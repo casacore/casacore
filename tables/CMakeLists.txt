@@ -256,7 +256,7 @@ init_pch_support(casa_tables ${top_level_headers})
 target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
 if(BUILD_SISCO)
   target_link_libraries (casa_tables ${DEFLATE_LIBRARY})
-  include_directories(${DEFLATE_INCLUDE_DIR})
+  target_include_directories(casa_tables PUBLIC ${DEFLATE_INCLUDE_DIR})
 endif(BUILD_SISCO)
 
 add_subdirectory (apps)

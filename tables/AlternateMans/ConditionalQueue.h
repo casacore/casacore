@@ -101,15 +101,13 @@ class ConditionalQueue {
   /**
    * Makes PopIf return false once the queue is empty.
    */
-  void Finish(std::unique_lock<std::mutex>& lock) {
-    [[maybe_unused]] const std::unique_lock<std::mutex>& avoid_lock_warning =
-        lock;
+  void Finish([[maybe_unused]] std::unique_lock<std::mutex>& lock) {
     assert(lock.owns_lock());
     is_finished_ = true;
     push_condition_.notify_all();
   }
 
-  size_t Size(std::unique_lock<std::mutex>& lock) const {
+  size_t Size([[maybe_unused]] std::unique_lock<std::mutex>& lock) const {
     assert(lock.owns_lock());
     return values_.size();
   }
