@@ -7,6 +7,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 
 #include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/AlternateMans/StokesIStManColumn.h>
 
 #include "SiscoReader.h"
 #include "SiscoWriter.h"
@@ -30,8 +31,9 @@ class SiscoStManColumn final : public StManColumn {
    * Constructor, to be overloaded by subclass.
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
+   * @param stokes_i Store only one polarization value instead of 4.
    */
-  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype)
+  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype, bool stokes_i)
       : StManColumn(dtype), parent_(parent) {
     if (dtype != casacore::TpComplex) {
       throw std::runtime_error(
@@ -113,7 +115,7 @@ class SiscoStManColumn final : public StManColumn {
       shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
     }
     if (shape->size() >= 2) {
-      const int n_polarizations = (*shape)[0];
+      const int n_polarizations = stokes_i_ ? 1 : (*shape)[0];
       const size_t n_channels = (*shape)[1];
 
       if (n_channels) {
@@ -127,6 +129,9 @@ class SiscoStManColumn final : public StManColumn {
             storage[channel * n_polarizations + polarization] =
                 buffer_[channel];
           }
+        }
+        if(stokes_i_) {
+          ExpandFromStokesI(storage, n_channels);
         }
         array.putStorage(storage, ownership);
       }
