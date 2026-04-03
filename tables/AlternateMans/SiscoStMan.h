@@ -147,6 +147,7 @@ class SiscoStMan final : public casacore::DataManager {
   std::unique_ptr<SiscoStManColumn> column_;
   int deflate_level_ = 9;
   int predict_level_ = 2;
+  bool stokes_i_ = false;
 };
 
 }  // namespace casacore

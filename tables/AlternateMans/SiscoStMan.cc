@@ -22,6 +22,7 @@ SiscoStMan::SiscoStMan(const casacore::String &/*name*/,
     : DataManager() {
   const std::string kDeflateLevelKey = "deflate_level";
   const std::string kPredictLevelKey = "predict_level";
+  const std::string kStokesIKey = "stokes_i";
 
   if (spec.isDefined(kDeflateLevelKey)) {
     deflate_level_ = spec.asInt(kDeflateLevelKey);
@@ -33,11 +34,14 @@ SiscoStMan::SiscoStMan(const casacore::String &/*name*/,
     if (predict_level_ < -1)
       throw std::runtime_error("Invalid value for " + kPredictLevelKey);
   }
+  if (spec.isDefined(kStokesIKey)) {
+    stokes_i_ = spec.asBool(kStokesIKey);
+  }
 }
 
 SiscoStMan::SiscoStMan(const SiscoStMan &source)
     : DataManager(),
-      name_(source.name_), deflate_level_(source.deflate_level_), predict_level_(source.predict_level_) {}
+      name_(source.name_), deflate_level_(source.deflate_level_), predict_level_(source.predict_level_), stokes_i_(source.stokes_i_) {}
 
 SiscoStMan::~SiscoStMan() noexcept = default;
 
@@ -45,6 +49,7 @@ casacore::Record SiscoStMan::dataManagerSpec() const {
   casacore::Record result;
   result.define("deflate_level", deflate_level_);
   result.define("predict_level", predict_level_);
+  result.define("stokes_i", stokes_i_);
   return result;
 }
 
@@ -77,7 +82,7 @@ casacore::DataManagerColumn *SiscoStMan::makeDirArrColumn(
 casacore::DataManagerColumn *SiscoStMan::makeIndArrColumn(
     [[maybe_unused]] const casacore::String &name, int dataType,
     [[maybe_unused]] const casacore::String &dataTypeID) {
-  column_ = std::make_unique<SiscoStManColumn>(*this, static_cast<DataType>(dataType));
+  column_ = std::make_unique<SiscoStManColumn>(*this, static_cast<DataType>(dataType), stokes_i_);
   return column_.get();
 }
 

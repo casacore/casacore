@@ -7,7 +7,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 
 #include <casacore/tables/Tables/ScalarColumn.h>
-#include <casacore/tables/AlternateMans/StokesIStManColumn.h>
+#include <casacore/tables/AlternateMans/StokesIConversions.h>
 
 #include "SiscoReader.h"
 #include "SiscoWriter.h"
@@ -28,24 +28,10 @@ class SiscoStMan;
 class SiscoStManColumn final : public StManColumn {
  public:
   /**
-   * Constructor, to be overloaded by subclass.
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
    * @param stokes_i Store only one polarization value instead of 4.
-   */
-  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype)
-      : StManColumn(dtype), parent_(parent) {
-    if (dtype != casacore::TpComplex) {
-      throw std::runtime_error(
-          "Sisco storage manager column can only be used for a data column "
-          "with single precision complex values");
-    }
-  }
-
-  ~SiscoStManColumn() override { ResetWriter(); }
-
-  /**
-   * Set the stokes-I mode of this column. If set to true, the column will have
+   * If set to true, the column will have
    * a shape with 4 polarizations (e.g. xx, xy, yx, yy) but only be able to store
    * Stokes I values, so values for which the 1st and 4th value are equal and the
    * other terms are zero.
@@ -54,13 +40,16 @@ class SiscoStManColumn final : public StManColumn {
    * redundant data, but explicitly decreasing it to Stokes I has a small additional
    * effect), and makes compression more than double as fast.
    */
-  void setStokesI(bool stokes_i) {
-    stokes_i_ = stokes_i;
+  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype, bool stokes_i)
+      : StManColumn(dtype), parent_(parent), stokes_i_(stokes_i) {
+    if (dtype != casacore::TpComplex) {
+      throw std::runtime_error(
+          "Sisco storage manager column can only be used for a data column "
+          "with single precision complex values");
+    }
   }
 
-  bool stokesI() const {
-    return stokes_i_;
-  }
+  ~SiscoStManColumn() override { ResetWriter(); }
 
   /**
    * Whether this column is writable
@@ -179,7 +168,7 @@ class SiscoStManColumn final : public StManColumn {
     const int antenna1 = antenna1_column_(current_write_row_);
     const int antenna2 = antenna2_column_(current_write_row_);
     if (array.shape().size() >= 2) {
-      const int n_polarizations = array.shape()[0];
+      const int n_polarizations = stokes_i_ ? 1 : array.shape()[0];
       const size_t n_channels = array.shape()[1];
 
       if (n_channels) {
@@ -190,9 +179,13 @@ class SiscoStManColumn final : public StManColumn {
              ++polarization) {
           const size_t baseline_id = GetBaselineId(
               field_id, data_desc_id, antenna1, antenna2, polarization);
-          for (size_t channel = 0; channel != n_channels; ++channel) {
-            buffer_[channel] =
-                storage[channel * n_polarizations + polarization];
+          if(stokes_i_) {
+            TransformToStokesI(storage, buffer_.data(), n_channels);
+          } else {
+            for (size_t channel = 0; channel != n_channels; ++channel) {
+              buffer_[channel] =
+                  storage[channel * n_polarizations + polarization];
+            }
           }
           writer_->Write(baseline_id, buffer_);
         }

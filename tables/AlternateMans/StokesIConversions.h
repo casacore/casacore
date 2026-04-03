@@ -68,7 +68,7 @@ inline bool *TransformToStokesI(const bool *input, bool *buffer, size_t n) {
       throw std::runtime_error(
           "Stokes-I storage modes cannot store boolean data for which not all "
           "correlations are equal");
-    new (&buffer[i]) bool(a);
+    buffer[i] = a;
   }
   return reinterpret_cast<bool *>(buffer);
 }
