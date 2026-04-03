@@ -49,7 +49,7 @@ class MorphingArray {
   void Resize(size_t new_size) {
     static_assert(std::is_trivially_destructible_v<T>);
     if (new_size > size_) {
-      free(data_);
+      std::free(data_);
       const size_t n_bytes = ((new_size * sizeof(T) + alignof(T) - 1) / alignof(T)) * alignof(T);
       data_ = std::aligned_alloc(alignof(T), n_bytes);
       if (!data_) throw std::bad_alloc();
