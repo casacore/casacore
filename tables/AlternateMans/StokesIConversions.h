@@ -44,7 +44,7 @@ inline T *TransformToStokesI(const T *input, T *buffer, size_t n) {
   for (size_t i = 0; i != n; ++i) {
     // Placement new is used, because the lifetime of type T needs
     // to be started.
-    new (&buffer[i * sizeof(T)]) T((input[i * 4] + input[i * 4 + 3]) * T(0.5));
+    buffer[i] = T((input[i * 4] + input[i * 4 + 3]) * T(0.5));
     if (input[i * 4 + 1] != T(0.0) || input[i * 4 + 2] != T(0.0))
       throw std::runtime_error(
           "Stokes-I storage modes cannot store data for which the 2nd and 3rd "
