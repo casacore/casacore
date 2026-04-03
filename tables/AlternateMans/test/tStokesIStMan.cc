@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(transform_to_stokes_i) {
   constexpr size_t data_b_size = 16;
   const double test_data_b[data_b_size] = {3.0, 0.0, 0.0, 3.0, 20.0,  0.0,  0.0, 24.0, 0.0,  0.0,   0.0, 1000.0, std::numeric_limits<double>::quiet_NaN(), 0.0, 0.0, 0.0};
   MorphingArray buffer_b;
-  buffer_a.Resize<double>(data_b_size);
+  buffer_b.Resize<double>(data_b_size);
   const double* result_b = casacore::TransformToStokesI(test_data_b, buffer_b.Data<double>(), data_b_size/4);
   BOOST_CHECK_CLOSE_FRACTION(result_b[0], 3.0, 1e-11);
   BOOST_CHECK_CLOSE_FRACTION(result_b[1], 22.0, 1e-11);
