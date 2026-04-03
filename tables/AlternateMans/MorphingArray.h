@@ -17,17 +17,23 @@
 class MorphingArray {
  public:
   MorphingArray() noexcept = default;
+  
+  template<typename T>
+  MorphingArray() {
+    
+  }
 
-  ~MorphingArray() { std::free(data_); }
+  ~MorphingArray() noexcept { std::free(data_); }
 
   MorphingArray(const MorphingArray&) = delete;
   MorphingArray& operator=(const MorphingArray&) = delete;
 
-  MorphingArray(MorphingArray&& other) : data_(other.data_), size_(other.size_) {
+  MorphingArray(MorphingArray&& other) noexcept : data_(other.data_), size_(other.size_) {
     other.data_ = nullptr;
     other.size_ = 0;
   }
-  MorphingArray& operator=(MorphingArray&& other) {
+  MorphingArray& operator=(MorphingArray&& other) noexcept {
+    std::free(data_);
     data_ = other.data_;
     size_ = other.size_;
     other.data_ = nullptr;

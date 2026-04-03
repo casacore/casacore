@@ -1,4 +1,4 @@
-#include "../DataManagers/MorphingArray.h"
+#include <casacore/tables/AlternateMans/MorphingArray.h>
 
 #include <complex>
 

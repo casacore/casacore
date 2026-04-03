@@ -1,8 +1,9 @@
 #include <boost/test/unit_test.hpp>
 
-#include <casacore/tables/AlternateMans/StokesIStManColumn.h>
+#include <casacore/tables/AlternateMans/MorphingArray.h>
+#include <casacore/tables/AlternateMans/StokesIConversions.h>
 
-BOOST_AUTO_TEST_SUITE(stokes_i_st_man_column)
+BOOST_AUTO_TEST_SUITE(stokes_i_conversions)
 
 BOOST_AUTO_TEST_CASE(expand_from_stokes_i) {
   casacore::ExpandFromStokesI<int>(nullptr, 0);
@@ -35,16 +36,18 @@ BOOST_AUTO_TEST_CASE(transform_to_stokes_i) {
 
   constexpr size_t data_a_size = 12;
   const bool test_data_a[data_a_size] = {false, false, false, false, true, true, true, true, false, false, false, false};
-  char buffer_a[data_a_size * sizeof(bool)];
-  const bool* result_a = casacore::TransformToStokesI(test_data_a, buffer_a, data_a_size/4);
+  MorphingArray buffer_a;
+  buffer_a.Resize<bool>(data_a_size);
+  const bool* result_a = casacore::TransformToStokesI(test_data_a, buffer_a.Data<bool>(), data_a_size/4);
   BOOST_CHECK(!result_a[0]);
   BOOST_CHECK(result_a[1]);
   BOOST_CHECK(!result_a[2]);
 
   constexpr size_t data_b_size = 16;
   const double test_data_b[data_b_size] = {3.0, 0.0, 0.0, 3.0, 20.0,  0.0,  0.0, 24.0, 0.0,  0.0,   0.0, 1000.0, std::numeric_limits<double>::quiet_NaN(), 0.0, 0.0, 0.0};
-  char buffer_b[data_b_size * sizeof(double)];
-  const double* result_b = casacore::TransformToStokesI(test_data_b, buffer_b, data_b_size/4);
+  MorphingArray buffer_b;
+  buffer_a.Resize<double>(data_b_size);
+  const double* result_b = casacore::TransformToStokesI(test_data_b, buffer_b.Data<double>(), data_b_size/4);
   BOOST_CHECK_CLOSE_FRACTION(result_b[0], 3.0, 1e-11);
   BOOST_CHECK_CLOSE_FRACTION(result_b[1], 22.0, 1e-11);
   BOOST_CHECK_CLOSE_FRACTION(result_b[2], 500.0, 1e-11);
