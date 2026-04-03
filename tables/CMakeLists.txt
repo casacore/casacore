@@ -256,7 +256,7 @@ init_pch_support(casa_tables ${top_level_headers})
 target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
 if(BUILD_SISCO)
   target_link_libraries (casa_tables ${DEFLATE_LIBRARY})
-  include_directories(${DEFLATE_INCLUDE_DIR})
+  target_include_directories(casa_tables PUBLIC ${DEFLATE_INCLUDE_DIR})
 endif(BUILD_SISCO)
 
 add_subdirectory (apps)
@@ -356,16 +356,6 @@ DESTINATION include/casacore/tables/Tables
 )
 
 install (FILES
-AlternateMans/AntennaPairFile.h
-AlternateMans/AntennaPairStMan.h
-AlternateMans/AntennaPairStManColumn.h
-AlternateMans/BitPacking.h
-AlternateMans/BufferedColumnarFile.h
-AlternateMans/RowBasedFile.h
-AlternateMans/SimpleColumnarFile.h
-AlternateMans/StokesIStMan.h
-AlternateMans/StokesIStManColumn.h
-AlternateMans/UvwFile.h
 DataMan/BaseMappedArrayEngine.h
 DataMan/BaseMappedArrayEngine.tcc
 DataMan/BitFlagsEngine.h
@@ -450,6 +440,22 @@ ${ADIOS2_HEADERS}
 DESTINATION include/casacore/tables/DataMan
 )
 
+install(FILES
+  AlternateMans/AntennaPairFile.h
+  AlternateMans/AntennaPairStMan.h
+  AlternateMans/AntennaPairStManColumn.h
+  AlternateMans/BitPacking.h
+  AlternateMans/BufferedColumnarFile.h
+  AlternateMans/MorphingArray.h
+  AlternateMans/RowBasedFile.h
+  AlternateMans/SimpleColumnarFile.h
+  AlternateMans/StokesIConversions.h
+  AlternateMans/StokesIStMan.h
+  AlternateMans/StokesIStManColumn.h
+  AlternateMans/UvwFile.h
+  DESTINATION include/casacore/tables/AlternateMans
+)
+
 if(BUILD_SISCO)
 install(FILES
   AlternateMans/BitFloat.h
@@ -461,7 +467,7 @@ install(FILES
   AlternateMans/SiscoStMan.h
   AlternateMans/SiscoStManColumn.h
   AlternateMans/SiscoWriter.h
-DESTINATION include/casacore/tables/DataMan)
+DESTINATION include/casacore/tables/AlternateMans)
 endif(BUILD_SISCO)
 
 install (FILES

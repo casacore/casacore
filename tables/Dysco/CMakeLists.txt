@@ -9,7 +9,6 @@ include_directories(${GSL_INCLUDE_DIRS})
 add_compile_options(-O3 -Wall -DNDEBUG)
 
 option(PORTABLE "Generate portable code" ON)
-option(BUILD_PACKAGES "Build Debian packages" OFF)
 
 if(NOT PORTABLE)
   if(USE_AVX512F)
