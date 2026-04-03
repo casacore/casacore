@@ -272,7 +272,7 @@ class SiscoStManColumn final : public StManColumn {
     std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
     const uint16_t major_and_stokes_i = kVersionMajor | (stokes_i_ ? 0x8000 : 0);
-    std::copy_n(reinterpret_cast<const char *>(major_and_stokes_i), 2,
+    std::copy_n(reinterpret_cast<const char *>(&major_and_stokes_i), 2,
                 &header_buffer[kMagicSize]);
     std::copy_n(reinterpret_cast<const char *>(&kVersionMinor), 2,
                 &header_buffer[kMagicSize + 2]);
@@ -347,7 +347,7 @@ class SiscoStManColumn final : public StManColumn {
           data_desc_id_column_(current_requested_reading_row_);
       const int antenna1 = antenna1_column_(current_requested_reading_row_);
       const int antenna2 = antenna2_column_(current_requested_reading_row_);
-      const int n_polarizations = shape[0];
+      const int n_polarizations = stokes_i_ ? 1 : shape[0];
       const int n_channels = shape[1];
       for (int polarization = 0; polarization != n_polarizations;
            ++polarization) {
@@ -383,7 +383,7 @@ class SiscoStManColumn final : public StManColumn {
 
   void WriteEmptyRow() {
     if (isFixedShape()) {
-      const int n_polarizations = fixed_shape_[0];
+      const int n_polarizations = stokes_i_ ? 1 : fixed_shape_[0];
       const int n_channels = fixed_shape_[1];
       buffer_.assign(n_channels, 0.0);
       const int field_id = field_id_column_(current_write_row_);
@@ -411,7 +411,7 @@ class SiscoStManColumn final : public StManColumn {
       shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
     }
     if (shape->size() >= 2) {
-      const int n_polarizations = (*shape)[0];
+      const int n_polarizations = stokes_i_ ? 1 : (*shape)[0];
       const int n_channels = (*shape)[1];
       if (n_channels) {
         buffer_.resize(n_channels);

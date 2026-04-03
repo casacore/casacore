@@ -47,9 +47,7 @@ class SiscoReader {
 
  public:
   SiscoReader(const std::string& filename);
-  SiscoReader(SiscoReader&&) = default;
   ~SiscoReader();
-  SiscoReader& operator=(SiscoReader&&) = default;
 
   void Open(std::span<std::byte> header_data);
 
