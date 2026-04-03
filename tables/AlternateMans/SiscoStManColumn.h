@@ -33,7 +33,7 @@ class SiscoStManColumn final : public StManColumn {
    * @param dtype The column's type as defined by Casacore.
    * @param stokes_i Store only one polarization value instead of 4.
    */
-  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype, bool stokes_i)
+  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype)
       : StManColumn(dtype), parent_(parent) {
     if (dtype != casacore::TpComplex) {
       throw std::runtime_error(
@@ -43,6 +43,24 @@ class SiscoStManColumn final : public StManColumn {
   }
 
   ~SiscoStManColumn() override { ResetWriter(); }
+
+  /**
+   * Set the stokes-I mode of this column. If set to true, the column will have
+   * a shape with 4 polarizations (e.g. xx, xy, yx, yy) but only be able to store
+   * Stokes I values, so values for which the 1st and 4th value are equal and the
+   * other terms are zero.
+   *
+   * This saves a small bit of space (Sisco is able to decrease the size of such
+   * redundant data, but explicitly decreasing it to Stokes I has a small additional
+   * effect), and makes compression more than double as fast.
+   */
+  void setStokesI(bool stokes_i) {
+    stokes_i_ = stokes_i;
+  }
+
+  bool stokesI() const {
+    return stokes_i_;
+  }
 
   /**
    * Whether this column is writable
@@ -260,7 +278,8 @@ class SiscoStManColumn final : public StManColumn {
     char header_buffer[kHeaderSize];
     std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
-    std::copy_n(reinterpret_cast<const char *>(&kVersionMajor), 2,
+    const uint16_t major_and_stokes_i = kVersionMajor | (stokes_i_ ? 0x8000 : 0);
+    std::copy_n(reinterpret_cast<const char *>(major_and_stokes_i), 2,
                 &header_buffer[kMagicSize]);
     std::copy_n(reinterpret_cast<const char *>(&kVersionMinor), 2,
                 &header_buffer[kMagicSize + 2]);
@@ -286,13 +305,14 @@ class SiscoStManColumn final : public StManColumn {
                                 kHeaderSize);
     reader_->Open(header);
     char magic_tag[kMagicSize];
-    short version_major;
-    short version_minor;
+    uint16_t version_major_and_stokes_i;
+    uint16_t version_minor;
     std::copy_n(&header_buffer[0], kMagicSize, magic_tag);
     std::copy_n(&header_buffer[kMagicSize], 2,
-                reinterpret_cast<char *>(&version_major));
+                reinterpret_cast<char *>(&version_major_and_stokes_i));
     std::copy_n(&header_buffer[kMagicSize + 2], 2,
                 reinterpret_cast<char *>(&version_minor));
+    const uint16_t version_major = version_major_and_stokes_i & 0x7FFF;
     if (version_major != kVersionMajor) {
       throw std::runtime_error(
           "The file on disk is written as a Sisco version " +
@@ -300,6 +320,7 @@ class SiscoStManColumn final : public StManColumn {
           " file, whereas this Casacore version supports only version " +
           std::to_string(kVersionMajor));
     }
+    stokes_i_ = (version_major_and_stokes_i & 0x8000) != 0;
 
     current_read_row_ = 0;
     baseline_ids_.clear();
@@ -450,6 +471,7 @@ class SiscoStManColumn final : public StManColumn {
   std::map<std::array<int, 5>, size_t> baseline_ids_;
   size_t baseline_count_;
   bool file_exists_ = false;
+  bool stokes_i_ = false;
   /**
    * If true, writing is done to a temporary file such that reading can still
    * take place from the old file. The temporary file will be moved over the

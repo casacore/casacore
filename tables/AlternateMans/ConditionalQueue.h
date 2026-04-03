@@ -116,7 +116,7 @@ class ConditionalQueue {
 
  private:
   template <typename Condition>
-  std::list<T>::iterator GetNext(Condition& condition) {
+  std::list<T>::iterator GetNext(Condition&& condition) {
     for (typename std::list<T>::iterator i = values_.begin();
          i != values_.end(); ++i) {
       if (condition(*i)) return i;
