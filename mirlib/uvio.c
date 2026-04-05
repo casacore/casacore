@@ -760,7 +760,7 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
     CHECK(iostat,(message,"Error accessing visdata for %s, in UVOPEN(old)",name));
 #ifdef MIR4
     /* figure out if to read old MIR3 or new MIR4 */
-#if true
+#if 1
       RDHDL_C(*tno,"vislen",&(uv->max_offset),hsize_c(uv->item));
 #else
       int old_vislen;

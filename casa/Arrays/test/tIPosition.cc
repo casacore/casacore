@@ -214,7 +214,8 @@ BOOST_AUTO_TEST_CASE( move_exhaustively )
   for (i=0; i<5; i++) {
     BOOST_CHECK(ip1(i) == i);
   }
-  ip1 = ip1;
+  IPosition& copy = ip1;
+  ip1 = copy;
   for (i=0; i<5; i++) {
     BOOST_CHECK(ip1(i) == i);
   }

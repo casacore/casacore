@@ -135,19 +135,13 @@ void TestTimeBlockEncoder(Normalization blockNormalization) {
   std::vector<ao::uvector<std::complex<float>>> allData;
 
   RMSMeasurement unscaledRMS;
-  double factorSum = 0.0;
-  size_t factorCount = 0;
   size_t blockRow = 0;
   for (size_t a1 = 0; a1 != nAnt; ++a1) {
     for (size_t a2 = a1; a2 != nAnt; ++a2) {
       for (size_t ch = 0; ch != nChan; ++ch) {
         for (size_t p = 0; p != nPol; ++p) {
           std::complex<float> rndVal(dist(rnd), dist(rnd));
-          // std::complex<float> rndVal(1.0, 0.0);
           float f = 1.0;
-          // float f = float(a1+1) * float(a2+1) * float(p+1);
-          factorSum += f;
-          factorCount++;
           data[p + ch * nPol] = rndVal * f;
 
           std::complex<float> encodedVal(

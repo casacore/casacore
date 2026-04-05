@@ -43,7 +43,7 @@
 
 namespace casacore {
   void fk45(Double R1950, Double D1950, Double BEPOCH, Double &R2000,
-	    Double &D2000, Double X2000[], Vector<Double> V2000[]);
+	    Double &D2000, Double X2000[3], Vector<Double> V2000[]);
 
   void conB1950(const MVDirection &b1950, const MVDirection &j2000,
 		Double epo=2000.0,

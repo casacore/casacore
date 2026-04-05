@@ -228,8 +228,7 @@ namespace casacore { namespace python {
       return TpOther;
     }
     DataType result = TpOther;
-    int i = 0;
-    for (;;i++) {
+    while (true) {
       handle<> py_elem_hdl(allow_null(PyIter_Next(obj_iter.get())));
       if (PyErr_Occurred()) {
     PyErr_Clear();

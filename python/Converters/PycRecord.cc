@@ -71,8 +71,7 @@ namespace casacore { namespace python {
     list keys = d.keys();
     Record result;
     handle<> obj_iter(PyObject_GetIter(keys.ptr()));
-    std::size_t i=0;
-    for(;;i++) {
+    while(true) {
       handle<> py_elem_hdl(allow_null(PyIter_Next(obj_iter.get())));
       if (PyErr_Occurred()) throw_error_already_set();
       if (!py_elem_hdl.get()) break;             // end of iteration

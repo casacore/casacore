@@ -556,7 +556,7 @@ namespace casacore { namespace python {
         bool is_same = PyRange_Check(obj_ptr) ||
                   (PySequence_Check(obj_ptr)
                && !PyTuple_Check(obj_ptr) && !PyList_Check(obj_ptr));
-    int i = 0;
+    [[maybe_unused]] int i = 0;
         for (;;i++) {
           handle<> py_elem_hdl(allow_null(PyIter_Next(obj_iter.get())));
           if (PyErr_Occurred()) {

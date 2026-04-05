@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
       }
     }
     // Now time getting the hourangle using DataMan and MSDerivedValues.
-    double totha = 0;
+    [[maybe_unused]] double totha = 0;
     Timer timer;
     for (uInt i=0; i<tab.nrow(); ++i) {
       totha += ha(i);

@@ -212,7 +212,7 @@ int main(int argc, const char* argv[])
 
   tim.mark();
   for (Int i=0; i<N; i++) {
-    Double res = a0(par, x);
+    [[maybe_unused]] Double res = a0(par, x);
     res *= 1.0;
   }
   cout << "g0: ";
@@ -220,7 +220,7 @@ int main(int argc, const char* argv[])
 
   tim.mark();
   for (Int i=0; i<N; i++) {
-    Double res = a1(par, x);
+    [[maybe_unused]] Double res = a1(par, x);
     res *= 1.0;
   }
   cout << "g1: ";
@@ -228,7 +228,7 @@ int main(int argc, const char* argv[])
 
   tim.mark();
   for (Int i=0; i<N; i++) {
-    Double res = a2(par, x);
+    [[maybe_unused]] Double res = a2(par, x);
     res *= 1.0;
   }
   cout << "g2: ";
@@ -236,7 +236,7 @@ int main(int argc, const char* argv[])
 
   tim.mark();
   for (Int i=0; i<N; i++) {
-    Double res = mv(va, par, x);
+    [[maybe_unused]] Double res = mv(va, par, x);
     res *= 1.0;
   }
   cout << "mv: ";
