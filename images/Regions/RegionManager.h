@@ -50,7 +50,6 @@ namespace casacore {
   class Record;
   class WCRegion;
   class WCBox;
-  template<class T> class PtrBlock;
   class ImageRegion;
 
   class RegionManager

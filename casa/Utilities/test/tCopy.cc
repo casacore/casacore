@@ -341,7 +341,6 @@ int main()
     Block<const void*> cbl2(cbl);
     Block<void*> bl(10,static_cast<void*>(0));
     Block<void*> bl2(bl);
-    // PtrBlock is based on Block<void*>
     Block<void*> bvl(10,static_cast<void*>(0));
     Block<void*> bvl2(bvl);
 

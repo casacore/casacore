@@ -40,7 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Block;
-template<class T> class PtrBlock;
 class ImageRegion;
 class Table;
 class Slice;
