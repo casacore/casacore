@@ -631,8 +631,6 @@ public:
   }
 
  private:
-  //friend class Array<T>; // to allow access to following constructors.
-
   Block(size_t n, ArrayInitPolicy initPolicy,
           Allocator_private::BulkAllocator<T> *allocator) :
       allocator_p(allocator), used_p(n), destroyPointer(
