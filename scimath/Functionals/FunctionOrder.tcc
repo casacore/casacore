@@ -73,7 +73,7 @@ FunctionOrder<T> &FunctionOrder<T>::operator=(const FunctionOrder<T> &other) {
     for (uInt i=0; i<function_p.nelements(); ++i) {
       delete function_p[i]; function_p[i] = 0;
     }
-    function_p =  PtrBlock<Function<T> *>(other.function_p.nelements());
+    function_p =  Block<Function<T> *>(other.function_p.nelements());
     for (uInt i=0; i<function_p.nelements(); ++i) {
       function_p[i] = (*(other.function_p[i])).clone();
     }
