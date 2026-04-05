@@ -61,8 +61,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   yout.resize(youtShape);
   Range* pyout=yout.getStorage(deleteYout);
 
-  PtrBlock<const Range*> yinPtrs(nxin);
-  PtrBlock<Range*> youtPtrs(nxout);
+  Block<const Range*> yinPtrs(nxin);
+  Block<Range*> youtPtrs(nxout);
   for (i=0; i<nxin; i++) yinPtrs[i]=pyin+i*yStep;
   for (i=0; i<nxout; i++) youtPtrs[i]=pyout+i*yStep;
   
@@ -115,10 +115,10 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   Range* pyout=yout.getStorage(deleteYout);
   Bool* pyoutFlags=youtFlags.getStorage(deleteYoutFlags);
 
-  PtrBlock<const Range*> yinPtrs(nxin);
-  PtrBlock<const Bool*> yinFlagPtrs(nxin);
-  PtrBlock<Range*> youtPtrs(nxout);
-  PtrBlock<Bool*> youtFlagPtrs(nxout);
+  Block<const Range*> yinPtrs(nxin);
+  Block<const Bool*> yinFlagPtrs(nxin);
+  Block<Range*> youtPtrs(nxout);
+  Block<Bool*> youtFlagPtrs(nxout);
   for (i=0; i<nxin; i++) {
     yinPtrs[i]=pyin+i*yStep;
     yinFlagPtrs[i]=pyinFlags+i*yStep;
@@ -176,8 +176,8 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
   yout.resize(youtShape);
   Range* pyout=yout.getStorage(deleteYout);
 
-  PtrBlock<const Range*> yinPtrs(na*nb*nc);
-  PtrBlock<Range*> youtPtrs(na*nxout*nc);
+  Block<const Range*> yinPtrs(na*nb*nc);
+  Block<Range*> youtPtrs(na*nxout*nc);
   Int i;
   for (i=0; i<(na*nb*nc); i++) yinPtrs[i]=pyin+i;
   for (i=0; i<(na*nxout*nc); i++) {
@@ -220,10 +220,10 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
   Range* pyout=yout.getStorage(deleteYout);
   Bool* pyoutFlags=youtFlags.getStorage(deleteYoutFlags);
 
-  PtrBlock<const Range*> yinPtrs(na*nb*nc);
-  PtrBlock<const Bool*> yinFlagPtrs(na*nb*nc);
-  PtrBlock<Range*> youtPtrs(na*nxout*nc);
-  PtrBlock<Bool*> youtFlagPtrs(na*nxout*nc);
+  Block<const Range*> yinPtrs(na*nb*nc);
+  Block<const Bool*> yinFlagPtrs(na*nb*nc);
+  Block<Range*> youtPtrs(na*nxout*nc);
+  Block<Bool*> youtFlagPtrs(na*nxout*nc);
   Int i;
   for (i=0; i<(na*nb*nc); i++) {
     yinPtrs[i]=pyin+i;
@@ -242,11 +242,11 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
 }
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout, 
+void InterpolateArray1D<Domain,Range>::interpolatePtr(Block<Range*>& yout,
                                                       Int ny, 
   					              const Vector<Domain>& xout, 
 						      const Vector<Domain>& xin,
-						      const PtrBlock<const Range*>& yin, 
+						      const Block<const Range*>& yin,
                                                       Int method)
 {
   uInt nElements=xin.nelements();
@@ -397,13 +397,13 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 }  
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout, 
-						      PtrBlock<Bool*>& youtFlags, 
+void InterpolateArray1D<Domain,Range>::interpolatePtr(Block<Range*>& yout,
+						      Block<Bool*>& youtFlags,
 						      Int ny, 
  						      const Vector<Domain>& xout, 
 						      const Vector<Domain>& xin,
-						      const PtrBlock<const Range*>& yin, 
-						      const PtrBlock<const Bool*>& yinFlags, 
+						      const Block<const Range*>& yin,
+						      const Block<const Bool*>& yinFlags,
 						      Int method,
 						      Bool goodIsTrue,
 						      Bool extrapolate)
@@ -643,13 +643,13 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 }  
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
+void InterpolateArray1D<Domain,Range>::interpolateyPtr(Block<Range*>& yout,
                                                       Int na,
                                                       Int nb,
                                                       Int nc,
                                                       const Vector<Domain>& xout,
                                                       const Vector<Domain>& xin,
-                                                      const PtrBlock<const Range*>& yin,
+                                                      const Block<const Range*>& yin,
                                                       Int method)
 {
   uInt nElements=xin.nelements();
@@ -707,15 +707,15 @@ void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
 }
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
-                                                      PtrBlock<Bool*>& youtFlags,
+void InterpolateArray1D<Domain,Range>::interpolateyPtr(Block<Range*>& yout,
+                                                      Block<Bool*>& youtFlags,
                                                       Int na,
                                                       Int nb,
                                                       Int nc,
                                                       const Vector<Domain>& xout,
                                                       const Vector<Domain>& xin,
-                                                      const PtrBlock<const Range*>& yin,
-                                                      const PtrBlock<const Bool*>& yinFlags,
+                                                      const Block<const Range*>& yin,
+                                                      const Block<const Bool*>& yinFlags,
                                                       Int method,
                                                       Bool goodIsTrue,
                                                       Bool extrapolate)
@@ -802,11 +802,11 @@ void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
 // using polynomial interpolation with specified order
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::polynomialInterpolation
-(PtrBlock<Range*>& yout,
+(Block<Range*>& yout,
  Int ny, 
  const Vector<Domain>& xout, 
  const Vector<Domain>& xin,
- const PtrBlock<const Range*>& yin, 
+ const Block<const Range*>& yin,
  Int order)
 {
   // Based on Nevilles Algorithm (Numerical Recipies 2nd ed., Section 3.1)

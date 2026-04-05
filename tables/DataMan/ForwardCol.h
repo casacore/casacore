@@ -520,7 +520,7 @@ private:
 
 
     // Define the various engine column objects.
-    PtrBlock<ForwardColumn*> refColumns_p;
+    Block<ForwardColumn*> refColumns_p;
     // The referenced table.
     // For newly created tables this is filled in by the constructor.
     // For existing tables this is filled in by the first ForwardColumn

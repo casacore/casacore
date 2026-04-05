@@ -132,7 +132,7 @@ private:
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    WCExtension (Bool takeOver, const PtrBlock<const WCRegion*>& regions);
+    WCExtension (Bool takeOver, const Block<const WCRegion*>& regions);
 
     // Find the axes to be extended and stretched.
     // The extend axes are the axis numbers in the box.

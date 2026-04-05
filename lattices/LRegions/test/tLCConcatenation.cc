@@ -46,7 +46,7 @@ void doIt (const IPosition& latticeShape,
     LCBox box (start, end, latticeShape);
     LCEllipsoid cir (center, radius, latticeShape);
     LCEllipsoid cir1 (center, radius-1, latticeShape);
-    PtrBlock<const LCRegion*> ptrs(3);
+    Block<const LCRegion*> ptrs(3);
     ptrs[0] = &cir;
     ptrs[1] = &box;
     ptrs[2] = &cir1;
@@ -138,7 +138,7 @@ void doIt (const IPosition& latticeShape,
     }
     {
     // Test ordered equality. 
-	PtrBlock<const LCRegion*> ptrs(2);
+	Block<const LCRegion*> ptrs(2);
 	ptrs[0] = &box;
 	ptrs[1] = &cir;
 	LCConcatenation union1 (False, ptrs, start.nelements());
@@ -147,7 +147,7 @@ void doIt (const IPosition& latticeShape,
     }
     {
     // Test unordered equality. 
-	PtrBlock<const LCRegion*> ptrs(2);
+	Block<const LCRegion*> ptrs(2);
 	ptrs[0] = &box;
 	ptrs[1] = &cir;
 	LCConcatenation union1 (False, ptrs, start.nelements());

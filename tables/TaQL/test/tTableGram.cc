@@ -164,7 +164,7 @@ void docomm()
 void showtab (const Table& tab, const Vector<String>& colnam)
 {
   uInt nrcol = 0;
-  PtrBlock<TableColumn*> tableColumns(colnam.nelements());
+  Block<TableColumn*> tableColumns(colnam.nelements());
   for (uInt i=0; i<colnam.nelements(); i++) {
     if (! tab.tableDesc().isColumn (colnam(i))) {
       cout << "Column " << colnam(i) << " does not exist" << endl;

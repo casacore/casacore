@@ -1563,7 +1563,7 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   vector<vector<Double> > allcol;
   while (read_line(line, infile)) {
     if (line.size() < 2 || int_data(line[1]) != Int(ncoeff)) continue;
-    Double st0;
+    Double st0 = 0.0;
     vector<Double> res;
     while (read_line(line, infile)) {
       for (uInt i=0; i<line.size(); ++i) {

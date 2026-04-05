@@ -95,13 +95,13 @@ public:
 		    const ImageRegion* region8 = 0,
 		    const ImageRegion* region9 = 0,
 		    const ImageRegion* region10 = 0);
-    WCIntersection (const PtrBlock<const ImageRegion*>& regions);
+    WCIntersection (const Block<const ImageRegion*>& regions);
     // </group>
 
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    WCIntersection (Bool takeOver, const PtrBlock<const WCRegion*>& regions);
+    WCIntersection (Bool takeOver, const Block<const WCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     WCIntersection (const WCIntersection& other);

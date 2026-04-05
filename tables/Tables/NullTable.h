@@ -134,7 +134,7 @@ public:
   virtual Vector<rownr_t>& rowStorage() override;
   virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
 			     Bool determineOrder) const override;
-  virtual std::shared_ptr<BaseTable> doSort (PtrBlock<BaseColumn*>&,
+  virtual std::shared_ptr<BaseTable> doSort (Block<BaseColumn*>&,
                                              const Block<std::shared_ptr<BaseCompare>>&,
                                              const Block<Int>&,
                                              int,

@@ -51,11 +51,11 @@ WCUnion::WCUnion (const ImageRegion* region1,
 	      region6, region7, region8, region9, region10)
 {}
 
-WCUnion::WCUnion (const PtrBlock<const ImageRegion*>& regions)
+WCUnion::WCUnion (const Block<const ImageRegion*>& regions)
 : WCCompound (regions)
 {}
 
-WCUnion::WCUnion (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
+WCUnion::WCUnion (Bool takeOver, const Block<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -89,7 +89,7 @@ LCRegion* WCUnion::doToLCRegion (const CoordinateSystem& cSys,
 				 const IPosition& pixelAxesMap,
 				 const IPosition& outOrder) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
     return new LCUnion (True, regions);
 }
@@ -115,7 +115,7 @@ TableRecord WCUnion::toRecord (const String& tableName) const
 WCUnion* WCUnion::fromRecord (const TableRecord& rec,
 			      const String& tableName)
 {
-    PtrBlock<const WCRegion*> regions;
+    Block<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCUnion (True, regions);
 }

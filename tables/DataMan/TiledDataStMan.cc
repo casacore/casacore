@@ -188,7 +188,7 @@ void TiledDataStMan::extendHypercube (uInt64 incrInLastDim,
     // Check if the number of rows involved fits in the table.
     checkNrrow (cubeSet_p[cubeNr]->cubeShape(), incrInLastDim);
     // Check if values for the last coordinate are given correctly.
-    PtrBlock<TSMColumn*> lastCoord (1, coordColSet_p[nrdim_p-1]);
+    Block<TSMColumn*> lastCoord (1, coordColSet_p[nrdim_p-1]);
     IPosition lastDim (1, incrInLastDim);
     checkCoordinates (lastCoord, lastDim, values);
     cubeSet_p[cubeNr]->extend (incrInLastDim, values, lastCoord[0]);

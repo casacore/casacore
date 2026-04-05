@@ -51,12 +51,12 @@ WCIntersection::WCIntersection (const ImageRegion* region1,
 	      region6, region7, region8, region9, region10)
 {}
 
-WCIntersection::WCIntersection (const PtrBlock<const ImageRegion*>& regions)
+WCIntersection::WCIntersection (const Block<const ImageRegion*>& regions)
 : WCCompound (regions)
 {}
 
 WCIntersection::WCIntersection (Bool takeOver,
-				const PtrBlock<const WCRegion*>& regions)
+				const Block<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -90,7 +90,7 @@ LCRegion* WCIntersection::doToLCRegion (const CoordinateSystem& cSys,
 					const IPosition& pixelAxesMap,
 					const IPosition& outOrder) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
     return new LCIntersection (True, regions);
 }
@@ -116,7 +116,7 @@ TableRecord WCIntersection::toRecord (const String& tableName) const
 WCIntersection* WCIntersection::fromRecord (const TableRecord& rec,
 					    const String& tableName)
 {
-    PtrBlock<const WCRegion*> regions;
+    Block<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCIntersection (True, regions);
 }

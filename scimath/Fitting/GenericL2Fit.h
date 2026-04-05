@@ -467,12 +467,12 @@ template<class T> class GenericL2Fit : public LSQaips {
   // as parameters; giving <src>[1,1,1]</src> as argument vector and
   // <src>3.1415</src> as value.
   // <group>
-  PtrBlock<Function<typename FunctionTraits<T>::DiffType,
+  Block<Function<typename FunctionTraits<T>::DiffType,
     typename FunctionTraits<T>::DiffType>*> constrFun_p;
   // List of vectors describing the constraint equations' arguments
-  PtrBlock<Vector<typename FunctionTraits<T>::BaseType>*> constrArg_p;
+  Block<Vector<typename FunctionTraits<T>::BaseType>*> constrArg_p;
   // List of values describing the constraint equations' value
-  PtrBlock<typename FunctionTraits<T>::BaseType *> constrVal_p;
+  Block<typename FunctionTraits<T>::BaseType *> constrVal_p;
   // </group>
   // Number of available parameters
   uInt pCount_p;

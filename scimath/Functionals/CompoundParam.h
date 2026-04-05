@@ -202,7 +202,7 @@ private:
 protected:
   //# Data
   // Pointer to each added function
-  PtrBlock<Function<T> *> functionPtr_p;
+  Block<Function<T> *> functionPtr_p;
   // Index of offset for each function to its parameters in general list
   Block<uInt> paroff_p;
   // Index of function belonging to parameter

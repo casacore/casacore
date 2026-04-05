@@ -516,7 +516,7 @@ namespace casacore { //# name space casa begins
       return doUnion(imageReg1, imageReg2);
   }
 
-  ImageRegion*  RegionManager::doUnion(const PtrBlock<const WCRegion*>& regions) {
+  ImageRegion*  RegionManager::doUnion(const Block<const WCRegion*>& regions) {
       *itsLog << LogOrigin("RegionManager", String(__FUNCTION__) + "_2");
       WCUnion leUnion(False, regions);
       ImageRegion* leReturn= new ImageRegion(leUnion);
@@ -554,7 +554,7 @@ namespace casacore { //# name space casa begins
   }
 
   ImageRegion*  RegionManager::doIntersection(
-      const PtrBlock<const WCRegion*>& regions)
+      const Block<const WCRegion*>& regions)
   {
       WCIntersection leIntersect(False, regions);
       ImageRegion* leReturn= new ImageRegion(leIntersect);
@@ -586,7 +586,7 @@ namespace casacore { //# name space casa begins
       return doComplement(imageReg1);
   }
 
-  ImageRegion*  RegionManager::doComplement(const PtrBlock<const WCRegion*>& regions){
+  ImageRegion*  RegionManager::doComplement(const Block<const WCRegion*>& regions){
       *itsLog << LogOrigin("RegionManager", "doComplement");
       WCComplement leComplement(False, regions);
       ImageRegion* leReturn= new ImageRegion(leComplement);
@@ -623,7 +623,7 @@ namespace casacore { //# name space casa begins
   }
 
   ImageRegion*  RegionManager::doDifference(
-      const PtrBlock<const WCRegion*>& regions)
+      const Block<const WCRegion*>& regions)
   {
       WCDifference leDiff(False, regions);
       ImageRegion* leReturn = new ImageRegion(leDiff);
@@ -654,14 +654,14 @@ namespace casacore { //# name space casa begins
      const WCRegion& region, 
      const WCBox& box )
  {
-     PtrBlock<const ImageRegion *> imageRegions(1);
+     Block<const ImageRegion *> imageRegions(1);
      imageRegions[0]= new ImageRegion(region);
      TableRecord recordBox = box.toRecord("");
      return doConcatenation(imageRegions, recordBox);
   }
 
   ImageRegion*  doConcatenation(
-      const PtrBlock<const WCRegion*>& regions, 
+      const Block<const WCRegion*>& regions, 
       const WCBox& box)
   {
       WCConcatenation leConcat(False, regions, box);
@@ -670,7 +670,7 @@ namespace casacore { //# name space casa begins
   }
 
   ImageRegion*  RegionManager::doConcatenation(
-      const PtrBlock<const ImageRegion*>& regions,
+      const Block<const ImageRegion*>& regions,
       const TableRecord& box )
   {
       *itsLog << LogOrigin("RegionManager", "doConcatenation");
@@ -697,14 +697,14 @@ namespace casacore { //# name space casa begins
   {
       *itsLog << LogOrigin("RegionManager", "doConcatenation");
 
-      // Once we convert the region Record to PtrBlock of 
+      // Once we convert the region Record to Block of 
       // ImageRegions then we just call one of the other
       // doConcatenation routines.
 
       if ( regions.nfields() < 1 )
 	  throw(AipsError(String("No regions have been supplied to concatenation" ) ) );
 
-      PtrBlock<const ImageRegion*> imageRegions(regions.nfields());
+      Block<const ImageRegion*> imageRegions(regions.nfields());
       ImageRegion* reg=0;
       TableRecord tblRec;
       for( uInt i=0; i < (regions.nfields()); i++ )

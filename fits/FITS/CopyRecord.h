@@ -98,24 +98,24 @@ public:
 private: 
     // We could just have a TableColumn for scalars, but we'd need all of
     // the array types anyway.
-    PtrBlock<ScalarColumn<Bool> *> table_bool;
-    PtrBlock<ScalarColumn<uChar> *> table_char;
-    PtrBlock<ScalarColumn<Short> *> table_short;
-    PtrBlock<ScalarColumn<Int> *> table_int;
-    PtrBlock<ScalarColumn<Float> *> table_float;
-    PtrBlock<ScalarColumn<Double> *> table_double;
-    PtrBlock<ScalarColumn<Complex> *> table_complex;
-    PtrBlock<ScalarColumn<DComplex> *> table_dcomplex;
-    PtrBlock<ScalarColumn<String> *> table_string;
-    PtrBlock<ArrayColumn<Bool> *> table_array_bool;
-    PtrBlock<ArrayColumn<uChar> *> table_array_char;
-    PtrBlock<ArrayColumn<Short> *> table_array_short;
-    PtrBlock<ArrayColumn<Int> *> table_array_int;
-    PtrBlock<ArrayColumn<Float> *> table_array_float;
-    PtrBlock<ArrayColumn<Double> *> table_array_double;
-    PtrBlock<ArrayColumn<Complex> *> table_array_complex;
-    PtrBlock<ArrayColumn<DComplex> *> table_array_dcomplex;
-    PtrBlock<ArrayColumn<String> *> table_array_string;
+    Block<ScalarColumn<Bool> *> table_bool;
+    Block<ScalarColumn<uChar> *> table_char;
+    Block<ScalarColumn<Short> *> table_short;
+    Block<ScalarColumn<Int> *> table_int;
+    Block<ScalarColumn<Float> *> table_float;
+    Block<ScalarColumn<Double> *> table_double;
+    Block<ScalarColumn<Complex> *> table_complex;
+    Block<ScalarColumn<DComplex> *> table_dcomplex;
+    Block<ScalarColumn<String> *> table_string;
+    Block<ArrayColumn<Bool> *> table_array_bool;
+    Block<ArrayColumn<uChar> *> table_array_char;
+    Block<ArrayColumn<Short> *> table_array_short;
+    Block<ArrayColumn<Int> *> table_array_int;
+    Block<ArrayColumn<Float> *> table_array_float;
+    Block<ArrayColumn<Double> *> table_array_double;
+    Block<ArrayColumn<Complex> *> table_array_complex;
+    Block<ArrayColumn<DComplex> *> table_array_dcomplex;
+    Block<ArrayColumn<String> *> table_array_string;
  
     Block<RORecordFieldPtr<Bool> > record_bool;
     Block<RORecordFieldPtr<uChar> > record_char;

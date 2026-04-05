@@ -42,7 +42,7 @@ LCComplement::LCComplement (const LCRegion& region)
 }
 
 LCComplement::LCComplement (Bool takeOver,
-			    const PtrBlock<const LCRegion*>& regions)
+			    const Block<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
     defineBox();
@@ -77,7 +77,7 @@ LCRegion* LCComplement::cloneRegion() const
 LCRegion* LCComplement::doTranslate (const Vector<Float>& translateVector,
 				     const IPosition& newLatticeShape) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
     return new LCComplement (True, regions);
 }
@@ -104,7 +104,7 @@ TableRecord LCComplement::toRecord (const String& tableName) const
 LCComplement* LCComplement::fromRecord (const TableRecord& rec,
 					const String& tableName)
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new LCComplement (True, regions);
 }

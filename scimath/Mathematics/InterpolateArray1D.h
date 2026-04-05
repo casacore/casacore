@@ -31,7 +31,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> class PtrBlock;
 template <class T> class Block;
 
 // <summary> Interpolate in one dimension </summary>
@@ -233,55 +232,55 @@ public:
 
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
-  static void interpolatePtr(PtrBlock<Range*>& yout, 
+  static void interpolatePtr(Block<Range*>& yout,
 			     Int ny, 
 			     const Vector<Domain>& xout, 
 			     const Vector<Domain>& xin,
-			     const PtrBlock<const Range*>& yin, 
+			     const Block<const Range*>& yin,
 			     Int method);
 
   // Interpolate the y-vectors of length ny from x values xin to xout.
   // Take flagging into account
-  static void interpolatePtr(PtrBlock<Range*>& yout, 
-			     PtrBlock<Bool*>& youtFlags,
+  static void interpolatePtr(Block<Range*>& yout,
+			     Block<Bool*>& youtFlags,
 			     Int ny, 
 			     const Vector<Domain>& xout, 
 			     const Vector<Domain>& xin,
-			     const PtrBlock<const Range*>& yin, 
-			     const PtrBlock<const Bool*>& yinFlags, 
+			     const Block<const Range*>& yin,
+			     const Block<const Bool*>& yinFlags,
 			     Int method, Bool goodIsTrue,
 			     Bool extrapolate);
 
   // Interpolate along yaxis 
-  static void interpolateyPtr(PtrBlock<Range*>& yout,
+  static void interpolateyPtr(Block<Range*>& yout,
                              Int na,
                              Int nb,
                              Int nc,
                              const Vector<Domain>& xout,
                              const Vector<Domain>& xin,
-                             const PtrBlock<const Range*>& yin,
+                             const Block<const Range*>& yin,
                              Int method);
 
   // Take flagging into account
-  static void interpolateyPtr(PtrBlock<Range*>& yout, 
-			     PtrBlock<Bool*>& youtFlags,
+  static void interpolateyPtr(Block<Range*>& yout,
+			     Block<Bool*>& youtFlags,
                              Int na,
 			     Int nb, 
 			     Int nc, 
 			     const Vector<Domain>& xout, 
 			     const Vector<Domain>& xin,
-			     const PtrBlock<const Range*>& yin, 
-			     const PtrBlock<const Bool*>& yinFlags, 
+			     const Block<const Range*>& yin,
+			     const Block<const Bool*>& yinFlags,
 			     Int method, Bool goodIsTrue,
 			     Bool extrapolate);
 
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.
-  static void polynomialInterpolation(PtrBlock<Range*>& yout, 
+  static void polynomialInterpolation(Block<Range*>& yout,
 				      Int ny, 
 				      const Vector<Domain>& xout, 
 				      const Vector<Domain>& xin,
-				      const PtrBlock<const Range*>& yin, 
+				      const Block<const Range*>& yin,
 				      Int order);
 
 };

@@ -52,7 +52,7 @@ public:
   ~MultiTermLatticeCleaner();
 
   // Input : number of Taylor terms
-  //         Reshapes PtrBlocks to hold the correct number of PSFs and Residual images
+  //         Reshapes Blocks to hold the correct number of PSFs and Residual images
   Bool setntaylorterms(const int & nterms);
   
   // Input : scales
@@ -138,39 +138,39 @@ private:
   Bool donePSF_p,donePSP_p,doneCONV_p;
  
   // h(s) [nx,ny,nscales]
-  PtrBlock<TempLattice<Float>* > vecScales_p; 
-  PtrBlock<TempLattice<Complex>* > vecScalesFT_p; 
+  Block<TempLattice<Float>* > vecScales_p; 
+  Block<TempLattice<Complex>* > vecScalesFT_p; 
   
   // B_k  [nx,ny,ntaylor]
-  PtrBlock<TempLattice<Float>* > vecPsf_p; 
-  PtrBlock<TempLattice<Complex>* > vecPsfFT_p; 
+  Block<TempLattice<Float>* > vecPsf_p; 
+  Block<TempLattice<Complex>* > vecPsfFT_p; 
   
   // I_D : Residual/Dirty Images [nx,ny,ntaylor]
-  PtrBlock<TempLattice<Float>* > vecDirty_p; 
+  Block<TempLattice<Float>* > vecDirty_p; 
  
   // I_M : Model Images [nx,ny,ntaylor]
-  PtrBlock<TempLattice<Float>* > vecModel_p; 
+  Block<TempLattice<Float>* > vecModel_p; 
  
   // A_{smn} = B_{sm} * B{sn} [nx,ny,ntaylor,ntaylor,nscales,nscales]
   // A_{s1s2mn} = B_{s1m} * B{s2n} [nx,ny,ntaylor,ntaylor,nscales,nscales]
-  PtrBlock<TempLattice<Float>* > cubeA_p; 
-  PtrBlock<LatticeIterator<Float>* > itercubeA_p;
+  Block<TempLattice<Float>* > cubeA_p; 
+  Block<LatticeIterator<Float>* > itercubeA_p;
   
   // R_{sk} = I_D * B_{sk} [nx,ny,ntaylor,nscales]
-  PtrBlock<TempLattice<Float>* > matR_p; 
-  PtrBlock<LatticeIterator<Float>* > itermatR_p;
+  Block<TempLattice<Float>* > matR_p; 
+  Block<LatticeIterator<Float>* > itermatR_p;
   
   // a_{sk} = Solution vectors. [nx,ny,ntaylor,nscales]
-  PtrBlock<TempLattice<Float>* > matCoeffs_p; 
-  PtrBlock<LatticeIterator<Float>* > itermatCoeffs_p;
+  Block<TempLattice<Float>* > matCoeffs_p; 
+  Block<LatticeIterator<Float>* > itermatCoeffs_p;
 
   // Memory to be allocated per TempLattice
   Double memoryMB_p;
   
   // Solve [A][Coeffs] = [I_D * B]
   // Shape of A : [ntaylor,ntaylor]
-  PtrBlock<Matrix<Double>*> matA_p;    // 2D matrix to be inverted.
-  PtrBlock<Matrix<Double>*> invMatA_p; // Inverse of matA_p;
+  Block<Matrix<Double>*> matA_p;    // 2D matrix to be inverted.
+  Block<Matrix<Double>*> invMatA_p; // Inverse of matA_p;
 
   // Scratch Lattices and iterators.
   TempLattice<Complex>* cWork_p;

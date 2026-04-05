@@ -211,7 +211,7 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     }
     // Find the shapes on each axis that will be tried.
     Block<uInt> nval(nrdim, uInt(0));
-    PtrBlock<Block<Int>*> values(nrdim);
+    Block<Block<Int>*> values(nrdim);
     for (i=0; i<nrdim; i++) {
 	values[i] = new Block<Int> (maxShape(i) - minShape(i) + 1);
 	// First find exactly fitting shapes.

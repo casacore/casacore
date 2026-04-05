@@ -216,7 +216,7 @@ public:
 				    const String& dirName = String());
     static LatticeExprNode command (const String& str,
 				    const Block<LatticeExprNode>& tempLattices,
-				    const PtrBlock<const ImageRegion*>& tempRegions,
+				    const Block<const ImageRegion*>& tempRegions,
 				    const String& dirName = String());
     // </group>
 

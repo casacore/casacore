@@ -37,7 +37,7 @@ LCConcatenation::LCConcatenation()
 {}
 
 LCConcatenation::LCConcatenation (Bool takeOver,
-				  const PtrBlock<const LCRegion*>& regions,
+				  const Block<const LCRegion*>& regions,
 				  Int extendAxis)
 : LCRegionMulti (takeOver, regions),
   itsExtendAxis (extendAxis)
@@ -50,7 +50,7 @@ LCConcatenation::LCConcatenation (Bool takeOver,
 }
 
 LCConcatenation::LCConcatenation (Bool takeOver,
-				  const PtrBlock<const LCRegion*>& regions,
+				  const Block<const LCRegion*>& regions,
 				  Int extendAxis,
 				  const LCBox& extendBox)
 : LCRegionMulti (takeOver, regions),
@@ -126,7 +126,7 @@ LCRegion* LCConcatenation::doTranslate (const Vector<Float>& translateVector,
 	regTransVec(i) = translateVector(axis);
 	regLatShape(i) = newLatticeShape(axis);
     }
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiTranslate (regions, regTransVec, regLatShape);
     // Create the new LCConcatenation object.
     LCConcatenation* extPtr = new LCConcatenation (True, regions,
@@ -158,7 +158,7 @@ TableRecord LCConcatenation::toRecord (const String& tableName) const
 LCConcatenation* LCConcatenation::fromRecord (const TableRecord& rec,
 					      const String& tableName)
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
 						   tableName));

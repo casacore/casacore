@@ -450,7 +450,7 @@ void showTable (const Table& tab, const Vector<String>& colnam,
                 Bool printMeasure, const String& separator, ostream& os)
 {
   uInt nrcol = 0;
-  PtrBlock<TableColumn*> tableColumns(colnam.nelements());
+  Block<TableColumn*> tableColumns(colnam.nelements());
   Block<Vector<String> > timeUnit(colnam.nelements());
   Block<Vector<String> > posUnit(colnam.nelements());
   Block<Vector<String> > dirUnit(colnam.nelements());

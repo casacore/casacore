@@ -97,13 +97,13 @@ public:
 		const ImageRegion* region8 = 0,
 		const ImageRegion* region9 = 0,
 		const ImageRegion* region10 = 0);
-    WCCompound (const PtrBlock<const ImageRegion*>& regions);
+    WCCompound (const Block<const ImageRegion*>& regions);
     // </group>
 
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    WCCompound (Bool takeOver, const PtrBlock<const WCRegion*>& regions);
+    WCCompound (Bool takeOver, const Block<const WCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     WCCompound (const WCCompound& other);
@@ -114,7 +114,7 @@ public:
     virtual Bool operator==(const WCRegion& other) const;
 
     // Get the contributing regions.
-    const PtrBlock<const WCRegion*>& regions() const;
+    const Block<const WCRegion*>& regions() const;
     
 protected:
     // Assignment (copy semantics) makes only sense for a derived class.
@@ -123,7 +123,7 @@ protected:
     // Convert each WCRegion to an LCRegion.
     // The axes argument tells which axes to use from the coordinate
     // system and shape.
-    void multiToLCRegion (PtrBlock<const LCRegion*>& regions,
+    void multiToLCRegion (Block<const LCRegion*>& regions,
 			  const CoordinateSystem& cSys,
 			  const IPosition& shape,
 			  const IPosition& pixelAxesMap,
@@ -133,25 +133,25 @@ protected:
     TableRecord makeRecord (const String& tableName) const;
 
     // Retrieve the contributing objects from the record.
-    static void unmakeRecord (PtrBlock<const WCRegion*>&,
+    static void unmakeRecord (Block<const WCRegion*>&,
 			      const TableRecord&,
 			      const String& tableName);
 
 private:
     // Check if the ImageRegion's contain WCRegion's and extract them.
-    void makeWCRegion (const PtrBlock<const ImageRegion*>&);
+    void makeWCRegion (const Block<const ImageRegion*>&);
 
     // Check if the regions are correct.
     // If needed, make a copy of the region objects.
     void init (Bool takeOver);
 
     //# Member variables.
-    PtrBlock<const WCRegion*> itsRegions;
+    Block<const WCRegion*> itsRegions;
     Block<IPosition>          itsAxesUsed;
 };
 
 
-inline const PtrBlock<const WCRegion*>& WCCompound::regions() const
+inline const Block<const WCRegion*>& WCCompound::regions() const
 {
     return itsRegions;
 }

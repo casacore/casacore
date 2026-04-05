@@ -391,7 +391,7 @@ protected:
     // is not bound.
     // It returns the number of bound columns.
     uInt getBindings (const Vector<String>& columnNames,
-		      PtrBlock<TSMColumn*>& colSet,
+		      Block<TSMColumn*>& colSet,
 		      Bool mustExist) const;
 
     // Function setup calls this function to allow the derived class
@@ -407,14 +407,14 @@ protected:
     // Check if values are given in the record for all columns in
     // the block. Also check if the data types are correct.
     // An exception is thrown if something is incorrect.
-    void checkValues (const PtrBlock<TSMColumn*>& colSet,
+    void checkValues (const Block<TSMColumn*>& colSet,
 		      const Record& values) const;
 
     // Check if the coordinate values are correct.
     // This calls checkValues and checks if their shapes match the
     // hypercube shape.
     // An exception is thrown if invalid.
-    void checkCoordinates (const PtrBlock<TSMColumn*>& coordColSet,
+    void checkCoordinates (const Block<TSMColumn*>& coordColSet,
 			   const IPosition& cubeShape,
 			   const Record& values) const;
 
@@ -497,20 +497,20 @@ protected:
     // The number of rows in the columns.
     rownr_t nrrow_p;
     // The assembly of all columns.
-    PtrBlock<TSMColumn*>  colSet_p;
+    Block<TSMColumn*>  colSet_p;
     // The assembly of all data columns.
-    PtrBlock<TSMDataColumn*> dataCols_p;
-    PtrBlock<TSMColumn*>  dataColSet_p;
+    Block<TSMDataColumn*> dataCols_p;
+    Block<TSMColumn*>  dataColSet_p;
     // The assembly of all id columns.
-    PtrBlock<TSMColumn*>  idColSet_p;
+    Block<TSMColumn*>  idColSet_p;
     // The assembly of all coordinate columns.
-    PtrBlock<TSMColumn*>  coordColSet_p;
+    Block<TSMColumn*>  coordColSet_p;
     // The assembly of all TSMFile objects.
     // The first file is for all non-extensible cubes, while the others
     // are for one file per extensible cube.
-    PtrBlock<TSMFile*> fileSet_p;
+    Block<TSMFile*> fileSet_p;
     // The assembly of all TSMCube objects.
-    PtrBlock<TSMCube*> cubeSet_p;
+    Block<TSMCube*> cubeSet_p;
     // The persistent maximum cache size (in MiB) for a hypercube.
     uInt      persMaxCacheSize_p;
     // The actual maximum cache size for a hypercube (in MiB).

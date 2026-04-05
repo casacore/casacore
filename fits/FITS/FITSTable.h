@@ -403,7 +403,7 @@ private:
     uInt nrows_written_p;
     BinaryTableExtension *bintable_p;
     Record row_p;
-    PtrBlock<FITSFieldCopier *> copiers_p;
+    Block<FITSFieldCopier *> copiers_p;
 };
 
 // <summary>

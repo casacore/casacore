@@ -298,10 +298,10 @@ private:
     uInt              indexLeng_p;
     // The row index per column; each index contains the row number
     // of each value stored in the bucket (for that column).
-    PtrBlock<Block<rownr_t>*> rowIndex_p;
+    Block<Block<rownr_t>*> rowIndex_p;
     // The offset index per column; each index contains the offset (in bytes)
     // of each value stored in the bucket (for that column).
-    PtrBlock<Block<uInt>*> offIndex_p;
+    Block<Block<uInt>*> offIndex_p;
     // Nr of used elements in each index; i.e. the number of stored values
     // per column.
     Block<uInt>       indexUsed_p;

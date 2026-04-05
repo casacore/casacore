@@ -350,7 +350,7 @@ private:
     // The number of rows in the columns.
     rownr_t      nrrow_p;
     // The assembly of all columns.
-    PtrBlock<ISMColumn*>  colSet_p;
+    Block<ISMColumn*>  colSet_p;
     // The cache with the ISM buckets.
     BucketCache* cache_p;
     // The file containing all data.

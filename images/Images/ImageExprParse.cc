@@ -48,7 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define pointer blocks holding temporary lattices and regions.
 static const Block<LatticeExprNode>* theTempLattices;
-static const PtrBlock<const ImageRegion*>* theTempRegions;
+static const Block<const ImageRegion*>* theTempRegions;
 
 //# Define static for holding the global directory name.
 static String theDirName;
@@ -68,7 +68,7 @@ static std::shared_ptr<HDF5File> theLastHDF5;
 
 #define SAVE_GLOBALS \
  const Block<LatticeExprNode>* savTempLattices=theTempLattices; \
- const PtrBlock<const ImageRegion*>* savTempRegions=theTempRegions; \
+ const Block<const ImageRegion*>* savTempRegions=theTempRegions; \
  String savDirName=theDirName; \
  Block<void*> savNodes=theNodes; \
  Block<Bool>  savNodesType=theNodesType; \
@@ -195,13 +195,13 @@ LatticeExprNode ImageExprParse::command (const String& str,
 					 const String& dirName)
 {
     Block<LatticeExprNode> dummyLat;
-    PtrBlock<const ImageRegion*> dummyReg;
+    Block<const ImageRegion*> dummyReg;
     return command (str, dummyLat, dummyReg, dirName);
 }
 LatticeExprNode ImageExprParse::command
                            (const String& str,
 			    const Block<LatticeExprNode>& tempLattices,
-			    const PtrBlock<const ImageRegion*>& tempRegions,
+			    const Block<const ImageRegion*>& tempRegions,
 			    const String& dirName)
 {
     // Clear the image names if at the top level.

@@ -36,7 +36,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-WCConcatenation::WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
+WCConcatenation::WCConcatenation (const Block<const ImageRegion*>& regions,
 				  const WCBox& extendBox)
 : WCCompound   (regions),
   itsExtendBox (extendBox)
@@ -45,7 +45,7 @@ WCConcatenation::WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
 }
 
 WCConcatenation::WCConcatenation (Bool takeOver,
-				  const PtrBlock<const WCRegion*>& regions,
+				  const Block<const WCRegion*>& regions,
 				  const WCBox& extendBox)
 : WCCompound   (takeOver, regions),
   itsExtendBox (extendBox)
@@ -145,7 +145,7 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     // Great, we're almost there.
     // Convert the regions and the box and combine them into an LCConcatenation.
     // The extend axis is the last axis of outOrder.
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, regPixMap, regOutOrd);
     LCRegion* boxptr = itsExtendBox.toLCRegionAxes (cSys, shape, boxPixMap,
 						    boxOutOrd);
@@ -179,7 +179,7 @@ TableRecord WCConcatenation::toRecord (const String& tableName) const
 WCConcatenation* WCConcatenation::fromRecord (const TableRecord& rec,
 					      const String& tableName)
 {
-    PtrBlock<const WCRegion*> regions;
+    Block<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     WCRegion* boxptr = WCRegion::fromRecord (rec.asRecord("box"), tableName);
     DebugAssert (boxptr->type() == WCBox::className(), AipsError);

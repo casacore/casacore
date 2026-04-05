@@ -440,7 +440,7 @@ private:
     }
 
     //# Data memebers
-    PtrBlock<SortKey*> keys_p;                    //# keys to sort on
+    Block<SortKey*>    keys_p;                    //# keys to sort on
     size_t             nrkey_p;                   //# #sort-keys
     const void*        data_p;                    //# pointer to data records
     uInt               size_p;                    //# size of data record

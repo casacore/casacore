@@ -305,8 +305,8 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
 	found(which) = True;
     }
 //
-    PtrBlock<Block<Int> *> newWorldMaps(nc);
-    PtrBlock<Block<Int> *> newPixelMaps(nc);
+    Block<Block<Int> *> newWorldMaps(nc);
+    Block<Block<Int> *> newPixelMaps(nc);
     newWorldMaps.set(static_cast<Block<Int> *>(0));
     newPixelMaps.set(static_cast<Block<Int> *>(0));
 
@@ -1715,8 +1715,8 @@ Bool CoordinateSystem::convert (Matrix<Double>& coordsOut,
 
    IPosition velAxesIn(n);
    IPosition velAxesOut(n);
-   PtrBlock<SpectralCoordinate*> specCoordsIn(n, (SpectralCoordinate*)0);
-   PtrBlock<SpectralCoordinate*> specCoordsOut(n, (SpectralCoordinate*)0);
+   Block<SpectralCoordinate*> specCoordsIn(n, (SpectralCoordinate*)0);
+   Block<SpectralCoordinate*> specCoordsOut(n, (SpectralCoordinate*)0);
 //
    Vector<String> unitsIn2(cSysIn.worldAxisUnits().copy());
    Vector<String> unitsOut2(cSysOut.worldAxisUnits().copy());
@@ -2716,9 +2716,9 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
        }
     }
 //
-    PtrBlock<Coordinate *> tmp;
+    Block<Coordinate *> tmp;
     Int nc = 0;                         // num coordinates
-    PtrBlock<Coordinate *> coords;
+    Block<Coordinate *> coords;
     static const String linear   = "linear";
     static const String direction = "direction";
     static const String spectral = "spectral";
@@ -4183,8 +4183,8 @@ Vector<Double> CoordinateSystem::worldMixMax () const
 }
 
 
-void CoordinateSystem::cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in, 
-                                         PtrBlock<SpectralCoordinate*>&  out)
+void CoordinateSystem::cleanUpSpecCoord (Block<SpectralCoordinate*>&  in, 
+                                         Block<SpectralCoordinate*>&  out)
 {
    for (uInt i=0; i<in.nelements(); i++) {
       if (in[i]) {

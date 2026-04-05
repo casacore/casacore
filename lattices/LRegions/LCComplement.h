@@ -75,7 +75,7 @@ public:
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    LCComplement (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    LCComplement (Bool takeOver, const Block<const LCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     LCComplement (const LCComplement& other);

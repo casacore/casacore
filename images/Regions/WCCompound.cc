@@ -38,7 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 WCCompound::WCCompound (const ImageRegion& region1,
 			const ImageRegion& region2)
 {
-    PtrBlock<const ImageRegion*> regions(2);
+    Block<const ImageRegion*> regions(2);
     regions[0] = &region1;
     regions[1] = &region2;
     makeWCRegion (regions);
@@ -56,7 +56,7 @@ WCCompound::WCCompound (const ImageRegion* region1,
 			const ImageRegion* region9,
 			const ImageRegion* region10)
 {
-    PtrBlock<const ImageRegion*> regions(10);
+    Block<const ImageRegion*> regions(10);
     uInt n=0;
     regions[n++] = region1;
     if (region2 != 0) regions[n++] = region2;
@@ -73,14 +73,14 @@ WCCompound::WCCompound (const ImageRegion* region1,
     init (False);
 }
 
-WCCompound::WCCompound (const PtrBlock<const ImageRegion*>& regions)
+WCCompound::WCCompound (const Block<const ImageRegion*>& regions)
 {
     makeWCRegion (regions);
     init (False);
 }
 
 WCCompound::WCCompound (Bool takeOver,
-			const PtrBlock<const WCRegion*>& regions)
+			const Block<const WCRegion*>& regions)
 : itsRegions (regions)
 {
     init (takeOver);
@@ -124,7 +124,7 @@ WCCompound& WCCompound::operator= (const WCCompound& other)
     return *this;
 }
 
-void WCCompound::multiToLCRegion (PtrBlock<const LCRegion*>& regions,
+void WCCompound::multiToLCRegion (Block<const LCRegion*>& regions,
 				  const CoordinateSystem& cSys,
 				  const IPosition& shape,
 				  const IPosition& pixelAxesMap,
@@ -193,7 +193,7 @@ Bool WCCompound::operator== (const WCRegion& other) const
     return True;
 }
 
-void WCCompound::makeWCRegion (const PtrBlock<const ImageRegion*>& regions)
+void WCCompound::makeWCRegion (const Block<const ImageRegion*>& regions)
 {
     uInt nr = regions.nelements();
     itsRegions.resize (nr);
@@ -249,7 +249,7 @@ TableRecord WCCompound::makeRecord (const String& tableName) const
     return rec;
 }
 
-void WCCompound::unmakeRecord (PtrBlock<const WCRegion*>& regions,
+void WCCompound::unmakeRecord (Block<const WCRegion*>& regions,
 			       const TableRecord& rec,
 			       const String& tableName)
 {

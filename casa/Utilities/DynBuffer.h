@@ -157,7 +157,7 @@ private:
     // total length per buffer
     Block<uInt>  totlen_p;      
     // pointer to buffer
-    PtrBlock<Char*> bufptr_p;     
+    Block<Char*> bufptr_p;
     // used length of current buffer
     uInt         curuselen_p;      
     // total length of current buffer

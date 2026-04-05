@@ -37,7 +37,7 @@ WCComplement::WCComplement (const ImageRegion& region)
 {}
 
 WCComplement::WCComplement (Bool takeOver,
-			    const PtrBlock<const WCRegion*>& regions)
+			    const Block<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -73,7 +73,7 @@ LCRegion* WCComplement::doToLCRegion (const CoordinateSystem& cSys,
 				      const IPosition& pixelAxesMap,
 				      const IPosition& outOrder) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
     return new LCComplement (True, regions);
 }
@@ -99,7 +99,7 @@ TableRecord WCComplement::toRecord (const String& tableName) const
 WCComplement* WCComplement::fromRecord (const TableRecord& rec,
 					const String& tableName)
 {
-    PtrBlock<const WCRegion*> regions;
+    Block<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCComplement (True, regions);
 }

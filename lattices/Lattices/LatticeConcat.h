@@ -250,7 +250,7 @@ public:
 
  
 private:
-   PtrBlock<MaskedLattice<T>* > lattices_p;
+   Block<MaskedLattice<T>* > lattices_p;
    uInt axis_p;
    IPosition shape_p;
    Bool isMasked_p, dimUpOne_p, tempClose_p;

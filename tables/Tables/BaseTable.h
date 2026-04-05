@@ -57,7 +57,6 @@ class BaseTableIterator;
 class DataManager;
 class IPosition;
 template<class T> class Block;
-template<class T> class PtrBlock;
 class AipsIO;
 
 
@@ -475,7 +474,7 @@ public:
     // The default implementation is suitable for almost all cases.
     // Only in RefTable a smarter implementation is provided.
     virtual std::shared_ptr<BaseTable> doSort
-    (PtrBlock<BaseColumn*>&,
+    (Block<BaseColumn*>&,
      const Block<std::shared_ptr<BaseCompare>>&,
      const Block<Int>& sortOrder,
      int sortOption,
