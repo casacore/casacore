@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uInt nr;
     ios >> nr;
     v.resize(nr);
-    getAipsIO(ios, nr, &(v[0]));
+    getAipsIO(ios, nr, v.data());
     ios.getend();
     return ios;
   }
@@ -64,7 +64,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   AipsIO& operator<< (AipsIO& ios, const std::vector<T>& v)
   {
     ios.putstart ("Block", 1);
-    putAipsIO (ios, (uInt)v.size(), &(v[0]));
+    putAipsIO (ios, (uInt)v.size(), v.data());
     ios.putend();
     return ios;
   }
