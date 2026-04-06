@@ -12,14 +12,32 @@ TableGram
 # while %pure_parser should be removed from the .yy file.
 foreach (src ${parser_inputs})
     if (BISON_VERSION VERSION_LESS 3.0)
-        BISON_TARGET (${src} TaQL/${src}.yy
-        ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+        set(EXTRA_BISON_FLAGS "-p ${src}")
     else()
-        BISON_TARGET (${src} TaQL/${src}.yy
-        ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -Dapi.prefix={${src}} --warnings=no-yacc")
+        set(EXTRA_BISON_FLAGS
+            "-Dapi.prefix={${src}}"
+            "--warnings=no-yacc"
+        )
     endif()
+    BISON_TARGET (${src} TaQL/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc OPTIONS -y ${EXTRA_BISON_FLAGS})
     FLEX_TARGET (${src} TaQL/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
+
+# Bison creates unused variables; disable compiler warning, but only for the relevant files
+set_source_files_properties(
+    TaQL/RecordGram.cc
+    TaQL/TableGram.cc
+    MSSel/MSAntennaGram.cc
+    MSSel/MSArrayGram.cc
+    MSSel/MSCorrGram.cc
+    MSSel/MSFeedGram.cc
+    MSSel/MSFieldGram.cc
+    MSSel/MSObservationGram.cc
+    MSSel/MSScanGram.cc
+    MSSel/MSSpwGram.cc
+    MSSel/MSStateGram.cc
+    PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable"
+)
 
 if(BUILD_SISCO)
 find_package(Deflate REQUIRED)
