@@ -19,23 +19,28 @@ MSStateGram
 
 foreach (src ${parser_inputs})
     if (BISON_VERSION VERSION_LESS 3.0)
-        set(EXTRA_BISON_FLAGS
-	    "-p ${src}"
-	    "--output-file=${src}.ycc"
-	)
+        set(EXTRA_BISON_FLAGS "-p ${src} --output-file=${src}.ycc")
     else()
-        set(EXTRA_BISON_FLAGS
-            "-Dapi.prefix={${src}}"
-            "--warnings=no-yacc"
-	)
+        set(EXTRA_BISON_FLAGS "-Dapi.prefix={${src}} --warnings=no-yacc")
     endif()
-    BISON_TARGET (${src} MSSel/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc OPTIONS -y --output-file=${src}.ycc ${EXTRA_BISON_FLAGS})
+    BISON_TARGET (${src} MSSel/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y --output-file=${src}.ycc ${EXTRA_BISON_FLAGS}")
     FLEX_TARGET (${src} MSSel/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
 # Bison creates unused variables; disable compiler warning, but only for the relevant files
 set_source_files_properties(
-    MSSel/MSTimeGram MSSel/MSUvDistGram.cc PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable"
+    MSSel/MSAntennaGram.cc
+    MSSel/MSArrayGram.cc
+    MSSel/MSCorrGram.cc
+    MSSel/MSFeedGram.cc
+    MSSel/MSFieldGram.cc
+    MSSel/MSObservationGram.cc
+    MSSel/MSScanGram.cc
+    MSSel/MSSpwGram.cc
+    MSSel/MSStateGram.cc
+    MSSel/MSTimeGram
+    MSSel/MSUvDistGram.cc
+    PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable"
 )
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})

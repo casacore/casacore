@@ -3,12 +3,18 @@
 #
 
 if (BISON_VERSION VERSION_LESS 3.0)
-    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
+    set(EXTRA_BISON_FLAGS "-p ImageExprGram")
 else()
-    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy
-    ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-Dapi.prefix={ImageExprGram} --warnings=no-yacc")
+    set(EXTRA_BISON_FLAGS "-Dapi.prefix={ImageExprGram} --warnings=no-yacc")
 endif()
+BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "${EXTRA_BISON_FLAGS}")
 FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
+
+# Bison creates unused variables; disable compiler warning, but only for the relevant files
+set_source_files_properties(
+    Images/ImageExprGram.cc
+    PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable"
+)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 

@@ -39,8 +39,6 @@ if (Python2_FOUND)
 endif(Python2_FOUND)
 
 
-include_directories (${PYTHON2_Boost_INCLUDE_DIRS} ${PYTHON2_NUMPY_INCLUDE_DIRS} ${PYTHON2_INCLUDE_DIRS})
-
 add_library (casa_python
 Converters/PycArray.cc
 Converters/PycArrayNP.cc
@@ -60,6 +58,7 @@ Converters/PycValueHolder.h
 Converters/PycArray.tcc
 )
 
+target_include_directories (casa_python SYSTEM PUBLIC ${PYTHON2_Boost_INCLUDE_DIRS} ${PYTHON2_NUMPY_INCLUDE_DIRS} ${PYTHON2_INCLUDE_DIRS})
 target_link_libraries (casa_python casa_casa ${PYTHON2_Boost_LIBRARIES} ${PYTHON2_LIBRARIES} ${CASACORE_ARCH_LIBS})
 
 install (TARGETS casa_python

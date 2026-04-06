@@ -20,12 +20,9 @@ foreach (src ${parser_inputs})
     if (BISON_VERSION VERSION_LESS 3.0)
         set(EXTRA_BISON_FLAGS "-p ${src}")
     else()
-        set(EXTRA_BISON_FLAGS
-            "-Dapi.prefix={${src}}"
-            "--warnings=no-yacc"
-        )
+        set(EXTRA_BISON_FLAGS "-Dapi.prefix={${src}} --warnings=no-yacc")
     endif()
-    BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc OPTIONS -y ${EXTRA_BISON_FLAGS})
+    BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y ${EXTRA_BISON_FLAGS}")
     FLEX_TARGET (${src} Json/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
