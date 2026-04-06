@@ -20,9 +20,9 @@ foreach (src ${parser_inputs})
     if (BISON_VERSION VERSION_LESS 3.0)
         set(EXTRA_BISON_FLAGS "-p ${src}")
     else()
-        set(EXTRA_BISON_FLAGS "-Dapi.prefix={${src}} --warnings=no-yacc")
+        set(EXTRA_BISON_FLAGS "-Dapi.prefix={${src}}")
     endif()
-    BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y ${EXTRA_BISON_FLAGS}")
+    BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "${EXTRA_BISON_FLAGS}")
     FLEX_TARGET (${src} Json/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
@@ -30,8 +30,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 # Bison creates unused variables; disable compiler warning, but only for the relevant file
 set_source_files_properties(
-    Json/JsonParser.cc PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable"
-)
+    Json/JsonParser.cc PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable")
 
 # Define the bfiles to build.
 set (buildfiles

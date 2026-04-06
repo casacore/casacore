@@ -146,7 +146,8 @@ void FilebufIO::flush()
 
 void FilebufIO::truncate (Int64 size)
 {
-  ::ftruncate (itsFile, size);
+  if(::ftruncate (itsFile, size) == -1)
+    throw std::runtime_error("ftruncate reported an error");
 }
   
 

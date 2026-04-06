@@ -14,9 +14,9 @@ foreach (src ${parser_inputs})
     if (BISON_VERSION VERSION_LESS 3.0)
         set(EXTRA_BISON_FLAGS "-p ${src}")
     else()
-        set(EXTRA_BISON_FLAGS "-Dapi.prefix={${src}} --warnings=no-yacc")
+        set(EXTRA_BISON_FLAGS "-Dapi.prefix={${src}}")
     endif()
-    BISON_TARGET (${src} TaQL/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y ${EXTRA_BISON_FLAGS}")
+    BISON_TARGET (${src} TaQL/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "${EXTRA_BISON_FLAGS}")
     FLEX_TARGET (${src} TaQL/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
@@ -24,8 +24,7 @@ endforeach (src)
 set_source_files_properties(
     TaQL/RecordGram.cc
     TaQL/TableGram.cc
-    PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable"
-)
+    PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable")
 
 if(BUILD_SISCO)
 find_package(Deflate REQUIRED)
