@@ -3,6 +3,7 @@
 #
 
 set (buildfiles
+Converted/vvroutines.cc
 Fitting/FittingProxy.cc
 Fitting/LSQFit.cc
 Fitting/LSQFit3.cc
@@ -65,6 +66,11 @@ install (TARGETS casa_scimath
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)
+
+install (FILES
+Converted/vvroutines.cc
+DESTINATION include/casacore/scimath/Converted
 )
 
 install (FILES
