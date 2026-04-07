@@ -32,7 +32,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// <summary>Utility class for Assert macros.</summary>
+// <summary>Utility function for Assert macros.</summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/13" tests="" demos="">
 // </reviewed>
@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 
 // <etymology>
-// Templated class <src>assert_</src> is the basis for the macros
+// Templated function <src>assert_</src> is the basis for the macros
 // <src>DebugAssertExit</src>, <src>DebugAssert</src>, 
 // <src>AlwaysAssertExit</src>, and <src>AlwaysAssert</src> which 
 // form the "public interface" to the Assertion mechanism.
@@ -55,14 +55,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dl>
 //  <dt> <src>DebugAssertExit(expr)</src>
 //  <dt> <src>AlwaysAssertExit(expr)</src>
-//  <dd> cause the program to abort if <src>expr</src> evaluates to a
-//       null value.  This form is intended for the <em>end users</em>
+//  <dd> cause the program to abort if <src>expr</src> evaluates to false.
+//       This form is intended for the <em>end users</em>
 //       because presumabily at their level there is no way to recover
 //       from errors.
 //  <dt> <src>DebugAssert(expr, exception)</src>
 //  <dt> <src>AlwaysAssert(expr, exception)</src>
-//  <dd> throw the specified exception if the <src>expr</src> is
-//       null. This form is designed to be used by <em>library 
+//  <dd> throw the specified exception if the <src>expr</src> is false.
+//       This form is designed to be used by <em>library 
 //       elements</em> because it actually raises an exception which
 //       can be later caught in the regular way.
 // </dl>
@@ -72,12 +72,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // debug mode (i.e. when <src>AIPS_DEBUG</src> is defined); otherwise
 //  they preprocess to null statements. <src>AlwaysAssertExit</src> 
 // and <src>AlwaysAssert</src> are always invoked.
-// </note>
-//
-// <note role=tip> Class <src>assert_</src> is internal to the
-// Assertion mechanism and should be undocumented. However,
-// documenting the class is the only way to document this mechanism,
-// which for the rest consists of preprocessor macros.
 // </note>
 //
 // </synopsis>
@@ -123,27 +117,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // new <src>Array<T></src> class).
 // </example>
 
-template<class t> class assert_ {
-public:
-    // <group>
-    assert_(int expr, const char *msg) {
-	if (! expr) throw(t(msg));
-    }
-    assert_(const void *ptr, const char *msg) {
-	if (! ptr) throw(t(msg));
-    }
-    assert_(int expr, const char *msg, const char* file, Int line);
-    assert_(const void *ptr, const char *msg, const char* file, Int line);
-    // </group>
-
-    // A no-op, but it keeps g++ from complaining about "variable not used"
-    // errors
-    void null() {}
-};
+// this templated function is called from Assert macros
+template<typename t>
+void assert_(bool expr, const char *msg, const char* file, int line);
 
 //  These marcos are provided for use instead of simply using the
-//  constructors of <src>assert_</src> to allow addition of line
-//  numbers and file name in the future.
+//  <src>assert_</src> function directly.
 //
 // <src>DebugAssert</src> and <src>AlwaysAssert</src> are designed to
 // be used by library elements because they actually raise an exception
@@ -153,30 +132,16 @@ public:
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {casacore::assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null(); }
+    {casacore::assert_<exception >(static_cast<bool>(expr), "Failed AlwaysAssert " #expr,__FILE__,static_cast<int>(__LINE__)); }
 #define AlwaysAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError>(static_cast<bool>(expr), "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,static_cast<int>(__LINE__));}
 
 #if defined(AIPS_DEBUG)
 
-//# The backslashes below have spaces after them to make the egcs
-//  compiler happy # (otherwise it thinks they are multiline //
-//  comments). If ever uncommented # the spaces should be removed.
-
-// #define DebugAssert(expr, exception)  
-//     (assert_<exception > (expr, "Failed Assertion: " #expr))
-// #define Assert(expr)  
-//     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr))
-
-// #define DebugAssert(expr, exception) 
-//     (assert_<exception > (expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__))
-// #define Assert(expr) 
-//     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
-
 #define DebugAssert(expr, exception) \
-    {casacore::assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<exception >(static_cast<bool>(expr), "Failed Assertion: " #expr,__FILE__,static_cast<int>(__LINE__));}
 #define DebugAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError>(static_cast<bool>(expr), "Unrecoverable Assertion: " #expr,__FILE__,static_cast<int>(__LINE__));}
 
 #else
 

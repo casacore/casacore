@@ -31,17 +31,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class t> assert_<t>::assert_(int expr, const char *msg, const char* file, Int line) {
+template<class t> 
+void assert_(bool expr, const char *msg, const char* file, int line) {
   static char message[1024];
   if (! expr) {
-    snprintf(message,sizeof(message),"(%s : %i) %s",file,line,msg);
-    throw(t(message));
-  }
-}
-
-template<class t> assert_<t>::assert_(const void *ptr, const char *msg, const char* file, Int line) {
-  static char message[1024];
-  if (! ptr) {
     snprintf(message,sizeof(message),"(%s : %i) %s",file,line,msg);
     throw(t(message));
   }
