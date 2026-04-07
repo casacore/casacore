@@ -557,7 +557,7 @@ namespace casacore { namespace python {
                   (PySequence_Check(obj_ptr)
                && !PyTuple_Check(obj_ptr) && !PyList_Check(obj_ptr));
     [[maybe_unused]] int i = 0;
-        for (;;i++) {
+        while (true) {
           handle<> py_elem_hdl(allow_null(PyIter_Next(obj_iter.get())));
           if (PyErr_Occurred()) {
             PyErr_Clear();
@@ -568,6 +568,7 @@ namespace casacore { namespace python {
           extract<container_element_type> elem_proxy(py_elem_obj);
           if (!elem_proxy.check()) return false;
           if (is_same) break; // all elements are of the same type
+          ++i;
         }
         if (!is_same) assert(i == obj_size );
       }
