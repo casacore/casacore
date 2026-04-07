@@ -117,17 +117,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // new <src>Array<T></src> class).
 // </example>
 
-// MV: it looks like this version is not used anywhere, perhaps it was used
-// originally but then all use was replaced by the version which also adds
-// file name and the line to the exception message. Perhaps, it can be removed?
-template<typename t>
-void assert_(bool expr, const char *msg) {
-	if (! expr) throw(t(msg));
-}
-
 // this templated function is called from Assert macros
 template<typename t>
-void assert_(bool expr, const char *msg, const char* file, Int line);
+void assert_(bool expr, const char *msg, const char* file, int line);
 
 //  These marcos are provided for use instead of simply using the
 //  <src>assert_</src> function directly.
@@ -140,30 +132,16 @@ void assert_(bool expr, const char *msg, const char* file, Int line);
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {casacore::assert_<exception >(static_cast<bool>(expr), "Failed AlwaysAssert " #expr,__FILE__,static_cast<casacore::Int>(__LINE__)); }
+    {casacore::assert_<exception >(static_cast<bool>(expr), "Failed AlwaysAssert " #expr,__FILE__,static_cast<int>(__LINE__)); }
 #define AlwaysAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError>(static_cast<bool>(expr), "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,static_cast<casacore::Int>(__LINE__));}
+    {casacore::assert_<casacore::AbortError>(static_cast<bool>(expr), "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,static_cast<int>(__LINE__));}
 
 #if defined(AIPS_DEBUG)
 
-//# The backslashes below have spaces after them to make the egcs
-//  compiler happy # (otherwise it thinks they are multiline //
-//  comments). If ever uncommented # the spaces should be removed.
-
-// #define DebugAssert(expr, exception)  
-//     (assert_<exception > (expr, "Failed Assertion: " #expr))
-// #define Assert(expr)  
-//     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr))
-
-// #define DebugAssert(expr, exception) 
-//     (assert_<exception > (expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__))
-// #define Assert(expr) 
-//     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
-
 #define DebugAssert(expr, exception) \
-    {casacore::assert_<exception >(static_cast<bool>(expr), "Failed Assertion: " #expr,__FILE__,static_cast<casacore::Int>(__LINE__));}
+    {casacore::assert_<exception >(static_cast<bool>(expr), "Failed Assertion: " #expr,__FILE__,static_cast<int>(__LINE__));}
 #define DebugAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError>(static_cast<bool>(expr), "Unrecoverable Assertion: " #expr,__FILE__,static_cast<casacore::Int>(__LINE__));}
+    {casacore::assert_<casacore::AbortError>(static_cast<bool>(expr), "Unrecoverable Assertion: " #expr,__FILE__,static_cast<int>(__LINE__));}
 
 #else
 

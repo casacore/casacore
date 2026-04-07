@@ -32,7 +32,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t> 
-void assert_(bool expr, const char *msg, const char* file, Int line) {
+void assert_(bool expr, const char *msg, const char* file, int line) {
   static char message[1024];
   if (! expr) {
     snprintf(message,sizeof(message),"(%s : %i) %s",file,line,msg);
