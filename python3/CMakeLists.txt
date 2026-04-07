@@ -38,8 +38,6 @@ if (Python3_FOUND)
     set(PYTHON3_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} )
 endif(Python3_FOUND)
 
-include_directories (${PYTHON3_Boost_INCLUDE_DIRS} ${PYTHON3_NUMPY_INCLUDE_DIRS} ${PYTHON3_INCLUDE_DIRS})
-
 add_library (casa_python3
 ../python/Converters/PycArray.cc
 ../python/Converters/PycArrayNP.cc
@@ -50,6 +48,7 @@ add_library (casa_python3
 ../python/Converters/PycValueHolder.cc
 )
 
+target_include_directories (casa_python3 SYSTEM PUBLIC ${PYTHON3_Boost_INCLUDE_DIRS} ${PYTHON3_NUMPY_INCLUDE_DIRS} ${PYTHON3_INCLUDE_DIRS})
 
 target_link_libraries (casa_python3 casa_casa ${PYTHON3_Boost_LIBRARIES} ${PYTHON3_LIBRARIES})
 

@@ -339,11 +339,9 @@ BOOST_AUTO_TEST_CASE( iterate_5d_array )
 			     IPosition(3,2,2,2));
 	Vector<int> b(4);
 	indgen(b, 4*256+4*16+4, 2);
-	int count = 0;
 	VectorIterator<int> ai(a1);
 	while (!ai.pastEnd()) {
 	  BOOST_CHECK(allEQ (ai.array(), b));
-	  count++;
 	  b += 512;
 	  ai.next();
 	}

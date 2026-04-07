@@ -787,11 +787,6 @@ Bool LatticeHistograms<T>::displayOneHistogram (const T& linearSum,
 //
 {
 
-// Are we going to see the Gaussian ?
- 
-   Bool doGauss2 = False;
-   if (doGauss_p && stats(LatticeStatsBase::SIGMA)>0) doGauss2 = True;
- 
 // Set binwidth
 
    const T binWidth = LatticeHistSpecialize::setBinWidth(stats(LatticeStatsBase::MIN),

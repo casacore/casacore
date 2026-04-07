@@ -93,12 +93,10 @@ void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
     expectedPos(0) = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedResult -= Int(cursorShape.product());
-    Int ns=0;
     for (; !iter.atStart(); iter--){
 	AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
 		     == True, AipsError);
 	expectedResult -= Int(cursorShape.product());
-	ns++;
     }
     clock.show();
     nstep = iter.nsteps();
