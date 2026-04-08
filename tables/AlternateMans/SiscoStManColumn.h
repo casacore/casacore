@@ -180,7 +180,6 @@ class SiscoStManColumn final : public StManColumn {
     const int antenna2 = antenna2_column_(current_write_row_);
     if (array.shape().size() >= 2) {
       const int n_column_correlations = array.shape()[0];
-      const int n_polarizations = GetNStoredCorrelations(n_column_correlations);
       if((store_mode_ == SiscoStoreMode::StokesI || store_mode_ == SiscoStoreMode::Diagonal) && n_column_correlations != 4)
       {
         throw std::runtime_error("Trying to store invalid number of correlations in Sisco column: Sisco was set to store full-correlation values as Stokes I or diagonal visibilities: can only store shape 4 values in this mode");
@@ -188,9 +187,12 @@ class SiscoStManColumn final : public StManColumn {
       const size_t n_channels = array.shape()[1];
 
       if (n_channels) {
+        const int n_polarizations = GetNStoredCorrelations(n_column_correlations);
         bool ownership;
         const std::complex<float> *storage = array.getStorage(ownership);
         buffer_.resize(n_channels);
+        if(store_mode_ == SiscoStoreMode::Diagonal)
+          CheckIsDiagonal(storage, n_channels);
         for (int polarization = 0; polarization != n_polarizations;
              ++polarization) {
           const size_t baseline_id = GetBaselineId(
@@ -198,11 +200,15 @@ class SiscoStManColumn final : public StManColumn {
           if(store_mode_ == SiscoStoreMode::StokesI) {
             TransformToStokesI(storage, buffer_.data(), n_channels);
           } else if(store_mode_ == SiscoStoreMode::Diagonal) {
-            TransformToDiagonal(storage, buffer_.data(), n_channels);
+            const size_t diagonal_index = polarization * 3; // 0 or 3
+            for (size_t channel = 0; channel != n_channels; ++channel) {
+              buffer_[channel] =
+                  storage[channel * 4 + diagonal_index];
+            }
           } else {
             for (size_t channel = 0; channel != n_channels; ++channel) {
               buffer_[channel] =
-                  storage[channel * n_polarizations + polarization];
+                  storage[channel * n_column_correlations + polarization];
             }
           }
           writer_->Write(baseline_id, buffer_);

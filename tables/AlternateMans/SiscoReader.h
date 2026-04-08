@@ -54,7 +54,7 @@ class SiscoReader {
   size_t GetRequestBufferSize() const { return kRequestBufferSize; }
 
   /**
-   * This is an interface that allow parallelism over the decompression. To
+   * This is an interface that allows parallelism over the decompression. To
    * use it, one thread should issue the requests (as fast as possible), while
    * the main thread should obtain the values using @ref GetNextResult().
    * The @ref Request() method is blocking when the internal buffer of results

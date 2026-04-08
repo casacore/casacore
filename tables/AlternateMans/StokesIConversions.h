@@ -94,23 +94,18 @@ inline bool *TransformToStokesI(const bool *input, bool *buffer, size_t n) {
 }
 
 /**
- * Transform every set of 4 input values to their diagonal values by
- * selecting the first and fourth members of every 4 values.
+ * Check if every set of 4 input values contains only non-zeros on
+ * the diagonal (pp or qq).
  * If pq or qp is non-zero, an exception is thrown.
  *
  * @param input buffer of size @p n*4 values
- * @param buffer destination of size @p n*2 values
  * @param n is the number of groups of 4 values to convert.
  */
 template <typename T>
-inline void TransformToDiagonal(const T *input, T *buffer, size_t n) {
+inline void CheckIsDiagonal(const T *input, size_t n) {
   for (size_t i = 0; i != n; ++i) {
-    const T a = input[i * 4];
     const T b = input[i * 4 + 1];
     const T c = input[i * 4 + 2];
-    const T d = input[i * 4 + 3];
-    buffer[i*2] = a;
-    buffer[i*2 + 1] = d;
     if (b != T(0) || c != T(0))
       throw std::runtime_error(
           "Diagonal storage modes cannot store data for which the 2nd and 3rd "

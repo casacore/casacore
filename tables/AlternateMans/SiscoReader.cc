@@ -157,10 +157,10 @@ void SiscoReader::Request(size_t baseline_index, size_t n_values) {
     request.chunk = current_chunk_;
     request.n_values = 0;
     request_queue_.Push(std::move(request), lock);
-    lock.unlock();
     
     results_in_chunk_counter_ = 0;
     current_chunk_ = &chunks_.emplace_back();
+    lock.unlock();
     GetNextChunk(*current_chunk_);
     chunk_item_position_ = 0;
   }
