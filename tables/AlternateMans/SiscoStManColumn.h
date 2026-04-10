@@ -128,13 +128,11 @@ class SiscoStManColumn final : public StManColumn {
       shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
     }
     if (shape->size() >= 2) {
-      const int n_column_correlations = (*shape)[0];
-      const int n_polarizations = GetNStoredCorrelations(n_column_correlations);
-      assert((store_mode_ != SiscoStoreMode::StokesI && store_mode_ != SiscoStoreMode::Diagonal) || n_column_correlations == 4);
-
       const size_t n_channels = (*shape)[1];
-
       if (n_channels) {
+        const int n_column_correlations = (*shape)[0];
+        const int n_polarizations = GetNStoredCorrelations(n_column_correlations);
+        assert(store_mode_ == SiscoStoreMode::Original || n_column_correlations == 4);
         bool ownership;
         Complex *storage = array.getStorage(ownership);
         buffer_.resize(n_channels);
