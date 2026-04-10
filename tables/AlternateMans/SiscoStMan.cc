@@ -22,6 +22,8 @@ SiscoStMan::SiscoStMan(const casacore::String &/*name*/,
     : DataManager() {
   const std::string kDeflateLevelKey = "deflate_level";
   const std::string kPredictLevelKey = "predict_level";
+  const std::string kStokesIKey = "stokes_i";
+  const std::string kDiagonalKey = "diagonal";
 
   if (spec.isDefined(kDeflateLevelKey)) {
     deflate_level_ = spec.asInt(kDeflateLevelKey);
@@ -33,11 +35,27 @@ SiscoStMan::SiscoStMan(const casacore::String &/*name*/,
     if (predict_level_ < -1)
       throw std::runtime_error("Invalid value for " + kPredictLevelKey);
   }
+  bool stokes_i = false;
+  bool diagonal = false;
+  if (spec.isDefined(kStokesIKey)) {
+    stokes_i = spec.asBool(kStokesIKey);
+  }
+  if(spec.isDefined(kDiagonalKey)) {
+    diagonal = spec.asBool(kDiagonalKey);
+  }
+  if(stokes_i && diagonal)
+    throw std::runtime_error("Can't combine Stokes I writing with Diagonal writing");
+  if(stokes_i)
+    store_mode_ = SiscoStoreMode::StokesI;
+  else if(diagonal)
+    store_mode_ = SiscoStoreMode::Diagonal;
+  else
+    store_mode_ = SiscoStoreMode::Original;
 }
 
 SiscoStMan::SiscoStMan(const SiscoStMan &source)
     : DataManager(),
-      name_(source.name_), deflate_level_(source.deflate_level_), predict_level_(source.predict_level_) {}
+      name_(source.name_), deflate_level_(source.deflate_level_), predict_level_(source.predict_level_), store_mode_(source.store_mode_) {}
 
 SiscoStMan::~SiscoStMan() noexcept = default;
 
@@ -45,6 +63,8 @@ casacore::Record SiscoStMan::dataManagerSpec() const {
   casacore::Record result;
   result.define("deflate_level", deflate_level_);
   result.define("predict_level", predict_level_);
+  result.define("stokes_i", store_mode_ == SiscoStoreMode::StokesI);
+  result.define("diagonal", store_mode_ == SiscoStoreMode::Diagonal);
   return result;
 }
 
@@ -77,7 +97,7 @@ casacore::DataManagerColumn *SiscoStMan::makeDirArrColumn(
 casacore::DataManagerColumn *SiscoStMan::makeIndArrColumn(
     [[maybe_unused]] const casacore::String &name, int dataType,
     [[maybe_unused]] const casacore::String &dataTypeID) {
-  column_ = std::make_unique<SiscoStManColumn>(*this, static_cast<DataType>(dataType));
+  column_ = std::make_unique<SiscoStManColumn>(*this, static_cast<DataType>(dataType), store_mode_);
   return column_.get();
 }
 

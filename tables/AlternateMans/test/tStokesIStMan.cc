@@ -31,6 +31,25 @@ BOOST_AUTO_TEST_CASE(expand_from_stokes_i) {
   BOOST_CHECK_EQUAL(test_data_b[11].imag(), -2.1f);
 }
 
+BOOST_AUTO_TEST_CASE(expand_from_diagonal) {
+  const std::complex<float> u = {8.8, 8.8};
+  const std::complex<float> a = {-3.7, 2.0};
+  const std::complex<float> b = {5.2, 0.0};
+  const std::complex<float> c = {std::numeric_limits<float>::quiet_NaN(), -2.1};
+  const std::complex<float> d = {-3.14, 2.0};
+  std::complex<float> test_data[8] = {a, b, c, d, u,u,u,u};
+  casacore::ExpandFromDiagonal(test_data, 2);
+  const std::complex<float> reference[4] = {
+    a, {0.0}, {0.0}, b // 1
+  };
+  BOOST_CHECK_EQUAL_COLLECTIONS(test_data, test_data+4, reference, reference+4);
+  BOOST_CHECK(std::isnan(test_data[4].real()));
+  BOOST_CHECK_EQUAL(test_data[4].imag(), c.imag());
+  BOOST_CHECK_EQUAL(test_data[5], 0.0f);
+  BOOST_CHECK_EQUAL(test_data[6], 0.0f);
+  BOOST_CHECK_EQUAL(test_data[7], d);
+}
+
 BOOST_AUTO_TEST_CASE(transform_to_stokes_i) {
   casacore::TransformToStokesI<int>(nullptr, nullptr, 0);
 
