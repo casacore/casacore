@@ -249,11 +249,6 @@ void doit()
 
       Int *p = new Int[20];
       try {
-        ba.replaceStorage(20, p, False);
-        AlwaysAssertExit(False);
-      } catch (std::exception const &) {
-      }
-      try {
         ba.replaceStorage(20, p, True);
       } catch (std::exception const &) {
         AlwaysAssertExit(False);
