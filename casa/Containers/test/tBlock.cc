@@ -248,18 +248,11 @@ void doit()
       AlwaysAssertExit(10 == bb[0] && 10 == bb[9]);
 
       Int *p = new Int[20];
-      ba.prohibitChangingAllocator();
-      try {
-        ba.replaceStorage(20, p, True);
-        AlwaysAssertExit(False);
-      } catch (std::exception const &) {
-      }
       try {
         ba.replaceStorage(20, p, False);
         AlwaysAssertExit(False);
       } catch (std::exception const &) {
       }
-      ba.permitChangingAllocator();
       try {
         ba.replaceStorage(20, p, True);
       } catch (std::exception const &) {
@@ -267,7 +260,6 @@ void doit()
       }
       AlwaysAssertExit(0 == p);
 
-      bb.prohibitChangingAllocator();
       p = DefaultAllocator<Int>::type().allocate(20);
       try {
         ba.replaceStorage(20, p, True, AllocSpec<DefaultAllocator<Int> >::value);
