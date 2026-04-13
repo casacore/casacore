@@ -105,6 +105,17 @@ void RFTimeBlockEncoder::encode(
   }
 }
 
+template void RFTimeBlockEncoder::encode<true>(
+    const dyscostman::StochasticEncoder<float> &gausEncoder,
+    const TimeBlockEncoder::FBuffer &buffer, float *metaBuffer,
+    TimeBlockEncoder::symbol_t *symbolBuffer, size_t,
+    std::mt19937 *rnd);
+template void RFTimeBlockEncoder::encode<false>(
+    const dyscostman::StochasticEncoder<float> &gausEncoder,
+    const TimeBlockEncoder::FBuffer &buffer, float *metaBuffer,
+    TimeBlockEncoder::symbol_t *symbolBuffer, size_t,
+    std::mt19937 *rnd);
+
 void RFTimeBlockEncoder::InitializeDecode(const float *metaBuffer, size_t nRow,
                                           size_t /*nAntennae*/) {
   _channelFactors.assign(metaBuffer, metaBuffer + _nPol * _nChannels);

@@ -40,7 +40,7 @@ class SiscoStManColumn final : public StManColumn {
    * it will store two values: the first and fourth components, and the other values
    * should be zero. When using @ref SiscoStoreMode::Original, Sisco will
    * store all correlations. In this mode, the (apparent) shape of the column can
-   * have any number of polarizations.
+   * have any number of correlations.
    *
    * This saves a small bit of space (Sisco is able to decrease the size of such
    * redundant data, but explicitly decreasing it to Stokes I has a small additional
@@ -293,7 +293,7 @@ class SiscoStManColumn final : public StManColumn {
     char header_buffer[kHeaderSize];
     std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
-    uint16_t storage_mode_tag;
+    uint16_t storage_mode_tag = 0;
     switch(store_mode_) {
       case SiscoStoreMode::StokesI:
         storage_mode_tag = 0x8000;

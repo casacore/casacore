@@ -1077,7 +1077,7 @@ void test1DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
       AlwaysAssert(stats.getMinMaxPos(minPos, maxPos), AipsError);
       AlwaysAssert(minPos.nelements()==1, AipsError);      
       AlwaysAssert(minPos(0)==0, AipsError);      
-      AlwaysAssert(maxPos(0)=shape(0)-1, AipsError);
+      AlwaysAssert(maxPos(0)==shape(0)-1, AipsError);
    }
 
    {
