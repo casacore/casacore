@@ -124,7 +124,7 @@ int main() {
                         AipsError
                 );
                 AlwaysAssert(
-                        stats(IPosition(1, i))[LatticeStatsBase::MEAN] = sum/8.0,
+                        stats(IPosition(1, i))[LatticeStatsBase::MEAN] == sum/8.0,
                         AipsError
                 );
             }
@@ -145,7 +145,7 @@ int main() {
                             AipsError
                     );
                     AlwaysAssert(
-                            stats(IPosition(2, i, j))[LatticeStatsBase::MEAN] = sum/4.0,
+                            stats(IPosition(2, i, j))[LatticeStatsBase::MEAN] == sum/4.0,
                             AipsError
                     );
                 }

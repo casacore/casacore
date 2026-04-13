@@ -155,10 +155,9 @@ void MSMetaData::_getStateToIntentsMap(
     uInt mysize = 0;
 
     vector<std::set<String> >::const_iterator lastState = stateToIntentsMap.end();
-    uInt count = 0;
     for (
         vector<std::set<String> >::const_iterator iter=stateToIntentsMap.begin();
-        iter!=lastState; ++iter, ++count
+        iter!=lastState; ++iter
     ) {
         std::set<String>::const_iterator lastIntent=iter->end();
         for (

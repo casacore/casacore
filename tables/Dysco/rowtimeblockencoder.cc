@@ -77,3 +77,14 @@ void RowTimeBlockEncoder::encode(const StochasticEncoder<float> &gausEncoder,
     symbolBufferPtr += visPerRow * 2;
   }
 }
+
+template
+void RowTimeBlockEncoder::encode<false>(const StochasticEncoder<float> &gausEncoder,
+                                 const FBuffer &buffer, float *metaBuffer,
+                                 symbol_t *symbolBuffer,
+                                 size_t, std::mt19937 *rnd);
+template
+void RowTimeBlockEncoder::encode<true>(const StochasticEncoder<float> &gausEncoder,
+                                 const FBuffer &buffer, float *metaBuffer,
+                                 symbol_t *symbolBuffer,
+                                 size_t, std::mt19937 *rnd);

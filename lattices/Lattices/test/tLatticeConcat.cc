@@ -210,7 +210,7 @@ int main() {
          AlwaysAssert(outShape.nelements()==3, AipsError);
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
-         AlwaysAssert(outShape(2)=2, AipsError);
+         AlwaysAssert(outShape(2)==2, AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
          AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
@@ -234,7 +234,7 @@ int main() {
          AlwaysAssert(outShape.nelements()==3, AipsError);
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
-         AlwaysAssert(outShape(2)=2, AipsError);
+         AlwaysAssert(outShape(2)==2, AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
          AlwaysAssert(lc.hasPixelMask()==True, AipsError);
          AlwaysAssert(lc.pixelMask().isWritable()==True, AipsError);
@@ -265,7 +265,7 @@ int main() {
          AlwaysAssert(outShape.nelements()==3, AipsError);
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
-         AlwaysAssert(outShape(2)=8, AipsError);
+         AlwaysAssert(outShape(2)==8, AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==8, AipsError);
@@ -336,7 +336,7 @@ int main() {
          AlwaysAssert(outShape.nelements()==3, AipsError);
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
-         AlwaysAssert(outShape(2)=8, AipsError);
+         AlwaysAssert(outShape(2)==8, AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==8, AipsError);
