@@ -273,7 +273,7 @@ public:
     other.capacity_p = 0;
     other.used_p = 0;
     other.array = nullptr;
-    other.destroyPointer = true;
+    other.destroyPointer = false;
   }
 
   // Assign other to this. this resizes itself to the size of other, so after
