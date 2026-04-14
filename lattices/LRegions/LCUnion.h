@@ -91,7 +91,7 @@ public:
 	     const LCRegion* region8 = 0,
 	     const LCRegion* region9 = 0,
 	     const LCRegion* region10 = 0);
-    LCUnion (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    LCUnion (Bool takeOver, const Block<const LCRegion*>& regions);
     // </group>
 
     // Copy constructor (copy semantics).

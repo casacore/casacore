@@ -94,7 +94,7 @@ public:
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    LCRegionMulti (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    LCRegionMulti (Bool takeOver, const Block<const LCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     LCRegionMulti (const LCRegionMulti& other);
@@ -115,12 +115,12 @@ protected:
     TableRecord makeRecord (const String& tableName) const;
 
     // Retrieve the contributing objects from the record.
-    static void unmakeRecord (PtrBlock<const LCRegion*>&,
+    static void unmakeRecord (Block<const LCRegion*>&,
 			      const TableRecord&,
 			      const String& tableName);
 
     // Translate all regions.
-    void multiTranslate (PtrBlock<const LCRegion*>&,
+    void multiTranslate (Block<const LCRegion*>&,
 			 const Vector<Float>& translateVector,
 			 const IPosition& newLatticeShape) const;
 
@@ -134,7 +134,7 @@ protected:
 		    const Slicer& section, uInt regNr) const;
 
     // Get the contributing regions.
-    const PtrBlock<const LCRegion*>& regions() const;
+    const Block<const LCRegion*>& regions() const;
     
 protected:
     // Construct from lattice shape and region pointer, which is
@@ -162,11 +162,11 @@ private:
     //# >=0 means this region has a mask.
     //# Its value gives the region with the biggest mask.
     Int itsHasMask;
-    PtrBlock<const LCRegion*> itsRegions;
+    Block<const LCRegion*> itsRegions;
 };
 
 
-inline const PtrBlock<const LCRegion*>& LCRegionMulti::regions() const
+inline const Block<const LCRegion*>& LCRegionMulti::regions() const
 {
     return itsRegions;
 }

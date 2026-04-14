@@ -61,7 +61,7 @@ void LatticeApply<T,U>::lineApply (MaskedLattice<U>& latticeOut,
 }
 
 template <class T, class U>
-void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
+void LatticeApply<T,U>::lineMultiApply (Block<MaskedLattice<U>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
 				      const LatticeRegion& region,
 				      LineCollapser<T,U>& collapser,
@@ -213,7 +213,7 @@ void LatticeApply<T,U>::lineApply (MaskedLattice<U>& latticeOut,
 }
 
 template <class T, class U>
-void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
+void LatticeApply<T,U>::lineMultiApply (Block<MaskedLattice<U>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
 				      LineCollapser<T,U>& collapser,
 				      uInt collapseAxis,

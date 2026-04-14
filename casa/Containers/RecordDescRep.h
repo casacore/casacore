@@ -278,7 +278,7 @@ private:
     // This isn't the most efficient representation. If this is ever an issue
     // we could calculate these, or store them in one Block, or implement
     // copy-on-write semantics.
-    PtrBlock<RecordDesc*> sub_records_p;
+    Block<RecordDesc*> sub_records_p;
     // The shape of the field [1] for scalars and sub-records.
     Block<IPosition> shapes_p;
     // True if the corresponding field is an array.

@@ -40,7 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Block;
-template<class T> class PtrBlock;
 class ImageRegion;
 class Table;
 class Slice;
@@ -216,7 +215,7 @@ public:
 				    const String& dirName = String());
     static LatticeExprNode command (const String& str,
 				    const Block<LatticeExprNode>& tempLattices,
-				    const PtrBlock<const ImageRegion*>& tempRegions,
+				    const Block<const ImageRegion*>& tempRegions,
 				    const String& dirName = String());
     // </group>
 

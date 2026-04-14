@@ -427,7 +427,7 @@ protected:
 
   MSIter* This;
   Block<MeasurementSet> bms_p;
-  PtrBlock<TableIterator* > tabIter_p;
+  Block<TableIterator* > tabIter_p;
   Block<Bool> tabIterAtStart_p;
 
   // This booleans determine if given columns are part of the sorting

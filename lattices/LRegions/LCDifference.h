@@ -78,7 +78,7 @@ public:
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    LCDifference (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    LCDifference (Bool takeOver, const Block<const LCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     LCDifference (const LCDifference& other);

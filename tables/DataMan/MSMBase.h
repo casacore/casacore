@@ -189,7 +189,7 @@ protected:
   // The number of rows in create().
   rownr_t nrrowCreate_p;
   // The assembly of all columns.
-  PtrBlock<MSMColumn*> colSet_p;
+  Block<MSMColumn*> colSet_p;
   // Has anything been put since the last flush?
   Bool    hasPut_p;
 };

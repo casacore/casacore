@@ -44,64 +44,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// <summary>simple 1-D array</summary>
-// <use visibility=export>
-//
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
-//
-// <etymology>
-//     This should be viewed as a <em>block</em> of memory without sophisticated
-//     manipulation functions. Thus it is called <src>Block</src>.
-// </etymology>
-//
-// <synopsis>
-// <src>Block<T></src> is a simple templated 1-D array class. Indices are always
-// 0-based. For efficiency reasons, no index checking is done unless the
-// preprocessor symbol <src>AIPS_ARRAY_INDEX_CHECK</src> is defined. 
-// <src>Block<T></src>'s may be assigned to and constructed from other
-// <src>Block<T></src>'s.
-// As no reference counting is done this can be an expensive operation, however.
-//
-// The net effect of this class is meant to be unsurprising to users who think
-// of arrays as first class objects. The name "Block" is  intended to convey
-// the concept of a solid "chunk" of things without any intervening "fancy"
-// memory management, etc. This class was written to be
-// used in the implementations of more functional Vector, Matrix, etc. classes,
-// although it is expected <src>Block<T></src> will be useful on its own.
-//
-// The Block class should be efficient. You should normally use <src>Block</src>.
-//
-// <note role=warning> If you use the assignment operator on an element of this
-// class, you may leave dangling references to pointers released from
-// <src>storage()</src>.
-// Resizing the array will also have this effect if the underlying storage
-// is actually affected.
-// </note>
-//
-// If index checking is turned on, an out-of-bounds index will
-// generate an <src>indexError<uInt></src> exception.
-// </synopsis>
-//
-// <example> 
-// <srcblock>
-// Block<Int> a(100,0);  // 100 ints initialized to 0
-// Block<Int> b;         // 0-length Block
-// // ...
-// b = a;                // resize b and copy a into it
-// for (size_t i=0; i < a.nelements(); i++) {
-//     a[i] = i;    // Generate a sequence
-//                  // with Vectors, could simply say "indgen(myVector);"
-// }
-// b.set(-1);       // All positions in b have the value -1
-// b.resize(b.nelements()*2); // Make b twice as long, by default the old
-//                            // elements are copied over, although this can
-//                            // be defeated.
-// some_c_function(b.storage());  // Use a fn that takes an
-//                                // <src>Int *</src> pointer
-// </srcblock> 
-// </example>
-//
 class BlockTrace
 {
 public:
@@ -202,14 +144,14 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   Block() :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), capacity_p(
-          0), used_p(0), array(0), destroyPointer(True), keep_allocator_p(False) {
+          0), used_p(0), array(0), destroyPointer(True) {
   }
   // Create a zero-length Block. Note that any index into this Block
   // is an error.
   template<typename Allocator>
   explicit Block(AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), capacity_p(0), used_p(
-          0), array(0), destroyPointer(True), keep_allocator_p(False) {
+          0), array(0), destroyPointer(True) {
   }
 
   // Create a Block with the given number of points. The values in Block
@@ -217,7 +159,7 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   explicit Block(size_t n) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
-          n), destroyPointer(True), keep_allocator_p(False) {
+          n), destroyPointer(True) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
@@ -226,7 +168,7 @@ public:
   template<typename Allocator>
   Block(size_t n, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          True) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
@@ -235,7 +177,7 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   Block(size_t n, ArrayInitPolicy initPolicy) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
-          n), destroyPointer(True), keep_allocator_p(False) {
+          n), destroyPointer(True) {
     init(initPolicy);
   }
 
@@ -245,7 +187,7 @@ public:
   Block(size_t n, ArrayInitPolicy initPolicy,
       AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          True) {
     init(initPolicy);
   }
 
@@ -254,7 +196,7 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   Block(size_t n, T const &val) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
-          n), destroyPointer(True), keep_allocator_p(False) {
+          n), destroyPointer(True) {
     init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
@@ -269,7 +211,7 @@ public:
   template<typename Allocator>
   Block(size_t n, T const &val, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          True) {
     init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
@@ -291,8 +233,7 @@ public:
   // to <src>DefaultAllocator<T>::value</src> in future.
   Block(size_t n, T *&storagePointer, Bool takeOverStorage = True) :
       allocator_p(get_allocator<typename NewDelAllocator<T>::type>()), capacity_p(
-          n), used_p(n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
-          False) {
+          n), used_p(n), array(storagePointer), destroyPointer(takeOverStorage) {
     if (destroyPointer)
       storagePointer = 0;
   }
@@ -305,8 +246,7 @@ public:
   Block(size_t n, T *&storagePointer, Bool takeOverStorage,
       AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), capacity_p(n), used_p(
-          n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
-          False) {
+          n), array(storagePointer), destroyPointer(takeOverStorage) {
     if (destroyPointer)
       storagePointer = 0;
   }
@@ -314,11 +254,10 @@ public:
   // Copy the other block into this one. Uses copy, not reference, semantics.
   Block(const Block<T> &other) :
       allocator_p(other.allocator_p), used_p(other.size()), destroyPointer(
-          True), keep_allocator_p(False) {
+          True) {
     init(ArrayInitPolicies::NO_INIT);
 
     try {
-      //objcopy(array, other.array, get_size());
       objthrowcp1(array, other.array, get_size());
       allocator_p->construct(array, get_size(), other.array);
     } catch (...) {
@@ -327,6 +266,16 @@ public:
     }
   }
   
+  Block(Block<T> &&other) noexcept :
+      allocator_p(other.allocator_p), capacity_p(other.capacity_p), used_p(other.used_p),
+          array(other.array), destroyPointer(other.destroyPointer) {
+    // The allocator of other is left as is; the storage is emptied so no need to change it.
+    other.capacity_p = 0;
+    other.used_p = 0;
+    other.array = nullptr;
+    other.destroyPointer = false;
+  }
+
   // Assign other to this. this resizes itself to the size of other, so after
   // the assignment, this->nelements() == other.nelements() always.
   Block<T> &operator=(const Block<T> &other) {
@@ -343,8 +292,27 @@ public:
     return *this;
   }
   
+  Block<T>& operator=(Block<T> &&other) noexcept
+  {
+    if (this == &other) {
+      return *this;
+    }
+    deinit();
+    allocator_p = other.allocator_p;
+    capacity_p = other.capacity_p;
+    used_p = other.used_p;
+    destroyPointer = other.destroyPointer;
+    array = other.array;
+    // The allocator of other is left as is; the storage is emptied so no need to change it.
+    other.capacity_p = 0;
+    other.used_p = 0;
+    other.array = nullptr;
+    other.destroyPointer = false;
+    return *this;
+  }
+
   // Frees up the storage pointed contained in the Block.
-  ~Block() {
+  ~Block() noexcept {
     deinit();
   }
 
@@ -382,10 +350,6 @@ public:
       return;
     }
     if (n < get_size() && forceSmaller == False) {
-      if (false) { // to keep get_size() == get_capacity()
-        allocator_p->destroy(&array[n], get_size() - n);
-        set_size(n);
-      }
       return;
     }
     if (get_size() < n  && n <= get_capacity()) {
@@ -492,23 +456,10 @@ public:
       destroyPointer = True;
     } else {
       objmove(&array[whichOne], &array[whichOne + 1], get_size() - whichOne - 1);
-      if (false) { // to keep get_size() == get_capacity()
-        allocator_p->destroy(&array[n], 1);
-        set_size(n);
-      }
     }
   }
   // </group>
 
-  // Prohibit changing allocator for this instance.
-  // <group>
-  void prohibitChangingAllocator() {
-    keep_allocator_p = True;
-  }
-  // Permit changing allocator for this instance.
-  void permitChangingAllocator() {
-    keep_allocator_p = False;
-  }
   // </group>
 
   // Replace the internal storage with a C-array (i.e. pointer).
@@ -529,10 +480,6 @@ public:
 	}
   template<typename Allocator>
   void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage, AllocSpec<Allocator> const &) {
-    if (keep_allocator_p && ! isCompatibleAllocator<Allocator>()) {
-      throw AipsError("Block::replaceStorage - Attemption to change allocator of Block");
-    }
-
     if (array && destroyPointer) {
       traceFree (array, get_capacity());
       allocator_p->destroy(array, get_size());
@@ -665,50 +612,10 @@ public:
   }
 
  private:
-  friend class Array<T>; // to allow access to following constructors.
-
-  Block(size_t n, ArrayInitPolicy initPolicy,
-          Allocator_private::BulkAllocator<T> *allocator) :
-      allocator_p(allocator), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
-    init(initPolicy);
-  }
-  Block(size_t n, Allocator_private::AllocSpec<T> allocator) :
-      allocator_p(allocator.allocator), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
-    init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
-  }
-  Block(size_t n, T *&storagePointer, Bool takeOverStorage,
-          Allocator_private::BulkAllocator<T> *allocator) :
-      allocator_p(allocator), capacity_p(n), used_p(
-          n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
-          False) {
-    if (destroyPointer)
-      storagePointer = 0;
-  }
-  void construct(size_t pos, size_t n, T const *src) {
-    allocator_p->construct(&array[pos], n, src);
-  }
-  void construct(size_t pos, size_t n,
-      T const &initial_value) {
-    allocator_p->construct(&array[pos], n, initial_value);
-  }
-  void construct(size_t pos, size_type n) {
-    allocator_p->construct(&array[pos], n);
-  }
-  void destroy(size_t pos, size_type n) {
-    allocator_p->destroy(&array[pos], n);
-  }
-  Allocator_private::BulkAllocator<T> *get_allocator(){
-      return allocator_p;
-  }
-
-  static bool init_anyway() {
+  static constexpr bool init_anyway() {
      return !(Block_internal_IsFundamental<T>::value
          || Block_internal_IsPointer<T>::value);
    }
-
-  // end of friend
 
   void init(ArrayInitPolicy initPolicy) {
     set_capacity(get_size());
@@ -782,82 +689,31 @@ public:
   T *array;
   // Can we delete the storage upon destruction?
   Bool destroyPointer;
-  // Can we change allocator or not?
-  Bool keep_allocator_p;
 };
 
 
-// <summary>
-// A drop-in replacement for <src>Block<T*></src>.
-// </summary>
- 
-// <use visibility=export>
-// <prerequisite>
-//   <li> <linkto class=Block>Block</linkto>
-// </prerequisite>
- 
-// <synopsis>
-// <src>PtrBlock<T*></src> has exactly the same interface as <src>Block<T*></src>
-// and should be used in preference to the latter. It's purpose is solely to
-// reduce the number of template instantiations.
-// </synopsis>
- 
-// <todo asof="1996/05/01">
-//   <li> Partial template specialization is another implementation choice that 
-//        will be possible eventually.
-//   <li> It might be useful to have functions that know the template parameter
-//        is a pointer, e.g. that delete all the non-null pointers.
-// </todo>
- 
- template<class T> class PtrBlock {
- public:
-   PtrBlock() : block_p() {}
-   explicit PtrBlock(size_t n) : block_p(n) {}
-   PtrBlock(size_t n, T val) : block_p(n, (void *)val) {}
-   PtrBlock(size_t n, T *&storagePointer, Bool takeOverStorage = True)
-     : block_p(n, (void **&)storagePointer, takeOverStorage) {}
-   PtrBlock(const PtrBlock<T> &other) : block_p(other.block_p) {}
-   PtrBlock<T> &operator=(const PtrBlock<T> &other)
-     { block_p = other.block_p; return *this;}
-   ~PtrBlock() {}
-   void resize(size_t n, Bool forceSmaller, Bool copyElements)
-     { block_p.resize(n,forceSmaller, copyElements); }
-   void resize(size_t n) {block_p.resize(n);}
-   void resize(size_t n, Bool forceSmaller) {block_p.resize(n, forceSmaller);}
-   void remove(size_t whichOne, Bool forceSmaller) {
-     block_p.remove(whichOne, forceSmaller);}
-   void remove(size_t whichOne) {block_p.remove(whichOne);}
-   void replaceStorage(size_t n, T *&storagePointer, 
-		       Bool takeOverStorage=True)
-     {block_p.replaceStorage(n, (void **&)storagePointer, takeOverStorage);}
-   T &operator[](size_t index) {return (T &)block_p[index];}
-   const T &operator[](size_t index) const {return (const T &)block_p[index];}
-   void set(const T &val) {block_p.set((void *const &)val);}
-   PtrBlock<T> &operator=(const T &val) {set(val); return *this;}
-   T *storage()  {return (T *)block_p.storage();}
-   const T *storage() const {return (const T *)block_p.storage();}
-   size_t nelements() const {return block_p.nelements();}
-   size_t size() const {return block_p.size();}
-   Bool empty() const {return block_p.empty();}
- private:
-   Block<void*> block_p;
- };
-
+/**
+ * PtrBlock was a class that was similar to Block, but it was used to speed up compilation on older compilers.
+ * This is no longer relevant, so it is deprecated and replaced by a using statement in April 2026.
+ */
+template<typename T>
+using PtrBlock [[deprecated("Use Block<T> or std::vector<T>: the original motivation for this class no longer holds")]]
+  = Block<T>;
 
 //# Instantiate extern templates for often used types.
-  extern template class Block<Bool>;
-  extern template class Block<Char>;
-  extern template class Block<Short>;
-  extern template class Block<uShort>;
-  extern template class Block<Int>;
-  extern template class Block<uInt>;
-  extern template class Block<Int64>;
-  extern template class Block<Float>;
-  extern template class Block<Double>;
-  extern template class Block<Complex>;
-  extern template class Block<DComplex>;
-  extern template class Block<String>;
-  extern template class Block<void*>;
+extern template class Block<Bool>;
+extern template class Block<Char>;
+extern template class Block<Short>;
+extern template class Block<uShort>;
+extern template class Block<Int>;
+extern template class Block<uInt>;
+extern template class Block<Int64>;
+extern template class Block<Float>;
+extern template class Block<Double>;
+extern template class Block<Complex>;
+extern template class Block<DComplex>;
+extern template class Block<String>;
+extern template class Block<void*>;
 
 
 } //# NAMESPACE CASACORE - END

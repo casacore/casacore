@@ -181,7 +181,7 @@ protected:
   uInt ndim_p;
   
   // Pointer to each added function
-  PtrBlock<Function<T> *> functionPtr_p;
+  Block<Function<T> *> functionPtr_p;
 
   //# Make members of parent classes known.
 public:

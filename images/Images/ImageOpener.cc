@@ -219,7 +219,7 @@ LatticeBase* ImageOpener::openExpr (const String& expr,
                                     const JsonKVMap& jmap)
 {
   LatticeBase* lattice = 0;
-  PtrBlock<const ImageRegion*> regions;
+  Block<const ImageRegion*> regions;
   LatticeExprNode node = ImageExprParse::command (expr, nodes, regions);
   switch (node.dataType()) {
   case TpFloat:

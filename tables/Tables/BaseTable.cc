@@ -692,7 +692,7 @@ std::shared_ptr<BaseTable> BaseTable::sort
     }
     //# Get the Column pointers.
     //# Check if a sort key is indeed a column of scalars.
-    PtrBlock<BaseColumn*> sortCol(nrkey);
+    Block<BaseColumn*> sortCol(nrkey);
     for (uInt i=0; i<nrkey; i++) {
         sortCol[i] = getColumn (names[i]);         // get BaseColumn object
         if (!sortCol[i]->columnDesc().isScalar()) {
@@ -707,7 +707,7 @@ std::shared_ptr<BaseTable> BaseTable::sort
 
 //# Do the actual sort.
 std::shared_ptr<BaseTable> BaseTable::doSort
-(PtrBlock<BaseColumn*>& sortCol,
+(Block<BaseColumn*>& sortCol,
  const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,

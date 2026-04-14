@@ -112,7 +112,7 @@ public:
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
     WCComplement (Bool takeOver,
-		  const PtrBlock<const WCRegion*>& regions);
+		  const Block<const WCRegion*>& regions);
 
 protected:
     // Convert to an LCRegion using the given coordinate system and shape.

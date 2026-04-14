@@ -43,7 +43,7 @@ LCDifference::LCDifference (const LCRegion& region1, const LCRegion& region2)
 }
 
 LCDifference::LCDifference (Bool takeOver,
-			    const PtrBlock<const LCRegion*>& regions)
+			    const Block<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
     defineBox();
@@ -78,7 +78,7 @@ LCRegion* LCDifference::cloneRegion() const
 LCRegion* LCDifference::doTranslate (const Vector<Float>& translateVector,
 				     const IPosition& newLatticeShape) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
     return new LCDifference (True, regions);
 }
@@ -104,7 +104,7 @@ TableRecord LCDifference::toRecord (const String& tableName) const
 LCDifference* LCDifference::fromRecord (const TableRecord& rec,
 					const String& tableName)
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new LCDifference (True, regions);
 }

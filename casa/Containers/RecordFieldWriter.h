@@ -159,7 +159,7 @@ public:
 private:
   // Make faster by having the RecordFieldCopiers split out so straight copying
   // is inline.
-  PtrBlock<RecordFieldWriter *> writers_p;
+  Block<RecordFieldWriter *> writers_p;
 };
 
 

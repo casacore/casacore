@@ -58,7 +58,7 @@ String substituteOID (Block<LatticeExprNode>& nodes,
   exprName = expr;
   return expr;
 }
-void makeRegionBlock (PtrBlock<const ImageRegion*>& regions,
+void makeRegionBlock (Block<const ImageRegion*>& regions,
 		      const Record&,
 		      LogIO&)
 {
@@ -76,7 +76,7 @@ void doExpr (const String& expr, const Record& regions)
 
 // Get LatticeExprNode (tree) from parser
 // Convert the GlishRecord containing regions to a
-// PtrBlock<const ImageRegion*>.
+// Block<const ImageRegion*>.
 
   if (expr.empty()) {
     os << "You must specify an expression" << LogIO::EXCEPTION;
@@ -84,7 +84,7 @@ void doExpr (const String& expr, const Record& regions)
   Block<LatticeExprNode> temps;
   String exprName;
   String newexpr = substituteOID (temps, exprName, expr);
-  PtrBlock<const ImageRegion*> tempRegs;
+  Block<const ImageRegion*> tempRegs;
   makeRegionBlock (tempRegs, regions, os);
   LatticeExprNode node = ImageExprParse::command (newexpr, temps, tempRegs);
   
@@ -257,7 +257,7 @@ int main (int argc, const char* argv[])
     temps[0] = LatticeExprNode(b);
     temps[1] = LatticeExprNode(c);
     temps[2] = LatticeExprNode(d);
-    PtrBlock<const ImageRegion*> regions(1);
+    Block<const ImageRegion*> regions(1);
     regions[0] = new ImageRegion(LCBox(shape));
     LatticeExpr<Double> expr(ImageExprParse::command
          ("$1 + ($2 + $3)[$R1]",
@@ -276,7 +276,7 @@ int main (int argc, const char* argv[])
   {
     cout << "Expr:  a = nelements(b[$region]" << endl;
     Block<LatticeExprNode> temps(0);
-    PtrBlock<const ImageRegion*> regions(1);
+    Block<const ImageRegion*> regions(1);
     Matrix<Bool> mask(shape-1);
     mask = False;
     mask(0,0) = True;
@@ -299,7 +299,7 @@ int main (int argc, const char* argv[])
     cout << "Expr:  a = nelements(b[$region1 || $region2) - "
 	    "length(b[$region1],0)" << endl;
     Block<LatticeExprNode> temps(0);
-    PtrBlock<const ImageRegion*> regions(2);
+    Block<const ImageRegion*> regions(2);
     Matrix<Bool> mask1(shape-1);
     Matrix<Bool> mask2(shape-1);
     mask1 = False;

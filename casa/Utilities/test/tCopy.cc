@@ -337,11 +337,10 @@ int main()
     // Block uses objcopy.
     // Somewhere Block<void*> and Block<const void*> are used.
     // See if they compile and link well.
-    PtrBlock<const void*> cbl(10,static_cast<const void*>(0));
-    PtrBlock<const void*> cbl2(cbl);
-    PtrBlock<void*> bl(10,static_cast<void*>(0));
-    PtrBlock<void*> bl2(bl);
-    // PtrBlock is based on Block<void*>
+    Block<const void*> cbl(10,static_cast<const void*>(0));
+    Block<const void*> cbl2(cbl);
+    Block<void*> bl(10,static_cast<void*>(0));
+    Block<void*> bl2(bl);
     Block<void*> bvl(10,static_cast<void*>(0));
     Block<void*> bvl2(bvl);
 

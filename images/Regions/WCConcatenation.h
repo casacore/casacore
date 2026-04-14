@@ -79,7 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // so they do not need to be deleted (the WCConcatenation destructor does it).
 // <srcblock>
 // IPosition center (2,10,20);
-// PtrBlock<ImageRegion*> cirPtr(n);
+// Block<ImageRegion*> cirPtr(n);
 // for (i=0; i<n; i++) {
 //   // Each circle has a different radius.
 //   cirPtr(i) = new WCEllipsoid cir1 (center, 1 + i%(n/2));
@@ -112,9 +112,9 @@ public:
     // given regions. Otherwise a copy of the regions is made.
     // The extend range has to be given as a 1-dimensional box.
     // <group>
-    WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
+    WCConcatenation (const Block<const ImageRegion*>& regions,
 		     const WCBox& extendRange);
-    WCConcatenation (Bool takeOver, const PtrBlock<const WCRegion*>& regions,
+    WCConcatenation (Bool takeOver, const Block<const WCRegion*>& regions,
 		     const WCBox& extendRange);
     // </group>
 

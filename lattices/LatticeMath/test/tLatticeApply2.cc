@@ -326,7 +326,7 @@ void doIt (int argc, const char* argv[])
         ArrayLattice<Bool> mask1(l2Shape); mask0.set(True);
         mLatOut1.setPixelMask(mask1,False); 
 //
-	PtrBlock<MaskedLattice<Float>*> blat(2);
+	Block<MaskedLattice<Float>*> blat(2);
 	blat[0] = &mLatOut0;
 	blat[1] = &mLatOut1;
 	MyLineCollapser collapser;

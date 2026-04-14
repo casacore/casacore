@@ -85,13 +85,13 @@ public:
     // exception is thrown.
     // <group>
     WCDifference (const ImageRegion& region1, const ImageRegion& region2);
-    WCDifference (const PtrBlock<const ImageRegion*>& regions);
+    WCDifference (const Block<const ImageRegion*>& regions);
     // </group>
 
     // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    WCDifference (Bool takeOver, const PtrBlock<const WCRegion*>& regions);
+    WCDifference (Bool takeOver, const Block<const WCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     WCDifference (const WCDifference& other);

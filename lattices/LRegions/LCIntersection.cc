@@ -59,7 +59,7 @@ LCIntersection::LCIntersection (Bool takeOver, const LCRegion* region1,
 }
 
 LCIntersection::LCIntersection (Bool takeOver,
-				const PtrBlock<const LCRegion*>& regions)
+				const Block<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
     defineBox();
@@ -96,7 +96,7 @@ LCRegion* LCIntersection::cloneRegion() const
 LCRegion* LCIntersection::doTranslate (const Vector<Float>& translateVector,
 				       const IPosition& newLatticeShape) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
     return new LCIntersection (True, regions);
 }
@@ -122,7 +122,7 @@ TableRecord LCIntersection::toRecord (const String& tableName) const
 LCIntersection* LCIntersection::fromRecord (const TableRecord& rec,
 					    const String& tableName)
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new LCIntersection (True, regions);
 }

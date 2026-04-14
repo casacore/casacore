@@ -37,11 +37,11 @@ WCDifference::WCDifference (const ImageRegion& region1,
 : WCCompound (region1, region2)
 {}
 
-WCDifference::WCDifference (const PtrBlock<const ImageRegion*>& regions)
+WCDifference::WCDifference (const Block<const ImageRegion*>& regions)
 : WCCompound (regions)
 {}
 
-WCDifference::WCDifference (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
+WCDifference::WCDifference (Bool takeOver, const Block<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -75,7 +75,7 @@ LCRegion* WCDifference::doToLCRegion (const CoordinateSystem& cSys,
 				      const IPosition& pixelAxesMap,
 				      const IPosition& outOrder) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
     return new LCDifference (True, regions);
 }
@@ -101,7 +101,7 @@ TableRecord WCDifference::toRecord (const String& tableName) const
 WCDifference* WCDifference::fromRecord (const TableRecord& rec,
 					const String& tableName)
 {
-    PtrBlock<const WCRegion*> regions;
+    Block<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCDifference (True, regions);
 }

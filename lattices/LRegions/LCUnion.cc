@@ -60,7 +60,7 @@ LCUnion::LCUnion (Bool takeOver, const LCRegion* region1,
 }
 
 LCUnion::LCUnion (Bool takeOver,
-		  const PtrBlock<const LCRegion*>& regions)
+		  const Block<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
     defineBox();
@@ -94,7 +94,7 @@ LCRegion* LCUnion::cloneRegion() const
 LCRegion* LCUnion::doTranslate (const Vector<Float>& translateVector,
 				const IPosition& newLatticeShape) const
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
     return new LCUnion (True, regions);
 }
@@ -120,7 +120,7 @@ TableRecord LCUnion::toRecord (const String& tableName) const
 LCUnion* LCUnion::fromRecord (const TableRecord& rec,
 			      const String& tableName)
 {
-    PtrBlock<const LCRegion*> regions;
+    Block<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new LCUnion (True, regions);
 }

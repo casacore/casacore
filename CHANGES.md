@@ -1,3 +1,10 @@
+# Next version
+
+## General
+
+- Clean up the Block class and deprecate the PtrBlock class.
+- Remove Block::prohibitChangingAllocator() and Block::permitChangingAllocator() as they were not used.
+
 # 3.8.0
 
 ## General

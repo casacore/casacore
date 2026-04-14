@@ -353,7 +353,7 @@ void doIt (int argc, const char* argv[])
 	Table paTable1(paSetup1);
 	PagedArray<Int> arrout1(TiledShape(l2Shape, t2Shape), paTable1);
 	SubLattice<Int> latout1(arrout1, True);
-	PtrBlock<MaskedLattice<Int>*> blat(2);
+	Block<MaskedLattice<Int>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
 	MyLineCollapser collapser;
@@ -539,7 +539,7 @@ void doIt (int argc, const char* argv[])
 	Table paTable1(paSetup1);
 	PagedArray<Int> arrout1(l3Shape, paTable1);
 	SubLattice<Int> latout1(arrout1, True);
-	PtrBlock<MaskedLattice<Int>*> blat(2);
+	Block<MaskedLattice<Int>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
 	MyLineCollapser collapser;

@@ -206,7 +206,7 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     }
     // Find the shapes on each axis that will be tried.
     Block<uInt64> nval(nrdim, uInt64(0));
-    PtrBlock<Block<Int64>*> values(nrdim);
+    Block<Block<Int64>*> values(nrdim);
     for (i=0; i<nrdim; i++) {
 	values[i] = new Block<Int64> (maxShape(i) - minShape(i) + 1);
 	// First find exactly fitting shapes.
@@ -725,7 +725,7 @@ void TiledStMan::setup (Int extraNdim)
 	idColSet_p[i] = idColSet_p[i]->makeIdColumn();
     }
     uInt nrd = dataColSet_p.nelements();
-    PtrBlock<TSMDataColumn*> dataColSet(nrd);
+    Block<TSMDataColumn*> dataColSet(nrd);
     for (i=0; i<nrd; i++) {
 	dataColSet[i] = dataColSet_p[i]->makeDataColumn();
     }
@@ -848,7 +848,7 @@ void TiledStMan::initCoordinates (TSMCube* hypercube)
 
 
 uInt TiledStMan::getBindings (const Vector<String>& columnNames,
-			      PtrBlock<TSMColumn*>& colSet,
+			      Block<TSMColumn*>& colSet,
 			      Bool mustExist) const
 {
     colSet = static_cast<TSMColumn*>(0);
@@ -939,7 +939,7 @@ Int TiledStMan::getCubeIndex (const Record& idValues) const
 }
 
 
-void TiledStMan::checkValues (const PtrBlock<TSMColumn*>& colSet,
+void TiledStMan::checkValues (const Block<TSMColumn*>& colSet,
 			      const Record& values) const
 {
     // Check if all values are given and if their data types match.
@@ -956,7 +956,7 @@ void TiledStMan::checkValues (const PtrBlock<TSMColumn*>& colSet,
     }
 }
 
-void TiledStMan::checkCoordinates (const PtrBlock<TSMColumn*>& coordColSet,
+void TiledStMan::checkCoordinates (const Block<TSMColumn*>& coordColSet,
 				   const IPosition& cubeShape,
 				   const Record& values) const
 {

@@ -164,13 +164,13 @@ public:
 // of the supplied region).
 // The default region is the entire input lattice.
 // <group>
-    static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
+    static void lineMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				LineCollapser<T,U>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
 
-    static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
+    static void lineMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				const LatticeRegion& region,
 				LineCollapser<T,U>& collapser,
@@ -218,12 +218,12 @@ public:
 // Thus they cannot be used yet.
 // </note>
 // <group>
-    static void tiledMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
+    static void tiledMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
 				 const MaskedLattice<T>& latticeIn,
 				 TiledCollapser<T,U>& collapser,
 				 const IPosition& collapseAxes,
 				 LatticeProgress* tellProgress = 0);
-    static void tiledMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
+    static void tiledMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
 				 const MaskedLattice<T>& latticeIn,
 				 const LatticeRegion& region,
 				 TiledCollapser<T,U>& collapser,

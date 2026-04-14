@@ -96,7 +96,7 @@ int main (int argc, const char* argv[])
     Block<LatticeExprNode> temps(1);
     temps[0] = LatticeExprNode(image);
 
-    PtrBlock<const ImageRegion*> tempRegs(1);
+    Block<const ImageRegion*> tempRegs(1);
     tempRegs[0] = new ImageRegion (WCBox(LCBox(shape), image.coordinates()));
 
     {

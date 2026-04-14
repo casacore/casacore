@@ -343,7 +343,7 @@ private:
     // The nr of slots used in the cache.
     uInt     its_CacheSizeUsed;
     // The cache itself.
-    PtrBlock<char*> its_Cache; 
+    Block<char*> its_Cache;
     // The cache slot actually used.
     uInt         its_ActualSlot;
     // The slot numbers of the buckets in the cache (-1 = not in cache).

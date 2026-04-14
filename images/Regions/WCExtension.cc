@@ -42,7 +42,7 @@ WCExtension::WCExtension (const ImageRegion& region,
 : WCCompound (region, ImageRegion(extendBox))
 {}
 
-WCExtension::WCExtension (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
+WCExtension::WCExtension (Bool takeOver, const Block<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -244,7 +244,7 @@ TableRecord WCExtension::toRecord (const String& tableName) const
 WCExtension* WCExtension::fromRecord (const TableRecord& rec,
 				      const String& tableName)
 {
-    PtrBlock<const WCRegion*> regions;
+    Block<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCExtension (True, regions);
 }

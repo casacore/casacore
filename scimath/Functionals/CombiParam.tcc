@@ -59,7 +59,7 @@ CombiParam<T>& CombiParam<T>::operator=(const CombiParam<T> &other) {
     for (uInt i=0; i<functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i]; functionPtr_p[i] = 0;
     }
-    functionPtr_p =  PtrBlock<Function<T> *>(other.functionPtr_p.nelements());
+    functionPtr_p =  Block<Function<T> *>(other.functionPtr_p.nelements());
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
     }

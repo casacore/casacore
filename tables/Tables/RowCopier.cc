@@ -53,8 +53,8 @@ private:
     Table out;
 
     // Blocks of pointers to the TableColumns that will be involved in copying
-    PtrBlock<TableColumn *> inTabCol;
-    PtrBlock<TableColumn *> outTabCol;
+    Block<TableColumn *> inTabCol;
+    Block<TableColumn *> outTabCol;
 
 };
 

@@ -36,6 +36,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
+#include <array>
 #include <vector>
 #include <limits>
 #include <stdint.h>
@@ -248,18 +249,6 @@ void doit()
       AlwaysAssertExit(10 == bb[0] && 10 == bb[9]);
 
       Int *p = new Int[20];
-      ba.prohibitChangingAllocator();
-      try {
-        ba.replaceStorage(20, p, True);
-        AlwaysAssertExit(False);
-      } catch (std::exception const &) {
-      }
-      try {
-        ba.replaceStorage(20, p, False);
-        AlwaysAssertExit(False);
-      } catch (std::exception const &) {
-      }
-      ba.permitChangingAllocator();
       try {
         ba.replaceStorage(20, p, True);
       } catch (std::exception const &) {
@@ -267,7 +256,6 @@ void doit()
       }
       AlwaysAssertExit(0 == p);
 
-      bb.prohibitChangingAllocator();
       p = DefaultAllocator<Int>::type().allocate(20);
       try {
         ba.replaceStorage(20, p, True, AllocSpec<DefaultAllocator<Int> >::value);
@@ -398,6 +386,24 @@ void doit()
     }
 
                                       // Block::~Block called at end of fn
+
+  // Move constructor
+  constexpr std::array<int, 3> data{-3, 1982, 42};
+  Block<int> block_a(data.size());
+  for(size_t i=0; i!=data.size(); ++i)
+    block_a[i] = data[i];
+  Block<int> block_b(std::move(block_a));
+  AlwaysAssertExit(block_b.size() == data.size());
+  for(size_t i=0; i!=data.size(); ++i)
+    AlwaysAssertExit(block_b[i] == data[i]);
+  AlwaysAssertExit(block_a.empty());
+
+  // Move assignment
+  block_a = std::move(block_b);
+  AlwaysAssertExit(block_a.size() == data.size());
+  for(size_t i=0; i!=data.size(); ++i)
+    AlwaysAssertExit(block_a[i] == data[i]);
+  AlwaysAssertExit(block_b.empty());
 }
 
 void testIO()

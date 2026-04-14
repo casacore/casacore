@@ -870,7 +870,7 @@ public:
 
 private:
     // Where we store copies of the coordinates we are created with.
-    PtrBlock<Coordinate *> coordinates_p;
+    Block<Coordinate *> coordinates_p;
     
     // For coordinate[i] axis[j], 
     //    world_maps_p[i][j], if >=0 gives the location in the
@@ -878,22 +878,22 @@ private:
     //                        <0 means that the axis has been removed
     //    world_tmp_p[i] a temporary vector length coord[i]->nworldAxes()
     //    replacement_values_p[i][j] value to use for this axis if removed
-    PtrBlock<Block<Int> *>     world_maps_p;
-    PtrBlock<Vector<Double> *> world_tmps_p;
-    PtrBlock<Vector<Double> *> world_replacement_values_p;
+    Block<Block<Int> *>     world_maps_p;
+    Block<Vector<Double> *> world_tmps_p;
+    Block<Vector<Double> *> world_replacement_values_p;
 
     // Same meanings as for the world*'s above.
-    PtrBlock<Block<Int> *>     pixel_maps_p;
-    PtrBlock<Vector<Double> *> pixel_tmps_p;
-    PtrBlock<Vector<Double> *> pixel_replacement_values_p;
+    Block<Block<Int> *>     pixel_maps_p;
+    Block<Vector<Double> *> pixel_tmps_p;
+    Block<Vector<Double> *> pixel_replacement_values_p;
 
     // These temporaries all needed for the toMix function
-    PtrBlock<Vector<Bool> *> worldAxes_tmps_p;
-    PtrBlock<Vector<Bool> *> pixelAxes_tmps_p;
-    PtrBlock<Vector<Double> *> worldOut_tmps_p;
-    PtrBlock<Vector<Double> *> pixelOut_tmps_p;
-    PtrBlock<Vector<Double> *> worldMin_tmps_p;
-    PtrBlock<Vector<Double> *> worldMax_tmps_p;
+    Block<Vector<Bool> *> worldAxes_tmps_p;
+    Block<Vector<Bool> *> pixelAxes_tmps_p;
+    Block<Vector<Double> *> worldOut_tmps_p;
+    Block<Vector<Double> *> pixelOut_tmps_p;
+    Block<Vector<Double> *> worldMin_tmps_p;
+    Block<Vector<Double> *> worldMax_tmps_p;
 
     // Miscellaneous information about the observation associated with this
     // Coordinate System.
@@ -918,8 +918,8 @@ private:
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
 
    // Delete some pointer blocks
-   void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
-                          PtrBlock<SpectralCoordinate*>&  out);
+   void cleanUpSpecCoord (Block<SpectralCoordinate*>&  in,
+                          Block<SpectralCoordinate*>&  out);
 
    // Delete temporary maps
    void deleteTemps (const uInt which);

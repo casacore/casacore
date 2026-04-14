@@ -70,7 +70,7 @@ operator=(const CompoundParam<T> &other) {
     for (uInt i=0; i<functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i]; functionPtr_p[i] = 0;
     }
-    functionPtr_p =  PtrBlock<Function<T> *>(other.functionPtr_p.nelements());
+    functionPtr_p =  Block<Function<T> *>(other.functionPtr_p.nelements());
     paroff_p = Block<uInt>(other.paroff_p.nelements());
     funpar_p = Block<uInt>(other.funpar_p.nelements());
     locpar_p = Block<uInt>(other.locpar_p.nelements());

@@ -364,7 +364,7 @@ private:
     String                          rowColumnName_p;
     ScalarColumn<uInt>              rowColumn_p;
     // Define the various engine column objects.
-    PtrBlock<ForwardColumnIndexedRow*> refColumns_p;
+    Block<ForwardColumnIndexedRow*> refColumns_p;
     // Cache of last row used to get row number.
     Int64   lastRow_p;
     rownr_t rowNumber_p;

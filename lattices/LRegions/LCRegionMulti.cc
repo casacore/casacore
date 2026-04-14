@@ -75,7 +75,7 @@ LCRegionMulti::LCRegionMulti (Bool takeOver, const LCRegion* region1,
 }
 
 LCRegionMulti::LCRegionMulti (Bool takeOver,
-			      const PtrBlock<const LCRegion*>& regions)
+			      const Block<const LCRegion*>& regions)
 : LCRegion   (regions[0]->latticeShape()),
   itsRegions (regions)
 {
@@ -134,7 +134,7 @@ Bool LCRegionMulti::hasMask() const
     return (itsHasMask >= 0);
 }
 
-void LCRegionMulti::multiTranslate (PtrBlock<const LCRegion*>& regions,
+void LCRegionMulti::multiTranslate (Block<const LCRegion*>& regions,
 				    const Vector<Float>& translateVector,
 				    const IPosition& newLatticeShape) const
 {
@@ -312,7 +312,7 @@ TableRecord LCRegionMulti::makeRecord (const String& tableName) const
     return rec;
 }
 
-void LCRegionMulti::unmakeRecord (PtrBlock<const LCRegion*>& regions,
+void LCRegionMulti::unmakeRecord (Block<const LCRegion*>& regions,
 				  const TableRecord& rec,
 				  const String& tableName)
 {

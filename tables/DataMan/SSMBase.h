@@ -407,7 +407,7 @@ private:
   Block<uInt> itsColIndexMap;
 
   // Will contain all indices
-  PtrBlock<SSMIndex*>  itsPtrIndex;
+  Block<SSMIndex*>  itsPtrIndex;
   
   // The cache with the SSM buckets.
   BucketCache* itsCache;
@@ -454,7 +454,7 @@ private:
   uInt itsBucketRows;
   
   // The assembly of all columns.
-  PtrBlock<SSMColumn*> itsPtrColumn;
+  Block<SSMColumn*> itsPtrColumn;
   
   // Has the data changed since the last flush?
   Bool isDataChanged;

@@ -136,7 +136,7 @@ template<class T> class FunctionOrder : public RecordTransformable {
   // String parameters
   String string_p;
   // List of functions (say for Combi and Compound)
-  PtrBlock<Function<T> *> function_p;
+  Block<Function<T> *> function_p;
   // Scale of y (length 1)
   Vector<T> scale_p;
   // Centers of x (length ndim)

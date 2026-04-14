@@ -86,7 +86,7 @@ private:
     Adios2StMan &parent;
     String itsDataManName = "Adios2StMan";
     rownr_t itsRows {0};
-    PtrBlock<Adios2StManColumn *> itsColumnPtrBlk;
+    Block<Adios2StManColumn *> itsColumnPtrBlk;
 
     std::shared_ptr<adios2::ADIOS> itsAdios;
     std::shared_ptr<adios2::IO> itsAdiosIO;

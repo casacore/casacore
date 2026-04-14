@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // so they do not need to be deleted (the LCConcatenation destructor does it).
 // <srcblock>
 // IPosition center (2,10,20);
-// PtrBlock<LCRegion*> cirPtr(n);
+// Block<LCRegion*> cirPtr(n);
 // for (i=0; i<n; i++) {
 //   // Each circle has a different radius.
 //   cirPtr(i) = new LCEllipsoid cir1 (center, 1 + i%(n/2));
@@ -108,9 +108,9 @@ public:
     // The extend range has to be given as a 1-dimensional box.
     // The default range is the entire axis.
     // <group>
-    LCConcatenation (Bool takeOver, const PtrBlock<const LCRegion*>& regions,
+    LCConcatenation (Bool takeOver, const Block<const LCRegion*>& regions,
 		     Int extendAxis);
-    LCConcatenation (Bool takeOver, const PtrBlock<const LCRegion*>& regions,
+    LCConcatenation (Bool takeOver, const Block<const LCRegion*>& regions,
 		     Int extendAxis, const LCBox& extendRange);
     // </group>
 

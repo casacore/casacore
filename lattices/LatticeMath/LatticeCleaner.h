@@ -274,11 +274,11 @@ private:
   Int itsNscales;
   Vector<Float> itsScaleSizes;
 
-  PtrBlock<TempLattice<T>* > itsScales;
-  PtrBlock<TempLattice<Complex>* > itsScaleXfrs;
-  PtrBlock<TempLattice<T>* > itsPsfConvScales;
-  PtrBlock<TempLattice<T>* > itsDirtyConvScales;
-  PtrBlock<TempLattice<T>* > itsScaleMasks;
+  Block<TempLattice<T>* > itsScales;
+  Block<TempLattice<Complex>* > itsScaleXfrs;
+  Block<TempLattice<T>* > itsPsfConvScales;
+  Block<TempLattice<T>* > itsDirtyConvScales;
+  Block<TempLattice<T>* > itsScaleMasks;
 
   Bool itsScalesValid;
 
