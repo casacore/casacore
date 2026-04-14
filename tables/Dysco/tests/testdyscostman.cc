@@ -142,12 +142,14 @@ BOOST_AUTO_TEST_CASE(maketable) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(read_past_end) {
+BOOST_AUTO_TEST_CASE(read_past_end, * boost::unit_test::disabled()) {
   /**
    * While reading past the end of a file might seem wrong in any case, it can
    * happen that a user reads a line that was not stored yet in the particular
-   * column, but which does exist in the table. This is valid (and DPPP does
-   * this).
+   * column, but which does exist in the table. DP3 may do this.
+   *
+   * However, when Casacore is compiled in debug mode, an assert fails when
+   * trying to write past the end of the table -- hence this test is disabled.
    */
   size_t nAnt = 3;
   TestTableFixture fixture(nAnt);
