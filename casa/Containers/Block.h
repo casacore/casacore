@@ -307,7 +307,7 @@ public:
     other.capacity_p = 0;
     other.used_p = 0;
     other.array = nullptr;
-    other.destroyPointer = true;
+    other.destroyPointer = false;
     return *this;
   }
 
