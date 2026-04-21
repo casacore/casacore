@@ -196,8 +196,8 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
   std::unique_ptr<casacore::ScalarColumn<double>> _timeCol;
   double _lastWrittenTime;
   int _lastWrittenField, _lastWrittenDataDescId;
-  ao::uvector<unsigned char> _packedBlockReadBuffer;
-  ao::uvector<unsigned int> _unpackedSymbolReadBuffer;
+  aocommon::UVector<unsigned char> _packedBlockReadBuffer;
+  aocommon::UVector<unsigned int> _unpackedSymbolReadBuffer;
   cache_t _cache;
   bool _stopThreads;
   std::mutex _mutex;

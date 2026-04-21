@@ -93,8 +93,8 @@ void TestSimpleExample(Normalization blockNormalization) {
 
   size_t metaDataCount = encoder->MetaDataCount(nRow, nPol, nChan, nAnt);
   size_t symbolCount = encoder->SymbolCount(nRow);
-  ao::uvector<float> metaBuffer(metaDataCount);
-  ao::uvector<TimeBlockEncoder::symbol_t> symbolBuffer(symbolCount);
+  aocommon::UVector<float> metaBuffer(metaDataCount);
+  aocommon::UVector<TimeBlockEncoder::symbol_t> symbolBuffer(symbolCount);
 
   encoder->EncodeWithoutDithering(gausEncoder, buffer, metaBuffer.data(),
                                   symbolBuffer.data(), nAnt);
@@ -131,8 +131,8 @@ void TestTimeBlockEncoder(Normalization blockNormalization) {
 
   dist(rnd);
 
-  ao::uvector<std::complex<float>> data(nChan * nPol);
-  std::vector<ao::uvector<std::complex<float>>> allData;
+  aocommon::UVector<std::complex<float>> data(nChan * nPol);
+  std::vector<aocommon::UVector<std::complex<float>>> allData;
 
   RMSMeasurement unscaledRMS;
   size_t blockRow = 0;
@@ -162,9 +162,9 @@ void TestTimeBlockEncoder(Normalization blockNormalization) {
       CreateEncoder(blockNormalization, nPol, nChan);
 
   const size_t nIter = 25;
-  ao::uvector<float> metaBuffer(
+  aocommon::UVector<float> metaBuffer(
       encoder->MetaDataCount(nRow, nPol, nChan, nAnt));
-  ao::uvector<unsigned> symbolBuffer(
+  aocommon::UVector<unsigned> symbolBuffer(
       encoder->SymbolCount(nAnt * (nAnt + 1) / 2));
 
   for (size_t i = 0; i != nIter; ++i)
@@ -176,7 +176,7 @@ void TestTimeBlockEncoder(Normalization blockNormalization) {
     blockRow = 0;
     for (size_t a1 = 0; a1 != nAnt; ++a1) {
       for (size_t a2 = a1; a2 != nAnt; ++a2) {
-        ao::uvector<std::complex<float>> dataOut(nChan * nPol);
+        aocommon::UVector<std::complex<float>> dataOut(nChan * nPol);
         encoder->Decode(gausEncoder, buffer, symbolBuffer.data(), blockRow, a1,
                         a2);
         buffer.GetData(blockRow, dataOut.data());
@@ -191,12 +191,12 @@ void TestTimeBlockEncoder(Normalization blockNormalization) {
   blockRow = 0;
   for (size_t a1 = 0; a1 != nAnt; ++a1) {
     for (size_t a2 = a1; a2 != nAnt; ++a2) {
-      ao::uvector<std::complex<float>> dataOut(nChan * nPol);
+      aocommon::UVector<std::complex<float>> dataOut(nChan * nPol);
       encoder->Decode(gausEncoder, buffer, symbolBuffer.data(), blockRow, a1,
                       a2);
       buffer.GetData(blockRow, dataOut.data());
 
-      ao::uvector<std::complex<float>>& dataIn = allData[index];
+      aocommon::UVector<std::complex<float>>& dataIn = allData[index];
       for (size_t i = 0; i != nPol * nChan; ++i) {
         mEncodingError.Include(dataOut[i] - dataIn[i]);
         mData.Include(dataIn[i]);
@@ -222,8 +222,8 @@ TimeBlockBuffer<std::complex<float>> EncodeDecode(Normalization block_normalizat
       CreateEncoder(block_normalization, n_pol, n_chan);
   size_t metaDataCount = encoder->MetaDataCount(n_row, n_pol, n_chan, n_ant);
   size_t symbolCount = encoder->SymbolCount(n_row);
-  ao::uvector<float> metaBuffer(metaDataCount);
-  ao::uvector<TimeBlockEncoder::symbol_t> symbolBuffer(symbolCount);
+  aocommon::UVector<float> metaBuffer(metaDataCount);
+  aocommon::UVector<TimeBlockEncoder::symbol_t> symbolBuffer(symbolCount);
 
   std::mt19937 mt;
   encoder->EncodeWithDithering(gausEncoder, buffer, metaBuffer.data(),

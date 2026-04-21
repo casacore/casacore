@@ -185,7 +185,7 @@ void AFTimeBlockEncoder::fitToMaximum(
         }
       }
 
-      ao::uvector<double> maxCompPerAntenna(antennaCount, 0.0);
+      aocommon::UVector<double> maxCompPerAntenna(antennaCount, 0.0);
       for (const DBufferRow &row : data) {
         if (row.antenna1 != row.antenna2) {
           for (size_t channel = 0; channel != _nChannels; ++channel) {
@@ -202,7 +202,7 @@ void AFTimeBlockEncoder::fitToMaximum(
           }
         }
       }
-      ao::uvector<double> increasePerAntenna(antennaCount, 0.0);
+      aocommon::UVector<double> increasePerAntenna(antennaCount, 0.0);
       for (const DBufferRow &row : data) {
         if (row.antenna1 != row.antenna2) {
           double factor1 = (maxCompPerAntenna[row.antenna1] == 0.0)
@@ -351,7 +351,7 @@ void AFTimeBlockEncoder::calculateAntennaeRMS(
     }
   }
 
-  ao::uvector<double> matrix(matrixMeas.size());
+  aocommon::UVector<double> matrix(matrixMeas.size());
   for (size_t i = 0; i != antennaCount; ++i) {
     for (size_t j = i; j != antennaCount; ++j) {
       matrix[i * antennaCount + j] = matrixMeas[i * antennaCount + j].RMS();
@@ -365,7 +365,7 @@ void AFTimeBlockEncoder::calculateAntennaeRMS(
   double precision = 1.0;
   for (size_t iteration = 0; iteration != 100 && precision > 1e-6;
        ++iteration) {
-    ao::uvector<double> nextRMS(antennaCount, 0.0);
+    aocommon::UVector<double> nextRMS(antennaCount, 0.0);
     for (size_t i = 0; i != antennaCount; ++i) {
       double weightSum = 0.0;
       for (size_t j = 0; j != antennaCount; ++j) {
@@ -415,7 +415,7 @@ void AFTimeBlockEncoder::Decode(
     const dyscostman::StochasticEncoder<float> &gausEncoder, FBuffer &buffer,
     const AFTimeBlockEncoder::symbol_t *symbolBuffer, size_t blockRow,
     size_t antenna1, size_t antenna2) {
-  ao::uvector<double> antFactors(_nPol);
+  aocommon::UVector<double> antFactors(_nPol);
   for (size_t p = 0; p != _nPol; ++p)
     antFactors[p] = _rmsPerAntenna[antenna1 * _nPol + p] *
                     _rmsPerAntenna[antenna2 * _nPol + p];

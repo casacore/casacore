@@ -67,11 +67,11 @@ BOOST_AUTO_TEST_CASE(under_and_overflow) {
   }
 }
 
-void testSingle(const ao::uvector<unsigned int>& data, int bitCount) {
+void testSingle(const aocommon::UVector<unsigned int>& data, int bitCount) {
   int limit = (1 << bitCount);
-  ao::uvector<unsigned int> trimmedData(data.size()), restoredData(data.size());
+  aocommon::UVector<unsigned int> trimmedData(data.size()), restoredData(data.size());
   for (size_t i = 0; i != data.size(); ++i) trimmedData[i] = data[i] % limit;
-  ao::uvector<unsigned char> buffer(
+  aocommon::UVector<unsigned char> buffer(
       BytePacker::bufferSize(trimmedData.size(), bitCount), 0);
 
   // 	std::cout << "Tested array: [" << trimmedData[0];
@@ -93,21 +93,21 @@ void testSingle(const ao::uvector<unsigned int>& data, int bitCount) {
   }
 }
 
-void testCombinations(const ao::uvector<unsigned int>& data, int bitCount) {
+void testCombinations(const aocommon::UVector<unsigned int>& data, int bitCount) {
   for (size_t dataSize = 1; dataSize != std::min<size_t>(32u, data.size());
        ++dataSize) {
-    ao::uvector<unsigned int> resizedData(data.begin(),
+    aocommon::UVector<unsigned int> resizedData(data.begin(),
                                           data.begin() + dataSize);
     testSingle(resizedData, bitCount);
   }
   testSingle(data, bitCount);
   for (size_t dataSize = 1; dataSize != std::min<size_t>(32u, data.size() - 1);
        ++dataSize) {
-    ao::uvector<unsigned int> resizedData(data.begin() + 1,
+    aocommon::UVector<unsigned int> resizedData(data.begin() + 1,
                                           data.begin() + dataSize + 1);
     testSingle(resizedData, bitCount);
   }
-  ao::uvector<unsigned int> resizedData(data.begin() + 1, data.end());
+  aocommon::UVector<unsigned int> resizedData(data.begin() + 1, data.end());
   testSingle(resizedData, bitCount);
 }
 
@@ -115,7 +115,7 @@ const int bitrates[] = {2, 3, 4, 6, 8, 10, 12, 16};
 
 BOOST_AUTO_TEST_CASE(pack_unpack) {
   for (int sample : bitrates) {
-    ao::uvector<unsigned int> testArray{1337, 2, 100, 0};
+    aocommon::UVector<unsigned int> testArray{1337, 2, 100, 0};
     for (int i = 0; i != 1000; ++i) {
       testArray.push_back(i);
       testArray.push_back(i * 37);
