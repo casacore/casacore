@@ -251,7 +251,7 @@ class StochasticEncoder {
     size_t capacity(size_t) const { return _values.capacity(); }
 
    private:
-    ao::uvector<value_t> _values;
+    aocommon::UVector<value_t> _values;
   };
 
   typedef long double num_t;

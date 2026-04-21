@@ -77,7 +77,7 @@ class RFTimeBlockEncoder : public TimeBlockEncoder {
 
   size_t _nPol, _nChannels;
 
-  ao::uvector<double> _channelFactors, _rowFactors;
+  aocommon::UVector<double> _channelFactors, _rowFactors;
   std::uniform_int_distribution<unsigned> _ditherDist;
 };
 

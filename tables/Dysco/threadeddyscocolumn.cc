@@ -303,8 +303,8 @@ void ThreadedDyscoColumn<DataType>::EncodingThreadFunctor::operator()() {
       parent->symbolCount(parent->nRowsInBlock(), nPolarizations, nChannels);
 
   std::unique_lock<std::mutex> lock(parent->_mutex);
-  ao::uvector<unsigned char> packedSymbolBuffer(parent->_blockSize);
-  ao::uvector<unsigned> unpackedSymbolBuffer(nSymbols);
+  aocommon::UVector<unsigned char> packedSymbolBuffer(parent->_blockSize);
+  aocommon::UVector<unsigned> unpackedSymbolBuffer(nSymbols);
   cache_t &cache = parent->_cache;
 
   std::unique_ptr<ThreadDataBase> threadUserData =

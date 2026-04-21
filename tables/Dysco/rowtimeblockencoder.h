@@ -69,7 +69,7 @@ class RowTimeBlockEncoder : public TimeBlockEncoder {
   size_t _nPol, _nChannels;
 
   std::uniform_int_distribution<unsigned> _ditherDist;
-  ao::uvector<double> _rowFactors;
+  aocommon::UVector<double> _rowFactors;
 };
 
 #endif

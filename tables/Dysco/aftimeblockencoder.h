@@ -83,7 +83,7 @@ class AFTimeBlockEncoder : public TimeBlockEncoder {
   size_t _nPol, _nChannels;
   bool _fitToMaximum;
 
-  ao::uvector<double> _rmsPerChannel, _rmsPerAntenna;
+  aocommon::UVector<double> _rmsPerChannel, _rmsPerAntenna;
   std::uniform_int_distribution<unsigned> _ditherDist;
 };
 
