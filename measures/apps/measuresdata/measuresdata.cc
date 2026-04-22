@@ -436,7 +436,7 @@ const tableProperties allProperties[] = {
     "IERS EOPC04_20 Earth Orientation Data from IERS",	"eop97",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.1962-now" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.dPsi_dEps.1962-now" } },
 
   //**********************************************************************//
 
