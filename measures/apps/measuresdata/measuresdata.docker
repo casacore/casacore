@@ -1,5 +1,5 @@
 # Script for creating the 'measures-directory' containing casacore-tables with ephemerides, EOP, TAI-UTC, etc.
-# This Dockerfile is currently NOT being used for creating the tarball ('WSRT_Measures.ztar') hosted at astron.nl
+# This Dockerfile is currently being used for creating the tarball ('WSRT_Measures.ztar') hosted at www.astron.nl/iers
 # To create data, start this docker container and run ./measuresdata-update
 FROM ubuntu:24.04
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -31,7 +31,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 RUN mkdir /code
 WORKDIR /code
-RUN wget https://github.com/casacore/casacore/archive/refs/tags/v3.7.1.tar.gz && tar xf *.tar.gz && mv casacore* casacore
+RUN wget https://github.com/casacore/casacore/archive/refs/heads/master.tar.gz && tar xf *.tar.gz && mv casacore* casacore
 RUN useradd -ms /bin/bash casacore \
     && chown -R casacore.casacore /code
 USER casacore
@@ -41,4 +41,5 @@ RUN cmake .. && make -j`nproc`
 RUN mkdir -p /code/measures/ephemerides /code/measures/geodetic
 RUN cp /code/casacore/build/measures/apps/measuresdata /code/casacore/measures/apps/measuresdata/measuresdata-update /code/measures
 ENV PATH="$PATH:/code/measures"
-WORKDIR /code/measures
+USER root
+WORKDIR /data/IERS/daily/
