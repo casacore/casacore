@@ -55,6 +55,7 @@
 #include <casacore/casa/stdio.h>
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #include <casacore/casa/namespace.h>
 
@@ -273,19 +274,19 @@ const columnDescr TAI_UTCCol[] = {
 
 // IERSeop97
 const columnDescr IERSeop97Col[] = {
-  {"MJD",	"d", 		columnDescr::CTD, 3},
-  {"x", 	"arcsec", 	columnDescr::CTD, 4},
-  {"Dx", 	"arcsec",	columnDescr::CTD, 10},
-  {"y", 	"arcsec", 	columnDescr::CTD, 5},
-  {"Dy", 	"arcsec", 	columnDescr::CTD, 11},
-  {"dUT1", 	"s", 		columnDescr::CTD, 6},
-  {"DdUT1", 	"s", 		columnDescr::CTD, 12},
-  {"LOD", 	"s", 		columnDescr::CTD, 7},
-  {"DLOD", 	"s", 		columnDescr::CTD, 13},
+  {"MJD",	"d", 		columnDescr::CTD, 4},
+  {"x", 	"arcsec", 	columnDescr::CTD, 5},
+  {"Dx", 	"arcsec",	columnDescr::CTD, 13},
+  {"y", 	"arcsec", 	columnDescr::CTD, 6},
+  {"Dy", 	"arcsec", 	columnDescr::CTD, 14},
+  {"dUT1", 	"s", 		columnDescr::CTD, 7},
+  {"DdUT1", 	"s", 		columnDescr::CTD, 15},
+  {"LOD", 	"s", 		columnDescr::CTD, 12},
+  {"DLOD", 	"s", 		columnDescr::CTD, 20},
   {"dPsi", 	"arcsec", 	columnDescr::CTD, 8},
-  {"DdPsi", 	"arcsec", 	columnDescr::CTD, 14},
+  {"DdPsi", 	"arcsec", 	columnDescr::CTD, 16},
   {"dEps", 	"arcsec",	columnDescr::CTD, 9},
-  {"DdEps", 	"arcsec", 	columnDescr::CTD, 15},
+  {"DdEps", 	"arcsec", 	columnDescr::CTD, 17},
   {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // IERSeop2000
@@ -432,10 +433,10 @@ const tableProperties allProperties[] = {
     "geodetic/IERSeop97",  	"ftp",  		"ascii",
     &IERSeop97,			IERSeop97Col,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
-    "IERS EOPC04_05 Earth Orientation Data from IERS",	"eop97",
+    "IERS EOPC04_20 Earth Orientation Data from IERS",	"eop97",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04_14", "eopc04.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.dPsi_dEps.IAU1980.1962-now" } },
 
   //**********************************************************************//
 
@@ -444,10 +445,10 @@ const tableProperties allProperties[] = {
     "geodetic/IERSeop2000", 	"ftp",  		"ascii",
     &IERSeop2000,		IERSeop2000Col,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
-    "IERS EOP2000C04_05 Earth Orientation Data IAU2000","eop2000",
+    "IERS EOP2000C04_20 Earth Orientation Data IAU2000","eop2000",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04_14", "eopc04_IAU2000.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04_IAU2000.62-now" } },
 
   //**********************************************************************//
 
@@ -1177,9 +1178,6 @@ Bool IERSeop(tableProperties &tprop, inputValues &inVal) {
   if (testu_table(tprop, inVal) && inVal.noup) return True;;;
   // Determine what to read next
   Double ml = max(Double(inVal.lastmjd), tprop.MJD0);
-  String ytd = uIntToString(MVTime(ml+1).year() % 100);
-  if (ytd.size() == 1) ytd = String("0") + ytd;
-  tprop.fileAddress[2].replace(tprop.fileAddress[2].size()-2, 2, ytd);
 
   // Check if in present and to be used
   if (inVal.testOnly || !inVal.x__fn || 
@@ -1190,7 +1188,7 @@ Bool IERSeop(tableProperties &tprop, inputValues &inVal) {
   read_data(lines, tprop.tnam, Path(inVal.in), True);
 
   // Split data lines into fields
-  vector<vector<String> > fields;
+  vector<vector<String>> fields;
   vector<String> field;
   for (uInt i=0; i<lines.size(); ++i) {
     if (split_data(field, lines[i])) fields.push_back(field);
@@ -1198,8 +1196,11 @@ Bool IERSeop(tableProperties &tprop, inputValues &inVal) {
 
   // Check format file
   uInt j = fields.size();
-  while (j>=20 && fields[j-1].size() < 2) --j;
-  if (fields.size() < 20 || fields[j-2].size() !=16) {
+  while (j>=20 && fields[j-1].size() < 2) --j;  // Strip trailing lines
+
+  uInt ncol = *max_element(tprop.colids.begin(), tprop.colids.end()) + 1;
+
+  if (fields.size() < 20 || fields[j-2].size() != ncol) {
     throw (AipsError("Incorrect input file for " + tprop.tnam));
   };
 
@@ -1209,7 +1210,9 @@ Bool IERSeop(tableProperties &tprop, inputValues &inVal) {
     allcol.push_back(vector<Double>());
   };
   for (uInt i=0; i<fields.size(); ++i) {
-    if (fields[i].size() == 16 && int_data(fields[i][3]) >= 37665) {
+    if (fields[i].size() != 0 and fields[i][0] == '#')
+      continue;
+    if (fields[i].size() == ncol) {
       for (uInt j=0; j<tprop.colnames.size(); ++j) {
 	allcol[j].push_back(double_data(fields[i][tprop.colids[j]]));
       };
