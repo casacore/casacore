@@ -94,13 +94,13 @@ void imag(Array<double> &rarray, const Array<std::complex<double>> &carray)
 void amplitude(Array<float> &rarray, const Array<std::complex<float>> &carray)
 {
   checkArrayShapes (carray, rarray, "amplitude");
-  arrayTransform (carray, rarray, std::abs<float>);
+  arrayTransform(carray, rarray, [](const std::complex<float>& v) { return std::abs(v); });
 }
 
 void amplitude(Array<double> &rarray, const Array<std::complex<double>> &carray)
 {
   checkArrayShapes (carray, rarray, "amplitude");
-  arrayTransform (carray, rarray, std::abs<double>);
+  arrayTransform(carray, rarray, [](const std::complex<double>& v) { return std::abs(v); });
 }
 
 void phase(Array<float> &rarray, const Array<std::complex<float>> &carray)
