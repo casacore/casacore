@@ -15,6 +15,9 @@ ENV BOOSTMINOR 0
 ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
 ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
 
+# libdeflate version
+ENV LIBDEFLATE_VERSION 1.24
+
 # where do we epect casacore data build time and runtime
 ENV CASACORE_DATA /usr/share/casacore/data
 
@@ -26,6 +29,7 @@ WORKDIR /tmp
 RUN curl -L http://www.iausofa.org/s/sofa_f-20231011tar.gz --output /tmp/sofa.tgz
 RUN curl -L https://www.astron.nl/iers/WSRT_Measures.ztar --output /tmp/measures.tgz
 RUN curl -L https://downloads.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
+RUN curl -L https://github.com/ebiggers/libdeflate/archive/refs/tags/v${LIBDEFLATE_VERSION}.tar.gz --output /tmp/libdeflate.tgz
 
 RUN mkdir /build
 WORKDIR /build
@@ -54,6 +58,12 @@ RUN ./b2 -j${THREADS} \
     cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/" \
     link=static,shared install
 
+# install libdeflate (for sisco storage manager)
+WORKDIR /build
+RUN tar jxf /tmp/libdeflate.tgz && mkdir /build/libdeflate-${LIBDEFLATE_VERSION}/build
+WORKDIR /build/libdeflate-${LIBDEFLATE_VERSION}/build
+RUN cmake .. && make -j${THREADS} && make install
+
 # casacore wants numpy. Do not take oldest_supported_numpy, because we want numpy 2.0 compatibility
 RUN /opt/python/${TARGET}/bin/pip install numpy
 
@@ -71,6 +81,7 @@ RUN cmake .. \
     -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/ \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
+    -DBUILD_SISCO=ON \
     -DDATA_DIR=${CASACORE_DATA} \
     -DPORTABLE=TRUE \
     -DUSE_PCH=FALSE \
