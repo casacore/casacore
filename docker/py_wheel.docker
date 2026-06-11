@@ -1,4 +1,4 @@
-FROM quay.io/pypa/manylinux2014_x86_64
+FROM quay.io/pypa/manylinux_2_28_x86_64
 
 # how many threads to use for compiling
 ARG THREADS=4
@@ -7,16 +7,16 @@ ARG THREADS=4
 ARG PYMAJOR
 ARG PYMINOR
 
-ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}
+ENV TARGET=cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}
 
 # boost version
-ENV BOOSTMAJOR 85
-ENV BOOSTMINOR 0
-ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
-ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
+ENV BOOSTMAJOR=91
+ENV BOOSTMINOR=0
+ENV BOOST=1.${BOOSTMAJOR}.${BOOSTMINOR}
+ENV BOOST_=1_${BOOSTMAJOR}_${BOOSTMINOR}
 
 # where do we epect casacore data build time and runtime
-ENV CASACORE_DATA /usr/share/casacore/data
+ENV CASACORE_DATA=/usr/share/casacore/data
 
 # install rpms
 RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel gsl-devel
@@ -25,7 +25,7 @@ RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel read
 WORKDIR /tmp
 RUN curl -L http://www.iausofa.org/s/sofa_f-20231011tar.gz --output /tmp/sofa.tgz
 RUN curl -L https://www.astron.nl/iers/WSRT_Measures.ztar --output /tmp/measures.tgz
-RUN curl -L https://downloads.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
+RUN curl -L https://archives.boost.io/release/${BOOST}/source/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
 
 RUN mkdir /build
 WORKDIR /build

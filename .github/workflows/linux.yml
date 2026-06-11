@@ -12,13 +12,13 @@ jobs:
     strategy:
       matrix:
         dist:
-          - ubuntu2204_clang
-          - ubuntu2204_gcc
           - ubuntu2404_clang
           - ubuntu2404_gcc
+          - ubuntu2604_clang
+          - ubuntu2604_gcc
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Build container
         run: docker build . -t ${{ matrix.dist }} -f docker/${{ matrix.dist }}.docker
