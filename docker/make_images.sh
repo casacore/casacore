@@ -11,7 +11,7 @@ REPOSITORY=quay.io/casacore/casacore
 GIT_TAG=$(git describe --tags --dirty)
 
 py_major=3
-for py_minor in $(seq 8 13); do
+for py_minor in $(seq 10 14); do
     echo -e "\n\n******** Building wheel for python ${py_major}.${py_minor} ********\n"
     py_version=${py_major}${py_minor}
     docker build \
