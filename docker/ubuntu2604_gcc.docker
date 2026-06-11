@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:26.04
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install -y \
@@ -17,6 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     libreadline6-dev \
     libhdf5-serial-dev \
     libboost-dev \
+    libboost-filesystem-dev \
     libboost-python-dev \
     libboost-test-dev \
     libgsl-dev \
