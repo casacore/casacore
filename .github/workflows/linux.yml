@@ -18,7 +18,7 @@ jobs:
           - ubuntu2404_gcc
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Build container
         run: docker build . -t ${{ matrix.dist }} -f docker/${{ matrix.dist }}.docker

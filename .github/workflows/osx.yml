@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: install dependencies, set python environment
         run: |
@@ -36,7 +36,7 @@ jobs:
 
       - name: set up build and install dir with WSRT measures
         run: |
-          wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
+          wget https://www.astron.nl/iers/WSRT_Measures.ztar -O WSRT_Measures.ztar
           mkdir -p build install
           cd build
           tar zxvf ../WSRT_Measures.ztar
