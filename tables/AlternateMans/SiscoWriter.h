@@ -8,6 +8,7 @@
 #include <set>
 #include <span>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "ConditionalQueue.h"
@@ -85,7 +86,7 @@ class SiscoWriter {
   std::byte* exponent_position_;
   size_t n_chunks_ = 0;
   // A list is used because we do not want to invalidate pointers when
-  // adding/revoming members. Access requires holding the mutex.
+  // adding/removing members. Access requires holding the mutex.
   std::list<Chunk> chunks_;
   Chunk* write_chunk_;
 

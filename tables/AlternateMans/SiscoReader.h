@@ -8,6 +8,7 @@
 #include <set>
 #include <span>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "ConditionalQueue.h"
@@ -49,6 +50,12 @@ class SiscoReader {
   SiscoReader(const std::string& filename);
   ~SiscoReader();
 
+  /**
+   * Open the file and prepare for decompression.
+   *
+   * This method is not thread safe and should be called (and finish) before
+   * calling @ref GetNextResult() or @ref Request().
+   */
   void Open(std::span<std::byte> header_data);
 
   size_t GetRequestBufferSize() const { return kRequestBufferSize; }
@@ -62,9 +69,16 @@ class SiscoReader {
    *
    * This method is necessary because the compressed files don't store the
    * nr of values per row or baseline_index.
+   *
+   * Only one thread should call the Request() function, but that thread may
+   * be different than the thread calling @ref GetNextResult().
    */
   void Request(size_t baseline_index, size_t n_values);
 
+  /**
+   * Retrieve the data associated with an earlier @ref Request() call. Results
+   * are returned in the same sequence as requested.
+   */
   void GetNextResult(std::span<std::complex<float>> data);
 
   int PredictLevel() const { return predict_level_; }
