@@ -15,6 +15,9 @@ ENV BOOSTMINOR=0
 ENV BOOST=1.${BOOSTMAJOR}.${BOOSTMINOR}
 ENV BOOST_=1_${BOOSTMAJOR}_${BOOSTMINOR}
 
+# libdeflate version
+ENV LIBDEFLATE=1.25
+
 # where do we epect casacore data build time and runtime
 ENV CASACORE_DATA=/usr/share/casacore/data
 
@@ -26,6 +29,7 @@ WORKDIR /tmp
 RUN curl -L http://www.iausofa.org/s/sofa_f-20231011tar.gz --output /tmp/sofa.tgz
 RUN curl -L https://www.astron.nl/iers/WSRT_Measures.ztar --output /tmp/measures.tgz
 RUN curl -L https://archives.boost.io/release/${BOOST}/source/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
+RUN curl -L https://github.com/ebiggers/libdeflate/releases/download/v${LIBDEFLATE}/libdeflate-${LIBDEFLATE}.tar.gz --output /tmp/libdeflate.tgz
 
 RUN mkdir /build
 WORKDIR /build
@@ -40,7 +44,6 @@ RUN tar zxvf /tmp/sofa.tgz
 WORKDIR /build/sofa/20231011/f77/src
 RUN make -j${THREADS}
 
-
 # setup boost
 WORKDIR /build
 RUN tar jxf /tmp/boost.tar.bz2
@@ -53,6 +56,14 @@ RUN ./bootstrap.sh --prefix=/opt/boost \
 RUN ./b2 -j${THREADS} \
     cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/" \
     link=static,shared install
+
+# setup libdeflate
+WORKDIR /build
+RUN tar zxvf /tmp/libdeflate.tgz
+WORKDIR /build/libdeflate-${LIBDEFLATE}/build
+RUN cmake .. -DCMAKE_INSTALL_PREFIX=/opt/libdeflate
+RUN make -j${THREADS}
+RUN make install
 
 # casacore wants numpy. Do not take oldest_supported_numpy, because we want numpy 2.0 compatibility
 RUN /opt/python/${TARGET}/bin/pip install numpy
@@ -69,6 +80,7 @@ RUN cmake .. \
     -DPython3_EXECUTABLE=/opt/python/${TARGET}/bin/python3 \
     -DPython3_LIBRARY=/opt/boost/lib/libboost_python${PYMAJOR}${PYMINOR}.so \
     -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/ \
+    -DDEFLATE_ROOT_DIR=/opt/libdeflate \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
