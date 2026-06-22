@@ -27,6 +27,7 @@ tTiledBool
 tTiledCellStM_1
 tTiledCellStMan
 tTiledColumnStMan
+tTiledColumnStManPerf
 tTiledDataStM_1
 tTiledDataStMan
 tTiledEmpty
