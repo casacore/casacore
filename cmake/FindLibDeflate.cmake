@@ -14,7 +14,8 @@ This module will set the following variables::
 Hints
 ^^^^^
 
-Set ``LibDeflate_ROOT`` to a directory that contains a libdeflate installation.
+Set ``LibDeflate_ROOT_DIR`` to a directory that contains a libdeflate
+installation.
 
 Cache variables
 ^^^^^^^^^^^^^^^
