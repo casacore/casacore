@@ -1,11 +1,30 @@
-# - Try to find libdeflate: the deflate compression library
-# Variables used by this module:
-#  LibDeflate_ROOT        - LibDeflate root directory (used as hint)
-# Variables defined by this module:
-#  LibDeflate_FOUND       - system has libdeflate
-#  LibDeflate_INCLUDE_DIR - the libdeflate include directory (cached)
-#  LibDeflate_LIBRARY     - the libdeflate library (cached)
-#  LibDeflate_VERSION     - the version of libdeflate (cached)
+#[=======================================================================[.rst:
+FindLibDeflate
+--------------
+
+Find the deflate compression library (libdeflate).
+
+Result Variables
+^^^^^^^^^^^^^^^^
+
+This module will set the following variables::
+
+ LibDeflate_FOUND - True if a matching version of libdeflate was found
+
+Hints
+^^^^^
+
+Set ``LibDeflate_ROOT`` to a directory that contains a libdeflate installation.
+
+Cache variables
+^^^^^^^^^^^^^^^
+
+This module may set the following cache variables::
+
+ LibDeflate_INCLUDE_DIR - Directory containing the libdeflate header file
+ LibDeflate_LIBRARY     - Location of the libdeflate library
+ LibDeflate_VERSION     - The version of the libdeflate that was found
+#]=======================================================================]
 
 if(NOT LibDeflate_FOUND)
 
