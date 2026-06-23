@@ -46,7 +46,7 @@ option (BUILD_PYTHON3 "Build the python3 bindings" YES)
 option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 option (BUILD_FFTPACK_DEPRECATED "build FFTPack" NO)
 option (BUILD_DYSCO "Build the Dysco compression storage manager" YES)
-option (BUILD_SISCO "Build the Sisco compression storage manager" NO)
+option (BUILD_SISCO "Build the Sisco compression storage manager" YES)
 
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)

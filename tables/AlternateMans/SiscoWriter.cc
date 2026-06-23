@@ -269,7 +269,7 @@ void SiscoWriter::WriteLoop()
   assert(scheduled_tasks.empty());
 }
 
-void SiscoWriter::WriteChunk(uint64_t uncompressed_size, std::span<const std::byte> data) {
+void SiscoWriter::WriteChunk(size_t uncompressed_size, std::span<const std::byte> data) {
   file_.write(reinterpret_cast<const char*>(&uncompressed_size), sizeof(uncompressed_size));
   const uint64_t compressed_size = data.size();
   file_.write(reinterpret_cast<const char*>(&compressed_size), sizeof(compressed_size));
