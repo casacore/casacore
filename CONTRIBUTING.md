@@ -54,7 +54,7 @@ quality high we have written down some guidelines for contributing, see below.
 ## Links
  
  * [1] http://help.github.com
- * [2] https://google-styleguide.googlecode.com/svn/trunk/cppguide.html
+ * [2] https://google.github.io/styleguide/cppguide.html
  * [3] https://help.github.com/articles/fork-a-repo/
  * [4] https://help.github.com/articles/creating-a-pull-request/
  * [5] https://chris.beams.io/posts/git-commit

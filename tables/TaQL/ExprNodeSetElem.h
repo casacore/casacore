@@ -546,7 +546,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // to an object of one its derived classes.
   // <br>At the end of 2022 the old TableExprSetElem was split into several
   // classes, one per element type. This class still exists for backward
-  // compatibilty, but is also useful in its own right. Its constructors create
+  // compatibility, but is also useful in its own right. Its constructors create
   // one of the derived TableExprNodeSetElemBase objects which mirror the
   // TaQL specification, but can also be used directly in C++. The types are:
   // <ul>

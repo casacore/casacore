@@ -133,7 +133,7 @@ template<class T> class Quantum;
 //         coordinate has the reference value.
 // </ul>
 // 
-// In this example is is more convenient to change the units to degrees. This can
+// In this example it is more convenient to change the units to degrees. This can
 // be accomplished as follows:
 // <srcblock>
 //    Vector<String> units(2); units = "deg";                       //  9

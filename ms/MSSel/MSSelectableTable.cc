@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//# MSSelectableTable.cc:  Implementation of the the generic MSSeletableTable interface
+//# MSSelectableTable.cc:  Implementation of the generic MSSelectableTable interface
 //# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#

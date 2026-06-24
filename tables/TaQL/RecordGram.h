@@ -145,7 +145,7 @@ public:
 // </prerequisite>
 
 // <synopsis> 
-// This class is needed for the the actions in the flex scanner
+// This class is needed for the actions in the flex scanner
 // and bison parser.
 // This stores the information by constructing RecordGram objects
 // as needed and storing them in a List.

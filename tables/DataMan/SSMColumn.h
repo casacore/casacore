@@ -228,7 +228,7 @@ protected:
   void getColumnValue (void* anArray, rownr_t aNrRows);
   
   // Put the values from the array in the entire column.
-  // Each data bucket is filled with the the appropriate part of the array.
+  // Each data bucket is filled with the appropriate part of the array.
   void putColumnValue (const void* anArray, rownr_t aNrRows);
 
 
