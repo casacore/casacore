@@ -894,7 +894,12 @@ static Table create_table(SetupNewTable &tableSetup, T /*comm*/)
 
 void MeasurementSet::createDefaultSubtables(Table::TableOption option)
 {
-    createDefaultSubtables_impl(option, 0);
+ 	// With MPICH the MPI_COMM is an int, so need some trickery to avoid
+	// ending up calling the 2nd create_table template with invalid comm
+#ifndef HAVE_MPI
+    float MPI_COMM_SELF = 1.0;
+#endif
+    createDefaultSubtables_impl(option,MPI_COMM_SELF);
 }
 
 #ifdef HAVE_MPI
