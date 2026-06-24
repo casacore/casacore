@@ -27,7 +27,7 @@ set_source_files_properties(
     PROPERTIES COMPILE_OPTIONS "-Wno-unused-but-set-variable")
 
 if(BUILD_SISCO)
-find_package(Deflate REQUIRED)
+    find_package(LibDeflate 1.19 REQUIRED)
 endif(BUILD_SISCO)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
@@ -260,8 +260,8 @@ init_pch_support(casa_tables ${top_level_headers})
 
 target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
 if(BUILD_SISCO)
-  target_link_libraries (casa_tables ${DEFLATE_LIBRARY})
-  target_include_directories(casa_tables PUBLIC ${DEFLATE_INCLUDE_DIR})
+  target_link_libraries (casa_tables ${LibDeflate_LIBRARY})
+  target_include_directories(casa_tables PUBLIC ${LibDeflate_INCLUDE_DIR})
 endif(BUILD_SISCO)
 
 add_subdirectory (apps)

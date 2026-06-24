@@ -80,7 +80,7 @@ RUN cmake .. \
     -DPython3_EXECUTABLE=/opt/python/${TARGET}/bin/python3 \
     -DPython3_LIBRARY=/opt/boost/lib/libboost_python${PYMAJOR}${PYMINOR}.so \
     -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/ \
-    -DDEFLATE_ROOT_DIR=/opt/libdeflate \
+    -DLibDeflate_ROOT_DIR=/opt/libdeflate \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
