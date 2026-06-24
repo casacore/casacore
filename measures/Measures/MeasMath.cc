@@ -236,6 +236,7 @@ void MeasMath::createPrecNutat() {
 void MeasMath::applyPrecNutat(MVPosition &in) {
   if (MeasTable::useIAU2000()) {
     getInfo(TT);
+    in *= MeasTable::frameBias00();
     in *= (RotMatrix((*PRECESIAU)(info_p[TT])) *
 	   RotMatrix((*NUTATIAU)(info_p[TT])));
   } else {
@@ -248,6 +249,7 @@ void MeasMath::applyPrecNutat(MVPosition &in) {
 void MeasMath::deapplyPrecNutat(MVPosition &in) {
   if (MeasTable::useIAU2000()) {
     getInfo(TT);
+    in = MeasTable::frameBias00() * in;
     in = (RotMatrix((*PRECESIAU)(info_p[TT])) *
 	  RotMatrix((*NUTATIAU)(info_p[TT]))) * in;
   } else {
@@ -790,4 +792,3 @@ void MeasMath::getB1950(MVPosition &out) {
 }
 
 } //# NAMESPACE CASACORE - END
-
