@@ -115,7 +115,7 @@ class Unit;
 //
 // Now we turn to the functions for finding axes in a CoordinateSystem. With
 // a CoordinateSystem object it is not required that the first Coordinate
-// axis in the the CoordinateSystem map to the first pixel axis in an
+// axis in the CoordinateSystem map to the first pixel axis in an
 // image. Hence it is necessary to determine which pixel axis corresponds to a
 // specified Coordinate and this can be done using these functions. Some
 // coordinate types, in particular DirectionCoordinate, usually map to more

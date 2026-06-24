@@ -62,7 +62,7 @@ class TableColumn;
 // <synopsis> 
 // BaseMappedArrayEngine is an abstract base class for virtual column engines
 // which map data from the arrays in the virtual column to
-// the arrays in the stored column. Note the the stored column does not need
+// the arrays in the stored column. Note that the stored column does not need
 // to be stored; it can be another virtual column, but usually it will be a
 // stored column.
 // Examples of classes using this base class are

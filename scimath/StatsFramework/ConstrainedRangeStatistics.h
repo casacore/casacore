@@ -116,7 +116,7 @@ public:
     // If one needs to compute both the median and quantile values, it is better
     // to call getMedianAndQuantiles() rather than getMedian() and
     // getQuantiles() separately, as the first will scan large data sets fewer
-    // times than calling the seperate methods. The return value is the median;
+    // times than calling the separate methods. The return value is the median;
     // the quantiles are returned in the <src>quantileToValue</src> map.
     virtual AccumType getMedianAndQuantiles(
         std::map<Double, AccumType>& quantileToValue,

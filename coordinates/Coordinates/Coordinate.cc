@@ -736,7 +736,7 @@ Bool Coordinate::setWorldMixRanges (const IPosition& shape)
 {
    const uInt n = shape.nelements();
    if (n!=nPixelAxes()) {
-      set_error("Shape has must be of length nPixelAxes");
+      set_error("Shape must be of length nPixelAxes");
       return False;
    }
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);

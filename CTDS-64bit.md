@@ -55,7 +55,7 @@ The main changes are:
    implementations for `getColumn`, `getSlice`, etc.. This has been moved to
    class `DataManagerColumn` making the `canAccess` functions obsolete
    in the new interface. Of course, these functions should be kept if
-   backward compatibily is needed.
+   backward compatibility is needed.
  * The interface of get/put functions handling arrays has been changed
    from `void*` to `ArrayBase&`, mainly to have it more clear. The native
    storage manager classes now often can use Array functionality to
