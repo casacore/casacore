@@ -1,9 +1,23 @@
 # Next version
 
+# 3.8.1
+
 ## General
 
-- Clean up the Block class and deprecate the PtrBlock class.
+- Fix performance regression - avoid/defer construction of instances in MCFrame: #1454
+- Cleanup and improvement of AlwaysAssert and DebugAssert: #1467
+- Clean up the Block class and deprecate the PtrBlock class: #1471
 - Remove Block::prohibitChangingAllocator() and Block::permitChangingAllocator() as they were not used.
+- Switch to new EOP files for Measures: #1476
+
+## Storage manager related
+
+- Fix read/write of array Adios2StMan columns by rows
+- Added write-after-read mode in Sisco: #1463
+- Fixes in StokesIStMan: #1469
+- Added a Sisco Stokes I mode: #1470
+- Build Sisco by default: #1481, #1483.
+  Note: this requires a compiler that supports C++20, and libdeflate >= 1.19.
 
 # 3.8.0
 
