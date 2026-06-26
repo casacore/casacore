@@ -420,6 +420,7 @@ if (DL_FOUND)
     add_definitions(-DHAVE_DL)
 endif (DL_FOUND)
 if (READLINE_FOUND)
+    include_directories (SYSTEM ${READLINE_INCLUDE_DIRS})
     add_definitions(-DHAVE_READLINE)
 endif (READLINE_FOUND)
 
