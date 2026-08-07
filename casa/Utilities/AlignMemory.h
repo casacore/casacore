@@ -31,31 +31,7 @@
 
 
 namespace casacore { //#Begin casa namespace
-
-// <summary>Referenced counted pointer for constant data</summary>
-// <use visibility=export>
-// <reviewed reviewer="Friso Olnon" date="1995/03/15" tests="tCountedPtr" demos="">
-
-// <etymology>
-// This class is <em>Counted</em> because it is reference counted.
-// </etymology>
-
-// <synopsis>
-// This class implements a reference counting mechanism. It
-// allows <src>CountedPtr</src>s to be passed around freely,
-// incrementing or decrementing the reference count as needed when one
-// <src>CountedPtr</src> is assigned to another. When the
-// reference count reaches zero the internal storage is deleted by
-// default, but this behavior can be overridden.
-//
-// Internally the class uses std::shared_ptr to be thread-safe. Note that
-// tr1 is used if the compiler does not support C++11 yet.
-// </synopsis>
-
-// <motivation>
-// Reference counting
-// </motivation>
-
+  
   class AlignMemory
   {
 
