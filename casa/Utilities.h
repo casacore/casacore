@@ -34,7 +34,6 @@
 #include <casacore/casa/Utilities/BitVector.h>
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/Utilities/Copy.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/DynBuffer.h>
 #include <casacore/casa/Utilities/Fallible.h>
@@ -90,11 +89,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=BitVector>Bit vectors</linkto>
 //    are an efficient method to keep True/False information on a set of
 //    items or conditions.
-//  </ul> 
-//  <li> Pointer utilities
-//  <ul>
-//   <li> <linkto class=CountedPtr>Counted pointers</linkto>
-//    provide support for reference counting.
 //  </ul> 
 //  <li> Datatype utilities
 //  <ul>
