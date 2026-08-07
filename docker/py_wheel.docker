@@ -27,7 +27,7 @@ RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel read
 # download other source code
 WORKDIR /tmp
 RUN curl -L http://www.iausofa.org/s/sofa_f-20231011tar.gz --output /tmp/sofa.tgz
-RUN curl -L https://www.astron.nl/iers/WSRT_Measures.ztar --output /tmp/measures.tgz
+RUN curl -L https://iers.astron.nl/WSRT_Measures.ztar --output /tmp/measures.tgz
 RUN curl -L https://archives.boost.io/release/${BOOST}/source/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
 RUN curl -L https://github.com/ebiggers/libdeflate/releases/download/v${LIBDEFLATE}/libdeflate-${LIBDEFLATE}.tar.gz --output /tmp/libdeflate.tgz
 
