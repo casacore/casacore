@@ -214,7 +214,6 @@ System/PGPlotterInterface.cc
 System/PGPlotterNull.cc
 System/ProgressMeter.cc
 Utilities/BitVector.cc
-Utilities/CountedPtr2.cc
 Utilities/Compare.cc
 Utilities/CompositeNumber.cc
 Utilities/Copy2.cc
@@ -617,8 +616,6 @@ Utilities/Compare.tcc
 Utilities/CompositeNumber.h
 Utilities/Copy.h
 Utilities/Copy.tcc
-Utilities/CountedPtr.h
-Utilities/CountedPtr.tcc
 Utilities/COWPtr.h
 Utilities/COWPtr.tcc
 Utilities/DataType.h

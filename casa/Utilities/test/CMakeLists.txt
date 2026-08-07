@@ -7,7 +7,6 @@ tBitVector
 tCompare
 tCompositeNumber
 tCopy
-tCountedPtr
 tCOWPtr
 tDataType
 tDefaultValue
