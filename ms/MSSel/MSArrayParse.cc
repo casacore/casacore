@@ -84,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 					     (ms()->col(colName) < n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
-	ostringstream os;
+	std::ostringstream os;
 	os << "Array Expression: Malformed range bounds " 
 	   << n0 << " (lower bound) and " 
 	   << n1 << " (upper bound)";
@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 					     (ms()->col(colName) <= n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
-	ostringstream os;
+	std::ostringstream os;
 	os << "Array Expression: Malformed range bounds " 
 	   << n0 << " (lower bound) and " 
 	   << n1 << " (upper bound)";

@@ -32,7 +32,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   String MSSSpwErrorHandler::constructMessage()
   {
-    ostringstream Mesg;
+    std::ostringstream Mesg;
     if (messageList.size() > 0)
       {
 	Mesg << messageList[0];

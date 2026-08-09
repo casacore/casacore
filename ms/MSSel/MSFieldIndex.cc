@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     catch (...) // Since I (SB) don't know the type of exception Regex throws, catch them all!
       {
-	ostringstream Mesg;
+	std::ostringstream Mesg;
 	Mesg << "Field Expression: Invalid regular expression \"" << pattern << "\"";
 	throw(MSSelectionFieldParseError(Mesg.str().c_str()));
       }
@@ -356,7 +356,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (uInt i=0;i<ids.nelements();i++)
       if ((ids[i] < 0) || (ids[i] > (Int)fieldIds_p.nelements()-1))
 	{
-	  ostringstream intAsName;
+	  std::ostringstream intAsName;
 	  outOfRangeIdList.push_back(ids[i]);
 	  //	  throw(MSSelectionFieldParseError(Mesg.str()));
 	  //	  logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
@@ -374,7 +374,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     LogIO logIO;
     if (outOfRangeIdList.size()) 
       {
-	ostringstream Mesg;
+	std::ostringstream Mesg;
 	Mesg << "Field Expression: Found out-of-range index(s) in the list (";
 	for (uInt i=0;i<outOfRangeIdList.size(); i++) Mesg << outOfRangeIdList[i] << " " ;
 	Mesg << ")" << " [TIP: Double-quoted strings forces name matching]";
@@ -382,7 +382,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     if (intAsNameIdList.size())
       {
-	ostringstream Mesg;
+	std::ostringstream Mesg;
 	Mesg << "Field Expression: Successfully parsed \"";
 	for (uInt i=0;i<intAsNameIdList.size(); i++) Mesg << intAsNameIdList[i] << " " ;
 	Mesg << "\" as name(s) and failed for the rest (please ensure this is what you intended).";

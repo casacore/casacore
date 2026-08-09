@@ -393,7 +393,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                 os.output().setf(ios::right, ios::adjustfield);
                 os <<  nrowMap->find(*siter)->second;
                 if (_listUnflaggedRowCount) {
-                    ostringstream xx;
+                    std::ostringstream xx;
                     xx << std::fixed << setprecision(2)
                         << _msmd->nUnflaggedRows(
                             MSMetaData::BOTH, arrid, obsid, siter->scan, siter->fieldID
@@ -1034,7 +1034,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                     os << _msmd->nRows(MSMetaData::BOTH, fld);
                     if (_listUnflaggedRowCount) {
                         os.output().width(widthNUnflaggedRows);
-                        ostringstream xx;
+                        std::ostringstream xx;
                         xx << std::fixed << setprecision(2) << std::right
                             << _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
                         os << xx.str();
@@ -1116,7 +1116,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
 String formatTime(const Double time) {
     MVTime mvtime(Quantity(time, "s"));
     Time t=mvtime.getTime();
-    ostringstream os;
+    std::ostringstream os;
     os << t;
     return os.str();
 }

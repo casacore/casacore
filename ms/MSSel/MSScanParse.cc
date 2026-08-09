@@ -106,7 +106,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
      					     (columnAsTEN_p < n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
-	ostringstream os;
+	std::ostringstream os;
 	os << "Scan Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
 	throw(MSSelectionScanParseError(os.str()));
       }
@@ -126,7 +126,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 					     (columnAsTEN_p <= n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
-	ostringstream os;
+	std::ostringstream os;
 	os << "Scan Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
 	throw(MSSelectionScanParseError(os.str()));
       }

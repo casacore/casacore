@@ -3100,7 +3100,7 @@ vector<String> MSMetaData::getFieldNamesForFieldIDs(
     uInt max = *max_element(fieldIDs.begin(), fieldIDs.end());
     uInt nField = nFields();
     if (max >= nField) {
-        ostringstream os;
+        std::ostringstream os;
         os << "MSMetaData::" << __FUNCTION__ << ": This MS only has "
             << nField << " fields so requested field number " << max
             << " does not exist";
@@ -4984,7 +4984,7 @@ std::shared_ptr<vector<int>> MSMetaData::_almaReceiverBands(uint nspw) const {
                         (*freqBands)[myid] = myrb;               
                     }
                     else {
-                        ostringstream os;
+                        std::ostringstream os;
                         os << "Unable to find spw id for row " << i
                             << " in table " << asdm_rx.path().absoluteName();
                         throw AipsError(os.str());

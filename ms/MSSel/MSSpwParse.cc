@@ -213,7 +213,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  }
 	if (!Found)
 	  {
-	    ostringstream Mesg;
+	    std::ostringstream Mesg;
 	    Mesg << "No Spw ID found";
 	    throw(MSSelectionSpwError(Mesg.str()));
 	  }
@@ -306,7 +306,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     if (tten->isNull())
       {
-	ostringstream Mesg;
+	std::ostringstream Mesg;
 	Mesg << "No Spw ID(s) matched specifications ";
 	throw(MSSelectionSpwError(Mesg.str()));
       }

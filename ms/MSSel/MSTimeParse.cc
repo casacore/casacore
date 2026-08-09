@@ -389,21 +389,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (tf.year < 1858) // This is not precise (should be < Wed Nov 17 00:00:00 1858)
       {                                       
-	ostringstream mesg;
+	std::ostringstream mesg;
 	mesg << "MSTime Selection error: Year = " << tf.year << " out of range";
 	//	throw(MSSelectionTimeError(mesg.str()));
 	throw(AipsError(mesg.str()));
       }
     if ((tf.month <= 0) || (tf.month > 12)) 
       {
-	ostringstream mesg;
+	std::ostringstream mesg;
 	mesg << "MSTime Selection error: Month = " << tf.month << " out of range";
 	//	throw(MSSelectionTimeError(mesg.str()));
 	throw(AipsError(mesg.str()));
       }
     if ((tf.day <= 0) || (tf.day > 31)) 
       {
-	ostringstream mesg;
+	std::ostringstream mesg;
 	mesg << "MSTime Selection error: Day = " << tf.day << " out of range";
 	//	throw(MSSelectionTimeError(mesg.str()));
 	throw(AipsError(mesg.str()));

@@ -186,7 +186,7 @@ Vector<Int> MSFeedIndex::matchFeedId(const Vector<Int>& sourceId)
     Vector<Int> IDs = set_intersection(sourceId, feedIds);
     if (IDs.nelements() == 0)
       {
-        ostringstream mesg;
+        std::ostringstream mesg;
         mesg << "No match found for requested feeds [ID(s): " << sourceId << "]";
         // Use the error handler if defined, otherwise throw.
         if (MSFeedParse::thisMSFErrorHandler) {

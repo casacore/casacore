@@ -42,7 +42,7 @@ void testSumm()
   // which will be printed on stdout at the ended.
   MeasurementSet ms("tMSSummary_tmp.MS", Table::Old);
   MSSummary mss(ms);
-  ostringstream ostr;
+  std::ostringstream ostr;
   LogSink logsink(LogMessage::NORMAL, &ostr, False);
   LogIO os(logsink);
   mss.list (os, True);

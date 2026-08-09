@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<Int> validPolIDs, validPolIndices;
     if (polnIDs.nelements() == 0)
       {
-	ostringstream mesg;
+	std::ostringstream mesg;
 	mesg << "No match for polarization ID(s) ";
 	throw(MSSelectionPolnParseError(String(mesg.str())));
       }
@@ -163,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //   if (polnIDs.nelements() == 0)
    if (polTypes.nelements() == 0)
       {
-	ostringstream mesg;
+	std::ostringstream mesg;
 	mesg << "No match for polarization ID(s) ";
 	throw(MSSelectionPolnParseError(String(mesg.str())));
       }
@@ -205,7 +205,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     if (ddIDs.nelements() == 0)
       {
-	ostringstream mesg;
+	std::ostringstream mesg;
 	mesg << "No match for polarization ID(s) ";
 	//	strpMSPolnGram = polnExpr.c_str();
 	throw(MSSelectionPolnParseError(String(mesg.str())));

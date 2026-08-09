@@ -65,7 +65,7 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
     IDs = set_intersection(sourceId,antennaIds_p);
     if (IDs.nelements() == 0)
       {
-    	ostringstream mesg;
+    	std::ostringstream mesg;
         mesg << "No match found for the antenna specificion [ID(s): " << sourceId << "]";
         // Use the error handler if defined, otherwise throw.
         if (MSAntennaParse::thisMSAErrorHandler) {

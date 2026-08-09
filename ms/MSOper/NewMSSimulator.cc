@@ -1181,7 +1181,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   polc.corrProduct().get(baseSpWID,corrProduct);
   Int nCorr=corrProduct.ncolumn();
 //  {
-//    ostringstream oss;
+//    std::ostringstream oss;
 //    oss << "Spectral window : "<<spWindowName<<endl
 //	<< "     reference frequency : " << startFreq/1.0e9 << "GHz" << endl
 //	<< "     number of channels : " << nChan << endl
@@ -1821,7 +1821,7 @@ void NewMSSimulator::blockage(Double &fraction1, Double &fraction2,
 String NewMSSimulator::formatDirection(const MDirection& direction) {
   MVAngle mvRa=direction.getAngle().getValue()(0);
   MVAngle mvDec=direction.getAngle().getValue()(1);
-  ostringstream oss;
+  std::ostringstream oss;
   oss.setf(ios::left, ios::adjustfield);
   oss.width(14);
   oss << mvRa(0.0).string(MVAngle::TIME,8);
