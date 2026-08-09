@@ -90,10 +90,10 @@ void showTableCache()
 
   Int n=lockedTables.nelements();
   if(n > 0)
-    cout << endl << "####WARNING!!!!: The Table Cache has the following " << n << " entries:"  << endl;
+    cout << std::endl << "####WARNING!!!!: The Table Cache has the following " << n << " entries:"  << std::endl;
   
   for (Int i=0; i<n; ++i) 
-    cout << "    " << i << ": \"" <<  lockedTables(i) << "\"" << endl;
+    cout << "    " << i << ": \"" <<  lockedTables(i) << "\"" << std::endl;
 }
 //
 //-------------------------------------------------------------------------
@@ -106,60 +106,60 @@ void printBaselineList(Matrix<Int> list,ostream& os)
     {
       for(Int i=0;i<shp(0);i++)
 	os << list(i,j) << " ";
-      os << endl << "\t            " ;
+      os << std::endl << "\t            " ;
     }
-  os << endl;
+  os << std::endl;
 }
 //
 //-------------------------------------------------------------------------
 //
 void printInfo(MSSelection& msSelection, Int& nRows)
 {
-  cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << endl;
-  cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << endl;
-  cout << "\tBE: Ant2         = " << msSelection.getAntenna2List() << endl;
+  cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << std::endl;
+  cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << std::endl;
+  cout << "\tBE: Ant2         = " << msSelection.getAntenna2List() << std::endl;
   printBaselineList(msSelection.getBaselineList(),cout);
-  //  cout << "Baselines    = " << msSelection.getBaselineList() << endl;
+  //  cout << "Baselines    = " << msSelection.getBaselineList() << std::endl;
 
-  cout << "FE: Field Expr=" << msSelection.getExpr(MSSelection::FIELD_EXPR) << endl;
-  cout << "\tFE: Field        = " << msSelection.getFieldList()    << endl;
+  cout << "FE: Field Expr=" << msSelection.getExpr(MSSelection::FIELD_EXPR) << std::endl;
+  cout << "\tFE: Field        = " << msSelection.getFieldList()    << std::endl;
 
-  cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << endl;
-  cout << "\tSE: SPW          = " << msSelection.getSpwList()      << endl;
-  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,True)     << endl;
-  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << endl;
+  cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << std::endl;
+  cout << "\tSE: SPW          = " << msSelection.getSpwList()      << std::endl;
+  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,True)     << std::endl;
+  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << std::endl;
 
-  cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << endl;
-  cout << "\tScE: tScan         = " << msSelection.getScanList()     << endl;
+  cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << std::endl;
+  cout << "\tScE: tScan         = " << msSelection.getScanList()     << std::endl;
   
-  cout << "StE: STATE Expr=" << msSelection.getExpr(MSSelection::STATE_EXPR) << endl;
-  cout << "\tStE: StateObsMode = " << msSelection.getStateObsModeList()     << endl;
+  cout << "StE: STATE Expr=" << msSelection.getExpr(MSSelection::STATE_EXPR) << std::endl;
+  cout << "\tStE: StateObsMode = " << msSelection.getStateObsModeList()     << std::endl;
 
-  cout << "AE: Array Expr=" << msSelection.getExpr(MSSelection::ARRAY_EXPR) << endl;
-  cout << "\tAE: Array        = " << msSelection.getSubArrayList() << endl;
+  cout << "AE: Array Expr=" << msSelection.getExpr(MSSelection::ARRAY_EXPR) << std::endl;
+  cout << "\tAE: Array        = " << msSelection.getSubArrayList() << std::endl;
 
-  cout << "TE: Time Expr=" << msSelection.getExpr(MSSelection::TIME_EXPR) << endl;
-  cout << "\tTE: Time         = " << msSelection.getTimeList()     << endl;
+  cout << "TE: Time Expr=" << msSelection.getExpr(MSSelection::TIME_EXPR) << std::endl;
+  cout << "\tTE: Time         = " << msSelection.getTimeList()     << std::endl;
 
-  cout << "UVE: UVRange Expr=" << msSelection.getExpr(MSSelection::UVDIST_EXPR) << endl;
-  cout << "\tUVE: UVRange      = " << msSelection.getUVList()       << endl;
-  cout << "\tUVE: UV in meters = " << msSelection.getUVUnitsList()  << endl;
+  cout << "UVE: UVRange Expr=" << msSelection.getExpr(MSSelection::UVDIST_EXPR) << std::endl;
+  cout << "\tUVE: UVRange      = " << msSelection.getUVList()       << std::endl;
+  cout << "\tUVE: UV in meters = " << msSelection.getUVUnitsList()  << std::endl;
 
-  cout << "OE: Observation Expr=" << msSelection.getExpr(MSSelection::OBSERVATION_EXPR) << endl;
-  cout << "\tOE: ObservationIDList    = " << msSelection.getObservationList() << endl;
+  cout << "OE: Observation Expr=" << msSelection.getExpr(MSSelection::OBSERVATION_EXPR) << std::endl;
+  cout << "\tOE: ObservationIDList    = " << msSelection.getObservationList() << std::endl;
 
-  cout << "PE: Poln Expr=" << msSelection.getExpr(MSSelection::POLN_EXPR) << endl;
-  cout << "\tPE: PolMap       = " << msSelection.getPolMap()       << endl;
-  cout << "\tPE: CorrMap      = " << msSelection.getCorrMap( )     << endl;
+  cout << "PE: Poln Expr=" << msSelection.getExpr(MSSelection::POLN_EXPR) << std::endl;
+  cout << "\tPE: PolMap       = " << msSelection.getPolMap()       << std::endl;
+  cout << "\tPE: CorrMap      = " << msSelection.getCorrMap( )     << std::endl;
 
-  cout << endl << "===========================================================" << endl;
-  cout << "DDIDs(Poln)  = " << msSelection.getDDIDList()     << endl;
-  cout << "DDIDs(SPW)   = " << msSelection.getSPWDDIDList()     << endl;
-  cout << "StateList    = " << msSelection.getStateObsModeList() << endl;
+  cout << std::endl << "===========================================================" << std::endl;
+  cout << "DDIDs(Poln)  = " << msSelection.getDDIDList()     << std::endl;
+  cout << "DDIDs(SPW)   = " << msSelection.getSPWDDIDList()     << std::endl;
+  cout << "StateList    = " << msSelection.getStateObsModeList() << std::endl;
 
-  if (nRows >= 0) cout << "Number of selected rows: " << nRows << endl;
+  if (nRows >= 0) cout << "Number of selected rows: " << nRows << std::endl;
 
-  if (nRows > 0) cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  if (nRows > 0) cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
 }
 //
 //-------------------------------------------------------------------------
@@ -225,7 +225,7 @@ int main(int argc, char **argv)
     			  uvdistStr,taqlStr,polnStr,scanStr,arrayStr,
     			  stateObsModeStr,observationStr);
     	// TableExprNode ten=msSelection.toTableExprNode(&msInterface);
-    	// cerr << "TEN rows = " << ten.nrow() << endl;
+    	// cerr << "TEN rows = " << ten.nrow() << std::endl;
 
 	Int nRows=0;
 	try
@@ -245,9 +245,9 @@ int main(int argc, char **argv)
     	  {
     	    cout << "###Informational:  Nothing selected.  ";
     	    if (OutMSBuf != "")
-    	      cout << "New MS not written." << endl;
+    	      cout << "New MS not written." << std::endl;
     	    else
-    	      cout << endl;
+    	      cout << std::endl;
     	  }
     	else
 	  {
@@ -260,8 +260,8 @@ int main(int argc, char **argv)
       }
     catch (MSSelectionError& x)
       {
-    	cout << "###MSSelectionError: " << x.what() << endl;
-	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+    	cout << "###MSSelectionError: " << x.what() << std::endl;
+	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
       }
     //
     // Catch any exception thrown by AIPS++ libs.  Do your cleanup here
@@ -272,11 +272,11 @@ int main(int argc, char **argv)
     //
     catch (AipsError& x)
       {
-    	cout << "###AipsError: " << x.what() << endl;
+    	cout << "###AipsError: " << x.what() << std::endl;
       }
     catch (std::exception& x)
       {
-    	cout << "###std::exception: " << x.what() << endl;
+    	cout << "###std::exception: " << x.what() << std::endl;
       }
   }
   //

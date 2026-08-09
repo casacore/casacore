@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Found = False;
 	for(Int i=0;i<nDDIDRows;i++)
 	  {
-	    //	    cerr << "DDID->SPWID: " << i << " " <<  mapDDID2SpwID(i) << endl;
+	    //	    cerr << "DDID->SPWID: " << i << " " <<  mapDDID2SpwID(i) << std::endl;
 	  if ((SpwIds(n) == mapDDID2SpwID(i)) && 
 	      (!msDataDescSubTable.flagRow()(i)) && 
 	      (!msSpwSubTable.flagRow()(SpwIds(n)))
@@ -149,7 +149,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     if (addTen) addCondition(*node_p, condition);
 
-    //    cerr << "DDID = " << ddidList << endl;
+    //    cerr << "DDID = " << ddidList << std::endl;
 
     return node_p;
   }

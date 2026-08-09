@@ -55,8 +55,8 @@ void testSumm()
 int main(int argc, const char* argv[])
 {
   try {
-    cout << "MSSummary" << endl;
-    cout << "--------------------------------------" << endl;
+    cout << "MSSummary" << std::endl;
+    cout << "--------------------------------------" << std::endl;
     LogIO os(LogOrigin("tMSSummary", "main()"));
 
     if (argc < 2) {
@@ -68,7 +68,7 @@ int main(int argc, const char* argv[])
       mss.listHistory(os);
     }
   } catch (const std::exception& x) {
-    cout << x.what() << endl;
+    cout << x.what() << std::endl;
   } 
   
   return 0;

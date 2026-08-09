@@ -167,9 +167,9 @@ void MSSummary::list (LogIO& os, Record& outRec, Bool verbose,
     //  listWeather (os,verbose);
 
     // List a summary of table sizes
-    //  os << dashlin1 << endl << endl;
+    //  os << dashlin1 << std::endl << std::endl;
     //  listTables (os,verbose);
-    //  os << dashlin2 << endl;
+    //  os << dashlin2 << std::endl;
 
     // Post it
     os.post();
@@ -189,8 +189,8 @@ void MSSummary::listTitle (LogIO& os) const
 
     // List the MS name and version as the title of the Summary
     os << LogIO::NORMAL;
-    os << dashlin2 << endl << "           MeasurementSet Name:  " << this->name()
-            << "      MS Version " << vers << endl << dashlin2 << endl;
+    os << dashlin2 << std::endl << "           MeasurementSet Name:  " << this->name()
+            << "      MS Version " << vers << std::endl << dashlin2 << std::endl;
 }
 
 
@@ -239,7 +239,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         Bool fillRecord) const
 {
     if (nrow()<=0) {
-        os << "The MAIN table is empty: there are no data!!!" << endl << LogIO::POST;
+        os << "The MAIN table is empty: there are no data!!!" << std::endl << LogIO::POST;
         return;
     }
        _msmd->setForceSubScanPropsToCache(True);
@@ -254,11 +254,11 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
     // Output info
     os << "Data records: " << nrow() << "       Total elapsed time = "
-            << exposTime << " seconds" << endl
+            << exposTime << " seconds" << std::endl
             << "   Observed from   " << MVTime(startTime/C::day).string(MVTime::DMY,7)  //startMVT.string()
             << "   to   " << MVTime(stopTime/C::day).string(MVTime::DMY,7)  // stopMVT.string()
             << " (" << timeref << ")"
-            << endl << endl;
+            << std::endl << std::endl;
     os << LogIO::POST;
 
     if(fillRecord){
@@ -326,8 +326,8 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         Int arrid = iter->arrayID;
         if (verbose) {
             // Report OBSID and ARRID, and header for listing:
-            os << endl << "   ObservationID = " << obsid;
-            os << "         ArrayID = " << arrid << endl;
+            os << std::endl << "   ObservationID = " << obsid;
+            os << "         ArrayID = " << arrid << std::endl;
             String datetime="  Date        Timerange                ";
             datetime.replace(24,1,"(");
             datetime.replace(25,timeref.length(),timeref);
@@ -338,7 +338,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
             if (_listUnflaggedRowCount) {
                 os << "nUnflRows   ";
             }
-            os << "SpwIds   Average Interval(s)    ScanIntent" << endl;
+            os << "SpwIds   Average Interval(s)    ScanIntent" << std::endl;
         }
         std::set<SubScanKey> subScans = _msmd->getSubScanKeys(*iter);
         os.output().precision(3);
@@ -420,7 +420,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                 if (! intents.empty()) {
                     os << intents;
                 }
-                os << endl;
+                os << std::endl;
             }
             if(fillRecord && (recLength < maxRecLength))  {
                 if(lastscan == thisscan && siter != subScans.begin()) {
@@ -460,7 +460,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         }
     }
     if (verbose){
-        os << "           (nRows = Total number of rows per scan) " << endl;
+        os << "           (nRows = Total number of rows per scan) " << std::endl;
         os << LogIO::POST;
     }
     os << LogIO::POST;
@@ -528,14 +528,14 @@ void MSSummary::getScanSummary (Record& outRec) const
         TableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
 
         // Report OBSID and ARRID, and header for listing:
-        //     os << endl << "   ObservationID = " << obsid;
-        //     os << "         ArrayID = " << arrid << endl;
+        //     os << std::endl << "   ObservationID = " << obsid;
+        //     os << "         ArrayID = " << arrid << std::endl;
         String datetime="  Date        Timerange                ";
         datetime.replace(24,1,"(");
         datetime.replace(25,timeref.length(),timeref);
         datetime.replace(25+timeref.length(),1,")");
         //     os << datetime;
-        //     os << "Scan  FldId FieldName    nVis   Int(s)   SpwIds" << endl;
+        //     os << "Scan  FldId FieldName    nVis   Int(s)   SpwIds" << std::endl;
 
         // Setup iteration over timestamps within this iteration:
         Block<String> jcols(2);
@@ -753,7 +753,7 @@ void MSSummary::getScanSummary (Record& outRec) const
 void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 {
     if (_msmd->nAntennas() == 0) { 
-        os << "The ANTENNA table is empty" << endl;
+        os << "The ANTENNA table is empty" << std::endl;
         return;
     }    
     // Determine antennas  present in the main table
@@ -780,7 +780,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os.output().setf(ios::fixed, ios::floatfield);
         os.output().setf(ios::left, ios::adjustfield);
         // Write the title:
-        os << title << endl;
+        os << title << std::endl;
         // Write the column headings:
         os << indent;
         os.output().width(indwidth);    os << "ID";
@@ -793,7 +793,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os << "       Offset from array center (m)";
         os.output().width(3*positionwidth);
         os << "         ITRF Geocentric coordinates (m)";
-        os << endl;
+        os << std::endl;
         os << indent;
         os.output().width(
             indwidth + namewidth + statwidth + diamwidth + 4
@@ -813,7 +813,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os << "y";
         os.output().width(positionwidth);
         os << "z";
-        os << endl;
+        os << std::endl;
         vector<MPosition> antPos = _msmd->getAntennaPositions();
         Bool posIsITRF = antPos[0].getRef().getType() != MPosition::ITRF;
         vector<QVD> offsets = _msmd->getAntennaOffsets();
@@ -860,12 +860,12 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
             os << xyz[1];
             os.output().width(positionwidth);
             os << xyz[2];
-            os << endl;
+            os << std::endl;
         }
     }
     else {
         // Horizontal list of the stations names:
-        os << "Antennas: " << nAnt << " 'name'='station' " <<  endl;
+        os << "Antennas: " << nAnt << " 'name'='station' " <<  std::endl;
         String line, leader;
         Int last = *antIds.begin() - 1;
         std::set<Int>::const_iterator iter = antIds.begin();
@@ -886,7 +886,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
                 os << "   ID=";
                 os.output().setf(ios::right, ios::adjustfield);
                 os.output().width(8); os << leader;
-                os << line << endl;
+                os << line << std::endl;
                 line = "";
                 last = ant;
             }
@@ -904,7 +904,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
         MSFeedColumns msFC(pMS->feed());
 
         if (msFC.antennaId().nrow()<=0) {
-            os << "The FEED table is empty" << endl;
+            os << "The FEED table is empty" << std::endl;
         }
         else {
             os << "Feeds: " << msFC.antennaId().nrow();
@@ -915,14 +915,14 @@ void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
             Int widthSpWinId    = 20;
             Int widthNumRec    = 15;
             Int widthPolType    = 10;
-            os << endl;
+            os << std::endl;
             os.output().setf(ios::left, ios::adjustfield);
             os.output().width(widthLead);    os << "  ";
             os.output().width(widthAnt);    os << "Antenna";
             os.output().width(widthSpWinId);    os << "Spectral Window";
             os.output().width(widthNumRec);    os << "# Receptors";
             os.output().width(widthPolType);    os << "Polarizations";
-            os << endl;
+            os << std::endl;
 
             // loop through rows
             // for (rownr_t row=0; row<msFC.antennaId().nrow(); row++) {
@@ -935,7 +935,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
                 os.output().width(widthSpWinId);os << spwId;
                 os.output().width(widthNumRec);    os << msFC.numReceptors()(row);
                 os.output().width(widthPolType);os << msFC.polarizationType()(row);
-                os << endl;
+                os << std::endl;
             }
         }
     }
@@ -956,13 +956,13 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
     std::set<Int> uniqueFields = _msmd->getUniqueFieldIDs();
     uInt nFieldsInMain = uniqueFields.size();
     if (nfields <= 0) {
-        os << "The FIELD table is empty" << endl;
+        os << "The FIELD table is empty" << std::endl;
     }
     else if (uniqueFields.empty()) {
-        os << "The MAIN table is empty" << endl;
+        os << "The MAIN table is empty" << std::endl;
     }
     else {
-        os << "Fields: " << nFieldsInMain << endl;
+        os << "Fields: " << nFieldsInMain << std::endl;
         Int widthLead  =  2;
         Int widthField =  5;
         Int widthCode  =  5;
@@ -996,7 +996,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                 os << "nUnflRows";
             }
         }
-        os << endl;
+        os << std::endl;
         // loop through fields
         vector<String> fieldNames = _msmd->getFieldNames();
         vector<String> codes = _msmd->getFieldCodes();
@@ -1040,7 +1040,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                         os << xx.str();
                     }
                 }
-                os << endl;
+                os << std::endl;
                 if(fillRecord){
                     Record fieldrec;
                     fieldrec.define("name", name);
@@ -1056,11 +1056,11 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                     }
                 }
             } else {
-                os << "Field "<<fld<<" not found in FIELD table"<<endl;
+                os << "Field "<<fld<<" not found in FIELD table"<<std::endl;
             }
         }
     }
-    os << endl << LogIO::POST;
+    os << std::endl << LogIO::POST;
 }
 
 void MSSummary::listObservation (LogIO& os, Bool verbose) const
@@ -1070,18 +1070,18 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
     const MSObservationColumns& msOC(msc.observation());
 
     if (msOC.project().nrow()<=0) {
-        os << "The OBSERVATION table is empty" << endl;
+        os << "The OBSERVATION table is empty" << std::endl;
     }
     else {
         os << "   Observer: " << msOC.observer()(0) << "  "
                 << "   Project: " << msOC.project()(0) << "  ";
-        //v2os << "   Obs Date: " << msOC.obsDate()(0) << endl
+        //v2os << "   Obs Date: " << msOC.obsDate()(0) << std::endl
         //     << "   Tel name: " << msOC.telescopeName()(0);
         if (msc.observation().telescopeName().nrow()>0) {
-            os<<endl << "Observation: " << msc.observation().telescopeName()(0);
+            os<<std::endl << "Observation: " << msc.observation().telescopeName()(0);
         }
         if (!verbose) os << "(" << msc.antenna().name().nrow() << " antennas)";
-        os << endl << endl;
+        os << std::endl << std::endl;
 
         if (msOC.project().nrow()>1) {
             // for version 2 of the MS
@@ -1097,7 +1097,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
             os.output().width(widthDate);    os << "Observation Date";
             os.output().width(widthObs);    os << "Observer";
             os.output().width(widthProj);    os << "Project";
-            os << endl;
+            os << std::endl;
 
             for (rownr_t row=0;row<msOC.project().nrow();row++) {
                 os.output().setf(ios::left, ios::adjustfield);
@@ -1106,7 +1106,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
                 os.output().width(widthDate);    os << msOC.timeRange()(row);
                 os.output().width(widthObs);    os << msOC.observer()(row);
                 os.output().width(widthProj);    os << msOC.project()(row);
-                os << endl;
+                os << std::endl;
             }
         }
     }
@@ -1127,11 +1127,11 @@ void MSSummary::listHistory (LogIO& os) const
     MSHistoryColumns msHis(pMS->history());
 
     if (msHis.nrow()<=0) {
-        os << "The HISTORY table is empty" << endl;
+        os << "The HISTORY table is empty" << std::endl;
     }
     else {
         uInt nmessages = msHis.time().nrow();
-        os << "History table entries: " << nmessages << endl << LogIO::POST;
+        os << "History table entries: " << nmessages << std::endl << LogIO::POST;
         const ScalarColumn<Double> &theTimes((msHis.time()));
         const ScalarColumn<String> &messOrigin((msHis.origin()));
         const ScalarColumn<String> &messString((msHis.message()));
@@ -1178,7 +1178,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
 
     // Check if optional SOURCE table is present:
     if (pMS->source().isNull()) {
-        os << "The SOURCE table is absent: see the FIELD table" << endl;
+        os << "The SOURCE table is absent: see the FIELD table" << std::endl;
         return;
     }
 
@@ -1190,12 +1190,12 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
     Bool sysVelOK=pMS->source().tableDesc().isColumn("SYSVEL");
 
     if (msSC.name().nrow()<=0) {
-        os << "The SOURCE table is empty: see the FIELD table" << endl;
+        os << "The SOURCE table is empty: see the FIELD table" << std::endl;
     }
     else {
 
         if (verbose) {  // activated: CAS-3180
-            os << "Sources: " << msSC.name().nrow() << endl;
+            os << "Sources: " << msSC.name().nrow() << std::endl;
 
             //  Line is    Time Name RA Dec SysVel
             Int widthLead =  2;
@@ -1221,7 +1221,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
             if (sysVelOK) {
                 os.output().width(widthVel);     os << "SysVel(km/s)";
             }
-            os << endl;
+            os << std::endl;
 
             os.output().precision(12);
 
@@ -1270,13 +1270,13 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
                     else
                         os<<"-";
                 }
-                os << endl;
+                os << std::endl;
             }
 
             if (!restFreqOK)
-                os << "  NB: No rest frequency information found in SOURCE table." << endl;
+                os << "  NB: No rest frequency information found in SOURCE table." << std::endl;
             if (!sysVelOK)
-                os << "  NB: No systemic velocity information found in SOURCE table." << endl;
+                os << "  NB: No systemic velocity information found in SOURCE table." << std::endl;
         }
     }
     os << LogIO::POST;
@@ -1291,10 +1291,10 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
     if (verbose) {}    //null; always the same output
 
     if (msSWC.refFrequency().nrow()<=0) {
-        os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << endl;
+        os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << std::endl;
     }
     else {
-        os << "Spectral Windows: " << msSWC.refFrequency().nrow() << endl;
+        os << "Spectral Windows: " << msSWC.refFrequency().nrow() << std::endl;
         // The 8 columns below are all in the SpWin subtable of Version 1 of
         // the MS definition.  For Version 2, some info will appear in other
         // subtables, as indicated.
@@ -1313,7 +1313,7 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
         os.output().width(widthFreq);    os << "Resolution";
         os.output().width(widthFreq);    os << "TotalBW";
         //    os.output().width(widthCorrTypes);os << "Correlations";
-        os << endl;
+        os << std::endl;
 
         // For each row of the SpWin subtable, write the info
         for (rownr_t row=0; row<msSWC.refFrequency().nrow(); row++) {
@@ -1347,7 +1347,7 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
             //    Int index = msSWC.corrType()(row)(IPosition(1,i));
             //    os << Stokes::name(Stokes::type(index));
             //      }
-            os << endl;
+            os << std::endl;
         }
     }
     os << LogIO::POST;
@@ -1413,10 +1413,10 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
 
     rownr_t nRow = pMS->polarization().nrow();
     if (nRow<=0) {
-        os << "The POLARIZATION table is empty: see the FEED table" << endl;
+        os << "The POLARIZATION table is empty: see the FEED table" << std::endl;
     }
     else {
-        os << "Polarization setups: " << nRow << endl;
+        os << "Polarization setups: " << nRow << std::endl;
 
         // Define the column widths
         Int widthLead    =  2;
@@ -1427,7 +1427,7 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
         os.output().setf(ios::left, ios::adjustfield);
         os.output().width(widthLead);    os << "  ";
         os.output().width(widthCorrTypes); os << "Correlations";
-        os << endl;
+        os << std::endl;
 
         // For each row of the Pol subtable, write the info
         for (rownr_t row=0; row<nRow; row++) {
@@ -1439,7 +1439,7 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
                 Int index = msPolC.corrType()(row)(IPosition(1,i));
                 os << Stokes::name(Stokes::type(index));
             }
-            os << endl;
+            os << std::endl;
         }
     }
     os << LogIO::POST;
@@ -1449,13 +1449,13 @@ void MSSummary::listSpectralAndPolInfo (
     LogIO& os, Bool, Bool
 ) const {
     if (_msmd->nDataDescriptions() == 0) {
-        os << "The DATA_DESCRIPTION table is empty: see the FEED table" << endl;
+        os << "The DATA_DESCRIPTION table is empty: see the FEED table" << std::endl;
     }
     if (_msmd->nSpw(True) == 0) {
-        os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << endl;
+        os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << std::endl;
     }
     if (_msmd->nPol() == 0) {
-        os << "The POLARIZATION table is empty: see the FEED table" << endl;
+        os << "The POLARIZATION table is empty: see the FEED table" << std::endl;
     }
     // determine the data_desc_ids present in the main table
     std::set<uInt> ddId = _msmd->getUniqueDataDescIDs();
@@ -1476,7 +1476,7 @@ void MSSummary::listSpectralAndPolInfo (
     if (! ddId.empty()) {
         os << "Spectral Windows: ";
         os << " (" << uniqueSpws.size() << " unique spectral windows and ";
-        os << uniquePolIDs.size() << " unique polarization setups)"<<endl;
+        os << uniquePolIDs.size() << " unique polarization setups)"<<std::endl;
 
         vector<String> names = _msmd->getSpwNames();
         Int widthName = 5;
@@ -1517,7 +1517,7 @@ void MSSummary::listSpectralAndPolInfo (
             os << "BBC Num ";
         }
         os.output().width(widthCorrTypes);  os << " Corrs";
-        os << endl;
+        os << std::endl;
 
         vector<uInt> nChans = _msmd->nChans();
         vector<QVD> chanFreqs = _msmd->getChanFreqs();
@@ -1595,7 +1595,7 @@ void MSSummary::listSpectralAndPolInfo (
             // CAS-9072 avoid printing blank lines if there are
             // spws that are not represented in the main table
             if (isSpwInMainTable) {
-                os << endl;
+                os << std::endl;
             }
         }
     }
@@ -1607,7 +1607,7 @@ void MSSummary::listSysCal (LogIO& os, Bool verbose) const
 {
     // Check for existence of optional SYSCAL table:
     if (pMS->sysCal().isNull()) {
-        os << "The SYSCAL table is absent" << endl;
+        os << "The SYSCAL table is absent" << std::endl;
         return;
     }
 
@@ -1618,12 +1618,12 @@ void MSSummary::listSysCal (LogIO& os, Bool verbose) const
         MSSysCalColumns msSCC(pMS->sysCal());
 
         if (msSCC.tsys().nrow()<=0) {
-            os << "The SYSCAL table is empty" << endl;
+            os << "The SYSCAL table is empty" << std::endl;
         }
         else {
-            os << "SysCal entries: " << msSCC.tsys().nrow() << endl;
+            os << "SysCal entries: " << msSCC.tsys().nrow() << std::endl;
             os << "   The average Tsys for all data is "
-                    << sum(msSCC.tsys()(0))/msSCC.tsys()(0).nelements() << " K" << endl;
+                    << sum(msSCC.tsys()(0))/msSCC.tsys()(0).nelements() << " K" << std::endl;
         }
     }
     os << LogIO::POST;
@@ -1634,7 +1634,7 @@ void MSSummary::listWeather (LogIO& os, Bool verbose) const
 {
     // Check for existence of optional WEATHER table:
     if (pMS->weather().isNull()) {
-        os << "The WEATHER table is absent" << endl;
+        os << "The WEATHER table is absent" << std::endl;
         return;
     }
 
@@ -1645,13 +1645,13 @@ void MSSummary::listWeather (LogIO& os, Bool verbose) const
         MSWeatherColumns msWC(pMS->weather());
 
         if (msWC.H2O().nrow()<=0) {
-            os << "The WEATHER table is empty" << endl;
+            os << "The WEATHER table is empty" << std::endl;
         }
         else {
-            os << "Weather entries: " << msWC.H2O().nrow() << endl;
+            os << "Weather entries: " << msWC.H2O().nrow() << std::endl;
             os << "   Average H2O column density = " << msWC.H2O()(0)
                     << " m**-2      Average air temperature = "
-                    << msWC.temperature()(0) << " K" << endl;
+                    << msWC.temperature()(0) << " K" << std::endl;
         }
     }
     os<< LogIO::POST;
@@ -1726,7 +1726,7 @@ void MSSummary::listTables (LogIO& os, Bool verbose) const
     if (!verbose) os << "(rows)";
     os << ":";
     if (!verbose) os << "   (-1 = table absent)";
-    os << endl;
+    os << std::endl;
     for (uInt i=0; i<18; i++) {
         if (verbose) {
             os.output().setf(ios::left, ios::adjustfield);
@@ -1748,9 +1748,9 @@ void MSSummary::listTables (LogIO& os, Bool verbose) const
             os.output().setf(ios::left, ios::adjustfield);
             os.output().width(10);
             os << rowStrings(i);
-            os << endl;
+            os << std::endl;
         }
-        else if ((i%5)==0) os << endl;
+        else if ((i%5)==0) os << std::endl;
     }
     os << LogIO::POST;
 }

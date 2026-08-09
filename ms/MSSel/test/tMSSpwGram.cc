@@ -61,7 +61,7 @@ int main(int argc, const char* argv[])
 {
   try {
     if(argc<3) {
-      cout << " please input ms file and selection string on command line " << endl;
+      cout << " please input ms file and selection string on command line " << std::endl;
       return 0;
     }
     const String msName = argv[1];
@@ -69,32 +69,32 @@ int main(int argc, const char* argv[])
     MeasurementSet * mssel;
     Vector<Int> selectedIDs;
     Matrix<Int> selectedChans;
-    cout << "Original table has rows " << ms.nrow() << endl;
+    cout << "Original table has rows " << ms.nrow() << std::endl;
     if(msSpwGramParseCommand(&ms, argv[2], selectedIDs, selectedChans)==0) {
       const TableExprNode *node = msSpwGramParseNode();
       if(node->isNull()) {
-	cout << "NULL node " << endl;
+	cout << "NULL node " << std::endl;
 	return 0;
       }
-      cout << "TableExprNode has rows = " << node->nrow() << endl;
+      cout << "TableExprNode has rows = " << node->nrow() << std::endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
       mssel->flush();
       if(mssel->nrow()==0) {
-        cout << "Check your input, No data selected" << endl;
+        cout << "Check your input, No data selected" << std::endl;
       }
       else {
-        cout << "selected table has rows " << mssel->nrow() << endl;
-	cout << "Selected IDs = " << selectedIDs << endl;
+        cout << "selected table has rows " << mssel->nrow() << std::endl;
+	cout << "Selected IDs = " << selectedIDs << std::endl;
       }
       delete mssel;
     }
     else {
-      cout << "failed to parse expression" << endl;
+      cout << "failed to parse expression" << std::endl;
     }
   } catch (std::exception& x) {
-    cout << "ERROR: " << x.what() << endl;
+    cout << "ERROR: " << x.what() << std::endl;
     return 1;
   } 
   return 0;

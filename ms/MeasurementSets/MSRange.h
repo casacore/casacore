@@ -70,7 +70,7 @@ class MSSelector;
 // items(1)="time";
 // items(2)="data_desc_id";
 // // get the range of values for the items specified
-// cout << myRange.range(items)<<endl;
+// cout << myRange.range(items)<<std::endl;
 // // sample output: range=[field_id=[0,1,2],time=[4.5e9, 4.51e9],
 // //   data_desc_id=[0,1,2]];
 // // Now preselect on data_desc_id
@@ -79,7 +79,7 @@ class MSSelector;
 // mss.selectinit(0,dd); // select data desc ids 1 and 2
 // MSRange r2(mss);
 // items(2)="amplitude";
-// cout<< r2.range(items)<<endl;
+// cout<< r2.range(items)<<std::endl;
 // // sample output: [field_id=[0,1,2],time=[4.5e9, 4.51e9],
 // //   amplitude=[0.00132,1.543]]
 // </srcblock></example>

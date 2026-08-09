@@ -63,7 +63,7 @@ class String;
 // IPosition tileShape = MSTileLayout::tileShape(dataShape,
 //                                               MSTileLayout::FastMosaic,
 //                                               "ATCA");
-// cout << "tileShape = "<< tileShape << endl;
+// cout << "tileShape = "<< tileShape << std::endl;
 // // Output is: 
 // tileShape = (4,11,15)
 // </srcblock>

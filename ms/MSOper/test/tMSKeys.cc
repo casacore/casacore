@@ -36,7 +36,7 @@ using namespace std;
 int main() {
     try {
         {
-            cout << "*** test uniqueArrayKeys()" << endl;
+            cout << "*** test uniqueArrayKeys()" << std::endl;
             ScanKey s;
             s.arrayID = 0;
             s.obsID = 2;
@@ -55,7 +55,7 @@ int main() {
             AlwaysAssert(iter->arrayID == 1 && iter->obsID == 2, AipsError);
         }
         {
-            cout << "*** test ArrayKey==" << endl;
+            cout << "*** test ArrayKey==" << std::endl;
             ArrayKey first, second;
             first.arrayID = 4;
             first.obsID = 6;
@@ -69,7 +69,7 @@ int main() {
             AlwaysAssert(first != second, AipsError);
         }
         {
-            cout << "*** test filter" << endl;
+            cout << "*** test filter" << std::endl;
             std::set<ScanKey> scanKeys;
             ScanKey sk;
             sk.obsID = 0;
@@ -99,10 +99,10 @@ int main() {
                 AlwaysAssert(*filtered.begin() == expec, AipsError);
             }
         }
-        cout << "OK" << endl;
+        cout << "OK" << std::endl;
     } 
     catch (const std::exception& x) {
-    	cerr << "Exception : " << x.what() << endl;
+    	cerr << "Exception : " << x.what() << std::endl;
     	return 1;
     }
     return 0;

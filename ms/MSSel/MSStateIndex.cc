@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Mesg << "State Expression: Invalid regular expression \"" << pattern << "\"";
 	throw(MSSelectionStateParseError(Mesg.str().c_str()));
       }
-    //cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
+    //cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << std::endl;
     IPosition sh(msStateCols_p.obsMode().getColumn().shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;

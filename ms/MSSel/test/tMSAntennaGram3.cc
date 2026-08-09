@@ -74,15 +74,15 @@ void makeMS()
 
 void doSel (const MeasurementSet& ms, const String& command, bool showBL=False)
 {
-  cout << command << endl;
+  cout << command << std::endl;
   Vector<Int> selectedAnts1;
   Vector<Int> selectedAnts2;
   Matrix<Int> selectedBaselines;
   msAntennaGramParseCommand (&ms, command,
                              selectedAnts1, selectedAnts2, selectedBaselines);
-  cout << "  " << selectedAnts1 << ' ' << selectedAnts2 << endl;
+  cout << "  " << selectedAnts1 << ' ' << selectedAnts2 << std::endl;
   if (showBL) {
-    cout << "  " << selectedBaselines << endl;
+    cout << "  " << selectedBaselines << std::endl;
   }
 }
 
@@ -123,7 +123,7 @@ int main()
     makeMS();
     selMS();
   } catch (std::exception& x) {
-    cout << "ERROR: " << x.what() << endl;
+    cout << "ERROR: " << x.what() << std::endl;
     return 1;
   } 
   return 0;

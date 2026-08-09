@@ -62,43 +62,43 @@ int main(int argc, const char* argv[])
 {
   try {
     if(argc < 3) {
-      cout << "Please input ms file and selection string on command line " << endl;
+      cout << "Please input ms file and selection string on command line " << std::endl;
       return 3;
     } 
     const String msName = argv[1];
-    cout << "ms file is  " << msName << endl;
+    cout << "ms file is  " << msName << std::endl;
     MeasurementSet ms(msName);
     MSSelection mss;
     mss.setAntennaExpr(String(argv[2]));
     TableExprNode node = mss.toTableExprNode(&ms);
 
     MeasurementSet* mssel = 0;
-    cout << "Original table has rows " << ms.nrow() << endl;
+    cout << "Original table has rows " << ms.nrow() << std::endl;
     Vector<Int> selectedAnt1, selectedAnt2;
     Matrix<Int> selectedBaselines;
     node = msAntennaGramParseCommand(&ms, argv[2],
                                      selectedAnt1, selectedAnt2,
                                      selectedBaselines);
     if(node.isNull()) {
-      cout << "NULL node " << endl;
+      cout << "NULL node " << std::endl;
       return 0;
     }
-    cout << "TableExprNode has rows = " << node.nrow() << endl;
+    cout << "TableExprNode has rows = " << node.nrow() << std::endl;
     Table tablesel(ms.tableName(), Table::Update);
     mssel = new MeasurementSet(tablesel(node, node.nrow() ));
     mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::New);
     mssel->flush();
     if(mssel->nrow()==0) {
-      cout << "Check your input, No data selected" << endl;
+      cout << "Check your input, No data selected" << std::endl;
     }
     else {
-      cout << "selected table has rows " << mssel->nrow() << endl;
-      cout << "selected ant1 = " << selectedAnt1 << endl
-           << "selected ant2 = " << selectedAnt2 << endl;
+      cout << "selected table has rows " << mssel->nrow() << std::endl;
+      cout << "selected ant1 = " << selectedAnt1 << std::endl
+           << "selected ant2 = " << selectedAnt2 << std::endl;
     }
     delete mssel;
   } catch (std::exception& x) {
-    cout << "ERROR: " << x.what() << endl;
+    cout << "ERROR: " << x.what() << std::endl;
     return 1;
   } 
   return 0;

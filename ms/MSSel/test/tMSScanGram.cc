@@ -60,37 +60,37 @@
 int main(int argc, const char* argv[])
 {
   if (argc != 2) {
-    cout << "Usage: "<< argv[0] << " MS_filename" << endl;
+    cout << "Usage: "<< argv[0] << " MS_filename" << std::endl;
     return 0;
   }
   try {
-    cout << "before ms constructor called " << endl;
+    cout << "before ms constructor called " << std::endl;
     const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
-    cout << "Original table has rows " << ms.nrow() << endl;
+    cout << "Original table has rows " << ms.nrow() << std::endl;
     Vector<Int> selectedIds;
     const TableExprNode node = msScanGramParseCommand(&ms, "1", selectedIds);
     if (!node.isNull()) {
-      cout << "TableExprNode has rows = " << node.nrow() << endl;
+      cout << "TableExprNode has rows = " << node.nrow() << std::endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(node, node.nrow() ));
-      cout << "After mssel constructor called " << endl;
+      cout << "After mssel constructor called " << std::endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
       mssel->flush();
       if(mssel->nrow()==0) {
-	cout << "Check your input, No data selected" << endl;
+	cout << "Check your input, No data selected" << std::endl;
       }
       else {
-	cout << "selected table has rows " << mssel->nrow() << endl;
+	cout << "selected table has rows " << mssel->nrow() << std::endl;
       }
       delete mssel;
     }
     else {
-      cout << "ERROR: failed to parse expression " << endl;
+      cout << "ERROR: failed to parse expression " << std::endl;
     }
   } catch (std::exception& x) {
-    cout << "ERROR: " << x.what() << endl;
+    cout << "ERROR: " << x.what() << std::endl;
     return 1;
   } 
   return 0;

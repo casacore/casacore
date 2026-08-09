@@ -611,7 +611,7 @@ String FITSImgParser::get_errorext(const Int &ext_index){
 
 	// make sure the extension index does exist
 	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
-		ostringstream os;
+		std::ostringstream os;
 		os << ext_index;
 		throw (AipsError("FITSImgParser::get_errorext - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
 	}
@@ -643,7 +643,7 @@ String FITSImgParser::get_maskext(const Int &ext_index){
 
 	// make sure the extension index does exist
 	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
-		ostringstream os;
+		std::ostringstream os;
 		os << ext_index;
 		throw (AipsError("FITSImgParser::get_maskext - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
 	}
@@ -704,7 +704,7 @@ Bool FITSImgParser::index_is_HDUtype(const Int &ext_index, const String &hdutype
 
 	// make sure the extension index does exist
 	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
-		ostringstream os;
+		std::ostringstream os;
 		os << ext_index;
 		throw (AipsError("FITSImgParser::index_is_HDUtype - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
 	}
@@ -860,7 +860,7 @@ String FITSExtInfo::get_extexpr(void)
 		extexpr += ':' + extname_p;
 
 		if (extversion_p > -1){
-		ostringstream os;
+		std::ostringstream os;
 		os << extversion_p;
 		extexpr += "," + String(os);
 		}

@@ -1426,7 +1426,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
     IPosition tileShape1(1, nrbasel);
     uInt freqPerTile = itsDataTileShape[1];
     uInt cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
-    cout << "HDF5 cacheSize = " << cacheSize << endl;
+    cout << "HDF5 cacheSize = " << cacheSize << std::endl;
     if (itsWriteFloatData) {
       spw.floatData = std::make_shared<HDF5DataSet>(*spw.spw, "FLOAT_DATA", shape,
                                                     itsDataTileShape, (float*)0);
@@ -1702,11 +1702,11 @@ IPosition formTileShape (int tileSize, int tileNPol, int tileNFreq,
 
 void showHelp()
 {
-  cout << "The program creates one or more MeasurementSets with a given number of" <<endl;
-  cout << "baselines, times, fields, spectral windows, channels and polarizations." << endl;
-  cout << "Run as:" << endl;
-  cout << "      writems parm=value parm=value ..." << endl;
-  cout << "Use   writems -h   to see the possible parameters." << endl;
+  cout << "The program creates one or more MeasurementSets with a given number of" <<std::endl;
+  cout << "baselines, times, fields, spectral windows, channels and polarizations." << std::endl;
+  cout << "Run as:" << std::endl;
+  cout << "      writems parm=value parm=value ..." << std::endl;
+  cout << "Use   writems -h   to see the possible parameters." << std::endl;
 }
 
 Int64 parmInt (Input& params, const String& name, const Record& vars=Record())
@@ -1973,8 +1973,8 @@ bool readParms (int argc, char* argv[])
 
 void showParms()
 {
-  cout << " nms      = " << myNPart << "   " << myMsName << endl;
-  cout << " nthread  = " << OMP::maxThreads() << endl;
+  cout << " nms      = " << myNPart << "   " << myMsName << std::endl;
+  cout << " nthread  = " << OMP::maxThreads() << std::endl;
   int nant = myAntPos.ncolumn();
   cout << " nant     = " << nant << "   (";
   if (myWriteFloatData) {
@@ -1984,24 +1984,24 @@ void showParms()
   } else {
     cout << nant*(nant-1)/2;
   }
-  cout << " baselines)" << endl;
+  cout << " baselines)" << std::endl;
   cout << " totalspw = " << myTotalNBand
-       << "   (firstspw = " << myFirstBand << ')' << endl;
+       << "   (firstspw = " << myFirstBand << ')' << std::endl;
   cout << " nspw     = " << myNBand
-       << "   (" << myNBand/myNPart << " per ms)" << endl;
+       << "   (" << myNBand/myNPart << " per ms)" << std::endl;
   cout << " nfield   = " << myRa.size();
   if (myNTimeField > 0) {
     cout << "   (" << myNTimeField << "times per field)";
   }
-  cout << endl;
-  cout << " ntime    = " << myNTime << endl;
-  cout << " nchan    = " << myNChan << endl;
-  cout << " npol     = " << myNPol << endl;
-  cout << " rowwise             = " << myWriteRowWise << endl;
-  cout << " writeweightspectrum = " << myWriteWeightSpectrum << endl;
-  cout << " createimagercolumns = " << myCreateImagerColumns << endl;
+  cout << std::endl;
+  cout << " ntime    = " << myNTime << std::endl;
+  cout << " nchan    = " << myNChan << std::endl;
+  cout << " npol     = " << myNPol << std::endl;
+  cout << " rowwise             = " << myWriteRowWise << std::endl;
+  cout << " writeweightspectrum = " << myWriteWeightSpectrum << std::endl;
+  cout << " createimagercolumns = " << myCreateImagerColumns << std::endl;
   if (!myFlagColumn.empty()  &&  myNFlagBits > 0) {
-    cout << " FLAG written as " << myNFlagBits << " bits per flag" << endl;
+    cout << " FLAG written as " << myNFlagBits << " bits per flag" << std::endl;
   }
   IPosition tileShape = formTileShape(myTileSize, myTileSizePol, myTileSizeFreq,
                                       myWriteFloatData, myNPol, myNChan);
@@ -2010,14 +2010,14 @@ void showParms()
     tileSize /= 2;
   }
   cout << " data tileshape      = " << tileShape
-       <<   "  (tilesize = " << tileSize << " bytes)" << endl;
+       <<   "  (tilesize = " << tileSize << " bytes)" << std::endl;
   if (!myWriteHDF5  &&  myUseMultiFile) {
     cout << " multi" << (myUseMultiFile==1 ? "file" : "hdf5");
     int multiBlockSize = myMultiBlockSize;
     if (multiBlockSize <= 0) {
       multiBlockSize = tileSize;
     }
-    cout << "    (blocksize = " << multiBlockSize << " bytes)" << endl;
+    cout << "    (blocksize = " << multiBlockSize << " bytes)" << std::endl;
   }
 }
 
@@ -2088,16 +2088,16 @@ void doAll()
     msnames[i] = doOne (i, myMsName);
   }
   if (myNPart == 1) {
-    cout << "Created 1 MS part" << endl;
+    cout << "Created 1 MS part" << std::endl;
   } else {
     cout << "Created " << myNPart << " MS parts in "
-         << nthread << " threads" << endl;
+         << nthread << " threads" << std::endl;
   }
   // Create the concatenated MS.
   if (!myDoSinglePart  &&  !myWriteHDF5) {
     Table tab = Table(msnames);
     tab.rename (myMsName, Table::New);
-    cout << "Created MultiMS " << myMsName << " containing all parts" << endl;
+    cout << "Created MultiMS " << myMsName << " containing all parts" << std::endl;
   }
 }
 
@@ -2112,7 +2112,7 @@ int main (int argc, char** argv)
       doAll();
     }
   } catch (std::exception& ex) {
-    cerr << "Unexpected exception in " << argv[0] << ": " << ex.what() << endl;
+    cerr << "Unexpected exception in " << argv[0] << ": " << ex.what() << std::endl;
     return 1;
   }
 #ifdef HAVE_MPI

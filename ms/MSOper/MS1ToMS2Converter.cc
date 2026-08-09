@@ -186,7 +186,7 @@ Bool MS1ToMS2Converter::convert()
     }
 
     if (renumber) {
-      // cout <<"Renumbering antennas in main table and all subtables"<<endl;
+      // cout <<"Renumbering antennas in main table and all subtables"<<std::endl;
       // Main
       {
         Vector<Int> newAnt1(t.nrow());
@@ -819,7 +819,7 @@ Bool MS1ToMS2Converter::convert()
   }
 
   if (sourceTab.tableDesc().isColumn("SYSVEL_OLD")) {
-    cout << "Array column SYSVEL_OLD seems to exist" << endl;
+    cout << "Array column SYSVEL_OLD seems to exist" << std::endl;
   } else {
     sourceTab.renameColumn("SYSVEL_OLD", "SYSVEL");
     sourceTab.addColumn(ArrayColumnDesc<Double>("SYSVEL", 1));
@@ -919,7 +919,7 @@ Bool MS1ToMS2Converter::convert()
 
   // get correct shape for array weight
   if (t.tableDesc().isColumn("WEIGHT_OLD")) {
-    cout << "Array column WEIGHT_OLD seems to exist" << endl;
+    cout << "Array column WEIGHT_OLD seems to exist" << std::endl;
   } else {
     t.renameColumn ("WEIGHT_OLD", "WEIGHT");
     t.addColumn (ArrayColumnDesc<Float>("WEIGHT", 1));

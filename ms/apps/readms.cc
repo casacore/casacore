@@ -73,10 +73,10 @@ Vector<String> mySortCols;
 
 void showHelp()
 {
-  cout << "The program reads one or more MeasurementSets" << endl;
-  cout << "Run as:" << endl;
-  cout << "      readms parm=value parm=value ..." << endl;
-  cout << "Use   readms -h   to see the possible parameters." << endl;
+  cout << "The program reads one or more MeasurementSets" << std::endl;
+  cout << "Run as:" << std::endl;
+  cout << "      readms parm=value parm=value ..." << std::endl;
+  cout << "Use   readms -h   to see the possible parameters." << std::endl;
 }
 
 
@@ -201,30 +201,30 @@ String makeMSName (int seqnr, const String& msName)
 void showParmsHDF5 (const IPosition& tileShape, uInt tileSize, uInt nspw,
                     const Record& attr)
 {
-  cout << " nms       = " << myNPart << "    " << myMsName << endl;
-  cout << " nthread   = " << OMP::maxThreads() << endl;
+  cout << " nms       = " << myNPart << "    " << myMsName << std::endl;
+  cout << " nthread   = " << OMP::maxThreads() << std::endl;
   cout << " nant      = " << attr.asInt("NAntenna")
-       << "   (" << attr.asInt("NBaseline") << " baselines)" << endl;
-  cout << " nspw      = " << nspw << endl;
+       << "   (" << attr.asInt("NBaseline") << " baselines)" << std::endl;
+  cout << " nspw      = " << nspw << std::endl;
   cout << " nfield    = " << attr.asInt("NField");
   int ntimefield = attr.asInt("NTimeField");
   if (ntimefield > 0) {
     cout << "   (" << ntimefield << "times per field)";
   }
-  cout << endl;
-  cout << " nchan     = " << myNChan << endl;
-  cout << " startchan = " << myStartChan << endl;
+  cout << std::endl;
+  cout << " nchan     = " << myNChan << std::endl;
+  cout << " startchan = " << myStartChan << std::endl;
   if (myChanSize > 0) {
-    cout << " chansize  = " << myChanSize << endl;
+    cout << " chansize  = " << myChanSize << std::endl;
   }
-  cout << " npol      = " << myNPol << endl;
-  cout << " rowwise             = " << myReadRowWise << endl;
-  cout << " readdata            = " << myReadData << endl;
-  cout << " readfloatdata       = " << myReadFloatData << endl;
-  cout << " readflag            = " << myReadFlag << endl;
-  cout << " readweightspectrum  = " << myReadWeightSpectrum << endl;
+  cout << " npol      = " << myNPol << std::endl;
+  cout << " rowwise             = " << myReadRowWise << std::endl;
+  cout << " readdata            = " << myReadData << std::endl;
+  cout << " readfloatdata       = " << myReadFloatData << std::endl;
+  cout << " readflag            = " << myReadFlag << std::endl;
+  cout << " readweightspectrum  = " << myReadWeightSpectrum << std::endl;
   cout << " data tileshape      = " << tileShape
-       << "   (tilesize = " << tileSize << " bytes)" << endl;
+       << "   (tilesize = " << tileSize << " bytes)" << std::endl;
 }
 
 void showParms()
@@ -249,8 +249,8 @@ void showParms()
   if (parts.size() > 1) {
     cout << "   (MultiMS with " << parts.size() << " MSs)";
   }
-  cout << endl;
-  cout << " nthread   = " << OMP::maxThreads() << endl;
+  cout << std::endl;
+  cout << " nthread   = " << OMP::maxThreads() << std::endl;
 
   // Since all parts are the same, only use the first one to determine sizes.
   MeasurementSet ms(parts[0]);
@@ -269,34 +269,34 @@ void showParms()
     ntimefield = iterfld.table().nrow() / tab1.nrow();
   }
   cout << " nant      = " << nant
-       << "   (" << nbl << " baselines)" << endl;
+       << "   (" << nbl << " baselines)" << std::endl;
   cout << " nspw      = " << ms.spectralWindow().nrow()
-       << "   (" << nspw << " per ms)" << endl;
+       << "   (" << nspw << " per ms)" << std::endl;
   cout << " nfield    = " << ms.field().nrow();
   if (ntimefield > 0) {
     cout << "   (" << ntimefield << "times per field)";
   }
-  cout << endl;
-  cout << " ntime     = " << ntime << endl;
+  cout << std::endl;
+  cout << " ntime     = " << ntime << std::endl;
   IPosition dataShape;
   if (ms.tableDesc().isColumn("DATA")) {
     dataShape = ArrayColumn<Complex>(ms, "DATA").shape(0);
   } else {
     dataShape = ArrayColumn<Float>(ms, "FLOAT_DATA").shape(0);
   }
-  cout << " nchan     = " << dataShape[1] << endl;
-  cout << " startchan = " << myStartChan << endl;
-  cout << " chansize  = " << myChanSize << endl;
-  cout << " npol      = " << dataShape[0] << endl;
-  cout << " rowwise             = " << myReadRowWise << endl;
-  cout << " readdata            = " << myReadData << endl;
-  cout << " readfloatdata       = " << myReadFloatData << endl;
-  cout << " readflag            = " << myReadFlag << endl;
-  cout << " readweightspectrum  = " << myReadWeightSpectrum << endl;
+  cout << " nchan     = " << dataShape[1] << std::endl;
+  cout << " startchan = " << myStartChan << std::endl;
+  cout << " chansize  = " << myChanSize << std::endl;
+  cout << " npol      = " << dataShape[0] << std::endl;
+  cout << " rowwise             = " << myReadRowWise << std::endl;
+  cout << " readdata            = " << myReadData << std::endl;
+  cout << " readfloatdata       = " << myReadFloatData << std::endl;
+  cout << " readflag            = " << myReadFlag << std::endl;
+  cout << " readweightspectrum  = " << myReadWeightSpectrum << std::endl;
   try {
     ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", True);
     cout << " data tileshape      = " << acc.tileShape(0)
-         << "   (tilesize = " << acc.bucketSize(0) << " bytes)" << endl;
+         << "   (tilesize = " << acc.bucketSize(0) << " bytes)" << std::endl;
   } catch (const AipsError&) {
   }
   const StorageOption& opt = ms.storageOption();
@@ -304,18 +304,18 @@ void showParms()
       opt.option() == StorageOption::MultiHDF5) {
     cout << " multi"
          << (opt.option() == StorageOption::MultiFile ? "file" : "hdf5");
-    cout << "    (blocksize = " << opt.blockSize() << " bytes)" << endl;
+    cout << "    (blocksize = " << opt.blockSize() << " bytes)" << std::endl;
   }
   if (! myBaselines.empty()) {
-    cout << "baseline selection   = " << myBaselines << endl;
+    cout << "baseline selection   = " << myBaselines << std::endl;
   }
   if (! mySelection.empty()) {
-    cout << "TaQL selection       = " << mySelection << endl;
+    cout << "TaQL selection       = " << mySelection << std::endl;
   }
-  cout << " iteration1 columns  = " << myIterCols1 << endl;
-  cout << " iteration2 columns  = " << myIterCols2 << endl;
+  cout << " iteration1 columns  = " << myIterCols1 << std::endl;
+  cout << " iteration2 columns  = " << myIterCols2 << std::endl;
   if (mySortCols.size() > 0) {
-    cout << " sort columns        = " << mySortCols << endl;
+    cout << " sort columns        = " << mySortCols << std::endl;
   }
   ///possibly show ntimes, etc. of selection subset
 }
@@ -788,7 +788,7 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
         myNChan = shape[1];
       }
       showParmsHDF5 (tileShape, tileSize, groupNames.size(), attr);
-      cout << "HDF5 cache size = " << cacheSize << endl;
+      cout << "HDF5 cache size = " << cacheSize << std::endl;
     }
     // Determine nr of rows to read per time step.
     int ntoread = attr.asInt("NBaseline");
@@ -882,13 +882,13 @@ void doAll()
     }
   }
   if (myNPart == 1) {
-    cout << "Read 1 MS part" << endl;
+    cout << "Read 1 MS part" << std::endl;
   } else {
     cout << "Read " << myNPart << " MS parts in "
-         << nthread << " threads" << endl;
+         << nthread << " threads" << std::endl;
   }
   cout << "For each part " << selNrow << " rows out of " << nrow
-       << " have been read" << endl;
+       << " have been read" << std::endl;
 }
 
 int main (int argc, char* argv[])

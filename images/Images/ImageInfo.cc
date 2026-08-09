@@ -414,7 +414,7 @@ Bool ImageInfo::fromFITS(
 				setRestoringBeam(GaussianBeam(bmajq, bminq, bpaq));
 			}
 			else {
-				ostringstream oss;
+				std::ostringstream oss;
 				oss << "BMAJ, BMIN ("<< bmaj << ", " << bmin <<") are not positive";
 				error(0) = oss.str();
 				ok = False;

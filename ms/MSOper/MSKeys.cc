@@ -57,7 +57,7 @@ String toString(const SubScanKey& subScanKey) {
 }
 
 std::ostream& operator<<(std::ostream& os, const SubScanKey& subScanKey) {
-    os << toString(subScanKey) << endl;
+    os << toString(subScanKey) << std::endl;
     return os;
 }
 
@@ -102,8 +102,8 @@ std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys) {
     return scanNumbers;
 }
 
-ostream& operator<<(ostream& os, const ScanKey& scanKey) {
-    os << toString(scanKey) << endl;
+std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey) {
+    os << toString(scanKey) << std::endl;
     return os;
 }
 

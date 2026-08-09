@@ -62,39 +62,39 @@ int main(int argc, const char* argv[])
     {
       if(argc < 3) 
       {
-	cout << "Please input selection string on command line " << endl;
+	cout << "Please input selection string on command line " << std::endl;
 	return 0;
       } 
     
     const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
-    cout << "Original table has rows " << ms.nrow() << endl;
+    cout << "Original table has rows " << ms.nrow() << std::endl;
     Vector<Int> selectedIDs;
     TableExprNode colAsTen=ms.col(MS::columnName(MS::FIELD_ID));
     const TableExprNode node = msFieldGramParseCommand(ms.field(), colAsTen, argv[2],selectedIDs);
     if(node.isNull()) 
       {
-	cout << "NULL node " << endl;
+	cout << "NULL node " << std::endl;
 	return 0;
       }
-    cout << "TableExprNode has rows = " << node.nrow() << endl;
+    cout << "TableExprNode has rows = " << node.nrow() << std::endl;
     Table tablesel(ms.tableName(), Table::Update);
     mssel = new MeasurementSet(tablesel(node, node.nrow() ));
     mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
     mssel->flush();
     if(mssel->nrow()==0)
-      cout << "Check your input, No data selected" << endl;
+      cout << "Check your input, No data selected" << std::endl;
     else 
       {
-	cout << "selected table has rows " << mssel->nrow() << endl;
-	cout << "Field IDs selected = " << selectedIDs << endl;
+	cout << "selected table has rows " << mssel->nrow() << std::endl;
+	cout << "Field IDs selected = " << selectedIDs << std::endl;
       }
     delete mssel;
   }
   catch (std::exception& x) 
     {
-      cout << "ERROR: " << x.what() << endl;
+      cout << "ERROR: " << x.what() << std::endl;
       return 1;
     } 
   return 0;

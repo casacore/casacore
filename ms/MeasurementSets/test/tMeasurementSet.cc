@@ -58,9 +58,9 @@ uInt tColumnStatics()
 	String pdname = MS::columnName(pdcol);
 	MS::PredefinedColumns pdtype = MS::columnType(pdname);
 	if (pdtype != pdcol) {
-	    cerr << "Inconsistency found for column : " << pdname << endl;
+	    cerr << "Inconsistency found for column : " << pdname << std::endl;
 	    cerr << "  Type : " << Int(pdtype) << " should be : " 
-		 << Int(pdcol) <<endl;
+		 << Int(pdcol) <<std::endl;
 	    errCount++;
 	}
 
@@ -68,7 +68,7 @@ uInt tColumnStatics()
 	pdtype = MS::columnType("NotAPredefinedColumn");
 	if (pdtype != MS::UNDEFINED_COLUMN) {
 	    cerr << "columnType returned a valid PredefinedColumn for \"NotAPredefinedColumn\""
-		<< Int(pdtype) << endl;
+		<< Int(pdtype) << std::endl;
 	    errCount++;
 	}
 
@@ -98,9 +98,9 @@ uInt tKeywordStatics()
 	MS::PredefinedKeywords pdtype = MS::keywordType(pdname);
 	// this MUST be valid and it must have the same value as pdkey
 	if (pdtype != pdkey) {
-	    cerr << "Inconsistency found for keyword : " << pdname << endl;
+	    cerr << "Inconsistency found for keyword : " << pdname << std::endl;
 	    cerr << "  Type : " << Int(pdtype) << " should be : " 
-		 << Int(pdkey) << endl;
+		 << Int(pdkey) << std::endl;
 	    errCount++;
 	}
 
@@ -200,22 +200,22 @@ uInt tNonStatic(const String& sdmsName)
 
     // verify that it is valid
     if (! ms.validate()) {
-	cerr << "self validation failed" <<endl;
+	cerr << "self validation failed" <<std::endl;
 	errCount++;
     }
     if (! MS::validate(ms.tableDesc())) {
-	cerr << "validation of tableDesc fails" << endl;
+	cerr << "validation of tableDesc fails" << std::endl;
 	errCount++;
     }
     if (! MS::validate(ms.keywordSet())) {
-	cerr << "validation of keywordSet fails" << endl;
+	cerr << "validation of keywordSet fails" << std::endl;
 	errCount++;
     }
 
     // they are all writable at this point
     if (!ms.isColumnWritable(MS::TIME)) {
 	cerr << "TIME column should be writable but isColumnWritable() returned False" 
-	     << endl;
+	     << std::endl;
 	errCount++;
     }
 
@@ -224,32 +224,32 @@ uInt tNonStatic(const String& sdmsName)
 
     // TIME is a scalar column, DATA is an array column
     if (!ms.isScalar(MS::TIME)) {
-	cerr << "TIME column is scalar but isScalar() returned False" << endl;
+	cerr << "TIME column is scalar but isScalar() returned False" << std::endl;
 	errCount++;
     }
     if (ms.isArray(MS::TIME)) {
-	cerr << "TIME column is scalar but isArray() returned True" << endl;
+	cerr << "TIME column is scalar but isArray() returned True" << std::endl;
 	errCount++;
     }
     if (ms.isScalar(MS::DATA)) {
-	cerr << "DATA column is array but isScalar() returned True" << endl;
+	cerr << "DATA column is array but isScalar() returned True" << std::endl;
 	errCount++;
     }
     if (!ms.isArray(MS::DATA)) {
-	cerr << "DATA column is array but isArray() returned False" << endl;
+	cerr << "DATA column is array but isArray() returned False" << std::endl;
 	errCount++;
     }
 
     // TIME has units of seconds
     // test via string
     if (ms.unit(MS::columnName(MS::TIME)) != "s") {
-	cerr << "MS::unit(const String&) failed to return s for TIME" << endl;
+	cerr << "MS::unit(const String&) failed to return s for TIME" << std::endl;
 	errCount++;
     }
     if (ms.unit(MS::TIME) != "s") {
-	cerr << "MS::unit(MS::TIME) failed to return s" << endl;
+	cerr << "MS::unit(MS::TIME) failed to return s" << std::endl;
 //*** testing
-	cerr << ms.unit(MS::TIME) <<endl;
+	cerr << ms.unit(MS::TIME) <<std::endl;
 //*** testing
 
 	errCount++;
@@ -265,7 +265,7 @@ uInt tNonStatic(const String& sdmsName)
 
     //    String parentName = ms.tableName();
     //    String subName = ms.keywordSet().asTable("ANTENNA").tableName();
-    //    cout << "Parent: "<<parentName<<", sub:"<<subName<<endl;
+    //    cout << "Parent: "<<parentName<<", sub:"<<subName<<std::endl;
     ms.flush();
 
     // ok, use operator to convert ms to sms
@@ -273,12 +273,12 @@ uInt tNonStatic(const String& sdmsName)
 
     // a couple of simple tests
     if (ms.nrow() != sms.nrow()) {
-	cerr << "operator= failed, number of rows is not correct" << endl;
+	cerr << "operator= failed, number of rows is not correct" << std::endl;
 	errCount++;
     }
 
     if (!ms.validate()) {
-	cerr << "operator= failed, validate returns False" << endl;
+	cerr << "operator= failed, validate returns False" << std::endl;
 	errCount++;
     }
 
@@ -486,14 +486,14 @@ uInt tReferenceCopy(const String& msName, const String& refMSName)
 	    // if so, it had better be TIME
 	    if (colNames(i) != MS::columnName(MS::TIME)) {
 //		cerr << "reference copy table column : " << colNames(i) 
-//		     << " is writable.  Only MS::TIME should be writable." << endl;
+//		     << " is writable.  Only MS::TIME should be writable." << std::endl;
 //		errCount++;
 	    }
 	} else {
 	    // it had better NOT be TIME
 	    if (colNames(i) == MS::columnName(MS::TIME)) {
 //		cerr << "reference copy table column : " << colNames(i)
-//		     << " is NOT writable.  It should be!" << endl;
+//		     << " is NOT writable.  It should be!" << std::endl;
 //		errCount++;
 	    }
 	}
@@ -513,7 +513,7 @@ uInt tNullMS(const String& msName)
     // Test construction and destruction of null MS.
     MeasurementSet ms;
     if (! ms.isNull()) {
-      cout << "tNullMS: MS should be null" << endl;
+      cout << "tNullMS: MS should be null" << std::endl;
       errCount++;
     }
   }
@@ -522,7 +522,7 @@ uInt tNullMS(const String& msName)
     // Test copy construction of null MS.
     MeasurementSet mscopy (nullMS);
     if (! mscopy.isNull()) {
-      cout << "tNullMS: MS copy should be null" << endl;
+      cout << "tNullMS: MS copy should be null" << std::endl;
       errCount++;
     }
   }
@@ -531,7 +531,7 @@ uInt tNullMS(const String& msName)
     MeasurementSet ms;
     ms = nullMS;
     if (! ms.isNull()) {
-      cout << "tNullMS: assign to null MS should be null" << endl;
+      cout << "tNullMS: assign to null MS should be null" << std::endl;
       errCount++;
     }
   }
@@ -540,7 +540,7 @@ uInt tNullMS(const String& msName)
     MeasurementSet ms(msName);
     ms = nullMS;
     if (! ms.isNull()) {
-      cout << "tNullMS: assign to non-null MS should be null" << endl;
+      cout << "tNullMS: assign to non-null MS should be null" << std::endl;
       errCount++;
     }
   }
@@ -550,7 +550,7 @@ uInt tNullMS(const String& msName)
     MeasurementSet ms(msName);
     nms = ms;
     if (nms.isNull()) {
-      cout << "tNullMS: assign to null MS should be non-null" << endl;
+      cout << "tNullMS: assign to null MS should be non-null" << std::endl;
       errCount++;
     }
   }
@@ -579,7 +579,7 @@ uInt tSetupNewTabError()
     } 
     if (!thrown) {
 	cerr << "MeasurementSet(SetupNewTable &, uInt) " 
-	    << "should have thrown an exception" << endl;
+	    << "should have thrown an exception" << std::endl;
 	errCount++;
     }
 
@@ -600,7 +600,7 @@ uInt tDestructorError(const String& sdmsName)
     } 
 
     if (!thrown) {
-	cerr << "~MeasurementSet() should have thrown an exception" << endl;
+	cerr << "~MeasurementSet() should have thrown an exception" << std::endl;
 	errCount++;
     }
   
@@ -610,9 +610,9 @@ uInt tDestructorError(const String& sdmsName)
 void checkErrors(uInt newErrors)
 {
     if (newErrors > 0) {
-	cout << newErrors << " errors!" << endl;
+	cout << newErrors << " errors!" << std::endl;
     } else {
-	cout << "ok." << endl;
+	cout << "ok." << std::endl;
     }
 }
 
@@ -660,7 +660,7 @@ int main() {
     checkErrors(newErrors);
     errCount += newErrors;
     
-    cout << "\nTest exceptions" << endl;
+    cout << "\nTest exceptions" << std::endl;
     cout << "in Constructors ... ";
     newErrors = tSetupNewTabError();
     checkErrors(newErrors);
@@ -678,14 +678,14 @@ int main() {
     ms.markForDelete();
 
     if (errCount > 0) {
-	cout << "tMeasurementSet ends with " << errCount << " errors." << endl;
+	cout << "tMeasurementSet ends with " << errCount << " errors." << std::endl;
     } else {
-	cout << "tMeasurementSet ends successfully" << endl;
+	cout << "tMeasurementSet ends successfully" << std::endl;
     }
 
     return errCount;
   } catch (std::exception& x) {
-      cerr << x.what() << endl;
+      cerr << x.what() << std::endl;
   } 
   return 1;
 }

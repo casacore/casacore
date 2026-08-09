@@ -186,7 +186,7 @@ int main() {
     }
     return 0;  
   } catch (std::exception& x) {
-    cerr << x.what() <<endl;
+    cerr << x.what() <<std::endl;
     return 1;
   } 
 }

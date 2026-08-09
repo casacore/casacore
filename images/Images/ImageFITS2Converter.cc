@@ -399,7 +399,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       cursorShape(i) = shape(i);
     }
 
-    ostringstream buffer;
+    std::ostringstream buffer;
     if (axis == Int(ndim) - 1) {
       buffer << "All pixels fit in memory";
     } else {
@@ -434,7 +434,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       CoordinateSystem cSys2;
       Vector<String> names(shape.nelements());
       for (uInt i=0; i<names.nelements(); i++) {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << i;
         names(i) = String("linear") + String(oss);
       }   
@@ -1168,7 +1168,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                 break;
             default:
                 {
-                    ostringstream mytype;
+                    std::ostringstream mytype;
                     mytype << misctype;
                     os << LogIO::NORMAL << "Not writing miscInfo field '" <<
                     miscname << "' - cannot handle type " << String(mytype) <<

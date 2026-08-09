@@ -186,7 +186,7 @@ LCRegion* WCRegion::toLCRegion (const CoordinateSystem& cSys,
     // Make sure shape length matches number of pixel axes.
 
     if (shape.nelements() != cSys.nPixelAxes()) {
-    	ostringstream os;
+    	std::ostringstream os;
     	os << "WCRegion::" << __FUNCTION__ << ": shape has "
 			<< shape.nelements() << " elements, the coordinate system has "
 			<< cSys.nPixelAxes() << " axes. The actual shape is "

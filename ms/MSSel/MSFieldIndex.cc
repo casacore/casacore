@@ -90,7 +90,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Mesg << "Field Expression: Invalid regular expression \"" << pattern << "\"";
 	throw(MSSelectionFieldParseError(Mesg.str().c_str()));
       }
-    //    cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
+    //    cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << std::endl;
     Vector<String> names=msFieldCols_p.name().getColumn();
     Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
     IPosition sh(names.shape());
@@ -128,7 +128,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (regex) reg=pattern;
     else       reg=reg.fromPattern(pattern);
     
-    //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+    //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
     Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
     Vector<String> codes=msFieldCols_p.code().getColumn();
     IPosition sh(codes.shape());

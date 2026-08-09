@@ -559,7 +559,7 @@ void ImageBeamSet::summarize(
         spCoord = &csys.spectralCoordinate();
         chanWidth = max(4, Int(log10(beamsShape[0])) + 1);
         // yes these really should be separated because width applies only to the first.
-        ostringstream x;
+        std::ostringstream x;
         Double freq;
         spCoord->toWorld(freq, 0);
         if (spCoord->pixelValues().size() > 0) {

@@ -196,8 +196,8 @@ private:
     ) const;
 
 // List min and max with world coordinates
-   virtual void listMinMax (ostringstream& osMin,
-                            ostringstream& osMax,
+   virtual void listMinMax (std::ostringstream& osMin,
+                            std::ostringstream& osMax,
                             Int oWidth, DataType type);
 
 // List the statistics
