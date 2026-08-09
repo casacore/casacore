@@ -85,7 +85,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     catch (...) // Since I (SB) don't know the type of exception Regex throws, catch them all!
       {
-	ostringstream Mesg;
+	std::ostringstream Mesg;
 	Mesg << "State Expression: Invalid regular expression \"" << pattern << "\"";
 	throw(MSSelectionStateParseError(Mesg.str().c_str()));
       }

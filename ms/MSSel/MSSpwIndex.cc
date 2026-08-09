@@ -122,7 +122,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (IDs.nelements() != sourceId.nelements())
       {
 	vector<int> tt = IDs.tovector();
-	ostringstream Mesg, tok;
+	std::ostringstream Mesg, tok;
 	Mesg << "Spw Expression: No match found for ";
 	for (uInt i=0;i<sourceId.nelements();i++)
 	  {
@@ -297,7 +297,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     if (IDs.nelements()==0)
       {
-	ostringstream msg;
+	std::ostringstream msg;
 	String rangeStr(" frequency range ");
 	if (f0==f1) rangeStr=" frequency ";
 	msg << "No matching SPW found for" << rangeStr << f0;
@@ -408,7 +408,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
 
     Bool someMatchFailed=False;
-    ostringstream Mesg;
+    std::ostringstream Mesg;
 
     if (nFList > 0)
       {
@@ -442,7 +442,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    {
 		      if (stop >= numChans(spw(i)))
 			{
-			  //			  ostringstream Mesg;
+			  //			  std::ostringstream Mesg;
 			  Mesg << "Channel " << stop << " out of range for SPW "
 			       << spw(i) << " (valid range 0~" << numChans(spw(i))-1 << ")."
 			       << " Limiting it to be within the available range.";
@@ -578,7 +578,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	//       << LogIO::WARN << LogIO::POST;
 	;
       } else {
-        ostringstream m;
+        std::ostringstream m;
         log_l << "Found no matching SPW(s) " << spw << LogIO::WARN << LogIO::POST;
         //	  log_l << m.str() << LogIO::WARN << LogIO::POST;
       }

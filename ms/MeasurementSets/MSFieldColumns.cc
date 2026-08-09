@@ -201,7 +201,7 @@ MRadialVelocity MSFieldColumns::radVelMeas(rownr_t row, Double interTime) const
       MVRadialVelocity mvradvel;
     
       if(!measCometsV_p(index)->getRadVel(mvradvel, interMJD)){
-	stringstream ss;
+	std::stringstream ss;
 	ss << "MSFieldColumns::radVelMeas(...) - No valid ephemeris entry for MJD " 
 	   << setprecision(11) << interMJD << " for field " << row;
 	throw(AipsError(ss.str()));
@@ -240,7 +240,7 @@ Quantity MSFieldColumns::rho(rownr_t row, Double interTime) const
     
       MVPosition mvpos;
       if(!measCometsV_p(index)->get(mvpos, interMJD)){
-	stringstream ss;
+	std::stringstream ss;
 	ss << "MSFieldColumns::rho(...) - No valid ephemeris entry for MJD " 
 	   << setprecision(11) << interMJD << " for field " << row;
 	throw(AipsError(ss.str()));
@@ -428,7 +428,7 @@ void MSFieldColumns::updateMeasComets()
       
       // find the table belonging to this id
       Directory fieldDir(measCometsPath_p);
-      stringstream ss;
+      std::stringstream ss;
       ss << theEphId;
       Regex ephemTableRegex (Regex::fromPattern("EPHEM"+ss.str()+"_*\\.tab"));
       Vector<String> candidates = fieldDir.find(ephemTableRegex, True, False); // followSymLinks=True, recursive=False
@@ -468,7 +468,7 @@ MDirection MSFieldColumns::extractDirMeas(const MDirection& offsetDir,
     
     MVPosition xmvpos;
     if(!measCometsV_p(index)->get(xmvpos, interMJD)){
-      stringstream ss;
+      std::stringstream ss;
       ss << "MSFieldColumns::extractDirMeas(...) - No valid ephemeris entry for MJD " 
 	 << setprecision(11) << interMJD << " in ephemeris " << measCometsV_p(index)->getTablePath();
       throw(AipsError(ss.str()));

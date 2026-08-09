@@ -960,19 +960,19 @@ int main (int argc, char* argv[])
     double msinterval = 60.;
     double binwidth = 120.;
     if (argc > 1) {
-      istringstream iss(argv[1]);
+      std::istringstream iss(argv[1]);
       iss >> nAnt;
     }
     if (argc > 2) {
-      istringstream iss(argv[2]);
+      std::istringstream iss(argv[2]);
       iss >> nTime;
     }
     if (argc > 3) {
-      istringstream iss(argv[3]);
+      std::istringstream iss(argv[3]);
       iss >> msinterval;
     }
     if (argc > 4) {
-      istringstream iss(argv[4]);
+      std::istringstream iss(argv[4]);
       iss >> binwidth;
     }
     createMS(nAnt, nTime, msinterval);

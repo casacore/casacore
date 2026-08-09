@@ -216,7 +216,7 @@ Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
     }
     if(Table::isReadable(inputEphemTableName)){
       Directory inputDir(inputEphemTableName);
-      stringstream ss;
+      std::stringstream ss;
       ss << "/EPHEM" << id << "_" << comment << ".tab";
       String destTableName = Path(this->tableName()).absoluteName() + String(ss.str());
       removeEphemeris(id); // remove preexisting ephemerides with the same id
@@ -231,7 +231,7 @@ Bool MSField::removeEphemeris(const uInt id){
 
   Bool rval=True;
   Directory fieldDir(Path(this->tableName()).absoluteName());
-  stringstream ss;
+  std::stringstream ss;
   ss << "EPHEM" << id << "_*.tab";
   Regex ephemTableRegex (Regex::fromPattern(ss.str()));
   Vector<String> candidates = fieldDir.find(ephemTableRegex, True, False); // followSymLinks=True, recursive=False

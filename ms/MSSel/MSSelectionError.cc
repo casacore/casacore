@@ -52,7 +52,7 @@ void MSSelectionError::changeMessage(String& mesg)
 //
 String constructMessage(const Int pos, const String& command)
 {
-  ostringstream newMesg;
+  std::ostringstream newMesg;
   newMesg << endl << "(near char. " << pos << " in string \"" << command << "\")";
   //
   // Make a few guess about user errors and help them out 

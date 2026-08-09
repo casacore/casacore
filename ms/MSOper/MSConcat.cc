@@ -3039,7 +3039,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
 	}
 	else{ // both use an ephemeris
 	  // is the time coverage of this ephem sufficient to be also used for the other field?
-	  stringstream ss;
+	  std::stringstream ss;
 	  for(uInt i=0; i<2; i++){
 	    try{
 	      MDirection tMDir = fieldCols.phaseDirMeas(newFld, validityRange(i));
