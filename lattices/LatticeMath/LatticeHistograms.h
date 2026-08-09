@@ -371,10 +371,10 @@ private:
    Bool setInclude (Vector<T>& range,
                     Bool& noInclude,  
                     const Vector<T>& include,
-                    ostream& os);
+                    std::ostream& os);
 
 // Set stream attributes
-   void setStream (ostream& os, Int oPrec);
+   void setStream (std::ostream& os, Int oPrec);
 
 // Make a string with pixel coordinates of display axes.  This function
 // is over-ridden by ImageHistograms which inherits from LatticeHistograms.

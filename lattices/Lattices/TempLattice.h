@@ -240,7 +240,7 @@ public:
   virtual void clearCache();
 
   // Report on cache success.
-  virtual void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics (std::ostream& os) const;
 
   // Get or put a single element in the lattice.
   // Note that Lattice::operator() can also be used to get a single element.

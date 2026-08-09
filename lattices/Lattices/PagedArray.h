@@ -514,7 +514,7 @@ public:
 
   // Generate a report on how the cache is doing. This is reset every
   // time <src>clearCache</src> is called.
-  virtual void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics (std::ostream& os) const;
 
   // Return the value of the single element located at the argument
   // IPosition.

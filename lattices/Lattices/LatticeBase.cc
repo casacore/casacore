@@ -148,7 +148,7 @@ void LatticeBase::setCacheSizeFromPath (const IPosition&,
 void LatticeBase::clearCache()
 {}
 
-void LatticeBase::showCacheStatistics (ostream&) const
+void LatticeBase::showCacheStatistics (std::ostream&) const
 {}
 
 void LatticeBase::throwBoolMath() const

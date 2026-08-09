@@ -249,7 +249,7 @@ public:
 
   // Report on cache success.
   // <br>The default implementation does nothing.
-  virtual void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics (std::ostream& os) const;
 
 
 protected:

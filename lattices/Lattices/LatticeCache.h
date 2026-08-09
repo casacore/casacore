@@ -118,7 +118,7 @@ public:
   IPosition& cacheLocation(IPosition& cacheLoc, const IPosition& tileLoc);
 
   // Show the statistics of cache access
-  virtual void showCacheStatistics(ostream& os);
+  virtual void showCacheStatistics(std::ostream& os);
 
   // Clear the statistics of cache access
   virtual void clearCacheStatistics();

@@ -30,6 +30,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 
+#include <ostream>
 #include <set>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -163,7 +164,7 @@ enum StatisticsTypes {
 // is resized to 2 before assignment.  A return value of <src>False</src> indicates 
 // invalid arguments.
    static Bool setNxy (Vector<Int>& nxy,
-                       ostream& os);
+                       std::ostream& os);
 
 // A storage image is used to accumulate information as a function of the display
 // axes as an image is iterated through.  This function sets the storage image shape 
