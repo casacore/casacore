@@ -320,7 +320,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		// determine which axis is the "latitude" axis, i.e. DEC or xLAT
 		int theLatAxisNum = -1;
 		for (uInt k=0; k<ctype.nelements(); k++){
-		    string theType(ctype[k]);
+		    std::string theType(ctype[k]);
 		    if (theType.substr(0,3) == "DEC" || theType.substr(1,3) == "LAT"){
 			theLatAxisNum = k;
 			break;

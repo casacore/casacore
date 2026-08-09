@@ -1062,7 +1062,7 @@ void MSLister::listData(const int pageRows,
                   ) {
                 // query the user, if we are interactive
                 if (listfile == "" &&  prompt && countPageRow != 0) {
-                  string contStr;
+                  std::string contStr;
                   myout << "Type Q to quit, A to toggle long/short list, or RETURN to continue [continue]: ";
                   getline(cin,contStr);
                   if ( (contStr.compare(0,1,"q") == 0) or
@@ -1129,7 +1129,7 @@ void MSLister::listData(const int pageRows,
       if (endOutput) {break;} // break out of msIter
       myout << hSeparator << endl;
       if (listfile == "") {
-        string contStr;
+        std::string contStr;
         myout << "Type Q to quit, A to toggle long/short list, or RETURN to continue [continue]: ";
         getline(cin,contStr);
         if ( (contStr.compare(0,1,"q") == 0) or

@@ -201,7 +201,7 @@ private:
   ScalarColumn<Double>        itsTimeCol;      //# TIME
   ScalarMeasColumn<MEpoch>    itsTimeMeasCol;  //# TIME as Measure
   ScalarColumn<Int>           itsCalCol;       //# CAL_DESC_ID
-  map<string,int>             itsCalMap;       //# map of MS name to index
+  map<std::string,int>        itsCalMap;       //# map of MS name to index
   vector<Int>                 itsCalIdMap;     //# map of calId to index
   MPosition                   itsArrayPos;
   Vector<double>              itsArrayItrf;    //# ITRF array position

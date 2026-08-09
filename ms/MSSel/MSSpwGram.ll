@@ -35,7 +35,7 @@
 
 #undef YY_DECL
 #define YY_DECL int MSSpwGramlex (YYSTYPE* lvalp)
-static string                qstr;
+static std::string                qstr;
 %}
 
 WHITE     [ \t\n]*

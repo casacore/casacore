@@ -61,7 +61,7 @@
 
 
 // Version
-const string PROG_VS = "20110502wnb";
+const std::string PROG_VS = "20110502wnb";
 
 
 // Using

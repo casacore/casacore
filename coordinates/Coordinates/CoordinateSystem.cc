@@ -2619,7 +2619,7 @@ String CoordinateSystem::coordRecordName(uInt which) const
 {
   // Write each string into a field it's type plus coordinate
   // number, e.g. direction0
-  string basename = "unknown";
+  std::string basename = "unknown";
   switch (coordinates_p[which]->type()) {
   case Coordinate::LINEAR:    basename = "linear"; break;
   case Coordinate::DIRECTION: basename = "direction"; break;

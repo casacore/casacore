@@ -331,7 +331,7 @@ String FITSImage::imageType() const
 
 String FITSImage::className()
 {
-    static const string x = "FITSImage";
+    static const std::string x = "FITSImage";
     return x;
 }
 

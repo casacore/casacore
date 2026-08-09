@@ -61,7 +61,7 @@ void testit(
 int main () {
 
   try {
-	  ostringstream test;
+	  std::ostringstream test;
 	  Vector<Double> x(2, 0);
 	  Vector<Double> y;
 	  uInt expected = 3;

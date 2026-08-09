@@ -23,6 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
+#include <iostream>
+
 #include <casacore/casa/HDF5/HDF5Object.h>
 
 using namespace casacore;
@@ -35,12 +37,12 @@ int main(int argc, char*[])
 {
   if (HDF5Object::hasHDF5Support()) {
     if (argc < 2) {
-      cout << "casacore built with HDF5 support" << endl;
+      std::cout << "casacore built with HDF5 support" << std::endl;
     }
     return 0;
   }
   if (argc < 2) {
-    cout << "casacore built without HDF5 support" << endl;
+    std::cout << "casacore built without HDF5 support" << std::endl;
   }
   return 1;
 }

@@ -421,10 +421,10 @@ String Path::makeAbsoluteName (const String& inString) const
 String Path::removeDots (const String& inString) const
 {
     // Split the name at the slashes.
-    Vector<string> parts (strToVector (inString, '/'));
+    Vector<std::string> parts (strToVector (inString, '/'));
     Vector<uInt> validParts (parts.nelements());
-    string dot(".");
-    string dotdot("..");
+    std::string dot(".");
+    std::string dotdot("..");
     uInt nvalid = 0;
     uInt i;
     // Count the number of valid parts and keep their index.

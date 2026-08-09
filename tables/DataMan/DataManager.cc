@@ -380,12 +380,12 @@ DataManagerCtor DataManager::getCtor (const String& type)
     // data managers can use the same library).
     String libname(type);
     libname.downcase();
-    string::size_type pos = libname.find_first_of (".<");
-    if (pos != string::npos) {
+    std::string::size_type pos = libname.find_first_of (".<");
+    if (pos != std::string::npos) {
         libname = libname.substr (0, pos);
     }
     // Try to load and initialize the dynamic library.
-    DynLib dl(libname, string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
+    DynLib dl(libname, std::string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
               "register_"+libname, False);
     if (dl.getHandle()) {
         // See if registered now.

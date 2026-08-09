@@ -79,7 +79,7 @@ public:
 
   // Get data members.
   // <group>
-  const string& source() const
+  const std::string& source() const
     { return itsSource; }
   Int maxDistance() const
     { return itsMaxDistance; }

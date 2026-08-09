@@ -116,7 +116,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     JsonOut (const String& name);
 
     // Create the object using the given ostream object.
-    JsonOut (ostream& os);
+    JsonOut (std::ostream& os);
 
     // Close the stream. It closes the ofstream object if created.
     ~JsonOut();
