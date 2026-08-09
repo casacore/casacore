@@ -509,7 +509,7 @@ void DataManInfo::setTiledStMan (Record& dminfo, const Vector<String>& columns,
   }
 }
 
-void DataManInfo::showDataManStats (const Table& tab, ostream& os)
+void DataManInfo::showDataManStats (const Table& tab, std::ostream& os)
 {
   Record dmInfo = tab.dataManagerInfo();
   // Loop through all data managers.

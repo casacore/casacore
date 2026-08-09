@@ -108,7 +108,7 @@ public:
       { return itsDataManager->sequenceNr(); } 
 
     // Show IO statistics.
-    void showCacheStatistics (ostream& os) const
+    void showCacheStatistics (std::ostream& os) const
       { itsDataManager->showCacheStatistics (os); }
 
 protected:
