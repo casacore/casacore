@@ -180,7 +180,7 @@ String Time::toString(const Bool iso) const
   // Tue Mar 22 16:40:24 1994
   // with GMT time
 
-  ostringstream out;
+  std::ostringstream out;
 
   int i,j,jd,l,n,day,month,year,dayweek,sec;
   double jdf,hour,min;

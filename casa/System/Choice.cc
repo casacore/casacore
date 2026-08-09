@@ -66,7 +66,7 @@ String Choice::ostreamChoice (std::ostream& os,
       os << ',' << choices[i];
     }
     os << "): ";
-    cin.getline (answer, sizeof(answer));
+    std::cin.getline (answer, sizeof(answer));
     String str(answer);
     if (str.size() == 0) {
       return choices[0];

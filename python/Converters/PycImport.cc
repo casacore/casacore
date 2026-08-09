@@ -43,7 +43,7 @@ namespace casacore { namespace python {
         // because Boost-Python does not do that.
         // (from http://stackoverflow.com/questions/9285384/
         //  how-does-import-work-with-boost-python-from-inside-python-files)
-        string workingDir = Path(".").absoluteName();
+        std::string workingDir = Path(".").absoluteName();
         char path[] = "path";      // warning if "path" is used below
         PyObject* sysPath = PySys_GetObject(path);
 #ifdef IS_PY3K

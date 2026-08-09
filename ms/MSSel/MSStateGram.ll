@@ -35,7 +35,7 @@
 
 #undef YY_DECL
 #define YY_DECL int MSStateGramlex (YYSTYPE* lvalp)
-static string                qstrState;
+static std::string                qstrState;
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 %}
 

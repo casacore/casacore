@@ -64,7 +64,7 @@ AipsError::AipsError (const String &msg, const String& filename,
                       uInt lineNumber, Category c)
   : category(c)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << msg << " at File: " << filename << ", line: " << lineNumber;
   message = os.str();
   AddStackTrace ();
@@ -175,7 +175,7 @@ AipsError AipsError::repackageAipsError (AipsError& error,
                                          const char* file,
                                          Int line, const char* func)
 {
-  ostringstream os;
+  std::ostringstream os;
   AipsError tmp (message, file, line);
   os << "+++Exception: " << tmp.getMesg() << ".\n...Thrown by " << func << ": "
      << "\n...Lower level exception: " << error.getMesg()

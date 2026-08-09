@@ -314,7 +314,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         break;
       default:
         if (iscntrl(in[i])) {
-          ostringstream oss;
+          std::ostringstream oss;
           oss << "\\u" << std::hex << std::uppercase << std::setfill('0')
               << std::setw(4) << static_cast<int>(in[i]);
           out.append (oss.str());

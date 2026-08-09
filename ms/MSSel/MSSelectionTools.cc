@@ -353,7 +353,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     std::stringstream ss(s);
     std::string item;
-    vector<string> tmp;
+    std::vector<std::string> tmp;
     while(std::getline(ss, item, delim))   tmp.push_back(item);
 
     elems.resize(tmp.size());

@@ -455,7 +455,7 @@ void MSCalEngine::fillCalDesc()
   for (rownr_t i=itsCalIdMap.size(); i<tab.nrow(); ++i) {
     String msName = nameCol(i);
     Int inx = itsCalMap.size();
-    map<string,int>::iterator iter = itsCalMap.find (msName);
+    map<std::string,int>::iterator iter = itsCalMap.find (msName);
     if (iter == itsCalMap.end()) {
       // New MS name, so add it.
       itsCalMap[msName] = inx;

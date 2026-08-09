@@ -53,7 +53,7 @@ Int String::freq(Char c) const {
   return found;
 }
 
-Int String::freq(const string &str) const {
+Int String::freq(const std::string &str) const {
   size_type p(0);
   Int found(0);
   while (p < length()) {
@@ -152,7 +152,7 @@ SubString String::at(size_type pos, size_type len) {
   return _substr(pos, len);
 }
 
-SubString String::at(const string &str, Int startpos) {
+SubString String::at(const std::string &str, Int startpos) {
   return _substr(index(str, startpos), str.length());
 }
 
@@ -168,7 +168,7 @@ SubString String::before(size_type pos) const {
   return _substr(0, pos);
 }
 
-SubString String::before(const string &str, size_type startpos) const {
+SubString String::before(const std::string &str, size_type startpos) const {
   return _substr(0, index(str, startpos));
 }
 
@@ -184,7 +184,7 @@ SubString String::through(size_type pos) {
   return _substr(0, pos+1);
 }
 
-SubString String::through(const string &str, size_type startpos) {
+SubString String::through(const std::string &str, size_type startpos) {
   size_type last(index(str, startpos));
   if (last != npos) last += str.length();
   return _substr(0, last);
@@ -206,7 +206,7 @@ SubString String::from(size_type pos) {
   return _substr(pos, length()-pos);
 }
 
-SubString String::from(const string &str, size_type startpos) {
+SubString String::from(const std::string &str, size_type startpos) {
   size_type first(index(str, startpos));
   return _substr(first, length()-first);
 }
@@ -225,7 +225,7 @@ SubString String::after(size_type pos) {
   return _substr(pos+1, length()-(pos+1));
 }
 
-SubString String::after(const string &str, size_type startpos) {
+SubString String::after(const std::string &str, size_type startpos) {
   size_type first(index(str, startpos));
   if (first != npos) first += str.length();
   return _substr(first, length()-first);
@@ -244,7 +244,7 @@ SubString String::after(Char c, size_type startpos) {
 }
 
 // Prepend string
-void String::prepend(const string &str) {
+void String::prepend(const std::string &str) {
   insert(size_type(0), str);
 }
 
@@ -261,7 +261,7 @@ void String::del(size_type pos, size_type len) {
   erase(pos, len);
 }
 
-void String::del(const string &str, size_type startpos) {
+void String::del(const std::string &str, size_type startpos) {
   erase(index(str, startpos), str.length());
 }
 
@@ -274,7 +274,7 @@ void String::del(Char c, size_type startpos) {
 }
 
 // Global substitution
-Int String::gsub(const string &pat, const string &repl) {
+Int String::gsub(const std::string &pat, const std::string &repl) {
   Int nmatches(0);
   if (length() == 0 || pat.length() == 0 ||
       length() < pat.length()) return nmatches;
@@ -292,7 +292,7 @@ Int String::gsub(const string &pat, const string &repl) {
   return nmatches;
 }
 
-Int String::gsub(const Char *pat, const string &repl) {
+Int String::gsub(const Char *pat, const std::string &repl) {
   return gsub(String(pat), repl);
 }
 
@@ -340,7 +340,7 @@ String::size_type String::find(const Regex &r, size_type pos) const {
   return r.find(c_str(), length(), unused, pos);
 }
 
-Bool String::matches(const string &str, Int pos) const {
+Bool String::matches(const std::string &str, Int pos) const {
   Bool rstat(False);
   if (pos < 0) {
     if (this->index(str,pos) == 0) {
@@ -416,7 +416,7 @@ void String::del(const Regex &r, size_type startpos) {
   }
 }
 
-Int String::gsub(const Regex &pat, const string &repl) {
+Int String::gsub(const Regex &pat, const std::string &repl) {
   Int nmatches(0);
   if (length() == 0) return nmatches;
   Int pl;
@@ -444,31 +444,31 @@ Int String::gsub(const Regex &pat, const string &repl) {
 }
 
 // Global functions
-String reverse(const string& str) {
+String reverse(const std::string& str) {
   String s(str);
   std::reverse(s.begin(), s.end());
   return s;
 }
 
-String upcase(const string& str) {
+String upcase(const std::string& str) {
   String s(str);
   std::transform(s.begin(), s.end(), s.begin(), ToUpper);
   return s;
 }
 
-String downcase(const string& str) {
+String downcase(const std::string& str) {
   String s(str);
   std::transform(s.begin(), s.end(), s.begin(), ToLower);
   return s;
 }
 
-String capitalize(const string& str) {
+String capitalize(const std::string& str) {
   String s(str);
   s.capitalize();
   return s;
 }
 
-String trim(const string& str) {
+String trim(const std::string& str) {
   String s(str);
   s.trim();
   return s;
@@ -478,15 +478,15 @@ String replicate(Char c, String::size_type n) {
   return String(n, c);
 }
 
-String replicate(const string &str, String::size_type n) {
+String replicate(const std::string &str, String::size_type n) {
   String t(str);
   t.reserve(n*str.length());
   while (--n > 0) t += str;
   return t;
 }
 
-Int split(const string &str, string res[], Int maxn,
-	  const string &sep) {
+Int split(const std::string &str, std::string res[], Int maxn,
+	  const std::string &sep) {
   Int i(0);
   String::size_type pos(0);
   while (i < maxn && pos < str.length()) {
@@ -499,7 +499,7 @@ Int split(const string &str, string res[], Int maxn,
   return i;
 }
 
-Int split(const string &str, string res[], Int maxn,
+Int split(const std::string &str, std::string res[], Int maxn,
 	  const Regex &sep) {
   Int i(0);
   String::size_type pos(0);
@@ -514,12 +514,12 @@ Int split(const string &str, string res[], Int maxn,
   return i;
 }
 
-Int split(const string &str, string res[], Int maxn,
+Int split(const std::string &str, std::string res[], Int maxn,
 	  const Char sep) {
   return split(str, res, maxn, String(sep));
 }
 
-String common_prefix(const string &x, const string &y, 
+String common_prefix(const std::string &x, const std::string &y,
 		     Int startpos) {
   if (static_cast<String::size_type>(startpos) == String::npos ||
       static_cast<String::size_type>(startpos) >= x.length() ||
@@ -531,7 +531,7 @@ String common_prefix(const string &x, const string &y,
   return String(x, startpos, l);
 }
 
-String common_suffix(const string &x, const string &y, 
+String common_suffix(const std::string &x, const std::string &y,
 		     Int startpos) {
   if (startpos >= 0 ||
       startpos + Int(x.length()) < 0 ||
@@ -543,7 +543,7 @@ String common_suffix(const string &x, const string &y,
   return String(x, x.length()+startpos+1-l, l);
 }
 
-String join(string src[], Int n, const string& sep) {
+String join(std::string src[], Int n, const std::string& sep) {
   String x;
   for (Int i=0; i<n; i++) {
     x += src[i];
@@ -555,14 +555,14 @@ String join(string src[], Int n, const string& sep) {
 Int fcompare(const String& x, const String& y) {
   // Determine minimum size and result in case characters compare equal.
   Int res = 0;
-  string::size_type sz = x.size();
+  std::string::size_type sz = x.size();
   if (x.size() < y.size()) {
     res = -1;
   } else if (x.size() > y.size()) {
     res = 1;
     sz  = y.size();
   }
-  for (string::size_type i=0; i<sz; ++i) {
+  for (std::string::size_type i=0; i<sz; ++i) {
     // Maybe it makes no sense to first test x[i] != y[i].
     char xc = tolower(x[i]);
     char yc = tolower(y[i]);
@@ -585,17 +585,17 @@ SubString &SubString::operator=(const SubString &str) {
 }
 
 SubString &SubString::operator=(const String &str) {
-  const_cast<string &>(ref_p).replace(pos_p, len_p, str);
+  const_cast<std::string &>(ref_p).replace(pos_p, len_p, str);
   return *this;
 }
 
 SubString &SubString::operator=(const Char *s) {
-  const_cast<string &>(ref_p).replace(pos_p, len_p, s);
+  const_cast<std::string &>(ref_p).replace(pos_p, len_p, s);
   return *this;
 }
 
 SubString &SubString::operator=(const Char c) {
-  const_cast<string &>(ref_p).replace(pos_p, len_p, 1, c);
+  const_cast<std::string &>(ref_p).replace(pos_p, len_p, 1, c);
   return *this;
 }
 

@@ -1912,7 +1912,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 
     } // end for
     if (maxDeviation>0. && gridSpacing>0. && maxDeviation/gridSpacing>1E-3) {
-      string sUnit = "Hz";
+      std::string sUnit = "Hz";
       if(preferWavelength){
 	sUnit = "m";
       }

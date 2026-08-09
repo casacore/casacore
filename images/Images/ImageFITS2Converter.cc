@@ -1201,7 +1201,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // ORIGIN
     //
     if (origin.empty()) {
-      header.define("ORIGIN", "casacore-" + string(getVersion()));
+      header.define("ORIGIN", "casacore-" + std::string(getVersion()));
     } else {
       header.define("ORIGIN", origin);
     }
