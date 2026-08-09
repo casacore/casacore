@@ -57,7 +57,7 @@
 
 #define MrsDebugLog(level,message) \
         { if ((level) <= mrsDebugLevel_p) { \
-            LogIO logIo (LogOrigin ("MS")); logIo << (message) << endl; logIo.post();\
+            LogIO logIo (LogOrigin ("MS")); logIo << (message) << std::endl; logIo.post();\
           }\
         }
 
@@ -1007,7 +1007,7 @@ Bool MeasurementSet::validateMeasureRefs()
 	if (refFld<0 || tableDesc()[i].keywordSet().asRecord(fld).
 	    asString(refFld) == "") {
 	  cerr << "Missing Measure reference for column "<<tableDesc()[i].name()
-	       << endl;
+	       << std::endl;
 	  ok = False;
 	}
       }
@@ -1028,7 +1028,7 @@ Bool MeasurementSet::validateMeasureRefs()
 	      asString(refFld) == "") {
 	    cerr << "Missing Measure reference for column "
 		 <<tab.tableDesc()[i].name()<<" in subtable "<<tab.tableName() 
-		 << endl;
+		 << std::endl;
 	    ok = False;
 	  }
 	}
@@ -1107,7 +1107,7 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   else allDDIDList = set_intersection(ddIDList, spwDDIDList);
 
 
-  //  cerr << ddIDList << endl << spwDDIDList << endl << allDDIDList << endl;
+  //  cerr << ddIDList << std::endl << spwDDIDList << std::endl << allDDIDList << std::endl;
 
   retval.define("spw", spwlist);
   retval.define("field", fieldlist);

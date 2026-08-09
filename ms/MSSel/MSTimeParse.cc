@@ -167,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     firstRowTime = mainColumn_p->timeQuant()(firstLogicalRow);
 
-    //    cout << firstRowTime.string(MVTime::DMY,7) << endl;
+    //    cout << firstRowTime.string(MVTime::DMY,7) << std::endl;
 
     Time t0(firstRowTime.getTime());
 
@@ -380,7 +380,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	if (tf.sec == -1)      tf.sec=0;
 	if (tf.fsec == -1)     tf.fsec = 0;
       }
-    //    cout << tf.year << " " << tf.month << " " << tf.day << " " << endl;
+    //    cout << tf.year << " " << tf.month << " " << tf.day << " " << std::endl;
   }
   //
   //-------------------------------------------------------------------

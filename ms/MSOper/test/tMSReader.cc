@@ -37,11 +37,11 @@ int main(int argc, const char* argv[])
 {
     try {
 	if (argc<2) {
-	    cout << "Usage: " << argv[0] << " ms_name" << endl; 
+	    cout << "Usage: " << argv[0] << " ms_name" << std::endl; 
 	    return 1;
 	}
 	String msName(argv[1]);
-	cout << "MS Name = " << msName << endl;
+	cout << "MS Name = " << msName << std::endl;
 
 	// construct the MS
 	MeasurementSet ms(msName);
@@ -52,7 +52,7 @@ int main(int argc, const char* argv[])
 	MSReader reader(ms);
 	timer.show("Construction : ");
 
-	cout << "Tables : " << reader.tables() << endl;
+	cout << "Tables : " << reader.tables() << std::endl;
 	Vector<String> tables(reader.tables());
 
 	timer.mark();
@@ -64,12 +64,12 @@ int main(int argc, const char* argv[])
 		if (j > 0) cout << " | ";
 		cout << reader.rowNumber(tables(j));
 	    }
-	    cout << endl;
+	    cout << std::endl;
 	}
 	timer.show("read to end : ");
-	cout << "done" << endl;
+	cout << "done" << std::endl;
     } catch (std::exception& x) {
-	cerr << "Exception : " << x.what() << endl;
+	cerr << "Exception : " << x.what() << std::endl;
     } 
  
     return 0;

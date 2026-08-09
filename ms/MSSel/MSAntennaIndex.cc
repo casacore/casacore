@@ -102,7 +102,7 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
   } else {
     reg=reg.fromPattern(patt);
   }
-  //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+  //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
   IPosition sh(msAntennaCols_p.name().getColumn().shape());
   LogicalArray maskArray(sh,False);
   IPosition i=sh;
@@ -112,7 +112,7 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
       Int ret=(msAntennaCols_p.name().getColumn()(i).matches(reg,pos));
       if (ret <= 0)
 	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
-      //      cerr << i << " " << ret << endl;
+      //      cerr << i << " " << ret << std::endl;
       maskArray(i) = ( (ret>0) != negate );
       //		       && !msAntennaCols_p.flagRow().getColumn()(i));
     }
@@ -207,7 +207,7 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern,
   } else {
     reg=reg.fromPattern(patt);
   }
-  //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+  //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
   IPosition sh(msAntennaCols_p.station().getColumn().shape());
   LogicalArray maskArray(sh,False);
   IPosition i=sh;
@@ -217,7 +217,7 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern,
       Int ret=(msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
       // if (ret <= 0)
       // 	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
-      //      cerr << i << " " << ret << endl;
+      //      cerr << i << " " << ret << std::endl;
       maskArray(i) = ( (ret>0) != negate );
       //		       && !msAntennaCols_p.flagRow().getColumn()(i));
     }

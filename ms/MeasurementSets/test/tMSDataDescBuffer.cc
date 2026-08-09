@@ -90,11 +90,11 @@ int main() {
     }
   }
   catch (std::exception& x) {
-    cerr << x.what() << endl;
-    cout << "FAIL" << endl;
+    cerr << x.what() << std::endl;
+    cout << "FAIL" << std::endl;
     return 1;
   }
-  cout << "OK" << endl;
+  cout << "OK" << std::endl;
 }
 
 // Local Variables: 

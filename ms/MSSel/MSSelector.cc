@@ -231,7 +231,7 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 		}
 
 		if (polVaries) {
-			os<< LogIO::WARN << "Polarization type varies with row - "<<endl<<
+			os<< LogIO::WARN << "Polarization type varies with row - "<<std::endl<<
 					"do not use selectpolarization or results will be incorrect "
 					"Assuming (falsely) the following polarizations are present:"
 					<< LogIO::POST;
@@ -1455,7 +1455,7 @@ Bool MSSelector::putData(const Record& items)
 			}
 			if (polIndex_p.nelements()>0) {
 				os << LogIO::SEVERE << "Polarization selection must be 1,2 or "
-						<< "all correlations,"<<endl<<
+						<< "all correlations,"<<std::endl<<
 						"in correct order (ie MeasurementSet order), when writing data"
 						<< LogIO::POST;
 				return False;

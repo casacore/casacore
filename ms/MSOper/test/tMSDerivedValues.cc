@@ -36,9 +36,9 @@ int main()
 {
   try {
     Quantity longitude; Quantity::read(longitude,"149.33.00.5");
-    cout << "longitude: "<<MVAngle(longitude)<<endl;
+    cout << "longitude: "<<MVAngle(longitude)<<std::endl;
     Quantity latitude;  Quantity::read(latitude,"-30.18.46.385");
-    cout << "latitude : "<<MVAngle(latitude)<<endl;
+    cout << "latitude : "<<MVAngle(latitude)<<std::endl;
     Vector<MPosition> pos(1);
     pos(0)=MPosition(Quantity(236.9,"m"),longitude,latitude,
 		     MPosition::Ref(MPosition::WGS84));
@@ -49,52 +49,52 @@ int main()
     Quantity time; MVTime::read(time,"today");
     MEpoch today(time);
 
-    cout <<" Current time: "<<MVTime(today.getValue())<<endl;
+    cout <<" Current time: "<<MVTime(today.getValue())<<std::endl;
 
     msd.setEpoch(today);
 
     MEpoch last = msd.last();
     
-    cout <<" Current last: "<< MVTime(last.getValue())<<endl;
+    cout <<" Current last: "<< MVTime(last.getValue())<<std::endl;
 
     Quantity ra; Quantity::read(ra,"12:00:00.0");
     Quantity dec; Quantity::read(dec,"-30.00.00.0");
     MDirection mySource(ra,dec);
    
-    cout <<" FieldCenter: "<< mySource.getAngle("deg") <<endl;
+    cout <<" FieldCenter: "<< mySource.getAngle("deg") <<std::endl;
 
     msd.setFieldCenter(mySource);
 
-    cout <<" Hour angle : "<< MVAngle(msd.hourAngle()) <<endl;
+    cout <<" Hour angle : "<< MVAngle(msd.hourAngle()) <<std::endl;
 
-    cout <<" Az & El    : "<< msd.azel().getAngle("deg")<<endl;
+    cout <<" Az & El    : "<< msd.azel().getAngle("deg")<<std::endl;
 
     Vector<String> mount(1); mount(0)="alt-az";
 
     msd.setAntennaMount(mount);
 
-    cout << " Par. angle: "<< MVAngle(msd.parAngle()) << endl;
+    cout << " Par. angle: "<< MVAngle(msd.parAngle()) << std::endl;
 
     // test the obsVel conversion
     
     cout << " observatory velocity in LSR  frame: "<< msd.obsVel().get("km/s").
-      getValue() << "km/s"<<endl;
+      getValue() << "km/s"<<std::endl;
 
     msd.setVelocityFrame(MRadialVelocity::BARY);
     cout << " observatory velocity in BARY frame: "<< msd.obsVel().get("km/s").
-      getValue() << "km/s"<<endl;
+      getValue() << "km/s"<<std::endl;
 
     
     msd.setVelocityFrame(MRadialVelocity::GEO);
     cout << " observatory velocity in GEO frame: "<< msd.obsVel().get("km/s").
-      getValue() << "km/s"<<endl;
+      getValue() << "km/s"<<std::endl;
 
     Quantity restFreq(1.42041,"GHz");
     Quantity radioVel(2196.25,"km/s");
     msd.setVelocityReference(MDoppler::RADIO);
     msd.setFrequencyReference(MFrequency::TOPO);
     cout << "radio velocity " << radioVel << " is frequency " << 
-      msd.toFrequency(radioVel, restFreq) << endl;
+      msd.toFrequency(radioVel, restFreq) << std::endl;
     //====
     /*
     MSDerivedValues msd1;
@@ -105,19 +105,19 @@ int main()
     //locate restFrequency for field 0 and spwid 0
     Bool hasRestFreq=msd1.setRestFrequency(0,0);
     if(!hasRestFreq){
-      cout << "Ou la la .....has no restfrequency in this ms" << endl;
+      cout << "Ou la la .....has no restfrequency in this ms" << std::endl;
     }
     else{
      cout << "radio velocity " << radioVel << " is frequency " << 
-       msd1.toFrequency(radioVel) << endl; 
+       msd1.toFrequency(radioVel) << std::endl; 
     }
     */
 
     } catch (std::exception& x) {
-	cout << "Caught exception " << endl;
-	cout << x.what() << endl;
+	cout << "Caught exception " << std::endl;
+	cout << x.what() << std::endl;
 	return 1;
     } 
-    cout << "Done." << endl;
+    cout << "Done." << std::endl;
     return 0;
 }

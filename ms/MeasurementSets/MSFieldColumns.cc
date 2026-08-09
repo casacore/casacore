@@ -421,7 +421,7 @@ void MSFieldColumns::updateMeasComets()
   Vector<Int> ephId = ephemerisId_p.getColumn();
   for(size_t i=0; i<ephId.size(); i++){
     Int theEphId = ephId(i);
-    //cout << "updateMeasComet: processing row " << i << ", found eph id " << theEphId << endl;
+    //cout << "updateMeasComet: processing row " << i << ", found eph id " << theEphId << std::endl;
     if(theEphId>=0 
        && ephIdToMeasComet_p.find(theEphId) == ephIdToMeasComet_p.end()){
       // the id is not yet in use, need to create a new MeasComet object
@@ -446,7 +446,7 @@ void MSFieldColumns::updateMeasComets()
       measCometsV_p(nMeasCom) = mC;
       // remember the connection ephId to the measCometsV_p index
       ephIdToMeasComet_p.insert(std::make_pair(theEphId, nMeasCom)); 
-      //cout << "Found and successfully opened ephemeris table " << ephemTablePath << endl;
+      //cout << "Found and successfully opened ephemeris table " << ephemTablePath << std::endl;
     }
   }
 } 

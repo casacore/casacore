@@ -279,7 +279,7 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	}	    
     } else {
       cerr << "MSTableImpl::addColumnToDesc - Invalid data type: "
-	   << colDType <<", "<<colName<<endl;
+	   << colDType <<", "<<colName<<std::endl;
       //	throw(AipsError ("MSTableImpl::addColumnToDesc(...) - "
       //			 "Invalid default data type for specified column"));
     }
@@ -321,7 +321,7 @@ void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
 //#	    keywordStandardComment(key);
 	break; 
     default:
-      cerr << "Data type: "<< keyDType << ", "<< keyName<< "not handled"<<endl;
+      cerr << "Data type: "<< keyDType << ", "<< keyName<< "not handled"<<std::endl;
       //	throw(AipsError ("MSTableImpl::addKeyToDesc(...) - "
       //			 "Data type not handled"));
     }  
@@ -455,7 +455,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 	isSuperset(requiredTD.columnDescSet(), eqDTypes);
 #if defined(AIPS_DEBUG)
     if (!temp) {
-	cerr << "MSTableImpl::validate - tabDesc not superset of requiredTD"<<endl;
+	cerr << "MSTableImpl::validate - tabDesc not superset of requiredTD"<<std::endl;
     }
 #endif
     // check all of the UNIT and MEASINFO-Type values against 
@@ -473,7 +473,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 #if defined(AIPS_DEBUG)
 	  if (!detail) {
 	    cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
-	      " doesn't have QuantumUnits"<<endl;
+	      " doesn't have QuantumUnits"<<std::endl;
 	  }
 #endif
 	  if (detail) detail = allEQ(keySet.asArrayString("QuantumUnits"), 
@@ -481,12 +481,12 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 #if defined(AIPS_DEBUG)
 //*** testing
 //	  cerr << "Column "<<colNames(colnr)<<" has QuantumUnits "<<
-//	    keySet.asArrayString("QuantumUnits")<<endl;
+//	    keySet.asArrayString("QuantumUnits")<<std::endl;
 //*** testing
 	    if (!detail) {
 	      cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
 		" has invalid QuantumUnits: "<< 
-		keySet.asArrayString("QuantumUnits")<<endl;
+		keySet.asArrayString("QuantumUnits")<<std::endl;
 	    }
 #endif
 	    // check Measure type if defined
@@ -495,7 +495,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 #if defined(AIPS_DEBUG)
 	      if (!detail) {
 		cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
-		  " doesn't have MEASINFO"<<endl;
+		  " doesn't have MEASINFO"<<std::endl;
 	      }
 #endif
 	      if (detail) {
@@ -506,7 +506,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 		if (!detail) {
 		  cerr << "MSTableImpl::validate - column "<<colNames(colnr)
 		       << " has invalid MEASURE TYPE: "
-		       << keySet.asRecord("MEASINFO").asString("type") << endl;
+		       << keySet.asRecord("MEASINFO").asString("type") << std::endl;
 		}
 #endif
 	    }

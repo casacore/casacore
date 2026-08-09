@@ -73,26 +73,26 @@ int main(int argc, const char* argv[])
       const String msName = argv[1];
       MeasurementSet ms(msName);
       MeasurementSet * mssel;
-      cout << "Original table has rows " << ms.nrow() << endl;
+      cout << "Original table has rows " << ms.nrow() << std::endl;
       MSSelection mss;
       mss.setTimeExpr(String(argv[2]));
       TableExprNode node=mss.toTableExprNode(&ms);
 
-      cout << "TableExprNode has rows = " << node.nrow() << endl;
+      cout << "TableExprNode has rows = " << node.nrow() << std::endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(node, node.nrow() ));
-      cout << "After mssel constructor called " << endl;
+      cout << "After mssel constructor called " << std::endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
       mssel->flush();
       if(mssel->nrow()==0) 
-	cout << "Check your input, No data selected" << endl;
+	cout << "Check your input, No data selected" << std::endl;
       else 
-	cout << "selected table has rows " << mssel->nrow() << endl;
+	cout << "selected table has rows " << mssel->nrow() << std::endl;
       delete mssel;
     } 
   catch (std::exception& x) 
     {
-      cout << "ERROR: " << x.what() << endl;
+      cout << "ERROR: " << x.what() << std::endl;
       return 1;
     } 
   return 0;

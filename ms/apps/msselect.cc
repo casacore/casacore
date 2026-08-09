@@ -63,7 +63,7 @@ void select (const String& msin, const String& out, const String& baseline,
     cout << "Created RefTable " << out;
   }
   cout << " containing " << mssel.nrow() << " rows (out of "
-       << ms.nrow() << ')' << endl;
+       << ms.nrow() << ')' << std::endl;
 }
 
 // Copy (or symlink) directories that are not a subtable.
@@ -85,7 +85,7 @@ void copyOtherDirs (const String& msName, const String& outName, bool deep)
         if (deep) {
           Directory sdir(iter.file());
           sdir.copyRecursive (outName + '/' + bname);
-          cout << "Copied subdirectory " << bname << endl;
+          cout << "Copied subdirectory " << bname << std::endl;
         } else {
           // Resolve a possible symlink created by another msselect.
           // Do it only one deep.
@@ -98,7 +98,7 @@ void copyOtherDirs (const String& msName, const String& outName, bool deep)
           // Create a symlink to the directory.
           SymLink slink(outName + '/' + bname);
           slink.create (newName.absoluteName(), False);
-          cout << "Created symlink to subdirectory " << bname << endl;
+          cout << "Created symlink to subdirectory " << bname << std::endl;
         }
       }
     }
@@ -153,7 +153,7 @@ int main (int argc, char* argv[])
     select (msin, out, baseline, deep);
     copyOtherDirs (msin, out, deep);
   } catch (std::exception& x) {
-    cerr << "Error: " << x.what() << endl;
+    cerr << "Error: " << x.what() << std::endl;
     return 1;
   }
   return 0;

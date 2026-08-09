@@ -135,10 +135,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    validPolIDs[n]=polnIDs[p];
 	    validPolIndices.resize((n=validPolIndices.nelements())+1,True);
 	    validPolIndices[n]=polnIndices[p];
-	    //	    cout << "Found DDID for PolID " << polnIDs[p] << endl;
+	    //	    cout << "Found DDID for PolID " << polnIDs[p] << std::endl;
 	  }
 	// else
-	//   cout << "Not found DDID for PolID " << polnIDs[p] << endl;
+	//   cout << "Not found DDID for PolID " << polnIDs[p] << std::endl;
       }
     polnIDs.resize(0); polnIDs=validPolIDs;
     polnIndices.resize(0); polnIndices=validPolIndices;
@@ -157,9 +157,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<Int> validPolIDs;//, validPolIndices;
     MSDataDescIndex msDDNdx(ms()->dataDescription());
     MSPolarizationIndex msPolNdx(ms()->polarization());
-    //    cout << "SpwIDs = " << spwIDs << endl;
+    //    cout << "SpwIDs = " << spwIDs << std::endl;
     polnIDs = getPolnIDsV2(polnExpr, polTypes);
-    //    cout << "PolIDs = " << polnIDs << " polTypes = " << polTypes << endl;
+    //    cout << "PolIDs = " << polnIDs << " polTypes = " << polTypes << std::endl;
     //   if (polnIDs.nelements() == 0)
    if (polTypes.nelements() == 0)
       {
@@ -171,7 +171,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	Vector<Int> tt;
 	tt = getPolnIndices(polnIDs[p],polTypes);
-	//	cout << "Poln indices for " << polnIDs[p] << " = " << tt << endl;
+	//	cout << "Poln indices for " << polnIDs[p] << " = " << tt << std::endl;
 	polnIndices.resize(0);
         polnIndices=tt;
 	thisDDList.resize(0);
@@ -188,7 +188,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		setIDLists((Int)polnIDs[p],0,polnIndices);
 		polMap_p[polnIDs[p]].resize(0);
 		polMap_p[polnIDs[p]]=polnIndices;
-		//		cout << "DDIDs for SPW = " << spwIDs[s] << " = " << tmp[0] << endl;
+		//		cout << "DDIDs for SPW = " << spwIDs[s] << " = " << tmp[0] << std::endl;
 	      }
 	  }
 	if (thisDDList.nelements() > 0) 
@@ -201,7 +201,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    // validPolIndices[n]=polnIndices[p];
 	  }
 	// else
-	//   cout << "Not found DDID for PolID " << polnIDs[p] << endl;
+	//   cout << "Not found DDID for PolID " << polnIDs[p] << std::endl;
       }
     if (ddIDs.nelements() == 0)
       {
@@ -324,7 +324,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //  indices which will then be used for in-row selection.
     //
     polIDList=matchPolIDsToPolTableRow(idList,polMap_p, polIndices);
-    //    cout << "IDList=" << idList << " " << polIDList << " " << polIndices << endl;
+    //    cout << "IDList=" << idList << " " << polIDList << " " << polIndices << std::endl;
     return polIDList;
   }
   //  
@@ -428,13 +428,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    // polnIDs=getPolnIDs(polnExpr, polIndices);
 	    // MSDataDescIndex msDDNdx(ms()->dataDescription());
 	    // MSPolarizationIndex msPolNdx(ms()->polarization());
-	    // cout << "PolIDs = " << polnIDs << endl;
+	    // cout << "PolIDs = " << polnIDs << std::endl;
 	    
 	    //	    tddIDList=getMapToDDIDs(msDDNdx, msPolNdx, spwIDs, polnIDs, polIndices);
-	    //	    cout << "PolExpr = " << polnExpr << endl;
+	    //	    cout << "PolExpr = " << polnExpr << std::endl;
 	    tddIDList=getMapToDDIDsV2(polnExpr, spwIDs, polnIDs, polIndices);
-	    //	    cout << "DDIDs = " << tddIDList << endl;
-	    //	    cout << "-----------------------------------" << endl;
+	    //	    cout << "DDIDs = " << tddIDList << std::endl;
+	    //	    cout << "-----------------------------------" << std::endl;
 	    tt=set_union(tddIDList, ddIDList_p);
 	    ddIDList_p.resize(0);
 	    ddIDList_p = tt;

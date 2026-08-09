@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	if (tokenList.size() > 0)
 	  for (uInt i=0;i<tokenList.size();i++) Mesg << tokenList[i] << " ";
 	else
-	  for (uInt i=1;i<messageList.size(); i++) Mesg << endl << messageList[i];
+	  for (uInt i=1;i<messageList.size(); i++) Mesg << std::endl << messageList[i];
       }
     String casaMesg(Mesg.str());
     return casaMesg;

@@ -239,16 +239,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      // Create the RO column access objects for main table and subtables
 //      MSColumns msc(ms);
 //      // show data from row 5
-//      cout << msc.data()(5) << endl;
+//      cout << msc.data()(5) << std::endl;
 //      // show phase center for row 3 in field table
 //      Vector<double> phaseCtr=msc.field().phaseCenter()(3);
-//      cout << phaseCtr<<endl;
+//      cout << phaseCtr<<std::endl;
 //      // now create a Measure for the phaseCenter
 //      MDirection phaseCenterMeasure =
 //         MS::directionMeasure(msc.field().phaseCenter());
 //      // put the value from row 3 in the Measure and print it
 //      phaseCenterMeasure.set(MVPosition(phaseCtr));
-//      cout <<"phase center:"<< phaseCenterMeasure<<endl;
+//      cout <<"phase center:"<< phaseCenterMeasure<<std::endl;
 //
 // </srcblock>
 //

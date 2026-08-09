@@ -572,7 +572,7 @@ namespace casacore { //# name space casa begins
   String ImageProxy::dataType() const
   {
     checkNull();
-    ostringstream ostr;
+    std::ostringstream ostr;
     ostr << itsLattice->dataType();
     return ostr.str();
   }

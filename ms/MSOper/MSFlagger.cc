@@ -580,7 +580,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
     }
     if (iter) {
       if (deleteFlag||deleteFlagRow) {
-	cerr << " arrays have to be written back "<<endl;
+	cerr << " arrays have to be written back "<<std::endl;
 	flag.putStorage(pflag,deleteFlag);
 	flagRow.putStorage(pflagRow,deleteFlagRow);
       }
@@ -588,7 +588,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
       getStats(medTF,adTF,medT,medFmedT,adT,medF,medTmedF,adF,
 	       diff, flag, flagRow);
       if (deleteFlag||deleteFlagRow) {
-	cerr << " arrays have to be read back "<<endl;
+	cerr << " arrays have to be read back "<<std::endl;
 	pflag=flag.getStorage(deleteFlag);
 	pflagRow=flagRow.getStorage(deleteFlagRow);
       }

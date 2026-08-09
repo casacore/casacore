@@ -162,7 +162,7 @@ namespace casacore {
 
   String makeRowName (uInt rownr)
   {
-    ostringstream ostr;
+    std::ostringstream ostr;
     ostr << std::setfill('0') << std::setw(5) << rownr;
     return ostr.str();
   }

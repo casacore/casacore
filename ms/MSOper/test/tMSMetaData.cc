@@ -54,7 +54,7 @@ void _printSet(const std::set<uInt>& set) {
         }
         cout << *iter;
     }
-    cout << endl;
+    cout << std::endl;
 }
 
 void _printSet(const std::set<String>& set) {
@@ -68,18 +68,18 @@ void _printSet(const std::set<String>& set) {
         }
         cout << *iter;
     }
-    cout << endl;
+    cout << std::endl;
 }
 
 void testIt(MSMetaData& md) {
     ArrayKey arrayKey;
     arrayKey.obsID = 0;
     arrayKey.arrayID = 0;
-    cout << "*** test nStates()" << endl;
+    cout << "*** test nStates()" << std::endl;
     AlwaysAssert(md.nStates() == 43, AipsError);
-    cout << "*** cache size " << md.getCache() << endl;
+    cout << "*** cache size " << md.getCache() << std::endl;
 
-    cout << "*** test getScansForState()" << endl;
+    cout << "*** test getScansForState()" << std::endl;
     for (uInt stateID=0; stateID<md.nStates(); ++stateID) {
         std::set<Int> scans = md.getScansForState(stateID, 0, 0);
         std::set<Int> expec;
@@ -114,16 +114,16 @@ void testIt(MSMetaData& md) {
         }
         AlwaysAssert(scans == expec, AipsError);
     }
-    cout << "*** cache size " << md.getCache() << endl;
+    cout << "*** cache size " << md.getCache() << std::endl;
 
-    cout << "*** test getIntents()" << endl;
-    cout << "*** size " << md.getIntents().size() << endl;
-    cout << "*** size " << md.getIntents().size() << endl;
+    cout << "*** test getIntents()" << std::endl;
+    cout << "*** size " << md.getIntents().size() << std::endl;
+    cout << "*** size " << md.getIntents().size() << std::endl;
 
     AlwaysAssert(md.getIntents().size() == 11, AipsError);
-    cout << "*** cache size " << md.getCache() << endl;
+    cout << "*** cache size " << md.getCache() << std::endl;
 
-    cout << "*** test getScanNumbers()" << endl;
+    cout << "*** test getScanNumbers()" << std::endl;
     std::set<Int> scans = md.getScanNumbers(0, 0);
     uInt myints[] = {
             1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -133,10 +133,10 @@ void testIt(MSMetaData& md) {
         std::set<Int> exp;
         exp.insert(myints, myints+32);
         AlwaysAssert(scans == exp, AipsError);
-        cout << "*** cache size " << md.getCache() << endl;
+        cout << "*** cache size " << md.getCache() << std::endl;
     }
     std::set<String> uniqueIntents;
-    cout << "*** test getIntentsForScan()" << endl;
+    cout << "*** test getIntentsForScan()" << std::endl;
     ScanKey scanKey;
     scanKey.obsID = 0;
     scanKey.arrayID = 0;
@@ -219,7 +219,7 @@ void testIt(MSMetaData& md) {
         AlwaysAssert(intents == exp, AipsError);
     }
     AlwaysAssert(md.getIntents() == uniqueIntents, AipsError);
-    cout << "*** test getSpwsForIntent()" << endl;
+    cout << "*** test getSpwsForIntent()" << std::endl;
     for (
         auto intent=uniqueIntents.cbegin();
         intent!=uniqueIntents.cend(); ++intent
@@ -262,11 +262,11 @@ void testIt(MSMetaData& md) {
         }
         AlwaysAssert(md.getSpwsForIntent(*intent) == exp, AipsError);
     }
-    cout << "*** test nSpw()" << endl;
+    cout << "*** test nSpw()" << std::endl;
     uInt nSpw = md.nSpw(True);
     AlwaysAssert(nSpw == 40, AipsError);
     AlwaysAssert(md.nSpw(False) == 40, AipsError);
-    cout << "*** test getIntentsForSpw()" << endl;
+    cout << "*** test getIntentsForSpw()" << std::endl;
     for (uInt spw=0; spw<nSpw; ++spw) {
         std::set<String> exp;
         if (spw == 0) {
@@ -316,10 +316,10 @@ void testIt(MSMetaData& md) {
         AlwaysAssert(md.getIntentsForSpw(spw) == exp, AipsError);
     }
     {
-        cout << "*** test nFields()" << endl;
+        cout << "*** test nFields()" << std::endl;
         uInt nFields = md.nFields();
         AlwaysAssert(nFields == 6, AipsError);
-        cout << "*** test getSpwsForField() and getFieldsToSpwsMap()" << endl;
+        cout << "*** test getSpwsForField() and getFieldsToSpwsMap()" << std::endl;
         std::map<Int, std::set<uInt> > mymap = md.getFieldsToSpwsMap();
         String names[] = {
                 "3C279", "J1337-129", "Titan",
@@ -348,14 +348,14 @@ void testIt(MSMetaData& md) {
                 };
                 exp.insert(myints, myints+17);
             }
-            cout << "*** i " << i << " " << md.getSpwsForField(i) << endl;
+            cout << "*** i " << i << " " << md.getSpwsForField(i) << std::endl;
             AlwaysAssert(md.getSpwsForField(i) == exp, AipsError);
             AlwaysAssert(md.getSpwsForField(names[i]) == exp, AipsError);
             AlwaysAssert(mymap[i] == exp, AipsError);
-            cout << "*** cache size " << md.getCache() << endl;
+            cout << "*** cache size " << md.getCache() << std::endl;
 
         }
-        cout << "*** test phaseDirFromFieldIDAndTime()" << endl;
+        cout << "*** test phaseDirFromFieldIDAndTime()" << std::endl;
         {
 
           MDirection phasCen=md.phaseDirFromFieldIDAndTime(2);
@@ -364,7 +364,7 @@ void testIt(MSMetaData& md) {
                 AipsError
             );
         }
-        cout << "*** test getFieldIDsForSpw()" << endl;
+        cout << "*** test getFieldIDsForSpw()" << std::endl;
         for (uInt i=0; i<md.nSpw(True); ++i) {
             std::set<Int> exp;
             std::set<String> expNames;
@@ -404,11 +404,11 @@ void testIt(MSMetaData& md) {
         }
     }
     {
-        cout << "*** test nScans()" << endl;
-        cout << "nscans " << md.nScans() << endl;
+        cout << "*** test nScans()" << std::endl;
+        cout << "nscans " << md.nScans() << std::endl;
         AlwaysAssert(md.nScans() == 32, AipsError);
         std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
-        cout << "*** test getSpwsForScan(), getScanToSpwsMap(), getPolarizationIDs()" << endl;
+        cout << "*** test getSpwsForScan(), getScanToSpwsMap(), getPolarizationIDs()" << std::endl;
         std::map<ScanKey, std::set<uInt> > mymap = md.getScanToSpwsMap();
         ScanKey scanKey;
         scanKey.obsID = 0;
@@ -465,7 +465,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScansForSpw() and getSpwToScansMap()" << endl;
+            cout << "*** test getScansForSpw() and getSpwToScansMap()" << std::endl;
             vector<std::set<ScanKey> > spwToScans = md.getSpwToScansMap();
             ScanKey scanKey;
             scanKey.obsID = 0;
@@ -514,9 +514,9 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test nAntennas()" << endl;
+            cout << "*** test nAntennas()" << std::endl;
             AlwaysAssert(md.nAntennas()==15, AipsError);
-            cout << "*** test getAntennaName()" << endl;
+            cout << "*** test getAntennaName()" << std::endl;
             String name;
             String expnames[] = {
                 "DA43", "DA44", "DV02", "DV03", "DV05",
@@ -532,7 +532,7 @@ void testIt(MSMetaData& md) {
                     AipsError
                 );
             }
-            cout << "*** test getAntennaID()" << endl;
+            cout << "*** test getAntennaID()" << std::endl;
             std::map<String, std::set<uInt> > mymap;
             for (uInt i=0; i<md.nAntennas(); ++i) {
                 vector<uInt> ids(1);
@@ -544,7 +544,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getTDMSpw()" << endl;
+            cout << "*** test getTDMSpw()" << std::endl;
             std::set<uInt> exp;
             uInt myints[] = {
                 0, 1, 3, 5, 7, 9, 11, 13, 15, 25, 26, 27, 28, 29,
@@ -554,14 +554,14 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(md.getTDMSpw() == exp, AipsError);
         }
         {
-            cout << "*** test getFDMSpw()" << endl;
+            cout << "*** test getFDMSpw()" << std::endl;
             std::set<uInt> exp;
             uInt myints[] = {17, 19, 21, 23};
             exp.insert(myints, myints+4);
             AlwaysAssert(md.getFDMSpw() == exp, AipsError);
         }
         {
-            cout << "*** test getChannelAvgSpw()" << endl;
+            cout << "*** test getChannelAvgSpw()" << std::endl;
             std::set<uInt> exp;
             uInt myints[] = {
                 2, 4, 6, 8, 10, 12, 14,
@@ -571,7 +571,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(md.getChannelAvgSpw() == exp, AipsError);
         }
         {
-            cout << "*** test getWVRSpw()" << endl;
+            cout << "*** test getWVRSpw()" << std::endl;
             std::set<uInt> exp;
             /*
             uInt myints[] = {
@@ -579,12 +579,12 @@ void testIt(MSMetaData& md) {
                 32, 33, 34, 35, 36, 37, 38, 39
             };
             exp.insert(myints, myints+16);
-            cout << "wvr " << md.getWVRSpw() << endl;
+            cout << "wvr " << md.getWVRSpw() << std::endl;
             */
             AlwaysAssert(md.getWVRSpw() == exp, AipsError);
         }
         {
-            cout << "*** test getScansForTimes()" << endl;
+            cout << "*** test getScansForTimes()" << std::endl;
             std::set<Int> exp;
             exp.insert(27);
             AlwaysAssert(
@@ -601,7 +601,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getTimesForScans()" << endl;
+            cout << "*** test getTimesForScans()" << std::endl;
             std::set<Double> expec;
             Double myd[] = {
                 4842825928.7, 4842825929.5,
@@ -630,7 +630,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getTimesForScan()" << endl;
+            cout << "*** test getTimesForScan()" << std::endl;
             std::set<Double> expec;
             Double myd[] = {
                 4842825003.6,
@@ -654,7 +654,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getStatesForScan() getScanToStatesMap()" << endl;
+            cout << "*** test getStatesForScan() getScanToStatesMap()" << std::endl;
             std::set<Int> expec;
             std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
             std::map<ScanKey, std::set<Int> > mymap = md.getScanToStatesMap();
@@ -722,10 +722,10 @@ void testIt(MSMetaData& md) {
                 scanKey.scan = *curScan;
                 AlwaysAssert(mymap[scanKey] == expec, AipsError);
             }
-            cout << "*** cache size " << md.getCache() << endl;
+            cout << "*** cache size " << md.getCache() << std::endl;
         }
         {
-            cout << "*** test getScansForIntent()" << endl;
+            cout << "*** test getScansForIntent()" << std::endl;
             std::set<String> intents = md.getIntents();
             for (
                 std::set<String>::const_iterator intent=intents.begin();
@@ -791,7 +791,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScansForFieldID() and getFieldToScansMap" << endl;
+            cout << "*** test getScansForFieldID() and getFieldToScansMap" << std::endl;
             vector<std::set<ScanKey> > mymap = md.getFieldToScansMap();
             std::set<Int> expec;
             ArrayKey aKey;
@@ -839,7 +839,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getFieldIDsForField()" << endl;
+            cout << "*** test getFieldIDsForField()" << std::endl;
             for (uInt i=0; i<6; ++i) {
                 std::set<Int> expec;
                 expec.insert(i);
@@ -856,7 +856,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScansForField()" << endl;
+            cout << "*** test getScansForField()" << std::endl;
             for (uInt i=0; i<6; ++i) {
                 std::set<Int> expec;
                 String name;
@@ -907,10 +907,10 @@ void testIt(MSMetaData& md) {
                 }
                 AlwaysAssert(md.getScansForField(name, 0, 0) == expec, AipsError);
             }
-            cout << "*** cache size " << md.getCache() << endl;
+            cout << "*** cache size " << md.getCache() << std::endl;
         }
         {
-            cout << "*** test getFieldsForScan() and getFieldsForScans()" << endl;
+            cout << "*** test getFieldsForScan() and getFieldsForScans()" << std::endl;
             std::set<Int> scans = md.getScanNumbers(0, 0);
             std::set<Int> expec2;
             std::set<Int> curScanSet;
@@ -985,7 +985,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getFieldsForIntent() and getIntentToFieldsMap()" << endl;
+            cout << "*** test getFieldsForIntent() and getIntentToFieldsMap()" << std::endl;
             std::map<String, std::set<Int> > mymap = md.getIntentToFieldsMap();
             std::set<String> intents = md.getIntents();
             for (
@@ -1041,7 +1041,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getFieldNamesForFieldIDs()" << endl;
+            cout << "*** test getFieldNamesForFieldIDs()" << std::endl;
             for (uInt i=0; i<md.nFields(); ++i) {
                 String name;
                 switch(i) {
@@ -1067,16 +1067,16 @@ void testIt(MSMetaData& md) {
                     throw AipsError("Unknown field ID");
                 }
                 String got = md.getFieldNamesForFieldIDs(vector<uInt>(1, i))[0];
-                cout << "*** expec " << name << " got " << got << endl;
+                cout << "*** expec " << name << " got " << got << std::endl;
                 AlwaysAssert(
                     got == name,
                     AipsError
                 );
             }
-            cout << "*** cache size " << md.getCache() << endl;
+            cout << "*** cache size " << md.getCache() << std::endl;
         }
         {
-            cout << "*** test getFieldsForTime()" << endl;
+            cout << "*** test getFieldsForTime()" << std::endl;
             std::set<Int> expec;
             expec.insert(0);
             AlwaysAssert(md.getFieldsForTimes(4842824746.0, 10) == expec, AipsError);
@@ -1088,7 +1088,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getTimesForField()" << endl;
+            cout << "*** test getTimesForField()" << std::endl;
             uInt nfields = md.nFields();
             for (uInt i=0; i< nfields; ++i) {
                 std::set<Double> times = md.getTimesForField(i);
@@ -1103,35 +1103,35 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getObservatoryNames()" << endl;
+            cout << "*** test getObservatoryNames()" << std::endl;
             vector<String> names = md.getObservatoryNames();
             AlwaysAssert(names.size() == 1, AipsError);
             AlwaysAssert(names[0] == "ALMA", AipsError);
         }
         {
-            cout << "*** test getObservatoryPosition()" << endl;
+            cout << "*** test getObservatoryPosition()" << std::endl;
             MPosition tPos = md.getObservatoryPosition(0);
             Vector<Double> angles = tPos.getAngle("deg").getValue();
-            cout << angles << endl;
+            cout << angles << std::endl;
             AlwaysAssert(near(angles[0], -67.7549, 1e-6), AipsError);
             AlwaysAssert(near(angles[1], -23.0229, 1e-6), AipsError);
-            cout << "*** cache size " << md.getCache() << endl;
+            cout << "*** cache size " << md.getCache() << std::endl;
 
         }
         {
-            cout << "*** test getAntennaPosition()" << endl;
+            cout << "*** test getAntennaPosition()" << std::endl;
             cout
                 << Vector<MPosition>(
                     md.getAntennaPositions(vector<uInt>(1, 2))
                 )
-                << endl;
+                << std::endl;
         }
         {
-            cout << "*** test getAntennaOffset()" << endl;
-            cout << md.getAntennaOffset(2) << endl;
+            cout << "*** test getAntennaOffset()" << std::endl;
+            cout << md.getAntennaOffset(2) << std::endl;
         }
         {
-            cout << "*** test getAntennaStations()" << endl;
+            cout << "*** test getAntennaStations()" << std::endl;
             vector<uInt> ids(3);
             ids[0] = 2;
             ids[1] = 4;
@@ -1152,14 +1152,14 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getAntennaDiameters" << endl;
+            cout << "*** test getAntennaDiameters" << std::endl;
             Quantum<Vector<Double> > antennaDiameters = md.getAntennaDiameters();
             AlwaysAssert(
                 allEQ(antennaDiameters.getValue(), 12.0), AipsError
             );
         }
         {
-            cout << "*** Test getIntentsForField()" << endl;
+            cout << "*** Test getIntentsForField()" << std::endl;
             uInt nFields = md.nFields();
             const auto fieldNames = md.getFieldNames();
             for (uInt i=0; i<nFields; ++i) {
@@ -1222,7 +1222,7 @@ void testIt(MSMetaData& md) {
                 default:
                     break;
                 }
-                cout << "*** i " << i << endl;
+                cout << "*** i " << i << std::endl;
                 _printSet(md.getIntentsForField(i));
                 AlwaysAssert(md.getIntentsForField(i) == expec, AipsError);
                 AlwaysAssert(
@@ -1231,16 +1231,16 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getUniqueBaselines() and nBaselines()" << endl;
+            cout << "*** test getUniqueBaselines() and nBaselines()" << std::endl;
             AlwaysAssert(md.nBaselines(False) == 21, AipsError);
             AlwaysAssert(md.nBaselines(True) == 25, AipsError);
         }
         {
-            cout << "*** test getEffectiveTotalExposureTime()" << endl;
-            cout << "effective exposure time is " << md.getEffectiveTotalExposureTime() << endl;
+            cout << "*** test getEffectiveTotalExposureTime()" << std::endl;
+            cout << "effective exposure time is " << md.getEffectiveTotalExposureTime() << std::endl;
         }
         {
-            cout << "*** test BBCNosToSpwMap()" << endl;
+            cout << "*** test BBCNosToSpwMap()" << std::endl;
             for (uInt i=0; i<3; ++i) {
                 MSMetaData::SQLDSwitch sqldSwitch = i == 0 ? MSMetaData::SQLD_INCLUDE
                     : i == 1 ? MSMetaData::SQLD_EXCLUDE : MSMetaData::SQLD_ONLY;
@@ -1317,7 +1317,7 @@ void testIt(MSMetaData& md) {
                 }
             }
             {
-                cout << "*** test getSpwIDPolIDToDataDescIDMap()" << endl;
+                cout << "*** test getSpwIDPolIDToDataDescIDMap()" << std::endl;
                 std::map<std::pair<uInt, uInt>, uInt> dataDescToPolID = md.getSpwIDPolIDToDataDescIDMap();
                 std::map<std::pair<uInt, uInt>, uInt>::const_iterator iter;
                 std::map<std::pair<uInt, uInt>, uInt>::const_iterator begin = dataDescToPolID.begin();
@@ -1335,25 +1335,25 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test nPol()" << endl;
+            cout << "*** test nPol()" << std::endl;
             AlwaysAssert(md.nPol() == 2, AipsError);
         }
         {
-            cout << "*** test getSQLDSpw()" << endl;
+            cout << "*** test getSQLDSpw()" << std::endl;
             std::set<uInt> res = md.getSQLDSpw();
             AlwaysAssert(res.size() == 1 && *res.begin() == 3, AipsError);
         }
         {
-            cout << "*** test getFirstExposureTimeMap() (deprecated)" << endl;
+            cout << "*** test getFirstExposureTimeMap() (deprecated)" << std::endl;
             vector<std::map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
-            cout << "val " << mymap[0][30].getValue("s") << endl;
-            cout << "val " << mymap[0][30] << endl;
+            cout << "val " << mymap[0][30].getValue("s") << std::endl;
+            cout << "val " << mymap[0][30] << std::endl;
             AlwaysAssert(near(mymap[0][30].getValue("s"), 1.152), AipsError);
             AlwaysAssert(near(mymap[10][17].getValue("s"), 1.008), AipsError)
-            cout << "mymap " << mymap[10][17] << endl;
+            cout << "mymap " << mymap[10][17] << std::endl;
         }
         {
-            cout << "*** test getScanToFirstExposureTimeMap()" << endl;
+            cout << "*** test getScanToFirstExposureTimeMap()" << std::endl;
             std::map<ScanKey, MSMetaData::FirstExposureTimeMap> mymap
                 = md.getScanToFirstExposureTimeMap(False);
             ScanKey scan;
@@ -1365,7 +1365,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(near(mymap[scan][10].second.getValue("s"), 1.008), AipsError)
         }
         {
-            cout << "*** test getUniqueFiedIDs()" << endl;
+            cout << "*** test getUniqueFiedIDs()" << std::endl;
             std::set<Int> expec;
             for (Int i=0; i<6; ++i) {
                 expec.insert(i);
@@ -1373,7 +1373,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(md.getUniqueFieldIDs() == expec, AipsError);
         }
         {
-            cout << "*** test getCenterFreqs()" << endl;
+            cout << "*** test getCenterFreqs()" << std::endl;
             vector<Quantity> centers = md.getCenterFreqs();
             Double mine[] = {
                 187550000000.0,    214250000000.0,
@@ -1403,14 +1403,14 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** Test getCorrBits" << endl;
+            cout << "*** Test getCorrBits" << std::endl;
             vector<String> cb = md.getCorrBits();
             for ( const auto &el : cb) {
                 AlwaysAssert(el == "UNKNOWN", AipsError);
             }
         }
         {
-            cout << "*** Test getFieldsForSourceMap" << endl;
+            cout << "*** Test getFieldsForSourceMap" << std::endl;
             std::map<Int, std::set<Int> > res = md.getFieldsForSourceMap();
             std::map<Int, std::set<String> > res2 = md.getFieldNamesForSourceMap();
             String names[] = {
@@ -1426,7 +1426,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** Test getPointingDirection" << endl;
+            cout << "*** Test getPointingDirection" << std::endl;
             Int ant1, ant2;
             Double time;
             std::pair<MDirection, MDirection> pDirs = md.getPointingDirection(
@@ -1453,13 +1453,13 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** Test getTimeRange()" << endl;
+            cout << "*** Test getTimeRange()" << std::endl;
             std::pair<Double, Double> timerange = md.getTimeRange();
             AlwaysAssert(near(timerange.first, 4842824745.020, 1e-12), AipsError);
             AlwaysAssert(near(timerange.second, 4842830012.448, 1e-12), AipsError);
         }
         {
-            cout << "*** test getTimesForIntent" << endl;
+            cout << "*** test getTimesForIntent" << std::endl;
             std::set<String> intents = md.getIntents();
             std::set<String>::const_iterator intent = intents.begin();
             std::set<String>::const_iterator end = intents.end();
@@ -1504,23 +1504,23 @@ void testIt(MSMetaData& md) {
                 ++intent;
             }
             {
-                cout << "*** test getSummary()" << endl;
-                //cout << "summary " << md.getSummary() << endl;
+                cout << "*** test getSummary()" << std::endl;
+                //cout << "summary " << md.getSummary() << std::endl;
             }
             {
-                cout << "*** test getProjects()" << endl;
+                cout << "*** test getProjects()" << std::endl;
                 vector<String> projects = md.getProjects();
                 AlwaysAssert(projects.size() == 1, AipsError);
                 AlwaysAssert(projects[0] == "T.B.D.", AipsError);
             }
             {
-                cout << "*** test getObservers()" << endl;
+                cout << "*** test getObservers()" << std::endl;
                 vector<String> observers = md.getObservers();
                 AlwaysAssert(observers.size() == 1, AipsError);
                 AlwaysAssert(observers[0] == "csalyk", AipsError);
             }
             {
-                cout << "*** test getSchedules()" << endl;
+                cout << "*** test getSchedules()" << std::endl;
                 vector<vector<String> > schedules = md.getSchedules();
                 AlwaysAssert(schedules.size() == 1, AipsError);
                 AlwaysAssert(schedules[0].size() == 2, AipsError);
@@ -1530,7 +1530,7 @@ void testIt(MSMetaData& md) {
             {
                 // 4842824633.4720001
                 // 4842830031.632
-                cout << "*** test getTimeRangesOfObservations()" << endl;
+                cout << "*** test getTimeRangesOfObservations()" << std::endl;
                 vector<std::pair<MEpoch, MEpoch> > timers = md.getTimeRangesOfObservations();
                 AlwaysAssert(timers.size() == 1, AipsError);
                 AlwaysAssert(timers[0].first.getRefString() == "UTC", AipsError);
@@ -1545,7 +1545,7 @@ void testIt(MSMetaData& md) {
                 );
             }
             {
-                cout << "*** test getRefFreqs()" << endl;
+                cout << "*** test getRefFreqs()" << std::endl;
                 Double expec[] = {
                     1.83300000e+11, 2.15250000e+11, 2.15250000e+11,
                     2.17250000e+11, 2.17250000e+11, 2.29250000e+11,
@@ -1572,7 +1572,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getCorrTypes" << endl;
+            cout << "*** test getCorrTypes" << std::endl;
             vector<vector<Int> > corrTypes = md.getCorrTypes();
             AlwaysAssert(corrTypes[0].size() == 2, AipsError);
             AlwaysAssert(corrTypes[0][0] == 9, AipsError);
@@ -1581,7 +1581,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(corrTypes[1][0] == 1, AipsError);
         }
         {
-            cout << "*** test getCorrProducts" << endl;
+            cout << "*** test getCorrProducts" << std::endl;
             vector<Array<Int> > corrProds = md.getCorrProducts();
             AlwaysAssert(corrProds[0].size() == 4, AipsError);
             AlwaysAssert(corrProds[0](IPosition(2, 0, 0)) == 0, AipsError);
@@ -1592,7 +1592,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(allTrue(corrProds[1] == 0), AipsError);
         }
         {
-            cout << "*** test getSourceTableSourceIDs" << endl;
+            cout << "*** test getSourceTableSourceIDs" << std::endl;
             vector<Int> sourceIDs = md.getSourceTableSourceIDs();
             AlwaysAssert(sourceIDs.size() == 200, AipsError);
             for (uInt i=0; i<200; ++i) {
@@ -1628,7 +1628,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getPhaseDirs()" << endl;
+            cout << "*** test getPhaseDirs()" << std::endl;
             vector<MDirection> phaseDirs = md.getPhaseDirs();
             AlwaysAssert(phaseDirs.size() == md.nFields(), AipsError);
             Double elong[] = {
@@ -1647,7 +1647,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getFieldTableSourceIDs" << endl;
+            cout << "*** test getFieldTableSourceIDs" << std::endl;
             vector<Int> sourceIDs = md.getFieldTableSourceIDs();
             AlwaysAssert(sourceIDs.size() == md.nFields(), AipsError);
             for (uInt i=0; i<sourceIDs.size(); ++i) {
@@ -1655,7 +1655,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getAntennasForScan()" << endl;
+            cout << "*** test getAntennasForScan()" << std::endl;
             std::set<Int> scans = md.getScanNumbers(0, 0);
             std::set<Int>::const_iterator iter = scans.begin();
             std::set<Int>::const_iterator end = scans.end();
@@ -1681,7 +1681,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getSourceNames()" << endl;
+            cout << "*** test getSourceNames()" << std::endl;
             vector<String> sourceNames = md.getSourceNames();
             String expec[] = {
                 "3C279", "3C279", "3C279", "3C279", "3C279", "3C279", "3C279",
@@ -1725,7 +1725,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getSourceDirections()" << endl;
+            cout << "*** test getSourceDirections()" << std::endl;
             vector<MDirection> dirs = md.getSourceDirections();
             AlwaysAssert(dirs.size() == 200, AipsError);
             Double elong[] = {
@@ -1820,7 +1820,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getProperMotions()" << endl;
+            cout << "*** test getProperMotions()" << std::endl;
             vector<std::pair<Quantity, Quantity> > pm = md.getProperMotions();
             AlwaysAssert(pm.size() == 200, AipsError);
             for (uInt i=0; i<200; ++i) {
@@ -1831,7 +1831,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getSpwToTimesForScan()" << endl;
+            cout << "*** test getSpwToTimesForScan()" << std::endl;
             ScanKey scan;
             scan.obsID = 0;
             scan.arrayID = 0;
@@ -1993,7 +1993,7 @@ void testIt(MSMetaData& md) {
                     expec = std::set<Double>(z, z+50);
                 }
                 else {
-                    cout << "found channel " << i << " which shouldn't be in this set" << endl;
+                    cout << "found channel " << i << " which shouldn't be in this set" << std::endl;
                     AlwaysAssert(False, AipsError);
                 }
                 AlwaysAssert(times[i].size() == expec.size(), AipsError);
@@ -2008,12 +2008,12 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test nUniqueSourceIDsFromSourceTable()" << endl;
+            cout << "*** test nUniqueSourceIDsFromSourceTable()" << std::endl;
             uInt n = md.nUniqueSourceIDsFromSourceTable();
             AlwaysAssert(n == 6, AipsError);
         }
         {
-            cout << "*** test getFieldNames()" << endl;
+            cout << "*** test getFieldNames()" << std::endl;
             vector<String> fnames = md.getFieldNames();
             String z[] = {"3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"};
             vector<String> expec(z, z+6);
@@ -2027,7 +2027,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getNetSidebands()" << endl;
+            cout << "*** test getNetSidebands()" << std::endl;
             vector<Int> netsb = md.getNetSidebands();
             Int expec[] = {
                 3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2,
@@ -2039,7 +2039,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getReferenceDirection()" << endl;
+            cout << "*** test getReferenceDirection()" << std::endl;
             uInt nfields = md.nFields();
             for (uInt i=0; i<nfields; ++i) {
                 MDirection dir = md.getReferenceDirection(i);
@@ -2075,7 +2075,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getChanEffectiveBWs()" << endl;
+            cout << "*** test getChanEffectiveBWs()" << std::endl;
             vector<QVector<Double> > ebw = md.getChanEffectiveBWs(False);
             vector<QVector<Double> >::const_iterator iter = ebw.begin();
             vector<QVector<Double> >::const_iterator end = ebw.end();
@@ -2109,7 +2109,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
         }
         {
-            cout << "*** test getChanResolutions()" << endl;
+            cout << "*** test getChanResolutions()" << std::endl;
             vector<QVector<Double> > ebw = md.getChanResolutions(False);
             vector<QVector<Double> >::const_iterator iter = ebw.begin();
             vector<QVector<Double> >::const_iterator end = ebw.end();
@@ -2143,7 +2143,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
         }
         {
-            cout << "test getRestFrequencies()" << endl;
+            cout << "test getRestFrequencies()" << std::endl;
             std::map<SourceKey, std::shared_ptr<vector<MFrequency> > > rfs = md.getRestFrequencies();
             std::map<SourceKey, std::shared_ptr<vector<MFrequency> > >::const_iterator iter = rfs.begin();
             std::map<SourceKey, std::shared_ptr<vector<MFrequency> > >::const_iterator end = rfs.end();
@@ -2160,7 +2160,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "test getTransitions()" << endl;
+            cout << "test getTransitions()" << std::endl;
             std::map<SourceKey, std::shared_ptr<vector<String> > > rfs = md.getTransitions();
             std::map<SourceKey, std::shared_ptr<vector<String> > >::const_iterator iter = rfs.begin();
             std::map<SourceKey, std::shared_ptr<vector<String> > >::const_iterator end = rfs.end();
@@ -2177,7 +2177,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "test getSubScanProperties" << endl;
+            cout << "test getSubScanProperties" << std::endl;
             SubScanKey sskey;
             sskey.arrayID = 0;
             sskey.fieldID = 0;
@@ -2215,7 +2215,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScanKeys()" << endl;
+            cout << "*** test getScanKeys()" << std::endl;
             std::set<ScanKey> keys = md.getScanKeys();
             ScanKey expec;
             expec.arrayID = 0;
@@ -2231,7 +2231,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getIntentsForSubScan() and getSubScanToIntentsMap()" << endl;
+            cout << "*** test getIntentsForSubScan() and getSubScanToIntentsMap()" << std::endl;
             ArrayKey arrayKey;
             arrayKey.obsID = 0;
             arrayKey.arrayID = 0;
@@ -2316,7 +2316,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getSpwsForSubScan()" << endl;
+            cout << "*** test getSpwsForSubScan()" << std::endl;
             ArrayKey arrayKey;
             arrayKey.obsID = 0;
             arrayKey.arrayID = 0;
@@ -2358,7 +2358,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "test getAverageIntervalsForSubScan()" << endl;
+            cout << "test getAverageIntervalsForSubScan()" << std::endl;
             ArrayKey arrayKey;
             arrayKey.obsID = 0;
             arrayKey.arrayID = 0;
@@ -2403,7 +2403,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getSpwIDs()" << endl;
+            cout << "*** test getSpwIDs()" << std::endl;
             std::set<uInt> spws = md.getSpwIDs();
             AlwaysAssert(spws.size() == 25, AipsError);
             std::set<uInt>::const_iterator iter = spws.begin();
@@ -2414,7 +2414,7 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScanToTimeRangeMap()" << endl;
+            cout << "*** test getScanToTimeRangeMap()" << std::endl;
             std::shared_ptr<const std::map<ScanKey, std::pair<Double,Double> > > mymap
                 = md.getScanToTimeRangeMap();
             ScanKey key;
@@ -2425,7 +2425,7 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(near(mymap->find(key)->second.second, 4842824839.0, 1.0), AipsError);
         }
         {
-            cout << "*** test getNRowsMap()" << endl;
+            cout << "*** test getNRowsMap()" << std::endl;
             SubScanKey key;
             key.arrayID = 0;
             key.obsID = 0;
@@ -2439,12 +2439,12 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(xc->find(key)->second == 316, AipsError);
         }
         {
-            cout << "*** test getFieldCodes()" << endl;
+            cout << "*** test getFieldCodes()" << std::endl;
             Vector<String> codes = Vector<String>(md.getFieldCodes());
             AlwaysAssert(allEQ(codes, String("none")), AipsError);
         }
         {
-            cout << "*** test getUniqueDataDescIDs()" << endl;
+            cout << "*** test getUniqueDataDescIDs()" << std::endl;
             std::set<uInt> ddids = md.getUniqueDataDescIDs();
             Vector<uInt> expec = indgen(25, (uInt)0, (uInt)1);
             AlwaysAssert(
@@ -2454,7 +2454,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getUniqueAntennaIDs()" << endl;
+            cout << "*** test getUniqueAntennaIDs()" << std::endl;
             std::set<Int> ants = md.getUniqueAntennaIDs();
             Int evals[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13};
             Vector<Int> expec(vector<Int>(evals, evals+13));
@@ -2465,7 +2465,7 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getFirstExposureTimeMap()" << endl;
+            cout << "*** test getFirstExposureTimeMap()" << std::endl;
             vector<std::map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
             AlwaysAssert(mymap.size() == 25, AipsError);
             for (Int i=0; i<25; ++i) {
@@ -2504,14 +2504,14 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getUniqueSpwIDs()" << endl;
+            cout << "*** test getUniqueSpwIDs()" << std::endl;
             std::set<uInt> spws = md.getUniqueSpwIDs();
             Vector<Int> expV = casacore::indgen(25, 0, 1);
             std::set<uInt> expec(expV.begin(), expV.end());
             AlwaysAssert(spws == expec, AipsError);
         }
         {
-            cout << "*** test getSourceTimes()" << endl;
+            cout << "*** test getSourceTimes()" << std::endl;
             std::shared_ptr<const Quantum<Vector<Double> > > times = md.getSourceTimes();
             Vector<Double> v = times->getValue();
             AlwaysAssert(v.size() == 200, AipsError);
@@ -2520,14 +2520,14 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(allNear(v, expec, 1e-10), AipsError);
         }
         {
-            cout << "*** test getIntervalStatistics()" << endl;
+            cout << "*** test getIntervalStatistics()" << std::endl;
             MSMetaData::ColumnStats stats = md.getIntervalStatistics();
             AlwaysAssert(near(stats.min, 1.008), AipsError);
             AlwaysAssert(near(stats.max, 6.048), AipsError);
             AlwaysAssert(near(stats.median, 1.008), AipsError);
         }
         {
-            cout << "test getTimesForSpws()" << endl;
+            cout << "test getTimesForSpws()" << std::endl;
             std::vector<std::set<Double> > vec = md.getTimesForSpws();
             uInt n = vec.size();
             AlwaysAssert(n == 40, AipsError);
@@ -2572,7 +2572,7 @@ void testIt(MSMetaData& md) {
 
         }
         {
-            cout << "*** cache size " << md.getCache() << endl;
+            cout << "*** cache size " << md.getCache() << std::endl;
         }
     }
 }
@@ -2584,9 +2584,9 @@ int main() {
         String datadir = parts[0] + "/data/";
         delete [] parts;
         casacore::MeasurementSet ms(datadir + "regression/unittest/MSMetaData/MSMetaData.ms");
-        cout << "*** test on-demand constructor" << endl;
+        cout << "*** test on-demand constructor" << std::endl;
         MSMetaData md1(&ms, 100);
-        cout << "*** cache size " << md1.getCache() << endl;
+        cout << "*** cache size " << md1.getCache() << std::endl;
 
         testIt(md1);
         // test after everything is cached
@@ -2595,10 +2595,10 @@ int main() {
         MSMetaData md2(&ms, 0);
         testIt(md2);
         AlwaysAssert(md2.getCache() == 0, AipsError);
-        cout << "OK" << endl;
+        cout << "OK" << std::endl;
     } 
     catch (const std::exception& x) {
-        cerr << "Exception : " << x.what() << endl;
+        cerr << "Exception : " << x.what() << std::endl;
         return 1;
     }
     return 0;

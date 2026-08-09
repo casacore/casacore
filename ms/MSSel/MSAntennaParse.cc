@@ -87,7 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	TableExprNode noAutoCorr = (column1AsTEN_p != column2AsTEN_p);
 	condition = noAutoCorr && condition;
       }
-    //    if (negate) cerr << "Generating a negation condition" << endl;
+    //    if (negate) cerr << "Generating a negation condition" << std::endl;
     if (negate) condition = !condition;
     if(node_p.isNull()) node_p = condition;
     else

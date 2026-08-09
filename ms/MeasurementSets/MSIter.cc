@@ -388,7 +388,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 
     if (!useIn && !useSorted) {
       // we have to resort the input; enclose in >>> <<< to avoid pollution of test .out file
-      if (aips_debug) cout << ">>>"<<endl<<"MSIter::construct - resorting table"<<endl<<"<<<"<<endl;
+      if (aips_debug) cout << ">>>"<<std::endl<<"MSIter::construct - resorting table"<<std::endl<<"<<<"<<std::endl;
       sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
     }
 
@@ -1003,9 +1003,9 @@ void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw,
     spw[k]=spwIn.convertToSpwIndex(freqlist, numSpec);
     Vector<Int> retchanlist=
       spwIn.convertToChannelIndex(spw[k], freqlist, numSpec);
-    cout << "retchanlist " << retchanlist << endl;
+    cout << "retchanlist " << retchanlist << std::endl;
     if((retchanlist.nelements()%3) != 0){
-      cout << "Error in getting channel out " << endl;
+      cout << "Error in getting channel out " << std::endl;
     }
     else{
       start[k].resize(spw[k].nelements());

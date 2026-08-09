@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (regex) reg=pattern;
     else       reg=reg.fromPattern(pattern);
     
-    //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+    //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
     IPosition sh(msSpwSubTable_p.name().getColumn().shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;
@@ -243,7 +243,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Int nChan=chanFreqList.nelements();
 	refFreq = (chanFreqList(nChan-1)+chanFreqList(0))/2.0;;
 
-	//cout << chanFreqList[0] << " " << chanFreqList[nChan-1] << " " << f0 << " " << f1 << " " << f3 << " " << maxChanWidth << endl;
+	//cout << chanFreqList[0] << " " << chanFreqList[nChan-1] << " " << f0 << " " << f1 << " " << f3 << " " << maxChanWidth << std::endl;
 
 	switch (mode)
 	  {
@@ -542,14 +542,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  //
 		  //Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
 		  //
- 		  // cerr << "Start = " << start << " Stop = " << stop << " Step = " << step << endl;
+ 		  // cerr << "Start = " << start << " Stop = " << stop << " Step = " << step << std::endl;
  		  // MRadialVelocity vstart(Quantity(start, "km/s"), MRadialVelocity::LSRK);
  		  // MDoppler mdoppler(vstart.getValue().get(), MDoppler::RADIO);
  		  // MSDopplerUtil msdoppler(*ms_p);
  		  // msdoppler.dopplerInfo(restFreq ,spw(i), fieldid);
 		  
  		  // cout << MFrequency::fromDoppler(mdoppler, 
- 		  // 				  restFreq).getValue().getValue() << endl;
+ 		  // 				  restFreq).getValue().getValue() << std::endl;
 		}
 	    }
       }

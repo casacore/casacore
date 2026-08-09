@@ -62,7 +62,7 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
   
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
-    cout << "Table is not writable " << endl;
+    cout << "Table is not writable " << std::endl;
     return NULL;
   } 
 
@@ -104,7 +104,7 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
     }
   }
   if(!corrTypeExist) {
-    cout << " corrtype " << corrType << " does not exist" << endl;
+    cout << " corrtype " << corrType << " does not exist" << std::endl;
     return NULL;
   }
 

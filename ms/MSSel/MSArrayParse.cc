@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	// Enumerated list of IDs can be treated as a [ID0, ID1]
 	// (range inclusive of the bounds).
-	//	cerr << "Selecting enumerated range: " << id0 << " " << id1 << endl;
+	//	cerr << "Selecting enumerated range: " << id0 << " " << id1 << std::endl;
 	selectRangeGEAndLE(id0,id1);
       }
     return parsedIDList_p;

@@ -141,7 +141,7 @@ void iterMS (double binwidth)
          << " time="
          << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << " keyCh=" << msIter.keyChange()
-         << endl;
+         << std::endl;
   }
 }
 
@@ -158,7 +158,7 @@ void iterMSMemory (double binwidth)
          << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
          << " time="
          << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
-         << endl;
+         << std::endl;
   }
 }
 
@@ -178,9 +178,9 @@ void iter2MS (double binwidth)
          << " time="
          << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << " keyCh=" << msIter.keyChange()
-         << endl;
+         << std::endl;
     if (++i == 4) {
-      cout << "=====" << endl;
+      cout << "=====" << std::endl;
       MSIter msIter1 = msIter;
       for (msIter1.origin(); msIter1.more(); ++msIter1) {
         cout << "nrow=" << msIter1.table().nrow()
@@ -189,12 +189,12 @@ void iter2MS (double binwidth)
              << " time="
              << ScalarColumn<double>(msIter1.table(), "TIME").getColumn() - 1e9
              << " keyCh=" << msIter1.keyChange()
-             << endl;
+             << std::endl;
       }
-      cout << "=====" << endl;
+      cout << "=====" << std::endl;
     }
   }
-  cout << "=====" << endl;
+  cout << "=====" << std::endl;
 }
 
 void iter2MSMemory (double binwidth)
@@ -213,7 +213,7 @@ void iter2MSMemory (double binwidth)
          << " a2=" << ScalarColumn<Int>(it->table(), "ANTENNA2")(0)
          << " time="
          << ScalarColumn<double>(it->table(), "TIME").getColumn() - 1e9
-         << endl;
+         << std::endl;
     if (++i % 2 == 1) {
       msIter1 = msIter;
       it = &msIter1;
@@ -236,7 +236,7 @@ void iterMSGenericSortFuncAlwaysTrue ()
   MSIter msIter(ms, sortCols);
   size_t niter = 0;
   for (msIter.origin(); msIter.more(); msIter++) {
-    cout << "nrow=" << msIter.table().nrow()<<endl;
+    cout << "nrow=" << msIter.table().nrow()<<std::endl;
     niter++;
   }
   AlwaysAssertExit(niter == 1);
@@ -281,7 +281,7 @@ void iterMSGenericSortFuncAntennaGrouping ()
   size_t nAnt01 = 0;
   size_t nAnt2 = 0;
   for (msIter.origin(); msIter.more(); msIter++) {
-    cout << "nrow=" << msIter.table().nrow()<<endl;
+    cout << "nrow=" << msIter.table().nrow()<<std::endl;
     Int antenna =  ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0);
     if(antenna == 0 || antenna == 1)
       nAnt01 += msIter.table().nrow();
@@ -411,8 +411,8 @@ void iterMSCachedDDFeedInfo ()
   // There will be as many iterations as DDIDs. 
   // This is done both for the traditional constructor as for the 
   // constructor with the generic sorting definition.
-  cout << "Iteration with DDID sorting" << endl;
-  cout << "===========================" << endl;
+  cout << "Iteration with DDID sorting" << std::endl;
+  cout << "===========================" << std::endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -460,11 +460,11 @@ void iterMSCachedDDFeedInfo ()
     // It is expected that in each iteration a new DDId is retrieved
     for (msIter->origin(); msIter->more(); (*msIter)++) 
     {
-      cout << "nrow=" << msIter->table().nrow()<<endl;
+      cout << "nrow=" << msIter->table().nrow()<<std::endl;
       cout << "ddid = " << msIter->dataDescriptionId() << 
               " spwid = " << msIter->spectralWindowId() <<
-              " polid = " << msIter->polarizationId() << endl;
-      cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+              " polid = " << msIter->polarizationId() << std::endl;
+      cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << std::endl;
 
       // Check that the DD related metadata is what we expect
       AlwaysAssertExit(msIter->dataDescriptionId() == expectedDDId);
@@ -520,8 +520,8 @@ void iterMSCachedDDFeedInfo ()
   // Antenna1 has been choosen as the other one.
   // This is done both for the traditional constructor as for the
   // constructor with the generic sorting definition.
-  cout << "Iteration with ANTENNA1 and DDID sorting" << endl;
-  cout << "========================================" << endl;
+  cout << "Iteration with ANTENNA1 and DDID sorting" << std::endl;
+  cout << "========================================" << std::endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -576,11 +576,11 @@ void iterMSCachedDDFeedInfo ()
     int antena1Idx = 0;
     for (msIter->origin(); msIter->more(); (*msIter)++)
     {
-      cout << "nrow=" << msIter->table().nrow()<<endl;
+      cout << "nrow=" << msIter->table().nrow()<<std::endl;
       cout << "ddid = " << msIter->dataDescriptionId() <<
               " spwid = " << msIter->spectralWindowId() <<
-              " polid = " << msIter->polarizationId() << endl;
-      cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+              " polid = " << msIter->polarizationId() << std::endl;
+      cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << std::endl;
 
       // Check that the DD related metadata is what we expect
       AlwaysAssertExit(msIter->dataDescriptionId() == expectedDDId);
@@ -651,8 +651,8 @@ void iterMSCachedDDFeedInfo ()
   // all baselines and all DDIds are present
   // This is done both for the traditional constructor as for the 
   // constructor with the generic sorting definition.
-  cout << "Iteration with TIME sorting" << endl;
-  cout << "===========================" << endl;
+  cout << "Iteration with TIME sorting" << std::endl;
+  cout << "===========================" << std::endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -705,11 +705,11 @@ void iterMSCachedDDFeedInfo ()
       {
         if(rowsToSkip == 0)
         {
-          cout << "nrow=" << msIter->table().nrow()<<endl;
+          cout << "nrow=" << msIter->table().nrow()<<std::endl;
           cout << "ddid = " << msIter->dataDescriptionId() <<
                   " spwid = " << msIter->spectralWindowId() <<
-                  " polid = " << msIter->polarizationId() << endl;
-          cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << endl;
+                  " polid = " << msIter->polarizationId() << std::endl;
+          cout << "freqs = " << msIter->frequency() << " freq0 " << msIter->frequency0() << std::endl;
           // Check that the DD related metadata is what we expect
           // For DDId, SPWId, polID: since there is no unique ID in this iteration
           // the first one (0) is returned
@@ -756,7 +756,7 @@ void iterMSCachedDDFeedInfo ()
         }
         else
         {
-          cout << " Skipping row" << endl;
+          cout << " Skipping row" << std::endl;
           rowsToSkip--;
         }
       }
@@ -781,8 +781,8 @@ void iterMSCachedFieldInfo ()
   // There will be as many iterations as FIELD_IDs.
   // This is done both for the traditional constructor as for the
   // constructor with the generic sorting definition.
-  cout << "Iteration with FIELD sorting" << endl;
-  cout << "===========================" << endl;
+  cout << "Iteration with FIELD sorting" << std::endl;
+  cout << "===========================" << std::endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -809,8 +809,8 @@ void iterMSCachedFieldInfo ()
     // It is expected that in each iteration a new FIELD_ID is retrieved
     for (msIter->origin(); msIter->more(); (*msIter)++)
     {
-      cout << "nrow=" << msIter->table().nrow()<<endl;
-      cout << "fieldid = " << msIter->fieldId() << endl;
+      cout << "nrow=" << msIter->table().nrow()<<std::endl;
+      cout << "fieldid = " << msIter->fieldId() << std::endl;
 
       // Check that the FIELD related metadata is what we expect
       AlwaysAssertExit(msIter->fieldId() == expectedFieldId);
@@ -830,8 +830,8 @@ void iterMSCachedFieldInfo ()
   // Antenna1 has been choosen as the other one.
   // This is done both for the traditional constructor as for the
   // constructor with the generic sorting definition.
-  cout << "Iteration with ANTENNA1 and FIELD sorting" << endl;
-  cout << "========================================" << endl;
+  cout << "Iteration with ANTENNA1 and FIELD sorting" << std::endl;
+  cout << "========================================" << std::endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -863,8 +863,8 @@ void iterMSCachedFieldInfo ()
     int antena1Idx = 0;
     for (msIter->origin(); msIter->more(); (*msIter)++)
     {
-      cout << "nrow=" << msIter->table().nrow()<<endl;
-      cout << "fieldid = " << msIter->fieldId() << endl;
+      cout << "nrow=" << msIter->table().nrow()<<std::endl;
+      cout << "fieldid = " << msIter->fieldId() << std::endl;
 
       // Check that the DD related metadata is what we expect
       AlwaysAssertExit(msIter->fieldId() == expectedFieldId);
@@ -893,8 +893,8 @@ void iterMSCachedFieldInfo ()
   // all baselines and all FIELD_IDs are present
   // This is done both for the traditional constructor as for the
   // constructor with the generic sorting definition.
-  cout << "Iteration with TIME sorting" << endl;
-  cout << "===========================" << endl;
+  cout << "Iteration with TIME sorting" << std::endl;
+  cout << "===========================" << std::endl;
   for(int useGenericSortCons = 0 ; useGenericSortCons < 2 ; useGenericSortCons++)
   {
     std::unique_ptr<MSIter> msIter;
@@ -930,8 +930,8 @@ void iterMSCachedFieldInfo ()
       {
         if(rowsToSkip == 0)
         {
-          cout << "nrow=" << msIter->table().nrow()<<endl;
-          cout << "fieldid = " << msIter->fieldId() << endl;
+          cout << "nrow=" << msIter->table().nrow()<<std::endl;
+          cout << "fieldid = " << msIter->fieldId() << std::endl;
           // Check that the FIELD related metadata is what we expect
           // For FIELD_ID: since there is no unique ID in this iteration
           // the first one (0) is returned
@@ -944,7 +944,7 @@ void iterMSCachedFieldInfo ()
         }
         else
         {
-          cout << " Skipping row" << endl;
+          cout << " Skipping row" << std::endl;
           rowsToSkip--;
         }
       }
@@ -977,22 +977,22 @@ int main (int argc, char* argv[])
     }
     createMS(nAnt, nTime, msinterval);
     iterMS(binwidth);
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iterMSMemory(binwidth);
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iter2MS(binwidth);
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iter2MSMemory(binwidth);
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iterMSGenericSortFuncAlwaysTrue();
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iterMSGenericSortFuncAntennaGrouping();
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iterMSCachedDDFeedInfo();
-    cout << "########" << endl;
+    cout << "########" << std::endl;
     iterMSCachedFieldInfo();
   } catch (std::exception& x) {
-    cerr << "Unexpected exception: " << x.what() << endl;
+    cerr << "Unexpected exception: " << x.what() << std::endl;
     return 1;
   }
   return 0;

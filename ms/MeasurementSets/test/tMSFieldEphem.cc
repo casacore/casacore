@@ -162,7 +162,7 @@ int main() {
 	Table x; Table* y=0;
 	MeasIERS::findTab(x, y, " ", " ", "VTOP");
 	tablePathName = Path(x.tableName()).absoluteName();
-        // cout << "Found " << tablePathName  << endl;
+        // cout << "Found " << tablePathName  << std::endl;
       }
 
       AlwaysAssertExit( ms.field().addEphemeris(0, tablePathName, "Venus") );
@@ -172,7 +172,7 @@ int main() {
 	Table x2; Table* y2=0;
 	MeasIERS::findTab(x2, y2, " ", " ", "VGEO");
 	tablePathName2 = Path(x2.tableName()).absoluteName();
-        // cout << "Found " << tablePathName2 << endl;
+        // cout << "Found " << tablePathName2 << std::endl;
       }
       // add using non-absolute path
      {
@@ -210,7 +210,7 @@ int main() {
 	Int row = 0;
 	Double mjds = 50802.75*86400.;
 	MDirection dDir = msfc.delayDirMeas(row, mjds);
-	// cout << "position for row " << row << ", MJD " << mjds/86400. << ": " << dDir.getAngle(Unit("deg")) << endl;
+	// cout << "position for row " << row << ", MJD " << mjds/86400. << ": " << dDir.getAngle(Unit("deg")) << std::endl;
 	MDirection rDir = msfc.referenceDirMeas(row, mjds);
 	MDirection eDir = msfc.ephemerisDirMeas(row, mjds);
 	MVDirection expDir(rDir.getAngle());
@@ -229,13 +229,13 @@ int main() {
 	Int row = 1;
 	Double mjds = 50802.75*86400.;
 	MDirection dDir = msfc.delayDirMeas(row, mjds);
-	// cout << "delaydir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << dDir.getAngle(Unit("deg")) << endl;
+	// cout << "delaydir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << dDir.getAngle(Unit("deg")) << std::endl;
 	MDirection pDir = msfc.phaseDirMeas(row, mjds);
-	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << endl;
+	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << std::endl;
 	MDirection rDir = msfc.referenceDirMeas(row, mjds);
-	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << endl;
+	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << std::endl;
 	MDirection eDir = msfc.ephemerisDirMeas(row, mjds);
-	// cout << "ephemerisdir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << eDir.getAngle(Unit("deg")) << endl;
+	// cout << "ephemerisdir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << eDir.getAngle(Unit("deg")) << std::endl;
 
 	MDirection expected(Quantity(-54.3855, "deg"), Quantity(-19.8873, "deg"), MDirection::APP);
 	MVDirection expDir(expected.getAngle());
@@ -263,13 +263,13 @@ int main() {
 	Int row = 2;
 	Double mjds = 50802.75*86400.;
 	MDirection dDir = msfc.delayDirMeas(row, mjds);
-	// cout << "delaydir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << dDir.getAngle(Unit("deg")) << endl;
+	// cout << "delaydir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << dDir.getAngle(Unit("deg")) << std::endl;
 	MDirection pDir = msfc.phaseDirMeas(row, mjds);
-	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << endl;
+	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << std::endl;
 	MDirection rDir = msfc.referenceDirMeas(row, mjds);
-	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << endl;
+	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << std::endl;
 	MDirection eDir = msfc.ephemerisDirMeas(row, mjds);
-	// cout << "ephemerisdir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << eDir.getAngle(Unit("deg")) << endl;
+	// cout << "ephemerisdir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << eDir.getAngle(Unit("deg")) << std::endl;
 
 	MVDirection original(Quantity(305.6145129, "deg"),
 			     Quantity(-19.8873316, "deg"));
@@ -283,7 +283,7 @@ int main() {
 	MVDirection expDir(expected.getAngle());
 	MVDirection unalteredExpDir(unalteredExpected.getAngle());
 
-	// cout << "separation " << expDir.separation(MVDirection(dDir.getAngle()), "deg") << endl;
+	// cout << "separation " << expDir.separation(MVDirection(dDir.getAngle()), "deg") << std::endl;
 
 	AlwaysAssertExit(expDir.separation(MVDirection(dDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
 	AlwaysAssertExit(dDir.getRef().getType()==expected.getRef().getType());
@@ -291,7 +291,7 @@ int main() {
 	AlwaysAssertExit(pDir.getRef().getType()==expected.getRef().getType());
 	AlwaysAssertExit(expDir.separation(MVDirection(rDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
 
-	// cout << "types " << rDir.getRef() << " " << expected.getRef() << endl;
+	// cout << "types " << rDir.getRef() << " " << expected.getRef() << std::endl;
 
 	AlwaysAssertExit(rDir.getRef().getType()  == expected.getRef().getType() );
 	AlwaysAssertExit(unalteredExpDir.separation(MVDirection(eDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
@@ -310,11 +310,11 @@ int main() {
 	Int row = 3;
 	Double mjds = 50802.75*86400.;
 	MDirection dDir = msfc.delayDirMeas(row, mjds);
-	// cout << "delaydir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << dDir.getAngle(Unit("deg")) << endl;
+	// cout << "delaydir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << dDir.getAngle(Unit("deg")) << std::endl;
 	MDirection pDir = msfc.phaseDirMeas(row, mjds);
-	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << endl;
+	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << std::endl;
 	MDirection rDir = msfc.referenceDirMeas(row, mjds);
-	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << endl;
+	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << std::endl;
 
 	MVDirection original(Quantity(305.6095079, "deg"),
 			     Quantity(-19.88256944, "deg"));
@@ -322,7 +322,7 @@ int main() {
 	MDirection expected(original, MDirection::APP);
 	MVDirection expDir(expected.getAngle());
 
-	// cout << "separation " << expDir.separation(MVDirection(dDir.getAngle()), "deg") << endl;
+	// cout << "separation " << expDir.separation(MVDirection(dDir.getAngle()), "deg") << std::endl;
 
 	AlwaysAssertExit(expDir.separation(MVDirection(dDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
 	AlwaysAssertExit(dDir.getRef().getType()==expected.getRef().getType());
@@ -338,7 +338,7 @@ int main() {
 	try{
 	  MDirection xDir = msfc.delayDirMeas(row, 12345.); // time outside validity range
 	} catch (std::exception& x) {
-	  //cout <<  x.what() <<endl;
+	  //cout <<  x.what() <<std::endl;
 	  didThrow = True;
 	}
 	AlwaysAssertExit(didThrow);
@@ -347,7 +347,7 @@ int main() {
 	try{
 	  MRadialVelocity xmradvel = msfc.radVelMeas(row, 12345.); // time outside validity range
 	} catch (std::exception& x) {
-	  //cout <<  x.what() <<endl;
+	  //cout <<  x.what() <<std::endl;
 	  didThrow = True;
 	}
 	AlwaysAssertExit(didThrow);
@@ -356,7 +356,7 @@ int main() {
 	try{
 	  MRadialVelocity xrho = msfc.rho(row, 12345.); // time outside validity range
 	} catch (std::exception& x) {
-	  //cout <<  x.what() <<endl;
+	  //cout <<  x.what() <<std::endl;
 	  didThrow = True;
 	}
 	AlwaysAssertExit(didThrow);
@@ -364,11 +364,11 @@ int main() {
 	// Finally test radial velocity and rho access
 
 	MRadialVelocity mradvel = msfc.radVelMeas(row, mjds);
-	// cout << "mradvel " << mradvel.get("AU/d") << endl;
+	// cout << "mradvel " << mradvel.get("AU/d") << std::endl;
 	AlwaysAssertExit((mradvel.get("AU/d")-Quantity(-0.0057244046, "AU/d")).getValue("km/s")<0.01);
 
 	Quantity rho =  msfc.rho(row, mjds);
-	// cout << "rho " << rho.get("AU") << endl;
+	// cout << "rho " << rho.get("AU") << std::endl;
 	AlwaysAssertExit((rho.get("AU") - Quantity(0.35214584, "AU")).getValue("km")<10.);
 
       }      
@@ -382,7 +382,7 @@ int main() {
     }
     return 0;  
   } catch (std::exception& x) {
-    cerr << x.what() <<endl;
+    cerr << x.what() <<std::endl;
     return 1;
   } 
 }

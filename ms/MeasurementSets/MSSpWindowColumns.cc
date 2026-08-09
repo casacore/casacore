@@ -338,10 +338,10 @@ matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const 
   MFrequency rowFreq;
   if( isRefFreq ) { 
      rowFreq = refFrequencyMeas()(row);
-	  //cout<< "[MSSpWindowColumns::matchRefFreqCnvtr()] match reference frequency. "<< endl;
+	  //cout<< "[MSSpWindowColumns::matchRefFreqCnvtr()] match reference frequency. "<< std::endl;
   }else{
      rowFreq = Vector<MFrequency>(chanFreqMeas()(row))(0);
-	  //cout<< "[MSSpWindowColumns::matchRefFreqCnvtr()] match first channel frequency. " << endl;
+	  //cout<< "[MSSpWindowColumns::matchRefFreqCnvtr()] match first channel frequency. " << std::endl;
   }
   //const MFrequency refFreqCtrd;
   const MFrequency::Types refType = MFrequency::castType(refFreq.getRef().getType());

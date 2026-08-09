@@ -1432,13 +1432,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Debug print statements
     
     //   cout << "MSSel::fromSI, at start, selectionItem.nfields=" << selectionItem.nfields()
-    //        << endl;
+    //        << std::endl;
     //   for (uInt fld=0; fld<selectionItem.nfields(); fld++) {
     //     cout << "MSSel::fromGR, fld= " << fld << ", name= "
     // 	 << selectionItem.name(fld) << ", type= "
-    // 	 << selectionItem.type(fld) << endl;
+    // 	 << selectionItem.type(fld) << std::endl;
     //   }
-    //   cout << "------------------------------------------------------" << endl;
+    //   cout << "------------------------------------------------------" << std::endl;
     
     exprOrder_p = Vector<Int>(MAX_EXPR, Int(NO_EXPR));
     
@@ -1447,31 +1447,31 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Antenna expression
     if (definedAndSet(selectionItem,"antenna")) {
       setAntennaExpr(selectionItem.asString("antenna"));
-      //    cout << antennaExpr_p << ", antenna" << endl;
+      //    cout << antennaExpr_p << ", antenna" << std::endl;
     }
 
     // Feed expression
     if (definedAndSet(selectionItem,"feed")) {
       setFieldExpr(selectionItem.asString("feed"));
-      //    cout << feedExpr_p << ", feed" << endl;
+      //    cout << feedExpr_p << ", feed" << std::endl;
     }
 
     // Field expression
     if (definedAndSet(selectionItem,"field")) {
       setFieldExpr(selectionItem.asString("field"));
-      //    cout << fieldExpr_p << ", field" << endl;
+      //    cout << fieldExpr_p << ", field" << std::endl;
     }
     
     // SPW expression
     if (definedAndSet(selectionItem,"spw")) {
       setSpwExpr(selectionItem.asString("spw"));
-      //    cout << spwExpr_p << ", spw" << endl;
+      //    cout << spwExpr_p << ", spw" << std::endl;
     }
     
     // Scan expression
     if (definedAndSet(selectionItem,"scan")) {
       setScanExpr(selectionItem.asString("scan"));
-      //    cout << scanExpr_p << ", scan" << endl;
+      //    cout << scanExpr_p << ", scan" << std::endl;
     }
     
     // Observation expression
@@ -1487,18 +1487,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Time expression
     if (definedAndSet(selectionItem,"time")) {
       setTimeExpr(selectionItem.asString("time"));
-      //    cout << timeExpr_p << ", time" << endl;
+      //    cout << timeExpr_p << ", time" << std::endl;
     }
     
     // UV Distribution expression
     if (definedAndSet(selectionItem,"uvdist")) {
       setUvDistExpr(selectionItem.asString("uvdist"));
-      //    cout << uvDistExpr_p << ", uvdist" << endl;
+      //    cout << uvDistExpr_p << ", uvdist" << std::endl;
     }
     // Poln expression
     if (definedAndSet(selectionItem,"poln")) {
       setUvDistExpr(selectionItem.asString("poln"));
-      //    cout << polnExpr_p << ", poln" << endl;
+      //    cout << polnExpr_p << ", poln" << std::endl;
     }
     
     clearErrorHandlers();

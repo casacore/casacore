@@ -225,7 +225,7 @@ namespace casacore { //# name space casa begins
     else{
       String error; 
       if(!qh.fromString(error, leString)){
-	ostringstream oss;
+	std::ostringstream oss;
 	String err="Error " + error + " In converting quantity " + leString;
 	throw( AipsError(err));
       }

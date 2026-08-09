@@ -105,11 +105,11 @@ private:
 // MSIter msIter(ms,sort,timeInteval);
 // for (msIter.origin(); msIter.more(); msIter++) {
 // // print out some of the iteration state
-//    cout << msIter.fieldId() << endl;
-//    cout << msIter.fieldName() << endl;
-//    cout << msIter.dataDescriptionId() << endl;
-//    cout << msIter.frequency0() << endl;
-//    cout << msIter.table().nrow() << endl;
+//    cout << msIter.fieldId() << std::endl;
+//    cout << msIter.fieldName() << std::endl;
+//    cout << msIter.dataDescriptionId() << std::endl;
+//    cout << msIter.frequency0() << std::endl;
+//    cout << msIter.table().nrow() << std::endl;
 //    process(msIter.table()); // process the data in the current iteration
 // }
 // // Output shows only 1 row at a time because the table is sorted on TIME
@@ -132,11 +132,11 @@ private:
 // MSIter msIter(ms,sort,timeInteval);
 // for (msIter.origin(); msIter.more(); msIter++) {
 // // print out some of the iteration state
-//    cout << msIter.fieldId() << endl;
-//    cout << msIter.fieldName() << endl;
-//    cout << msIter.dataDescriptionId() << endl;
-//    cout << msIter.frequency0() << endl;
-//    cout << msIter.table().nrow() << endl;
+//    cout << msIter.fieldId() << std::endl;
+//    cout << msIter.fieldName() << std::endl;
+//    cout << msIter.dataDescriptionId() << std::endl;
+//    cout << msIter.frequency0() << std::endl;
+//    cout << msIter.table().nrow() << std::endl;
 //    process(msIter.table()); // process the data in the current iteration
 // // Now the output shows 7 rows at a time, all with identical ANTENNA1
 // // and ANTENNA2 values and TIME values within a 3000s interval.

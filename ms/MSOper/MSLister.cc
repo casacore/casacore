@@ -285,7 +285,7 @@ void MSLister::listHeader()
         throw(AipsError("Unrecognized value in parameter datacolumn"));
     }
     // logStream_p << "dataColSel = " << dataColSel << LogIO::POST;
-    // cout << "dataColSel = " << dataColSel << endl;
+    // cout << "dataColSel = " << dataColSel << std::endl;
 
     // Fill unused variables to avoid compiler warnings.
     nchan = 0;
@@ -335,19 +335,19 @@ void MSLister::selectvis(const String& timerange,
     logStream_p << LogIO::DEBUG1 << "Begin: MSLister::selectvis" << LogIO::POST;
 
     // List input parameter values.
-    logStream_p << LogIO::DEBUG1 << "timerange   = " << timerange   << " , strlen = " << timerange.length()   << endl;
-    logStream_p << LogIO::DEBUG1 << "spw         = " << spw         << " , strlen = " << spw.length()         << endl;
-    logStream_p << LogIO::DEBUG1 << "scan        = " << scan        << " , strlen = " << scan.length()        << endl;
-    logStream_p << LogIO::DEBUG1 << "field       = " << field       << " , strlen = " << field.length()       << endl;
-    logStream_p << LogIO::DEBUG1 << "antenna     = " << antenna     << " , strlen = " << antenna.length()     << endl;
-    logStream_p << LogIO::DEBUG1 << "uvrange     = " << uvrange     << " , strlen = " << uvrange.length()     << endl;
-    logStream_p << LogIO::DEBUG1 << "correlation = " << correlation << " , strlen = " << correlation.length() << endl;
-    logStream_p << LogIO::DEBUG1 << "array       = " << array       << " , strlen = " << array.length()       << endl;
-    logStream_p << LogIO::DEBUG1 << "observation = " << observation << " , strlen = " << observation.length() << endl;
+    logStream_p << LogIO::DEBUG1 << "timerange   = " << timerange   << " , strlen = " << timerange.length()   << std::endl;
+    logStream_p << LogIO::DEBUG1 << "spw         = " << spw         << " , strlen = " << spw.length()         << std::endl;
+    logStream_p << LogIO::DEBUG1 << "scan        = " << scan        << " , strlen = " << scan.length()        << std::endl;
+    logStream_p << LogIO::DEBUG1 << "field       = " << field       << " , strlen = " << field.length()       << std::endl;
+    logStream_p << LogIO::DEBUG1 << "antenna     = " << antenna     << " , strlen = " << antenna.length()     << std::endl;
+    logStream_p << LogIO::DEBUG1 << "uvrange     = " << uvrange     << " , strlen = " << uvrange.length()     << std::endl;
+    logStream_p << LogIO::DEBUG1 << "correlation = " << correlation << " , strlen = " << correlation.length() << std::endl;
+    logStream_p << LogIO::DEBUG1 << "array       = " << array       << " , strlen = " << array.length()       << std::endl;
+    logStream_p << LogIO::DEBUG1 << "observation = " << observation << " , strlen = " << observation.length() << std::endl;
     logStream_p << LogIO::DEBUG1 << "msSelect    = " << uvrange     << " , strlen = " << msSelect.length()    << LogIO::POST;
-    // logStream_p << "feed        = " << feed        << " , strlen = " << feed.length()        << endl;
-    // logStream_p << "average     = " << uvrange     << " , strlen = " << average.length()     << endl;
-    // logStream_p << "showflags   = " << uvrange     << " , strlen = " << showflags.length()   << endl;
+    // logStream_p << "feed        = " << feed        << " , strlen = " << feed.length()        << std::endl;
+    // logStream_p << "average     = " << uvrange     << " , strlen = " << average.length()     << std::endl;
+    // logStream_p << "showflags   = " << uvrange     << " , strlen = " << showflags.length()   << std::endl;
 
     // Apply selection to the original MeasurementSet
     if (!(timerange.empty() && spw.empty() && scan.empty() && field.empty() &&
@@ -420,15 +420,15 @@ void MSLister::selectvis(const String& timerange,
     // the whole thing.
     String selectedMS = "MSLister.selected.ms";
     logStream_p << LogIO::NORMAL1 << "Writing selected MS to disk (overwriting if necessary)." << LogIO::POST;
-    cout << "Writing selected MS to disk (overwriting if necessary)." << endl;
+    cout << "Writing selected MS to disk (overwriting if necessary)." << std::endl;
     pMSSel_p->deepCopy(selectedMS, Table::New);
     logStream_p << LogIO::NORMAL1 << selectedMS << " written." << LogIO::POST;
-    cout << selectedMS << " written." << endl;
+    cout << selectedMS << " written." << std::endl;
     */
 
     // What channels are contained in the selected data?
     chanList_p=pMSSelection->getChanList();
-    logStream_p << LogIO::DEBUG1 << "pMSSelection->getChanList() = " << endl
+    logStream_p << LogIO::DEBUG1 << "pMSSelection->getChanList() = " << std::endl
                 << pMSSelection->getChanList() << LogIO::POST;
 
     // Do not make a list of all channels!
@@ -503,7 +503,7 @@ void MSLister::selectvis(const String& timerange,
     /// logStream_p << LogIO::NORMAL2 << "Number of selected channels = "
     ///           << nchan_p << LogIO::POST;
     /// logStream_p << LogIO::DEBUG1 << "nchan_p = " << nchan_p << LogIO::POST;
-    logStream_p << LogIO::DEBUG2 << "msSpwinC.numChan() = " << endl
+    logStream_p << LogIO::DEBUG2 << "msSpwinC.numChan() = " << std::endl
               << msSpWinC.numChan().getColumn()
               << LogIO::POST;
 
@@ -583,7 +583,7 @@ void MSLister::listData(const int pageRows,
         throw(AipsError(errmsg));
       }
       else
-        cerr << "Writing output to file: " << listfile << endl;
+        cerr << "Writing output to file: " << listfile << std::endl;
 
       file.open(listfile.data());
       myout.rdbuf(file.rdbuf());   // DON'T redirect cout to file!
@@ -617,7 +617,7 @@ void MSLister::listData(const int pageRows,
     // setting
     //getRanges(*pMSSel_p);
 
-    //myout << "pMSSel_p.nrows=" << pMSSel_p->nrow() << endl;
+    //myout << "pMSSel_p.nrows=" << pMSSel_p->nrow() << std::endl;
 
 /////////////////////////////////////////////////////
 //////read whole ms into mem is not practical, slow and waste memory
@@ -637,12 +637,12 @@ void MSLister::listData(const int pageRows,
       }
       if (!splitMS.nrow())
           break;
-      //myout << "splitMS.nrow()=" << splitMS.nrow() << endl;
+      //myout << "splitMS.nrow()=" << splitMS.nrow() << std::endl;
 
       getRanges(splitMS);
 
       // UNCOMMENT TO: PRINT RECORD OF RANGES (Records can be written to ostreams, but not to LogIO.)
-      // myout << "ranges_p = " << endl << ranges_p << endl;
+      // myout << "ranges_p = " << std::endl << ranges_p << std::endl;
 
       // From here on, all MS access should go through mss_p.
 
@@ -672,7 +672,7 @@ void MSLister::listData(const int pageRows,
       Array <Float>         weight;
       Array <Double>         uvw;
 
-      //myout << "type=" << dataRecords_p.type(dataRecords_p.fieldNumber("uvw")) << endl;
+      //myout << "type=" << dataRecords_p.type(dataRecords_p.fieldNumber("uvw")) << std::endl;
       // Fill the arrays.
       rowTime = dataRecords_p.asArrayDouble(RecordFieldId("time"));
       // ACQUIRE ANTENNA NAME VECTORS
@@ -764,7 +764,7 @@ void MSLister::listData(const int pageRows,
       }
 
       /* List available units on the top of the output */
-      myout << "Units of columns are: Date/Time(YYMMDD/HH:MM:SS UT), UVDist(wavelength), Phase(deg), UVW(m)" << endl;
+      myout << "Units of columns are: Date/Time(YYMMDD/HH:MM:SS UT), UVDist(wavelength), Phase(deg), UVW(m)" << std::endl;
       // Add or adjust ranges_p to non-zero absolutes for non-index and/or
       // converted values (so we can use ranges_p for field width and
       // precision setting):
@@ -781,7 +781,7 @@ void MSLister::listData(const int pageRows,
       amplminmax(0)=min(ampl(ampl>=0.0f));
       amplminmax(1)=max(ampl);
 	  if(amplminmax(0) == amplminmax(1))
-		{ myout << "All selected data has AMPLITUDE = " << amplminmax(0) << endl; }
+		{ myout << "All selected data has AMPLITUDE = " << amplminmax(0) << std::endl; }
 
 	  ranges_p.define(dataColSel(0),amplminmax);
 
@@ -794,7 +794,7 @@ void MSLister::listData(const int pageRows,
 		  phminmax(0) = min(abs(phase));
 		  phminmax(1) = max(abs(phase));
 		  if(phminmax(0) == phminmax(1))
-			{ myout << "All selected data has PHASE = " << phminmax(0) << endl; }
+			{ myout << "All selected data has PHASE = " << phminmax(0) << std::endl; }
 
 		  ranges_p.define(dataColSel(1),phminmax);
       }
@@ -804,26 +804,26 @@ void MSLister::listData(const int pageRows,
       // this is necessary.  We shall see!..
       //
       //    MaskedArray<float> maPhase(phase, (phase!=0.0f));
-      //    myout << "phase = " << endl << phase << endl;
-      //    myout << "maPhase.nelements() = " << maPhase.nelements() << endl;
-      //    myout << "phase(phase!=0.0f).nelements() = " << phase(phase!=0.0f).nelements() << endl;
-      //    myout << "abs(phase(phase!=0.0f)).nelements() = " << abs(phase(phase!=0.0f)).nelements() << endl;
-      //    myout << "min(abs(phase(phase!=0.0f))) = " << min(abs(phase(phase!=0.0f))) << endl;
-      //    myout << "min(phase(phase!=0.0f)) = " << min(phase(phase!=0.0f)) << endl;
+      //    myout << "phase = " << std::endl << phase << std::endl;
+      //    myout << "maPhase.nelements() = " << maPhase.nelements() << std::endl;
+      //    myout << "phase(phase!=0.0f).nelements() = " << phase(phase!=0.0f).nelements() << std::endl;
+      //    myout << "abs(phase(phase!=0.0f)).nelements() = " << abs(phase(phase!=0.0f)).nelements() << std::endl;
+      //    myout << "min(abs(phase(phase!=0.0f))) = " << min(abs(phase(phase!=0.0f))) << std::endl;
+      //    myout << "min(phase(phase!=0.0f)) = " << min(phase(phase!=0.0f)) << std::endl;
       //    if (maPhase.nelementsValid() != 0) {
       //      logStream_p << LogIO::DEBUG2 << "maPhase contains at least 1 element" << LogIO::POST;
       //      // logStream_p << LogIO::DEBUG2 << "phase = " << phase << LogIO::POST;
       //      // CANNOT BE DONE myout << "phase(phase !=0.0f) = " << phase(phase!=0.0f);
-      //      // CANNOT BE DONE myout << "maPhase = " << maPhase << endl;
+      //      // CANNOT BE DONE myout << "maPhase = " << maPhase << std::endl;
       //      phminmax(0)=min(abs(phase(phase!=0.0f)));
-      //      myout << "phminmax(0) = " << phminmax(0) << endl;
+      //      myout << "phminmax(0) = " << phminmax(0) << std::endl;
       //      phminmax(1)=max(phase);
-      //      myout << "phminmax(1) = " << phminmax(1) << endl;
+      //      myout << "phminmax(1) = " << phminmax(1) << std::endl;
       //    } else {
       //      phminmax(0) = 0.0f;
       //      phminmax(1) = 0.0f;
       //      logStream_p << LogIO::NORMAL1 << "All selected data has phase = 0.0" << LogIO::POST;
-      //      myout << "All selected data has phase = 0.0" << endl;
+      //      myout << "All selected data has phase = 0.0" << std::endl;
       //    }
 //      if (!is_float) {ranges_p.define(dataColSel(1),phminmax);}
 
@@ -832,7 +832,7 @@ void MSLister::listData(const int pageRows,
       wtminmax(0)=min(abs(weight));
       wtminmax(1)=max(abs(weight));
       if(wtminmax(0) == wtminmax(1))
-        myout << "WEIGHT: " << wtminmax[0] << endl;
+        myout << "WEIGHT: " << wtminmax[0] << std::endl;
       ranges_p.define("weight",wtminmax);
 
       //logStream_p << LogIO::DEBUG2 << "Setting the uvw min and max." << LogIO::POST;
@@ -840,12 +840,12 @@ void MSLister::listData(const int pageRows,
       uvwminmax(0)=min(abs(uvw));
       uvwminmax(1)=max(abs(uvw));
       //if(uvwminmax(0) == uvwminmax(1))
-      //  { myout << "All selected data has UVW = " << uvwminmax(0) << endl; }
+      //  { myout << "All selected data has UVW = " << uvwminmax(0) << std::endl; }
       ranges_p.define("uvw",uvwminmax);
 
       // Records currently only support output to stdio, not to LogIO!
-      //myout << "Printing out the Record ranges_p:" << endl
-      //     << ranges_p << endl;
+      //myout << "Printing out the Record ranges_p:" << std::endl
+      //     << ranges_p << std::endl;
       //logStream_p << LogIO::DEBUG2 << "Setting flags for output:" << LogIO::POST;
 
       // TURN THIS FLAG SETTING INTO A NEW FUNCTION
@@ -860,7 +860,7 @@ void MSLister::listData(const int pageRows,
         doFld_p = False;
         //logStream_p << LogIO::NORMAL << "All selected data has FIELD = "
         //            << fieldid(0) << LogIO::POST;
-        myout << "FIELD: " << fieldid[0] << endl;
+        myout << "FIELD: " << fieldid[0] << std::endl;
       }
       // doSpW_p = (ranges_p.asArrayInt(RecordFieldId("data_desc_id")).nelements() > 1);
       if (ranges_p.asArrayInt(RecordFieldId("data_desc_id")).nelements() > 1) {
@@ -869,7 +869,7 @@ void MSLister::listData(const int pageRows,
         doSpW_p = False;
         //logStream_p << LogIO::NORMAL << "All selected data has SPW = "
         //          << datadescid(0) << LogIO::POST;
-        myout << "SPW: " << datadescid[0] << endl;
+        myout << "SPW: " << datadescid[0] << std::endl;
       }
       if (multiChan_p) {
         doChn_p = True; // Output a CHANNEL column
@@ -877,19 +877,19 @@ void MSLister::listData(const int pageRows,
         doChn_p = False;
         //logStream_p << LogIO::NORMAL << "All selected data has CHANNEL = "
         //            << chanList_p(0,1) << LogIO::POST;
-        myout << "CHANNEL: " << chanList_p(0, 1) << endl;
+        myout << "CHANNEL: " << chanList_p(0, 1) << std::endl;
       }
 
-      // logStream_p << LogIO::DEBUG2 << "Fld id : " << ranges_p.get("field_id") << endl
+      // logStream_p << LogIO::DEBUG2 << "Fld id : " << ranges_p.get("field_id") << std::endl
       //           << "SpW id : " << ranges_p.get("spectral_window_id") << LogIO::POST;
 
       // From this point on, don't change scaling in list arrays, since the
       // field sizes are determined directly from the data.
 //      logStream_p << LogIO::DEBUG1
-//                  << "(Min, max) uvdist: " << uvminmax[0] << ", " << uvminmax[1] << endl
-//                  << "(Min, max) uvw:    " << uvwminmax[0] << ", " << uvwminmax[1] << endl
-//                  << "(Min, max) amp:    " << amplminmax[0] << ", " << amplminmax[1] << endl
-//                  << "(Min, max) phase:  " << phminmax[0] << ", " << phminmax[1] << endl
+//                  << "(Min, max) uvdist: " << uvminmax[0] << ", " << uvminmax[1] << std::endl
+//                  << "(Min, max) uvw:    " << uvwminmax[0] << ", " << uvwminmax[1] << std::endl
+//                  << "(Min, max) amp:    " << amplminmax[0] << ", " << amplminmax[1] << std::endl
+//                  << "(Min, max) phase:  " << phminmax[0] << ", " << phminmax[1] << std::endl
 //                  << "(Min, max) weight: " << wtminmax[0] << ", " << wtminmax[1]
 //                  << LogIO::POST;
 
@@ -975,8 +975,8 @@ void MSLister::listData(const int pageRows,
       // replicate does not work if the first parameter is "-", but it does for '-'.
       // Bug report here: https://bugs.aoc.nrao.edu/browse/CAS-511
       String hSeparator=replicate('-',wTotal_p+1);
-      //myout << "wTotal_p=" << wTotal_p << endl;
-      //myout << "hSeparator.length=" << hSeparator.size() << endl;
+      //myout << "wTotal_p=" << wTotal_p << std::endl;
+      //myout << "hSeparator.length=" << hSeparator.size() << std::endl;
       uInt colPos=0;
       colPos+=wTime_p;   hSeparator[colPos]='|';
       colPos+=wIntrf_p;  hSeparator[colPos]='|';
@@ -992,8 +992,8 @@ void MSLister::listData(const int pageRows,
       colPos+=wUVW_p; hSeparator[colPos]='|';
       colPos+=wUVW_p; hSeparator[colPos]='|';
       colPos+=wUVW_p; hSeparator[colPos]='|';
-      //myout << "wTotal_p=" << wTotal_p << " colPos=" << colPos << endl;
-      //myout << "hSeparator.length=" << hSeparator.size() << endl;
+      //myout << "wTotal_p=" << wTotal_p << " colPos=" << colPos << std::endl;
+      //myout << "hSeparator.length=" << hSeparator.size() << std::endl;
       //hSeparator.resize(colPos, True);
 
 
@@ -1007,16 +1007,16 @@ void MSLister::listData(const int pageRows,
       // But what exactly to say, since number of channels can vary between
       // spws?
       //logStream_p << LogIO::NORMAL << "Listing " << rowTime.nelements()
-      //          << " data records satisfying selection criteria, " << endl
+      //          << " data records satisfying selection criteria, " << std::endl
       //          << "for each of " << npols_p << " polarisation(s) and " << (chanList_p(0,2)+1)
       //          << " spectral channel(s)." << LogIO::POST;
 
       Int countPageRow=0;
 
-      //myout << "pageRows=" << pageRows << endl;
+      //myout << "pageRows=" << pageRows << std::endl;
       if(pageRows == 0) { // Do not paginate; print header only once.
         listColumnHeader(myout);
-        myout << hSeparator << endl;
+        myout << hSeparator << std::endl;
       }
 
 
@@ -1075,7 +1075,7 @@ void MSLister::listData(const int pageRows,
                 if (endOutput) {break;} // break out of if block
                 //if (prompt) {
                 listColumnHeader(myout);
-                myout << hSeparator << endl;
+                myout << hSeparator << std::endl;
                 //}
               }
               lastdate_p = date_p;
@@ -1118,7 +1118,7 @@ void MSLister::listData(const int pageRows,
                 myout.precision(precUVW_p);
                 myout.width(wUVW_p);myout << uvw(IPosition(2, u, tableRow));
               }
-              myout << endl;
+              myout << std::endl;
             } // chan loop
           }
           if (endOutput) {break;} // break out of spw loop
@@ -1127,7 +1127,7 @@ void MSLister::listData(const int pageRows,
         if (endOutput) {break;} // break out of row loop
       } // row loop
       if (endOutput) {break;} // break out of msIter
-      myout << hSeparator << endl;
+      myout << hSeparator << std::endl;
       if (listfile == "") {
         std::string contStr;
         myout << "Type Q to quit, A to toggle long/short list, or RETURN to continue [continue]: ";
@@ -1182,7 +1182,7 @@ void MSLister::listColumnHeader(ostream& cout) {
   cout.width(wUVW_p);           cout << " ";
   cout.width(wUVW_p);           cout << " ";
   cout.width(wUVW_p);           cout << " ";
-  cout << endl;
+  cout << std::endl;
 
   // Second line of column header
   cout.setf(ios::left, ios::adjustfield);
@@ -1203,7 +1203,7 @@ void MSLister::listColumnHeader(ostream& cout) {
   cout.width(wUVW_p);           cout << "U";
   cout.width(wUVW_p);           cout << "V";
   cout.width(wUVW_p);           cout << "W";
-  cout << endl;
+  cout << std::endl;
 } // end listColumnHeader()
 
 Int MSLister::columnWidth(const Vector<String> antNames) {
@@ -1296,8 +1296,8 @@ void MSLister::polarizationParse(String correlation) {
 			logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
 		}
 
-		logStream_p << LogIO::NORMAL2 << "Correlation selections identified:" << endl
-				<< parseCorrs << endl
+		logStream_p << LogIO::NORMAL2 << "Correlation selections identified:" << std::endl
+				<< parseCorrs << std::endl
 				<< "Number of polarization selections = " << nParseCorrs
 				<< LogIO::POST;
 
@@ -1329,7 +1329,7 @@ void MSLister::polarizationParse(String correlation) {
 			}
 		}
 
-		logStream_p << LogIO::DEBUG1 << "indexPols_p = " << indexPols_p << endl
+		logStream_p << LogIO::DEBUG1 << "indexPols_p = " << indexPols_p << std::endl
 				<< "pols_p = " << pols_p << LogIO::POST;
 
 	} // end try

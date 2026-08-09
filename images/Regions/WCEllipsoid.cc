@@ -557,7 +557,7 @@ void WCEllipsoid::_init() {
 }
 
 void WCEllipsoid::_checkPixelAxes() const {
-	ostringstream oss;
+	std::ostringstream oss;
 	oss << _pixelAxes;
 	String paAsString = oss.str();
 	for (uInt i=0; i<_pixelAxes.size(); i++) {

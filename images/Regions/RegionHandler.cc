@@ -128,7 +128,7 @@ String RegionHandler::makeUniqueRegionName (const String& rootName,
 					    uInt startNumber) const
 {
   while (True) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << startNumber;
     String name = rootName + String(oss);
     if (! hasRegion (name, RegionHandler::Any)) {

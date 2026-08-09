@@ -68,7 +68,7 @@ int main()
 	  !nearAbs(dataout(5),Complex(0.231824,0.0),1.e-6)||
 	  !nearAbs(dataout(6),Complex(0.67082,0.0),1.e-6)) {
 	err++;
-	cerr << "dataout="<<dataout<<endl;
+	cerr << "dataout="<<dataout<<std::endl;
       }
 
       Vector<Bool> flagout, flagin(4);
@@ -78,13 +78,13 @@ int main()
       if (flagout(0) || !flagout(1) || !flagout(2) || flagout(3) ||
 	  !flagout(4) || !flagout(5) || !flagout(6)) {
 	err++;
-	cerr << "flagout="<<flagout<<endl;
+	cerr << "flagout="<<flagout<<std::endl;
       }
 
       sc.invert(flagin, flagout);
       if (!flagin(0) || !flagin(1) || !flagin(2) || !flagin(3)) {
 	err++;
-	cerr << "flagin="<<flagin<< endl;
+	cerr << "flagin="<<flagin<< std::endl;
       }
     }
 
@@ -108,9 +108,9 @@ int main()
 	    data.column(k)=dataout;
 	  } else {
 	    if (!allNearAbs(data.column(k),dataout,1.e-6)) {
-	      cerr<< "Error for i="<<i<<", k="<<k<<endl;
-	      cerr<< "dataout="<<dataout<<endl;
-	      cerr<< "data.column(k)="<<data.column(k)<<endl;
+	      cerr<< "Error for i="<<i<<", k="<<k<<std::endl;
+	      cerr<< "dataout="<<dataout<<std::endl;
+	      cerr<< "data.column(k)="<<data.column(k)<<std::endl;
 	      err++;
 	    }
 	  }
@@ -118,10 +118,10 @@ int main()
       }
     }
   } catch (std::exception& x) {
-    cout << "Exception: "<< x.what() <<endl;
+    cout << "Exception: "<< x.what() <<std::endl;
   } 
-  if (err==0) cout<<"OK"<<endl;
-  else cout << err << " errors encountered"<<endl;
+  if (err==0) cout<<"OK"<<std::endl;
+  else cout << err << " errors encountered"<<std::endl;
   return err;
 }
 

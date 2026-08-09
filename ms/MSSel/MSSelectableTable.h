@@ -175,7 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 		    uvdistStr,taqlStr,polnStr,scanStr,arrayStr,
 // 		    stateObsModeStr,observationStr);
 // if (msSelection.getSelectedMS(selectedMS))
-//   cerr << "Got the selected MS!" << endl;
+//   cerr << "Got the selected MS!" << std::endl;
 // else
 //   cerr << "The set of expressions resulted into null-selection";
 // </srcblock>

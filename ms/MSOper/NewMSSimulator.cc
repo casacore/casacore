@@ -441,7 +441,7 @@ void NewMSSimulator::initAnt(const String& telescope,
     MVAngle mvLong= mRefLocation.getAngle().getValue()(0);
     MVAngle mvLat= mRefLocation.getAngle().getValue()(1);
     
-    os << "Using local coordinates for the antennas" << endl
+    os << "Using local coordinates for the antennas" << std::endl
        << "Reference position = ";
     os.output().width(13); os << mvLong.string(MVAngle::ANGLE,7);
     os.output().width(14);  os << mvLat.string(MVAngle::DIG2,7);
@@ -886,7 +886,7 @@ void NewMSSimulator::initFeeds(const String& mode,
   
   Int nFeed=x.nelements();
 
-  //  cout << "nFeed = " << nFeed << endl;
+  //  cout << "nFeed = " << nFeed << std::endl;
   
   String feedPol0="R", feedPol1="L";
   Bool isList=False;
@@ -909,8 +909,8 @@ void NewMSSimulator::initFeeds(const String& mode,
     }
   }
 
-  //cout << "Mode in initFeeds = " << mode << endl;
-  //cout << "feedPol0,1 = " << feedPol0 << " " << feedPol1 << endl;
+  //cout << "Mode in initFeeds = " << mode << std::endl;
+  //cout << "feedPol0,1 = " << feedPol0 << " " << feedPol1 << std::endl;
   
   Int nRow=nFeed*nAnt;
   Vector<Int> feedAntId(nRow);
@@ -1182,11 +1182,11 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Int nCorr=corrProduct.ncolumn();
 //  {
 //    std::ostringstream oss;
-//    oss << "Spectral window : "<<spWindowName<<endl
-//	<< "     reference frequency : " << startFreq/1.0e9 << "GHz" << endl
-//	<< "     number of channels : " << nChan << endl
-//	<< "     total bandwidth : " << nChan*freqInc/1.0e9 << "GHz" << endl
-//	<< "     number of correlations : " << nCorr << endl;
+//    oss << "Spectral window : "<<spWindowName<<std::endl
+//	<< "     reference frequency : " << startFreq/1.0e9 << "GHz" << std::endl
+//	<< "     number of channels : " << nChan << std::endl
+//	<< "     total bandwidth : " << nChan*freqInc/1.0e9 << "GHz" << std::endl
+//	<< "     number of correlations : " << nCorr << std::endl;
 //    os<<String(oss)<<LogIO::DEBUG1;
 //  }
   
@@ -1224,7 +1224,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   MDirection fieldCenter=fcs(0);
   {
     os << "First source: "<< sourceNames[iSrc]
-       << " @ " << formatDirection(fieldCenter) << endl;
+       << " @ " << formatDirection(fieldCenter) << std::endl;
   }
 
 
@@ -1269,7 +1269,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     msd.setFieldCenter(fieldCenter);  // set to first sourceName above
     t_offset_p = - msd.hourAngle() * 3600.0 * 180.0/M_PI / 15.0; // in seconds
     hourAngleDefined_p=True;
-    //      os << "Times specified are interpreted as hour angles for first source observed" << endl
+    //      os << "Times specified are interpreted as hour angles for first source observed" << std::endl
     //	 << "     offset in time = " << t_offset_p / 3600.0 << " hours from "
     //	 << formatTime(taiRefTime.get("s").getValue("s")) << LogIO::DEBUG1;
   }
@@ -1293,7 +1293,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Int maxObsId=-1;
   Int maxArrayId=0;
 
-  //cout << "OBSERVATION table has "<< nobsrow << " rows"<<endl;
+  //cout << "OBSERVATION table has "<< nobsrow << " rows"<<std::endl;
 
   if (add_observation or nobsrow<=0) {
     obs.addRow();
@@ -1312,7 +1312,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     tmpids=msc.arrayId().getColumn();
     if (tmpids.nelements()>0) maxArrayId=max(tmpids);
 
-    //cout << "OBSERVATION table added to; nobsrow now ="<< nobsrow <<endl;
+    //cout << "OBSERVATION table added to; nobsrow now ="<< nobsrow <<std::endl;
   }
 
 
@@ -1326,7 +1326,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   MSStateColumns& msstateCol = msc.state();
   Int staterow = -1; // the state row to use in the main table
 
-  //cout << "STATE table has " <<msstate.nrow() <<"rows.. searching for match"<<endl;
+  //cout << "STATE table has " <<msstate.nrow() <<"rows.. searching for match"<<std::endl;
   
   for (uInt i = 0; i < msstate.nrow(); i++) {
     if ((msstateCol.sig()(i) == state_sig) &&
@@ -1339,7 +1339,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     }
   }
 
-  //cout << " (matching) staterow = "<<staterow<< endl;
+  //cout << " (matching) staterow = "<<staterow<< std::endl;
   
   if (staterow<0) {
     msstate.addRow();
@@ -1353,7 +1353,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     msstateCol.flagRow().put(staterow, false);
   }
 
-  //cout << " after adding a row, staterow = "<<staterow<< endl;
+  //cout << " after adding a row, staterow = "<<staterow<< std::endl;
   
 
 
@@ -1446,7 +1446,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Matrix<Bool> flag(nCorr,nChan); 
   flag=False;
 
-  os << "Calculating a total of " << nIntegrations << " integrations" << endl 
+  os << "Calculating a total of " << nIntegrations << " integrations" << std::endl 
      << LogIO::POST;
 
   for(Int feed=0; feed<nFeed; feed++) {
@@ -1527,11 +1527,11 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	os << LogIO::DEBUG1 
 	   << "   Field " << pointing << ": " << sourceNames(pointing)
 	   << " @ " << formatDirection(fieldCenter) 
-	   << " for " << nIntegrations << " integrations " << endl;
+	   << " for " << nIntegrations << " integrations " << std::endl;
       } else {
 	if (pointing==20) {
 	  os << LogIO::DEBUG1 
-	     << "   (continuing without printing to log -- see MS for details) " << endl << LogIO::POST;
+	     << "   (continuing without printing to log -- see MS for details) " << std::endl << LogIO::POST;
 	}
       }
 
@@ -1769,7 +1769,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 //  os << (row+1) << " visibilities simulated " << LogIO::DEBUG1;
 //  os << nShadowed << " visibilities flagged due to shadowing " << LogIO::DEBUG1;
 //  os << nSubElevation << " visibilities flagged due to elevation limit of " << 
-//    elevationLimit_p.getValue("deg") << " degrees " << endl << LogIO::DEBUG1;
+//    elevationLimit_p.getValue("deg") << " degrees " << std::endl << LogIO::DEBUG1;
   
 }
 

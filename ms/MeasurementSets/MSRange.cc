@@ -469,7 +469,7 @@ Record MSRange::range(const Vector<Int>& keys,
 
   if (shapeChangesWarning) {
     os << LogIO::WARN << "Not all requested items were returned because "
-       <<"the input contains "<< endl 
+       <<"the input contains "<< std::endl 
        <<"multiple data descriptions with varying data shape"<<LogIO::POST;
   }
   return out;
