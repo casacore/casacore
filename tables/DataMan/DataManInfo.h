@@ -26,8 +26,8 @@
 #ifndef TABLES_DATAMANINFO_H
 #define TABLES_DATAMANINFO_H
 
+#include <ostream>
 
-//# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -152,7 +152,7 @@ public:
   static void adjustDesc (TableDesc& tabDesc, const Record& dminfo);
 
   // Show the Table IO statistics.
-  static void showDataManStats (const Table&, ostream&);
+  static void showDataManStats (const Table&, std::ostream&);
 
 private:
   // Merge the column info of data manager definitions.
