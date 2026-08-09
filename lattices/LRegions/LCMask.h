@@ -146,7 +146,7 @@ public:
   virtual void clearCache();
 
   // Report on cache success.
-  virtual void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics (std::ostream& os) const;
 
   // Handle the (un)locking.
   // <group>

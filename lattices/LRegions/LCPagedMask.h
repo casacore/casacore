@@ -129,7 +129,7 @@ public:
     virtual void clearCache();
 
     // Report on cache success.
-    virtual void showCacheStatistics (ostream& os) const;
+    virtual void showCacheStatistics (std::ostream& os) const;
 
     // Handle deletion of the region by deleting the associated table.
     virtual void handleDelete();

@@ -171,7 +171,7 @@ void LCMask::clearCache()
   itsMask->clearCache();
 }
 
-void LCMask::showCacheStatistics (ostream& os) const
+void LCMask::showCacheStatistics (std::ostream& os) const
 {
   itsMask->showCacheStatistics (os);
 }

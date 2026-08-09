@@ -485,7 +485,7 @@ protected:
 // Non-virtual functions
 //
 // set stream manipulators
-   void setStream (ostream& os, Int oPrec);
+   void setStream (std::ostream& os, Int oPrec);
 
    // get the storage lattice shape
    inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }

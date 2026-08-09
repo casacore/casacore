@@ -158,7 +158,7 @@ void LCPagedMask::clearCache()
     itsMask.clearCache();
 }
 
-void LCPagedMask::showCacheStatistics (ostream& os) const
+void LCPagedMask::showCacheStatistics (std::ostream& os) const
 {
     itsMask.showCacheStatistics (os);
 }

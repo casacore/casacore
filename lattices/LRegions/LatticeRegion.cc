@@ -143,7 +143,7 @@ void LatticeRegion::clearCache()
   itsRegion->clearCache();
 }
 
-void LatticeRegion::showCacheStatistics (ostream& os) const
+void LatticeRegion::showCacheStatistics (std::ostream& os) const
 {
   itsRegion->showCacheStatistics (os);
 }

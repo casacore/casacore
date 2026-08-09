@@ -176,7 +176,7 @@ public:
     { itsLatticePtr->clearCache(); }
 
   // Report on cache success.
-  void showCacheStatistics (ostream& os) const
+  void showCacheStatistics (std::ostream& os) const
     { itsLatticePtr->showCacheStatistics (os); }
 
   // Get or put a single element in the lattice.

@@ -140,7 +140,7 @@ String LatticeStatsBase::toStatisticName (StatisticsTypes type)
 
 
 Bool LatticeStatsBase::setNxy (Vector<Int>& nxy,
-                               ostream& os)
+                               std::ostream& os)
 {
    Int n = nxy.nelements();
    nxy.resize(2,True);
