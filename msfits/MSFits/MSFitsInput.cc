@@ -2946,22 +2946,21 @@ void MSFitsInput::getAxisInfo(ConstFitsKeywordList& kwl) {
             _log << "Axes " << i << " cannot have a negative value"
                     << LogIO::EXCEPTION;
         }
-        const char* tmp;
 
-        tmp = (String::toString(i + 1).append("CTYP").append(String::toString(nAxis))).chars();
-        _coordType(i) = String(kwl(tmp)->asString()).before(trailing);
+        String tmp_string = String::toString(i + 1).append("CTYP").append(String::toString(nAxis));
+        _coordType(i) = String(kwl(tmp_string.c_str())->asString()).before(trailing);
 
-        tmp = (String::toString(i + 1).append("CRVL").append(String::toString(nAxis))).chars();
-        _refVal(i) = kwl(tmp)->asDouble();
+        tmp_string = String::toString(i + 1).append("CRVL").append(String::toString(nAxis));
+        _refVal(i) = kwl(tmp_string.c_str())->asDouble();
 
-        tmp = (String::toString(i + 1).append("CRPX").append(String::toString(nAxis))).chars();
-        _refPix(i) = kwl(tmp)->asDouble();
+        tmp_string = String::toString(i + 1).append("CRPX").append(String::toString(nAxis));
+        _refPix(i) = kwl(tmp_string.c_str())->asDouble();
 
-        tmp = (String::toString(i + 1).append("CDLT").append(String::toString(nAxis))).chars();
-        _delta(i) = kwl(tmp)->asDouble();
+        tmp_string = String::toString(i + 1).append("CDLT").append(String::toString(nAxis));
+        _delta(i) = kwl(tmp_string.c_str())->asDouble();
 
-        //tmp = (String::toString(i + 1).append("CROT").append(String::toString(nAxis))).chars();
-        //cRot_p(i) = kwl(tmp)->asDouble();
+        //tmp_string = String::toString(i + 1).append("CROT").append(String::toString(nAxis));
+        //cRot_p(i) = kwl(tmp_string.c_str())->asDouble();
     }
     _log << LogOrigin("MSFitsInput", "fillMSMainTable")
                << LogIO::DEBUG1
