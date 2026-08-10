@@ -180,9 +180,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } 
  }
 
-  String JsonOut::indentValue (const String& indent, const String& name) const
+  String JsonOut::indentValue (const std::string& indent, const std::string& name) const
   {
-    String extra("                    ");
+    const std::string extra("                    ");
     return indent + extra.substr(0, std::min(15,int(name.size())) + 5);
   }
 

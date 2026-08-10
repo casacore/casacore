@@ -290,83 +290,64 @@ class String : public std::string {
   // </group>
   // ** Casacore addition: synonym for at(pos, len)
   SubString operator()(size_type pos, size_type len);
-  // Concatenate
-  // <group>
-  String& operator+=(const std::string& str) {
-    return static_cast<String&>(std::string::operator+=(str)); }
-  String& operator+=(const Char* s) {
-    return static_cast<String&>(std::string::operator+=(s)); }
-  String& operator+=(Char c) {
-    return static_cast<String&>(std::string::operator+=(c)); }
-  // </group>
 
-  // Indexing. The standard version is undefined if <src>pos > size()</src>, or 
-  // <src>pos >= size()</src> for non-const version. 
-  // <note role=warning> The const_reference version needs the at() version
-  // for the gcc compiler: no const [] exists. </note>
-  // <group>
-  const_reference operator[](size_type pos) const {
-    return std::string::at(pos); }
-  reference operator[](size_type pos) {
-    return std::string::operator[](pos); }
+  using std::string::operator+=;
+  using std::string::operator[];
+
   // *** Casacore addition
   // <group>
+  [[deprecated("Use String::at()")]]
   const_reference elem(size_type pos) const {
     return std::string::at(pos); }
+
+  [[deprecated("Use String::front()")]]
   Char firstchar() const { return at(static_cast<size_type>(0)); }
+  [[deprecated("Use String::back()")]]
   Char lastchar() const { return at(length()-1); }
-  // </group>
-  // </group>
 
-  //# Member functions
-  // Iterators
-  // <group>
-  iterator begin() { return std::string::begin(); }
-  const_iterator begin() const { return std::string::begin(); }
-  iterator end() { return std::string::end(); }
-  const_iterator end() const { return std::string::end(); }
-  reverse_iterator rbegin() { return std::string::rbegin(); }
-  const_reverse_iterator rbegin() const { return std::string::rbegin(); }
-  reverse_iterator rend() { return std::string::rend(); }
-  const_reverse_iterator rend() const { return std::string::rend(); }
-  // </group>
+  /*using std::string::begin;
+  using std::string::end;
+  using std::string::rbegin;
+  using std::string::rend;
+  using std::string::size;
+  using std::string::length;
+  using std::string::max_size;
+  using std::string::capacity;
+  using std::string::resize;
+  using std::string::reserve;
+  using std::string::clear;
+  using std::string::empty;
+  using std::string::append;
+  using std::string::assign;
+  using std::string::insert;
+  using std::string::compare;
+  using std::string::erase;
+  using std::string::replace;
+  using std::string::copy;
+  using std::string::swap;
+  using std::string::c_str;
+  using std::string::data;
+  using std::string::substr;
+  using std::string::rfind;
+  using std::string::find_first_of;
+  using std::string::find_last_of;
+  using std::string::find_first_not_of;
+  using std::string::find_last_not_of;*/
 
-  // Capacity, size
-  // <group>
-  size_type size() const { return std::string::size(); }
-  size_type length() const { return std::string::length(); }
-  size_type max_size() const { return std::string::max_size(); }
-  size_type capacity() const { return std::string::capacity(); }
   // ** Casacore addition -- works as a capacity(n) -- Note Int
+  [[deprecated("Use String::capacity()")]]
   Int allocation() const { return std::string::capacity(); }
-  // </group>
 
-  // Resize by truncating or extending with copies of <src>c</src> (default 
-  // Char())
-  // <thrown>
-  // <li> length_error if n > max_size()
-  // <li> length_error if res_arg > max_size()
-  // </thrown>
-  // <group>
-  // <note role=tip> The reserve length given is non-binding on the
-  // implementation </note>
-  String& resize(size_type n) {
-    std::string::resize(n); return *this; }
-  String& resize(size_type n, Char c) {
-    std::string::resize(n, c); return *this; }
-  String& reserve(size_type res_arg = 0) {
-    std::string::reserve(res_arg); return *this; }
   // ** Casacore addition -- works as a resize(n)
+  [[deprecated("Use String::resize()")]]
   void alloc(size_type n) { std::string::resize(n); }
-  // </group>
 
-  // Clear the string
-  // <note role=warning> clear() executed as erase() due to missing clear() in
-  // gcc </note> 
-  void clear() { std::string::erase(begin(), end()); }
-
-  // Test for empty
-  Bool empty() const { return std::string::empty(); }
+  // ** Casacore addition
+  [[deprecated("Use String::append(1, c)")]]
+  std::string& append(Char c) {
+    return std::string::append(1, c);
+  }
+  using std::string::append;
 
   // Addressing
   // <thrown>
@@ -375,194 +356,35 @@ class String : public std::string {
   // <group>
   const_reference at(size_type n) const { return std::string::at(n); }
   reference at(size_type n) { return std::string::at(n); }
-  // </group>
 
-  // Append
-  // <thrown>
-  // <li> out_of_range if pos > str.size()
-  // <li> length_error if new size() >= npos
-  // </thrown>
-  // <note role=warning> The standard has a 
-  // <src>void push_back(const Char) </src> which is completely undefined. It
-  // probably is a remnant of the full list of container functions pop/push
-  // back/front. </note>
-  // <group>
-  String& append(const std::string& str) {
-    return static_cast<String&>(std::string::append(str)); }
-  String& append(const std::string& str, size_type pos, size_type n) {
-    return static_cast<String&>(std::string::append(str, pos, n)); }
-  String& append(const Char* s, size_type n) {
-    return static_cast<String&>(std::string::append(s, n)); }
-  String& append(const Char* s) {
-    return static_cast<String&>(std::string::append(s)); }
-  String& append(size_type n, Char c) {
-    return static_cast<String&>(std::string::append(n, c)); }
-  template<class InputIterator>
-    String& append(InputIterator first, InputIterator last) {
-    return static_cast<String&>(std::string::append(first, last)); }
   // ** Casacore addition
-  String& append(Char c) {
-    return static_cast<String&>(std::string::append(1, c)); }
-  // </group>
-
-  // Assign
-  // <thrown>
-  // <li> out_of_range if pos > str.size()
-  // </thrown>
-  // <group>
-  String& assign(const std::string& str) {
-    return static_cast<String&>(std::string::assign(str)); }
-  String& assign(const std::string& str, size_type pos, size_type n) {
-    return static_cast<String&>(std::string::assign(str, pos, n)); }
-  String& assign(const Char* s, size_type n) {
-    return static_cast<String&>(std::string::assign(s, n)); }
-  String& assign(const Char* s) {
-    return static_cast<String&>(std::string::assign(s)); }
-  String& assign(size_type n, Char c) {
-    return static_cast<String&>(std::string::assign(n, c)); }
-  template<class InputIterator>
-    String& assign(InputIterator first, InputIterator last) {
-    return static_cast<String&>(std::string::assign(first, last)); }
-  // ** Casacore addition
+  [[deprecated("Use String::assign(1, c)")]]
   String& assign(Char c)  {
     return static_cast<String&>(std::string::assign(1, c)); }
   // </group>
 
-  // Insert
-  // <thrown>
-  // <li> out_of_range if pos1 > str.size() or pos2 > str.size()
-  // <li> length_error if new size() >= npos
-  // </thrown>
-  // <group>
-  String& insert(size_type pos1, const std::string& str) {
-    return static_cast<String&>(std::string::insert(pos1, str)); }
-  String& insert(size_type pos1, const std::string& str,
-		 size_type pos2, size_type n) {
-    return static_cast<String&>(std::string::insert(pos1, str, pos2, n)); }
-  String& insert(size_type pos, const Char* s, size_type n) {
-    return static_cast<String&>(std::string::insert(pos, s, n)); }
-  String& insert(size_type pos, const Char* s) {
-    return static_cast<String&>(std::string::insert(pos, s)); }
-  String& insert(size_type pos, size_type n, Char c) {
-    return static_cast<String&>(std::string::insert(pos, n, c)); }
   // ** Casacore addition
+  [[deprecated("Use String::insert(pos, 1, c)")]]
   String& insert(size_type pos, Char c) {
     return static_cast<String&>(std::string::insert(pos, 1, c)); }
+  using std::string::insert;
 
-  iterator insert(iterator p, Char c) {
-    return std::string::insert(p, c); }
-  void insert(iterator p, size_type n, Char c) {
-    std::string::insert(p, n, c); }
-  template<class InputIterator>
-    void insert(iterator p, InputIterator first, InputIterator last) {
-    std::string::insert(p, first, last); }
-  // ** Casacore additions
-  // <group>
-  String& insert(iterator p, const std::string& str) {
-    return static_cast<String&>(std::string::insert(p-begin(), str)); }
-  String& insert(iterator p, const Char* s, size_type n) {
-    return static_cast<String&>(std::string::insert(p-begin(), s, n)); }
-  String& insert(iterator p, const Char* s) {
-    return static_cast<String&>(std::string::insert(p-begin(), s)); }
-  // </group>
-  // </group>
-
-  // Compare. Returns 0 if strings equal and of equal size; else positive if
-  // str larger or longer; else negative.
-  // <note role=warning> The gcc compiler does not have the proper standard
-  // compare functions. Hence they are locally implemented. </note>
-  // <group>
-  Int compare(const std::string& str) const {
-    return std::string::compare(str); }
-  Int compare(size_type pos1, size_type n1, const std::string& str) const {
-    return String(*this, pos1, n1).compare(str); }
-  Int compare(size_type pos1, size_type n1, const std::string& str,
-	      size_type pos2, size_type n2) const {
-    return String(*this, pos1, n1).compare(String(str, pos2, n2)); }
-  Int compare(const Char* s) const {
-    return std::string::compare(s); }
-  Int compare(size_type pos1, size_type n1, const Char* s,
-	      size_type n2=npos) const {
-    return String(*this, pos1, n1).compare(String(s, n2)); }
-  // </group>
-
-  // Erase
-  // <group>
-  String& erase(size_type pos, size_type n = npos) {
-    return static_cast<String&>(std::string::erase(pos, n)); }
-  iterator erase(iterator position) {
-    return std::string::erase(position); }
-  iterator erase(iterator first, iterator last) {
-    return std::string::erase(first, last); }
-  // </group>
-
-  // Replace
-  // <thrown>
-  // <li> out_of_range if pos1 > str.size() or pos2 > str.size()
-  // <li> length_error if new size() > npos
-  // </thrown>
-  // <group>
-  String& replace(size_type pos1, size_type n1, const std::string& str) {
-    return static_cast<String&>(std::string::replace(pos1, n1, str)); }
-  String& replace(size_type pos1, size_type n1, const std::string& str,
-		  size_type pos2, size_type n2) {
-    return static_cast<String&>(std::string::replace(pos1, n1, str, pos2, n2)); }
-  String& replace(size_type pos, size_type n1, const Char* s, size_type n2) {
-    return static_cast<String&>(std::string::replace(pos, n1, s, n2)); }
-  String& replace(size_type pos, size_type n1, const Char* s) {
-    return static_cast<String&>(std::string::replace(pos, n1, s)); }
-  String& replace(size_type pos, size_type n1, size_type n2, Char c) {
-    return static_cast<String&>(std::string::replace(pos, n1, n2, c)); }
   // ** Casacore addition
   String& replace(size_type pos, size_type n1, Char c) {
     return static_cast<String&>(std::string::replace(pos, n1, 1, c)); }
-  String& replace(iterator i1, iterator i2, const std::string& str) {
-    return static_cast<String&>(std::string::replace(i1, i2, str)); }
-  String& replace(iterator i1, iterator i2, const Char* s, size_type n) {
-    return static_cast<String&>(std::string::replace(i1, i2, s, n)); }
-  String& replace(iterator i1, iterator i2, const Char* s) {
-    return static_cast<String&>(std::string::replace(i1, i2, s)); }
-  String& replace(iterator i1, iterator i2, size_type n, Char c) {
-    return static_cast<String&>(std::string::replace(i1, i2, n, c)); }
   // ** Casacore addition
   String& replace(iterator i1, iterator i2, Char c) {
     return static_cast<String&>(std::string::replace(i1, i2, 1, c)); }
-  template<class InputIterator>
-    String& replace(iterator i1, iterator i2, InputIterator j1, 
-		    InputIterator j2) {
-    return static_cast<String&>(std::string::replace(i1, i2, j1, j2)); }
-  // </group>
+  using std::string::replace;
 
-  // Copy
-  // <thrown>
-  // <li> out_of_range if pos > size()
-  // </thrown>
-  size_type copy(Char* s, size_type n, size_type pos = 0) const {
-    return std::string::copy(s, n, pos); }
-
-  // Swap
-  void swap(std::string& s) { std::string::swap(s); }
-
-  // Get char array
-  // <group>
-  // As a proper null terminated C-string
-  const Char *c_str() const { return std::string::c_str(); }
-  // As pointer to char array 
-  const Char *data() const { return std::string::data(); }
   // ** Casacore synonym
+  [[deprecated("Use c_str()")]]
   const Char *chars() const { return std::string::c_str(); }
-  // </group>
 
   // Get allocator used
   // <note role=warning> gcc has no get_allocator() </note>
+  [[deprecated("Use allocator_type()")]]
   allocator_type get_allocator() const { return std::string::allocator_type(); }
-
-  // Get a sub string
-  // <thrown>
-  // <li> out_of_range if pos > size()
-  // </thrown>
-  String substr(size_type pos=0, size_type n=npos) const {
-    return String(*this, pos, n); }
 
   // Create a formatted string using the given printf format string.
   static String format (const char* picture, ...);
@@ -632,61 +454,10 @@ class String : public std::string {
   Bool startsWith(const std::string& beginString) const
     { return find(beginString) == 0; }
 
-  // Search functions. Returns either npos (if not found); else position.
-  // <note role=warning> The Regex ones are ** Casacore additions</note>
-  // <group>
-  size_type find(const std::string &str, size_type pos=0) const {
-    return std::string::find(str, pos); }
-  size_type find(const Char *s, size_type pos=0) const {
-    return std::string::find(s, pos); }
-  size_type find(const Char *s, size_type pos, size_type n) const {
-    return std::string::find(s, pos, n); }
-  size_type find(Char c, size_type pos=0) const {
-    return std::string::find(c, pos); }
+  using std::string::find;
   size_type find(const Regex &r, size_type pos=0) const;
-  size_type rfind(const std::string &str, size_type pos=npos) const {
-    return std::string::rfind(str, pos); }
-  size_type rfind(const Char *s, size_type pos=npos) const {
-    return std::string::rfind(s, pos); }
-  size_type rfind(const Char *s, size_type pos, size_type n) const {
-    return std::string::rfind(s, pos, n); }
-  size_type rfind(Char c, size_type pos=npos) const {
-    return std::string::rfind(c, pos); }
-  size_type find_first_of(const std::string &str, size_type pos=0) const {
-    return std::string::find_first_of(str, pos); }
-  size_type find_first_of(const Char *s, size_type pos=0) const {
-    return std::string::find_first_of(s, pos); }
-  size_type find_first_of(const Char *s, size_type pos, size_type n) const {
-    return std::string::find_first_of(s, pos, n); }
-  size_type find_first_of(Char c, size_type pos=0) const {
-    return std::string::find_first_of(c, pos); }
-  size_type find_last_of(const std::string &str, size_type pos=npos) const {
-    return std::string::find_last_of(str, pos); }
-  size_type find_last_of(const Char *s, size_type pos=npos) const {
-    return std::string::find_last_of(s, pos); }
-  size_type find_last_of(const Char *s, size_type pos, size_type n) const {
-    return std::string::find_last_of(s, pos, n); }
-  size_type find_last_of(Char c, size_type pos=npos) const {
-    return std::string::find_last_of(c, pos); }
-  size_type find_first_not_of(const std::string &str, size_type pos=0) const {
-    return std::string::find_first_not_of(str, pos); }
-  size_type find_first_not_of(const Char *s, size_type pos=0) const {
-    return std::string::find_first_not_of(s, pos); }
-  size_type find_first_not_of(const Char *s, size_type pos, size_type n) const {
-    return std::string::find_first_not_of(s, pos, n); }
-  size_type find_first_not_of(Char c, size_type pos=0) const {
-    return std::string::find_first_not_of(c, pos); }
-  size_type find_last_not_of(const std::string &str, size_type pos=npos) const {
-    return std::string::find_last_not_of(str, pos); }
-  size_type find_last_not_of(const Char *s, size_type pos=npos) const {
-    return std::string::find_last_not_of(s, pos); }
-  size_type find_last_not_of(const Char *s, size_type pos, size_type n) const {
-    return std::string::find_last_not_of(s, pos, n); }
-  size_type find_last_not_of(Char c, size_type pos=npos) const {
-    return std::string::find_last_not_of(c, pos); }
-  // </group>
-  
-  // Containment. ** Casacore addition
+
+   // Containment. ** Casacore addition
   // <group name=contains>
   Bool contains(Char c) const {
     return (find(c) != npos); }
@@ -717,27 +488,31 @@ class String : public std::string {
   Bool matches(const Regex &r, Int pos = 0) const;
   // </group>
 
-  // Concatenate by prepending the argument onto String. ** Casacore addition
-  // <group name=concatenation_method>
+  [[deprecated("Use a = str + a")]]
   void prepend(const std::string &str);
-  void prepend(const Char *s);
+  [[deprecated("Use a = str + a")]]
+  void prepend(const Char *str);
+  [[deprecated("Use a.insert(0, c)")]]
   void prepend(Char c);
-  // </group> 
 
   // Return the position of the target in the string or npos for failure.
+  // Searches the first index if the startpos >= 0, or the last index if
+  // startpos < 0.
   // ** Casacore addition
-  // <group name=index>
+  [[deprecated("Use std::find or std::rfind")]]
   size_type index(Char c, Int startpos = 0) const {
     return ((startpos >= 0) ? find(c, startpos) :
 	    rfind(c, length() + startpos - 1)); }
+  [[deprecated("Use std::find or std::rfind")]]
   size_type index(const std::string &str, Int startpos = 0) const {
     return ((startpos >= 0) ? find(str, startpos) :
 	    rfind(str, length() + startpos - str.length())); }
+  [[deprecated("Use std::find or std::rfind")]]
   size_type index(const Char *s, Int startpos = 0) const {
     return ((startpos >= 0) ? find(s, startpos) :
 	    rfind(s, length() + startpos - traits_type::length(s))); }
+
   size_type index(const Regex &r, Int startpos = 0) const;
-  // </group>
 
   //  Return the number of occurences of target in String. ** Casacore addition
   // <group name=freq>
@@ -746,11 +521,12 @@ class String : public std::string {
   Int freq(const Char *s) const;
   // </group>
 
-  // Extract the string "at" the argument's position. ** Casacore addition
-  // <group name=at>
+  [[deprecated("Use substr()")]]
   SubString at(size_type pos, size_type len);
+  [[deprecated("Use substr()")]]
   String at(size_type pos, size_type len) const {
     return String(*this, pos, len); }
+
   SubString at(const std::string &str, Int startpos = 0);
   String at(const std::string &str, Int startpos = 0) const;
   SubString at(const Char *s, Int startpos = 0);
@@ -835,6 +611,7 @@ class String : public std::string {
   // Maybe forget some. ** Casacore addition
   // <group>
   // internal transformation to reverse order of String.
+  [[deprecated("Use std::reverse(str.begin(), str.end())")]]
   void reverse();
   // internal transformation to capitalization of String.
   void capitalize();
@@ -845,6 +622,7 @@ class String : public std::string {
   // </group>
 
   // Delete len chars starting at pos. ** Casacore addition
+  [[deprecated("Use String::erase()")]]
   void del(size_type pos, size_type len);
 
   // Delete the first occurrence of target after startpos. ** Casacore addition
@@ -854,6 +632,7 @@ class String : public std::string {
   void del(Char c, size_type startpos = 0);
   void del(const Regex &r, size_type startpos = 0);
   // Overload problem
+  [[deprecated("Use String::erase()")]]
   void del(Int pos, Int len) {
     del(static_cast<size_type>(pos), static_cast<size_type>(len)); }
   //</group> 

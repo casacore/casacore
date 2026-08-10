@@ -199,11 +199,11 @@ namespace casacore {
         return iter->second (fname);
       }
     }
-    String sfname(fname);
+    std::string sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
     Int j = fname.index('.');
-    String libname;
+    std::string libname;
     if (j > 0  &&  j < Int(fname.size())-1) {
       // Replace a possible synonym for the library name.
       libname = fname.substr(0,j);
@@ -233,8 +233,8 @@ namespace casacore {
         return iter->second (fname);
       }
     }
-    String unk;
-    if (fname != sfname) {
+    std::string unk;
+    if (static_cast<std::string&>(fname) != sfname) {
       unk = " (=" + fname + ')';
     }
     throw TableInvExpr ("TaQL function " + sfname + unk +

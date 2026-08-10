@@ -116,7 +116,7 @@ namespace casacore {
     const char* units[]    = {"m",   "",    "rad","rad",    "m", "m"};
     int vtypes[]           = {3,     -3,    2,     2,       1,   1};
     for (unsigned i=0; i<sizeof(vtypes)/sizeof(int); ++i) {
-      String suf(suffices[i]);
+      const std::string suf(suffices[i]);
       if (lens > suf.size()  &&  type.substr(lens-suf.size()) == suf) {
         itsValueType = vtypes[i];
         itsInUnit = units[i];

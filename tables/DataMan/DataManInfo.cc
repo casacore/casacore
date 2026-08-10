@@ -445,7 +445,7 @@ void DataManInfo::adaptNames (Record& dminfo, const Table& tab)
 
 Vector<String> DataManInfo::removeDminfoColumns (Record& dminfo,
                                                  const Vector<String>& columns,
-                                                 const String& keepType)
+                                                 const std::string& keepType)
 {
   Record newdm;
   // Find the given columns and remove them.

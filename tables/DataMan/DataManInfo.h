@@ -145,7 +145,7 @@ public:
   // has to match, so "Tiled" matches all tiled storagemanagers.
   static Vector<String> removeDminfoColumns (Record& dminfo,
                                              const Vector<String>& columns,
-                                             const String& keepType= String());
+                                             const std::string& keepType= std::string());
 
   // Adjust the data manager types and groups and the
   // hypercolumn definitions to the actual data manager info.
