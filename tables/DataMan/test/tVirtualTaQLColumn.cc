@@ -226,7 +226,7 @@ void check(const Table& tab, Bool showname)
 	if (abval != i  ||  acval != i+1
         ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)
-        ||  acalccval != 10  ||  acalcafval != (afval+"1234").substr(0,4)
+        ||  acalccval != 10  ||  static_cast<std::string&>(acalcafval) != (afval+"1234").substr(0,4)
 	||  acalcval != abval+10  ||  acalc3val != abval*acval) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << acval << ", " << adval

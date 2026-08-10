@@ -254,7 +254,7 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     // fill str with the pid and the unique number
     uInt seqnr = uniqueSeqnr_p.fetch_add(1);
     snprintf (str, sizeof(str), "%i_%i", Int(getpid()), seqnr);
-    if (directory.empty()  ||  directory.lastchar() == '/') {
+    if (directory.empty()  ||  directory.back() == '/') {
 	return Path (directory + prefix + str);
     }
     // a slash is added when a directory is given and the last

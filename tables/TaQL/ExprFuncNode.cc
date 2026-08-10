@@ -1177,7 +1177,7 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
       fmts[i].upcase();
       // Alas giveMe returns 0 for an invalid value, but that is also
       // the value of ANGLE (or abbrev). So treat that separately.
-      if (fmts[i] != String("ANGLE").substr(0, fmts[i].size())) {
+      if (static_cast<std::string>(fmts[i]) != std::string("ANGLE").substr(0, fmts[i].size())) {
         int f = MVTime::giveMe (fmts[i]);
         if (f != 0) {
           mvFormat |= f;

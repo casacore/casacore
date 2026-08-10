@@ -222,7 +222,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the indentation after a name.
     // It indents with the length of the name (including quotes and colon)
     // with a maximum of 20 spaces.
-    String indentValue (const String& indent, const String& name) const;
+    String indentValue (const std::string& indent, const std::string& name) const;
 
     //# Data fields.
     std::ofstream itsFile;
