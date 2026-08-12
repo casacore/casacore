@@ -23,13 +23,24 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
-#ifndef CASA_STRING_H
-#define CASA_STRING_H
+#ifndef CASACORE_STRING_H_
+#define CASACORE_STRING_H_
 
-#include <casacore/casa/aips.h>
+// Uncomment this to issue warnings for all use of non-std::string functions
+//#define CASACORE_DEPRECATE_STRING
 
+#ifdef CASACORE_DEPRECATE_STRING
+#define DEPRECATED(X) [[deprecated(X)]]
+#else
+#define DEPRECATED(X)
+#endif
+
+#include <algorithm>
+#include <cassert>
+#include <cctype>
 #include <sstream>
 #include <string>
+#include <string_view>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -62,11 +73,11 @@ public:
   // <group>
   SubString &operator=(const SubString &str);
   SubString &operator=(const String &str);
-  SubString &operator=(const Char *s);
-  SubString &operator=(const Char c);
+  SubString &operator=(const char *s);
+  SubString &operator=(const char c);
   // </group>
   // Get as (const) C array
-  const Char *chars() const;
+  const char *chars() const;
   // Obtain length
   std::string::size_type length() const { return len_p; }
 
@@ -113,15 +124,15 @@ private:
 // The String class may be instantiated in many ways:
 // <ol>
 // <li> A single character - <src>String myChar('C');</src>
-// <li> A Char* argument - <src>String myWord("Yowza");</src>
+// <li> A char* argument - <src>String myWord("Yowza");</src>
 // <li> The first n chararcters of a pre-existing string - 
 // <src>String myFoo("fooey", 3);</src>
 // </ol> As well as the copy and default constructors and iterator based ones.
 //
 // A String may be concatinated with another object (String, or 
 // char*) with either prepending or postpending.  A search for the position
-// of a character within a String may return its position, a Bool that it
-// is contained within or a Bool confirming your guess at the character's 
+// of a character within a String may return its position, a bool that it
+// is contained within or a bool confirming your guess at the character's
 // position is correct.  A check of the frequency of occurance of a string
 // within a String will return the number of occurances.  
 // 
@@ -137,37 +148,37 @@ private:
 //
 // The standard string class provides the following functionality:
 // <ol>
-// <li> Construction from (part of) String, (part of) Char*,
+// <li> Construction from (part of) String, (part of) char*,
 //		(repeating) Char, iterator pair.
-// <li> Assignment from String, Char*, Char
+// <li> Assignment from String, char*, Char
 // <li> Iterators: begin() and end(); rbegin() and rend() (Note: gcc reverse
 //		iterators still weak)
 // <li> Capacity: size, length, max_size, resize, capacity, reserve, clear,
 //		empty
 // <li> Special size: String::size_type, with indicator: String::npos
 // <li> Element access: [pos] and at(pos) (both const and non-const)
-// <li> Modifiers: += of String, Char*, Char; append of (part of) String,
-//		Char*, Char and iterator defined; assign() of (part of)
-//		String, Char* and (repeating) Char and iterator;
+// <li> Modifiers: += of String, char*, Char; append of (part of) String,
+//		char*, char and iterator defined; assign() of (part of)
+//		String, char* and (repeating) char and iterator;
 //		insertion of same; replacing of same; erase of part of
 //		String; a copy and a swap.
-// <li> C-string: get Char* with c_str() or data() and get the relevant
+// <li> C-string: get char* with c_str() or data() and get the relevant
 //		Allocator used (Note: not fully supported in gcc)
 // <li> Operations: find, rfind, find_first_of, find_last_of, find_first_not_of,
 //		find_last_not_of; substr (Note only readable substring);
-//		compare with (part of) String, Char*
-// <li> Globals: Addition operators for String, Char*, Char; all comparison
-//		operators for String and Char*; getline; input and output
+//		compare with (part of) String, char*
+// <li> Globals: Addition operators for String, char*, Char; all comparison
+//		operators for String and char*; getline; input and output
 //		stream operators
 // <li> Typedef: All relevant typedefs for standard containers and iterator
 // 		handling
 // </ol>
 // The Casacore additions are:
 // <ol>
-// <li> To standard: some Char function arguments where appropriate; Regex
+// <li> To standard: some char function arguments where appropriate; Regex
 //		arguments in search like methods.
 // <li> Substring additions: at, before, after, from, through functions taking
-//		search String, Char* as arguments can give (hidden) substrings
+//		search String, char* as arguments can give (hidden) substrings
 //		which can be assigned (as in <src> at(1,2) = ";"</src>)
 // <li> Methods: prepend (in addition to standard append); del (as erase);
 //		global substitution of String and patterns;
@@ -196,11 +207,11 @@ private:
 // // find the spot where we put something earlier
 // String::size_type position = allKeys.index(finishIt);
 // // find if the word is in the String...
-// Bool query = myString.contains("good men");
+// bool query = myString.contains("good men");
 // // ask if the position we think is true is correct...
-// Bool answer = allKeys.matches(finishIt, position);
+// bool answer = allKeys.matches(finishIt, position);
 // // How many spaces are in our phrase?
-// Int spacesCount = allKeys.freq(" ");
+// int spacesCount = allKeys.freq(" ");
 // </srcblock>
 // </example>
 //
@@ -217,26 +228,6 @@ private:
 class String : public std::string {
 
  public:
-
-  //# Basic container typedefs
-  typedef std::string::traits_type 		traits_type;
-  typedef std::string::value_type		value_type;
-  typedef std::string::allocator_type	allocator_type;
-  typedef std::string::size_type 		size_type;
-  typedef std::string::difference_type	difference_type;
-
-  typedef std::string::reference 		reference;
-  typedef std::string::const_reference 	const_reference;
-  typedef std::string::pointer		pointer;
-  typedef std::string::const_pointer		const_pointer;
-
-  typedef std::string::iterator iterator;
-  typedef std::string::const_iterator const_iterator;
-  typedef std::string::reverse_iterator reverse_iterator;
-  typedef std::string::const_reverse_iterator const_reverse_iterator;
-  //# Next cast necessary to stop warning in gcc
-  static const size_type npos = static_cast<size_type>(-1);
-
   //# Constructors
   // Default constructor
   String() = default;
@@ -251,14 +242,14 @@ class String : public std::string {
   // <thrown>
   // <li> length_error if n == npos
   // </thrown>
-  String(const Char* s, size_type n) : std::string(s, n) {}
+  String(const char* s, size_type n) : std::string(s, n) {}
   // Construct from char array
-  String(const Char* s) : std::string(s) {}
+  String(const char* s) : std::string(s) {}
   // Construct from a single char (repeated n times)
   // <thrown>
   // <li> length_error if n == npos
   // </thrown>
-  String(size_type n, Char c) : std::string(n, c) {}
+  String(size_type n, char c) : std::string(n, c) {}
   // Construct from iterator
   template<class InputIterator>
     String(InputIterator begin, InputIterator end) : std::string(begin, end) {}
@@ -266,10 +257,12 @@ class String : public std::string {
   // <note role=warning> Note that there is no automatic Char-to-String
   // conversion available. This stops inadvertent conversions of
   // integer to string. </note>
-  explicit String(Char c) : std::string(1, c) {}
+  explicit String(char c) : std::string(1, c) {}
   // Construct from a SubString
+  DEPRECATED("SubString should be replaced by use of std::string_view")
   String(const SubString &str) : std::string(str.ref_p, str.pos_p, str.len_p) {}
   // Construct from a stream.
+  DEPRECATED("Use os.str()")
   String(std::ostringstream &os);
 
   //# Destructor
@@ -283,130 +276,92 @@ class String : public std::string {
     return static_cast<String&>(std::string::operator=(str)); }
   String& operator=(const SubString &str) {
     return (*this = String(str)); }
-  String& operator=(const Char* s) {
+  String& operator=(const char* s) {
     return static_cast<String&>(std::string::operator=(s)); }
-  String& operator=(Char c) {
+  String& operator=(char c) {
     return static_cast<String&>(std::string::operator=(c)); }
   // </group>
   // ** Casacore addition: synonym for at(pos, len)
+  DEPRECATED("Use subview()")
   SubString operator()(size_type pos, size_type len);
-
-  using std::string::operator+=;
-  using std::string::operator[];
 
   // *** Casacore addition
   // <group>
-  [[deprecated("Use String::at()")]]
+  DEPRECATED("Use at()")
   const_reference elem(size_type pos) const {
     return std::string::at(pos); }
 
-  [[deprecated("Use String::front()")]]
-  Char firstchar() const { return at(static_cast<size_type>(0)); }
-  [[deprecated("Use String::back()")]]
-  Char lastchar() const { return at(length()-1); }
-
-  /*using std::string::begin;
-  using std::string::end;
-  using std::string::rbegin;
-  using std::string::rend;
-  using std::string::size;
-  using std::string::length;
-  using std::string::max_size;
-  using std::string::capacity;
-  using std::string::resize;
-  using std::string::reserve;
-  using std::string::clear;
-  using std::string::empty;
-  using std::string::append;
-  using std::string::assign;
-  using std::string::insert;
-  using std::string::compare;
-  using std::string::erase;
-  using std::string::replace;
-  using std::string::copy;
-  using std::string::swap;
-  using std::string::c_str;
-  using std::string::data;
-  using std::string::substr;
-  using std::string::rfind;
-  using std::string::find_first_of;
-  using std::string::find_last_of;
-  using std::string::find_first_not_of;
-  using std::string::find_last_not_of;*/
+  DEPRECATED("Use front()")
+  char firstchar() const { return at(static_cast<size_type>(0)); }
+  DEPRECATED("Use back()")
+  char lastchar() const { return at(length()-1); }
 
   // ** Casacore addition -- works as a capacity(n) -- Note Int
-  [[deprecated("Use String::capacity()")]]
-  Int allocation() const { return std::string::capacity(); }
+  DEPRECATED("Use capacity()")
+  int allocation() const { return std::string::capacity(); }
 
   // ** Casacore addition -- works as a resize(n)
-  [[deprecated("Use String::resize()")]]
+  DEPRECATED("Use resize()")
   void alloc(size_type n) { std::string::resize(n); }
 
   // ** Casacore addition
-  [[deprecated("Use String::append(1, c)")]]
-  std::string& append(Char c) {
+  DEPRECATED("Use append(1, c)")
+  std::string& append(char c) {
     return std::string::append(1, c);
   }
   using std::string::append;
 
-  // Addressing
-  // <thrown>
-  // <li> out_of_range if pos >= size()
-  // </thrown>
-  // <group>
-  const_reference at(size_type n) const { return std::string::at(n); }
-  reference at(size_type n) { return std::string::at(n); }
-
   // ** Casacore addition
-  [[deprecated("Use String::assign(1, c)")]]
-  String& assign(Char c)  {
+  DEPRECATED("Use assign(1, c)")
+  String& assign(char c)  {
     return static_cast<String&>(std::string::assign(1, c)); }
-  // </group>
 
   // ** Casacore addition
-  [[deprecated("Use String::insert(pos, 1, c)")]]
-  String& insert(size_type pos, Char c) {
+  DEPRECATED("Use insert(pos, 1, c)")
+  String& insert(size_type pos, char c) {
     return static_cast<String&>(std::string::insert(pos, 1, c)); }
   using std::string::insert;
 
   // ** Casacore addition
-  String& replace(size_type pos, size_type n1, Char c) {
+  DEPRECATED("Use other overload, e.g. String::replace(pos, n1, 1, c)")
+  String& replace(size_type pos, size_type n1, char c) {
     return static_cast<String&>(std::string::replace(pos, n1, 1, c)); }
   // ** Casacore addition
-  String& replace(iterator i1, iterator i2, Char c) {
+  DEPRECATED("Use other overload, e.g. String::replace(i1, i2, 1, c)")
+  String& replace(iterator i1, iterator i2, char c) {
     return static_cast<String&>(std::string::replace(i1, i2, 1, c)); }
   using std::string::replace;
 
   // ** Casacore synonym
-  [[deprecated("Use c_str()")]]
-  const Char *chars() const { return std::string::c_str(); }
-
-  // Get allocator used
-  // <note role=warning> gcc has no get_allocator() </note>
-  [[deprecated("Use allocator_type()")]]
-  allocator_type get_allocator() const { return std::string::allocator_type(); }
+  DEPRECATED("Use c_str()")
+  const char *chars() const { return std::string::c_str(); }
 
   // Create a formatted string using the given printf format string.
+  DEPRECATED("Use std::format if possible, or FormatString() if the format string can't be changed (e.g. runtime determined)")
   static String format (const char* picture, ...);
 
   // Convert a String to a value. All characters in the string must be used.
   // It uses a shift from an ostringstream, so that operator must exist
   // for the data type used.
   // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
-  // Otherwise it returns False and <src>value</src> contains the value read
+  // Otherwise it returns false and <src>value</src> contains the value read
   // so far.
   // <group>
-  template<typename T> inline Bool fromString (T& value, Bool chk=True) const
+  template<typename T>
+  DEPRECATED("Use StringToValue()")
+  inline bool fromString (T& value, bool chk=true) const
   {
     std::istringstream os(*this);
     os >> value;
     if (os.fail()  ||  !os.eof()) {
       if (chk) throwFromStringError();
-      return False;
+      return false;
     }
-    return True;
+    return true;
   }
-  template<typename T> inline T fromString() const
+  template<typename T>
+  DEPRECATED("Use StringToValue()")
+  inline T fromString() const
   {
     T value;
     fromString(value);
@@ -418,9 +373,12 @@ class String : public std::string {
   // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
   // Otherwise the value read so far is returned (0 if nothing read).
   // <group>
-  static Int toInt (const String& s, Bool chk=False);
-  static Float toFloat (const String& s, Bool chk=False);
-  static Double toDouble (const String& s, Bool chk=False);
+  DEPRECATED("Use StringToInt()")
+  static int toInt (const String& s, bool chk=false);
+  DEPRECATED("Use StringToFloat()")
+  static float toFloat (const String& s, bool chk=false);
+  DEPRECATED("Use StringToDouble()")
+  static double toDouble (const String& s, bool chk=false);
   // </group>
 
   // Convert a value to a String.
@@ -435,161 +393,212 @@ class String : public std::string {
   }
 
   // Remove beginning and ending whitespace.
+  DEPRECATED("Use free function TrimInPlace()")
   void trim();
 
   // Remove specified chars from beginning and end of string.
-  void trim(char c[], uInt n);
+  DEPRECATED("Use free function TrimInPlace()")
+  void trim(char c[], uint n);
 
   // Remove specified character from beginning of string.
   // If the character is repeated more than once on the left, all instances
   // will be removed; e.g. ltrim(',') results in ",,xy" becoming "xy".
+  DEPRECATED("Use free function LTrimInPlace()")
   void ltrim(char c);
 
   // Remove specified character from end of string.
   // If the character is repeated more than once on the right, all instances
   // will be removed; e.g. rtrim(',') results in "xy,," becoming "xy".
+  DEPRECATED("Use free function RTrimInPlace()")
   void rtrim(char c);
 
   // Does the string start with the specified string?
-  Bool startsWith(const std::string& beginString) const
-    { return find(beginString) == 0; }
+  DEPRECATED("Use String.starts_with(beginString)")
+  bool startsWith(const std::string& beginString) const
+    { return starts_with(beginString); }
 
   using std::string::find;
+  DEPRECATED("Use std::regex")
   size_type find(const Regex &r, size_type pos=0) const;
 
    // Containment. ** Casacore addition
   // <group name=contains>
-  Bool contains(Char c) const {
+  DEPRECATED("Use find(c) != npos")
+  bool contains(char c) const {
     return (find(c) != npos); }
-  Bool contains(const std::string &str) const {
+  DEPRECATED("Use find(str) != npos")
+  bool contains(const std::string &str) const {
     return (find(str) != npos); }
-  Bool contains(const Char *s) const {
+  DEPRECATED("Use find(s) != npos")
+  bool contains(const char *s) const {
     return (find(s) != npos); }
-  Bool contains(const Regex &r) const;
+  DEPRECATED("Use std::regex")
+  bool contains(const Regex &r) const;
   // </group>
   // Does the string starting at the given position contain the given substring?
   // If the position is negative, it is counted from the end.
   // ** Casacore addition
   // <group name=contains_pos>
-  Bool contains(Char c, Int pos) const;
-  Bool contains(const std::string &str, Int pos) const;
-  Bool contains(const Char *s, Int pos) const;
-  Bool contains(const Regex &r, Int pos) const;
+  DEPRECATED("Use find(), rfind() or IndexString()")
+  bool contains(char c, int pos) const;
+  DEPRECATED("Use find(), rfind() or IndexString()")
+  bool contains(const std::string &str, int pos) const;
+  DEPRECATED("Use find(), rfind() or IndexString()")
+  bool contains(const char *s, int pos) const;
+  DEPRECATED("Use std::regex")
+  bool contains(const Regex &r, int pos) const;
   // </group>
 
   // Matches entire string from pos
   // (or till pos if negative pos). ** Casacore addition
   // <group name=matches>
-  Bool matches(const std::string &str, Int pos = 0) const;
-  Bool matches(Char c, Int pos = 0) const {
+  DEPRECATED("Use subview(pos) == str")
+  bool matches(const std::string &str, int pos = 0) const;
+  DEPRECATED("Use subview(pos) == c")
+  bool matches(char c, int pos = 0) const {
     return matches(String(c), pos); };
-  Bool matches(const Char *s, Int pos = 0) const {
+  DEPRECATED("Use subview(pos) == s")
+  bool matches(const char *s, int pos = 0) const {
     return matches(String(s), pos); };
-  Bool matches(const Regex &r, Int pos = 0) const;
+  DEPRECATED("Use std::regex")
+  bool matches(const Regex &r, int pos = 0) const;
   // </group>
 
-  [[deprecated("Use a = str + a")]]
+  DEPRECATED("Use insert(0, str)")
   void prepend(const std::string &str);
-  [[deprecated("Use a = str + a")]]
-  void prepend(const Char *str);
-  [[deprecated("Use a.insert(0, c)")]]
-  void prepend(Char c);
+  DEPRECATED("Use insert(0, str)")
+  void prepend(const char *str);
+  DEPRECATED("Use insert(0, c)")
+  void prepend(char c);
 
   // Return the position of the target in the string or npos for failure.
   // Searches the first index if the startpos >= 0, or the last index if
   // startpos < 0.
   // ** Casacore addition
-  [[deprecated("Use std::find or std::rfind")]]
-  size_type index(Char c, Int startpos = 0) const {
+  DEPRECATED("Use find() or rfind(), or IndexString() if the search direction is runtime-dependent")
+  size_type index(char c, int startpos = 0) const {
     return ((startpos >= 0) ? find(c, startpos) :
 	    rfind(c, length() + startpos - 1)); }
-  [[deprecated("Use std::find or std::rfind")]]
-  size_type index(const std::string &str, Int startpos = 0) const {
+  DEPRECATED("Use find() or rfind(), or IndexString() if the search direction is runtime-dependent")
+  size_type index(const std::string &str, int startpos = 0) const {
     return ((startpos >= 0) ? find(str, startpos) :
 	    rfind(str, length() + startpos - str.length())); }
-  [[deprecated("Use std::find or std::rfind")]]
-  size_type index(const Char *s, Int startpos = 0) const {
+  DEPRECATED("Use find() or rfind(), or IndexString() if the search direction is runtime-dependent")
+  size_type index(const char *s, int startpos = 0) const {
     return ((startpos >= 0) ? find(s, startpos) :
 	    rfind(s, length() + startpos - traits_type::length(s))); }
-
-  size_type index(const Regex &r, Int startpos = 0) const;
+  DEPRECATED("Use std::regex")
+  size_type index(const Regex &r, int startpos = 0) const;
 
   //  Return the number of occurences of target in String. ** Casacore addition
   // <group name=freq>
-  Int freq(Char c) const; 
-  Int freq(const std::string &str) const;
-  Int freq(const Char *s) const;
+  DEPRECATED("Use std::count()")
+  int freq(char c) const;
+  DEPRECATED("Use SubStringCount()")
+  int freq(const std::string &str) const;
+  DEPRECATED("Use SubStringCount()")
+  int freq(const char *s) const;
   // </group>
 
-  [[deprecated("Use substr()")]]
+  DEPRECATED("Use substr()")
   SubString at(size_type pos, size_type len);
-  [[deprecated("Use substr()")]]
+  DEPRECATED("Use substr()")
   String at(size_type pos, size_type len) const {
     return String(*this, pos, len); }
 
-  SubString at(const std::string &str, Int startpos = 0);
-  String at(const std::string &str, Int startpos = 0) const;
-  SubString at(const Char *s, Int startpos = 0);
-  String at(const Char *s, Int startpos = 0) const;
-  SubString at(Char c, Int startpos = 0);
-  String at(Char c, Int startpos = 0) const;
-  SubString at(const Regex &r, Int startpos = 0); 
-  String at(const Regex &r, Int startpos = 0) const; 
+  DEPRECATED("Use a combination of find and/or replace")
+  SubString at(const std::string &str, int startpos = 0);
+  DEPRECATED("Use GetSubViewFrom()")
+  String at(const std::string &str, int startpos = 0) const;
+  DEPRECATED("Use a combination of find and/or replace")
+  SubString at(const char *s, int startpos = 0);
+  DEPRECATED("Use GetSubViewFrom()")
+  String at(const char *s, int startpos = 0) const;
+  DEPRECATED("Use a combination of find and/or replace")
+  SubString at(char c, int startpos = 0);
+  DEPRECATED("Use GetSubViewFrom()")
+  String at(char c, int startpos = 0) const;
+  DEPRECATED("Use std::regex")
+  SubString at(const Regex &r, int startpos = 0);
+  DEPRECATED("Use std::regex")
+  String at(const Regex &r, int startpos = 0) const;
   // Next ones for overloading reasons. 
   // <note role=tip> It is better to use the <src>substr()</src> method
   // in stead. </note>
   // <group>
-  SubString at(Int pos, Int len) {
+  DEPRECATED("Use substr()")
+  SubString at(int pos, int len) {
     return at(static_cast<size_type>(pos), static_cast<size_type>(len));
   };
-  String at(Int pos, Int len) const {
+  DEPRECATED("Use subview()")
+  String at(int pos, int len) const {
     return at(static_cast<size_type>(pos), static_cast<size_type>(len));
   };
-  SubString at(Int pos, size_type len) {
+  DEPRECATED("Use substr()")
+  SubString at(int pos, size_type len) {
     return at(static_cast<size_type>(pos), len);
   };
-  String at(Int pos, size_type len) const {
+  DEPRECATED("Use subview()")
+  String at(int pos, size_type len) const {
     return at(static_cast<size_type>(pos), len);
   };
-  // </group>
+  using std::string::at;
   // </group>
 
   // Start at startpos and extract the string "before" the argument's 
   // position, exclusive. ** Casacore addition
   // <group name=before>
-  SubString before(size_type pos) const;
-  SubString before(const std::string &str, size_type startpos = 0) const;
-  SubString before(const Char *s, size_type startpos = 0) const;
-  SubString before(Char c, size_type startpos = 0) const;
-  SubString before(const Regex &r, size_type startpos = 0) const;
+  DEPRECATED("Use subview(0, pos)")
+  SubString before(size_type pos);
+  DEPRECATED("Use GetStringViewUpTo()")
+  SubString before(const std::string &str, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewUpTo()")
+  SubString before(const char *s, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewUpTo()")
+  SubString before(char c, size_type startpos = 0);
+  DEPRECATED("Use std::regex")
+  SubString before(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString before(Int pos) const {
+  DEPRECATED("Use subview(0, pos)")
+  SubString before(int pos) {
     return before(static_cast<size_type>(pos)); };    
   // </group>
 
   // Start at startpos and extract the SubString "through" to the argument's 
   // position, inclusive. ** Casacore addition
   // <group name=through>
+  DEPRECATED("Use subview(0, pos+1)")
   SubString through(size_type pos);
+  DEPRECATED("Use GetStringViewUpToIncluding()")
   SubString through(const std::string &str, size_type startpos = 0);
-  SubString through(const Char *s, size_type startpos = 0);
-  SubString through(Char c, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewUpToIncluding()")
+  SubString through(const char *s, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewUpToIncluding()")
+  SubString through(char c, size_type startpos = 0);
+  DEPRECATED("Use std::regex")
   SubString through(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString through(Int pos) {
+  DEPRECATED("Use subview(pos)")
+  SubString through(int pos) {
     return through(static_cast<size_type>(pos)); }
   // </group>
 
   // Start at startpos and extract the SubString "from" the argument's 
   // position, inclusive, to the String's end. ** Casacore addition
   // <group name=from>
+  DEPRECATED("Use subview(pos)")
   SubString from(size_type pos);
+  DEPRECATED("Use GetStringViewFrom()")
   SubString from(const std::string &str, size_type startpos = 0);
-  SubString from(const Char *s, size_type startpos = 0);
-  SubString from(Char c, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewFrom()")
+  SubString from(const char *s, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewFrom()")
+  SubString from(char c, size_type startpos = 0);
+  DEPRECATED("Use std::regex")
   SubString from(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString from(Int pos) {
+  DEPRECATED("Use subview(pos)")
+  SubString from(int pos) {
     return from(static_cast<size_type>(pos));
   };
   // </group>
@@ -597,13 +606,19 @@ class String : public std::string {
   // Start at startpos and extract the SubString "after" the argument's 
   // position, exclusive, to the String's end. ** Casacore addition
   // <group name=after>
+  DEPRECATED("Use subview(pos + 1)")
   SubString after(size_type pos);
+  DEPRECATED("Use GetStringViewAfter()")
   SubString after(const std::string &str, size_type startpos = 0);
-  SubString after(const Char *s, size_type startpos = 0);
-  SubString after(Char c, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewAfter()")
+  SubString after(const char *s, size_type startpos = 0);
+  DEPRECATED("Use GetStringViewAfter()")
+  SubString after(char c, size_type startpos = 0);
+  DEPRECATED("Use std::regex")
   SubString after(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString after(Int pos) {
+  DEPRECATED("Use subview(pos + 1)")
+  SubString after(int pos) {
     return after(static_cast<size_type>(pos));
   };
   // </group>
@@ -611,29 +626,36 @@ class String : public std::string {
   // Maybe forget some. ** Casacore addition
   // <group>
   // internal transformation to reverse order of String.
-  [[deprecated("Use std::reverse(str.begin(), str.end())")]]
+  DEPRECATED("Use std::reverse(str.begin(), str.end())")
   void reverse();
   // internal transformation to capitalization of String.
+  DEPRECATED("Use CapitalizeStringInPlace()")
   void capitalize();
   // internal transformation to uppercase of String
+  DEPRECATED("Use ToUpperCaseInPlace()")
   void upcase();
   // internal transformation to lowercase of String
+  DEPRECATED("Use ToLowerCaseInPlace()")
   void downcase();
   // </group>
 
   // Delete len chars starting at pos. ** Casacore addition
-  [[deprecated("Use String::erase()")]]
+  DEPRECATED("Use erase()")
   void del(size_type pos, size_type len);
 
   // Delete the first occurrence of target after startpos. ** Casacore addition
   //<group name=del_after>
+  DEPRECATED("Use EraseStringFrom()")
   void del(const std::string &str, size_type startpos = 0);
-  void del(const Char *s, size_type startpos = 0);
-  void del(Char c, size_type startpos = 0);
+  DEPRECATED("Use EraseStringFrom()")
+  void del(const char *s, size_type startpos = 0);
+  DEPRECATED("Use EraseStringFrom()")
+  void del(char c, size_type startpos = 0);
+  DEPRECATED("Use std::regex")
   void del(const Regex &r, size_type startpos = 0);
   // Overload problem
-  [[deprecated("Use String::erase()")]]
-  void del(Int pos, Int len) {
+  DEPRECATED("Use erase()")
+  void del(int pos, int len) {
     del(static_cast<size_type>(pos), static_cast<size_type>(len)); }
   //</group> 
 
@@ -641,10 +663,14 @@ class String : public std::string {
   // return the number of replacements.
   // ** Casacore addition
   //<group name=gsub>
-  Int gsub(const std::string &pat, const std::string &repl);
-  Int gsub(const Char *pat, const std::string &repl);
-  Int gsub(const Char *pat, const Char *repl);
-  Int gsub(const Regex &pat, const std::string &repl);
+  DEPRECATED("Use ReplaceAllInPlace()")
+  int gsub(const std::string &pat, const std::string &repl);
+  DEPRECATED("Use ReplaceAllInPlace()")
+  int gsub(const char *pat, const std::string &repl);
+  DEPRECATED("Use ReplaceAllInPlace()")
+  int gsub(const char *pat, const char *repl);
+  DEPRECATED("Use std::regex")
+  int gsub(const Regex &pat, const std::string &repl);
   //</group>
 
 private:
@@ -666,13 +692,13 @@ private:
 // <group name=concatenator>
 inline String operator+(const String &lhs, const String &rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(const Char *lhs, const String &rhs) {
+inline String operator+(const char *lhs, const String &rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(Char lhs, const String &rhs) {
+inline String operator+(char lhs, const String &rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(const String &lhs, const Char *rhs) {
+inline String operator+(const String &lhs, const char *rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(const String &lhs, Char rhs) {
+inline String operator+(const String &lhs, char rhs) {
   String str(lhs); str.append(rhs); return str; }
 // </group>
 
@@ -682,54 +708,54 @@ inline String operator+(const String &lhs, Char rhs) {
 
 // The global comparison operators
 // <group name=comparitor>
-inline Bool operator==(const String &x, const String &y) {
+inline bool operator==(const String &x, const String &y) {
   return x.compare(y) == 0; }
-inline Bool operator!=(const String &x, const String &y) {
+inline bool operator!=(const String &x, const String &y) {
   return x.compare(y) != 0; }
-inline Bool operator>(const String &x, const String &y) {
+inline bool operator>(const String &x, const String &y) {
   return x.compare(y) > 0; }
-inline Bool operator>=(const String &x, const String &y) {
+inline bool operator>=(const String &x, const String &y) {
   return x.compare(y) >= 0; }
-inline Bool operator<(const String &x, const String &y) {
+inline bool operator<(const String &x, const String &y) {
   return x.compare(y) < 0; }
-inline Bool operator<=(const String &x, const String &y) {
+inline bool operator<=(const String &x, const String &y) {
   return x.compare(y) <= 0; }
-inline Bool operator==(const String &x, const Char *t) {
+inline bool operator==(const String &x, const char *t) {
   return x.compare(t) == 0; }
-inline Bool operator!=(const String &x, const Char *t) {
+inline bool operator!=(const String &x, const char *t) {
   return x.compare(t) != 0; }
-inline Bool operator>(const String &x, const Char *t) {
+inline bool operator>(const String &x, const char *t) {
   return x.compare(t) > 0; }
-inline Bool operator>=(const String &x, const Char *t) {
+inline bool operator>=(const String &x, const char *t) {
   return x.compare(t) >= 0; }
-inline Bool operator<(const String &x, const Char *t) {
+inline bool operator<(const String &x, const char *t) {
   return x.compare(t) < 0; }
-inline Bool operator<=(const String &x, const Char *t) {
+inline bool operator<=(const String &x, const char *t) {
   return x.compare(t) <= 0; }
-inline Bool operator==(const String &x, const Char t) {
+inline bool operator==(const String &x, const char t) {
   return x.compare(String(t)) == 0; }
-inline Bool operator!=(const String &x, const Char t) {
+inline bool operator!=(const String &x, const char t) {
   return x.compare(String(t)) != 0; }
-inline Bool operator>(const String &x, const Char t) {
+inline bool operator>(const String &x, const char t) {
   return x.compare(String(t)) > 0; }
-inline Bool operator>=(const String &x, const Char t) {
+inline bool operator>=(const String &x, const char t) {
   return x.compare(String(t)) >= 0; }
-inline Bool operator<(const String &x, const Char t) {
+inline bool operator<(const String &x, const char t) {
   return x.compare(String(t)) < 0; }
-inline Bool operator<=(const String &x, const Char t) {
+inline bool operator<=(const String &x, const char t) {
   return x.compare(String(t)) <= 0; }
 // ** Casacore additions of global compares. Returns 0 if equal; lt or gt 0 if
 // strings unequal or of unequal lengths.
 // <group>
-inline Int compare(const std::string &x, const std::string &y) {
+inline int compare(const std::string &x, const std::string &y) {
   return x.compare(y); }
-inline Int compare(const std::string &x, const Char *y) {
+inline int compare(const std::string &x, const char *y) {
   return x.compare(y); }
-inline Int compare(const std::string &x, const Char y) {
+inline int compare(const std::string &x, const char y) {
   return x.compare(String(y)); }
 // this version ignores case. ** Casacore addition. Result is 0 if equal
 // strings of equal lengths; else lt or gt 0 to indicate differences.
-Int fcompare(const String& x, const String& y);
+int fcompare(const String& x, const String& y);
 // </group>
 // </group>
 
@@ -737,11 +763,11 @@ Int fcompare(const String& x, const String& y);
 // Global function which splits the String into string array res at separator
 // and returns the number of elements.  ** Casacore addition
 // <group name=split>
-Int split(const std::string &str, std::string res[], Int maxn,
+int split(const std::string &str, std::string res[], int maxn,
 	  const std::string &sep);
-Int split(const std::string &str, std::string res[], Int maxn,
-	  const Char sep);
-Int split(const std::string &str, std::string res[], Int maxn,
+int split(const std::string &str, std::string res[], int maxn,
+	  const char sep);
+int split(const std::string &str, std::string res[], int maxn,
 	  const Regex &sep);
 //</group> 
 
@@ -749,12 +775,12 @@ Int split(const std::string &str, std::string res[], Int maxn,
 // Functions to find special patterns, join and replicate
 // <group name=common>
 String common_prefix(const std::string &x, const std::string &y,
-		     Int startpos = 0);
+		     int startpos = 0);
 String common_suffix(const std::string &x, const std::string &y,
-		     Int startpos = -1);
-String replicate(Char c, String::size_type n);
+		     int startpos = -1);
+String replicate(char c, String::size_type n);
 String replicate(const std::string &str, String::size_type n);
-String join(std::string src[], Int n, const std::string &sep);
+String join(std::string src[], int n, const std::string &sep);
 // </group>
 
 // <summary> Casing and related functions </summary>
@@ -779,7 +805,6 @@ String trim(const std::string& str);
 std::ostream &operator<<(std::ostream &s, const String &x);
 // </group>
 
-//# Inlines
 inline SubString::SubString(const std::string &str, std::string::size_type pos,
 			    std::string::size_type len) :
   ref_p(str), pos_p((pos > str.length()) ? str.length() : pos),
@@ -788,21 +813,234 @@ inline SubString::SubString(const std::string &str, std::string::size_type pos,
 
 inline SubString String::operator()(size_type pos, size_type len) {
   return at(pos, len); }
-inline  const Char *SubString::chars() const {
+inline  const char *SubString::chars() const {
   return String(*this).c_str(); }
 
-inline Bool String::contains(Char c, Int pos) const {
+inline bool String::contains(char c, int pos) const {
   return (index(c, pos) != npos); }
-inline Bool String::contains(const std::string &str, Int pos) const {
+inline bool String::contains(const std::string &str, int pos) const {
   return (index(str, pos) != npos); }
-inline Bool String::contains(const Char *s, Int pos) const {
+inline bool String::contains(const char *s, int pos) const {
   return (index(s, pos) != npos); }
-inline Bool String::contains(const Regex &r, Int pos) const {
+inline bool String::contains(const Regex &r, int pos) const {
   return (index(r, pos) != npos); }
 
 inline std::ostream &operator<<(std::ostream &s, const String &x) {
   s << x.c_str(); return s; }
 
+// Remove specified chars from beginning and end of string.
+void TrimInPlace(std::string& str, std::string_view characters = " \t\n\r");
+
+// Remove specified character from beginning of string.
+// If the character is repeated more than once on the left, all instances
+// will be removed; e.g. LTrimInPlace(str, ',') results in ",,xy" becoming "xy".
+inline void LTrimInPlace(std::string& str, char character) {
+  std::string::iterator iter = str.begin();
+  while (iter != str.end()  &&  *iter == character) {
+    ++iter;
+  }
+  str.erase (str.begin(), iter);
+}
+
+// Remove specified character from end of string.
+// If the character is repeated more than once on the right, all instances
+// will be removed; e.g. rtrim(',') results in "xy,," becoming "xy".
+inline void RTrimInPlace(std::string& str, char character) {
+  if (!str.empty()) {
+    std::string::iterator iter = str.end() - 1;
+    while (iter != str.begin()  &&  *iter == character) {
+      --iter;
+    }
+    if(*iter != character)
+      ++iter;
+    str.erase (iter, str.end());
+  }
+}
+
+// Return the position of the character in the string or npos if not found.
+// Searches the first index of the character if the startpos >= 0, or the last index if
+// startpos < 0.
+inline std::string::size_type IndexString(std::string_view str, char c, int startpos = 0) {
+  if (startpos >= 0) {
+    return str.find(c, startpos);
+  } else {
+    const int search_from = str.length() + startpos - 1;
+    return search_from >= 0 ? str.rfind(c, search_from) : std::string::npos;
+  }
+}
+
+// Return the position of the substring in the string or npos if not found.
+// Searches the first index of the substring if the startpos >= 0, or the last index if
+// startpos < 0.
+inline std::string::size_type IndexString(std::string_view str, std::string_view pattern, int startpos = 0) {
+  if (startpos >= 0) {
+    return str.find(pattern, startpos);
+  } else {
+    const int search_from = str.length() + startpos - pattern.length();
+    return search_from >= 0 ? str.rfind(pattern, search_from) : std::string::npos;
+  }
+}
+
+// Convert a String to a value. All characters in the string must be used.
+// It uses a shift from an ostringstream, so that operator must exist
+// for the data type used.
+// In case of an error, an exception is thrown if @p check is set.
+// Otherwise it returns false and @p value contains the value read
+// so far.
+template<typename T>
+inline bool StringToValue (const std::string& str, T& value, bool check=true)
+{
+  std::istringstream os(str);
+  os >> value;
+  if (os.fail()  ||  !os.eof()) {
+    if (check) {
+      if(os.fail()) {
+        throw std::runtime_error ("String '" + str + "' failed to parse in StringToValue()");
+      } else {
+        std::string extra;
+        std::getline(os, extra);
+        throw std::runtime_error ("Extra characters afters parsing string '" + str + "' in StringToValue(): '" + extra + "'");
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+template<typename T>
+inline T StringToValue(const std::string& str)
+{
+  T value;
+  StringToValue(str, value);
+  return value;
+}
+
+// Same as StringToValue<int>
+inline int StringToInt(const std::string& str) {
+  return StringToValue<int>(str);
+}
+
+// Same as StringToValue<float>
+inline float StringToFloat(const std::string& str) {
+  return StringToValue<float>(str);
+}
+
+// Same as StringToValue<double>
+inline double StringToDouble(const std::string& str) {
+  return StringToValue<double>(str);
+}
+
+// Like sprintf. Don't use for new code -- to be deprecated if possible.
+std::string FormatString(const char* picture, ...);
+
+// Returns the number of times a given pattern occurs in a string.
+// E.g. SubStringCount("ababaaba", "aba") returns 3.
+inline std::size_t SubStringCount(std::string_view str, std::string_view pattern) {
+  std::size_t p = 0;
+  std::size_t count = 0;
+  while (p < str.length()) {
+    if ((p = str.find(pattern, p)) == std::string::npos) break;
+    count++;
+    p++;
+  }
+  return count;
+}
+
+inline std::string_view GetStringUpToExcluding(std::string_view input, std::string_view stop_string, size_t start_position = 0) {
+  assert(start_position <= input.size());
+  const std::size_t end = std::min(input.size(), input.find(stop_string, start_position));
+  // input.subview() is only available from C++26, so construct manually:
+  return std::string_view(input.begin(), input.begin() + end);
+}
+
+// Rather specific function -- this is a replacement for String:through(), but maybe String::through() is rarely
+// used, in which case this function should be removed.
+inline std::string_view GetStringUpToIncluding(std::string_view input, std::string_view stop_string, size_t start_position = 0) {
+  assert(start_position <= input.size());
+  std::size_t end = input.find(stop_string, start_position);
+  if(end == std::string_view::npos) {
+    end = input.size();
+  } else {
+    end += stop_string.size();
+  }
+  // input.subview() is only available from C++26, so construct manually:
+  return std::string_view(input.begin(), input.begin() + end);
+}
+
+inline std::string_view GetStringFrom(std::string_view input, std::string_view start_string, size_t start_position = 0) {
+  assert(start_position <= input.size());
+  std::size_t start = input.find(start_string, start_position);
+  if(start == std::string_view::npos)
+    start = input.size();
+  // input.subview() is only available from C++26, so construct manually:
+  return std::string_view(input.begin() + start, input.end());
+}
+
+// Rather specific function -- this is a replacement for String:after(), but maybe String::after() is rarely
+// used, in which case this function should be removed.
+inline std::string_view GetStringAfter(std::string_view input, std::string_view pattern, size_t start_position = 0) {
+  assert(start_position <= input.size());
+  std::size_t start = input.find(pattern, start_position);
+  if(start == std::string_view::npos) {
+    start = input.size();
+  } else {
+    start += pattern.size();
+  }
+  // input.subview() is only available from C++26, so construct manually:
+  return std::string_view(input.begin() + start, input.end());
+}
+
+inline void ToUpperCaseInPlace(std::string& str) {
+  std::transform(str.begin(), str.end(), str.begin(), [&](char c) { return toupper(c); });
+}
+
+inline void ToLowerCaseInPlace(std::string& str) {
+  std::transform(str.begin(), str.end(), str.begin(), [&](char c) { return tolower(c); });
+}
+
+inline void CapitalizeStringInPlace(std::string& str) {
+  for (std::string::iterator p=str.begin(); p != str.end(); p++) {
+    bool at_word;
+    if (islower(*p)) {
+      *p = toupper(*p);
+      at_word = true;
+    } else {
+      at_word = isupper(*p) || isdigit(*p);
+    }
+    // atword is now true if *p is a character or digit
+    if (at_word) {
+      while (++p < str.end()) {
+        if (isupper(*p)) {
+          *p = tolower(*p);
+        }
+        else if (!islower(*p) && !isdigit(*p)) break;
+      }
+    }
+  }
+}
+
+inline void EraseStringFrom(std::string& str, std::string_view pattern, size_t start_position = 0) {
+  const std::size_t start = str.find(pattern, start_position);
+  if(start != std::string::npos)
+    str.erase(start, pattern.length());
+}
+
+inline size_t ReplaceAllInPlace(std::string& str, std::string_view pattern, std::string_view replacement) {
+  std::size_t n_matches = 0;
+  if (str.length() == 0 || pattern.length() == 0 ||
+      str.length() < pattern.length()) return n_matches;
+  std::size_t search_index = 0;
+  while (str.length()-search_index >= pattern.length()) {
+    const std::size_t pos = str.find(pattern, search_index);
+    if (pos == std::string::npos) break;
+    else {
+      n_matches++;
+      str.replace(pos, pattern.length(), replacement);
+      search_index = pos + replacement.length();
+    }
+  }
+  return n_matches;
+}
 
 } //# NAMESPACE CASACORE - END
 
@@ -815,7 +1053,8 @@ struct hash<casacore::String>
   std::size_t operator()(casacore::String const& k) const noexcept
     { return std::hash<std::string>()(k); }
 };
+} // namespace std
 
-} // namespace casacore
+#undef DEPRECATED
 
 #endif

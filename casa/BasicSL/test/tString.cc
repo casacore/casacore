@@ -1,492 +1,380 @@
-//# tString.cc: This program tests Strings
-//# Copyright (C) 1993-1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
-//# Includes
-
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/Regex.h>
-#include <casacore/casa/Utilities/Assert.h>
-// Next one for atoi and atof
-#include <casacore/casa/stdlib.h>
-#include <casacore/casa/iostream.h>
-#include <casacore/casa/sstream.h>
-#include <unordered_set>
 
-#include <casacore/casa/namespace.h>
-// Generally used variables
-String X = "Hello";
-String Y = "world";
-String N = "123";
-String c;
-const Char*  s = ",";
-Regex  r ("e[a-z]*o");
+#include <boost/test/unit_test.hpp>
 
-void decltest() {
-  String x;
-  cout << "an empty String:" << x << endl;
-  AlwaysAssertExit(x == "");
+BOOST_AUTO_TEST_SUITE(string_operations)
 
-  String y = "Hello";
-  cout << "A string initialized to Hello:" << y << endl;
-  AlwaysAssertExit(y == "Hello");
-
-  if (y[y.length()-1] == 'o') y = y + '\n';
-  AlwaysAssertExit(y == "Hello\n");
-  y = "Hello";
-
-  String a = y;
-  cout << "A string initialized to previous string:" << a << endl;
-  AlwaysAssertExit(a == "Hello");
-  AlwaysAssertExit(a == y);
-
-  String b (a.at(1, 2));
-  cout << "A string initialized to previous string.at(1, 2):" << b << endl;
-  AlwaysAssertExit(b == "el");
-
-  Char ch = '@';
-  String z(ch);
-  cout << "A string initialized to @:" << z << endl;
-  AlwaysAssertExit(z == "@");
-
-  String n = "20";
-  cout << "A string initialized to dec(20):" << n << endl;
-  AlwaysAssertExit(n == "20");
-
-  Int i = atoi(n.chars());
-  Double f = atof(n.chars());
-  cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << endl;
-  AlwaysAssertExit(i == 20);
-  AlwaysAssertExit(f == 20);
-
-  /*
-  AlwaysAssertExit(X.OK());
-  AlwaysAssertExit(Y.OK());
-  AlwaysAssertExit(x.OK());
-  AlwaysAssertExit(y.OK());
-  AlwaysAssertExit(z.OK());
-  AlwaysAssertExit(n.OK());
-  AlwaysAssertExit(r.OK());
-  */
-}
-
-void cattest() {
-  String x = X;
-  String y = Y;
-  String z = x + y;
-  cout << "z = x + y = " << z << endl;
-  AlwaysAssertExit(z == "Helloworld");
-
-  x += y;
-  cout << "x += y; x = " << x << endl;
-  AlwaysAssertExit(x == "Helloworld");
-
-  y = Y;
-  x = X;
-  y.prepend(x);
-  cout << "y.prepend(x); y = " << y << endl;
-  AlwaysAssertExit(y == "Helloworld");
-
-  x = X;
-  y = Y;
-  z = x + s + ' ' + y.at("w") + y.after("w") + ".";
-  cout << "z = x + s +  + y.at(w) + y.after(w) + . = " << z << endl;
-  AlwaysAssertExit(z == "Hello, world.");
-}
-
-void comparetest() {
-  String x = X;
-  String y = Y;
-  String n = N;
-  String z = x + y;
-
-  AlwaysAssertExit(x != y);
-  AlwaysAssertExit(x == "Hello");
-  AlwaysAssertExit(x != z.at(0, 4));
-  AlwaysAssertExit (x < y);
-  AlwaysAssertExit(!(x >= z.at(0, 6)));
-  AlwaysAssertExit(x.contains("He"));
-  AlwaysAssertExit (z.contains(x));
-  AlwaysAssertExit(x.contains(r));
-  
-  AlwaysAssertExit(!(x.matches(r)));
-  AlwaysAssertExit(x.matches(RXalpha));
-  AlwaysAssertExit(!(n.matches(RXalpha)));
-  AlwaysAssertExit(n.matches(RXint));
-  AlwaysAssertExit(n.matches(RXdouble));
-  
-  AlwaysAssertExit(x.index("lo") == 3);
-  AlwaysAssertExit(x.index("l", 2) == 2);
-  AlwaysAssertExit(x.index("l", -1) == 3); // negative pos!
-  AlwaysAssertExit(x.index(r)  == 1);
-  AlwaysAssertExit(x.index(r, -2) == 1);
-
-  AlwaysAssertExit(x.contains("el", 1));
-  AlwaysAssertExit(x.contains("el"));
-  
-  AlwaysAssertExit(common_prefix(x, "Help") == "Hel");
-  AlwaysAssertExit(common_suffix(x, "to") == "o");
-  
-  AlwaysAssertExit(fcompare(x, "hello") == 0);
-  AlwaysAssertExit(fcompare(x, "hellox") < 0);
-  AlwaysAssertExit(fcompare(x, "hell") > 0);
-  AlwaysAssertExit(fcompare(x, "hELlo") == 0);
-  AlwaysAssertExit(fcompare(x, "hElp") < 0);
-}
-
-void substrtest() {
-  String x = X;
-
-  Char ch = x[0];
-  cout << "ch = x[0] = " << ch << endl;
-  AlwaysAssertExit(ch == 'H');
-
-  String z = x.at(2, 3);
-  cout << "z = x.at(2, 3) = " << z << endl;
-  AlwaysAssertExit(z.length() == 3);
-  AlwaysAssertExit(z == "llo");
-
-  String z1 = x.at(2, 4);
-  cout << "z1 = x.at(2, 4) = " << z1 << endl;
-  AlwaysAssertExit(z1.length() == 3);
-  AlwaysAssertExit(z1 == "llo");
-
-  String z2 = x.at(5, 3);
-  cout << "z2 = x.at(5, 3) = " << z2 << endl;
-  AlwaysAssertExit(z2.length() == 0);
-  AlwaysAssertExit(z2 == "");
-
-  x.at(2, 2) = "r";
-  cout << "x.at(2, 2) = r; x = " << x << endl;
-  AlwaysAssertExit(x == "Hero");
-
-  x = X;
-  x.at(0, 1) = "j";
-  cout << "x.at(0, 1) = j; x = " << x << endl;
-  AlwaysAssertExit(x == "jello");
-
-  x = X;
-  x.at("He") = "je";
-  cout << "x.at(He) = je; x = " << x << endl;
-  AlwaysAssertExit(x == "jello");
-  
-  x = X;
-  x.at("l", -1) = "i";
-  cout << "x.at(l, -1) = i; x = " << x << endl;
-  AlwaysAssertExit(x == "Helio");
-  
-  x = X;
-  z = x.at(r);
-  cout << "z = x.at(r) = " << z << endl;
-  AlwaysAssertExit(z == "ello");
-  
-  z = x.before("o");
-  cout << "z = x.before(o) = " << z << endl;
-  AlwaysAssertExit(z == "Hell");
-  x.before("ll") = "Bri";
-  cout << "x.before(ll) = Bri; x = " << x << endl;
-  AlwaysAssertExit(x == "Brillo");
-
-  x = X;
-  z = x.before(2);
-  cout << "z = x.before(2) = " << z << endl;
-  AlwaysAssertExit(z == "He");
-
-  z = x.after("Hel");
-  cout << "z = x.after(Hel) = " << z << endl;
-  AlwaysAssertExit(z == "lo");
-  x.after("Hel") = "p";
-  cout << "x.after(Hel) = p; x = " << x << endl;
-  AlwaysAssertExit(x == "Help");
-
-  x = X;
-  z = x.after(3);
-  cout << "z = x.after(3) = " << z << endl;
-  AlwaysAssertExit(z == "o");
-
-  z = "  a bc";
-  z  = z.after(RXwhite);
-  cout << "z =   a bc; z = z.after(RXwhite); z =" << z << endl;
-  AlwaysAssertExit(z == "a bc");
-}
-
-void utiltest() {
-  String x = X;
-  
-  Int matches = x.gsub("l", "ll");
-  
-  cout << "x.gsub(l, ll); x = " << x << endl;
-  AlwaysAssertExit(matches == 2);
-  AlwaysAssertExit(x == "Hellllo");
-
-  x = X;
-  matches = x.gsub(r, "ello should have been replaced by this string");
-  cout << "x.gsub(r, ...); x = " << x << endl;
-  AlwaysAssertExit(matches == 1);
-  AlwaysAssertExit(x == "Hello should have been replaced by this string");
-
-  matches = x.gsub(RXwhite, "#");
-  cout << "x.gsub(RXwhite, #); x = " << x << endl;
-  AlwaysAssertExit(matches == 7);
-  
-  String z = X + Y;
-  z.del("loworl");
-  cout << "z = x+y; z.del(loworl); z = " << z << endl;
-  AlwaysAssertExit(z == "Held");
-
-  x = X;
-  z = reverse(x);
-  cout << "reverse(x) = " << z << endl;
-  AlwaysAssertExit(z == "olleH");
-
-  x.reverse();
-  cout << "x.reverse() = " << x << endl;
-  AlwaysAssertExit(x == z);
-
-  x = X;
-  z = upcase(x);
-  cout << "upcase(x) = " << z << endl;
-  AlwaysAssertExit(z == "HELLO");
-
-  z = downcase(x);
-  cout << "downcase(x) = " << z << endl;
-  AlwaysAssertExit(z == "hello");
-
-  z = capitalize(x);
-  cout << "capitalize(x) = " << z << endl;
-  AlwaysAssertExit(z == "Hello");
-
-  z = replicate('*', 10);
-  cout << "z = replicate(*, 10) = " << z << endl;
-  AlwaysAssertExit(z == "**********");
-  AlwaysAssertExit(z.length() == 10);
-}
-
-void splittest() {
-  String z = "This string\thas\nfive words";
-  cout << "z = " << z << endl;
-  String w[10];
-  Int nw = split(z, w, 10, RXwhite);
-  AlwaysAssertExit(nw == 5);
-  cout << "from split(z, RXwhite, w, 10), n words = " << nw << ":\n";
-  for (Int i = 0; i < nw; ++i) {
-    cout << w[i] << endl;
-  }
-  AlwaysAssertExit(w[0] == "This");
-  AlwaysAssertExit(w[1] == "string");
-  AlwaysAssertExit(w[2] == "has");
-  AlwaysAssertExit(w[3] == "five");
-  AlwaysAssertExit(w[4] == "words");
-  AlwaysAssertExit(w[5] == "");
-
-  z = join(w, nw, "/");
-  cout << "z = join(w, nw, /); z =" << z << endl;
-  AlwaysAssertExit(z == "This/string/has/five/words");
-}
-
-void iotest() {
-  String z = "Della and the Dealer\n and a dog named Jake,\n and a cat named Kalamazoo";
-  cout << "word =" << z << " ";
-  cout << "length = " << z.length() << endl;
-  ostringstream os;
-  os << "Test stream: " << "length = " << z.length();
-  String zx(os);
-  cout << zx << endl;
-}
-
-void identitytest(String a, String b) {
-  String x = a;
-  String y = b;
-  x += b;
-  y.prepend(a);
-  AlwaysAssertExit((a + b) == x);
-  AlwaysAssertExit((a + b) == y);
-  AlwaysAssertExit(x == y);
-  AlwaysAssertExit(x.after(a) == b);
-  AlwaysAssertExit(x.before(b, 4) == a);
-  AlwaysAssertExit(x.from(a) == x);
-  AlwaysAssertExit(x.through(b, x.size()) == x);
-  AlwaysAssertExit(x.at(a) == a);
-  AlwaysAssertExit(x.at(b) == b);
-
-  AlwaysAssertExit(reverse(x) == reverse(b) + reverse(a));
-
-  AlwaysAssertExit((a + b + a) == (a + (b + a)));
-  
-  ///  x.del(b, -1);
-  x.del(b);
-  AlwaysAssertExit(x == a);
-
-  y.before(b, 2) = b;
-  AlwaysAssertExit(y == (b + b));
-  y.at(b) = a;
-  AlwaysAssertExit(y == (a + b));
-  
-  x = a + reverse(a);
-  for (Int i = 0; i < 7; ++i) {
-    y = x;
-    x += x;
-    AlwaysAssertExit(x == reverse(x));
-    AlwaysAssertExit(x.index(y) == 0);
-  }
-}
-
-
-void freqtest() {
-  String x = "Hello World";
-  String y = x.at(0,5);
-  AlwaysAssertExit(x.freq('l') == 3);	// Char
-  AlwaysAssertExit(x.freq("lo") == 1);	// Char*
-  AlwaysAssertExit(x.freq(x) == 1);	// String
-  AlwaysAssertExit(x.freq(y) == 1);	// SubString
-}
-
-void toDouble() {
-    String x = "1.5";
-    Double y = String::toDouble(x);
-    AlwaysAssertExit(y == 1.5);
-    x = "frodo";
-    AlwaysAssertExit (String::toDouble(x) == 0);
-    bool ok = false;
-    try {
-      y = String::toDouble(x, True);
-    } catch (const AipsError&) {
-      ok = true;
-    }
-    AlwaysAssertExit(ok);
-}
-
-void toFloat() {
-    String x = "1.5";
-    Float y = String::toFloat(x);
-    AlwaysAssertExit(y == 1.5);
-    x = "1.5 aa";
-    AlwaysAssertExit(String::toFloat(x) == 1.5);
-    bool ok = false;
-    try {
-      y = String::toFloat(x, True);
-    } catch (const AipsError&) {
-      ok = true;
-    }
-    AlwaysAssertExit(ok);
-}
-
-void toInt() {
-    String x = "4";
-    Int y = String::toInt(x);
-    AlwaysAssertExit(y == 4);
-    x = "-12";
-    y = String::toInt(x);
-    AlwaysAssertExit(y == -12);
-    x = "6.9999";
-    AlwaysAssertExit (String::toInt(x) == 6);
-    bool ok = false;
-    try {
-      y = String::toInt(x, True);
-    } catch (const AipsError&) {
-      ok = true;
-    }
-    AlwaysAssertExit(ok);
-}
-
-void trim() {
-    String myString = "\t  \t  \n\r  my string \n\r \t ";
-    myString.trim();
-    AlwaysAssertExit(myString == "my string");
-    myString = "\t  \t  \n\r  my string";
-    myString.trim();
-    AlwaysAssertExit(myString == "my string");
-    myString = "my string \n\r \t ";
-    myString.trim();
-    AlwaysAssertExit(myString == "my string");
-    myString = "\n \t\t\r  ";
-    myString.trim();
-    AlwaysAssertExit(myString.empty());
-    myString = "    ";
-    myString.trim();
-    AlwaysAssertExit(myString.empty());
-}
-
-void startsWith() {
-    String myString = "Gozer the Destroyer";
-    AlwaysAssertExit(myString.startsWith("G"));
-    AlwaysAssertExit(myString.startsWith("Gozer t"));
-    AlwaysAssertExit(! myString.startsWith("oz"));
-}
-
-/* void hashtest()
+BOOST_AUTO_TEST_CASE(TrimInPlace)
 {
-  String *xp, a, x[] = {
-   "Hello World",
-   "Me and you and the dog named boo",
-   "a",
-   "b",
-   "aa",
-   "bb",
-   "A",
-   ""
-  };
+  using casacore::TrimInPlace;
 
-  //# remove cout's of hash values because they can differ between arch's
-  for (xp=x; xp->length() > 0; xp++)  xp->hash();
-  //  cout << "hash(" << *xp << ") = " << xp->hash() << endl;
+  std::string empty;
+  TrimInPlace(empty);
+  BOOST_CHECK_EQUAL(empty, "");
 
+  std::string str1("-- hello --");
+  TrimInPlace(str1, "-");
+  BOOST_CHECK_EQUAL(str1, " hello ");
 
-  a = ""; a.hash();
-  //  cout << "hash() = " << a.hash() << endl;
+  TrimInPlace(str1);
+  BOOST_CHECK_EQUAL(str1, "hello");
 
+  std::string str2("-/- hel-/|lo -|-");
+  TrimInPlace(str2, "-/| ");
+  BOOST_CHECK_EQUAL(str2, "hel-/|lo");
+
+  std::string str3("a\0hello\0a");
+  TrimInPlace(str3, "a");
+  BOOST_CHECK_EQUAL(str3, "\0hello\0");
+
+  std::string str4("all gone");
+  TrimInPlace(str4, "al gone");
+  BOOST_CHECK_EQUAL(str4, "");
+
+  std::string str5("none gone");
+  TrimInPlace(str5, "./?");
+  BOOST_CHECK_EQUAL(str5, "none gone");
 }
-*/
 
-int main() {
-  decltest();
-  cattest();
-  comparetest();
-  substrtest();
-  utiltest();
-  splittest();
-  freqtest();
-  identitytest(X, X);
-  identitytest(X, Y);
-  identitytest(X+Y+N+X+Y+N,
-	       "A string that will be used in identitytest but is otherwise "
-	       "just another useless string.");
-  ///  hashtest();
-  iotest();
-  toDouble();
-  toFloat();
-  toInt();
-  trim();
-  startsWith();
-  {
-    // Test to see if String hash works.
-    std::unordered_set<String> sset;
-    sset.insert ("abc");
-    AlwaysAssertExit (sset.size() == 1);
-    AlwaysAssertExit (sset.find("abc") != sset.end());
-    AlwaysAssertExit (sset.find("abd") == sset.end());
-  }
-  cout << "\nEnd of test\n";
-  return(0);
+BOOST_AUTO_TEST_CASE(LTrimInPlace) {
+  using casacore::LTrimInPlace;
+
+  std::string empty;
+  LTrimInPlace(empty, '*');
+  BOOST_CHECK_EQUAL(empty, "");
+
+  std::string str1("-- hello --");
+  LTrimInPlace(str1, '-');
+  BOOST_CHECK_EQUAL(str1, " hello --");
+
+  LTrimInPlace(str1, ' ');
+  BOOST_CHECK_EQUAL(str1, "hello --");
+
+  std::string str2("a\0hello\0a", 9);
+  LTrimInPlace(str2, 'a');
+  BOOST_CHECK_EQUAL(str2, std::string("\0hello\0a", 8));
+
+  std::string str3("****");
+  LTrimInPlace(str3, '*');
+  BOOST_CHECK_EQUAL(str3, "");
+
+  std::string str4("!");
+  LTrimInPlace(str4, '?');
+  BOOST_CHECK_EQUAL(str4, "!");
 }
+
+BOOST_AUTO_TEST_CASE(RTrimInPlace) {
+  using casacore::RTrimInPlace;
+
+  std::string empty;
+  RTrimInPlace(empty, '*');
+  BOOST_CHECK_EQUAL(empty, "");
+
+  std::string str1("-- hello --");
+  RTrimInPlace(str1, '-');
+  BOOST_CHECK_EQUAL(str1, "-- hello ");
+
+  RTrimInPlace(str1, ' ');
+  BOOST_CHECK_EQUAL(str1, "-- hello");
+
+  std::string str2("a\0hello\0a", 9);
+  RTrimInPlace(str2, 'a');
+  BOOST_CHECK_EQUAL(str2, std::string("a\0hello\0", 8));
+
+  std::string str3("****");
+  RTrimInPlace(str3, '*');
+  BOOST_CHECK_EQUAL(str3, "");
+
+  std::string str4("!");
+  RTrimInPlace(str4, '?');
+  BOOST_CHECK_EQUAL(str4, "!");
+}
+
+BOOST_AUTO_TEST_CASE(IndexStringWithChar) {
+  using casacore::IndexString;
+  const std::string kStr = "bla bla";
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'b'), 0);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'l', 0), 1);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'l', 1), 1);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'b', 1), 4);
+  // Apparently there's no way to use IndexString to get the last character,
+  // only second to last. Casacore might depend on this behaviour so this is
+  // kept as is.
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'a', -1), 2);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'l', -1), 5);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'b', -1), 4);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'b', -3), 0);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'b', -6), 0);
+
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'z', 0), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'a', 7), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kStr, 'b', -7), std::string::npos);
+}
+
+BOOST_AUTO_TEST_CASE(IndexStringWithString) {
+  using casacore::IndexString;
+  const std::string kBlaBla = "bla bla";
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "b"), 0);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "l", 0), 1);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "l", 1), 1);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "b", 1), 4);
+  // See comment in IndexStringWithChar about indexing last character.
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "a", -1), 2);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "l", -1), 5);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "b", -1), 4);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "b", -3), 0);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "b", -6), 0);
+
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "z", 0), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "a", 7), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBla, "b", -7), std::string::npos);
+
+  const std::string kBlaBlaBli = "bla bla bli";
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bl"), 0);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bl", 1), 4);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bl", 5), 8);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", 1), 4);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bli", 0), 8);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bli", 8), 8);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, kBlaBlaBli, 0), 0);
+
+  // As for individual chars, the old implementation is such that the
+  // last match can't be found with -1. This is confusing but we keep
+  // it as is.
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "li", -1), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bli", -1), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bl", -1), 8);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla bla bl", -1), 0);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", -1), 4);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", -4), 4);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", -5), 0);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", -8), 0);
+
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, ""), 0);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "", 10), 10);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "", 11), 11);
+  BOOST_CHECK_EQUAL(IndexString("", ""), 0);
+
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "blu"), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", 5), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bli", 9), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla", -9), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, kBlaBlaBli, 1), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, kBlaBlaBli, -1), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString(kBlaBlaBli, "bla bla bli!", 0), std::string::npos);
+  BOOST_CHECK_EQUAL(IndexString("", "?"), std::string::npos);
+}
+
+BOOST_AUTO_TEST_CASE(IndexStringReference) {
+  using casacore::IndexString;
+  // These were the original tests for casacore::String::index(), kept as reference
+  const std::string kHello = "hello";
+  BOOST_CHECK_EQUAL(IndexString(kHello, "lo"), 3);
+  BOOST_CHECK_EQUAL(IndexString(kHello, "l", 2), 2);
+  BOOST_CHECK_EQUAL(IndexString(kHello, "l", -1), 3);
+}
+
+BOOST_AUTO_TEST_CASE(StringToValue) {
+  using casacore::StringToValue;
+  BOOST_CHECK_EQUAL(StringToValue<unsigned>("0"), 0);
+  BOOST_CHECK_EQUAL(StringToValue<unsigned>("3"), 3);
+  BOOST_CHECK_EQUAL(StringToValue<int16_t>("-0"), 0);
+  BOOST_CHECK_EQUAL(StringToValue<int16_t>("32767"), 32767);
+  BOOST_CHECK_EQUAL(StringToValue<int16_t>("-32768"), -32768);
+  BOOST_CHECK_EQUAL(StringToValue<bool>("0"), false);
+  BOOST_CHECK_EQUAL(StringToValue<bool>("1"), true);
+  BOOST_CHECK_EQUAL(StringToValue<int64_t>("0"), 0);
+  BOOST_CHECK_EQUAL(StringToValue<int64_t>("-1"), -1);
+  BOOST_CHECK_EQUAL(StringToValue<int64_t>("9223372036854775807"), 9223372036854775807ll);
+  // C++ can't represent -9223372036854775808, because it interprets it as an unsigned value
+  // and applies minus to it; hence the subtraction with one.
+  BOOST_CHECK_EQUAL(StringToValue<int64_t>("-9223372036854775808"), -9223372036854775807ll - 1ll);
+
+  BOOST_CHECK_THROW(StringToValue<int64_t>("Everything is awesome!"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToValue<unsigned short>("9223372036854775807"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToValue<unsigned>(""), std::runtime_error);
+  BOOST_CHECK_THROW(StringToValue<unsigned>("0?"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToValue<short>("1e12"), std::runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(StringToInt) {
+  using casacore::StringToInt;
+  BOOST_CHECK_EQUAL(StringToInt("0"), 0);
+  BOOST_CHECK_EQUAL(StringToInt("3"), 3);
+  BOOST_CHECK_EQUAL(StringToInt("-0"), 0);
+  BOOST_CHECK_EQUAL(StringToInt("-32768"), -32768);
+
+  BOOST_CHECK_THROW(StringToInt(""), std::runtime_error);
+  BOOST_CHECK_THROW(StringToInt("0?"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToInt("1e12"), std::runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(StringToFloat) {
+  using casacore::StringToFloat;
+  BOOST_CHECK_EQUAL(StringToFloat("0"), 0.0f);
+  BOOST_CHECK_CLOSE_FRACTION(StringToFloat("3e3"), 3e3, 1e-6);
+  BOOST_CHECK_EQUAL(StringToFloat("-0.0"), -0.0f);
+  BOOST_CHECK_CLOSE_FRACTION(StringToFloat("-3.14159265e-4"), -3.14159265e-4f, 1e-6);
+
+  BOOST_CHECK_THROW(StringToFloat(""), std::runtime_error);
+  BOOST_CHECK_THROW(StringToFloat("0?"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToFloat("1e12e"), std::runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(StringToDouble) {
+  using casacore::StringToDouble;
+  BOOST_CHECK_EQUAL(StringToDouble("0"), 0.0);
+  BOOST_CHECK_CLOSE_FRACTION(StringToDouble("3e3"), 3e3, 1e-8);
+  BOOST_CHECK_EQUAL(StringToDouble("-0.0"), -0.0f);
+  BOOST_CHECK_CLOSE_FRACTION(StringToDouble("-3.14159265e-4"), -3.14159265e-4, 1e-8);
+  BOOST_CHECK_CLOSE_FRACTION(StringToDouble("1e308"), 1e308, 1e-8);
+
+  BOOST_CHECK_THROW(StringToDouble(""), std::runtime_error);
+  BOOST_CHECK_THROW(StringToDouble("0?"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToDouble("1e12e"), std::runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(SubStringCount) {
+  using casacore::SubStringCount;
+  BOOST_CHECK_EQUAL(SubStringCount("aaa", "a"), 3);
+  BOOST_CHECK_EQUAL(SubStringCount("aaa", "b"), 0);
+  BOOST_CHECK_EQUAL(SubStringCount("aaa", "aa"), 2);
+  BOOST_CHECK_EQUAL(SubStringCount("In Lhee lees je boeken in de lheesbieb", "ee"), 3);
+  BOOST_CHECK_EQUAL(SubStringCount("abab", "ab"), 2);
+  BOOST_CHECK_EQUAL(SubStringCount("a", "ab"), 0);
+  BOOST_CHECK_EQUAL(SubStringCount("", "ab"), 0);
+}
+
+BOOST_AUTO_TEST_CASE(GetStringViewUpToExcluding) {
+  using casacore::GetStringUpToExcluding;
+  constexpr const char* kStr = "Een twee drie";
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "drie"), "Een twee ");
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "twee"), "Een ");
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "Een"), "");
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "vier"), kStr);
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, kStr), "");
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding("", "Een"), "");
+
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "Een", 1), kStr);
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "twee", 1), "Een ");
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "twee", 4), "Een ");
+  BOOST_CHECK_EQUAL(GetStringUpToExcluding(kStr, "vier", 13), kStr);
+}
+
+BOOST_AUTO_TEST_CASE(GetStringUpToIncluding) {
+  using casacore::GetStringUpToIncluding;
+  constexpr const char* kStr = "Een twee drie";
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "drie"), "Een twee drie");
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "twee"), "Een twee");
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "Een"), "Een");
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "vier"), kStr);
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, kStr), kStr);
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding("", "Een"), "");
+
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "Een", 1), kStr);
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "twee", 1), "Een twee");
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "twee", 4), "Een twee");
+  BOOST_CHECK_EQUAL(GetStringUpToIncluding(kStr, "vier", 13), kStr);
+}
+
+BOOST_AUTO_TEST_CASE(GetStringFrom) {
+  using casacore::GetStringFrom;
+  constexpr const char* kStr = "Een twee drie";
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "drie"), "drie");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "twee"), "twee drie");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "Een"), "Een twee drie");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "vier"), "");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, kStr), kStr);
+  BOOST_CHECK_EQUAL(GetStringFrom("", "Een"), "");
+
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "Een", 1), "");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "twee", 1), "twee drie");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "twee", 4), "twee drie");
+  BOOST_CHECK_EQUAL(GetStringFrom(kStr, "vier", 13), "");
+}
+
+BOOST_AUTO_TEST_CASE(GetStringAfter) {
+  using casacore::GetStringAfter;
+  constexpr const char* kStr = "Een twee drie";
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "drie"), "");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "twee"), " drie");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "Een"), " twee drie");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "vier"), "");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, kStr), "");
+  BOOST_CHECK_EQUAL(GetStringAfter("", "Een"), "");
+
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "Een", 1), "");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "twee", 1), " drie");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "twee", 4), " drie");
+  BOOST_CHECK_EQUAL(GetStringAfter(kStr, "vier", 13), "");
+}
+
+BOOST_AUTO_TEST_CASE(ToUpperAndToLower) {
+  using casacore::ToUpperCaseInPlace;
+  using casacore::ToLowerCaseInPlace;
+  const std::string kStart = "Hello? HELLO?!?";
+  const std::string kLower = "hello? hello?!?";
+  const std::string kUpper = "HELLO? HELLO?!?";
+  std::string input = kStart;
+  ToUpperCaseInPlace(input);
+  BOOST_CHECK_EQUAL(input, kUpper);
+  ToLowerCaseInPlace(input);
+  BOOST_CHECK_EQUAL(input, kLower);
+  ToLowerCaseInPlace(input);
+  BOOST_CHECK_EQUAL(input, kLower);
+  ToUpperCaseInPlace(input);
+  BOOST_CHECK_EQUAL(input, kUpper);
+
+  input = "";
+  ToLowerCaseInPlace(input);
+  BOOST_CHECK_EQUAL(input, "");
+  ToUpperCaseInPlace(input);
+  BOOST_CHECK_EQUAL(input, "");
+}
+
+BOOST_AUTO_TEST_CASE(CapitalizeStringInPlace) {
+  using casacore::CapitalizeStringInPlace;
+
+  std::string empty;
+  CapitalizeStringInPlace(empty);
+  BOOST_CHECK_EQUAL(empty, "");
+
+  std::string sentence = "thIS is A senTENce, WiTh A cOMma aND 2 DIgItS. No 1! Ok 3THEN?";
+  CapitalizeStringInPlace(sentence);
+  const char* expected = "This Is A Sentence, With A Comma And 2 Digits. No 1! Ok 3then?";
+  BOOST_CHECK_EQUAL(sentence, expected);
+}
+
+BOOST_AUTO_TEST_CASE(EraseStringFrom) {
+  using casacore::EraseStringFrom;
+
+  std::string input = "Remove the e from here and here";
+  EraseStringFrom(input, "e");
+  BOOST_CHECK_EQUAL(input, "Rmove the e from here and here");
+  EraseStringFrom(input, " here");
+  BOOST_CHECK_EQUAL(input, "Rmove the e from and here");
+  EraseStringFrom(input, "!!");
+  BOOST_CHECK_EQUAL(input, "Rmove the e from and here");
+  EraseStringFrom(input, "");
+  BOOST_CHECK_EQUAL(input, "Rmove the e from and here");
+  input = "";
+  EraseStringFrom(input, "a");
+  BOOST_CHECK_EQUAL(input, "");
+}
+
+BOOST_AUTO_TEST_CASE(ReplaceAllInPlace) {
+  using casacore::ReplaceAllInPlace;
+
+  std::string input = "Remove the e from here and here";
+  ReplaceAllInPlace(input, "e", "");
+  BOOST_CHECK_EQUAL(input, "Rmov th  from hr and hr");
+  ReplaceAllInPlace(input, "hr", "|-|");
+  BOOST_CHECK_EQUAL(input, "Rmov th  from |-| and |-|");
+  ReplaceAllInPlace(input, "|--|", "?");
+  BOOST_CHECK_EQUAL(input, "Rmov th  from |-| and |-|");
+  input = "";
+  ReplaceAllInPlace(input, "a", "?");
+  BOOST_CHECK_EQUAL(input, "");
+}
+
+BOOST_AUTO_TEST_SUITE_END()

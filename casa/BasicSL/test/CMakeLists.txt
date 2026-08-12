@@ -3,7 +3,7 @@ tComplex
 tConstants
 tSTLIO
 tSTLMath
-tString
+tStringOld
 )
 
 foreach (test ${tests})
