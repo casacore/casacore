@@ -426,10 +426,10 @@ class String : public std::string {
   DEPRECATED("Use find(c) != npos")
   bool contains(char c) const {
     return (find(c) != npos); }
-  DEPRECATED("Use find(str) != npos")
+  DEPRECATED("Use find(str) != npos or StringContains()")
   bool contains(const std::string &str) const {
     return (find(str) != npos); }
-  DEPRECATED("Use find(s) != npos")
+  DEPRECATED("Use find(s) != npos or StringContains()")
   bool contains(const char *s) const {
     return (find(s) != npos); }
   DEPRECATED("Use std::regex")
@@ -442,10 +442,10 @@ class String : public std::string {
   DEPRECATED("Use find(), rfind() or IndexString()")
   bool contains(char c, int pos) const {
     return index(c, pos) != npos; }
-  DEPRECATED("Use find(), rfind() or IndexString()")
+  DEPRECATED("Use find(), rfind(), IndexString() and/or StringContains()")
   bool contains(const std::string &str, int pos) const {
     return (index(str, pos) != npos); }
-  DEPRECATED("Use find(), rfind() or IndexString()")
+  DEPRECATED("Use find(), rfind() or IndexString() and/or StringContains()")
   bool contains(const char *s, int pos) const {
     return (index(s, pos) != npos); }
   DEPRECATED("Use std::regex")
@@ -552,7 +552,7 @@ class String : public std::string {
   // Start at startpos and extract the string "before" the argument's 
   // position, exclusive. ** Casacore addition
   // <group name=before>
-  DEPRECATED("Use subview(0, pos)")
+  DEPRECATED("Use substr(0, pos) or create a view. Also consider if str.start_with() suffices.")
   SubString before(size_type pos);
   DEPRECATED("Use GetStringViewUpTo()")
   SubString before(const std::string &str, size_type startpos = 0);
