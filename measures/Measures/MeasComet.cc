@@ -259,16 +259,16 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
 			  Quantity(kws.asDouble("GeoLat"), "deg"));
       if (kws.isDefined("posrefsys")) {
 	String prs = kws.asString("posrefsys");
-	prs.upcase();
-	if(prs.contains("J2000")){
+	ToUpperCaseInPlace(prs);
+	if(StringContains(prs, "J2000")) {
 	  mtype_p = MDirection::J2000;
-	}else if(prs.contains("B1950")){
+	}else if(StringContains(prs, "B1950")){
 	  mtype_p = MDirection::B1950;	
-	}else if(prs.contains("APP")){
+	}else if(StringContains(prs, "APP")){
 	  mtype_p = MDirection::APP;
-	}else if(prs.contains("ICRS")){
+	}else if(StringContains(prs, "ICRS")){
 	  mtype_p = MDirection::ICRS;
-	}else if(prs.contains("TOPO")){
+	}else if(StringContains(prs, "TOPO")){
 	  mtype_p = MDirection::TOPO;
 	}else{
 	  os << LogIO::SEVERE

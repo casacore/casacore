@@ -306,7 +306,7 @@ namespace casacore {
     String type;
     if (operands().size() == 1) {
       type = operands()[0]->getString(id);
-      type.downcase();
+      ToLowerCaseInPlace(type);
     }
     if (type.empty()) {
       showFuncsPosition (os, False);

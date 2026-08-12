@@ -42,7 +42,7 @@ Quality::QualityTypes Quality::type(const String &qualityName)
 {
    QualityTypes val = Undefined;
    String name = qualityName;
-   name.upcase();
+   ToUpperCaseInPlace(name);
    if (name == "DATA")    val = DATA;
    else if (name == "ERROR")   val = ERROR;
    return val;

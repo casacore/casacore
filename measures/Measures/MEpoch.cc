@@ -222,9 +222,9 @@ Bool MEpoch::setRefString(const String &in) {
   MEpoch::Types tp;
   String x = in;
   Bool raze = False;
-  if (x.before(2) == "r_" || x.before(2) == "R_") {
+  if (x.starts_with("r_") || x.starts_with("R_")) {
     raze = True;
-    x = x.from(2);
+    x = x.substr(2);
   }
   if (MEpoch::getType(tp, x)) {
     if (raze) {

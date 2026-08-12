@@ -123,9 +123,9 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
       MEpoch::Types tp;
       String x = outref;
       Bool raze = False;
-      if (x.before(2) == "r_" || x.before(2) == "R_") {
+      if (x.starts_with("r_") || x.starts_with("R_")) {
 	raze = True;
-	x = x.from(2);
+	x = x.substr(2);
       }
       if (MEpoch::getType(tp, x)) {
 	if (raze) outRef.setType(tp | MEpoch::RAZE);

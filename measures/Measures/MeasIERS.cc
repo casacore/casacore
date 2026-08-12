@@ -446,7 +446,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 
             String mdir;
             if (Aipsrc::find(mdir, "measures.directory")) {
-              mdir.trim();
+              TrimInPlace(mdir);
               Path mpath = Path(mdir);
               mpath.append(udir);
               for (Int i=0; i<2; i++) {
@@ -461,8 +461,8 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
             }
             if (!found) {
               String casadata=String(CASADATA);
-              casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
-              casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
+              ReplaceAllInPlace(casadata, "%CASAROOT%", Aipsrc::aipsRoot());
+              ReplaceAllInPlace(casadata, "%CASAHOME%", Aipsrc::aipsHome());
               Path cdatapath(casadata);
               for (Int i=0; i<2; i++) {
                 ldir = cdatapath.absoluteName() + path[i];

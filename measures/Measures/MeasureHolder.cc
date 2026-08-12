@@ -446,7 +446,7 @@ Bool MeasureHolder::getType(String &error, const RecordInterface &in) {
 
 Bool MeasureHolder::getType(String &error, const String &in) {
   String tp(in);
-  tp.downcase();
+  ToLowerCaseInPlace(tp);
   hold_p.reset();
   if (tp == downcase(MDirection::showMe())) {
     hold_p.reset(new MDirection());

@@ -148,7 +148,7 @@ String MCBase::showState(uInt *state,
     }
     oss << "\n";
   }
-  return String(oss);
+  return oss.str();
 }
 
 } //# NAMESPACE CASACORE - END
