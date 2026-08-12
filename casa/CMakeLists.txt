@@ -649,7 +649,68 @@ install (FILES ${top_level_headers}
 DESTINATION include/casacore/casa
 )
 add_subdirectory (test ${EXCL_ALL})
-foreach (casa_module Arrays BasicMath BasicSL Containers
+foreach (casa_module BasicMath BasicSL Containers
      Exceptions HDF5 Inputs IO Json Logging OS Quanta System Utilities)
   add_subdirectory (${casa_module}/test ${EXCL_ALL})
 endforeach (casa_module)
+
+set (unittestfiles
+  Arrays/test/tAllocator.cc
+  Arrays/test/tArray.cc
+  Arrays/test/tArrayAccessor.cc
+  Arrays/test/tArrayBase.cc
+  Arrays/test/tArrayExceptionHandling.cc
+  Arrays/test/tArrayIter.cc
+  Arrays/test/tArrayIter1.cc
+  Arrays/test/tArrayIteratorSTL.cc
+  Arrays/test/tArrayLogical.cc
+  Arrays/test/tArrayMath.cc
+  Arrays/test/tArrayMathTransform.cc
+  Arrays/test/tArrayOperations.cc
+  Arrays/test/tArrayOpsDiffShapes.cc
+  Arrays/test/tArrayPartMath.cc
+  Arrays/test/tArrayPosIter.cc
+  Arrays/test/tArrayStr.cc
+  Arrays/test/tArrayUtil.cc
+  Arrays/test/tAxesSpecifier.cc
+  Arrays/test/tBoxedArrayMath.cc
+  Arrays/test/tConvertArray.cc
+  Arrays/test/tCpp11Features.cc
+  Arrays/test/tCube.cc
+  Arrays/test/tDiagonal.cc
+  Arrays/test/tExtendSpecifier.cc
+  Arrays/test/tIPosition.cc
+  Arrays/test/tLinAlgebra.cc
+  Arrays/test/tMaskArrExcp.cc
+  Arrays/test/tMaskArrIO.cc
+  Arrays/test/tMaskArrLogi.cc
+  Arrays/test/tMaskArrMath0.cc
+  Arrays/test/tMaskArrMath1.cc
+  Arrays/test/tMaskArrMath2.cc
+  Arrays/test/tMaskedArray.cc
+  Arrays/test/tMatrix.cc
+  Arrays/test/tMatrixMath.cc
+  Arrays/test/tMedianSmooth.cc
+  Arrays/test/tSlice.cc
+  Arrays/test/tSlicer.cc
+  Arrays/test/tSlidingArrayMath.cc
+  Arrays/test/tStringArray.cc
+  Arrays/test/tVector.cc
+  Arrays/test/tVectorSTLIterator.cc
+  BasicSL/test/tString.cc
+)
+
+find_package(Boost 1.73 COMPONENTS unit_test_framework)
+if(Boost_FOUND)
+	include_directories(${Boost_INCLUDE_DIR})
+
+	add_executable (unittests ${unittestfiles})
+	add_pch_support(unittests)
+  target_link_libraries(unittests
+    PRIVATE
+      casa_casa
+      Boost::unit_test_framework
+  )
+  add_test (arraytest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./unittests)
+	add_dependencies(check unittests)
+endif(Boost_FOUND)

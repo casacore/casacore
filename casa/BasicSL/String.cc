@@ -36,6 +36,37 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+void TrimInPlace(std::string& str, std::string_view characters) {
+  std::string::iterator iter = str.begin();
+  while (iter != str.end()  &&  std::find(characters.begin(), characters.end(), *iter) != characters.end()) {
+    ++iter;
+  }
+  str.erase (str.begin(), iter);
+  if (! str.empty()) {
+    iter = str.end() - 1;
+    while (iter != str.begin()  &&  std::find(characters.begin(), characters.end(), *iter) != characters.end()) {
+        --iter;
+    }
+    ++iter;
+    str.erase (iter, str.end());
+  }
+}
+
+std::string FormatString (const char* picture, ...)
+{
+  constexpr int BufferSize = 16384;
+  char buffer [BufferSize];
+  va_list vaList;
+  va_start (vaList, picture);
+  const int nUsed = vsnprintf (buffer, BufferSize, picture, vaList);
+  va_end (vaList);
+  std::string result(buffer);
+  if (nUsed >= BufferSize){
+      result += "*TRUNCATED*";
+  }
+  return result;
+}
+
 // Special constructors
 String::String(ostringstream &os) {
   *this = os.str();
@@ -104,47 +135,19 @@ String String::format (const char* picture, ...)
 
 void String::trim()
 {
-    char ws[4];
-    ws[0] = ' ';
-    ws[1] = '\t';
-    ws[2] = '\n';
-    ws[3] = '\r';
-    trim(ws, 4);
+  TrimInPlace(*this);
 }
 
 void String::trim(char c[], uInt n) {
-    iterator iter = begin();
-    while (iter != end()  &&  std::find(c, c+n, *iter) != c+n) {
-        ++iter;
-    }
-    erase (begin(), iter);
-    if (! empty()) {
-        iter = end() - 1;
-        while (iter != begin()  &&  std::find(c, c+n, *iter) != c+n) {
-            --iter;
-        }
-        ++iter;
-        erase (iter, end());
-    }
+  TrimInPlace(*this, std::string_view(c, n));
 }
 
 void String::ltrim(char c) {
-    iterator iter = begin();
-    while (iter != end()  &&  *iter ==c) {
-         ++iter;
-    }
-    erase (begin(), iter);
+  LTrimInPlace(*this, c);
 }
 
 void String::rtrim(char c) {
-    if (! empty()) {
-      iterator iter = end() - 1;
-        while (iter != begin()  &&  *iter == c) {
-            --iter;
-        }
-        ++iter;
-        erase (iter, end());
-    }
+  RTrimInPlace(*this, c);
 }
 
 // Obtain a (separate) 'sub'-string
@@ -164,19 +167,19 @@ SubString String::at(Char c, Int startpos) {
   return _substr(index(c, startpos), 1);
 }
 
-SubString String::before(size_type pos) const {
+SubString String::before(size_type pos) {
   return _substr(0, pos);
 }
 
-SubString String::before(const std::string &str, size_type startpos) const {
+SubString String::before(const std::string &str, size_type startpos) {
   return _substr(0, index(str, startpos));
 }
 
-SubString String::before(const Char *s, size_type startpos) const {
+SubString String::before(const Char *s, size_type startpos) {
   return _substr(0, index(s, startpos));
 }
 
-SubString String::before(Char c, size_type startpos) const {
+SubString String::before(Char c, size_type startpos) {
   return _substr(0, index(c, startpos));
 }
 
@@ -321,17 +324,7 @@ void String::downcase() {
 }
 
 void String::capitalize() {
-  for (iterator p=begin(); p < end(); p++) {
-    Bool at_word;
-    if ((at_word = islower(*p))) *p = ToUpper(*p);
-    else at_word = isupper(*p) || isdigit(*p);
-    if (at_word) {
-      while (++p < end()) {
-        if (isupper(*p)) *p = ToLower(*p);
-        else if (!islower(*p) && !isdigit(*p)) break;
-      }
-    }
-  }
+  CapitalizeStringInPlace(*this);
 }
 
 // Regex related functions
@@ -382,7 +375,7 @@ SubString String::at(const Regex &r, Int startpos) {
   return _substr(first, mlen);
 }
 
-SubString String::before(const Regex &r, size_type startpos) const {
+SubString String::before(const Regex &r, size_type startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(0, first);
