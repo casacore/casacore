@@ -333,17 +333,17 @@ String::size_type String::find(const Regex &r, size_type pos) const {
 }
 
 bool String::matches(const std::string &str, int pos) const {
-  bool rstat(False);
+  bool rstat(false);
   if (pos < 0) {
     if (this->index(str,pos) == 0) {
-      rstat = True;
+      rstat = true;
     }
   } else {
     if (length() != 0 && str.length() != 0 &&
         length() == pos+str.length() &&
         static_cast<size_type>(pos) < length() &&
         index(str, pos) == static_cast<size_type>(pos)) {
-      rstat = True;
+      rstat = true;
     }
   }
   return rstat;
@@ -356,7 +356,7 @@ bool String::contains(const Regex &r) const {
 
 bool String::matches(const Regex &r, int pos) const {
   String::size_type l = (pos < 0) ? -pos : length() - pos;
-  if (l>length()) return False;
+  if (l>length()) return false;
   if (pos<0) return r.fullMatch(c_str(), l);
   return r.fullMatch(c_str()+pos, l);
 }
@@ -454,13 +454,13 @@ String downcase(const std::string& str) {
 
 String capitalize(const std::string& str) {
   String s(str);
-  s.capitalize();
+  CapitalizeStringInPlace(s);
   return s;
 }
 
 String trim(const std::string& str) {
   String s(str);
-  s.trim();
+  TrimInPlace(s);
   return s;
 }
 

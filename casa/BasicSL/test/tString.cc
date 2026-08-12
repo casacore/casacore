@@ -395,4 +395,42 @@ BOOST_AUTO_TEST_CASE(StringContains) {
   BOOST_CHECK(!StringContains("", "a"));
 }
 
+BOOST_AUTO_TEST_CASE(matches) {
+  using casacore::EqualStringsAndNotEmpty;
+  const std::string kStr = "abc";
+  BOOST_CHECK(EqualStringsAndNotEmpty(kStr, "abc"));
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "abd"));
+  BOOST_CHECK(EqualStringsAndNotEmpty(kStr, "bc", 1));
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "abc", 1));
+  BOOST_CHECK(EqualStringsAndNotEmpty(kStr, "c", 2));
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "a", 2));
+  // Original implementation considers empty pattern not to be a match
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "", 3));
+  // Empty also doesn't match empty
+  BOOST_CHECK(!EqualStringsAndNotEmpty("", ""));
+  BOOST_CHECK(!EqualStringsAndNotEmpty("", "a"));
+
+  BOOST_CHECK(EqualStringsAndNotEmpty(kStr, "abc", -3));
+  BOOST_CHECK(EqualStringsAndNotEmpty(kStr, "a", -1));
+
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "", -1));
+  // Two empty strings with negative pos returned true in the old implementation.
+  // BOOST_CHECK(casacore::String().matches(std::string(""), -1));
+  // BOOST_CHECK(EqualStringsAndNotEmpty("", "", -1));
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "bc", -1));
+  BOOST_CHECK(!EqualStringsAndNotEmpty(kStr, "c", -1));
+
+  // Old behaviour that I think is buggy and that we don't reproduce:
+  casacore::String cStr = "xyxy";
+  // cStr matches with x "up to index 1", but matches() returns false.
+  // So this passed with the old implementation:
+  // BOOST_CHECK(!cStr.matches(std::string("x"), -1));
+  BOOST_CHECK(EqualStringsAndNotEmpty("xyxy", "x", -1));
+  // cStr does not match with x "up to index 1", but matches() returns true
+  // So this passed with the old implementation:
+  // BOOST_CHECK(cStr.matches(std::string("xyxy"), -1));
+  BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "xyxy", -1));
+  BOOST_CHECK(EqualStringsAndNotEmpty("xyxy", "xy", -2));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

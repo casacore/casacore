@@ -48,6 +48,42 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class Regex;
 
+// Return the position of the character in the string or npos if not found.
+// Searches the first index of the character if the startpos >= 0, or the last index if
+// startpos < 0.
+inline std::string::size_type IndexString(std::string_view str, char c, int startpos = 0) {
+  if (startpos >= 0) {
+    return str.find(c, startpos);
+  } else {
+    const int search_from = str.length() + startpos - 1;
+    return search_from >= 0 ? str.rfind(c, search_from) : std::string::npos;
+  }
+}
+
+// Return the position of the substring in the string or npos if not found.
+// Searches the first index of the substring if the startpos >= 0, or the last index if
+// startpos < 0.
+inline std::string::size_type IndexString(std::string_view str, std::string_view pattern, int startpos = 0) {
+  if (startpos >= 0) {
+    return str.find(pattern, startpos);
+  } else {
+    const int search_from = str.length() + startpos - pattern.length();
+    return search_from >= 0 ? str.rfind(pattern, search_from) : std::string::npos;
+  }
+}
+
+// Replacement of old member function "matches", which has somewhat confusing semantics: two empty strings do
+// not match, and an empty pattern does also not match. Do not use this for new code.
+inline bool EqualStringsAndNotEmpty(std::string_view str1, std::string_view str2, int position = 0) {
+  if(str1.empty() || str2.empty()) {
+    return false;
+  } else if(position < 0) {
+    return std::string_view(str1.begin(), str1.begin() - position) == str2;
+  } else {
+    return std::string_view(str1.begin() + position, str1.end()) == str2;
+  }
+}
+
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>
 // The SubString class can only be used by the String class to be able to
@@ -259,7 +295,6 @@ class String : public std::string {
   // integer to string. </note>
   explicit String(char c) : std::string(1, c) {}
   // Construct from a SubString
-  DEPRECATED("SubString should be replaced by use of std::string_view")
   String(const SubString &str) : std::string(str.ref_p, str.pos_p, str.len_p) {}
   // Construct from a stream.
   DEPRECATED("Use os.str()")
@@ -282,7 +317,7 @@ class String : public std::string {
     return static_cast<String&>(std::string::operator=(c)); }
   // </group>
   // ** Casacore addition: synonym for at(pos, len)
-  DEPRECATED("Use subview()")
+  DEPRECATED("Use substr()")
   SubString operator()(size_type pos, size_type len);
 
   // *** Casacore addition
@@ -441,29 +476,33 @@ class String : public std::string {
   // <group name=contains_pos>
   DEPRECATED("Use find(), rfind() or IndexString()")
   bool contains(char c, int pos) const {
-    return index(c, pos) != npos; }
+    return IndexString(*this, c, pos) != npos; }
   DEPRECATED("Use find(), rfind(), IndexString() and/or StringContains()")
   bool contains(const std::string &str, int pos) const {
-    return (index(str, pos) != npos); }
+    return (IndexString(*this, str, pos) != npos); }
   DEPRECATED("Use find(), rfind() or IndexString() and/or StringContains()")
   bool contains(const char *s, int pos) const {
-    return (index(s, pos) != npos); }
+    return (IndexString(*this, s, pos) != npos); }
   DEPRECATED("Use std::regex")
   bool contains(const Regex &r, int pos) const {
     return (index(r, pos) != npos); }
   // </group>
 
-  // Matches entire string from pos
-  // (or till pos if negative pos). ** Casacore addition
+  // Matches entire string from pos, or till pos if negative pos. ** Casacore addition
+  // Returns false if either is empty and pos >= 0.
+  // The original implementation has multiple bugs and awkward behaviour.
+  // BUG: Returns false for two empty strings (except if pos < 0).
+  // BUG: Returns false when pattern is empty, whereas normally an empty pattern matches everything.
+  // BUG: When pos < 0, it does not behave as advertised; e.g. "xyxy" does not match with "x" when pos=-1 is specified.
   // <group name=matches>
-  DEPRECATED("Use subview(pos) == str")
+  DEPRECATED("Use substr(pos) == str if possible, consider ends_with() / starts_with() for positive/negative pos or use EqualStringsAndNotEmpty() if direct replacement is necessary")
   bool matches(const std::string &str, int pos = 0) const;
-  DEPRECATED("Use subview(pos) == c")
+  DEPRECATED("Use substr(pos) == str if possible, consider ends_with() / starts_with() for positive/negative pos or use EqualStringsAndNotEmpty() if direct replacement is necessary")
   bool matches(char c, int pos = 0) const {
-    return matches(String(c), pos); };
-  DEPRECATED("Use subview(pos) == s")
+    return EqualStringsAndNotEmpty(*this, std::string_view(&c, 1), pos); }
+  DEPRECATED("Use substr(pos) == str if possible, consider ends_with() / starts_with() for positive/negative pos or use EqualStringsAndNotEmpty() if direct replacement is necessary")
   bool matches(const char *s, int pos = 0) const {
-    return matches(String(s), pos); };
+    return EqualStringsAndNotEmpty(*this, s, pos); }
   DEPRECATED("Use std::regex")
   bool matches(const Regex &r, int pos = 0) const;
   // </group>
@@ -534,7 +573,7 @@ class String : public std::string {
   SubString at(int pos, int len) {
     return at(static_cast<size_type>(pos), static_cast<size_type>(len));
   };
-  DEPRECATED("Use subview()")
+  DEPRECATED("Use substr()")
   String at(int pos, int len) const {
     return at(static_cast<size_type>(pos), static_cast<size_type>(len));
   };
@@ -542,7 +581,7 @@ class String : public std::string {
   SubString at(int pos, size_type len) {
     return at(static_cast<size_type>(pos), len);
   };
-  DEPRECATED("Use subview()")
+  DEPRECATED("Use substr()")
   String at(int pos, size_type len) const {
     return at(static_cast<size_type>(pos), len);
   };
@@ -563,7 +602,7 @@ class String : public std::string {
   DEPRECATED("Use std::regex")
   SubString before(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  DEPRECATED("Use subview(0, pos)")
+  DEPRECATED("Use substr(0, pos)")
   SubString before(int pos) {
     return before(static_cast<size_type>(pos)); };    
   // </group>
@@ -571,7 +610,7 @@ class String : public std::string {
   // Start at startpos and extract the SubString "through" to the argument's 
   // position, inclusive. ** Casacore addition
   // <group name=through>
-  DEPRECATED("Use subview(0, pos+1)")
+  DEPRECATED("Use substr(0, pos+1)")
   SubString through(size_type pos);
   DEPRECATED("Use GetStringViewUpToIncluding()")
   SubString through(const std::string &str, size_type startpos = 0);
@@ -582,7 +621,7 @@ class String : public std::string {
   DEPRECATED("Use std::regex")
   SubString through(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  DEPRECATED("Use subview(pos)")
+  DEPRECATED("Use substr(pos)")
   SubString through(int pos) {
     return through(static_cast<size_type>(pos)); }
   // </group>
@@ -590,7 +629,7 @@ class String : public std::string {
   // Start at startpos and extract the SubString "from" the argument's 
   // position, inclusive, to the String's end. ** Casacore addition
   // <group name=from>
-  DEPRECATED("Use subview(pos)")
+  DEPRECATED("Use substr(pos)")
   SubString from(size_type pos);
   DEPRECATED("Use GetStringViewFrom()")
   SubString from(const std::string &str, size_type startpos = 0);
@@ -601,7 +640,7 @@ class String : public std::string {
   DEPRECATED("Use std::regex")
   SubString from(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  DEPRECATED("Use subview(pos)")
+  DEPRECATED("Use substr(pos)")
   SubString from(int pos) {
     return from(static_cast<size_type>(pos));
   };
@@ -610,7 +649,7 @@ class String : public std::string {
   // Start at startpos and extract the SubString "after" the argument's 
   // position, exclusive, to the String's end. ** Casacore addition
   // <group name=after>
-  DEPRECATED("Use subview(pos + 1)")
+  DEPRECATED("Use substr(pos + 1)")
   SubString after(size_type pos);
   DEPRECATED("Use GetStringViewAfter()")
   SubString after(const std::string &str, size_type startpos = 0);
@@ -621,7 +660,7 @@ class String : public std::string {
   DEPRECATED("Use std::regex")
   SubString after(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  DEPRECATED("Use subview(pos + 1)")
+  DEPRECATED("Use substr(pos + 1)")
   SubString after(int pos) {
     return after(static_cast<size_type>(pos));
   };
@@ -849,30 +888,6 @@ inline void RTrimInPlace(std::string& str, char character) {
     if(*iter != character)
       ++iter;
     str.erase (iter, str.end());
-  }
-}
-
-// Return the position of the character in the string or npos if not found.
-// Searches the first index of the character if the startpos >= 0, or the last index if
-// startpos < 0.
-inline std::string::size_type IndexString(std::string_view str, char c, int startpos = 0) {
-  if (startpos >= 0) {
-    return str.find(c, startpos);
-  } else {
-    const int search_from = str.length() + startpos - 1;
-    return search_from >= 0 ? str.rfind(c, search_from) : std::string::npos;
-  }
-}
-
-// Return the position of the substring in the string or npos if not found.
-// Searches the first index of the substring if the startpos >= 0, or the last index if
-// startpos < 0.
-inline std::string::size_type IndexString(std::string_view str, std::string_view pattern, int startpos = 0) {
-  if (startpos >= 0) {
-    return str.find(pattern, startpos);
-  } else {
-    const int search_from = str.length() + startpos - pattern.length();
-    return search_from >= 0 ? str.rfind(pattern, search_from) : std::string::npos;
   }
 }
 
