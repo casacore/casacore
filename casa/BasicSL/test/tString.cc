@@ -377,4 +377,22 @@ BOOST_AUTO_TEST_CASE(ReplaceAllInPlace) {
   BOOST_CHECK_EQUAL(input, "");
 }
 
+BOOST_AUTO_TEST_CASE(StringContains) {
+  using casacore::StringContains;
+
+  BOOST_CHECK(StringContains("abc", "a"));
+  BOOST_CHECK(StringContains("abc", "b"));
+  BOOST_CHECK(StringContains("abc", "c"));
+  BOOST_CHECK(StringContains("abc", "ab"));
+  BOOST_CHECK(StringContains("abc", "bc"));
+  BOOST_CHECK(StringContains("abc", "abc"));
+  BOOST_CHECK(StringContains("abc", ""));
+  BOOST_CHECK(StringContains("", ""));
+
+  BOOST_CHECK(!StringContains("abc", "d"));
+  BOOST_CHECK(!StringContains("abc", "ba"));
+  BOOST_CHECK(!StringContains("abc", "abcd"));
+  BOOST_CHECK(!StringContains("", "a"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

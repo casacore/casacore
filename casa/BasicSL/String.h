@@ -440,13 +440,17 @@ class String : public std::string {
   // ** Casacore addition
   // <group name=contains_pos>
   DEPRECATED("Use find(), rfind() or IndexString()")
-  bool contains(char c, int pos) const;
+  bool contains(char c, int pos) const {
+    return index(c, pos) != npos; }
   DEPRECATED("Use find(), rfind() or IndexString()")
-  bool contains(const std::string &str, int pos) const;
+  bool contains(const std::string &str, int pos) const {
+    return (index(str, pos) != npos); }
   DEPRECATED("Use find(), rfind() or IndexString()")
-  bool contains(const char *s, int pos) const;
+  bool contains(const char *s, int pos) const {
+    return (index(s, pos) != npos); }
   DEPRECATED("Use std::regex")
-  bool contains(const Regex &r, int pos) const;
+  bool contains(const Regex &r, int pos) const {
+    return (index(r, pos) != npos); }
   // </group>
 
   // Matches entire string from pos
@@ -816,15 +820,6 @@ inline SubString String::operator()(size_type pos, size_type len) {
 inline  const char *SubString::chars() const {
   return String(*this).c_str(); }
 
-inline bool String::contains(char c, int pos) const {
-  return (index(c, pos) != npos); }
-inline bool String::contains(const std::string &str, int pos) const {
-  return (index(str, pos) != npos); }
-inline bool String::contains(const char *s, int pos) const {
-  return (index(s, pos) != npos); }
-inline bool String::contains(const Regex &r, int pos) const {
-  return (index(r, pos) != npos); }
-
 inline std::ostream &operator<<(std::ostream &s, const String &x) {
   s << x.c_str(); return s; }
 
@@ -1044,6 +1039,10 @@ inline size_t ReplaceAllInPlace(std::string& str, std::string_view pattern, std:
     }
   }
   return n_matches;
+}
+
+inline constexpr bool StringContains(std::string_view str, std::string_view pattern) {
+  return str.find(pattern) != std::string_view::npos;
 }
 
 } //# NAMESPACE CASACORE - END
