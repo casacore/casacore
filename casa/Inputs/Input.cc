@@ -422,7 +422,7 @@ void Input::readArguments (int ac, char const* const* av)
     thisarg = av[i];
     // The next statement uses elem() rather than [] to cater for sgi-32b
     // problem
-    if (thisarg[0] == '-') {
+    if (thisarg.elem(0) == '-') {
       if (i >= ac - 1) {
 	throw(AipsError("Input::ReadArguments:"
 			"-keyword not followed by value"));

@@ -114,8 +114,8 @@ Path& Path::operator= (const Path& that)
 void Path::append (const String& string)
 {
     if  (!string.empty()) {
-	if (itsOriginalPathName.back() != '/'
-        &&  string.front() != '/') {
+	if (itsOriginalPathName.lastchar() != '/'
+        &&  string.firstchar() != '/') {
 	    itsOriginalPathName += "/";
 	}
 	itsOriginalPathName += string;
@@ -311,7 +311,7 @@ String Path::expandName (const String& inString) const
 	count++;          // count is increased when the string is 
 	cursor = 0;       // walked through 
 	// Replace tilde with the name of the home directory
-	if (tempString.front() == '~') {
+	if (tempString.firstchar() == '~') {
 	    if (tempString.length() == 1  ||  tempString[1] == '/') {
 	      // To get the home directory, environment variable HOME is used.
 		String name (EnvironmentVariable::get("HOME"));
@@ -391,7 +391,7 @@ String Path::expandName (const String& inString) const
 String Path::makeAbsoluteName (const String& inString) const
 {
     // If the first char is a slash the name is already absolute.
-    if (inString.front() == '/') {
+    if (inString.firstchar() == '/') {
 	return inString;
     }
     // Otherwise we have a relative pathname.
@@ -411,7 +411,7 @@ String Path::makeAbsoluteName (const String& inString) const
 	return tempString;
     }
     // Append a / if needed.
-    if (tempString.back() != '/') {
+    if (tempString.lastchar() != '/') {
 	tempString += '/';
     }
     tempString += workString;
@@ -471,7 +471,7 @@ String Path::stripDirectory (const String& name, const String& otherName)
 {
     // Add trailing slash if not there.
     String dir (Path(otherName).absoluteName());
-    if (dir.back() != '/') {
+    if (dir.lastchar() != '/') {
 	dir += '/';
     }
     Int leng = dir.length();

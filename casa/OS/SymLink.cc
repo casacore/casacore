@@ -165,7 +165,7 @@ Path SymLink::readSymLink() const
 {
     Path result (getSymLink());
     // Prepend with dirname if no absolute name.
-    if (result.originalName().front() != '/') {
+    if (result.originalName().firstchar() != '/') {
 	result = path().dirName() + "/" + result.originalName();
     }	
     return result; 
