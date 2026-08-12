@@ -49,8 +49,9 @@ class String;
 class Regex;
 
 // Return the position of the character in the string or npos if not found.
-// Searches the first index of the character if the startpos >= 0, or the last index if
-// startpos < 0.
+// Searches the first index of the character if the startpos >= 0, or the reverse index if
+// startpos < 0. Note that a startpos of -1 indicates searching at the second to last character.
+// This is in line with the old index() function, but rather confusing, so do not use for new code.
 inline std::string::size_type IndexString(std::string_view str, char c, int startpos = 0) {
   if (startpos >= 0) {
     return str.find(c, startpos);
@@ -62,7 +63,8 @@ inline std::string::size_type IndexString(std::string_view str, char c, int star
 
 // Return the position of the substring in the string or npos if not found.
 // Searches the first index of the substring if the startpos >= 0, or the last index if
-// startpos < 0.
+// startpos < 0. Note that a startpos of -1 indicates searching at the second to last character.
+// This is in line with the old index() function, but rather confusing, so do not use for new code.
 inline std::string::size_type IndexString(std::string_view str, std::string_view pattern, int startpos = 0) {
   if (startpos >= 0) {
     return str.find(pattern, startpos);
@@ -73,14 +75,14 @@ inline std::string::size_type IndexString(std::string_view str, std::string_view
 }
 
 // Replacement of old member function "matches", which has somewhat confusing semantics: two empty strings do
-// not match, and an empty pattern does also not match. Do not use this for new code.
+// not match, and an empty pattern does also not match. Do not use this for new code and try to rewrite old code.
 inline bool EqualStringsAndNotEmpty(std::string_view str1, std::string_view str2, int position = 0) {
   if(str1.empty() || str2.empty()) {
     return false;
   } else if(position < 0) {
-    return std::string_view(str1.begin(), str1.begin() - position) == str2;
+    return std::string_view(str1.begin(), str1.begin() + std::min<size_t>(-position, str1.size())) == str2;
   } else {
-    return std::string_view(str1.begin() + position, str1.end()) == str2;
+    return std::string_view(str1.begin() + std::min<size_t>(position, str1.size()), str1.end()) == str2;
   }
 }
 
@@ -900,16 +902,16 @@ inline void RTrimInPlace(std::string& str, char character) {
 template<typename T>
 inline bool StringToValue (const std::string& str, T& value, bool check=true)
 {
-  std::istringstream os(str);
-  os >> value;
-  if (os.fail()  ||  !os.eof()) {
+  std::istringstream is(str);
+  is >> value;
+  if (is.fail()  ||  !is.eof()) {
     if (check) {
-      if(os.fail()) {
+      if(is.fail()) {
         throw std::runtime_error ("String '" + str + "' failed to parse in StringToValue()");
       } else {
         std::string extra;
-        std::getline(os, extra);
-        throw std::runtime_error ("Extra characters afters parsing string '" + str + "' in StringToValue(): '" + extra + "'");
+        std::getline(is, extra);
+        throw std::runtime_error ("Extra characters after parsing string '" + str + "' in StringToValue(): '" + extra + "'");
       }
     }
     return false;
