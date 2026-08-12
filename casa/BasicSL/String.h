@@ -999,7 +999,8 @@ inline void ToLowerCaseInPlace(std::string& str) {
 }
 
 inline void CapitalizeStringInPlace(std::string& str) {
-  for (std::string::iterator p=str.begin(); p != str.end(); p++) {
+  std::string::iterator p=str.begin();
+  while(p != str.end()) {
     bool at_word;
     if (islower(*p)) {
       *p = toupper(*p);
@@ -1007,14 +1008,17 @@ inline void CapitalizeStringInPlace(std::string& str) {
     } else {
       at_word = isupper(*p) || isdigit(*p);
     }
-    // atword is now true if *p is a character or digit
+    ++p;
+    // atword is now true if the previous *p is a character or digit
     if (at_word) {
-      while (++p < str.end()) {
+      while (p != str.end()) {
         if (isupper(*p)) {
           *p = tolower(*p);
         }
         else if (!islower(*p) && !isdigit(*p)) break;
+        ++p;
       }
+      if(p != str.end()) ++p;
     }
   }
 }
