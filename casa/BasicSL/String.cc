@@ -27,12 +27,11 @@
 
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/iostream.h>
+
 #include <algorithm>
-#include <casacore/casa/string.h>
-#include <casacore/casa/sstream.h>
-#include <stdio.h>		// for vsnprintf( )
 #include <cstdarg>              // for va_start/end
+#include <cstdio>		// for vsnprintf( )
+#include <iostream>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -68,14 +67,14 @@ std::string FormatString (const char* picture, ...)
 }
 
 // Special constructors
-String::String(ostringstream &os) {
+String::String(std::ostringstream &os) {
   *this = os.str();
 }
 
 // Count occurrences
-Int String::freq(Char c) const {
+int String::freq(Char c) const {
   size_type p(0);
-  Int found(0);
+  int found(0);
   while (p < length()) {
     if ((p = find(c, p)) == npos) break;
     found++;
@@ -84,9 +83,9 @@ Int String::freq(Char c) const {
   return found;
 }
 
-Int String::freq(const std::string &str) const {
+int String::freq(const std::string &str) const {
   size_type p(0);
-  Int found(0);
+  int found(0);
   while (p < length()) {
     if ((p = find(str, p)) == npos) break;
     found++;
@@ -95,9 +94,9 @@ Int String::freq(const std::string &str) const {
   return found;
 }
 
-Int String::freq(const Char *s) const {
+int String::freq(const Char *s) const {
   size_type p(0);
-  Int found(0);
+  int found(0);
   while (p < length()) {
     if ((p = find(s, p)) == npos) break;
     found++;
@@ -106,11 +105,11 @@ Int String::freq(const Char *s) const {
   return found;
 }
 
-Int String::toInt (const String& s, Bool chk)
-  { Int v=0; s.fromString(v, chk); return v; }
-Float String::toFloat (const String& s, Bool chk)
+int String::toInt (const String& s, bool chk)
+  { int v=0; s.fromString(v, chk); return v; }
+Float String::toFloat (const String& s, bool chk)
   { Float v=0; s.fromString(v, chk); return v; }
-Double String::toDouble (const String& s, Bool chk)
+Double String::toDouble (const String& s, bool chk)
   { Double v=0; s.fromString(v, chk); return v; }
 
 void String::throwFromStringError() const
@@ -138,7 +137,7 @@ void String::trim()
   TrimInPlace(*this);
 }
 
-void String::trim(char c[], uInt n) {
+void String::trim(char c[], unsigned n) {
   TrimInPlace(*this, std::string_view(c, n));
 }
 
@@ -155,15 +154,15 @@ SubString String::at(size_type pos, size_type len) {
   return _substr(pos, len);
 }
 
-SubString String::at(const std::string &str, Int startpos) {
+SubString String::at(const std::string &str, int startpos) {
   return _substr(index(str, startpos), str.length());
 }
 
-SubString String::at(const Char *s, Int startpos) {
+SubString String::at(const Char *s, int startpos) {
   return _substr(index(s, startpos), traits_type::length(s));
 }
 
-SubString String::at(Char c, Int startpos) {
+SubString String::at(Char c, int startpos) {
   return _substr(index(c, startpos), 1);
 }
 
@@ -277,12 +276,12 @@ void String::del(Char c, size_type startpos) {
 }
 
 // Global substitution
-Int String::gsub(const std::string &pat, const std::string &repl) {
-  Int nmatches(0);
+int String::gsub(const std::string &pat, const std::string &repl) {
+  int nmatches(0);
   if (length() == 0 || pat.length() == 0 ||
       length() < pat.length()) return nmatches;
   size_type si(0);
-  Int rl(repl.length());
+  int rl(repl.length());
   while (length()-si >= pat.length()) {
     size_type pos = find(pat, si);
     if (pos == npos) break;
@@ -295,11 +294,11 @@ Int String::gsub(const std::string &pat, const std::string &repl) {
   return nmatches;
 }
 
-Int String::gsub(const Char *pat, const std::string &repl) {
+int String::gsub(const Char *pat, const std::string &repl) {
   return gsub(String(pat), repl);
 }
 
-Int String::gsub(const Char *pat, const Char *repl) {
+int String::gsub(const Char *pat, const Char *repl) {
   return gsub(String(pat), String(repl));
 }
 
@@ -308,8 +307,8 @@ void String::reverse() {
   std::reverse(begin(), end());
 }
 #if defined(AIPS_SUN_NATIVE)
-Int ToUpper(Int a){return toupper(a);}
-Int ToLower(Int a){return tolower(a);}
+int ToUpper(int a){return toupper(a);}
+int ToLower(int a){return tolower(a);}
 #else
 #define ToUpper toupper
 #define ToLower tolower
@@ -329,17 +328,15 @@ void String::capitalize() {
 
 // Regex related functions
 String::size_type String::find(const Regex &r, size_type pos) const {
-  Int unused;
+  int unused;
   return r.find(c_str(), length(), unused, pos);
 }
 
-Bool String::matches(const std::string &str, Int pos) const {
-  Bool rstat(False);
+bool String::matches(const std::string &str, int pos) const {
+  bool rstat(False);
   if (pos < 0) {
     if (this->index(str,pos) == 0) {
       rstat = True;
-      ///    } else {
-      ///      cerr << "No Match " << this->index(str, pos) << endl;
     }
   } else {
     if (length() != 0 && str.length() != 0 &&
@@ -352,69 +349,69 @@ Bool String::matches(const std::string &str, Int pos) const {
   return rstat;
 }
 
-Bool String::contains(const Regex &r) const {
-  Int unused;
+bool String::contains(const Regex &r) const {
+  int unused;
   return (r.find(c_str(), length(), unused, 0)) != npos;
 }
 
-Bool String::matches(const Regex &r, Int pos) const {
+bool String::matches(const Regex &r, int pos) const {
   String::size_type l = (pos < 0) ? -pos : length() - pos;
   if (l>length()) return False;
   if (pos<0) return r.fullMatch(c_str(), l);
   return r.fullMatch(c_str()+pos, l);
 }
 
-String::size_type String::index(const Regex &r, Int startpos) const {
-  Int unused;
+String::size_type String::index(const Regex &r, int startpos) const {
+  int unused;
   return r.search(c_str(), length(), unused, startpos);
 }
 
-SubString String::at(const Regex &r, Int startpos) {
-  Int mlen;
+SubString String::at(const Regex &r, int startpos) {
+  int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(first, mlen);
 }
 
 SubString String::before(const Regex &r, size_type startpos) {
-  Int mlen;
+  int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(0, first);
 }
 
 SubString String::through(const Regex &r, size_type startpos) {
-  Int mlen;
+  int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
   return _substr(0, first);
 }
 
 SubString String::from(const Regex &r, size_type startpos) {
-  Int mlen;
+  int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(first, length()-first);
 }
 
 SubString String::after(const Regex &r, size_type startpos) {
-  Int mlen;
+  int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
   return _substr(first, length()-first);
 }
 
 void String::del(const Regex &r, size_type startpos) {
-  Int mlen;
+  int mlen;
   size_type first = r.find(c_str(), length(), mlen, startpos);
   if (mlen > 0) {
     erase(first, mlen);
   }
 }
 
-Int String::gsub(const Regex &pat, const std::string &repl) {
-  Int nmatches(0);
+int String::gsub(const Regex &pat, const std::string &repl) {
+  int nmatches(0);
   if (length() == 0) return nmatches;
-  Int pl;
+  int pl;
   size_type si(0);
-  Int rl(repl.length());
+  int rl(repl.length());
   while (length() > si) {
     size_type pos = pat.find(c_str(), length(), pl, si);
     if (pos >= npos-1 || pl <= 0) break;
@@ -422,7 +419,7 @@ Int String::gsub(const Regex &pat, const std::string &repl) {
       nmatches++;
       si = pos + rl;
       if (pos == 0 && si == 0) { 	// could be problem with anchor at begin
-	Int pls;
+	int pls;
 	size_type ps = pat.find(c_str(), length(), pls, pl); // try for begin
 	if (ps >= npos-1 || pls <= 0) {
 	  replace(pos, pl, repl);	// finish off if no more (anchored) match
@@ -478,9 +475,9 @@ String replicate(const std::string &str, String::size_type n) {
   return t;
 }
 
-Int split(const std::string &str, std::string res[], Int maxn,
+int split(const std::string &str, std::string res[], int maxn,
 	  const std::string &sep) {
-  Int i(0);
+  int i(0);
   String::size_type pos(0);
   while (i < maxn && pos < str.length()) {
     String::size_type p = str.find(sep, pos);
@@ -492,11 +489,11 @@ Int split(const std::string &str, std::string res[], Int maxn,
   return i;
 }
 
-Int split(const std::string &str, std::string res[], Int maxn,
+int split(const std::string &str, std::string res[], int maxn,
 	  const Regex &sep) {
-  Int i(0);
+  int i(0);
   String::size_type pos(0);
-  Int matchlen;
+  int matchlen;
   while (i < maxn && pos < str.length()) {
     String::size_type p = sep.find(str.c_str(), str.length(), matchlen, pos);
     if (p == String::npos) p = str.length();
@@ -507,13 +504,13 @@ Int split(const std::string &str, std::string res[], Int maxn,
   return i;
 }
 
-Int split(const std::string &str, std::string res[], Int maxn,
+int split(const std::string &str, std::string res[], int maxn,
 	  const Char sep) {
   return split(str, res, maxn, String(sep));
 }
 
 String common_prefix(const std::string &x, const std::string &y,
-		     Int startpos) {
+		     int startpos) {
   if (static_cast<String::size_type>(startpos) == String::npos ||
       static_cast<String::size_type>(startpos) >= x.length() ||
       static_cast<String::size_type>(startpos) >= y.length()) return String();
@@ -525,7 +522,7 @@ String common_prefix(const std::string &x, const std::string &y,
 }
 
 String common_suffix(const std::string &x, const std::string &y,
-		     Int startpos) {
+		     int startpos) {
   if (startpos >= 0 ||
       startpos + Int(x.length()) < 0 ||
       startpos + Int(y.length()) < 0) return String();
@@ -536,18 +533,18 @@ String common_suffix(const std::string &x, const std::string &y,
   return String(x, x.length()+startpos+1-l, l);
 }
 
-String join(std::string src[], Int n, const std::string& sep) {
+String join(std::string src[], int n, const std::string& sep) {
   String x;
-  for (Int i=0; i<n; i++) {
+  for (int i=0; i<n; i++) {
     x += src[i];
     if (i != n-1) x += sep;
   }
   return x;
 }
 
-Int fcompare(const String& x, const String& y) {
+int fcompare(const String& x, const String& y) {
   // Determine minimum size and result in case characters compare equal.
-  Int res = 0;
+  int res = 0;
   std::string::size_type sz = x.size();
   if (x.size() < y.size()) {
     res = -1;
