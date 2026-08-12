@@ -398,7 +398,7 @@ class String : public std::string {
 
   // Remove specified chars from beginning and end of string.
   DEPRECATED("Use free function TrimInPlace()")
-  void trim(char c[], uint n);
+  void trim(char c[], unsigned int n);
 
   // Remove specified character from beginning of string.
   // If the character is repeated more than once on the left, all instances
