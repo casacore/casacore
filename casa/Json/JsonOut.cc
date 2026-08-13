@@ -44,7 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
 
   JsonOut::JsonOut (const String& name)
-    : itsFile   (name.chars()),
+    : itsFile   (name.c_str()),
       itsStream (itsFile),
       itsLevel  (0)
   {}
@@ -309,8 +309,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         break;
       case '"':
       case '\\':
-        out.append ('\\');
-        out.append (in[i]);
+        out.append (1, '\\');
+        out.append (1, in[i]);
         break;
       default:
         if (iscntrl(in[i])) {
@@ -319,7 +319,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               << std::setw(4) << static_cast<int>(in[i]);
           out.append (oss.str());
         } else {
-          out.append (in[i]);
+          out.append (1, in[i]);
         }
       }
     }

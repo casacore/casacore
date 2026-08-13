@@ -84,7 +84,7 @@ Bool File::isRegular (Bool followSymLink) const
 	testPath = SymLink(itsPath).followSymLink();
     }
     struct fileSTAT buf;
-    if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
+    if (mylstat (testPath.expandedName().c_str(), &buf) < 0) {
 	return False;
     }
     return  (S_ISREG (buf.st_mode));
@@ -102,7 +102,7 @@ Bool File::isDirectory (Bool followSymLink) const
 	testPath = SymLink(itsPath).followSymLink();
     }
     struct fileSTAT buf;
-    if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
+    if (mylstat (testPath.expandedName().c_str(), &buf) < 0) {
 	return False;
     }
     return  (S_ISDIR (buf.st_mode));
@@ -113,7 +113,7 @@ Bool File::isSymLink() const
     // The struct is filled in by mylstat, and S_ISLNK checks buf
     // if the file is a symbolic link.
     struct fileSTAT buf;
-    if (mylstat (itsPath.expandedName().chars(), &buf) < 0) {
+    if (mylstat (itsPath.expandedName().c_str(), &buf) < 0) {
 	return False;
     }
     return  (S_ISLNK (buf.st_mode));
@@ -160,7 +160,7 @@ Bool File::exists() const
     // The function access always substitutes symlinks.
     // Therefore use lstat instead.
     struct fileSTAT buf;
-    int status = mylstat((itsPath.expandedName()).chars(), &buf);
+    int status = mylstat((itsPath.expandedName()).c_str(), &buf);
     if (status != 0 && errno != ENOENT){
         LogIO logIo (LogOrigin ("File", "exists"));
         logIo << LogIO::WARN;
@@ -175,19 +175,19 @@ Bool File::exists() const
 Bool File::isReadable() const
 {
     // The function access checks if the file is readable.
-    return (access ((itsPath.expandedName()).chars(), R_OK)==0);
+    return (access ((itsPath.expandedName()).c_str(), R_OK)==0);
 }
 
 Bool File::isWritable() const
 {
     // The function access checks if the file is writable.
-    return (access ((itsPath.expandedName()).chars(), W_OK)==0);
+    return (access ((itsPath.expandedName()).c_str(), W_OK)==0);
 }
 
 Bool File::isExecutable() const
 {
     // The function access checks if the file is executable.
-    return (access ((itsPath.expandedName()).chars(), X_OK)==0);
+    return (access ((itsPath.expandedName()).c_str(), X_OK)==0);
 }
 
 Bool File::canCreate() const
@@ -243,7 +243,7 @@ void File::setPermissions(uInt permissions)
 {
     // Changes the permissions by using chmod, the value must be 
     // an octal value.
-    chmod ((itsPath.expandedName()).chars(),long (permissions));
+    chmod ((itsPath.expandedName()).c_str(),long (permissions));
 }
 
 
@@ -254,7 +254,7 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     // fill str with the pid and the unique number
     uInt seqnr = uniqueSeqnr_p.fetch_add(1);
     snprintf (str, sizeof(str), "%i_%i", Int(getpid()), seqnr);
-    if (directory.empty()  ||  directory.lastchar() == '/') {
+    if (directory.empty()  ||  directory.back() == '/') {
 	return Path (directory + prefix + str);
     }
     // a slash is added when a directory is given and the last
@@ -276,7 +276,7 @@ void File::touch(uInt time)
     times.actime = time;
     times.modtime = time;
     if (isWritable()) {
-	utime ((itsPath.expandedName()).chars(), &times);
+	utime ((itsPath.expandedName()).c_str(), &times);
     }
 }
 
@@ -285,7 +285,7 @@ void File::touch()
     // Uses the function utime to set the access time and the
     // modification time on the current time. 
     if (isWritable()) {
-	utime ((itsPath.expandedName()).chars(), 0); 
+	utime ((itsPath.expandedName()).c_str(), 0); 
     }
 }
 
@@ -374,7 +374,7 @@ int File::mylstat(const char* path, void* buf) const
 
 void File::getstat (const File& file, void* buf) const
 {
-    if (mylstat (file.path().expandedName().chars(), buf) < 0) {
+    if (mylstat (file.path().expandedName().c_str(), buf) < 0) {
 	throw (AipsError ("File::getstat error on " +
 			  file.path().expandedName() +
 			  ": " + strerror(errno)));
@@ -429,7 +429,7 @@ String File::getFSType() const
 {
 	String rstat("Normal");
 	struct fileSTATFS  statbuf;
-        fileSTATFS(itsPath.dirName().chars(), &statbuf);
+        fileSTATFS(itsPath.dirName().c_str(), &statbuf);
 #ifdef AIPS_DARWIN
 	rstat = String(statbuf.f_fstypename);
 #else

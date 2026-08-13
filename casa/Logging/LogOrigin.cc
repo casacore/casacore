@@ -186,7 +186,7 @@ String LogOrigin::location() const
 	}
 	os << ")";
     }
-    return String(os);
+    return os.str();
 }
 
 String LogOrigin::toString() const
@@ -195,7 +195,7 @@ String LogOrigin::toString() const
     if (! objectID().isNull()) {
 	ostringstream os;
         os << " ObjectID=" << objectID();
-	retval += String(os);
+	retval += os.str();
     }
     return retval;
 }

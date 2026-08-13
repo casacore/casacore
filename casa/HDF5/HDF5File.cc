@@ -58,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Disable automatic printing of errors.
     H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
-    return H5Fis_hdf5 (name.chars());
+    return H5Fis_hdf5 (name.c_str());
   }
 
   void HDF5File::reopenRW()
@@ -117,26 +117,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create the file.
     switch (itsOption) {
     case ByteIO::Old:
-      setHid (H5Fopen (getName().chars(), H5F_ACC_RDONLY, access_plist));
+      setHid (H5Fopen (getName().c_str(), H5F_ACC_RDONLY, access_plist));
       break;
     case ByteIO::Delete:
       itsDelete = True;
       // fall through
     case ByteIO::Update:
     case ByteIO::Append:
-      setHid (H5Fopen (getName().chars(), H5F_ACC_RDWR, access_plist));
+      setHid (H5Fopen (getName().c_str(), H5F_ACC_RDWR, access_plist));
       itsOption = ByteIO::Update;
       break;
     case ByteIO::Scratch:
       itsDelete = True;
       // fall through
     case ByteIO::New:
-      setHid (H5Fcreate (getName().chars(), H5F_ACC_TRUNC,
+      setHid (H5Fcreate (getName().c_str(), H5F_ACC_TRUNC,
 			 create_plist, access_plist));
       itsOption = ByteIO::Update;
       break;
     case ByteIO::NewNoReplace:
-      setHid (H5Fcreate (getName().chars(), H5F_ACC_EXCL,
+      setHid (H5Fcreate (getName().c_str(), H5F_ACC_EXCL,
 			 create_plist, access_plist));
       itsOption = ByteIO::Update;
       break;

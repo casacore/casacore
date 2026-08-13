@@ -271,12 +271,12 @@ Bool Input::put (const String& key, const String& value)
 Bool Input::put (const String& key)
 {
   String k = key;                  // Need non-const string
-  String::size_type inx = key.index("=");
+  String::size_type inx = key.find('=');
   if (inx == String::npos) {
     String msg = "Input::Put: " + key + " is not a valid parameter.";
     throw (AipsError(msg));
   }
-  return put (k.before(inx), k.after(inx));
+  return put (k.substr(0, inx), k.substr(inx+1));
 }
 
 Int Input::count() const
@@ -301,13 +301,13 @@ void Input::announce()
     cout << "\n";
   }
   
-  if (help_mode.contains("prompt")) {
+  if (StringContains(help_mode, "prompt")) {
     do_prompt = True;
   }
-  if (help_mode.contains("keys")) {
+  if (StringContains(help_mode, "keys")) {
     keys();
   }
-  if (help_mode.contains("exit")) {
+  if (StringContains(help_mode, "exit")) {
     exit(0);
   }
   if (version_id.length() > 0) {               // Always announce ???
@@ -422,22 +422,22 @@ void Input::readArguments (int ac, char const* const* av)
     thisarg = av[i];
     // The next statement uses elem() rather than [] to cater for sgi-32b
     // problem
-    if (thisarg.elem(0) == '-') {
+    if (thisarg[0] == '-') {
       if (i >= ac - 1) {
 	throw(AipsError("Input::ReadArguments:"
 			"-keyword not followed by value"));
       }
       i++;  // Advance
-      keyandval = thisarg.after(0) + "=" + av[i];
+      keyandval = thisarg.substr(1) + "=" + av[i];
     } else {
       keyandval = thisarg;
     }
     //	cout << "putting " << keyandval << endl;
     put (keyandval);   // Insert command line parameters
-    if (keyandval.size() > 5  &&  keyandval.before(6) == "debug=") {
-      debug_level = atoi(keyandval.after(6).chars());
-    } else if (keyandval.size() > 4  &&  keyandval.before(5) == "help=") {
-      help_mode = keyandval.after(4);
+    if (keyandval.starts_with("debug=")) {
+      debug_level = atoi(keyandval.substr(6).c_str());
+    } else if (keyandval.starts_with("help=")) {
+      help_mode = keyandval.substr(5);
     }
   }
   announce();          // Announce and possibly die here
@@ -446,32 +446,32 @@ void Input::readArguments (int ac, char const* const* av)
 Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length,
 				       Bool oneRelative)
 {
-  Regex single("^[ \t]*[0-9]+[ \t]*$", 1);
-  Regex range("^[ \t]*[0-9]+[ \t]*-[ \t]*[0-9]+[ \t]*$", 1);
+  const std::regex single("^[ \t]*[0-9]+[ \t]*$", 1);
+  const std::regex range("^[ \t]*[0-9]+[ \t]*-[ \t]*[0-9]+[ \t]*$", 1);
   
   Vector<Bool> mask(length);
   mask = False;
   
   // Step through the string, comma separated expression by comma separated
   // expression.
-  Int numberOfCommas = ranges.freq(",");
+  Int numberOfCommas = std::count(ranges.begin(), ranges.end(), ',');
   Block<String> expressions(numberOfCommas + 1);
   split (ranges, expressions.storage(), numberOfCommas + 1, ",");
   
   for (uInt i=0; i < expressions.nelements(); i++) {
     // Validate
-    if (expressions[i].contains(single) == False &&
-	expressions[i].contains(range) == False) {
+    if (!std::regex_search(expressions[i], single) &&
+	!std::regex_search(expressions[i], range)) {
       throw (AipsError(String("Input::makeMaskFromRanges - "
 			      "invalid range:") + expressions[i]));
     }
     Int left, right;
-    String::size_type inx = expressions[i].index('-');
+    String::size_type inx = expressions[i].find('-');
     if (inx != String::npos) {
-      left = atoi(expressions[i].before(inx).chars());
-      right = atoi(expressions[i].after(inx).chars());
+      left = atoi(expressions[i].substr(0, inx).c_str());
+      right = atoi(expressions[i].substr(inx+1).c_str());
     } else {
-      left = right = atoi(expressions[i].chars());
+      left = right = atoi(expressions[i].c_str());
     }
     if (oneRelative) {
       left -= 1;

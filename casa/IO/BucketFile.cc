@@ -71,7 +71,7 @@ BucketFile::BucketFile (const String& fileName,
       isMapped_p = False;
       bufSize_p  = 0;
     } else {
-      fd_p   = FiledesIO::create (name_p.chars());
+      fd_p   = FiledesIO::create (name_p.c_str());
       file_p.reset (new FiledesIO (fd_p, name_p));
     }
     createMapBuf();
@@ -128,7 +128,7 @@ void BucketFile::open()
         file_p.reset (new MFFileIO (mfile_p, name_p,
                                     isWritable_p ? ByteIO::Update : ByteIO::Old));
       } else {
-        fd_p   = FiledesIO::open (name_p.chars(), isWritable_p);
+        fd_p   = FiledesIO::open (name_p.c_str(), isWritable_p);
         file_p.reset (new FiledesIO (fd_p, name_p));
       }
       createMapBuf();

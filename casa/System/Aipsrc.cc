@@ -48,7 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
 			  uInt start) {
   for (uInt i=start; i<keywordPattern.nelements(); i++) {
-     if (keyword.contains(Regex(keywordPattern[i]))) {
+     if (std::regex_search(keyword, std::regex(keywordPattern[i]))) {
        where = i;
        return True;
      }
@@ -223,7 +223,7 @@ void Aipsrc::fillAips() {
     setAipsPath(uhome);
     aipsPath = extAipsPath;
   }
-  Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 4;
+  Int n = std::count(aipsPath.begin(), aipsPath.end(), ' ') + std::count(aipsPath.begin(), aipsPath.end(), '	') + 4;
   String *newdir = new String[n];
   n = split(aipsPath, newdir, n, Regex("[ 	]"));
   // Cater for non-existing fields
@@ -361,7 +361,7 @@ void Aipsrc::save(const String keyword, const String val) {
   } else if (filo.exists()) {
     filo.remove();
   }
-  ofstream ostr(filn.chars(), ios::out);
+  ofstream ostr(filn.c_str(), ios::out);
   ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   ostr << keyword << ":	" << val << endl;
@@ -369,16 +369,16 @@ void Aipsrc::save(const String keyword, const String val) {
   Char *buf = new Char[8192];	// Single lines must fit in this
   if (fil.exists()) {
     String buffer;
-    Int nv = atoi(Aipsrc::get(nv_r).chars());	// number to keep
+    Int nv = atoi(Aipsrc::get(nv_r).c_str());	// number to keep
     Bool editSeen = False;	// if edit line seen
     String editBuf;		// edit line buffer
     Int editCnt = 0;		// count for edits
     String kwt = keyword + ":";  // keyword test
-    ifstream istr(filno.chars(), ios::in );
+    ifstream istr(filno.c_str(), ios::in );
     while (istr.getline(buf, 8192)) {
       buffer = buf;
       if (editSeen) {
-	if (buffer.index(kwt) == 0) {
+	if (buffer.starts_with(kwt)) {
 	  editCnt++;
 	  if (editCnt < nv) { // copy
 	    ostr << editBuf << endl;
@@ -390,7 +390,7 @@ void Aipsrc::save(const String keyword, const String val) {
 	  ostr << editBuf << endl;
 	}
       }
-      editSeen = (buffer.index(editTxt) == 0);
+      editSeen = (buffer.starts_with(editTxt));
       if (editSeen) {
 	editBuf = buffer;
       } else {
@@ -444,8 +444,8 @@ void Aipsrc::doParse(String &fileList) {
   String keyword;
   for (Int i=0; i<nkw; i++) {
     keyword = keywordPattern[i];
-    keyword.gsub(gs00, gs01);
-    keyword.gsub(gs10, gs11);
+    ReplaceAllInPlace(keyword, gs00, gs01);
+    ReplaceAllInPlace(keyword, gs10, gs11);
     keywordPattern[i] = String("^") + keyword + String("$");
   }
 }
@@ -463,7 +463,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
   // This here be the parse function. It looks through all the directories
   // looking for files to parse.
   
-  Int dirCount(fileList.freq(':') + 1);
+  Int dirCount(std::count(fileList.begin() ,fileList.end(), ':') + 1);
   String *directories = new String[dirCount];
   dirCount = split(fileList, directories, dirCount, ":");
   keywordFile.resize(dirCount);
@@ -476,21 +476,21 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
     if (! keywordFile[nfile].empty()) {
       File fil(keywordFile[nfile]);
       if (fil.exists()) {
-	ifstream fileAipsrc(keywordFile[nfile].chars(), ios::in);
+	ifstream fileAipsrc(keywordFile[nfile].c_str(), ios::in);
 	String buffer;
 	String keyword;
 	String value;
-	const Regex comm("^[ 	]*#");	// Comment line
+	const std::regex comm("^[ 	]*#");	// Comment line
 	while (fileAipsrc.getline(buf, 8192)) {
 	  buffer = buf;
-	  if (buffer.empty() || buffer.contains(comm))	// Ignore comments
+	  if (buffer.empty() || std::regex_search(buffer, comm))	// Ignore comments
 	    continue;
           String::size_type inx = buffer.find(':');
           if (inx != String::npos) {
-	    keyword = buffer.before(inx);
-	    value = buffer.after(inx);
-            keyword.trim();
-            value.trim();
+	    keyword = buffer.substr(0, inx);
+	    value = buffer.substr(inx + 1);
+            TrimInPlace(keyword);
+            TrimInPlace(value);
 	    if (keyword.length() < 1)
 	      continue;
 	    while (nkw >= keywordPattern.nelements()) {
@@ -532,8 +532,8 @@ void Aipsrc::show(ostream &oStream) {
     " keyword/value pairs found:" << endl;
   for (uInt j = 0; j<keywordValue.nelements(); j++) {
     nam = keywordPattern[j];
-    nam.gsub(gs00, gs01);
-    nam.gsub(gs10, gs11);
+    ReplaceAllInPlace(nam, gs00, gs01);
+    ReplaceAllInPlace(nam, gs10, gs11);
     oStream << j << ":	" << 
       nam << ":	" <<
       keywordValue[j] << endl;
@@ -551,7 +551,7 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
   std::vector<String> values_la;
   uInt n;
   for (Int i=nkw-1; i>=0; i--) {	// reverse order to do aipsrc like
-    if (!nl[i].contains('*')) {		// no wild cards
+    if (nl[i].find('*') == std::string::npos) {		// no wild cards
       n = Aipsrc::registerRC(nl[i], names_la);
       if(n > values_la.size())
         values_la.resize(n);
@@ -574,7 +574,7 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
   } else if (filo.exists()) {
     filo.remove();
   }
-  ofstream ostr(fnam.chars(), ios::out);
+  ofstream ostr(fnam.c_str(), ios::out);
   ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   for (Int i=namlst.nelements()-1; i>=0; i--) {

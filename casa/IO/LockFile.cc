@@ -103,16 +103,16 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     //# For noLocking, it does not need to exist.
     int fd = -1;
     if (!create) {
-      fd = FiledesIO::open (itsName.chars(), True, False);
+      fd = FiledesIO::open (itsName.c_str(), True, False);
       if (fd == -1) {
-        fd = FiledesIO::open (itsName.chars(), False, !noLocking);
+        fd = FiledesIO::open (itsName.c_str(), False, !noLocking);
         itsWritable  = False;
         itsAddToList = False;
       }
     } else if (!noLocking) {
       //# Create a new file with world write access.
       //# Initialize the values in it.
-      fd = FiledesIO::create (itsName.chars(), 0666);
+      fd = FiledesIO::create (itsName.c_str(), 0666);
       putReqId (fd);
     }
     if (fd >= 0) {
@@ -401,7 +401,7 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
 			 " does not exist");
     }
     //# Open the lock file as readonly.
-    int fd = FiledesIO::open (fullName.chars(), False);
+    int fd = FiledesIO::open (fullName.c_str(), False);
     if (fd == -1) {
         throw AipsError ("LockFile::showLock - File " + fileName +
 			 " could not be opened");

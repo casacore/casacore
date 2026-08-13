@@ -74,34 +74,34 @@ void testBasic()
     AlwaysAssertExit (RXalpha.match ("bcd",3) == 3);
     AlwaysAssertExit (RXalpha.match ("bcd",4) == 3);
     // Also test the String's matches function for a regex.
-    AlwaysAssertExit (String("1").matches(RXdouble));
-    AlwaysAssertExit (String("-1").matches(RXdouble));
-    AlwaysAssertExit (String("+1").matches(RXdouble));
-    AlwaysAssertExit (String("1.").matches(RXdouble));
-    AlwaysAssertExit (String("1.1").matches(RXdouble));
-    AlwaysAssertExit (String(".1").matches(RXdouble));
-    AlwaysAssertExit (String("1.e1").matches(RXdouble));
-    AlwaysAssertExit (String("1.1e+1").matches(RXdouble));
-    AlwaysAssertExit (String(".1E-1").matches(RXdouble));
-    AlwaysAssertExit (! String(".1.e-1").matches(RXdouble));
+    AlwaysAssertExit (RegexMatches("1", RXdouble));
+    AlwaysAssertExit (RegexMatches("-1", RXdouble));
+    AlwaysAssertExit (RegexMatches("+1", RXdouble));
+    AlwaysAssertExit (RegexMatches("1.", RXdouble));
+    AlwaysAssertExit (RegexMatches("1.1", RXdouble));
+    AlwaysAssertExit (RegexMatches(".1", RXdouble));
+    AlwaysAssertExit (RegexMatches("1.e1", RXdouble));
+    AlwaysAssertExit (RegexMatches("1.1e+1", RXdouble));
+    AlwaysAssertExit (RegexMatches(".1E-1", RXdouble));
+    AlwaysAssertExit (! RegexMatches(".1.e-1", RXdouble));
 
     // Some more basic tests using the copy constructor.
     Regex exp2(exp);
     AlwaysAssertExit (exp2.match ("abcdbcdcdd",10) == 10);
-    AlwaysAssertExit (String("abcdbcdcdd").matches(exp2));
-    AlwaysAssertExit (! String("abcdb").matches(exp2));
-    AlwaysAssertExit (String("abcd").matches(exp2));
-    AlwaysAssertExit (String("bcd").matches(exp2));
+    AlwaysAssertExit (RegexMatches("abcdbcdcdd", exp2));
+    AlwaysAssertExit (! RegexMatches("abcdb", exp2));
+    AlwaysAssertExit (RegexMatches("abcd", exp2));
+    AlwaysAssertExit (RegexMatches("bcd", exp2));
     AlwaysAssertExit (exp2.regexp() == "a?bcd(bcdcdd)?");
 
     // The same using the assignment operator.
     Regex exp3("any");
     exp3 = exp2;
     AlwaysAssertExit (exp3.match ("abcdbcdcdd",10) == 10);
-    AlwaysAssertExit (String("abcdbcdcdd").matches(exp3));
-    AlwaysAssertExit (! String("abcdb").matches(exp3));
-    AlwaysAssertExit (String("abcd").matches(exp3));
-    AlwaysAssertExit (String("bcd").matches(exp3));
+    AlwaysAssertExit (RegexMatches("abcdbcdcdd", exp3));
+    AlwaysAssertExit (! RegexMatches("abcdb", exp3));
+    AlwaysAssertExit (RegexMatches("abcd", exp3));
+    AlwaysAssertExit (RegexMatches("bcd", exp3));
     AlwaysAssertExit (exp3.regexp() == "a?bcd(bcdcdd)?");
 
     // Arbitrary strings match.
@@ -170,7 +170,7 @@ void testParallel()
 #endif
   for (int i=0; i<32; ++i) {
     Regex rx(".*");
-    AlwaysAssert (String("ab").matches(rx), AipsError);
+    AlwaysAssert (RegexMatches("ab", rx), AipsError);
   }
 }
 

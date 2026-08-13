@@ -234,12 +234,12 @@ Bool UnitVal::field(MUString &str, UnitVal &res, UMaps* maps) {
   if (key.length() == 0) { res = loc.getVal(); return True;}
   if (UnitMap::getCache(key,res)) return True;
   if (UnitMap::getUnit(key,loc,maps)) { res = loc.getVal(); return True;}
-  if (key.length() > 1 && UnitMap::getPref(key(0,1), loc, maps)) {
+  if (key.length() > 1 && UnitMap::getPref(key.substr(0,1), loc, maps)) {
     UnitName loc1 = UnitName();
-    if (UnitMap::getUnit(key.from(1), loc1, maps)) {
+    if (UnitMap::getUnit(key.substr(1), loc1, maps)) {
       res = (loc.getVal() * loc1.getVal()); return True;
-    } else if ( key.length() > 2 && UnitMap::getPref(key(0,2),loc)) {
-      if (UnitMap::getUnit(key.from(2), loc1, maps)) {
+    } else if ( key.length() > 2 && UnitMap::getPref(key.substr(0,2),loc)) {
+      if (UnitMap::getUnit(key.substr(2), loc1, maps)) {
 	res = (loc.getVal() * loc1.getVal()); return True;
       }
     }

@@ -148,7 +148,7 @@ void AipsError::throwIf (bool condition, const String& message,
 {
   // If the condition is met then throw an AipsError
   if (condition) {
-    String m = String::format ("Exception: %s.\n... thrown by %s",
+    String m = FormatString ("Exception: %s.\n... thrown by %s",
                                message.c_str(), func);
     AipsError e (m.c_str(), file, line);
     throw e;
@@ -162,7 +162,7 @@ void AipsError::throwIfError (int errorCode, const String& prefix,
   // throw an AipsError using the provided prefix and then details
   // of the error.
   if (errorCode != 0) {
-    AipsError e (String::format ("Exception: %s.\n...Thrown by %s\n...(errno=%d): %s",
+    AipsError e (FormatString ("Exception: %s.\n...Thrown by %s\n...(errno=%d): %s",
                                  prefix.c_str(), func,
                                  errorCode, strerror (errorCode)),
                  file, line);
@@ -201,10 +201,10 @@ SystemCallError::SystemCallError(const String& funcName, int error, Category c)
   : AipsError("Error in " + funcName + ": " + errorMessage(error), c),
     itsError (error)
 {}
-SystemCallError::SystemCallError (int error, const String &msg,
+SystemCallError::SystemCallError (int error, const std::string &msg,
                                   const String &filename,
                                   uInt lineNumber, Category c)
-  : AipsError (msg + String::format (": errno=%d: %s", error,
+  : AipsError (msg + FormatString (": errno=%d: %s", error,
 				     errorMessage (error).c_str()),
                filename, lineNumber, c),
     itsError (error)

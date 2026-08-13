@@ -157,7 +157,7 @@ Bool Directory::isEmpty() const
     DirectoryIterator iter(*this);
     while (! iter.pastEnd()) {
       String nm (iter.name());
-      if (nm.size() < 5  ||  nm.before(4) != ".nfs") {
+      if (!nm.starts_with(".nfs")) {
         ///        cout <<"iter at "<<iter.name()<<endl;
 	return False;
       }
@@ -173,10 +173,10 @@ Double Directory::freeSpace() const
 #else
     struct statfs buf;
 #if defined(AIPS_IRIX)
-    if (statfs (itsFile.path().expandedName().chars(),
+    if (statfs (itsFile.path().expandedName().c_str(),
 		&buf, sizeof(buf), 0) < 0) {
 #else
-    if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
+    if (statfs (itsFile.path().expandedName().c_str(), &buf) < 0) {
 #endif
 	throw (AipsError ("Directory::freeSpace error on " +
 			  itsFile.path().expandedName() +
@@ -210,7 +210,7 @@ void Directory::create (Bool overwrite)
 	// Keep the directory, so special allocation on Lustre is preserved.
 	Directory(itsFile).removeRecursive(True);
     } else {
-        if (mkdir (itsFile.path().expandedName().chars(), 0777) < 0) {
+        if (mkdir (itsFile.path().expandedName().c_str(), 0777) < 0) {
 	    throw (AipsError ("Directory::create error on " +
 			      itsFile.path().expandedName() +
 			      ": " + strerror(errno)));
@@ -228,7 +228,7 @@ void Directory::remove()
     if (isSymLink()) {
 	removeSymLinks();
     }
-    rmdir (itsFile.path().absoluteName().chars());
+    rmdir (itsFile.path().absoluteName().c_str());
 }
 
 void Directory::removeFiles()
@@ -237,7 +237,7 @@ void Directory::removeFiles()
     while (! iter.pastEnd()) {
 	File file = iter.file();
 	if (! file.isDirectory (False)) {
-	    unlink (file.path().originalName().chars());
+	    unlink (file.path().originalName().c_str());
 	}
 	iter++;
     }
@@ -251,7 +251,7 @@ void Directory::removeRecursive (Bool keepDir)
 	if (file.isDirectory (False)) {
 	    Directory(file).removeRecursive();
 	} else {
-	    unlink (file.path().originalName().chars());
+	    unlink (file.path().originalName().c_str());
 	}
 	iter++;
     }
@@ -300,7 +300,7 @@ void Directory::copy (const Path& target, Bool overwrite,
     String command("cp -r '");
     command += itsFile.path().expandedName() + "' '" +
                targetName.expandedName() + "'";
-    int result = system(command.chars());
+    int result = system(command.c_str());
     if(result != 0) {
       throw AipsError("Executing cp command returned an error. Command was: "
 		      + command);
@@ -313,7 +313,7 @@ void Directory::copy (const Path& target, Bool overwrite,
 	command = "chmod -Rf u+w '";
 #endif
 	command += targetName.expandedName() + "'";
-	int result = system(command.chars());
+	int result = system(command.c_str());
 	if(result != 0)
 	  throw AipsError("Executing chmod command returned an error. Command was: "
 			  + command);	  
@@ -347,8 +347,8 @@ void Directory::move (const Path& target, Bool overwrite)
     // Start trying to rename.
     // If source and target are the same directory, rename does nothing
     // and returns a success status.
-    if (rename (path().expandedName().chars(),
-		targetPath.expandedName().chars()) == 0) {
+    if (rename (path().expandedName().c_str(),
+		targetPath.expandedName().c_str()) == 0) {
 	return;
     
     }
@@ -371,11 +371,11 @@ void Directory::move (const Path& target, Bool overwrite)
     if (alrExist) {
 	Directory(targetPath).removeRecursive();
     } else if (errno == ENOTDIR) {
-	unlink (targetPath.expandedName().chars());
+	unlink (targetPath.expandedName().c_str());
     }
     // Try again.
-    if (rename (path().expandedName().chars(),
-		targetPath.expandedName().chars()) == 0) {
+    if (rename (path().expandedName().c_str(),
+		targetPath.expandedName().c_str()) == 0) {
 	return;
     }
     // Throw an exception if not "different file systems" error.
@@ -405,7 +405,7 @@ Vector<String> Directory::find (const Regex& regexp, Bool followSymLinks,
     uInt count=0;
     while (!iter.pastEnd()) {
 //#//        if (iter.name().contains (regexp)) {
-        if (iter.name().matches (regexp)) {
+        if (RegexMatches(iter.name(), regexp)) {
 	    if (count + 1 >= myentries.nelements()) {
 	        // More entries have been added - have to resize
 	        myentries.resize (2*myentries.nelements(), True);
@@ -506,7 +506,7 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
 Bool Directory::isNFSMounted() const
 {
    struct statfs buf;
-   if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
+   if (statfs (itsFile.path().expandedName().c_str(), &buf) < 0) {
       throw (AipsError ("Directory::isNFSMounted error on " +
             itsFile.path().expandedName() +
             ": " + strerror(errno)));

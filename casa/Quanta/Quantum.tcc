@@ -337,9 +337,9 @@ void Quantum<Qtype>::convert(const Unit &s) {
 	// Suppress (gcc) warnings:
 	qVal = Qtype (qVal * qUnit.getValue().getFac());
 	if (s.empty()) {
-	  qUnit = String(oss);
+	  qUnit = oss.str();
 	} else {
-	  qUnit = Unit(s.getName() + '.' + String(oss).after(0));
+	  qUnit = Unit(s.getName() + '.' + oss.str().substr(1));
 	}
       }
     }

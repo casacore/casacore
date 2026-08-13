@@ -34,19 +34,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool EnvironmentVariable::isDefined (const String& name)
 {
-  return getenv (name.chars());
+  return getenv (name.c_str());
 }
 
 String EnvironmentVariable::get (const String& name)
 {
-  Char* env = getenv (name.chars());
+  Char* env = getenv (name.c_str());
   if (env) return String(env);
   return String();
 }
 
 void EnvironmentVariable::set (const String& name, const String& value)
 {
-  AlwaysAssert (setenv(name.chars(), value.chars(), 1) == 0, AipsError);
+  AlwaysAssert (setenv(name.c_str(), value.c_str(), 1) == 0, AipsError);
 }
 
 } //# NAMESPACE CASACORE - END

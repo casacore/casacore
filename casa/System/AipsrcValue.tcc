@@ -122,7 +122,7 @@ void AipsrcValue<T>::save(uInt keyword) {
     oss << tlst[keyword-1];
   }
   // Unlock has to be done before save, because MVTime uses AipsrcValue.
-  Aipsrc::save(ntlst[keyword-1], String(oss));
+  Aipsrc::save(ntlst[keyword-1], oss.str());
 }
 
 } //# NAMESPACE CASACORE - END

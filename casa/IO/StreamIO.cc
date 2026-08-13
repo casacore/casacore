@@ -53,13 +53,13 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
   memset(&serverInfo, 0, sizeof(serverInfo));
   serverInfo.sin_family = AF_INET;
 
-  Regex anyLetters("[A-Za-z]");
-  if(hostname.contains(anyLetters)){
-    struct hostent *hp = gethostbyname(hostname.chars());
+  const std::regex anyLetters("[A-Za-z]");
+  if(std::regex_search(hostname, anyLetters)){
+    struct hostent *hp = gethostbyname(hostname.c_str());
     memcpy ((char *) &serverInfo.sin_addr, (char *) hp->h_addr,  hp->h_length);
     serverInfo.sin_family = hp->h_addrtype;
   } else {
-     serverInfo.sin_addr.s_addr = inet_addr(hostname.chars());;
+     serverInfo.sin_addr.s_addr = inet_addr(hostname.c_str());
   }
   serverInfo.sin_port = htons(portNumber);
   

@@ -110,7 +110,7 @@ void DirectoryIterator::init()
     // Alas readdir is not supported on the compute nodes of the Cray XT3.
 #if defined(AIPS_CRAY_PGI)
     itsNameList = 0;
-    itsNrNames = scandir(itsDirectory.path().expandedName().chars(),
+    itsNrNames = scandir(itsDirectory.path().expandedName().c_str(),
 			 &itsNameList, 0, alphasort);
     if (itsNrNames < 0) {
         throw AipsError ("DirectoryIterator: error on directory " +
@@ -121,7 +121,7 @@ void DirectoryIterator::init()
 #else
     // Set the private directory on the current working directory
     // Open the directory, if this is not possible throw an exception
-    itsDirectoryDescriptor = opendir(itsDirectory.path().expandedName().chars());
+    itsDirectoryDescriptor = opendir(itsDirectory.path().expandedName().c_str());
     if (itsDirectoryDescriptor == 0){
 	throw (AipsError ("DirectoryIterator: error on directory " +
 			  itsDirectory.path().expandedName() +
@@ -158,7 +158,7 @@ void DirectoryIterator::operator++()
         name = itsDirectoryEntry->d_name;
     }
     while (name == "."  ||  name == ".."
-       ||  name.matches (itsExpression) == 0);
+       ||  RegexMatches(name, itsExpression) == 0);
 }
 
 void DirectoryIterator::operator++(int)

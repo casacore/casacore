@@ -39,8 +39,8 @@ Bool AipsrcVector<String>::find(Vector<String> &value,
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
-    res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    RegexReplaceAll(res, ws, " ");
+    Int m = std::count(res.begin(), res.end(), ' ')+1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<String>(m);
@@ -89,7 +89,7 @@ void AipsrcVector<String>::save(uInt keyword) {
   ostringstream oss;
   const Int n = (tlst[keyword-1]).nelements();
   for (Int i=0; i<n; i++) oss << " " << (tlst[keyword-1])(i);
-  Aipsrc::save((ntlst)[keyword-1], String(oss));
+  Aipsrc::save((ntlst)[keyword-1], oss.str());
 }
 
 } //# NAMESPACE CASACORE - END

@@ -129,7 +129,7 @@ void RegularFile::create (Bool overwrite)
 			      " already exists"));
 	}
     }
-    int fd = ::creat (itsFile.path().expandedName().chars(), 0666);
+    int fd = ::creat (itsFile.path().expandedName().c_str(), 0666);
     if (fd < 0) {
 	throw (AipsError ("RegularFile::create error on " +
 			  itsFile.path().expandedName() +
@@ -143,7 +143,7 @@ void RegularFile::remove()
     if (isSymLink()) {
 	removeSymLinks();
     }    
-    unlink (itsFile.path().expandedName().chars());
+    unlink (itsFile.path().expandedName().c_str());
 }
 
 void RegularFile::copy (const Path& target, Bool overwrite,
@@ -158,7 +158,7 @@ void RegularFile::copy (const Path& target, Bool overwrite,
     String call("cp '");
     call += itsFile.path().expandedName() + "' '" +
             targetName.expandedName() + "'";
-    AlwaysAssert (system(call.chars()) == 0, AipsError);
+    AlwaysAssert (system(call.c_str()) == 0, AipsError);
     if (setUserWritePermission) {
 	File result(targetName.expandedName());
 	if (! result.isWritable()) {
@@ -170,8 +170,8 @@ void RegularFile::copy (const Path& target, Bool overwrite,
 
 void RegularFile::manualCopy (const String& source, const String& target)
 {
-    int infd (FiledesIO::open (source.chars()));
-    int outfd (FiledesIO::create (target.chars()));
+    int infd (FiledesIO::open (source.c_str()));
+    int outfd (FiledesIO::create (target.c_str()));
     FiledesIO in (infd, source);
     FiledesIO out (outfd, target);
     char buf[32768];
@@ -195,8 +195,8 @@ void RegularFile::move (const Path& target, Bool overwrite)
     // Start trying to rename.
     // If source and target are the same directory, rename does nothing
     // and returns a success status.
-    if (rename (path().expandedName().chars(),
-		targetPath.expandedName().chars()) == 0) {
+    if (rename (path().expandedName().c_str(),
+		targetPath.expandedName().c_str()) == 0) {
 	return;
     
     }
@@ -212,11 +212,11 @@ void RegularFile::move (const Path& target, Bool overwrite)
     }
 #endif
     if (alrExist) {
-	unlink (targetPath.expandedName().chars());
+	unlink (targetPath.expandedName().c_str());
     }
     // Try again.
-    if (rename (path().expandedName().chars(),
-		targetPath.expandedName().chars()) == 0) {
+    if (rename (path().expandedName().c_str(),
+		targetPath.expandedName().c_str()) == 0) {
 	return;
     }
     // Throw an exception if not "different file systems" error.

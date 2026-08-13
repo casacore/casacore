@@ -226,7 +226,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Block<hsize_t> cs = HDF5DataType::fromShape (itsTileShape);
     H5Pset_chunk(itsPLid, rank, cs.storage());
     // Create the data set.
-    setHid (H5Dcreate2(parentHid, name.chars(), itsDataType.getHidFile(),
+    setHid (H5Dcreate2(parentHid, name.c_str(), itsDataType.getHidFile(),
 		       itsDSid, 0, itsPLid, 0));
     if (! isValid()) {
       throw HDF5Error("Data set array " + name + " could not be created");
@@ -238,7 +238,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsParent = &parentHid;
     setName (name);
     // Open the dataset.
-    setHid (H5Dopen2(parentHid, name.chars(), 0));
+    setHid (H5Dopen2(parentHid, name.c_str(), 0));
     if (! isValid()) {
       throw HDF5Error("Data set array " + name + " does not exist");
     }
@@ -322,7 +322,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Reopen the dataset with cache size in itsDaplid.
     String name = getName();
-    setHid (H5Dopen2(*itsParent, name.chars(), itsDaplid));
+    setHid (H5Dopen2(*itsParent, name.c_str(), itsDaplid));
     if (! isValid()) {
       throw HDF5Error("Data set array " + name + " could not be reopened");
     }
@@ -330,7 +330,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   DataType HDF5DataSet::getDataType (hid_t parentHid, const String& name)
   {
-    hid_t id = H5Dopen2(parentHid, name.chars(), 0);
+    hid_t id = H5Dopen2(parentHid, name.c_str(), 0);
     if (id < 0) {
       throw HDF5Error("Data set array " + name + " does not exist");
     }

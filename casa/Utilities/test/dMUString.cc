@@ -93,9 +93,9 @@ int main()
        Double res = 0.0;
        if (ptr < l) {
 	 String loc0 = in;		// non-const string
-	 Int p = in.index(Regex("[ 	]"),ptr);
-	 p = (p<0) ? l : p;
-	 String loc = loc0.at(ptr,p-ptr);
+	 size_t p = in.find_first_of(" 	", ptr);
+	 p = (p==std::string::npos) ? l : p;
+	 String loc = loc0.substr(ptr,p-ptr);
 	 ptr = p;
 	 istringstream instr(loc);
 	 streampos stt(instr.tellg());

@@ -96,7 +96,7 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
     // In order to recognize those old names, we must do something special.
     String type = ios.getNextType();
     int version;
-    if (type.length() > 6  &&  type.index("Array<") == 0) {
+    if (type.length() > 6  &&  type.starts_with("Array<")) {
       version = ios.getstart(type);
     } else {
       version = ios.getstart("Array");

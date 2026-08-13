@@ -69,10 +69,10 @@ ostream& operator<< (ostream &os, const UnitName &name) {
     static String FillString("                                ");
     Int i=os.precision();
     os << name.basicTag <<
-	(FillString)(0,10 - name.basicTag.length()) <<
+	FillString.substr(0,10 - name.basicTag.length()) <<
 	    "(" <<
 		name.basicName << ")" <<
-		    (FillString)(0,27 - name.basicName.length()) <<
+		    FillString.substr(0,27 - name.basicName.length()) <<
 			setprecision(12) <<
 			    name.basicKind  <<
 				setprecision(i);

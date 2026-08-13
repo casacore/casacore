@@ -140,7 +140,7 @@ Quantum<Qtype> root(const Quantum<Qtype> &left, Int p) {
   UnitVal vres(left.getFullUnit().getValue().root(p));
   ostringstream oss;
   oss << vres.getDim();
-  res.setUnit(String(oss));
+  res.setUnit(oss.str());
   res.setValue(res.getValue() * vres.getFac());
   return res;
 }

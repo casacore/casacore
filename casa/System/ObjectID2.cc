@@ -52,16 +52,16 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
     String str = command;
     // Extract object-id from the command, convert it to an
     // ObjectID in the block, and put its index into the command.
-    Int index = str.index ("'ObjectID=[");
-    while (index >= 0) {
-        result += str.before(index);
+    size_t index = str.find ("'ObjectID=[");
+    while (index != std::string::npos) {
+        result += str.substr(0, index);
 	index += 11;
-	Int pos = str.index ("]'", index);
+	size_t pos = str.find ("]'", index);
 	ObjectID oid;
 	// Convert to ObjectID.
 	// If not succesfull, put original back.
-	if (! oid.fromString (error, str(index, pos-index))) {
-	    result += str(index-11, pos-index+13);
+	if (! oid.fromString (error, str.substr(index, pos-index))) {
+	    result += str.substr(index-11, pos-index+13);
 	} else {
 	    uInt n = objectIDs.nelements() + 1;
 	    objectIDs.resize (n);
@@ -69,9 +69,9 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
 	    char buf[16];
 	    snprintf (buf, sizeof(buf), "$OBJ#%i#O", n);
 	    result += buf;
-	    str = str.after(pos+1);
+	    str = str.substr(pos+2);
 	}
-	index = str.index ("'ObjectID=[");
+	index = str.find ("'ObjectID=[");
     }
     result += str;
     return result;
