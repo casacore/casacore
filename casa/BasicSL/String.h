@@ -170,26 +170,26 @@ public:
   //# Friends
   friend class String;
   // Make a string
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   operator const std::string() const { return std::string(ref_p, pos_p, len_p); }
   // Default copy constructor.
   SubString (const SubString&) = default;
   // Assignment
   // <group>
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   SubString &operator=(const SubString &str);
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   SubString &operator=(const String &str);
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   SubString &operator=(const char *s);
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   SubString &operator=(const char c);
   // </group>
   // Get as (const) C array
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   const char *chars() const;
   // Obtain length
-  DEPRECATED("class SubString will be removed");
+  DEPRECATED("class SubString will be removed")
   std::string::size_type length() const { return len_p; }
 
 private:
@@ -461,7 +461,7 @@ class String : public std::string {
   DEPRECATED("Use StringToValue()")
   inline bool fromString (T& value, bool chk=true) const
   {
-    return StringToValue(value, chk);
+    return StringToValue(*this, value, chk);
   }
   template<typename T>
   DEPRECATED("Use StringToValue()")
