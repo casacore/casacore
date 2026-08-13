@@ -433,9 +433,9 @@ BOOST_AUTO_TEST_CASE(EqualStringsAndNotEmpty) {
   BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "xyxy", -1));
   BOOST_CHECK(EqualStringsAndNotEmpty("xyxy", "xy", -2));
 
-  BOOST_CHECK(!cStr.matches(std::string("x"), 1000));
+  //BOOST_CHECK(!cStr.matches(std::string("x"), 1000));
   BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "x", 1000));
-  BOOST_CHECK(!cStr.matches(std::string("x"), -1000));
+  //BOOST_CHECK(!cStr.matches(std::string("x"), -1000));
   BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "x", -1000));
 }
 

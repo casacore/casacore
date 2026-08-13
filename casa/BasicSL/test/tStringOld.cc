@@ -43,6 +43,8 @@ String c;
 const Char*  s = ",";
 Regex  r ("e[a-z]*o");
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 void decltest() {
   String x;
   cout << "an empty String:" << x << endl;
@@ -74,8 +76,8 @@ void decltest() {
   cout << "A string initialized to dec(20):" << n << endl;
   AlwaysAssertExit(n == "20");
 
-  Int i = atoi(n.chars());
-  Double f = atof(n.chars());
+  Int i = atoi(n.c_str());
+  Double f = atof(n.c_str());
   cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << endl;
   AlwaysAssertExit(i == 20);
   AlwaysAssertExit(f == 20);
@@ -371,7 +373,7 @@ void toDouble() {
     bool ok = false;
     try {
       y = String::toDouble(x, True);
-    } catch (const AipsError&) {
+    } catch (const std::exception&) {
       ok = true;
     }
     AlwaysAssertExit(ok);
@@ -386,7 +388,7 @@ void toFloat() {
     bool ok = false;
     try {
       y = String::toFloat(x, True);
-    } catch (const AipsError&) {
+    } catch (const std::exception&) {
       ok = true;
     }
     AlwaysAssertExit(ok);
@@ -404,7 +406,7 @@ void toInt() {
     bool ok = false;
     try {
       y = String::toInt(x, True);
-    } catch (const AipsError&) {
+    } catch (const std::exception&) {
       ok = true;
     }
     AlwaysAssertExit(ok);

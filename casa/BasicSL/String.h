@@ -30,6 +30,9 @@
 //#define CASACORE_DEPRECATE_STRING
 
 #ifdef CASACORE_DEPRECATE_STRING
+// Some of the (deprecated) code calls deprecated functions, so disable this
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #define DEPRECATED(X) [[deprecated(X)]]
 #else
 #define DEPRECATED(X)
@@ -86,6 +89,69 @@ inline bool EqualStringsAndNotEmpty(std::string_view str1, std::string_view str2
   }
 }
 
+// Convert a String to a value. All characters in the string must be used.
+// It uses a shift from an ostringstream, so that operator must exist
+// for the data type used.
+// In case of an error, an exception is thrown if @p check is set.
+// Otherwise it returns false and @p value contains the value read
+// so far.
+template<typename T>
+inline bool StringToValue (const std::string& str, T& value, bool check=true)
+{
+  std::istringstream is(str);
+  is >> value;
+  if (is.fail()  ||  !is.eof()) {
+    if (check) {
+      if(is.fail()) {
+        throw std::runtime_error ("String '" + str + "' failed to parse in StringToValue()");
+      } else {
+        std::string extra;
+        std::getline(is, extra);
+        throw std::runtime_error ("Extra characters after parsing string '" + str + "' in StringToValue(): '" + extra + "'");
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+// Same as other StringToValue() overload, but returns the parsed value.
+template<typename T>
+inline T StringToValue(const std::string& str)
+{
+  T value;
+  StringToValue(str, value);
+  return value;
+}
+
+// Same as StringToValue<int>
+inline int StringToInt(const std::string& str) {
+  return StringToValue<int>(str);
+}
+
+// Same as StringToValue<float>
+inline float StringToFloat(const std::string& str) {
+  return StringToValue<float>(str);
+}
+
+// Same as StringToValue<double>
+inline double StringToDouble(const std::string& str) {
+  return StringToValue<double>(str);
+}
+
+// Replace all matches of the string @p str with the regex @pat by @repl.
+int RegexReplaceAll(std::string& str, const Regex &pat, const std::string &repl);
+
+// Checks if the regex @r matches with the string @str. If @p pos is provided,
+// searching starts from that position.
+bool RegexMatches(const std::string& str, const Regex &r, int pos = 0);
+
+// Matches the regex and returns the matching part.
+std::string RegexSubStr(const std::string& str, const Regex& r, size_t startpos = 0);
+
+// Matches the regex and returns at what index in the string.
+size_t RegexIndex(const std::string& str, const Regex& r, size_t startpos = 0);
+
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>
 // The SubString class can only be used by the String class to be able to
@@ -104,19 +170,26 @@ public:
   //# Friends
   friend class String;
   // Make a string
+  DEPRECATED("class SubString will be removed");
   operator const std::string() const { return std::string(ref_p, pos_p, len_p); }
   // Default copy constructor.
   SubString (const SubString&) = default;
   // Assignment
   // <group>
+  DEPRECATED("class SubString will be removed");
   SubString &operator=(const SubString &str);
+  DEPRECATED("class SubString will be removed");
   SubString &operator=(const String &str);
+  DEPRECATED("class SubString will be removed");
   SubString &operator=(const char *s);
+  DEPRECATED("class SubString will be removed");
   SubString &operator=(const char c);
   // </group>
   // Get as (const) C array
+  DEPRECATED("class SubString will be removed");
   const char *chars() const;
   // Obtain length
+  DEPRECATED("class SubString will be removed");
   std::string::size_type length() const { return len_p; }
 
 private:
@@ -388,13 +461,7 @@ class String : public std::string {
   DEPRECATED("Use StringToValue()")
   inline bool fromString (T& value, bool chk=true) const
   {
-    std::istringstream os(*this);
-    os >> value;
-    if (os.fail()  ||  !os.eof()) {
-      if (chk) throwFromStringError();
-      return false;
-    }
-    return true;
+    return StringToValue(value, chk);
   }
   template<typename T>
   DEPRECATED("Use StringToValue()")
@@ -411,11 +478,23 @@ class String : public std::string {
   // Otherwise the value read so far is returned (0 if nothing read).
   // <group>
   DEPRECATED("Use StringToInt()")
-  static int toInt (const String& s, bool chk=false);
+  static int toInt (const String& s, bool chk=false) {
+    int v=0;
+    StringToValue(s, v, chk);
+    return v;
+  }
   DEPRECATED("Use StringToFloat()")
-  static float toFloat (const String& s, bool chk=false);
+  static float toFloat (const String& s, bool chk=false) {
+    float v=0;
+    StringToValue(s, v, chk);
+    return v;
+  }
   DEPRECATED("Use StringToDouble()")
-  static double toDouble (const String& s, bool chk=false);
+  static double toDouble (const String& s, bool chk=false) {
+    double v=0;
+    StringToValue(s, v, chk);
+    return v;
+  }
   // </group>
 
   // Convert a value to a String.
@@ -469,7 +548,7 @@ class String : public std::string {
   DEPRECATED("Use find(s) != npos or StringContains()")
   bool contains(const char *s) const {
     return (find(s) != npos); }
-  DEPRECATED("Use std::regex")
+  DEPRECATED("Use std::regex_search(str, regex);")
   bool contains(const Regex &r) const;
   // </group>
   // Does the string starting at the given position contain the given substring?
@@ -485,7 +564,7 @@ class String : public std::string {
   DEPRECATED("Use find(), rfind() or IndexString() and/or StringContains()")
   bool contains(const char *s, int pos) const {
     return (IndexString(*this, s, pos) != npos); }
-  DEPRECATED("Use std::regex")
+  DEPRECATED("Use std::regex_search(str.substr(pos), regex);")
   bool contains(const Regex &r, int pos) const {
     return (index(r, pos) != npos); }
   // </group>
@@ -505,8 +584,10 @@ class String : public std::string {
   DEPRECATED("Use substr(pos) == str if possible, consider ends_with() / starts_with() for positive/negative pos or use EqualStringsAndNotEmpty() if direct replacement is necessary")
   bool matches(const char *s, int pos = 0) const {
     return EqualStringsAndNotEmpty(*this, s, pos); }
-  DEPRECATED("Use std::regex")
-  bool matches(const Regex &r, int pos = 0) const;
+  DEPRECATED("Use RegexMatches()")
+  bool matches(const Regex &r, int pos = 0) const {
+    return RegexMatches(*this, r, pos);
+  }
   // </group>
 
   DEPRECATED("Use insert(0, str)")
@@ -532,7 +613,7 @@ class String : public std::string {
   size_type index(const char *s, int startpos = 0) const {
     return ((startpos >= 0) ? find(s, startpos) :
 	    rfind(s, length() + startpos - traits_type::length(s))); }
-  DEPRECATED("Use std::regex")
+  DEPRECATED("Use RegexIndex()")
   size_type index(const Regex &r, int startpos = 0) const;
 
   //  Return the number of occurences of target in String. ** Casacore addition
@@ -563,9 +644,9 @@ class String : public std::string {
   SubString at(char c, int startpos = 0);
   DEPRECATED("Use GetSubViewFrom()")
   String at(char c, int startpos = 0) const;
-  DEPRECATED("Use std::regex")
+  DEPRECATED("Use RegexSubStr")
   SubString at(const Regex &r, int startpos = 0);
-  DEPRECATED("Use std::regex")
+  DEPRECATED("Use RegexSubStr")
   String at(const Regex &r, int startpos = 0) const;
   // Next ones for overloading reasons. 
   // <note role=tip> It is better to use the <src>substr()</src> method
@@ -623,7 +704,7 @@ class String : public std::string {
   DEPRECATED("Use std::regex")
   SubString through(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  DEPRECATED("Use substr(pos)")
+  DEPRECATED("Use substr(0, pos+1)")
   SubString through(int pos) {
     return through(static_cast<size_type>(pos)); }
   // </group>
@@ -714,8 +795,10 @@ class String : public std::string {
   int gsub(const char *pat, const std::string &repl);
   DEPRECATED("Use ReplaceAllInPlace()")
   int gsub(const char *pat, const char *repl);
-  DEPRECATED("Use std::regex")
-  int gsub(const Regex &pat, const std::string &repl);
+  DEPRECATED("Use RegexReplaceAll")
+  int gsub(const Regex &pat, const std::string &repl) {
+    return RegexReplaceAll(*this, pat, repl);
+  }
   //</group>
 
 private:
@@ -833,14 +916,14 @@ String join(std::string src[], int n, const std::string &sep);
 // <group name=case>
 // Global function which returns a transformation to reverse order of String.
 String reverse(const std::string& str);
-// Global function  which returns a transformation to uppercase of String.
+// Global function which returns a transformation to uppercase of String.
 String upcase(const std::string& str);
-// Global function  which returns a transformation to lowercase of String.
+// Global function which returns a transformation to lowercase of String.
 String downcase(const std::string& str);
-// Global function  which returns a transformation to capitalization of 
+// Global function which returns a transformation to capitalization of
 // String.
 String capitalize(const std::string& str);
-// Global function  which removes leading and trailing whitespace.
+// Global function which removes leading and trailing whitespace.
 String trim(const std::string& str);
 // </group>
 
@@ -893,55 +976,6 @@ inline void RTrimInPlace(std::string& str, char character) {
   }
 }
 
-// Convert a String to a value. All characters in the string must be used.
-// It uses a shift from an ostringstream, so that operator must exist
-// for the data type used.
-// In case of an error, an exception is thrown if @p check is set.
-// Otherwise it returns false and @p value contains the value read
-// so far.
-template<typename T>
-inline bool StringToValue (const std::string& str, T& value, bool check=true)
-{
-  std::istringstream is(str);
-  is >> value;
-  if (is.fail()  ||  !is.eof()) {
-    if (check) {
-      if(is.fail()) {
-        throw std::runtime_error ("String '" + str + "' failed to parse in StringToValue()");
-      } else {
-        std::string extra;
-        std::getline(is, extra);
-        throw std::runtime_error ("Extra characters after parsing string '" + str + "' in StringToValue(): '" + extra + "'");
-      }
-    }
-    return false;
-  }
-  return true;
-}
-
-template<typename T>
-inline T StringToValue(const std::string& str)
-{
-  T value;
-  StringToValue(str, value);
-  return value;
-}
-
-// Same as StringToValue<int>
-inline int StringToInt(const std::string& str) {
-  return StringToValue<int>(str);
-}
-
-// Same as StringToValue<float>
-inline float StringToFloat(const std::string& str) {
-  return StringToValue<float>(str);
-}
-
-// Same as StringToValue<double>
-inline double StringToDouble(const std::string& str) {
-  return StringToValue<double>(str);
-}
-
 // Like sprintf. Don't use for new code -- to be deprecated if possible.
 std::string FormatString(const char* picture, ...);
 
@@ -958,30 +992,34 @@ inline std::size_t SubStringCount(std::string_view str, std::string_view pattern
   return count;
 }
 
-inline std::string_view GetStringUpToExcluding(std::string_view input, std::string_view stop_string, size_t start_position = 0) {
+// Gets a part of a string up to and excluding a specified pattern.
+// An optional @p start_position can be specified to skip the beginning of the string.
+inline std::string_view GetStringUpToExcluding(std::string_view input, std::string_view pattern, size_t start_position = 0) {
   assert(start_position <= input.size());
-  const std::size_t end = std::min(input.size(), input.find(stop_string, start_position));
+  const std::size_t end = std::min(input.size(), input.find(pattern, start_position));
   // input.subview() is only available from C++26, so construct manually:
   return std::string_view(input.begin(), input.begin() + end);
 }
 
-// Rather specific function -- this is a replacement for String:through(), but maybe String::through() is rarely
+// Rather specific function -- this is a replacement for String:through() with string argument, but maybe String::through() is rarely
 // used, in which case this function should be removed.
-inline std::string_view GetStringUpToIncluding(std::string_view input, std::string_view stop_string, size_t start_position = 0) {
+inline std::string_view GetStringUpToIncluding(std::string_view input, std::string_view pattern, size_t start_position = 0) {
   assert(start_position <= input.size());
-  std::size_t end = input.find(stop_string, start_position);
+  std::size_t end = input.find(pattern, start_position);
   if(end == std::string_view::npos) {
     end = input.size();
   } else {
-    end += stop_string.size();
+    end += pattern.size();
   }
   // input.subview() is only available from C++26, so construct manually:
   return std::string_view(input.begin(), input.begin() + end);
 }
 
-inline std::string_view GetStringFrom(std::string_view input, std::string_view start_string, size_t start_position = 0) {
+// Get a string starting at a specific pattern that is found in the string. The @p start_position can be used
+// to start the search at a later position.
+inline std::string_view GetStringFrom(std::string_view input, std::string_view pattern, size_t start_position = 0) {
   assert(start_position <= input.size());
-  std::size_t start = input.find(start_string, start_position);
+  std::size_t start = input.find(pattern, start_position);
   if(start == std::string_view::npos)
     start = input.size();
   // input.subview() is only available from C++26, so construct manually:
@@ -1002,14 +1040,18 @@ inline std::string_view GetStringAfter(std::string_view input, std::string_view 
   return std::string_view(input.begin() + start, input.end());
 }
 
+// Converts the specified string to upper case, in place.
 inline void ToUpperCaseInPlace(std::string& str) {
   std::transform(str.begin(), str.end(), str.begin(), [&](char c) { return toupper(c); });
 }
 
+// Converts the specified string to lower case, in place.
 inline void ToLowerCaseInPlace(std::string& str) {
   std::transform(str.begin(), str.end(), str.begin(), [&](char c) { return tolower(c); });
 }
 
+// Changes the casing such that every separate word starts with an uppercase
+// character and continues lowercase.
 inline void CapitalizeStringInPlace(std::string& str) {
   std::string::iterator p=str.begin();
   while(p != str.end()) {
@@ -1035,12 +1077,15 @@ inline void CapitalizeStringInPlace(std::string& str) {
   }
 }
 
+// Remove the end of a string, starting from a specified pattern.
+// A start_position can be specified to skip the beginning during the search for the pattern
 inline void EraseStringFrom(std::string& str, std::string_view pattern, size_t start_position = 0) {
   const std::size_t start = str.find(pattern, start_position);
   if(start != std::string::npos)
     str.erase(start, pattern.length());
 }
 
+// Replace every occurence of @c pattern in @c str by @c replacement.
 inline size_t ReplaceAllInPlace(std::string& str, std::string_view pattern, std::string_view replacement) {
   std::size_t n_matches = 0;
   if (str.length() == 0 || pattern.length() == 0 ||
@@ -1058,6 +1103,7 @@ inline size_t ReplaceAllInPlace(std::string& str, std::string_view pattern, std:
   return n_matches;
 }
 
+// Determines if a given string contains another given string.
 inline constexpr bool StringContains(std::string_view str, std::string_view pattern) {
   return str.find(pattern) != std::string_view::npos;
 }
@@ -1074,6 +1120,10 @@ struct hash<casacore::String>
     { return std::hash<std::string>()(k); }
 };
 } // namespace std
+
+#ifdef CASACORE_DEPRECATE_STRING
+#pragma GCC diagnostic pop
+#endif
 
 #undef DEPRECATED
 
