@@ -105,13 +105,6 @@ int String::freq(const Char *s) const {
   return found;
 }
 
-int String::toInt (const String& s, bool chk)
-  { int v=0; s.fromString(v, chk); return v; }
-Float String::toFloat (const String& s, bool chk)
-  { Float v=0; s.fromString(v, chk); return v; }
-Double String::toDouble (const String& s, bool chk)
-  { Double v=0; s.fromString(v, chk); return v; }
-
 void String::throwFromStringError() const
 {
   throw AipsError ("fromString failure for string '" + *this + "'");
@@ -155,15 +148,15 @@ SubString String::at(size_type pos, size_type len) {
 }
 
 SubString String::at(const std::string &str, int startpos) {
-  return _substr(index(str, startpos), str.length());
+  return _substr(IndexString(*this, str, startpos), str.length());
 }
 
 SubString String::at(const Char *s, int startpos) {
-  return _substr(index(s, startpos), traits_type::length(s));
+  return _substr(IndexString(*this, s, startpos), traits_type::length(s));
 }
 
 SubString String::at(Char c, int startpos) {
-  return _substr(index(c, startpos), 1);
+  return _substr(IndexString(*this, c, startpos), 1);
 }
 
 SubString String::before(size_type pos) {
@@ -171,15 +164,15 @@ SubString String::before(size_type pos) {
 }
 
 SubString String::before(const std::string &str, size_type startpos) {
-  return _substr(0, index(str, startpos));
+  return _substr(0, IndexString(*this, str, startpos));
 }
 
 SubString String::before(const Char *s, size_type startpos) {
-  return _substr(0, index(s, startpos));
+  return _substr(0, IndexString(*this, s, startpos));
 }
 
 SubString String::before(Char c, size_type startpos) {
-  return _substr(0, index(c, startpos));
+  return _substr(0, find(c, startpos));
 }
 
 SubString String::through(size_type pos) {
@@ -187,19 +180,19 @@ SubString String::through(size_type pos) {
 }
 
 SubString String::through(const std::string &str, size_type startpos) {
-  size_type last(index(str, startpos));
+  size_type last(IndexString(*this, str, startpos));
   if (last != npos) last += str.length();
   return _substr(0, last);
 }
 
 SubString String::through(const Char *s, size_type startpos) {
-  size_type last(index(s, startpos));
+  size_type last(IndexString(*this, s, startpos));
   if (last != npos) last +=  traits_type::length(s);
   return _substr(0, last);
 }
 
 SubString String::through(Char c, size_type startpos) {
-  size_type last(index(c, startpos));
+  size_type last(find(c, startpos));
   if (last != npos) last += 1;
   return _substr(0, last);
 }
@@ -209,17 +202,17 @@ SubString String::from(size_type pos) {
 }
 
 SubString String::from(const std::string &str, size_type startpos) {
-  size_type first(index(str, startpos));
+  size_type first(IndexString(*this, str, startpos));
   return _substr(first, length()-first);
 }
 
 SubString String::from(const Char *s, size_type startpos) {
-  size_type first(index(s, startpos));
+  size_type first(IndexString(*this, s, startpos));
   return _substr(first, length()-first);
 }
 
 SubString String::from(Char c, size_type startpos) {
-  size_type first(index(c, startpos));
+  size_type first(find(c, startpos));
   return _substr(first, length()-first);
 }
 
@@ -228,19 +221,19 @@ SubString String::after(size_type pos) {
 }
 
 SubString String::after(const std::string &str, size_type startpos) {
-  size_type first(index(str, startpos));
+  size_type first(IndexString(*this, str, startpos));
   if (first != npos) first += str.length();
   return _substr(first, length()-first);
 }
 
 SubString String::after(const Char *s, size_type startpos) {
-  size_type first(index(s, startpos));
+  size_type first(IndexString(*this, s, startpos));
   if (first != npos) first += traits_type::length(s);
   return _substr(first, length()-first);
 }
 
 SubString String::after(Char c, size_type startpos) {
-  size_type first(index(c, startpos));
+  size_type first(find(c, startpos));
   if (first != npos) first += 1;
   return _substr(first, length()-first);
 }
@@ -255,7 +248,7 @@ void String::prepend(const Char *s) {
 }
 
 void String::prepend(Char c) {
-  insert(size_type(0), c);
+  insert(size_type(0), 1, c);
 }
 
 // Delete
@@ -264,42 +257,28 @@ void String::del(size_type pos, size_type len) {
 }
 
 void String::del(const std::string &str, size_type startpos) {
-  erase(index(str, startpos), str.length());
+  erase(IndexString(*this, str, startpos), str.length());
 }
 
 void String::del(const Char *s, size_type startpos) {
-  erase(index(s, startpos), traits_type::length(s));
+  erase(IndexString(*this, s, startpos), traits_type::length(s));
 }
 
 void String::del(Char c, size_type startpos) {
-  erase(index(c, startpos), 1);
+  erase(find(c, startpos), 1);
 }
 
 // Global substitution
 int String::gsub(const std::string &pat, const std::string &repl) {
-  int nmatches(0);
-  if (length() == 0 || pat.length() == 0 ||
-      length() < pat.length()) return nmatches;
-  size_type si(0);
-  int rl(repl.length());
-  while (length()-si >= pat.length()) {
-    size_type pos = find(pat, si);
-    if (pos == npos) break;
-    else {
-      nmatches++;
-      replace(pos, pat.length(), repl);
-      si = pos + rl;
-    }
-  }
-  return nmatches;
+  return ReplaceAllInPlace(*this, pat, repl);
 }
 
 int String::gsub(const Char *pat, const std::string &repl) {
-  return gsub(String(pat), repl);
+  return ReplaceAllInPlace(*this, String(pat), repl);
 }
 
 int String::gsub(const Char *pat, const Char *repl) {
-  return gsub(String(pat), String(repl));
+  return ReplaceAllInPlace(*this, String(pat), String(repl));
 }
 
 // Member utilities
@@ -335,14 +314,14 @@ String::size_type String::find(const Regex &r, size_type pos) const {
 bool String::matches(const std::string &str, int pos) const {
   bool rstat(false);
   if (pos < 0) {
-    if (this->index(str,pos) == 0) {
+    if (IndexString(*this, str,pos) == 0) {
       rstat = true;
     }
   } else {
     if (length() != 0 && str.length() != 0 &&
         length() == pos+str.length() &&
         static_cast<size_type>(pos) < length() &&
-        index(str, pos) == static_cast<size_type>(pos)) {
+        IndexString(*this, str, pos) == static_cast<size_type>(pos)) {
       rstat = true;
     }
   }
@@ -354,16 +333,27 @@ bool String::contains(const Regex &r) const {
   return (r.find(c_str(), length(), unused, 0)) != npos;
 }
 
-bool String::matches(const Regex &r, int pos) const {
-  String::size_type l = (pos < 0) ? -pos : length() - pos;
-  if (l>length()) return false;
-  if (pos<0) return r.fullMatch(c_str(), l);
-  return r.fullMatch(c_str()+pos, l);
+bool RegexMatches(const std::string& str, const Regex &r, int pos) {
+  const size_t l = (pos < 0) ? -pos : str.length() - pos;
+  if (l>str.length()) return false;
+  if (pos<0) return r.fullMatch(str.c_str(), l);
+  return r.fullMatch(str.c_str()+pos, l);
+}
+
+size_t RegexIndex(const std::string& str, const Regex& r, size_t startpos) {
+  int unused;
+  return r.search(str.c_str(), str.length(), unused, startpos);
 }
 
 String::size_type String::index(const Regex &r, int startpos) const {
   int unused;
   return r.search(c_str(), length(), unused, startpos);
+}
+
+std::string RegexSubStr(const std::string& str, const Regex& r, size_t startpos) {
+  int mlen;
+  size_t first = r.search(str.c_str(), str.length(), mlen, startpos);
+  return str.substr(first, mlen);
 }
 
 SubString String::at(const Regex &r, int startpos) {
@@ -406,28 +396,28 @@ void String::del(const Regex &r, size_type startpos) {
   }
 }
 
-int String::gsub(const Regex &pat, const std::string &repl) {
+int RegexReplaceAll(std::string& str, const Regex &pat, const std::string &repl) {
   int nmatches(0);
-  if (length() == 0) return nmatches;
+  if (str.length() == 0) return nmatches;
   int pl;
-  size_type si(0);
+  size_t si(0);
   int rl(repl.length());
-  while (length() > si) {
-    size_type pos = pat.find(c_str(), length(), pl, si);
-    if (pos >= npos-1 || pl <= 0) break;
+  while (str.length() > si) {
+    size_t pos = pat.find(str.c_str(), str.length(), pl, si);
+    if (pos >= std::string::npos-1 || pl <= 0) break;
     else {
       nmatches++;
       si = pos + rl;
       if (pos == 0 && si == 0) { 	// could be problem with anchor at begin
 	int pls;
-	size_type ps = pat.find(c_str(), length(), pls, pl); // try for begin
-	if (ps >= npos-1 || pls <= 0) {
-	  replace(pos, pl, repl);	// finish off if no more (anchored) match
+	size_t ps = pat.find(str.c_str(), str.length(), pls, pl); // try for begin
+	if (ps >= std::string::npos-1 || pls <= 0) {
+	  str.replace(pos, pl, repl);	// finish off if no more (anchored) match
 	  break;
 	}
       }
       // Continue global substitution
-      replace(pos, pl, repl);
+      str.replace(pos, pl, repl);
     }
   }
   return nmatches;
