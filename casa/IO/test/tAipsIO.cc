@@ -200,7 +200,7 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
 	
 	cout << io.putstart ("abcdefghij",20) << endl;
 	io << "Ger";
-	io << str(2,11);                                 // put a substring
+	io << str.substr(2,11);                                 // put a substring
 	io.put (1, &i);
 	cout << io.putend() << endl;
 	

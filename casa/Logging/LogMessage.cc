@@ -93,7 +93,7 @@ LogMessage &LogMessage::message(const String &message, Bool keepLastTime)
 	; // Nothing
     }
     if (n+1 < Int(message_p.length())) {
-	message_p = message_p.before(n+1);
+	message_p = message_p.substr(0, n+1);
     }
 
     return *this;
@@ -171,18 +171,18 @@ String LogMessage::toString() const
         String daOrigin = origin().toString();
         if (priority_p > NORMAL1 && priority_p < WARN) {
             // Remove file and line location from origin
-            daOrigin.gsub(Regex(".file .*line .*"), "");
+          RegexReplaceAll(daOrigin, Regex(".file .*line .*"), "");
         }
         header += daOrigin;
   }
 	
   String continuationHeader = "\n" + header + "+\t";
   String message = String(message_p); // copy
-  message.gsub("\n", continuationHeader);
+  ReplaceAllInPlace(message, "\n", continuationHeader);
 
   ostringstream os;
   os << header << "\t" << message;
-  return String(os);
+  return os.str();
 }
 
 String LogMessage::toTermString() const
@@ -195,7 +195,7 @@ String LogMessage::toTermString() const
         String daOrigin = origin().toString();
         if (priority_p > NORMAL1 && priority_p < WARN) {
             // Remove file and line location from origin
-            daOrigin.gsub(Regex(".file .*line .*"), "");
+            RegexReplaceAll(daOrigin, Regex(".file .*line .*"), "");
         }
         header += daOrigin;
   }
@@ -208,7 +208,7 @@ String LogMessage::toTermString() const
   os << header << "\n" << message;
   //String pr = toString(priority());
   //os << pr.resize(6, ' ') << "   " << message;
-  return String(os);
+  return os.str();
 }
 
 ostream &operator<<(ostream &os, const LogMessage &message)

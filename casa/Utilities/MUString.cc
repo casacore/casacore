@@ -190,7 +190,7 @@ Double MUString::getDouble() {
     ("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
   Double res = 0.0;
   if (ptr < len && testDouble()) {
-    istringstream instr(std::string(str.at(ex, ptr)));
+    istringstream instr(RegexSubStr(str, ex, ptr));
     instr >> res;
     skipString(ex);
   }
@@ -277,7 +277,7 @@ Bool MUString::testCharNC(Char ch) const {
 }
 
 Bool MUString::testChar(const Regex &ex) const {
-  return (ptr < len && String(str[ptr]).index(ex) == 0);
+  return (ptr < len && RegexIndex(std::string(1, str[ptr]), ex) == 0);
 }
 
 Bool MUString::testAlpha() const {
@@ -313,14 +313,14 @@ String MUString::getAlphaNum() {
 
 Bool MUString::testString(const Regex &ex) const {
   return (ptr < len &&
-	  String(String(str).from(Int(ptr))).index(ex) == 0);
+	  RegexIndex(str.substr(ptr), ex) == 0);
 }
 
 Bool MUString::testString(const String &ex) const {
   if (ptr < len) {
     Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
-    String t = String(str)(ptr,tl); 
-    return (t.matches(ex));
+    String t = str.substr(ptr,tl);
+    return t == ex;
   }
   return False;
 }
@@ -328,9 +328,9 @@ Bool MUString::testString(const String &ex) const {
 Bool MUString::testStringNC(const String &ex) const {
   if (ptr < len) {
     Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
-    String t = String(str)(ptr,tl); t.downcase();
-    String u = ex; u.downcase();
-    return (t.matches(u));
+    String t = str.substr(ptr,tl); ToLowerCaseInPlace(t);
+    String u = ex; ToLowerCaseInPlace(u);
+    return t == u;
   }
   return False;
 }
@@ -348,7 +348,7 @@ Bool MUString::tSkipStringNC(const String &ex) {
 }
 
 void MUString::skipString(const Regex &ex) {
-  if (testString(ex)) adjustPtr(ptr + str.at(ex, ptr).length());
+  if (testString(ex)) adjustPtr(ptr + RegexSubStr(str, ex, ptr).length());
 }
 
 void MUString::skipString(const String &ex) {
@@ -457,7 +457,7 @@ Int MUString::initLast() {
 
 void MUString::setLast(Int st) {
   if (st < (Int)ptr) {
-    stat = True; lget = str(st, ptr-st);
+    stat = True; lget = str.substr(st, ptr-st);
   }
 }
 
@@ -476,14 +476,14 @@ uInt MUString::minimaxNC(const String &in, Int N_name,
 	    String b = upcase(tname[i]);
 	    size_t ib = b.length();
 	    ib = ia < ib ? ia : ib;
-	    if (a.at(0,ib) == b.at(0,ib)) {
+	    if (a.substr(0,ib) == b.substr(0,ib)) {
 		Int j;
 // Look for more partials
 		for (j=i+1; j<N_name; j++) {
 		    b = upcase(tname[j]);
 		    ib = b.length();
 		    ib = ia < ib ? ia : ib;
-		    if (a(0,ib) == b.at(0,ib)) break;
+		    if (a.substr(0,ib) == b.substr(0,ib)) break;
 		}
 // Found duplicate
 		if (j<N_name) i=N_name;
@@ -503,7 +503,7 @@ uInt MUString::minimaxNC(const String &in,
 }
 
 ostream &operator<<(ostream &os, const MUString &in) {
-  if (in.ptr < in.len) os << String(in.str).from(Int(in.ptr));
+  if (in.ptr < in.len) os << String(in.str).substr(in.ptr);
   return os;
 }
 

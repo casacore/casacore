@@ -103,12 +103,12 @@ Vector<String> DOos::fileNames (const String& directoryName,
 				Bool all, Bool follow)
 {
   // Determine if and how to select on file type.
-  Bool takeRegular =  (fileTypes.contains ('r'));
-  Bool takeDirectory =  (fileTypes.contains ('d'));
-  Bool takeSymLink =  (fileTypes.contains ('s'));
-  Bool takeReadable =  (fileTypes.contains ('R'));
-  Bool takeWritable =  (fileTypes.contains ('W'));
-  Bool takeExecutable =  (fileTypes.contains ('X'));
+  Bool takeRegular =  (fileTypes.find ('r') != std::string::npos);
+  Bool takeDirectory =  (fileTypes.find ('d') != std::string::npos);
+  Bool takeSymLink =  (fileTypes.find ('s') != std::string::npos);
+  Bool takeReadable =  (fileTypes.find ('R') != std::string::npos);
+  Bool takeWritable =  (fileTypes.find ('W') != std::string::npos);
+  Bool takeExecutable =  (fileTypes.find ('X') != std::string::npos);
   Bool checkType =  (takeRegular || takeDirectory || takeSymLink);
   Bool checkAcc =  (takeReadable || takeWritable || takeExecutable);
   Bool check =  (checkType || checkAcc);

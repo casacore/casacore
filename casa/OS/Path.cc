@@ -114,8 +114,8 @@ Path& Path::operator= (const Path& that)
 void Path::append (const String& string)
 {
     if  (!string.empty()) {
-	if (itsOriginalPathName.lastchar() != '/'
-        &&  string.firstchar() != '/') {
+	if (itsOriginalPathName.back() != '/'
+        &&  string.front() != '/') {
 	    itsOriginalPathName += "/";
 	}
 	itsOriginalPathName += string;
@@ -158,7 +158,7 @@ Bool Path::isValid() const
 	return False;
     }
     // Check if pathname contains double slashes
-    if (itsOriginalPathName.contains ("//")) {
+    if (itsOriginalPathName.find ("//") != std::string::npos) {
 	return False;
     }
     // Check if pathname contains non-printables
@@ -195,7 +195,7 @@ Bool Path::isStrictlyPosix() const
 	return False;
     }
     // Check if pathname contains double slashes
-    if (itsOriginalPathName.contains ("//")) {
+    if (itsOriginalPathName.find ("//") != std::string::npos) {
 	return False;
     }
     // Check if pathname contains non-printables
@@ -240,7 +240,7 @@ String Path::baseName() const
     Int i=len;
     while (--i >= 0  &&  name[i] != '/') {}
     // The base name is the part from the slash till the end.
-    return name(i+1, len-i-1);
+    return name.substr(i+1, len-i-1);
 }
 
 String Path::dirName() const
@@ -261,7 +261,7 @@ String Path::dirName() const
     if (i > 0) {
 	i--;
     }
-    return name.through(i);
+    return name.substr(0, i+1);
 }
 
 
@@ -285,7 +285,7 @@ uInt Path::getMaxNameSize()
     // if this doesn't work nameMax will get the value of PATH_MAX_GUESS
     if (nameMax == 0) {
 #if defined(AIPS_CRAY_PGI)
-        pathMax = NAME_MAX_GUESS;
+        nameMax = NAME_MAX_GUESS;
 #else
 	nameMax = pathconf ("/",_PC_NAME_MAX) < 0  ?  nameMax : NAME_MAX_GUESS;
 #endif
@@ -311,18 +311,18 @@ String Path::expandName (const String& inString) const
 	count++;          // count is increased when the string is 
 	cursor = 0;       // walked through 
 	// Replace tilde with the name of the home directory
-	if (tempString.firstchar() == '~') {
+	if (tempString.front() == '~') {
 	    if (tempString.length() == 1  ||  tempString[1] == '/') {
 	      // To get the home directory, environment variable HOME is used.
 		String name (EnvironmentVariable::get("HOME"));
 		if (! name.empty()) {
-		    tempString.del ("~",0);
-		    tempString.prepend (name);
+		    tempString.erase (0, 1);
+		    tempString.insert (0, name);
 		}
 	    } else {
-		tempString.del ("~",0);
+		tempString.erase (0, 1);
 		getNextName (tempString, cursor);
-		String temp (tempString.before(Int(cursor)));
+		String temp (tempString.substr(0, cursor));
 		// The password file is used to get the home directory 
 		// of "~name"
 		// This cannot be done on the CRAY XT3 CATAMOUNT as it
@@ -330,13 +330,13 @@ String Path::expandName (const String& inString) const
 #ifdef AIPS_CRAY_PGI
 		tempString.prepend ("~");
 #else
-		passwd* passWd = getpwnam(temp.chars());
+		passwd* passWd = getpwnam(temp.c_str());
 		if (passWd != 0) {
-		    tempString.del (tempString.before (Int(cursor)));
-		    tempString.prepend (passWd->pw_dir);
+		    tempString.erase (0, cursor);
+		    tempString.insert (0, passWd->pw_dir);
 		    cursor = 0;
 		}else{
-		    tempString.prepend ("~");
+		    tempString.insert(0, "~");
 		}
 #endif
 	    }
@@ -352,7 +352,7 @@ String Path::expandName (const String& inString) const
             String::size_type dpos = tempString.find ('$', cursor);
             if (dpos != String::npos) {
                 String::size_type last = i;
-		String dName (tempString.at (Int(dpos+1), Int((i-dpos)-1)));
+		String dName (tempString.substr (Int(dpos+1), Int((i-dpos)-1)));
                 if (dName[0] == '{') {
                     String::size_type bracePos = dName.find ('}');
                     if (bracePos != std::string::npos) {
@@ -366,8 +366,8 @@ String Path::expandName (const String& inString) const
                     String name (EnvironmentVariable::get(dName));
                     if (! name.empty()) {
 		        String res (name);
-                        res.prepend (tempString.before(Int(dpos)));
-                        res += tempString.after (Int(last-1));
+                        res.insert (0, tempString.substr(0, dpos));
+                        res += tempString.substr (last);
                         // Update the index for the changed part.
                         i = last + Int(res.size()) - Int(tempString.size());
                         tempString = res;
@@ -391,15 +391,15 @@ String Path::expandName (const String& inString) const
 String Path::makeAbsoluteName (const String& inString) const
 {
     // If the first char is a slash the name is already absolute.
-    if (inString.firstchar() == '/') {
+    if (inString.front() == '/') {
 	return inString;
     }
     // Otherwise we have a relative pathname.
     String workString (inString);
     if (workString == ".") {
         workString = "";
-    } else if (workString.startsWith("./")) {
-        workString = workString.from(2);
+    } else if (workString.starts_with("./")) {
+        workString = workString.substr(2);
     }
     // Get the working directory and prepend it.
     // getcwd returns a null pointer if it fails.
@@ -411,7 +411,7 @@ String Path::makeAbsoluteName (const String& inString) const
 	return tempString;
     }
     // Append a / if needed.
-    if (tempString.lastchar() != '/') {
+    if (tempString.back() != '/') {
 	tempString += '/';
     }
     tempString += workString;
@@ -458,8 +458,8 @@ String Path::removeDots (const String& inString) const
 void Path::getNextName (const String& inString, uInt& count) const
 {
     // Sets count on the next slash or on the end of the string
-    Int inx = inString.index ("/", count);
-    if (inx < 0) {
+    size_t inx = inString.find ('/', count);
+    if (inx == std::string::npos) {
 	count = inString.length();
     } else {
 	count = inx;
@@ -470,35 +470,35 @@ void Path::getNextName (const String& inString, uInt& count) const
 String Path::stripDirectory (const String& name, const String& otherName)
 {
     // Add trailing slash if not there.
-    String dir (Path(otherName).absoluteName());
-    if (dir.lastchar() != '/') {
+    std::string dir (Path(otherName).absoluteName());
+    if (dir.back() != '/') {
 	dir += '/';
     }
     Int leng = dir.length();
     // Convert name to an absolute path name.
-    String aName (Path(name).absoluteName());
+    std::string aName (Path(name).absoluteName());
     // If directory is contained in this name, return name without it.
     // Prepend by ././ indicating full name is removed.
     if (leng > 0) {
         Int aleng = aName.length();
-	if (aleng > leng  &&  aName.before(leng) == dir) {
-	    return "././" + aName.from (leng);
+	if (aleng > leng  &&  aName.substr(0, leng) == dir) {
+	    return "././" + aName.substr (leng);
 	} else {
 	    // No match; see if name matches start of otherName.
 	    // If so, append /. to remainder of otherName.
-	    if (aleng+1 < leng  &&  dir.before(aleng+1) == aName+'/') {
-	        return dir.from(aleng+1) + '.';
+	    if (aleng+1 < leng  &&  dir.substr(0, aleng+1) == aName+'/') {
+	        return dir.substr(aleng+1) + '.';
 	    }
 	    // No match; now compare using the directory part only.
 	    dir = Path(dir).dirName() + '/';
 	    while (dir.length() >= 2  &&  dir[0] == '.'  &&  dir[1] == '/') {
-		dir = dir.after(1);
+		dir = dir.substr(2);
 	    }
 	    leng = dir.length();
 	    if (leng > 0) {
-		if (aName.length() > uInt(leng)  && aName.before(leng) == dir) {
+		if (aName.length() > uInt(leng)  && aName.substr(0, leng) == dir) {
 		    // The leading ./ indicates that directory is removed.
-		    return "./" + aName.from (leng);
+		    return "./" + aName.substr (leng);
 		}
 	    }
 	}
@@ -514,7 +514,7 @@ String Path::stripDirectory (const String& name, const String& otherName)
     // Return original name after removing possible leading ./
     String tName(name);
     while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
-	tName = tName.after(1);
+	tName = tName.substr(2);
     }
     return tName;
 }
@@ -527,7 +527,7 @@ String Path::addDirectory (const String& name, const String& otherName)
     // Start with removing possible leading ./
     String tName(name);
     while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
-	tName = tName.after(1);
+	tName = tName.substr(2);
     }
     // If anything was removed, we have to add the directory.
     if (tName.length() < name.length()) {
@@ -548,8 +548,8 @@ String Path::addDirectory (const String& name, const String& otherName)
 	    String oName(otherName);
 	    Int oleng = oName.length();
 	    if (oleng >= leng+2
-            &&  '/'+tName.before(leng) == oName.from(oleng-leng-1)) {
-	        return oName.before(oleng-leng-1);
+            &&  '/'+tName.substr(0, leng) == oName.substr(oleng-leng-1)) {
+	        return oName.substr(oleng-leng-1);
 	    }
 	}
     }

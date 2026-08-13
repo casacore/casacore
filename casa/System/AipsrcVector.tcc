@@ -44,8 +44,8 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
-    res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    RegexReplaceAll(res, ws, " ");
+    Int m = std::count(res.begin(), res.end(), ' ')+1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<T>(m);

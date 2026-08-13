@@ -75,7 +75,7 @@ void AipsrcValue<Bool>::save(uInt keyword) {
   } else {
     oss << "false";
   }
-  Aipsrc::save(ntlst[keyword-1], String(oss));
+  Aipsrc::save(ntlst[keyword-1], oss.str());
 }
 
 } //# NAMESPACE CASACORE - END

@@ -296,7 +296,7 @@ String Time::toString(const Bool iso) const
       out<<year;
   }
 
-  return String(out);
+  return out.str();
 }
 
 istream& operator>>(istream& in, Time& other) {

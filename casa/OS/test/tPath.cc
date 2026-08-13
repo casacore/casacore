@@ -241,6 +241,7 @@ void doIt (Bool doExcp, Bool& success)
 		      == "de/.");
     AlwaysAssertExit (Path::stripDirectory ("././abc/de/ef", "././././abc/de")
 		      == "././ef");
+    const std::string result = Path::stripDirectory ("abc/ef", "abc/de");
     AlwaysAssertExit (Path::stripDirectory ("abc/ef", "abc/de")
 		      == "./ef");
     AlwaysAssertExit (Path::stripDirectory ("ef", "de")

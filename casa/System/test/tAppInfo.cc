@@ -78,11 +78,11 @@ int main()
 
 
 	String file = AppInfo::workFileName();
-	AlwaysAssertExit(file.contains(dir1) || file.contains(dir2));
-	AlwaysAssertExit(file.contains(Regex("/aipstmp_")));
+	AlwaysAssertExit(StringContains(file, dir1) || StringContains(file, dir2));
+	AlwaysAssertExit(std::regex_search(file, std::regex("/aipstmp_")));
 	file = AppInfo::workFileName(0, "foo_");
-	AlwaysAssertExit(file.contains(dir1) || file.contains(dir2));
-	AlwaysAssertExit(file.contains(Regex("/foo_")));
+	AlwaysAssertExit(StringContains(file, dir1) || StringContains(file, dir2));
+	AlwaysAssertExit(std::regex_search(file, std::regex("/foo_")));
 
 	///Bool caught = False;
 	try {

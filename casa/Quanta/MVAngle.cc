@@ -198,7 +198,7 @@ String MVAngle::string(uInt intyp, uInt inprec) const {
 String MVAngle::string(const MVAngle::Format &form) const {
     ostringstream oss;
     print (oss, form);
-    return String(oss);
+    return oss.str();
 }
 
 Double MVAngle::timeZone() {

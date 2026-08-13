@@ -106,8 +106,8 @@ void SymLink::create (const Path& target, Bool overwrite)
 	// Remove an existing symlink, otherwise symlink fails.
 	remove();
     }
-    if (symlink (target.expandedName().chars(),
-		 path().expandedName().chars()) < 0) {
+    if (symlink (target.expandedName().c_str(),
+		 path().expandedName().c_str()) < 0) {
 	throw (AipsError ("SymLink::create error on " + target.expandedName() +
 			  ": " + strerror(errno)));
     }
@@ -115,7 +115,7 @@ void SymLink::create (const Path& target, Bool overwrite)
 
 void SymLink::remove()
 {
-    unlink (path().expandedName().chars());
+    unlink (path().expandedName().c_str());
 }
 
 void SymLink::copy (const Path& target, Bool overwrite) const
@@ -153,7 +153,7 @@ String SymLink::getSymLink() const
     int length;
     // read the link, and place the result in buf, length is the number
     // of characters placed in buf by readlink
-    length = readlink (path().expandedName().chars(), buf, 2048);
+    length = readlink (path().expandedName().c_str(), buf, 2048);
     if (length <= 0) {
 	throw (AipsError ("SymLink: " + path().expandedName() +
 			  " does not exist"));
@@ -165,7 +165,7 @@ Path SymLink::readSymLink() const
 {
     Path result (getSymLink());
     // Prepend with dirname if no absolute name.
-    if (result.originalName().firstchar() != '/') {
+    if (result.originalName().front() != '/') {
 	result = path().dirName() + "/" + result.originalName();
     }	
     return result; 

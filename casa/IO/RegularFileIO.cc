@@ -102,9 +102,9 @@ int RegularFileIO::openCreate (const RegularFile& file,
     int fd;
     for (int i=0; i<2; ++i) {
       if (create) {
-        fd = trace3OPEN ((char*)name.chars(), stropt, 0666);
+        fd = trace3OPEN ((char*)name.c_str(), stropt, 0666);
       } else {
-        fd = trace2OPEN ((char*)name.chars(), stropt);
+        fd = trace2OPEN ((char*)name.c_str(), stropt);
       }
       if (fd < 0  &&  useODirect) {
         stropt = stropt_orig;
@@ -126,7 +126,7 @@ void RegularFileIO::reopenRW()
     }
     // First try if the file can be opened as read/write.
     const String& name = itsRegularFile.path().expandedName();
-    int file = trace2OPEN ((char *)name.chars(), O_RDWR);
+    int file = trace2OPEN ((char *)name.c_str(), O_RDWR);
     if (file < 0) {
 	throw (AipsError ("RegularFileIO::reopenRW "
 			  "not possible for file " +

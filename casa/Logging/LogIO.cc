@@ -78,7 +78,7 @@ void LogIO::post(LogMessage &amess)
 void LogIO::post()
 {
     if (text_p) {
-	msg_p.message(*text_p);
+	msg_p.message(text_p->str());
 	delete text_p;
 	text_p = 0;
         sink_p.post(msg_p);
@@ -90,7 +90,7 @@ void LogIO::post()
 void LogIO::postLocally()
 {
     if (text_p) {
-	msg_p.message(*text_p);
+	msg_p.message(text_p->str());
 	delete text_p;
 	text_p = 0;
         sink_p.postLocally(msg_p);
@@ -107,7 +107,7 @@ void LogIO::preparePostThenThrow (const AipsError& x)
     if (text_p == 0) {
 	output() << "Unknown error!";
     }
-    msg_p.message(*text_p);
+    msg_p.message(text_p->str());
     // Reset priority before the post, because that'll make a copy and
     // thereafter throw an exception.
     msg_p.priority(LogMessage::NORMAL);

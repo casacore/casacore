@@ -49,7 +49,7 @@ StringDistance::StringDistance (const String& source, int maxDistance,
     itsSource = removeBlanks (itsSource);
   }
   if (caseInsensitive) {
-    itsSource.downcase();
+    ToLowerCaseInPlace(itsSource);
   }
   if (itsMaxDistance < 0) {
     itsMaxDistance = 1 + itsSource.size() / 3;
@@ -71,7 +71,7 @@ Bool StringDistance::match (const String& target) const
     return false;
   }
   if (itsCaseInsensitive) {
-    t.downcase();
+    ToLowerCaseInPlace(t);
   }
   if (itsMaxDistance == 0) {
     return t == itsSource;
@@ -89,7 +89,7 @@ Int StringDistance::distance (const String& target) const
     return t.size() - itsSource.size();
   }
   if (itsCaseInsensitive) {
-    t.downcase();
+    ToLowerCaseInPlace(t);
   }
   return doDistance (itsSource, t, itsCountSwaps, itsMatrix);
 }

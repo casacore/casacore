@@ -81,16 +81,16 @@ Bool readQuantity(Quantity &res, MUString &in)
 
 Bool readQuantity(Quantity &res, const String &in)
 {
-  static const Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
-  static const Regex ex2("[tT][oO][dD][aA][yY]");
-  static const Regex ex3("[nN][oO][wW]");
+  static const std::regex ex("^[[:space:][:punct:]]*[[:digit:]]");
+  static const std::regex ex2("[tT][oO][dD][aA][yY]");
+  static const std::regex ex3("[nN][oO][wW]");
   MUString tmp(in);
   // The next construct is to cater for an unexplained error in
   // the Linux egcs stream input library; and an even more funny one in sgi
   ///  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
   ///		      in[0] == 'Y')) {
-  if (!in.empty() && !in.contains(ex2) && !in.contains(ex3) &&
-      !in.contains(ex)) {
+  if (!in.empty() && !std::regex_search(in, ex2) && !std::regex_search(in, ex3) &&
+      !std::regex_search(in, ex)) {
     tmp = MUString(String("0.0") + in);		// Pointed non-const String
   }
   return readQuantity(res, tmp);

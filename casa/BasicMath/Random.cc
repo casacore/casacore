@@ -439,13 +439,13 @@ String Random::asString(Random::Types type) {
 
 Random::Types Random::asType(const String& str) {
   String canonicalCase(str);
-  canonicalCase.upcase();
+  ToUpperCaseInPlace(canonicalCase);
   Random::Types t;
   String s2;
   for (uInt i = 0; i < NUMBER_TYPES; i++) {
     t = static_cast<Random::Types>(i);
     s2 = Random::asString(t);
-    if (s2.matches(canonicalCase)) {
+    if (s2 == canonicalCase) {
       return t;
     }
   }

@@ -951,13 +951,13 @@ const String& AipsIO::getNextType()
 
 uInt AipsIO::getstart (const String& type)
 {
-    return (getstart (type.chars()));
+    return (getstart (type.c_str()));
 }
 
 uInt AipsIO::getstart (const Char* type)
 {
     uInt vers;
-    if (strcmp (type, getNextType().chars()) != 0) {
+    if (getNextType() != type) {
 	throw (AipsError ("AipsIO::getstart: found object type " +
 			  getNextType() + ", expected " + type));
     }

@@ -300,7 +300,7 @@ String TapeIO::fileName() const {
 int TapeIO::open(const Path& device, Bool writable) {
   int fd;
   const String& deviceString = device.absoluteName();
-  char* devicePtr = (char*) deviceString.chars();
+  char* devicePtr = (char*) deviceString.c_str();
   if (writable) {
     fd = ::open (devicePtr, O_RDWR);
   } else {

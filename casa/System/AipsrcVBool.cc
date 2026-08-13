@@ -39,14 +39,14 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
-    const Regex tTrue("^([tT]|[yY]|[1-9])");
-    res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    const std::regex tTrue("^([tT]|[yY]|[1-9])");
+    RegexReplaceAll(res, ws, " ");
+    Int m = std::count(res.begin(), res.end(), ' ') +1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<Bool>(m);
     for (Int i=0; i<m; i++) {
-      value(i) = ((nres[i]).contains(tTrue));;
+      value(i) = std::regex_search(nres[i], tTrue);
     }
     delete [] nres;
   }
@@ -95,7 +95,7 @@ void AipsrcVector<Bool>::save(uInt keyword) {
       oss << " false";
     }
   }
-  Aipsrc::save((ntlst)[keyword-1], String(oss));
+  Aipsrc::save((ntlst)[keyword-1], oss.str());
 }
 
 } //# NAMESPACE CASACORE - END

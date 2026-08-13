@@ -164,7 +164,7 @@ Bool ObjectID::fromString(String &error, const String &in)
     for (Int i=0; ok && i<found; i++) {
 	key = ""; val = "";
 	split(parsed[i], splitup, 2, "=");
-	val.gsub(" ", "");
+  ReplaceAllInPlace(val, " ", "");
 	if (key == "sequence") {
 	    if (foundSeq || !toInt(seq, error, val)) {
 		ok = False;

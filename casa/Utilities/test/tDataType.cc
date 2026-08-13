@@ -37,7 +37,7 @@ void simpleTests()
     {
 	ostringstream formatter;
 	formatter << TpBool;
-	AlwaysAssertExit(String(formatter) == "Bool");
+	AlwaysAssertExit(formatter.str() == "Bool");
     }
     {
 	ostringstream formatter;

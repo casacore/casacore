@@ -128,7 +128,7 @@ size_t TypeIO::write (size_t nvalues, const String* value)
     for (size_t i=0; i<nvalues; i++) {
 	uInt len = value[i].length();
 	n += write (1, &len);
-	n += write (len, value[i].chars());
+	n += write (len, value[i].c_str());
     }
     return n;
 }

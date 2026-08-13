@@ -130,7 +130,7 @@ Param::getDouble (Bool prompt) const		// Double value
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
     }
-    return atof(value.chars());
+    return atof(value.c_str());
 #endif
 }
 
@@ -139,7 +139,7 @@ Param::getDoubleArray (Bool prompt) const	// Double value
 {
     Int i;
     Int idx=0;
-    Int n = value.freq(",")+1;
+    Int n = std::count(value.begin(), value.end(), ',')+1;
     String z;
     String val(value);            // need a non-const String
     Block<Double> x(n);
@@ -150,12 +150,12 @@ Param::getDoubleArray (Bool prompt) const	// Double value
     for (i=0; i<n; i++) {
         if (i==0) {
             z = val;
-            idx = z.index(",");
+            idx = z.find(',');
         } else {
-            z = val.after(idx);
-            idx += z.index(",") + 1;
+            z = val.substr(idx + 1);
+            idx += z.find(',') + 1;
         }
-        x[i] = atof(z.chars());
+        x[i] = atof(z.c_str());
     }
     return x;
 }
@@ -166,7 +166,7 @@ Param::getInt (Bool prompt) const		// Int value
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
     }
-    return atoi(value.chars());
+    return atoi(value.c_str());
 }
 
 Block<Int>
@@ -174,7 +174,7 @@ Param::getIntArray (Bool prompt) const
 {
     Int i;
     Int idx=0;
-    Int n = value.freq(",")+1;
+    Int n = std::count(value.begin(), value.end(), ',')+1;
     String z;
     String val(value);            // need a non-const String
     Block<Int> x(n);
@@ -185,12 +185,12 @@ Param::getIntArray (Bool prompt) const
     for (i=0; i<n; i++) {
         if (i==0) {
             z = val;
-            idx = z.index(",");
+            idx = z.find(',');
         } else {
-            z = val.after(idx);
-            idx += z.index(",") + 1;
+            z = val.substr(idx + 1);
+            idx += z.find(',') + 1;
         }
-        x[i] = atoi(z.chars());
+        x[i] = atoi(z.c_str());
     }
     return x;
 }
@@ -209,7 +209,7 @@ Param::getStringArray (Bool prompt) const
 {
     Int i;
     Int idx=0;
-    Int n = value.freq(",")+1;
+    Int n = std::count(value.begin(), value.end(), ',')+1;
     String z;
     String val(value);            // need a non-const String
     Block<String> x(n);
@@ -220,10 +220,10 @@ Param::getStringArray (Bool prompt) const
     for (i=0; i<n; i++) {
         if (i==0) {
             z = val;
-            idx = z.index(",");
+            idx = z.find(',');
         } else {
-            z = val.after(idx);
-            idx += z.index(",") + 1;
+            z = val.substr(idx + 1);
+            idx += z.find(',') + 1;
         }
         x[i] = z;
     }
@@ -236,7 +236,8 @@ Param::getBool(Bool prompt) const		// Bool value
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
     }
-    return  (value.contains(Regex("[TtYy1Jj]")));
+    const std::regex r("[TtYy1Jj]");
+    return std::regex_search(value, r);
 }
 
 #if 0
