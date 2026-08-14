@@ -51,6 +51,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class Regex;
 
+inline const std::string_view kWhiteSpaceCharacters = " \n\t\r\v\f";
+
 // Return the position of the character in the string or npos if not found.
 // Searches the first index of the character if the startpos >= 0, or the reverse index if
 // startpos < 0. Note that a startpos of -1 indicates searching at the second to last character.
@@ -676,11 +678,11 @@ class String : public std::string {
   // <group name=before>
   DEPRECATED("Use substr(0, pos) or create a view. Also consider if str.start_with() suffices.")
   SubString before(size_type pos);
-  DEPRECATED("Use GetStringViewUpToExcluding()")
+  DEPRECATED("Use GetStringUpToExcluding()")
   SubString before(const std::string &str, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewUpToExcluding()")
+  DEPRECATED("Use GetStringUpToExcluding()")
   SubString before(const char *s, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewUpToExcluding()")
+  DEPRECATED("Use GetStringUpToExcluding()")
   SubString before(char c, size_type startpos = 0);
   DEPRECATED("Use std::regex")
   SubString before(const Regex &r, size_type startpos = 0);
@@ -695,11 +697,11 @@ class String : public std::string {
   // <group name=through>
   DEPRECATED("Use substr(0, pos+1)")
   SubString through(size_type pos);
-  DEPRECATED("Use GetStringViewUpToIncluding()")
+  DEPRECATED("Use GetStringUpToIncluding()")
   SubString through(const std::string &str, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewUpToIncluding()")
+  DEPRECATED("Use GetStringUpToIncluding()")
   SubString through(const char *s, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewUpToIncluding()")
+  DEPRECATED("Use GetStringUpToIncluding()")
   SubString through(char c, size_type startpos = 0);
   DEPRECATED("Use std::regex")
   SubString through(const Regex &r, size_type startpos = 0);
@@ -714,11 +716,11 @@ class String : public std::string {
   // <group name=from>
   DEPRECATED("Use substr(pos)")
   SubString from(size_type pos);
-  DEPRECATED("Use GetStringViewFrom()")
+  DEPRECATED("Use GetStringFrom()")
   SubString from(const std::string &str, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewFrom()")
+  DEPRECATED("Use GetStringFrom()")
   SubString from(const char *s, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewFrom()")
+  DEPRECATED("Use GetStringFrom()")
   SubString from(char c, size_type startpos = 0);
   DEPRECATED("Use std::regex")
   SubString from(const Regex &r, size_type startpos = 0);
@@ -734,11 +736,11 @@ class String : public std::string {
   // <group name=after>
   DEPRECATED("Use substr(pos + 1)")
   SubString after(size_type pos);
-  DEPRECATED("Use GetStringViewAfter()")
+  DEPRECATED("Use GetStringAfter()")
   SubString after(const std::string &str, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewAfter()")
+  DEPRECATED("Use GetStringAfter()")
   SubString after(const char *s, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewAfter()")
+  DEPRECATED("Use GetStringAfter()")
   SubString after(char c, size_type startpos = 0);
   DEPRECATED("Use std::regex")
   SubString after(const Regex &r, size_type startpos = 0);
