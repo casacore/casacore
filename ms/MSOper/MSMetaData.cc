@@ -2525,10 +2525,10 @@ std::set<Int> MSMetaData::getFieldIDsForField(
     String name = field;
     vector<String> fieldNames = getFieldNames();
     uInt nNames = fieldNames.size();
-    name.upcase();
+    ToUpperCaseInPlace(name);
     for (uInt i=0; i<nNames; ++i) {
         String testName = fieldNames[i];
-        testName.upcase();
+        ToUpperCaseInPlace(testName);
         if (name == testName) {
             fieldIDs.insert(i);
         }
@@ -5017,7 +5017,7 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
     std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
 ) const {
-    static const Regex rxSqld("BB_[0-9]#SQLD");
+    static const std::regex rxSqld("BB_[0-9]#SQLD");
     static const std::regex rb("RB_(\\d\\d)");
     static const std::regex sw("SW-(\\d\\d)");
     std::smatch match;
@@ -5097,7 +5097,7 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         spwInfo[i].name = name[i];
         if (myHasBBCNo) {
             spwInfo[i].bbcno = bbcno[i];
-            if (name[i].contains(rxSqld)) {
+            if (std::regex_search(name[i], rxSqld)) {
                 sqldSpw.insert(i);
             }
         }
@@ -5108,14 +5108,14 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         }
         // types of ALMA spws
         // algorithm from thunter, CAS-5794, CAS-12592, CAS-13362
-        if (name[i].contains(wvr)) {
+        if (name[i].find(wvr) != std::string::npos) {
             wvrFirst.insert(i);
             if (name[i] == wvrNominal) {
                 wvrSecond.insert(i);
             }
         }
         else if (
-            spwInfo[i].nchans == 1 && ! name[i].contains("FULL_RES")
+            spwInfo[i].nchans == 1 && name[i].find("FULL_RES") == std::string::npos
         ) {
             avgSpw.insert(i);
         }

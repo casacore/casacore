@@ -62,7 +62,7 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
   MSSpWindowColumns msSpwCol(ms()->spectralWindow());
   MSDataDescColumns msDataDescSubTable(ms()->dataDescription());
   String units(unit);
-  units.downcase();
+  ToLowerCaseInPlace(units);
 
   if(units == "km") // Kilo meter
     {

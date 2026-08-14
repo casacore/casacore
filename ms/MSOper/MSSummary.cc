@@ -386,9 +386,9 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                 os.output().width(widthFieldId); os << siter->fieldID << " ";
                 os.output().setf(ios::left, ios::adjustfield);
                 if (name.length()>20) {
-                    name.replace(19,1,'*');
+                    name.replace(19,1,1,'*');
                 }
-                os.output().width(widthField); os << name.at(0,20);
+                os.output().width(widthField); os << name.substr(0,20);
                 os.output().width(widthnrow);
                 os.output().setf(ios::right, ios::adjustfield);
                 os <<  nrowMap->find(*siter)->second;
@@ -1019,7 +1019,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                 os.output().width(widthLead);    os << "  ";
                 os.output().width(widthField);    os << (fld);
                 os.output().width(widthCode);   os << codes[fld];
-                os.output().width(widthName);    os << name.at(0,20);
+                os.output().width(widthName);    os << name.substr(0,20);
                 os.output().width(widthRA);    os << mvRa(0.0).string(MVAngle::TIME,12);
                 os.output().width(widthDec);    os << mvDec.string(MVAngle::DIG2,11);
                 os.output().width(widthType);
@@ -1238,7 +1238,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
                 //    os.output().width(widthTime);
                 //                os<< MVTime(msSC.time()(row)/86400.0).string();
                 os.output().width(widthSrc);    os<< msSC.sourceId()(row);
-                os.output().width(widthName);    os<< name.at(0,20);
+                os.output().width(widthName);    os<< name.substr(0,20);
                 //    os.output().width(widthRA);    os<< mvRa(0.0).string(MVAngle::TIME,10);
                 //    os.output().width(widthDec);    os<< mvDec.string(MVAngle::DIG2,10);
                 os.output().width(widthSpw);

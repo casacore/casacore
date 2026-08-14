@@ -188,11 +188,11 @@ String makeMSName (int seqnr, const String& msName)
 {
   String name;
   if (msName.find ("%d") != String::npos) {
-    name = String::format (msName.c_str(), seqnr);
+    name = FormatString (msName.c_str(), seqnr);
   } else {
     name = msName;
     if (!myDoSinglePart) {
-      name += String::format ("_p%d", seqnr);
+      name += FormatString ("_p%d", seqnr);
     }
   }
   return name;

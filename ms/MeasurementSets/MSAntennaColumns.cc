@@ -214,12 +214,12 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
 
 Bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
-  return antName.matches(name()(row));
+  return antName == name()(row);
 }
 
 Bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
   DebugAssert(row < nrow(), AipsError);
-  return stationName.matches(station()(row));
+  return stationName == station()(row);
 }
 
 Bool MSAntennaColumns::

@@ -80,7 +80,7 @@ static Int                   posMSArrayGram = 0;
     {
       MSArrayGramrestart (MSArrayGramin);
       yy_start = 1;
-      strpMSArrayGram = command.chars();     // get pointer to command string
+      strpMSArrayGram = command.c_str();     // get pointer to command string
       posMSArrayGram  = 0;                   // initialize string position
       MSArrayParse parser(ms);               // setup measurement set
       MSArrayParse::thisMSAParser = &parser; // The global pointer to the parser

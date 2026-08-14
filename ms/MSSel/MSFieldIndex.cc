@@ -99,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
 	String sname = stripWhite(names(i)); // Strip leading and trailing blanks
-	Int ret=(sname.matches(reg,pos));
+	Int ret=RegexMatches(sname,reg,pos);
 	maskArray(i) = ((ret>0) && !flagRow(i));
       }
     
@@ -136,7 +136,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=codes(i).matches(reg,pos);
+	Int ret=RegexMatches(codes(i), reg,pos);
 	maskArray(i) = ( (ret>0) && !flagRow(i));
       }
     
@@ -218,7 +218,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uInt len = fieldnames.nelements();
     Vector<Bool> matchfieldnames(len, False);
     for(uInt j = 0; j < len; j++) {
-      if(stripWhite(fieldnames[j]).contains(name))
+      if(stripWhite(fieldnames[j]).find(name) != std::string::npos)
 	matchfieldnames(j) = True;
     }
     LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());

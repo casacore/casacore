@@ -458,7 +458,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
     return False;
   }
   String item = buffer_p.asString(RecordFieldId("datafield"));
-  if (item.contains("data")) {
+  if (item.find("data") != std::string::npos) {
     os << LogIO::WARN << "Can't clip complex data,"<<
        " use diffbuffer first or load a derived quantity"<< LogIO::POST;
     return False;

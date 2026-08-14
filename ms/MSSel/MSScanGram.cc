@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSScanGramrestart (MSScanGramin);
 	yy_start = 1;
-	strpMSScanGram = command.chars();     // get pointer to command string
+	strpMSScanGram = command.c_str();     // get pointer to command string
 	posMSScanGram  = 0;                   // initialize string position
 	//MSScanParse parser(ms);               // setup measurement set
 	MSScanParse::thisMSSParser = parser; // The global pointer to the parser
