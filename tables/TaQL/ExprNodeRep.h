@@ -92,7 +92,7 @@ public:
   // Does the regex or maximum string distance match?
   Bool match (const String& str) const
     { return itsRegex.regexp().empty()  ?
-        itsDist.match(str) : str.matches(itsRegex);
+        itsDist.match(str) : RegexMatches(str, itsRegex);
     }
 
   // Return the regular expression.

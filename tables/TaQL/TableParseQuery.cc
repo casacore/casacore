@@ -1012,7 +1012,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     resultName_p = name;
     for (uInt i=0; i<rec.nfields(); ++i) {
       String fldName = rec.name(i);
-      fldName.downcase();
+      ToLowerCaseInPlace(fldName);
       Bool done=False;
       if (rec.dataType(i) == TpBool) {
         done = True;
@@ -1047,7 +1047,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         if (rec.dataType(i) == TpString) {
           ok = True;
           String str = rec.asString(i);
-          str.downcase();
+          ToLowerCaseInPlace(str);
           if (str == "plain") {
             resultType_p = 3;
           } else if (str == "scratch") {
@@ -1067,7 +1067,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         if (rec.dataType(i) == TpString) {
           ok = True;
           String str = rec.asString(i);
-          str.downcase();
+          ToLowerCaseInPlace(str);
           if (str == "big") {
             endianFormat_p = Table::BigEndian;
           } else if (str == "little") {
@@ -1089,7 +1089,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         if (rec.dataType(i) == TpString) {
           ok = True;
           String str = rec.asString(i);
-          str.downcase();
+          ToLowerCaseInPlace(str);
           if (str == "multifile") {
             storageOption_p.setOption (StorageOption::MultiFile);
           } else if (str == "multihdf5") {
@@ -1384,7 +1384,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool colkey = False;
     for (uInt i=2; i<parts.size(); ++i) {
       String opt(parts[i]);
-      opt.downcase();
+      ToLowerCaseInPlace(opt);
       Bool fop = True;
       if (opt.size() > 2   &&  opt.substr(0,2) == "no") {
         fop = False;

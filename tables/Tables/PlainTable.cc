@@ -793,7 +793,7 @@ void PlainTable::setEndian (int endianFormat)
         String opt;
 	// Default "big" was used until version 10.1203.00.
 	AipsrcValue<String>::find (opt, "table.endianformat", "local");
-	opt.downcase();
+	ToLowerCaseInPlace(opt);
 	if (opt == "big") {
 	    endOpt = Table::BigEndian;
 	} else if (opt == "little") {

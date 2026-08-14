@@ -103,7 +103,7 @@ void a (const char* argum[])
     IPosition cubeShape (cubeV.nelements());
     IPosition tileShape (tileV.nelements());
     for (i=0; i<cubeV.nelements(); i++) {
-	istringstream istr(cubeV(i).chars());
+	istringstream istr(cubeV(i).c_str());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
 	    throw AipsError("Cubeshape " + String::toString(cubeShape(i))
@@ -111,7 +111,7 @@ void a (const char* argum[])
 	}
     }
     for (i=0; i<tileV.nelements(); i++) {
-	istringstream istr(tileV(i).chars());
+	istringstream istr(tileV(i).c_str());
 	istr >> tileShape(i);
 	if (tileShape(i) <= 0) {
 	    throw AipsError("Tileshape " + String::toString(tileShape(i))

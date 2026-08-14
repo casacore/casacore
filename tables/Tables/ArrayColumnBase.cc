@@ -759,17 +759,17 @@ String ColumnSlicer::validateParameters() const
 {
   // Validate the contruction parameters to see if they are consistent.
   if (dataSlicers_p.size() != destinationSlicers_p.size()){
-    return String::format ("Number of data slicers (%d) and destination slicers (%d) "
+    return FormatString ("Number of data slicers (%d) and destination slicers (%d) "
                            "must match", dataSlicers_p.size(), destinationSlicers_p.size());
   }
 
   if (dataSlicers_p.size() == 0){
-    return String::format ("At least one destination and one data slicer required.");
+    return "At least one destination and one data slicer required.";
   }
 
   for (uInt i = 0; i < dataSlicers_p.size(); i++) {
     if (dataSlicers_p[i]->length() != destinationSlicers_p[i]->length()){
-      return String::format ("Length of data slicer[%d] (%s) and "
+      return FormatString ("Length of data slicer[%d] (%s) and "
                              "destination slicer [%d] (%s) must be equal", 
                              i, dataSlicers_p[i]->length().toString().c_str(),
                              i, destinationSlicers_p[i]->length().toString().c_str());

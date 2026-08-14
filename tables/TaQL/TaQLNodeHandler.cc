@@ -1076,7 +1076,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       TaQLNodeResult result = visitNode (nodes[0]);
       const TaQLNodeHRValue& res = getHR(result);
       parts[0] = res.getExpr().getString(0);
-      parts[0].downcase();
+      ToLowerCaseInPlace(parts[0]);
       if (parts[0] == "table"  &&  nodes.size() > 1) {
         TableParseQuery* curSel = pushStack (TableParseQuery::PSHOW);
         TaQLNodeHRValue res;

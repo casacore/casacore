@@ -47,7 +47,7 @@ TableIterProxy::TableIterProxy (const TableProxy& tab,
     names[i] = columns(i);
   }
   String corder(order);
-  corder.downcase();
+  ToLowerCaseInPlace(corder);
   TableIterator::Order taborder = TableIterator::Ascending;
   if (! corder.empty()) {
     if (corder[0] == 'd'  ||  corder[0] == 'D') {
@@ -55,7 +55,7 @@ TableIterProxy::TableIterProxy (const TableProxy& tab,
     }
   }
   String csort(sortType);
-  csort.downcase();
+  ToLowerCaseInPlace(csort);
   TableIterator::Option tabsort = TableIterator::ParSort;
   if (! csort.empty()) {
     if (csort[0] == 'q') {

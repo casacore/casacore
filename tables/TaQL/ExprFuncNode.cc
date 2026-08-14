@@ -976,43 +976,43 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case upcaseFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.upcase();
+        ToUpperCaseInPlace(str);
         return str;
       }
     case downcaseFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.downcase();
+        ToLowerCaseInPlace(str);
         return str;
       }
     case capitalizeFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.capitalize();
+        CapitalizeStringInPlace(str);
         return str;
       }
     case sreverseFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.reverse();
+        std::reverse(str.begin(), str.end());
         return str;
       }
     case trimFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.trim();
+        TrimInPlace(str);
         return str;
       }
     case ltrimFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.gsub (leadingWS, String());
+        RegexReplaceAll(str, leadingWS, String());
         return str;
       }
     case rtrimFUNC:
       {
         String str = operands_p[0]->getString (id);
-        str.gsub (trailingWS, String());
+        RegexReplaceAll(str, trailingWS, String());
         return str;
       }
     case substrFUNC:
@@ -1036,9 +1036,9 @@ String TableExprFuncNode::getString (const TableExprId& id)
           repl = operands_p[2]->getString (id);
         }
         if (operands_p[1]->dataType() == NTString) {
-          str.gsub (operands_p[1]->getString(id), repl);
+          ReplaceAllInPlace(str, operands_p[1]->getString(id), repl);
         } else {
-          str.gsub (operands_p[1]->getRegex(id).regex(), repl);
+          RegexReplaceAll(str, operands_p[1]->getRegex(id).regex(), repl);
         }
         return str;
       }
@@ -1173,8 +1173,8 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
     Vector<String> fmts = stringToVector(fmt, separator);
     Bool ok = True;
     for (uInt i=0; i<fmts.size(); ++i) {
-      fmts[i].trim();
-      fmts[i].upcase();
+      TrimInPlace(fmts[i]);
+      ToUpperCaseInPlace(fmts[i]);
       // Alas giveMe returns 0 for an invalid value, but that is also
       // the value of ANGLE (or abbrev). So treat that separately.
       if (static_cast<std::string&>(fmts[i]) != std::string("ANGLE").substr(0, fmts[i].size())) {
@@ -1184,7 +1184,7 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
         } else {
           // Unknown format. See if it is an integer (giving the precision).
           Int p;
-          if (fmts[i].fromString (p, False)) {
+          if (StringToValue(fmts[i], p, False)) {
             prec = p;
           } else {
             // No integer, so it must be a printf format.
@@ -1232,7 +1232,7 @@ String TableExprFuncNode::stringValue (Bool val, const String& fmt, Int width)
   if (fmt.empty()) {
     return stringValue (String(val ? "True ":"False"), fmt, width);
   }
-  return String::format (fmt.c_str(), val);
+  return FormatString (fmt.c_str(), val);
 }
 String TableExprFuncNode::stringValue (Int64 val, const String& fmt, Int width)
 {
@@ -1242,7 +1242,7 @@ String TableExprFuncNode::stringValue (Int64 val, const String& fmt, Int width)
     os << val;
     return os.str();
   }
-  return String::format (fmt.c_str(), val);
+  return FormatString (fmt.c_str(), val);
 }
 String TableExprFuncNode::stringValue (Double val, const String& fmt,
                                        Int width, Int prec,
@@ -1264,7 +1264,7 @@ String TableExprFuncNode::stringValue (Double val, const String& fmt,
     return stringAngle (val, mvFormat.second,
                         MVAngle::formatTypes(mvFormat.first));
   }
-  return String::format (fmt.c_str(), val);
+  return FormatString (fmt.c_str(), val);
 }
 String TableExprFuncNode::stringValue (const DComplex& val, const String& fmt,
                                        Int width, Int prec)
@@ -1284,7 +1284,7 @@ String TableExprFuncNode::stringValue (const DComplex& val, const String& fmt,
     }
     return os.str();
   }
-  return String::format (fmt.c_str(), val.real(), val.imag());
+  return FormatString (fmt.c_str(), val.real(), val.imag());
 }
 String TableExprFuncNode::stringValue (const String& val, const String& fmt,
                                        Int width)
@@ -1296,7 +1296,7 @@ String TableExprFuncNode::stringValue (const String& val, const String& fmt,
     os << std::setw(width) << val.substr(0,width);
     return os.str();
   }
-  return String::format (fmt.c_str(), val.c_str());
+  return FormatString (fmt.c_str(), val.c_str());
 }
 String TableExprFuncNode::stringValue (const MVTime& val, const String& fmt,
                                        Int width,
@@ -1310,7 +1310,7 @@ String TableExprFuncNode::stringValue (const MVTime& val, const String& fmt,
     return stringDT (val, mvFormat.second,
                      MVTime::formatTypes(mvFormat.first));
   }
-  return String::format (fmt.c_str(), val.day());
+  return FormatString (fmt.c_str(), val.day());
 }
 String TableExprFuncNode::stringHMS (double val, Int prec)
 {
@@ -1980,8 +1980,8 @@ DComplex TableExprFuncNode::string2Complex (const String& str)
 Bool TableExprFuncNode::string2Bool (const String& str)
 {
   String s(str);
-  s.trim();
-  s.downcase();
+  TrimInPlace(s);
+  ToLowerCaseInPlace(s);
   if (s.empty()  ||  s == "f"  ||  s == "false"  ||  s == "0"  ||
       s == "-"   ||  s == "n"  ||  s == "no") {
     return False;

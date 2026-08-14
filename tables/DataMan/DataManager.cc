@@ -379,7 +379,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
     // A dot can be used to have a specific library name (so multiple
     // data managers can use the same library).
     String libname(type);
-    libname.downcase();
+    ToLowerCaseInPlace(libname);
     std::string::size_type pos = libname.find_first_of (".<");
     if (pos != std::string::npos) {
         libname = libname.substr (0, pos);

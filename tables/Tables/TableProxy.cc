@@ -1726,7 +1726,7 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
         }
 
         String valtype = cold.asString("valueType");
-        valtype.downcase();
+        ToLowerCaseInPlace(valtype);
 
         int option = 0;
         if (cold.isDefined("option")) {
@@ -3387,7 +3387,7 @@ TableLock TableProxy::makeLockOptions (const Record& options)
     throw TableError ("lockOptions must contain field 'option'");
   }
   String str = options.asString ("option");
-  str.downcase();
+  ToLowerCaseInPlace(str);
   TableLock::LockOption opt = TableLock::AutoLocking;
   if (str == "default") {
     opt = TableLock::DefaultLocking;
@@ -3428,7 +3428,7 @@ Table::EndianFormat TableProxy::makeEndianFormat (const String& endianFormat)
   Table::EndianFormat endOpt = Table::AipsrcEndian;
   if (! endianFormat.empty()) {
     String str(endianFormat);
-    str.downcase();
+    ToLowerCaseInPlace(str);
     if (str == "aipsrc") {
       endOpt = Table::AipsrcEndian;
     } else if (str == "local") {

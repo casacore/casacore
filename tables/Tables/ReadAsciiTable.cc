@@ -174,9 +174,9 @@ void ReadAsciiTable::getTypes (const IPosition& shape,
 	    string1[0] = 'A';
 	} else {
 	    str = string2;
-	    if (str.matches (RXint)) {
+	    if (RegexMatches(str, RXint)) {
 	        string1[0] = 'I';
-	    } else if (str.matches (RXdouble)) {
+	    } else if (RegexMatches(str, RXdouble)) {
 	        string1[0] = 'D';
 	    } else {
 	        string1[0] = 'A';
@@ -278,7 +278,7 @@ void ReadAsciiTable::handleKeyset (Int lineSize, char* string1,
     }
     String keyName = String(first);
     String keyType = String(second);
-    keyType.upcase();
+    ToUpperCaseInPlace(keyType);
     if (keyset.isDefined (keyName)) {
       logger << LogIO::WARN <<
 	"Keyword " << keyName << " skipped because defined twice in "
@@ -427,15 +427,15 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
   Vector<String> vec = stringToVector (typestr);
   // The first value can be something like I10, so find first digit.
   // It should have a type before the first digit.
-  uInt pos = vec(0).find (Regex("[0-9]"));
-  if (pos == 0) {
+  size_t pos = vec(0).find_first_of("0123456789");
+  if (pos == std::string::npos) {
     throw AipsError ("ReadAsciiTable: no type info in type string '" +
 		     typestr + "'");
   }
   // Get type without shape info.
   // Note: need to convert pos to an Int because some compilers are more picky
   // about type safety, i.e. the native compilers for SGI and SUN.
-  String tp = vec(0).before (Int(pos));
+  String tp = vec(0).substr (0, pos);
   if (pos >= vec(0).length()) {
     vec(0) = String();
     // Clear vector if no shape given at all.
@@ -444,14 +444,14 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
     }
   } else {
     // Keep only length in first value.
-    vec(0) = vec(0).from(Int(pos));
+    vec(0) = vec(0).substr(pos);
   }
   shape.resize (vec.nelements());
   Regex num("[0-9]+");
   // Check value and convert to integers.
   // One variable shaped axis is possible.
   for (uInt i=0; i<vec.nelements(); i++) {
-    if (! vec(i).matches (num)) {
+    if (! RegexMatches(vec(i), num)) {
       throw AipsError ("ReadAsciiTable: invalid shape value '" + vec(i) +
 		       "' in type string '" + typestr + "'");
     }
@@ -502,7 +502,7 @@ double ReadAsciiTable::stringToPos (const String& str, Bool isDMS)
   // This function is a bit more relaxed than MVAngle::read.
   // It allows whitespace. Furthermore it allows whitespace as separator.
   String strc(str);
-  strc.downcase();
+  ToLowerCaseInPlace(strc);
   // Remove blanks and insert : if only blanks.
   // Insert 0 if nothing between separators.
   String pos;
@@ -1104,7 +1104,7 @@ Table ReadAsciiTable::makeTab (String& formatString,
     ifstream jFile;
     Path headerPath(headerfile);
     String hdrName = headerPath.expandedName();
-    jFile.open(hdrName.chars(), ios::in);
+    jFile.open(hdrName.c_str(), ios::in);
     if (! jFile) {
         throw AipsError ("ReadAsciiTable: file " + hdrName +
 			 " not found or unreadable" );
@@ -1158,7 +1158,7 @@ Table ReadAsciiTable::makeTab (String& formatString,
         jFile.close();
 	Path filePath(filein);
 	String fileName = filePath.expandedName();
-	jFile.open(fileName.chars(), ios::in);
+	jFile.open(fileName.c_str(), ios::in);
 	if (! jFile) {
 	    throw AipsError ("ReadAsciiTable: input file " + fileName +
 			     " not found or unreadable");
@@ -1225,7 +1225,7 @@ Table ReadAsciiTable::makeTab (String& formatString,
     // Generate a format string.
     String formStr;
     for (int i=0; i<nrcol; ++i) {
-        tstrOfColumn[i].upcase();
+        ToUpperCaseInPlace(tstrOfColumn[i]);
 	if (! formStr.empty()) {
 	    formStr += ", ";
 	}

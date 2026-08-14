@@ -80,11 +80,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // A true column name is given.
         String oldName;
         String str = name;
-        Int inx = str.index('.');
-        if (inx < 0) {
+        size_t inx = str.find('.');
+        if (inx == std::string::npos) {
           oldName = str;
         } else {
-          oldName = str.after(inx);
+          oldName = str.substr(inx + 1);
         }
         // Make an expression of the column or keyword name.
         columnExpr_p[nrcol] = handleKeyCol (str, True, tpq);
@@ -134,24 +134,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool caseInsensitive = ((stringType & 1) != 0);
     Bool negate          = ((stringType & 2) != 0);
     Regex regex;
-    int shInx = -1;
+    size_t shInx = std::string::npos;
     // See if the wildcarded name has a table shorthand in it.
     String shorthand;
     if (name[0] == 'p') {
       if (!negate) {
-        shInx = str.index('.');
-        if (shInx >= 0) {
-          shorthand = str.before(shInx);
-          str       = str.after(shInx);
+        shInx = str.find('.');
+        if (shInx != std::string::npos) {
+          shorthand = str.substr(0, shInx);
+          str       = str.substr(shInx + 1);
         }
       }
       regex = Regex::fromPattern (str);
     } else {
       if (!negate) {
-        shInx = str.index("\\.");
-        if (shInx >= 0) {
-          shorthand = str.before(shInx);
-          str       = str.after(shInx+1);
+        shInx = str.find("\\.");
+        if (shInx != std::string::npos) {
+          shorthand = str.substr(0, shInx);
+          str       = str.substr(shInx+2);
         }
       }
       if (name[0] == 'f') {
@@ -183,9 +183,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       for (uInt i=0; i<columns.size(); ++i) {
         String col = columns[i];
         if (caseInsensitive) {
-          col.downcase();
+          ToLowerCaseInPlace(col);
         }
-        if (col.matches(regex)) {
+        if (RegexMatches(col, regex)) {
           ++nr;
         } else {
           columns[i] = String();
@@ -220,9 +220,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         String col = columnNames_p[nrcol];
         if (!col.empty()) {
           if (caseInsensitive) {
-            col.downcase();
+            ToLowerCaseInPlace(col);
           }
-          if (col.matches(regex)) {
+          if (RegexMatches(col, regex)) {
             columnNames_p[nrcol] = String();
           }
         }
@@ -264,9 +264,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             // That can only be the case if no old name is filled in.
             AlwaysAssert (oldNames[nr].empty(), AipsError);
             String name = names[nr];
-            Int j = name.index('.');
-            if (j >= 0) {
-              name = name.after(j);
+            size_t j = name.find('.');
+            if (j != std::string::npos) {
+              name = name.substr(j + 1);
             }
             // Make an expression of the column name.
             exprs[nr]    = handleKeyCol (name, False, tpq);
@@ -349,7 +349,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the possible specifications (which override the LIKE column).
     for (uInt i=0; i<spec.nfields(); i++) {
       String name = spec.name(i);
-      name.upcase();
+      ToUpperCaseInPlace(name);
       if (name == "NDIM") {
         ndim = spec.asInt(i);
       } else if (name == "SHAPE") {

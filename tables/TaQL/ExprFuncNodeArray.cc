@@ -2224,37 +2224,37 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         switch (funcType()) {
         case TableExprFuncNode::upcaseFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].upcase();
+                ToUpperCaseInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::downcaseFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].downcase();
+                ToLowerCaseInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::capitalizeFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].capitalize();
+                CapitalizeStringInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::sreverseFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].reverse();
+                std::reverse(str[i].begin(), str[i].end());
             }
             break;
         case TableExprFuncNode::trimFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].trim();
+                TrimInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::ltrimFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].gsub (leadingWS, String());
+                RegexReplaceAll(str[i], leadingWS, String());
             }
             break;
         case TableExprFuncNode::rtrimFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].gsub (trailingWS, String());
+                RegexReplaceAll(str[i], trailingWS, String());
             }
             break;
         case TableExprFuncNode::substrFUNC:
@@ -2281,12 +2281,12 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
               if (operands()[1]->dataType() == TableExprNodeRep::NTString) {
                 String patt = operands()[1]->getString(id);
                 for (size_t i=0; i<n; i++) {
-                  str[i].gsub (patt, repl);
+                  ReplaceAllInPlace(str[i], patt, repl);
                 }
               } else {
                 Regex patt = operands()[1]->getRegex(id).regex();
                 for (size_t i=0; i<n; i++) {
-                  str[i].gsub (patt, repl);
+                  RegexReplaceAll(str[i], patt, repl);
                 }
               }
             }

@@ -71,7 +71,7 @@ DataClass::DataClass(const IPosition &shape, const LogSink &sink)
   buffer << "Inital shape " << shape << "and value 2";                   // 16
   log_sink_p.post(                                                       // 17
   logMessage.priority(LogMessage::NORMAL).line(__LINE__).                // 19
-     message(buffer));                                                   // 19
+     message(buffer.str()));                                                   // 19
                                                                          // 20
   set(2);                                                                // 21
 }
@@ -84,14 +84,14 @@ void DataClass::set(Int toWhat)
   ostringstream buffer;                                                   // 3
   buffer << "Setting data values to " << toWhat;                          // 4
   log_sink_p.post(logMessage.priority(LogMessage::NORMAL).line(__LINE__). // 5
-		  message(buffer));                                       // 6
+		  message(buffer.str()));                                       // 6
   uInt n = data_p.nelements();                                            // 7
   for (uInt i=0; i < n; i++) {                                            // 8
 #ifdef AIPS_DEBUG                                                         // 9
     ostringstream buffer;                                                 // 10
     buffer << "Setting element  " << i << " to " << toWhat;               // 11
     logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).            // 12
-               message(buffer);                                           // 13
+               message(buffer.str());                                           // 13
     log_sink_p.post(logMessage);                                          // 14
 #endif                                                                    // 15
     data_p(i) = toWhat;                                                   // 16
@@ -111,7 +111,7 @@ float sum(const DataClass &object)
   float theSum = sum(object.data());                                 // 1
   ostringstream buffer;                                              // 2
   buffer << "Sum of object is: " << theSum;                          // 3
-  LogSink::postGlobally(LogMessage(buffer,                           // 4
+  LogSink::postGlobally(LogMessage(buffer.str(),                           // 4
 	   LogOrigin("sum(const DataClass &object)", WHERE)));       // 5
   return theSum;                                                     // 6
 }
