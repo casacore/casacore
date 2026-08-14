@@ -261,6 +261,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // Users can use column.subfield by preceeding it with a dot
         // (.a.b always means column.subfield).
         fldNam = stringToVector (columnName, '.');
+        if(fldNam.empty()) {
+          if (checkError) {
+            throw (TableInvExpr ("No name given"));
+          }
+          return False;
+        }
         if (fldNam.size() == 1) {
           stfld = 0;                      // one part simply means column
         } else if (fldNam(0).empty()) {
