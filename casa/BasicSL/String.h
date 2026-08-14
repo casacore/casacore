@@ -27,7 +27,7 @@
 #define CASACORE_STRING_H_
 
 // Uncomment this to issue warnings for all use of non-std::string functions
-//#define CASACORE_DEPRECATE_STRING
+#define CASACORE_DEPRECATE_STRING
 
 #ifdef CASACORE_DEPRECATE_STRING
 // Some of the (deprecated) code calls deprecated functions, so disable this
@@ -954,26 +954,38 @@ void TrimInPlace(std::string& str, std::string_view characters = " \t\n\r");
 // If the character is repeated more than once on the left, all instances
 // will be removed; e.g. LTrimInPlace(str, ',') results in ",,xy" becoming "xy".
 inline void LTrimInPlace(std::string& str, char character) {
-  std::string::iterator iter = str.begin();
-  while (iter != str.end()  &&  *iter == character) {
-    ++iter;
-  }
-  str.erase (str.begin(), iter);
+  const std::size_t pos = str.find_first_not_of(character);
+  str.erase(0, pos);
+}
+
+// Remove specified characters from beginning of string.
+// If the characters are repeated more than once on the left, all instances
+// will be removed; e.g. LTrimInPlace(str, "*-") results in "-**-xy" becoming "xy".
+inline void LTrimInPlace(std::string& str, std::string_view characters) {
+  const std::size_t pos = str.find_first_not_of(characters);
+  str.erase(0, pos);
 }
 
 // Remove specified character from end of string.
 // If the character is repeated more than once on the right, all instances
-// will be removed; e.g. rtrim(',') results in "xy,," becoming "xy".
+// will be removed; e.g. RTrimInPlace(str, ',') results in "xy,," becoming "xy".
 inline void RTrimInPlace(std::string& str, char character) {
-  if (!str.empty()) {
-    std::string::iterator iter = str.end() - 1;
-    while (iter != str.begin()  &&  *iter == character) {
-      --iter;
-    }
-    if(*iter != character)
-      ++iter;
-    str.erase (iter, str.end());
-  }
+  const size_t pos = str.find_last_not_of(character);
+  if(pos == std::string::npos)
+    str.clear();
+  else
+    str.resize(pos + 1);
+}
+
+// Remove specified characters from end of string.
+// If the characters are repeated more than once on the right, all instances
+// will be removed; e.g. RTrimInPlace(str, "*-") results in "xy--**-" becoming "xy".
+inline void RTrimInPlace(std::string& str, std::string_view characters) {
+  const size_t pos = str.find_last_not_of(characters);
+  if(pos == std::string::npos)
+    str.clear();
+  else
+    str.resize(pos + 1);
 }
 
 // Like sprintf. Don't use for new code -- to be deprecated if possible.
