@@ -560,7 +560,7 @@ int fcompare(const String& x, const String& y) {
 
 // SubString
 SubString &SubString::operator=(const SubString &str) {
-  if (this != &str) *this = String(str);
+  const_cast<std::string &>(ref_p).replace(pos_p, len_p, String(str));
   return *this;
 }
 

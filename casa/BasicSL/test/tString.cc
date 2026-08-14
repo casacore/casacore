@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(TrimInPlace)
   BOOST_CHECK_EQUAL(str5, "none gone");
 }
 
-BOOST_AUTO_TEST_CASE(LTrimInPlace) {
+BOOST_AUTO_TEST_CASE(LTrimInPlaceCharacter) {
   using casacore::LTrimInPlace;
 
   std::string empty;
@@ -63,7 +63,37 @@ BOOST_AUTO_TEST_CASE(LTrimInPlace) {
   BOOST_CHECK_EQUAL(str4, "!");
 }
 
-BOOST_AUTO_TEST_CASE(RTrimInPlace) {
+BOOST_AUTO_TEST_CASE(LTrimInPlaceStringView) {
+  using casacore::LTrimInPlace;
+
+  std::string empty;
+  LTrimInPlace(empty, "*-");
+  BOOST_CHECK_EQUAL(empty, "");
+
+  std::string str1("-- hello --");
+  LTrimInPlace(str1, "- ");
+  BOOST_CHECK_EQUAL(str1, "hello --");
+
+  LTrimInPlace(str1, "h");
+  BOOST_CHECK_EQUAL(str1, "ello --");
+
+  std::string str2("a\0hello\0a", 9);
+  LTrimInPlace(str2, "ah");
+  BOOST_CHECK_EQUAL(str2, std::string("\0hello\0a", 8));
+
+  std::string str3("****");
+  LTrimInPlace(str3, "**=");
+  BOOST_CHECK_EQUAL(str3, "");
+
+  std::string str4("!");
+  LTrimInPlace(str4, "?/.,");
+  BOOST_CHECK_EQUAL(str4, "!");
+
+  LTrimInPlace(str4, "");
+  BOOST_CHECK_EQUAL(str4, "!");
+}
+
+BOOST_AUTO_TEST_CASE(RTrimInPlaceChar) {
   using casacore::RTrimInPlace;
 
   std::string empty;
@@ -87,6 +117,36 @@ BOOST_AUTO_TEST_CASE(RTrimInPlace) {
 
   std::string str4("!");
   RTrimInPlace(str4, '?');
+  BOOST_CHECK_EQUAL(str4, "!");
+}
+
+BOOST_AUTO_TEST_CASE(RTrimInPlaceStringView) {
+  using casacore::RTrimInPlace;
+
+  std::string empty;
+  RTrimInPlace(empty, '*');
+  BOOST_CHECK_EQUAL(empty, "");
+
+  std::string str1("-- hello --");
+  RTrimInPlace(str1, "- ");
+  BOOST_CHECK_EQUAL(str1, "-- hello");
+
+  RTrimInPlace(str1, "lo");
+  BOOST_CHECK_EQUAL(str1, "-- he");
+
+  std::string str2("a\0hello\0a", 9);
+  RTrimInPlace(str2, "a");
+  BOOST_CHECK_EQUAL(str2, std::string("a\0hello\0", 8));
+
+  std::string str3("****");
+  RTrimInPlace(str3, "**=");
+  BOOST_CHECK_EQUAL(str3, "");
+
+  std::string str4("!");
+  RTrimInPlace(str4, "?#");
+  BOOST_CHECK_EQUAL(str4, "!");
+
+  RTrimInPlace(str4, "");
   BOOST_CHECK_EQUAL(str4, "!");
 }
 
