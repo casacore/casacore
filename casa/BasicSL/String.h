@@ -676,11 +676,11 @@ class String : public std::string {
   // <group name=before>
   DEPRECATED("Use substr(0, pos) or create a view. Also consider if str.start_with() suffices.")
   SubString before(size_type pos);
-  DEPRECATED("Use GetStringViewUpTo()")
+  DEPRECATED("Use GetStringViewUpToExcluding()")
   SubString before(const std::string &str, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewUpTo()")
+  DEPRECATED("Use GetStringViewUpToExcluding()")
   SubString before(const char *s, size_type startpos = 0);
-  DEPRECATED("Use GetStringViewUpTo()")
+  DEPRECATED("Use GetStringViewUpToExcluding()")
   SubString before(char c, size_type startpos = 0);
   DEPRECATED("Use std::regex")
   SubString before(const Regex &r, size_type startpos = 0);
