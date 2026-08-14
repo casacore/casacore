@@ -1039,7 +1039,7 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
       }
 //
       // oss << ends;
-      return String(oss);
+      return oss.str();
    }
 
 // Continue on with other format types
@@ -1111,7 +1111,7 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
       oss << value;
    }
 //
-   return String(oss);
+   return oss.str();
 }
 
 String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
@@ -1159,7 +1159,7 @@ String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
    } else if (form==Coordinate::MIXED) {
       oss << value;
    }
-   return String(oss);
+   return oss.str();
 }
 
 
@@ -1243,7 +1243,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
          if (names_p[i] != dCoord.names_p[i]) {
             oss << "The DirectionCoordinates have differing axis names for axis "
                 << i;
-            set_error(String(oss));
+            set_error(oss.str());
             return False;      
          }
       }
@@ -1260,7 +1260,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
          if (units_p[i] != dCoord.units_p[i]) {
             oss << "The DirectionCoordinates have differing axis units for axis "
                 << i;
-            set_error(String(oss));
+            set_error(oss.str());
             return False;      
          }
       }
@@ -1270,12 +1270,12 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
     if (!casacore::near(Double(wcs_p.lonpole), Double(dCoord.wcs_p.lonpole))) {
        oss << "The DirectionCoordinates have differing lonpoles";
-       set_error(String(oss));
+       set_error(oss.str());
        return False;      
     }
     if (!casacore::near(Double(wcs_p.latpole), Double(dCoord.wcs_p.latpole))) {
        oss << "The DirectionCoordinates have differing latpoles";
-       set_error(String(oss));
+       set_error(oss.str());
        return False;      
     }
 
@@ -1294,7 +1294,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
             if (!casacore::near(thisVal[i],thatVal[i], tol)) {
                oss << "The DirectionCoordinates have differing reference values for axis "
                    << i;
-               set_error(String(oss));
+               set_error(oss.str());
                return False;      
             }
          }
@@ -1307,7 +1307,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
    LinearXform thatVal(dCoord.referencePixel(), dCoord.increment(), dCoord.linearTransform());
    if (!(thisVal.near(thatVal, excludeAxes))) {
       oss << "The DirectionCoordinates have differing LinearXform components";
-      set_error(String(oss));
+      set_error(oss.str());
       return False;      
    }
 
@@ -2100,8 +2100,8 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
     Vector<String> axisNames = DirectionCoordinate::axisNames(directionType, True);
     Vector<String> ctype = FITSCoordinateUtil::cTypeFromDirection (proj, axisNames,
                                                                    False);
-    strncpy (wcs.ctype[0], ctype[0].chars(), 9);
-    strncpy (wcs.ctype[1], ctype[1].chars(), 9);
+    strncpy (wcs.ctype[0], ctype[0].c_str(), 9);
+    strncpy (wcs.ctype[1], ctype[1].c_str(), 9);
 //
     String name = Projection::name(proj.type());
     const Vector<Double>& projParameters = proj.parameters();

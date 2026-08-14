@@ -456,8 +456,8 @@ Bool ObsInfo::fromFITS(Vector<String>& error, const RecordInterface & rec)
           error(0) = "Type of TELESCOP field is not String!";
           ok = False;
        } else {
-          String ss = subRec.asString(String("value"));
-          ss = ss.before(' ');
+          std::string ss = subRec.asString(String("value"));
+          ss = GetStringUpToExcluding(ss, " ");
 	  if (ss.length()>0) {
              setTelescope(ss);
              done = True;	       

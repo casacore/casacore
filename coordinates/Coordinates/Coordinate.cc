@@ -436,7 +436,7 @@ String Coordinate::format(
       oss << worldValue;
    }
 //
-   return String(oss);
+   return oss.str();
 }
 
 
@@ -847,22 +847,22 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 // Units
 
          String x1 = thisUnits(i);
-         x1.upcase();
+         ToUpperCaseInPlace(x1);
          String x2 = otherUnits(i);
-         x2.upcase();
+         ToUpperCaseInPlace(x2);
 //
-         Int i1 = x1.index(RXwhite,0);
-         if (i1==-1) i1 = x1.length();
-         Int i2 = x2.index(RXwhite,0);
-         if (i2==-1) i2 = x2.length();
+         size_t i1 = x1.find_first_of(kWhiteSpaceCharacters);
+         if (i1==std::string::npos) i1 = x1.length();
+         size_t i2 = x2.find_first_of(kWhiteSpaceCharacters);
+         if (i2==std::string::npos) i2 = x2.length();
 //
-         String y1 = String(x1.before(i1));
-         String y2 = String(x2.before(i2));
+         String y1 = String(x1.substr(0, i1));
+         String y2 = String(x2.substr(0, i2));
          ostringstream oss;
          if (y1 != y2) {
            oss << "The Coordinates have differing axis units for axis "
                << i;
-           set_error(String(oss));
+           set_error(oss.str());
            return False;
          }
 
@@ -871,7 +871,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          if (!casacore::near(thisRefVal(i), otherRefVal(i), tol)) {
             oss << "The Coordinates have differing reference values for axis "
                  << i;
-            set_error(String(oss));
+            set_error(oss.str());
             return False;
          }
 
@@ -880,7 +880,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          if (!casacore::near(thisInc(i), otherInc(i), tol)) {
             oss << "The Coordinates have differing increments for axis "
                  << i;
-            set_error(String(oss));
+            set_error(oss.str());
             return False;
          }
 
@@ -889,7 +889,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          if (!casacore::near(thisRefPix(i), otherRefPix(i), tol)) {
             oss << "The Coordinates have differing reference pixels for axis "
                  << i;
-            set_error(String(oss));
+            set_error(oss.str());
             return False;
          }
 

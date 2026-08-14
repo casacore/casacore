@@ -481,7 +481,7 @@ Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
        ostringstream oss;
        oss << "Illegal removal world axis number (" << axis << "), max is ("
            << nWorldAxes() << ")" << endl;
-       set_error (String(oss));
+       set_error (oss.str());
        return False;
     }
 
@@ -522,7 +522,7 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
        ostringstream oss;
        oss << "Illegal removal pixel axis number (" << axis << "), max is ("
            << nPixelAxes() << ")" << endl;
-       set_error (String(oss));
+       set_error (oss.str());
        return False;
     }
 //
@@ -1060,7 +1060,7 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	ostringstream oss;
 	oss << "pixel.nelements() != nPixelAxes(): "
 	    << pixel.nelements() << ", " << nPixelAxes();
-	throw (AipsError(String(oss)));
+	throw (AipsError(oss.str()));
     }
 
     if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
@@ -2396,7 +2396,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
 
       if (coordinate(i).type() != cSys.coordinate(i).type()) {
          oss << "The coordinate types differ for coordinate number " << i;
-         set_error(String(oss));
+         set_error(oss.str());
          return False;
       }
 
@@ -2407,12 +2407,12 @@ Bool CoordinateSystem::near(const Coordinate& other,
 
       if (pixelAxes(i).nelements() != cSys.pixelAxes(i).nelements()) {
          oss << "The number of pixel axes differs for coordinate number " << i;
-         set_error(String(oss));
+         set_error(oss.str());
          return False;
       }
       if (!allEQ(pixelAxes(i), cSys.pixelAxes(i))) {
          oss << "The pixel axes differ for coordinate number " << i;
-         set_error(String(oss));
+         set_error(oss.str());
          return False;
       }
 
@@ -2421,12 +2421,12 @@ Bool CoordinateSystem::near(const Coordinate& other,
 
       if (worldAxes(i).nelements() != cSys.worldAxes(i).nelements()) {
          oss << "The number of world axes differs for coordinate number " << i;
-         set_error(String(oss));
+         set_error(oss.str());
          return False;
       }
       if (!allEQ(worldAxes(i), cSys.worldAxes(i))) {
          oss << "The world axes differ for coordinate number " << i;
-         set_error(String(oss));
+         set_error(oss.str());
          return False;
       }
  
@@ -2496,7 +2496,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
                if (coord1 != coord2) {
                   oss << "The coordinate numbers differ (!!) for coordinate number "
                       << i;
-                  set_error(String(oss));
+                  set_error(oss.str());
                   return False;
                }
 
@@ -2505,7 +2505,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
                   oss << "World axis " << j << " in the CoordinateSystems"
                       << "has a different axis number in coordinate number "
                       << i;
-                  set_error(String(oss));
+                  set_error(oss.str());
                   return False;
                }
             }
@@ -2558,7 +2558,7 @@ Bool CoordinateSystem::nearPixel  (const CoordinateSystem& other,
       if (c1.type() != c2.type()) {
          ostringstream oss;
          oss << "The coordinate types differ for pixel axis number " << i;
-         set_error(String(oss));
+         set_error(oss.str());
          return False;
       }
 //
@@ -2678,7 +2678,7 @@ Bool CoordinateSystem::save(RecordInterface &container,
 	}
 	ostringstream onum;
 	onum << i;
-	String num = onum;
+	String num = onum.str();
 	String name = basename + num;
 	coordinates_p[i]->save(subrec, name);
 	name = String("worldmap") + num;
@@ -2729,7 +2729,7 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
     while(True) {
 	ostringstream onum;
 	onum << nc;
-	String num = onum;
+	String num = onum.str();
 	nc++;
 	if (subrec.isDefined(linear + num)) {
 	    coords.resize(nc);
@@ -2777,7 +2777,7 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 	ostringstream onum;
 	onum << i;
 	Vector<Int> dummy;
-	String num(onum), name;
+	String num(onum.str()), name;
 	name = String("worldmap") + num;
 	subrec.get(name, dummy);
 	*(retval->world_maps_p[i]) = makeBlock(dummy);
@@ -3045,7 +3045,7 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
          if (coord<0) {
             ostringstream oss;
             oss << "Pixel axis " << axes(i) << " has been removed" << endl;
-            os << String(oss) << LogIO::EXCEPTION;
+            os << oss.str() << LogIO::EXCEPTION;
          }
 
 // Is it this coordinate ?
@@ -3062,7 +3062,7 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
             if (worldAxis<0) {
 //               ostringstream oss;
 //               oss << "World axis for pixel axis " << axes(i) << " has been removed";
-//               os << LogIO::WARN << String(oss) << endl;
+//               os << LogIO::WARN << oss.str() << endl;
 //               os << LogIO::WARN << "This does not affect the Fourier Transform" << LogIO::POST;
             }
          }
@@ -3416,7 +3416,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
      } else {
         oss << "..";
      }
-     string = String(oss);
+     string = oss.str();
      if (findWidths) {
         widthAxis = max(widthAxis, string.length());
      } else {
@@ -3432,7 +3432,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
      ostringstream oss;
      //oss << coordinate + 1;
      oss << coordinate;
-     string = String(oss);
+     string = oss.str();
      if (findWidths) {
         widthCoordNumber = max(widthCoordNumber, string.length());
      } else {
@@ -3497,7 +3497,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
       if (pixelAxis != -1) {
          ostringstream oss;
          oss << latticeShape(pixelAxis);
-         string = String(oss);
+         string = oss.str();
       } else {
          string = " ";
       }
@@ -3513,7 +3513,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
       if (pixelAxis != -1) {
          ostringstream oss;
          oss << tileShape(pixelAxis);
-         string = String(oss);
+         string = oss.str();
       } else {
          string = " ";
       }
@@ -3647,7 +3647,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
       } else {
 	oss << (*pixel_replacement_values_p[coordinate])[axisInCoordinate]; // + 1.0;
       }
-      string = String(oss);
+      string = oss.str();
       if (findWidths) {
          widthRefPixel = max(widthRefPixel,string.length());
       } else {
@@ -3833,7 +3833,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(precRefPixFloat);
       oss << sc.referencePixel()(axisInCoordinate); // + 1.0;
-      string = String(oss);
+      string = oss.str();
    } else {
       string = " ";
    }
@@ -3853,7 +3853,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
         oss.setf(ios::scientific, ios::floatfield);
         oss.precision(precIncSci);
         oss << velocityInc;
-        string = String(oss);
+        string = oss.str();
      }
   } else {
      string = " ";
@@ -4009,7 +4009,7 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
 //
          ostringstream oss;
          oss << "Pointing center     :  " << lon << "  " << lat;
-         os << String(oss) << endl;
+         os << oss.str() << endl;
       }
    }
 }
@@ -4275,7 +4275,7 @@ Bool CoordinateSystem::checkWorldReplacementAxis(Int& coordinate,
        ostringstream oss;
        oss << "Illegal removal world axis number (" << axis << "), max is ("
            << nWorld << ")" << endl;
-       set_error (String(oss));
+       set_error (oss.str());
        return False;
     }
 
@@ -4304,7 +4304,7 @@ Bool CoordinateSystem::checkWorldReplacementAxis(Int& coordinate,
     if (coordinate==-1 || axisInCoordinate==-1) {
        ostringstream oss;
        oss << "Cannot find world axis " << axis << endl;
-       set_error (String(oss));
+       set_error (oss.str());
        return False;
     }
 //
@@ -4332,7 +4332,7 @@ Bool CoordinateSystem::checkPixelReplacementAxis(Int& coordinate,
        ostringstream oss;
        oss << "Illegal removal pixel axis number (" << axis << "), max is ("
            << nPixel << ")" << endl;
-       set_error (String(oss));
+       set_error (oss.str());
        return False;
     }
 
@@ -4361,7 +4361,7 @@ Bool CoordinateSystem::checkPixelReplacementAxis(Int& coordinate,
     if (coordinate==-1 || axisInCoordinate==-1) {
        ostringstream oss;
        oss << "Cannot find removed pixel axis " << axis << endl;
-       set_error (String(oss));
+       set_error (oss.str());
        return False;
     }
 //
@@ -4683,11 +4683,11 @@ Vector<Int> CoordinateSystem::getWorldAxesOrder(
 		vector<uInt> matchedNumbers(0);
 		for (uInt j=0; j<axisNames.size(); j++) {
 			if (
-				axisNames[j].startsWith(name)
+				axisNames[j].starts_with(name)
 				|| (
 					allowFriendlyNames
 					&& _friendlyAxisMap.find(axisNames[j]) != _friendlyAxisMap.end()
-					&& _friendlyAxisMap[axisNames[j]].startsWith(name)
+					&& _friendlyAxisMap[axisNames[j]].starts_with(name)
 				)
 			) {
 				matchedNames.push_back(axisNames[j]);

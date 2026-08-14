@@ -206,8 +206,8 @@ int main()
          String ctype0("RA---SIN");
          String ctype1("DEC--SIN");
 //
-         strncpy (wcs.ctype[0], ctype0.chars(), 9);
-         strncpy (wcs.ctype[1], ctype1.chars(), 9);
+         strncpy (wcs.ctype[0], ctype0.c_str(), 9);
+         strncpy (wcs.ctype[1], ctype1.c_str(), 9);
 //
          iret = wcsset(&wcs);
          if (iret!=0) {
