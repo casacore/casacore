@@ -554,3 +554,22 @@ DESTINATION include/casacore/tables
 foreach (casa_module Tables AlternateMans DataMan TaQL LogTables)
   add_subdirectory (${casa_module}/test ${EXCL_ALL})
 endforeach (casa_module)
+
+set (unittestfiles
+  TaQL/test/tTableParseUtil.cc
+)
+
+find_package(Boost 1.73 COMPONENTS unit_test_framework)
+if(Boost_FOUND)
+	include_directories(${Boost_INCLUDE_DIR})
+
+	add_executable (tablestests ${unittestfiles})
+	add_pch_support(tablestests)
+  target_link_libraries(tablestests
+    PRIVATE
+      casa_tables
+      Boost::unit_test_framework
+  )
+  add_test (tablestests ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./tablestests)
+	add_dependencies(check tablestests)
+endif(Boost_FOUND)
