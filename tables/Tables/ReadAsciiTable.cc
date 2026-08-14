@@ -427,16 +427,14 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
   Vector<String> vec = stringToVector (typestr);
   // The first value can be something like I10, so find first digit.
   // It should have a type before the first digit.
-  size_t pos = vec(0).find_first_of("0123456789");
-  if (pos == std::string::npos) {
+  size_t pos = vec(0).find_first_of ("0123456789");
+  if (pos == 0) {
     throw AipsError ("ReadAsciiTable: no type info in type string '" +
 		     typestr + "'");
   }
   // Get type without shape info.
-  // Note: need to convert pos to an Int because some compilers are more picky
-  // about type safety, i.e. the native compilers for SGI and SUN.
   String tp = vec(0).substr (0, pos);
-  if (pos >= vec(0).length()) {
+  if (pos == std::string::npos) {
     vec(0) = String();
     // Clear vector if no shape given at all.
     if (vec.nelements() == 1) {
