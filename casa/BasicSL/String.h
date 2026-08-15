@@ -141,6 +141,14 @@ inline double StringToDouble(const std::string& str) {
   return StringToValue<double>(str);
 }
 
+template<typename T>
+std::string ValueToString(T&& value)
+{
+  std::ostringstream os;
+  os << std::forward<T>(value);
+  return os.str();
+}
+
 // Replace all matches of the string @p str with the regex @pat by @repl.
 int RegexReplaceAll(std::string& str, const Regex &pat, const std::string &repl);
 
@@ -503,11 +511,10 @@ class String : public std::string {
   // It uses a shift into an ostringstream, so that operator must be
   // defined for the data type used.
   template<typename T>
+  DEPRECATED("Use ValueToString()")
   static String toString(const T& value)
   {
-    std::ostringstream os;
-    os << value;
-    return os.str();
+    return ValueToString(value);
   }
 
   // Remove beginning and ending whitespace.
