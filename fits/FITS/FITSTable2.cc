@@ -77,7 +77,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
     for (i=0; i < nfields; i++) {
       const char *comment = 0;
       if (description.comment(i) != "") {
-	  comment = description.comment(i).chars();
+	  comment = description.comment(i).c_str();
       }
       Bool hasVariableShape = 
 	  (variableShapes.fieldNumber(description.name(i)) >= 0) &&
@@ -95,7 +95,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpBool:
@@ -112,7 +112,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpUChar:
@@ -129,7 +129,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpShort:
@@ -146,7 +146,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpInt:
@@ -163,7 +163,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpFloat:
@@ -180,7 +180,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpDouble:
@@ -197,7 +197,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpComplex:
@@ -214,7 +214,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << size;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	  }
 	  CASACORE_FALLTHROUGH;
       case TpDComplex:
@@ -228,7 +228,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      sizeInBytes += stringlen;
 	      ostringstream buffer;
 	      buffer << stringlen;
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	      code = "A";
 	  }
 	  break;
@@ -240,8 +240,8 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  throw(AipsError("Invalid type"));
       }
 
-      columns.mk(thisColumn, FITS::TTYPE, description.name(i).chars(), comment);
-      columns.mk(thisColumn, FITS::TFORM, (repeat + code).chars());
+      columns.mk(thisColumn, FITS::TTYPE, description.name(i).c_str(), comment);
+      columns.mk(thisColumn, FITS::TFORM, (repeat + code).c_str());
       IPosition shape = description.shape(i);
       if (shape.nelements() > 1 && !hasVariableShape) {
 	  ostringstream buffer;
@@ -251,15 +251,15 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      if (j != shape.nelements()-1) {buffer << ",";}
 	  }
 	  buffer << ")";
-	  String s(buffer);
-	  columns.mk(thisColumn, FITS::TDIM, s.chars());
+	  String s(buffer.str());
+	  columns.mk(thisColumn, FITS::TDIM, s.c_str());
       } 	  
       // see if there are units for this column
       if (units.isDefined(description.name(i)) &&
 	  units.dataType(description.name(i)) == TpString) {
 	  String unitString(units.asString(description.name(i)));
 	  if (unitString != String(""))
-	      columns.mk(thisColumn, FITS::TUNIT, unitString.chars());
+	      columns.mk(thisColumn, FITS::TUNIT, unitString.c_str());
       }
       fieldMap[i] = thisColumn-1;
       fieldSizes[i] = size;
@@ -269,7 +269,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      ostringstream buffer;
 	      buffer << sampleTdim.length();
-	      repeat = String(buffer);
+	      repeat = buffer.str();
 	      sizeInBytes += sampleTdim.length();
 	  }
 	  code = "A";
@@ -277,8 +277,8 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  snprintf(tdimColName,sizeof(tdimColName),"TDIM%03i",thisColumn);
 	  thisColumn++;
 	  String tdimComment = "Shape of " + description.name(i) + " column.";
-	  columns.mk(thisColumn, FITS::TTYPE, tdimColName, tdimComment.chars());
-	  columns.mk(thisColumn, FITS::TFORM, (repeat + code).chars());
+	  columns.mk(thisColumn, FITS::TTYPE, tdimColName, tdimComment.c_str());
+	  columns.mk(thisColumn, FITS::TFORM, (repeat + code).c_str());
 	  tdimMap[i] = thisColumn-1;
       }
       thisColumn++;
@@ -308,56 +308,56 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
         String name = extraKeywords.name(i);
 	const char *comment = 0;
 	if (extraKeywords.comment(i) != "") {
-	    comment = extraKeywords.comment(i).chars();
+	    comment = extraKeywords.comment(i).c_str();
 	}
 	switch (extraKeywords.type(i)) {
 	case TpBool:
 	    {
 	        Bool val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val, comment);
+		kw.mk(name.c_str(), val, comment);
 	  }
 	  break;
 	case TpInt:
 	    {
 	        Int val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val, comment);
+		kw.mk(name.c_str(), val, comment);
 	  }
 	  break;
 	case TpFloat:
 	    {
 	        Float val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val, comment);
+		kw.mk(name.c_str(), val, comment);
 	  }
 	  break;
 	case TpDouble:
 	    {
 	        Double val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val, comment);
+		kw.mk(name.c_str(), val, comment);
 	  }
 	  break;
 	case TpComplex:
 	    {
 	        Complex val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val.real(), val.imag(), comment);
+		kw.mk(name.c_str(), val.real(), val.imag(), comment);
 	  }
 	  break;
 	case TpDComplex:
 	    {
 	        DComplex val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val.real(), val.imag(), comment);
+		kw.mk(name.c_str(), val.real(), val.imag(), comment);
 	    }
 	    break;
 	case TpString:
 	    {
 	        String val;
 		extraKeywords.get(i, val);
-		kw.mk(name.chars(), val.chars(), comment);
+		kw.mk(name.c_str(), val.c_str(), comment);
 	    }
 	    break;
 	default:
@@ -623,7 +623,7 @@ void FITSTableWriter::write()
 
 FitsOutput *FITSTableWriter::makeWriter(const String &fileName)
 {
-    const char *name = Path(fileName).expandedName().chars();
+    const char *name = Path(fileName).expandedName().c_str();
     FitsOutput *file = new FitsOutput(name, FITS::Disk);
     FitsKeywordList st;
 

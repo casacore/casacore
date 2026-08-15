@@ -555,7 +555,7 @@ void FitsInput::read_header_rec() {
         // by parse are useless and needlessly confusing, so don't show them
         //cout<< "[ FitsInput::read_header_rec()] Error mesages from determin_type(): " << endl;
         for (uInt i = parseErrs; i < nerrs_; i++) {
-            m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
+            m_errfn(messages_[i].c_str(), FITSError::ErrorLevel(errLevels_[i]));
         }
         nerrs_ = 0;
         m_rec_type = FITS::SpecialRecord;
@@ -565,7 +565,7 @@ void FitsInput::read_header_rec() {
     // spit out all of the cached error messages
     // cout<< "[ FitsInput::read_header_rec()] Error message from parsing and determin_type():" << endl;
     for (uInt i = 0; i < nerrs_; i++) {
-        m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
+        m_errfn(messages_[i].c_str(), FITSError::ErrorLevel(errLevels_[i]));
     }
     nerrs_ = 0;
     if (m_hdu_type == FITS::PrimaryArrayHDU || m_hdu_type

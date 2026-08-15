@@ -79,7 +79,7 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     
     // See if we can open the output file
     // use Path so that environment variables and any tilde in fileName are parse
-    writer_p = new FitsOutput(Path(fileName).expandedName().chars(), FITS::Disk);
+    writer_p = new FitsOutput(Path(fileName).expandedName().c_str(), FITS::Disk);
     AlwaysAssert(writer_p, AipsError);
     check_error("creating file");
 
@@ -129,8 +129,8 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     // ORIGIN
     ostringstream buffer;
     buffer << setfill('0') << "casacore ";
-    String version(buffer);
-    kw.mk(FITS::ORIGIN, version.chars());
+    String version(buffer.str());
+    kw.mk(FITS::ORIGIN, version.c_str());
 
     kw.spaces();
 
@@ -245,7 +245,7 @@ void FITSGroupWriter::check_error(const char *extra_info)
 	    if (extra_info) {
 		os << ". Error occured while " << extra_info << ".\n";
 	    }
-	    msg.message(os);
+	    msg.message(os.str());
 	    LogSink::postGlobally(msg);
 	    error_count_p++;
 	}
@@ -277,7 +277,7 @@ void FITSGroupWriter::check_error(const char *extra_info)
 	    case FitsIO::HDUERR: os << "(HDUERR)"; break;
 	    default: os << "(unknown error)";
 	    }
-	    msg.message(os);
+	    msg.message(os.str());
 	    LogSink::postGlobally(msg);
 	    error_count_p++;
 	}

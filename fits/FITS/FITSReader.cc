@@ -51,7 +51,7 @@ void showHDU(HeaderDataUnit *h) {
      //ostringstream oss;
      //oss << *h << '\n';
      //os << LogOrigin("FITSReader", "showHDU", WHERE)
-     //   << LogIO::NORMAL << String(oss) << '\n';
+     //   << LogIO::NORMAL << oss.str() << '\n';
 
      //FitsKeywordList *k = new FitsKeywordList(h->kwlist());
      //k->first();
@@ -60,7 +60,7 @@ void showHDU(HeaderDataUnit *h) {
      //for (int i = 1; x != 0; ++i, x = k->next())
      //   oss << /*i << ". " <<*/ *x;
      //os << LogOrigin("FITSReader", "showHDU", WHERE)
-     //   << LogIO::NORMAL << String(oss) << '\n';
+     //   << LogIO::NORMAL << oss.str() << '\n';
 
      h->firstkw();
      ostringstream oss;
@@ -152,7 +152,7 @@ void showHDU(HeaderDataUnit *h) {
       }
    }
    os << LogOrigin("FITSReader", "showHDU", WHERE)
-      << LogIO::NORMAL << String(oss)
+      << LogIO::NORMAL << oss.str()
       << LogIO::POST;
      
 }
@@ -255,7 +255,7 @@ void showBinaryTable(BinaryTableExtension &x) {
        << x.ncols() << " cols, "
        << x.fitsdatasize() << " bytes total\n";
    os << LogOrigin("FITSReader", "showBinaryTable", WHERE)
-      << LogIO::NORMAL << String(oss) << LogIO::POST;
+      << LogIO::NORMAL << oss.str() << LogIO::POST;
 
    oss.str("");
    oss << "\nTable Data\n";
@@ -268,7 +268,7 @@ void showBinaryTable(BinaryTableExtension &x) {
           << x.tunit(i) << "\n";       
    }
    os << LogOrigin("FITSReader", "showBinaryTable", WHERE)
-      << LogIO::DEBUGGING << String(oss) << LogIO::POST;
+      << LogIO::DEBUGGING << oss.str() << LogIO::POST;
 
 
    oss.str("");
@@ -349,7 +349,7 @@ void showBinaryTable(BinaryTableExtension &x) {
    int displayCols = 20;
    oss << "the first " << displayCols << " cols of the first " << displayLines << " rows:\n"; 
    os << LogOrigin("FITSReader", "showBinaryTable", WHERE)
-      << LogIO::NORMAL << String(oss) << LogIO::POST;
+      << LogIO::NORMAL << oss.str() << LogIO::POST;
 
    oss.str("");
    for (int n = 0; n < displayLines && n < x.nrows(); ++n) { 
@@ -470,7 +470,7 @@ void showBinaryTable(BinaryTableExtension &x) {
    }
    os << LogOrigin("FITSReader", "showBinaryTable", WHERE)
       << LogIO::NORMAL
-      << String(oss) << LogIO::POST;
+      << oss.str() << LogIO::POST;
 
    for (i = 0; i < x.ncols(); ++i) {
        if (vaptr[i]) {

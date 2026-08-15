@@ -74,34 +74,34 @@ static void splitKW1D(String &name, Int &num, String &fullName)
     where++;
     // where now points to the start of the numerical part - its
     // also the length of the number of characters before that
-    name = fullName(0, where);
-    String snum = fullName(where, (fullName.length()-where));
-    num = atol(snum.chars());
+    name = fullName.substr(0, where);
+    String snum = fullName.substr(where, (fullName.length()-where));
+    num = atol(snum.c_str());
 }
 
 static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
 {
     name = "";
 
-    if(fullName.contains("_")){ // assume new matrix syntax  ii_jj or i_j
+    if(fullName.find('_') != std::string::npos){ // assume new matrix syntax  ii_jj or i_j
       uInt where = 0;// Where the frst number starts
       while (where++ < fullName.length() && !isdigit(fullName[where])) {
 	; // Nothing
       }
-      name = fullName(0, where);
+      name = fullName.substr(0, where);
       // found first non-digit
       String::size_type where2 = fullName.find('_');
       if (where2 == String::npos || where2 == fullName.length()-1){
 	return False;
       }
-      String snum1 = fullName(where, where2-where);
+      String snum1 = fullName.substr(where, where2-where);
       Int nc = 2; // don't use the last digit if there are three
       if(fullName.length()-where2<2){ 
 	nc = 1;
       }
-      String snum2 = fullName(where2+1, nc);
-      nrow = atol(snum1.chars());
-      ncol = atol(snum2.chars());
+      String snum2 = fullName.substr(where2+1, nc);
+      nrow = atol(snum1.c_str());
+      ncol = atol(snum2.c_str());
     }
     else { // old matrix syntax
       // We assume that 1/2 the characters belong to each of the two
@@ -113,16 +113,16 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
       where++;
       // where now points to the start of the numerical part - its
       // also the length of the number of characters before that
-      name = fullName(0, where);
+      name = fullName.substr(0, where);
       Int numlen = fullName.length() - where;
       if (numlen != 6) {
 	// 2D arrays must be xxxyyy and so there must be 6 digits
 	return False;
       }
-      String snum1 = fullName(where, 3);
-      String snum2 = fullName(where+3, 3);
-      nrow = atol(snum1.chars());
-      ncol = atol(snum2.chars());
+      String snum1 = fullName.substr(where, 3);
+      String snum2 = fullName.substr(where+3, 3);
+      nrow = atol(snum1.c_str());
+      ncol = atol(snum2.c_str());
     }
 
     return True;
@@ -149,8 +149,8 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
     Bool ok = True;
 
     const uInt n = in.nfields();
-    static Regex commentName("^COMMENT");
-    static Regex historyName("^HISTORY");
+    const std::regex commentName("^COMMENT");
+    const std::regex historyName("^HISTORY");
 
     uInt i = 0;
     while (i < n) {
@@ -161,13 +161,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 		// silently truncate COMMENT* and HISTORY* - the addCommand and addHistory
 		// functions keep them unique in the RecordInterface by adding a random trailing
 		// number
-		if (!(name.contains(commentName) || name.contains(historyName))) {
+		if (!(std::regex_search(name, commentName) || std::regex_search(name, historyName))) {
 		    // this is just a warning, everything is still ok
 		    os << LogIO::WARN
 		       << "Name is too long for keyword " << name
 		       << " - truncated to first 8 characters." << LogIO::POST;
 		}
-		name = name.before(8);
+		name = name.substr(0, 8);
 	    }
 	    // comments are automatically truncated by the FITS classes
 	    String comment = in.comment(i);
@@ -176,65 +176,65 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 		{
 		    Bool val;
 		    in.get(i, val);
-		    out.mk(name.chars(), val, comment.chars());
+		    out.mk(name.c_str(), val, comment.c_str());
 		}
 		break;
 	    case TpInt:
 		{
 		    Int val;
 		    in.get(i, val);
-		    out.mk(name.chars(), val, comment.chars());
+		    out.mk(name.c_str(), val, comment.c_str());
 		}
 	    break;
 	    case TpShort:
 		{
 		    Short val;
 		    in.get(i, val);
-		    out.mk(name.chars(), val, comment.chars());
+		    out.mk(name.c_str(), val, comment.c_str());
 		}
 	    break;
 	    case TpUInt:
 		{
 		    uInt val;
 		    in.get(i, val);
-		    out.mk(name.chars(), int(val), comment.chars());
+		    out.mk(name.c_str(), int(val), comment.c_str());
 		}
 	    break;
 	    case TpFloat:
 		{
 		    Float val;
 		    in.get(i, val);
-		    out.mk(name.chars(), val, comment.chars());
+		    out.mk(name.c_str(), val, comment.c_str());
 		}
 	    break;
 	    case TpDouble:
 		{
 		    Double val;
 		    in.get(i, val);
-		    out.mk(name.chars(), val, comment.chars());
+		    out.mk(name.c_str(), val, comment.c_str());
 		}
 	    break;
 	    case TpString:
 		{
 		    String val;
 		    in.get(i, val);
-		    if (name.contains(commentName)) {
+		    if (std::regex_search(name, commentName)) {
 			if (val == "") {
 			    out.spaces();
 			} else {
-			    out.comment(val.chars());
+			    out.comment(val.c_str());
 			}
-		    } else if (name.contains(historyName)) {
-			out.history(val.chars());
+		    } else if (std::regex_search(name, historyName)) {
+			out.history(val.c_str());
 		    } else {
 			if (val.length() > 68) {
 			    os << LogIO::SEVERE 
-			       << "Value of keyword " << name.chars() 
+			       << "Value of keyword " << name.c_str() 
 			       << " will be truncated at 68 characters." << LogIO::POST;
 			    ok = False;
-			    val = val.before(68);
+			    val = val.substr(0, 68);
 			}
-			out.mk(name.chars(), val.chars(), comment.chars());
+			out.mk(name.c_str(), val.c_str(), comment.c_str());
 		    }
 		}
 	    break;
@@ -332,7 +332,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  		    String name = upcase(in.name(j));
 		    String num;
  		    if (ndim == 2) {
-			if (name.length() > 2) name = name.before(2);
+			if (name.length() > 2) name = name.substr(0, 2);
  			// Form i_j name
 			Int nrow = in.shape(i)(0);
  			Int ii = k % nrow + 1;
@@ -346,13 +346,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 			else{
 			  ostr << setw(1) << ii << "_" << setw(1) << jj;
 			}
-			name += String(ostr);
+			name += ostr.str();
  		    } else {
 			ostringstream ostr;
 			ostr << k + 1;
-			num = String(ostr);
+			num = ostr.str();
 		    }
-		    if (name.length() > (8-num.length())) name = name.before(8-num.length());
+		    if (name.length() > (8-num.length())) name = name.substr(0, 8-num.length());
  		    switch(type) {
  		    case TpArrayBool:
  			{
@@ -361,13 +361,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  			    Bool deleteIt;
  			    Bool *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
-				out.mk(name.chars(), storage[k]);
+				out.mk(name.c_str(), storage[k]);
 			    } else {
 				FITS::ReservedName fname;
 				if (findReservedName(fname, name)) {
 				    out.mk(int(k+1), fname, storage[k]);
 				} else {
-				    out.mk((name + num).chars(), storage[k]);
+				    out.mk((name + num).c_str(), storage[k]);
 				}
 			    }
  			    val.putStorage(storage, deleteIt);
@@ -380,13 +380,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  			    Bool deleteIt;
  			    Int *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
-				out.mk(name.chars(), storage[k]);
+				out.mk(name.c_str(), storage[k]);
 			    } else {
 				FITS::ReservedName fname;
 				if (findReservedName(fname, name)) {
 				    out.mk(int(k+1), fname, storage[k]);
 				} else {
-				    out.mk((name + num).chars(), storage[k]);
+				    out.mk((name + num).c_str(), storage[k]);
 				}
 			    }
  			    val.putStorage(storage, deleteIt);
@@ -399,13 +399,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  			    Bool deleteIt;
  			    Float *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
-				out.mk(name.chars(), storage[k]);
+				out.mk(name.c_str(), storage[k]);
 			    } else {
 				FITS::ReservedName fname;
 				if (findReservedName(fname, name)) {
 				    out.mk(int(k+1), fname, storage[k]);
 				} else {
-				    out.mk((name + num).chars(), storage[k]);
+				    out.mk((name + num).c_str(), storage[k]);
 				}
 			    }
  			    val.putStorage(storage, deleteIt);
@@ -418,13 +418,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  			    Bool deleteIt;
  			    Double *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
-				out.mk(name.chars(), storage[k]);
+				out.mk(name.c_str(), storage[k]);
 			    } else {
 				FITS::ReservedName fname;
 				if (findReservedName(fname, name)) {
 				    out.mk(int(k+1), fname, storage[k]);
 				} else {
-				    out.mk((name + num).chars(), storage[k]);
+				    out.mk((name + num).c_str(), storage[k]);
 				}
 			    }
  			    val.putStorage(storage, deleteIt);
@@ -439,19 +439,19 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 			    String thisVal = storage[k];
 			    if (thisVal.length() > 68) {
 				os << LogIO::SEVERE 
-				   << "Value of keyword " << name.chars() 
+				   << "Value of keyword " << name.c_str() 
 				   << " will be truncated at 68 characters." << LogIO::POST;
 				ok = False;
-				thisVal = thisVal.before(68);
+				thisVal = thisVal.substr(0, 68);
 			    }
 			    if (ndim == 2) {
-				out.mk(name.chars(), thisVal.chars());
+				out.mk(name.c_str(), thisVal.c_str());
 			    } else {
 				FITS::ReservedName fname;
 				if (findReservedName(fname, name)) {
-				    out.mk(int(k+1), fname, thisVal.chars());
+				    out.mk(int(k+1), fname, thisVal.c_str());
 				} else {
-				    out.mk((name + num).chars(), thisVal.chars());
+				    out.mk((name + num).c_str(), thisVal.c_str());
 				}
 			    }
  			    val.putStorage(storage, deleteIt);
@@ -491,14 +491,14 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     // Reset to the beginning of the KW list
     in.first();
 
-    const Regex kw1D("^[a-z0-9]*[a-z][1-9]+"); // We can have X3F, but not XF3
+    const std::regex kw1D("^[a-z0-9]*[a-z][1-9]+"); // We can have X3F, but not XF3
     // This fails with more than 99 axes.
-    const Regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
-    const Regex kw2Dmodern("^[a-z][a-z]?[0-9][0-9]?[_][0-9][0-9]?");
-    const Regex kw2Dstandard("^[[a-z][a-z]?[0-9]?[_][0-9]?");
-    const Regex crota("crota");
+    const std::regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
+    const std::regex kw2Dmodern("^[a-z][a-z]?[0-9][0-9]?[_][0-9][0-9]?");
+    const std::regex kw2Dstandard("^[[a-z][a-z]?[0-9]?[_][0-9]?");
+    const std::regex crota("crota");
     const Regex trailing(" *$");
-    const Regex cd("^cd[0-9]+[_][0-9]+");
+    const std::regex cd("^cd[0-9]+[_][0-9]+");
     const String empty;
 
     // The complication in this function springs from the fact that we want to
@@ -545,15 +545,15 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    }
         }
 //
-        if (name.contains(crota)) {
+        if (std::regex_search(name, crota)) {
 	    foundCROTA = True;
 	    baseCROTA = name;
         }
 //
 
 
-	if ((name.contains(kw2Dstandard) || name.contains(kw2D) || name.contains(kw2Dmodern)) 
-            && !name.contains(cd)) {
+	if ((std::regex_search(name, kw2Dstandard) || std::regex_search(name, kw2D) || std::regex_search(name, kw2Dmodern))
+            && !std::regex_search(name, cd)) {
 	    Int nrow, ncol;
 	    String base;
 	    if (!splitKW2D(base, nrow, ncol, name)) {
@@ -567,7 +567,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    if (ncol < min2Dcol[base]) {min2Dcol[base] = ncol;}
 	    if (ncol > max2Dcol[base]) {max2Dcol[base] = ncol;}
         } 
-	else if ((key->isindexed() || name.contains(kw1D)) && !name.contains(cd)) {
+	else if ((key->isindexed() || std::regex_search(name, kw1D)) && !std::regex_search(name, cd)) {
 	    String base;
 	    Int num;
 	    if (key->isindexed()) {
@@ -613,8 +613,8 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	}
 
 	// OK, it's a keyword we have to process
-	if ((fullName.contains(kw2Dstandard) || fullName.contains(kw2D) ||
-	     fullName.contains(kw2Dmodern)) && !fullName.contains(cd)) {
+	if ((std::regex_search(fullName, kw2Dstandard) || std::regex_search(fullName, kw2D) ||
+	     std::regex_search(fullName, kw2Dmodern)) && !std::regex_search(fullName, cd)) {
 	    Int thisRow, thisCol;
 	    String base;
 	    splitKW2D(base, thisRow, thisCol, fullName);
@@ -663,7 +663,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    // are not significant in FITS keywords.
 		    // at any rate, we need to remove them.
 		    String tmp = key->asString();
-		    tmp.gsub(trailing, empty);
+		    RegexReplaceAll(tmp, trailing, empty);
 		    mat(thisRow,thisCol) = tmp;
 		    out.define(base, mat);
 		}
@@ -767,7 +767,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		os << LogIO::SEVERE << "Unknown type for keyword '" 
 		   << fullName << "'. Continuing." << LogIO::POST;
 	    }
-	} else if (key->isindexed() || (fullName.contains(kw1D) && !fullName.contains(cd))){
+	} else if (key->isindexed() || (std::regex_search(fullName, kw1D) && !std::regex_search(fullName, cd))){
             String base;
 	    Int num;
 	    if (key->isindexed()) {
@@ -821,7 +821,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    // with trailing blank spaces, but they do.  Trailing blanks
 		    // are not significant in FITS keywords.
 		    // at any rate, we need to remove them
-		    tmp.gsub(trailing, empty);
+		    RegexReplaceAll(tmp, trailing, empty);
 		    if (! out.isDefined(base)) {
 			Vector<String> vec(max1D[base] - min1D[base] + 1);
 			vec = "";
@@ -1001,7 +1001,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    // with trailing blank spaces, but they do.  Trailing blanks
 		    // are not significant in FITS keywords.
 		    // at any rate, we need to remove them
-		    tmp.gsub(trailing, empty);
+		    RegexReplaceAll(tmp, trailing, empty);
 		    out.define(fullName, tmp);
 		}
 		break;
@@ -1050,11 +1050,10 @@ void FITSKeywordUtil::removeKeywords(RecordInterface &out,
     LogIO os(LogOrigin("FITSKeywordUtil", "removeKeywords", WHERE));
 
     const Int nregex = ignore.nelements();
-    Regex *regexlist = new Regex[nregex];
-    AlwaysAssert(regexlist, AipsError);
+    std::vector<std::regex> regexlist(nregex);
     Int i;
     for (i=0; i < nregex; i++) {
-        regexlist[i] = Regex(ignore(i));
+        regexlist[i] = std::regex(ignore(i));
     }
 
     const Int nfields = out.nfields();
@@ -1064,14 +1063,12 @@ void FITSKeywordUtil::removeKeywords(RecordInterface &out,
     for (i=nfields - 1; i>= 0; i--) {
 	nametmp = out.name(i);
 	for (Int j=0; j<nregex; j++) {
-	    if (nametmp.contains(regexlist[j])) {
+	    if (std::regex_search(nametmp, regexlist[j])) {
 		out.removeField(i);
 		break;
 	    }
 	}
     }
-
-    delete [] regexlist;
 }
 
 Bool FITSKeywordUtil::fromTDIM(IPosition& shape, const String& tdim)
@@ -1079,19 +1076,19 @@ Bool FITSKeywordUtil::fromTDIM(IPosition& shape, const String& tdim)
     Bool ok = True;
     // verify that it has the right form
     // whitespace ( anything ) whitespace
-    if (tdim.matches(Regex("[:space:]*[(].*[)][:space:]*"))) {
+    if (RegexMatches(tdim, Regex("[:space:]*[(].*[)][:space:]*"))) {
 	// count commas to get number of elements
-	String fields(tdim);
-	fields = fields.after('(');
-	fields = fields.before(')');
-	Int nelem = fields.freq(',') + 1;
+	std::string fields(tdim);
+	fields = GetStringAfter(fields, "(");
+	fields = GetStringUpToExcluding(fields, ")");
+	Int nelem = std::count(fields.begin(), fields.end(), ',') + 1;
 	String * carrst = new String [nelem];
        	if (split(fields, carrst, nelem, ',') != nelem) {
 	    ok = False;
 	} else {
 	    shape.resize(nelem);
 	    for (Int i=0;i<nelem;i++) {
-		shape(i) = atoi(carrst[i].chars());
+		shape(i) = atoi(carrst[i].c_str());
 	    }
 	}
 	delete [] carrst;
@@ -1112,7 +1109,7 @@ Bool FITSKeywordUtil::toTDIM(String& tdim, const IPosition& shape)
 	ostr << "," << shape(i);
     }
     ostr << ")";
-    tdim = String(ostr);
+    tdim = ostr.str();
     if (tdim.length() > 71) {
 	ok = False;
     }
@@ -1139,7 +1136,7 @@ static void addText(RecordInterface &header, const String &comment,
 	do {
 	    ostringstream os;
 	    os << offset;
-	    keyname = leader + String(os);
+	    keyname = leader + os.str();
 	    offset++;
 	} while (header.isDefined(keyname));
 	header.define(keyname, lines(i));

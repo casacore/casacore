@@ -51,7 +51,6 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
     groupType = "";
     const Regex groupstart("^ *[Cc][Aa][Ss][Aa] *[Ss][Tt][Aa][Rr][Tt] *");
     const Regex groupend  ("^ *[Cc][Aa][Ss][Aa] *[Ed][Nn][Dd]");
-    const Regex trailing(" *$");
     const String empty;
 
     // if in is at the top, strangely enough, this gets the first kw
@@ -66,8 +65,8 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 	    // Found a history card.
 	    tmp = key->comm();
 	    // Get rid of trailing spaces for all strings
-	    tmp.gsub(trailing, empty);
-	    if (tmp.contains(groupstart)) {
+      TrimInPlace(tmp, " ");
+	    if (std::regex_search(tmp, groupstart)) {
 		// CASA START
 		if (foundStart) {
 		    os << LogIO::SEVERE << "Cannot handle nested CASA START"
@@ -78,18 +77,18 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 		} else {
 		    // OK, found a valid start of group.
 		    foundStart = True;
-		    tmp.gsub(groupstart, "");
-		    tmp.gsub(" ", "");
+		    RegexReplaceAll(tmp, groupstart, "");
+		    ReplaceAllInPlace(tmp, " ", "");
 		    groupType = tmp;
 		}
-	    } else if (tmp.contains(groupend)) {
+	    } else if (std::regex_search(tmp, groupend)) {
 		// CASA END
 		if (foundStart) {
 		    // OK, a normal end.
 		    // Attempt to parse the TYPE in the END statement to see
 		    // if it matches for debugging purposes.
-		    tmp.gsub(groupend, "");
-		    tmp.gsub(" ", "");
+		    RegexReplaceAll(tmp, groupend, "");
+		    ReplaceAllInPlace(tmp, " ", "");
 		    if (tmp != "") {
 			if (tmp != groupType) {
 			    os << LogIO::SEVERE << 
@@ -114,7 +113,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 		    strings(nFound-1) = tmp;
 		} else {
 		    // continuation - strip out leading '>'
-		    strings(nFound-1) += tmp(1, tmp.length()-1);
+		    strings(nFound-1) += tmp.substr(1, tmp.length()-1);
 		}
 	    }
 	}
@@ -137,7 +136,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out,
 
     if (groupType != "") {
 	String tmp = String("CASA START ") + groupType;
-	out.history(tmp.chars());
+	out.history(tmp.c_str());
     }
 
     const Int maxlen = 72; // 80 - length('HISTORY ');
@@ -148,7 +147,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out,
 	Vector<String> lines = stringToVector(strings[i], '\n');
 	for (uInt j=0; j<lines.nelements(); j++) {
 	    if (Int(lines(j).length()) <= maxlen) {
-		out.history(lines(j).chars());
+		out.history(lines(j).c_str());
 	    } else {
 		// Alas, we need to break the line. maxlen is effectively one
 		// less here because we have to put in the leading '>'.
@@ -168,8 +167,8 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out,
 			pos--; // Backup to the first non-blank character
 		    }
 		    tmp = start == 0 ? "" : ">";
-		    tmp += lines(j)(start, pos - start + 1);
-		    out.history(tmp.chars());
+		    tmp += lines(j).substr(start, pos - start + 1);
+		    out.history(tmp.c_str());
 		    start = pos;
 		    start = pos+1;
 		}
@@ -178,7 +177,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out,
     }	
 
     if (groupType != "") {
-	out.history((String("CASA END ") + groupType).chars());
+	out.history((String("CASA END ") + groupType).c_str());
     }
 }
 
@@ -215,7 +214,7 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
 // Get the TIME
 
 	    tmp = history(2*i);
-	    date = tmp.at(timePattern);
+	    date = RegexSubStr(tmp, timePattern);
 	    if (FITSDateUtil::fromFITS(time, timeSystem, date, "")) {
                dtime = Double(time)*86400.0;
 	    } else {
@@ -227,34 +226,34 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
 
 // PRIORITY
 
-	    priority = tmp.at(timeAndPriorityPattern);
-	    priority.gsub(timePattern, "");
+	    priority = RegexSubStr(tmp, timeAndPriorityPattern);
+	    RegexReplaceAll(priority, timePattern, "");
 	    // there is a leading space in priority at this point
-	    priority = priority.after(0);
+	    priority = priority.substr(1);
 
 // LOCATION
 
-	    location2 = tmp.at(locationPattern);
+	    location2 = RegexSubStr(tmp, locationPattern);
 	    if (location2 == "") {
                location = location2;
 	    } else {
 
 // We need to strip the trailing '
 
-               location2.gsub("SRCCODE='", "");
-               location = location2.at(0, location2.length() - 1);
+               ReplaceAllInPlace(location2, "SRCCODE='", "");
+               location = location2.substr(0, location2.length() - 1);
 	    }
 
 // ID
-	    objid2 = tmp.at(objectIDPattern);
+	    objid2 = RegexSubStr(tmp, objectIDPattern);
 	    if (objid2 == "") {
                 objid = objid2;
 	    } else {
 
 // We need to strip the trailing '
 
-		objid2.gsub("OBJID='", "");
-		objid = objid2.at(0, objid2.length() - 1);
+		ReplaceAllInPlace(objid2, "OBJID='", "");
+		objid = objid2.substr(0, objid2.length() - 1);
 	    }
 //
 	    try{
