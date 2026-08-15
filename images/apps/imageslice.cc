@@ -57,7 +57,7 @@ int main(int argc, const char* argv[]) {
     if ( out.empty() ) {
       out = "sliced_"+in;
     }
-    Bool outisfits = downcase(out).after(out.size()-6) == ".fits";
+    Bool outisfits = downcase(out).substr(out.size()-5) == ".fits";
 
     const Block<Int> outregion = inputs.getIntArray("outregion");
 

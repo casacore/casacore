@@ -129,8 +129,8 @@ void ClassicalStatistics<CASA_STATP>::_doNptsMinMax(
     if (knownMin && knownMax) {
         ThrowIf(
             *knownMax < *knownMin,
-            "Provided max " + String::toString(*knownMax) + " is less than "
-            "provided min " + String::toString(*knownMin)
+            "Provided max " + ValueToString(*knownMax) + " is less than "
+            "provided min " + ValueToString(*knownMin)
         );
         mymin = *knownMin;
         mymax = *knownMax;

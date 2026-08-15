@@ -150,8 +150,8 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
     }
     else {
         String imageUnits = pInImage_p->units().getName();
-        imageUnits.upcase();
-        if (! imageUnits.contains("JY/BEAM")) {
+        ToUpperCaseInPlace(imageUnits);
+        if (! StringContains(imageUnits, "JY/BEAM")) {
             msg = "Image brightness units not conformant with Jy/beam";
             return False;
         }
@@ -359,7 +359,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       os_p.output() << setw(oCWidth)   << sWorld(j);
       ostringstream os00; setStream(os00, oPrec);
       os00 << stats.column(NPTS)(j);   
-      os_p.output() << setw(oDWidth)   << String(os00);   
+      os_p.output() << setw(oDWidth)   << os00.str();
       if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
 // Convert to strings.
@@ -379,14 +379,14 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os5 << stats.column(MIN)(j);
          os6 << stats.column(MAX)(j);
 //
-         os_p.output() << setw(oDWidth)   << String(os0);
-         if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
-         os_p.output() << setw(oDWidth)   << String(os2);
-         if (doRobust_p) os_p.output() << setw(oDWidth)   << String(os8);
-         os_p.output() << setw(oDWidth)   << String(os3);
-         os_p.output() << setw(oDWidth)   << String(os4);
-         os_p.output() << setw(oDWidth)   << String(os5);
-         os_p.output() << setw(oDWidth)   << String(os6);
+         os_p.output() << setw(oDWidth)   << os0.str();
+         if (hasBeam) os_p.output() << setw(oDWidth)   << os1.str();
+         os_p.output() << setw(oDWidth)   << os2.str();
+         if (doRobust_p) os_p.output() << setw(oDWidth)   << os8.str();
+         os_p.output() << setw(oDWidth)   << os3.str();
+         os_p.output() << setw(oDWidth)   << os4.str();
+         os_p.output() << setw(oDWidth)   << os5.str();
+         os_p.output() << setw(oDWidth)   << os6.str();
       }
       os_p.output() << endl;
    }
@@ -570,7 +570,7 @@ template <class T> Quantum<typename ImageStatistics<T>::AccumType> ImageStatisti
     Quantum<AccumType> flux(0, "");
     String sbunit = pInImage_p->units().getName();
     Bool intensityBeamBased = False;
-    if (sbunit.contains("K")) {
+    if (StringContains(sbunit, "K")) {
         String areaUnit = "arcsec2";
         flux.setUnit(sbunit + "." + areaUnit);
         flux.setValue(
@@ -579,7 +579,7 @@ template <class T> Quantum<typename ImageStatistics<T>::AccumType> ImageStatisti
     }
     else {
         flux.setUnit("Jy");
-        if (sbunit.contains("/beam")) {
+        if (StringContains(sbunit, "/beam")) {
             intensityBeamBased = True;
             uInt iBeam = sbunit.find("/beam");
             if (beamAreaInPixels > 0) {
@@ -668,8 +668,8 @@ template <class T> Bool ImageStatistics<T>::_computeFlux(
     Bool gotBeamArea = _getBeamArea(beamArea, msg);
     if (! gotBeamArea) {
         String unit = pInImage_p->units().getName();
-        unit.downcase();
-        if (unit.contains("/beam") && ! pInImage_p->imageInfo().hasMultipleBeams()) {
+        ToLowerCaseInPlace(unit);
+        if (StringContains(unit, "/beam") && ! pInImage_p->imageInfo().hasMultipleBeams()) {
             os_p << LogIO::WARN << "Unable to compute flux density: "
                 << msg << LogIO::POST;
             return False;
@@ -717,8 +717,8 @@ template <class T>  Bool ImageStatistics<T>::_computeFlux(
     }
     else {
         String unit = pInImage_p->units().getName();
-        unit.downcase();
-        if (unit.contains("/beam")) {
+        ToLowerCaseInPlace(unit);
+        if (StringContains(unit, "/beam")) {
             return False;
         }
         flux = _flux(unused, sum, 0).getValue();
@@ -732,10 +732,10 @@ template <class T> Bool ImageStatistics<T>::_canDoFlux() const {
         return False;
     }
     String unit = pInImage_p->units().getName();
-    Bool unitOK = unit.contains("K")
+    Bool unitOK = unit.find('K') != std::string::npos
         || (
             pInImage_p->imageInfo().hasBeam()
-            && unit.contains("/beam")
+            && StringContains(unit, "/beam")
         );
     if (! unitOK) {
         return False;
@@ -844,7 +844,7 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
              << " = " << locInLattice(dPos,True)(j) << " (" << sWorld(0) << ")";
          if (j < nDisplayAxes-1) oss << ", ";
       }
-      hLabel = String(oss);
+      hLabel = oss.str();
    }
 }
 

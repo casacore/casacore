@@ -70,7 +70,7 @@ void RFReaderWriter::setError(const String& error, bool isFatal) const {
 // Static Methods //
 
 RFReaderWriter::SupportedType RFReaderWriter::supportedTypes(String t) {
-    t.downcase();
+    ToLowerCaseInPlace(t);
     if(t == "aips-box" )     return AIPS_BOX;
     else if(t == "ds9")      return DS9;
     else if(t == "casa-xml") return CASA_XML;

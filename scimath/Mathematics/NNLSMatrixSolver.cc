@@ -89,26 +89,26 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
   if (mode==2) {
     ostringstream o;o<<"dimensions set up incorrectly";
     message.priority(LogMessage::SEVERE);
-    message.message(o);logSink().post(message);
+    message.message(o.str());logSink().post(message);
     setSolved(False);
     return Solved();
   }
   if (mode==3) {
     ostringstream o;o<<"Exceeded number of iterations";
     message.priority(LogMessage::SEVERE);
-    message.message(o);logSink().post(message);
+    message.message(o.str());logSink().post(message);
     setSolved(False);
     return Solved();
   }
   
   if(accurateSolution()) {
     ostringstream o;o<<"Solution acheived";
-    message.message(o);logSink().post(message);
+    message.message(o.str());logSink().post(message);
     setSolved(True);
   }
   else {
     ostringstream o;o<<"Solution not formally accurate enough";
-    message.message(o);logSink().post(message);
+    message.message(o.str());logSink().post(message);
     setSolved(False);
   }
   return Solved();

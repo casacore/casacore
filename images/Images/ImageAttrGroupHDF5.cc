@@ -100,7 +100,7 @@ namespace casacore {
   ValueHolder ImageAttrGroupHDF5::getData (const String& attrName, uInt rownr)
   {
     if (rownr >= itsRecord.nfields()) {
-      throw AipsError("ImageAttrGroupHDF5: rownr " + String::toString(rownr) +
+      throw AipsError("ImageAttrGroupHDF5: rownr " + ValueToString(rownr) +
                       " does not exist");
     }
     const Record& subRecord = itsRecord.subRecord(rownr);
@@ -110,7 +110,7 @@ namespace casacore {
   Record ImageAttrGroupHDF5::getDataRow (uInt rownr)
   {
     if (rownr >= itsRecord.nfields()) {
-      throw AipsError("ImageAttrGroupHDF5: rownr " + String::toString(rownr) +
+      throw AipsError("ImageAttrGroupHDF5: rownr " + ValueToString(rownr) +
                       " does not exist");
     }
     return itsRecord.subRecord(rownr);
@@ -167,15 +167,15 @@ namespace casacore {
     return ostr.str();
   }
 
-  void ImageAttrGroupHDF5::checkRows (const String& attrName, uInt rownr)
+  void ImageAttrGroupHDF5::checkRows (const std::string& attrName, uInt rownr)
   {
     uInt nrow = itsRecord.nfields();
     // A new row can only be added right after the last row.
     if (rownr > nrow) {
-      throw AipsError("ImageAttrGroupHDF5: row " + String::toString(rownr) +
+      throw AipsError("ImageAttrGroupHDF5: row " + ValueToString(rownr) +
                       " of attribute " + attrName +
                       " cannot be added; beyond current #rows " +
-                      String::toString(nrow));
+                      ValueToString(nrow));
     }
     if (rownr == nrow) {
       itsRecord.defineRecord (makeRowName(rownr), Record());

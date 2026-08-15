@@ -110,7 +110,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // OK, now see if we can attach the FITS reading classes
 
-    FitsInput infile(fitsfile.path().expandedName().chars(), FITS::Disk);
+    FitsInput infile(fitsfile.path().expandedName().c_str(), FITS::Disk);
 
     if (infile.err()) {
       error = String("Cannot open file (or other I/O error): ") + fitsName;
@@ -411,7 +411,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     buffer << " (" << cursorShape.product() << " pixels).";
-    report = String(buffer);
+    report = buffer.str();
     return cursorShape;
   }
 
@@ -436,7 +436,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       for (uInt i=0; i<names.nelements(); i++) {
         std::ostringstream oss;
         oss << i;
-        names(i) = String("linear") + String(oss);
+        names(i) = "linear" + oss.str();
       }   
       CoordinateUtil::addLinearAxes(cSys2, names, shape);
       cSys = cSys2;
@@ -528,7 +528,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                           const String& filename,
                                           const DataType type
                                           ) {
-    FitsInput input(File(filename).path().expandedName().chars(), FITS::Disk);
+    FitsInput input(File(filename).path().expandedName().c_str(), FITS::Disk);
     switch (type) {
       // advance to correct location in the input
     case TpFloat: {
@@ -560,7 +560,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       else {
         BinaryTable binTab(input);
         String type = binTab.extname();
-        if (type.contains("BEAMS")) {
+        if (StringContains(type, "BEAMS")) {
           beamTable = binTab.fullTable();
           break;
         }
@@ -1025,7 +1025,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     //header.define("COMMENT1", ""); // inserts spaces
 
-    header.define("BUNIT", image.units().getName().chars());
+    header.define("BUNIT", image.units().getName().c_str());
     header.setComment("BUNIT", "Brightness (pixel) unit");
     //
     IPosition shapeCopy = fhi.newShape;
@@ -1075,7 +1075,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const uInt nmisc = miscInfo.nfields();
     for (i=0; i<nmisc; i++) {
         String tmp0 = miscInfo.name(i);
-        String miscname(tmp0.at(0,8));
+        String miscname(tmp0.substr(0,8));
         if (tmp0.length() > 8) {
             os  << LogIO::NORMAL << "Truncating miscinfo field " << tmp0
                 << " to " << miscname << LogIO::POST;
@@ -1123,7 +1123,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                     header.define(miscname, miscInfo.asDComplex(i));
                     break;
                 case TpString:
-                    if (miscname.contains("date") && miscname != "date") {
+                    if (StringContains(miscname, "date") && miscname != "date") {
                         // Try to canonicalize dates (i.e. solve Y2K)
                         String outdate;
                         // We only need to convert the date, the timesys we'll just
@@ -1171,7 +1171,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                     std::ostringstream mytype;
                     mytype << misctype;
                     os << LogIO::NORMAL << "Not writing miscInfo field '" <<
-                    miscname << "' - cannot handle type " << String(mytype) <<
+                    miscname << "' - cannot handle type " << mytype.str() <<
                     LogIO::POST;
 
                 }
@@ -1405,7 +1405,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             }
           } else {
             error = "ImageFITS2Converter: Storing FITS primary Float array failed with HDU error code "
-              + String::toString(hduErr);
+              + ValueToString(hduErr);
             return False;
           }
         }
@@ -1456,7 +1456,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           }
           else {
             error = "ImageFITS2Converter: Storing FITS primary Short array failed with HDU error code "
-              + String::toString(hduErr);
+              + ValueToString(hduErr);
             return False;
           }
         }
@@ -1711,7 +1711,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //
       // OK, it appears to be a writable etc. file, let's try opening it.
       //
-      fitsOut = new FitsOutput(fitsfile.path().expandedName().chars(),
+      fitsOut = new FitsOutput(fitsfile.path().expandedName().c_str(),
                                FITS::Disk);
     }
     //

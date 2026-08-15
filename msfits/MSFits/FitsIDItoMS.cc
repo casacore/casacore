@@ -142,7 +142,7 @@ static Int getIndexContains(Vector<String>& map, const String& key,
   uInt count = 0;
   const uInt nMap = map.nelements();
   for (uInt i = 0; i < nMap; i++) {
-    if (map(i).contains(key)) {
+    if (StringContains(map(i), key)) {
       if (count == which) {
 	return i;
       } else {
@@ -286,10 +286,8 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
 
   //cout << "Created " << itsCurRowTab.tableName() << endl; 
   
-  const Regex trailing(" *$"); // trailing blanks
-  
   String extname(FITSIDItoMS1::extname());
-  extname = extname.before(trailing);
+  RTrimInPlace(extname, ' ');
   
   
   if(extname!="UV_DATA"){     
@@ -710,7 +708,6 @@ void FITSIDItoMS1::convertKeywords()
     ConstFitsKeywordList& kwl = kwlist();
     kwl.first();
     const FitsKeyword* kw;
-    Regex trailing(" *$"); // trailing blanks
     String kwname;
     
     //
@@ -751,8 +748,8 @@ void FITSIDItoMS1::convertKeywords()
 	    //
 	    // Buffer the MS-specific keywords.
 	    //
-	    if (kwname(0,3)=="MSK") {
-		iMSK = atoi(kwname.after(3).chars());
+	    if (kwname.substr(0,3)=="MSK") {
+		iMSK = atoi(kwname.substr(4).c_str());
 		if (iMSK > 0) {
 		    if (iMSK > itsNrMSKs) {
 			// Extend the MSK buffers with 10 elements.
@@ -771,12 +768,12 @@ void FITSIDItoMS1::convertKeywords()
 		    // padded with blanks. Remove those.
 		    //
 		    String val = kw->asString();
-		    val = val.before(trailing);
-		    if (kwname(3,1)=="C") {
+        RTrimInPlace(val, ' ');
+		    if (kwname.substr(3,1)=="C") {
 			itsMSKC(iMSK-1) = val;
-		    } else if (kwname(3,1)=="N") {
+		    } else if (kwname.substr(3,1)=="N") {
 			itsMSKN(iMSK-1) = val;
-		    } else if (kwname(3,1)=="V") {
+		    } else if (kwname.substr(3,1)=="V") {
 			itsMSKV(iMSK-1) = val;
 		    } else {
 			*itsLog << LogIO::WARN << "MSBinaryTable found unknown MSK keyword: "
@@ -853,7 +850,6 @@ void FITSIDItoMS1::describeColumns()
     //
     // Loop over the fields in the FITS table.
     //
-    Regex trailing(" *$"); // trailing blanks
     Int nfield = tfields();    // nr of fields in the FITS table
 
     ConstFitsKeywordList& kwl = kwlist();
@@ -863,7 +859,7 @@ void FITSIDItoMS1::describeColumns()
     // and determine if there are WEIGHTS in the UV data
     //
     String extname(FITSIDItoMS1::extname());
-    extname = extname.before(trailing);
+    RTrimInPlace(extname, ' ');
 
     Vector<Int> maxis(0);
     if(extname=="UV_DATA"){
@@ -882,31 +878,31 @@ void FITSIDItoMS1::describeColumns()
 
         while((kw = kwl.next())){
 	    kwname = kw->name();
-	    if(kwname.at(0,5)=="MAXIS"){ 
+	    if(kwname.substr(0,5)=="MAXIS"){
 		maxis.resize(++ctr,True);
 		maxis(ctr-1)=kw->asInt();
 //		cout << "**maxis=" << maxis << endl;
 	    }
-	    else if(kwname.at(0,7)=="NO_STKD"){
+	    else if(kwname.substr(0,7)=="NO_STKD"){
 	        nStokes_p = kw->asInt();
 //		cout << "**nStokes=" << nStokes_p << endl;
 	    }
-	    else if(kwname.at(0,7)=="NO_BAND"){
+	    else if(kwname.substr(0,7)=="NO_BAND"){
 	        nBand_p = kw->asInt();
 //		cout << "**nBand=" << nBand_p << endl;
 	    }
-	    else if(kwname.at(0,8)=="WEIGHTYP"){
+	    else if(kwname.substr(0,8)=="WEIGHTYP"){
 	        weightypKwPresent_p = True;
 		weightyp_p = kw->asString();
-		weightyp_p.upcase();
-		weightyp_p.trim();
+    ToUpperCaseInPlace(weightyp_p);
+    TrimInPlace(weightyp_p);
 		if(weightyp_p!="NORMAL" && weightyp_p!="CORRELAT"){
 		  *itsLog << LogIO::WARN << "Found WEIGHTYP keyword with value \"" << weightyp_p
 			  << "\" in UV_DATA table. Presently this keyword is ignored."
 			  << LogIO::POST;
 		}
 	    }
-	    else if(kwname.at(0,8)=="VIS_SCAL"){
+	    else if(kwname.substr(0,8)=="VIS_SCAL"){
 		visScl_p = kw->asDouble();
 	    }
 	}
@@ -939,7 +935,7 @@ void FITSIDItoMS1::describeColumns()
 	// are padded with blanks. Remove those.)
 	//
 	String colname(ttype(icol));
-	colname = colname.before(trailing);
+  RTrimInPlace(colname, ' ');
 ///	cout << "Doing field " << icol << " with name " << colname << endl;
 
 	//cout << "colname=" << colname << endl;
@@ -1057,20 +1053,20 @@ void FITSIDItoMS1::describeColumns()
 
 	    String dimstr(tdim(icol));
 	    String formstr(tform(icol));
-	    if (dimstr(0,1)=="(") {
+	    if (dimstr.substr(0,1)=="(") {
 		//
 		// TDIM key given as a string (dim1,dim2,...). Decode
 		// the substring inside the parentheses. Again,
 		// strings shorter than 8 characters were padded with
 		// blanks; remove those.
 		// 
-		dimstr = dimstr.before(trailing);
-		dimstr = dimstr(1,dimstr.length()-2);
+    RTrimInPlace(dimstr, ' ');
+		dimstr = dimstr.substr(1,dimstr.length()-2);
 		Vector<String> dimvec(stringToVector(dimstr));
 		ndim = dimvec.nelements();
 		shape.resize(ndim);
 		for (Int id=0; id<ndim; id++) {
-		    shape(id) = atoi(dimvec(id).chars());
+		    shape(id) = atoi(dimvec(id).c_str());
 		}
 //		cout << "   shape = " << shape << endl;
 
@@ -1079,8 +1075,8 @@ void FITSIDItoMS1::describeColumns()
 		// Vector of strings or degenerated vector.  Use the
 		// substring inside the parentheses as shape.
 		//
-		dimstr = SHAPEstr(1,SHAPEstr.length()-2);
-		shape(0) = atoi(dimstr.chars());
+		dimstr = SHAPEstr.substr(1,SHAPEstr.length()-2);
+		shape(0) = atoi(dimstr.c_str());
 //		cout << "   shape = " << shape << endl;
 
 	    } else {
@@ -1090,9 +1086,9 @@ void FITSIDItoMS1::describeColumns()
 		// strings shorter than 8 characters were padded with
 		// blanks; remove those.
 		//
-		formstr = formstr.before(trailing);
-		formstr = formstr(0,formstr.length()-1);
-		shape(0) = atoi(formstr.chars());
+		RTrimInPlace(formstr, ' ');
+		formstr = formstr.substr(0,formstr.length()-1);
+		shape(0) = atoi(formstr.c_str());
 //		cout << "    shape = " << shape << endl;
 	    }
 
@@ -1250,7 +1246,7 @@ void FITSIDItoMS1::describeColumns()
 	// with blanks; remove those.
 	//
 	String unitstr(tunit(icol));
-	unitstr = unitstr.before(trailing);
+  RTrimInPlace(unitstr, ' ');
 	itsTableDesc.rwColumnDesc(colname).rwKeywordSet()
 	    .define("UNIT", unitstr);
 
@@ -1265,7 +1261,6 @@ void FITSIDItoMS1::describeColumns()
 
 
     //String extname(FITSIDItoMS1::extname());
-    //extname = extname.before(trailing);
     if (extname == "UV_DATA") {
 	//
 	// Define the tiled hypercube for the data and flag columns.
@@ -1324,7 +1319,6 @@ void FITSIDItoMS1::getAxisInfo()
   *itsLog << LogOrigin("FitsIDItoMS", "getAxisInfo");
   // Extracts the axis related info. from the MAXISn fields and 
   // returns them in the form of arrays.
-  const Regex trailing(" *$"); // trailing blanks
   
   ConstFitsKeywordList& kwl = kwlist();
   
@@ -1333,7 +1327,7 @@ void FITSIDItoMS1::getAxisInfo()
   // Also, get associated CTYPEn CRPIXn CRVALn CDELTn values
   //
   String extname(FITSIDItoMS1::extname());
-  extname = extname.before(trailing);
+  RTrimInPlace(extname, ' ');
   Vector<Int> maxis(0);
   
   if(extname=="UV_DATA"){
@@ -1374,20 +1368,20 @@ void FITSIDItoMS1::getAxisInfo()
       //cout << "kwname=" << kwname <<endl;
       // Note: MAXISn are non-reserved FITS keywords
       // so 'n' does NOT recongnized as index. 
-      if(kwname.at(0,5)=="MAXIS" && kwname.length()>5){ 
+      if(kwname.substr(0,5)=="MAXIS" && kwname.length()>5){
 	nPixel_p(imaxis++)=kw->asInt();
       }
-      if(kwname.at(0,5)=="CTYPE"){ 
+      if(kwname.substr(0,5)=="CTYPE"){
 	coordType_p(idx)=kw->asString(); 
-	coordType_p(idx)=coordType_p(idx).before(trailing);
+  RTrimInPlace(coordType_p(idx), ' ');
       }
-      else if(kwname.at(0,5)=="CDELT"){    
+      else if(kwname.substr(0,5)=="CDELT"){
 	delta_p(idx)=kw->asDouble();
       }
-      else if(kwname.at(0,5)=="CRPIX"){
+      else if(kwname.substr(0,5)=="CRPIX"){
 	refPix_p(idx)=kw->asDouble();
       }
-      else if(kwname.at(0,5)=="CRVAL" ){
+      else if(kwname.substr(0,5)=="CRVAL" ){
 	refVal_p(idx)=kw->asDouble();
       }
       else 
@@ -1399,12 +1393,10 @@ void FITSIDItoMS1::getAxisInfo()
       for(Int ctr=0;ctr<nAxis;ctr++)
 	{
           //coordType_p(ctr) = priGroup_p.ctype(ctr);
-          //coordType_p(ctr) = coordType_p(ctr).before(trailing);
           //refVal_p(ctr) = static_cast<Double>(priGroup_p.crval(ctr));
           //refPix_p(ctr) = static_cast<Double>(priGroup_p.crpix(ctr));
           //delta_p(ctr) = static_cast<Double>(priGroup_p.cdelt(ctr));	  
           coordType_p(ctr) = ctype(ctr);
-          coordType_p(ctr) = coordType_p(ctr).before(trailing);
           refVal_p(ctr) = static_cast<Double>(crval(ctr));
           refPix_p(ctr) = static_cast<Double>(crpix(ctr));
           delta_p(ctr) = static_cast<Double>(cdelt(ctr));	  
@@ -1548,15 +1540,15 @@ void FITSIDItoMS1::getAxisInfo()
   // Save the object name, we may need it (for single source fits)
   const FitsKeyword* kwp;
   object_p = (kwp=kw(FITS::OBJECT)) ? kwp->asString() : "unknown";
-  object_p=object_p.before(trailing);
+  RTrimInPlace(object_p, ' ');
   // Save the array name
   if(array_p=="" || array_p=="unknown"){
     array_p = (kwp=kw(FITS::TELESCOP)) ? kwp->asString() : "unknown";
-    array_p=array_p.before(trailing);
+    RTrimInPlace(array_p, ' ');
   }
   if(array_p=="" || array_p=="unknown"){
     array_p = (kwp=kw("ARRNAM")) ? kwp->asString() : "unknown";
-    array_p=array_p.before(trailing);
+    RTrimInPlace(array_p, ' ');
   }
 
   // Save the RA/DEC epoch (for ss fits)
@@ -1912,8 +1904,6 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     msc_p = new MSColumns(ms_p); 
   }
 
-  const Regex trailing(" *$"); // trailing blanks
-
   // get the random group parameter names
   Int tFields; //(nParams)
   Int nRows;  //(nGroups)
@@ -1934,7 +1924,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
   for (Int i=0; i < tFields; i++) {
     tType(i) = ttype(i); 
-    tType(i) = tType(i).before(trailing);
+      RTrimInPlace(tType(i), ' ');
   }
 
   //cout << "tType=" << tType(0) << endl;
@@ -2446,7 +2436,6 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
 // fill Observation table
 void FITSIDItoMS1::fillObsTables() {
-  const Regex trailing(" *$"); // trailing blanks
   const FitsKeyword* kwp;
   Vector<Double> times(2);
   
@@ -2454,18 +2443,18 @@ void FITSIDItoMS1::fillObsTables() {
     ms_p.observation().addRow();
     String observer;
     observer = (kwp=kw(FITS::OBSERVER)) ? kwp->asString() : "unknown";
-    observer=observer.before(trailing);
+    RTrimInPlace(observer, ' ');
     MSObservationColumns msObsCol(ms_p.observation());
     msObsCol.observer().put(0,observer);
     String obscode;
     obscode = (kwp=kw("OBSCODE")) ? kwp->asString() : "";
-    obscode=obscode.before(trailing);
+    RTrimInPlace(obscode, ' ');
     msObsCol.project().put(0,obscode);
     String telescope= (kwp=kw(FITS::TELESCOP)) ? kwp->asString() : array_p;
-    telescope=telescope.before(trailing);  
+    RTrimInPlace(telescope, ' ');
     if(telescope=="" || telescope=="unknown"){
       telescope= (kwp=kw("ARRNAM")) ? kwp->asString() : "unknown";
-      telescope=telescope.before(trailing);  
+      RTrimInPlace(telescope, ' ');
     } 
     msObsCol.telescopeName().put(0,telescope);
     msObsCol.scheduleType().put(0, "");
@@ -2503,7 +2492,7 @@ void FITSIDItoMS1::fillObsTables() {
   Double time=timeVal.second();
 
   String history = (kwp=kw(FITS::HISTORY)) ? kwp->comm(): "";
-  history = history.before(trailing);
+  RTrimInPlace(history, ' ');
   MSHistoryColumns msHisCol(ms_p.history());
   Int row=-1;
   while (history!="") {
@@ -2515,14 +2504,13 @@ void FITSIDItoMS1::fillObsTables() {
     msHisCol.application().put(row,"ms");
     msHisCol.message().put(row,history);
     history = (kwp=nextkw()) ? kwp->comm(): "";
-    history = history.before(trailing);
+    RTrimInPlace(history, ' ');
   }
 }
 
 void FITSIDItoMS1::fillAntennaTable()
 {
   *itsLog << LogOrigin("FitsIDItoMS", "fillAntennaTable");
-  const Regex trailing(" *$"); // trailing blanks
   TableRecord btKeywords=getKeywords();
   
   Int nAnt=nrows();
@@ -2555,16 +2543,16 @@ void FITSIDItoMS1::fillAntennaTable()
    String timsys="TAI";
    if (btKeywords.isDefined("TIMSYS")) {
      timsys=btKeywords.asString("TIMSYS");
-     timsys=timsys.before(trailing);
+      RTrimInPlace(timsys, ' ');
    }
    if (btKeywords.isDefined("TIMESYS")) { // TIMESYS overrides TIMSYS
      timsys=btKeywords.asString("TIMESYS");
-     timsys=timsys.before(trailing);
+     RTrimInPlace(timsys, ' ');
    }
    String frame="GEOCENTRIC";
    if (btKeywords.isDefined("FRAME")) {
      String myframe = btKeywords.asString("FRAME");
-     myframe=myframe.before(trailing);
+     RTrimInPlace(myframe, ' ');
      if(myframe != frame){ // presently the only defined value is the default
        *itsLog << LogIO::WARN << "FRAME keyword in ARRAY_GEOMETRY table has unrecognized value \"" 
 	       << myframe << "\", will assume GEOCENTRIC." << LogIO::POST;
@@ -2580,7 +2568,7 @@ void FITSIDItoMS1::fillAntennaTable()
    String arrnam="unknown";
    if (btKeywords.isDefined("ARRNAM")) {
      arrnam=btKeywords.asString("ARRNAM");
-     arrnam=arrnam.before(trailing);
+     RTrimInPlace(arrnam, ' ');
      if(array_p=="" || array_p=="unknown"){
        array_p = arrnam;
      }
@@ -2593,7 +2581,7 @@ void FITSIDItoMS1::fillAntennaTable()
    }
    if ((array_p=="" || array_p=="unknown") && btKeywords.isDefined("TELESCOP")) {
      arrnam=btKeywords.asString("TELESCOP");
-     arrnam=arrnam.before(trailing);
+     RTrimInPlace(arrnam, ' ');
      array_p = arrnam;
    }
 
@@ -2679,7 +2667,7 @@ void FITSIDItoMS1::fillAntennaTable()
      }
      ant.flagRow().put(row,False);
      ant.mount().put(row,mount);
-     String temps = String::toString(anNo(i));
+     String temps = ValueToString(anNo(i));
      if(anNo(i)<10){
        temps = String("0")+temps;
      }
@@ -2718,7 +2706,6 @@ void FITSIDItoMS1::fillAntennaTable()
 }
 
 void FITSIDItoMS1::fillFeedTable() {
-  const Regex trailing(" *$"); // trailing blanks
   MSFeedColumns& msfc(msc_p->feed());
 
   ConstFitsKeywordList& kwl = kwlist();
@@ -3154,7 +3141,7 @@ void FITSIDItoMS1::fillFieldTable()
     }
   }
   else{
-    if (equinox(0).contains("1950.0B")) {
+    if (StringContains(equinox(0), "1950.0B")) {
       epochRefZero=MDirection::B1950;
     }
   }    
@@ -3219,9 +3206,9 @@ void FITSIDItoMS1::fillFieldTable()
 	}
       }
       else{ // have equinox
-	if (equinox(inRow).contains("J2000")) {
+	if (StringContains(equinox(inRow), "J2000")) {
 	  epochRef = MDirection::J2000;
-	} else if (numPoly == 0 && equinox(inRow).contains("1950.0B")) {
+	} else if (numPoly == 0 && StringContains(equinox(inRow), "1950.0B")) {
 	  epochRef = MDirection::B1950;
 	} else {
 	  *itsLog << " Cannot handle equinox in SU table: "
@@ -4052,7 +4039,7 @@ Bool FITSIDItoMS1::handleModelComps()
     }
     if (kwname == "TAPER_FN") {
       taperFn = fkw->asString();
-      taperFn.trim();
+      TrimInPlace(taperFn);
     }
   }
 
@@ -4146,9 +4133,8 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
   
   String tmpPolTab;
 
-  const Regex trailing(" *$"); // trailing blanks 
   String extname(FITSIDItoMS1::extname());
-  extname=extname.before(trailing);
+  RTrimInPlace(extname, ' ');
   
   *itsLog << LogIO::NORMAL << "Found binary table " << extname << LogIO::POST;
   

@@ -146,15 +146,15 @@ namespace casacore {
     itsTable.putCell (attrName, Vector<Int64>(1,rownr), data);
   }
 
-  void ImageAttrGroupCasa::checkRows (const String& attrName, uInt rownr)
+  void ImageAttrGroupCasa::checkRows (const std::string& attrName, uInt rownr)
   {
     uInt nrow = itsTable.nrows();
     // A new row can only be added right after the last row.
     if (rownr > nrow) {
-      throw AipsError("ImageAttrGroupCasa: row " + String::toString(rownr) +
+      throw AipsError("ImageAttrGroupCasa: row " + ValueToString(rownr) +
                       " of attribute " + attrName +
                       " cannot be added; beyond current #rows " +
-                      String::toString(nrow));
+                      ValueToString(nrow));
     }
     if (rownr == nrow) {
       itsTable.addRow(1);
@@ -222,7 +222,7 @@ namespace casacore {
       break;
     default:
       throw AipsError("ImageAttrGroupCasa::addNewColumn: Unknown datatype " +
-                      String::toString(data.dataType()));
+                      ValueToString(data.dataType()));
     }
     return True;
   }

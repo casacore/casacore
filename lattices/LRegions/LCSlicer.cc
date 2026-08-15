@@ -481,8 +481,8 @@ Slicer LCSlicer::toSlicer (const Vector<Float>& referencePixel,
 	    bstr << blc;
 	    tstr << trc;
 	    throw (AipsError ("LCSlicer::toSlicer - "
-			      "blc " + String(bstr) + " must be <= trc "
-			      + String(tstr)));
+			      "blc " + bstr.str() + " must be <= trc "
+			      + tstr.str()));
 	}
     }
     // Return the completed LCSlicer as a Slicer.

@@ -157,7 +157,7 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 	    LogIO::POST;
     } else {
         LogIO os;
-	os << LogIO::SEVERE << String(errmsg) << LogIO::POST;
+	os << LogIO::SEVERE << errmsg.str() << LogIO::POST;
     }
     return ok;
 }

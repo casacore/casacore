@@ -1645,13 +1645,13 @@ void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
 {
    if (!fixedMinMax_p) {
        os_p << LogIO::NORMAL << "Minimum value ";
-      os_p.output() << setw(oWidth) << String(osMin);
+      os_p.output() << setw(oWidth) << osMin.str();
       if (type==TpFloat && minPos_p.size() > 0) {
          os_p <<  " at " << blcParent_p + minPos_p+1;
       }
       os_p.post();
       os_p << "Maximum value ";
-      os_p.output() << setw(oWidth) << String(osMax);
+      os_p.output() << setw(oWidth) << osMax.str();
       if (type==TpFloat && maxPos_p.size() > 0) {
          os_p <<  " at " << blcParent_p + maxPos_p+1 << endl;
       }
@@ -1792,14 +1792,14 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os5 << stats.column(MIN)(j);
          os6 << stats.column(MAX)(j);
 
-         os_p.output() << setw(oDWidth)   << String(os0);
-         if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
-         os_p.output() << setw(oDWidth)   << String(os2);
-         if (doRobust_p) os_p.output() << setw(oDWidth)   << String(os8);
-         os_p.output() << setw(oDWidth)   << String(os3);
-         os_p.output() << setw(oDWidth)   << String(os4);
-         os_p.output() << setw(oDWidth)   << String(os5);
-         os_p.output() << setw(oDWidth)   << String(os6);
+         os_p.output() << setw(oDWidth)   << os0.str();
+         if (hasBeam) os_p.output() << setw(oDWidth)   << os1.str();
+         os_p.output() << setw(oDWidth)   << os2.str();
+         if (doRobust_p) os_p.output() << setw(oDWidth)   << os8.str();
+         os_p.output() << setw(oDWidth)   << os3.str();
+         os_p.output() << setw(oDWidth)   << os4.str();
+         os_p.output() << setw(oDWidth)   << os5.str();
+         os_p.output() << setw(oDWidth)   << os6.str();
       }
       os_p.output() << endl;
    }
@@ -2352,7 +2352,7 @@ IPosition LatticeStatistics<T>::locInStorageLattice(const IPosition& latticePosi
    uInt iType = uInt(type);
    ThrowIf(
            iType >= uInt(LatticeStatsBase::NACCUM),
-           "Illegal statistics accumulation type " + String::toString(type)
+           "Illegal statistics accumulation type " + ValueToString(type)
    );
 
    const uInt nDim = pStoreLattice_p->ndim();
@@ -2798,42 +2798,42 @@ void LatticeStatistics<T>::displayStats (
       os12 << q1;
       os13 << q3;
       os_p << "Number points = ";
-      os_p.output() << setw(oWidth) << String(os00) << "       Sum      = ";
-      os_p.output() << setw(oWidth) << String(os1) << endl;
+      os_p.output() << setw(oWidth) << os00.str() << "       Sum      = ";
+      os_p.output() << setw(oWidth) << os1.str() << endl;
       os_p.post();
       os_p << "Mean          = ";
-      os_p.output() << setw(oWidth) << String(os2);
+      os_p.output() << setw(oWidth) << os2.str();
       if (doRobust_p) {
          os_p.output()  << "       Median   = ";
-         os_p.output() << setw(oWidth) << String(os8) << endl;
+         os_p.output() << setw(oWidth) << os8.str() << endl;
       }
       os_p.post();
 //
       os_p << "Variance      = ";
-      os_p.output() << setw(oWidth) << String(os3);
+      os_p.output() << setw(oWidth) << os3.str();
 //
       if (var > 0.0) {
          os_p << "       Std dev   = ";
-         os_p.output() << setw(oWidth) << String(os4) << endl;
+         os_p.output() << setw(oWidth) << os4.str() << endl;
          os_p.post();
       } else {
          os_p.post();
       }
 //
       os_p << "Rms           = ";
-      os_p.output() << setw(oWidth) << String(os5) << endl;
+      os_p.output() << setw(oWidth) << os5.str() << endl;
       os_p << endl;
       os_p.post();
 //
       if (doRobust_p) {
          os_p << "MedAbsDevMed  = ";
-         os_p.output() << setw(oWidth) << String(os9);
+         os_p.output() << setw(oWidth) << os9.str();
          os_p.output()  << "            IQR = ";
-         os_p.output() << setw(oWidth) << String(os10) << endl;
+         os_p.output() << setw(oWidth) << os10.str() << endl;
          os_p.output()  << " First Quartile = ";
-         os_p.output() << setw(oWidth) << String(os12) << endl;
+         os_p.output() << setw(oWidth) << os12.str() << endl;
          os_p.output()  << " Third Quartile = ";
-         os_p.output() << setw(oWidth) << String(os13) << endl;
+         os_p.output() << setw(oWidth) << os13.str() << endl;
          os_p.post();
       }
       os_p << endl << LogIO::POST;

@@ -185,7 +185,7 @@ String FITSImage::get_fitsname(const String &fullname)
 	Int close_bracepos, open_bracepos, fullname_length;
 
 	fullname_l = fullname;
-	fullname_l.trim();
+	TrimInPlace(fullname_l);
 	fullname_length = fullname_l.length();
 
 	//cerr << "Initial name: " << fullname_l << endl;
@@ -241,7 +241,7 @@ uInt FITSImage::get_hdunum(const String &fullname)
 	uInt hduindex=0;
 
 	fullname_l = fullname;
-	fullname_l.trim();
+	TrimInPlace(fullname_l);
 	fullname_length = fullname_l.length();
 
 	// determine the FITS name
@@ -257,12 +257,12 @@ uInt FITSImage::get_hdunum(const String &fullname)
 		// check for the comma
 		comma_pos = extstring.rfind(",", extstring.length());
 		if (comma_pos < 0) {
-			extstring.trim();
+			TrimInPlace(extstring);
 
 			// check whether an index is given
-			if (String::toInt(extstring)){
+			if (StringToInt(extstring)){
 				// get the index
-				extindex = String::toInt(extstring);
+				extindex = StringToInt(extstring);
 			}
 			// explicitly check for the literal "0"
 			else if (!extstring.compare(0, 1, "0", 1)){
@@ -278,7 +278,7 @@ uInt FITSImage::get_hdunum(const String &fullname)
 			extname = String(extstring, 0, comma_pos);
 
 			// find the extension version
-			extver = String::toInt(String(extstring, comma_pos+1, extstring.length()-1));
+			extver = StringToInt(String(extstring, comma_pos+1, extstring.length()-1));
 
 			if (!extver){
 				throw (AipsError(String(extstring, comma_pos+1, extstring.length()-1) + " Extension version not an integer"));
@@ -293,8 +293,8 @@ uInt FITSImage::get_hdunum(const String &fullname)
 
 		}
 		// make it pretty
-		extname.trim();
-		extname.upcase();
+		TrimInPlace(extname);
+		ToUpperCaseInPlace(extname);
 	}
 
 	//cerr << "Opening image parser with: "<< fitsname <<endl;
@@ -719,7 +719,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
        throw (AipsError(name + " is not a FITS image"));
    }
 //
-    FitsInput infile(fitsfile.path().expandedName().chars(), FITS::Disk);
+    FitsInput infile(fitsfile.path().expandedName().c_str(), FITS::Disk);
     if (infile.err()) {
         throw (AipsError("Cannot open file " + name +
 			 " (or other I/O error)"));
