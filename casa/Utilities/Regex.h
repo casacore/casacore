@@ -197,7 +197,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# </todo>
 
 
-class Regex: std::regex
+class Regex: public std::regex
 {
 public:
   // Default constructor uses a zero-length regular expression.
