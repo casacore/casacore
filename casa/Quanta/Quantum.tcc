@@ -339,7 +339,7 @@ void Quantum<Qtype>::convert(const Unit &s) {
 	if (s.empty()) {
 	  qUnit = oss.str();
 	} else {
-	  qUnit = Unit(s.getName() + '.' + oss.str().substr(1));
+	  qUnit = Unit(std::string(s.getName()) + '.' + oss.str().substr(1));
 	}
       }
     }
