@@ -269,7 +269,7 @@ Bool ValueHolderRep::asBool() const
     ;
   }
   throw AipsError ("ValueHolderRep::asBool - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 uChar ValueHolderRep::asuChar() const
@@ -293,7 +293,7 @@ uChar ValueHolderRep::asuChar() const
     ;
   }
   throw AipsError ("ValueHolderRep::asuChar - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 Short ValueHolderRep::asShort() const
@@ -317,7 +317,7 @@ Short ValueHolderRep::asShort() const
     ;
   }
   throw AipsError ("ValueHolderRep::asShort - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 uShort ValueHolderRep::asuShort() const
@@ -341,7 +341,7 @@ uShort ValueHolderRep::asuShort() const
     ;
   }
   throw AipsError ("ValueHolderRep::asuShort - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 Int ValueHolderRep::asInt() const
@@ -362,7 +362,7 @@ Int ValueHolderRep::asInt() const
     ;
   }
   throw AipsError ("ValueHolderRep::asInt - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 uInt ValueHolderRep::asuInt() const
@@ -386,7 +386,7 @@ uInt ValueHolderRep::asuInt() const
     ;
   }
   throw AipsError ("ValueHolderRep::asuInt - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 Int64 ValueHolderRep::asInt64() const
@@ -407,7 +407,7 @@ Int64 ValueHolderRep::asInt64() const
     ;
   }
   throw AipsError ("ValueHolderRep::asInt64 - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 Float ValueHolderRep::asFloat() const
@@ -428,7 +428,7 @@ Float ValueHolderRep::asFloat() const
     ;
   }
   throw AipsError ("ValueHolderRep::asFloat - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 Double ValueHolderRep::asDouble() const
@@ -449,7 +449,7 @@ Double ValueHolderRep::asDouble() const
     ;
   }
   throw AipsError ("ValueHolderRep::asDouble - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 Complex ValueHolderRep::asComplex() const
@@ -475,7 +475,7 @@ Complex ValueHolderRep::asComplex() const
     ;
   }
   throw AipsError ("ValueHolderRep::asComplex - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 DComplex ValueHolderRep::asDComplex() const
@@ -500,7 +500,7 @@ DComplex ValueHolderRep::asDComplex() const
     ;
   }
   throw AipsError ("ValueHolderRep::asDComplex - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 const String& ValueHolderRep::asString() const
@@ -512,7 +512,7 @@ const String& ValueHolderRep::asString() const
     ;
   }
   throw AipsError ("ValueHolderRep::asString - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 const Array<Bool> ValueHolderRep::asArrayBool() const
@@ -994,7 +994,7 @@ const Record& ValueHolderRep::asRecord() const
     ;
   }
   throw AipsError ("ValueHolderRep::asRecord - invalid data type " +
-                   String::toString(itsType));
+                   std::to_string(itsType));
 }
 
 
@@ -1142,7 +1142,7 @@ ValueHolderRep* ValueHolderRep::fromRecord (const Record& rec,
     break;
   }
   throw AipsError ("ValueHolder::fromRecord - unknown data type " +
-                   String::toString(rec.dataType(id)));
+                   std::to_string(rec.dataType(id)));
 }
 
 ostream& ValueHolderRep::write (ostream& os) const
@@ -1200,7 +1200,7 @@ ostream& ValueHolderRep::write (ostream& os) const
     break;
   default:
     throw AipsError ("ValueHolder::write - unknown data type " +
-                     String::toString(itsType));
+                     std::to_string(itsType));
     break;
   }
   return os;
@@ -1227,7 +1227,7 @@ bool ValueHolderRep::operator< (const ValueHolderRep& right) const
     return *static_cast<String*>(itsPtr) < *static_cast<String*>(right.itsPtr);
   default:
     throw AipsError ("ValueHolder::operator< - unsupported data type " +
-                     String::toString(itsType));
+                     std::to_string(itsType));
   }
 }
 

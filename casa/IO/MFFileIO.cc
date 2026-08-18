@@ -62,9 +62,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsPosition += n;
     if (throwException  &&  n < size) {
       throw AipsError ("MFFileIO::read - incorrect number of bytes ("
-		       + String::toString(n) + " out of "
-                       + String::toString(size) + ") read for logical file "
-                       + itsName + " in MultiFileBase " + itsFile->fileName());
+		       + std::to_string(n) + " out of "
+                       + std::to_string(size) + ") read for logical file "
+                       + std::string(itsName) + " in MultiFileBase " + std::string(itsFile->fileName()));
     }
     return n;
   }

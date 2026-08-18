@@ -54,7 +54,7 @@ void readFile (const String& name = "tMultiFile_tmp.dat")
   AlwaysAssertExit (! mfile.isWritable());
   mfile.show (cout);
   for (uInt i=0; i<mfile.info().size(); ++i) {
-    String nm = "file" + String::toString(i);
+    String nm = "file" + std::to_string(i);
     cout << nm << ' ' << mfile.fileId(nm, False) << endl;
   }
 }

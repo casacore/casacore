@@ -65,15 +65,13 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
   
   itsSockDesc = socket(AF_INET, SOCK_STREAM, 0);
   if (itsSockDesc < 0) {
-    throw(AipsError(String("StreamIO::StreamIO - cannot attach a socket to") +
-		    String(" host ") + hostname + String(" on port ") +
-		    String::toString(portNumber)));
+    throw(AipsError("StreamIO::StreamIO - cannot attach a socket to host " + std::string(hostname) + " on port " +
+		    std::to_string(portNumber)));
   }
   if (connect(itsSockDesc, reinterpret_cast<sockaddr*>(&serverInfo),
 	      sizeof(serverInfo)) < 0) {
-    throw(AipsError(String("StreamIO::StreamIO - cannot connect to") +
-		    String(" host ") + hostname + String(" on port ") +
-		    String::toString(portNumber)));
+    throw(AipsError("StreamIO::StreamIO - cannot connect to host " + std::string(hostname) + " on port " +
+		    std::to_string(portNumber)));
   }
 #endif
 }

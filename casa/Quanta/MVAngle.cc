@@ -350,8 +350,8 @@ Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
 
 Bool MVAngle::handleReadError(MUString& in, Bool throwExcp) {
   if (throwExcp) {
-    throw AipsError("Invalid date/time '" + in.get(0) +
-                    "', invalid char about pos " + String::toString(in.getPtr()));
+    throw AipsError("Invalid date/time '" + std::string(in.get(0)) +
+                    "', invalid char about pos " + std::to_string(in.getPtr()));
   }
   in.pop();
   return False;

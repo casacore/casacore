@@ -32,10 +32,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void throwContainerSizes (const char* name, size_t l1, size_t l2)
   {
-    throw AipsError ("STLMath function " + String(name) +
+    throw AipsError ("STLMath function " + std::string(name) +
                      ": container sizes differ ( " +
-                     String::toString(l1) + " and " +
-                     String::toString(l2) + ')');
+                     std::to_string(l1) + " and " +
+                     std::to_string(l2) + ')');
   }
 
 } //# NAMESPACE CASACORE - END

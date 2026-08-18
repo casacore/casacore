@@ -213,7 +213,7 @@ SystemCallError::~SystemCallError() noexcept
 {}
 String strerror_overload(int err)
 {
-  return "errno " + String::toString(err);
+  return "errno " + std::to_string(err);
 }
 String strerror_overload(char *err)
 {

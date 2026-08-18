@@ -420,9 +420,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const size_t align = 4096;
     if (bufSize > 0) {
       if (useODirect  &&  bufSize%align != 0) {
-        throw AipsError("MultiFile bufsize " + String::toString(bufSize) +
+        throw AipsError("MultiFile bufsize " + std::to_string(bufSize) +
                         " must be a multiple of " +
-                        String::toString(mfb_od_align) +
+                        std::to_string(mfb_od_align) +
                         " when using O_DIRECT");
       }
       // Note that the error messages do a malloc as well, but small
