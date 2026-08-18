@@ -998,7 +998,7 @@ inline void RTrimInPlace(std::string& str, std::string_view characters) {
 }
 
 // Like sprintf. Don't use for new code -- to be deprecated if possible.
-std::string FormatString(const char* picture, ...);
+std::string FormatString(const char* format_string, ...);
 
 // Returns the number of times a given pattern occurs in a string.
 // E.g. SubStringCount("ababaaba", "aba") returns 3.
@@ -1084,7 +1084,7 @@ inline void CapitalizeStringInPlace(std::string& str) {
       at_word = isupper(*p) || isdigit(*p);
     }
     ++p;
-    // atword is now true if the previous *p is a character or digit
+    // at_word is now true if the previous *p is a character or digit
     if (at_word) {
       while (p != str.end()) {
         if (isupper(*p)) {
