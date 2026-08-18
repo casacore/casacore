@@ -1009,9 +1009,9 @@ String CoordinateUtil::formatCoordinate(
 ) {
     ThrowIf(
         pixel.size() != csys.nPixelAxes(),
-        "Number of elements in pixel (" + String::toString(pixel.size())
+        "Number of elements in pixel (" + std::to_string(pixel.size())
         + ") must be equal to number of pixel axes in coordinate system ("
-        + String::toString(csys.nPixelAxes()) + ")"
+        + std::to_string(csys.nPixelAxes()) + ")"
     );
     Vector<Double> pixel2(csys.nPixelAxes());
     for (uInt i=0; i<pixel2.nelements(); i++) {
