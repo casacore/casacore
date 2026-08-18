@@ -75,7 +75,7 @@ void showHDU(HeaderDataUnit *h) {
            m = String(x->name()).length(); 
            if (x->index() != 0) {
               oss << x->index();
-              m += String::toString(x->index()).length();
+              m += std::to_string(x->index()).length();
            }
            int n;
            Complex c; 

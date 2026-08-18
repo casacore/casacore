@@ -313,7 +313,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 			   << " - the first 999 elements will be used." << LogIO::POST;
 			ok = False;
 		    }
-		    String slen = String::toString(length);
+		    String slen = std::to_string(length);
 		    if (in.name(j).length() + slen.length() > 8) {
 			os << LogIO::SEVERE 
 			   << "Name is too long for array field " << in.name(j) 
