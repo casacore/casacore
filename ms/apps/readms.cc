@@ -797,8 +797,8 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
     Int64 nrow = readStepsHDF5 (hflag, hdata, hfloatdata, hweightspectrum,
                                 ntoread, niter);
     res[0] += nrow;
-    timer.show ("Read " + String::toString(nrow) + " rows (in " +
-                String::toString(niter) + " iterations) from MS " + name);
+    timer.show ("Read " + std::to_string(nrow) + " rows (in " +
+                std::to_string(niter) + " iterations) from MS " + std::string(name));
   }
   res[1] = res[0];
   return res;
@@ -859,8 +859,8 @@ std::vector<Int64> doOne (int seqnr, const String& msName)
   MeasurementSet ms(tab);
   Int64 niter;
   Int64 nrow = readSteps (ms, niter);
-  timer.show ("Read " + String::toString(nrow) + " rows (in " +
-              String::toString(niter) + " iterations) from MS " + msName);
+  timer.show ("Read " + std::to_string(nrow) + " rows (in " +
+              std::to_string(niter) + " iterations) from MS " + std::string(msName));
   if (seqnr == 0) {
     showCacheStatistics (ms);
   }

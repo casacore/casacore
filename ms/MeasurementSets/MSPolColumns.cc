@@ -74,7 +74,7 @@ match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow) {
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSPolarszationColumns::match(...) - "
-                      "row " + String::toString(tr) +
+                      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     if (!flagRow()(tr) &&

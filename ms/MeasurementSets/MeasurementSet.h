@@ -84,7 +84,7 @@ public:
         // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
         // as the last parameter, which can just be ignored.
         if (subtableId != MSMainEnums::UNDEFINED_KEYWORD){
-          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + String::toString (subtableId));
+          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + std::to_string (subtableId));
           eligible.eligible_p.insert(subtableId);
         }
       }
@@ -99,7 +99,7 @@ public:
         // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
         // as the last parameter, which can just be ignored.
         if (subtableId != MSMainEnums::UNDEFINED_KEYWORD) {
-          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + String::toString (subtableId));
+          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + std::to_string (subtableId));
           ineligible.eligible_p.insert (subtableId);
         }
       }

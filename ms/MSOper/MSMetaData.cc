@@ -44,7 +44,7 @@
 #include <regex>
 #include <utility>
 
-#define _ORIGIN "MSMetaData::" + String(__func__) + ": "
+#define _ORIGIN "MSMetaData::" + std::string(__func__) + ": "
 
 namespace casacore {
 
@@ -579,9 +579,9 @@ std::shared_ptr<Vector<Int> > MSMetaData::_getStateIDs() const {
     Int nstates = (Int)nStates();
     ThrowIf(
         maxState >= nstates,
-        "MS only has " + String::toString(nstates)
+        "MS only has " + std::to_string(nstates)
         + " rows in its STATE table, but references STATE_ID "
-        + String::toString(maxState) + " in its main table."
+        + std::to_string(maxState) + " in its main table."
     );
     return states;
 }
@@ -1171,7 +1171,7 @@ std::set<uInt> MSMetaData::getSpwsForField(const String& fieldName) {
     }
     ThrowIf(
         spws.empty(),
-        _ORIGIN + "field (" + fieldName + " does not exist."
+        _ORIGIN + "field (" + std::string(fieldName) + " does not exist."
     );
     return spws;
 }
@@ -1590,7 +1590,7 @@ vector<String> MSMetaData::getAntennaNames(
     uInt mymax = max(Vector<uInt>(antennaIDs));
     ThrowIf(
         mymax >= nAnts,
-        "Antenna ID " + String::toString(mymax)
+        "Antenna ID " + std::to_string(mymax)
         + " out of range."
     );
     vector<String> names;
@@ -1630,7 +1630,7 @@ vector<std::set<uInt> > MSMetaData::getAntennaIDs(
     ) {
         std::map<String, std::set<uInt> >::const_iterator pair = namesToIDsMap.find(*name);
         ThrowIf(
-            pair == mapEnd, _ORIGIN + "Unknown antenna " + *name
+            pair == mapEnd, _ORIGIN + "Unknown antenna " + std::string(*name)
         );
         ids.push_back(pair->second);
     }
@@ -2656,10 +2656,10 @@ Record MSMetaData::getSummary() const {
             _createScanRecords(
                 arrayRec, aKey, subScanProps
             );
-            obsRec.defineRecord("arrayID=" + String::toString(*aIter), arrayRec);
+            obsRec.defineRecord("arrayID=" + std::to_string(*aIter), arrayRec);
             ++aIter;
         }
-        summary.defineRecord("observationID=" + String::toString(oCount), obsRec);
+        summary.defineRecord("observationID=" + std::to_string(oCount), obsRec);
         ++oIter;
         ++oCount;
     }
@@ -2688,7 +2688,7 @@ void MSMetaData::_createScanRecords(
         );
         scanRec.define("nrows", (Int64)scanNRows);
         scanRec.define("antennas", Vector<Int>(antennasForScan.begin(), antennasForScan.size(), 0));
-        parent.defineRecord("scan=" + String::toString(scanKey.scan), scanRec);
+        parent.defineRecord("scan=" + std::to_string(scanKey.scan), scanRec);
         ++scanIter;
     }
 }
@@ -2714,7 +2714,7 @@ void MSMetaData::_createSubScanRecords(
         subScanRec.define("state IDs", Vector<Int>(props.stateIDs.begin(), props.stateIDs.size(), 0));
         //subScanRec.define("field ID", subScanIter->fieldID);
         _createTimeStampRecords(subScanRec, props);
-        parent.defineRecord("fieldID=" + String::toString(subScanIter->fieldID), subScanRec);
+        parent.defineRecord("fieldID=" + std::to_string(subScanIter->fieldID), subScanRec);
         ++subScanIter;
     }
 }
@@ -2733,7 +2733,7 @@ void MSMetaData::_createTimeStampRecords(
         );
         timeRec.define("nrows", (Int64)(tpIter->second.nrows));
         timeRec.define("time", tpIter->first);
-        parent.defineRecord(String::toString(timeCount), timeRec);
+        parent.defineRecord(std::to_string(timeCount), timeRec);
         ++tpIter;
         ++timeCount;
     }
@@ -4789,7 +4789,7 @@ vector<MSMetaData::SpwProperties> MSMetaData::_getSpwInfo(
 void MSMetaData::_checkField(uInt fieldID) const {
     ThrowIf(
         fieldID >= nFields(),
-        "Unknown fieldID " + String::toString(fieldID)
+        "Unknown fieldID " + std::to_string(fieldID)
     );
 }
 
@@ -4826,9 +4826,9 @@ Bool MSMetaData::_hasFieldID(const Int fieldID) const {
     ThrowIf (
         fieldID >= (Int)nFields(),
         "Requested field ID "
-        + String::toString(fieldID)
+        + std::to_string(fieldID)
         + " is greater than or equal to the number of records ("
-        + String::toString(nFields())
+        + std::to_string(nFields())
         + ") in this MS's FIELD table"
     );
     std::set<Int> uniqueFields = getUniqueFieldIDs();
@@ -4909,9 +4909,9 @@ Bool MSMetaData::_hasStateID(const Int stateID) const {
     ThrowIf(
         stateID >= (Int)nStates(),
         "Requested state ID "
-        + String::toString(stateID)
+        + std::to_string(stateID)
         + " is greater than or equal to the number of records ("
-        + String::toString(nStates())
+        + std::to_string(nStates())
         + ") in this MS's STATE table"
     );
     if (_uniqueStateIDs.empty()) {
@@ -4925,9 +4925,9 @@ void MSMetaData::_hasAntennaID(Int antennaID) {
     ThrowIf(
         antennaID >= (Int)nAntennas(),
         _ORIGIN + "Requested antenna ID "
-        + String::toString(antennaID)
+        + std::to_string(antennaID)
         + " is greater than or equal to the number of records ("
-        + String::toString(nAntennas())
+        + std::to_string(nAntennas())
         + ") in this MS's ANTENNA table"
     );
 }

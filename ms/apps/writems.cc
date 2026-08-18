@@ -883,7 +883,7 @@ void MSCreateCasa::fillAntenna (const Block<MPosition>& antMPos,
   // Write default values if there was no such input column.
   if (! antTab.tableDesc().isColumn("NAME")) {
     for (Int i=0; i<itsNrAnt; i++) {
-      msantCol.name().put (i, "ST_" + String::toString(i));
+      msantCol.name().put (i, "ST_" + std::to_string(i));
     }
   }
   if (! antTab.tableDesc().isColumn("STATION")) {
@@ -1034,7 +1034,7 @@ void MSCreateCasa::addField (int field)
     MSFieldColumns msfieldCol(msfield);
     uInt rownr = msfield.nrow();
     msfield.addRow();
-    msfieldCol.name().put (rownr, "BEAM_" + String::toString(rownr));
+    msfieldCol.name().put (rownr, "BEAM_" + std::to_string(rownr));
     msfieldCol.code().put (rownr, "");
     msfieldCol.time().put (rownr, itsStartTime); // really startTime; everywhere else it is midpoint with an interval
     msfieldCol.numPoly().put (rownr, 0);
@@ -1417,7 +1417,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
   // Create a group per spectral window.
   for (int band=itsSpw; band<itsSpw+itsNSpw; ++band) {
     HDF5Spw spw;
-    spw.spw = std::make_shared<HDF5Group>(*itsFile, "SPW_"+String::toString(band));
+    spw.spw = std::make_shared<HDF5Group>(*itsFile, "SPW_"+std::to_string(band));
     // Write the attributes.
     HDF5Record::writeRecord (*(spw.spw), "ATTR", rec);
     // Create the data in the spw.
@@ -2069,8 +2069,8 @@ String doOne (int seqnr, const String& msName)
     msmaker->writeTimeStep (myNTimeField, myWriteRowWise);
   }
   msmaker->flush();
-  timer.show ("Wrote " + String::toString(msmaker->nrow()) + " rows into MS "
-              + msName);
+  timer.show ("Wrote " + std::to_string(msmaker->nrow()) + " rows into MS "
+              + std::string(msName));
   if (seqnr == 0 && !myUseAdios2) {
     msmaker->showCacheStatistics();
   }

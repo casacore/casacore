@@ -51,9 +51,9 @@ Bool operator<(const SubScanKey& lhs, const SubScanKey& rhs) {
     return False;
 }
 
-String toString(const SubScanKey& subScanKey) {
+std::string toString(const SubScanKey& subScanKey) {
     return toString(scanKey(subScanKey)) + " fieldID="
-        + String::toString(subScanKey.fieldID);
+        + std::to_string(subScanKey.fieldID);
 }
 
 std::ostream& operator<<(std::ostream& os, const SubScanKey& subScanKey) {
@@ -62,10 +62,10 @@ std::ostream& operator<<(std::ostream& os, const SubScanKey& subScanKey) {
 }
 
 
-String toString(const ScanKey& scanKey) {
-    return "observationID=" + String::toString(scanKey.obsID)
-        + " arrayID=" + String::toString(scanKey.arrayID)
-        + " scan number=" + String::toString(scanKey.scan);
+std::string toString(const ScanKey& scanKey) {
+    return "observationID=" + std::to_string(scanKey.obsID)
+        + " arrayID=" + std::to_string(scanKey.arrayID)
+        + " scan number=" + std::to_string(scanKey.scan);
 }
 
 
