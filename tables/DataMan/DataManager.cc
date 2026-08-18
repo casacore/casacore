@@ -225,8 +225,8 @@ void DataManager::checkDataType (const DataManagerColumn* colPtr,
     if (dataType != colPtr->dataType()) {
 	throw (DataManInvDT ("Column " + columnName +
                              " has data type " +
-                             String::toString(colPtr->dataTypeId()) +
-                             "; expected " + String::toString(dataTypeId)));
+                             colPtr->dataTypeId() +
+                             "; expected " + dataTypeId));
     }
     if (dataType == TpOther) {
 	if (dataTypeId != colPtr->dataTypeId()) {

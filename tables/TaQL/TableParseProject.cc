@@ -419,7 +419,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // If no new name is given, make one (unique).
       String newName = columnNames_p[i];
       if (newName.empty()) {
-        String nm = "Col_" + String::toString(i+1);
+        const std::string nm = "Col_" + std::to_string(i+1);
         Int seqnr = 0;
         newName = nm;
         Bool unique = False;
@@ -429,7 +429,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             if (newName == columnNames_p[i]) {
               unique = False;
               seqnr++;
-              newName = nm + "_" + String::toString(seqnr);
+              newName = nm + "_" + std::to_string(seqnr);
               break;
             }
           }
@@ -825,10 +825,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           firstColName_p  = name;
         } else {
           if (tab.nrow() != firstColTable_p.nrow()) {
-            throw TableInvExpr ("Nr of rows (" + String::toString(tab.nrow()) +
-                                ") in table column " + name +
-                                " differs from column "+ firstColName_p + " (" +
-                                String::toString(firstColTable_p.nrow()) + ')');
+            throw TableInvExpr ("Nr of rows (" + std::to_string(tab.nrow()) +
+                                ") in table column " + std::string(name) +
+                                " differs from column "+ std::string(firstColName_p) + " (" +
+                                std::to_string(firstColTable_p.nrow()) + ')');
           }
         }
       }

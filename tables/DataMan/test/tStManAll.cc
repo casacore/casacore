@@ -127,9 +127,9 @@ template<> Array<String> makeArray (const IPosition& shape,
 {
   Array<String> arr(shape);
   for (uInt i=0; i<arr.size(); ++i) {
-    arr.data()[i] = value + String::toString(i);
+    arr.data()[i] = value + String(std::to_string(i));
   }
-  return arr;
+return arr;
 }
 
 template<typename T> void incrArray (Array<T>& arr, int incr, Bool)
@@ -151,7 +151,7 @@ template<> void incrArray (Array<Bool>& arr, int, Bool incr)
 }
 template<> void incrArray (Array<String>& arr, int incr, Bool)
 {
-  arr += String::toString(abs(incr)%10);
+  arr += String(std::to_string(abs(incr)%10));
 }
 
 // Create all global arrays using the globally defined array shapes.

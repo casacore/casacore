@@ -1028,7 +1028,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         tables.push_back (tab);
       } else if (name.empty()) {
         throw TableInvExpr("No matching tables found for $" +
-                           String::toString(res.getInt()));
+                           std::to_string(res.getInt()));
       } else {
         Vector<String> nms = Directory::shellExpand(Vector<String>(1, name));
         if (nms.empty()) {

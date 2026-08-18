@@ -179,7 +179,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                   ||  (rep->dataType() != TableExprNodeRep::NTInt
                        &&  rep->dataType() != TableExprNodeRep::NTDouble)) {
                 throw TableInvExpr ("Axes/shape arguments " +
-                                    String::toString(i+1) +
+                                    std::to_string(i+1) +
                                     " are not one or more scalars"
                                     " or a single bounded range");
               }

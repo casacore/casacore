@@ -227,7 +227,7 @@ void ReadAsciiTable::handleKeyset (Int lineSize, char* string1,
 				   char* first, char* second,
 				   TableRecord& keysets,
 				   LogIO& logger,
-				   const String& fileName,
+				   const std::string& fileName,
 				   ifstream& jFile,
 				   Int& lineNumber,
 				   Char separator,
@@ -273,7 +273,7 @@ void ReadAsciiTable::handleKeyset (Int lineSize, char* string1,
     Int done4 = getNext (string1, lineSize, second, at3, ' '); 
     if (done3<=0 || done4<=0) {
       throw AipsError ("ReadAsciiTable: no keyword name or type in line " +
-		       String::toString(lineNumber)
+		       std::to_string(lineNumber)
 		       + " of " + fileName);
     }
     String keyName = String(first);

@@ -290,9 +290,9 @@ void ColumnSet::removeRow (rownr_t rownr)
 			     "; its storage managers do not support it"));
     }
     if (rownr >= nrrow_p) {
-	throw (TableInvOper ("removeRow: rownr " + String::toString(rownr) +
-			     " too high in table " + baseTablePtr_p->tableName() +
-			     " (#rows=" + String::toString(nrrow_p) + ")"));
+	throw (TableInvOper ("removeRow: rownr " + std::to_string(rownr) +
+			     " too high in table " + std::string(baseTablePtr_p->tableName()) +
+			     " (#rows=" + std::to_string(nrrow_p) + ")"));
     }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	BLOCKDATAMANVAL(i)->removeRow64 (rownr);
@@ -647,13 +647,13 @@ Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
     return True;
 }
 
-String ColumnSet::uniqueDataManagerName (const String& name) const
+String ColumnSet::uniqueDataManagerName (const std::string& name) const
 {
     String dmName = name;
     Int nr = 0;
     while (! checkDataManagerName (dmName, 0, String(), False)) {
         nr++;
-	dmName = name + '_' + String::toString(nr);
+	dmName = name + '_' + std::to_string(nr);
     }
     return dmName;
 }

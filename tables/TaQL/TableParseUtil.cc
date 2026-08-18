@@ -434,7 +434,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         default:
           throw TableInvExpr ("TableParse::getTypeString - "
                               "value has an unknown data type " +
-                              String::toString(type));
+                              std::to_string(type));
         }
       }
       return out;

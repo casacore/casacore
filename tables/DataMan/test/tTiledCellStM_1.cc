@@ -176,7 +176,7 @@ void makeCube (const char* argv[])
 	istringstream istr(cubeV(i).c_str());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
-	    throw AipsError("Arrayshape "  + String::toString(cubeShape(i))
+	    throw AipsError("Arrayshape "  + std::to_string(cubeShape(i))
 			    + " must be > 0");
 	}
     }
@@ -190,7 +190,7 @@ void makeCube (const char* argv[])
 	    istringstream istr(tileV(i).c_str());
 	    istr >> tileShape(i);
 	    if (tileShape(i) <= 0) {
-		throw AipsError("Tileshape " + String::toString(tileShape(i))
+		throw AipsError("Tileshape " + std::to_string(tileShape(i))
 				+ " must be > 0");
 	    }
 	}

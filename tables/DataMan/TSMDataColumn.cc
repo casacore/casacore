@@ -138,7 +138,7 @@ IPosition TSMDataColumn::shape (rownr_t rownr)
     IPosition cubeShape = hypercube->cubeShape();
     if (cubeShape.nelements() == 0) {
         throw (DataManInvOper ("TSM: no array in row " +
-			       String::toString(rownr) +
+			       String(std::to_string(rownr)) +
 			       " of column " + columnName() +
 			       " in "+ stmanPtr_p->fileName()));
     }

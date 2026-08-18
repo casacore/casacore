@@ -150,7 +150,7 @@ StIndArray* SSMIndColumn::getShape (rownr_t aRowNr)
     StIndArray* aPtr = getArrayPtr (aRowNr);
     if (aPtr == 0) {
       throw DataManInvOper ("SSMIndColumn::getShape: no array in row "+
-                            String::toString(aRowNr) + " in column "
+                            String(std::to_string(aRowNr)) + " in column "
                             + columnName()
                             + " of table " + itsSSMPtr->table().tableName());
     }

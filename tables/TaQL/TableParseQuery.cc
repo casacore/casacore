@@ -473,7 +473,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       stride_p = evalIntScaExpr (TableExprNode(expr.increment()));
       if (stride_p <= 0) {
         throw TableInvExpr ("in the LIMIT clause stride " +
-                            String::toString(stride_p) +
+                            std::to_string(stride_p) +
                             " must be positive");
       }
     }
@@ -553,10 +553,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const Block<String>& colNames = tableProject_p.getColumnNames();
     if (update_p.size() != colNames.size()) {
       throw TableInvExpr ("Error in INSERT command; nr of columns (=" +
-                          String::toString(colNames.size()) +
+                          std::to_string(colNames.size()) +
                           ") mismatches "
                           "number of VALUES expressions (=" +
-                          String::toString(Int(update_p.size())) + ")");
+                          std::to_string(Int(update_p.size())) + ")");
     }
     tableProject_p.setUpdateNames (update_p);
   }
@@ -686,10 +686,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const Block<String>& colNames = tableProject_p.getColumnNames();
     if (sourceNames.size() != colNames.size()) {
       throw TableInvExpr ("Error in INSERT command; nr of columns (=" +
-                          String::toString(colNames.size()) +
+                          std::to_string(colNames.size()) +
                           ") mismatches "
                           "number of columns in selection (=" +
-                          String::toString(sourceNames.size()) + ")");
+                          std::to_string(sourceNames.size()) + ")");
     }
     // Check if the data types match.
     const TableDesc& tdesc1 = table.tableDesc();

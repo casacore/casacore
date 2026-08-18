@@ -488,7 +488,7 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
     default:
         throw (TableInvExpr ("TableExprFuncNode::getBool, "
                              "unknown function " +
-                             String::toString(funcType_p)));
+                             std::to_string(funcType_p)));
     }
     return True;
 }
@@ -619,7 +619,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
     default:
         throw (TableInvExpr ("TableExprFuncNode::getInt, "
                              "unknown function " +
-                             String::toString(funcType_p)));
+                             std::to_string(funcType_p)));
     }
     return 0;
 }
@@ -963,7 +963,7 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
     default:
         throw (TableInvExpr ("TableExprFuncNode::getDComplex, "
                              "unknown function " +
-                             String::toString(funcType_p)));
+                             std::to_string(funcType_p)));
     }
     return DComplex(0., 0.);
 }
@@ -1082,7 +1082,7 @@ String TableExprFuncNode::getString (const TableExprId& id)
     default:
         throw (TableInvExpr ("TableExprFuncNode::getString, "
                              "unknown function " +
-                             String::toString(funcType_p)));
+                             std::to_string(funcType_p)));
     }
     return "";
 }
@@ -1106,7 +1106,7 @@ TaqlRegex TableExprFuncNode::getRegex (const TableExprId& id)
     }
     throw (TableInvExpr ("TableExprFuncNode::getRegex, "
                          "unknown function " +
-                         String::toString(funcType_p)));
+                         std::to_string(funcType_p)));
 }
 
 MVTime TableExprFuncNode::getDate (const TableExprId& id)
@@ -1131,7 +1131,7 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
     default:
         throw (TableInvExpr ("TableExprFuncNode::getDate, "
                              "unknown function " +
-                             String::toString(funcType_p)));
+                             std::to_string(funcType_p)));
     }
     return MVTime();
 }
@@ -1611,7 +1611,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         if (fType != arrayFUNC) {
             if (nodes[0]->valueType() != VTArray) {
                 throw TableInvExpr ("1st argument of function nr " +
-                                    String::toString(fType) +
+                                    std::to_string(fType) +
                                     " has to be an array");
             }
         }
@@ -1635,7 +1635,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         if (nodes[axarg]->dataType() != NTInt) {
           throw TableInvExpr ("The axes arguments of RUNNINGxxx, BOXEDxxx, "
                               "or XXXs function " +
-                              String::toString(fType) +
+                              std::to_string(fType) +
                               " have to be integers");
         }
         // The last argument forms the axes as an array object.
@@ -1660,7 +1660,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         if (vt == VTArray) {
             resVT = vt;
         } else if (vt != VTScalar) {
-            throw TableInvExpr ("Function nr " + String::toString(fType) +
+            throw TableInvExpr ("Function nr " + std::to_string(fType) +
                                 " has to have a scalar or array argument");
         }
     }
@@ -1914,7 +1914,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars only (or no arguments).
     for (uInt i=0; i< nodes.size(); i++) {
         if (nodes[i]->valueType() != VTScalar) {
-            throw TableInvExpr ("Function nr " + String::toString(fType) +
+            throw TableInvExpr ("Function nr " + std::to_string(fType) +
                                 " has to have a scalar argument");
         }
     }
@@ -1936,7 +1936,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         return checkDT (dtypeOper, NTString, NTRegex, nodes);
     default:
         throw (TableInvExpr ("TableExprFuncNode::checkOperands, "
-                             "function nr " + String::toString(fType) +
+                             "function nr " + std::to_string(fType) +
                              " not contained in switch statement"));
     }
     return NTNumeric;

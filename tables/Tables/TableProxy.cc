@@ -822,7 +822,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       for (rownr_t i=0; i<expr.nrow(); i++) {
 	MArray<Bool> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr.array());
+	res.define (std::to_string(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
@@ -830,7 +830,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       for (rownr_t i=0; i<expr.nrow(); i++) {
 	MArray<Int64> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr.array());
+	res.define (std::to_string(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
@@ -838,7 +838,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       for (rownr_t i=0; i<expr.nrow(); i++) {
 	MArray<Double> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr.array());
+	res.define (std::to_string(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
@@ -846,7 +846,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       for (rownr_t i=0; i<expr.nrow(); i++) {
 	MArray<DComplex> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr.array());
+	res.define (std::to_string(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
@@ -854,7 +854,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       for (rownr_t i=0; i<expr.nrow(); i++) {
 	MArray<String> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr.array());
+	res.define (std::to_string(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;

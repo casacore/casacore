@@ -1051,10 +1051,10 @@ Bool BaseTable::checkRemoveColumn (const Vector<String>& columnNames,
 
 void BaseTable::checkRowNumberThrow (rownr_t rownr) const
 {
-    throw (TableError ("TableColumn: row number " + String::toString(rownr) +
+    throw (TableError ("TableColumn: row number " + std::to_string(rownr) +
 		       " exceeds #rows " +
-		       String::toString(nrrow_p+nrrowToAdd_p)
-		       + " in table " + tableName()));
+		       std::to_string(nrrow_p+nrrowToAdd_p)
+		       + " in table " + std::string(tableName())));
 }
 
 void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,

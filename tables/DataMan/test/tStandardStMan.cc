@@ -520,7 +520,7 @@ void addColumn(DataType aDataType)
       // fill new column with data
       for (uInt i=0; i<aTable.nrow(); i++) {
 	aj.put(i,aString);
-	aString += " "+String::toString(i);
+	aString += " "+std::to_string(i);
       }
     }
     break;
@@ -612,7 +612,7 @@ void addIndStringArray()
   for (uInt i=0; i<aTable.nrow(); i++) {
     ai.put(i,arrs);
     for (uInt j=0; j< 5;j++) {
-      arrs(j) += " "+String::toString(i);
+      arrs(j) += " "+std::to_string(i);
     }
   }
 

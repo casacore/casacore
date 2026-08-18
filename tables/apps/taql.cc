@@ -175,7 +175,7 @@ uInt skipQuoted (const String& str, uInt st, uInt end)
     if (str[st] == '\\') st++;   // skip escaped char
   }
   throw AipsError ("Unbalanced quoted string at position "
-                   + String::toString(st) + " in " + str);
+                   + std::to_string(st) + " in " + std::string(str));
 }
 
 // Split a line using ; as delimiter.
@@ -249,7 +249,7 @@ vector<String> splitWS (const String& str)
   }
   if (qpos >= 0) {
     throw AipsError ("Unbalanced quoted string at position " +
-                     String::toString(qpos) + " in " + str);
+                     std::to_string(qpos) + " in " + std::string(str));
   }
   if (part.size() > 0) {
     parts.push_back (part);    // last part
@@ -962,7 +962,7 @@ String substituteName (const String& name, const TableMap& tableMap,
     return name;    // not found
   }
   tabs.push_back (&(fnd->second.first));
-  return String::toString (tabs.size());    // return seqnr as string
+  return std::to_string (tabs.size());    // return seqnr as string
 }
 
 vector<const Table*> replaceVars (String& str, const TableMap& tableMap)

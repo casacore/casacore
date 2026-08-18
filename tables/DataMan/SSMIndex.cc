@@ -238,7 +238,7 @@ uInt SSMIndex::getIndex (rownr_t aRowNumber, const String& colName) const
 				       itsNUsed );
   if (anIndex >= itsNUsed) {
     throw TableError ("SSMIndex::getIndex - access to non-existing row "
-                      + String::toString(aRowNumber) +
+                      + String(std::to_string(aRowNumber)) +
                       " in column " + colName + " of table " + 
 		      itsSSMPtr->table().tableName());
   }
