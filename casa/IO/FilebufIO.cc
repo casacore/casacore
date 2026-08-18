@@ -205,9 +205,9 @@ Int64 FilebufIO::readBuffer (Int64 offset, char* buf, Int64 size,
     } else if (bytesRead < Int(size)) {
       itsSeekOffset = -1;
       throw AipsError ("FilebufIO::read - incorrect number of bytes ("
-		       + String::toString(bytesRead) + " out of "
-                       + String::toString(size) + ") read for file "
-                       + fileName());
+		       + std::to_string(bytesRead) + " out of "
+                       + std::to_string(size) + ") read for file "
+                       + std::string(fileName()));
     }
   }
   itsSeekOffset += bytesRead;

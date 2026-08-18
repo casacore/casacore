@@ -139,9 +139,9 @@ Int64 FiledesIO::read (Int64 size, void* buf, Bool throwException)
                        strerror(error));
     } else if (bytesRead < size) {
       throw AipsError ("FiledesIO::read - incorrect number of bytes ("
-		       + String::toString(bytesRead) + " out of "
-                       + String::toString(size) + ") read for file "
-                       + itsFileName);
+		       + std::to_string(bytesRead) + " out of "
+                       + std::to_string(size) + ") read for file "
+                       + std::string(itsFileName));
     }
   }
   return bytesRead;
@@ -167,9 +167,9 @@ Int64 FiledesIO::pread (Int64 size, Int64 offset, void* buf, Bool throwException
                        strerror(error));
     } else if (bytesRead < size) {
       throw AipsError ("FiledesIO::pread - incorrect number of bytes ("
-		       + String::toString(bytesRead) + " out of "
-                       + String::toString(size) + ") read for file "
-                       + itsFileName);
+		       + std::to_string(bytesRead) + " out of "
+                       + std::to_string(size) + ") read for file "
+                       + std::string(itsFileName));
     }
   }
   return bytesRead;

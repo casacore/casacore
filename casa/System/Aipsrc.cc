@@ -323,13 +323,13 @@ void Aipsrc::set(uInt keyword, const String &default_value) {
 void Aipsrc::set(uInt keyword,
 		 Int Nname, const String tname[], const String &default_value) {
   AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  find (coded_values_[keyword-1], String::toString(keyword), Nname, tname, default_value);
+  find (coded_values_[keyword-1], std::to_string(keyword), Nname, tname, default_value);
 }
 
 void Aipsrc::set(uInt keyword,
 		 const Vector<String> &tname, const String &default_value) {
   AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  find (coded_values_[keyword-1], String::toString(keyword), tname, default_value);
+  find (coded_values_[keyword-1], std::to_string(keyword), tname, default_value);
 }
 
 void Aipsrc::save(uInt keyword) {

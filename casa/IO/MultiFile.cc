@@ -481,7 +481,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Future versions might use higher version numbers.
     if (version != 2) {
       throw AipsError("This version of Casacore supports up to MultiFile "
-                      "version 2, not version " + String::toString(version));
+                      "version 2, not version " + std::to_string(version));
     }
     CanonicalConversion::toLocal (headerCRC, &(buf[28]));
     CanonicalConversion::toLocal (headerSize, &(buf[32]));
@@ -687,7 +687,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uInt crc = calcCRC (buffer, itsBlockSize);
     if (crc != itsCRC[blknr]) {
       throw AipsError ("Mismatch in CRC of MultiFile block " +
-                       String::toString(blknr));
+                       std::to_string(blknr));
     }
   }
 

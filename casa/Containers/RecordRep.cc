@@ -393,7 +393,7 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
 	return new Array<String> (arrayShape);
     default:
 	throw (AipsError ("RecordRep::createDataField: unknown data type " +
-                          String::toString(int(type))));
+                          std::to_string(int(type))));
     }
 }
 

@@ -224,7 +224,7 @@ char* BucketCache::getBucket (uInt bucketNr)
     }else{
         if (! its_file->isWritable()) {
             throw AipsError ("BucketCache::getBucket: bucket " +
-                             String::toString(bucketNr) +
+                             std::to_string(bucketNr) +
                              " exceeds nr of buckets");
         }
 	initializeBuckets (bucketNr);
