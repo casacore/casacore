@@ -35,6 +35,8 @@
 #include <unordered_set>
 
 #include <casacore/casa/namespace.h>
+
+namespace {
 // Generally used variables
 String X = "Hello";
 String Y = "world";
@@ -42,6 +44,7 @@ String N = "123";
 String c;
 const Char*  s = ",";
 Regex  r ("e[a-z]*o");
+} // namespace
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -81,16 +84,6 @@ void decltest() {
   cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << endl;
   AlwaysAssertExit(i == 20);
   AlwaysAssertExit(f == 20);
-
-  /*
-  AlwaysAssertExit(X.OK());
-  AlwaysAssertExit(Y.OK());
-  AlwaysAssertExit(x.OK());
-  AlwaysAssertExit(y.OK());
-  AlwaysAssertExit(z.OK());
-  AlwaysAssertExit(n.OK());
-  AlwaysAssertExit(r.OK());
-  */
 }
 
 void cattest() {
