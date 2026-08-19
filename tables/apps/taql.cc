@@ -1050,7 +1050,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
         varName = strc.substr(0, assLen);
         strc = strc.substr(assLen);
         int match_length;
-        size_t first = assignment_regex.find(varName.c_str(), varName.length(), match_length);
+        const size_t first = assignment_regex.find(varName.c_str(), varName.length(), match_length);
         if (match_length > 0) {
           varName.erase(first, match_length);
         }

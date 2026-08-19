@@ -254,7 +254,7 @@ void SSMColumn::getString (rownr_t aRowNr, String* aValue)
     // The +1 is to correct for the incorrect use of the chars() function
     // Should be changed to use real Char*
     aValue->resize(itsMaxLen+1);
-    char* sp = const_cast<char*>(aValue->c_str());
+    char* sp = aValue->data();
     rownr_t aStartRow;
     rownr_t anEndRow;
     char* buf = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,

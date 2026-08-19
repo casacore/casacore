@@ -161,7 +161,7 @@ namespace casacore {
     // The library name is the first part.
     size_t j = fname.find('.');
     String libname;
-    if (j > 0  &&  j < fname.size()-1) {
+    if (j > 0  &&  j+1 < fname.size() && j!=std::string::npos) {
       libname = fname.substr(0,j);
     } else {
       throw TableInvExpr("UDF " + name + " has an invalid name (no dot)");
@@ -204,7 +204,7 @@ namespace casacore {
     // Require that a . is found and is not the first or last character.
     size_t j = fname.find('.');
     std::string libname;
-    if (j > 0  &&  j < fname.size()-1) {
+    if (j > 0  &&  j < fname.size()-1 && j!=std::string::npos) {
       // Replace a possible synonym for the library name.
       libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
