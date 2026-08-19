@@ -95,7 +95,7 @@ int main (int argc, const char* argv[])
 	}
 	if (fitsfile == "") {
 	  fitsfile = msin;
-	  fitsfile = fitsfile.before(Regex("\\.MS$")) + ".UVF";
+	  fitsfile = fitsfile.substr(0, fitsfile.size() - 3) + ".UVF";
 	}
 
 	// Get the column name.

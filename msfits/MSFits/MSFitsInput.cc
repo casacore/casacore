@@ -127,7 +127,7 @@ static Int getIndexContains(Vector<String>& map, const String& key, uInt which =
     uInt count = 0;
     const uInt nMap = map.nelements();
     for (uInt i = 0; i < nMap; i++) {
-        if (map(i).contains(key)) {
+        if (StringContains(map(i), key)) {
             if (count == which) {
                 return i;
             } else {
@@ -272,7 +272,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
             << "' to MeasurementSet '" << msFile << "'" << LogIO::POST;
 
     // Open the FITS file for reading
-    _infile = new FitsInput(fitsFile.chars(), FITS::Disk);
+    _infile = new FitsInput(fitsFile.c_str(), FITS::Disk);
     _obsTime.resize(2);
     MVTime timeVal;
     MEpoch::Types epochRef;
@@ -394,15 +394,15 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
                 << " ncols=" << binTab.ncols() << " rowsize=" << binTab.rowsize()
                 << " pcount=" << binTab.pcount() << " gcount=" << binTab.gcount()
                 << LogIO::POST;
-            if (type.contains("AN") && !haveAn) {
+            if (StringContains(type, "AN") && !haveAn) {
                 haveAn = True;
                 fillAntennaTable(binTab);
             }
-            else if (type.contains("FQ") && !haveSpW) {
+            else if (StringContains(type, "FQ") && !haveSpW) {
                 haveSpW = True;
                 fillSpectralWindowTable(binTab, nSpW);
             }
-            else if (type.contains("SU") && !haveField) {
+            else if (StringContains(type, "SU") && !haveField) {
                 haveField = True;
                 fillFieldTable(binTab, nField);
                 setFreqFrameVar(binTab);
@@ -411,7 +411,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
                     updateSpectralWindowTable();
                 }
             }
-            else if (type.contains("SY") && ! haveSysPower) {
+            else if (StringContains(type, "SY") && ! haveSysPower) {
                 haveSysPower = True;
                 _fillSysPowerTable(binTab);
             }
@@ -506,13 +506,13 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                        << " ncols=" << bt->ncols() << " rowsize=" << bt->rowsize() 
                        << LogIO::POST;
 
-                if (type.contains("AN")) {
+                if (StringContains(type, "AN")) {
                     fillAntennaTable(*bt);
                 } 
-                else if (type.contains("FQ")) {
+                else if (StringContains(type, "FQ")) {
                     fqTab = &(*bt);
                 }
-                else if (type.contains("SU")) {
+                else if (StringContains(type, "SU")) {
                     fillFieldTable(*bt);
                     setFreqFrameVar(*bt);
                     //in case spectral window was already filled
@@ -520,10 +520,10 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     //    updateSpectralWindowTable();
                     //}
                 } 
-                else if (type.contains("SY")) {
+                else if (StringContains(type, "SY")) {
                     _fillSysPowerTable(*bt);
                 }
-                else if (type.contains("UV")) {
+                else if (StringContains(type, "UV")) {
                     //showBinaryTable(*bt);
                     //fillOtherUVTables(*bt, *fqTab);
                     //TableRecord btKeywords = bt.getKeywords();
@@ -639,7 +639,6 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
     _log << LogOrigin("MSFitsInput", "getPrimaryGroupAxisInfo");
     // Extracts the axis related info. from the PrimaryGroup object and
     // returns them in the form of arrays.
-    const Regex trailing(" *$"); // trailing blanks
     const Int nAxis = _priGroup.dims();
     if (nAxis < 1) {
         _log << "Data has no axes!" << LogIO::EXCEPTION;
@@ -656,7 +655,7 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
                     << LogIO::EXCEPTION;
         }
         _coordType(i) = _priGroup.ctype(i);
-        _coordType(i) = _coordType(i).before(trailing);
+        RTrimInPlace(_coordType(i), ' ');
         _refVal(i) = static_cast<Double> (_priGroup.crval(i));
         _refPix(i) = static_cast<Double> (_priGroup.crpix(i));
         _delta(i) = static_cast<Double> (_priGroup.cdelt(i));
@@ -796,11 +795,11 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
     const FitsKeyword* kwp;
     _object = (kwp = _priGroup.kw(FITS::OBJECT)) ? kwp->asString()
             : "unknown";
-    _object = _object.before(trailing);
+    RTrimInPlace(_object, ' ');
     // Save the array name
     _array = (kwp = _priGroup.kw(FITS::TELESCOP)) ? kwp->asString()
             : "unknown";
-    _array = _array.before(trailing);
+    RTrimInPlace(_array, ' ');
     // Save the RA/DEC epoch (for ss fits)
     if (_priGroup.kw(FITS::EPOCH))
         _epoch = (_priGroup.kw(FITS::EPOCH))->asFloat();
@@ -981,17 +980,16 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
 }
 
 void MSFitsInput::fillObsTables() {
-    const Regex trailing(" *$"); // trailing blanks
     const FitsKeyword* kwp;
     _ms.observation().addRow();
     String observer;
     observer = (kwp = _priGroup.kw(FITS::OBSERVER)) ? kwp->asString() : "";
-    observer = observer.before(trailing);
+    RTrimInPlace(observer, ' ');
     MSObservationColumns msObsCol(_ms.observation());
     msObsCol.observer().put(0, observer);
     String telescope = (kwp = _priGroup.kw(FITS::TELESCOP)) ? kwp->asString()
             : "unknown";
-    telescope = telescope.before(trailing);
+    RTrimInPlace(telescope, ' ');
     if (telescope == "HATCREEK")
         telescope = "BIMA";
     msObsCol.telescopeName().put(0, telescope);
@@ -1023,7 +1021,7 @@ void MSFitsInput::fillObsTables() {
 
     // Store all keywords from the first HISTORY keyword onwards in History table
     String history = (kwp = _priGroup.kw(FITS::HISTORY)) ? kwp->comm() : "";
-    history = history.before(trailing);
+    RTrimInPlace(history, ' ');
     MSHistoryColumns msHisCol(_ms.history());
     Int row = -1;
     while (history != "") {
@@ -1040,7 +1038,7 @@ void MSFitsInput::fillObsTables() {
         msHisCol.appParams().put(row, cliComm);
         msHisCol.message().put(row, history);
         history = (kwp = _priGroup.nextkw()) ? kwp->comm() : "";
-        history = history.before(trailing);
+        RTrimInPlace(history, ' ');
     }
 }
 
@@ -1048,8 +1046,6 @@ void MSFitsInput::fillObsTables() {
 void MSFitsInput::fillHistoryTable(ConstFitsKeywordList &kwl) {
     kwl.first();
     const FitsKeyword *kw;
-
-    const Regex trailing(" *$");
 
     String date;
     date = (kw = kwl(FITS::DATE_OBS)) ? kw->asString() : "";
@@ -1071,19 +1067,19 @@ void MSFitsInput::fillHistoryTable(ConstFitsKeywordList &kwl) {
         String nm = kw->name();
         if (nm == "HISTORY" || nm == "COMMENT" || nm == "") {
             history = kw->comm();
-            history = history.before(trailing);
+            RTrimInPlace(history, ' ');
             _ms.history().addRow();
             row++;
             msHisCol.observationId().put(row, 0);
             msHisCol.time().put(uInt(row), time);
             msHisCol.priority().put(row, "NORMAL");
             msHisCol.origin().put(row, "MSFitsInput::fillHistoryTables");
-            msHisCol.application().put(row, history.before(' '));
+            msHisCol.application().put(row, std::string(GetStringUpToExcluding(history, " ")));
             Vector<String> cliComm(1);
             cliComm[0] = "";
             msHisCol.cliCommand().put(row, cliComm);
             msHisCol.appParams().put(row, cliComm);
-            msHisCol.message().put(row, history.after(' '));
+            msHisCol.message().put(row, std::string(GetStringAfter(history, " ")));
         }
     }
 
@@ -1096,7 +1092,6 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     _log << LogOrigin("MSFitsInput", "fillMSMainTable");
     // Get access to the MS columns
     MSColumns& msc(*_msc);
-    const Regex trailing(" *$"); // trailing blanks
 
     // get the random group parameter names
     Int nParams;
@@ -1106,7 +1101,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     Vector<String> pType(nParams);
     for (Int i = 0; i < nParams; i++) {
         pType(i) = _priGroup.ptype(i);
-        pType(i) = pType(i).before(trailing);
+        RTrimInPlace(pType(i), ' ');
     }
     Int totRows = nGroups * max(1, _nIF);
 
@@ -1442,7 +1437,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     Vector<String> pType(nParams);
     for (Int i = 0; i < nParams; i++) {
         pType(i) = _priGroup.ptype(i);
-        pType(i) = pType(i).before(trailing);
+        RTrimInPlace(pType(i), ' ');
     }
 
     Int nCorr = _nPixel(getIndex(_coordType, "STOKES"));
@@ -1891,7 +1886,6 @@ void MSFitsInput::_doFillSysPowerSingleIF(
 }  
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
-    static const Regex trailing(" *$"); // trailing blanks
     TableRecord btKeywords = bt.getKeywords();
     Int nAnt = bt.nrows();
     Table anTab = bt.fullTable();
@@ -1923,7 +1917,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         Int maxAntVis = *std::max_element(_uniqueAnts.begin(), _uniqueAnts.end());
         ThrowIf(
             maxAntVis > _nAntRow,
-            "This data set has (1-based) antenna number " + String::toString(maxAntVis)
+            "This data set has (1-based) antenna number " + std::to_string(maxAntVis)
             + " in the visibility data, but there is no corresponding "
             "antenna ID in the FITS AN table. Cannot proceed."
         );
@@ -1932,7 +1926,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         for (; iter!=end; ++iter) {
             ThrowIf(
                 std::find(sids.begin(), sids.end(), *iter) == sids.end(),
-                "(1-based) antenna " + String::toString(*iter)
+                "(1-based) antenna " + std::to_string(*iter)
                 + " exists in the visibility data, but there is no "
                 " record which references it in the FITS AN table. "
                 "Cannot proceed"
@@ -2003,7 +1997,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     String timsys = "TAI";
     if (btKeywords.isDefined("TIMSYS")) {
         timsys = btKeywords.asString("TIMSYS");
-        timsys = timsys.before(trailing);
+        RTrimInPlace(timsys, ' ');
     }
     MVTime timeVal;
     MEpoch::Types epochRef;
@@ -2070,12 +2064,12 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             // CAS-8875, algorithm from Jen Meyer
             for (Int i = 0; i < nAnt; ++i) {
                 const String& myName = name(i);
-                if (myName.startsWith("CM")) {
+                if (myName.starts_with("CM")) {
                     antDiams[i] = 7.0;
                 }
                 else if (
-                    myName.startsWith("DA") || myName.startsWith("DV")
-                    || myName.startsWith("PM")
+                    myName.starts_with("DA") || myName.starts_with("DV")
+                    || myName.starts_with("PM")
                 ) {
                     antDiams[i] = 12.0;
                 }
@@ -2092,7 +2086,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     String arrnam = "Unknown";
     if (btKeywords.isDefined("ARRNAM")) {
         arrnam = btKeywords.asString("ARRNAM");
-        arrnam.trim();
+        TrimInPlace(arrnam);
     }
     // For old VLA archive files, antenna positions are stored in a non-standard
     // frame and so must be rotated. This is necessary for CASA VLA users, see
@@ -2213,13 +2207,13 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             ant.name().put(row, oss.str());
         } 
         else {
-            ant.name().put(row, String::toString(id(i)));
+            ant.name().put(row, std::to_string(id(i)));
         }
         Vector<Double> offsets(3);
         offsets = 0.;
         offsets(0) = offset(i);
         ant.offset().put(row, offsets);
-        ant.station().put(row, name(i).before('\0'));
+        ant.station().put(row, std::string(GetStringUpToExcluding(name(i), std::string_view("\0", 1))));
         ant.type().put(row, "GROUND-BASED");
 
         // Do UVFITS-dependent position corrections:
@@ -2475,8 +2469,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
         ThrowIf(
     			throwImmediately,
     			"Inconsistent SU table, number of elements in rest frequency column is "
-    			+ String::toString(nrestfreqs) + " but number of IFs is "
-    			+ String::toString(noif)
+    			+ std::to_string(nrestfreqs) + " but number of IFs is "
+    			+ std::to_string(noif)
     	);
     	sysvel.getColumn(_sysVel);
     }
@@ -2533,7 +2527,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
         msField.code().put(fld, code(inRow));
         String theFldName;
         if (multiqual)
-            theFldName = name(inRow) + "_" + String::toString(qual(inRow));
+            theFldName = std::string(name(inRow)) + "_" + std::to_string(qual(inRow));
         else
             theFldName = name(inRow);
         msField.name().put(fld, theFldName);
@@ -2861,23 +2855,23 @@ void MSFitsInput::setFreqFrameVar(BinaryTable& binTab) {
             frame = kw->asString();
         }
     }
-    if (frame.contains("LSR")) {
+    if (StringContains(frame, "LSR")) {
         _freqsys = MFrequency::LSRK; // because some smart people use only LSR
-        if (frame.contains("LSRD")) // in uvfits !
+        if (StringContains(frame, "LSRD")) // in uvfits !
             _freqsys = MFrequency::LSRD;
-    } else if (frame.contains("REST")) {
+    } else if (StringContains(frame, "REST")) {
         _freqsys = MFrequency::REST;
-    } else if (frame.contains("BARY")) {
+    } else if (StringContains(frame, "BARY")) {
         _freqsys = MFrequency::BARY;
-    } else if (frame.contains("GEO")) {
+    } else if (StringContains(frame, "GEO")) {
         _freqsys = MFrequency::GEO;
-    } else if (frame.contains("TOPO")) {
+    } else if (StringContains(frame, "TOPO")) {
         _freqsys = MFrequency::TOPO;
-    } else if (frame.contains("GALAC")) {
+    } else if (StringContains(frame, "GALAC")) {
         _freqsys = MFrequency::GALACTO;
-    } else if (frame.contains("LOCAL") || frame.contains("LGROUP")) {
+    } else if (StringContains(frame, "LOCAL") || StringContains(frame, "LGROUP")) {
         _freqsys = MFrequency::LGROUP;
-    } else if (frame.contains("CMB")) {
+    } else if (StringContains(frame, "CMB")) {
         _freqsys = MFrequency::CMB;
     }
 }
@@ -2917,11 +2911,10 @@ void MSFitsInput::getAxisInfo(ConstFitsKeywordList& kwl) {
     // Extracts the axis related info. from the UV table keyword list and
     // saves them in the arrays.
     kwl.first();
-    const Regex trailing(" *$");
 
     const FitsKeyword *kw;
     String table = (kw = kwl(FITS::EXTNAME)) ? kw->asString() : "";
-    if (!table.contains("UV")) {
+    if (!StringContains(table, "UV")) {
          _log << "This is not a uv table!" << LogIO::EXCEPTION;
     }
     const Int nAxis = kwl(FITS::TFIELDS)->asInt();
@@ -2947,19 +2940,21 @@ void MSFitsInput::getAxisInfo(ConstFitsKeywordList& kwl) {
                     << LogIO::EXCEPTION;
         }
 
-        String tmp_string = String::toString(i + 1).append("CTYP").append(String::toString(nAxis));
-        _coordType(i) = String(kwl(tmp_string.c_str())->asString()).before(trailing);
+        String tmp_string = std::to_string(i + 1).append("CTYP").append(std::to_string(nAxis));
+        tmp_string = kwl(tmp_string.c_str())->asString();
+        RTrimInPlace(tmp_string, ' ');
+        _coordType(i) = tmp_string;
 
-        tmp_string = String::toString(i + 1).append("CRVL").append(String::toString(nAxis));
+        tmp_string = std::to_string(i + 1).append("CRVL").append(std::to_string(nAxis));
         _refVal(i) = kwl(tmp_string.c_str())->asDouble();
 
-        tmp_string = String::toString(i + 1).append("CRPX").append(String::toString(nAxis));
+        tmp_string = std::to_string(i + 1).append("CRPX").append(std::to_string(nAxis));
         _refPix(i) = kwl(tmp_string.c_str())->asDouble();
 
-        tmp_string = String::toString(i + 1).append("CDLT").append(String::toString(nAxis));
+        tmp_string = std::to_string(i + 1).append("CDLT").append(std::to_string(nAxis));
         _delta(i) = kwl(tmp_string.c_str())->asDouble();
 
-        //tmp_string = String::toString(i + 1).append("CROT").append(String::toString(nAxis));
+        //tmp_string = std::to_string(i + 1).append("CROT").append(std::to_string(nAxis));
         //cRot_p(i) = kwl(tmp_string.c_str())->asDouble();
     }
     _log << LogOrigin("MSFitsInput", "fillMSMainTable")
@@ -3175,7 +3170,6 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
 
 void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     MSColumns& msc(*_msc);
-    const Regex trailing(" *$");
 
     ConstFitsKeywordList kwl = bt.kwlist();
     //FitsKeywordList pkw = kwl;
@@ -3200,7 +3194,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     kwl.first();
     for (Int i = 0; i < nFields; i++) {
         TType(i) = (kw = kwl(FITS::TTYPE, i + 1)) ? String(kw->asString()) : "";
-        TType(i) = TType(i).before(trailing);
+        RTrimInPlace(TType(i), ' ');
         TScal(i) = (kw = kwl(FITS::TSCAL, i + 1)) ? kw->asDouble() : 1;
         TZero(i) = (kw = kwl(FITS::TZERO, i + 1)) ? kw->asDouble() : 0;
     }
@@ -3554,20 +3548,19 @@ std::pair<Int, Int> MSFitsInput::_extractAntennas(Float baseline) {
 
 void MSFitsInput::fillObservationTable(ConstFitsKeywordList& kwl) {
     const FitsKeyword* kw;
-    const Regex trailing(" *$"); // trailing blanks
     kwl.first();
     _ms.observation().addRow();
     String observer;
     observer = (kw = kwl(FITS::OBSERVER)) ? kw->asString() : "";
-    observer = observer.before(trailing);
+    RTrimInPlace(observer, ' ');
     MSObservationColumns msObsCol(_ms.observation());
     msObsCol.observer().put(0, observer);
     String telescope = (kw = kwl(FITS::TELESCOP)) ? kw->asString() : "unknown";
-    telescope = telescope.before(trailing);
+    RTrimInPlace(telescope, ' ');
     if (telescope == "HATCREEK")
         telescope = "BIMA";
     String instrume = (kw = kwl(FITS::INSTRUME)) ? kw->asString() : "unknown";
-    instrume = instrume.before(trailing);
+    RTrimInPlace(instrume, ' ');
     msObsCol.telescopeName().put(0, telescope);
     msObsCol.scheduleType().put(0, "");
     msObsCol.project().put(0, "");
@@ -3695,7 +3688,7 @@ void MSFitsInput::fillSourceTable() {
 
         for (uInt i = 0; i < mainRec.nfields() - 5; i++) {
             Int fnum = mainRec.fieldNumber(String("scan_").append(
-                    String::toString(i + 1)));
+                    std::to_string(i + 1)));
             Record rec = mainRec.subRecord(fnum).subRecord(String('0'));
             Double time1 = rec.asDouble("BeginTime");
             Double time2 = rec.asDouble("IntegrationTime");
@@ -3921,7 +3914,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
         msField.code().put(fld, code(inRow));
         String theFldName;
         if (multiqual)
-            theFldName = name(inRow) + "_" + String::toString(qual(inRow));
+            theFldName = std::string(name(inRow)) + "_" + std::to_string(qual(inRow));
         else
             theFldName = name(inRow);
         msField.name().put(fld, theFldName);
