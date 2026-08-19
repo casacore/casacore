@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // A true column name is given.
         String oldName;
         String str = name;
-        size_t inx = str.find('.');
+        const size_t inx = str.find('.');
         if (inx == std::string::npos) {
           oldName = str;
         } else {
@@ -97,7 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           // The same is true if the same column is already used. In such a case
           // the user likely wants to duplicate the column with a different name.
           columnOldNames_p[nrcol] = oldName;
-          if (!newDtype.empty()  ||  inx >= 0) {
+          if (!newDtype.empty()  ||  inx != std::string::npos) {
             nrSelExprUsed_p++;
           } else {
             for (Int i=0; i<nrcol; ++i) {
@@ -176,7 +176,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       Vector<String> columns = tab.tableDesc().columnNames();
       // Add back the delimiting . if a shorthand is given.
-      if (shInx >= 0) {
+      if (shInx != std::string::npos) {
         shorthand += '.';
       }
       Int nr = 0;
@@ -264,7 +264,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             // That can only be the case if no old name is filled in.
             AlwaysAssert (oldNames[nr].empty(), AipsError);
             String name = names[nr];
-            size_t j = name.find('.');
+            const size_t j = name.find('.');
             if (j != std::string::npos) {
               name = name.substr(j + 1);
             }
