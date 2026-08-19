@@ -113,7 +113,8 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 		    strings(nFound-1) = tmp;
 		} else {
 		    // continuation - strip out leading '>'
-		    strings(nFound-1) += tmp.substr(1, tmp.length()-1);
+        if(!tmp.empty())
+  		    strings(nFound-1) += tmp.substr(1, tmp.length()-1);
 		}
 	    }
 	}
@@ -234,7 +235,7 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
 // LOCATION
 
 	    location2 = RegexSubStr(tmp, locationPattern);
-	    if (location2 == "") {
+	    if (location2.empty()) {
                location = location2;
 	    } else {
 
