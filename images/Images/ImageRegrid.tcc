@@ -312,10 +312,10 @@ void ImageRegrid<T>::_regridOneCoordinate (LogIO& os, IPosition& outShape2,
 		ostringstream oss2;
 		oss1 << outCoords.showType(outCoordinate);
 		oss2 << outPixelAxis+1;
-		String msg = String("Output axis (") + oss2.str() +
-				String(") of coordinate type ") + oss1.str() +
-				String("does not have a coordinate in the input "
-						"CoordinateSystem");
+		String msg = "Output axis (" + oss2.str() +
+				") of coordinate type " + oss1.str() +
+				"does not have a coordinate in the input "
+						"CoordinateSystem";
 		ThrowCc(msg);
 	}
 
