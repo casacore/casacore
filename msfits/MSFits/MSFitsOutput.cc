@@ -155,7 +155,7 @@ void MSFitsOutput::write() const {
     if (outfile.empty()) {
       constexpr std::string_view kExtension(".ms");
         outfile = msfile.ends_with(kExtension)
-            ? msfile.substr(0, kExtension.size()) + ".fits"
+	  ? msfile.substr(0, msfile.size() - kExtension.size()) + ".fits"
             : msfile + ".fits";
     }
     String errmsg;
