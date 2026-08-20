@@ -353,7 +353,10 @@ String::size_type String::index(const Regex &r, int startpos) const {
 std::string RegexSubStr(const std::string& str, const Regex& r, size_t startpos) {
   int mlen;
   size_t first = r.search(str.c_str(), str.length(), mlen, startpos);
-  return str.substr(first, mlen);
+  if(first == std::string::npos)
+    return "";
+  else
+    return str.substr(first, mlen);
 }
 
 SubString String::at(const Regex &r, int startpos) {

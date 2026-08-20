@@ -98,12 +98,12 @@ inline bool EqualStringsAndNotEmpty(std::string_view str1, std::string_view str2
 // Otherwise it returns false and @p value contains the value read
 // so far.
 template<typename T>
-inline bool StringToValue (const std::string& str, T& value, bool check=true)
+inline bool StringToValue (const std::string& str, T& value, bool throw_on_error=true)
 {
   std::istringstream is(str);
   is >> value;
   if (is.fail()  ||  !is.eof()) {
-    if (check) {
+    if (throw_on_error) {
       if(is.fail()) {
         throw std::runtime_error ("String '" + str + "' failed to parse in StringToValue()");
       } else {
@@ -119,26 +119,26 @@ inline bool StringToValue (const std::string& str, T& value, bool check=true)
 
 // Same as other StringToValue() overload, but returns the parsed value.
 template<typename T>
-inline T StringToValue(const std::string& str)
+inline T StringToValue(const std::string& str, bool throw_on_error = true)
 {
   T value;
-  StringToValue(str, value);
+  StringToValue(str, value, throw_on_error);
   return value;
 }
 
 // Same as StringToValue<int>
-inline int StringToInt(const std::string& str) {
-  return StringToValue<int>(str);
+inline int StringToInt(const std::string& str, bool throw_on_error = false) {
+  return StringToValue<int>(str, throw_on_error);
 }
 
 // Same as StringToValue<float>
-inline float StringToFloat(const std::string& str) {
-  return StringToValue<float>(str);
+inline float StringToFloat(const std::string& str, bool throw_on_error = false) {
+  return StringToValue<float>(str, throw_on_error);
 }
 
 // Same as StringToValue<double>
-inline double StringToDouble(const std::string& str) {
-  return StringToValue<double>(str);
+inline double StringToDouble(const std::string& str, bool throw_on_error = false) {
+  return StringToValue<double>(str, throw_on_error);
 }
 
 template<typename T>
@@ -469,9 +469,9 @@ class String : public std::string {
   // <group>
   template<typename T>
   DEPRECATED("Use StringToValue()")
-  inline bool fromString (T& value, bool chk=true) const
+  inline bool fromString (T& value, bool throw_on_error=true) const
   {
-    return StringToValue(*this, value, chk);
+    return StringToValue(*this, value, throw_on_error);
   }
   template<typename T>
   DEPRECATED("Use StringToValue()")
@@ -511,7 +511,7 @@ class String : public std::string {
   // It uses a shift into an ostringstream, so that operator must be
   // defined for the data type used.
   template<typename T>
-  DEPRECATED("Use ValueToString()")
+  DEPRECATED("Use std::to_string or ValueToString()")
   static String toString(const T& value)
   {
     return ValueToString(value);
