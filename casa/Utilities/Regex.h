@@ -312,6 +312,7 @@ extern const Regex RXuppercase;      //# = "[A-Z]+"
 extern const Regex RXalphanum;       //# = "[0-9A-Za-z]+"
 extern const Regex RXidentifier;     //# = "[A-Za-z_][A-Za-z0-9_]*"
 
+constexpr std::string_view kIntegerCharacters = "-0123456789";
 
 } //# NAMESPACE CASACORE - END
 

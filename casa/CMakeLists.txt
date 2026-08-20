@@ -711,6 +711,6 @@ if(Boost_FOUND)
       casa_casa
       Boost::unit_test_framework
   )
-  add_test (arraytest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./unittests)
+  add_test (unittests ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./unittests)
 	add_dependencies(check unittests)
 endif(Boost_FOUND)

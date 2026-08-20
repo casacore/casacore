@@ -264,9 +264,14 @@ BOOST_AUTO_TEST_CASE(StringToInt) {
   BOOST_CHECK_EQUAL(StringToInt("-0"), 0);
   BOOST_CHECK_EQUAL(StringToInt("-32768"), -32768);
 
-  BOOST_CHECK_THROW(StringToInt(""), std::runtime_error);
-  BOOST_CHECK_THROW(StringToInt("0?"), std::runtime_error);
-  BOOST_CHECK_THROW(StringToInt("1e12"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToInt("", true), std::runtime_error);
+  BOOST_CHECK_THROW(StringToInt("0?", true), std::runtime_error);
+  BOOST_CHECK_THROW(StringToInt("1e12", true), std::runtime_error);
+
+
+  BOOST_CHECK_NO_THROW(StringToInt("", false));
+  BOOST_CHECK_NO_THROW(StringToInt("0?", false));
+  BOOST_CHECK_NO_THROW(StringToInt("1e12", false));
 }
 
 BOOST_AUTO_TEST_CASE(StringToFloat) {
@@ -276,9 +281,13 @@ BOOST_AUTO_TEST_CASE(StringToFloat) {
   BOOST_CHECK_EQUAL(StringToFloat("-0.0"), -0.0f);
   BOOST_CHECK_CLOSE_FRACTION(StringToFloat("-3.14159265e-4"), -3.14159265e-4f, 1e-6);
 
-  BOOST_CHECK_THROW(StringToFloat(""), std::runtime_error);
-  BOOST_CHECK_THROW(StringToFloat("0?"), std::runtime_error);
-  BOOST_CHECK_THROW(StringToFloat("1e12e"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToFloat("", true), std::runtime_error);
+  BOOST_CHECK_THROW(StringToFloat("0?", true), std::runtime_error);
+  BOOST_CHECK_THROW(StringToFloat("1e12e", true), std::runtime_error);
+
+  BOOST_CHECK_NO_THROW(StringToFloat("", false));
+  BOOST_CHECK_NO_THROW(StringToFloat("0?", false));
+  BOOST_CHECK_NO_THROW(StringToFloat("1e12e", false));
 }
 
 BOOST_AUTO_TEST_CASE(StringToDouble) {
@@ -289,9 +298,13 @@ BOOST_AUTO_TEST_CASE(StringToDouble) {
   BOOST_CHECK_CLOSE_FRACTION(StringToDouble("-3.14159265e-4"), -3.14159265e-4, 1e-8);
   BOOST_CHECK_CLOSE_FRACTION(StringToDouble("1e308"), 1e308, 1e-8);
 
-  BOOST_CHECK_THROW(StringToDouble(""), std::runtime_error);
-  BOOST_CHECK_THROW(StringToDouble("0?"), std::runtime_error);
-  BOOST_CHECK_THROW(StringToDouble("1e12e"), std::runtime_error);
+  BOOST_CHECK_THROW(StringToDouble("", true), std::runtime_error);
+  BOOST_CHECK_THROW(StringToDouble("0?", true), std::runtime_error);
+  BOOST_CHECK_THROW(StringToDouble("1e12e", true), std::runtime_error);
+
+  BOOST_CHECK_NO_THROW(StringToDouble("", false));
+  BOOST_CHECK_NO_THROW(StringToDouble("0?", false));
+  BOOST_CHECK_NO_THROW(StringToDouble("1e12e", false));
 }
 
 BOOST_AUTO_TEST_CASE(SubStringCount) {
