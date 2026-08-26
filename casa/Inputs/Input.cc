@@ -271,8 +271,8 @@ Bool Input::put (const String& key, const String& value)
 Bool Input::put (const String& key)
 {
   String k = key;                  // Need non-const string
-  String::size_type inx = key.find('=');
-  if (inx == String::npos) {
+  const std::string::size_type inx = key.find('=');
+  if (inx == std::string::npos) {
     String msg = "Input::Put: " + key + " is not a valid parameter.";
     throw (AipsError(msg));
   }
