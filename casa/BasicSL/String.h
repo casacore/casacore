@@ -1079,20 +1079,20 @@ inline void CapitalizeStringInPlace(std::string& str) {
   std::string::iterator p=str.begin();
   while(p != str.end()) {
     bool at_word;
-    if (islower(*p)) {
-      *p = toupper(*p);
+    if (std::islower(static_cast<unsigned char>(*p))) {
+      *p = std::toupper(static_cast<unsigned char>(*p));
       at_word = true;
     } else {
-      at_word = isupper(*p) || isdigit(*p);
+      at_word = std::isupper(static_cast<unsigned char>(*p)) || std::isdigit(static_cast<unsigned char>(*p));
     }
     ++p;
     // at_word is now true if the previous *p is a character or digit
     if (at_word) {
       while (p != str.end()) {
-        if (isupper(*p)) {
-          *p = tolower(*p);
+        if (std::isupper(static_cast<unsigned char>(*p))) {
+          *p = std::tolower(static_cast<unsigned char>(*p));
         }
-        else if (!islower(*p) && !isdigit(*p)) break;
+        else if (!std::islower(static_cast<unsigned char>(*p)) && !std::isdigit(static_cast<unsigned char>(*p))) break;
         ++p;
       }
       if(p != str.end()) ++p;
