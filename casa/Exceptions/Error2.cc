@@ -202,7 +202,7 @@ SystemCallError::SystemCallError(const String& funcName, int error, Category c)
     itsError (error)
 {}
 SystemCallError::SystemCallError (int error, const std::string &msg,
-                                  const String &filename,
+                                  const std::string &filename,
                                   uInt lineNumber, Category c)
   : AipsError (msg + FormatString (": errno=%d: %s", error,
 				     errorMessage (error).c_str()),
