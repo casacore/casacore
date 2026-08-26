@@ -1070,7 +1070,7 @@ inline void ToUpperCaseInPlace(std::string& str) {
 // Converts the specified string to lower case, in place.
 inline void ToLowerCaseInPlace(std::string& str) {
   std::transform(str.begin(), str.end(), str.begin(),
-                 [](unsigned char c) { return static_cast<char>(tolower(c)); });
+                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 }
 
 // Changes the casing such that every separate word starts with an uppercase
