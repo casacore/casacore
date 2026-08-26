@@ -1063,12 +1063,14 @@ inline std::string_view GetStringAfter(std::string_view input, std::string_view 
 
 // Converts the specified string to upper case, in place.
 inline void ToUpperCaseInPlace(std::string& str) {
-  std::transform(str.begin(), str.end(), str.begin(), [&](char c) { return toupper(c); });
+  std::transform(str.begin(), str.end(), str.begin(),
+                 [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
 }
 
 // Converts the specified string to lower case, in place.
 inline void ToLowerCaseInPlace(std::string& str) {
-  std::transform(str.begin(), str.end(), str.begin(), [&](char c) { return tolower(c); });
+  std::transform(str.begin(), str.end(), str.begin(),
+                 [](unsigned char c) { return static_cast<char>(tolower(c)); });
 }
 
 // Changes the casing such that every separate word starts with an uppercase
