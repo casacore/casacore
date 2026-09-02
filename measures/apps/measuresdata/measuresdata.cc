@@ -1280,7 +1280,10 @@ Bool IERSpred(tableProperties &tprop, inputValues &inVal) {
     if (lines[i].size() >= tprop.fdesc.back().start +  tprop.fdesc.back().n) {
       field.resize(0);
       for (uInt j=0; j<tprop.fdesc.size(); ++j) {
-	field.push_back(lines[i].substr(tprop.fdesc[j].start, tprop.fdesc[j].n));
+        if(tprop.fdesc[j].start < lines[i].size())
+	  field.push_back(lines[i].substr(tprop.fdesc[j].start, tprop.fdesc[j].n));
+        else
+          fields.emplace_back();
       };
       fields.push_back(field);
     };
