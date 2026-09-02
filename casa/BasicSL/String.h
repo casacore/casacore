@@ -51,7 +51,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class Regex;
 
-inline const std::string_view kWhiteSpaceCharacters = " \n\t\r\v\f";
+// Standard white space characters: space, new line, tab and carriage return.
+inline const std::string_view kWhiteSpaceCharacters = " \n\t\r";
+
+// All the characters of kWhiteSpaceCharacters, extended with vertical tab (\v) and form feed (\f).
+inline const std::string_view kExtendedWhiteSpaceCharacters = " \n\t\r\v\f";
 
 // Return the position of the character in the string or npos if not found.
 // Searches the first index of the character if the startpos >= 0, or the reverse index if
@@ -1001,7 +1005,7 @@ inline void TrimInPlace(std::string& str, char single_character) {
 }
 
 // Remove specified chars from beginning and end of string.
-inline void TrimInPlace(std::string& str, std::string_view characters = " \t\n\r") {
+inline void TrimInPlace(std::string& str, std::string_view characters = kWhiteSpaceCharacters) {
   LTrimInPlace(str, characters);
   RTrimInPlace(str, characters);
 }

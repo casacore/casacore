@@ -361,8 +361,8 @@ Projection::Type Projection::type (String& ctypeLong,
                                    String& ctypeLat) const
 {
   // Strip trailing spaces
-  RTrimInPlace(ctypeLong, kWhiteSpaceCharacters);
-  RTrimInPlace(ctypeLat, kWhiteSpaceCharacters);
+  RTrimInPlace(ctypeLong, kExtendedWhiteSpaceCharacters);
+  RTrimInPlace(ctypeLat, kExtendedWhiteSpaceCharacters);
 
   String proj1(ctypeLong.size() > 4 ? ctypeLong.substr(4) : "");
   String proj2(ctypeLat.size() > 4 ? ctypeLat.substr(4) : "");

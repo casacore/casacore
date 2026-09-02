@@ -457,9 +457,9 @@ Bool LinearCoordinate::near(const Coordinate& other,
            String x2 = names2(i);
            ToUpperCaseInPlace(x2);
 //
-           size_t i1 = x1.find_first_of(kWhiteSpaceCharacters);
+           size_t i1 = x1.find_first_of(kExtendedWhiteSpaceCharacters);
            if (i1==std::string::npos) i1 = x1.length();
-           size_t i2 = x2.find_first_of(kWhiteSpaceCharacters);
+           size_t i2 = x2.find_first_of(kExtendedWhiteSpaceCharacters);
            if (i2==std::string::npos) i2 = x2.length();
 //
            String y1 = x1.substr(0, i1);
@@ -487,9 +487,9 @@ Bool LinearCoordinate::near(const Coordinate& other,
            String x2 = units2(i);
            ToUpperCaseInPlace(x2);
 //
-           size_t i1 = x1.find_first_of(kWhiteSpaceCharacters);
+           size_t i1 = x1.find_first_of(kExtendedWhiteSpaceCharacters);
            if (i1==-1) i1 = x1.length();
-           Int i2 = x2.find_first_of(kWhiteSpaceCharacters);
+           Int i2 = x2.find_first_of(kExtendedWhiteSpaceCharacters);
            if (i2==-1) i2 = x2.length();
 //
            String y1 = String(x1.substr(0, i1));

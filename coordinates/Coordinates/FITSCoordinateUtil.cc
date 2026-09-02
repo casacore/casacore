@@ -1279,7 +1279,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	String raDecSys;
 	if (sysIsDefined) {
 	    String tt(wcs.radesys);
-	    size_t i1 = tt.find_first_of(kWhiteSpaceCharacters);
+	    size_t i1 = tt.find_first_of(kExtendedWhiteSpaceCharacters);
 	    if (i1==std::string::npos) i1 = tt.length();
 	    raDecSys = String(tt.substr(0, i1));
 	}

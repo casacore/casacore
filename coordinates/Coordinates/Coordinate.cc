@@ -851,9 +851,9 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          String x2 = otherUnits(i);
          ToUpperCaseInPlace(x2);
 //
-         size_t i1 = x1.find_first_of(kWhiteSpaceCharacters);
+         size_t i1 = x1.find_first_of(kExtendedWhiteSpaceCharacters);
          if (i1==std::string::npos) i1 = x1.length();
-         size_t i2 = x2.find_first_of(kWhiteSpaceCharacters);
+         size_t i2 = x2.find_first_of(kExtendedWhiteSpaceCharacters);
          if (i2==std::string::npos) i2 = x2.length();
 //
          String y1 = String(x1.substr(0, i1));
