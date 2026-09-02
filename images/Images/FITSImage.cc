@@ -278,9 +278,10 @@ uInt FITSImage::get_hdunum(const String &fullname)
 			extname = String(extstring, 0, comma_pos);
 
 			// find the extension version
-			extver = StringToInt(String(extstring, comma_pos+1, extstring.length()-1));
+			const bool correctly_parsed =
+			  StringToValue<int>(String(extstring, comma_pos+1, extstring.length()-1), extver, false);
 
-			if (!extver){
+			if (!correctly_parsed){
 				throw (AipsError(String(extstring, comma_pos+1, extstring.length()-1) + " Extension version not an integer"));
 				//cerr << "Extension version not an Integer: " << String(extstring, comma_pos+1, extstring.length()-1)<< endl;
 				//exit(0);
