@@ -179,7 +179,8 @@ Bool FITSImgParser::is_qualityimg(const String &extexpr){
 	// which indicates rather an extension version
 	// number and not a quality image
 	for (uInt index=0; index<extlist.size();index++){
-		if (StringToInt(extlist(index))){
+    int dummy;
+		if (StringToValue<int>(extlist(index), dummy, false)){
 			//cout << "The extension: " << extlist(index) << " does not exist!" << endl;
 			return False;
 		}

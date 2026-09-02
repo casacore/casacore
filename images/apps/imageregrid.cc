@@ -78,7 +78,7 @@ int main(int argc, const char* argv[]) {
       out = "regridded_"+in;
       cout << "No output name give using '" << out << "'." << endl;
     }
-    Bool outisfits = downcase(out).substr(out.size()-5) == ".fits";
+    const Bool outisfits = downcase(out).ends_with(".fits");
 
     const Int decimate = inputs.getInt("decimate");
     const String dirref = inputs.getString("dirref");

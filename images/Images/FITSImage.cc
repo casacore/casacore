@@ -260,9 +260,9 @@ uInt FITSImage::get_hdunum(const String &fullname)
 			TrimInPlace(extstring);
 
 			// check whether an index is given
-			if (StringToInt(extstring)){
+			if (int value; StringToValue<int>(extstring, value, false)){
 				// get the index
-				extindex = StringToInt(extstring);
+				extindex = value;
 			}
 			// explicitly check for the literal "0"
 			else if (!extstring.compare(0, 1, "0", 1)){

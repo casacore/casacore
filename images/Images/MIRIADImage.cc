@@ -593,8 +593,8 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
     const Int l1 = proj1.length();
     const Int l2 = proj2.length();
-    proj1 = String(proj1.substr(4, l1-4));
-    proj2 = String(proj2.substr(4, l2-4));
+    proj1 = l1 < 4 ? "" : String(proj1.substr(4, l1-4));
+    proj2 = l2 < 4 ? "" : String(proj2.substr(4, l2-4));
 
     // Get rid of leading -'s
     LTrimInPlace(proj1, '-');

@@ -95,8 +95,12 @@ int main (int argc, const char* argv[])
 	}
 	if (fitsfile == "") {
 	  fitsfile = msin;
-	  fitsfile = fitsfile.substr(0, fitsfile.size() - 3) + ".UVF";
-	}
+	  constexpr std::string_view kExtension = ".MS";
+	  if (fitsfile.ends_with(kExtension)) {
+	    fitsfile.resize(fitsfile.size() - kExtension.size());
+	  }
+	  fitsfile += ".UVF";
+  }
 
 	// Get the column name.
 	String column(inputs.getString("column"));

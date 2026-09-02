@@ -749,7 +749,7 @@ void FITSIDItoMS1::convertKeywords()
 	    // Buffer the MS-specific keywords.
 	    //
 	    if (kwname.substr(0,3)=="MSK") {
-		iMSK = atoi(kwname.substr(4).c_str());
+		iMSK = kwname.size() > 4 ? atoi(kwname.substr(4).c_str()) : 0;
 		if (iMSK > 0) {
 		    if (iMSK > itsNrMSKs) {
 			// Extend the MSK buffers with 10 elements.
@@ -1075,7 +1075,7 @@ void FITSIDItoMS1::describeColumns()
 		// Vector of strings or degenerated vector.  Use the
 		// substring inside the parentheses as shape.
 		//
-		dimstr = SHAPEstr.substr(1,SHAPEstr.length()-2);
+		dimstr = SHAPEstr.size() < 2 ? "" : SHAPEstr.substr(1,SHAPEstr.length()-2);
 		shape(0) = atoi(dimstr.c_str());
 //		cout << "   shape = " << shape << endl;
 
