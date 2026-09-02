@@ -364,16 +364,16 @@ Projection::Type Projection::type (String& ctypeLong,
   RTrimInPlace(ctypeLong, kWhiteSpaceCharacters);
   RTrimInPlace(ctypeLat, kWhiteSpaceCharacters);
 
-  String proj1(ctypeLong.substr(4));
-  String proj2(ctypeLat.substr(4));
+  String proj1(ctypeLong.size() > 4 ? ctypeLong.substr(4) : "");
+  String proj2(ctypeLat.size() > 4 ? ctypeLat.substr(4) : "");
 
     // Get rid of leading -'s
   LTrimInPlace(proj1, '-');
   LTrimInPlace(proj2, '-');
 
-  // Get rid of spaces
-  LTrimInPlace(proj1, ' ');
-  LTrimInPlace(proj2, ' ');
+  // Get rid of spaces on both sides
+  TrimInPlace(proj1, ' ');
+  TrimInPlace(proj2, ' ');
 
   if (proj1 != proj2) {
     throw (AipsError("Projection codes must be identical"));

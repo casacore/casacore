@@ -602,6 +602,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	    delete [] tmp;
 	}
+	// The wcs* functions need a writable char*, so data() is used instead of c_str() to get a writeable char*.
 	char* pChar2 = all.data();
     
 // Print cards for debugging

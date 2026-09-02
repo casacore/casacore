@@ -956,9 +956,6 @@ inline  const char *SubString::chars() const {
 inline std::ostream &operator<<(std::ostream &s, const String &x) {
   s << x.c_str(); return s; }
 
-// Remove specified chars from beginning and end of string.
-void TrimInPlace(std::string& str, std::string_view characters = " \t\n\r");
-
 // Remove specified character from beginning of string.
 // If the character is repeated more than once on the left, all instances
 // will be removed; e.g. LTrimInPlace(str, ',') results in ",,xy" becoming "xy".
@@ -995,6 +992,18 @@ inline void RTrimInPlace(std::string& str, std::string_view characters) {
     str.clear();
   else
     str.resize(pos + 1);
+}
+
+// Remove specified char from beginning and end of string.
+inline void TrimInPlace(std::string& str, char single_character) {
+  LTrimInPlace(str, single_character);
+  RTrimInPlace(str, single_character);
+}
+
+// Remove specified chars from beginning and end of string.
+inline void TrimInPlace(std::string& str, std::string_view characters = " \t\n\r") {
+  LTrimInPlace(str, characters);
+  RTrimInPlace(str, characters);
 }
 
 // Like sprintf. Don't use for new code -- to be deprecated if possible.
