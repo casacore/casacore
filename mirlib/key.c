@@ -782,7 +782,7 @@ void keyl_c(Const char *keyword, int *value, Const int keydef)
       state = KEYTRUE;
     }
 
-    snprintf(errmsg, sizeof(errmsg), "KeyL: invalid value for a logical: [%s].", string);
+    snprintf(errmsg, sizeof(errmsg), "KeyL: invalid value for a logical: [%.4000s].", string);
     switch ((int)string[0]) {
       case 'f': case 'F': case 'n': case 'N': case '0':
         state = KEYFALSE;

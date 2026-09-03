@@ -1188,7 +1188,7 @@ static void uv_override(UV *uv)
 	v->callno = 1;
       } else {
 	free(b);
-	ERROR('w',(message,sizeof(message),"Cannot override variable %s, in UVOPEN",varname));
+	ERROR('w',(message,sizeof(message),"Cannot override variable %.64s, in UVOPEN",varname));
       }
     }
   }
