@@ -132,7 +132,7 @@ const Quantum<Double> &VelocityMachine::makeVelocity(Double in) {
 	);
 	ThrowIf(
 		rfreqValue < 0,
-		"Rest frequency is " + String::toString(rest_p)
+		"Rest frequency is " + std::to_string(rest_p)
 		+ " which is invalid because it is less than 0 so cannot "
 		" convert to velocity"
 	);

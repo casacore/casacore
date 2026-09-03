@@ -2932,7 +2932,7 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
       {
 	String mdir;
 	Aipsrc::find(mdir, "measures.directory");
-	mdir.trim();
+	TrimInPlace(mdir);
 	Path lPath(mdir);
 	lPath.append(antRespPath);
 	absPathName = lPath.absoluteName();
@@ -2940,8 +2940,8 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
       }
       if(!isValid){
         String casadata=String(CASADATA);
-        casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
-        casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
+        ReplaceAllInPlace(casadata, "%CASAROOT%", Aipsrc::aipsRoot());
+        ReplaceAllInPlace(casadata, "%CASAHOME%", Aipsrc::aipsHome());
         Path lPath(casadata + "/" + antRespPath);
         isValid = Table::isReadable(absPathName);
       }

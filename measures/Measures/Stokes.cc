@@ -42,7 +42,7 @@ Stokes::StokesTypes Stokes::type(const String &stokesName)
 {
    StokesTypes val = Undefined;
    String name = stokesName;
-   name.upcase();
+   ToUpperCaseInPlace(name);
    if      (name == "I")  val = I;
    else if (name == "Q")  val = Q;
    else if (name == "U")  val = U;

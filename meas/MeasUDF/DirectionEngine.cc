@@ -152,7 +152,7 @@ namespace casacore {
     itsH.resize (names.size());
     for (uInt i=0; i<names.size(); ++i) {
       String name(names.data()[i]);
-      name.upcase();
+      ToUpperCaseInPlace(name);
       itsH[i] = 0;
       if (name.substr(0,3) == "SUN") {
         // Determine which part of the sun has to be used for rise/set times.

@@ -636,7 +636,7 @@ void makeProperties() {
       else if (upcase(tmp[j]) == "A") fd.n = 1;
       else if (tmp[j].size()<2) throw(AipsError("Illegal Format specifier"));
       else {
-	fd.n = int_data(tmp[j].from(1));
+	fd.n = int_data(tmp[j].substr(1));
 	if (upcase(tmp[j])[0] == 'X');
 	else if (upcase(tmp[j])[0] == 'A') fd.form = formatDescr::A;	
 	else if (upcase(tmp[j])[0] == 'I') fd.form = formatDescr::I;	
@@ -718,14 +718,14 @@ String minimaxNC(const String &in, const vector<String> &tname) {
       ib = tname[i].length();
       ib = ia < ib ? ia : ib;
       b = upcase(tname[i]);
-      if (ia==ib && a.at(0,ib) == b.at(0,ib)) {
+      if (ia==ib && a.substr(0,ib) == b.substr(0,ib)) {
 	uInt j;
 	// Look for more partials
 	for (j=i+1; j<N_name; j++) {
 	  ib = tname[j].length();
 	  ib = ia < ib ? ia : ib;
 	  b = upcase(tname[j]);
-	  if (ia==ib && a.at(0,ib) == b.at(0,ib)) break;
+	  if (ia==ib && a.substr(0,ib) == b.substr(0,ib)) break;
 	};
 	// Found duplicate
 	if (j<N_name) i=N_name;
@@ -1280,7 +1280,10 @@ Bool IERSpred(tableProperties &tprop, inputValues &inVal) {
     if (lines[i].size() >= tprop.fdesc.back().start +  tprop.fdesc.back().n) {
       field.resize(0);
       for (uInt j=0; j<tprop.fdesc.size(); ++j) {
-	field.push_back(lines[i].at(tprop.fdesc[j].start, tprop.fdesc[j].n));
+        if(tprop.fdesc[j].start < lines[i].size())
+	  field.push_back(lines[i].substr(tprop.fdesc[j].start, tprop.fdesc[j].n));
+        else
+          fields.emplace_back();
       };
       fields.push_back(field);
     };
@@ -1356,7 +1359,7 @@ Bool IGRF(tableProperties &tprop, inputValues &inVal) {
       if (lines[i].size() < expsize) lines[i].resize(expsize, ' ');
       field.resize(0);
       for (uInt j=0; j<tprop.fdesc.size(); ++j) {
-	field.push_back(lines[i].at(tprop.fdesc[j].start, tprop.fdesc[j].n));
+	field.push_back(lines[i].substr(tprop.fdesc[j].start, tprop.fdesc[j].n));
       };
       fields.push_back(field);
     };

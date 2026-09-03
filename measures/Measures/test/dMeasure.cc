@@ -52,7 +52,7 @@ int main()
 	    } else {
 		cin >> epoch;
 	    };
-	    epoch.capitalize();
+	    CapitalizeStringInPlace(epoch);
 	    if (epoch.empty()) epoch = "B1950";
 	};
 

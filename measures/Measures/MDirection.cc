@@ -104,7 +104,7 @@ MDirection MDirection::makeMDirection (const String& sourceName)
     Bool fnd = True;
     // Make it case-insensitive.
     String name(sourceName);
-    name.upcase();
+    ToUpperCaseInPlace(name);
     if (name == "ZENITH") {
       return MDirection (MVDirection(), MDirection::AZEL);
     } else if (name == "CASA") {
@@ -477,7 +477,7 @@ String MDirection::toString() const {
 	) {
 		String ra = MVTime(longitude).string(MVTime::TIME, 12);
 		String dec = MVAngle(abs(lat)).string(MVAngle::ANGLE_CLEAN, 11);
-		dec.trim();
+		TrimInPlace(dec);
 		if (lat.getValue() < 0) {
 			dec = "-" + dec;
 		}

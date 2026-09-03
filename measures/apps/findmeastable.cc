@@ -49,7 +49,7 @@ int main (int argc, char* argv[])
       return 0;
     }
     String tableNameLC = tableName;
-    tableNameLC.downcase();
+    ToLowerCaseInPlace(tableNameLC);
     Table table;
     TableRecord kws;
     ROTableRow row;

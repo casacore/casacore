@@ -103,8 +103,8 @@ const String& TableMeasType::refType (uInt refCode) const
   }
   if (i >= itsNtypes) {
     throw (AipsError ("TableMeasDescBase::refType - refCode " + 
-		      String::toString(refCode) + 
-		      " unknown for measure" + type()));
+		      std::to_string(refCode) +
+		      " unknown for measure" + std::string(type())));
   }
   return itsStypes[i];
 }
