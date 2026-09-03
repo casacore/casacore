@@ -11,7 +11,6 @@ tCOWPtr
 tDataType
 tDefaultValue
 tDynBuffer
-tFallible
 tGenSort
 tLinearSearch
 tPrecision

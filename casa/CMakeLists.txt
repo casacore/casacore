@@ -219,7 +219,6 @@ Utilities/CompositeNumber.cc
 Utilities/Copy2.cc
 Utilities/DataType.cc
 Utilities/DynBuffer.cc
-Utilities/Fallible2.cc
 Utilities/MUString.cc
 Utilities/Precision.cc
 Utilities/RecordTransformable.cc

@@ -26,9 +26,10 @@
 #ifndef MEASURES_STOKES_H
 #define MEASURES_STOKES_H
 
+#include <optional>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/Vector.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -143,11 +144,11 @@ public:
 //              map StokesTypes to receptor number (0 or 1) for the
 //              interferometric correlation products.
 //              e.g. XY will give receptor1==0 receptor2==1 etc.
-//              I,Q,U,V and the single dish types will produce invalid
-//              Fallible.
+//              I,Q,U,V and the single dish types will produce empty
+//              optional.
 //              <group>
-	static Fallible<Int> receptor1(StokesTypes stokesType);
-	static Fallible<Int> receptor2(StokesTypes stokesType);
+	static std::optional<Int> receptor1(StokesTypes stokesType);
+	static std::optional<Int> receptor2(StokesTypes stokesType);
 //              </group>
 
     // These two functions map stokes type to FITS type and vice versa. If you add a 

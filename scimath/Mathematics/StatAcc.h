@@ -26,9 +26,10 @@
 #ifndef SCIMATH_STATACC_H
 #define SCIMATH_STATACC_H
 
+#include <optional>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/iosfwd.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
@@ -74,7 +75,7 @@ class String;
 // type Float.
 //
 // Asking for a result does not change the internal state. The 
-// type of the returned results is always Fallible<Double>.
+// type of the returned results is always std::optional<Double>.
 // A result is invalid if no input values with non-zero weight
 // have been accumulated yet.
 //
@@ -95,7 +96,7 @@ class String;
 //   Matrix<Float> wgt(2,5);     // an associated matrix of weights
 //   .... fill vv and wgt with values and individual weights ... 
 //   s.put(vv,wgt);              // accumulate the weighted values   
-//   Fallible<Double> min = s.getMin();    // return the minimum value
+//   std::optional<Double> min = s.getMin();    // return the minimum value
 //
 //   s.reset();                  // re-initialise
 //   s.put(vv);                  // if wgt omitted, default = 1.0
@@ -160,12 +161,12 @@ public:
     // <group>
     Double getWtot() const;           
     uInt             getCount() const;
-    Fallible<Double> getMin() const;        
-    Fallible<Double> getMax() const;      
-    Fallible<Double> getMean() const;        
-    Fallible<Double> getRms() const;      
-    Fallible<Double> getVariance() const;      
-    Fallible<Double> getRmsAbs() const; 
+    std::optional<Double> getMin() const;
+    std::optional<Double> getMax() const;
+    std::optional<Double> getMean() const;
+    std::optional<Double> getRms() const;
+    std::optional<Double> getVariance() const;
+    std::optional<Double> getRmsAbs() const;
     // </group>
 
     // Print summary of accumulated statistics.

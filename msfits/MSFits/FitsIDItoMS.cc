@@ -23,6 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
+#include <optional>
+
 #include <casacore/msfits/MSFits/FitsIDItoMS.h> 
 #include <casacore/casa/IO/ArrayIO.h> 
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -90,7 +92,6 @@
 #include <casacore/casa/Utilities/Assert.h> 
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/fits/FITS/FITSKeywordUtil.h>
 #include <casacore/fits/FITS/FITSSpectralUtil.h>
 #include <casacore/fits/FITS/FITSDateUtil.h>
@@ -1527,17 +1528,17 @@ void FITSIDItoMS1::getAxisInfo()
   corrProduct_p.resize(2, numCorr); corrProduct_p = 0;
   for (uInt i = 0; i < numCorr; i++) {
     const Stokes::StokesTypes cType = Stokes::type(corrType_p(i));
-    Fallible<Int> receptor = Stokes::receptor1(cType);
-    if (receptor.isValid()) {
-      corrProduct_p(0,i) = receptor;
+    std::optional<Int> receptor = Stokes::receptor1(cType);
+    if (receptor.has_value()) {
+      corrProduct_p(0,i) = *receptor;
 //      cout << "corrProcut_p(0,"<< i <<")=" << corrProduct_p(0,i);
     } else {
       *itsLog << "Cannot deduce receptor 1 for correlations of type: " 
 	     << Stokes::name(cType) << LogIO::EXCEPTION;
     }
     receptor = Stokes::receptor2(cType);
-    if (receptor.isValid()) {
-      corrProduct_p(1,i) = receptor;
+    if (receptor.has_value()) {
+      corrProduct_p(1,i) = *receptor;
 //      cout << "corrProcut_p(1,"<< i <<")=" << corrProduct_p(1,i);
     } else {
       *itsLog << "Cannot deduce receptor 2 for correlations of type: " 

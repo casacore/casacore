@@ -45,8 +45,8 @@ int main() {
 		<<",  Stokes::type(Stokes::type(polint)) = "
 		<< Stokes::type(Stokes::type(polint))
 		<< endl
-		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint))
-		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint))
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint).value())
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint).value())
 		<< endl;
 
 		polint=-1;
@@ -57,9 +57,9 @@ int main() {
 			cout << Stokes::type(Stokes::type(polint));
 			cout << endl;
 			cout <<  " --- receptor1 = ";
-			cout << Stokes::receptor1(Stokes::type(polint));
+			cout << Stokes::receptor1(Stokes::type(polint)).value();
 			cout <<  " --- receptor2 = ";
-			cout << Stokes::receptor2(Stokes::type(polint));
+			cout << Stokes::receptor2(Stokes::type(polint)).value();
 			cout << endl;
 		} catch(std::exception& x) {
 			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;
@@ -71,8 +71,8 @@ int main() {
 		<< ", Stokes::type(Stokes::type(polstr)) = "
 		<< Stokes::type(Stokes::type(polstr))
 		<< endl
-		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr))
-		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr))
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr)).value()
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr)).value()
 		<< endl;
 
 		polstr="LX";
@@ -81,8 +81,8 @@ int main() {
 		<< ", Stokes::type(Stokes::type(polstr)) = "
 		<< Stokes::type(Stokes::type(polstr))
 		<< endl
-		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr))
-		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr))
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr)).value()
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr)).value()
 		<< endl;
 
 
@@ -94,9 +94,9 @@ int main() {
 			cout << Stokes::type(Stokes::type(polstr));
 			cout << endl  ;
 			cout <<  " --- receptor1 = ";
-			cout << Stokes::receptor1(Stokes::type(polstr)) ;
+			cout << Stokes::receptor1(Stokes::type(polstr)).value() ;
 			cout <<  " --- receptor2 = ";
-			cout << Stokes::receptor2(Stokes::type(polstr)) ;
+			cout << Stokes::receptor2(Stokes::type(polstr)).value() ;
 			cout << endl;
 		} catch(std::exception& x) {
 			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;

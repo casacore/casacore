@@ -168,64 +168,66 @@ uInt StatAcc<T>::getCount() const               // get number of samples
 
 
 template<class T>
-Fallible<Double> StatAcc<T>::getMax() const         // get minimum value  
+std::optional<Double> StatAcc<T>::getMax() const         // get minimum value
 {     
     if (itsWtot == 0) {
-	return Fallible<Double>();      
+	return std::optional<Double>();
     }
-    return Fallible<Double>(itsMax);
+    return std::optional<Double>(itsMax);
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getMin() const       // get minimum value 
+std::optional<Double> StatAcc<T>::getMin() const       // get minimum value
 {
     if (itsWtot == 0) {
-	return Fallible<Double>();      
+	return std::optional<Double>();
     }
-    return Fallible<Double>(itsMin);
+    return std::optional<Double>(itsMin);
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getMean() const     // get mean value 
+std::optional<Double> StatAcc<T>::getMean() const     // get mean value
 {
     if (itsWtot == 0) {
-	return Fallible<Double>();
+	return std::optional<Double>();
     }      
-    return Fallible<Double>(itsWsum/itsWtot);
+    return std::optional<Double>(itsWsum/itsWtot);
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getRmsAbs() const  // get rmsAbs value 
+std::optional<Double> StatAcc<T>::getRmsAbs() const  // get rmsAbs value
 {
     if (itsWtot == 0) {
-	return Fallible<Double>();
+	return std::optional<Double>();
     }      
-    return Fallible<Double>(sqrt(itsWssum/itsWtot));
+    return std::optional<Double>(sqrt(itsWssum/itsWtot));
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getRms() const     // get rms w.r.t. the mean 
+std::optional<Double> StatAcc<T>::getRms() const     // get rms w.r.t. the mean
 {
-    if (getVariance().isValid()) {
-	Double ms = getVariance();
+    const std::optional variance = getVariance();
+    if (variance) {
+	Double ms = *variance;
 	if (ms >= 0) {
-	    return Fallible<Double>(sqrt(ms));  // valid
+	    return std::optional<Double>(sqrt(ms));  // valid
 	} else {
-	    return Fallible<Double>(0);         // .....?
+	    return std::optional<Double>(0);         // .....?
 	}
     } else {
-	return Fallible<Double>();              // 
+	return std::optional<Double>();              //
     }
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getVariance() const     // get variance
+std::optional<Double> StatAcc<T>::getVariance() const     // get variance
 { 
-    if (getMean().isValid()) {
-	Double mean = getMean();
-	return Fallible<Double>(itsWssum/itsWtot - mean*mean); 
+    const std::optional<Double> mean = getMean();
+    if (mean) {
+	const Double m = *mean;
+	return std::optional<Double>(itsWssum/itsWtot - m*m);
     } else {
-	return Fallible<Double>(); 
+	return std::optional<Double>();
     }
 }
 
@@ -284,10 +286,10 @@ void StatAcc<T>::printSummaryLine (ostream& os, const String& caption) const
     if (itsWtot != 0) {
 	os << setprecision(p) << setw(p+3) << getWtot(); 
 	os << setprecision(p) << setw(p+3) << getCount(); 
-	os << setprecision(p) << setw(p+3) << getMean(); 
-	os << setprecision(p) << setw(p+3) << getRms(); 
-	os << setprecision(p) << setw(p+3) << getMin(); 
-	os << setprecision(p) << setw(p+3) << getMax(); 
+	os << setprecision(p) << setw(p+3) << getMean().value();
+	os << setprecision(p) << setw(p+3) << getRms().value();
+	os << setprecision(p) << setw(p+3) << getMin().value();
+	os << setprecision(p) << setw(p+3) << getMax().value();
     } else {
 	os << setprecision(p) << setw(p+3) << getWtot(); 
 	os << setw(5*(p+3)) << "  no values accumulated " ; 
@@ -333,12 +335,12 @@ void StatAcc<T>::printSummaryList (ostream& os, const String& caption) const
 
     os << " Wtot=    " << setw(p+3) << getWtot() << endl; 
     os << " Npts=    " << setw(p+3) << getCount() << endl;
-    os << " Mean=    " << setw(p+3) << getMean() << endl; 
-    os << " Min=     " << setw(p+3) << getMin() << endl; 
-    os << " Max=     " << setw(p+3) << getMax() << endl; 
-    os << " Rms=     " << setw(p+3) << getRms() << endl; 
-    os << " Variance=" << setw(p+3) << getVariance() << endl; 
-    os << " RmsAbs=  " << setw(p+3) << getRmsAbs() << endl; 
+    os << " Mean=    " << setw(p+3) << getMean().value() << endl;
+    os << " Min=     " << setw(p+3) << getMin().value() << endl;
+    os << " Max=     " << setw(p+3) << getMax().value() << endl;
+    os << " Rms=     " << setw(p+3) << getRms().value() << endl;
+    os << " Variance=" << setw(p+3) << getVariance().value() << endl;
+    os << " RmsAbs=  " << setw(p+3) << getRmsAbs().value() << endl;
 
     os.flags(flags);                  // restore original setting
 }

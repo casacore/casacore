@@ -34,7 +34,6 @@
 #include <casacore/tables/Tables.h>
 #include <casacore/tables/Tables/RowCopier.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MPosition.h>

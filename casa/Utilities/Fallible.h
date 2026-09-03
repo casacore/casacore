@@ -44,7 +44,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </thrown>
 //
 // <group name=invalid_access>
-void AccessInvalidFallibleObject();
+[[deprecated("Fallible is replaced by std::optional")]]
+inline void AccessInvalidFallibleObject() {
+  throw(AipsError("Fallible<T>:: invalid object accessed. Sorry I don't know"
+    " from where"));
+}
 // </group>
 
 // <summary> Mark a value as valid or invalid. </summary>
@@ -117,7 +121,9 @@ void AccessInvalidFallibleObject();
 //   <LI>  copy constructor
 // </templating>
 
-template<class T> class Fallible
+template<class T> class
+[[deprecated("Use std::optional")]]
+Fallible
 {
 public: 
     // The default constructor creates an invalid object.
