@@ -53,6 +53,15 @@ TiledColumnStMan::TiledColumnStMan ()
 
 TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
 				    const IPosition& tileShape,
+				    const IPosition& rowShape,
+				    uInt64 maximumCacheSize)
+: TiledStMan  (hypercolumnName, maximumCacheSize),
+  tileShape_p (tileShape),
+  rowShape_p  (rowShape)
+{}
+
+TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
+				    const IPosition& tileShape,
 				    uInt64 maximumCacheSize)
 : TiledStMan  (hypercolumnName, maximumCacheSize),
   tileShape_p (tileShape)
@@ -64,6 +73,9 @@ TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
 {
     if (spec.isDefined ("DEFAULTTILESHAPE")) {
         tileShape_p = IPosition (spec.toArrayInt ("DEFAULTTILESHAPE"));
+    }
+    if (spec.isDefined ("ROWSHAPE")) {
+        rowShape_p = IPosition (spec.toArrayInt ("ROWSHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
         setPersMaxCacheSize (spec.asInt64 ("MAXIMUMCACHESIZE"));
@@ -77,6 +89,7 @@ DataManager* TiledColumnStMan::clone() const
 {
     TiledColumnStMan* smp = new TiledColumnStMan (hypercolumnName_p,
 						  tileShape_p,
+                                                  rowShape_p,
 						  maximumCacheSize());
     return smp;
 }
@@ -93,28 +106,40 @@ String TiledColumnStMan::dataManagerType() const
     return "TiledColumnStMan";
 }
 
-Bool TiledColumnStMan::canAccessColumn () const
+Bool TiledColumnStMan::canAccessColumn() const
 {
-    return True;
+    // This is only possible if an integral nr of rows fit the hypercube.
+    // Note that rowMap_p always contains at least 1 element.
+    DebugAssert (rowMap_p.size() > 0, AipsError);
+    return nrrow_p % rowMap_p[rowMap_p.size() - 1] == 0;
 }
 
 
 void TiledColumnStMan::create64 (rownr_t nrrow)
 {
+    // Make the hypercube extendible.
+    if (rowShape_p.empty()) {
+      rowShape_p = IPosition(1,0);
+    } else {
+      rowShape_p.last() = 0;
+    }
     // Set up the various things.
-    setup(1);
+    setupRowMap();
+    setup (rowShape_p.size());
     // Create the one and single TSMFile object.
     createFile (0);
     // Create the hypercube object.
     // Its shape is the cell shape plus an extensible last dimension.
     // Check if the hypercube dimensionality is one extra.
-    if (nrdim_p != fixedCellShape_p.nelements() + 1) {
+    if (nrdim_p != fixedCellShape_p.nelements() + rowShape_p.size()) {
 	throw (TSMError ("TiledColumnStMan: hypercube dimensionality "
-			 "has to be 1 + cell dimensionality"));
+			 "has to be row shape + cell dimensionality"));
     }
     IPosition cubeShape (fixedCellShape_p);
     cubeShape.resize (nrdim_p);
-    cubeShape(nrdim_p - 1) = 0;
+    for (uInt i=0; i<rowShape_p.size(); ++i) {
+      cubeShape(nrdim_p - rowShape_p.size() +  i) = rowShape_p(i);
+    }
     cubeSet_p.resize (1);
     cubeSet_p[0] = makeTSMCube (fileSet_p[0],
 				cubeShape, tileShape_p, emptyRecord);
@@ -130,10 +155,17 @@ Bool TiledColumnStMan::flush (AipsIO&, Bool fsync)
     if (! flushCaches (fsync)) {
 	return False;
     }
-    // Create the header file and write data in it.
+    // Create the header file and write data into it.
+    // Use version 1 if rowshape has 1 dim, so it can be used by older casacore.
     AipsIO* headerFile = headerFileCreate();
-    headerFile->putstart ("TiledColumnStMan", 1);
-    *headerFile << tileShape_p;
+    if (rowShape_p.size() == 1) {
+        headerFile->putstart ("TiledColumnStMan", 1);
+        *headerFile << tileShape_p;
+    } else {
+        headerFile->putstart ("TiledColumnStMan", 2);
+        *headerFile << tileShape_p;
+        *headerFile << rowShape_p;
+    }
     // Let the base class write its data; there is only one TSMCube to write.
     headerFilePut (*headerFile, 1);
     headerFile->putend();
@@ -145,22 +177,50 @@ void TiledColumnStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
-    headerFile->getstart ("TiledColumnStMan");
+    uInt version = headerFile->getstart ("TiledColumnStMan");
     *headerFile >> tileShape_p;
+    if (version == 2) {
+        *headerFile >> rowShape_p;
+    } else {
+        AlwaysAssert (version==1, AipsError);
+        rowShape_p = IPosition(1,0);
+    }
+    setupRowMap();
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime, 1);
+    headerFileGet (*headerFile, tabNrrow, firstTime, rowShape_p.size());
     headerFile->getend();
     headerFileClose (headerFile);
 }
 
+void TiledColumnStMan::setupRowMap()
+{
+  rowMap_p.resize (rowShape_p.size());
+  ssize_t sz = 1;
+  for (uInt i=0; i<rowShape_p.size(); ++i) {
+    rowMap_p[i] = sz;
+    sz *= rowShape_p[i];
+  }
+}
+
+void TiledColumnStMan::rowToPosition (IPosition& pos, rownr_t row) const
+{
+  DebugAssert (pos.size() >= rowMap_p.size(), AipsError);
+  uInt st = pos.size() - rowMap_p.size();
+  ssize_t inx = row;
+  for (uInt i=rowMap_p.size()-1; i>0; --i) {
+    pos[st + i] = inx / rowMap_p[i];
+    inx -= pos[st + i] * rowMap_p[i];
+  }
+  pos[st] = inx;
+}
 
 void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
 				   const Vector<String>& dataNames) const
 {
     // The data columns may only contain arrays with the correct
-    // dimensionality, which should be one less than the hypercube
+    // dimensionality, which should be less than the hypercube
     // dimensionality.
-    Int ndim = nrdim_p - 1;
+    Int ndim = nrdim_p - rowShape_p.size();
     for (uInt i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
 	if (columnDesc.isScalar()) {
@@ -172,7 +232,9 @@ void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
 	} else {
 	    if (! columnDesc.isArray()  ||  ndim != columnDesc.ndim()) {
 	        throw (TSMError ("Dimensionality of column " + dataNames(i) +
-				 " should be one less than hypercolumn"
+				 " should be " +
+                                 String::toString(rowShape_p.size()) +
+                                 " less than hypercolumn"
 				 " definition when used in TiledColumnStMan"));
 	    }
 	    // The data columns in a column hypercube must be fixed shape.
@@ -197,7 +259,15 @@ IPosition TiledColumnStMan::defaultTileShape() const
 
 void TiledColumnStMan::addRow64 (rownr_t nrow)
 {
-    cubeSet_p[0]->extend (nrow, emptyRecord, coordColSet_p[nrdim_p - 1]);
+    // Extend the last dimension as much as needed.
+    ssize_t nnew  = (nrrow_p+nrow) / rowMap_p.last() - nrrow_p / rowMap_p.last();
+    // Make sure at least 1 is added if still empty.
+    if (nrrow_p == 0  &&  nrow > 0  &&  nnew == 0) {
+        nnew = 1;
+    }
+    if (nnew > 0) {
+        cubeSet_p[0]->extend (nnew, emptyRecord, coordColSet_p[nrdim_p - 1]);
+    }
     nrrow_p += nrow;
     setDataChanged();
 }
@@ -217,10 +287,10 @@ TSMCube* TiledColumnStMan::getHypercube (rownr_t rownr, IPosition& position)
     if (rownr >= nrrow_p) {
 	throw (TSMError ("getHypercube: rownr is too high"));
     }
-    // The rownr is the position in the hypercube.
+    // The rownr determines the position in the hypercube.
     position.resize (0);
     position = cubeSet_p[0]->cubeShape();
-    position(nrdim_p-1) = rownr;
+    rowToPosition (position, rownr);
     return cubeSet_p[0];
 }
 
