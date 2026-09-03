@@ -215,7 +215,7 @@ std::optional<Double> StatAcc<T>::getRms() const     // get rms w.r.t. the mean
 	    return std::optional<Double>(0);         // .....?
 	}
     } else {
-	return std::optional<Double>();              //
+	return std::optional<Double>();
     }
 }
 
