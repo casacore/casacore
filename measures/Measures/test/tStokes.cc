@@ -45,8 +45,8 @@ int main() {
 		<<",  Stokes::type(Stokes::type(polint)) = "
 		<< Stokes::type(Stokes::type(polint))
 		<< endl
-		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint).value())
-		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint).value())
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint)).value()
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint)).value()
 		<< endl;
 
 		polint=-1;
