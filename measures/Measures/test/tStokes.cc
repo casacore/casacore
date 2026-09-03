@@ -62,7 +62,7 @@ int main() {
 			cout << Stokes::receptor2(Stokes::type(polint)).value();
 			cout << endl;
 		} catch(std::exception& x) {
-			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;
+			cout << " Caught exception of receptor correctly."<<endl;
 		}
 
 		polstr="XY";
@@ -99,7 +99,7 @@ int main() {
 			cout << Stokes::receptor2(Stokes::type(polstr)).value() ;
 			cout << endl;
 		} catch(std::exception& x) {
-			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;
+			cout << " Caught exception of receptor correctly."<<endl;
 		}
 		for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
 			if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
