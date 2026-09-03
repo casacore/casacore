@@ -528,7 +528,7 @@ void StokesCoordinate::makePixelRelative (Vector<Double>& pixel) const
    } else {
       ostringstream os;
       os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
-      String s(os);
+      String s(os.str());
       throw(AipsError(s));
    }
 }
@@ -547,7 +547,7 @@ void StokesCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
    if (index < 0 ||  index >= nValues_p) {
       ostringstream os;
       os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
-      String s(os);
+      String s(os.str());
       throw(AipsError(s));
    }
 } 
@@ -581,7 +581,7 @@ Bool StokesCoordinate::toWorld(Double& world, const Double pixel) const
     } else {
 	ostringstream os;
 	os << "Pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
-	set_error(os);
+	set_error(os.str());
 	return False;
     }
 }
@@ -600,7 +600,7 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
         Stokes::StokesTypes t0 = toWorld(world);
         String t = Stokes::name(t0);
 	os << "Stokes value " << t << " is not contained in this StokesCoordinate";
-	set_error(os);
+	set_error(os.str());
 	return False;
     }
 //

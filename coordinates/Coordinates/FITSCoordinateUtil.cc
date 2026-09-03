@@ -336,7 +336,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		else {
 		    ostringstream oss;
 		    oss << "pv" << theLatAxisNum+1 << "_"; // numbers are start at 1 in WCS
-		    String s(oss);
+		    String s(oss.str());
 
 		    header.define(s, pvi_ma);
 
@@ -465,10 +465,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Linear and Tabular
 
-		ctype[i].upcase();
 		if (ctype[i].length() > 8) {
-		    ctype[i] = ctype[i].at(0,8);
+		    ctype[i].resize(8);
 		}
+		ToUpperCaseInPlace(ctype[i]);
 		while (ctype[i].length() < 8) ctype[i] += " ";
 	    }
 	}
@@ -478,7 +478,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	cunit = cSys.worldAxisUnits();
 	for (Int i=0; i<n; i++) {
 	    if (cunit(i).length() > 8) {
-		cunit(i) = cunit(i).at(0,8);
+		cunit(i).resize(8);
 	    }
 	    while (cunit(i).length() < 8) cunit(i) += " ";
 	}
@@ -555,10 +555,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    else if (
             // adding the first condition (FEEQ, VRAD, VOPT) is necessary to avoid incorrect munging
             // of position-velocity image axes.
-	    	! (header[i].contains("FREQ") || header[i].contains("VRAD") || header[i].contains("VOPT"))
+	    	! (StringContains(header[i], "FREQ") || StringContains(header[i], "VRAD") || StringContains(header[i], "VOPT"))
             && hsize >= 19 && (
-	    		header[i].startsWith("CTYPE1")
-	    		|| header[i].startsWith("CTYPE2")
+	    		header[i].starts_with("CTYPE1")
+	    		|| header[i].starts_with("CTYPE2")
 	    	)
 		    && header[i][15]==' ' && header[i][16]==' '
 		    && header[i][17]==' ' && header[i][18]==' '
@@ -595,14 +595,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		   << "The SIP convention for representing distortion in FITS headers\n  is not part of FITS standard v3.0"
 		   << " and not yet supported by CASA.\n  Header\n  "<< header[i] << "\n  was interpreted as\n  " << tmp << LogIO::POST;
 	    } else {
-	        if(header[i].contains("-GLS")){
+	        if(StringContains(header[i], "-GLS")){
 	  	    os << LogIO::WARN << "Note: The GLS projection is deprecated. Use SFL instead." << LogIO::POST;
 	        }
 		all = all.append(header(i));
 	    }
 	    delete [] tmp;
 	}
-	char* pChar2 = const_cast<char *>(all.chars());
+	// The wcs* functions need a writable char*, so data() is used instead of c_str() to get a writeable char*.
+	char* pChar2 = all.data();
     
 // Print cards for debugging
   
@@ -650,7 +651,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             for (uInt i=0; i<saveCards.size(); ++i) {
                 newHdr.append (saveCards[i]);
             }
-            pChar2 = const_cast<char*>(newHdr.chars());
+            pChar2 = newHdr.data();
         }
 
 // Put the rest of the header into a Record for subsequent use
@@ -1046,7 +1047,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	    String cType = wcsDest.ctype[0];
     
-	    if (cType.contains("WAVE") || cType.contains("AWAV")){
+	    if (StringContains(cType, "WAVE") || StringContains(cType, "AWAV")){
 
 		if(nc==0){
 		    os << LogIO::WARN << "Will omit tabular spectral coordinate with no channels." << LogIO::POST;
@@ -1085,7 +1086,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 		Bool inAir = False;
 		nativeSType = SpectralCoordinate::WAVE;
-		if(cType.contains("AWAV")){
+		if(StringContains(cType, "AWAV")){
 		  // os << LogIO::NORMAL << "Translating Air Wavelength into wavelength ..." << LogIO::POST;
 		    inAir = True;
 		    nativeSType = SpectralCoordinate::AWAV;
@@ -1101,7 +1102,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    ok = False;
 		}     
 	    }
-	    else if(cType.contains("VOPT") || cType.contains("FELO")){
+	    else if(StringContains(cType, "VOPT") || StringContains(cType, "FELO")){
 
 		if(nc==0){
 		    os << LogIO::WARN << "Will omit tabular spectral coordinate with no channels." << LogIO::POST;
@@ -1173,15 +1174,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		int index=0;
 		char ctype[9];
 		
-		if (cType.contains("FREQ")){
+		if (StringContains(cType, "FREQ")){
 		  strcpy(ctype,"FREQ-???");
 		  nativeSType = SpectralCoordinate::FREQ;
 		}
-		else if(cType.contains("VELO")){
+		else if(StringContains(cType, "VELO")){
 		  strcpy(ctype, "FREQ-???");
 		  nativeSType = SpectralCoordinate::VRAD;
 		}
-		else if (cType.contains("VRAD")){
+		else if (StringContains(cType, "VRAD")){
 		  strcpy(ctype, "FREQ-???");
 		  nativeSType = SpectralCoordinate::VRAD;
 		}
@@ -1278,22 +1279,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	String raDecSys;
 	if (sysIsDefined) {
 	    String tt(wcs.radesys);
-	    Int i1 = tt.index(RXwhite,0);
-	    if (i1==-1) i1 = tt.length();
-	    raDecSys = String(tt.before(i1));
+	    size_t i1 = tt.find_first_of(kExtendedWhiteSpaceCharacters);
+	    if (i1==std::string::npos) i1 = tt.length();
+	    raDecSys = String(tt.substr(0, i1));
 	}
 
 // Extract CTYPEs (must exist)
 
 	String cTypeLon(wcs.ctype[0]);
 	String cTypeLat(wcs.ctype[1]);
-	cTypeLon.upcase();
-	cTypeLat.upcase();
+	ToUpperCaseInPlace(cTypeLon);
+	ToUpperCaseInPlace(cTypeLat);
 
 // See if we have xLON/xLAT pair
 
-	String cLon(cTypeLon.at(0,4));
-	String cLat(cTypeLat.at(0,4));
+	String cLon(cTypeLon.substr(0,4));
+	String cLat(cTypeLat.substr(0,4));
 	ostringstream oss2;
 	if (cLon=="GLON" && cLat=="GLAT") {
 
@@ -1311,7 +1312,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		return True;
 	    } else {
 		oss2 << "Equinox " << equinox << " is invalid for Ecliptic Coordinates - must be 2000.0";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;
 	    }
 	} else if (cLon=="SLON" && cLat=="SLAT") {      
@@ -1324,11 +1325,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    errMsg = String("Helioecliptic Coordinates are not supported");
 	    return False;
 	} else {
-	    String cLon2(cTypeLon.at(1,3));
-	    String cLat2(cTypeLat.at(1,3));
+	    String cLon2(cTypeLon.substr(1,3));
+	    String cLat2(cTypeLat.substr(1,3));
 	    if ( (cLon2=="LON" || cLat2=="LAT") || (cLon2=="LAT" || cLat2=="LON") ) {
 		oss2 << cLon << " and " << cLat << " are unsupported LON/LAT types";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;
 	    }
 	}
@@ -1343,7 +1344,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		return True;
 	    } else {
 		oss2 << "Direction system ICRS with equinox " << equinox << " is not supported";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;
 	    }
 	} else if (raDecSys==String("FK5")) {                
@@ -1352,7 +1353,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		return True;
 	    } else {
 		oss2 << "Direction system FK5 with equinox " << equinox << " is not supported";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;
 	    }
 	} else if (raDecSys==String("FK4")) {  
@@ -1364,7 +1365,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		return True;
 	    } else {
 		oss2 << "Direction system FK4 with equinox " << equinox << " is not supported";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;
 	    }
 	} else if (raDecSys==String("FK4-NO-E")) {
@@ -1376,7 +1377,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		return True;
 	    } else {
 		oss2 << "Direction system FK4-NO-E with equinox " << equinox << " is not supported";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;        
 	    }
 	} else if (raDecSys==String("GAPPT")) {
@@ -1386,7 +1387,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	} else {
 	    if (sysIsDefined) {
 		oss2 << "Direction system '" << raDecSys << "' is not supported";
-		errMsg = String(oss2);
+		errMsg = oss2.str();
 		return False;
 	    } else {
 		if (eqIsDefined) {                            // No RaDecSys but Equinox available
@@ -1472,7 +1473,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	}
 	String specSys(wcs.specsys);
-	specSys.upcase();
+	ToUpperCaseInPlace(specSys);
 
 // Extract system
 
@@ -1510,7 +1511,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    return True;
 	} else {
 	    oss << "Frequency system '" << specSys << "' is not supported";
-	    errMsg = String(oss);
+	    errMsg = oss.str();
 	    return False;
 	}
 //
@@ -1818,7 +1819,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    for (uInt j=0; j<n; j++) {
 		ostringstream oss;
 		oss << "cd" << j+1 << "_" << i+1;
-		String field(oss);
+		String field(oss.str());
 		if (header.isDefined(field)) {         
 		    header.get(field, cd(i,j));
 		} else {
@@ -1949,7 +1950,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    Record subRec;
 //
 	    String name(keys[i].keyword);
-	    name.downcase();
+	    ToLowerCaseInPlace(name);
 //
 	    int type = abs(keys[i].type);
 	    switch (type) {

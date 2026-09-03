@@ -507,7 +507,7 @@ void QualityCoordinate::makePixelRelative (Vector<Double>& pixel) const
 	} else {
 		ostringstream os;
 		os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
-		String s(os);
+		String s(os.str());
 		throw(AipsError(s));
 	}
 }
@@ -527,7 +527,7 @@ void QualityCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
 	if (index < 0 ||  index >= nValues_p) {
 		ostringstream os;
 		os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
-		String s(os);
+		String s(os.str());
 		throw(AipsError(s));
 	}
 }
@@ -565,7 +565,7 @@ Bool QualityCoordinate::toWorld(Double& world, const Double pixel) const
     else {
     	ostringstream os;
     	os << "Pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
-    	set_error(os);
+    	set_error(os.str());
     	return False;
     }
 }
@@ -586,7 +586,7 @@ Bool QualityCoordinate::toPixel(Double& pixel,  const Double world) const
         Quality::QualityTypes t0 = toWorld(world);
         String t = Quality::name(t0);
         os << "Quality value " << t << " is not contained in this QualityCoordinate";
-        set_error(os);
+        set_error(os.str());
         return False;
     }
     pixel = Double(index);

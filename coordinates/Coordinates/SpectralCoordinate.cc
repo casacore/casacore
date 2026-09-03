@@ -1938,12 +1938,12 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     crpix(whichAxis) = Crpix;
     cdelt(whichAxis) = Cdelt;
     if (cunit.nelements() > 0) {
-	if (Ctype.contains("VELO") || Ctype.contains("FELO")|| 
-	    Ctype.contains("VRAD")|| Ctype.contains("VOPT")) {
+	if (StringContains(Ctype, "VELO") || StringContains(Ctype, "FELO")||
+	    StringContains(Ctype, "VRAD")|| StringContains(Ctype, "VOPT")) {
 	    cunit(whichAxis) = "m/s";
-	} else if (Ctype.contains("FREQ")) {
+	} else if (StringContains(Ctype, "FREQ")) {
 	    cunit(whichAxis) = "Hz";
-	} else if (Ctype.contains("WAVE")|| Ctype.contains("AWAV")) {
+	} else if (StringContains(Ctype, "WAVE")|| StringContains(Ctype, "AWAV")) {
 	    cunit(whichAxis) = Cunit;
 	} else {
 	    AlwaysAssert(0, AipsError); // NOTREACHED
@@ -2238,7 +2238,7 @@ String SpectralCoordinate::format (String& units,
        oss.precision(prec);
        oss << worldValue;
      }
-     theString = String(oss);
+     theString = oss.str();
    }
 //
    return theString;
@@ -2297,7 +2297,7 @@ String SpectralCoordinate::formatRestFrequencies () const
       oss << " " << unit;
    }   
 //
-   return String(oss);
+   return oss.str();
 }
 
 
@@ -2316,13 +2316,13 @@ void SpectralCoordinate::makeWCS(::wcsprm& wcs, const String& ctype, Double refP
     wcs.cdelt[0] = inc;
     wcs.crval[0] = refVal;
     wcs.restfrq = restFreq;
-    strcpy (wcs.ctype[0], ctype.chars());
+    strcpy (wcs.ctype[0], ctype.c_str());
 
 // Unit currently ignored; Hz assumed
 
 /*
     String unit("Hz");
-    strcpy (wcs.cunit[0], unit.chars());
+    strcpy (wcs.cunit[0], unit.c_str());
 */
 
     

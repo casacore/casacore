@@ -146,7 +146,7 @@ LinearCoordinate::LinearCoordinate(const ::wcsprm& wcs, Bool oneRel)
       String name(wcs.cunit[i]);
       Unit u(name);
       Unit u2 = UnitMap::fromFITS(u);
-      strncpy (wcs_p.cunit[i], u2.getName().chars(), 9);
+      strncpy (wcs_p.cunit[i], u2.getName().c_str(), 9);
    }
 //
     setDefaultWorldMixRanges();
@@ -275,7 +275,7 @@ Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
        set_error("names vector has the wrong size");
     } else {
        for (uInt i=0; i<nWorldAxes(); i++) {
-          strcpy (wcs_p.ctype[i], names[i].chars());
+          strcpy (wcs_p.ctype[i], names[i].c_str());
        }
     }
 //
@@ -288,7 +288,7 @@ Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units)
     Bool ok = Coordinate::setWorldAxisUnits(units);
     if (ok) {
        for (uInt i=0; i<nWorldAxes(); i++) {
-          strcpy (wcs_p.cunit[i], units[i].chars());
+          strcpy (wcs_p.cunit[i], units[i].c_str());
        }
 
 // Presently wcs does not actually do anything with units
@@ -304,7 +304,7 @@ Bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
    Bool ok = units.nelements() == nWorldAxes();
    if (ok) {
       for (uInt i=0; i<nWorldAxes(); i++) {
-         strcpy (wcs_p.cunit[i], units[i].chars());
+         strcpy (wcs_p.cunit[i], units[i].c_str());
       }
    } else {
       set_error ("units vector has the wrong size");
@@ -453,22 +453,22 @@ Bool LinearCoordinate::near(const Coordinate& other,
 //
          {
            String x1 = names1(i);
-           x1.upcase();
+           ToUpperCaseInPlace(x1);
            String x2 = names2(i);
-           x2.upcase();
+           ToUpperCaseInPlace(x2);
 //
-           Int i1 = x1.index(RXwhite,0);
-           if (i1==-1) i1 = x1.length();
-           Int i2 = x2.index(RXwhite,0);
-           if (i2==-1) i2 = x2.length();
+           size_t i1 = x1.find_first_of(kExtendedWhiteSpaceCharacters);
+           if (i1==std::string::npos) i1 = x1.length();
+           size_t i2 = x2.find_first_of(kExtendedWhiteSpaceCharacters);
+           if (i2==std::string::npos) i2 = x2.length();
 //
-           String y1 = String(x1.before(i1));
-           String y2 = String(x2.before(i2));
+           String y1 = x1.substr(0, i1);
+           String y2 = x2.substr(0, i2);
 //
            if (y1 != y2) {
               oss << "The LinearCoordinates have differing axis names for axis "
                   << i;
-              set_error(String(oss));
+              set_error(oss.str());
               return False;
            }
         }
@@ -483,21 +483,21 @@ Bool LinearCoordinate::near(const Coordinate& other,
 
          {
            String x1 = units1(i);
-           x1.upcase();
+           ToUpperCaseInPlace(x1);
            String x2 = units2(i);
-           x2.upcase();
+           ToUpperCaseInPlace(x2);
 //
-           Int i1 = x1.index(RXwhite,0);
+           size_t i1 = x1.find_first_of(kExtendedWhiteSpaceCharacters);
            if (i1==-1) i1 = x1.length();
-           Int i2 = x2.index(RXwhite,0);
+           Int i2 = x2.find_first_of(kExtendedWhiteSpaceCharacters);
            if (i2==-1) i2 = x2.length();
 //
-           String y1 = String(x1.before(i1));
-           String y2 = String(x2.before(i2));
+           String y1 = String(x1.substr(0, i1));
+           String y2 = String(x2.substr(0, i2));
            if (y1 != y2) {
              oss << "The LinearCoordinates have differing axis units for axis "
                  << i;
-             set_error(String(oss));
+             set_error(oss.str());
              return False;
            }
         }
@@ -508,19 +508,19 @@ Bool LinearCoordinate::near(const Coordinate& other,
          if (!casacore::near(crval1[i],crval2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i << ", " << crval1[i] << " vs. " << crval2[i];
-            set_error(String(oss));
+            set_error(oss.str());
             return False;
          }
          if (!casacore::near(cdelt1[i],cdelt2[i],tol)) {
             oss << "The LinearCoordinates have differing increments for axis "
                 << i << ", " << cdelt1[i] << " vs. " << cdelt2[i];
-            set_error(String(oss));
+            set_error(oss.str());
             return False;
          }
          if (!casacore::near(crpix1[i],crpix2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i << ", " << crpix1[i] << " vs. " << crpix2[i];
-            set_error(String(oss));
+            set_error(oss.str());
             return False;
          }
       }
@@ -738,8 +738,8 @@ void LinearCoordinate::makeWCS (::wcsprm& wcs,
        wcs.crpix[i] = refPix[i];
        wcs.crval[i] = refVal[i];
        wcs.cdelt[i] = incr[i];
-       strcpy (wcs.ctype[i], names[i].chars());
-       strcpy (wcs.cunit[i], units[i].chars());
+       strcpy (wcs.ctype[i], names[i].c_str());
+       strcpy (wcs.cunit[i], units[i].c_str());
     }
     xFormToPC (wcs, pc);
 

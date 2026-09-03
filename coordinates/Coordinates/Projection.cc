@@ -360,39 +360,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 Projection::Type Projection::type (String& ctypeLong,
                                    String& ctypeLat) const
 {
-// Strip trailing spaces
+  // Strip trailing spaces
+  RTrimInPlace(ctypeLong, kExtendedWhiteSpaceCharacters);
+  RTrimInPlace(ctypeLat, kExtendedWhiteSpaceCharacters);
 
-   Int i1 = ctypeLong.index(RXwhite,0);
-   if (i1>=0) ctypeLong = String(ctypeLong.before(i1));
-//
-   i1 = ctypeLat.index(RXwhite,0);
-   if (i1>=0) ctypeLat = String(ctypeLat.before(i1));
+  String proj1(ctypeLong.size() > 4 ? ctypeLong.substr(4) : "");
+  String proj2(ctypeLat.size() > 4 ? ctypeLat.substr(4) : "");
 
-   Int l1 = ctypeLong.length();
-   Int l2 = ctypeLat.length();
-   Int n = 4;
-   String proj1(ctypeLong.at(n, l1-4));
-   String proj2(ctypeLat.at(n, l2-4));
-        
-// Get rid of leading -'s
-              
-   proj1.gsub(Regex("^-*"), String(""));
-   proj2.gsub(Regex("^-*"), String(""));
-                
-// Get rid of spaces
-            
-   proj1.gsub(Regex(" *"), String(""));
-   proj2.gsub(String(" "), String(""));
-//
-   if (proj1 != proj2) {
-      throw (AipsError("Projection codes must be identical"));
-   }
-//
-   if (proj1==String("")) {
-      throw (AipsError("No projection code given in direction axes"));
-   }
-//
-   return type(proj1);
+    // Get rid of leading -'s
+  LTrimInPlace(proj1, '-');
+  LTrimInPlace(proj2, '-');
+
+  // Get rid of spaces on both sides
+  TrimInPlace(proj1, ' ');
+  TrimInPlace(proj2, ' ');
+
+  if (proj1 != proj2) {
+    throw (AipsError("Projection codes must be identical"));
+  }
+  if (proj1.empty()) {
+    throw (AipsError("No projection code given in direction axes"));
+  }
+  return type(proj1);
 }
 
 } //# NAMESPACE CASACORE - END

@@ -506,7 +506,7 @@ LinearCoordinate makeCoordinate (Vector<String>& names,
    for (uInt i=0; i<n; i++) {
       ostringstream oss;
       oss << i;
-      names(i) = "axis" + String(oss);
+      names(i) = "axis" + oss.str();
       crpix(i) = 10*(i+1);
       cdelt(i) = i+1;
       crval(i) = 20*(i+1);

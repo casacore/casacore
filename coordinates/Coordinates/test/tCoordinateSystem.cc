@@ -2342,7 +2342,7 @@ LinearCoordinate makeLinearCoordinate (uInt nAxes)
    for (uInt i=0; i<nAxes; i++) {
       ostringstream oss;
       oss << i;
-      names(i) = String("axis") + String(oss);
+      names(i) = std::string("axis") + oss.str();
       crpix(i) = 10.0 * (i + 1);
       cdelt(i) = (i+1);
       crval(i) = crpix(i) * 3.13;

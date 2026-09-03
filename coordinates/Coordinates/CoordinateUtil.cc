@@ -556,7 +556,7 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
       for (uInt i=0; i<n; i++) {
          ostringstream oss;
          oss << (i+1);
-         String t(oss);
+         String t(oss.str());
          names(i) = "linear" + t;
       }
       CoordinateUtil::addLinearAxes(csys, names, shape);
@@ -616,7 +616,7 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
             shape2(i) = shape(i+nDone);
             ostringstream oss;
             oss << (i+1);
-            String t(oss);
+            String t(oss.str());
             names(i) = "linear" + t;
          }
          CoordinateUtil::addLinearAxes(csys, names, shape2);
@@ -1009,9 +1009,9 @@ String CoordinateUtil::formatCoordinate(
 ) {
     ThrowIf(
         pixel.size() != csys.nPixelAxes(),
-        "Number of elements in pixel (" + String::toString(pixel.size())
+        "Number of elements in pixel (" + std::to_string(pixel.size())
         + ") must be equal to number of pixel axes in coordinate system ("
-        + String::toString(csys.nPixelAxes()) + ")"
+        + std::to_string(csys.nPixelAxes()) + ")"
     );
     Vector<Double> pixel2(csys.nPixelAxes());
     for (uInt i=0; i<pixel2.nelements(); i++) {
@@ -1641,7 +1641,7 @@ Bool CoordinateUtil::setDirectionConversion (String& errorMsg,
 // Convert code from String
 
       String code = directionSystem;
-      code.upcase();
+      ToUpperCaseInPlace(code);
       MDirection::Types type;
       if (!MDirection::getType(type, code)) {
          errorMsg = String("Invalid direction reference system");

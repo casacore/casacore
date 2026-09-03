@@ -35,22 +35,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-void TrimInPlace(std::string& str, std::string_view characters) {
-  std::string::iterator iter = str.begin();
-  while (iter != str.end()  &&  std::find(characters.begin(), characters.end(), *iter) != characters.end()) {
-    ++iter;
-  }
-  str.erase (str.begin(), iter);
-  if (! str.empty()) {
-    iter = str.end() - 1;
-    while (iter != str.begin()  &&  std::find(characters.begin(), characters.end(), *iter) != characters.end()) {
-        --iter;
-    }
-    ++iter;
-    str.erase (iter, str.end());
-  }
-}
-
 std::string FormatString (const char* picture, ...)
 {
   constexpr int BufferSize = 16384;
