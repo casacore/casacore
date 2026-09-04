@@ -27,18 +27,14 @@
 #define CASA_FALLIBLE_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# The following function is to be found in Fallible2.cc not Fallible.cc
-//# because it's a non-templated function and template instantiators normally
-//# do not like them in the same .cc file with templated functions.
-//
 // <summary> throw exception on access of an invalid object </summary>
 //
 // This function gets called when an invalid object is accessed. It
-// just throws an exception. Since we have inline functions, let's keep
-// the throw out of them to keep them from moving out of line.
+// just throws an exception.
 // <thrown>
 //  <li> AipsError
 // </thrown>
