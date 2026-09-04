@@ -124,13 +124,13 @@ ImageRegion RegionHandler::makeMask (const LatticeBase&,
   return ImageRegion();
 }
 
-String RegionHandler::makeUniqueRegionName (const String& rootName,
+String RegionHandler::makeUniqueRegionName (const std::string& rootName,
 					    uInt startNumber) const
 {
   while (True) {
     std::ostringstream oss;
     oss << startNumber;
-    String name = rootName + String(oss);
+    String name = rootName + oss.str();
     if (! hasRegion (name, RegionHandler::Any)) {
       return name;
     }

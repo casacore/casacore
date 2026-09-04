@@ -226,7 +226,7 @@ void  LatticeCleanProgress::basicSetUp(Bool doPlot)
     oos << "Scale " << scale+1;
     itsPgplotter->text(0.85*xMax,
 		       (logMaxRes - 0.1*(1+scale)*deltaY),
-		       oos);
+		       oos.str());
   }
 
   if (doPlot) {
@@ -263,7 +263,7 @@ void  LatticeCleanProgress::basicSetUp(Bool doPlot)
     oos << "Total Flux ";
     itsPgplotter->text(0.85*xMax, 
 		       (0.5*(currentFluxScale - currentMinFluxScale)), 
-		       oos);
+		       oos.str());
   }
 
    if (doPlot) {

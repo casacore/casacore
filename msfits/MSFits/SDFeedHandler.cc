@@ -130,7 +130,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 	// also, ignore the MS row columns if POLARIZATION_TYPE doesn't match polType
 	if (doMSCheck && polarizationTypeField_p.isAttached()) {
 	    // turn this into an array
-	    istringstream istr(String((*polarizationTypeField_p).chars(), (*polarizationTypeField_p).length()));
+	    istringstream istr(String((*polarizationTypeField_p).c_str(), (*polarizationTypeField_p).length()));
 	    Array<String> polTypeArr;
 	    // decode it - [#,#,#,#...] - individual brackets separated by commas
 	    istr >> polTypeArr;

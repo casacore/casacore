@@ -218,32 +218,32 @@ Vector<Bool> Fit2D::convertMask (const String mask,
 {
    Vector<Bool> parameterMask;
    String cmask = mask;
-   cmask.downcase();
+   ToLowerCaseInPlace(cmask);
    if (type==Fit2D::LEVEL) {
 	   parameterMask.resize(1);
 	   parameterMask = True;
-	   if (cmask.contains("l")) {
+	   if (cmask.find('l') != std::string::npos) {
 		   parameterMask(0) = False;
 	   }
    } else if (type==Fit2D::DISK || type==Fit2D::GAUSSIAN) {
       parameterMask.resize(6);
       parameterMask = True;
-      if (cmask.contains("f")) {
+      if (cmask.find('f') != std::string::npos) {
     	  parameterMask(0) = False;
       }
-      if (cmask.contains("x")) {
+      if (cmask.find('x') != std::string::npos) {
     	  parameterMask(1) = False;
       }
-      if (cmask.contains("y")) {
+      if (cmask.find('y') != std::string::npos) {
     	  parameterMask(2) = False;
       }
-      if (cmask.contains("a")) {
+      if (cmask.find('a') != std::string::npos) {
     	  parameterMask(3) = False;
       }
-      if (cmask.contains("b")) {
+      if (cmask.find('b') != std::string::npos) {
     	  parameterMask(4) = False;
       }
-      if (cmask.contains("p")) {
+      if (cmask.find('p') != std::string::npos) {
     	  parameterMask(5) = False;
       }
    }
@@ -314,7 +314,7 @@ String Fit2D::type(Fit2D::Types type)
 Fit2D::Types Fit2D::type(const String& type)
 {
    String t0 = type;
-   String tmp = upcase(t0.at(0,1));
+   String tmp = upcase(t0.substr(0,1));
    Fit2D::Types tmp2;
    if (tmp==String("L")) {
       tmp2 = Fit2D::LEVEL;

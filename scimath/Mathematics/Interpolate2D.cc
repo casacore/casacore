@@ -352,13 +352,13 @@ void Interpolate2D::bcucof (Double c[4][4], const Double y[4],
 
 Interpolate2D::Method Interpolate2D::stringToMethod (const String &method) {
   String typeU = method;
-  typeU.upcase();
-  String tmp = String(typeU.at(0, 1));
+  ToUpperCaseInPlace(typeU);
+  String tmp = String(typeU.substr(0, 1));
   Interpolate2D::Method method2;
   if (tmp==String("N")) {
     method2 = Interpolate2D::NEAREST;
   } else if (tmp==String("L")) {
-    String tmp2 = String(typeU.at(1, 1));
+    String tmp2 = String(typeU.substr(1, 1));
     if (tmp2==String("A")) {
       method2 = Interpolate2D::LANCZOS;
     } else {

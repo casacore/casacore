@@ -96,9 +96,9 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
 	break;
       }
     }
-    if (i > 0  &&  base.after(i) == "image") {
-      String descName = file.path().dirName() + '/' +
-	                base.before(i) + ".descr";
+    if (i > 0  &&  base.substr(i + 1) == "image") {
+      String descName = std::string(file.path().dirName()) + '/' +
+	                base.substr(0, i) + ".descr";
       if (File(descName).isRegular()) {
 	return GIPSY;
       }
@@ -108,7 +108,7 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
     Int nread = fio.read (2880, buf, False);
     if (nread == 2880) {
       String str(buf, 80);
-      if (str.matches (Regex("^SIMPLE *= *T.*"))) {
+      if (RegexMatches(str, Regex("^SIMPLE *= *T.*"))) {
 	return FITS;
       }
     }
@@ -183,7 +183,7 @@ LatticeBase* ImageOpener::openImageConcat (const String& fileName)
   // opposite of ImageConcat::save.
   JsonKVMap jmap = JsonParser::parseFile (fileName + "/imageconcat.json");
   String dtype = jmap.get("DataType").getString();
-  dtype.downcase();
+  ToLowerCaseInPlace(dtype);
   LatticeBase* img = 0;
   if (dtype == "float") {
     img = new ImageConcat<Float> (jmap, fileName);

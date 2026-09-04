@@ -91,8 +91,8 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
     while (True) {
         ThrowIf(
             maxIdx < minIdx,
-            "Logic Error: maxIdx (" + String::toString(maxIdx) + ") < minIdx ("
-            + String::toString(minIdx) + ")"
+            "Logic Error: maxIdx (" + ValueToString(maxIdx) + ") < minIdx ("
+            + ValueToString(minIdx) + ")"
         );
         // integer division
         testIdx = (minIdx + maxIdx)/2;

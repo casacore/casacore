@@ -303,7 +303,7 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
 	}
 	ostringstream oss;
 	oss << "__*" << i;
-	func.defineRecord(String(oss), fnc);
+	func.defineRecord(oss.str(), fnc);
       }
       out.defineRecord("funcs", func);
     }

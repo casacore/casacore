@@ -107,7 +107,7 @@ int imageExprGramParseCommand (const String& command)
     ImageExprGramState next (ImageExprGram_create_buffer (ImageExprGramin, YY_BUF_SIZE));
     ImageExprGram_switch_to_buffer (next.state());
     yy_start = 1;
-    strpImageExprGram = command.chars();     // get pointer to command string
+    strpImageExprGram = command.c_str();     // get pointer to command string
     posImageExprGram  = 0;                   // initialize string position
     int sts = ImageExprGramparse();          // parse command string
     // The current state has to be deleted before switching back to previous.
@@ -168,12 +168,12 @@ String imageExprGramRemoveQuotes (const String& in)
     int pos = 0;
     while (pos < leng) {
 	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
+	size_t inx = str.find (str[pos], pos+1);
+	if (inx == std::string::npos) {
 	    throw (AipsError ("ImageExprParse - Ill-formed quoted string: " +
 			      str));
 	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
+	out += str.substr (pos+1, inx-pos-1);             // add substring
 	pos = inx+1;
     }
     return out;

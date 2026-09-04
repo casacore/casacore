@@ -268,10 +268,14 @@ BOOST_AUTO_TEST_CASE(StringToInt) {
   BOOST_CHECK_THROW(StringToInt("0?", true), std::runtime_error);
   BOOST_CHECK_THROW(StringToInt("1e12", true), std::runtime_error);
 
-
   BOOST_CHECK_NO_THROW(StringToInt("", false));
   BOOST_CHECK_NO_THROW(StringToInt("0?", false));
   BOOST_CHECK_NO_THROW(StringToInt("1e12", false));
+
+  BOOST_CHECK_EQUAL(StringToInt("", false), 0);
+  BOOST_CHECK_EQUAL(StringToInt("0?", false), 0);
+  // On error, StringToInt() still returns the number up to where the error occurs:
+  BOOST_CHECK_EQUAL(StringToInt("1e12", false), 1);
 }
 
 BOOST_AUTO_TEST_CASE(StringToFloat) {

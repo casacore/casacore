@@ -102,9 +102,10 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   String outfile;
   // OK, get the output name
   if (fitsfile == "") {
-    if (msfile.contains(Regex("\\.ms$"))) {
+    const std::string_view kExtension = ".ms";
+    if (msfile.ends_with(kExtension)) {
       String copy = msfile; // need a copy because .before is non-const
-      outfile = copy.before(Regex("\\.ms"),0) + ".fits";
+      outfile = copy.substr(0, msfile.size() - kExtension.size()) + ".fits";
     } else {
       outfile = msfile + ".fits";
     }
@@ -490,7 +491,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   RecordDesc desc;
   String columnName;
   String col=column;
-  col.upcase();
+  ToUpperCaseInPlace(col);
   if (col=="OBSERVED" || col==MS::columnName(MS::DATA)) {
     columnName = MS::columnName(MS::DATA);
     os << "Writing DATA column" << LogIO::POST;
@@ -565,7 +566,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     if (indata.keywordSet().isDefined("QuantumUnit") &&
 	indata.keywordSet().dataType("QuantumUnit") == TpString) {
       indata.keywordSet().get("QuantumUnit", bunit);
-      bunit.upcase();
+      ToUpperCaseInPlace(bunit);
     }
   }
   ek.define("bunit", bunit);
@@ -676,10 +677,10 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // EPOCH
   Bool foundEpoch = False;
   String dirtype = msfc.phaseDirMeas(0).getRefString();
-  if (dirtype.contains("2000")) {
+  if (StringContains(dirtype, "2000")) {
     ek.define("epoch", 2000.0);
     foundEpoch = True;
-  } else if (dirtype.contains("1950")) {
+  } else if (StringContains(dirtype, "1950")) {
     ek.define("epoch", 1950.0);
     foundEpoch = True;
   }
@@ -1240,8 +1241,8 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     Bool useAntId = True;
     for (uInt a = 0; a < nant; a++) {
       const String& antName = antid(a) ;
-      if (antName.matches(RXint)) {
-	id[a] = atoi(antName.chars());
+      if (RegexMatches(antName, RXint)) {
+	id[a] = atoi(antName.c_str());
       } else {
 	useAntId = False;
 	break;
@@ -1281,11 +1282,11 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
       *nosta = id[antnum];
       String mount = upcase(inantmount(antnum));
-      if (mount.contains("ALT-AZ")) {
+      if (StringContains(mount, "ALT-AZ")) {
 	*mntsta = 0;
-      } else if (mount.contains("EQUATORIAL")) {
+      } else if (StringContains(mount, "EQUATORIAL")) {
 	*mntsta = 1;
-      } else if (mount.contains("ORBIT")) {
+      } else if (StringContains(mount, "ORBIT")) {
 	*mntsta = 2;
       } else {
 	*mntsta = -1; // ???
@@ -1391,12 +1392,12 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   if (spectralTable.tableDesc().isColumn ("NFRA_VELOCDEFINITION")) {
     ScalarColumn<String> velTypeCol (spectralTable, "NFRA_VELOCDEFINITION");
     velType = velTypeCol(0);
-    velType.upcase();
+    ToUpperCaseInPlace(velType);
     header.define("VELTYP", velType);
     if (spectralTable.tableDesc().isColumn ("NFRA_CONVERSIONTYPE")) {
       ScalarColumn<String> velDefCol (spectralTable, "NFRA_CONVERSIONTYPE");
       velDef = velDefCol(0);
-      velDef.upcase();
+      ToUpperCaseInPlace(velDef);
       header.define("VELDEF", velDef);
     }
   } else {

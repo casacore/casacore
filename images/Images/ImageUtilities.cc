@@ -153,14 +153,14 @@ String ImageUtilities::shortAxisName (const String& axisName)
 //
 {
    String temp = axisName;
-   temp.upcase();
-   if (temp.contains("RIGHT ASCENSION")) {
+   ToUpperCaseInPlace(temp);
+   if (StringContains(temp, "RIGHT ASCENSION")) {
      temp = "RA";
-   } else if (temp.contains("DECLINATION")) {
+   } else if (StringContains(temp, "DECLINATION")) {
      temp = "Dec";
-   } else if (temp.contains("VELOCITY")) {
+   } else if (StringContains(temp, "VELOCITY")) {
      temp = "Vel";
-   } else if (temp.contains("FREQUENCY")) {
+   } else if (StringContains(temp, "FREQUENCY")) {
      temp = "Freq";
    } else {
      temp = axisName;

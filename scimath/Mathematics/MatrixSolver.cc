@@ -128,7 +128,7 @@ Bool MatrixSolver::accurateSolution() {
   
   ostringstream o;o<<"MatrixSolver: Norms of initial and residual vectors "<<
 		 BNorm<<", "<<RNorm;
-  message.message(o);
+  message.message(o.str());
   logSink().post(message);
   if (RNorm<(SolTolerance*BNorm)) {
     setSolved(True);

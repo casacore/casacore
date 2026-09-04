@@ -115,7 +115,7 @@ public:
 
 private:
   // Check the rownr and add a row if needed.
-  void checkRows (const String& attrName, uInt rownr);
+  void checkRows (const std::string& attrName, uInt rownr);
 
   //# Data members.
   Record itsRecord;     //# Record containing all attributes (subrecord per row)
