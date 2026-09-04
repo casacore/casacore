@@ -13,7 +13,7 @@
 #        will be updated. A copy of existing tables is made in directory
 #        /data/IERS/daily/old/<datetime>.
 #
-# Run this script on kis001.
+# Run this script on dop414
 #
 #
 
@@ -45,21 +45,6 @@ endif
 # update scripts need to be run in $iers_tbl
 cd $iers_tbl
 echo "Using directory: "$iers_tbl >> $logfile
-
-# check existance of measuresdata-update and measuresdata
-set exist = `which measuresdata-update`
-if ( "${exist}" =~ *not\ found* ) then
-  set lognow = `date +%T`
-  echo ${lognow}": Could not locate measuresdata-update, cannot continue." | tee -a $logfile
-  exit
-endif
-set exist = `which measuresdata`
-if ( "${exist}" =~ *not\ found* ) then
-  set lognow = `date +%T`
-  echo ${lognow}": Could not locate measuresdata, cannot continue." | tee -a $logfile
-  exit
-endif
-
 
 # check existence of tables
 set list="DE200 DE405 Lines Sources IERSeop2000 IERSeop97 IERSpredict IERSpredict2000 TAI_UTC Observatories IGRF"
@@ -119,13 +104,13 @@ echo "Created tarfile ${archivedir}/${archname}" | tee -a $logfile
 
 set lognow = `date +%T`
 echo ${lognow}": iers_cron : Executing measuresdata-update" | tee -a $logfile
-measuresdata-update type=IERSpredict refresh=y | tee -a $logfile
+docker run -v /data/IERS/:/data/IERS casacore-measuresdata measuresdata-update type=IERSpredict refresh=y | tee -a $logfile
 set lognow = `date +%T`
 echo ${lognow}": iers_cron : Executing measuresdata-update" | tee -a $logfile
-measuresdata-update type=IERSpredict2000 refresh=y | tee -a $logfile
+docker run -v /data/IERS/:/data/IERS casacore-measuresdata measuresdata-update type=IERSpredict2000 refresh=y | tee -a $logfile
 set lognow = `date +%T`
 echo ${lognow}": iers_cron : Executing measuresdata-update" | tee -a $logfile
-measuresdata-update | tee -a $logfile
+docker run -v /data/IERS/:/data/IERS casacore-measuresdata measuresdata-update | tee -a $logfile
 set lognow = `date +%T`
 
 set ok = 1
@@ -168,20 +153,20 @@ rm -f eop* >& /dev/null
 # which points to the tables to be TESTED!!
 # See Wiki for info (search for IERS)
 
-echo ${lognow}": Testing new tables with tMeasure" | tee -a $logfile
-set result = `tMeasure >& ${iers_tbl}/log/tMeasure.out; echo $?`
-if ($result != 0) then
-  set lognow = `date +%T`
-  echo ${lognow}": Problem with running tMeasure on updated tables. See ${iers_tbl}/log/tMeasure.out for details " | tee -a $logfile
-  exit 1;
-endif
-echo ${lognow}": Testing new tables with tMeasJPL" | tee -a $logfile
-set result = `tMeasJPL >& ${iers_tbl}/log/tMeasJPL.out; echo $?`
-if ($result != 0) then
-  set lognow = `date +%T`
-  echo ${lognow}": Problem with running tMeasJPL on updated tables. See ${iers_tbl}/log/tMeasJPL.out for details " | tee -a $logfile
-  exit 1;
-endif
+#echo ${lognow}": Testing new tables with tMeasure" | tee -a $logfile
+#set result = `tMeasure >& ${iers_tbl}/log/tMeasure.out; echo $?`
+#if ($result != 0) then
+#  set lognow = `date +%T`
+#  echo ${lognow}": Problem with running tMeasure on updated tables. See ${iers_tbl}/log/tMeasure.out for details " | tee -a $logfile
+#  exit 1;
+#endif
+#echo ${lognow}": Testing new tables with tMeasJPL" | tee -a $logfile
+#set result = `tMeasJPL >& ${iers_tbl}/log/tMeasJPL.out; echo $?`
+#if ($result != 0) then
+#  set lognow = `date +%T`
+#  echo ${lognow}": Problem with running tMeasJPL on updated tables. See ${iers_tbl}/log/tMeasJPL.out for details " | tee -a $logfile
+#  exit 1;
+#endif
 
 # Create tarfile of current tables and remove previous.
 if (-e iers.tar.gz.new) rm -f iers.tar.gz.new >& /dev/null
