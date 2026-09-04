@@ -84,7 +84,7 @@ int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command,
       Int ret;
       MSUvDistGramrestart (MSUvDistGramin);
       yy_start = 1;
-      strpMSUvDistGram = command.chars();     // get pointer to command string
+      strpMSUvDistGram = command.c_str();     // get pointer to command string
       posMSUvDistGram  = 0;                   // initialize string position
       MSUvDistParse parser(ms);               // setup measurement set
       MSUvDistParse::thisMSUParser = &parser; // The global pointer to the parser
@@ -109,7 +109,7 @@ int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command)
       Int ret;
       MSUvDistGramrestart (MSUvDistGramin);
       yy_start = 1;
-      strpMSUvDistGram = command.chars();     // get pointer to command string
+      strpMSUvDistGram = command.c_str();     // get pointer to command string
       posMSUvDistGram  = 0;                   // initialize string position
       MSUvDistParse parser(ms);               // setup measurement set
       MSUvDistParse::thisMSUParser = &parser; // The global pointer to the parser

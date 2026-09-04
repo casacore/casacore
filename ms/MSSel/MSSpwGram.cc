@@ -84,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Int ret;
 	MSSpwGramrestart (MSSpwGramin);
 	yy_start = 1;
-	strpMSSpwGram = command.chars();     // get pointer to command string
+	strpMSSpwGram = command.c_str();     // get pointer to command string
 	posMSSpwGram  = 0;                   // initialize string position
 	MSSpwParse parser(ms);               // setup measurement set
 	MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
@@ -110,7 +110,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Int ret;
 	MSSpwGramrestart (MSSpwGramin);
 	yy_start = 1;
-	strpMSSpwGram = command.chars();     // get pointer to command string
+	strpMSSpwGram = command.c_str();     // get pointer to command string
 	posMSSpwGram  = 0;                   // initialize string position
 	MSSpwParse::thisMSSParser = parser; // The global pointer to the parser
 	parser->reset();
@@ -153,7 +153,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     	Int ret;
     	MSSpwGramrestart (MSSpwGramin);
     	yy_start = 1;
-    	strpMSSpwGram = command.chars();     // get pointer to command string
+    	strpMSSpwGram = command.c_str();     // get pointer to command string
     	posMSSpwGram  = 0;                   // initialize string position
     	MSSpwParse parser(ms);               // setup measurement set
     	MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser

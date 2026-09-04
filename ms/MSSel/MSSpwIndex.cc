@@ -66,7 +66,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=(msSpwSubTable_p.name().getColumn()(i).matches(reg,pos));
+	Int ret=RegexMatches(msSpwSubTable_p.name().getColumn()(i),reg,pos);
 	maskArray(i) = ( (ret>0) );//&&	 !msSpwSubTable_p.flagRow().getColumn()(i));
       }
     
@@ -376,7 +376,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 					 const String& unit)
   {
     Vector<Float> freqs(2);
-    String units(unit);   units.downcase();
+    String units(unit);
+    ToLowerCaseInPlace(units);
     Float factor=1.0;
  
     if (units[0] == 'k') factor *= 1000;

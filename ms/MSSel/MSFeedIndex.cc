@@ -192,7 +192,7 @@ Vector<Int> MSFeedIndex::matchFeedId(const Vector<Int>& sourceId)
         if (MSFeedParse::thisMSFErrorHandler) {
           MSFeedParse::thisMSFErrorHandler->reportError ("", mesg.str());
         } else {
-          throw (MSSelectionFeedParseError(mesg));
+          throw (MSSelectionFeedParseError(mesg.str()));
         }
       }
     return IDs;
