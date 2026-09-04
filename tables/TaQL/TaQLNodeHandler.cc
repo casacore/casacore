@@ -1028,7 +1028,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         tables.push_back (tab);
       } else if (name.empty()) {
         throw TableInvExpr("No matching tables found for $" +
-                           String::toString(res.getInt()));
+                           std::to_string(res.getInt()));
       } else {
         Vector<String> nms = Directory::shellExpand(Vector<String>(1, name));
         if (nms.empty()) {
@@ -1076,7 +1076,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       TaQLNodeResult result = visitNode (nodes[0]);
       const TaQLNodeHRValue& res = getHR(result);
       parts[0] = res.getExpr().getString(0);
-      parts[0].downcase();
+      ToLowerCaseInPlace(parts[0]);
       if (parts[0] == "table"  &&  nodes.size() > 1) {
         TableParseQuery* curSel = pushStack (TableParseQuery::PSHOW);
         TaQLNodeHRValue res;

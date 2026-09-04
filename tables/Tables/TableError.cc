@@ -209,7 +209,7 @@ TableParseError::~TableParseError () noexcept
 
 TableGramError::TableGramError (int pos, const String& token, Category c)
 : TableError ("parse error at or near position " +
-              String::toString(pos) + " '" + token + "'", c),
+              std::to_string(pos) + " '" + std::string(token) + "'", c),
   itsPos   (pos),
   itsToken (token)
 {}

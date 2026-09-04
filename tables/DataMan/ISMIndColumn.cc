@@ -155,7 +155,7 @@ StIndArray* ISMIndColumn::getShape (rownr_t rownr)
     StIndArray* ptr = getArrayPtr (rownr);
     if (ptr == 0) {
       throw DataManInvOper ("ISM: no array in row " +
-                            String::toString(rownr) +
+                            String(std::to_string(rownr)) +
                             " in column " + columnName() +
                             " of " + stmanPtr_p->fileName());
     }

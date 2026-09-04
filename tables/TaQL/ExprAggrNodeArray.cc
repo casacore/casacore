@@ -90,9 +90,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (operands()[0]->valueType() == VTScalar) {
       throw TableInvExpr ("Aggregate function " +
-                          String::toString(funcType()) +
+                          std::to_string(funcType()) +
                           " is unknown for scalar data type " +
-                          String::toString(operands()[0]->dataType()));
+                          std::to_string(operands()[0]->dataType()));
     }
     // The operand is an array.
     switch (operands()[0]->dataType()) {
@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return std::make_shared<TableExprGroupArrayNFalses>(this);
       default:
         throw TableInvExpr ("Aggregate function " +
-                            String::toString(funcType()) +
+                            std::to_string(funcType()) +
                             " cannot be used with a bool argument");
       }
     case NTInt:
@@ -154,7 +154,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return std::make_shared<TableExprGroupRmssArrayDouble>(this);
       default:
         throw TableInvExpr ("Aggregate function " +
-                            String::toString(funcType()) +
+                            std::to_string(funcType()) +
                             " cannot be used with an integer/double argument");
       }
     case NTComplex:
@@ -177,14 +177,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return std::make_shared<TableExprGroupStdDevsArrayDComplex>(this, 1);
       default:
         throw TableInvExpr ("Aggregate function " +
-                            String::toString(funcType()) +
+                            std::to_string(funcType()) +
                             " cannot be used with a dcomplex argument");
       }
     default:
       break;
     }
     throw TableInvExpr ("Array aggregate function " +
-                        String::toString(funcType()) +
+                        std::to_string(funcType()) +
                         " is unknown");
   }
 

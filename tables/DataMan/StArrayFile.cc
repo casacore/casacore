@@ -300,7 +300,7 @@ void StManArrayFile::put (Int64 fileOff, Int64 arrayOff, uInt64 nr,
             AlwaysAssert (leng_p < Int64(65536)*65536, DataManError);
 	    buf[i] = leng_p;
 	    leng_p += put (uInt(data->length()));   // write string length
-	    leng_p += iofil_p->write (data->length(), data->chars());
+	    leng_p += iofil_p->write (data->length(), data->c_str());
 	    data++;
 	}
 	//# Write the offsets.

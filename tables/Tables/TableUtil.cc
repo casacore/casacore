@@ -237,7 +237,7 @@ namespace casacore {
       AipsIO ios (Table::fileName(getFullName(tableName)));
       uInt version = ios.getstart ("Table");
       if (version > 3) {
-        throw TableError ("Table version " + String::toString(version) +
+        throw TableError ("Table version " + std::to_string(version) +
                           " not supported by TableUtil in this version of Casacore");
       }
       if (version > 2) {

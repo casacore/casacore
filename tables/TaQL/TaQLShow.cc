@@ -1115,11 +1115,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return getHelp (infoHelp);
     }
     String cmd(parts[0]);
-    cmd.downcase();
+    ToLowerCaseInPlace(cmd);
     String type;
     if (parts.size() > 1) type = parts[1];
     String origType(type);
-    type.downcase();
+    ToLowerCaseInPlace(type);
     if (cmd == "table") {
       return showTable (parts);
     } else if (cmd == "command"  ||  cmd == "commands") {

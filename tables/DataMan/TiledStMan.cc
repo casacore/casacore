@@ -405,7 +405,7 @@ TSMCube* TiledStMan::getTSMCube (uInt hypercube)
 {
     if (hypercube >= nhypercubes()  ||  cubeSet_p[hypercube] == 0) {
       throw (AipsError ("TiledStMan::getTSMCube - hypercube nr "
-			+ String::toString(hypercube) + " does not exist in " +
+			+ String(std::to_string(hypercube)) + " does not exist in " +
                         hypercolumnName_p));
     }
     return cubeSet_p[hypercube];
@@ -1145,8 +1145,8 @@ uInt TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
 #else
 	throw (DataManInternalError
 	          ("TiledStMan::headerFileGet: mismatch in #row; expected " +
-		   String::toString(nrrow_p) + ", found " +
-		   String::toString(nrrow)));
+		   std::to_string(nrrow_p) + ", found " +
+		   std::to_string(nrrow)));
 #endif
     }
     for (uInt i=0; i<ncolumn(); i++) {

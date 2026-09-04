@@ -116,7 +116,7 @@ int main (int argc, char* argv[])
         seltab.rename (tmpName, Table::New);
       }
       clog << "Starting casabrowser " << seltab.tableName() << " ..." << endl;
-      if (! system (("casabrowser " + seltab.tableName()).chars())) {
+      if (! system (("casabrowser " + seltab.tableName()).c_str())) {
 	clog << "Could not start casabrowser; " << strerror(errno) << endl;
       }
       if (!tmpName.empty()) {

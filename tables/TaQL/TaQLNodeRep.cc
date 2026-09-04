@@ -42,7 +42,7 @@ String TaQLNodeRep::checkDataType (const String& dtype)
 {
   String dtstr(dtype);
   if (! dtstr.empty()) {
-    dtstr.upcase();
+    ToUpperCaseInPlace(dtstr);
     if (dtstr == "B"  ||  dtstr == "BOOL"  ||  dtstr == "BOOLEAN") {
       dtstr = "B";
     } else if (dtstr == "U1"  ||  dtstr == "UC"
@@ -86,7 +86,7 @@ String TaQLNodeRep::addEscape (const String& str) const
   static Regex re("[A-Za-z0-9_./+\\-~$@:]");
   String out;
   for (size_t i=0; i<str.size(); ++i) {
-    if (! String(str[i]).matches (re)) {
+    if (! RegexMatches(String(str[i]), re)) {
       out += '\\';
     }
     out += str[i];

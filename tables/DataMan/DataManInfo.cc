@@ -412,7 +412,7 @@ String DataManInfo::uniqueName (const Record& dminfo, const String& name,
         const Record& dm = dminfo.subRecord(i);
         if (dm.isDefined("NAME")  &&  dm.asString("NAME") == newName) {
           // Not unique, so add increased suffix and try again.
-          newName = name + '_' + String::toString(++suffix);
+          newName = std::string(name) + '_' + std::to_string(++suffix);
           unique = False;
           break;
         }

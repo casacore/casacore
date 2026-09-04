@@ -176,7 +176,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return checkDT (dtypeOper, NTBool, NTInt, nodes);
     default:
         throw TableInvExpr ("Unhandled aggregate function " +
-                            String::toString(ftype));
+                            std::to_string(ftype));
     }
   }
 
@@ -223,7 +223,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           return new TableExprGroupNFalse(this);
         default:
           throw TableInvExpr ("Aggregate function " +
-                              String::toString(funcType()) +
+                              std::to_string(funcType()) +
                               " cannot be used with a bool argument");
         }
       case NTInt:
@@ -279,7 +279,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
              operands()[3]->getDouble(0));
         default:
           throw TableInvExpr ("Aggregate function " +
-                              String::toString(funcType()) +
+                              std::to_string(funcType()) +
                               " cannot be used with an integer/double"
                               " argument");
         }
@@ -303,16 +303,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           return new TableExprGroupStdDevDComplex(this, 1);
         default:
           throw TableInvExpr ("Aggregate function " +
-                              String::toString(funcType()) +
+                              std::to_string(funcType()) +
                               " cannot be used with a dcomplex argument");
         }
       default:
         break;
       }
       throw TableInvExpr ("Aggregate function " +
-                          String::toString(funcType()) +
+                          std::to_string(funcType()) +
                           " is unknown for scalar data type " +
-                          String::toString(operands()[0]->dataType()));
+                          std::to_string(operands()[0]->dataType()));
     }
     // The operand is an array.
     switch (operands()[0]->dataType()) {
@@ -328,7 +328,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return new TableExprGroupArrayNFalse(this);
       default:
         throw TableInvExpr ("Aggregate function " +
-                            String::toString(funcType()) +
+                            std::to_string(funcType()) +
                             " cannot be used with a bool argument");
       }
     case NTInt:
@@ -379,7 +379,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           (this, operands()[1]->getDouble(0));
       default:
         throw TableInvExpr ("Aggregate function " +
-                            String::toString(funcType()) +
+                            std::to_string(funcType()) +
                             " cannot be used with an integer/double argument");
       }
     case NTComplex:
@@ -402,16 +402,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         return new TableExprGroupStdDevArrayDComplex(this, 1);
       default:
         throw TableInvExpr ("Aggregate function " +
-                            String::toString(funcType()) +
+                            std::to_string(funcType()) +
                             " cannot be used with a dcomplex argument");
       }
     default:
       break;
     }
     throw TableInvExpr ("Aggregate function " +
-                        String::toString(funcType()) +
+                        std::to_string(funcType()) +
                         " is unknown for array data type " +
-                        String::toString(operands()[0]->dataType()));
+                        std::to_string(operands()[0]->dataType()));
   }
 
   Bool TableExprAggrNode::getBool (const TableExprId& id)

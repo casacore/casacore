@@ -264,7 +264,7 @@ public:
 
     // Make a unique data manager name by appending a suffix _n if needed
     // where n is a number that makes the name unique.
-    String uniqueDataManagerName (const String& name) const;
+    String uniqueDataManagerName (const std::string& name) const;
 
     // Synchronize the columns after it appeared that data in the
     // main table file have changed.

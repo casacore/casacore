@@ -209,7 +209,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     String tp;
     version = ios.getstart ("Table");
     if (version > 3) {
-      throw TableError ("PlainTable version " + String::toString(version) +
+      throw TableError ("PlainTable version " + std::to_string(version) +
                         " not supported by this version of Casacore");
     }
     if (version > 2) {
@@ -793,7 +793,7 @@ void PlainTable::setEndian (int endianFormat)
         String opt;
 	// Default "big" was used until version 10.1203.00.
 	AipsrcValue<String>::find (opt, "table.endianformat", "local");
-	opt.downcase();
+	ToLowerCaseInPlace(opt);
 	if (opt == "big") {
 	    endOpt = Table::BigEndian;
 	} else if (opt == "little") {

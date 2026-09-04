@@ -175,7 +175,7 @@ uInt skipQuoted (const String& str, uInt st, uInt end)
     if (str[st] == '\\') st++;   // skip escaped char
   }
   throw AipsError ("Unbalanced quoted string at position "
-                   + String::toString(st) + " in " + str);
+                   + std::to_string(st) + " in " + std::string(str));
 }
 
 // Split a line using ; as delimiter.
@@ -249,7 +249,7 @@ vector<String> splitWS (const String& str)
   }
   if (qpos >= 0) {
     throw AipsError ("Unbalanced quoted string at position " +
-                     String::toString(qpos) + " in " + str);
+                     std::to_string(qpos) + " in " + std::string(str));
   }
   if (part.size() > 0) {
     parts.push_back (part);    // last part
@@ -721,7 +721,7 @@ Table taqlCommand (const Options& options, const String& varName,
       epos = command.size();
     }
     String s = command.substr(spos, epos-spos);
-    s.downcase();
+    ToLowerCaseInPlace(s);
     showHelp = (s=="show" || s=="help");
     addComm = !(s=="with" || s=="select" || s=="update" || s=="insert" ||
                 s=="calc" || s=="delete" || s=="count"  || 
@@ -747,7 +747,7 @@ Table taqlCommand (const Options& options, const String& varName,
   Vector<String> colNames;
   String cmd;
   TaQLResult result = tableCommand (strc, tempTables, colNames, cmd);
-  cmd.downcase();
+  ToLowerCaseInPlace(cmd);
   // Show result of COUNT as well.
   if (cmd == "count") {
     colNames.resize (colNames.size() + 1, True);
@@ -962,7 +962,7 @@ String substituteName (const String& name, const TableMap& tableMap,
     return name;    // not found
   }
   tabs.push_back (&(fnd->second.first));
-  return String::toString (tabs.size());    // return seqnr as string
+  return std::to_string (tabs.size());    // return seqnr as string
 }
 
 vector<const Table*> replaceVars (String& str, const TableMap& tableMap)
@@ -1027,10 +1027,8 @@ vector<const Table*> replaceVars (String& str, const TableMap& tableMap)
 Bool execCommand (const String& command, TableMap& tableMap,
                   const Options& options)
 {
-  Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
-  Regex assRE("[ \t]*=");
-  Regex lwhiteRE("^[ \t]*");
-  Regex rwhiteRE("[ \t]*$");
+  const Regex variable_assignment_regex("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
+  const Regex assignment_regex("[ \t]*=");
   try {
     ostream& os = *(options.stream);
     String strc(command);
@@ -1046,17 +1044,21 @@ Bool execCommand (const String& command, TableMap& tableMap,
       return False;
     } else {
       String varName;
-      String::size_type assLen = varassRE.match (strc.c_str(), strc.size());
+      String::size_type assLen = variable_assignment_regex.match (strc.c_str(), strc.size());
       if (assLen != String::npos) {
         // Assignment to variable; get its name and remove from command.
-        varName = strc.before(assLen);
-        strc = strc.from(assLen);
-        varName.del (assRE);
+        varName = strc.substr(0, assLen);
+        strc = strc.substr(assLen);
+        int match_length;
+        const size_t first = assignment_regex.find(varName.c_str(), varName.length(), match_length);
+        if (match_length > 0) {
+          varName.erase(first, match_length);
+        }
         if (varName.empty()) {
           throw AipsError ("Variable name before =command is empty");
         }
       }
-      strc.del (lwhiteRE);
+      LTrimInPlace(strc, " \t");
       if (strc.empty()) {
         // No command means that the variable will be removed.
         tableMap.erase (varName);
@@ -1071,7 +1073,7 @@ Bool execCommand (const String& command, TableMap& tableMap,
         }
         Int level = strc.size() - sz;
         String name = strc.substr(0, sz);
-        name.del (rwhiteRE);
+        RTrimInPlace(name, " \t");
         TableMap::const_iterator it = tableMap.find (name);
         if (it != tableMap.end()) {
           // It exists, so it must be a name.
@@ -1227,7 +1229,7 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
         st++;
         String fname = removeQuotes (args[st], removeQuote);
         String outname(fname);
-        outname.downcase();
+        ToLowerCaseInPlace(outname);
         if (outname == "stdout") {
           options.stream  = std::shared_ptr<ostream>(&cout, Deleter(False));
           options.outName = "stdout";

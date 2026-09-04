@@ -114,7 +114,7 @@ uInt MSMColumn::findExt (rownr_t index, Bool setCache)
   }
   if (i > Int(nrext_p)) {
     throw (indexError<rownr_t>(index, "MSMColumn::findExt - "
-                               "rownr " + String::toString(index) +
+                               "rownr " + String(std::to_string(index)) +
                                " in column " + columnName() +
                                " out of range"));
   }

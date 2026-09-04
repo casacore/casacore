@@ -80,11 +80,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // A true column name is given.
         String oldName;
         String str = name;
-        Int inx = str.index('.');
-        if (inx < 0) {
+        const size_t inx = str.find('.');
+        if (inx == std::string::npos) {
           oldName = str;
         } else {
-          oldName = str.after(inx);
+          oldName = str.substr(inx + 1);
         }
         // Make an expression of the column or keyword name.
         columnExpr_p[nrcol] = handleKeyCol (str, True, tpq);
@@ -97,7 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           // The same is true if the same column is already used. In such a case
           // the user likely wants to duplicate the column with a different name.
           columnOldNames_p[nrcol] = oldName;
-          if (!newDtype.empty()  ||  inx >= 0) {
+          if (!newDtype.empty()  ||  inx != std::string::npos) {
             nrSelExprUsed_p++;
           } else {
             for (Int i=0; i<nrcol; ++i) {
@@ -134,24 +134,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool caseInsensitive = ((stringType & 1) != 0);
     Bool negate          = ((stringType & 2) != 0);
     Regex regex;
-    int shInx = -1;
+    size_t shInx = std::string::npos;
     // See if the wildcarded name has a table shorthand in it.
     String shorthand;
     if (name[0] == 'p') {
       if (!negate) {
-        shInx = str.index('.');
-        if (shInx >= 0) {
-          shorthand = str.before(shInx);
-          str       = str.after(shInx);
+        shInx = str.find('.');
+        if (shInx != std::string::npos) {
+          shorthand = str.substr(0, shInx);
+          str       = str.substr(shInx + 1);
         }
       }
       regex = Regex::fromPattern (str);
     } else {
       if (!negate) {
-        shInx = str.index("\\.");
-        if (shInx >= 0) {
-          shorthand = str.before(shInx);
-          str       = str.after(shInx+1);
+        shInx = str.find("\\.");
+        if (shInx != std::string::npos) {
+          shorthand = str.substr(0, shInx);
+          str       = str.substr(shInx+2);
         }
       }
       if (name[0] == 'f') {
@@ -176,16 +176,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       Vector<String> columns = tab.tableDesc().columnNames();
       // Add back the delimiting . if a shorthand is given.
-      if (shInx >= 0) {
+      if (shInx != std::string::npos) {
         shorthand += '.';
       }
       Int nr = 0;
       for (uInt i=0; i<columns.size(); ++i) {
         String col = columns[i];
         if (caseInsensitive) {
-          col.downcase();
+          ToLowerCaseInPlace(col);
         }
-        if (col.matches(regex)) {
+        if (RegexMatches(col, regex)) {
           ++nr;
         } else {
           columns[i] = String();
@@ -220,9 +220,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         String col = columnNames_p[nrcol];
         if (!col.empty()) {
           if (caseInsensitive) {
-            col.downcase();
+            ToLowerCaseInPlace(col);
           }
-          if (col.matches(regex)) {
+          if (RegexMatches(col, regex)) {
             columnNames_p[nrcol] = String();
           }
         }
@@ -264,9 +264,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             // That can only be the case if no old name is filled in.
             AlwaysAssert (oldNames[nr].empty(), AipsError);
             String name = names[nr];
-            Int j = name.index('.');
-            if (j >= 0) {
-              name = name.after(j);
+            const size_t j = name.find('.');
+            if (j != std::string::npos) {
+              name = name.substr(j + 1);
             }
             // Make an expression of the column name.
             exprs[nr]    = handleKeyCol (name, False, tpq);
@@ -349,7 +349,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the possible specifications (which override the LIKE column).
     for (uInt i=0; i<spec.nfields(); i++) {
       String name = spec.name(i);
-      name.upcase();
+      ToUpperCaseInPlace(name);
       if (name == "NDIM") {
         ndim = spec.asInt(i);
       } else if (name == "SHAPE") {
@@ -419,7 +419,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // If no new name is given, make one (unique).
       String newName = columnNames_p[i];
       if (newName.empty()) {
-        String nm = "Col_" + String::toString(i+1);
+        const std::string nm = "Col_" + std::to_string(i+1);
         Int seqnr = 0;
         newName = nm;
         Bool unique = False;
@@ -429,7 +429,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             if (newName == columnNames_p[i]) {
               unique = False;
               seqnr++;
-              newName = nm + "_" + String::toString(seqnr);
+              newName = nm + "_" + std::to_string(seqnr);
               break;
             }
           }
@@ -825,10 +825,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           firstColName_p  = name;
         } else {
           if (tab.nrow() != firstColTable_p.nrow()) {
-            throw TableInvExpr ("Nr of rows (" + String::toString(tab.nrow()) +
-                                ") in table column " + name +
-                                " differs from column "+ firstColName_p + " (" +
-                                String::toString(firstColTable_p.nrow()) + ')');
+            throw TableInvExpr ("Nr of rows (" + std::to_string(tab.nrow()) +
+                                ") in table column " + std::string(name) +
+                                " differs from column "+ std::string(firstColName_p) + " (" +
+                                std::to_string(firstColTable_p.nrow()) + ')');
           }
         }
       }

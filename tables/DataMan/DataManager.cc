@@ -225,8 +225,8 @@ void DataManager::checkDataType (const DataManagerColumn* colPtr,
     if (dataType != colPtr->dataType()) {
 	throw (DataManInvDT ("Column " + columnName +
                              " has data type " +
-                             String::toString(colPtr->dataTypeId()) +
-                             "; expected " + String::toString(dataTypeId)));
+                             colPtr->dataTypeId() +
+                             "; expected " + dataTypeId));
     }
     if (dataType == TpOther) {
 	if (dataTypeId != colPtr->dataTypeId()) {
@@ -379,7 +379,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
     // A dot can be used to have a specific library name (so multiple
     // data managers can use the same library).
     String libname(type);
-    libname.downcase();
+    ToLowerCaseInPlace(libname);
     std::string::size_type pos = libname.find_first_of (".<");
     if (pos != std::string::npos) {
         libname = libname.substr (0, pos);
