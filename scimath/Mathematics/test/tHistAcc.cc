@@ -92,7 +92,7 @@ int main()
 
       cout << " " << endl;
       cout << "  hmanf.getStatistics().getMean():    ";
-      cout << hmanf.getStatistics().getMean() << endl;
+      cout << hmanf.getStatistics().getMean().value() << endl;
 
       Block<uInt> binsi;
       Block<Float> valsf;

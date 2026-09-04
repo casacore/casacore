@@ -1004,8 +1004,8 @@ int MSCreateCasa::addPolarization (int npolarizations)
   }
   Matrix<Int> corrProduct(2, npolarizations);
   for (Int i=0; i<npolarizations; i++) {
-    corrProduct(0,i) = Stokes::receptor1(Stokes::type(corrType(i)));
-    corrProduct(1,i) = Stokes::receptor2(Stokes::type(corrType(i)));
+    corrProduct(0,i) = Stokes::receptor1(Stokes::type(corrType(i))).value();
+    corrProduct(1,i) = Stokes::receptor2(Stokes::type(corrType(i))).value();
   }
   // Fill the columns.
   mspol.addRow();

@@ -27,7 +27,6 @@
 #define SCIMATH_HISTACC_H
 
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/scimath/Mathematics/StatAcc.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/iosfwd.h>
@@ -81,7 +80,7 @@ class String;
 //   HistAcc<T> h(25);            // use the first 25 values to define bins 
 //   h.put(vv);                   // accumulate values into histogram 
 //   h.printHistogram(cout,"vv"); // print the histogram of vv
-//   Fallible<Double> median = h1.getMedian();  // return the median
+//   std::optional<Double> median = h1.getMedian();  // return the median
 // </srcblock>
 //  
 // In some cases the bin parameters are pre-defined:
@@ -97,8 +96,8 @@ class String;
 // or implicitly:
 // <srcblock>
 //   StatAcc<T> s = h.getStatistics();     // return the internal StatAcc
-//   Fallible<Double> mean = s.getMean();  // get the mean of the input values
-//   Fallible<Double> mean = h.getStatistics().getMean();  // alternative
+//   std::optional<Double> mean = s.getMean();  // get the mean of the input values
+//   std::optional<Double> mean = h.getStatistics().getMean();  // alternative
 // </srcblock>
 
 // </example>
@@ -151,11 +150,11 @@ public:
     // value which has 50 percent of the input values below it.
     // Calculation takes into account the spurious
     // input values, i.e. values that fell outside the bins.
-    Fallible<T> getPercentile(const Float p); 
-    Fallible<T> getMedian();                 
+    std::optional<T> getPercentile(const Float p);
+    std::optional<T> getMedian();
 
     // All bins have the same width.
-    Fallible<T> getBinWidth() const;           
+    std::optional<T> getBinWidth() const;
 
     // Get the internal Statistics accumulator (see StatAcc,h).
     // It can be used to obtain statistics of the input values.
@@ -164,7 +163,7 @@ public:
     // The return value is the nr of histogram bins, and is invalid
     // if the number is zero. The given blocks/vectors are resized,
     // and contain the contents and centre values of the bins. 
-    Fallible<uInt> getHistogram(Block<uInt>& bins, Block<T>& values);
+    std::optional<uInt> getHistogram(Block<uInt>& bins, Block<T>& values);
 
     // Get the nr of `spurious' values, i.e. the ones that fell
     // outside the defined bins. 
@@ -204,7 +203,7 @@ private:
     // Other internal helper function(s).
     // <group>
     void init();   
-    Fallible<T> getBinValue(const uInt index) const;  //# bin centre value
+    std::optional<T> getBinValue(const uInt index) const;  //# bin centre value
     // </group>
 
 };

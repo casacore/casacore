@@ -193,9 +193,9 @@ void HistAcc<T>::autoDefineBins ()
 	itsStatAcc.put(itsBuffer);     // accumulate buffer values
 
 	// Calculate bin range from statistics:
-	Double hw = itsStatAcc.getRms();  // w.r.t. mean
+	Double hw = itsStatAcc.getRms().value();  // w.r.t. mean
 	hw *= 3;                          // 3 sigma?
-	Double low = itsStatAcc.getMean();// lowest bin
+	Double low = itsStatAcc.getMean().value();// lowest bin
 	Double high = low;                // highest bin
 	low -= hw;                        // mean - 3 rms
 	high += hw;                       // mean + 3 rms
@@ -339,20 +339,20 @@ uInt HistAcc<T>::getSpurious(uInt& nlow, uInt& nhigh)
 // between the first two bins. 
 
 template<class T> 
-Fallible<T> HistAcc<T>::getBinWidth() const
+std::optional<T> HistAcc<T>::getBinWidth() const
 {
     T width = itsBinHighLimit[1] - itsBinHighLimit[0];
     if (width <= 0) {
-	return Fallible<T>();
+	return std::optional<T>();
     } else {
-	return Fallible<T>(width);
+	return std::optional<T>(width);
     }
 }
 
 // Result: get the Median (= the 50-percentile) 
 
 template<class T> 
-Fallible<T> HistAcc<T>::getMedian ()
+std::optional<T> HistAcc<T>::getMedian ()
 {
     return getPercentile(50.0);
 }
@@ -361,7 +361,7 @@ Fallible<T> HistAcc<T>::getMedian ()
 // input values below it. (the Median is the 50-percentile).
 
 template<class T> 
-Fallible<T> HistAcc<T>::getPercentile (const Float p)
+std::optional<T> HistAcc<T>::getPercentile (const Float p)
 {
     if (itsAutoDefineMode) {
 	autoDefineBins();
@@ -370,7 +370,7 @@ Fallible<T> HistAcc<T>::getPercentile (const Float p)
 
     uInt n1 = itsBinContents[0];          // spurious low
     if (n1 > target) {
-	return Fallible<T>();             // not defined
+	return std::optional<T>();             // not defined
     }
     // Go through the regular bins, excuding spurious high
     for (uInt i=1; i<itsBinContents.nelements()-1; i++) {
@@ -379,7 +379,7 @@ Fallible<T> HistAcc<T>::getPercentile (const Float p)
 	    return getBinValue(i);        // OK
 	} 
     }
-    return Fallible<T>();             // none of the regular bins
+    return std::optional<T>();             // none of the regular bins
 }
  
 // Result: get the centre value for the bin with the given index.
@@ -387,35 +387,36 @@ Fallible<T> HistAcc<T>::getPercentile (const Float p)
 // that is a full histogram-width away from the extreme bins.
 
 template<class T> 
-Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
+std::optional<T> HistAcc<T>::getBinValue (const uInt index) const
 {
-    if (getBinWidth().isValid()) {
-	T width = getBinWidth();
+    const std::optional<Double> binWidth = getBinWidth();
+    if (binWidth.has_value()) {
+	const T width = *binWidth;
 	if (index == 0) {
-	    return Fallible<T>(itsBinHighLimit[0] - 
+	    return std::optional<T>(itsBinHighLimit[0] -
 			       itsBinContents.nelements() * width);
 	    
 	} else if (index < itsBinContents.nelements()-1) { 
 	    // Regular bins. The strange construct of using -1+0.5 for -0.5 
 	    // is to get the correct result for integers.
-	    return Fallible<T>(itsBinHighLimit[index] - width + width/2);
+	    return std::optional<T>(itsBinHighLimit[index] - width + width/2);
 	    
 	} else if (index == itsBinContents.nelements()-1) {
-	    return Fallible<T>(itsBinHighLimit[0] + 
+	    return std::optional<T>(itsBinHighLimit[0] +
 			       itsBinContents.nelements() * width * 2);
 	    
 	} else {
-	    return Fallible<T>();
+	    return std::optional<T>();
 	}
 
     } else {
-	return Fallible<T>();
+	return std::optional<T>();
     }
 }
 
 // Result: get the Histogram itself in two Blocks (simple vectors)
    template<class T> 
-   Fallible<uInt> HistAcc<T>::getHistogram (Block<uInt>& binContents, 
+   std::optional<uInt> HistAcc<T>::getHistogram (Block<uInt>& binContents,
     					    Block<T>& binValues) 
 {    
     if (itsAutoDefineMode) {
@@ -427,11 +428,11 @@ Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
 	binValues.resize(n-2);
 	for (uInt i=1; i<n-1; i++) {
 	    binContents[i-1] = itsBinContents[i];
-	    binValues[i-1] = getBinValue(i);
+	    binValues[i-1] = getBinValue(i).value();
 	}
-        return Fallible<uInt>(n);
+        return std::optional<uInt>(n);
     } else {
-	return Fallible<uInt>();               // error
+	return std::optional<uInt>();               // error
     }
 }
 
@@ -462,7 +463,7 @@ void HistAcc<T>::emptyBinsWithLessThan (const uInt nmin)
 	    } else {                            // above the limit
 		// Re-calculate statistics:
 		wgt = itsBinContents[i];       // weight
-		itsStatAcc.put(getBinValue(i),wgt);
+		itsStatAcc.put(getBinValue(i).value(),wgt);
 	    }
 	}
     }
@@ -485,15 +486,15 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
 
     for (uInt i=1; i<itsBinContents.nelements()-1; i++) {
 	setprecision(pv);
-	os << "  bin value=" << setw(pv+4) << getBinValue(i);
+	os << "  bin value=" << setw(pv+4) << getBinValue(i).value();
 	setprecision(pc);
 	os << " : n=" << setw(pc+1) << itsBinContents[i];
 	os << endl;
     }
 
     os << "  nTotal=" << itsStatAcc.getWtot();
-    if (getBinWidth().isValid()) {
-	os << "    binWidth=" << getBinWidth();
+    if (getBinWidth()) {
+	os << "    binWidth=" << *getBinWidth();
     } else {
 	os << "    binWidth not defined";
     }
@@ -504,32 +505,32 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
     uInt nsp = getSpurious(nlow, nhigh);
     os << "  nSpurious=" << nsp;
     os << "   nLow=" << nlow;
-    if (itsStatAcc.getMin().isValid()) {
-	os << "(vMin=" << itsStatAcc.getMin() << ")";
+    if (itsStatAcc.getMin().has_value()) {
+	os << "(vMin=" << *itsStatAcc.getMin() << ")";
     } else {
 	os << "(vMin= ..)";
     }
     os << "   nHigh=" << nhigh;
-    if (itsStatAcc.getMax().isValid()) {
-	os << "(vMax=" << itsStatAcc.getMax() << ")";
+    if (itsStatAcc.getMax().has_value()) {
+	os << "(vMax=" << *itsStatAcc.getMax() << ")";
     } else {
 	os << "(vMax= ..)";
     }
     os << endl;
 
     os << " ";
-    if (itsStatAcc.getMean().isValid()) {
-	os << " mean=" << itsStatAcc.getMean();
+    if (itsStatAcc.getMean().has_value()) {
+	os << " mean=" << *itsStatAcc.getMean();
     } else {
 	os << " mean= ..";
     }
-    if (getMedian().isValid()) {
-	os << "   median=" << getMedian();
+    if (getMedian().has_value()) {
+	os << "   median=" << *getMedian();
     } else {
 	os << "   median= ..";
     }
-    if (itsStatAcc.getRms().isValid()) {
-	os  << "  rms=" << itsStatAcc.getRms();
+    if (itsStatAcc.getRms().has_value()) {
+	os  << "  rms=" << *itsStatAcc.getRms();
     } else {
 	os << "   rms= ..";
     }

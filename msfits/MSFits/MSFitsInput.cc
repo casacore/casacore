@@ -78,7 +78,6 @@
 #include <casacore/tables/DataMan/TiledDataStMan.h>
 #include <casacore/tables/DataMan/TiledStManAccessor.h>
 #include <casacore/tables/TaQL/ExprNode.h>
-#include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -771,10 +770,10 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
     _corrProduct = 0;
     for (uInt i = 0; i < numCorr; i++) {
         const Stokes::StokesTypes cType = Stokes::type(_corrType(i));
-        Fallible<Int> receptor = Stokes::receptor1(cType);
+        std::optional<Int> receptor = Stokes::receptor1(cType);
         Bool warn = False;
-        if (receptor.isValid()) {
-            _corrProduct(0, i) = receptor;
+        if (receptor.has_value()) {
+            _corrProduct(0, i) = *receptor;
         } else if (!warn) {
             warn = True;
             _log << LogIO::WARN
@@ -782,8 +781,8 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
                     << Stokes::name(cType) << LogIO::POST;
         }
         receptor = Stokes::receptor2(cType);
-        if (receptor.isValid()) {
-            _corrProduct(1, i) = receptor;
+        if (receptor.has_value()) {
+            _corrProduct(1, i) = *receptor;
         } else if (!warn) {
             warn = True;
             _log << LogIO::WARN
@@ -3034,10 +3033,10 @@ void MSFitsInput::sortPolarizations() {
     _corrProduct = 0;
     for (uInt i = 0; i < numCorr; i++) {
         const Stokes::StokesTypes cType = Stokes::type(_corrType(i));
-        Fallible<Int> receptor = Stokes::receptor1(cType);
+        std::optional<Int> receptor = Stokes::receptor1(cType);
         Bool warn = False;
-        if (receptor.isValid()) {
-            _corrProduct(0, i) = receptor;
+        if (receptor) {
+            _corrProduct(0, i) = *receptor;
         } else if (!warn) {
             warn = True;
             _log << LogIO::WARN
@@ -3045,8 +3044,8 @@ void MSFitsInput::sortPolarizations() {
                     << Stokes::name(cType) << LogIO::POST;
         }
         receptor = Stokes::receptor2(cType);
-        if (receptor.isValid()) {
-            _corrProduct(1, i) = receptor;
+        if (receptor) {
+            _corrProduct(1, i) = *receptor;
         } else if (!warn) {
             warn = True;
             _log << LogIO::WARN

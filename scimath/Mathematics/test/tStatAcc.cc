@@ -123,12 +123,12 @@ int main()
       cout << "Test of s.get-functions: " << endl;
       cout << "  s.getWtot:    " << s.getWtot() << endl;
       cout << "  s.getCount:   " << s.getCount() << endl;
-      cout << "  s.getMean:    " << s.getMean() << endl;
-      cout << "  s.getRms:     " << s.getRms() << endl;
-      cout << "  s.getVariance:" << s.getVariance() << endl;
-      cout << "  s.getRmsAbs:  " << s.getRmsAbs() << endl;
-      cout << "  s.getMin:     " << s.getMin() << endl;
-      cout << "  s.getMax:     " << s.getMax() << endl;
+      cout << "  s.getMean:    " << s.getMean().value() << endl;
+      cout << "  s.getRms:     " << s.getRms().value() << endl;
+      cout << "  s.getVariance:" << s.getVariance().value() << endl;
+      cout << "  s.getRmsAbs:  " << s.getRmsAbs().value() << endl;
+      cout << "  s.getMin:     " << s.getMin().value() << endl;
+      cout << "  s.getMax:     " << s.getMax().value() << endl;
 
       s.printSummaryList(cout,"Test of s.printSummaryList");
 

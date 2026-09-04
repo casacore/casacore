@@ -764,13 +764,13 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   // translate stokesTypes into receptor products, catch invalid
   // fallibles.
   Matrix<Int> corrProduct(uInt(2),uInt(nCorr));
-  Fallible<Int> fi;
+  std::optional<Int> fi;
   stokesTypes.resize(nCorr, True);
   for (Int j=0; j< nCorr; j++) {
     fi=Stokes::receptor1(Stokes::type(stokesTypes(j)));
-    corrProduct(0,j)=(fi.isValid() ? fi.value() : 0);
+    corrProduct(0,j)=(fi.has_value() ? *fi : 0);
     fi=Stokes::receptor2(Stokes::type(stokesTypes(j)));
-    corrProduct(1,j)=(fi.isValid() ? fi.value() : 0);
+    corrProduct(1,j)=(fi.has_value() ? *fi : 0);
   }
   spwc.refFrequency().put(baseSpWID,vStartFreq);
   spwc.chanFreq().put(baseSpWID,freqs);

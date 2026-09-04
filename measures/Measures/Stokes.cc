@@ -133,22 +133,22 @@ Vector<String> Stokes::allNames(Bool includeUndefined) {
 }
 
 
-Fallible<Int> Stokes::receptor1(StokesTypes stokesType)
+std::optional<Int> Stokes::receptor1(StokesTypes stokesType)
 {
     Int rec1 = (stokesType-1)%4; 
     if (rec1<2) rec1=0; else rec1=1;
     if (stokesType>Stokes::V && stokesType<Stokes::RCircular) 
-	return Fallible<Int>(rec1);
-    else return Fallible<Int>();
+	return std::optional<Int>(rec1);
+    else return std::optional<Int>();
 }
 
-Fallible<Int> Stokes::receptor2(StokesTypes stokesType)
+std::optional<Int> Stokes::receptor2(StokesTypes stokesType)
 {
     Int rec2 = (stokesType-1)%4; 
     if (rec2==0 || rec2==2) rec2=0; else rec2=1;
     if (stokesType>Stokes::V && stokesType<Stokes::RCircular) 
-	return Fallible<Int>(rec2);
-    else return Fallible<Int>();
+	return std::optional<Int>(rec2);
+    else return std::optional<Int>();
 }
 
 Int Stokes::FITSValue(StokesTypes which)
