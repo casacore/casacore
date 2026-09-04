@@ -342,7 +342,7 @@
 /*----------------------------------------------------------------------*/
 
 #define BUG(sev,a)   bug_c(sev,a)
-#define ERROR(sev,a) bug_c(sev,((void)sprintf a,message))
+#define ERROR(sev,a) bug_c(sev,((void)snprintf a,message))
 #define CHECK(x,a) if(x) { Sprintf a; bugv_c('f', "%s: %s", \
 					     message, errmsg_c (x)); }
 
@@ -811,7 +811,7 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
       int old_vislen;
       rdhdi_c(*tno,"vislen",&old_vislen,hsize_c(uv->item));
       if (old_vislen < 0) 
-	ERROR('f',(message,"Bad conversion MIR3<->MIR4 in UVOPEN: vislen=%d",old_vislen));
+	ERROR('f',(message,sizeof(message),"Bad conversion MIR3<->MIR4 in UVOPEN: vislen=%d",old_vislen));
       uv->offset = old_vislen;
     }
 #else
@@ -837,7 +837,7 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
 /*									*/
 /*----------------------------------------------------------------------*/
 
-  } else ERROR('f',(message,"Status %s is not recognised by UVOPEN",status));
+  } else ERROR('f',(message,sizeof(message),"Status %s is not recognised by UVOPEN",status));
 }
 /************************************************************************/
 void uvclose_c(int tno)
@@ -1188,11 +1188,11 @@ static void uv_override(UV *uv)
 	v->callno = 1;
       } else {
 	free(b);
-	ERROR('w',(message,"Cannot override variable %s, in UVOPEN",varname));
+	ERROR('w',(message,sizeof(message),"Cannot override variable %.64s, in UVOPEN",varname));
       }
     }
   }
-  if(iostat != -1) ERROR('f',(message,
+  if(iostat != -1) ERROR('f',(message,sizeof(message),
 	"Error %d when performing override checks, in UVOPEN",iostat));
   hdaccess_c(item,&iostat);
 }
@@ -1219,7 +1219,7 @@ static void uv_vartable_in(UV *uv)
       case 'r':	type = H_REAL;	break;
       case 'd':	type = H_DBLE;	break;
       case 'c': type = H_CMPLX;	break;
-      default: ERROR('f',(message,"Bad type (%c) for variable %s",ctype,name));
+      default: ERROR('f',(message,sizeof(message),"Bad type (%c) for variable %s",ctype,name));
     }
     (void)uv_mkvar(uv->tno,name,type);
   }
@@ -1243,7 +1243,7 @@ static VARIABLE *uv_mkvar(int tno,char *name,int type)
 
 /* Check that the variable has a good name. */
   if((int)strlen(name) > MAXNAM)
-    ERROR('f',(message,"The variable name %s is too long, in UVPUTVR",name));
+    ERROR('f',(message,sizeof(message),"The variable name %s is too long, in UVPUTVR",name));
 
 /* We are going to have to create it. */
 
@@ -1573,7 +1573,7 @@ void uvrdvr_c(int tno,int type,Const char *var,char *data,const char *def,int n)
 /* Give a fatal error message if there is a type mismatch. */
 
   if(!oktype)
-    ERROR('f',(message,"Type incompatiblity for variable %s, in UVRDVR",var));
+    ERROR('f',(message,sizeof(message),"Type incompatiblity for variable %s, in UVRDVR",var));
 
 /* Null terminate the data, if its a character string. */
 
@@ -1620,14 +1620,14 @@ void uvgetvr_c(int tno,int type,Const char *var,char *data,int n)
 
   v = uv_locvar(tno,(char *)var);
   if(v == NULL)
-    ERROR('f',(message,"Variable %s not found, in UVGETVR",var));
+    ERROR('f',(message,sizeof(message),"Variable %s not found, in UVGETVR",var));
   size = external_size[type];
   if( type != v->type )
-    ERROR('f',(message,"Variable %s has wrong type, in UVGETVR",var));
+    ERROR('f',(message,sizeof(message),"Variable %s has wrong type, in UVGETVR",var));
   if(v->buf == NULL)
-    ERROR('f',(message,"Variable %s currently has no value, in UVGETVR",var));
+    ERROR('f',(message,sizeof(message),"Variable %s currently has no value, in UVGETVR",var));
   if( (type == H_BYTE ? n < v->length + 1 : n*size != v->length) )
-    ERROR('f',(message,"Buffer for variable %s has wrong size, in UVGETVR (%d != %d)",
+    ERROR('f',(message,sizeof(message),"Buffer for variable %s has wrong size, in UVGETVR (%d != %d)",
 	       var,n*size,v->length));
 
 /* Copy the data. */
@@ -1721,13 +1721,13 @@ void uvputvr_c(int tno,int type,Const char *var,Const char *data,int n)
   char *in1,*in2;
 
   if(n <= 0){
-    ERROR('w',(message,"Variable %s has zero or negative size, in UVPUTVR",var));
+    ERROR('w',(message,sizeof(message),"Variable %s has zero or negative size, in UVPUTVR",var));
     return;
   }
   uv = uvs[tno];
   v = uv_mkvar(tno,(char *)var,type);
   if(v->type != type)
-    ERROR('f',(message,"Variable %s has changed type, in UVPUTVR",var));
+    ERROR('f',(message,sizeof(message),"Variable %s has changed type, in UVPUTVR",var));
   size = external_size[type];
 
 /* If the size of this variable has changed, write it out to the file. */
@@ -1823,7 +1823,7 @@ void uvtrack_c(int tno,Const char *name,Const char *switches)
 	      uv->flags |= UVF_COPY;				break;
     case ' ':							break;
     default:
-      ERROR('w',(message,"Unrecognised switch %c, in UVTRACK",*(switches-1)));
+      ERROR('w',(message,sizeof(message),"Unrecognised switch %c, in UVTRACK",*(switches-1)));
 								break;
   }
 }
@@ -1860,7 +1860,7 @@ int uvscan_c(int tno,Const char *var)
   uv = uvs[tno];
   if(*var){
     v = uv_locvar(tno,(char *)var);
-    if(v == NULL) ERROR('f',(message,"Variable %s not found, in UVSCAN",var));
+    if(v == NULL) ERROR('f',(message,sizeof(message),"Variable %s not found, in UVSCAN",var));
   } else v = NULL;
   uv->mark = uv->callno + 1;
   uv->flags &= ~(UVF_UPDATED | UVF_COPY);
@@ -1908,10 +1908,10 @@ static int uv_scan(UV *uv, VARIABLE *vt)
       hreadi_c(uv->item,&v->flength,offset+UV_HDR_SIZE,H_INT_SIZE,&iostat);
       CHECK(iostat,(message,"Error reading a variable-length for %s, while UV scanning",v->name));
       if(v->flength <= 0)
-	ERROR('f',(message,"Variable %s has length of %d, when scanning",
+	ERROR('f',(message,sizeof(message),"Variable %s has length of %d, when scanning",
 			v->name,v->flength));
       if(v->flength % extsize)
-        ERROR('f',(message,
+        ERROR('f',(message,sizeof(message),
 	  "Non-integral no. elements in variable %s, when scanning",v->name));
       if(!(v->flags & UVF_OVERRIDE) || v->type != H_BYTE){
         v->length = v->flength;
@@ -1947,7 +1947,7 @@ static int uv_scan(UV *uv, VARIABLE *vt)
 /* Something is wrong. */
 
      default:
-      ERROR('f',(message,"Unrecognised record code %d, when scanning",*(s+2)));
+      ERROR('f',(message,sizeof(message),"Unrecognised record code %d, when scanning",*(s+2)));
     }
     if(changed){
       v->callno = uv->callno;
@@ -2266,7 +2266,7 @@ void uvsela_c(int tno,Const char *object,Const char *string,int datasel)
 /* Some unknown form of selection. */
 
   } else {
-    ERROR('w',(message,
+    ERROR('w',(message,sizeof(message),
 	"Unrecognised selection \"%s\" ignored, in UVSELA",object));
   }
 }
@@ -2530,8 +2530,8 @@ void uvselect_c(int tno,Const char *object,double p1,double p2,int datasel)
     }
     i1 = max(p1, p2) + 0.5;
     i2 = min(p1, p2) + 0.5;
-    if(i1 < 0 || i1 > MAXANT) ERROR('f',(message,"bad antennae %d",i1));
-    if(i2 < 0 || i2 > MAXANT) ERROR('f',(message,"bad antennae %d",i2));
+    if(i1 < 0 || i1 > MAXANT) ERROR('f',(message,sizeof(message),"bad antennae %d",i1));
+    if(i2 < 0 || i2 > MAXANT) ERROR('f',(message,sizeof(message),"bad antennae %d",i2));
     if(i1 == 0){
       for(i=0; i < MAXANT*(MAXANT+1)/2; i++)sel->ants[i] = discard;
     } else if(i2 == 0){
@@ -2544,7 +2544,7 @@ void uvselect_c(int tno,Const char *object,double p1,double p2,int datasel)
 /* Some unknown form of selection. */
 
   } else {
-    ERROR('w',(message,
+    ERROR('w',(message,sizeof(message),
 	"Unrecognised selection \"%s\" ignored, in UVSELECT",object));
   }
 }
@@ -2637,7 +2637,7 @@ void uvset_c(int tno,Const char *object,Const char *type,
     else if(!strcmp(type,"runs"))
       uv->flags |= UVF_RUNS;
     else {
-      ERROR('f',(message,"Unrecognised flags mode \'%s\', in UVSET",type));
+      ERROR('f',(message,sizeof(message),"Unrecognised flags mode \'%s\', in UVSET",type));
     }
   } else if(!strcmp(object,"minsize2")) {
     uv->minsize2 = n;
@@ -2650,9 +2650,9 @@ void uvset_c(int tno,Const char *object,Const char *type,
     else if(!strcmp(type,"j"))
       uv->corr = uv_mkvar(tno,"corr", H_INT2 );
     else
-      ERROR('f',(message,"Unsupported correlation type %s, in UVSET",type));
+      ERROR('f',(message,sizeof(message),"Unsupported correlation type %s, in UVSET",type));
   } else {
-    ERROR('w',(message,"Unrecognised object \"%s\" ignored, in UVSET.",object));
+    ERROR('w',(message,sizeof(message),"Unrecognised object \"%s\" ignored, in UVSET.",object));
   }
 }
 /************************************************************************/
@@ -2670,12 +2670,12 @@ static void uvset_preamble(UV *uv, const char *type)
     uv->presize = 3;
     if(!strcmp(type,"uvw/time/baseline"))uv->flags |= UVF_DOW;
     else if(strcmp(type,"uv/time/baseline")){
-      ERROR('f',(message,"Unsupported preamble \"%s\",in UVSET.",type));}
+      ERROR('f',(message,sizeof(message),"Unsupported preamble \"%s\",in UVSET.",type));}
   } else {
     n = 0;
     while(*type){
       if(n >= MAXPRE){
-	ERROR('f',(message,"Too many parameters in preamble \"%s\".",type));}
+	ERROR('f',(message,sizeof(message),"Too many parameters in preamble \"%s\".",type));}
 
 /* Get the variable name. */
 
@@ -2698,7 +2698,7 @@ static void uvset_preamble(UV *uv, const char *type)
 	ok = (v == NULL || v->type == H_INT  || 
 			   v->type == H_REAL || v->type == H_DBLE);
       }
-      if(!ok){ERROR('f',(message,"Invalid preamble \"%s\".",type));}
+      if(!ok){ERROR('f',(message,sizeof(message),"Invalid preamble \"%s\".",type));}
       n++;
     }
     uv->presize = n;
@@ -2715,7 +2715,7 @@ static void uvset_selection(UV *uv, const char *type, int n)
   } else if(!strcmp(type,"window")){
     uv->apply_win = n > 0;
   } else {
-    ERROR('w',(message,"Unrecognised type %s ignored, in UVSET(amplitude)",type));
+    ERROR('w',(message,sizeof(message),"Unrecognised type %s ignored, in UVSET(amplitude)",type));
   }
 }
 /************************************************************************/
@@ -2746,7 +2746,7 @@ static void uvset_coord(UV *uv, const char *type)
 					uv->flags |=  UVF_WAVELENGTH; }
   else if(!strcmp(type,"nanosec")){	uv->flags &= ~UVF_WAVELENGTH; }
   else{
-     ERROR('w',(message,
+     ERROR('w',(message,sizeof(message),
 	"Unrecognised coordinate type \"%s\" ignored, in UVSET",type));
   }
 }
@@ -2792,7 +2792,7 @@ static void uvset_linetype(LINE_INFO *line, const char *type, int n,
     line->n = n;
     line->start = start-1; line->width = width; line->step  = step;
   } else {
-    ERROR('w',(message,
+    ERROR('w',(message,sizeof(message),
       "Unrecognised line type \"%s\" ignored, in UVSET",type));
   }
 }
@@ -3196,7 +3196,7 @@ static int uvread_select(UV *uv)
       bl = *((float *)(uv->bl->buf)) + 0.5;
       uvbasant_c(bl,&i1,&i2);
       if(i1 < 1 || i2 > MAXANT){
-	ERROR('w',(message,"Discarded data with bad antenna numbers when selecting: (%d,%d) baseline number is %d\n",i1,i2,bl));
+	ERROR('w',(message,sizeof(message),"Discarded data with bad antenna numbers when selecting: (%d,%d) baseline number is %d\n",i1,i2,bl));
 	discard = TRUE;
       }else{
         discard = sel->ants[(i2*(i2-1))/2+i1-1];
@@ -4133,11 +4133,11 @@ static VARIABLE *uv_checkvar(int tno,char *varname,int type)
   VARIABLE *v;
 
   v = uv_locvar(tno,varname);
-  if(v == NULL) ERROR('f',(message,
+  if(v == NULL) ERROR('f',(message,sizeof(message),
 	"Variable %s is missing, in UVREAD",varname));
-  else if(type != 0 && type != v->type)ERROR('f',(message,
+  else if(type != 0 && type != v->type)ERROR('f',(message,sizeof(message),
 	"Variable %s has the wrong data type, in UVREAD",varname));
-  else if(v->buf == NULL || v->length <= 0)ERROR('f',(message,
+  else if(v->buf == NULL || v->length <= 0)ERROR('f',(message,sizeof(message),
 	"Variable %s was not initialised before it was required, in UVREAD",varname));
   return(v);
 }
@@ -4763,7 +4763,7 @@ void uvinfo_c(int tno,Const char *object,double *data)
   else if(!strcmp(object,"frequency"))  uvinfo_chan(uv,data,FREQ);
   else if(!strcmp(object,"sfreq"))	uvinfo_chan(uv,data,SFREQ);
   else
-    ERROR('f',(message,"Unrecognised object %s, in UVINFO",object));
+    ERROR('f',(message,sizeof(message),"Unrecognised object %s, in UVINFO",object));
 }
 /************************************************************************/
 static void uvinfo_variance(UV *uv,double *data)
