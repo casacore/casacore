@@ -73,8 +73,8 @@ int main()
     cout << "Writing...." << endl;
     // remove the fits file if already exists
     remove( file );  // unlink() at the end does this.
-    if (WriteFITS(file,m,message, unitout.chars(), &namesout, &refout,
-		  &locout, &deltaout, &mapout, objectout.chars()) == False) {
+    if (WriteFITS(file,m,message, unitout.c_str(), &namesout, &refout,
+		  &locout, &deltaout, &mapout, objectout.c_str()) == False) {
 	cout << "Write failed: " << message << endl;
 	return 1;
     }

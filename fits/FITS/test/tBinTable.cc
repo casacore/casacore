@@ -65,7 +65,7 @@ int main(int argc, const char* argv[])
 	String storageManagerType = inputs.getString("storageManager");
 	Bool sdfits = inputs.getBool("sdfits");
 
-	storageManagerType.downcase();
+	ToLowerCaseInPlace(storageManagerType);
 
 	Bool useMiriadSM;
 	if (storageManagerType == "miriad") {
@@ -89,7 +89,7 @@ int main(int argc, const char* argv[])
         int tabNameLen = baseName.length() + 10;
 	char *tabName = new char[tabNameLen];
 	// construct the FITS input
-	FitsInput infits(inputFilename.chars(), FITS::Disk);
+	FitsInput infits(inputFilename.c_str(), FITS::Disk);
 	if (infits.err() != FitsIO::OK) {
 	    cout << "Problem instantiating FITS input " << infits.err() << endl;
 	    return 1;
@@ -99,7 +99,7 @@ int main(int argc, const char* argv[])
 	    switch (infits.hdutype()) {
 	    case FITS::BinaryTableHDU:
 	    {
-                snprintf(tabName,tabNameLen,"%s.table.%i",baseName.chars(),tabCount++);
+                snprintf(tabName,tabNameLen,"%s.table.%i",baseName.c_str(),tabCount++);
 		String tabNameString(tabName);
 		cout << "BinaryTableHDU : " << tabNameString << " ... " ;
 		BinaryTable bintab(infits, FITSError::defaultHandler, 

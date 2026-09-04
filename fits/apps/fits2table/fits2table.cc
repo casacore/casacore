@@ -73,7 +73,7 @@ int main(int argc, const char* argv[])
 	Int whichHDU = inputs.getInt("which_hdu");
 	Bool sdfits = inputs.getBool("sdfits");
 
-	storageManagerType.downcase();
+	ToLowerCaseInPlace(storageManagerType);
 
 	Bool useIncrSM;
 	if (storageManagerType == "incremental") {
@@ -118,7 +118,7 @@ int main(int argc, const char* argv[])
 	if (sdfits) {
 	    Vector<String> cols(td.columnNames());
 	    for (uInt i=0;i<cols.nelements();i++) {
-		if (cols(i).matches(Regex("^TDIM.*"))) {
+		if (RegexMatches(cols(i), Regex("^TDIM.*"))) {
 		    td.removeColumn(cols(i));
 		}
 	    }

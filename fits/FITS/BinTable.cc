@@ -178,7 +178,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        if (!kw->isreserved() || (sdfits && isSDFitsColumn(kw->kw().name()))) {
 	   // Get the kw name and remove the trailing spaces
            kwname = kw->name();
-	   kwname.rtrim(' ');
+	   RTrimInPlace(kwname, ' ');
 	   // if it is indexed, add the index to the keyword
 	   if (kw->isindexed()) {
                snprintf(index,sizeof(index),"%i",kw->index());
@@ -233,7 +233,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        //		check if the column name exists
        String colname(ttype(i));
        //               remove trailing spaces
-       colname.rtrim(' ');
+       RTrimInPlace(colname, ' ');
        if (td.isColumn(colname)) {
 	   //		issue a warning, append column number to this name
 	   ostringstream newname;

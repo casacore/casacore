@@ -186,7 +186,7 @@ class StringFITSFieldCopier : public FITSFieldCopier
  	  Int fitslength = fits_p->nelements();
  	  Int reclength = (*(*rec_p)).length();
  	  Int minlength = fitslength < reclength ? fitslength : reclength;
- 	  const char *chars = (**rec_p).chars();
+ 	  const char *chars = (**rec_p).c_str();
 	  Int i;
  	  for (i=0; i<minlength; i++) {
  	      (*fits_p)(i) = chars[i];
@@ -306,7 +306,7 @@ public:
 	Int fitslength = tdir_p->nelements();
 	Int reclength = thisTDIR.length();
 	Int minlength = fitslength < reclength ? fitslength : reclength;
-	const char *chars = thisTDIR.chars();
+	const char *chars = thisTDIR.c_str();
 	Int i;
 	for (i=0; i<minlength; i++) {
 	    (*tdir_p)(i) = chars[i];
