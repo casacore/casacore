@@ -389,8 +389,9 @@ std::optional<T> HistAcc<T>::getPercentile (const Float p)
 template<class T> 
 std::optional<T> HistAcc<T>::getBinValue (const uInt index) const
 {
-    if (getBinWidth().has_value()) {
-	T width = *getBinWidth();
+	const auto binWidth = getBinWidth();
+	if (binWidth.has_value()) {
+		const T width = *binWidth;
 	if (index == 0) {
 	    return std::optional<T>(itsBinHighLimit[0] -
 			       itsBinContents.nelements() * width);
