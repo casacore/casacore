@@ -32,6 +32,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/iostream.h>
 
+#include <casacore/scimath/Converted/vvroutines.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -59,54 +60,12 @@ std::mutex VanVleck::theirMutex;
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)
 #define dqags dqags_
-#define vvr3 vvr3_
-#define vvr9 vvr9_
-#define vvr3auto vvr3auto_
-#define vvr9auto vvr9auto_
-#define vvr3zmean vvr3zmean_
-#define vvr9zmean vvr9zmean_
-#define vvr3zauto vvr3zauto_
-#define vvr9zauto vvr9zauto_
 #endif
 
 extern "C" { 
    void dqags(Double (*)(Double *), Double*, Double *, Double *, Double *, Double *,
 	      Double *, Int *, Int*, Int *, Int *, Int *, Int *, Double *);
 }
-
-extern "C" { 
-   Double vvr3(Double*, Double *, Double *, Double *, Double *);
-}
-
-extern "C" { 
-   Double vvr9(Double*, Double *, Double *, Double *, Double *);
-}
-
-extern "C" { 
-   Double vvr3auto(Double*, Double *, Double *);
-}
-
-extern "C" { 
-   Double vvr9auto(Double*, Double *, Double *);
-}
-
-extern "C" { 
-   Double vvr3zmean(Double*, Double *, Double *);
-}
-
-extern "C" { 
-   Double vvr9zmean(Double*, Double *, Double *);
-}
-
-extern "C" { 
-   Double vvr3zauto(Double*, Double *);
-}
-
-extern "C" { 
-   Double vvr9zauto(Double*, Double *);
-}
-
-
 
 void VanVleck::size(uInt npts)
 {
@@ -233,7 +192,7 @@ void VanVleck::initInterpolator()
 		  for (Int i=1;i<=midi;i++) {
 		      Int hi = midi+i;
 		      Int lo = midi-i;
-		      rs[hi] = vvr3zauto(&itsXlev, &(rhos[hi]));
+		      rs[hi] = vvr3zauto(itsXlev, rhos[hi]);
 		      rs[lo] = -rs[hi];
 		  }
 	      } else {
@@ -241,19 +200,19 @@ void VanVleck::initInterpolator()
 		  for (Int i=1;i<=midi;i++) {
 		      Int hi = midi+i;
 		      Int lo = midi-i;
-		      rs[hi] = vvr9zauto(&itsXlev, &(rhos[hi]));
+		      rs[hi] = vvr9zauto(itsXlev, rhos[hi]);
 		      rs[lo] = -rs[hi];
 		  }
 	      }
 	  } else {
 	      if (itsNx == 3) {
 		  for (uInt i=0;i<rhos.nelements();i++) {
-		      rs[i] = vvr3auto(&itsXmean, &itsXlev, &(rhos[i]));
+		      rs[i] = vvr3auto(itsXmean, itsXlev, rhos[i]);
 		  }
 	      } else {
 		  // it must be 9
 		  for (uInt i=0;i<rhos.nelements();i++) {
-		      rs[i] = vvr9auto(&itsXmean, &itsXlev, &(rhos[i]));
+		      rs[i] = vvr9auto(itsXmean, itsXlev, rhos[i]);
 		  }
 	      }
 	  }
@@ -263,25 +222,25 @@ void VanVleck::initInterpolator()
 	      // zero-mean
 	      if (itsNx == 3) {
 		  for (uInt i=0;i<rhos.nelements();i++) {
-		      rs[i] = vvr3zmean(&itsXlev, &itsYlev, &(rhos[i]));
+		      rs[i] = vvr3zmean(itsXlev, itsYlev, rhos[i]);
 		  }
 	      } else {
 		  // it must be 9
 		  for (uInt i=0;i<rhos.nelements();i++) {
-		      rs[i] = vvr9zmean(&itsXlev, &itsYlev, &(rhos[i]));
+		      rs[i] = vvr9zmean(itsXlev, itsYlev, rhos[i]);
 		  }
 	      }
 	  } else {
 	      if (itsNx == 3) {
 		  for (uInt i=0;i<rhos.nelements();i++) {
-		      rs[i] = vvr3(&itsXmean, &itsYmean, &itsXlev, &itsYlev, 
-				   &(rhos[i]));
+		      rs[i] = vvr3(itsXmean, itsYmean, itsXlev, itsYlev,
+				   rhos[i]);
 		  }
 	      } else {
 		  // it must be 9
 		  for (uInt i=0;i<rhos.nelements();i++) {
-		      rs[i] = vvr9(&itsXmean, &itsYmean, &itsXlev, &itsYlev, 
-				   &(rhos[i]));
+		      rs[i] = vvr9(itsXmean, itsYmean, itsXlev, itsYlev,
+				   rhos[i]);
 		  }
 	      }
 	  }

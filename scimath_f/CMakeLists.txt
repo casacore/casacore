@@ -26,7 +26,6 @@ maxabs.f
 parametricsolver.f
 phasol.f
 subcom.f
-vvroutines.f
 )
 
 if (BUILD_FFTPACK_DEPRECATED)
