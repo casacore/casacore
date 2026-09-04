@@ -168,7 +168,7 @@ uInt StatAcc<T>::getCount() const               // get number of samples
 
 
 template<class T>
-std::optional<Double> StatAcc<T>::getMax() const         // get minimum value
+std::optional<Double> StatAcc<T>::getMax() const         // get maximum value
 {     
     if (itsWtot == 0) {
 	return std::optional<Double>();
