@@ -15,6 +15,12 @@ if (DATA_DIR)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCASADATA='\"${DATA_DIRX}\"'")
 endif (DATA_DIR)
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/casacore.rc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/casacore.rc
+    @ONLY
+)
+
 add_library (casa_measures
 Measures/Aberration.cc
 Measures/EarthField.cc
@@ -165,6 +171,10 @@ DESTINATION include/casacore/measures/TableMeasures
 
 install (FILES ${top_level_headers}
 DESTINATION include/casacore/measures
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/casacore.rc
+    DESTINATION etc
 )
 
 add_subdirectory (Measures/test ${EXCL_ALL})
