@@ -164,7 +164,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
 	    return False;
 	}
 	for (Int i=0; i < Int(array.ndim()); i++) {
-	    kw.mk(i+1, FITS::CTYPE, (*axisNames)(i).chars());
+	    kw.mk(i+1, FITS::CTYPE, (*axisNames)(i).c_str());
 	}
     }
     if (refPixel) {
@@ -199,11 +199,11 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
             String key (elem.first);
 	    Double val (elem.second);
 	    // FITS requires upper case, length=8 (or less) keywords
-	    key.upcase();
+	    ToUpperCaseInPlace(key);
 	    if (key.length() > 8) {
-		key = key.at(0,8);
+		key = key.substr(0,8);
 	    }
-	    kw.mk(key.chars(), val);
+	    kw.mk(key.c_str(), val);
 	}
     }
     if (objectName) {

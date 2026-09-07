@@ -84,7 +84,7 @@ Bool SDFITSTable::isSDFitsColumn(const String& name)
 {
   Bool result;
   // if name is not reserved, return True
-  if (!FITS::ResWord.isreserved(name.chars(), name.length())) {
+  if (!FITS::ResWord.isreserved(name.c_str(), name.length())) {
     result = True;
   } else if (name != FITS::ResWord.aname(FITS::COMMENT) && 
 	     name != FITS::ResWord.aname(FITS::DATAMAX) && 

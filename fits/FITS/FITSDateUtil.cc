@@ -123,7 +123,7 @@ Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
     system = MEpoch::UTC;
 
     // Let's carry on with the date
-    if (date.contains("/")) {
+    if (date.find("/") != std::string::npos) {
 	// Old style
 	ok = date.length() >= 8;
 	ok = ok && isdigit(date[0]);
@@ -211,16 +211,16 @@ Bool FITSDateUtil::convertDateString(String &out, const String &in)
 
 uInt FITSDateUtil::findPrecision(const String &fitsDate)
 {
-    if (fitsDate.contains("/")) {
+    if (fitsDate.find('/') != std::string::npos) {
 	return 0; // Old style has no time
     }
 
     // OK, new style
     uInt prec = 0;
-    if (fitsDate.contains("T")) {
+    if (fitsDate.find('T') != std::string::npos) {
 	prec += 6; // We are good at least to the second
-	Int decimalpos = fitsDate.index('.');
-	if (decimalpos > 0) {
+	size_t decimalpos = fitsDate.find('.');
+	if (decimalpos > 0 && decimalpos != std::string::npos) {
 	    // OK, we may have some decimal points, count 'em.
 	    for (uInt i=decimalpos+1; 
 		 i<fitsDate.length() && isdigit(fitsDate[i]); i++) {

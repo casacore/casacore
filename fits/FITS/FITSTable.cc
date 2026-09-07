@@ -125,7 +125,7 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
       if (key->isindexed()) {
 	ostringstream num;
 	num << key->index();
-	name += String(num);
+	name += num.str();
       }
 
       switch (key->type()) {
@@ -187,7 +187,7 @@ RecordDesc FITSTabular::descriptionFromHDU(
 	    shape(j) = hdu.field(i).dim(j);
 	}
 	String colname(hdu.ttype(i));
-        colname.rtrim(' ');
+        RTrimInPlace(colname, ' ');
 	// watch for VADESC columns
 	if (hdu.field(i).fieldtype() == FITS::VADESC) {
 	    // variable array descriptor
@@ -240,27 +240,27 @@ Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu)
     Regex trailing(" *$"); // trailing blanks
     for (uInt i=0; i < ncol; i++) {
 	String colname(hdu.ttype(i));
-        colname.rtrim(' ');
+        RTrimInPlace(colname, ' ');
 	String tform(hdu.tform(i));
-        tform.rtrim(' ');
+        RTrimInPlace(tform, ' ');
 	// Look for the sub-string convention, described in appendix C of
 	// Cotton, Tody, and Pence.  Its in the TFIELD for this column.
 	// This probably could (should?) happen in FitsField<char>.
 	// But I understand this better so do it here.
-	if (tform.matches(Regex("^.*A:SSTR[0-9]+(/[0-9]+)?$"))) {
+	if (RegexMatches(tform, Regex("^.*A:SSTR[0-9]+(/[0-9]+)?$"))) {
 	    Record info;
-	    String sstr = tform.after(tform.find("SSTR")+3);
+	    String sstr = tform.substr(tform.find("SSTR")+4);
             String::size_type slinx = sstr.find('/');
             if (slinx != String::npos) {
 		// two integers separate by a the slash
-                Int maxChars = atol(sstr.before(slinx).chars());
-		Int delim = atol(sstr.after(slinx).chars());
+                Int maxChars = atol(sstr.substr(0, slinx).c_str());
+		Int delim = atol(sstr.substr(slinx + 1).c_str());
 		info.define("NCHAR", maxChars);
 		info.define("NELEM", -1);
 		info.define("DELIM", String(Char(delim)));
 	    } else {
 		// it must be just an integer at this point
-		Int nchars = atol(sstr.chars());
+		Int nchars = atol(sstr.c_str());
 		// fixed shape String array
 		// determine the shape given nchars
 		Int nelem = hdu.field(i).nelements() / nchars;
@@ -282,9 +282,9 @@ Record FITSTabular::unitsFromHDU(BinaryTableExtension &hdu)
 
     for (uInt i=0; i < ncol; i++) {
 	String colname(hdu.ttype(i));
-	colname.rtrim(' ');
+	RTrimInPlace(colname, ' ');
 	String unitval(hdu.tunit(i));
-	unitval.rtrim(' ');
+	RTrimInPlace(unitval, ' ');
 	if (!unitval.empty()) units.define(colname, unitval);
     }
     return units;
@@ -297,9 +297,9 @@ Record FITSTabular::displayFormatsFromHDU(BinaryTableExtension &hdu)
 
     for (uInt i=0; i < ncol; i++) {
 	String colname(hdu.ttype(i));
-	colname.rtrim(' ');
+	RTrimInPlace(colname, ' ');
 	String dispval(hdu.tdisp(i));
-	dispval.rtrim(' ');
+	RTrimInPlace(dispval, ' ');
 	if (!dispval.empty()) disps.define(colname, dispval);
     }
     return disps;
@@ -327,7 +327,7 @@ Record FITSTabular::nullsFromHDU(BinaryTableExtension &hdu)
 	     hdu.field(i).fieldtype() == FITS::LONG) &&
 	    hdu.tscal(i) == 1.0 && hdu.tzero(i) == 0.0) {
 	    String colname(hdu.ttype(i));
-	    colname.rtrim(' ');
+	    RTrimInPlace(colname, ' ');
 	    nulls.define(colname, (hdu.kw(tnull,i))->asInt());
 	}
     }
@@ -588,7 +588,7 @@ Bool FITSTable::reopen(const String &fileName)
 
     // use the Path class so that ~ is parsed if present in the file name
     Path filePath(fileName);
-    io_p = new FitsInput(filePath.expandedName().chars(), FITS::Disk);
+    io_p = new FitsInput(filePath.expandedName().c_str(), FITS::Disk);
     AlwaysAssert(io_p, AipsError);
     if (io_p->err() || io_p->eof()) {
 	return False;
@@ -601,35 +601,35 @@ Bool FITSTable::reopen(const String &fileName)
 	{
 	    BytePrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().c_str());
 	}
     break;
     case FITS::SHORT:
 	{
 	    ShortPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().c_str());
 	}
     break;
     case FITS::LONG:
 	{
 	    LongPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().c_str());
 	}
     break;
     case FITS::FLOAT:
 	{
 	    FloatPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().c_str());
 	}
     break;
     case FITS::DOUBLE:
 	{
 	    DoublePrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().c_str());
 	}
     break;
     default:
@@ -681,11 +681,11 @@ Bool FITSTable::reopen(const String &fileName)
 	    promoted_p[i] = True;
 	    anyPromoted = True;
 	} 
-	if (description_p.name(i).matches(Regex("^TDIM[0-9]+$")) && 
+	if (RegexMatches(description_p.name(i), Regex("^TDIM[0-9]+$")) &&
 	    description_p.type(i) == TpString) {
             String tdim = description_p.name(i);
-            tdim = tdim.after(3);
-	    Int which = atol(tdim.chars())-1;
+            tdim = tdim.substr(4);
+	    Int which = atol(tdim.c_str())-1;
 	    if (which >= 0 && which < Int(tdims_p.nelements())) {
 		anyReshaped = True;
 		tdims_p[which] = i;
@@ -946,19 +946,19 @@ void FITSTable::fill_row()
 		}
 		String tdim((char *)fitsRef.data(), length);
 		// remove the surrounding parenthesis
-		tdim = tdim.after(tdim.find('('));
-		tdim = tdim.before(tdim.find(')'));
+		tdim = tdim.substr(tdim.find('(') + 1);
+		tdim = tdim.substr(0, tdim.find(')'));
 		// count up the number of commas
-		Int ncommas = tdim.freq(',');
+		Int ncommas = std::count(tdim.begin(), tdim.end(), ',');
 		shape.resize(ncommas+1, False);
 		for (Int j=0;j<ncommas;j++) {
                     String::size_type inx = tdim.find(',');
-                    String field = tdim.before(inx);
-		    tdim = tdim.after(inx);
-		    shape(j) = atol(field.chars());
+                    String field = tdim.substr(0, inx);
+		    tdim = tdim.substr(inx + 1);
+		    shape(j) = atol(field.c_str());
 		}
 		// the final field is left
-		shape(ncommas) = atol(tdim.chars());
+		shape(ncommas) = atol(tdim.c_str());
 	    } else {
 		// this must be a VADesc, that's the only way this can ever happen
 		// unless, of course, its a CHAR array using the sub-string convention
@@ -1058,20 +1058,20 @@ void FITSTable::fill_row()
 		    // and just do them all
 		    Int curr = 0;
 		    for (Int z=0;z<nels;z++) {
-			result(z) = rawValue.at(curr, nchar);
+			result(z) = rawValue.substr(curr, nchar);
 			curr += nchar;
 		    }
 		} else {
 		    // variable shape
 		    // count the number of delimiters and add 1
 		    String delim(info.asString("DELIM"));
-		    nels = rawValue.freq(delim) + 1;
+		    nels = SubStringCount(rawValue, delim) + 1;
 		    result.resize(nels);
 		    (*rowRef).resize(result.shape());
 		    for (Int z=0;z<(nels-1);z++) {
                         String::size_type inx = rawValue.find(delim);
-			result(z) = rawValue.before(inx);
-			rawValue = rawValue.after(inx+delim.size()-1);
+			result(z) = rawValue.substr(0, inx);
+			rawValue = rawValue.substr(inx+delim.size());
 		    }
 		    // the last one remains
 		    result(nels-1) = rawValue;
@@ -1920,7 +1920,7 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 void FITSTable::reopenAtFirstHDU(const String &name) {
     delete io_p;
     io_p = 0;
-    io_p = new FitsInput(name.chars(), FITS::Disk);
+    io_p = new FitsInput(name.c_str(), FITS::Disk);
     AlwaysAssert(io_p, AipsError);
     // no need to check for err here, presumably
     io_p->skip_hdu();

@@ -132,8 +132,8 @@ int main()
 	    if (inName == "alongname") outName = "alongnam";
 	    Int outField = myNewKeywords.fieldNumber(outName);
 	    AlwaysAssertExit(outField>=0 || inName == "world" || 
-			     inName.contains(Regex("^comment")) ||
-			     inName.contains(Regex("^history")));
+			     std::regex_search(inName, std::regex("^comment")) ||
+			     std::regex_search(inName, std::regex("^history")));
 	    // check types
 	    
 	    if (outField >= 0) {
@@ -218,9 +218,9 @@ int main()
 	ignore(0) = "tarray.*";
 	FITSKeywordUtil::removeKeywords(myNewKeywords, ignore);
 	// verify that myNewKeywords doesn't contain any tarray keywords
-	Regex rx("tarray.*");
+	std::regex rx("tarray.*");
 	for (uInt i=0;i<myNewKeywords.nfields();i++) {
-	    AlwaysAssertExit(!myNewKeywords.name(i).contains(rx));
+	    AlwaysAssertExit(!std::regex_search(myNewKeywords.name(i), rx));
 	}
 	
 	// test the TDIM manipulation functions
@@ -277,8 +277,8 @@ int main()
 	// all fields should not contain "mat" but should contain "ma"
 	for (uInt i=0;i<myNewKeywords.nfields();i++) {
 	    String name = myNewKeywords.name(i);
-	    AlwaysAssertExit(!name.contains(Regex("^mat")) && 
-			     name.contains(Regex("^ma")));
+	    AlwaysAssertExit(!std::regex_search(name, std::regex("^mat")) &&
+			     std::regex_search(name, std::regex("^ma")));
 	}
 	
 	// name too long for array field - max of 8 chars including number of elements

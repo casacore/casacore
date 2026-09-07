@@ -119,10 +119,10 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     // Find the spectral axis, if any.
 
     for (Int i=0; i<ndim; i++) {
-	if (ctype(i).contains("FELO") || ctype(i).contains("FREQ") ||
-	    ctype(i).contains("VELO") || ctype(i).contains("VOPT") ||
-	    ctype(i).contains("VRAD") || ctype(i).contains("WAVE") ||
-	    ctype(i).contains("AWAV")) {
+	if (StringContains(ctype(i), "FELO") || StringContains(ctype(i), "FREQ") ||
+	    StringContains(ctype(i), "VELO") || StringContains(ctype(i), "VOPT") ||
+	    StringContains(ctype(i), "VRAD") || StringContains(ctype(i), "WAVE") ||
+	    StringContains(ctype(i), "AWAV")) {
 	    spectralAxis = i;
 	    break;
 	}
@@ -140,13 +140,13 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     		header.get("velref", velref);
     	}
     } else {
-    	if (ctype(spectralAxis).contains("VELO") || ctype(spectralAxis).contains("VRAD")) {
+    	if (StringContains(ctype(spectralAxis), "VELO") || StringContains(ctype(spectralAxis), "VRAD")) {
     		velref = 259; // radio + OBS
     	}
     }
     
     // Try to work out OPTICAL/RADIO/. Default to Optical
-    String type(ctype(spectralAxis).before(4));
+    String type(ctype(spectralAxis).substr(0, 4));
     velocityPreference = MDoppler::OPTICAL;
     if (velref > 256) {
     	velocityPreference = MDoppler::RADIO;
@@ -192,7 +192,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     if (ctype(spectralAxis).length() <= 5) {
       spectralAxisQualifier = "";
     } else {
-      spectralAxisQualifier = ctype(spectralAxis).after(4);
+      spectralAxisQualifier = ctype(spectralAxis).substr(5);
     };
 
 
@@ -252,7 +252,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     if ((Int)cunit.size()>spectralAxis)
     	unit = cunit(spectralAxis);
 
-    if (ctype(spectralAxis).contains("FREQ")) {
+    if (ctype(spectralAxis).find("FREQ") != std::string::npos) {
 
     	referenceFrequency = rval;
     	//HAS ALTRVAL
@@ -280,7 +280,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     				referenceFrequency + (Double(i)-referenceChannel)*delt;
     	}
 
-    } else if (ctype(spectralAxis).contains("FELO") || (ctype(spectralAxis).contains("VOPT"))) {
+    } else if (StringContains(ctype(spectralAxis), "FELO") || StringContains(ctype(spectralAxis), "VOPT")) {
     	if (restFrequency < 0) {
     		logger << LogIO::SEVERE << "VOPT axis does not have rest frequency "
     				"information (RESTFREQ)" << LogIO::POST;
@@ -308,7 +308,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     					(Double(i)-referenceChannel) * deltaFrequency;
     		}
     	}
-    } else if (ctype(spectralAxis).contains("VELO") || ctype(spectralAxis).contains("VRAD")) {
+    } else if (StringContains(ctype(spectralAxis), "VELO") || StringContains(ctype(spectralAxis), "VRAD")) {
     	if (restFrequency < 0) {
     		logger << LogIO::SEVERE << "VRAD axis does not have rest frequency "
     				"information (RESTFREQ)" << LogIO::POST;
@@ -336,7 +336,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     					(Double(i)-referenceChannel) * deltaFrequency;
     		}
     	}
-    } else if (ctype(spectralAxis).contains("WAVE")) {
+    } else if (StringContains(ctype(spectralAxis), "WAVE")) {
     	// get the conversion to "m"
     	Quantity wavUnit(1.0, Unit(unit));
     	wavUnit.convert(Unit("m"));
@@ -363,7 +363,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     			return False;
     		}
     	}
-    } else if (ctype(spectralAxis).contains("AWAV")) {
+    } else if (StringContains(ctype(spectralAxis), "AWAV")) {
     	Quantity wavUnit(1.0, Unit(unit));
     	wavUnit.convert(Unit("m"));
     	Double to_m = wavUnit.getValue();
