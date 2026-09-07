@@ -355,8 +355,8 @@ rownr_t StManAipsIO::resync64 (rownr_t nrrow)
 #else
 	throw (DataManInternalError
 	                 ("StManAipsIO::open: mismatch in #row; expected " +
-			  String::toString(nrrow) + ", found " +
-			  String::toString(nrr)));
+			  std::to_string(nrrow) + ", found " +
+			  std::to_string(nrr)));
 #endif
     }
     for (i=0; i<ncolumn(); i++) {

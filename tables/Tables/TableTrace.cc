@@ -124,7 +124,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       } else {
         // Otherwise see if this column is traced.
         for (size_t i=0; i<theirColumns.size(); ++i) {
-          if (cd.name().matches (theirColumns[i])) {
+          if (RegexMatches(cd.name(), theirColumns[i])) {
             traceCol = theirOper;
             break;
           }
@@ -296,7 +296,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String operStr;
     AipsrcValue<String>::find (operStr, "table.trace.operation", "");
     if (! operStr.empty()) {
-      operStr.downcase();
+      ToLowerCaseInPlace(operStr);
       for (uInt i=0; i<operStr.size(); ++i) {
         if (operStr[i] == 's') {
           theirDoTrace |= 2;
@@ -317,7 +317,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String colStr;
     AipsrcValue<String>::find (colStr, "table.trace.column", "");
     if (! typeStr.empty()) {
-      typeStr.downcase();
+      ToLowerCaseInPlace(typeStr);
       for (uInt i=0; i<typeStr.size(); ++i) {
         if (typeStr[i] == 's') {
           theirColType |= SCALAR;

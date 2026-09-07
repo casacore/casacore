@@ -79,7 +79,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length,
     getBucket(bucketNr);
   }
 
-  replaceData(offset,string.length(),string.chars());
+  replaceData(offset,string.length(),string.c_str());
 
   // remove additional space left (if any)
   if (length - string.length() > 0) {
@@ -120,7 +120,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length,
       //
     CanonicalConversion::fromLocal (itsIntBuf, uInt(aString[i].length()));
     replaceData (offset,itsIntSize, itsIntBuf);
-    replaceData (offset,aString[i].length(), aString[i].chars());
+    replaceData (offset,aString[i].length(), aString[i].c_str());
   }
 
   string.freeStorage(aString,deleteIt);
@@ -222,7 +222,7 @@ void SSMStringHandler::put (Int& bucketNr, Int& offset, Int& length,
   offset   = itsUsedLength;
   bucketNr = itsCurrentBucket;
   length   = string.length();
-  putData (length, string.chars());
+  putData (length, string.c_str());
 }
 
 void SSMStringHandler::put (Int& bucketNr, Int& offset, Int& length, 
@@ -304,7 +304,7 @@ void SSMStringHandler::put (Int& bucketNr, Int& offset, Int& length,
       //
     CanonicalConversion::fromLocal (itsIntBuf, uInt(aString[i].length()));
     putData (itsIntSize, itsIntBuf);
-    putData (aString[i].length(), aString[i].chars());
+    putData (aString[i].length(), aString[i].c_str());
   }
   string.freeStorage(aString,deleteIt);
 }

@@ -396,7 +396,7 @@ private:
 			    char* first, char* second,
 			    TableRecord& keysets,
 			    LogIO& logger,
-			    const String& fileName,
+			    const std::string& fileName,
 			    ifstream& jFile,
 			    Int& lineNumber,
 			    Char separator,

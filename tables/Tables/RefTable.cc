@@ -334,7 +334,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     rownr_t rootNrow, nrrow;
     Int version = ios.getstart ("RefTable");
     if (version > 3) {
-      throw TableError ("RefTable version " + String::toString(version) +
+      throw TableError ("RefTable version " + std::to_string(version) +
                         " not supported by this version of Cassacore");
     }
     ios >> rootName;

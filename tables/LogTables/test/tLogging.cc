@@ -168,13 +168,13 @@ void testLogMessage()
 	AlwaysAssertExit(m.priority() == LogMessage::SEVERE);
 	AlwaysAssertExit(LogMessage::toString(m.priority()) == "SEVERE");
 	String message = m.toString();
-	AlwaysAssertExit(message.contains(String("hello")) &&
-			 message.contains(String("test")) &&
-			 message.contains(String("SEVERE")));
+	AlwaysAssertExit(message.find("hello") != std::string::npos &&
+			 message.find("test") != std::string::npos &&
+			 message.find("SEVERE") != std::string::npos);
 	ostringstream os;
 	os << m;
-	String cached(os);
-	cached = cached(0, cached.length()-1); // get rid of trailing nl
+	String cached(os.str());
+	cached = cached.substr(0, cached.length()-1); // get rid of trailing nl
 	AlwaysAssertExit(cached == message);
     }
 
@@ -266,12 +266,12 @@ void testLogOrigin()
 			 distributed.line() == t3.line() &&
 			 distributed.fileName() == t3.fileName());
 	String s = t3.toString();
-	AlwaysAssertExit(s.contains(String("class")) &&
-			 s.contains(String("member")) &&
-			 s.contains(String("file")));
+	AlwaysAssertExit(s.find("class") != std::string::npos &&
+			 s.find("member") != std::string::npos &&
+			 s.find("file") != std::string::npos);
 	ostringstream buffer;
 	buffer << t3;
-	String s2(buffer);
+	String s2(buffer.str());
 	AlwaysAssertExit(s2 == s);
     }
 
@@ -323,8 +323,8 @@ void testLogSink()
 		     sink2.post(message) &&
 		     sink3.post(message));
 	
-    String fromos(os);
-    AlwaysAssertExit(fromos.contains("test"));
+    String fromos(os.str());
+    AlwaysAssertExit(fromos.find("test") != std::string::npos);
     
     Table logTable(tableNames[0]);
     Table logTable2(tableNames[1]);
@@ -366,7 +366,7 @@ void testLogSink()
         sink5.postThenThrow(message, AipsError());
     } catch (std::exception& x) {
         caught = True;
-	AlwaysAssertExit(String(x.what()).contains("test"));
+	AlwaysAssertExit(String(x.what()).find("test") != std::string::npos);
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 7);
     } 
     AlwaysAssertExit(caught);
@@ -377,7 +377,7 @@ void testLogSink()
         sink5.postGloballyThenThrow(message);
     } catch (std::exception& x) {
         caught = True;
-	AlwaysAssertExit(String(x.what()).contains("test"));
+	AlwaysAssertExit(String(x.what()).find("test") != std::string::npos);
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 8);
     } 
     AlwaysAssertExit(caught);
@@ -413,8 +413,8 @@ void testLogIO()
 	//     ostream& output();
 	//     void post();
 	os << "This SHOULD post" << LogIO::POST;
-	String s(ostr);
-	AlwaysAssert(s.contains("SHOULD"), AipsError);
+	String s(ostr.str());
+	AlwaysAssert(s.find("SHOULD") != std::string::npos, AipsError);
 	//     ~LogIO();
     }
     {
@@ -423,8 +423,8 @@ void testLogIO()
 	//     LogIO(const LogOrigin &or, LogSink &sink);
 	LogIO os(LogOrigin("HELLO"), sls);
 	os << "This SHOULD post" << LogIO::POST;
-	String s(ostr);
-	AlwaysAssert(s.contains("HELLO"), AipsError);
+	String s(ostr.str());
+	AlwaysAssert(s.find("HELLO") != std::string::npos, AipsError);
     }
     {
 	ostringstream ostr;
@@ -432,7 +432,7 @@ void testLogIO()
 	LogIO os(sls);
 	//     void priority(LogMessage::Priority which);
 	os << LogIO::DEBUGGING << "This SHOULD NOT post" << LogIO::POST;
-	String s(ostr);
+	String s(ostr.str());
 	AlwaysAssert(s == "", AipsError);
     }
     {
@@ -442,8 +442,8 @@ void testLogIO()
 	//     LogIO();
 	LogIO os;
 	os << "This SHOULD post" << LogIO::POST;
-	String s(ostr);
-	AlwaysAssert(s.contains("SHOULD"), AipsError);
+	String s(ostr.str());
+	AlwaysAssert(s.find("SHOULD") != std::string::npos, AipsError);
 	// Put back the null log sink since ostr is now frozen!
 	sls = new NullLogSink;
 	LogSink::globalSink(sls);
@@ -460,8 +460,8 @@ void testLogIO()
 	    caught = True;
 	} 
 	AlwaysAssert(caught, AipsError);
-	String s(ostr);
-	AlwaysAssert(s.contains("SHOULD"), AipsError);
+	String s(ostr.str());
+	AlwaysAssert(s.find("SHOULD") != std::string::npos, AipsError);
 	//     ~LogIO();
     }
     {
@@ -477,9 +477,9 @@ void testLogIO()
 	    caught = True;
 	} 
 	AlwaysAssert(caught, AipsError);
-	String s(ostr);
-	AlwaysAssert(s.contains("SHOULD"), AipsError);
-	AlwaysAssert(s.contains("duplicate"), AipsError);
+	String s(ostr.str());
+	AlwaysAssert(s.find("SHOULD") != std::string::npos, AipsError);
+	AlwaysAssert(s.find("duplicate") != std::string::npos, AipsError);
 	//     ~LogIO();
     }
 }

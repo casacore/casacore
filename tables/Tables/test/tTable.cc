@@ -75,7 +75,7 @@ void cbFunc (const String& name, Bool isScratch, const String& oldname)
 String removeDir (const String& msg)
 {
   String s = msg;
-  s.gsub (Regex("/.*/t"), "t");
+  RegexReplaceAll(s, Regex("/.*/t"), "t");
   return s;
 }
 

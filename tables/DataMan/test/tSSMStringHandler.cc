@@ -172,7 +172,7 @@ void init (uInt aBucketSize, uInt aMode)
   // fill new column with data
   for (uInt i=start; i<aTable.nrow(); i++) {
     aa.put(i,aString);
-    aString += " "+String::toString(i);
+    aString += " "+std::to_string(i);
   }
 
   if (aMode == 0) {
@@ -214,7 +214,7 @@ void addDirArrayColumn()
   for (uInt i=0; i<aTable.nrow(); i++) {
     ab.put(i,arrs);
     for (uInt j=0; j< 5;j++) {
-      arrs(j) += "-"+String::toString(i);
+      arrs(j) += "-"+std::to_string(i);
     }
   }
 
@@ -249,7 +249,7 @@ void addIndArrayColumn()
   for (uInt i=0; i<aTable.nrow(); i++) {
     ac.put(i,arrs);
     for (uInt j=0; j< 5;j++) {
-      arrs(j) += "-"+String::toString(i);
+      arrs(j) += "-"+std::to_string(i);
     }
   }
 
@@ -275,7 +275,7 @@ void addSmallColumn()
     ae.attach(aTable,"Col-4");
   }
   
-  String aS("SFS");
+  const std::string aS("SFS");
  
   Vector<String> arrs(5);
   arrs(0)="SFS1";
@@ -287,7 +287,7 @@ void addSmallColumn()
   for (uInt i=0; i<aTable.nrow(); i++) {
     ae.put(i,arrs);
     for (uInt j=0; j< 5;j++) {
-      arrs(j) = aS + String::toString(j) + "-"+String::toString(i);
+      arrs(j) = aS + std::to_string(j) + "-"+std::to_string(i);
     }
   }
 
@@ -398,7 +398,7 @@ void replaceStrings()
       aString="Small";
     }
     aa.put(i,aString);
-    aString += " "+String::toString(aTable.nrow()-i);
+    aString += " "+std::to_string(aTable.nrow()-i);
   }
 
   cout << "Try to change some datain Column 2" << endl;
@@ -413,7 +413,7 @@ void replaceStrings()
   for (uInt i=0; i<5; i++) {
     ab.put(i,arrd);
     for (uInt j=0; j< 5;j++) {
-      arrd(j) += "-"+String::toString(i);
+      arrd(j) += "-"+std::to_string(i);
     }
   }
 
@@ -426,7 +426,7 @@ void replaceStrings()
   for (uInt i=6; i<15; i++) {
     ab.put(i,arrd);
     for (uInt j=0; j< 5;j++) {
-      arrd(j) += "-"+String::toString(i);
+      arrd(j) += "-"+std::to_string(i);
     }
   }
 
@@ -442,7 +442,7 @@ void replaceStrings()
   for (uInt i=0; i<5; i++) {
     ac.put(i,arri);
     for (uInt j=0; j< 5;j++) {
-      arri(j) += "-"+String::toString(i);
+      arri(j) += "-"+std::to_string(i);
     }
   }
 
@@ -455,7 +455,7 @@ void replaceStrings()
   for (uInt i=6; i<15; i++) {
     ac.put(i,arri);
     for (uInt j=0; j< 5;j++) {
-      arri(j) += "-"+String::toString(i);
+      arri(j) += "-"+std::to_string(i);
     }
   }
 

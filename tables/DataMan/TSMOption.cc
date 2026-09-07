@@ -41,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (itsOption == TSMOption::Aipsrc) {
       String opt;
       AipsrcValue<String>::find (opt, "table.tsm.option", "cache");
-      opt.downcase();
+      ToLowerCaseInPlace(opt);
       if (opt == "map"  ||  opt == "mmap") {
         itsOption = TSMOption::MMap;
       } else if (opt == "cache") {

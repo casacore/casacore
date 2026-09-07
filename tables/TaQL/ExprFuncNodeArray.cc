@@ -569,11 +569,11 @@ const IPosition& TableExprFuncNodeArray::getDiagonalArg (const TableExprId& id,
     }
     if (ipos_p[0] < 0  ||  ipos_p[0] >= Int(shp.size())-1) {
       throw TableInvExpr ("Diagonals axes outside array with ndim=" +
-                          String::toString(shp.size()));
+                          std::to_string(shp.size()));
     }
     if (shp[ipos_p[0]] != shp[ipos_p[0]+1]) {
-      throw TableInvExpr ("Diagonals axis " + String::toString(ipos_p[0]) +
-                          " and " + String::toString(ipos_p[0]+1) +
+      throw TableInvExpr ("Diagonals axis " + std::to_string(ipos_p[0]) +
+                          " and " + std::to_string(ipos_p[0]+1) +
                           " should have equal length");
     }
     // Set offset to last one if exceeding.
@@ -993,7 +993,7 @@ MArray<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
     }
     throw TableInvExpr ("TableExprFuncNodeArray::getArrayBool, "
                         "unknown function " +
-                        String::toString(funcType()));
+                        std::to_string(funcType()));
 }
 
 MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
@@ -1111,7 +1111,7 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
         default:
             throw TableInvExpr ("TableExprFuncNodeArray::getArrayInt, "
                                 "unhandled date/time function " +
-                                String::toString(funcType()));
+                                std::to_string(funcType()));
         }
         values.array().freeStorage (val, deleteVal);
         res.putStorage (resp, deleteRes);
@@ -1345,7 +1345,7 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
     }
     throw TableInvExpr ("TableExprFuncNodeArray::getArrayInt, "
                         "unknown function " +
-                        String::toString(funcType()));
+                        std::to_string(funcType()));
 }
 
 MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
@@ -2198,7 +2198,7 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
     }
     throw TableInvExpr ("TableExprFuncNodeArray::getArrayDComplex, "
                         "unknown function " +
-                        String::toString(funcType()));
+                        std::to_string(funcType()));
 }
 
 MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
@@ -2224,37 +2224,37 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         switch (funcType()) {
         case TableExprFuncNode::upcaseFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].upcase();
+                ToUpperCaseInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::downcaseFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].downcase();
+                ToLowerCaseInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::capitalizeFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].capitalize();
+                CapitalizeStringInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::sreverseFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].reverse();
+                std::reverse(str[i].begin(), str[i].end());
             }
             break;
         case TableExprFuncNode::trimFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].trim();
+                TrimInPlace(str[i]);
             }
             break;
         case TableExprFuncNode::ltrimFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].gsub (leadingWS, String());
+                RegexReplaceAll(str[i], leadingWS, String());
             }
             break;
         case TableExprFuncNode::rtrimFUNC:
             for (size_t i=0; i<n; i++) {
-                str[i].gsub (trailingWS, String());
+                RegexReplaceAll(str[i], trailingWS, String());
             }
             break;
         case TableExprFuncNode::substrFUNC:
@@ -2281,12 +2281,12 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
               if (operands()[1]->dataType() == TableExprNodeRep::NTString) {
                 String patt = operands()[1]->getString(id);
                 for (size_t i=0; i<n; i++) {
-                  str[i].gsub (patt, repl);
+                  ReplaceAllInPlace(str[i], patt, repl);
                 }
               } else {
                 Regex patt = operands()[1]->getRegex(id).regex();
                 for (size_t i=0; i<n; i++) {
-                  str[i].gsub (patt, repl);
+                  RegexReplaceAll(str[i], patt, repl);
                 }
               }
             }
@@ -2294,7 +2294,7 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         default:
             throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
                                 "unhandled string function " +
-                                String::toString(funcType()));
+                                std::to_string(funcType()));
         }
         strings.putStorage (str, deleteStr);
         return MArray<String> (strings, mstrings);
@@ -2341,7 +2341,7 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         default:
             throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
                                 "unhandled date-string function " +
-                                String::toString(funcType()));
+                                std::to_string(funcType()));
         }
         values.array().freeStorage (val, deleteVal);
         strings.putStorage (str, deleteStr);
@@ -2455,7 +2455,7 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
         default:
             throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
                                 "unhandled angle-string function " +
-                                String::toString(funcType()));
+                                std::to_string(funcType()));
         }
         values.array().freeStorage (val, deleteVal);
         strings.putStorage (str, deleteStr);
@@ -2534,7 +2534,7 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
     }
     throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
                         "unknown function " +
-                        String::toString(funcType()));
+                        std::to_string(funcType()));
 }
 
 MArray<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
@@ -2661,7 +2661,7 @@ MArray<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
     }
     throw TableInvExpr ("TableExprFuncNodeArray::getArrayDate, "
                         "unknown function " +
-                        String::toString(funcType()));
+                        std::to_string(funcType()));
 }
 
 } //# NAMESPACE CASACORE - END

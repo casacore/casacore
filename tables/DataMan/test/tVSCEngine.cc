@@ -91,7 +91,7 @@ void a() {
     ScalarColumn<VSCExample> colA (tab,"colA");
     uInt i;
     for (i=0; i<10; i++) {
-      colA.put (i, VSCExample(i,i+1, String::toString(i+2)));
+      colA.put (i, VSCExample(i,i+1, std::to_string(i+2)));
     }
 
     //# Do an erroneous thing.
@@ -123,7 +123,7 @@ void b()
 	coly.get (i, valy);
 	colz.get (i, valz);
 	colA.get (i, valA);
-        String expz = String::toString(i+2);
+        String expz = std::to_string(i+2);
 	if (valx!=i || valy!=i+1 || valz!=expz || !(valA == VSCExample(i,i+1,expz))) {
             cout << "error: " << valx << " " << valy << " " << valz << " "
 		 << valA.x() << " " << valA.y() << " " << valA.z() << endl;
@@ -131,7 +131,7 @@ void b()
     }
     Vector<VSCExample> vecA = colA.getColumn();
     for (i=0; i<10; i++) {
-      if (!(vecA(i) == VSCExample(i,i+1,String::toString(i+2)))) {
+      if (!(vecA(i) == VSCExample(i,i+1,std::to_string(i+2)))) {
 	    cout << "error in vecA(" << i << "): "
 		 << vecA(i).x() << " " << vecA(i).y() << vecA(i).z() << endl;
 	}
@@ -142,6 +142,6 @@ void b()
     rows[1] = 5;
     Vector<VSCExample> vecRF = colA.getColumnCells(RefRows(rows));
     AlwaysAssertExit (vecRF.size() == 2);
-    AlwaysAssertExit (vecRF[0] == VSCExample(2,3,String::toString(4)));
-    AlwaysAssertExit (vecRF[1] == VSCExample(5,6,String::toString(7)));
+    AlwaysAssertExit (vecRF[0] == VSCExample(2,3,std::to_string(4)));
+    AlwaysAssertExit (vecRF[1] == VSCExample(5,6,std::to_string(7)));
 }

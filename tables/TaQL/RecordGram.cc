@@ -129,7 +129,7 @@ int recordGramParseCommand (const String& command)
 {
     RecordGramrestart (RecordGramin);
     yy_start = 1;
-    strpRecordGram = command.chars();     // get pointer to command string
+    strpRecordGram = command.c_str();     // get pointer to command string
     posRecordGram  = 0;                   // initialize string position
     return RecordGramparse();             // parse command string
 }
@@ -348,7 +348,7 @@ TableExprNode RecordGram::parse (const Table& table,
 TableExprNode RecordGram::doParse (const String& expression)
 {
     theirTokens.clear();
-    String message;
+    std::string message;
     String command = expression + '\n';
     Bool error = False;
     TableExprNode result;
@@ -369,7 +369,7 @@ TableExprNode RecordGram::doParse (const String& expression)
     //# If an exception was thrown; throw it again with the message.
     if (error) {
         throw AipsError(message + '\n' + "Scanned so far: " +
-                         command.before(recordGramPosition()));
+                         command.substr(0, recordGramPosition()));
     }
     return result;
 }
@@ -413,7 +413,7 @@ TableExprNode RecordGram::handleLiteral (RecordGramVal* val)
         Quantity res;
         //# Skip a possible leading / which acts as an escape character.
         if (val->str.length() > 0  &&  val->str[0] == '/') {
-            val->str = val->str.after(0);
+            val->str = val->str.substr(1);
         }
         if (! MVAngle::read (res, val->str)) {
             throw (TableInvExpr ("invalid time/pos string " + val->str));

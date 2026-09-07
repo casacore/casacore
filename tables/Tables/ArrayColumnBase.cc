@@ -75,7 +75,7 @@ Bool ArrayColumnBase::checkShape (const IPosition& expShape,
     }
     String msg(where);
     if (rownr >= 0) {
-      msg += " for row " + String::toString(rownr);
+      msg += " for row " + std::to_string(rownr);
     }
     throw TableArrayConformanceError(msg + " in column " +
                                      baseColPtr_p->columnDesc().name(),
@@ -287,8 +287,8 @@ void ArrayColumnBase::setShape (rownr_t rownr, const IPosition& shape)
     if (! shape.isEqual (baseColPtr_p->shape (rownr))) {
       throw TableInvOper
         ("ArrayColumn::setShape; shape cannot be changed for row " +
-         String::toString(rownr) + " in column " +
-         baseColPtr_p->columnDesc().name());
+         std::to_string(rownr) + " in column " +
+         std::string(baseColPtr_p->columnDesc().name()));
     }
   }
 }
@@ -306,8 +306,8 @@ void ArrayColumnBase::setShape (rownr_t rownr, const IPosition& shape,
     if (! shape.isEqual (baseColPtr_p->shape (rownr))) {
       throw TableInvOper
         ("ArrayColumn::setShape; shape cannot be changed for row " +
-         String::toString(rownr) + " column " +
-         baseColPtr_p->columnDesc().name());	
+         std::to_string(rownr) + " column " +
+         std::string(baseColPtr_p->columnDesc().name()));
     }
   }
 }
@@ -373,9 +373,9 @@ void ArrayColumnBase::acbPutColumn (const ArrayBase& arr)
   if (shp[last] != Int(nrrow)) {
     throw TableArrayConformanceError
       ("ArrayColumn::putColumn - column " +
-       baseColPtr_p->columnDesc().name() + " has " +
-       String::toString(nrrow) + ", array has " +
-       String::toString(shp[last]) + " rows");
+       std::string(baseColPtr_p->columnDesc().name()) + " has " +
+       std::to_string(nrrow) + ", array has " +
+       std::to_string(shp[last]) + " rows");
   }
   //# Remove #rows from shape to get the shape of each cell.
   shp.resize (last);
@@ -405,9 +405,9 @@ void ArrayColumnBase::acbPutColumn (const Slicer& arraySection,
   if (arrshp(last) != Int(nrrow)) {
     throw TableArrayConformanceError
       ("ArrayColumn::putColumn(slicer) - column " +
-       baseColPtr_p->columnDesc().name() + " has " +
-       String::toString(nrrow) + ", but array has " +
-       String::toString(arrshp[last]) + " rows");
+       std::string(baseColPtr_p->columnDesc().name()) + " has " +
+       std::to_string(nrrow) + ", but array has " +
+       std::to_string(arrshp[last]) + " rows");
   }
   //# If the array is fixed shape, check if the shape matches.
   if ((columnDesc().options() & ColumnDesc::FixedShape)
@@ -759,17 +759,17 @@ String ColumnSlicer::validateParameters() const
 {
   // Validate the contruction parameters to see if they are consistent.
   if (dataSlicers_p.size() != destinationSlicers_p.size()){
-    return String::format ("Number of data slicers (%d) and destination slicers (%d) "
+    return FormatString ("Number of data slicers (%d) and destination slicers (%d) "
                            "must match", dataSlicers_p.size(), destinationSlicers_p.size());
   }
 
   if (dataSlicers_p.size() == 0){
-    return String::format ("At least one destination and one data slicer required.");
+    return "At least one destination and one data slicer required.";
   }
 
   for (uInt i = 0; i < dataSlicers_p.size(); i++) {
     if (dataSlicers_p[i]->length() != destinationSlicers_p[i]->length()){
-      return String::format ("Length of data slicer[%d] (%s) and "
+      return FormatString ("Length of data slicer[%d] (%s) and "
                              "destination slicer [%d] (%s) must be equal", 
                              i, dataSlicers_p[i]->length().toString().c_str(),
                              i, destinationSlicers_p[i]->length().toString().c_str());

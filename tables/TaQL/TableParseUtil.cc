@@ -201,26 +201,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //# Make a copy, because some String functions are non-const.
       //# Usually the name consists of a columnName only, so use that.
       //# A keyword is given if :: is part of the name or if isKeyword is set.
-      shorthand = "";
       columnName = name;
       String restName;
       Bool isKey = isKeyword;
-      int j = columnName.index("::");
-      Vector<String> fldNam;
-      uInt stfld = 0;
-      if (j >= 0) {
+      const size_t sep_index = columnName.find("::");
+      if (sep_index != std::string::npos) {
         // The name contains ::, thus represents a keyword name.
         isKey = True;
+        restName = columnName.substr(sep_index+2);
       } else if (isKey) {
         // It is a keyword, but no ::.
-        j = -2;
+        restName = columnName;
       }
+      Vector<String> fldNam;
+      uInt stfld = 0;
+      shorthand = "";
       if (isKey) {
         // There should be something after the ::
         // which can be multiple names separated by dots.
         // They represent the keyword name and possible subfields in case
         // the keyword is a record.
-        restName = columnName.after(j+1);
         if (!allowNoKey && restName.empty()) {
           if (checkError) {
             throw (TableInvExpr ("No keyword given in name " + name));
@@ -230,10 +230,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         fldNam = stringToVector (restName, '.');
         // The part before the :: can be empty, an optional shorthand,
         // and an optional column name (separated by a dot).
-        if (j <= 0) {
+        if (sep_index == std::string::npos || sep_index == 0) {
           columnName = "";
         } else {
-          Vector<String> scNames = stringToVector(columnName.before(j), '.');
+          Vector<String> scNames = stringToVector(columnName.substr(0, sep_index), '.');
           switch (scNames.size()) {
           case 2:
             shorthand = scNames(0);
@@ -434,7 +434,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         default:
           throw TableInvExpr ("TableParse::getTypeString - "
                               "value has an unknown data type " +
-                              String::toString(type));
+                              std::to_string(type));
         }
       }
       return out;

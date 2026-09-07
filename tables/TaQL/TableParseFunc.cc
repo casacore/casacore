@@ -179,7 +179,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                   ||  (rep->dataType() != TableExprNodeRep::NTInt
                        &&  rep->dataType() != TableExprNodeRep::NTDouble)) {
                 throw TableInvExpr ("Axes/shape arguments " +
-                                    String::toString(i+1) +
+                                    std::to_string(i+1) +
                                     " are not one or more scalars"
                                     " or a single bounded range");
               }
@@ -203,8 +203,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return TableExprNode::newFunctionNode (ftype, arguments, tabInfo, style);
     } catch (const std::exception& x) {
       String err (x.what());
-      if (err.size() > 28  &&  err.before(28) == "Error in select expression: ") {
-        err = err.from(28);
+      if (err.size() > 28  &&  err.substr(0, 28) == "Error in select expression: ") {
+        err = err.substr(28);
       }
       throw TableInvExpr ("Erroneous use of function " + name + " - " + err);
     }
@@ -258,7 +258,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# the function is an aggregate one.
     TableExprFuncNode::FunctionType ftype = TableExprFuncNode::piFUNC;
     String funcName (name);
-    funcName.downcase();
+    ToLowerCaseInPlace(funcName);
     if (funcName == "pi") {
       ftype = TableExprFuncNode::piFUNC;
     } else if (funcName == "e") {

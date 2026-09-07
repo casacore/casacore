@@ -82,7 +82,7 @@ MSMIndColumn::Data* MSMIndColumn::getShape (rownr_t rownr)
   void* ptr = getArrayPtr(rownr);
   if (ptr == 0) {
     throw (DataManInvOper ("MSM: no array in row " +
-			   String::toString(rownr) +
+			   String(std::to_string(rownr)) +
                            " in column " + columnName() +
 			   " of " + stmanPtr_p->fileName()));
   }

@@ -341,7 +341,7 @@ void seltab (const String& str)
       addCalc = True;
     } else {
       s = str.substr(spos, epos-spos);
-      s.downcase();
+      ToLowerCaseInPlace(s);
       addCalc = !(s=="with" || s=="select" || s=="update" || s=="insert" ||
                   s=="calc" || s=="delete" || s=="count"  ||
                   s=="create" || s=="createtable" ||
@@ -366,9 +366,9 @@ void seltab (const String& str)
   if (semipos == String::npos) {
     result = tableCommand (strc, vecstr, cmd);
   } else {
-    Table tab(strc.after(semipos));
+    Table tab(strc.substr(semipos + 1));
     std::vector<const Table*> tabblock(1, &tab);
-    result = tableCommand (strc.before(semipos), tabblock, vecstr, cmd);
+    result = tableCommand (strc.substr(0, semipos), tabblock, vecstr, cmd);
   }
   cout << "    has been executed" << endl;
   if (result.isTable()) {

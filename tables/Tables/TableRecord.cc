@@ -470,8 +470,8 @@ void TableRecord::defineFromValueHolder (const RecordFieldId& fieldId,
   case TpString:
     {
       String val = value.asString();
-      if (val.index("Table: ") == 0  &&  Table::isReadable (val.from(7))) {
-	Table tab(val.from(7));
+      if (val.starts_with("Table: ")  &&  Table::isReadable (val.substr(7))) {
+	Table tab(val.substr(7));
 	defineTable (fieldId, tab);
       } else {
 	define (fieldId, val);

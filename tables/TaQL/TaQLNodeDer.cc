@@ -279,7 +279,7 @@ TaQLRegexNodeRep::TaQLRegexNodeRep (const String& regex)
   AlwaysAssert (sz-inx >= 3, AipsError);
   itsValue = regex.substr(inx, sz-inx);
   if (itsCaseInsensitive) {
-    itsValue.downcase();
+    ToLowerCaseInPlace(itsValue);
   }
 }
 TaQLRegexNodeRep::TaQLRegexNodeRep (const String& value,

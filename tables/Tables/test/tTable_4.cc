@@ -57,7 +57,7 @@
 String removeDir (const String& msg)
 {
   String s = msg;
-  s.gsub (Regex("/.*/t"), "t");
+  RegexReplaceAll(s, Regex("/.*/t"), "t");
   return s;
 }
 
@@ -86,7 +86,7 @@ TableDesc makeDesc (Bool ask)
 	stman = "StandardStMan";
 	stmanname = "";
 	if (strs.nelements() > 1) {
-	  strs(1).downcase();
+	  ToLowerCaseInPlace(strs(1));
 	  if (strs(1) == 'a') {
 	    stman = "StManAipsIO";
 	  } else if (strs(1) == 'i') {

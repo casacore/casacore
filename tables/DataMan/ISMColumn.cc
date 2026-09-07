@@ -1242,7 +1242,7 @@ size_t ISMColumn::fromString (void* out, const void* in, size_t n,
 	const String& str = ((const String*)in)[i];
 	strleng = str.length();
 	leng += writeLeng (buf + leng, &strleng, 1);
-	memcpy (buf + leng, str.chars(), strleng);
+	memcpy (buf + leng, str.c_str(), strleng);
 	leng += strleng;
     }
     writeLeng (buf, &leng, 1);

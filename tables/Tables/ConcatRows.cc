@@ -43,9 +43,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatRows::findRownr (rownr_t rownr) const
   {
     if (rownr >= itsRows[itsNTable]) {
-      throw TableError ("ConcatTable: rownr " + String::toString(rownr) +
+      throw TableError ("ConcatTable: rownr " + std::to_string(rownr) +
 			" past nr of rows (=" +
-			String::toString(itsRows[itsNTable]) + ')');
+			std::to_string(itsRows[itsNTable]) + ')');
     }
     Bool found;
     Int inx = binarySearchBrackets (found, itsRows, rownr, itsNTable);

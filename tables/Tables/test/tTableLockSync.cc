@@ -189,7 +189,7 @@ void b (Bool noReadLocking, Bool permLocking)
 		    col2.put (rownr, val+1);
 		    col3.put (rownr, val+2);
 		    cols.put (rownr, "ARatherLongTestString" +
-			             String::toString(val));
+			             std::to_string(val));
 		    indgen (freqValues, float(val+2));
 		    indgen (polValues, float(val+3));
 		    indgen (dataValues, float(val+4));

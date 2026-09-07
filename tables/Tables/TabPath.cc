@@ -56,7 +56,7 @@ Bool TabPath::found (const String& name, String& dir) const
     uInt dirnr;
     Bool sw = False;
     for (dirnr=0; dirnr<nrDir_p; dirnr++) {
-	if (access ((tabDir_p[dirnr] + name).chars(), R_OK) == 0) {
+	if (access ((tabDir_p[dirnr] + name).c_str(), R_OK) == 0) {
 	    sw = True;             // found
 	    break;
 	}

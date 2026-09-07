@@ -157,11 +157,11 @@ namespace casacore {
   void UDFBase::registerUDF (const String& name, MakeUDFObject* func)
   {
     String fname(name);
-    fname.downcase();
+    ToLowerCaseInPlace(fname);
     // The library name is the first part.
-    Int j = fname.index('.');
+    size_t j = fname.find('.');
     String libname;
-    if (j > 0  &&  j < Int(fname.size())-1) {
+    if (j > 0  &&  j+1 < fname.size() && j!=std::string::npos) {
       libname = fname.substr(0,j);
     } else {
       throw TableInvExpr("UDF " + name + " has an invalid name (no dot)");
@@ -189,7 +189,7 @@ namespace casacore {
   UDFBase* UDFBase::createUDF (const String& name, const TaQLStyle& style)
   {
     String fname(name);
-    fname.downcase();
+    ToLowerCaseInPlace(fname);
     map<String,MakeUDFObject*>::iterator iter;
     {
       std::lock_guard<std::recursive_mutex> lock(theirMutex);
@@ -202,9 +202,9 @@ namespace casacore {
     std::string sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
-    Int j = fname.index('.');
+    size_t j = fname.find('.');
     std::string libname;
-    if (j > 0  &&  j < Int(fname.size())-1) {
+    if (j > 0  &&  j < fname.size()-1 && j!=std::string::npos) {
       // Replace a possible synonym for the library name.
       libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
@@ -221,7 +221,7 @@ namespace casacore {
       if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
         DynLib dl(libname, std::string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
-                  "register_"+libname, False);
+                  std::string("register_")+libname, False);
         if (dl.getHandle()) {
           // Add to map to indicate library has been loaded.
           theirRegistry[libname] = 0;

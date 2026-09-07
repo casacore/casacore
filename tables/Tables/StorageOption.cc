@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (itsOption == StorageOption::Aipsrc) {
       String opt;
       AipsrcValue<String>::find (opt, "table.storage.option", "default");
-      opt.downcase();
+      ToLowerCaseInPlace(opt);
       if (opt == "multifile") {
         itsOption = StorageOption::MultiFile;
       } else if (opt == "multihdf5") {

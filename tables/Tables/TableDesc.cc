@@ -553,7 +553,7 @@ Vector<String> TableDesc::hypercolumnNames() const
     for (i=0; i<nkey; i++) {
 	if (privKey_p->type(i) == TpRecord) {
 	    const String& key = privKey_p->description().name (i);
-	    if (key.index (theHyperPrefix) == 0) {
+	    if (key.starts_with (theHyperPrefix)) {
 		nhyp++;
 	    }
 	}
@@ -564,9 +564,9 @@ Vector<String> TableDesc::hypercolumnNames() const
 	for (i=0; i<nkey; i++) {
 	    if (privKey_p->type(i) == TpRecord) {
 		const String& key = privKey_p->description().name (i);
-		if (key.index (theHyperPrefix) == 0) {
-		    result(nhyp) = String(key).from
-			                   (int(theHyperPrefix.length()));
+		if (key.starts_with (theHyperPrefix)) {
+		    result(nhyp) = String(key).substr
+			                   (theHyperPrefix.length());
 		    nhyp++;
 		}
 	    }

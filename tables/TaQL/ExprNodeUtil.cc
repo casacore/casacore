@@ -104,10 +104,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           first = False;
         } else {
           if (tab.nrow() != nrow) {
-            throw TableInvExpr("Table " + tab.tableName() + " has " +
-                               String::toString(tab.nrow()) + " rows, " +
+            throw TableInvExpr("Table " + std::string(tab.tableName()) + " has " +
+                               std::to_string(tab.nrow()) + " rows, " +
                                "but previous tables have " +
-                               String::toString(nrow) + " rows");
+                               std::to_string(nrow) + " rows");
           }
         }
       }

@@ -90,7 +90,7 @@ void a() {
     for (int i=0; i<10; i++) {
       Vector<VACExample> vac(i);
       for (int j=0; j<i; ++j) {
-        vac[j] = VACExample(i+j, i+j+1, String::toString(i+j+2));
+        vac[j] = VACExample(i+j, i+j+1, std::to_string(i+j+2));
       }
       colA.put (i, vac);
     }
@@ -112,7 +112,7 @@ void checkArrs (int st, int len, const Array<Int>& x, const Array<float>& y,
   AlwaysAssertExit(x.size()==sz && y.size()==sz && z.size()==sz);
   AlwaysAssertExit(x.ndim()==1 && y.ndim()==1 && z.ndim()==1);
   for (int j=0; j<len; ++j) {
-    String expz = String::toString(st+j+2);
+    String expz = std::to_string(st+j+2);
     AlwaysAssertExit (x.data()[j] == st+j);
     AlwaysAssertExit (y.data()[j] == st+j+1);
     AlwaysAssertExit (z.data()[j] == expz);
@@ -124,7 +124,7 @@ void checkVac (int st, int len, const Array<VACExample>& vac)
   AlwaysAssertExit(vac.size()==uInt(len));
   AlwaysAssertExit(vac.ndim()==1);
   for (int j=0; j<len; ++j) {
-    String expz = String::toString(st+j+2);
+    String expz = std::to_string(st+j+2);
     AlwaysAssertExit (vac.data()[j].x() == st+j);
     AlwaysAssertExit (vac.data()[j].y() == st+j+1);
     AlwaysAssertExit (vac.data()[j].z() == expz);

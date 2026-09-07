@@ -488,7 +488,7 @@ std::shared_ptr<BaseTable> Table::makeBaseTable
     String tp;
     uInt version = ios.getstart ("Table");
     if (version > 3) {
-      throw TableError ("Table version " + String::toString(version) +
+      throw TableError ("Table version " + std::to_string(version) +
                         " not supported by this version of Casacore");
     }
     uInt format;

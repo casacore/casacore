@@ -253,8 +253,8 @@ void SSMColumn::getString (rownr_t aRowNr, String* aValue)
     // Allocate the maximum number of characters needed
     // The +1 is to correct for the incorrect use of the chars() function
     // Should be changed to use real Char*
-    aValue->alloc(itsMaxLen+1);
-    char* sp = const_cast<char*>(aValue->chars());
+    aValue->resize(itsMaxLen+1);
+    char* sp = aValue->data();
     rownr_t aStartRow;
     rownr_t anEndRow;
     char* buf = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
@@ -269,7 +269,7 @@ void SSMColumn::getString (rownr_t aRowNr, String* aValue)
     while (*sp++ != '\0') {
       len++;
     }
-    aValue->alloc(len);
+    aValue->resize(len);
   } else {
 
     // The string is probably stored indirectly in a string bucket.
@@ -429,7 +429,7 @@ void SSMColumn::putString (rownr_t aRowNr, const String* aValue)
     char*   aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                                       columnName());
     itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
-		  aValue->chars(), min(itsMaxLen, aValue->length()+1));
+		  aValue->c_str(), min(itsMaxLen, aValue->length()+1));
     itsSSMPtr->setBucketDirty();
   } else { 
 
@@ -484,7 +484,7 @@ void SSMColumn::putValueShortString(rownr_t aRowNr, const void* aValue,
 
   itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
   		aValue, itsNrCopy);
-  memcpy (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes, string.chars(),
+  memcpy (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes, string.c_str(),
 	  string.length());
   itsSSMPtr->setBucketDirty();
 }

@@ -95,8 +95,8 @@ void TaQLStyle::defineSynonym (const String& command)
   String cmd(command);  // to make it non-const
   String::size_type pos = cmd.find ('=');
   AlwaysAssert (pos != String::npos, AipsError);
-  defineSynonym (trim(String(cmd.before(pos))),
-                 trim(String(cmd.after(pos))));
+  defineSynonym (trim(String(cmd.substr(0, pos))),
+                 trim(String(cmd.substr(pos + 1))));
 }
 
 String TaQLStyle::findSynonym (const String& synonym) const

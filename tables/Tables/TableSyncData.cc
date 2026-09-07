@@ -129,7 +129,7 @@ Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
     if (itsMemIO->length() > 0) {
         uint version = itsAipsIO.getstart ("sync");
         if (version > 2) {
-          throw TableError ("TableSyncData version " + String::toString(version) +
+          throw TableError ("TableSyncData version " + std::to_string(version) +
                             " not supported by this version of Casacore");
         }
         if (version == 1) {

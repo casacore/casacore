@@ -173,10 +173,10 @@ void makeCube (const char* argv[])
     IPosition cubeShape (nrdim);
     IPosition tileShape (nrdim);
     for (i=0; i<nrdim; i++) {
-	istringstream istr(cubeV(i).chars());
+	istringstream istr(cubeV(i).c_str());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
-	    throw AipsError("Arrayshape "  + String::toString(cubeShape(i))
+	    throw AipsError("Arrayshape "  + std::to_string(cubeShape(i))
 			    + " must be > 0");
 	}
     }
@@ -187,10 +187,10 @@ void makeCube (const char* argv[])
 	tileShape = TiledStMan::makeTileShape (cubeShape);
     }else{
 	for (i=0; i<nrdim; i++) {
-	    istringstream istr(tileV(i).chars());
+	    istringstream istr(tileV(i).c_str());
 	    istr >> tileShape(i);
 	    if (tileShape(i) <= 0) {
-		throw AipsError("Tileshape " + String::toString(tileShape(i))
+		throw AipsError("Tileshape " + std::to_string(tileShape(i))
 				+ " must be > 0");
 	    }
 	}
@@ -380,7 +380,7 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	    Bool error = False;
 	    IPosition pos(vec.nelements());
 	    for (uInt i=0; i<vec.nelements(); i++) {
-		istringstream istr(vec(i).chars());
+		istringstream istr(vec(i).c_str());
 		istr >> pos(i);
 		if (pos(i) < 0) {
 		    cout << "Value " << pos(i) << " must be >= 0" << endl;
