@@ -269,8 +269,8 @@ std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
     auto arySize = myArray.size();
     ThrowIf(
         *indices.rbegin() >= arySize,
-        "Logic Error: Index " + String::toString(*indices.rbegin()) + " is too "
-        "large. The sorted array has size " + String::toString(arySize)
+        "Logic Error: Index " + ValueToString(*indices.rbegin()) + " is too "
+        "large. The sorted array has size " + ValueToString(arySize)
     );
     std::map<uInt64, AccumType> indexToValuesMap;
     uInt64 lastIndex = 0;

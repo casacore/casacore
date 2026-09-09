@@ -64,34 +64,34 @@ Vector<Int> LatticeStatsBase::toStatisticTypes (const Vector<String>& statsU)
 Int LatticeStatsBase::toStatisticType (const String& statU)
 { 
    String stat = statU;
-   stat.upcase();
+   ToUpperCaseInPlace(stat);
    Int statToPlot = -1;
-   if (stat.contains("NPTS")) {
+   if (StringContains(stat, "NPTS")) {
       statToPlot = NPTS;
-   } else if (stat.contains("SUMSQ")) {
+   } else if (StringContains(stat, "SUMSQ")) {
       statToPlot = SUMSQ;
-   } else if (stat.contains("SUM")) {  
+   } else if (StringContains(stat, "SUM")) {
       statToPlot = SUM;
-   } else if (stat.contains("MEAN")) {
+   } else if (StringContains(stat, "MEAN")) {
       statToPlot = MEAN;
-   } else if (stat.contains("VAR")) {
+   } else if (StringContains(stat, "VAR")) {
       statToPlot = VARIANCE;
-   } else if (stat.contains("SIG") ||
-              stat.contains("STD")) {
+   } else if (StringContains(stat, "SIG") ||
+              StringContains(stat, "STD")) {
       statToPlot = SIGMA;
-   } else if (stat.contains("RMS")) {
+   } else if (StringContains(stat, "RMS")) {
       statToPlot = RMS;
-   } else if (stat.contains("MIN")) {
+   } else if (StringContains(stat, "MIN")) {
       statToPlot = MIN;
-   } else if (stat.contains("MAX")) {
+   } else if (StringContains(stat, "MAX")) {
       statToPlot = MAX;
-   } else if (stat.contains("FLUX")) {
+   } else if (StringContains(stat, "FLUX")) {
       statToPlot = FLUX;
-   } else if (stat.contains("MEDABS")) {
+   } else if (StringContains(stat, "MEDABS")) {
       statToPlot = MEDABSDEVMED;
-   } else if (stat.contains("MED")) {
+   } else if (StringContains(stat, "MED")) {
       statToPlot = MEDIAN;
-   } else if (stat.contains("QU")) {
+   } else if (StringContains(stat, "QU")) {
       statToPlot = QUARTILE;
    }
    return statToPlot;

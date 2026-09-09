@@ -64,7 +64,7 @@ void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -73,7 +73,7 @@ void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -126,7 +126,7 @@ void testMatrixROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "vectorCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("one non-degenerate")) {
+        if (!StringContains(x.what(), "one non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -135,7 +135,7 @@ void testMatrixROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -191,7 +191,7 @@ void testCubeROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "vectorCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("one non-degenerate")) {
+        if (!StringContains(x.what(), "one non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -200,7 +200,7 @@ void testCubeROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -250,7 +250,7 @@ void testArrayROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "vectorCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("one non-degenerate")) {
+        if (!StringContains(x.what(), "one non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -259,7 +259,7 @@ void testArrayROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -268,7 +268,7 @@ void testArrayROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -318,7 +318,7 @@ void test8ElemROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -327,7 +327,7 @@ void test8ElemROIter (const Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -622,7 +622,7 @@ void testVectorRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -631,7 +631,7 @@ void testVectorRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -690,7 +690,7 @@ void testMatrixRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "vectorCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("one non-degenerate")) {
+        if (!StringContains(x.what(), "one non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -699,7 +699,7 @@ void testMatrixRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -755,7 +755,7 @@ void testCubeRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "vectorCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("one non-degenerate")) {
+        if (!StringContains(x.what(), "one non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -764,7 +764,7 @@ void testCubeRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -814,7 +814,7 @@ void testArrayRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "vectorCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("one non-degenerate")) {
+        if (!StringContains(x.what(), "one non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -823,7 +823,7 @@ void testArrayRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "matrixCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("two non-degenerate")) {
+        if (!StringContains(x.what(), "two non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 
@@ -832,7 +832,7 @@ void testArrayRWIter (Lattice<Int>& lattice, Bool useRef)
         throw(AipsError("tHDF5Iterator - "
                         "cubeCursor worked where it should not have"));
     } catch (std::exception& x) {
-        if (!String(x.what()).contains("three non-degenerate")) {
+        if (!StringContains(x.what(), "three non-degenerate")) {
 	    throw (AipsError (x.what()));
         }
     } 

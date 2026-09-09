@@ -468,7 +468,7 @@ ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
     for (
         auto iter = beams.begin(); iter != iterend; ++iter, ++count
     ) {
-        String field = "*" + String::toString(count);
+        String field = "*" + ValueToString(count);
         ThrowIf(
             ! rec.isDefined(field),
             "Field " + field + " is not defined"
@@ -495,7 +495,7 @@ Record ImageBeamSet::toRecord() const {
             "Invalid per plane beam found"
         );
         Record rec = beam.toRecord();
-        perPlaneBeams.defineRecord("*" + String::toString(count), rec);
+        perPlaneBeams.defineRecord("*" + ValueToString(count), rec);
         ++count;
     }
     return perPlaneBeams;

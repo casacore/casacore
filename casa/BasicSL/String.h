@@ -98,7 +98,7 @@ inline bool EqualStringsAndNotEmpty(std::string_view str1, std::string_view str2
 // Convert a String to a value. All characters in the string must be used.
 // It uses a shift from an ostringstream, so that operator must exist
 // for the data type used.
-// In case of an error, an exception is thrown if @p check is set.
+// In case of an error, an exception is thrown if @p throw_on_error is set.
 // Otherwise it returns false and @p value contains the value read
 // so far.
 template<typename T>
@@ -125,7 +125,7 @@ inline bool StringToValue (const std::string& str, T& value, bool throw_on_error
 template<typename T>
 inline T StringToValue(const std::string& str, bool throw_on_error = true)
 {
-  T value;
+  T value{};
   StringToValue(str, value, throw_on_error);
   return value;
 }

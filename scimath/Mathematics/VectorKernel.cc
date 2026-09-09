@@ -174,7 +174,7 @@ Vector<Int> VectorKernel::toKernelTypes (const Vector<String>& kernels)
 VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
 {
    String kernel2 = upcase(kernel);
-   String kernel3(kernel2.at(0,1));
+   String kernel3(kernel2.substr(0,1));
 
    if (kernel3==String("B")) {
       return VectorKernel::BOXCAR;

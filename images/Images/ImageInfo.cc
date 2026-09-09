@@ -138,16 +138,16 @@ Bool ImageInfo::getRestoringBeam (LoggerHolder& logger) {
 	) {
 		String line = iter->message();
 		if (
-			line.contains(String("BMAJ"))
-			&& line.contains(String("BMIN"))
-			&& line.contains(String("BPA"))
+			StringContains(line, "BMAJ")
+			&& StringContains(line, "BMIN")
+			&& StringContains(line, "BPA")
 		) {
 			Quantity major, minor, pa;
 			String s[20];
 			int n = split(line, s, 20, RXwhite);
 			for (Int i=0; i<n; i++) {
-				if (s[i].contains("BMAJ")) {
-					istringstream oss(s[i+1].chars());
+				if (StringContains(s[i], "BMAJ")) {
+					istringstream oss(s[i+1].c_str());
 					Double x;
 					oss >> x;
 					if (x <= 0) {
@@ -155,8 +155,8 @@ Bool ImageInfo::getRestoringBeam (LoggerHolder& logger) {
 					}
 					major = Quantity(x, Unit(String("deg")));
 				}
-				else if (s[i].contains("BMIN")) {
-					istringstream oss(s[i+1].chars());
+				else if (StringContains(s[i], "BMIN")) {
+					istringstream oss(s[i+1].c_str());
 					Double x;
 					oss >> x;
 					if (x <= 0) {
@@ -164,8 +164,8 @@ Bool ImageInfo::getRestoringBeam (LoggerHolder& logger) {
 					}
 					minor = Quantity(x, Unit(String("deg")));
 				}
-				else if (s[i].contains("BPA")) {
-					istringstream oss(s[i+1].chars());
+				else if (StringContains(s[i], "BPA")) {
+					istringstream oss(s[i+1].c_str());
 					Double x;
 					oss >> x;
 					pa = Quantity(x, Unit(String("deg")));
@@ -594,10 +594,10 @@ Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
 	for (uInt i = 0; i < nchan; i++) {
 		Record chanRec;
 		for (uInt j = 0; j < nstokes; j++) {
-			chanRec.defineRecord("*" + String::toString(j),
+			chanRec.defineRecord("*" + ValueToString(j),
 					_beams(i, j).toRecord());
 		}
-		beamRec.defineRecord("*" + String::toString(i), chanRec);
+		beamRec.defineRecord("*" + ValueToString(i), chanRec);
 	}
 	rstat.defineRecord("beams", beamRec);
 	return rstat;

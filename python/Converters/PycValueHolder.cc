@@ -88,7 +88,7 @@ namespace casacore { namespace python {
       return casa_record_to_python::makeobject (vh.asRecord());
     default:
       throw AipsError ("PycValueHolder: unknown casa data type " +
-                       String::toString(vh.dataType()));
+                       ValueToString(vh.dataType()));
     }
   }
 

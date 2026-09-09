@@ -124,13 +124,13 @@ void SDAntennaHandler::fill(const Record &row)
 	    // fill the key with the telescope value
 	    *nameKey_p = *telescopField_p;
 	    // correct for a few quirks - mostly involving extra spaces or "_"
-	    if ((*nameKey_p).contains("NRAO")) {
-		if ((*nameKey_p).contains("12M")) {
+	    if (StringContains(*nameKey_p, "NRAO")) {
+		if (StringContains(*nameKey_p, "12M")) {
 		    *nameKey_p = "NRAO12M";
-		} else if ((*nameKey_p).contains("43M")) {
+		} else if (StringContains(*nameKey_p, "43M")) {
 		    // 140' position IS the GB position in the observatories list
 		    *nameKey_p = "GB";
-		} else if ((*nameKey_p).contains("GBT")) {
+		} else if (StringContains(*nameKey_p, "GBT")) {
 		    // early versions had NRAO_GBT
 		    *nameKey_p = "GBT";
 		}

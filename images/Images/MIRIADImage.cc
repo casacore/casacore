@@ -470,7 +470,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   Int rotationAxis = -1;
   
 
-  xyopen_c(&tno_p, const_cast<char *>(name.chars()), "old", naxis, axes);    // open miriad file
+  xyopen_c(&tno_p, const_cast<char *>(name.c_str()), "old", naxis, axes);    // open miriad file
   rdhdi_c(tno_p,"naxis",&ndim,0);                // for convenience, get ndim
 
 #if 0
@@ -520,21 +520,21 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
   // get the miriad axes descriptors
   for (i=0; i<ndim; i++) {
-      tmps = "ctype" + digit.toString(i+1);
-      rdhda_c(tno_p,const_cast<char*>(tmps.chars()), tmps64, "", 64);
+      tmps = "ctype" + ValueToString(i+1);
+      rdhda_c(tno_p,const_cast<char*>(tmps.c_str()), tmps64, "", 64);
       ctype(i) = tmps64;
       // cerr << tmps << "=>" << ctype(i) << endl;
 
-      tmps = "crval" + digit.toString(i+1);
-      rdhdd_c(tno_p,const_cast<char *>(tmps.chars()), &crval(i), 0.0);
+      tmps = "crval" + ValueToString(i+1);
+      rdhdd_c(tno_p,const_cast<char *>(tmps.c_str()), &crval(i), 0.0);
       // cerr << tmps << "=>" << crval(i) << endl;
 
-      tmps = "cdelt" + digit.toString(i+1);
-      rdhdd_c(tno_p,const_cast<char *>(tmps.chars()), &cdelt(i), 0.0);
+      tmps = "cdelt" + ValueToString(i+1);
+      rdhdd_c(tno_p,const_cast<char *>(tmps.c_str()), &cdelt(i), 0.0);
       // cerr << tmps << "=>" << cdelt(i) << endl;
 
-      tmps = "crpix" + digit.toString(i+1);
-      rdhdd_c(tno_p,const_cast<char*>(tmps.chars()), &crpix(i), 0.0);
+      tmps = "crpix" + ValueToString(i+1);
+      rdhdd_c(tno_p,const_cast<char*>(tmps.c_str()), &crpix(i), 0.0);
       crpix(i) -= offset;
       // cerr << tmps << "=>" << crpix(i) << endl;
   }
@@ -542,27 +542,27 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   Int longAxis=-1, latAxis=-1, stokesAxis=-1, spectralAxis=-1;
 
   for (i=0; i<ndim; i++) {
-        String subRA(ctype(i).at(0,2));
-        String subDEC(ctype(i).at(0,3));
-	if (subRA==String("RA") || ctype(i).contains("LON") || subRA==String("LL")) {
+        String subRA(ctype(i).substr(0,2));
+        String subDEC(ctype(i).substr(0,3));
+	if (subRA==String("RA") || StringContains(ctype(i), "LON") || subRA==String("LL")) {
 	    if (longAxis >= 0) {
 		os << LogIO::SEVERE << "More than one longitude axis is "
 		    "present in header!";
 		// return False;
 	    }
 	    longAxis = i;
-	} else if (subDEC==String("DEC") || ctype(i).contains("LAT") || subDEC.contains("MM")) {
+	} else if (subDEC==String("DEC") || StringContains(ctype(i), "LAT") || StringContains(subDEC, "MM")) {
 	    if (latAxis >= 0) {
 		os << LogIO::SEVERE << "More than one latitude axis is "
 		    "present in header!";
 		// return False; // we already have a latitude axis!
 	    }
 	    latAxis = i;
-	} else if (ctype(i).contains("STOKES")) {
+	} else if (StringContains(ctype(i), "STOKES")) {
 	    stokesAxis = i;
-	} else if (ctype(i).contains("FREQ") || 
-		   ctype(i).contains("FELO") ||
-		   ctype(i).contains("VELO")) {
+	} else if (StringContains(ctype(i), "FREQ") ||
+		   StringContains(ctype(i), "FELO") ||
+		   StringContains(ctype(i), "VELO")) {
 	    spectralAxis = i;
 	}
   }
@@ -587,24 +587,22 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     proj1 = ctype(longAxis);
     proj2 = ctype(latAxis);
 
-    if (proj1.contains("GLON")) isGalactic = True;
+    if (StringContains(proj1, "GLON")) isGalactic = True;
 
     // Get rid of the first 4 characters, e.g., RA--
 
     const Int l1 = proj1.length();
     const Int l2 = proj2.length();
-    proj1 = String(proj1.at(4, l1-4));
-    proj2 = String(proj2.at(4, l2-4));
+    proj1 = l1 < 4 ? "" : String(proj1.substr(4, l1-4));
+    proj2 = l2 < 4 ? "" : String(proj2.substr(4, l2-4));
 
     // Get rid of leading -'s
-
-    proj1.gsub(Regex("^-*"), String(""));
-    proj2.gsub(Regex("^-*"), String(""));
+    LTrimInPlace(proj1, '-');
+    LTrimInPlace(proj2, '-');
     
     // Get rid of spaces
-
-    proj1.gsub(Regex(" *"), String(""));   
-    proj2.gsub(String(" "), String(""));
+    ReplaceAllInPlace(proj1, " ", "");
+    ReplaceAllInPlace(proj2, " ", "");
 
     if (proj1=="" && proj2=="") {
 
@@ -748,12 +746,12 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     //
 
     Int velref = 2; // Default is optical + topocentric ("OBS")
-    if (ctype(spectralAxis).contains("VELO")) {
+    if (StringContains(ctype(spectralAxis), "VELO")) {
       velref = 258; // radio + OBS
     }
 
     // Try to work out OPTICAL/RADIO/. Default to Optical
-    String type(ctype(spectralAxis).before(4));
+    String type(ctype(spectralAxis).substr(0, 4));
     MDoppler::Types velocityPreference = MDoppler::OPTICAL;
     if (velref > 256) {
       velocityPreference = MDoppler::RADIO;   
@@ -768,7 +766,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     if (ctype(spectralAxis).length() <= 5) {
       spectralAxisQualifier = "";
     } else {
-      spectralAxisQualifier = ctype(spectralAxis).after(4);
+      spectralAxisQualifier = ctype(spectralAxis).substr(5);
     }
 
     Double referenceChannel = crpix(spectralAxis);
@@ -802,7 +800,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     Double rval = crval(spectralAxis);
     Double rpix = crpix(spectralAxis);
     
-    if (ctype(spectralAxis).contains("FREQ")) {
+    if (StringContains(ctype(spectralAxis), "FREQ")) {
       delt *= 1e9;
       rval *= 1e9;
       referenceFrequency = rval;
@@ -812,7 +810,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	frequencies(i) = referenceFrequency + (Double(i)-referenceChannel)*delt;
       }
       if (restFrequency<0) restFrequency = 0.0;
-    } else if (ctype(spectralAxis).contains("FELO")) {
+    } else if (StringContains(ctype(spectralAxis), "FELO")) {
       delt *= 1e3;
       rval *= 1e3;
       if (restFrequency < 0) {
@@ -848,7 +846,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	    (Double(i)-referenceChannel) * deltaFrequency;
 	}
       }
-    } else if (ctype(spectralAxis).contains("VELO")) {
+    } else if (StringContains(ctype(spectralAxis), "VELO")) {
       delt *= 1e3;
       rval *= 1e3;
       if (restFrequency < 0) {

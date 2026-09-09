@@ -32,12 +32,12 @@ namespace casacore {
 RegionType::AbsRelType RegionType::absRelTypeFromString(const String& absrel) {
 
     String str(absrel);
-    str.upcase();
-    if(str.contains("ABS"))
+    ToUpperCaseInPlace(str);
+    if(StringContains(str, "ABS"))
       return RegionType::Abs;
-    else if(str.contains("RELREF"))
+    else if(StringContains(str, "RELREF"))
       return RegionType::RelRef;
-    else if(str.contains("RELCEN"))
+    else if(StringContains(str, "RELCEN"))
       return RegionType::RelCen;
     else
       throw(AipsError(String("Undefined region type")+absrel));

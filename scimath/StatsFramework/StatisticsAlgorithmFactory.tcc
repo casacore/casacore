@@ -122,7 +122,7 @@ StatisticsAlgorithmFactory<CASA_STATP>::createStatsAlgorithm() const {
     }
     default:
         ThrowCc(
-            "Logic Error: Unhandled algorithm " + String::toString(_algorithm)
+            "Logic Error: Unhandled algorithm " + ValueToString(_algorithm)
         );
     }
 }
@@ -194,7 +194,7 @@ CASA_STATD Record StatisticsAlgorithmFactory<CASA_STATP>::toRecord() const {
     }
     default:
         ThrowCc(
-            "Logic Error: Unhandled algorithm " + String::toString(_algorithm)
+            "Logic Error: Unhandled algorithm " + ValueToString(_algorithm)
         );
     }
 }
@@ -208,20 +208,20 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     StatisticsData::ALGORITHM algorithm;
     if (dt == TpString) {
         String rAlg = r.asString(fieldNum);
-        rAlg.downcase();
-        if (rAlg.startsWith("b")) {
+        ToLowerCaseInPlace(rAlg);
+        if (rAlg.starts_with("b")) {
             algorithm = StatisticsData::BIWEIGHT;
         }
-        if (rAlg.startsWith("cl")) {
+        if (rAlg.starts_with("cl")) {
             algorithm = StatisticsData::CLASSICAL;
         }
-        else if (rAlg.startsWith("ch")) {
+        else if (rAlg.starts_with("ch")) {
             algorithm = StatisticsData::CHAUVENETCRITERION;
         }
-        else if (rAlg.startsWith("f")) {
+        else if (rAlg.starts_with("f")) {
             algorithm = StatisticsData::FITTOHALF;
         }
-        else if (rAlg.startsWith("h")) {
+        else if (rAlg.starts_with("h")) {
             algorithm = StatisticsData::HINGESFENCES;
         }
         else {
@@ -277,7 +277,7 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     }
     default:
         ThrowCc(
-            "Logic Error: Unhandled algorithm " + String::toString(algorithm)
+            "Logic Error: Unhandled algorithm " + ValueToString(algorithm)
         );
     }
 }

@@ -233,8 +233,8 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 	    bstr << bl;
 	    tstr << tr;
 	    throw (AipsError ("LCBox::LCBox - "
-			      "blc " + String(bstr) + " must be <= trc "
-			      + String(tstr)));
+			      "blc " + bstr.str() + " must be <= trc "
+			      + tstr.str()));
 	}
     }
     setBoundingBox (Slicer(bl, tr, Slicer::endIsLast));

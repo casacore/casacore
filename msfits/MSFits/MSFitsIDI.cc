@@ -271,7 +271,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   atEnd = False;
 
   // Construct a FitsInput object
-  FitsInput infits(itsDataSource.chars(), itsDeviceType);
+  FitsInput infits(itsDataSource.c_str(), itsDeviceType);
   if (infits.err() != FitsIO::OK) {
     os << LogIO::SEVERE << "Error reading FITS input" << LogIO::EXCEPTION;
   }
@@ -281,9 +281,6 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   if (infits.hdutype() != FITS::PrimaryArrayHDU) {
     os << LogIO::SEVERE << "Not a FITS-IDI file" << LogIO::EXCEPTION;
   }
-
-  // Regular expression for trailing blanks
-  Regex trailing(" *$");
 
   // Create a temporary work directory for the sub-tables
   Directory tmpDir(itsMSOut + "_tmp");
@@ -308,7 +305,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       BytePrimaryArray tab(infits);
       if (tab.kw("CORRELAT")) {
 	correlat = tab.kw("CORRELAT")->asString();
-	correlat.trim();
+	TrimInPlace(correlat);
 	os << LogIO::NORMAL << "Correlator: " << correlat << LogIO::POST;
       }
       if(tab.kw("FXCORVER")){
@@ -336,7 +333,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 			  vanVleck, corVer);
       initFirstMain = False;
       String hduName = bintab.extname();
-      hduName = hduName.before(trailing);
+      RTrimInPlace(hduName, ' ');
       String tableName = itsMSOut;
       if (hduName != "") {
 	if (hduName != "UV_DATA") {

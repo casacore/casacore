@@ -312,10 +312,10 @@ void ImageRegrid<T>::_regridOneCoordinate (LogIO& os, IPosition& outShape2,
 		ostringstream oss2;
 		oss1 << outCoords.showType(outCoordinate);
 		oss2 << outPixelAxis+1;
-		String msg = String("Output axis (") + String(oss2) +
-				String(") of coordinate type ") + String(oss1) +
-				String("does not have a coordinate in the input "
-						"CoordinateSystem");
+		String msg = "Output axis (" + oss2.str() +
+				") of coordinate type " + oss1.str() +
+				"does not have a coordinate in the input "
+						"CoordinateSystem";
 		ThrowCc(msg);
 	}
 
@@ -544,7 +544,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
          ostringstream oss;
          oss << "Pixel axis " << i <<
 	   " has been removed from the output CoordinateSystem" << endl;
-         ThrowCc(String(oss));
+         ThrowCc(oss.str());
       }
       Coordinate::Type type = outCoords.type(coordinate);
       ThrowIf(
@@ -951,7 +951,7 @@ void ImageRegrid<T>::regridTwoAxisCoordinate (
 		Double nMax = Double(outLattice.shape().product());
 		ostringstream oss;
 		oss << "Axes " << outPixelAxes + 1 << " : Pixels Regridded";
-		pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
+		pProgressMeter = new ProgressMeter(nMin, nMax, oss.str(),
 				String("Regridding"),
 				String(""), String(""),
 				True,
@@ -1871,7 +1871,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
        Double(outIter.cursorShape().product());
      ostringstream oss;
      oss << "Axis " << outPixelAxis + 1 << " : Lines Regridded";
-     pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
+     pProgressMeter = new ProgressMeter(nMin, nMax, oss.str(),
                                         String("Regridding"),
                                         String(""), String(""),
                                         True, max(1,Int(nMax/20)));
@@ -2111,7 +2111,7 @@ void ImageRegrid<T>::_checkAxes(IPosition& outPixelAxes,
          ostringstream oss;
          oss << "Pixel axis " << outPixelAxes(i)+1 << 
                 " has been removed from the output CoordinateSystem" << endl;
-         ThrowCc(String(oss));
+         ThrowCc(oss.str());
       }
 
 // Find out the coordinate type and don't allow Stokes
@@ -2159,7 +2159,7 @@ void ImageRegrid<T>::_checkAxes(IPosition& outPixelAxes,
 //
       ThrowIf(
     		  found(outPixelAxes(i)),
-    		  "Specified pixel axes " + String::toString( outPixelAxes+1)
+    		  "Specified pixel axes " + ValueToString(outPixelAxes+1)
             	+ " are not unique"
       );
          found(outPixelAxes(i)) = True;
@@ -2248,7 +2248,7 @@ Double ImageRegrid<T>::findScaleFactor(const Unit& units,
 {
    Double fac = 1.0;
    String t = units.getName();
-   t.upcase();
+   ToUpperCaseInPlace(t);
    if (t==String("JY/PIXEL")) {
 
 // Set units to the same thing

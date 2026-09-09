@@ -572,7 +572,7 @@ void WCEllipsoid::_checkPixelAxes() const {
 				)
 			);
 		}
-		if (paAsString.freq(String::toString(_pixelAxes[i])) > 1) {
+		if (SubStringCount(paAsString, ValueToString(_pixelAxes[i])) > 1) {
 			throw (
 				AipsError(
 					"WCEllipsoid::" + String(__FUNCTION__)

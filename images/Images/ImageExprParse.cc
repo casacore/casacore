@@ -217,7 +217,7 @@ LatticeExprNode ImageExprParse::command
     theTempRegions  = &tempRegions;
     theDirName      = dirName;
     imageExprParse_clear();
-    String message;
+    std::string message;
     String command = str + '\n';
     Bool error = False;
     theirLevel++;
@@ -244,7 +244,7 @@ LatticeExprNode ImageExprParse::command
     if (error) {
         node = LatticeExprNode();
 	throw (AipsError(message + '\n' + "Scanned so far: " +
-	                 command.before(imageExprGramPosition())));
+	                 command.substr(0, imageExprGramPosition())));
     }
     // Restore the global variables to make it re-entrant.
     RESTORE_GLOBALS;
@@ -256,7 +256,7 @@ LatticeExprNode ImageExprParse::makeFuncNode() const
 {
     AlwaysAssert (itsType == TpString, AipsError);
     String val(itsSval);
-    val.downcase();
+    ToLowerCaseInPlace(val);
     if (val == "pi") {
 	return LatticeExprNode (M_PI);
     } else if (val == "e") {
@@ -271,7 +271,7 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 {
     AlwaysAssert (itsType == TpString, AipsError);
     String val(itsSval);
-    val.downcase();
+    ToLowerCaseInPlace(val);
     if (val == "sin") {
 	return sin(arg1);
     } else if (val == "sinh") {
@@ -373,7 +373,7 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 {
     AlwaysAssert (itsType == TpString, AipsError);
     String val(itsSval);
-    val.downcase();
+    ToLowerCaseInPlace(val);
     if (val == "atan2") {
 	return atan2(arg1, arg2);
     } else if (val == "pow") {
@@ -414,7 +414,7 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 {
     AlwaysAssert (itsType == TpString, AipsError);
     String val(itsSval);
-    val.downcase();
+    ToLowerCaseInPlace(val);
     if (val == "iif") {
 	return iif(arg1, arg2, arg3);
     } else if (val == "fractilerange") {
@@ -831,7 +831,7 @@ LatticeExprNode ImageExprParse::makeImageNode (const String& name,
     MaskSpecifier spec(True);
     if (! mask.empty()) {
         String maskName = mask;
-	maskName.upcase();
+	ToUpperCaseInPlace(maskName);
         if (maskName == "NOMASK") {
 	    spec = MaskSpecifier(False);
 	} else {

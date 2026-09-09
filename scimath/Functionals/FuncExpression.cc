@@ -111,18 +111,18 @@ Bool FuncExpression::compExpr(MUString &prg) {
   prg.skipBlank();
   String t;
   // Check unary
-  t = prg.get().at(0,2);
-  while (exd.unary1().find(t.at(0,1)) != exd.unary1().end() ||
+  t = prg.get().substr(0,2);
+  while (exd.unary1().find(t.substr(0,1)) != exd.unary1().end() ||
 	 exd.unary2().find(t) != exd.unary2().end()) {
     if (exd.unary2().find(t) != exd.unary2().end()) {
       if (!setOp(exd.unary2().find(t)->second)) return False;
       prg.skipChar();
     } else {
-      if (!setOp(exd.unary1().find(t.at(0,1))->second)) return False;
+      if (!setOp(exd.unary1().find(t.substr(0,1))->second)) return False;
     }
     prg.skipChar();
     prg.skipBlank();
-    t = prg.get().at(0,2);
+    t = prg.get().substr(0,2);
   }
   if (!compTerm(prg)) return False;
   // Get binary 
@@ -133,20 +133,20 @@ Bool FuncExpression::compExpr(MUString &prg) {
     if (!compExpr(prg)) return False;
     prg.skipBlank();
   }    
-  t = prg.get().at(0,2);
+  t = prg.get().substr(0,2);
   while (!prg.eos() && 
-	 (exd.binary1().find(t.at(0,1)) != exd.binary1().end() ||
+	 (exd.binary1().find(t.substr(0,1)) != exd.binary1().end() ||
 	  exd.binary2().find(t) != exd.binary2().end())) {
     if (exd.binary2().find(t) != exd.binary2().end()) {
       if (!setOp(exd.binary2().find(t)->second)) return False;
       prg.skipChar();
     } else {
-      if (!setOp(exd.binary1().find(t.at(0,1))->second)) return False;
+      if (!setOp(exd.binary1().find(t.substr(0,1))->second)) return False;
     }
     prg.skipChar();
     if (!compExpr(prg)) return False;
     prg.skipBlank();
-    t = prg.get().at(0,2);
+    t = prg.get().substr(0,2);
   }
   return True;
 }
@@ -167,10 +167,10 @@ Bool FuncExpression::compTerm(MUString &prg) {
     prg.skipChar();
     if (!setOp(exd.special()[")"])) return False;
   } else if (prg.testAlpha()) {
-    Regex parrx("p[0-9]*$");
-    Regex argrx("x[0-9]*$");
+    const Regex parrx("p[0-9]*$");
+    const Regex argrx("x[0-9]*$");
     String t = prg.getAlphaNum();
-    t.downcase();
+    ToLowerCaseInPlace(t);
     MUString tmu(t);
     if (exd.function().find(t) != exd.function().end()) {
       if (!setOp(exd.function().find(t)->second)) return False;
@@ -186,7 +186,7 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	prg.skipChar();
       }
       if (!setOp(exd.special()[")"])) return False;
-    } else if (t.matches(parrx) || t.matches(argrx)) {
+    } else if (RegexMatches(t, parrx) || RegexMatches(t, argrx)) {
       tmu.skipChar();
       uInt n = tmu.getuInt();
       prg.skipBlank();
@@ -207,7 +207,7 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	prg.skipChar();
       }
       FuncExprData::ExprOperator oper;
-      if (t.matches(parrx)) {
+      if (RegexMatches(t, parrx)) {
 	oper = exd.special()["PARAM"];
 	if (n >= npar_p) npar_p = n+1;
       } else {

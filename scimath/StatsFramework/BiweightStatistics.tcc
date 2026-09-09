@@ -397,7 +397,7 @@ void BiweightStatistics<CASA_STATP>::_computeStats() {
     _npts = cs.getNPts();
     ThrowIf (
         _npts <= 1,
-        "npts is " + String::toString(_npts) + ". There must be at least two "
+        "npts is " + ValueToString(_npts) + ". There must be at least two "
         "points to compute the biweight location and scale"
     );
     StatsData<AccumType>& stats = this->_getStatsData();

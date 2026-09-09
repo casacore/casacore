@@ -217,9 +217,9 @@ namespace casacore { //# name space casa begins
   void RegionManager::toQuantity(Quantity& out, const String& in){
     String leString=in;
     QuantumHolder qh;
-    if(leString.contains("pix")){
-      leString=leString.before("pix");
-      Double value=atof(leString.chars());
+    if(const size_t pix_pos = leString.find("pix"); pix_pos != std::string::npos){
+      leString=leString.substr(0, pix_pos);
+      Double value=atof(leString.c_str());
       out=Quantity(value, "pix");
     }
     else{
@@ -257,12 +257,12 @@ namespace casacore { //# name space casa begins
       else{
 	//Stokes is not known in Quantity...have to convert them to pix
 	Int stpix=-1;
-	if(blc[k].contains("pix"))
+	if(blc[k].find("pix") != std::string::npos)
 	  toQuantity(losBlc[k], blc[k]);
 	else if(stCoord.toPixel(stpix, Stokes::type(blc[k])))
 	  losBlc[k]=Quantity(stpix, "pix");
 	stpix=-1;
-	if(trc[k].contains("pix"))
+	if(trc[k].find("pix") != std::string::npos)
 	  toQuantity(losTrc[k], trc[k]);
 	else if(stCoord.toPixel(stpix, Stokes::type(trc[k])))
 	  losTrc[k]=Quantity(stpix, "pix");
@@ -317,7 +317,7 @@ namespace casacore { //# name space casa begins
     Vector<Double> world = csys.referenceValue();
     Vector<Double> pixel(world.nelements());
     for (uInt k=0; k < nvertices; ++k){
-      if(x[k].getUnit().contains("pix") && y[k].getUnit().contains("pix") ){
+      if(StringContains(x[k].getUnit(), "pix") && StringContains(y[k].getUnit(), "pix") ){
 	
 	Vector<Double> lepix(2);
 	lepix[0]=x[k].getValue();
@@ -327,10 +327,10 @@ namespace casacore { //# name space casa begins
 	leX[k]=lemonde[0]; leY[k]=lemonde[1];
 	
       }
-      else if((x[k].getUnit().contains("pix") && 
-	       !y[k].getUnit().contains("pix")) || 
-	      (!x[k].getUnit().contains("pix") && 
-	       y[k].getUnit().contains("pix"))){
+      else if((StringContains(x[k].getUnit(), "pix") &&
+	       !StringContains(y[k].getUnit(), "pix")) ||
+	      (!StringContains(x[k].getUnit(), "pix") &&
+	       StringContains(y[k].getUnit(), "pix"))){
 	throw(AipsError("Cannot  handle cross units pix and non-pix together"));
       }
       else{
@@ -468,11 +468,11 @@ namespace casacore { //# name space casa begins
 				  > outerRadii[i].getValue(innerRadii[i].getUnit())
 		  ) {
 			  throw AipsError(
-				  "RegionManager::" + String(__FUNCTION__)
-				  + ": For radius " + String::toString(i)
-				  + " inner radius " + String::toString(innerRadii[i])
+				  "RegionManager::" + std::string(__FUNCTION__)
+				  + ": For radius " + ValueToString(i)
+				  + " inner radius " + ValueToString(innerRadii[i])
 				  + " is greater than outer radius "
-				  + String::toString(outerRadii[i])
+				  + ValueToString(outerRadii[i])
 			  );
 		  }
 	  }

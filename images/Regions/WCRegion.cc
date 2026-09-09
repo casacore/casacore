@@ -350,15 +350,15 @@ void WCRegion::checkAxes (
 		if (worldAxes[i] == -1) {
 			throw (
 				AipsError(
-					"WCRegion::" + String(__FUNCTION__)
-					+ "from " + type() + ": pixelAxes["
-					+ String::toString(i)
-					+ "]=" + String::toString(pixelAxes[i])
+					"WCRegion::" + std::string(__FUNCTION__)
+					+ "from " + std::string(type()) + ": pixelAxes["
+					+ ValueToString(i)
+					+ "]=" + ValueToString(pixelAxes[i])
 					+ " has no corresponding world axis"
 				)
 			);
 		}
-		String unit = quantityUnits[i];
+		std::string unit = quantityUnits[i];
 		if (unit == "default") {
 			throw (
 				AipsError(
@@ -371,12 +371,12 @@ void WCRegion::checkAxes (
 			if (Unit(unit) != Unit(units(worldAxes[i]))) {
 				throw (
 					AipsError(
-						"WCRegion::" + String(__FUNCTION__)
-						+ "from " + type()
-						+ ": units of quantity[" + String::toString(i)
+						"WCRegion::" + std::string(__FUNCTION__)
+						+ "from " + std::string(type())
+						+ ": units of quantity[" + ValueToString(i)
 						+ "]=" + unit
 						+ " are inconsistent with units of coordinate system"
-						+ "units (" + units(worldAxes[i]) + ")"
+						+ "units (" + std::string(units(worldAxes[i])) + ")"
 					)
 				);
 			}

@@ -1283,7 +1283,7 @@ namespace casacore { //# name space casa begins
                                    Bool forceRegrid)
   {
     String method2 = method;
-    method2.upcase();
+    ToUpperCaseInPlace(method2);
     IPosition outShape;
     if (shape.size() == 0  ||  shape[0] == -1) {
       outShape = image.shape();

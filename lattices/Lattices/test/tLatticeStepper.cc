@@ -54,7 +54,7 @@ int main()
 	cout << "'more axes than lattice' exception expected" << endl;
 	return 1;
       } catch (std::exception& x) {
- 	if (!String(x.what()).contains("more axes than lattice")) {
+ 	if (!StringContains(x.what(), "more axes than lattice")) {
  	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
  	}
@@ -65,7 +65,7 @@ int main()
 	cout << "'upper bound exceeded' exception expected" << endl;
 	return 1;
       } catch (std::exception& x) {
-	if (!String(x.what()).contains("> latticeShape")) {
+	if (!StringContains(x.what(), "> latticeShape")) {
 	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
@@ -76,7 +76,7 @@ int main()
 	cout << "'lower bound exceeded' exception expected" << endl;
 	return 1;
       } catch (std::exception& x) {
-	if (!String(x.what()).contains("cursorShape <=0")) {
+	if (!StringContains(x.what(), "cursorShape <=0")) {
 	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
@@ -87,7 +87,7 @@ int main()
 	cout << "'bad orientation' exception 1 expected" << endl;
 	return 1;
       } catch (std::exception& x) {
-	if (!String(x.what()).contains("makeAxisPath")){
+	if (!StringContains(x.what(), "makeAxisPath")){
 	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}
@@ -98,7 +98,7 @@ int main()
 	cout << "'bad orientation' exception 2 expected" << endl;
 	return 1;
       } catch (std::exception& x) {
-	if (!String(x.what()).contains("makeAxisPath")){
+	if (!StringContains(x.what(), "makeAxisPath")){
 	  cout << x.what() << endl << "FAIL" << endl;
 	  return 1;
 	}

@@ -458,7 +458,7 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
    if (latticeType !=TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
       ostringstream oss;
       oss << "Lattices of type " << latticeType << " are not currently supported" << endl;
-      error_p = String(oss);
+      error_p = oss.str();
       goodParameterStatus_p = False;
       pInLattice_p = 0;
       return False;
@@ -1174,7 +1174,7 @@ String LatticeHistograms<T>::writeCoordinates(const IPosition& histPos) const
          if (j < nDisplayAxes-1) oss << ", ";
       }
    }
-   return String(oss);
+   return oss.str();
 }
 
 

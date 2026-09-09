@@ -67,7 +67,7 @@ String StatisticsData::toString(STATS stat) {
     default:
         ThrowCc(
             "Logic error: Unhandled value in switch statement"
-            + String::toString(stat)
+            + ValueToString(stat)
         );
     }
 }

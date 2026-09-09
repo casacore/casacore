@@ -179,7 +179,8 @@ Bool FITSImgParser::is_qualityimg(const String &extexpr){
 	// which indicates rather an extension version
 	// number and not a quality image
 	for (uInt index=0; index<extlist.size();index++){
-		if (String::toInt(extlist(index))){
+    int dummy;
+		if (StringToValue<int>(extlist(index), dummy, false)){
 			//cout << "The extension: " << extlist(index) << " does not exist!" << endl;
 			return False;
 		}
@@ -291,7 +292,7 @@ Bool FITSImgParser::get_quality_data(const String &extexpr, Int &data_HDU, Int &
 
 					// convert the keyword to string
 					String kw_errtype = String(actkeyw->asString());
-					kw_errtype.trim();
+					TrimInPlace(kw_errtype);
 
 					// set the value if possible
 					if (kw_errtype.size()>0)
@@ -329,7 +330,7 @@ Bool FITSImgParser::get_quality_data(const String &extexpr, Int &data_HDU, Int &
 
 					// convert the keyword to string
 					String kw_masktype = String(actkeyw->asString());
-					kw_masktype.trim();
+					TrimInPlace(kw_masktype);
 
 					// set the value if possible
 					if (kw_masktype.size()>0)
@@ -376,7 +377,7 @@ void FITSImgParser::setup(void)
 	String fullName = path.absoluteName();
 
 	// open the fits image
-	FitsInput fin(path.expandedName().chars(),FITS::Disk);
+	FitsInput fin(path.expandedName().c_str(),FITS::Disk);
 	if (fin.err() == FitsIO::IOERR)
 		throw (AipsError("FITSImgParser::setup - "+name_p+" Error opening FITS input."));
 	else if (fin.err())
@@ -514,7 +515,7 @@ void FITSImgParser::process_extension(HeaderDataUnit *h,const uInt &extindex)
 	actkeyw = h->kw("EXTNAME");
 	if (actkeyw){
 		extname = actkeyw->asString();
-		extname.trim();
+		TrimInPlace(extname);
 	}
 
 	// get the extension version
@@ -543,7 +544,7 @@ void FITSImgParser::process_extension(HeaderDataUnit *h,const uInt &extindex)
 Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 
 	String extexpr_l = extexpr;
-	extexpr_l.trim();
+	TrimInPlace(extexpr_l);
 
 	// there is nothing to do
 	if (extexpr_l.size() < 1)
@@ -564,7 +565,7 @@ Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 	}
 
 	String  extexpr_b = String(extexpr_l, open_bracepos, close_bracepos);
-	Int n_comma = extexpr_b.freq(",");
+	Int n_comma = std::count(extexpr_b.begin(), extexpr_b.end(), ',');
 
 	Int f_start=0;
 	for (Int index=0; index<n_comma; index++){
@@ -573,7 +574,7 @@ Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 
 		// create a substring
 		String tmp = String(extexpr_b, f_start, c_pos-f_start);
-		tmp.trim();
+		TrimInPlace(tmp);
 
 		// extend the extension list and append the substring
 		extlist.resize(extlist.size()+1, True);
@@ -581,8 +582,8 @@ Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 		f_start=c_pos+1;
 	}
 	String tmp = String(extexpr_b, f_start, extexpr_b.size()-f_start);
-	tmp.trim();
-	tmp.upcase();
+	TrimInPlace(tmp);
+	ToUpperCaseInPlace(tmp);
 
 	// extend the list and append the substring
 	extlist.resize(extlist.size()+1, True);
@@ -613,7 +614,7 @@ String FITSImgParser::get_errorext(const Int &ext_index){
 	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
 		std::ostringstream os;
 		os << ext_index;
-		throw (AipsError("FITSImgParser::get_errorext - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
+		throw (AipsError("FITSImgParser::get_errorext - Can not access extension: "+os.str()+" in image: " + std::string(fitsname(True))));
 	}
 
 	// extract the keyword "ERRDATA"
@@ -623,8 +624,8 @@ String FITSImgParser::get_errorext(const Int &ext_index){
 	if (actkeyw){
 		// convert the keyword to string
 		String kw_error = String(actkeyw->asString());
-		kw_error.trim();
-		kw_error.upcase();
+		TrimInPlace(kw_error);
+		ToUpperCaseInPlace(kw_error);
 
 		// check whether the HDUtype keyword
 		// has the correct value
@@ -645,7 +646,7 @@ String FITSImgParser::get_maskext(const Int &ext_index){
 	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
 		std::ostringstream os;
 		os << ext_index;
-		throw (AipsError("FITSImgParser::get_maskext - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
+		throw (AipsError("FITSImgParser::get_maskext - Can not access extension: "+os.str()+" in image: " + std::string(fitsname(True))));
 	}
 
 	// extract the keyword "QUALDATA"
@@ -655,8 +656,8 @@ String FITSImgParser::get_maskext(const Int &ext_index){
 	if (actkeyw){
 		// convert the keyword to string
 		String kw_mask = String(actkeyw->asString());
-		kw_mask.trim();
-		kw_mask.upcase();
+		TrimInPlace(kw_mask);
+		ToUpperCaseInPlace(kw_mask);
 
 		// check whether the HDUtype keyword
 		// has the correct value
@@ -685,7 +686,7 @@ Bool FITSImgParser::confirm_fix_keywords(const Int &ext_index){
 		if (actkeyw){
 			// convert the keyword to string
 			String kword_string = String(actkeyw->asString());
-			kword_string.trim();
+			TrimInPlace(kword_string);
 
 			// compare the keyword value and return true if they are identical
 			if (kword_string.size()<1 || kword_string.compare(key_values(index)))
@@ -706,7 +707,7 @@ Bool FITSImgParser::index_is_HDUtype(const Int &ext_index, const String &hdutype
 	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
 		std::ostringstream os;
 		os << ext_index;
-		throw (AipsError("FITSImgParser::index_is_HDUtype - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
+		throw (AipsError("FITSImgParser::index_is_HDUtype - Can not access extension: "+os.str()+" in image: " + std::string(fitsname(True))));
 	}
 
 	// verify the mandatory, fixed keywords
@@ -720,7 +721,7 @@ Bool FITSImgParser::index_is_HDUtype(const Int &ext_index, const String &hdutype
 	if (actkeyw){
 		// convert the keyword to string
 		String kw_hdutype = String(actkeyw->asString());
-		kw_hdutype.trim();
+		TrimInPlace(kw_hdutype);
 
 		// compare the keyword value and return true if they are identical
 		if (kw_hdutype.size()>0 && !kw_hdutype.compare(hdutype))
@@ -795,7 +796,7 @@ FITSExtInfo::FITSExtInfo(const String &name, const uInt &extindex, const String 
 {
 	// make sure the extension
 	// name is upper case
-	extname_p.upcase();
+	ToUpperCaseInPlace(extname_p);
 }
 
 // Copy constructor (reference semantics)
@@ -854,7 +855,7 @@ Bool FITSExtInfo::operator==(const FITSExtInfo &extinfo)
 
 String FITSExtInfo::get_extexpr(void)
 {
-        String extexpr=name_p + "[" + String::toString(extindex_p);
+        String extexpr=std::string(name_p) + "[" + ValueToString(extindex_p);
 
 	if (extname_p.length() > 0){
 		extexpr += ':' + extname_p;
@@ -862,7 +863,7 @@ String FITSExtInfo::get_extexpr(void)
 		if (extversion_p > -1){
 		std::ostringstream os;
 		os << extversion_p;
-		extexpr += "," + String(os);
+		extexpr += "," + os.str();
 		}
 	}
 

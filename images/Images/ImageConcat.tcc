@@ -219,7 +219,7 @@ void ImageConcat<T>::save (const String& fileName) const
   jout.start();
   jout.write ("Version", 1);
   String dt(ValType::getTypeStr(this->dataType()));
-  dt.trim();
+  TrimInPlace(dt);
   jout.write ("DataType", dt);
   jout.write ("Axis", latticeConcat_p.axis());
   jout.write ("TempClose", latticeConcat_p.isTempClose());
@@ -649,19 +649,19 @@ void ImageConcat<T>::checkNonConcatAxisCoordinates (LogIO& os,
            ImageInfo::logMessage (warnRefPix_p, os, relax,
                                   "Image reference pixels are different on "
                                   "non-concatenation axis " +
-                                  String::toString(j+1));
+                                  ValueToString(j+1));
          }
          if (!near(refVal(j), refVal0(j))) {
            ImageInfo::logMessage (warnRefVal_p, os, relax,
                                   "Image reference values are different on "
                                   "non-concatenation axis " +
-                                  String::toString(j+1));
+                                  ValueToString(j+1));
          }
          if (!near(inc(j), inc0(j))) {
            ImageInfo::logMessage (warnInc_p, os, relax,
                                   "Image increments are different on "
                                   "non-concatenation axis " +
-                                  String::toString(j+1));
+                                  ValueToString(j+1));
          }
       }
    }

@@ -171,8 +171,6 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<Str
 {
     // build a TableDesc using row and any un-handled columns
     TableDesc td;
-    Regex sdfPrefix("^NS_SDFITS_");
-    Regex sdfPrefixMatch("^NS_SDFITS_.*");
     colNames.resize(handledCols.nelements());
     colNames = "";
     uInt colCount = 0;
@@ -182,8 +180,9 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<Str
 	    // its the input name unless it starts with NS_SDFITS_ in which case its
 	    // everything after the NS_SDFITS_
 	    String colName = row.name(i);
-	    if (colName.matches(sdfPrefixMatch)) {
-		colName = colName.after(sdfPrefix);
+      constexpr std::string_view kSdfPrefix("NS_SDFITS_");
+	    if (colName.starts_with(kSdfPrefix)) {
+        colName = colName.substr(kSdfPrefix.size());
 	    } 
 	    // ignore any TIME and INTERVAL here
 	    if (colName == "TIME" || colName == "INTERVAL") {

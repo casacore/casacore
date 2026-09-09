@@ -268,7 +268,7 @@ Bool ImageSummary<T>::restFrequency(String& restFreqString,
 //      oss.output().setf(ios::scientific, ios::floatfield);
 //      oss.output().precision(8);
       oss << restFreq << endl;
-      restFreqString= String(oss);
+      restFreqString= oss.str();
    } else {
       restFreq.setValue(0.0);
       restFreq.setUnit("Hz");
@@ -445,7 +445,7 @@ String ImageSummary<T>::makeMasksString() const
    if (!defaultMask.empty()) {
       oss << defaultMask;
       if (nMasks==1) {
-         return String(oss);
+         return oss.str();
       }
    }
 //
@@ -461,7 +461,7 @@ String ImageSummary<T>::makeMasksString() const
       }
    } 
    oss << "]";
-   return String(oss);
+   return oss.str();
 }
 
 
@@ -481,7 +481,7 @@ String ImageSummary<T>::makeRegionsString() const
       oss << regions(i);
       j++;
    } 
-   return String(oss);
+   return oss.str();
 }
 
 } //# NAMESPACE CASACORE - END

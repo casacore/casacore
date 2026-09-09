@@ -107,20 +107,20 @@ MathFunc<T>::MathFunc(FUNCTYPE type)
 template<class T>
 MathFunc<T>::MathFunc(String &type, Vector<double> &args)
 {
-    if (type.matches("MOD_KB"))
+    if (type == "MOD_KB")
 	object = new Mod_KB_Conv<T>((T)args(0), (T)args(1), (T)args(2), 
 				    (T)args(3));
-    else if (type.matches( "GAUSSIAN"))
+    else if (type == "GAUSSIAN")
 	object = new GaussianConv<T>((T)args(0), (T)args(1));
-    else if (type.matches( "KB"))
+    else if (type == "KB")
 	object = new KB_Conv<T>((T)args(0), (T)args(1), (T)args(2));
-    else if (type.matches( "SPHEROIDAL"))
+    else if (type == "SPHEROIDAL")
 	object = new Sph_Conv<T>((T)args(0), (T)args(1));
-    else if (type.matches( "SINC"))
+    else if (type == "SINC")
 	object = new Sinc_Conv<T>((T)args(0), (T)args(1));
-    else if (type.matches( "UNARY"))
+    else if (type == "UNARY")
 	object = new Unary<T>((T)args(0));
-    else if (type.matches( "EXP_SINC"))
+    else if (type == "EXP_SINC")
 	object = new ExpSincConv<T>((T)args(0), (T)args(1), (T)args(2),
 				    (T)args(3));
     else 

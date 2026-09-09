@@ -306,10 +306,10 @@ template<class T>
 typename LatticeSlice1D<T>::Method LatticeSlice1D<T>::stringToMethod (const String& method)
 {
    String typeU = method;
-   typeU.upcase();
+   ToUpperCaseInPlace(typeU);
 //
    Method method2;
-   String tmp = String(typeU.at(0,1));
+   String tmp = typeU.substr(0,1);
    if (tmp==String("N")) {
       method2 = NEAREST;
    } else if (tmp==String("L")) {

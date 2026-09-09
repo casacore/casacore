@@ -112,7 +112,7 @@ public:
 private:
   // Check if the size matches the number of rows.
   // Add rows if the table is still empty.
-  void checkRows (const String& attrName, uInt size);
+  void checkRows (const std::string& attrName, uInt size);
 
   // Add a new column for the given attribute for the data type in the value.
   Bool addNewColumn (const String& attrName, const ValueHolder&);

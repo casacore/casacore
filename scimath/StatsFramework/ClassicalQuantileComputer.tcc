@@ -869,8 +869,8 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
             [&iNpts](const DataArray& ary) {
             ThrowIf(
                 ary.size() != *iNpts,
-                "Logic Error: data array has " + String::toString(ary.size())
-                + " elements but it should have " + String::toString(*iNpts)
+                "Logic Error: data array has " + ValueToString(ary.size())
+                + " elements but it should have " + ValueToString(*iNpts)
                 + ". Please file a bug report and include your dataset and "
                 "your inputs"
             );
@@ -889,9 +889,9 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
                 [&iNpts, &iIVMaps, &iArrays, &prevIdx](uInt64 idx) {
                 ThrowIf(
                     idx >= *iNpts,
-                    "Logic Error: aryIdx " + String::toString(idx) + " is too "
+                    "Logic Error: aryIdx " + ValueToString(idx) + " is too "
                     "large. It should be no larger than "
-                    + String::toString(*iNpts-1) + ". Please file a defect "
+                    + ValueToString(*iNpts-1) + ". Please file a defect "
                     + "report and include your dataset and your inputs"
                 );
                 (*iIVMaps)[idx] = GenSort<AccumType>::kthLargest(

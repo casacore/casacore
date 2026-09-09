@@ -153,8 +153,9 @@ void MSFitsOutput::write() const {
     String msfile = _ms.tableName();
     String outfile = _fitsfile;
     if (outfile.empty()) {
-        outfile = msfile.contains(Regex("\\.ms$"))
-            ? msfile.before(Regex("\\.ms"), 0) + ".fits"
+      constexpr std::string_view kExtension(".ms");
+        outfile = msfile.ends_with(kExtension)
+	  ? msfile.substr(0, msfile.size() - kExtension.size()) + ".fits"
             : msfile + ".fits";
     }
     String errmsg;
@@ -366,9 +367,9 @@ uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,
 
 // Define a FITS random group parameter with default scaling and offset
 static void defineRandomParam(Record& ek, Int n, const String& name) {
-    String ptype = "ptype" + String::toString(n);
-    String pscal = "pscal" + String::toString(n);
-    String pzero = "pzero" + String::toString(n);
+    String ptype = "ptype" + std::to_string(n);
+    String pscal = "pscal" + std::to_string(n);
+    String pzero = "pzero" + std::to_string(n);
     ek.define(ptype, name);
     ek.define(pscal, 1.0);
     ek.define(pzero, 0.0);
@@ -376,7 +377,7 @@ static void defineRandomParam(Record& ek, Int n, const String& name) {
 
 static void defineRandomParam(Record& ek, Int n, const String& name,
         const String& comment) {
-    String ptype = "ptype" + String::toString(n);
+    String ptype = "ptype" + std::to_string(n);
     defineRandomParam(ek, n, name);
     ek.setComment(ptype, comment);
 }
@@ -418,11 +419,11 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     	uInt myfield = asMultiSource ? 0 : _fieldNumber;
     	Bool foundEpoch = False;
     	String dirtype = msfc.phaseDirMeas(myfield).getRefString();
-    	if (dirtype.contains("2000")) {
+    	if (StringContains(dirtype, "2000")) {
     		ek.define("epoch", 2000.0);
     		foundEpoch = True;
     	}
-    	else if (dirtype.contains("1950")) {
+    	else if (StringContains(dirtype, "1950")) {
     		ek.define("epoch", 1950.0);
     		foundEpoch = True;
     	}
@@ -644,7 +645,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     RecordDesc desc;
     String columnName;
     String col = _column;
-    col.upcase();
+    ToUpperCaseInPlace(col);
     if (col == "OBSERVED" || col == MS::columnName(MS::DATA)) {
         columnName = MS::columnName(MS::DATA);
         os << "Writing DATA column" << LogIO::POST;
@@ -727,7 +728,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
         if (indata.keywordSet().isDefined("QuantumUnit")
                 && indata.keywordSet().dataType("QuantumUnit") == TpString) {
             indata.keywordSet().get("QuantumUnit", bunit);
-            bunit.upcase();
+            ToUpperCaseInPlace(bunit);
         }
     }
     ek.define("bunit", bunit);
@@ -1809,34 +1810,34 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
             *nosta = id[antnum];
             String mount = upcase(inantmount(antnum));
             // MS has "EQUATORIAL", "ALT-AZ", "X-Y",  "SPACE-HALCA"
-            if (mount.contains("ALT-AZ+NASMYTH-R")) {
+            if (StringContains(mount, "ALT-AZ+NASMYTH-R")) {
                 *mntsta = 4;
             }
-            else if (mount.contains("ALT-AZ+NASMYTH-L")) {
+            else if (StringContains(mount, "ALT-AZ+NASMYTH-L")) {
                 *mntsta = 5;
             }
-	    else if (mount.contains("ALT-AZ+BWG-R")) {
+	    else if (StringContains(mount, "ALT-AZ+BWG-R")) {
 		*mntsta = 6;
 	    }
-	    else if (mount.contains("ALT-AZ+BWG-L")) {
+	    else if (StringContains(mount, "ALT-AZ+BWG-L")) {
 		*mntsta = 7;
 	    }
-	    else if (mount.contains("ALT-AZ")) {
+	    else if (StringContains(mount, "ALT-AZ")) {
                 *mntsta = 0;
             }
-            else if (mount.contains("EQUATORIAL")) {
+            else if (StringContains(mount, "EQUATORIAL")) {
                 *mntsta = 1;
             }
-            else if (mount.contains("ORBIT")) {
+            else if (StringContains(mount, "ORBIT")) {
                 *mntsta = 2;
             }
-            else if (mount.contains("X-Y")) {
+            else if (StringContains(mount, "X-Y")) {
                 *mntsta = 3;
             }
-            else if (mount.contains("SPACE-HALCA")) {
+            else if (StringContains(mount, "SPACE-HALCA")) {
                 *mntsta = 9;
             }
-            else if (mount.contains("BIZARRE")) {
+            else if (StringContains(mount, "BIZARRE")) {
                 *mntsta = 8;
             }
             else {
@@ -3070,14 +3071,18 @@ void MSFitsOutput::_handleAntNumbers(const MeasurementSet& ms,
 
     for (Int iant = 0; iant < nAnt; ++iant) {
         String name;
-        if (arrayName.contains("VLA"))
+        if (StringContains(arrayName, "VLA")) {
             // Trim leading EA/VA, if present
-            name = antname(iant).from(RXint);
-        else
             name = antname(iant);
+            const size_t int_pos = antname(iant).find_first_of(kIntegerCharacters);
+            if(int_pos != std::string::npos)
+              name = name.substr(int_pos);
+        } else {
+            name = antname(iant);
+        }
 
-        if (name.matches(RXint))
-            antnumbers(iant) = atoi(name.chars());
+        if (RegexMatches(name, RXint))
+            antnumbers(iant) = atoi(name.c_str());
         else {
             // at least one name isn't a number, so use use index+1 for ALL
             indgen(antnumbers);

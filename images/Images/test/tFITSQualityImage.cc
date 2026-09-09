@@ -306,7 +306,7 @@ Bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
 	   uInt ndim       = fitsQI.ndim();
 	   IPosition shape = fitsQI.shape();
 	   if (shape(ndim-1)!=2) {
-		   String msg = String("Last dimension should be 2 but is: ") + String::toString(shape(ndim-1));
+		   String msg = "Last dimension should be 2 but is: " + ValueToString(shape(ndim-1));
            throw(AipsError(msg));
 
 	   }

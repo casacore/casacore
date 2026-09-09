@@ -166,7 +166,7 @@ void ImageExpr<T>::save (const String& fileName) const
   jout.start();
   jout.write ("Version", 1);
   String dt(ValType::getTypeStr(this->dataType()));
-  dt.trim();
+  TrimInPlace(dt);
   jout.write ("DataType", dt);
   jout.write ("ImageExpr", exprString_p);
   jout.write ("MiscInfo", this->miscInfo().toRecord());

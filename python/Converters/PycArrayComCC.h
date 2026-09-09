@@ -250,9 +250,9 @@
     PyObject** dst = static_cast<PyObject**>(to);
     for (size_t i=0; i<nr; i++) {
 #ifdef IS_PY3K
-      dst[i] = PyUnicode_FromString(from[i].chars());
+      dst[i] = PyUnicode_FromString(from[i].c_str());
 #else
-      dst[i] = PyString_FromString(from[i].chars());
+      dst[i] = PyString_FromString(from[i].c_str());
 #endif
     }
   }
