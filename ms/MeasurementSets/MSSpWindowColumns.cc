@@ -158,7 +158,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSSpWindowColumns::match(...) - "
-                      "row " + String::toString(tr) +
+                      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -204,7 +204,7 @@ matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasF
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSSpWindowColumns::match(...) - "
-                      "row " + String::toString(tr) +
+                      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     if (!flagRow()(tr) &&

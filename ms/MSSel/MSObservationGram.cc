@@ -81,7 +81,7 @@ static Int                   posMSObservationGram = 0;
       {
 	MSObservationGramrestart (MSObservationGramin);
 	yy_start = 1;
-	strpMSObservationGram = command.chars();       // get pointer to command string
+	strpMSObservationGram = command.c_str();       // get pointer to command string
 	posMSObservationGram  = 0;                     // initialize string position
 	//MSObservationParse parser(ms,obsSubTable);     // setup measurement set
 	MSObservationParse::thisMSObsParser = parser; // The global pointer to the parser

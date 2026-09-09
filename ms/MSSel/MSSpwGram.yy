@@ -117,8 +117,8 @@ PhyVal: FNUMBER
 UnitCode: UNIT 
           {
 	    String str($1);
-	    str.downcase();
-	    if (str.contains("hz")) $$[0]=MSSpwIndex::MSSPW_UNITHZ;
+	    ToLowerCaseInPlace(str);
+	    if (str.find("hz") != std::string::npos) $$[0]=MSSpwIndex::MSSPW_UNITHZ;
 	    else // Only Frequency and velocity units will make to the parser.
 	      {
 		$$[0] = MSSpwIndex::MSSPW_UNITVELOCITY;

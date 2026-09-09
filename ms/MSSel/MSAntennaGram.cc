@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSAntennaGramrestart (MSAntennaGramin);
 	yy_start = 1;
-	strpMSAntennaGram = command.chars();     // get pointer to command string
+	strpMSAntennaGram = command.c_str();     // get pointer to command string
 	posMSAntennaGram  = 0;                   // initialize string position
 	parser->setComplexity();
 	MSAntennaParse::thisMSAParser = parser; // The global pointer to the parser

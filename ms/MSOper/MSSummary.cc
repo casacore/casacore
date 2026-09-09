@@ -386,9 +386,9 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                 os.output().width(widthFieldId); os << siter->fieldID << " ";
                 os.output().setf(ios::left, ios::adjustfield);
                 if (name.length()>20) {
-                    name.replace(19,1,'*');
+                    name.replace(19,1,1,'*');
                 }
-                os.output().width(widthField); os << name.at(0,20);
+                os.output().width(widthField); os << name.substr(0,20);
                 os.output().width(widthnrow);
                 os.output().setf(ios::right, ios::adjustfield);
                 os <<  nrowMap->find(*siter)->second;
@@ -431,7 +431,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                 }
                 Record scanRecord;
                 Record subScanRecord;
-                String scanrecid = String("scan_")+String::toString(siter->scan);
+                String scanrecid = "scan_"+std::to_string(siter->scan);
                 if (outRec.isDefined(scanrecid)){
                     scanRecord = outRec.asrwRecord(scanrecid);
                     outRec.removeField(scanrecid);
@@ -445,7 +445,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                 subScanRecord.define("nRow", nrow);
                 subScanRecord.define("IntegrationTime", props.meanExposureTime.getValue("s"));
                 subScanRecord.define("SpwIds", Vector<Int>(spw.begin(), spw.size(), 0));
-                scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
+                scanRecord.defineRecord(std::to_string(subsetscan), subScanRecord);
                 if(!outRec.isDefined(scanrecid)){
                     outRec.defineRecord(scanrecid, scanRecord);
                 }
@@ -653,7 +653,7 @@ void MSSummary::getScanSummary (Record& outRec) const
 
                     Record scanRecord;
                     Record subScanRecord;
-                    String scanrecid=String::toString(lastscan);
+                    String scanrecid=std::to_string(lastscan);
                     if(outRec.isDefined(scanrecid)){
                         scanRecord=outRec.asrwRecord(scanrecid);
                         outRec.removeField(scanrecid);
@@ -667,7 +667,7 @@ void MSSummary::getScanSummary (Record& outRec) const
                     subScanRecord.define("IntegrationTime", meanIntTim);
                     subScanRecord.define("SpwIds", spwids);
                     subScanRecord.define("DDIds", lastddids);
-                    scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
+                    scanRecord.defineRecord(std::to_string(subsetscan), subScanRecord);
                     if(!outRec.isDefined(scanrecid)){
                         outRec.defineRecord(scanrecid, scanRecord);
                     }
@@ -724,7 +724,7 @@ void MSSummary::getScanSummary (Record& outRec) const
         // Print out final scan's times, fields, ddis
         Record scanRecord;
         Record subScanRecord;
-        String scanrecid=String::toString(lastscan);
+        String scanrecid=std::to_string(lastscan);
         if(outRec.isDefined(scanrecid)){
             scanRecord=outRec.asrwRecord(scanrecid);
             outRec.removeField(scanrecid);
@@ -738,7 +738,7 @@ void MSSummary::getScanSummary (Record& outRec) const
         subScanRecord.define("IntegrationTime", meanIntTim);
         subScanRecord.define("SpwIds", spwids);
         subScanRecord.define("DDIds", lastddids);
-        scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
+        scanRecord.defineRecord(std::to_string(subsetscan), subScanRecord);
         if(!outRec.isDefined(scanrecid)){
             outRec.defineRecord(scanrecid, scanRecord);
         }
@@ -765,7 +765,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     if (verbose) {
         // Detailed antenna list
         String title;
-        title="Antennas: " + String::toString(nAnt) + ":";
+        title="Antennas: " + std::to_string(nAnt) + ":";
         String indent("  ");
         uInt indwidth =5;
         uInt namewidth=6;
@@ -882,7 +882,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
             }
             if (line.length() > 55 || ant == maxAnt) {
                 // This line is finished, dump it after the line leader
-                leader = String::toString(last+1) +"-" +String::toString(ant) +": ";
+                leader = std::to_string(last+1) +"-" +std::to_string(ant) +": ";
                 os << "   ID=";
                 os.output().setf(ios::right, ios::adjustfield);
                 os.output().width(8); os << leader;
@@ -1019,7 +1019,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                 os.output().width(widthLead);    os << "  ";
                 os.output().width(widthField);    os << (fld);
                 os.output().width(widthCode);   os << codes[fld];
-                os.output().width(widthName);    os << name.at(0,20);
+                os.output().width(widthName);    os << name.substr(0,20);
                 os.output().width(widthRA);    os << mvRa(0.0).string(MVAngle::TIME,12);
                 os.output().width(widthDec);    os << mvDec.string(MVAngle::DIG2,11);
                 os.output().width(widthType);
@@ -1050,7 +1050,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                     String err;
                     mh.toRecord(err, dirrec);
                     fieldrec.defineRecord("direction", dirrec);
-                    String fieldrecid=String("field_")+String::toString(fld);
+                    String fieldrecid="field_"+std::to_string(fld);
                     if(!outrec.isDefined(fieldrecid)){
                         outrec.defineRecord(fieldrecid, fieldrec);
                     }
@@ -1238,7 +1238,7 @@ void MSSummary::listSource (LogIO& os, Bool verbose) const
                 //    os.output().width(widthTime);
                 //                os<< MVTime(msSC.time()(row)/86400.0).string();
                 os.output().width(widthSrc);    os<< msSC.sourceId()(row);
-                os.output().width(widthName);    os<< name.at(0,20);
+                os.output().width(widthName);    os<< name.substr(0,20);
                 //    os.output().width(widthRA);    os<< mvRa(0.0).string(MVAngle::TIME,10);
                 //    os.output().width(widthDec);    os<< mvDec.string(MVAngle::DIG2,10);
                 os.output().width(widthSpw);
@@ -1402,7 +1402,7 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
             ddRec.define("PolId", polIds(i));
             ddRec.define("NumCorr", msPOLC.numCorr()(pol));
 
-            outRec.defineRecord(String::toString(dd), ddRec);
+            outRec.defineRecord(std::to_string(dd), ddRec);
         }
     }
 }

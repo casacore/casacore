@@ -129,7 +129,7 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
-                      "row " + String::toString(tr) +
+                      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -186,7 +186,7 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSAntennaColumns::matchAntenna(...) - "
-                      "row " + String::toString(tr) +
+                      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     Bool stationMatches = stationName.empty() || matchStation(tr, stationName);
@@ -214,12 +214,12 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
 
 Bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
-  return antName.matches(name()(row));
+  return antName == name()(row);
 }
 
 Bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
   DebugAssert(row < nrow(), AipsError);
-  return stationName.matches(station()(row));
+  return stationName == station()(row);
 }
 
 Bool MSAntennaColumns::

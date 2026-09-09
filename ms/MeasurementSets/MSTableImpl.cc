@@ -63,7 +63,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {
   String meas = measure;
-  meas.downcase();
+  ToLowerCaseInPlace(meas);
   TableMeasRefDesc measRef;
   TableMeasValueDesc measVal(td, column);
   if (!refCol.empty()) measRef=TableMeasRefDesc(td,refCol);

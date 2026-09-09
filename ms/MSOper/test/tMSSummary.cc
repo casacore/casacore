@@ -48,7 +48,7 @@ void testSumm()
   mss.list (os, True);
   // Remove the extra fields (time, severity) from the output string.
   String str(ostr.str());
-  str.gsub (Regex(".*\tINFO\t[+]?\t"), "");
+  RegexReplaceAll(str, Regex(".*\tINFO\t[+]?\t"), "");
   cout << str;
 }
 

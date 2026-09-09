@@ -382,14 +382,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   String MSSelection::indexExprStr(Vector<Int> index)
   {
-    String expression;
+    std::string expression;
     
     for(uInt i=0; i<index.nelements(); i++)
       {
 	if(i==0)
-	  expression = String::toString(index[i]);
+	  expression = std::to_string(index[i]);
 	else
-	  expression = expression + "," + String::toString(index[i]);
+	  expression = expression + "," + std::to_string(index[i]);
       }
     
     return expression;

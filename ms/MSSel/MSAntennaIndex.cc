@@ -71,7 +71,7 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
         if (MSAntennaParse::thisMSAErrorHandler) {
           MSAntennaParse::thisMSAErrorHandler->reportError ("", mesg.str());
         } else {
-          throw (MSSelectionAntennaParseError(mesg));
+          throw (MSSelectionAntennaParseError(mesg.str()));
         }
       }
     return IDs;
@@ -94,7 +94,7 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
   String patt = pattern;
   if (patt[0] == '^') {
     negate = True;
-    patt = patt.from(1);
+    patt = patt.substr(1);
   }
   Regex reg;
   if (regex) {
@@ -109,9 +109,9 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
   for(i(0)=0;i(0)<sh(0);i(0)++)
     {
       //Int ret=(msAntennaCols_p.name().getColumn()(i).find(reg,pos));
-      Int ret=(msAntennaCols_p.name().getColumn()(i).matches(reg,pos));
+      Int ret=RegexMatches(msAntennaCols_p.name().getColumn()(i), reg,pos);
       if (ret <= 0)
-	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
+	ret = RegexMatches(msAntennaCols_p.station().getColumn()(i), reg,pos);
       //      cerr << i << " " << ret << std::endl;
       maskArray(i) = ( (ret>0) != negate );
       //		       && !msAntennaCols_p.flagRow().getColumn()(i));
@@ -199,7 +199,7 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern,
   String patt = pattern;
   if (patt[0] == '^') {
     negate = True;
-    patt = patt.from(1);
+    patt = patt.substr(1);
   }
   Regex reg;
   if (regex) {
@@ -214,7 +214,7 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern,
   for(i(0)=0;i(0)<sh(0);i(0)++)
     {
       //Int ret=(msAntennaCols_p.name().getColumn()(i).find(reg,pos));
-      Int ret=(msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
+      Int ret=RegexMatches(msAntennaCols_p.station().getColumn()(i), reg,pos);
       // if (ret <= 0)
       // 	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
       //      cerr << i << " " << ret << std::endl;

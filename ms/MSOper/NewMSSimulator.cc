@@ -714,15 +714,15 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   String myStokesString = stokesString;
   Int nCorr=0;
   for (Int j=0; j<4; j++) {	  
-    while (myStokesString.at(0,1) == " ") {
-      myStokesString.del(0,1);
+    while (myStokesString.substr(0,1) == " ") {
+      myStokesString.erase(0,1);
     }
     
     if (myStokesString.length() == 0) 
       break;
     
-    stokesTypes(j) = Stokes::type( myStokesString.at(0, 2) );
-    myStokesString.del(0,2);
+    stokesTypes(j) = Stokes::type( myStokesString.substr(0, 2) );
+    myStokesString.erase(0,2);
     nCorr = j+1; 
     if (stokesTypes(j)==Stokes::Undefined) {
       os<< " Undefined polarization type in input"<<LogIO::POST;
@@ -903,7 +903,7 @@ void NewMSSimulator::initFeeds(const String& mode,
   else {
     nFeed=1;
     // mode == "perfect R L" OR "perfect X Y"
-    if (mode.contains("X", 0)) {
+    if (mode.find("X") != std::string::npos) {
       feedPol0 = "X";
       feedPol1 = "Y";
     }
@@ -945,7 +945,7 @@ void NewMSSimulator::initFeeds(const String& mode,
 	feedXYZ(2,iRow) = 0.0;
 	feedAngle(0,iRow) = 0.0;
 	feedAngle(1,iRow) = 0.0;
-	if (pol(j).contains("X", 0)) {
+	if (pol(j).find("X") != std::string::npos) {
 	  feedPol(0, iRow) = "X";
 	  feedPol(1, iRow) = "Y";
 	}
@@ -1828,7 +1828,7 @@ String NewMSSimulator::formatDirection(const MDirection& direction) {
   oss.width(14);
   oss << mvDec.string(MVAngle::DIG2,8);
   oss << "     " << MDirection::showType(direction.getRef().getType());
-  return String(oss);
+  return oss.str();
 }
 
 String NewMSSimulator::formatTime(const Double time) {

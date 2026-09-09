@@ -427,7 +427,7 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 	for (Int i=0; i<n; i++) {
 		String column=items.name(i);
 		MSS::Field fld=MSS::field(column);
-		column.upcase();
+		ToUpperCaseInPlace(column);
 		switch (fld) {
 		case MSS::ANTENNA1:
 		case MSS::ANTENNA2:
@@ -600,7 +600,7 @@ Bool MSSelector::select(const String& msSelect)
 	}
 	// check that a selection was given
 	Int len = msSelect.length();
-	Int nspace = msSelect.freq(' ');
+	Int nspace = std::count(msSelect.begin(), msSelect.end(), ' ');
 	if (msSelect.empty() || nspace==len) return False;
 	String parseString="select from $1 where " + msSelect;
 	selms_p=tableCommand(parseString,selms_p).table();
@@ -854,13 +854,14 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 					if (ifrAxis_p(k)>=0) {
 						Int ant1 = ifrAxis_p(k)/1000;
 						Int ant2 = ifrAxis_p(k)%1000;
-						ifrName(k)=antName(ant1).before('\0');
+            constexpr std::string_view kTerminatingZero("\0", 1);
+						ifrName(k)=std::string(GetStringUpToExcluding(antName(ant1), kTerminatingZero));
 						ifrName(k)+="-";
-						ifrName(k)+=antName(ant2).before('\0');
+						ifrName(k)+=GetStringUpToExcluding(antName(ant2), kTerminatingZero);
 						if (prefix.length()>1) {
-							sName(k)=String(antName(ant1).after(prefix)).before('\0');
+							sName(k)=std::string(GetStringUpToExcluding(GetStringAfter(antName(ant1), prefix), kTerminatingZero));
 							sName(k)+="-";
-							sName(k)+=String(antName(ant2).after(prefix)).before('\0');
+							sName(k)+=GetStringUpToExcluding(GetStringAfter(antName(ant2), prefix), kTerminatingZero);
 						} else {
 							sName(k)=ifrName(k);
 						}
