@@ -764,9 +764,9 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     vector<String> stations = _msmd->getAntennaStations();
     if (verbose) {
         // Detailed antenna list
-        String title;
+        std::string title;
         title="Antennas: " + std::to_string(nAnt) + ":";
-        String indent("  ");
+        std::string indent("  ");
         uInt indwidth =5;
         uInt namewidth=6;
         uInt statwidth=10;
@@ -1050,7 +1050,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
                     String err;
                     mh.toRecord(err, dirrec);
                     fieldrec.defineRecord("direction", dirrec);
-                    String fieldrecid="field_"+std::to_string(fld);
+                    std::string fieldrecid="field_"+std::to_string(fld);
                     if(!outrec.isDefined(fieldrecid)){
                         outrec.defineRecord(fieldrecid, fieldrec);
                     }
