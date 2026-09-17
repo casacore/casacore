@@ -26,8 +26,8 @@
 #ifndef CASACORE_STRING_H_
 #define CASACORE_STRING_H_
 
-// Uncomment this to issue warnings for all use of non-std::string functions
-// #define CASACORE_DEPRECATE_STRING
+// Comment this out to surpress warnings for use of non-std::string functions
+#define CASACORE_DEPRECATE_STRING
 
 #ifdef CASACORE_DEPRECATE_STRING
 // Some of the (deprecated) code calls deprecated functions, so disable this
