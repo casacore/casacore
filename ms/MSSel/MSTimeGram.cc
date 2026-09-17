@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSTimeGramrestart (MSTimeGramin);
 	yy_start = 1;
-	strpMSTimeGram = command.chars();     // get pointer to command string
+	strpMSTimeGram = command.c_str();     // get pointer to command string
 	posMSTimeGram  = 0;                   // initialize string position
 	parser->reset();  		      // global pointer to it
 	MSTimeParse::thisMSTParser = parser;
@@ -177,7 +177,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSTimeGramrestart (MSTimeGramin);
 	yy_start = 1;
-	strpMSTimeGram = command.chars();     // get pointer to command string
+	strpMSTimeGram = command.c_str();     // get pointer to command string
 	posMSTimeGram  = 0;                   // initialize string position
 	MSTimeParse parser(ms,otherTens);     // setup the parser and
 					      // global pointer to it

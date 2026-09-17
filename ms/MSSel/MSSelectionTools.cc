@@ -311,7 +311,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     String tmpStr(str);
     /* String::size_type tokpos,startpos=0; */
-    if (upcase) tmpStr.upcase();
+    if (upcase) ToUpperCaseInPlace(tmpStr);
     char *sep_p=(char *)sep.c_str();
 
     char *tok=strtok((char *)tmpStr.c_str(), sep_p);

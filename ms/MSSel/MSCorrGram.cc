@@ -77,7 +77,7 @@ int msCorrGramParseCommand (const MeasurementSet* ms, const String& command)
 {
     MSCorrGramrestart (MSCorrGramin);
     yy_start = 1;
-    strpMSCorrGram = command.chars();     // get pointer to command string
+    strpMSCorrGram = command.c_str();     // get pointer to command string
     posMSCorrGram  = 0;                   // initialize string position
     MSCorrParse parser(ms);               // setup measurement set
     return MSCorrGramparse();             // parse command string
@@ -141,12 +141,12 @@ String msCorrGramRemoveQuotes (const String& in)
     int pos = 0;
     while (pos < leng) {
 	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
+	const size_t inx = str.find (str[pos], pos+1);
+	if (inx == std::string::npos) {
 	    throw (AipsError ("MSCorrParse - Ill-formed quoted string: " +
 			      str));
 	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
+	out += str.substr (pos+1, inx-pos-1);             // add substring
 	pos = inx+1;
     }
     return out;

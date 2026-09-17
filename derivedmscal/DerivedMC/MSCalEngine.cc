@@ -397,9 +397,9 @@ void MSCalEngine::fillAntPos (Int calDescId, Int calInx)
   antMB.reserve  (tab.nrow());
   for (rownr_t i=0; i<tab.nrow(); ++i) {
     String mount = mountCol(i);
-    mount.downcase();
+    ToLowerCaseInPlace(mount);
     Int mountType = 0;
-    if (mount.size() >= 6  &&  mount(0,6) == "alt-az") {
+    if (mount.substr(0,6) == "alt-az") {
       mountType = 1;
     }
     mounts.push_back (mountType);

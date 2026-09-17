@@ -47,7 +47,7 @@ struct SubScanKey {
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const SubScanKey& lhs, const SubScanKey& rhs);
 
-String toString(const SubScanKey& subScanKey);
+std::string toString(const SubScanKey& subScanKey);
 
 std::ostream& operator<<(std::ostream& os, const SubScanKey& scanKey);
 
@@ -69,7 +69,7 @@ inline ScanKey scanKey(const SubScanKey& subScanKey) {
     return key;
 }
 
-String toString(const ScanKey& scanKey);
+std::string toString(const ScanKey& scanKey);
 
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const ScanKey& lhs, const ScanKey& rhs);

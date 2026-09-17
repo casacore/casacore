@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSFeedGramrestart (MSFeedGramin);
 	yy_start = 1;
-	strpMSFeedGram = command.chars();     // get pointer to command string
+	strpMSFeedGram = command.c_str();     // get pointer to command string
 	posMSFeedGram  = 0;                   // initialize string position
 	MSFeedParse::thisMSFParser = parser; // The global pointer to the parser
 	MSFeedGramparse();                    // parse command string

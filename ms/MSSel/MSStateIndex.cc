@@ -61,7 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     Int ret=0;
     for(uInt i=0;i<strList.nelements();i++)
-      if ((ret=strList[i].matches(regex,pos)) > 0) break;
+      if ((ret=RegexMatches(strList[i],regex,pos)) > 0) break;
     return ret;
   }
   //-------------------------------------------------------------------------

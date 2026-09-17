@@ -300,7 +300,7 @@ namespace casacore {
         // Now do it as a FIELD column name.
         // Skip possible leading backslash (escape char).
         if (str.size() > 0  &&  str[0] == '\\') {
-          str = str.from(1);
+          str = str.substr(1);
         }
         if (str.empty()) {
           throw AipsError ("An empty string given to a MSCAL function");
@@ -376,7 +376,7 @@ namespace casacore {
                          "constant String scalar");
       }
       type = operands[1]->getString(0);
-      type.upcase();
+      ToUpperCaseInPlace(type);
     }
     // The optional third argument tells if a factor 2 must be applied to I.
     Bool rescale = False;

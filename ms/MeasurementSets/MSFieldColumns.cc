@@ -357,7 +357,7 @@ Int64 MSFieldColumns::matchDirection(const MDirection& referenceDirection,
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSFieldColumns::matchDirection(...) - "
-		      "row " + String::toString(tr) +
+		      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     if (!flagRow()(tr) &&

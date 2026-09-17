@@ -84,7 +84,7 @@ int msStateGramParseCommand (const MeasurementSet* ms, const String& command)
       Int ret;
       MSStateGramrestart (MSStateGramin);
       yy_start = 1;
-      strpMSStateGram = command.chars();     // get pointer to command string
+      strpMSStateGram = command.c_str();     // get pointer to command string
       posMSStateGram  = 0;                   // initialize string position
       MSStateParse parser(ms);               // setup measurement set
       MSStateParse::thisMSSIParser = &parser; // The global pointer to the parser
@@ -110,7 +110,7 @@ int msStateGramParseCommand (const MeasurementSet* ms, const String& command)
       Int ret;
       MSStateGramrestart (MSStateGramin);
       yy_start = 1;
-      strpMSStateGram = command.chars();     // get pointer to command string
+      strpMSStateGram = command.c_str();     // get pointer to command string
       posMSStateGram  = 0;                   // initialize string position
       MSStateParse parser(ms);               // setup measurement set
       MSStateParse::thisMSSIParser = &parser; // The global pointer to the parser

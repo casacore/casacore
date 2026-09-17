@@ -371,7 +371,7 @@ antidrange: INT // A single antenna index
 		  {
 		    ostringstream vlaName;
 		    vlaName << antennaids[i];
-		    Vector<Int> tmp(myMSAI.matchAntennaName(vlaName));
+		    Vector<Int> tmp(myMSAI.matchAntennaName(vlaName.str()));
 		    if (tmp.nelements() > 0) ((*$$))[i] = tmp[0];
 		    else ((*$$))[i] = antennaids[i];
 		  }

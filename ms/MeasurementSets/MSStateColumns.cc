@@ -75,7 +75,7 @@ Int64 MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
     const rownr_t tr = tryRow;
     if (tr >= r) {
       throw(AipsError("MSStateColumns::matchState(...) - "
-                      "row " + String::toString(tr) +
+                      "row " + std::to_string(tr) +
                       " you suggest is too big"));
     }
     if (!flagRow()(tr)

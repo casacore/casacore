@@ -260,14 +260,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       String str(*iter);
       Bool neg = (str[0] == '^');
       if (neg) {
-        str = str.after(0);
+        str = str.substr(1);
       }
       Regex re(str);
       // Form all possible baseline names and see it they match.
       for (uInt j=0; j<names.size(); ++j) {
         for (uInt i=0; i<names.size(); ++i) {
           String bl = names[i] + '&' + names[j];
-          if (bl.matches(re) != neg) {
+          if (RegexMatches(bl, re) != neg) {
             match(i,j) = True;
           }
         }

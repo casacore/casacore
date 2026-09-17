@@ -137,7 +137,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSFieldGramrestart (MSFieldGramin);
 	yy_start = 1;
-	strpMSFieldGram = command.chars();     // get pointer to command string
+	strpMSFieldGram = command.c_str();     // get pointer to command string
 	posMSFieldGram  = 0;                   // initialize string position
 	//	MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
 	MSFieldParse::thisMSFParser = parser; // The global pointer to the parser

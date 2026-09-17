@@ -36,6 +36,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/OS/File.h>
@@ -1246,6 +1247,32 @@ void MSLister::_polarizationSetup(const uInt selPolID) {
 	}
 }
 
+bool IsAsciiLetter(char c)
+{
+  return (c >= 'A' && c <= 'Z') ||
+          (c >= 'a' && c <= 'z');
+}
+
+std::string_view Leading2Letters(std::string_view str)
+{
+  size_t length = 0;
+  while (length < str.size() && length < 2 &&
+          IsAsciiLetter(str[length]))
+  {
+      ++length;
+  }
+  return str.substr(0, length);
+}
+
+void LeftTrimNonAlpha(std::string& str) {
+  const size_t pos = str.find_first_of(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  if (pos != std::string::npos)
+    str.erase(0, pos);
+  else
+    str.clear();
+}
+
 // Parse the correlation (polarization) selection string.
 // Vector<Int> indexPols_p holds the indices of pols_p that
 // match the correlation selection. nIndexPols_p holds the
@@ -1254,8 +1281,8 @@ void MSLister::polarizationParse(String correlation) {
 
 	logStream_p << LogIO::DEBUG1 << "Begin: MSLister::polarizationParse" << LogIO::POST;
 
-	Regex alpha("[A-Za-z]"); // Any letter
-	if(correlation.empty() || !(correlation.contains(alpha))) {
+	const std::regex alpha("[A-Za-z]"); // Any letter
+	if(correlation.empty() || !regex_search(correlation, alpha)) {
 		// If correlation is empty (no correlation selection) select all
 		// polarizations by default.  Fill indexPols_p with indices 0
 		// through (npols_p - 1).
@@ -1267,33 +1294,30 @@ void MSLister::polarizationParse(String correlation) {
 		for(uInt i=0; i<nIndexPols_p; i++) { indexPols_p(i) = i; }
 		return;
 	}
-	correlation.upcase(); // transform to uppercase
+	ToUpperCaseInPlace(correlation);
 
 	try {
 		// Parse correlation parameter value.  Put each substring into
 		// Vector<String> parseCorrs. nParseCorrs holds the number of
 		// elements in parseCorrs.
 
-		Vector<String> parseCorrs;
+		std::vector<std::string> parseCorrs;
 		Int nParseCorrs=0;
 		// Use Regex to do the parsing.
-		Regex startRegex("^[^A-Za-z]"); // leading non-letter
-		Regex cRegex("^[A-Za-z]{1,2}"); // 1 polarization selection
 		// strip all leading whitespace
 		logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
-		while(correlation.contains(startRegex)) { correlation.del(startRegex); }
+    LeftTrimNonAlpha(correlation);
 		logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
 		// Acquire 1 polarization selection
-		while(correlation.contains(cRegex)) {
-                        nParseCorrs = parseCorrs.size(); // get size of parseCorrs
-			parseCorrs.resize(++nParseCorrs,True); // append one element to parseCorrs
-			// Store polarization in parseCorrs
-			parseCorrs(nParseCorrs - 1) = correlation.through(cRegex);
-			correlation.del(cRegex); // remove polarization
+    std::string_view c = Leading2Letters(correlation);
+		while(!c.empty()) {
+			parseCorrs.emplace_back(c);
+      correlation.erase(0, c.size());
 			logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
 			// strip all leading whitespace
-			while(correlation.contains(startRegex)) { correlation.del(startRegex); }
+      LeftTrimNonAlpha(correlation);
 			logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
+      c = Leading2Letters(correlation);
 		}
 
 		logStream_p << LogIO::NORMAL2 << "Correlation selections identified:" << std::endl
@@ -1312,9 +1336,9 @@ void MSLister::polarizationParse(String correlation) {
 			for(uInt j=0; j<npols_p; j++) {
 				// REMOVE COMMENTED DEBUGGING MESSAGES LATER
 				///logStream_p << LogIO::DEBUG2 << "index j = " << j << LogIO::POST;
-				if(parseCorrs(i) == pols_p(j)) {
+				if(parseCorrs[i] == std::string(pols_p(j))) {
 					logStream_p << LogIO::DEBUG2 << "parseCorrs(" << i << ") = "
-							<< parseCorrs(i) << ", and pols_p(" << j << ") = "
+							<< parseCorrs[i] << ", and pols_p(" << j << ") = "
 							<< pols_p(j) << LogIO::POST;
 					verifyCorr = True;
 					// Build indexPols_p here.
@@ -1324,7 +1348,7 @@ void MSLister::polarizationParse(String correlation) {
 				}
 			}
 			if(! verifyCorr) { // If polarization not found in data, throw exception
-				throw(AipsError("Selected correlation '" + parseCorrs(i)
+				throw(AipsError("Selected correlation '" + parseCorrs[i]
 						+ "' does not exist."));
 			}
 		}
