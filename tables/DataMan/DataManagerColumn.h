@@ -449,6 +449,38 @@ protected:
     virtual void getOther    (rownr_t rownr, void* dataPtr);
     // </group>
 
+    template <typename T>
+    void getGeneric(rownr_t rownr, T* dataPtr)
+    {
+      if constexpr (std::is_same_v<T, Bool>) {
+        getBool(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uChar>) {
+        getuChar(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Short>) {
+        getShort(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uShort>) {
+        getuShort(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Int>) {
+        getInt(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uInt>) {
+        getuInt(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Int64>) {
+        getInt64(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, float>) {
+        getfloat(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, double>) {
+        getdouble(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Complex>) {
+        getComplex(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, DComplex>) {
+        getDComplex(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, String>) {
+        getString(rownr, dataPtr);
+      } else {
+        getOther(rownr, dataPtr);
+      }
+    }
+
     // Put the scalar value into the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
@@ -467,6 +499,38 @@ protected:
     // This function is the put for all non-standard data types.
     virtual void putOther    (rownr_t rownr, const void* dataPtr);
     // </group>
+
+    template <typename T>
+    void putGeneric(rownr_t rownr, const T* dataPtr)
+    {
+      if constexpr (std::is_same_v<T, Bool>) {
+        putBool(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uChar>) {
+        putuChar(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Short>) {
+        putShort(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uShort>) {
+        putuShort(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Int>) {
+        putInt(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uInt>) {
+        putuInt(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Int64>) {
+        putInt64(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, float>) {
+        putfloat(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, double>) {
+        putdouble(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Complex>) {
+        putComplex(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, DComplex>) {
+        putDComplex(rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, String>) {
+        putString(rownr, dataPtr);
+      } else {
+        putOther(rownr, static_cast<const void*>(dataPtr));
+      }
+    }
 
     // The default implementations of get and put functions.
     // <group>
@@ -489,6 +553,15 @@ protected:
     // </group>
 
 private:
+    template<typename T>
+    void GetCells(const RefRows& rownrs, ArrayBase& arr);
+    template<typename T>
+    void PutCells(const RefRows& rownrs, const ArrayBase& arr);
+    template<typename T>
+    void GetCol(ArrayBase& arr);
+    template<typename T>
+    void PutCol(const ArrayBase& arr);
+
     // Set the shape of all (fixed-shaped) arrays in the column.
     // By default it throws a "not possible" exception.
     virtual void setShapeColumn (const IPosition& shape);
