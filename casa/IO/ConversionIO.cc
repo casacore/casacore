@@ -71,29 +71,25 @@ ConversionIO::~ConversionIO()
     delete [] itsBuffer;
 }
 
+template<typename T>
+void ConversionIO::initType(uInt& size, Bool& copy) const
+{
+  copy = itsConversion->canCopyGeneric<T>();
+  size = itsConversion->externalSizeGeneric<T>();
+}
 
 void ConversionIO::init()
 {
-    itsCopyChar   = itsConversion->canCopy (static_cast<Char*>(0));
-    itsCopyuChar  = itsConversion->canCopy (static_cast<uChar*>(0));
-    itsCopyShort  = itsConversion->canCopy (static_cast<Short*>(0));
-    itsCopyuShort = itsConversion->canCopy (static_cast<uShort*>(0));
-    itsCopyInt    = itsConversion->canCopy (static_cast<Int*>(0));
-    itsCopyuInt   = itsConversion->canCopy (static_cast<uInt*>(0));
-    itsCopyInt64  = itsConversion->canCopy (static_cast<Int64*>(0));
-    itsCopyuInt64 = itsConversion->canCopy (static_cast<uInt64*>(0));
-    itsCopyFloat  = itsConversion->canCopy (static_cast<Float*>(0));
-    itsCopyDouble = itsConversion->canCopy (static_cast<Double*>(0));
-    itsSizeChar   = itsConversion->externalSize (static_cast<Char*>(0));
-    itsSizeuChar  = itsConversion->externalSize (static_cast<uChar*>(0));
-    itsSizeShort  = itsConversion->externalSize (static_cast<Short*>(0));
-    itsSizeuShort = itsConversion->externalSize (static_cast<uShort*>(0));
-    itsSizeInt    = itsConversion->externalSize (static_cast<Int*>(0));
-    itsSizeuInt   = itsConversion->externalSize (static_cast<uInt*>(0));
-    itsSizeInt64  = itsConversion->externalSize (static_cast<Int64*>(0));
-    itsSizeuInt64 = itsConversion->externalSize (static_cast<uInt64*>(0));
-    itsSizeFloat  = itsConversion->externalSize (static_cast<Float*>(0));
-    itsSizeDouble = itsConversion->externalSize (static_cast<Double*>(0));
+  initType<Char>   (itsSizeChar,   itsCopyChar);
+  initType<uChar>  (itsSizeuChar,  itsCopyuChar);
+  initType<Short>  (itsSizeShort,  itsCopyShort);
+  initType<uShort> (itsSizeuShort, itsCopyuShort);
+  initType<Int>    (itsSizeInt,    itsCopyInt);
+  initType<uInt>   (itsSizeuInt,   itsCopyuInt);
+  initType<Int64>  (itsSizeInt64,  itsCopyInt64);
+  initType<uInt64> (itsSizeuInt64, itsCopyuInt64);
+  initType<Float>  (itsSizeFloat,  itsCopyFloat);
+  initType<Double> (itsSizeDouble, itsCopyDouble);
 }
 
 
@@ -137,56 +133,67 @@ size_t ConversionIO::read (size_t nvalues, String* value)
     return TypeIO::read (nvalues, value);
 }
 
-
-#define CONVERSIONIO_DOIT(T) \
-size_t ConversionIO::write (size_t nvalues, const T* value) \
-{ \
-    size_t size = nvalues * aips_name2(itsSize,T); \
-    if (aips_name2(itsCopy,T)) { \
-	itsByteIO->write (size, value); \
-    } else { \
-	if (size <= itsBufferLength) { \
-	    itsConversion->fromLocal (itsBuffer, value, nvalues); \
-	    itsByteIO->write (size, itsBuffer); \
-    	} else { \
-	    char* tempBuffer = new char [size]; \
-	    itsConversion->fromLocal (tempBuffer, value, nvalues); \
-	    itsByteIO->write (size, tempBuffer); \
-	    delete [] tempBuffer; \
-	} \
-    } \
-    return size; \
-} \
-size_t ConversionIO::read (size_t nvalues, T* value) \
-{ \
-    size_t size = nvalues * aips_name2(itsSize,T); \
-    if (aips_name2(itsCopy,T)) { \
-	itsByteIO->read (size, value); \
-    } else { \
-	if (size <= itsBufferLength) { \
-	    itsByteIO->read (size, itsBuffer); \
-	    itsConversion->toLocal (value, itsBuffer, nvalues); \
-	} else { \
-	    char* tempBuffer = new char[size]; \
-	    itsByteIO->read (size, tempBuffer); \
-	    itsConversion->toLocal (value, tempBuffer, nvalues); \
-	    delete [] tempBuffer; \
-	} \
-    } \
-    return size; \
+template<typename T>
+size_t ConversionIO::writeGeneric (size_t nvalues, const T* value, size_t type_size, bool copy)
+{
+    const size_t size = nvalues * type_size;
+    if (copy) {
+	itsByteIO->write (size, value);
+    } else {
+	if (size <= itsBufferLength) {
+	    itsConversion->fromLocal (itsBuffer, value, nvalues);
+	    itsByteIO->write (size, itsBuffer);
+    	} else {
+	    char* tempBuffer = new char [size];
+	    itsConversion->fromLocal (tempBuffer, value, nvalues);
+	    itsByteIO->write (size, tempBuffer);
+	    delete [] tempBuffer;
+	}
+    }
+    return size;
 }
 
+template<typename T>
+size_t ConversionIO::readGeneric (size_t nvalues, T* value, size_t type_size, bool copy)
+{
+    const size_t size = nvalues * type_size;
+    if (copy) {
+	itsByteIO->read (size, value);
+    } else {
+	if (size <= itsBufferLength) {
+	    itsByteIO->read (size, itsBuffer);
+	    itsConversion->toLocal (value, itsBuffer, nvalues);
+	} else {
+	    char* tempBuffer = new char[size];
+	    itsByteIO->read (size, tempBuffer);
+	    itsConversion->toLocal (value, tempBuffer, nvalues);
+	    delete [] tempBuffer;
+	}
+    }
+    return size;
+}
 
-CONVERSIONIO_DOIT(Char)
-CONVERSIONIO_DOIT(uChar)
-CONVERSIONIO_DOIT(Short)
-CONVERSIONIO_DOIT(uShort)
-CONVERSIONIO_DOIT(Int)
-CONVERSIONIO_DOIT(uInt)
-CONVERSIONIO_DOIT(Int64)
-CONVERSIONIO_DOIT(uInt64)
-CONVERSIONIO_DOIT(Float)
-CONVERSIONIO_DOIT(Double)
+size_t ConversionIO::write (size_t nvalues, const Char* data) { return writeGeneric<Char>(nvalues, data, itsSizeChar, itsCopyChar); }
+size_t ConversionIO::write (size_t nvalues, const uChar* data) { return writeGeneric<uChar>(nvalues, data, itsSizeuChar, itsCopyuChar); }
+size_t ConversionIO::write (size_t nvalues, const Short* data) { return writeGeneric<Short>(nvalues, data, itsSizeShort, itsCopyShort); }
+size_t ConversionIO::write (size_t nvalues, const uShort* data) { return writeGeneric<uShort>(nvalues, data, itsSizeuShort, itsCopyuShort); }
+size_t ConversionIO::write (size_t nvalues, const Int* data) { return writeGeneric<Int>(nvalues, data, itsSizeInt, itsCopyInt); }
+size_t ConversionIO::write (size_t nvalues, const uInt* data) { return writeGeneric<uInt>(nvalues, data, itsSizeuInt, itsCopyuInt); }
+size_t ConversionIO::write (size_t nvalues, const Int64* data) { return writeGeneric<Int64>(nvalues, data, itsSizeInt64, itsCopyInt64); }
+size_t ConversionIO::write (size_t nvalues, const uInt64* data) { return writeGeneric<uInt64>(nvalues, data, itsSizeuInt64, itsCopyuInt64); }
+size_t ConversionIO::write (size_t nvalues, const Float* data) { return writeGeneric<Float>(nvalues, data, itsSizeFloat, itsCopyFloat); }
+size_t ConversionIO::write (size_t nvalues, const Double* data) { return writeGeneric<Double>(nvalues, data, itsSizeDouble, itsCopyDouble); }
+
+size_t ConversionIO::read (size_t nvalues, Char* data) { return readGeneric<Char>(nvalues, data, itsSizeChar, itsCopyChar); }
+size_t ConversionIO::read (size_t nvalues, uChar* data) { return readGeneric<uChar>(nvalues, data, itsSizeuChar, itsCopyuChar); }
+size_t ConversionIO::read (size_t nvalues, Short* data) { return readGeneric<Short>(nvalues, data, itsSizeShort, itsCopyShort); }
+size_t ConversionIO::read (size_t nvalues, uShort* data) { return readGeneric<uShort>(nvalues, data, itsSizeuShort, itsCopyuShort); }
+size_t ConversionIO::read (size_t nvalues, Int* data) { return readGeneric<Int>(nvalues, data, itsSizeInt, itsCopyInt); }
+size_t ConversionIO::read (size_t nvalues, uInt* data) { return readGeneric<uInt>(nvalues, data, itsSizeuInt, itsCopyuInt); }
+size_t ConversionIO::read (size_t nvalues, Int64* data) { return readGeneric<Int64>(nvalues, data, itsSizeInt64, itsCopyInt64); }
+size_t ConversionIO::read (size_t nvalues, uInt64* data) { return readGeneric<uInt64>(nvalues, data, itsSizeuInt64, itsCopyuInt64); }
+size_t ConversionIO::read (size_t nvalues, Float* data) { return readGeneric<Float>(nvalues, data, itsSizeFloat, itsCopyFloat); }
+size_t ConversionIO::read (size_t nvalues, Double* data) { return readGeneric<Double>(nvalues, data, itsSizeDouble, itsCopyDouble); }
 
 } //# NAMESPACE CASACORE - END
 

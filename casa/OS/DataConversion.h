@@ -85,6 +85,36 @@ public:
 
     virtual ~DataConversion();
 
+    template <typename T>
+    size_t toLocalGeneric (T& to, const void* from) const {
+      return toLocal(to, from);
+    }
+
+    template <typename T>
+    size_t toLocalGeneric (T* to, const void* from, size_t nr) const {
+      return toLocal(to, from, nr);
+    }
+
+    template <typename T>
+    size_t fromLocalGeneric (void* to, T from) const {
+      return fromLocal(to, from);
+    }
+
+    template <typename T>
+    size_t fromLocal (void* to, const char* from, size_t nr) const {
+      return fromLocal(to, from, nr);
+    }
+
+    template <typename T>
+    bool canCopyGeneric() const {
+      return canCopy(static_cast<const T*>(nullptr));
+    }
+
+    template <typename T>
+    unsigned int externalSizeGeneric () const {
+      return externalSize(static_cast<const T*>(nullptr));
+    }
+
     // Convert one value from foreign format to local format.
     // The from and to buffer should not overlap.
     // <note>
