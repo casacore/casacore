@@ -28,6 +28,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/tables/DataMan/TSMColumn.h>
 #include <casacore/tables/DataMan/TiledStMan.h>
 #include <casacore/casa/Arrays/IPosition.h>
