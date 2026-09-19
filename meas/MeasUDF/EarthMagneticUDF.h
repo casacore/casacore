@@ -1,37 +1,37 @@
-//# EarthMagneticUDF.h: TaQL UDFs for EarthMagnetic conversions
-//# Copyright (C) 2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # EarthMagneticUDF.h: TaQL UDFs for EarthMagnetic conversions
+// # Copyright (C) 2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEAS_EARTHMAGNETICUDF_H
 #define MEAS_EARTHMAGNETICUDF_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/meas/MeasUDF/EarthMagneticEngine.h>
-#include<casacore/meas/MeasUDF/EpochEngine.h>
-#include<casacore/meas/MeasUDF/PositionEngine.h>
-#include<casacore/meas/MeasUDF/DirectionEngine.h>
+#include <casacore/meas/MeasUDF/EpochEngine.h>
+#include <casacore/meas/MeasUDF/PositionEngine.h>
+#include <casacore/meas/MeasUDF/DirectionEngine.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 
 namespace casacore {
@@ -46,7 +46,7 @@ namespace casacore {
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> UDFBase
 // </prerequisite>
 
@@ -79,44 +79,42 @@ namespace casacore {
 // It makes it possible to handle measures in TaQL.
 // </motivation>
 
-  class EarthMagneticUDF: public UDFBase
-  {
-  public:
-    // Define the possible function types.
-    enum FuncType {EMXYZ, EMANG, EMLEN, IGRFXYZ, IGRFANG, IGRFLEN,
-                   IGRFLOS, IGRFLONG};
+class EarthMagneticUDF : public UDFBase {
+ public:
+  // Define the possible function types.
+  enum FuncType { EMXYZ, EMANG, EMLEN, IGRFXYZ, IGRFANG, IGRFLEN, IGRFLOS, IGRFLONG };
 
-    // Create for the given function type.
-    explicit EarthMagneticUDF (FuncType);
+  // Create for the given function type.
+  explicit EarthMagneticUDF(FuncType);
 
-    // Function to create an object.
-    static UDFBase* makeEMXYZ    (const String&);
-    static UDFBase* makeEMANG    (const String&);
-    static UDFBase* makeEMLEN    (const String&);
-    static UDFBase* makeIGRFXYZ  (const String&);
-    static UDFBase* makeIGRFANG  (const String&);
-    static UDFBase* makeIGRFLEN  (const String&);
-    static UDFBase* makeIGRFLOS  (const String&);
-    static UDFBase* makeIGRFLONG (const String&);
+  // Function to create an object.
+  static UDFBase* makeEMXYZ(const String&);
+  static UDFBase* makeEMANG(const String&);
+  static UDFBase* makeEMLEN(const String&);
+  static UDFBase* makeIGRFXYZ(const String&);
+  static UDFBase* makeIGRFANG(const String&);
+  static UDFBase* makeIGRFLEN(const String&);
+  static UDFBase* makeIGRFLOS(const String&);
+  static UDFBase* makeIGRFLONG(const String&);
 
-    // Setup the object.
-    virtual void setup (const Table&, const TaQLStyle&);
+  // Setup the object.
+  virtual void setup(const Table&, const TaQLStyle&);
 
-    // Get the value.
-    virtual Double getDouble (const TableExprId& id);
-    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+  // Get the value.
+  virtual Double getDouble(const TableExprId& id);
+  virtual MArray<Double> getArrayDouble(const TableExprId& id);
 
-  private:
-    //# Data members.
-    EarthMagneticEngine   itsEngine;
-    DirectionEngine       itsDirectionEngine;
-    EpochEngine           itsEpochEngine;
-    PositionEngine        itsPositionEngine;
-    FuncType              itsType;
-    Int                   itsValueType;
-    MEarthMagnetic::Types itsRefType;
-  };
+ private:
+  // # Data members.
+  EarthMagneticEngine itsEngine;
+  DirectionEngine itsDirectionEngine;
+  EpochEngine itsEpochEngine;
+  PositionEngine itsPositionEngine;
+  FuncType itsType;
+  Int itsValueType;
+  MEarthMagnetic::Types itsRefType;
+};
 
-} //end namespace
+}  // namespace casacore
 
 #endif
