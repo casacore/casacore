@@ -1,27 +1,27 @@
-//# FitGaussian.h: Multidimensional fitter class for Gaussians
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FitGaussian.h: Multidimensional fitter class for Gaussians
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 #ifndef SCIMATH_FITGAUSSIAN_H
 #define SCIMATH_FITGAUSSIAN_H
 
@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>Multidimensional fitter class for Gaussians.</summary>
 
@@ -50,14 +50,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 
 // <src>FitGaussian</src> is specially designed for fitting procedures in
-// code that must be generalized for general dimensionality and 
+// code that must be generalized for general dimensionality and
 // number of components, and for complicated fits where the failure rate of
 // the standard nonlinear fitter is unacceptibly high.
 
-// <src>FitGaussian</src> essentially provides a Gaussian-adapted 
-// interface for NonLinearFitLM.  The user specifies the dimension, 
+// <src>FitGaussian</src> essentially provides a Gaussian-adapted
+// interface for NonLinearFitLM.  The user specifies the dimension,
 // number of gaussians, initial estimate, retry factors, and the data,
-// and the fitting proceeds automatically.  Upon failure of the fitter it will 
+// and the fitting proceeds automatically.  Upon failure of the fitter it will
 // retry the fit according to the retry factors until a fit is completed
 // successfully.  The user can optionally require as a criterion for success
 // that the RMS of the fit residuals not exceed some maximum value.
@@ -71,7 +71,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // for a limited number of retries, but true optimization of the retry system
 // would demand the use of a more sophisticated method.
 // </synopsis>
-
 
 // <example>
 // <srcblock>
@@ -89,7 +88,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <motivation>
 // Fitting multiple Gaussians is required for many different applications,
-// but requires a substantial amount of coding - especially if the 
+// but requires a substantial amount of coding - especially if the
 // dimensionality of the image is not known to the programmer.  Furthermore,
 // fitting multiple Gaussians has a very high failure rate.  So, a specialized
 // Gaussian fitting class that retries from different initial estimates
@@ -106,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    <li> AipsError if incorrect parameter number specified.
 //    <li> AipsError if estimate/retry/data arrays are of wrong dimension
 // </thrown>
-  
+
 // <todo asof="2002/07/22">
 //   <li> Optimize the default retry matrix
 //   <li> Send fitting messages to logger instead of console
@@ -116,13 +115,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        class.
 // </todo>
 
-
-
 template <class T>
-class FitGaussian
-{
-  public:
-
+class FitGaussian {
+ public:
   // Create the fitter.  The dimension and the number of gaussians to fit
   // can be modified later if necessary.
   // <group>
@@ -141,11 +136,11 @@ class FitGaussian
   void setFirstEstimate(const Matrix<T>& estimate);
 
   // Set the maximum number of retries.
-  void setMaxRetries(uInt nretries) {itsMaxRetries = nretries;};
+  void setMaxRetries(uInt nretries) { itsMaxRetries = nretries; };
 
   // Set the maximum amount of time to spend (in seconds).  If time runs out
   // during a fit the process will still complete that fit.
-  void setMaxTime(Double maxtime) {itsMaxTime = maxtime;};
+  void setMaxTime(Double maxtime) { itsMaxTime = maxtime; };
 
   // Set the retry factors, the values that are added/multiplied with the
   // first estimate on subsequent attempts if the first attempt fails.
@@ -156,27 +151,24 @@ class FitGaussian
   // </group>
 
   // Return the number of retry options available
-  uInt nRetryFactors() {return itsRetryFctr.nrow();};
+  uInt nRetryFactors() { return itsRetryFctr.nrow(); };
 
   // Mask out some parameters so that they are not modified during fitting
-  Bool &mask(uInt gaussian, uInt parameter);
-  const Bool &mask(uInt gaussian, uInt parameter) const;
+  Bool& mask(uInt gaussian, uInt parameter);
+  const Bool& mask(uInt gaussian, uInt parameter) const;
 
   // Run the fit, using the data provided in the arguments pos and f.
   // The fit will retry from different initial estimates until it converges
   // to a value with an RMS error less than maximumRMS.  If this cannot be
   // accomplished it will simply take the result that generated the best RMS.
-  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f,
-                T maximumRMS = 1.0, uInt maxiter = 1024, 
+  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS = 1.0, uInt maxiter = 1024,
                 T convcriteria = 0.0001);
-  Matrix<T> fit(const Matrix<T>& pos,const Vector<T>& f,
-                const Vector<T>& sigma,
-                T maximumRMS = 1.0, uInt maxiter = 1024, 
-                T convcriteria = 0.0001);
+  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, const Vector<T>& sigma,
+                T maximumRMS = 1.0, uInt maxiter = 1024, T convcriteria = 0.0001);
 
   // Allow access to the fit parameters from this class
-  const Matrix<T> &solution(){return itsSolutionParameters;};
-  const Matrix<T> &errors(){return itsSolutionErrors;};
+  const Matrix<T>& solution() { return itsSolutionParameters; };
+  const Matrix<T>& errors() { return itsSolutionErrors; };
 
   // Internal function for ensuring that parameters stay within their stated
   // domains (see <src>Gaussian2D</src> and <src>Gaussian3D</src>.)
@@ -191,53 +183,40 @@ class FitGaussian
   // Returns True if the fit (eventually) converged to a value.
   Bool converged();
 
-
-  private:
-  uInt itsDimension;           // how many dimensions (1, 2, or 3)
-  uInt itsNGaussians;          // number of gaussians to fit
-  uInt itsMaxRetries;          // maximum number of retries to attempt
-  Double itsMaxTime;           // maximum time to spend fitting in secs
-  T itsChisquare;              // chisquare of fit
-  T itsRMS;                    // RMS of fit (sqrt[chisquare / N])
-  Bool itsSuccess;             // flags success or failure
+ private:
+  uInt itsDimension;   // how many dimensions (1, 2, or 3)
+  uInt itsNGaussians;  // number of gaussians to fit
+  uInt itsMaxRetries;  // maximum number of retries to attempt
+  Double itsMaxTime;   // maximum time to spend fitting in secs
+  T itsChisquare;      // chisquare of fit
+  T itsRMS;            // RMS of fit (sqrt[chisquare / N])
+  Bool itsSuccess;     // flags success or failure
   LogIO os;
 
   Matrix<T> itsFirstEstimate;  // user's estimate.
   Matrix<T> itsRetryFctr;      // source of retry information
   Matrix<Bool> itsMask;        // masks parameters not to change in fitting
 
-  
   // Sets the retry matrix to a default value.  This is done automatically if
   // the retry matrix is not set directly.
   Matrix<T> defaultRetryMatrix();
 
-  //Add one or more rows to the retry matrix.
+  // Add one or more rows to the retry matrix.
   void expandRetryMatrix(uInt rowstoadd);
 
-  //Find the number of unmasked parameters to be fit
+  // Find the number of unmasked parameters to be fit
   uInt countFreeParameters();
 
   // The solutions to the fit
   Matrix<T> itsSolutionParameters;
-  
+
   // The errors on the solution parameters
   Matrix<T> itsSolutionErrors;
-
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/FitGaussian.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
-
-
-
-
-
-
-
-

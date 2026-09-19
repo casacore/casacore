@@ -1,33 +1,32 @@
-//# Functionals.h: A module that represents various function-like classes.
-//# Copyright (C) 1995,1996,1998,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # Functionals.h: A module that represents various function-like classes.
+// # Copyright (C) 1995,1996,1998,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCTIONALS_H
 #define SCIMATH_FUNCTIONALS_H
 
-//# Base classes
+// # Base classes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicMath/Functional.h>
 #include <casacore/scimath/Functionals/FunctionTraits.h>
@@ -35,20 +34,20 @@
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Functionals/Function1D.h>
 
-//# Combination methods
+// # Combination methods
 #include <casacore/scimath/Functionals/FunctionWrapper.h>
 #include <casacore/scimath/Functionals/CombiFunction.h>
 #include <casacore/scimath/Functionals/CompoundFunction.h>
 
-//# remainder will be removed
+// # remainder will be removed
 #include <casacore/scimath/Functionals/SampledFunctional.h>
 
-//# 1-D Functions
+// # 1-D Functions
 #include <casacore/scimath/Functionals/Interpolate1D.h>
 #include <casacore/scimath/Functionals/ArraySampledFunctional.h>
 #include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -66,9 +65,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 // <src>Functionals</src> and their derived classes map an input
-// <src>Domain</src> object into an output <src>Range</src> object using the 
+// <src>Domain</src> object into an output <src>Range</src> object using the
 // <src>operator()</src>.
-// Often the input and output types are numeric, but it can be of any type. 
+// Often the input and output types are numeric, but it can be of any type.
 // <srcblock>
 // class Offspring : public Functional<List<Parents>, List<Children> > {
 //  public:
@@ -76,15 +75,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // };
 // </srcblock>
 // would be a legal Functional.
-// 
+//
 // The <src>Functions</src> and their derived classes map, again using the
 // <src>operator()</src>, numeric value(s) into a numeric value. Since they are
 // numeric, the <src>Domain</src> and <src>Range</src> base type can be of type
 // <src>AutoDiff<T></src> (where <src>T</src> is numeric base type) or one
 // of its derivations, in which case the value and its derivatives will be
 // calculated.
-// 
-// <note role=warning> In the current version the <src>Domain</src> and 
+//
+// <note role=warning> In the current version the <src>Domain</src> and
 // <src>Range</src> are the same for Functions </note>
 //
 // The basic classes are:
@@ -97,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <src>Range</src> will be available in the class
 // or in the input information. No variable class state (<em>parameters</em>)
 // are available.
-// 
+//
 // <dt> <linkto class=FunctionParam><src>FunctionParam<T></src></linkto>
 // <dd> A helper base class that acts as a container for <em>parameters</em>
 // (<em>state</em>) used in <src>Function</src> classes. The class contains
@@ -114,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // and the Fitting routines: the Gaussian fitter just sets a flag to False, and
 // let the Fitting worry about what to do internally).
 // </note>
-// 
+//
 // <dt> <linkto class=Function><src>Function<T></src></linkto>
 // <dd> Base class for function objects with zero or more parameters (i.e.
 // Functionals with state).
@@ -138,18 +137,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // derivatives w.r.t. the non-masked parameters) Using <src>AutoDiffA<T></src>
 // the derivatives can be calculated w.r.t. parameters and/or arguments, see
 // <linkto class=AutoDiff>AutoDiff</linkto> and <linkto class=FunctionTraits>
-// FunctionTraits</linkto> for details. 
-// 
+// FunctionTraits</linkto> for details.
+//
 // <note role=tip>
 // A <src>Function1D</src> is provided for 1-dimensional function objects
 // </note>
 // </dl>
-// 
+//
 //  Actual functional classes:
 // <dl>
 // <dt> e.g. <linkto
 // class=Gaussian1D><src>Gaussian1D<T></src></linkto>
-// <dd> An actual function object will be derived from 
+// <dd> An actual function object will be derived from
 // <src>Function<T></src>. The minimum functionality of a Function
 // object will be support for the <src>operator()</src> methods (through a
 // single, hidden, <src>eval()</src> method); for the manipulation of the
@@ -166,20 +165,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </dl>
 // Combinatory Function objects are provided to easily combine and create
 // function objects:
-// <dl> 
+// <dl>
 // <dt> <linkto class=CompoundFunction>CompoundFunction</linkto>
 // <dd> creates
 // a new, compound, function object from one or more other function objects
-// (including compounds...). The new function will have the sum of the 
+// (including compounds...). The new function will have the sum of the
 // parameters of the input functions as the new parameters (i.e. the compound
-// function created from a 1-dimensional Gaussian (with 3 parameters) and a 
+// function created from a 1-dimensional Gaussian (with 3 parameters) and a
 // third-order polynomial (with 4 parameters) will have 7 parameters).
-// <dt> <linkto class=CombiFunction>CombiFunction</linkto> 
+// <dt> <linkto class=CombiFunction>CombiFunction</linkto>
 // <dd> creates
 // a (linear) combination of a number of input functions. The number of
 // parameters of the newly created function will be equal to the number of
-// input functions (i.e. the combi 
-// function created from a 1-dimensional Gaussian (with 3 parameters) and a 
+// input functions (i.e. the combi
+// function created from a 1-dimensional Gaussian (with 3 parameters) and a
 // third-order polynomial (with 4 parameters) will have 2 parameters). The
 // function will be <src>param0*gauss(x) + param1*poly(x)</src>
 // <dt> <linkto class=FunctionWrapper>FunctionWrapper</linkto>
@@ -187,9 +186,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // a global function (or by the use of the <em>STL</em> function adapters
 // <src>mem_fun*</src> also member functions) of any dimension, and with
 // any number of parameters. The function is assumed to be called as
-// <src>f(x, p)</src>, and is wrapped like 
-// <src>FunctionWrapper(&func, param&, ndim)</src> (see example). 
-//   
+// <src>f(x, p)</src>, and is wrapped like
+// <src>FunctionWrapper(&func, param&, ndim)</src> (see example).
+//
 // </dl>
 //
 // </synopsis>
@@ -198,8 +197,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // A function to find a bracketed root by bisection could be written
 // as follows:
 // <srcblock>
-//    template <class Domain, class Range> 
-//      Domain findRoot(const Functional<Domain,Range> &func, Domain left, 
+//    template <class Domain, class Range>
+//      Domain findRoot(const Functional<Domain,Range> &func, Domain left,
 //                      Domain right, Domain tol) {
 //          Range fr = func(right);
 //          Range fl = func(left);
@@ -282,14 +281,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 // <todo asof="2001/12/30">
-//   <li> It could be convenient to have a letter/envelope class, and to 
+//   <li> It could be convenient to have a letter/envelope class, and to
 //        define ``function arithmetic.''
 // </todo>
 
 // </module>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-

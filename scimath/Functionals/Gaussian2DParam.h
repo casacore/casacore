@@ -1,27 +1,27 @@
-//# Gaussian2DParam.h: Parameter handling for 2 dimensional Gaussian class
-//# Copyright (C) 2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Gaussian2DParam.h: Parameter handling for 2 dimensional Gaussian class
+// # Copyright (C) 2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_GAUSSIAN2DPARAM_H
 #define SCIMATH_GAUSSIAN2DPARAM_H
@@ -31,7 +31,7 @@
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Parameter handling for 2 dimensional Gaussian class
 // </summary>
@@ -46,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class="Function">Function</linkto> class
 // </prerequisite>
 
-// <etymology> 
+// <etymology>
 // A 2-dimensional Gaussian's parameters.
 // </etymology>
 
@@ -59,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </src> function) is always specified in terms of the full width at half
 // maximum (FWHM). The major axis is parallel with the y axis when the
 // position angle is zero. The major axis will always have a larger width
-// than the minor axis. 
+// than the minor axis.
 //
 // It is not possible to set the width of the major axis (using the <src>
 // setMajorAxis </src> function) smaller than the width of the current minor
@@ -78,7 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // specified and returned in radians. When using the <src> setPA </src>
 // function its value must be between -2pi and + 2pi, and the returned value
 // from the <src> pa </src> function will always be a value between 0 and
-// pi. 
+// pi.
 //
 // The axial ratio can be used as an alternative to specifying the width of
 // the minor axis. It is the ratio between the minor and major axis
@@ -91,25 +91,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // setFlux </src> function can be used to implicitly set the peak height by
 // specifying the integrated area under the Gaussian. The height (or flux)
 // can be positive, negative or zero, as this class makes no assumptions on
-// what quantity the height represents. 
+// what quantity the height represents.
 //
 // <note role=tip> Changing the width of the Gaussian will not affect
 // its peak height but will change its flux. So you should always set the
 // width before setting the flux. </note>
 //
-// The parameter interface (see 
-// <linkto class="FunctionParam">FunctionParam</linkto> class), 
+// The parameter interface (see
+// <linkto class="FunctionParam">FunctionParam</linkto> class),
 // is used to provide an interface to the
-// <linkto module="Fitting"> Fitting </linkto> classes. 
+// <linkto module="Fitting"> Fitting </linkto> classes.
 //
 // There are 6 parameters that are used to describe the Gaussian:
 // <ol>
-// <li> The height of the Gaussian. This is identical to the value 
+// <li> The height of the Gaussian. This is identical to the value
 //      returned using the <src> height </src> member function.
 // <li> The center of the Gaussian in the x direction. This is identical to
-//      the value returned using the <src> xCenter </src> member function. 
+//      the value returned using the <src> xCenter </src> member function.
 // <li> The center of the Gaussian in the y direction. This is identical to
-//      the value returned using the <src> yCenter </src> member function. 
+//      the value returned using the <src> yCenter </src> member function.
 // <li> The width (FWHM) of the Gaussian on one axis. Initially this will be
 //      the major axis, but if the parameters are adjusted by a Fitting
 //      class, it may become the axis with the smaller width. To aid
@@ -130,13 +130,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      otherwise it will be different by 90 degrees. The tight constraints
 //      on the value of the rotation angle enforced by the setPA() function
 //      are relaxed so that any value between -6000 and 6000 is allowed. It
-//      is still interpreted in radians. 
+//      is still interpreted in radians.
 // </ol>
 //
 // An enumeration for the <src>HEIGHT</src>, <src>XCENTER</src>,
 // <src>YCENTER</src>, <src>YWIDTH</src>, <src>RATIO</src>, <src>PANGLE</src>
 // parameter index is provided, enabling the setting
-// and reading of parameters with the <src>[]</src> operator. The 
+// and reading of parameters with the <src>[]</src> operator. The
 // <src>mask()</src> methods can be used to check and set the parameter masks.
 //
 // This class is in general used implicitly by the <src>Gaussian2D</src>
@@ -152,14 +152,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      the position angle is meaningless when the major and minor axis are
 //      equal.
 // <li> If fitting an elliptical Gaussian your initial model should not be a
-//      circular Gaussian. 
+//      circular Gaussian.
 // </ul>
 // </note>
 //
 // </synopsis>
 
 // <example>
-// <srcblock> 
+// <srcblock>
 // Gaussian2D<Double> g(10.0, 0.0, 0.0, 2.0, 1.0, 0.0);
 // Vector<Double> x(2);
 // x(0) = 1.0; x(1) = 0.5;
@@ -187,48 +187,50 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian2DParam : public Function<T>
-{
-public:
-  //# Enumerations
-  enum { HEIGHT=0, XCENTER, YCENTER, YWIDTH, RATIO, PANGLE};
-  
-  //# Constructors
-  // Constructs the two dimensional Gaussians. Defaults:
-  // height=1, center=0, width(FWHM)=1, pa=0.
-  // <group>
+template <class T>
+class Gaussian2DParam : public Function<T> {
+ public:
+  // # Enumerations
+  enum { HEIGHT = 0, XCENTER, YCENTER, YWIDTH, RATIO, PANGLE };
+
+  // # Constructors
+  //  Constructs the two dimensional Gaussians. Defaults:
+  //  height=1, center=0, width(FWHM)=1, pa=0.
+  //  <group>
   Gaussian2DParam();
-  Gaussian2DParam(const T &height, const Vector<T> &center, 
-		  const Vector<T> &width, const T &pa);
-  Gaussian2DParam(const T &height, const T &xCenter, const T &yCenter,
-		  const T &majorAxis, const T &axialRatio,
-		  const T &pa);
+  Gaussian2DParam(const T &height, const Vector<T> &center, const Vector<T> &width, const T &pa);
+  Gaussian2DParam(const T &height, const T &xCenter, const T &yCenter, const T &majorAxis,
+                  const T &axialRatio, const T &pa);
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   Gaussian2DParam(const Gaussian2DParam<T> &other);
   template <class W>
-    Gaussian2DParam(const Gaussian2DParam<W> &other) :
-    Function<T>(other),
-    fwhm2int(T(1.0)/sqrt(log(T(16.0)))) { majorAxis(); setPA(PA()); }
+  Gaussian2DParam(const Gaussian2DParam<W> &other)
+      : Function<T>(other), fwhm2int(T(1.0) / sqrt(log(T(16.0)))) {
+    majorAxis();
+    setPA(PA());
+  }
   // </group>
 
   // Copy assignment (deep copy)
   Gaussian2DParam<T> &operator=(const Gaussian2DParam<T> &other);
-    
+
   // Destructor
   virtual ~Gaussian2DParam();
 
-  //# Operators    
- 
+  // # Operators
+
   // Variable dimensionality
   virtual uInt ndim() const { return 2; }
 
-  //# Member functions
-  // Give name of function
-  virtual const String &name() const { static String x("gaussian2d");
-    return x; }
+  // # Member functions
+  //  Give name of function
+  virtual const String &name() const {
+    static String x("gaussian2d");
+    return x;
+  }
 
   // Get or set the peak height of the Gaussian
   // <group>
@@ -263,16 +265,16 @@ public:
   void setMinorAxis(const T &width);
   T axialRatio() const;
   void setAxialRatio(const T &axialRatio);
-  // </group> 
+  // </group>
 
   // Set/get the rotation angle (orientation) of the Gaussian.  PA is given
-  // in radians counterclockwise. 
+  // in radians counterclockwise.
   // <group>
   T PA() const;
   void setPA(const T &pa);
   // </group>
 
-protected:
+ protected:
   // Constant to scale halfwidth at 1/e to FWHM
   T fwhm2int;
   // cached vale of the PA
@@ -285,17 +287,17 @@ protected:
   // cached vale of the Xwidth = ratio*theYwidth;
   mutable T theXwidth;
 
-  //# Make members of parent classes known.
-protected:
+  // # Make members of parent classes known.
+ protected:
   using Function<T>::param_p;
-public:
+
+ public:
   using Function<T>::nparameters;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/Gaussian2DParam.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

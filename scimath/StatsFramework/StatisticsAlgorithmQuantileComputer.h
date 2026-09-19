@@ -1,27 +1,27 @@
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-//#
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
+// #
 
 #ifndef SCIMATH_STATSALGORITHMQUANTILECOMPUTER_H
 #define SCIMATH_STATSALGORITHMQUANTILECOMPUTER_H
@@ -37,91 +37,79 @@ namespace casacore {
 // QuantileComputer class; they are used internally by other StatsFramework
 // classes. See the documentation of StatisticsAlgorithm for more details.
 
-template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
-    class WeightsIterator=DataIterator
->
+template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+          class WeightsIterator = DataIterator>
 class StatisticsAlgorithmQuantileComputer {
+ public:
+  StatisticsAlgorithmQuantileComputer() = delete;
 
-public:
+  virtual ~StatisticsAlgorithmQuantileComputer();
 
-    StatisticsAlgorithmQuantileComputer() = delete;
+  // clone this object by returning a pointer to a copy
+  virtual StatisticsAlgorithmQuantileComputer<CASA_STATP>* clone() const = 0;
 
-    virtual ~StatisticsAlgorithmQuantileComputer();
+  // delete any (partially) sorted array
+  void deleteSortedArray();
 
-    // clone this object by returning a pointer to a copy
-    virtual StatisticsAlgorithmQuantileComputer<CASA_STATP>* clone() const = 0;
+  // reset this object by clearing data.
+  virtual void reset();
 
-    // delete any (partially) sorted array
-    void deleteSortedArray();
+  // This must be called upon the copy or assignment of the
+  // associated statistics algorithm object. Otherwise, there is generally
+  // no reason to call it.
+  void setDataset(StatisticsDataset<CASA_STATP>* ds);
 
-    // reset this object by clearing data.
-    virtual void reset();
+  // FIXME make protected once refactor is complete
+  std::vector<AccumType>& _getSortedArray() { return _sortedArray; }
 
-    // This must be called upon the copy or assignment of the
-    // associated statistics algorithm object. Otherwise, there is generally
-    // no reason to call it.
-    void setDataset(StatisticsDataset<CASA_STATP>* ds);
+  // FIXME make protected once refactor is complete
+  void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
-    // FIXME make protected once refactor is complete
-    std::vector<AccumType>& _getSortedArray() { return _sortedArray; }
+  void setMedian(std::shared_ptr<AccumType> median) { _median = std::move(median); }
 
-    // FIXME make protected once refactor is complete
-    void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
+ protected:
+  // ds should be the dataset object held in the StatisticsAlgorithm object.
+  // The QuantileComputer calculator object should never hold its own version
+  // of a dataset object. The algorithm object (caller of this method) is
+  // always responsible for deleting the passed object, usually upon its
+  // destruction.
+  StatisticsAlgorithmQuantileComputer(StatisticsDataset<CASA_STATP>* ds);
 
-    void setMedian(std::shared_ptr<AccumType> median) { _median = std::move(median); }
+  // use copy semantics. statistics algorithm object's responsibility to set
+  // the _dataset object in the new QuantileComputer calculator object upon a
+  // copy. The underlying _dataset object in the new stats calculator object
+  // should be a reference to the new _dataset object in the copied statistics
+  // algorithm object.
+  StatisticsAlgorithmQuantileComputer(const StatisticsAlgorithmQuantileComputer& other);
 
-protected:
+  // use copy semantics. The _dataset object is not copied. It is the
+  // associated statistics algorithm object's responsibility to set the
+  // _dataset object in the new QuantileComputer calculator object upon an
+  // assignment. The underlying _dataset object in the new stats calculator
+  // object should be a reference to that in the newly assigned statistics
+  // algorithm object.
+  StatisticsAlgorithmQuantileComputer& operator=(const StatisticsAlgorithmQuantileComputer& other);
 
-    // ds should be the dataset object held in the StatisticsAlgorithm object.
-    // The QuantileComputer calculator object should never hold its own version
-    // of a dataset object. The algorithm object (caller of this method) is
-    // always responsible for deleting the passed object, usually upon its
-    // destruction.
-    StatisticsAlgorithmQuantileComputer(StatisticsDataset<CASA_STATP>* ds);
+  StatisticsDataset<CASA_STATP>* _getDataset() { return _dataset; }
 
-    // use copy semantics. statistics algorithm object's responsibility to set
-    // the _dataset object in the new QuantileComputer calculator object upon a
-    // copy. The underlying _dataset object in the new stats calculator object
-    // should be a reference to the new _dataset object in the copied statistics
-    // algorithm object.
-    StatisticsAlgorithmQuantileComputer(
-        const StatisticsAlgorithmQuantileComputer& other
-    );
+  std::shared_ptr<AccumType> _getMedian() const { return _median; }
 
-    // use copy semantics. The _dataset object is not copied. It is the
-    // associated statistics algorithm object's responsibility to set the
-    // _dataset object in the new QuantileComputer calculator object upon an
-    // assignment. The underlying _dataset object in the new stats calculator
-    // object should be a reference to that in the newly assigned statistics
-    // algorithm object.
-    StatisticsAlgorithmQuantileComputer& operator=(
-        const StatisticsAlgorithmQuantileComputer& other
-    );
+  std::shared_ptr<AccumType> _getMedianAbsDevMedian() const { return _medAbsDevMed; }
 
-    StatisticsDataset<CASA_STATP>* _getDataset() { return _dataset; }
+  void _setMedianAbsDevMedian(std::shared_ptr<AccumType> medAbsDevMed) {
+    _medAbsDevMed = std::move(medAbsDevMed);
+  }
 
-    std::shared_ptr<AccumType> _getMedian() const { return _median; }
-
-    std::shared_ptr<AccumType> _getMedianAbsDevMedian() const {
-        return _medAbsDevMed;
-    }
-
-    void _setMedianAbsDevMedian(std::shared_ptr<AccumType> medAbsDevMed) {
-        _medAbsDevMed = std::move(medAbsDevMed);
-    }
-
-private:
-    std::vector<AccumType> _sortedArray{};
-    // This pointer references the (non-pointer) object
-    // in the associated non-QuantileComputer computer object,
-    // so this should not be wrapped in a smart pointer.
-    StatisticsDataset<CASA_STATP>* _dataset{nullptr};
-    std::shared_ptr<AccumType> _median{}, _medAbsDevMed{};
-
+ private:
+  std::vector<AccumType> _sortedArray{};
+  // This pointer references the (non-pointer) object
+  // in the associated non-QuantileComputer computer object,
+  // so this should not be wrapped in a smart pointer.
+  StatisticsDataset<CASA_STATP>* _dataset{nullptr};
+  std::shared_ptr<AccumType> _median{}, _medAbsDevMed{};
 };
 
-}
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithmQuantileComputer.tcc>

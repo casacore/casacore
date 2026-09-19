@@ -1,40 +1,40 @@
-//# CompiledFunction.h: Form a linear combination of Functions
-//# Copyright (C) 2002,2004,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # CompiledFunction.h: Form a linear combination of Functions
+// # Copyright (C) 2002,2004,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_COMPILEDFUNCTION_H
 #define SCIMATH_COMPILEDFUNCTION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/CompiledParam.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 
 // <summary>
 // Form a linear combination of function objects.
@@ -53,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Given a string describing an expression
 // (see <linkto class=FuncExpression>FuncExpression</linkto> class for
 // details of the expression), the <src>CompiledFunction</src>class wraps
-// this expression as a 
+// this expression as a
 // Function (see <linkto class=Function>Function</linkto> class) which can
 // be used in all places where functions can be used (e.g. see
 // <linkto module=Fitting>Fitting</linkto>).
@@ -125,49 +125,49 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> Nothing I know of
 // </todo>
 
-template <class T> class CompiledFunction : public CompiledParam<T> {
+template <class T>
+class CompiledFunction : public CompiledParam<T> {
  public:
-  //# Constructors
-  // The default constructor -- no functions, no parameters, nothing, the
-  // function operator returns a 0.
+  // # Constructors
+  //  The default constructor -- no functions, no parameters, nothing, the
+  //  function operator returns a 0.
   CompiledFunction() : CompiledParam<T>() {}
   // Make this object a (deep) copy of other.
   // <group>
-  CompiledFunction(const CompiledFunction<T> &other) :
-    CompiledParam<T>(other) {}
+  CompiledFunction(const CompiledFunction<T> &other) : CompiledParam<T>(other) {}
   template <class W>
-    CompiledFunction(const CompiledFunction<W> &other) :
-    CompiledParam<T>(other) {}
+  CompiledFunction(const CompiledFunction<W> &other) : CompiledParam<T>(other) {}
   // </group>
   // Make this object a (deep) copy of other.
   CompiledFunction<T> &operator=(const CompiledFunction<T> &other) {
-    CompiledParam<T>::operator=(other); return *this; }
+    CompiledParam<T>::operator=(other);
+    return *this;
+  }
 
   // Destructor
   virtual ~CompiledFunction() {}
 
-  //# Operators
-  // Evaluate the function at <src>x</src>.
+  // # Operators
+  //  Evaluate the function at <src>x</src>.
   virtual T eval(typename Function<T>::FunctionArg x) const;
-  
-  //# Member functions
-  // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer.
-  // <group>
-  virtual Function<T> *clone() const {
-    return new CompiledFunction<T>(*this); }
+
+  // # Member functions
+  //  Return a copy of this object from the heap. The caller is responsible for
+  //  deleting the pointer.
+  //  <group>
+  virtual Function<T> *clone() const { return new CompiledFunction<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new CompiledFunction<typename FunctionTraits<T>::DiffType>(*this); }
+    return new CompiledFunction<typename FunctionTraits<T>::DiffType>(*this);
+  }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new CompiledFunction<typename FunctionTraits<T>::BaseType>(*this); }
+    return new CompiledFunction<typename FunctionTraits<T>::BaseType>(*this);
+  }
   // </group>
-  
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/CompiledFunction.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

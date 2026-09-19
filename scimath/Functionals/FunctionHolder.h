@@ -1,32 +1,32 @@
-//# FunctionHolder.h: A holder for Functions to enable record conversions
-//# Copyright (C) 2002,2003,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FunctionHolder.h: A holder for Functions to enable record conversions
+// # Copyright (C) 2002,2003,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCTIONHOLDER_H
 #define SCIMATH_FUNCTIONHOLDER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/scimath/Functionals/Function.h>
@@ -34,9 +34,9 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 // <summary> A holder for Functions to enable record conversions </summary>
 
@@ -86,10 +86,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // the actual Function being converted.
 // </motivation>
 
-template <class T> class FunctionHolder : public RecordTransformable {
+template <class T>
+class FunctionHolder : public RecordTransformable {
  public:
-  //# Enumerations
-  // Types of functions
+  // # Enumerations
+  //  Types of functions
   enum Types {
     GAUSSIAN1D,
     GAUSSIAN2D,
@@ -107,8 +108,8 @@ template <class T> class FunctionHolder : public RecordTransformable {
     COMPILED,
     N_Types
   };
-  //# Structures
-  // Structure to hold functional status
+  // # Structures
+  //  Structure to hold functional status
   struct FuncStat {
     // Name
     String nam;
@@ -118,29 +119,29 @@ template <class T> class FunctionHolder : public RecordTransformable {
     Bool order;
   };
 
-  //# Constructors
-  // Creates an empty holder
+  // # Constructors
+  //  Creates an empty holder
   FunctionHolder();
   // Create from a Function (copy made)
   FunctionHolder(const Function<T> &in);
   // Copy a holder (copy semantics)
   FunctionHolder(const FunctionHolder<T> &other);
-  //# Destructor
+  // # Destructor
   ~FunctionHolder();
 
-  //# Operators
-  // Assignment (copy semantics)
+  // # Operators
+  //  Assignment (copy semantics)
   FunctionHolder &operator=(const FunctionHolder<T> &other);
 
-  //# Member Functions
-  // Check the the FunctionHolder holds the specified type. Return
-  // True if if does and False otherwise.
-  // <group>
+  // # Member Functions
+  //  Check the the FunctionHolder holds the specified type. Return
+  //  True if if does and False otherwise.
+  //  <group>
   Bool isEmpty() const;
   // </group>
   // Get the known names
   const Vector<String> &names() const;
-  // Get a specific Function from the holder (with lifetime as long 
+  // Get a specific Function from the holder (with lifetime as long
   // as holder exists).
   // <thrown>
   // <li> AipsError if holder empty
@@ -150,7 +151,7 @@ template <class T> class FunctionHolder : public RecordTransformable {
   const Function<T> &asFunction() const;
   // </group>
   // Add a function
-  Bool addFunction(const Function<T> &fnc); 
+  Bool addFunction(const Function<T> &fnc);
   // Get the type of currently filled holder
   Types type() const;
   // Create a Function from a record. An error message is generated, and False
@@ -167,14 +168,13 @@ template <class T> class FunctionHolder : public RecordTransformable {
   // </ul>
   // A Function can be created from a string. In that case the string
   // will only indicate the type of function (like polynomial), and will
-  // create a default polynomial of that given type. 
+  // create a default polynomial of that given type.
   // Error messages are postfixed to error.
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
   virtual Bool fromString(String &error, const String &in);
   template <class U>
-    Bool getRecord(String &error, Function<U> *&fn,
-		   const RecordInterface &in);
+  Bool getRecord(String &error, Function<U> *&fn, const RecordInterface &in);
   // </group>
   // Create a record from a Function. The return will be False and an error
   // message generated only if the FunctionHolder does not contain a Function.
@@ -183,9 +183,9 @@ template <class T> class FunctionHolder : public RecordTransformable {
   // Get identification of record
   virtual const String &ident() const;
 
-private:
-  //# Data Members
-  // Pointer to a Function
+ private:
+  // # Data Members
+  //  Pointer to a Function
   std::unique_ptr<Function<T>> hold_p;
   // Aids (only filled after a succesful to/fromRecord
   // <group>
@@ -199,25 +199,24 @@ private:
   // Filled list?
   mutable Bool isFilled;
 
-  //# Member functions
-  // Initialise and check the name list
+  // # Member functions
+  //  Initialise and check the name list
   void init() const;
   // Aid for to/from Record, String
   // <group>
   Bool putType(String &error, RecordInterface &out) const;
   template <class U>
-    Bool getType(String &error, Function<U> *&fn, const RecordInterface &in);  
+  Bool getType(String &error, Function<U> *&fn, const RecordInterface &in);
   template <class U>
-    Bool getType(String &error, Function<U> *&fn);
+  Bool getType(String &error, Function<U> *&fn);
   void setParameters(Function<T> *&fn, const Vector<T> &params);
   void setParameters(Function<AutoDiff<T>> *&fn, const Vector<T> &params);
   // </group>
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/FunctionHolder.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,48 +1,48 @@
-//# FuncExpression.h: An expression executable as function
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FuncExpression.h: An expression executable as function
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCEXPRESSION_H
 #define SCIMATH_FUNCEXPRESSION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/scimath/Functionals/FuncExprData.h>
 #include <casacore/casa/stdvector.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-//# Forward Declarations
+// # Forward Declarations
 #include <casacore/casa/iosfwd.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class MUString;
 
 // <summary> An expression executable as function
 // </summary>
 
-// <use visibility=export> 
+// <use visibility=export>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
@@ -59,8 +59,8 @@ class MUString;
 // can be used in all places where Functions can be used (like in the
 // linear and non-linear <linkto module=Fitting>Fitting</linkto> classes.
 //
-// An expression is created by either supplying a <src>String</src> to a 
-// constructor, or be setting a <src>String</src>. 
+// An expression is created by either supplying a <src>String</src> to a
+// constructor, or be setting a <src>String</src>.
 // </synopsis>
 //
 // <example>
@@ -80,10 +80,10 @@ class MUString;
 
 class FuncExpression {
  public:
-  //# Enumerations
+  // # Enumerations
 
-  //# Constructors
-  // Construct an empty executable expression
+  // # Constructors
+  //  Construct an empty executable expression
   FuncExpression();
   // Construct an executable expression from the given string
   explicit FuncExpression(const String &prog);
@@ -95,8 +95,8 @@ class FuncExpression {
   // Destructor
   ~FuncExpression() {}
 
-  //# Member functions
-  // Create an executable program
+  // # Member functions
+  //  Create an executable program
   Bool create(const String &prog);
   // Get the current error message
   const String &errorMessage() { return error_p; }
@@ -105,7 +105,7 @@ class FuncExpression {
   // Get the number of parameters in executable program
   uInt getNpar() const { return npar_p; }
   // Get the number of dimensions of executable program
-  uInt getNdim() const {return ndim_p; }
+  uInt getNdim() const { return ndim_p; }
   // Get reference to the compiled program
   const vector<FuncExprData::ExprOperator> &getCode() { return code_p; }
   // Get reference to compiled constants
@@ -116,8 +116,8 @@ class FuncExpression {
   void print(ostream &os) const;
 
  private:
-  //# Data
-  // The expression data /// later into a singleton
+  // # Data
+  //  The expression data /// later into a singleton
   FuncExprData exd;
   // The latest error message
   mutable String error_p;
@@ -136,8 +136,8 @@ class FuncExpression {
   // Executing stack
   mutable vector<Double> exec_p;
 
-  //# Member functions
-  // Compile a statement (in prg, which will be adjusted)
+  // # Member functions
+  //  Compile a statement (in prg, which will be adjusted)
   Bool compStmt(MUString &prg);
   // Compile an expression (in prg, which will be adjusted)
   Bool compExpr(MUString &prg);
@@ -153,7 +153,7 @@ class FuncExpression {
   void initState();
 };
 
-//# Global Functions
+// # Global Functions
 
 // <summary> Output function </summary>
 // <group name=output>
@@ -168,7 +168,6 @@ template <class T>
 T FuncExecute(const Vector<T> &x, const Vector<T> &par);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

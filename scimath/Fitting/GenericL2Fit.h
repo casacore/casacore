@@ -1,33 +1,33 @@
-//# GenericL2Fit.h: Generic base class for least-squares fit.
-//#
-//# Copyright (C) 2001,2002,2004,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # GenericL2Fit.h: Generic base class for least-squares fit.
+// #
+// # Copyright (C) 2001,2002,2004,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_GENERICL2FIT_H
 #define SCIMATH_GENERICL2FIT_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -38,10 +38,11 @@
 #include <casacore/scimath/Functionals/FunctionTraits.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 
-namespace casacore { // begin namespace casa
+namespace casacore {  // begin namespace casa
 
-//# Forward declarations
-template <class T, class U> class Function;
+// # Forward declarations
+template <class T, class U>
+class Function;
 
 // <summary> Generic base class for least-squares fit.
 // </summary>
@@ -51,7 +52,7 @@ template <class T, class U> class Function;
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class="Function">Function</linkto> 
+//   <li> <linkto class="Function">Function</linkto>
 //   <li> <linkto module="Fitting">Fitting</linkto>
 // </prerequisite>
 //
@@ -65,51 +66,51 @@ template <class T, class U> class Function;
 // NOTE: Constraints added. Documentation out of date at moment, check
 // the tLinearFitSVD and tNonLinearFitLM programs for examples.
 //
-// The class acts as a base class for L2-type (least-squares) fitting. 
+// The class acts as a base class for L2-type (least-squares) fitting.
 // Actual classes (se e.g. <linkto class=LinearFit>LinearFit</linkto> and
 // <linkto class=NonLinearFit>NonLinearFit</linkto>.
 //
 // The following is a brief summary of the linear least-squares fit problem.
 // See module header, <linkto module="Fitting">Fitting</linkto>,
-// for a more complete description.  
+// for a more complete description.
 //
-// Given a set of N data points (measurements), (x(i), y(i)) i = 0,...,N-1, 
-// along with a set of standard deviations, sigma(i), for the data points, 
-// and M specified functions, f(j)(x) j = 0,...,M-1, we form a linear 
-// combination of the functions: 
+// Given a set of N data points (measurements), (x(i), y(i)) i = 0,...,N-1,
+// along with a set of standard deviations, sigma(i), for the data points,
+// and M specified functions, f(j)(x) j = 0,...,M-1, we form a linear
+// combination of the functions:
 // <srcblock>
 // z(i) = a(0)f(0)(x(i)) + a(1)f(1)(x(i)) + ... + a(M-1)f(M-1)(x(i)),
 // </srcblock>
 // where a(j) j = 0,...,M-1 are a set of parameters to be determined.
 // The linear least-squares fit tries to minimize
 // <srcblock>
-// chi-square = [(y(0)-z(0))/sigma(0)]^2 + [(y(1)-z(1))/sigma(1)]^2 + ... 
+// chi-square = [(y(0)-z(0))/sigma(0)]^2 + [(y(1)-z(1))/sigma(1)]^2 + ...
 //              + [(y(N-1)-z(N-1))/sigma(N-1)]^2.
 // </srcblock>
-// by adjusting {a(j)} in the equation. 
+// by adjusting {a(j)} in the equation.
 //
-// For complex numbers, <code>[(y(i)-z(i))/sigma(i)]^2</code> in chi-square 
+// For complex numbers, <code>[(y(i)-z(i))/sigma(i)]^2</code> in chi-square
 // is replaced by
 // <code>[(y(i)-z(i))/sigma(i)]*conjugate([(y(i)-z(i))/sigma(i)])</code>
 //
 // For multidimensional functions, x(i) is a vector, and
-// <srcblock> 
+// <srcblock>
 // f(j)(x(i)) = f(j)(x(i,0), x(i,1), x(i,2), ...)
 // </srcblock>
 //
-// Normally, it is necessary that N > M for the solutions to be valid, since 
+// Normally, it is necessary that N > M for the solutions to be valid, since
 // there must be more data points than model parameters to be solved.
 //
-// If the measurement errors (standard deviation sigma) are not known 
-// at all, they can all be set to one initially.  In this case, we assume all 
+// If the measurement errors (standard deviation sigma) are not known
+// at all, they can all be set to one initially.  In this case, we assume all
 // measurements have the same standard deviation, after minimizing
 // chi-square, we recompute
-// <srcblock>  
-// sigma^2 = {(y(0)-z(0))^2 + (y(1)-z(1))^2 + ... 
+// <srcblock>
+// sigma^2 = {(y(0)-z(0))^2 + (y(1)-z(1))^2 + ...
 //           + (y(N-1)-z(N-1))^2}/(N-M) = chi-square/(N-M).
-// </srcblock> 
+// </srcblock>
 //
-// A statistic weight can also be assigned to each measurement if the 
+// A statistic weight can also be assigned to each measurement if the
 // standard deviation is not available.  sigma can be calculated from
 // <srcblock>
 // sigma = 1/ sqrt(weight)
@@ -122,7 +123,7 @@ template <class T, class U> class Function;
 // The function to be fitted to the data can be given as an instance of the
 // <linkto class="Function">Function</linkto> class.
 // One can also form a sum of functions using the
-// <linkto class="CompoundFunction">CompoundFunction</linkto>.  
+// <linkto class="CompoundFunction">CompoundFunction</linkto>.
 //
 // For small datasets the usage of the calls is:
 // <ul>
@@ -137,12 +138,12 @@ template <class T, class U> class Function;
 // </ul>
 // Note that the fitter is reusable. An example is given in the following.
 //
-// The solution of a fit always produces the total number of parameters given 
+// The solution of a fit always produces the total number of parameters given
 // to the fitter. I.e. including any parameters that were fixed. In the
 // latter case the solution returned will be the fixed value.
-// 
+//
 // <templating arg=T>
-// <li> The following data types can be used to instantiate the GenericL2Fit 
+// <li> The following data types can be used to instantiate the GenericL2Fit
 //      templated class:
 //      Known classes for FunctionTraits. I.e simple numerical like
 //	<src>Float</src>, <src>Double</src>, <src>Complex</src>,
@@ -185,7 +186,7 @@ template <class T, class U> class Function;
 //    	for (uInt i=1; i < nPrimes; i++) {
 //        primesTable(i) =
 //	   Primes::nextLargerPrimeThan(Int(primesTable(i-1)+0.01));
-//      }   
+//      }
 //	Vector<Double> sigma(nPrimes);
 //	sigma = 1.0;
 //	// The fitter
@@ -197,7 +198,7 @@ template <class T, class U> class Function;
 //	// Get the solution
 //	fitter.setFunction(combination);
 //    	Vector<Double> solution = fitter.fit(x, primesTable, sigma);
-//	// Try with a function with automatic derivatives (note that default 
+//	// Try with a function with automatic derivatives (note that default
 //	// polynomial has zero first guess)
 //  	LinearFit<AutoDiffA<Double> > fitad;
 //    	Polynomial<AutoDiffA<Double> > sqre(2);
@@ -208,16 +209,17 @@ template <class T, class U> class Function;
 // information, and other examples.
 // </example>
 
-template<class T> class GenericL2Fit : public LSQaips {
- public: 
-  //# Constants
-  // Default collinearity test for SVD
+template <class T>
+class GenericL2Fit : public LSQaips {
+ public:
+  // # Constants
+  //  Default collinearity test for SVD
   const Double COLLINEARITY;
 
-  //# Constructors
-  // Create a fitter: the normal way to generate a fitter object. Necessary
-  // data will be deduced from the Functional provided with
-  // <src>setFunction()</src>
+  // # Constructors
+  //  Create a fitter: the normal way to generate a fitter object. Necessary
+  //  data will be deduced from the Functional provided with
+  //  <src>setFunction()</src>
   GenericL2Fit();
   // Copy constructor (deep copy)
   GenericL2Fit(const GenericL2Fit &other);
@@ -227,16 +229,19 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Destructor
   virtual ~GenericL2Fit();
 
-  // Sets the function to be fitted.  Upon entry, the argument function object 
+  // Sets the function to be fitted.  Upon entry, the argument function object
   // is cloned.  The cloned copy is used in the later fitting process.
   // A valid function should be an instance of the
   // <linkto class="Function">Function</linkto> class,
   // so that derivatives with respect to the adjustable parameters
   // can be calculated.  The current values of the "available" parameters
   // of the function are taken as the initial guess for the non-linear fitting.
-  template <class U>  
-    void setFunction(const Function<U,U> &function) { resetFunction();
-    ptr_derive_p = function.cloneAD(); setFunctionEx(); }
+  template <class U>
+  void setFunction(const Function<U, U> &function) {
+    resetFunction();
+    ptr_derive_p = function.cloneAD();
+    setFunctionEx();
+  }
 
   // Set the possible constraint functions. The <src>addConstraint</src>
   // will add one; the <src>setConstraint</src> will [re-]set the
@@ -246,34 +251,33 @@ template<class T> class GenericL2Fit : public LSQaips {
   // to be fitted. The <src>x</src> should have the correct dimension.
   // <group>
   template <class U>
-    Bool setConstraint(const uInt n,
-		       const Function<U,U> &function,
-		       const Vector<typename FunctionTraits<T>::BaseType> &x,
-		       const typename FunctionTraits<T>::BaseType y=
-		       typename FunctionTraits<T>::BaseType(0)) {
-    if (n >= constrFun_p.nelements() ||
-	!ptr_derive_p ||
-	ptr_derive_p->nparameters() != function.nparameters() ||
-	function.ndim() != x.nelements()) return False;
-    delete constrFun_p[n]; constrFun_p[n] = 0;
-    constrFun_p[n] = function.cloneAD(); return setConstraintEx(n, x, y); }
-  Bool setConstraint(const uInt n,
-		     const Vector<typename FunctionTraits<T>::BaseType> &x,
-		     const typename FunctionTraits<T>::BaseType y=
-		     typename FunctionTraits<T>::BaseType(0));
-  Bool setConstraint(const uInt n,
-		     const typename FunctionTraits<T>::BaseType y=
-		     typename FunctionTraits<T>::BaseType(0));
-  Bool addConstraint(const Function<typename FunctionTraits<T>::DiffType,
-		     typename FunctionTraits<T>::DiffType> &function,
-		     const Vector<typename FunctionTraits<T>::BaseType> &x,
-		     const typename FunctionTraits<T>::BaseType y=
-		     typename FunctionTraits<T>::BaseType(0));
-  Bool addConstraint(const Vector<typename FunctionTraits<T>::BaseType> &x,
-		     const typename FunctionTraits<T>::BaseType y=
-		     typename FunctionTraits<T>::BaseType(0));
-  Bool addConstraint(const typename FunctionTraits<T>::BaseType y=
-		     typename FunctionTraits<T>::BaseType(0));
+  Bool setConstraint(
+      const uInt n, const Function<U, U> &function,
+      const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0)) {
+    if (n >= constrFun_p.nelements() || !ptr_derive_p ||
+        ptr_derive_p->nparameters() != function.nparameters() || function.ndim() != x.nelements())
+      return False;
+    delete constrFun_p[n];
+    constrFun_p[n] = 0;
+    constrFun_p[n] = function.cloneAD();
+    return setConstraintEx(n, x, y);
+  }
+  Bool setConstraint(
+      const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
+  Bool setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y =
+                                       typename FunctionTraits<T>::BaseType(0));
+  Bool addConstraint(
+      const Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType>
+          &function,
+      const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
+  Bool addConstraint(
+      const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
+  Bool addConstraint(
+      const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
   // </group>
   // Set the collinearity factor as the square of the sine of the
   // minimum angle allowed between input vectors (default zero for non-SVD,
@@ -292,12 +296,14 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Return a pointer to the function being fitted.  Should
   // never delete this pointer.
   // <group>
-  Function<typename FunctionTraits<T>::DiffType,
-    typename FunctionTraits<T>::DiffType> *fittedFunction() {
-    return ptr_derive_p; }
-  const Function<typename FunctionTraits<T>::DiffType,
-                 typename FunctionTraits<T>::DiffType>*
-    fittedFunction() const { return ptr_derive_p; }
+  Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType> *
+  fittedFunction() {
+    return ptr_derive_p;
+  }
+  const Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType> *
+  fittedFunction() const {
+    return ptr_derive_p;
+  }
   // </group>
   // Return the number of fitted parameters
   uInt fittedNumber() const { return aCount_ai; }
@@ -307,24 +313,22 @@ template<class T> class GenericL2Fit : public LSQaips {
   // This pointer should never be destroyed.
   // <group>
   uInt NConstraints() { return constrFun_p.nelements(); }
-  Function<typename FunctionTraits<T>::DiffType,
-    typename FunctionTraits<T>::DiffType> *getConstraint(const uInt n) {
-    return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]); }
+  Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType> *
+  getConstraint(const uInt n) {
+    return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]);
+  }
   // </group>
 
   // Return the nth constraint equation derived from SVD
   // Note that the number present will be given by <src>getDeficiency()</src>
-  Vector<typename LSQTraits<typename FunctionTraits<T>::
-    BaseType>::base> getSVDConstraint(uInt n);
+  Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> getSVDConstraint(uInt n);
   // Set the parameter values. The input is a vector of parameters; all
   // or only the masked ones' values will be set, using the input values
   // <group>
-  void setParameterValues
-    (const Vector<typename FunctionTraits<T>::BaseType> &parms);
-  void setMaskedParameterValues
-    (const Vector<typename FunctionTraits<T>::BaseType> &parms);
+  void setParameterValues(const Vector<typename FunctionTraits<T>::BaseType> &parms);
+  void setMaskedParameterValues(const Vector<typename FunctionTraits<T>::BaseType> &parms);
   // </group>
-  
+
   // Fit the function to the data. If no sigma provided, all ones assumed.
   // In the case of no x,y,sigma the fitting equations are supposed to be
   // generated by previous calls to buildNormalMatrix. Note that the ones
@@ -336,48 +340,42 @@ template<class T> class GenericL2Fit : public LSQaips {
   //		the case of the Bool versions.)
   // </thrown>
   // <group>
-  Vector<typename FunctionTraits<T>::BaseType>
-    fit(const Vector<typename FunctionTraits<T>::BaseType> &x, 
-	const Vector<typename FunctionTraits<T>::BaseType> &y,
-	const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-	const Vector<Bool> *const mask=0);
-  Vector<typename FunctionTraits<T>::BaseType>
-    fit(const Matrix<typename FunctionTraits<T>::BaseType> &x, 
-	const Vector<typename FunctionTraits<T>::BaseType> &y,
-	const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-	const Vector<Bool> *const mask=0);
-  Vector<typename FunctionTraits<T>::BaseType>
-    fit(const Vector<typename FunctionTraits<T>::BaseType> &x, 
-	const Vector<typename FunctionTraits<T>::BaseType> &y,
-	const Vector<Bool> *const mask=0);
-  Vector<typename FunctionTraits<T>::BaseType>
-    fit(const Matrix<typename FunctionTraits<T>::BaseType> &x, 
-	const Vector<typename FunctionTraits<T>::BaseType> &y,
-	const Vector<Bool> *const mask=0);
-  Vector<typename FunctionTraits<T>::BaseType>
-    fit(const Vector<Bool> *const mask=0); 
+  Vector<typename FunctionTraits<T>::BaseType> fit(
+      const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const Vector<typename FunctionTraits<T>::BaseType> &y,
+      const Vector<typename FunctionTraits<T>::BaseType> &sigma,
+      const Vector<Bool> *const mask = 0);
+  Vector<typename FunctionTraits<T>::BaseType> fit(
+      const Matrix<typename FunctionTraits<T>::BaseType> &x,
+      const Vector<typename FunctionTraits<T>::BaseType> &y,
+      const Vector<typename FunctionTraits<T>::BaseType> &sigma,
+      const Vector<Bool> *const mask = 0);
+  Vector<typename FunctionTraits<T>::BaseType> fit(
+      const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<Bool> *const mask = 0);
+  Vector<typename FunctionTraits<T>::BaseType> fit(
+      const Matrix<typename FunctionTraits<T>::BaseType> &x,
+      const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<Bool> *const mask = 0);
+  Vector<typename FunctionTraits<T>::BaseType> fit(const Vector<Bool> *const mask = 0);
   Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
-	   const Vector<typename FunctionTraits<T>::BaseType> &x, 
-	   const Vector<typename FunctionTraits<T>::BaseType> &y,
-	   const Vector<typename FunctionTraits<T>::BaseType> &sigma,	
-	   const Vector<Bool> *const mask=0);
+           const Vector<typename FunctionTraits<T>::BaseType> &x,
+           const Vector<typename FunctionTraits<T>::BaseType> &y,
+           const Vector<typename FunctionTraits<T>::BaseType> &sigma,
+           const Vector<Bool> *const mask = 0);
   Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
-	   const Matrix<typename FunctionTraits<T>::BaseType> &x, 
-	   const Vector<typename FunctionTraits<T>::BaseType> &y,
-	   const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-	   const Vector<Bool> *const mask=0);
+           const Matrix<typename FunctionTraits<T>::BaseType> &x,
+           const Vector<typename FunctionTraits<T>::BaseType> &y,
+           const Vector<typename FunctionTraits<T>::BaseType> &sigma,
+           const Vector<Bool> *const mask = 0);
   Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
-	   const Vector<typename FunctionTraits<T>::BaseType> &x, 
-	   const Vector<typename FunctionTraits<T>::BaseType> &y,
-	   const typename FunctionTraits<T>::BaseType &sigma,
-	   const Vector<Bool> *const mask=0);
+           const Vector<typename FunctionTraits<T>::BaseType> &x,
+           const Vector<typename FunctionTraits<T>::BaseType> &y,
+           const typename FunctionTraits<T>::BaseType &sigma, const Vector<Bool> *const mask = 0);
   Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
-	   const Matrix<typename FunctionTraits<T>::BaseType> &x, 
-	   const Vector<typename FunctionTraits<T>::BaseType> &y,
-	   const typename FunctionTraits<T>::BaseType &sigma,
-	   const Vector<Bool> *const mask=0);
-  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
-	   const Vector<Bool> *const mask=0);
+           const Matrix<typename FunctionTraits<T>::BaseType> &x,
+           const Vector<typename FunctionTraits<T>::BaseType> &y,
+           const typename FunctionTraits<T>::BaseType &sigma, const Vector<Bool> *const mask = 0);
+  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol, const Vector<Bool> *const mask = 0);
   // </group>
 
   // Obtain the chi squared. It has already been calculated during the
@@ -406,27 +404,23 @@ template<class T> class GenericL2Fit : public LSQaips {
   // The arguments are the same as for the fit(arguments) function.
   // A False is returned if the Array sizes are unmatched.
   // <group>
-  void buildNormalMatrix
-    (const Vector<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-     const Vector<Bool> *const mask=0);
-  void buildNormalMatrix
-    (const Matrix<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-     const Vector<Bool> *const mask=0);
-  void buildNormalMatrix
-    (const Vector<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<Bool> *const mask=0);
-  void buildNormalMatrix
-    (const Matrix<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<Bool> *const mask=0);
+  void buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
+                         const Vector<typename FunctionTraits<T>::BaseType> &y,
+                         const Vector<typename FunctionTraits<T>::BaseType> &sigma,
+                         const Vector<Bool> *const mask = 0);
+  void buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
+                         const Vector<typename FunctionTraits<T>::BaseType> &y,
+                         const Vector<typename FunctionTraits<T>::BaseType> &sigma,
+                         const Vector<Bool> *const mask = 0);
+  void buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
+                         const Vector<typename FunctionTraits<T>::BaseType> &y,
+                         const Vector<Bool> *const mask = 0);
+  void buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
+                         const Vector<typename FunctionTraits<T>::BaseType> &y,
+                         const Vector<Bool> *const mask = 0);
   // </group>
-  // Return the residual after a fit in y. x can 
-  // be a vector (if 1D function) or a matrix (ND functional), as in the 
+  // Return the residual after a fit in y. x can
+  // be a vector (if 1D function) or a matrix (ND functional), as in the
   // fit() methods. If sol is given, it is the solution derived from
   // a fit and its value will be used; otherwise  only the parameters
   // in the fitted functional will be used.
@@ -438,39 +432,36 @@ template<class T> class GenericL2Fit : public LSQaips {
   // </thrown>
   // <group>
   Bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
-		const Array<typename FunctionTraits<T>::BaseType> &x,
-		const Vector<typename FunctionTraits<T>::BaseType> &sol,
-		const Bool model=False);
+                const Array<typename FunctionTraits<T>::BaseType> &x,
+                const Vector<typename FunctionTraits<T>::BaseType> &sol, const Bool model = False);
   Bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
-		const Array<typename FunctionTraits<T>::BaseType> &x,
-		const Bool model=False);
+                const Array<typename FunctionTraits<T>::BaseType> &x, const Bool model = False);
   // </group>
-  // Get the rank of the solution (or zero of no fit() done yet). A 
+  // Get the rank of the solution (or zero of no fit() done yet). A
   // valid solution will have the same rank as the number of unknowns (or
   // double that number in the complex case). For SVD solutions the
   // rank could be less.
-  uInt getRank() const {
-    return (solved_p ? nUnknowns()-getDeficiency() : 0); }
+  uInt getRank() const { return (solved_p ? nUnknowns() - getDeficiency() : 0); }
 
  protected:
-  //#Data
-  // Adjustable
+  // #Data
+  //  Adjustable
   uInt aCount_ai;
   // SVD indicator
   Bool svd_p;
   // Function to use in evaluating condition equation
-  Function<typename FunctionTraits<T>::DiffType,
-    typename FunctionTraits<T>::DiffType> *ptr_derive_p;
+  Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType>
+      *ptr_derive_p;
   // List of functions describing the possible constraint equations
   // e.g. The sum of 3 angles w`could be described by a
   // <src>HyperPlane(3)</src> function with <src>[1,1,1]</src>
   // as parameters; giving <src>[1,1,1]</src> as argument vector and
   // <src>3.1415</src> as value.
   // <group>
-  Block<Function<typename FunctionTraits<T>::DiffType,
-    typename FunctionTraits<T>::DiffType>*> constrFun_p;
+  Block<Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType> *>
+      constrFun_p;
   // List of vectors describing the constraint equations' arguments
-  Block<Vector<typename FunctionTraits<T>::BaseType>*> constrArg_p;
+  Block<Vector<typename FunctionTraits<T>::BaseType> *> constrArg_p;
   // List of values describing the constraint equations' value
   Block<typename FunctionTraits<T>::BaseType *> constrVal_p;
   // </group>
@@ -511,62 +502,56 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Local value and derivatives
   mutable typename FunctionTraits<T>::DiffType valder_p;
   // Local SVD constraints
-  mutable Vector<Vector<typename LSQTraits<typename FunctionTraits<T>::
-    BaseType>::base> > consvd_p;
-  //# Member functions
-  // Generalised fitter
-  virtual Bool fitIt
-    (Vector<typename FunctionTraits<T>::BaseType> &sol,
-     const Array<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-     const Vector<Bool> *const mask=0) = 0;
+  mutable Vector<Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base>> consvd_p;
+  // # Member functions
+  //  Generalised fitter
+  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+                     const Array<typename FunctionTraits<T>::BaseType> &x,
+                     const Vector<typename FunctionTraits<T>::BaseType> &y,
+                     const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
+                     const Vector<Bool> *const mask = 0) = 0;
   // Build the normal matrix
-  void buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x, 
-		   const Vector<typename FunctionTraits<T>::BaseType> &y,
-		   const Vector<typename FunctionTraits<T>::BaseType>
-		   *const sigma,
-		   const Vector<Bool> *const mask=0);
+  void buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
+                   const Vector<typename FunctionTraits<T>::BaseType> &y,
+                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
+                   const Vector<Bool> *const mask = 0);
   // Build the constraint equations
   void buildConstraint();
   // Get the SVD constraints
   void fillSVDConstraints();
   // Calculate residuals
   Bool buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
-		     const Array<typename FunctionTraits<T>::BaseType> &x,
-		     const Vector<typename FunctionTraits<T>::BaseType>
-		     *const sol, const Bool model=False);
+                     const Array<typename FunctionTraits<T>::BaseType> &x,
+                     const Vector<typename FunctionTraits<T>::BaseType> *const sol,
+                     const Bool model = False);
   // Function to get evaluated functional value
-  typename FunctionTraits<T>::BaseType
-    getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
-	     uInt j, uInt i) const;
+  typename FunctionTraits<T>::BaseType getVal_p(
+      const Array<typename FunctionTraits<T>::BaseType> &x, uInt j, uInt i) const;
   // Initialise the fitter with number of solvable parameters
   void initfit_p(uInt parcnt);
   // Return number of condition equations and check sizes x, y, sigma
   // <thrown>
-  //  <li> Aipserror if size inconsistencies 
+  //  <li> Aipserror if size inconsistencies
   // </thrown>
-  uInt testInput_p
-    (const Array<typename FunctionTraits<T>::BaseType> &x,
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<typename FunctionTraits<T>::BaseType> *const sigma);
+  uInt testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
+                   const Vector<typename FunctionTraits<T>::BaseType> &y,
+                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma);
   // Reset all the input
   void resetFunction();
 
  private:
-  //# Data
+  // # Data
 
-  //# Member functions
-  // Set function properties
+  // # Member functions
+  //  Set function properties
   void setFunctionEx();
   // Set Constraint properties
-  Bool setConstraintEx(const uInt n,
-		       const Vector<typename FunctionTraits<T>::BaseType> &x,
-		       const typename FunctionTraits<T>::BaseType y);
+  Bool setConstraintEx(const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
+                       const typename FunctionTraits<T>::BaseType y);
 };
 
-} //# End namespace casacore
+}  // namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/GenericL2Fit.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

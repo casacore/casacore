@@ -1,39 +1,39 @@
-//# Interpolate2D.h: this defines the Interpolate2D class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Interpolate2D.h: this defines the Interpolate2D class
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_INTERPOLATE2D_H
 #define SCIMATH_INTERPOLATE2D_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 class String;
 
 // <summary>
@@ -45,7 +45,7 @@ class String;
 // <reviewed reviewer="wbrouw" date="2004/05/26" tests="" demos="">
 // </reviewed>
 
-// <prerequisite> 
+// <prerequisite>
 // <li> <linkto class=Array>Arrays</linkto>
 // </prerequisite>
 //
@@ -60,9 +60,9 @@ class String;
 //
 // Absolutely no checking of the consistency of the input data
 // is done in order to preserve maximum speed.   The coordinate vector
-// *must* have at least 2 elements (others will be ignored). If 
+// *must* have at least 2 elements (others will be ignored). If
 // you supply data and mask, those arrays *must* be the same shape.
-// Failure to follow these rules will result in your program 
+// Failure to follow these rules will result in your program
 // crashing.
 // </synopsis>
 //
@@ -76,7 +76,7 @@ class String;
 // Float result;
 // Bool ok = myInterp.interp(result, where, matt);
 //
-// </srcblock> 
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -90,60 +90,51 @@ class String;
 //        vector locations, return a block of interpolation results
 // </todo>
 
-
 class Interpolate2D {
  public:
-
   enum Method {
 
     // Nearest neighbour
-    NEAREST,  
-    
-    // Bilinear 
-    LINEAR, 
-    
-    // Bicubic 
+    NEAREST,
+
+    // Bilinear
+    LINEAR,
+
+    // Bicubic
     CUBIC,
 
     // Lanczos
-    LANCZOS};
-  
+    LANCZOS
+  };
+
   // Constructor
-  Interpolate2D(Interpolate2D::Method method=Interpolate2D::LINEAR);
-  
+  Interpolate2D(Interpolate2D::Method method = Interpolate2D::LINEAR);
+
   // Copy constructor (copy semantics)
   Interpolate2D(const Interpolate2D &other);
-  
+
   // destructor
   ~Interpolate2D();
-  
+
   // Assignment operator (copy semantics)
   Interpolate2D &operator=(const Interpolate2D &other);
-  
+
   // Do one Float interpolation, supply Matrix and mask (True is good),
-  // and pixel coordinate.  Returns False if coordinate out of range or data 
+  // and pixel coordinate.  Returns False if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  Bool interp (Float &result, 
-               const Vector<Double> &where,
-               const Matrix<Float> &data) const;
-  Bool interp (Float &result, 
-               const Vector<Double> &where,
-               const Matrix<Float> &data, 
-               const Matrix<Bool> &mask) const;
+  Bool interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data) const;
+  Bool interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data,
+              const Matrix<Bool> &mask) const;
   // </group>
-  
+
   // Do one Double interpolation, supply Matrix/Array and mask (True is good),
-  // and pixel coordinate.  Returns False if coordinate out of range or data 
+  // and pixel coordinate.  Returns False if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  Bool interp (Double &result, 
-               const Vector<Double> &where,
-               const Matrix<Double> &data) const;
-  Bool interp (Double &result, 
-               const Vector<Double> &where,
-               const Matrix<Double> &data, 
-               const Matrix<Bool> &mask) const;
+  Bool interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data) const;
+  Bool interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data,
+              const Matrix<Bool> &mask) const;
   // </group>
 
   // Do one Complex interpolation, supply Matrix/Array and mask (True is good),
@@ -151,13 +142,9 @@ class Interpolate2D {
   // are masked.  No shape integrity checking is done (see above). The real
   // and imaginary parts are treated independently (see CAS-11375).
   // <group>
-  Bool interp (Complex &result,
-               const Vector<Double> &where,
-               const Matrix<Complex> &data) const;
-  Bool interp (Complex &result,
-               const Vector<Double> &where,
-               const Matrix<Complex> &data,
-               const Matrix<Bool> &mask) const;
+  Bool interp(Complex &result, const Vector<Double> &where, const Matrix<Complex> &data) const;
+  Bool interp(Complex &result, const Vector<Double> &where, const Matrix<Complex> &data,
+              const Matrix<Bool> &mask) const;
   // </group>
 
   // Do one DComplex interpolation, supply Matrix/Array and mask (True is good),
@@ -165,83 +152,62 @@ class Interpolate2D {
   // are masked.  No shape integrity checking is done (see above). The real
   // and imaginary parts are treated independently (see CAS-11375).
   // <group>
-  Bool interp (DComplex &result,
-               const Vector<Double> &where,
-               const Matrix<DComplex> &data) const;
-  Bool interp (DComplex &result,
-               const Vector<Double> &where,
-               const Matrix<DComplex> &data,
-               const Matrix<Bool> &mask) const;
+  Bool interp(DComplex &result, const Vector<Double> &where, const Matrix<DComplex> &data) const;
+  Bool interp(DComplex &result, const Vector<Double> &where, const Matrix<DComplex> &data,
+              const Matrix<Bool> &mask) const;
   // </group>
 
   // Do two linear interpolations simultaneously. The second call is direct.
   // The first call transfers to the second call. It is assumed that the
   // structure (shape, steps) of the mask and data files are the same.
   // <group>
-  Bool interp(Double &resultI, Double &resultJ, 
-	      const Vector<Double> &where, 
-	      const Matrix<Double> &dataI,
-	      const Matrix<Double> &dataJ,
-	      const Matrix<Bool> &mask) const;
+  Bool interp(Double &resultI, Double &resultJ, const Vector<Double> &where,
+              const Matrix<Double> &dataI, const Matrix<Double> &dataJ,
+              const Matrix<Bool> &mask) const;
   template <typename T>
-  Bool interpLinear2(T &resultI, T &resultJ, 
-		     const Vector<Double> &where, 
-		     const Matrix<T> &dataI,
-		     const Matrix<T> &dataJ,
-		     const Matrix<Bool> &mask) const;
+  Bool interpLinear2(T &resultI, T &resultJ, const Vector<Double> &where, const Matrix<T> &dataI,
+                     const Matrix<T> &dataJ, const Matrix<Bool> &mask) const;
   // </group>
-  
+
   // Do one interpolation, supply boolean Matrix (True is good),
   // and pixel coordinate.  Returns False if coordinate
   // out of range. The result is False if any data value in the interpolation
   // grid are False (bad), else True.  No shape integrity checking is done.
   // <group>
-  Bool  interp (Bool &result, 
-                const Vector<Double> &where,
-                const Matrix<Bool> &data) const;
+  Bool interp(Bool &result, const Vector<Double> &where, const Matrix<Bool> &data) const;
   // </group>
-  
+
   // Convert string ("nearest", "linear", "cubic", "lanczos") to interpolation
   // method. The match is case insensitive.
   static Interpolate2D::Method stringToMethod(const String &method);
-  
+
  private:
-  
   // Are any of the mask pixels bad ? Returns False if no mask.
-  Bool anyBadMaskPixels (const Matrix<Bool>* &mask, Int i1, Int i2,
-			 Int j1, Int j2) const;
-  
+  Bool anyBadMaskPixels(const Matrix<Bool> *&mask, Int i1, Int i2, Int j1, Int j2) const;
+
   // nearest neighbour interpolation
   template <typename T>
-  Bool interpNearest(T &result, const Vector<Double> &where,
-		     const Matrix<T> &data,
-		     const Matrix<Bool>* &maskPtr) const;
-  Bool interpNearestBool(Bool &result, const Vector<Double> &where,
-			 const Matrix<Bool> &data) const;
+  Bool interpNearest(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                     const Matrix<Bool> *&maskPtr) const;
+  Bool interpNearestBool(Bool &result, const Vector<Double> &where, const Matrix<Bool> &data) const;
 
-  // bi-linear interpolation 
+  // bi-linear interpolation
   template <typename T>
-  Bool interpLinear(T &result, const Vector<Double> &where,
-		    const Matrix<T> &data,
-		    const Matrix<Bool>* &maskPtr) const;
-  Bool interpLinearBool(Bool &result, const Vector<Double> &where,
-			const Matrix<Bool> &data) const;
-  
+  Bool interpLinear(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                    const Matrix<Bool> *&maskPtr) const;
+  Bool interpLinearBool(Bool &result, const Vector<Double> &where, const Matrix<Bool> &data) const;
+
   // bi-cubic interpolation
   template <typename T>
-    Bool interpCubic(T &result, const Vector<Double> &where,
-		     const Matrix<T> &data,
-		     const Matrix<Bool>* &maskPtr) const;
-  Bool interpCubicBool(Bool &result, const Vector<Double> &where,
-		       const Matrix<Bool> &data) const;
+  Bool interpCubic(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                   const Matrix<Bool> *&maskPtr) const;
+  Bool interpCubicBool(Bool &result, const Vector<Double> &where, const Matrix<Bool> &data) const;
 
   // Lanczos interpolation
   template <typename T>
-  Bool interpLanczos(T &result, const Vector<Double> &where,
-		     const Matrix<T> &data,
-		     const Matrix<Bool>* &maskPtr) const;
-  Bool interpLanczosBool(Bool &result, const Vector<Double> &where,
-		       const Matrix<Bool> &data) const;
+  Bool interpLanczos(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                     const Matrix<Bool> *&maskPtr) const;
+  Bool interpLanczosBool(Bool &result, const Vector<Double> &where, const Matrix<Bool> &data) const;
   // Lanczos interpolation: helper functions
   template <typename T>
   T sinc(const T x) const;
@@ -249,37 +215,27 @@ class Interpolate2D {
   T L(const T x, const Int a) const;
 
   // helping routine from numerical recipes
-  void bcucof (Double c[4][4], const Double y[4],
-	       const Double y1[4], 
-               const Double y2[4], const Double y12[4]) const;
+  void bcucof(Double c[4][4], const Double y[4], const Double y1[4], const Double y2[4],
+              const Double y12[4]) const;
 
   // Typedefs for function pointers
-  typedef Bool(Interpolate2D::*FuncPtrFloat)
-    (Float &result, 
-     const Vector<Double> &where, 
-     const Matrix<Float> &data,
-     const Matrix<Bool>* &maskPtr) const;
-  typedef Bool(Interpolate2D::*FuncPtrDouble)
-    (Double &result, 
-     const Vector<Double> &where, 
-     const Matrix<Double> &data,
-     const Matrix<Bool>* &maskPtr) const;
-  typedef Bool(Interpolate2D::*FuncPtrBool)
-    (Bool &result, 
-     const Vector<Double> &where, 
-     const Matrix<Bool> &data) const;
+  typedef Bool (Interpolate2D::*FuncPtrFloat)(Float &result, const Vector<Double> &where,
+                                              const Matrix<Float> &data,
+                                              const Matrix<Bool> *&maskPtr) const;
+  typedef Bool (Interpolate2D::*FuncPtrDouble)(Double &result, const Vector<Double> &where,
+                                               const Matrix<Double> &data,
+                                               const Matrix<Bool> *&maskPtr) const;
+  typedef Bool (Interpolate2D::*FuncPtrBool)(Bool &result, const Vector<Double> &where,
+                                             const Matrix<Bool> &data) const;
   //
   FuncPtrFloat itsFuncPtrFloat;
   FuncPtrDouble itsFuncPtrDouble;
   FuncPtrBool itsFuncPtrBool;
-
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/Interpolate2D2.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
-

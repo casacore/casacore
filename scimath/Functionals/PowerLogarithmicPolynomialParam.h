@@ -1,32 +1,32 @@
-//# PolynomialParam.h: Parameter handling for one-dimensional polynomials
-//# Copyright (C) 2001,2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # PolynomialParam.h: Parameter handling for one-dimensional polynomials
+// # Copyright (C) 2001,2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_H
 #define SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/vector.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>  Parameter handling for one-dimensional power logarithmic polynomials
 // </summary>
@@ -48,25 +48,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=Function1D>Function1D</linkto>
 // </prerequisite>
 
-// <etymology> 
+// <etymology>
 // A 1-dimensional power logaritmic olynomial's parameters.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // A <src>power logarithmic polynomial</src> is described by a set of coefficients;
 // its fundamental operation is evaluating itself at some "x".
 //
 // Since the <src> power logarithmic olynomial</src> is a <src>Function</src>, the derivatives
-// can be obtained as well. 
+// can be obtained as well.
 //
-// The parameter interface (see 
-// <linkto class="FunctionParam">FunctionParam</linkto> class), 
+// The parameter interface (see
+// <linkto class="FunctionParam">FunctionParam</linkto> class),
 // is used to provide an interface to the
-// <linkto module="Fitting">Fitting</linkto> classes. 
+// <linkto module="Fitting">Fitting</linkto> classes.
 //
 // This class is in general used implicitly by the <src>PowerLogarithmicPolynomial</src>
 // class only.
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // <srcblock>
@@ -83,70 +83,78 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //		coefficients
 // </thrown>
 
-
-template<class T> class PowerLogarithmicPolynomialParam: public Function1D<T> {
-public:
-  //# Constructors
-  // Constructs a function with two coefficients, both 1 (so y = x).
+template <class T>
+class PowerLogarithmicPolynomialParam : public Function1D<T> {
+ public:
+  // # Constructors
+  //  Constructs a function with two coefficients, both 1 (so y = x).
   PowerLogarithmicPolynomialParam();
-  
+
   // Makes a polynomial of the specified number of coefficients, all set to zero.
   explicit PowerLogarithmicPolynomialParam(uInt n);
-  
-  PowerLogarithmicPolynomialParam(const vector<T>& parms);
+
+  PowerLogarithmicPolynomialParam(const vector<T> &parms);
 
   // Make this a copy of other (deep copy).
   // <group>
   PowerLogarithmicPolynomialParam(const PowerLogarithmicPolynomialParam<T> &other);
   template <class W>
-    PowerLogarithmicPolynomialParam(const PowerLogarithmicPolynomialParam<W> &other) :
-    Function1D<T>(other) {}
+  PowerLogarithmicPolynomialParam(const PowerLogarithmicPolynomialParam<W> &other)
+      : Function1D<T>(other) {}
   PowerLogarithmicPolynomialParam<T> &operator=(const PowerLogarithmicPolynomialParam<T> &other);
   // </group>
-  
+
   // Destructor
   virtual ~PowerLogarithmicPolynomialParam();
 
-  //# Operators  
-  // Comparisons.  
-  // <group>
+  // # Operators
+  //  Comparisons.
+  //  <group>
   Bool operator==(const PowerLogarithmicPolynomialParam<T> &other) const {
-    return (param_p == other.param_p); }
+    return (param_p == other.param_p);
+  }
   Bool operator!=(const PowerLogarithmicPolynomialParam<T> &other) const {
-    return (param_p != other.param_p); }
+    return (param_p != other.param_p);
+  }
   // </group>
 
-  //# Member functions
-  // Give name of function
-  virtual const String &name() const { static String x("power logarithmic polynomial");
-    return x; }
+  // # Member functions
+  //  Give name of function
+  virtual const String &name() const {
+    static String x("power logarithmic polynomial");
+    return x;
+  }
 
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
   T coefficient(uInt which) const {
-    DebugAssert(which<=nparameters(), AipsError); return param_p[which]; }
-  
+    DebugAssert(which <= nparameters(), AipsError);
+    return param_p[which];
+  }
+
   // Return all the coefficients as a vector.
   const Vector<T> &coefficients() const;
 
-  // Set the <em>which</em>'th coefficient to <em>value</em>. 
+  // Set the <em>which</em>'th coefficient to <em>value</em>.
   void setCoefficient(uInt which, const T value) {
-    DebugAssert(which<=nparameters(), AipsError); param_p[which] = value; }
-  
+    DebugAssert(which <= nparameters(), AipsError);
+    param_p[which] = value;
+  }
+
   // Set all the coefficients at once, throw away all existing coefficients.
   void setCoefficients(const Vector<T> &coefficients);
 
-  //# Make members of parent classes known.
-protected:
+  // # Make members of parent classes known.
+ protected:
   using Function1D<T>::param_p;
-public:
+
+ public:
   using Function1D<T>::nparameters;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/PowerLogarithmicPolynomialParam.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

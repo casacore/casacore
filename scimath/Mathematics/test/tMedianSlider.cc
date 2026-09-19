@@ -1,29 +1,29 @@
-//# tMedianSlider.cc: This program tests tMedianSlider objects
-//# Copyright (C) 2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU General Public License
-//# along with this program; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tMedianSlider.cc: This program tests tMedianSlider objects
+// # Copyright (C) 2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU General Public License
+// # along with this program; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//#! Includes
+// #! Includes
 
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -32,9 +32,10 @@
 #include <casacore/scimath/Mathematics/MedianSlider.h>
 
 #include <casacore/casa/namespace.h>
-int main(){
+int main() {
   MedianSlider me;
-  cout << "Create a MedianSlider me by means of call to MedianSlider () with default arguments" << endl;
+  cout << "Create a MedianSlider me by means of call to MedianSlider () with default arguments"
+       << endl;
   int halfwin = 3;
   MedianSlider m1(halfwin);
   cout << "Create a MedianSlider m1 by means of call to MedianSlider(int hw)" << endl;
@@ -67,8 +68,6 @@ int main(){
   cout << "Add a non-flagged 8.5" << endl;
   cout << "The number of non-flagged values in m1 window is " << m1.nval() << endl;
   cout << "Current median value in m1 window is " << m1.median() << endl;
-
-
 
   MedianSlider m2(m1);
   cout << "\nCreate a MedianSlider m2 by means of call to copy constructor\n";
@@ -103,7 +102,8 @@ int main(){
 
   cout << "The value takes 4 step back from end " << m1.prevVal(uInt(4), flag) << endl;
   cout << "The value at the midpoint " << m1.midpoint(flag) << endl;
-  cout << "The difference between the current median and the value at the window center " << m1.diff(flag) << endl;
+  cout << "The difference between the current median and the value at the window center "
+       << m1.diff(flag) << endl;
   cout << "The total memory usage for a given half window size is " << m1.objsize(halfwin) << endl;
 
   m1.add();
@@ -111,11 +111,11 @@ int main(){
   cout << "Current median value in m1 window is " << m1.median() << endl;
   cout << "Now the value at the midpoint is " << m1.midpoint(flag);
   String boolAsString;
-  if(flag == 0)
+  if (flag == 0)
     boolAsString = "False";
   else
     boolAsString = "True";
-  cout <<" with flag " << boolAsString << " the difference between midpoint and current median "
+  cout << " with flag " << boolAsString << " the difference between midpoint and current median "
        << m1.diff() << endl;
   //  cout << " Number of values in the m1 window " << m1.size() << endl;
 

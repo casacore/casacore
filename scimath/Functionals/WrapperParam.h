@@ -1,42 +1,42 @@
-//# WrapperParam.h: Parameter handling for wrapped function objects 
-//# Copyright (C) 2001,2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # WrapperParam.h: Parameter handling for wrapped function objects
+// # Copyright (C) 2001,2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_WRAPPERPARAM_H
 #define SCIMATH_WRAPPERPARAM_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 
-// <summary>  Parameter handling for wrapped function objects 
+// <summary>  Parameter handling for wrapped function objects
 // </summary>
 //
 // <use visibility=local>
@@ -75,13 +75,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Nothing I know of
 // </todo>
 
-
-template <class T> class WrapperParam : public Function<T>
-{
-public:
-  //# Constructors
-  // Construct with the given parameters
-  // <group>
+template <class T>
+class WrapperParam : public Function<T> {
+ public:
+  // # Constructors
+  //  Construct with the given parameters
+  //  <group>
   WrapperParam();
   explicit WrapperParam(const T &par);
   explicit WrapperParam(const Vector<T> &par);
@@ -97,22 +96,23 @@ public:
   // Destructor
   virtual ~WrapperParam();
 
-  //# Operators    
+  // # Operators
 
-  //# Member functions
-  // Give name of function
-  virtual const String &name() const { static String x("wrapper");
-    return x; }
+  // # Member functions
+  //  Give name of function
+  virtual const String &name() const {
+    static String x("wrapper");
+    return x;
+  }
 
-protected:
-  //# Make members of parent classes known.
+ protected:
+  // # Make members of parent classes known.
   using Function<T>::param_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/WrapperParam.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

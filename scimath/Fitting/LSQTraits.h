@@ -1,37 +1,37 @@
-//# LSQTraits.h: Typing support classes for LSQ classes
-//# Copyright (C) 2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LSQTraits.h: Typing support classes for LSQ classes
+// # Copyright (C) 2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 #ifndef SCIMATH_LSQTRAITS_H
 #define SCIMATH_LSQTRAITS_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <complex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 // <summary> Typing support classes for LSQ classes </summary>
 // <reviewed reviewer="Wim Brouw" date="2004/04/01" tests="tLSQFit, tLSQaips"
@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <synopsis>
 // The following classes are used in detremining the type of iterator
-// presented to the LSQFit class. They are for a large part based on ideas by 
+// presented to the LSQFit class. They are for a large part based on ideas by
 // Alexandrescu(2001), 'Modern C++ design'.
 // </synopsis>
 
@@ -76,14 +76,17 @@ class LSQNull {};
 template <class T>
 class LSQType {
  private:
-  template <class U> struct PointerTraits {
+  template <class U>
+  struct PointerTraits {
     enum { result = False };
     typedef LSQNull Pointee;
   };
-  template <class U> struct PointerTraits<U*> {
+  template <class U>
+  struct PointerTraits<U*> {
     enum { result = True };
     typedef U Pointee;
   };
+
  public:
   enum { isPointer = PointerTraits<T>::result };
   typedef typename PointerTraits<T>::Pointee Pointee;
@@ -94,7 +97,7 @@ template <class T>
 class LSQTraits {
  public:
   // Defining type
-  typedef T    value_type;
+  typedef T value_type;
   // Numeric base type
   typedef Char base;
   // Numeric type
@@ -108,11 +111,12 @@ class LSQTraits {
 #endif
 #define LSQTraits_F LSQTraits
 // <summary>LSQTraits specialization for Float</summary>
-template <> class LSQTraits_F<Float> {
+template <>
+class LSQTraits_F<Float> {
  public:
-  typedef Float        value_type;
-  typedef Float        base;
-  typedef LSQReal      num_type;
+  typedef Float value_type;
+  typedef Float base;
+  typedef LSQReal num_type;
   enum { size = 1 };
 };
 #undef LSQTraits_F
@@ -122,11 +126,12 @@ template <> class LSQTraits_F<Float> {
 #endif
 #define LSQTraits_D LSQTraits
 // <summary>LSQTraits specialization for Double</summary>
-template <> class LSQTraits_D<Double> {
+template <>
+class LSQTraits_D<Double> {
  public:
-  typedef Double       value_type;
-  typedef Double       base;
-  typedef LSQReal      num_type;
+  typedef Double value_type;
+  typedef Double base;
+  typedef LSQReal num_type;
   enum { size = 1 };
 };
 #undef LSQTraits_D
@@ -136,11 +141,12 @@ template <> class LSQTraits_D<Double> {
 #endif
 #define LSQTraits_CD LSQTraits
 // <summary>LSQTraits specialization for DComplex </summary>
-template <> class LSQTraits_CD<std::complex<Double> > {
+template <>
+class LSQTraits_CD<std::complex<Double>> {
  public:
-  typedef std::complex<Double>    value_type;
-  typedef Double                  base;
-  typedef LSQComplex              num_type;
+  typedef std::complex<Double> value_type;
+  typedef Double base;
+  typedef LSQComplex num_type;
   enum { size = 2 };
 };
 #undef LSQTraits_CD
@@ -150,16 +156,16 @@ template <> class LSQTraits_CD<std::complex<Double> > {
 #endif
 #define LSQTraits_CF LSQTraits
 // <summary>LSQTraits specialization for Complex </summary>
-template <> class LSQTraits_CF<std::complex<Float> > {
+template <>
+class LSQTraits_CF<std::complex<Float>> {
  public:
-  typedef std::complex<Float>    value_type;
-  typedef Float                  base;
-  typedef LSQComplex             num_type;
+  typedef std::complex<Float> value_type;
+  typedef Float base;
+  typedef LSQComplex num_type;
   enum { size = 2 };
 };
 #undef LSQTraits_CF
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

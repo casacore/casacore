@@ -1,27 +1,27 @@
-//# ScalarSampledFunctional.h:
-//# Copyright (C) 1996
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ScalarSampledFunctional.h:
+// # Copyright (C) 1996
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_SCALARSAMPLEDFUNCTIONAL_H
 #define SCIMATH_SCALARSAMPLEDFUNCTIONAL_H
@@ -30,9 +30,10 @@
 #include <casacore/scimath/Functionals/SampledFunctional.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template<class T> class Block;
+template <class T>
+class Block;
 
 // <summary> A unified interface for indexing into Vectors or Blocks </summary>
 
@@ -62,7 +63,7 @@ template<class T> class Block;
 // (ie. [] for Blocks and () for Vectors). The disadvantage is that it hides
 // just about all the other functionality of Vectors and Blocks. If all you
 // are interested in is random access to various elements of these objects
-// then this class is a suitable abstraction. 
+// then this class is a suitable abstraction.
 
 // Reference semantics are used (ie. the class does not make a copy of the
 // data but refers to the original data) whenever possible. It is not
@@ -86,10 +87,10 @@ template<class T> class Block;
 
 // <example>
 // Constructing and using ScalarSampledFunctional's
-// <srcblock> 
+// <srcblock>
 // Block<Float> b(10); // Create a block of ten elements
-// // ... Fill the block any way you like ... 
-// ScalarSampledFunctional<Float> fb(b); 
+// // ... Fill the block any way you like ...
+// ScalarSampledFunctional<Float> fb(b);
 // for(uInt i = 0; i < 10; i++)
 //  cout << "f(" << i << ") = " << fb(i) << endl;
 // </srcblock>
@@ -102,7 +103,7 @@ template<class T> class Block;
 
 // <templating arg=Range>
 // <li> Very few assumptions are made on the templating type. So this class
-// should work for a wide variety of templates types. 
+// should work for a wide variety of templates types.
 // </templating>
 
 // <thrown>
@@ -113,46 +114,42 @@ template<class T> class Block;
 //   <li> Nothing I can think of
 // </todo>
 
-template<class T> class ScalarSampledFunctional
-  :public SampledFunctional<T>
-{
-public:
+template <class T>
+class ScalarSampledFunctional : public SampledFunctional<T> {
+ public:
   // See the description above to determine whether a copy or a reference is
-  // made to the original data. 
+  // made to the original data.
   // <group>
   ScalarSampledFunctional();
-  ScalarSampledFunctional(Vector<T> & data);
-  ScalarSampledFunctional(const Vector<T> & data);
-  ScalarSampledFunctional(const Block<T> & data);
+  ScalarSampledFunctional(Vector<T> &data);
+  ScalarSampledFunctional(const Vector<T> &data);
+  ScalarSampledFunctional(const Block<T> &data);
   // </group>
 
   // The standard copy constructor and assignment operator. These functions
   // use reference semantics when the ScalarSampledFunctional is
   // non-const, and copy semantics otherwise.
   // <group>
-  ScalarSampledFunctional(ScalarSampledFunctional<T> & other);
-  ScalarSampledFunctional(const ScalarSampledFunctional<T> & other);
-  ScalarSampledFunctional<T> & operator=(ScalarSampledFunctional<T> &other);
-  ScalarSampledFunctional<T> & operator=(const ScalarSampledFunctional<T> &other);
+  ScalarSampledFunctional(ScalarSampledFunctional<T> &other);
+  ScalarSampledFunctional(const ScalarSampledFunctional<T> &other);
+  ScalarSampledFunctional<T> &operator=(ScalarSampledFunctional<T> &other);
+  ScalarSampledFunctional<T> &operator=(const ScalarSampledFunctional<T> &other);
   // </group>
 
   // Define the functions for the SampledFunctional interface
-  // <group> 
+  // <group>
   virtual T operator()(const uInt &index) const;
   virtual uInt nelements() const;
   virtual ~ScalarSampledFunctional();
   // </group>
 
-private:
+ private:
   Vector<T> refData;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/ScalarSampledFunctional.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
-
-

@@ -1,26 +1,26 @@
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_STATSISTICSDATA_H
 #define SCIMATH_STATSISTICSDATA_H
@@ -39,48 +39,39 @@ class String;
 // framework.
 
 class StatisticsData {
-public:
+ public:
+  // implemented algorithms
+  enum ALGORITHM { BIWEIGHT, CHAUVENETCRITERION, CLASSICAL, FITTOHALF, HINGESFENCES };
 
-    // implemented algorithms
-    enum ALGORITHM {
-        BIWEIGHT,
-        CHAUVENETCRITERION,
-        CLASSICAL,
-        FITTOHALF,
-        HINGESFENCES
-    };
+  enum STATS {
+    MAX,
+    MEAN,
+    MIN,
+    NPTS,
+    RMS,
+    STDDEV,
+    SUM,
+    SUMSQ,
+    // sum of weights
+    SUMWEIGHTS,
+    VARIANCE,
+    // commonly used quantile-related types
+    MEDIAN,
+    MEDABSDEVMED,
+    FIRST_QUARTILE,
+    THIRD_QUARTILE,
+    // inner quartile range, Q3 - Q1
+    INNER_QUARTILE_RANGE
+  };
 
-    enum STATS {
-        MAX,
-        MEAN,
-        MIN,
-        NPTS,
-        RMS,
-        STDDEV,
-        SUM,
-        SUMSQ,
-        // sum of weights
-        SUMWEIGHTS,
-        VARIANCE,
-        // commonly used quantile-related types
-        MEDIAN,
-        MEDABSDEVMED,
-        FIRST_QUARTILE,
-        THIRD_QUARTILE,
-        // inner quartile range, Q3 - Q1
-        INNER_QUARTILE_RANGE
-    };
+  // get the zero-based indices of the specified fractions in a CDF with npts
+  // number of good points. The returned map maps fractions to indices.
+  static std::map<Double, uInt64> indicesFromFractions(uInt64 npts,
+                                                       const std::set<Double>& fractions);
 
-    // get the zero-based indices of the specified fractions in a CDF with npts
-    // number of good points. The returned map maps fractions to indices.
-    static std::map<Double, uInt64> indicesFromFractions(
-        uInt64 npts, const std::set<Double>& fractions
-    );
-
-    static String toString(STATS stat);
-
+  static String toString(STATS stat);
 };
 
-}
+}  // namespace casacore
 
 #endif

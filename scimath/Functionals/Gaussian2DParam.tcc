@@ -1,32 +1,32 @@
-//# Gaussian2DParam.cc: Parameter handling for 2 dimensional Gaussian class
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Gaussian2DParam.cc: Parameter handling for 2 dimensional Gaussian class
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_GAUSSIAN2DPARAM_TCC
 #define SCIMATH_GAUSSIAN2DPARAM_TCC
 
-//# Includes
+// # Includes
 #include <casacore/scimath/Functionals/Gaussian2DParam.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -35,19 +35,20 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+// # Statics
+/// template<class T>
+/// const T Gaussian2DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
 
-//# Statics
-///template<class T>
-///const T Gaussian2DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
-
-//# Constructors
-template<class T>
-Gaussian2DParam<T>::Gaussian2DParam() :
-  Function<T>(6),
-  fwhm2int(T(1.0)/sqrt(log(T(16.0)))),
-  thePA(0), theSpa(T(0.0)), theCpa(T(1.0)) {
+// # Constructors
+template <class T>
+Gaussian2DParam<T>::Gaussian2DParam()
+    : Function<T>(6),
+      fwhm2int(T(1.0) / sqrt(log(T(16.0)))),
+      thePA(0),
+      theSpa(T(0.0)),
+      theCpa(T(1.0)) {
   param_p[HEIGHT] = T(1.0);
   param_p[XCENTER] = T(0.0);
   param_p[YCENTER] = T(0.0);
@@ -57,13 +58,10 @@ Gaussian2DParam<T>::Gaussian2DParam() :
   theXwidth = T(1.0);
 }
 
-template<class T>
-Gaussian2DParam<T>::Gaussian2DParam(const T &height, const T &xCenter,
-				    const T &yCenter,
-				    const T &majorAxis, const T &axialRatio,
-				    const T &pa) :
-  Function<T>(6),
-  fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
+template <class T>
+Gaussian2DParam<T>::Gaussian2DParam(const T &height, const T &xCenter, const T &yCenter,
+                                    const T &majorAxis, const T &axialRatio, const T &pa)
+    : Function<T>(6), fwhm2int(T(1.0) / sqrt(log(T(16.0)))) {
   param_p[HEIGHT] = height;
   param_p[XCENTER] = xCenter;
   param_p[YCENTER] = yCenter;
@@ -76,11 +74,10 @@ Gaussian2DParam<T>::Gaussian2DParam(const T &height, const T &xCenter,
   setPA(pa);
 }
 
-template<class T>
-Gaussian2DParam<T>::Gaussian2DParam(const T &height, const Vector<T> &center, 
-				    const Vector<T> &width, const T &pa) :
-  Function<T>(6),
-  fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
+template <class T>
+Gaussian2DParam<T>::Gaussian2DParam(const T &height, const Vector<T> &center,
+                                    const Vector<T> &width, const T &pa)
+    : Function<T>(6), fwhm2int(T(1.0) / sqrt(log(T(16.0)))) {
   param_p[HEIGHT] = height;
   param_p[YWIDTH] = T(0.0);
   theXwidth = T(0.0);
@@ -89,23 +86,21 @@ Gaussian2DParam<T>::Gaussian2DParam(const T &height, const Vector<T> &center,
   setPA(pa);
 }
 
-template<class T>
-Gaussian2DParam<T>::Gaussian2DParam(const Gaussian2DParam<T> &other) :
-  Function<T>(other),
-  fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
+template <class T>
+Gaussian2DParam<T>::Gaussian2DParam(const Gaussian2DParam<T> &other)
+    : Function<T>(other), fwhm2int(T(1.0) / sqrt(log(T(16.0)))) {
   theXwidth = other.theXwidth;
   thePA = other.thePA;
   theSpa = other.theSpa;
   theCpa = other.theCpa;
 }
 
-template<class T>
+template <class T>
 Gaussian2DParam<T>::~Gaussian2DParam() {}
 
-//# Operators
-template<class T>
-Gaussian2DParam<T> &
-Gaussian2DParam<T>::operator=(const Gaussian2DParam<T> &other) {
+// # Operators
+template <class T>
+Gaussian2DParam<T> &Gaussian2DParam<T>::operator=(const Gaussian2DParam<T> &other) {
   if (this != &other) {
     fwhm2int = other.fwhm2int;
     Function<T>::operator=(other);
@@ -116,22 +111,20 @@ Gaussian2DParam<T>::operator=(const Gaussian2DParam<T> &other) {
   return *this;
 }
 
-//# Member functions
-template<class T>
+// # Member functions
+template <class T>
 T Gaussian2DParam<T>::flux() const {
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  return param_p[HEIGHT]*abs(param_p[YWIDTH]*theXwidth*
-			     fwhm2int*fwhm2int*T(M_PI));
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  return param_p[HEIGHT] * abs(param_p[YWIDTH] * theXwidth * fwhm2int * fwhm2int * T(M_PI));
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setFlux(const T &flux) {
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  param_p[HEIGHT] = flux/(abs(param_p[YWIDTH]*theXwidth*T(M_PI))*
-			  fwhm2int*fwhm2int);
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  param_p[HEIGHT] = flux / (abs(param_p[YWIDTH] * theXwidth * T(M_PI)) * fwhm2int * fwhm2int);
 }
 
-template<class T>
+template <class T>
 Vector<T> Gaussian2DParam<T>::center() const {
   Vector<T> center(2);
   center(0) = param_p[XCENTER];
@@ -139,14 +132,14 @@ Vector<T> Gaussian2DParam<T>::center() const {
   return center;
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setCenter(const Vector<T> &center) {
   DebugAssert(center.nelements() == 2, AipsError);
   param_p[XCENTER] = center(0);
   param_p[YCENTER] = center(1);
 }
 
-template<class T>
+template <class T>
 Vector<T> Gaussian2DParam<T>::width() const {
   Vector<T> width(2);
   width(0) = majorAxis();
@@ -154,7 +147,7 @@ Vector<T> Gaussian2DParam<T>::width() const {
   return width;
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setWidth(const Vector<T> &width) {
   DebugAssert(width.nelements() == 2, AipsError);
   if (abs(width(0)) > minorAxis()) {
@@ -166,17 +159,18 @@ void Gaussian2DParam<T>::setWidth(const Vector<T> &width) {
   }
 }
 
-template<class T>
+template <class T>
 T Gaussian2DParam<T>::majorAxis() const {
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
   return max(abs(param_p[YWIDTH]), abs(theXwidth));
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setMajorAxis(const T &width) {
   if (width <= T(0.0)) {
-    throw(AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
-		    " - width must be positive"));
+    throw(
+        AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
+                  " - width must be positive"));
   }
   // The near function is necessary for Intel processors (and doesn't hurt for
   // other architectures) because of the extra precision that floating point
@@ -186,78 +180,89 @@ void Gaussian2DParam<T>::setMajorAxis(const T &width) {
   // defect AOCso00071
   const T minorWidth = minorAxis();
   if (width < minorWidth && !near(width, minorWidth)) {
-    throw(AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
-		    " - major axis is smaller than minor axis"));
+    throw(
+        AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
+                  " - major axis is smaller than minor axis"));
   }
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  if (abs(theXwidth) > abs(param_p[YWIDTH])) theXwidth = width;
-  else param_p[YWIDTH] = width;
-  param_p[RATIO] = theXwidth/param_p[YWIDTH];
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  if (abs(theXwidth) > abs(param_p[YWIDTH]))
+    theXwidth = width;
+  else
+    param_p[YWIDTH] = width;
+  param_p[RATIO] = theXwidth / param_p[YWIDTH];
 }
 
-template<class T>
+template <class T>
 T Gaussian2DParam<T>::minorAxis() const {
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  return min(abs(param_p[YWIDTH]),abs(theXwidth));
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  return min(abs(param_p[YWIDTH]), abs(theXwidth));
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setMinorAxis(const T &width) {
   if (width <= T(0.0)) {
-    throw(AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
-		    " - width must be positive"));
+    throw(
+        AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
+                  " - width must be positive"));
   }
   const T majorWidth = majorAxis();
   if (width > majorWidth && !near(width, majorWidth)) {
-    throw(AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
-		    " - minor axis is greater than major axis"));
+    throw(
+        AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
+                  " - minor axis is greater than major axis"));
   }
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  if (abs(theXwidth) <= abs(param_p[YWIDTH])) theXwidth = width;
-  else param_p[YWIDTH] = width;
-  param_p[RATIO] = theXwidth/param_p[YWIDTH];
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  if (abs(theXwidth) <= abs(param_p[YWIDTH]))
+    theXwidth = width;
+  else
+    param_p[YWIDTH] = width;
+  param_p[RATIO] = theXwidth / param_p[YWIDTH];
 }
 
-template<class T>
+template <class T>
 T Gaussian2DParam<T>::axialRatio() const {
-  return minorAxis()/majorAxis();
+  return minorAxis() / majorAxis();
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setAxialRatio(const T &axialRatio) {
   if (axialRatio <= T(0.0) || axialRatio > T(1.0)) {
-    throw(AipsError("Gaussian2DParam<T>::setAxialRatio(const T &axialRatio)"
-		    " - axialRatio must be between (0,1]"));
+    throw(
+        AipsError("Gaussian2DParam<T>::setAxialRatio(const T &axialRatio)"
+                  " - axialRatio must be between (0,1]"));
   }
-  setMinorAxis(axialRatio*majorAxis());
+  setMinorAxis(axialRatio * majorAxis());
 }
 
-template<class T>
+template <class T>
 T Gaussian2DParam<T>::PA() const {
   T pa;
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  if (abs(param_p[YWIDTH]) >= abs(theXwidth)) pa = fmod(param_p[PANGLE],
-							T(M_PI));
-  else pa = fmod(param_p[PANGLE]+T(M_PI_2), T(M_PI));
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  if (abs(param_p[YWIDTH]) >= abs(theXwidth))
+    pa = fmod(param_p[PANGLE], T(M_PI));
+  else
+    pa = fmod(param_p[PANGLE] + T(M_PI_2), T(M_PI));
   if (pa < T(0.0)) pa += T(M_PI);
   return pa;
 }
 
-template<class T>
+template <class T>
 void Gaussian2DParam<T>::setPA(const T &pa) {
-  if (abs(pa) > T(2.0*M_PI)) {
-    throw(AipsError("Gaussian2DParam<T>::setPA(const T &pa)"
-		    " - PA must be in radians and between -2pi and 2pi"));
+  if (abs(pa) > T(2.0 * M_PI)) {
+    throw(
+        AipsError("Gaussian2DParam<T>::setPA(const T &pa)"
+                  " - PA must be in radians and between -2pi and 2pi"));
   }
-  theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  if (abs(param_p[YWIDTH]) >= abs(theXwidth)) param_p[PANGLE] = pa;
-  else param_p[PANGLE] = pa - T(M_PI_2);
+  theXwidth = param_p[YWIDTH] * param_p[RATIO];
+  if (abs(param_p[YWIDTH]) >= abs(theXwidth))
+    param_p[PANGLE] = pa;
+  else
+    param_p[PANGLE] = pa - T(M_PI_2);
   theCpa = cos(param_p[PANGLE]);
   theSpa = sin(param_p[PANGLE]);
-  thePA  = param_p[PANGLE];
+  thePA = param_p[PANGLE];
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore
 
 #endif

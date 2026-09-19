@@ -1,36 +1,36 @@
-//# AutoDiff.h: An automatic differentiating class for functions
-//# Copyright (C) 1995,1998,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AutoDiff.h: An automatic differentiating class for functions
+// # Copyright (C) 1995,1998,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_AUTODIFF_H
 #define SCIMATH_AUTODIFF_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class that computes partial derivatives by automatic differentiation.
@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 //
 // <prerequisite>
-// <li> 
+// <li>
 // </prerequisite>
 //
 // <etymology>
@@ -52,45 +52,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 // Class that computes partial derivatives by automatic differentiation.
-// It does this by storing the value of a function and the values of its first 
+// It does this by storing the value of a function and the values of its first
 // derivatives with respect to its independent parameters.  When a mathematical
-// operation is applied to an AutoDiff object, the derivative values of the 
-// resulting new object are computed according to chain rules 
+// operation is applied to an AutoDiff object, the derivative values of the
+// resulting new object are computed according to chain rules
 // of differentiation.
 //
 // Suppose we have a function f(x0,x1,...,xn) and its differential is
-// <srcblock> 
+// <srcblock>
 // df = (df/dx0)*dx0 + (df/dx1)*dx1 + ... + (df/dxn)*dxn
-// </srcblock> 
-// We can build a class that has the value of the function, 
-// f(x0,x1,...,xn), and the values of the derivatives, (df/dx0), (df/dx1), 
-// ..., (df/dxn) at (x0,x1,...,xn), as class members. 
+// </srcblock>
+// We can build a class that has the value of the function,
+// f(x0,x1,...,xn), and the values of the derivatives, (df/dx0), (df/dx1),
+// ..., (df/dxn) at (x0,x1,...,xn), as class members.
 //
 // Now if we have another function, g(x0,x1,...,xn) and its differential is
 // dg = (dg/dx0)*dx0 + (dg/dx1)*dx1 + ... + (dg/dxn)*dxn,
-// since 
-// <srcblock> 
-// d(f+g) = df + dg, 
-// d(f*g) = g*df + f*dg, 
+// since
+// <srcblock>
+// d(f+g) = df + dg,
+// d(f*g) = g*df + f*dg,
 // d(f/g) = df/g - fdg/g^2,
-// dsin(f) = cos(f)df, 
+// dsin(f) = cos(f)df,
 // ...,
-// </srcblock> 
+// </srcblock>
 // we can calculate
-// <srcblock>  
-// d(f+g), d(f*g), ..., 
+// <srcblock>
+// d(f+g), d(f*g), ...,
 // </srcblock>  based on our information on
-// <srcblock>  
-// df/dx0, df/dx1, ..., dg/dx0, dg/dx1, ..., dg/dxn. 
-// </srcblock>  
-// All we need to do is to define the operators and derivatives of common 
+// <srcblock>
+// df/dx0, df/dx1, ..., dg/dx0, dg/dx1, ..., dg/dxn.
+// </srcblock>
+// All we need to do is to define the operators and derivatives of common
 // mathematical functions.
 //
 // To be able to use the class as an automatic differentiator of a function
 // object, we need a templated function object, i.e. an object with:
 // <ul>
 // <li> a <src> template <class T> T operator()(const T)</src>
-// <li> or multiple variable input like: 
+// <li> or multiple variable input like:
 //		<src> template <class T> T operator()(const Vector<T> &)</src>
 // <li> all variables and constants used in the calculation of the function
 //	value should have been typed with T
@@ -127,10 +127,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // derivatives in least squares fitting procedures in the Fitting
 // module. The major one is to view the function object having 'fixed' and
 // 'variable' parameters. I.e., rather than viewing the function as
-// depending on parameters <em>a, b, x</em> (<src>f(a,b,x)</src>), the 
-// function is considered to be <src>f(x; a,b)</src>, where <em>a, b</em> 
+// depending on parameters <em>a, b, x</em> (<src>f(a,b,x)</src>), the
+// function is considered to be <src>f(x; a,b)</src>, where <em>a, b</em>
 // are 'fixed' parameters, and <em>x</em> a variable parameter.
-// Fixed parameters should be contained in a 
+// Fixed parameters should be contained in a
 // <linkto class=FunctionParam>FunctionParam</linkto> container object;
 // while the variable parameter(s) are given in the function
 // <src>operator()</src>. See <linkto class=Function>Function</linkto> class
@@ -143,9 +143,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // parameters could be reversed. An example could be a whole stack of
 // observed (in the laboratory) spectra at different temperatures at
 // one frequency. In that case the width would be the variable parameter,
-// and the frequency one of the fixed (and to be solved for)parameters. 
+// and the frequency one of the fixed (and to be solved for)parameters.
 //
-// Since the calculation of the derivatives is done with simple overloading, 
+// Since the calculation of the derivatives is done with simple overloading,
 // the calculation of second (and higher) derivatives is easy. It should be
 // noted that higher deivatives are inefficient in the current incarnation
 // (there is no knowledge e.g. about symmetry in the Jacobian). However,
@@ -160,8 +160,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // method (e.g. a generic one and a specialized one). See the
 // <src>dAutoDiff</src> demo for an example of its use.
 //
-// All operators and functions are declared in <linkto file=AutoDiffMath.h> 
-// AutoDiffMath</linkto>. The output operator in 
+// All operators and functions are declared in <linkto file=AutoDiffMath.h>
+// AutoDiffMath</linkto>. The output operator in
 // <linkto file=AutoDiffIO.h>AutoDiffIO</linkto>.
 // </synopsis>
 //
@@ -172,8 +172,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // value of the function for x=10; y=20; z=30; and for
 // // the derivatives at those point.
 // // Specify the values; and indicate 3 derivatives:
-// 	AutoDiff<Double> x(10.0, 3, 0); 
-// 	AutoDiff<Double> y(20.0, 3, 1); 
+// 	AutoDiff<Double> x(10.0, 3, 0);
+// 	AutoDiff<Double> y(20.0, 3, 1);
 // 	AutoDiff<Double> z(30.0, 3, 2);
 // // The result will be:
 // 	AutoDiff<Double> result = x*y + sin(z);
@@ -187,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // See for an extensive example the demo program dAutoDiff. It is
 // based on the example given above, and shows also the use of second
 // derivatives (which is just using <src>AutoDiff<AutoDiff<Double> ></src>
-// as template argument). 
+// as template argument).
 // <srcblock>
 // 	// The function, with fixed parameters a,b:
 //	template <class T> class f {
@@ -202,20 +202,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	  Double a0(2), b0(3), x0(7);
 //	  f<Double> f0; f0.set(a0, b0);
 //	  cout << "Value:     " << f0(x0) << endl;
-//	
+//
 //	  AutoDiff<Double> a1(2,2,0), b1(3,2,1), x1(7);
 //	  f<AutoDiff<Double> > f1; f1.set(a1, b1);
 //	  cout << "Diff a,b:   " << f1(x1) << endl;
-//	
+//
 //	  AutoDiff<Double> a2(2), b2(3), x2(7,1,0);
 //	  f<AutoDiff<Double> > f2; f2.set(a2, b2);
 //	  cout << "Diff x:     " << f2(x2) << endl;
-//	
+//
 //	  AutoDiff<AutoDiff<Double> > a3(AutoDiff<Double>(2,2,0),2,0),
 //	    b3(AutoDiff<Double>(3,2,1),2,1), x3(AutoDiff<Double>(7),2);
 //	  f<AutoDiff<AutoDiff<Double> > > f3; f3.set(a3, b3);
 //	  cout << "Diff2 a,b:  " << f3(x3) << endl;
-//	
+//
 //	  AutoDiff<AutoDiff<Double> > a4(AutoDiff<Double>(2),1),
 //	    b4(AutoDiff<Double>(3),1),
 //	    x4(AutoDiff<Double>(7,1,0),1,0);
@@ -251,36 +251,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> Nothing I know
 // </todo>
 
-template <class T> class AutoDiff {
+template <class T>
+class AutoDiff {
  public:
-  //# Typedefs
-  typedef T 			value_type;
-  typedef value_type&		reference;
-  typedef const value_type&	const_reference;
-  typedef value_type*		iterator;
-  typedef const value_type*	const_iterator;
+  // # Typedefs
+  typedef T value_type;
+  typedef value_type &reference;
+  typedef const value_type &const_reference;
+  typedef value_type *iterator;
+  typedef const value_type *const_iterator;
 
-  //# Constructors
-  // Construct a constant with a value of zero.  Zero derivatives.
+  // # Constructors
+  //  Construct a constant with a value of zero.  Zero derivatives.
   AutoDiff();
 
   // Construct a constant with a value of v.  Zero derivatives.
   AutoDiff(const T &v);
 
-  // A function f(x0,x1,...,xn,...) with a value of v.  The 
-  // total number of derivatives is ndiffs, the nth derivative is one, and all 
-  // others are zero. 
-  AutoDiff(const T &v, const uInt ndiffs, const uInt n); 
+  // A function f(x0,x1,...,xn,...) with a value of v.  The
+  // total number of derivatives is ndiffs, the nth derivative is one, and all
+  // others are zero.
+  AutoDiff(const T &v, const uInt ndiffs, const uInt n);
 
-  // A function f(x0,x1,...,xn,...) with a value of v.  The 
+  // A function f(x0,x1,...,xn,...) with a value of v.  The
   // total number of derivatives is ndiffs.
-  // All derivatives are zero. 
-  AutoDiff(const T &v, const uInt ndiffs); 
+  // All derivatives are zero.
+  AutoDiff(const T &v, const uInt ndiffs);
 
   // Construct one from another
   AutoDiff(const AutoDiff<T> &other);
 
-  // Construct a function f(x0,x1,...,xn) of a value v and a vector of 
+  // Construct a function f(x0,x1,...,xn) of a value v and a vector of
   // derivatives derivs(0) = df/dx0, derivs(1) = df/dx1, ...
   AutoDiff(const T &v, const Vector<T> &derivs);
 
@@ -310,14 +311,14 @@ template <class T> class AutoDiff {
   T &value() { return val_p; }
   const T &value() const { return val_p; }
   // </group>
-  
+
   // Returns a vector of the derivatives of an AutoDiff
   // <group>
-  const Vector<T>& derivatives() const {return grad_p; }
-  Vector<T>& derivatives() {return grad_p; }
+  const Vector<T> &derivatives() const { return grad_p; }
+  Vector<T> &derivatives() { return grad_p; }
   void derivatives(Vector<T> &res) const;
   // </group>
-  
+
   // Returns a specific derivative. The second set does not check for
   // a valid which; the first set does through Vector addressing.
   // <group>
@@ -326,16 +327,16 @@ template <class T> class AutoDiff {
   T &deriv(uInt which) { return grad_p[which]; }
   const T &deriv(uInt which) const { return grad_p[which]; }
   // </group>
-  
+
   // Return total number of derivatives
   uInt nDerivatives() const { return nd_p; }
-  
+
   // Is it a constant, i.e., with zero derivatives?
   Bool isConstant() const { return nd_p == 0; }
 
  private:
-  //# Data
-  // The function value
+  // # Data
+  //  The function value
   T val_p;
   // The number of derivatives
   uInt nd_p;
@@ -343,10 +344,9 @@ template <class T> class AutoDiff {
   Vector<T> grad_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/AutoDiff.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,27 +1,27 @@
-//# Gridder.h: Definition for Gridder
-//# Copyright (C) 1996,1997,1999,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Gridder.h: Definition for Gridder
+// # Copyright (C) 1996,1997,1999,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_GRIDDER_H
 #define SCIMATH_GRIDDER_H
@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class IPosition;
 
@@ -41,20 +41,16 @@ class IPosition;
 
 template <class Domain, class Range>
 class Gridder {
-public:
-
+ public:
   Gridder();
 
-  Gridder(const IPosition& shape, const Vector<Domain>& scale,
-	  const Vector<Domain>& offset);
+  Gridder(const IPosition& shape, const Vector<Domain>& scale, const Vector<Domain>& offset);
 
   virtual ~Gridder();
 
-  virtual Bool grid(Array<Range>&, const Vector<Domain>& position,
-		    const Range& value) = 0;
+  virtual Bool grid(Array<Range>&, const Vector<Domain>& position, const Range& value) = 0;
 
-  virtual Bool degrid(const Array<Range>&, const Vector<Domain>& position,
-		      Range& value) = 0;
+  virtual Bool degrid(const Array<Range>&, const Vector<Domain>& position, Range& value) = 0;
 
   virtual Range correct(const IPosition& loc);
 
@@ -75,9 +71,8 @@ public:
 
   void setOffset(const IPosition& off);
 
-protected:
-
-  Int nint(Double val) {return Int(std::floor(val+0.5));}
+ protected:
+  Int nint(Double val) { return Int(std::floor(val + 0.5)); }
 
   virtual void fillCorrectionVectors();
 
@@ -86,26 +81,25 @@ protected:
   virtual Range correctionFactor1D(Int loc, Int len) = 0;
 
   Int ndim;
-  IPosition shape;		// Shape of array
+  IPosition shape;  // Shape of array
 
-  Vector<Domain> scale; 	// Scaling from world to pixel
-  Vector<Domain> offset;	// Scaling from world to pixel
+  Vector<Domain> scale;   // Scaling from world to pixel
+  Vector<Domain> offset;  // Scaling from world to pixel
 
-  Vector<Domain> posVec;	// Scaled location
+  Vector<Domain> posVec;  // Scaled location
 
-  Vector<Int> locVec;   	// Vector for location type quantities
-  Vector<Int> shapeVec;		// Vector for shape
-  Vector<Int> zeroShapeVec;	// Vector for zero shape
-  Vector<Int> offsetVec;	// Offset to be added to coordinates
-  Vector<Int> centerVec;        // IPosition for center
+  Vector<Int> locVec;        // Vector for location type quantities
+  Vector<Int> shapeVec;      // Vector for shape
+  Vector<Int> zeroShapeVec;  // Vector for zero shape
+  Vector<Int> offsetVec;     // Offset to be added to coordinates
+  Vector<Int> centerVec;     // IPosition for center
 
-  Vector <Vector<Range> > correctionVectors;
-
+  Vector<Vector<Range>> correctionVectors;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/Gridder.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
