@@ -101,7 +101,7 @@ public:
     }
 
     template <typename T>
-    size_t fromLocal (void* to, const char* from, size_t nr) const {
+    size_t fromLocalGeneric (void* to, const T* from, size_t nr) const {
       return fromLocal(to, from, nr);
     }
 
