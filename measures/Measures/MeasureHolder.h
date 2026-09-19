@@ -1,40 +1,40 @@
-//# MeasureHolder.h: A holder for Measures to enable record conversions
-//# Copyright (C) 1998,1999,2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasureHolder.h: A holder for Measures to enable record conversions
+// # Copyright (C) 1998,1999,2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASUREHOLDER_H
 #define MEASURES_MEASUREHOLDER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/Containers/Block.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Measure;
 class MDirection;
 class MDoppler;
@@ -84,7 +84,7 @@ class MeasValue;
 // the m0, m1 and/or m2 fields. The <src>getMV()</src> method can be used to
 // access the <src>nelements()</src> additional information. They can be
 // (re-)set with the <src>setMV()</src> method (after a possible creation
-// of the extra block if not already there, or of the wrong length, 
+// of the extra block if not already there, or of the wrong length,
 // with <src>makeMV()</src>. If any value is set they will be used in
 // creating records, with the first value always overwriting the actual
 // Measure value.
@@ -115,31 +115,29 @@ class MeasValue;
 // </motivation>
 
 class MeasureHolder : public RecordTransformable {
+ public:
+  // # Friends
 
-public:
+  // # Enumerations
 
-//# Friends
-
-//# Enumerations
-
-//# Constructors
-  // Creates an empty holder
+  // # Constructors
+  //  Creates an empty holder
   MeasureHolder();
   // Create from a Measure (copy made)
   MeasureHolder(const Measure &in);
   // Copy a holder (copy semantics)
   MeasureHolder(const MeasureHolder &other);
-//# Destructor
+  // # Destructor
   ~MeasureHolder();
 
-//# Operators
-  // Assignment (copy semantics)
+  // # Operators
+  //  Assignment (copy semantics)
   MeasureHolder &operator=(const MeasureHolder &other);
 
-//# Member Functions
-  // Check the the MeasureHolder holds the specified Measure type. Return
-  // True if if does and False otherwise.
-  // <group>
+  // # Member Functions
+  //  Check the the MeasureHolder holds the specified Measure type. Return
+  //  True if if does and False otherwise.
+  //  <group>
   Bool isEmpty() const;
   Bool isMeasure() const;
   Bool isMDirection() const;
@@ -153,7 +151,7 @@ public:
   Bool isMEarthMagnetic() const;
   // </group>
 
-  // Get a specific Measure from the holder (with lifetime as long 
+  // Get a specific Measure from the holder (with lifetime as long
   // as holder exists).
   // <thrown>
   // <li> AipsError if holder empty
@@ -178,7 +176,7 @@ public:
   // <ul>
   // <li> type = TpString: type of Measure (direction, epoch, etc; case
   //	 insensitive)
-  // <li> refer = TpString: reference type of Measure (case insensitive; 
+  // <li> refer = TpString: reference type of Measure (case insensitive;
   //	  enough characters to be unique (e.g. J20, j200, utc, b1950, J2000);
   //	  unknown reference type will log an error message and translate into
   //	  the default type for the Measure.
@@ -193,7 +191,7 @@ public:
   // A Measure can be created from a string. In that case the string
   // will only indicate the type of measure (like direction), and will
   // create a default measure of that given type. In essence identical
-  // to the fromType() method. 
+  // to the fromType() method.
   // Error messages are postfixed to error.
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
@@ -209,8 +207,7 @@ public:
   // that are content with just letting the exception proceed up the call stack
   // so they do not have to check a return status. This is, among other things, what
   // exceptions are for after all.
-  virtual void toRecord(RecordInterface& outRecord) const;
-
+  virtual void toRecord(RecordInterface &outRecord) const;
 
   // Create a default Measure or a record with only a type from a Measure
   // <group>
@@ -230,27 +227,25 @@ public:
   // Get a pointer to a MeasValue (or 0)
   MeasValue *getMV(uInt pos) const;
 
-private:
-  
-  //# Data Members
-  // Pointer to a Measure
+ private:
+  // # Data Members
+  //  Pointer to a Measure
   std::unique_ptr<Measure> hold_p;
   // Block of pointers to measure values to make a faster interface
   Block<MeasValue *> mvhold_p;
   // Should the mvhold_p be converted into record?
   Bool convertmv_p;
-  //# Member functions
-  // Aid for to/from Record, String and Type
-  // <group>
+  // # Member functions
+  //  Aid for to/from Record, String and Type
+  //  <group>
   Bool putType(String &error, RecordInterface &out) const;
-  Bool getType(String &error, const RecordInterface &in);  
-  Bool getType(String &error, const String &in);  
+  Bool getType(String &error, const RecordInterface &in);
+  Bool getType(String &error, const String &in);
   // </group>
   // Make a MeasValue block of pointers of length n
   void createMV(uInt n);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,44 +1,46 @@
-//# ArrayMeasColumn.h: Access to array Measure columns in Tables.
-//# Copyright (C) 1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrayMeasColumn.h: Access to array Measure columns in Tables.
+// # Copyright (C) 1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_ARRAYMEASCOLUMN_H
 #define MEASURES_ARRAYMEASCOLUMN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasColumn.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class ArrayColumn;
-template <class T> class ScalarColumn;
-template <class M> class ScalarMeasColumn;
-
+// # Forward Declarations
+template <class T>
+class ArrayColumn;
+template <class T>
+class ScalarColumn;
+template <class M>
+class ScalarMeasColumn;
 
 // <summary>
 // Access table array Measure columns.
@@ -161,14 +163,13 @@ template <class M> class ScalarMeasColumn;
 //        shape.
 // </thrown>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-template<class M> class ArrayMeasColumn : public TableMeasColumn
-{
-public:
+template <class M>
+class ArrayMeasColumn : public TableMeasColumn {
+ public:
   // The default constructor creates a null object.  Useful for creating
   // arrays of ArrayMeasColumn objects.  Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
@@ -178,41 +179,39 @@ public:
   ArrayMeasColumn();
 
   // Create the ArrayMeasColumn from the table and column Name.
-  ArrayMeasColumn (const Table& tab, const String& columnName);
+  ArrayMeasColumn(const Table& tab, const String& columnName);
 
   // Copy constructor (copy semantics).
-  ArrayMeasColumn (const ArrayMeasColumn<M>& that);
+  ArrayMeasColumn(const ArrayMeasColumn<M>& that);
 
   virtual ~ArrayMeasColumn();
 
   // Change the reference to another column.
-  void reference (const ArrayMeasColumn<M>& that);
+  void reference(const ArrayMeasColumn<M>& that);
 
   // Attach a column to the object.
-  void attach (const Table& tab, const String& columnName);
+  void attach(const Table& tab, const String& columnName);
 
   // Get the Measure array in the specified row.  For get() the supplied
   // array's shape should match the shape in the row unless resize is True.
   // <group name=get>
-  void get (rownr_t rownr, Array<M>& meas, Bool resize = False) const;
-  Array<M> operator() (rownr_t rownr) const;
+  void get(rownr_t rownr, Array<M>& meas, Bool resize = False) const;
+  Array<M> operator()(rownr_t rownr) const;
   // </group>
 
   // Get the Measure array contained in the specified row and convert
   // it to the reference and offset found in the given measure.
-  Array<M> convert (rownr_t rownr, const M& meas) const
-    { return convert (rownr, meas.getRef()); }
+  Array<M> convert(rownr_t rownr, const M& meas) const { return convert(rownr, meas.getRef()); }
 
   // Get the Measure array contained in the specified row and convert
   // it to the given reference.
   // <group>
-  Array<M> convert (rownr_t rownr, const MeasRef<M>& measRef) const;
-  Array<M> convert (rownr_t rownr, uInt refCode) const;
+  Array<M> convert(rownr_t rownr, const MeasRef<M>& measRef) const;
+  Array<M> convert(rownr_t rownr, uInt refCode) const;
   // </group>
 
   // Get the column's reference.
-  const MeasRef<M>& getMeasRef() const
-    { return itsMeasRef; }
+  const MeasRef<M>& getMeasRef() const { return itsMeasRef; }
 
   // Reset the refCode, offset, or units.
   // It overwrites the value used when defining the TableMeasDesc.
@@ -228,56 +227,52 @@ public:
   // a False <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode (uInt refCode, Bool tableMustBeEmpty=True);
-  void setDescOffset (const Measure& offset, Bool tableMustBeEmpty=True);
-  void setDescUnits (const Vector<Unit>& units, Bool tableMustBeEmpty=True);
+  void setDescRefCode(uInt refCode, Bool tableMustBeEmpty = True);
+  void setDescOffset(const Measure& offset, Bool tableMustBeEmpty = True);
+  void setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty = True);
   // </group>
 
   // Add a Measure array to the specified row.
   // <group name=put>
-  void put (rownr_t rownr, const Array<M>&);
+  void put(rownr_t rownr, const Array<M>&);
   // </group>
 
-protected:
-  //# Its measure reference when the MeasRef is constant per row.
+ protected:
+  // # Its measure reference when the MeasRef is constant per row.
   MeasRef<M> itsMeasRef;
 
-private:
-  //# Column which contains the Measure's actual data.
+ private:
+  // # Column which contains the Measure's actual data.
   ArrayColumn<Double>* itsDataCol;
-  //# Its MeasRef code column when references are variable.
+  // # Its MeasRef code column when references are variable.
   ScalarColumn<Int>* itsRefIntCol;
   ArrayColumn<Int>* itsArrRefIntCol;
-  //# Its MeasRef column when references are variable and stored as Strings.
+  // # Its MeasRef column when references are variable and stored as Strings.
   ScalarColumn<String>* itsRefStrCol;
   ArrayColumn<String>* itsArrRefStrCol;
-  //# Column containing its variable offsets.  Only applicable if the
-  //# measure references have offsets and they are variable.
+  // # Column containing its variable offsets.  Only applicable if the
+  // # measure references have offsets and they are variable.
   ScalarMeasColumn<M>* itsOffsetCol;
   ArrayMeasColumn<M>* itsArrOffsetCol;
 
-
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.
-  ArrayMeasColumn& operator= (const ArrayMeasColumn<M>& that);
+  ArrayMeasColumn& operator=(const ArrayMeasColumn<M>& that);
 
   // Deletes allocated memory etc. Called by ~tor and any member which needs
   // to reallocate data.
   void cleanUp();
 
   // Get the data and convert using conversion engine.
-  Array<M> doConvert (rownr_t rownr, typename M::Convert& conv) const;
+  Array<M> doConvert(rownr_t rownr, typename M::Convert& conv) const;
 };
 
+}  // namespace casacore
 
-} //# NAMESPACE CASACORE - END
-
-
-//# Make old name ROArrayMeasColumn still available.
+// # Make old name ROArrayMeasColumn still available.
 #define ROArrayMeasColumn ArrayMeasColumn
-
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/TableMeasures/ArrayMeasColumn.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

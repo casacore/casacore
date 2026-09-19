@@ -1,46 +1,45 @@
-//# TableMeasRefDesc.h: Definition of a Measure Reference in a Table.
-//# Copyright (C) 1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableMeasRefDesc.h: Definition of a Measure Reference in a Table.
+// # Copyright (C) 1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_TABLEMEASREFDESC_H
 #define MEASURES_TABLEMEASREFDESC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasOffsetDesc.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TableMeasDescBase;
 class Table;
 class TableDesc;
 class TableRecord;
-
 
 // <summary>
 // Definition of a Measure Reference in a Table.
@@ -52,7 +51,7 @@ class TableRecord;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
 //   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
@@ -157,20 +156,18 @@ class TableRecord;
 // </thrown>
 //
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-class TableMeasRefDesc
-{
-public:
+class TableMeasRefDesc {
+ public:
   // Define a fixed MeasRef by supplying its reference code
   // Optionally a Measure offset can be specified.
   // The reference code and offset should not need a reference frame.
   // <group>
-  explicit TableMeasRefDesc (uInt refCode = 0);
-  TableMeasRefDesc (uInt refCode, const TableMeasOffsetDesc&);
+  explicit TableMeasRefDesc(uInt refCode = 0);
+  TableMeasRefDesc(uInt refCode, const TableMeasOffsetDesc&);
   // </group>
 
   // Define a variable reference by supplying the name of the column
@@ -182,88 +179,75 @@ public:
   // browse tables manually.  Optionally supply a Measure offset.
   // The reference code and offset should not need a reference frame.
   // <group>
-  TableMeasRefDesc (const TableDesc&, const String& column);
-  TableMeasRefDesc (const TableDesc&, const String& column,
-		    const TableMeasOffsetDesc&);
+  TableMeasRefDesc(const TableDesc&, const String& column);
+  TableMeasRefDesc(const TableDesc&, const String& column, const TableMeasOffsetDesc&);
   // </group>
 
   // Reconstruct the object from the MEASINFO record.
   // Not useful for the public.
-  TableMeasRefDesc (const TableRecord& measInfo,
-		    const Table&,
-		    const MeasureHolder& measHolder,
-		    const TableMeasDescBase&);
+  TableMeasRefDesc(const TableRecord& measInfo, const Table&, const MeasureHolder& measHolder,
+                   const TableMeasDescBase&);
 
   // Copy constructor (copy semantics)
-  TableMeasRefDesc (const TableMeasRefDesc& that);
+  TableMeasRefDesc(const TableMeasRefDesc& that);
 
   ~TableMeasRefDesc();
 
   // Assignment operator (copy semantics).
-  TableMeasRefDesc& operator= (const TableMeasRefDesc& that);
+  TableMeasRefDesc& operator=(const TableMeasRefDesc& that);
 
   // Return the reference code.
-  uInt getRefCode() const
-    { return itsRefCode; }
+  uInt getRefCode() const { return itsRefCode; }
 
   // Is the reference variable?
-  Bool isRefCodeVariable() const
-    { return (! itsColumn.empty()); }
+  Bool isRefCodeVariable() const { return (!itsColumn.empty()); }
 
   // Return the name of its variable reference code column.
-  const String& columnName() const
-    { return itsColumn; }
+  const String& columnName() const { return itsColumn; }
 
   // Is the reference code variable and stored in an integer column?
-  Bool isRefCodeColumnInt() const
-    { return itsRefCodeColInt; }
+  Bool isRefCodeColumnInt() const { return itsRefCodeColInt; }
 
   // Do the keywords contain the reference codes and types.
   // For old tables this might not be the case.
-  Bool hasRefTab() const
-    { return itsHasRefTab; }
+  Bool hasRefTab() const { return itsHasRefTab; }
 
   // Returns True if the reference has an offset.
-  Bool hasOffset() const
-    { return (itsOffset != 0); }
+  Bool hasOffset() const { return (itsOffset != 0); }
 
   // Returns True if the offset is variable.
-  Bool isOffsetVariable() const
-    { return (itsOffset != 0  ?  itsOffset->isVariable() : False); }
+  Bool isOffsetVariable() const { return (itsOffset != 0 ? itsOffset->isVariable() : False); }
 
   // Returns True is the offset is variable and it is an ArrayMeasColumn.
-  Bool isOffsetArray() const
-    { return (itsOffset != 0  ?  itsOffset->isArray() : False); }
+  Bool isOffsetArray() const { return (itsOffset != 0 ? itsOffset->isArray() : False); }
 
   // Return the fixed Measure offset.
   // It does not test if the offset is defined; hasOffset() should be used
   // for that purpose.
-  const Measure& getOffset() const
-    { return itsOffset->getOffset(); }
+  const Measure& getOffset() const { return itsOffset->getOffset(); }
 
   // Return the name of the Measure offset column.
   // An empty string is returned if no variable offset is used.
-  const String& offsetColumnName() const
-    { return itsOffset->columnName(); }
+  const String& offsetColumnName() const { return itsOffset->columnName(); }
 
   // Reset the refCode or offset.
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
   // <group>
-  void resetRefCode (uInt refCode);
-  void resetOffset (const Measure& offset);
+  void resetRefCode(uInt refCode);
+  void resetOffset(const Measure& offset);
   // </group>
 
   // Make the Measure value descriptor persistent.  Normally would not be
   // called by the user directly.
   // <group>
-  void write (TableDesc&, TableRecord& measInfo, const TableMeasDescBase&);
-  void write (Table&, TableRecord& measInfo, const TableMeasDescBase&);
+  void write(TableDesc&, TableRecord& measInfo, const TableMeasDescBase&);
+  void write(Table&, TableRecord& measInfo, const TableMeasDescBase&);
   // </group>
 
   // Initialize the table reference codes and types and
   // the maps (mapping a code onto itself).
-  void initTabRef (const MeasureHolder& measHolder);
+  void initTabRef(const MeasureHolder& measHolder);
 
   // Reference codes can be persistent in tables.
   // Because their enum values can change, a mapping of current table
@@ -271,8 +255,8 @@ public:
   // never-changing string representations.
   // These functions convert current refcode to and from table refcode.
   // <group>
-  uInt tab2cur (uInt tabRefCode) const;
-  uInt cur2tab (uInt curRefCode) const;
+  uInt tab2cur(uInt tabRefCode) const;
+  uInt cur2tab(uInt curRefCode) const;
   // </group>
 
   // Set the function used to get all reference codes for a MeasureHolder.
@@ -280,58 +264,48 @@ public:
   // to add extra codes when testing.
   // <br> The default function simply calls MeasureHolder.asMeasure.allTypes.
   // <group>
-  typedef void TypesFunc (Vector<String>& types,
-			  Vector<uInt>& codes, const MeasureHolder&);
-  static void setTypesFunc (TypesFunc* func)
-    { theirTypesFunc = func; }
-  static void defaultTypesFunc (Vector<String>& types,
-				Vector<uInt>& codes, const MeasureHolder&);
+  typedef void TypesFunc(Vector<String>& types, Vector<uInt>& codes, const MeasureHolder&);
+  static void setTypesFunc(TypesFunc* func) { theirTypesFunc = func; }
+  static void defaultTypesFunc(Vector<String>& types, Vector<uInt>& codes, const MeasureHolder&);
   static TypesFunc* theirTypesFunc;
   // </group>
 
-private:
+ private:
   uInt itsRefCode;
   // The name of column containing its variable references.
   String itsColumn;
   // Is the reference code column a string column?
-  Bool   itsRefCodeColInt;
+  Bool itsRefCodeColInt;
   // Do the keywords contain the reference codes and types?
-  Bool   itsHasRefTab;
-  //# Its reference offset.
-  TableMeasOffsetDesc* itsOffset; 	
-  //# Define the vectors holding the measref codes and types.
-  //# These are the codes as used in the table, which might be different
-  //# from the current values.
+  Bool itsHasRefTab;
+  // # Its reference offset.
+  TableMeasOffsetDesc* itsOffset;
+  // # Define the vectors holding the measref codes and types.
+  // # These are the codes as used in the table, which might be different
+  // # from the current values.
   Vector<String> itsTabRefTypes;
-  Vector<uInt>   itsTabRefCodes;
-  //# Define the mappings of table measref codes to current ones and back.
-  //# There are only filled in and used if a variable reference code is used.
+  Vector<uInt> itsTabRefCodes;
+  // # Define the mappings of table measref codes to current ones and back.
+  // # There are only filled in and used if a variable reference code is used.
   Block<Int> itsTab2Cur;
   Block<Int> itsCur2Tab;
 
   // Fill the reference code mappings for table<->current.
   // <group>
   void initTabRefMap();
-  void fillTabRefMap (const MeasureHolder& measHolder);
-  uInt fillMap (Block<Int>& f2t,
-		const Vector<uInt>& codesf,
-		const Vector<String>& typesf,
-		Vector<uInt>& codest,
-		Vector<String>& typest,
-		Int maxnr);
+  void fillTabRefMap(const MeasureHolder& measHolder);
+  uInt fillMap(Block<Int>& f2t, const Vector<uInt>& codesf, const Vector<String>& typesf,
+               Vector<uInt>& codest, Vector<String>& typest, Int maxnr);
   // </group>
 
   // Write the actual keywords.
-  void writeKeys (TableRecord& measInfo, 
-		  const TableMeasDescBase& measDesc);
+  void writeKeys(TableRecord& measInfo, const TableMeasDescBase& measDesc);
 
   // Throw an exception if the column doesn't exist or is of the
   // wrong type.
-  void checkColumn (const TableDesc& td);
+  void checkColumn(const TableDesc& td);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

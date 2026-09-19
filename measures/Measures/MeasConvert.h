@@ -1,32 +1,32 @@
-//# MeasConvert.h: Conversion of Measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasConvert.h: Conversion of Measures
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASCONVERT_H
 #define MEASURES_MEASCONVERT_H
 
-//# Includes
+// # Includes
 #include <memory>
 #include <vector>
 
@@ -35,15 +35,15 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/measures/Measures/Measure.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MCBase;
 class MeasVal;
 
-//# Typedefs
+// # Typedefs
 
-//# Constants
+// # Constants
 
 // <summary> Conversion of Measures </summary>
 
@@ -53,10 +53,10 @@ class MeasVal;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
-//   <li> <linkto class=MRBase>MeasRef</linkto> base class 
-//   <li> <linkto class=MConvertBase>MConvertBase</linkto> class 
-//   <li> <linkto class=Quantum>Quantum</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
+//   <li> <linkto class=MRBase>MeasRef</linkto> base class
+//   <li> <linkto class=MConvertBase>MConvertBase</linkto> class
+//   <li> <linkto class=Quantum>Quantum</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -69,15 +69,15 @@ class MeasVal;
 // for the allowed conversions, like <src>MEpoch::Convert.</src><br>
 // The basic operation is to create a MeasConvert with either of:
 // <ul>
-//   <li> MEpoch::Convert(MEpoch, MEpoch::Ref), where the 
+//   <li> MEpoch::Convert(MEpoch, MEpoch::Ref), where the
 //	<linkto class=MEpoch>MEpoch</linkto> is a template for subsequent
-//	conversions, i.e. it will remember the value (with its reference) and 
+//	conversions, i.e. it will remember the value (with its reference) and
 //	the <linkto class=MeasRef>MeasRef</linkto> output reference.
 //   <li> MEpoch::Convert(MEpoch) with a subsequent setOut(MEpoch::Ref)
 //   <li> MEpoch::Convert(MEpoch::Ref in, MEpoch::Ref out) is a template for
 //	 conversions from the input reference to the output reference. The
 //	'template' model used is the default value for the Measure, with
-//	no units. 
+//	no units.
 //   <li> MEpoch::Convert(Unit, MEpoch::Ref in, MEpoch::Ref out) is a
 //	 template for
 //	 conversions from the input reference to the output reference. The
@@ -90,7 +90,7 @@ class MeasVal;
 // output reference frame, and construct a pointer (in practice a list
 // of pointers to bypass the necessity of creating too many conversion
 // functions) to a conversion routine.
-// 
+//
 // An <src>isNOP()</src> function is available to test if the created
 // conversion engine is empty.
 //
@@ -99,11 +99,11 @@ class MeasVal;
 // Possible arguments are (MVEpoch is used here generic, and indicates the
 // internal format of a Measure; possibly, to make sure distinction between
 // values with and without units possible, even simple Measures will
-// have their own internal class format, e.g. MVDouble. 
+// have their own internal class format, e.g. MVDouble.
 // The possible arguments to the () conversion operator are (again Epoch
 // is used for the generic Measure):
 // <ul>
-//   <li> (MEpoch, MEpoch::Ref): will create a new conversion method, and use 
+//   <li> (MEpoch, MEpoch::Ref): will create a new conversion method, and use
 //	it to produce the result of converting the MEpoch to the specified
 //	frame
 //    <li> (MEpoch): will create a new conversion method from the
@@ -140,24 +140,23 @@ class MeasVal;
 // <todo asof="1999/09/24">
 // </todo>
 
-template<class M> class MeasConvert : public MConvertBase {
+template <class M>
+class MeasConvert : public MConvertBase {
+ public:
+  // # Friends
 
-public:
-
-  //# Friends
-
-  //# Constructors
-  // <note role=tip> In the following constructors and other functions, all 
-  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-  // where no offsets or frames are needed in the reference.</note>
-  // Construct an empty MeasConvert. It is not usable, unless a setModel, and
-  // probably a setOut has been done.
+  // # Constructors
+  //  <note role=tip> In the following constructors and other functions, all
+  //  <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  //  where no offsets or frames are needed in the reference.</note>
+  //  Construct an empty MeasConvert. It is not usable, unless a setModel, and
+  //  probably a setOut has been done.
   MeasConvert();
   // Copy constructor
   MeasConvert(const MeasConvert<M> &other);
   // Copy assignment
   MeasConvert<M> &operator=(const MeasConvert<M> &other);
-  
+
   // Construct a conversion for the specified Measure and reference
   // <group>
   MeasConvert(const M &ep);
@@ -169,28 +168,24 @@ public:
   MeasConvert(const typename M::Ref &mrin, typename M::Types mr);
   MeasConvert(typename M::Types mrin, const typename M::Ref &mr);
   MeasConvert(typename M::Types mrin, typename M::Types mr);
-  MeasConvert(const Unit &inunit, const typename M::Ref &mrin, 
-	      const typename M::Ref &mr);
-  MeasConvert(const Unit &inunit, const typename M::Ref &mrin, 
-	      typename M::Types mr);
-  MeasConvert(const Unit &inunit, typename M::Types mrin, 
-	      const typename M::Ref &mr);
-  MeasConvert(const Unit &inunit, typename M::Types mrin, 
-	      typename M::Types mr);
+  MeasConvert(const Unit &inunit, const typename M::Ref &mrin, const typename M::Ref &mr);
+  MeasConvert(const Unit &inunit, const typename M::Ref &mrin, typename M::Types mr);
+  MeasConvert(const Unit &inunit, typename M::Types mrin, const typename M::Ref &mr);
+  MeasConvert(const Unit &inunit, typename M::Types mrin, typename M::Types mr);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   ~MeasConvert();
-  
-  //# Operators
-  // The actual conversion operations
-  // <group>
-  // Convert model Measure to output frame
+
+  // # Operators
+  //  The actual conversion operations
+  //  <group>
+  //  Convert model Measure to output frame
   const M &operator()();
   const M &operator()(Double val);
   const M &operator()(const Vector<Double> &val);
   const M &operator()(const Quantum<Double> &val);
-  const M &operator()(const Quantum<Vector<Double> > &val);
+  const M &operator()(const Quantum<Vector<Double>> &val);
   const M &operator()(const typename M::MVType &val);
   const M &operator()(const MeasVal *val);
   const M &operator()(const M &val);
@@ -199,9 +194,9 @@ public:
   const M &operator()(const typename M::Ref &mr);
   const M &operator()(typename M::Types mr);
   // </group>
-  
-  //# General Member Functions
-  // Set a new model for the conversion
+
+  // # General Member Functions
+  //  Set a new model for the conversion
   virtual void setModel(const Measure &val);
   // Set a new output reference
   // <group>
@@ -217,7 +212,7 @@ public:
   virtual void set(const MeasValue &val);
   // Set a new model unit only
   virtual void set(const Unit &inunit);
-  
+
   // Add a method (Note: uInt should be an enum from the appropiate Measure)
   virtual void addMethod(uInt method);
   // Add the frame type (Note: tp should be an MeasFrame::FrameType)
@@ -230,10 +225,10 @@ public:
   Bool isNOP() { return crout.empty(); }
   // Print conversion engine
   virtual void print(ostream &os) const;
-  
-private:
-  //# Data
-  // The model template Measure
+
+ private:
+  // # Data
+  //  The model template Measure
   std::unique_ptr<Measure> model;
   // The model unit to be used in conversions
   Unit unit;
@@ -259,9 +254,9 @@ private:
   // <group>
   std::unique_ptr<typename M::MVType> locres;
   // </group>
-  
-  //# Member functions
-  // Initialise pointers
+
+  // # Member functions
+  //  Initialise pointers
   void init();
   // Copy a MeasConvert
   void copy(const MeasConvert<M> &other);
@@ -276,12 +271,11 @@ private:
   // </group>
 };
 
-//# Global functions
+// # Global functions
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/Measures/MeasConvert.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

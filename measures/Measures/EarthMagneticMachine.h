@@ -1,32 +1,32 @@
-//# EarthMagneticMachine.h: Calculates magnetic field in a direction  
-//# Copyright (C) 1998,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # EarthMagneticMachine.h: Calculates magnetic field in a direction
+// # Copyright (C) 1998,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_EARTHMAGNETICMACHINE_H
 #define MEASURES_EARTHMAGNETICMACHINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures.h>
@@ -35,9 +35,9 @@
 #include <casacore/measures/Measures/EarthField.h>
 #include <casacore/casa/Quanta/MVEarthMagnetic.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasFrame;
 class MPosition;
 class MEpoch;
@@ -63,11 +63,11 @@ class MEpoch;
 // machine that can
 // calculate the magnetic field in an arbitrary direction.
 //
-// The constructors need a reference code (and possibly frame) input 
+// The constructors need a reference code (and possibly frame) input
 // <linkto class=MDirection>MDirection::Ref</linkto>  to specify how the
 // the input coordinates have to be interpreted (e.g. MDirection::HADEC).
 // It also needs an altitude above the Earth for which the field has to be
-// calculated. The position on Earth can be given as either a 
+// calculated. The position on Earth can be given as either a
 // <linkto class=MPosition>position</linkto>, or as a frame containing the
 // position. In the latter case the frame will also be used in the
 // coordinate transformations.
@@ -77,7 +77,7 @@ class MEpoch;
 // the field by the <em>calculate(MVDirection)</em> method. A variety of
 // get methods let you obtain e.g. the field along the line of sight, the
 // longitude of the point for which the field was calculated (e.g. the
-// sub-ionospheric point). 
+// sub-ionospheric point).
 // </synopsis>
 //
 // <example>
@@ -111,9 +111,9 @@ class MEpoch;
 // </todo>
 
 class EarthMagneticMachine {
-public:
-  //# Constructors
-  // Construct an empty machine (probably not usable unles set() used)
+ public:
+  // # Constructors
+  //  Construct an empty machine (probably not usable unles set() used)
   EarthMagneticMachine();
   // Construct a machine from the input values. Either a height or direction
   // is normally specified. The other can be set(), or can be iterated
@@ -122,27 +122,25 @@ public:
   //   <li> AipsError if frame does not contain position and time
   // </thrown>
   // <group>
-  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt,
-		       MeasFrame &frame);
-  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt,
-		       const MPosition &pos, const MEpoch &tm);
-  EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir,
-		       MeasFrame &frame);
-  EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir,
-		       const MPosition &pos, const MEpoch &tm);
+  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt, MeasFrame &frame);
+  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt, const MPosition &pos,
+                       const MEpoch &tm);
+  EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir, MeasFrame &frame);
+  EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir, const MPosition &pos,
+                       const MEpoch &tm);
   // </group>
   // Copy constructor
   EarthMagneticMachine(const EarthMagneticMachine &other);
   // Copy assignments
   EarthMagneticMachine &operator=(const EarthMagneticMachine &other);
 
-  //# Destructor
+  // # Destructor
   ~EarthMagneticMachine();
 
-  //# Operators
-  // Return line-of-sight field (nT or given units) (from previous calculate
-  // if no direction or height given)
-  // <group>
+  // # Operators
+  //  Return line-of-sight field (nT or given units) (from previous calculate
+  //  if no direction or height given)
+  //  <group>
   Double operator()();
   Quantum<Double> operator()(const Unit &un);
   Double operator()(const MVDirection &in);
@@ -153,9 +151,9 @@ public:
   Quantum<Double> operator()(const Double in, const Unit &un);
   // </group>
 
-  //# Member functions
-  // Set or reset part of the machine
-  // <group>
+  // # Member functions
+  //  Set or reset part of the machine
+  //  <group>
   void set(const MDirection::Ref &in);
   void set(const Quantum<Double> &hgt);
   void set(MeasFrame &frame);
@@ -209,10 +207,9 @@ public:
   // Recalculate the machinery
   void reCalculate();
 
-private:
-
-  //# Data
-  // Input direction reference
+ private:
+  // # Data
+  //  Input direction reference
   MDirection::Ref inref_p;
   // Height (m)
   Double hgt_p;
@@ -252,8 +249,8 @@ private:
   // Calc done
   Bool clx_p;
 
-  //# Private Member Functions
-  // Initialise machinery
+  // # Private Member Functions
+  //  Initialise machinery
   void init();
   // Copy data members
   void copy(const EarthMagneticMachine &other);
@@ -261,7 +258,6 @@ private:
   void calculate();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

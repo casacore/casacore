@@ -1,44 +1,45 @@
-//# Measure.h: Physical quantities within reference frame
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Measure.h: Physical quantities within reference frame
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASURE_H
 #define MEASURES_MEASURE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class Unit;
 class MeasValue;
 class MRBase;
-template <class T> class Quantum;
+template <class T>
+class Quantum;
 
 // <summary>
 // Physical quantities within reference frame
@@ -93,13 +94,13 @@ template <class T> class Quantum;
 // A Measure has both a value (specified in some value internal to the specific
 // Measure, in general called <em>MVMeasure</em> (e.g. MVEpoch)), see
 // <linkto class=MeasValue>MeasValue</linkto> for general details; and a
-// reference type and frame specifier (see 
+// reference type and frame specifier (see
 // <linkto class=MeasRef>MeasRef</linkto> class).<br>
 // The <linkto class=MeasRef>MeasRef</linkto> specifies the reference type
-// of the value, e.g. TAI, UTC, LAST. In addition the 
+// of the value, e.g. TAI, UTC, LAST. In addition the
 //  <linkto class=MeasRef>MeasRef</linkto> specifies a possible offset (e.g.
 // the beginning of the year, or today), and, if necessary, Measures necessary
-// for defining the absolute quantity (e.g. an 
+// for defining the absolute quantity (e.g. an
 // <linkto class=MPosition>MPosition</linkto> on Earth for LAST), using a
 // reference frame specifier (see
 // <linkto class=MeasFrame>MeasFrame</linkto> class).<br>
@@ -108,7 +109,7 @@ template <class T> class Quantum;
 // easily specify the correct one, e.g. <src>MEpoch::Ref</src>.<br>
 // A Measure can be converted from one reference frame to another (e.g.
 // an MDirection can be converted from J2000 to apparent coordinates) by
-// setting up a measure specific conversion engine (see 
+// setting up a measure specific conversion engine (see
 // <linkto class=MeasConvert>MeasConvert</linkto> class and below).
 // From an input
 // <src>MeasRef</src> frame and an output <src>MeasRef</src> frame it
@@ -116,12 +117,12 @@ template <class T> class Quantum;
 // the <src>() operator</src>).<br>
 // Some conversions can, in addition to the main type (like TAI), specify
 // details to completely describe any conversion process (e.g. the type
-// of nutation calculation) by specifying 
+// of nutation calculation) by specifying
 // <linkto class=Aipsrc>Aipsrc</linkto> keyword/value pairs. <br>
 // <p>
 // Measures can in general be constructed from a <src>MeasRef</src> and a
 // value. The value can be expressed in the internally used units (e.g.
-// <linkto class=MVEpoch>MVEpoch</linkto> for <src>MEpoch</src>, 
+// <linkto class=MVEpoch>MVEpoch</linkto> for <src>MEpoch</src>,
 // <linkto class=MVDirection>MVDirection</linkto> for <src>MDirection</src>), or
 // as a <src>Quantum</src>, i.e. a value with a dimension (e.g. (20,"km/s"))
 // (see <linkto class=Quantum>Quantum</linkto> class). The preferred way of
@@ -132,16 +133,16 @@ template <class T> class Quantum;
 // where the reference can be omitted,
 // defaulting to <src>Measure::DEFAULT</src>), or in simple cases (not needing
 // additional frame information) be specified directly as a code (e.g.
-// <src>MEpoch::IAT</src>).<br> 
+// <src>MEpoch::IAT</src>).<br>
 // <p>
-// The value of the <src>Measure</src> can be obtained by a variety of 
+// The value of the <src>Measure</src> can be obtained by a variety of
 // <src>get</src> functions, returning in general internal or <src>Quantum</src>
 // values. The preferred way is a <src>getValue(void)</src>, which returns
 // the specific <src>MVmeasure</src> value, which can then be further formatted
 // using the appropiate <src>MVmeasure</src> get() functions.<br>
 // Special formatting (like hh:mm:ss.t, dd.mm.ss.t, yy/mm/dd etc)
-// are catered for in <em>conversion-type</em> classes like 
-// <linkto class=MVAngle>MVAngle</linkto>, 
+// are catered for in <em>conversion-type</em> classes like
+// <linkto class=MVAngle>MVAngle</linkto>,
 // <linkto class=MVTime>MVTime</linkto>.<br>
 // <p>
 // Conversion (within a Measure type) from one reference frame to another
@@ -153,7 +154,7 @@ template <class T> class Quantum;
 // <srcblock>
 // // With a default Measure included
 // 	Measure::Convert(Measure val, Measure::Ref outref);
-// // With only input and output reference frames given 
+// // With only input and output reference frames given
 //	Mesaure::Convert( Measure::Ref inref, Measure::Ref outref);
 // </srcblock>
 // The <src>val</src>
@@ -230,12 +231,11 @@ template <class T> class Quantum;
 // </todo>
 
 class Measure {
-
-public:
-  //# Enumerations
-  // Each derived class should have a <src>Types</src> enumeration, specifying
-  // the recognised frame types. It is formatted as:
-  // <srcblock>
+ public:
+  // # Enumerations
+  //  Each derived class should have a <src>Types</src> enumeration, specifying
+  //  the recognised frame types. It is formatted as:
+  //  <srcblock>
   //	enum Types {
   //	CODE1,
   //	CODE2,
@@ -246,45 +246,45 @@ public:
   //	SYNONYM1 = CODEn,	// Probable synonyms
   //	....,
   //	DEFAULT = CODEm};
-  // </srcblock>
-  // Dummy for cxx2html
-  enum Types {N_Types, DEFAULT = 0};
-  
-  //# Typedefs
-  // Each Measure should have typedefs of the form:
-  // <srcblock>
-  // typedef MeasConvert<class a_Measure, class its_MV, its_MC> Convert;
-  // typedef MeasRef<class a_Measure> Ref;
-  // </srcblock>
-  // Dummy for cxx2html
-  typedef void* Convert;
-  //# Friends
-  // Each derived class should have:
-  // <srcblock>
-  // 	friend class MeasConvert<a_Measure, its_MV, its_MC>;
-  // </srcblock>
-  // Output a Measure
+  //  </srcblock>
+  //  Dummy for cxx2html
+  enum Types { N_Types, DEFAULT = 0 };
+
+  // # Typedefs
+  //  Each Measure should have typedefs of the form:
+  //  <srcblock>
+  //  typedef MeasConvert<class a_Measure, class its_MV, its_MC> Convert;
+  //  typedef MeasRef<class a_Measure> Ref;
+  //  </srcblock>
+  //  Dummy for cxx2html
+  typedef void *Convert;
+  // # Friends
+  //  Each derived class should have:
+  //  <srcblock>
+  //  	friend class MeasConvert<a_Measure, its_MV, its_MC>;
+  //  </srcblock>
+  //  Output a Measure
   friend std::ostream &operator<<(std::ostream &os, const Measure &meas);
-  
-  //# Constructors
-  
-  //# Destructor
-  // Destructor
+
+  // # Constructors
+
+  // # Destructor
+  //  Destructor
   virtual ~Measure();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Each Measure should have the following set functions (with appropiate
-  // MVs and Ref):
-  // <srcblock>
+
+  // # Operators
+
+  // # General Member Functions
+  //  Each Measure should have the following set functions (with appropiate
+  //  MVs and Ref):
+  //  <srcblock>
   //	void set(const MVmeasure &dt);
   //	void set(const Measure::Ref &rf);
   //	void set(const MVmeasure &dt, const Measure::Ref &rf);
-  // </srcblock>
-  // <group>
+  //  </srcblock>
+  //  <group>
   virtual void set(const MeasValue &dt) = 0;
-  virtual Bool putValue(const Vector<Quantum<Double> > &in) = 0;
+  virtual Bool putValue(const Vector<Quantum<Double>> &in) = 0;
   // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in) = 0;
@@ -303,7 +303,7 @@ public:
   // </group>
   // Tell me your Measure type (e.g. "Epoch")
   virtual const String &tellMe() const = 0;
-  
+
   // Each Measure should have the following static methods to give its
   // name (e.g. Epoch) or reference type (e.g. UTC):<br>
   // <srcblock>
@@ -340,7 +340,7 @@ public:
   // Get the default reference type
   virtual const String &getDefaultType() const = 0;
   // Get a list of all known reference codes. nall returns the number in list,
-  // nextra the number of specials (like planets) that should be at 
+  // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // All should have
   // <srcblock>
@@ -348,11 +348,10 @@ public:
   //			              const uInt *&typ);
   // </srcblock>
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
+  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
   // </group>
   //
-  // Check if all internal tables of types (both enum and String) are 
+  // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
   // necessary.
   // <thrown>
@@ -362,7 +361,7 @@ public:
   // <srcblock>
   //  static void checkMyTypes();
   // </srcblock>
-  // <group> 
+  // <group>
   virtual void checkTypes() const = 0;
   // </group>
   //
@@ -371,8 +370,7 @@ public:
   // strings to check against (tname), and its length (N_name). The check
   // is case insensitive and mini-max. A return value less than N_name indicates
   // success.
-  static uInt giveMe(const String &in, Int N_name, 
-		     const String tname[]);
+  static uInt giveMe(const String &in, Int N_name, const String tname[]);
   // Each class should have a function to return its reference:
   // <srcblock>
   //  	Measure::Ref getRef() const;
@@ -386,7 +384,7 @@ public:
   // <srcblock>
   // 	const MVmeasure &getValue() const;
   // </srcblock>
-  // To get dimensioned data, each derived class should contain the 
+  // To get dimensioned data, each derived class should contain the
   // appropiate one of:
   // <srcblock>
   //    Quantity get(const Unit &unit) const;
@@ -399,61 +397,58 @@ public:
   //
   // Get unit (only available if Measure generated from a Quantum, else "")
   virtual const Unit &getUnit() const = 0;
-  
+
   // Get data pointer (used by MeasConvert)
-  virtual const MeasValue* getData() const = 0;
-  
+  virtual const MeasValue *getData() const = 0;
+
   // Get general reference pointer
   virtual MRBase *getRefPtr() const = 0;
-  
+
   // Print a Measure
   virtual void print(std::ostream &os) const = 0;
   // Create a copy
   // <group>
   virtual Measure *clone() const = 0;
   // </group>
-protected:
-  
-private:
-  //# Enumerations
-  
-  //# Data
-  // Each class will have the following information:
-  // Actual data
-  // <srcblock>
+ protected:
+ private:
+  // # Enumerations
+
+  // # Data
+  //  Each class will have the following information:
+  //  Actual data
+  //  <srcblock>
   //	MVmeasure data;
-  // </srcblock>
-  // Reference frame data
-  // <srcblock>
+  //  </srcblock>
+  //  Reference frame data
+  //  <srcblock>
   //	MeasRef<Measure> ref;
-  // </srcblock>
-  // Possible input units
-  // <srcblock>
+  //  </srcblock>
+  //  Possible input units
+  //  <srcblock>
   //	Unit unit;
-  // </srcblock>
-  // And maybe later (or somewhere else)
-  // <srcblock>
+  //  </srcblock>
+  //  And maybe later (or somewhere else)
+  //  <srcblock>
   //	MeasErr error;
-  // </srcblock>
-  // <group>
-  // Dummy for cxx2html
+  //  </srcblock>
+  //  <group>
+  //  Dummy for cxx2html
   void dummy_data() const {}
   // </group>
   //
-  //# Member functions
+  // # Member functions
   // Clear the measure
   virtual void clear() = 0;
-  
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output declaration
+// # Global functions
+//  <summary> Global functions </summary>
+//  <group name=Output>
+//  Output declaration
 std::ostream &operator<<(std::ostream &os, const Measure &meas);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,42 +1,43 @@
-//# ScalarMeasColumn.h: Access to Scalar Measure Columns in Tables.
-//# Copyright (C) 1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ScalarMeasColumn.h: Access to Scalar Measure Columns in Tables.
+// # Copyright (C) 1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_SCALARMEASCOLUMN_H
 #define MEASURES_SCALARMEASCOLUMN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasColumn.h>
 #include <casacore/measures/Measures/MeasRef.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class ArrayColumn;
-template <class T> class ScalarColumn;
-
+// # Forward Declarations
+template <class T>
+class ArrayColumn;
+template <class T>
+class ScalarColumn;
 
 // <summary>
 // Read only access to table scalar Measure columns.
@@ -48,7 +49,7 @@ template <class T> class ScalarColumn;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
 //   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
@@ -101,7 +102,7 @@ template <class T> class ScalarColumn;
 //     // "Time1" must exist in Table "tab" and must have previously been
 //     // defined as a MEpoch column using a TableMeasDesc.
 //     MEpoch::ScalarMeasColumn timeCol(tab, "Time1");
-// 	
+//
 //     // print some details about the column
 //     if (timeCol.measDesc().isRefCodeVariable()) {
 //        cout << "The column has variable references." << endl;
@@ -110,7 +111,7 @@ template <class T> class ScalarColumn;
 //	        << timeCol.getMeasRef() << endl;
 //     }
 //
-//     // Add tab.nrow() measures to the column.	
+//     // Add tab.nrow() measures to the column.
 //     MEpoch tm(Quantity(MeasData::MJD2000, "d"), MEpoch::TAI);
 //     for (rownr_t i=0; i<tab.nrow(); i++) {
 //         timeCol.put(i, tm);
@@ -135,12 +136,12 @@ template <class T> class ScalarColumn;
 //        offsets which are stored in an Array- rather than a ScalarColumn.
 // </thrown>
 //
-//# <todo asof="$DATE:$">
-//# </todo>
+// # <todo asof="$DATE:$">
+// # </todo>
 
-template <class M> class ScalarMeasColumn : public TableMeasColumn
-{
-public:
+template <class M>
+class ScalarMeasColumn : public TableMeasColumn {
+ public:
   // The default constructor creates a null object.  Useful for creating
   // arrays of ScalarMeasColumn objects.  Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
@@ -150,42 +151,40 @@ public:
   ScalarMeasColumn();
 
   // Create the ScalarMeasColumn from the table and column Name.
-  ScalarMeasColumn (const Table& tab, const String& columnName);
+  ScalarMeasColumn(const Table& tab, const String& columnName);
 
   // Copy constructor (copy semantics).
-  ScalarMeasColumn (const ScalarMeasColumn<M>& that);
+  ScalarMeasColumn(const ScalarMeasColumn<M>& that);
 
   virtual ~ScalarMeasColumn();
 
   // Change the reference to another column.
-  void reference (const ScalarMeasColumn<M>& that);
+  void reference(const ScalarMeasColumn<M>& that);
 
   // Attach a column to the object.
-  void attach (const Table& tab, const String& columnName);
+  void attach(const Table& tab, const String& columnName);
 
   // Get the Measure contained in the specified row.
   // It returns the Measure as found in the table.
   // <group name=get>
-  void get (rownr_t rownr, M& meas) const;
-  M operator() (rownr_t rownr) const;
+  void get(rownr_t rownr, M& meas) const;
+  M operator()(rownr_t rownr) const;
   // </group>
 
   // Get the Measure contained in the specified row and convert
   // it to the reference and offset found in the given measure.
-  M convert (rownr_t rownr, const M& meas) const
-    { return convert (rownr, meas.getRef()); }
+  M convert(rownr_t rownr, const M& meas) const { return convert(rownr, meas.getRef()); }
 
   // Get the Measure contained in the specified row and convert
   // it to the given reference.
   // <group>
-  M convert (rownr_t rownr, const MeasRef<M>& measRef) const;
-  M convert (rownr_t rownr, uInt refCode) const;
+  M convert(rownr_t rownr, const MeasRef<M>& measRef) const;
+  M convert(rownr_t rownr, uInt refCode) const;
   // </group>
 
   // Returns the column's fixed reference or the reference of the last
   // read Measure if references are variable.
-  const MeasRef<M>& getMeasRef() const
-    { return itsMeasRef; }
+  const MeasRef<M>& getMeasRef() const { return itsMeasRef; }
 
   // Reset the refCode, offset, or units.
   // It overwrites the value used when defining the TableMeasDesc.
@@ -201,61 +200,57 @@ public:
   // a False <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode (uInt refCode, Bool tableMustBeEmpty=True);
-  void setDescOffset (const Measure& offset, Bool tableMustBeEmpty=True);
-  void setDescUnits (const Vector<Unit>& units, Bool tableMustBeEmpty=True);
+  void setDescRefCode(uInt refCode, Bool tableMustBeEmpty = True);
+  void setDescOffset(const Measure& offset, Bool tableMustBeEmpty = True);
+  void setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty = True);
   // </group>
 
   // Put a Measure into the given row.
   // <group name=put>
-  void put (rownr_t rownr, const M& meas);
+  void put(rownr_t rownr, const M& meas);
   // </group>
 
-protected:
+ protected:
   // Make a MeasRef for the given row.
-  MeasRef<M> makeMeasRef (rownr_t rownr) const;
+  MeasRef<M> makeMeasRef(rownr_t rownr) const;
 
-private:
-  //# Whether conversion is needed during a put.  True if either
-  //# the reference code or offset is fixed for the column
+ private:
+  // # Whether conversion is needed during a put.  True if either
+  // # the reference code or offset is fixed for the column
   Bool itsConvFlag;
-  //# Column which contains the Measure's actual data. An array column
-  //# is needed if the data component of the underlying Measure is
-  //# represented by more than 1 value
+  // # Column which contains the Measure's actual data. An array column
+  // # is needed if the data component of the underlying Measure is
+  // # represented by more than 1 value
   ArrayColumn<Double>* itsArrDataCol;
   ScalarColumn<Double>* itsScaDataCol;
-  //# Its MeasRef code column when references are variable.
+  // # Its MeasRef code column when references are variable.
   ScalarColumn<Int>* itsRefIntCol;
   ScalarColumn<String>* itsRefStrCol;
-  //# Column containing its variable offsets. Only applicable if the
-  //# measure references have offsets and they are variable.
+  // # Column containing its variable offsets. Only applicable if the
+  // # measure references have offsets and they are variable.
   ScalarMeasColumn<M>* itsOffsetCol;
-  //# This is either the column's fixed Measure reference or the reference
-  //# of the last Measure read.
+  // # This is either the column's fixed Measure reference or the reference
+  // # of the last Measure read.
   MeasRef<M> itsMeasRef;
-
 
   // Assignment makes no sense in a readonly class.
   // Declaring this operator private makes it unusable.
-  ScalarMeasColumn& operator= (const ScalarMeasColumn<M>& that);
+  ScalarMeasColumn& operator=(const ScalarMeasColumn<M>& that);
 
   // Check if refs have the same value (as opposed to being the same object).
-  Bool equalRefs (const MRBase& r1, const MRBase& r2) const;
+  Bool equalRefs(const MRBase& r1, const MRBase& r2) const;
 
-  //# Deletes allocated memory etc. Called by ~tor and any member which
-  //# needs to reallocate data.
+  // # Deletes allocated memory etc. Called by ~tor and any member which
+  // # needs to reallocate data.
   void cleanUp();
 };
 
+}  // namespace casacore
 
-} //# NAMESPACE CASACORE - END
-
-
-//# Make old name ROScalarMeasColumn still available.
+// # Make old name ROScalarMeasColumn still available.
 #define ROScalarMeasColumn ScalarMeasColumn
-
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,43 +1,44 @@
-//# MeasRef.h: Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasRef.h: Reference frame for physical measures
+// # Copyright (C) 1995,1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASREF_H
 #define MEASURES_MEASREF_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MRBase.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/iosfwd.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
-template <class Ms> class MeasRef;
+template <class Ms>
+class MeasRef;
 
 // <summary> Reference frame for physical measures </summary>
 
@@ -48,8 +49,8 @@ template <class Ms> class MeasRef;
 
 // <prerequisite>
 //   <li> <linkto class=MRBase>MRBase</linkto>: the MeasRef base class
-//   <li> <linkto class=Quantum>Quantum</linkto> class 
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Quantum>Quantum</linkto> class
+//   <li> <linkto class=Measure>Measure</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -77,15 +78,14 @@ template <class Ms> class MeasRef;
 // <todo asof="1997/04/15">
 // </todo>
 
-template<class Ms> class MeasRef : public MRBase {
-  
-public:
-  
-  //# Friends
-  
-  //# Constructors
-  // Construct an empty MeasRef. I.e. it will have a standard,
-  // <em>default</em>, type; no offsets and Frame.
+template <class Ms>
+class MeasRef : public MRBase {
+ public:
+  // # Friends
+
+  // # Constructors
+  //  Construct an empty MeasRef. I.e. it will have a standard,
+  //  <em>default</em>, type; no offsets and Frame.
   MeasRef();
   // Copy constructor
   MeasRef(const MeasRef<Ms> &other);
@@ -93,7 +93,7 @@ public:
   MeasRef &operator=(const MeasRef<Ms> &other);
   // Construct a reference with specified type, offset and Frame
   // <group>
-  // <note role=caution> The following should really be (and should 
+  // <note role=caution> The following should really be (and should
   // still be called as), but
   // compiler does not accept it, due to incomplete definition when
   // called in MeasBase: </note>
@@ -104,55 +104,50 @@ public:
   MeasRef(const uInt tp, const MeasFrame &mf);
   MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   ~MeasRef();
-  
-  //# Operators
-  // Check if same MeasRef
+
+  // # Operators
+  //  Check if same MeasRef
   Bool operator==(const MeasRef<Ms> &other) const;
   // Check if unequal MeasRef
   Bool operator!=(const MeasRef<Ms> &other) const;
-  
-  //# General Member Functions
-  // Check if empty reference
+
+  // # General Member Functions
+  //  Check if empty reference
   virtual Bool empty() const;
   // Check the type of Measure the reference can be used for
   // <group>
   static const String &showMe();
   // </group>
   // Return the type of the reference
-  // <note role=caution> the following should really be 
+  // <note role=caution> the following should really be
   // (and should be interpreted as), but
   // cannot create a virtual function:</note>
   //   <src> Ms::Types getType();</src>
   virtual uInt getType() const;
   // Return the frame of reference
   virtual MeasFrame &getFrame();
-  // Return the first frame which has specified information. Checking is done in 
+  // Return the first frame which has specified information. Checking is done in
   // argument order.
   // <thrown>
   //   <li> AipsError if neither reference has a frame or the proper type
   // </thrown>
   // <group>
-  static const MeasFrame &framePosition(MRBase &ref1,
-					MRBase &ref2);
-  static const MeasFrame &frameEpoch(MRBase &ref1,
-				     MRBase &ref2);
-  static const MeasFrame &frameDirection(MRBase &ref1,
-					 MRBase &ref2);
-  static const MeasFrame &frameRadialVelocity(MRBase &ref1,
-					      MRBase &ref2);
-  static const MeasFrame &frameComet(MRBase &ref1,
-				     MRBase &ref2);
+  static const MeasFrame &framePosition(MRBase &ref1, MRBase &ref2);
+  static const MeasFrame &frameEpoch(MRBase &ref1, MRBase &ref2);
+  static const MeasFrame &frameDirection(MRBase &ref1, MRBase &ref2);
+  static const MeasFrame &frameRadialVelocity(MRBase &ref1, MRBase &ref2);
+  static const MeasFrame &frameComet(MRBase &ref1, MRBase &ref2);
   // </group>
   // Return the offset (or 0)
-  virtual const Measure* offset() const;
+  virtual const Measure *offset() const;
   // Set the type
   // <thrown>
   //   <li> AipsError if wrong Measure
   // </thrown>
-  // <note role=caution> the following should really be 
+  // <note role=caution> the following should really be
   // (and should be called as), but
   // compiler does not accept it, since a virtual function:</note>
   //   <src> void set(Ms::Types tp);</src>
@@ -166,15 +161,14 @@ public:
   void set(const Measure &ep);
   // Set a new frame
   virtual void set(const MeasFrame &mf);
-  
+
   // Print a Measure
   virtual void print(ostream &os) const;
-  
-private:
-  
+
+ private:
   // Representation class
   class RefRep {
-  public:
+   public:
     // Constructor
     // <note role=warning> Next one must be in-line for (some?) compilers </note>
     RefRep() = default;
@@ -188,22 +182,21 @@ private:
     MeasFrame frame;
     // </group>
   };
-  
-  //# Data
+
+  // # Data
   std::shared_ptr<RefRep> rep_p;
-  
-  //# Member functions
-  // Create an instance of MeasRef
+
+  // # Member functions
+  //  Create an instance of MeasRef
   void create();
-  
+
   // Copy an instance
   MeasRef copy();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/Measures/MeasRef.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

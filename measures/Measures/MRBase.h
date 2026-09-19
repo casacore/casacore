@@ -1,39 +1,39 @@
-//# MRBase.h: Base for Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MRBase.h: Base for Reference frame for physical measures
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MRBASE_H
 #define MEASURES_MRBASE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 
 // <summary> Base for Reference frame for physical measures </summary>
@@ -44,8 +44,8 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Quantum>Quantum</linkto> class 
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Quantum>Quantum</linkto> class
+//   <li> <linkto class=Measure>Measure</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -66,7 +66,7 @@ class String;
 // <linkto class=MPosition>MPosition</linkto> for a sidereal time definition).
 // A time
 // (<linkto class=MEpoch>MEpoch</linkto>) could e.g. have a type
-// <src>MEpoch::TAI</src>, and an MEpoch as offset: 
+// <src>MEpoch::TAI</src>, and an MEpoch as offset:
 // <srcblock>
 // MEpoch off(Quantity(40745,"d"), MEpoch::Ref(MEpoch::UTC));
 // MEpoch::Ref myref(MEpoch::TAI, off);
@@ -98,21 +98,19 @@ class String;
 // </todo>
 
 class MRBase {
-  
-public:
-
-  //# Friends
+ public:
+  // # Friends
   friend ostream &operator<<(ostream &os, const MRBase &meas);
-  
-  //# Constructors
-  
-  //# Destructor
+
+  // # Constructors
+
+  // # Destructor
   virtual ~MRBase();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Check if empty reference
+
+  // # Operators
+
+  // # General Member Functions
+  //  Check if empty reference
   virtual Bool empty() const = 0;
   // Check the type of Measure the reference can be used for:<br>
   //   <src> static const String &showMe() = 0; </src>.<br>
@@ -124,7 +122,7 @@ public:
   virtual uInt getType() const = 0;
   // Return the frame of the reference
   virtual MeasFrame &getFrame() = 0;
-  // Return the first frame which has specified information. Checking is done in 
+  // Return the first frame which has specified information. Checking is done in
   // argument order.
   // <thrown>
   //   <li> AipsError if neither reference has a frame or the proper type
@@ -140,7 +138,7 @@ public:
   //						  const MRBase &ref2) = 0;
   // </srcblock>
   // Return the offset (or 0)
-  virtual const Measure* offset() const = 0;
+  virtual const Measure *offset() const = 0;
   // Set the type
   // <thrown>
   //   <li> AipsError if wrong Measure
@@ -156,28 +154,24 @@ public:
   //   void set(const Measure &ep);
   // Set a new frame
   virtual void set(const MeasFrame &mf) = 0;
-  
+
   // Print a Measure
   virtual void print(ostream &os) const = 0;
-  
-protected:
-  
-private:
-  
-  //# Data
-  
-  //# Member functions
-  
+
+ protected:
+ private:
+  // # Data
+
+  // # Member functions
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output declaration
+// # Global functions
+//  <summary> Global functions </summary>
+//  <group name=Output>
+//  Output declaration
 ostream &operator<<(ostream &os, const MRBase &meas);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

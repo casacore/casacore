@@ -1,43 +1,42 @@
-//# TableMeasValueDesc.h: Definition of a MeasValue in a Table.
-//# Copyright (C) 1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableMeasValueDesc.h: Definition of a MeasValue in a Table.
+// # Copyright (C) 1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_TABLEMEASVALUEDESC_H
 #define MEASURES_TABLEMEASVALUEDESC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class ColumnDesc;
 class Table;
 class TableDesc;
 class TableRecord;
-
 
 // <summary>
 // Definition of a Measure Value in a Table.
@@ -49,7 +48,7 @@ class TableRecord;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
 //   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
@@ -97,65 +96,56 @@ class TableRecord;
 // 	an ArrayColumn or its type is not Double.
 // </thrown>
 //
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-class TableMeasValueDesc
-{
-public:
+class TableMeasValueDesc {
+ public:
   // Null constructor
   TableMeasValueDesc();
 
   // Construct the MeasValue column descriptor for the given column.
   // The column must be a column of type Double and should exist in
   // the TableDesc.
-  TableMeasValueDesc (const TableDesc&, const String& columnName);
+  TableMeasValueDesc(const TableDesc&, const String& columnName);
 
   // Construct the MeasValue column descriptor for the given column.
   // Checking if the column exists is done in the write function.
   // <group>
-  TableMeasValueDesc (const String& columnName)
-    : itsColumn (columnName) {}
-  TableMeasValueDesc (const Char* columnName)
-    : itsColumn (columnName) {}
+  TableMeasValueDesc(const String& columnName) : itsColumn(columnName) {}
+  TableMeasValueDesc(const Char* columnName) : itsColumn(columnName) {}
   // </group>
 
   // Copy constructor.
-  TableMeasValueDesc (const TableMeasValueDesc& that);
+  TableMeasValueDesc(const TableMeasValueDesc& that);
 
   ~TableMeasValueDesc();
 
   // Assignment operator.
-  TableMeasValueDesc& operator= (const TableMeasValueDesc& that);
+  TableMeasValueDesc& operator=(const TableMeasValueDesc& that);
 
   // Write the type, unit, and MEASINFO record into the column keywords.
   // It checks if the column exists in the given table description.
   // <group>
-  void write (TableDesc&, const TableRecord& measInfo);
-  void write (Table&, const TableRecord& measInfo);
+  void write(TableDesc&, const TableRecord& measInfo);
+  void write(Table&, const TableRecord& measInfo);
   // </group>
 
   // Get the name of the underlying column.
-  const String& columnName() const
-    { return itsColumn; }
+  const String& columnName() const { return itsColumn; }
 
-private:
-  String itsColumn;	    //# MeasValue column name.
-
+ private:
+  String itsColumn;  // # MeasValue column name.
 
   // Write the actual keywords.
-  void writeKeys (TableRecord& columnKeyset,
-		  const TableRecord& measInfo);
+  void writeKeys(TableRecord& columnKeyset, const TableRecord& measInfo);
 
   // Throw an exception if the quantum column doesn't exist or is of the
   // wrong type.
-  void checkColumn (const TableDesc& td) const;
+  void checkColumn(const TableDesc& td) const;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

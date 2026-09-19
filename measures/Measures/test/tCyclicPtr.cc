@@ -7,13 +7,9 @@ using casacore::details::CyclicState;
 using casacore::details::MakeCyclic;
 
 class Counter {
-public:
-  Counter(int id) : id_(id) {
-    ++constructions_;
-  }
-  ~Counter() {
-    ++destructions_;
-  }
+ public:
+  Counter(int id) : id_(id) { ++constructions_; }
+  ~Counter() { ++destructions_; }
   int Id() const { return id_; }
 
   static void Reset() {
@@ -30,7 +26,7 @@ public:
     BOOST_CHECK_EQUAL(constructions_minus_destructions, constructions_ - destructions_);
   }
 
-private:
+ private:
   inline static int constructions_ = 0;
   inline static int destructions_ = 0;
   int id_;
@@ -50,7 +46,6 @@ struct MultiNode {
 BOOST_AUTO_TEST_SUITE(cyclic_ptr)
 
 BOOST_AUTO_TEST_CASE(empty) {
-
   BOOST_CHECK(!CyclicPtr<int>());
   BOOST_CHECK(CyclicPtr<int>().Get() == nullptr);
 
@@ -60,9 +55,9 @@ BOOST_AUTO_TEST_CASE(empty) {
     BOOST_CHECK(!empty);
     empty.Reset();
     BOOST_CHECK(!empty);
-    Counter::Check(0, 0); // 'empty' is in scope.
+    Counter::Check(0, 0);  // 'empty' is in scope.
   }
-  Counter::Check(0, 0); // 'empty' is out of scope.
+  Counter::Check(0, 0);  // 'empty' is out of scope.
 }
 
 BOOST_AUTO_TEST_CASE(non_empty) {

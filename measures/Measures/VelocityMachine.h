@@ -1,32 +1,32 @@
-//# VelocityMachine.h: Converts between velocities and frequencies
-//# Copyright (C) 1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # VelocityMachine.h: Converts between velocities and frequencies
+// # Copyright (C) 1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_VELOCITYMACHINE_H
 #define MEASURES_VELOCITYMACHINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Quanta/Quantum.h>
@@ -35,9 +35,9 @@
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasFrame;
 
 // <summary> Converts between velocities and frequencies </summary>
@@ -165,7 +165,7 @@ class MeasFrame;
 //	//
 //	// the following will give the same result:
 //	cout << "Velocity: " << exec.makeVelocity(0.0) << endl;
-//	
+//
 // </srcblock>
 // See the test program for more examples
 // </example>
@@ -179,37 +179,32 @@ class MeasFrame;
 // </todo>
 
 class VelocityMachine {
-public:
-  //# Constructors
-  // Construct a machine from the input values (no frame conversion, implicit
-  // frame if necessary)
+ public:
+  // # Constructors
+  //  Construct a machine from the input values (no frame conversion, implicit
+  //  frame if necessary)
   VelocityMachine(const MFrequency::Ref &freqRef, const Unit &freqUnits,
-		  const MVFrequency &restFreq,
-		  const MDoppler::Ref &velRef, const Unit &velUnits);
+                  const MVFrequency &restFreq, const MDoppler::Ref &velRef, const Unit &velUnits);
 
   // Construct a machine from the input values (no frame conversion, explicit
   // frame will be added to freqRef)
   VelocityMachine(const MFrequency::Ref &freqRef, const Unit &freqUnits,
-		  const MVFrequency &restFreq,
-		  const MDoppler::Ref &velRef, const Unit &velUnits,
-		  const MeasFrame &frame);
+                  const MVFrequency &restFreq, const MDoppler::Ref &velRef, const Unit &velUnits,
+                  const MeasFrame &frame);
 
   // Construct a machine from the input values (frame conversion, implicit
   // frame assumed if necessary) with explicit velocity reference frame
   // specified.
   VelocityMachine(const MFrequency::Ref &freqRef, const Unit &freqUnits,
-		  const MVFrequency &restFreq,
-		  const MFrequency::Types &convertRef,
-		  const MDoppler::Ref &velRef, const Unit &velUnits);
+                  const MVFrequency &restFreq, const MFrequency::Types &convertRef,
+                  const MDoppler::Ref &velRef, const Unit &velUnits);
 
   // Construct a machine from the input values (frame conversion, explicit
   // frame) with explicit velocity reference frame
   // specified, and added to freqref.
   VelocityMachine(const MFrequency::Ref &freqref, const Unit &freqUnits,
-		  const MVFrequency &restFreq,
-		  const MFrequency::Types &convertRef,
-		  const MDoppler::Ref &velRef, const Unit &velUnits,
-		  const MeasFrame &frame);
+                  const MVFrequency &restFreq, const MFrequency::Types &convertRef,
+                  const MDoppler::Ref &velRef, const Unit &velUnits, const MeasFrame &frame);
 
   // Copy constructor (copy semantics)
   VelocityMachine(const VelocityMachine &other);
@@ -217,28 +212,28 @@ public:
   // Copy assignment (copy semantics)
   VelocityMachine &operator=(const VelocityMachine &other);
 
-  //# Destructor
+  // # Destructor
   ~VelocityMachine();
 
-  //# Operators
-  // Return velocity if frequency given, or a frequency if a velocity is given
-  // <group>
+  // # Operators
+  //  Return velocity if frequency given, or a frequency if a velocity is given
+  //  <group>
   const Quantum<Double> &operator()(const MVFrequency &in);
   const Quantum<Double> &operator()(const MVDoppler &in);
   const Quantum<Double> &operator()(const Quantum<Double> &in);
   const Quantum<Double> &makeVelocity(Double in);
   const Quantum<Double> &makeFrequency(Double in);
-  const Quantum<Vector<Double> > &makeVelocity(const Vector<Double> &in);
-  const Quantum<Vector<Double> > &makeFrequency(const Vector<Double> &in);
+  const Quantum<Vector<Double>> &makeVelocity(const Vector<Double> &in);
+  const Quantum<Vector<Double>> &makeFrequency(const Vector<Double> &in);
   // </group>
 
-  //# Member functions
-  // Set or reset the specified part of the machine. The machinery will be
-  // reset to reflect the changes made.
-  // <group>
-  // Sets a new frequency reference. Note that if an explicit frame has been
-  // used in earlier constructors, the frame should again be set explicitly
-  // with set(MeasFrame).
+  // # Member functions
+  //  Set or reset the specified part of the machine. The machinery will be
+  //  reset to reflect the changes made.
+  //  <group>
+  //  Sets a new frequency reference. Note that if an explicit frame has been
+  //  used in earlier constructors, the frame should again be set explicitly
+  //  with set(MeasFrame).
   void set(const MFrequency::Ref &in);
   void set(const Unit &in);
   // Sets the rest frequency
@@ -266,14 +261,13 @@ public:
   // any circumstance it should be used explicitly.
   void reCalculate();
 
-private:
-
-  //# Constructors
-  // Construct an empty machine (not implemented)
+ private:
+  // # Constructors
+  //  Construct an empty machine (not implemented)
   VelocityMachine();
 
-  //# Data
-  // Frequency reference
+  // # Data
+  //  Frequency reference
   MFrequency::Ref fref_p;
   // Frequency units
   // <group>
@@ -302,18 +296,17 @@ private:
   // <group>
   Quantum<Double> resv_p;
   Quantum<Double> resf_p;
-  Quantum<Vector<Double> > vresv_p;
-  Quantum<Vector<Double> > vresf_p;
+  Quantum<Vector<Double>> vresv_p;
+  Quantum<Vector<Double>> vresf_p;
   // </group>
 
-  //# Private Member Functions
-  // Initialise machinery
+  // # Private Member Functions
+  //  Initialise machinery
   void init();
   // Copy data members
   void copy(const VelocityMachine &other);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

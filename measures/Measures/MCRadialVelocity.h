@@ -1,32 +1,32 @@
-//# MCRadialVelocity.h: MRadialVelocity conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MCRadialVelocity.h: MRadialVelocity conversion routines
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MCRADIALVELOCITY_H
 #define MEASURES_MCRADIALVELOCITY_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasRef.h>
@@ -36,9 +36,9 @@
 
 #include <mutex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MCRadialVelocity;
 class MDoppler;
 class MVPosition;
@@ -46,7 +46,7 @@ class MVDirection;
 class Aberration;
 class String;
 
-//# Typedefs
+// # Typedefs
 
 // <summary> MRadialVelocity conversion routines </summary>
 
@@ -56,7 +56,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 //   <li> <linkto class=MCBase>MCBase</linkto> base class
 //   <li> <linkto class=MConvertBase>overall conversion</linkto>  class
 // </prerequisite>
@@ -78,7 +78,7 @@ class String;
 //		MDoppler::Convert( MRadialVelocity( Quantity(100., "km/s"),
 //				      MRadialVelocity::TOPO).toDoppler(QC::HI),
 //				   MDoppler::Z)() << endl;
-// </srcblock>				   
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -88,30 +88,29 @@ class String;
 // </todo>
 
 class MCRadialVelocity : public MCBase {
-  
-public:
-  //# Friends
-  // Conversion of data
+ public:
+  // # Friends
+  //  Conversion of data
   friend class MeasConvert<MRadialVelocity>;
-  
-  //# Constructors
-  // Default constructor
+
+  // # Constructors
+  //  Default constructor
   MCRadialVelocity();
-  
-  //# Destructor
+
+  // # Destructor
   ~MCRadialVelocity();
 
-  //# Member functions
-  // Show the state of the conversion engine (mainly for debugging purposes)
+  // # Member functions
+  //  Show the state of the conversion engine (mainly for debugging purposes)
   static String showState();
-  
-private:
-  //# Enumerations
-  // The list of actual routines provided.
-  // <note role=warning> Each <src>AA_BB</src> in the list points to routine
-  // that can be used in the FromTo list in the getConvert routine.
-  // In addition the type to which each is converted should be in the
-  // ToRef array, again in the proper order. </note>
+
+ private:
+  // # Enumerations
+  //  The list of actual routines provided.
+  //  <note role=warning> Each <src>AA_BB</src> in the list points to routine
+  //  that can be used in the FromTo list in the getConvert routine.
+  //  In addition the type to which each is converted should be in the
+  //  ToRef array, again in the proper order. </note>
   enum Routes {
     LSRD_BARY,
     BARY_LSRD,
@@ -127,65 +126,57 @@ private:
     LGROUP_BARY,
     BARY_CMB,
     CMB_BARY,
-    N_Routes };
-  
-  //# Typedefs
-  
-  //# Operators
-  
-  //# General Member Functions
-  
-  //# Enumerations
-  
-  //# Cached Data
+    N_Routes
+  };
+
+  // # Typedefs
+
+  // # Operators
+
+  // # General Member Functions
+
+  // # Enumerations
+
+  // # Cached Data
   MVPosition *MVPOS1;
   MVDirection *MVDIR1;
   Aberration *ABERFROM;
   Aberration *ABERTO;
 
-  //# State machine data
-  // Transition list
+  // # State machine data
+  //  Transition list
   static uInt ToRef_p[N_Routes][3];
   // Transition matrix
   static uInt FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirInitOnceFlag;
 
-  //# Constructors
-  // Copy constructor (not implemented)
+  // # Constructors
+  //  Copy constructor (not implemented)
   MCRadialVelocity(const MCRadialVelocity &other);
   // Assignment (not implemented)
   MCRadialVelocity &operator=(const MCRadialVelocity &other);
-  
-  //# Member functions
-  // Create conversion function pointer
-  virtual void getConvert(MConvertBase &mc,
-			  const MRBase &inref,
-			  const MRBase &outref);
-  
+
+  // # Member functions
+  //  Create conversion function pointer
+  virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref);
+
   // Create help structures for Measure conversion routines
   virtual void initConvert(uInt which, MConvertBase &mc);
-  
+
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert();
-  
+
   // Routine to convert RadialVelocity from one reference frame to another
-  virtual void doConvert(MeasValue &in,
-			 MRBase &inref,
-			 MRBase &outref,
-			 const MConvertBase &mc);
+  virtual void doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MConvertBase &mc);
   // Conversion routine to cater for inheritance question
-  void doConvert(MVRadialVelocity &in,
-		 MRBase &inref,
-		 MRBase &outref,
-		 const MConvertBase &mc);
-  
-private:
+  void doConvert(MVRadialVelocity &in, MRBase &inref, MRBase &outref, const MConvertBase &mc);
+
+ private:
   // Fill the global state. Called using theirInitOnce.
   static void doFillState();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

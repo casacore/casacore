@@ -1,31 +1,31 @@
-//# ParAngleMachine.h: Converts a direction into parallactic angle
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ParAngleMachine.h: Converts a direction into parallactic angle
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 #ifndef MEASURES_PARANGLEMACHINE_H
 #define MEASURES_PARANGLEMACHINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures.h>
 #include <casacore/measures/Measures/MCDirection.h>
@@ -37,9 +37,9 @@
 #include <casacore/casa/Quanta/MVEpoch.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasFrame;
 
 // <summary> Converts a direction into parallactic angle
@@ -62,14 +62,14 @@ class MeasFrame;
 // The construction of a ParAngleMachine class object creates a machine that
 // can create parallactic angles from a series of time epochs given.
 //
-// The machinery needs an input 
-// <linkto class=MDirection>MDirection</linkto>  to specify the input 
+// The machinery needs an input
+// <linkto class=MDirection>MDirection</linkto>  to specify the input
 // coordinates reference direction and coordinate system.
 // The parallactic (<em>vertical</em>)
 // angle will be calculated as the angle between the vertical in the
 // local coordinate system (<em>Az, El</em>) through the given direction and
 // the pole of the <em>J2000</em> coordinate system.
-// <note role=tip> To calculate the parallactic angle for another 
+// <note role=tip> To calculate the parallactic angle for another
 // coordinate system pole, add the <src>positionAngle</src> between the
 // <em>J2000</em> system and the pole in the other coordinate system. </note>
 //
@@ -108,9 +108,9 @@ class MeasFrame;
 
 class ParAngleMachine {
  public:
-  //# Constructors
-  // Create an empty machine. It can only be used after appropriate 'set'
-  // methods
+  // # Constructors
+  //  Create an empty machine. It can only be used after appropriate 'set'
+  //  methods
   ParAngleMachine();
   // Construct for the specified direction
   ParAngleMachine(const MDirection &in);
@@ -119,20 +119,19 @@ class ParAngleMachine {
   // Copy assignments (deep copy)
   ParAngleMachine &operator=(const ParAngleMachine &other);
 
-  //# Destructor
+  // # Destructor
   ~ParAngleMachine();
 
-  //# Operators
-  // Return parallactic angles (epoch in days if given as Double)
-  // <thrown>
-  // <li> AipsError if no frame or a frame without an Epoch (for type) or       
-  //    Position.
-  // </thrown>
-  // <group>
-  Quantum<Vector<Double> >
-    operator()(const Quantum<Vector<Double> > &ep) const;
-  Quantum<Vector<Double> > operator()(const Vector<MVEpoch> &ep) const;
-  Quantum<Vector<Double> > operator()(const Vector<MEpoch> &ep) const;
+  // # Operators
+  //  Return parallactic angles (epoch in days if given as Double)
+  //  <thrown>
+  //  <li> AipsError if no frame or a frame without an Epoch (for type) or
+  //     Position.
+  //  </thrown>
+  //  <group>
+  Quantum<Vector<Double>> operator()(const Quantum<Vector<Double>> &ep) const;
+  Quantum<Vector<Double>> operator()(const Vector<MVEpoch> &ep) const;
+  Quantum<Vector<Double>> operator()(const Vector<MEpoch> &ep) const;
   Quantum<Double> operator()(const Quantum<Double> &ep) const;
   Quantum<Double> operator()(const MVEpoch &ep) const;
   Quantum<Double> operator()(const MEpoch &ep) const;
@@ -140,20 +139,19 @@ class ParAngleMachine {
   Vector<Double> operator()(const Vector<Double> &ep) const;
   // </group>
 
-  //# Member functions
-  // Will have a group of set methods (in direction; reference time; a frame;
-  // a reference time valid period
-  // <group>
+  // # Member functions
+  //  Will have a group of set methods (in direction; reference time; a frame;
+  //  a reference time valid period
+  //  <group>
   void set(const MDirection &in);
   void set(const MeasFrame &frame);
   // </group>
   // Set the test interval (in days) over which to use simple formula
   void setInterval(const Double ttime);
 
-private:
-
-  //# Data
-  // Input direction
+ private:
+  // # Data
+  //  Input direction
   MDirection *indir_p;
   // Conversion engine
   mutable MDirection::Convert *convdir_p;
@@ -180,17 +178,17 @@ private:
   mutable Double clat2_p;
   // </group>
 
-  //# Constructors
+  // # Constructors
 
-  //# Private Member Functions
-  // Get position angle (Epoch is supposed to be in days if Double)
-  // <thrown>
-  // <li> AipsError if no frame or a frame without an Epoch (for type) or
-  // 	Position.
-  // </thrown>
-  // <group>
+  // # Private Member Functions
+  //  Get position angle (Epoch is supposed to be in days if Double)
+  //  <thrown>
+  //  <li> AipsError if no frame or a frame without an Epoch (for type) or
+  //  	Position.
+  //  </thrown>
+  //  <group>
   Double posAngle(const Quantum<Double> &ep) const;
-  Vector<Double> posAngle(const Quantum<Vector<Double> > &ep) const;
+  Vector<Double> posAngle(const Quantum<Vector<Double>> &ep) const;
   Double posAngle(const Double &ep) const;
   Vector<Double> posAngle(const Vector<Double> &ep) const;
   // </group>
@@ -202,7 +200,6 @@ private:
   Double calcAngle(const Double ep) const;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

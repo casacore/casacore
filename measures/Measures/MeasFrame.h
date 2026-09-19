@@ -1,32 +1,32 @@
-//# MeasFrame.h: Container for Measure frame
-//# Copyright (C) 1996-2003,2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasFrame.h: Container for Measure frame
+// # Copyright (C) 1996-2003,2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASFRAME_H
 #define MEASURES_MEASFRAME_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -34,9 +34,9 @@
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MVEpoch;
 class MVPosition;
 class MVDirection;
@@ -44,7 +44,8 @@ class MVRadialVelocity;
 class MeasComet;
 class FrameRep;
 class MCFrame;
-template <class Qtype> class Quantum;
+template <class Qtype>
+class Quantum;
 
 // <summary> Container for Measure frame </summary>
 
@@ -101,7 +102,7 @@ template <class Qtype> class Quantum;
 //
 // Furthermore, a frame will often be regularly updated (e.g. coordinate
 // conversion for a series of times). To make use of cached information, and
-// to speed up as much as possible, <src>reset...()</src> functions are 
+// to speed up as much as possible, <src>reset...()</src> functions are
 // available. These reset functions accept the same range of input parameter
 // types as the <linkto class=MeasConvert>MeasConvert</linkto> () operator,
 // and will keep any determined conversion machines and related information
@@ -149,31 +150,24 @@ template <class Qtype> class Quantum;
 // </todo>
 
 class MeasFrame {
-
  public:
-  
-  //# Friends
-  // Output a frame
+  // # Friends
+  //  Output a frame
   friend ostream &operator<<(ostream &os, MeasFrame &mf);
   // Machinery
   // <group>
   friend class MCFrame;
   // </group>
 
-  //# Enumerations
-  // Enumeration for the different farme entries possible. This can be used
-  // to find out if a certain conversion needs the frame. It will be
-  // used in a registration/notify environment to enable bypassing of
-  // some new conversion settings.
-  enum FrameTypes {
-    EPOCH 	= 1,
-    POSITION 	= 2,
-    DIRECTION 	= 4,
-    VELOCITY 	= 8,
-    COMET 	= 16 };
+  // # Enumerations
+  //  Enumeration for the different farme entries possible. This can be used
+  //  to find out if a certain conversion needs the frame. It will be
+  //  used in a registration/notify environment to enable bypassing of
+  //  some new conversion settings.
+  enum FrameTypes { EPOCH = 1, POSITION = 2, DIRECTION = 4, VELOCITY = 8, COMET = 16 };
 
-  //# Constructors
-  // Default constructor
+  // # Constructors
+  //  Default constructor
   MeasFrame();
   // Construct frame with specified measures
   // <thrown>
@@ -182,30 +176,29 @@ class MeasFrame {
   // <group>
   MeasFrame(const Measure &meas1);
   MeasFrame(const Measure &meas1, const Measure &meas2);
-  MeasFrame(const Measure &meas1, const Measure &meas2,
-	    const Measure &meas3);
+  MeasFrame(const Measure &meas1, const Measure &meas2, const Measure &meas3);
   // </group>
   // Copy constructor (reference semantics)
   MeasFrame(const MeasFrame &other);
   MeasFrame(MeasFrame &&other);
-  
+
   // Copy assignment (reference semantics)
   MeasFrame &operator=(const MeasFrame &other);
   MeasFrame &operator=(MeasFrame &&other);
   // Destructor
   ~MeasFrame();
-  
-  //# Operators
-  // Comparisons
-  // <group>
+
+  // # Operators
+  //  Comparisons
+  //  <group>
   Bool operator==(const MeasFrame &other) const;
   Bool operator!=(const MeasFrame &other) const;
   // </group>
-  
-  //# General member functions
-  // Test if empty (i.e. no measure filled in)
+
+  // # General member functions
+  //  Test if empty (i.e. no measure filled in)
   Bool empty() const;
-  
+
   // Set frame elements
   // <thrown>
   //   <li> AipsError if a non-frame Measure
@@ -214,8 +207,7 @@ class MeasFrame {
   // <group>
   void set(const Measure &meas1);
   void set(const Measure &meas1, const Measure &meas2);
-  void set(const Measure &meas1, const Measure &meas2,
-	   const Measure &meas3);
+  void set(const Measure &meas1, const Measure &meas2, const Measure &meas3);
   void set(const MeasComet &meas);
   // </group>
   // Reset a frame element and its cached derived values.
@@ -226,34 +218,34 @@ class MeasFrame {
   void resetEpoch(Double val);
   void resetEpoch(const Vector<Double> &val);
   void resetEpoch(const Quantum<Double> &val);
-  void resetEpoch(const Quantum<Vector<Double> > &val);
+  void resetEpoch(const Quantum<Vector<Double>> &val);
   void resetEpoch(const MVEpoch &val);
   void resetEpoch(const Measure &val);
   void resetPosition(const Vector<Double> &val);
-  void resetPosition(const Quantum<Vector<Double> > &val);
+  void resetPosition(const Quantum<Vector<Double>> &val);
   void resetPosition(const MVPosition &val);
   void resetPosition(const Measure &val);
   void resetDirection(const Vector<Double> &val);
-  void resetDirection(const Quantum<Vector<Double> > &val);
+  void resetDirection(const Quantum<Vector<Double>> &val);
   void resetDirection(const MVDirection &val);
   void resetDirection(const Measure &val);
   void resetRadialVelocity(const Vector<Double> &val);
-  void resetRadialVelocity(const Quantum<Vector<Double> > &val);
+  void resetRadialVelocity(const Quantum<Vector<Double>> &val);
   void resetRadialVelocity(const MVRadialVelocity &val);
   void resetRadialVelocity(const Measure &val);
   void resetComet(const MeasComet &val);
   // </group>
-  
+
   // Get the epoch pointer (0 if not present)
-  const Measure* epoch() const;
+  const Measure *epoch() const;
   // Get the position pointer (0 if not present)
-  const Measure* position() const;
+  const Measure *position() const;
   // Get the direction pointer (0 if not present)
-  const Measure* direction() const;
+  const Measure *direction() const;
   // Get the radial velocity pointer (0 if not present)
-  const Measure* radialVelocity() const;
+  const Measure *radialVelocity() const;
   // Get the comet pointer (0 if not present)
-  const MeasComet* comet() const;
+  const MeasComet *comet() const;
   // Get data from frame. Only available if appropriate measures are set,
   // and the frame is in a calculating state.
   // <group>
@@ -320,16 +312,15 @@ class MeasFrame {
   // they don't write to shared_direction or shared_frame), and performs a direction conversion
   // from J2000 to ITRF. Any information that is shared between the threads is read-only.
   MeasFrame independentCopy() const;
-  
-private:
-  
-  //# Data
-  // Representation of MeasFrame. See the CyclicPtr class documentation for motivation.
+
+ private:
+  // # Data
+  //  Representation of MeasFrame. See the CyclicPtr class documentation for motivation.
   details::CyclicPtr<FrameRep> rep;
-  
+
   MeasFrame(details::CyclicPtr<FrameRep> new_rep);
-  //# Member functions
-  // Create an instance of the MeasFrame class
+  // # Member functions
+  //  Create an instance of the MeasFrame class
   void create();
   // Fill a MeasFrame element
   // <group>
@@ -350,14 +341,13 @@ private:
   void errorReset(const String &txt);
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output a frame
+// # Global functions
+//  <summary> Global functions </summary>
+//  <group name=Output>
+//  Output a frame
 ostream &operator<<(ostream &os, MeasFrame &mf);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

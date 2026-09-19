@@ -1,46 +1,45 @@
-//# TableMeasOffseDesc.h: Definition of an Offset measure in a Table.
-//# Copyright (C) 1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableMeasOffseDesc.h: Definition of an Offset measure in a Table.
+// # Copyright (C) 1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_TABLEMEASOFFSETDESC_H
 #define MEASURES_TABLEMEASOFFSETDESC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/measures/Measures/MeasureHolder.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TableMeasDescBase;
 class Measure;
 class Table;
 class TableDesc;
 class TableRecord;
 class String;
-
 
 // <summary>
 // Definition of a Measure Offset in a Table.
@@ -52,7 +51,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
 //   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
@@ -136,81 +135,71 @@ class String;
 //    <li>AipsError during a reconstruct if the column doesn't have a Unit.
 // </thrown>
 //
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-class TableMeasOffsetDesc
-{
-public:
+class TableMeasOffsetDesc {
+ public:
   // Constructor which defines a constant (non-variable) offset.  All
   // measures in the columns will have the same offset.
-  TableMeasOffsetDesc (const Measure& offset);
+  TableMeasOffsetDesc(const Measure& offset);
 
   // Constructor for defining a variable offset.  If asArray is True then
   // the offset is stored per array element.  The default is for the
   // offset to be stored (and hence variable) per row.
-  TableMeasOffsetDesc (const TableMeasDescBase& offsetColumn,
-		       Bool asArray=False);
+  TableMeasOffsetDesc(const TableMeasDescBase& offsetColumn, Bool asArray = False);
 
   // Copy constructor (copy semantics).
-  TableMeasOffsetDesc (const TableMeasOffsetDesc& that);
+  TableMeasOffsetDesc(const TableMeasOffsetDesc& that);
 
   ~TableMeasOffsetDesc();
 
   // Assignment operator (copy semantics).
-  TableMeasOffsetDesc& operator= (const TableMeasOffsetDesc& that);
+  TableMeasOffsetDesc& operator=(const TableMeasOffsetDesc& that);
 
   // Reconstructs the TableMeasOffsetDesc from the measInfo TableRecord.
-  static TableMeasOffsetDesc* reconstruct (const TableRecord& measInfo,
-					   const String& prefix,
-					   const Table& tab);
+  static TableMeasOffsetDesc* reconstruct(const TableRecord& measInfo, const String& prefix,
+                                          const Table& tab);
 
   // Get the (non-variable) measure offset for this column.  If it doesn't
   // exist (thus if the offset is variable), an exception is thrown.
   const Measure& getOffset() const;
 
   // Returns True if the offset varies per row.
-  Bool isVariable() const
-    { return (itsTMDesc != 0); }
+  Bool isVariable() const { return (itsTMDesc != 0); }
 
   // Returns True if the offset varies per array element.
-  Bool isArray() const
-    { return (isVariable() && itsVarPerArr); }
+  Bool isArray() const { return (isVariable() && itsVarPerArr); }
 
   // Gets the name of the column which stores the variable offset.
   // "" is returned if the offset is not variable.
-  const String& columnName() const
-    { return itsVarColName; }
+  const String& columnName() const { return itsVarColName; }
 
   // Reset the offset.
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
-  void resetOffset (const Measure& offset);
+  void resetOffset(const Measure& offset);
 
   // Write the information into the record.
   // <group>
-  void write (TableDesc&, TableRecord& measInfo, const String& prefix);
-  void write (Table&, TableRecord& measInfo, const String& prefix);
+  void write(TableDesc&, TableRecord& measInfo, const String& prefix);
+  void write(Table&, TableRecord& measInfo, const String& prefix);
   // </group>
 
-private:
-  TableMeasDescBase* itsTMDesc;      //# Stores variable offset if applicable
-  MeasureHolder      itsMeasure;     //# The offset if non-variable.
-  String             itsVarColName;  //# "" if offset non-variable.
-  Bool               itsVarPerArr;   //# Is variable per array element.
-
+ private:
+  TableMeasDescBase* itsTMDesc;  // # Stores variable offset if applicable
+  MeasureHolder itsMeasure;      // # The offset if non-variable.
+  String itsVarColName;          // # "" if offset non-variable.
+  Bool itsVarPerArr;             // # Is variable per array element.
 
   // Constructor which uses the measInfo TableRecord.
-  TableMeasOffsetDesc (const TableRecord& measInfo, const String& prefix,
-		       const Table&);
+  TableMeasOffsetDesc(const TableRecord& measInfo, const String& prefix, const Table&);
 
   // Write the actual keywords.
-  void writeKeys (TableRecord& measInfo, const String& prefix);
+  void writeKeys(TableRecord& measInfo, const String& prefix);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

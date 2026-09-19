@@ -1,49 +1,52 @@
-//# Muvw.h: A Measure: uvw on Earth
-//# Copyright (C) 1998-2000,2002,2004,2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Muvw.h: A Measure: uvw on Earth
+// # Copyright (C) 1998-2000,2002,2004,2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MUVW_H
 #define MEASURES_MUVW_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVuvw.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Muvw;
 class MCuvw;
 class MDirection;
-template <class M> class MeasConvert;
-template <class M> class ArrayMeasColumn;
-template <class M> class ScalarMeasColumn;
+template <class M>
+class MeasConvert;
+template <class M>
+class ArrayMeasColumn;
+template <class M>
+class ScalarMeasColumn;
 
-//# Typedefs
+// # Typedefs
 
 // <summary> A Measure: uvw on Earth </summary>
 
@@ -53,7 +56,7 @@ template <class M> class ScalarMeasColumn;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -62,7 +65,7 @@ template <class M> class ScalarMeasColumn;
 //
 // <synopsis>
 // Muvw is the derived Measure class for an interferometer uvw.
-// uvws can be given in any of the direction types, or as ITRF, the 
+// uvws can be given in any of the direction types, or as ITRF, the
 // IERS base.<br>
 // Note that at the moment no correction for Earth tides (error <~ 0.05 mm/km
 // EW uvw), plate motion (not relevant for telescopes on same plate) and
@@ -74,8 +77,8 @@ template <class M> class ScalarMeasColumn;
 // <srcblock>
 //      // Specify an Epoch and a telescope position
 //	MEpoch tbm(Quantity(50927.92931, "d"));
-//	MPosition pos(MVPosition(-4750915.84032, 2792906.17778, 
-//				 -3200483.75028), 
+//	MPosition pos(MVPosition(-4750915.84032, 2792906.17778,
+//				 -3200483.75028),
 //		      MPosition::ITRF);
 //      // Use them in a frame
 //	MeasFrame mf(tbm, pos);
@@ -101,7 +104,7 @@ template <class M> class ScalarMeasColumn;
 // </example>
 //
 // <motivation>
-// To be able to handle conversions between uvw coordinates with different 
+// To be able to handle conversions between uvw coordinates with different
 // reference directions.
 // </motivation>
 //
@@ -109,21 +112,20 @@ template <class M> class ScalarMeasColumn;
 //	<li> EW baselines
 // </todo>
 
-class Muvw : public MeasBase<MVuvw, MeasRef<Muvw> > {
-
-public:
-  //# Friends
-  // Conversion of data
+class Muvw : public MeasBase<MVuvw, MeasRef<Muvw>> {
+ public:
+  // # Friends
+  //  Conversion of data
   friend class MeasConvert<Muvw>;
-  
-  //# Enumerations
-  // Types of known Muvws
-  // <note role=warning>
-  // The order defines the order in the translation matrix FromTo
-  // in the getConvert routine. Do not change the order without
-  // changing the array. Additions should be made before N_types, and
-  // an additional row and column should be coded in FromTo, and
-  // in showType().</note>
+
+  // # Enumerations
+  //  Types of known Muvws
+  //  <note role=warning>
+  //  The order defines the order in the translation matrix FromTo
+  //  in the getConvert routine. Do not change the order without
+  //  changing the array. Additions should be made before N_types, and
+  //  an additional row and column should be coded in FromTo, and
+  //  in showType().</note>
   enum Types {
     J2000,
     JMEAN,
@@ -149,13 +151,14 @@ public:
     ICRS,
     N_Types,
     // Defaults
-    DEFAULT=ITRF,
+    DEFAULT = ITRF,
     // Synonyms
-    AZELNE=AZEL,
-    AZELNEGEO=AZELGEO };
-  
-  //# Typedefs
-  // Measure value container for this class (i.e. Muvw::MVType)
+    AZELNE = AZEL,
+    AZELNEGEO = AZELGEO
+  };
+
+  // # Typedefs
+  //  Measure value container for this class (i.e. Muvw::MVType)
   typedef MVuvw MVType;
   // Measure conversion routines for this class (i.e. Muvw::MCType)
   typedef MCuvw MCType;
@@ -166,12 +169,12 @@ public:
   // Measure table Columns (e.g., Muvw::ScalarColumn)
   typedef ScalarMeasColumn<Muvw> ScalarColumn;
   typedef ArrayMeasColumn<Muvw> ArrayColumn;
-  
-  //# Constructors
-  // <note role=tip> In the following constructors and other functions, all 
-  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-  // where no offsets or frames are needed in the reference. </note>
-  // Default constructor; generates the ITRF centre
+
+  // # Constructors
+  //  <note role=tip> In the following constructors and other functions, all
+  //  <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  //  where no offsets or frames are needed in the reference. </note>
+  //  Default constructor; generates the ITRF centre
   Muvw();
   // Create from data and reference
   // <group>
@@ -186,15 +189,15 @@ public:
   Muvw(const Muvw &);
   Muvw &operator=(const Muvw &);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   virtual ~Muvw();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Tell me your type
-  // <group>
+
+  // # Operators
+
+  // # General Member Functions
+  //  Tell me your type
+  //  <group>
   virtual const String &tellMe() const;
   static const String &showMe();
   static void assure(const Measure &in);
@@ -222,21 +225,19 @@ public:
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
-  // nextra the number of specials (like planets) that should be at 
+  // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
-  static const String* allMyTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ);
+  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
+  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
   // </group>
-  // Check if all internal tables of types (both enum and String) are 
+  // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
   // necessary.
   // <thrown>
   //   <li> AipsError if a (programming) error in the types.
   // </thrown>
-  // <group> 
+  // <group>
   virtual void checkTypes() const;
   static void checkMyTypes();
   // </group>
@@ -247,29 +248,27 @@ public:
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  
+
   // Get Measure data
   // <group>
-  Quantum<Vector<Double> > get(const Unit &inunit) const;
-  Quantum<Vector<Double> > getAngle() const;
-  Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
+  Quantum<Vector<Double>> get(const Unit &inunit) const;
+  Quantum<Vector<Double>> getAngle() const;
+  Quantum<Vector<Double>> getAngle(const Unit &inunit) const;
   // </group>
-  
+
   // Make copy
   // <group>
   virtual Measure *clone() const;
   // </group>
-  
- private:
-  //# Enumerations
-  
-  //# Data
-  
-  //# Member functions
 
+ private:
+  // # Enumerations
+
+  // # Data
+
+  // # Member functions
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

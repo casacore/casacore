@@ -1,29 +1,29 @@
-//# tVelocityMachine.cc: This program tests the VelocityMachine class
-//# Copyright (C) 1998,1999,2000,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tVelocityMachine.cc: This program tests the VelocityMachine class
+// # Copyright (C) 1998,1999,2000,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/measures/Measures.h>
@@ -40,48 +40,40 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-
   try {
     cout << "Test Velocity<->Frequency machine" << endl;
     cout << "--------------------------------------" << endl;
-    MVTime dat(1998,5,10);
+    MVTime dat(1998, 5, 10);
     MVPosition mvobs(Quantity(3828488.86, "m").getBaseValue(),
-		     Quantity(443253.42, "m").getBaseValue(),
-		     Quantity(5064977.78, "m").getBaseValue());
+                     Quantity(443253.42, "m").getBaseValue(),
+                     Quantity(5064977.78, "m").getBaseValue());
     MPosition obs(mvobs);
-    MDirection dir((MVDirection(Quantity(0, "deg"),
-			       Quantity(80, "deg"))));
+    MDirection dir((MVDirection(Quantity(0, "deg"), Quantity(80, "deg"))));
     MeasFrame frame((MEpoch(MVEpoch(dat.day()))), obs, dir);
-    
-    cout << "Date:      " << dat.string(MVTime::YMD +
-					MVTime::NO_TIME, 6) <<
-      endl;
+
+    cout << "Date:      " << dat.string(MVTime::YMD + MVTime::NO_TIME, 6) << endl;
     cout << "Position:  " << obs.getValue().get() << endl;
     cout << "           " << obs.getAngle("deg") << endl;
     cout << "           " << obs.getValue().getLength("km") << endl;
     cout << "Direction: " << dir.getValue().get() << endl;
     cout << "           " << dir.getAngle("deg") << endl;
-    
-    
+
     MFrequency::Ref frqref(MFrequency::LSRK);
     MDoppler::Ref velref(MDoppler::RADIO);
-    MVFrequency restfrq(QC::HI( ));
-    cout << "Rest freq: "  << restfrq.get("GHz") << endl;
+    MVFrequency restfrq(QC::HI());
+    cout << "Rest freq: " << restfrq.get("GHz") << endl;
 
-    VelocityMachine vm(frqref, Unit("GHz"), restfrq, velref, Unit("km/s"),
-		       frame);
+    VelocityMachine vm(frqref, Unit("GHz"), restfrq, velref, Unit("km/s"), frame);
     cout << "------------------- Conversions ------" << endl;
     cout << "1410 MHz to RADIO: " << vm.makeVelocity(1.41) << endl;
-    cout << "1410 MHz to RADIO: " << vm(MVFrequency(Quantity(1.41, "GHz"))) <<
-      endl;
+    cout << "1410 MHz to RADIO: " << vm(MVFrequency(Quantity(1.41, "GHz"))) << endl;
     Double bck(vm.makeVelocity(1.41).getValue());
     cout << "Back:              " << vm.makeFrequency(bck) << endl;
-    cout << "Back:              " << vm(MVDoppler(Quantity(bck, "km/s"))) <<
-      endl;
+    cout << "Back:              " << vm(MVDoppler(Quantity(bck, "km/s"))) << endl;
     vm.set(MFrequency::TOPO);
     cout << "1410 MHz to TOPO:  " << vm.makeVelocity(1.41) << endl;
     vm.set(MFrequency::LSRK);
-    frqref.set(MFrequency(Quantity(1.405, "GHz"))); 
+    frqref.set(MFrequency(Quantity(1.405, "GHz")));
     cout << "Frequency offset:  " << *(frqref.offset()) << endl;
     vm.set(frqref);
     Vector<Double> fx(3);
@@ -102,8 +94,8 @@ int main() {
     cout << "--------Test constructors-----" << endl;
     VelocityMachine vma(frqref, Unit("GHz"), restfrq, velref, Unit("km/s"));
     cout << "List to RADIO: " << vma.makeVelocity(fx) << endl;
-    VelocityMachine vmb(frqref, Unit("GHz"), restfrq,
-			MFrequency::TOPO, velref, Unit("km/s"), frame);
+    VelocityMachine vmb(frqref, Unit("GHz"), restfrq, MFrequency::TOPO, velref, Unit("km/s"),
+                        frame);
     cout << "List to TOPO:  " << vmb.makeVelocity(fx) << endl;
     cout << "--------Test assignment-----" << endl;
     vma = vm;
@@ -121,32 +113,27 @@ int main() {
     vm.set(frame);
     cout << "List to RADIO: " << vm.makeVelocity(fx) << endl;
     {
-    	// test restfreq <= 0 throws exception
-    	MVFrequency restfrq2(0);
-        VelocityMachine bogus(frqref, Unit("GHz"), restfrq2, velref, Unit("km/s"));
-        try {
-        	bogus.makeVelocity(20);
-        	// exception should be thrown before we get here
-        	AlwaysAssert(False, AipsError);
-        }
-        catch (const std::exception& x) {}
-        MVFrequency restfrq3(-1);
-        VelocityMachine bogus2(
-        	frqref, Unit("GHz"), restfrq3, velref, Unit("km/s")
-        );
-        try {
-        	bogus2.makeVelocity(20);
-        	AlwaysAssert(False, AipsError);
-        }
-        catch (const std::exception& x) {}
-
-
-
+      // test restfreq <= 0 throws exception
+      MVFrequency restfrq2(0);
+      VelocityMachine bogus(frqref, Unit("GHz"), restfrq2, velref, Unit("km/s"));
+      try {
+        bogus.makeVelocity(20);
+        // exception should be thrown before we get here
+        AlwaysAssert(False, AipsError);
+      } catch (const std::exception& x) {
+      }
+      MVFrequency restfrq3(-1);
+      VelocityMachine bogus2(frqref, Unit("GHz"), restfrq3, velref, Unit("km/s"));
+      try {
+        bogus2.makeVelocity(20);
+        AlwaysAssert(False, AipsError);
+      } catch (const std::exception& x) {
+      }
     }
 
   } catch (std::exception& x) {
     cout << x.what() << endl;
-  } 
-  
+  }
+
   return 0;
 }

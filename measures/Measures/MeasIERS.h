@@ -1,32 +1,32 @@
-//# MeasIERS.h: Interface to IERS tables
-//# Copyright (C) 1996,1997,1999,2000,2002,2007,2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasIERS.h: Interface to IERS tables
+// # Copyright (C) 1996,1997,1999,2000,2002,2007,2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASIERS_H
 #define MEASURES_MEASIERS_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRow.h>
@@ -35,9 +35,9 @@
 
 #include <mutex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 
 // <summary> Interface to IERS tables </summary>
@@ -60,7 +60,7 @@ class String;
 // It has only static members.<br>
 // It has a member (<src>getTable()</src>) to open and check IERS
 // (and other Measures related Tables) type tables.
-// Tables are found using the aipsrc 
+// Tables are found using the aipsrc
 // (using <src>measures.<table>.directory</src>, or <src>measures.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
 // (i.e. they are looked for in (udir in following normally given by
@@ -81,7 +81,7 @@ class String;
 // the measured table if possible. Only if forced (see below), or if data is
 // not (yet) available in measured the predicted values are used. A warning
 // message is (once) issued if values are not available at all.
-// 
+//
 // MeasIERS looks at some <linkto class=Aipsrc>Aipsrc</linkto>
 // values to determine actions:
 // <ul>
@@ -91,12 +91,12 @@ class String;
 //  <li> measures.measiers.d_predicttime : Use values from prediction tables if
 //	(now - time) less than value given (default 5) (days)
 // </ul>
-// These values can be set in aipsrc as well as using 
+// These values can be set in aipsrc as well as using
 // <linkto class=AipsrcValue>AipsrcValue</linkto> set() methods.
 // <note>
 // 	A message is Logged (once) if an IERS table cannot be found.
 //	A message is logged (once) if a date outside the range in
-//	the Tables is asked for. 
+//	the Tables is asked for.
 // </note>
 // <thrown>
 //     <li> AipsError if table opened has wrong format or otherwise corrupted.
@@ -104,11 +104,11 @@ class String;
 // </synopsis>
 //
 // <example>
-// See the <src>dUTC()</src> method in 
+// See the <src>dUTC()</src> method in
 // <linkto class=MeasTable>MeasTable</linkto> for an example of the
 // <src>getTable</src> method; and the <src>polarMotion()</src> method for
 // an example of <src>get()</src>.
-// 
+//
 // </example>
 //
 // <motivation>
@@ -118,18 +118,17 @@ class String;
 // <todo asof="1997/07/02">
 // </todo>
 
-class MeasIERS {	
+class MeasIERS {
+ public:
+  // # Typedefs
+  //  Define the function pointer to be called to close files
+  typedef void (*CLOSEFUN)();
 
-public:
-  //# Typedefs
-  // Define the function pointer to be called to close files
-  typedef void (*CLOSEFUN) ();
-
-  //# Constants
+  // # Constants
   static const Double INTV;
-  
-  //# Enumerations
-  // Types of known data
+
+  // # Enumerations
+  //  Types of known data
   enum Types {
     // MJD (must be first in list)
     MJD,
@@ -158,8 +157,9 @@ public:
     // dEpsilon error
     DdEps,
     // Number of types
-    N_Types};
-  
+    N_Types
+  };
+
   // Types of files
   enum Files {
     // Measured EOP values
@@ -169,15 +169,13 @@ public:
     // # of known types
     N_Files,
     // Default
-    DEFAULT = MEASURED };
-  
-  //# General Member Functions
-  // Get the value from an IERS table, interpolated for date(in MJD).
-  // The file can be PREDICTED or MEASURED, the type as given in enum.
-  static Bool get(Double &returnValue,
-		  MeasIERS::Files file, 
-		  MeasIERS::Types type,
-		  Double date);
+    DEFAULT = MEASURED
+  };
+
+  // # General Member Functions
+  //  Get the value from an IERS table, interpolated for date(in MJD).
+  //  The file can be PREDICTED or MEASURED, the type as given in enum.
+  static Bool get(Double &returnValue, MeasIERS::Files file, MeasIERS::Types type, Double date);
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
@@ -189,12 +187,9 @@ public:
   //  <li> AipsError if missing VS_ keywords, columns, or they type is not IERS.
   // </thrown>
   static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-		       RORecordFieldPtr<Double> rfp[],
-		       String &vs, Double &dt,
-		       Int N, const String rfn[],
-		       const String &name,
-		       const String &rc, const String &dir,
-		       const Table *tabin = 0);
+                       RORecordFieldPtr<Double> rfp[], String &vs, Double &dt, Int N,
+                       const String rfn[], const String &name, const String &rc, const String &dir,
+                       const Table *tabin = 0);
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // reqcols gives the names (in order) of the columns which must be present.
@@ -209,21 +204,17 @@ public:
   //  <li> AipsError if missing VS_ keywords, required columns, or the type is not IERS.
   // </thrown>
   static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-  		       Vector<RORecordFieldPtr<Double> >& rfp,
-  		       String &vs, Double &dt,
-  		       const Vector<String>& reqcols,
-  		       Vector<String>& optcols,
-  		       const String &name,
-  		       const String &rc, const String &dir,
-  		       const Table *tabin = 0);
+                       Vector<RORecordFieldPtr<Double>> &rfp, String &vs, Double &dt,
+                       const Vector<String> &reqcols, Vector<String> &optcols, const String &name,
+                       const String &rc, const String &dir, const Table *tabin = 0);
 
   // A helper function for getTable() which is conceivably usable outside it,
   // for finding a table in the same way, but not requiring it to fit the IERS
   // mold.
   // Finds a Table for tab, by looking in tabin, rc, dir, and name.
   // Returns whether or not it was successful.
-  static Bool findTab(Table& tab, const Table *tabin, const String &rc,
-		      const String &dir, const String &name);
+  static Bool findTab(Table &tab, const Table *tabin, const String &rc, const String &dir,
+                      const String &name);
 
   // Notify that a table has successfully been opened with getTable()
   static void openNote(CLOSEFUN fun);
@@ -236,33 +227,31 @@ public:
   // Close the set of IERS tables only. Only call it last at end of program.
   static void closeMeas();
 
-private:
-  
-  //# Constructors
-  // Default constructor, NOT defined
+ private:
+  // # Constructors
+  //  Default constructor, NOT defined
   MeasIERS();
-  
+
   // Copy assign, NOT defined
   MeasIERS &operator=(const MeasIERS &other);
-  
-  //# Destructor
-  //  Destructor, NOT defined and not declared to stop warning
-  // ~MeasIERS();
-  
-  //# General member functions
-  // Initialise tables
+
+  // # Destructor
+  //   Destructor, NOT defined and not declared to stop warning
+  //  ~MeasIERS();
+
+  // # General member functions
+  //  Initialise tables
   static void initMeas();
 
   // A helper function for getTable() which is not likely usable outside it.
-  // Sets dt and vs (the table version), and checks that 
+  // Sets dt and vs (the table version), and checks that
   //  ks has VS_DATE, VS_VERSION, VS_CREATE, and VS_TYPE,
   //  and that tab's type is IERS in its info.
   // Returns whether or not it was successful.
-  static Bool handle_keywords(Double &dt, String &vs,
-			      const TableRecord& ks, const Table& tab);
+  static Bool handle_keywords(Double &dt, String &vs, const TableRecord &ks, const Table &tab);
 
-  //# Data members
-  // Object to ensure safe multi-threaded lazy single initialization
+  // # Data members
+  //  Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirCallOnceFlag;
   // Current date
   static Double dateNow;
@@ -284,9 +273,8 @@ private:
   static uInt nNote;
 };
 
-//# Inline Implementations
+// # Inline Implementations
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

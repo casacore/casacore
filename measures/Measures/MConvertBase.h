@@ -1,46 +1,46 @@
-//# MConvertBase.h: Conversion of Measures Base
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MConvertBase.h: Conversion of Measures Base
+// # Copyright (C) 1995,1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MCONVERTBASE_H
 #define MEASURES_MCONVERTBASE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Unit;
 class MeasValue;
 class Measure;
 class MRBase;
 
-//# Typedefs
+// # Typedefs
 
-//# Constants
+// # Constants
 
 // <summary> Conversion of Measures Base</summary>
 
@@ -50,9 +50,9 @@ class MRBase;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
-//   <li> <linkto class=MeasRef>MeasRef</linkto> class 
-//   <li> <linkto class=Quantum>Quantum</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
+//   <li> <linkto class=MeasRef>MeasRef</linkto> class
+//   <li> <linkto class=Quantum>Quantum</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -64,16 +64,16 @@ class MRBase;
 // has typedefs for the allowed conversions, like <src>MEpoch::Convert.</src><br>
 // The basic operation is to create a MConvertBase with either of:
 // <ul>
-//   <li> MEpoch::Convert(MEpoch, MEpoch::Ref), where the 
+//   <li> MEpoch::Convert(MEpoch, MEpoch::Ref), where the
 //	<linkto class=MEpoch>MEpoch</linkto> is a template for subsequent
-//	conversions, i.e. it will remember the value and 
-//	the input reference frame. And the 
+//	conversions, i.e. it will remember the value and
+//	the input reference frame. And the
 //	<linkto class=MeasRef>MeasRef</linkto> is the output reference class.
 //   <li> MEpoch::Convert(MEpoch) with a subsequent setOut(MEpoch::Ref)
 //   <li> MEpoch::Convert(MEpoch::Ref in, MEpoch::Ref out) is a template for
 //	 conversions from the input reference to the output reference. The
 //	'template' model used is the default value for the Measure, with
-//	no units. 
+//	no units.
 //   <li> MEpoch::Convert(Unit, MEpoch::Ref in, MEpoch::Ref out) is a
 //	 template for
 //	 conversions from the input reference to the output reference. The
@@ -97,13 +97,13 @@ class MRBase;
 // internal format of a Measure; possibly, to make sure distinction between
 // values with and without units is possible, even simple Measures will
 // have their own internal class format, e.g. MVDouble. This will also aid
-// in the possibility that I am still pursuing to have a fully dynamic 
+// in the possibility that I am still pursuing to have a fully dynamic
 // conversion possibility. However, to be able to use pointers to functions
 // in any reasonable way for all possible input and output types, a
 // multi-level approach is necessary, with all possible datatypes derived
 // from some MeasValue.):
 // <ul>
-//   <li> (MEpoch, MEpoch::Ref): will create a new conversion method, and use 
+//   <li> (MEpoch, MEpoch::Ref): will create a new conversion method, and use
 //	it to produce the result of converting the MEpoch to the specified
 //	frame
 //    <li> (MEpoch): will create a new conversion method from the
@@ -142,20 +142,18 @@ class MRBase;
 // </todo>
 
 class MConvertBase {
+ public:
+  // # Friends
 
-public:
-  
-  //# Friends
-  
-  //# Constructors
-  
-  //# Destructor
+  // # Constructors
+
+  // # Destructor
   virtual ~MConvertBase();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Set a new model for the conversion
+
+  // # Operators
+
+  // # General Member Functions
+  //  Set a new model for the conversion
   virtual void setModel(const Measure &val) = 0;
   // Set a new model value only
   virtual void set(const MeasValue &val) = 0;
@@ -171,22 +169,20 @@ public:
   virtual uInt getMethod(uInt which) const = 0;
   // Print a conversion engine
   virtual void print(ostream &os) const = 0;
-  
-private:
-  //# Data
-  
-  //# Member functions
 
+ private:
+  // # Data
+
+  // # Member functions
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output decalration
-ostream &operator<<( ostream &os, const MConvertBase &mc);
+// # Global functions
+//  <summary> Global functions </summary>
+//  <group name=Output>
+//  Output decalration
+ostream &operator<<(ostream &os, const MConvertBase &mc);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
