@@ -1,27 +1,27 @@
-//# FITSFieldCopier.h: Copy RORecordFields to FitsFields
-//# Copyright (C) 1996,1998,1999,2000,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FITSFieldCopier.h: Copy RORecordFields to FitsFields
+// # Copyright (C) 1996,1998,1999,2000,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef FITS_FITSFIELDCOPIER_H
 #define FITS_FITSFIELDCOPIER_H
@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/fits/FITS/FITSKeywordUtil.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Virtual base class for copying RORecordFields to FitsFields
@@ -70,15 +70,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> actually document this
 // </todo>
 
-
-class FITSFieldCopier
-{
-public:
+class FITSFieldCopier {
+ public:
   // destructor
-    virtual ~FITSFieldCopier() {};
+  virtual ~FITSFieldCopier() {};
 
   // the things which does the work - to be implemented in each derived class
-    virtual void copyToFITS() = 0;
+  virtual void copyToFITS() = 0;
 };
 
 // <summary>
@@ -116,26 +114,26 @@ public:
 //   <li> actually document this
 // </todo>
 
-
-template<class recordType, class fitsType> class ScalarFITSFieldCopier : 
-  public FITSFieldCopier
-{
-public:
-    ScalarFITSFieldCopier(RORecordFieldPtr<recordType> *recptr, 
-			  FitsField<fitsType> *fitsptr) 
+template <class recordType, class fitsType>
+class ScalarFITSFieldCopier : public FITSFieldCopier {
+ public:
+  ScalarFITSFieldCopier(RORecordFieldPtr<recordType> *recptr, FitsField<fitsType> *fitsptr)
       : rec_p(recptr), fits_p(fitsptr) {}
-    ~ScalarFITSFieldCopier() {delete rec_p; delete fits_p;}
+  ~ScalarFITSFieldCopier() {
+    delete rec_p;
+    delete fits_p;
+  }
 
-  // Copy the current contents of the input RORecordFieldPtr to the 
+  // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
-    virtual void copyToFITS() {(*fits_p)() = *(*rec_p); }
-private:
-    RORecordFieldPtr<recordType> *rec_p;
-    FitsField<fitsType> *fits_p;
+  virtual void copyToFITS() { (*fits_p)() = *(*rec_p); }
 
-    ScalarFITSFieldCopier(const ScalarFITSFieldCopier<recordType,fitsType> &other);
-    ScalarFITSFieldCopier &operator=(
-			     const ScalarFITSFieldCopier<recordType,fitsType> &other);
+ private:
+  RORecordFieldPtr<recordType> *rec_p;
+  FitsField<fitsType> *fits_p;
+
+  ScalarFITSFieldCopier(const ScalarFITSFieldCopier<recordType, fitsType> &other);
+  ScalarFITSFieldCopier &operator=(const ScalarFITSFieldCopier<recordType, fitsType> &other);
 };
 
 // <summary>
@@ -173,36 +171,37 @@ private:
 //   <li> actually document this
 // </todo>
 
-
-class StringFITSFieldCopier : public FITSFieldCopier
-{
+class StringFITSFieldCopier : public FITSFieldCopier {
  public:
-     StringFITSFieldCopier(RORecordFieldPtr<String> *rptr,
- 		 FitsField<char> *fptr) : rec_p(rptr), fits_p(fptr) {}
-  // Copy the current contents of the input RORecordFieldPtr to the 
+  StringFITSFieldCopier(RORecordFieldPtr<String> *rptr, FitsField<char> *fptr)
+      : rec_p(rptr), fits_p(fptr) {}
+  // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
-     virtual void copyToFITS()
-       {
- 	  Int fitslength = fits_p->nelements();
- 	  Int reclength = (*(*rec_p)).length();
- 	  Int minlength = fitslength < reclength ? fitslength : reclength;
- 	  const char *chars = (**rec_p).c_str();
-	  Int i;
- 	  for (i=0; i<minlength; i++) {
- 	      (*fits_p)(i) = chars[i];
- 	  }
- 	  if (i < fitslength) {
-	      (*fits_p)(i) = '\0'; // null terminate if possible
- 	  }
-       }
-     ~StringFITSFieldCopier() {delete rec_p; delete fits_p;}
-private:
-     RORecordFieldPtr<String> *rec_p;
-     FitsField<char> *fits_p;
+  virtual void copyToFITS() {
+    Int fitslength = fits_p->nelements();
+    Int reclength = (*(*rec_p)).length();
+    Int minlength = fitslength < reclength ? fitslength : reclength;
+    const char *chars = (**rec_p).c_str();
+    Int i;
+    for (i = 0; i < minlength; i++) {
+      (*fits_p)(i) = chars[i];
+    }
+    if (i < fitslength) {
+      (*fits_p)(i) = '\0';  // null terminate if possible
+    }
+  }
+  ~StringFITSFieldCopier() {
+    delete rec_p;
+    delete fits_p;
+  }
 
-    // Undefined and inaccessible.
-     StringFITSFieldCopier(const StringFITSFieldCopier &other);
-     StringFITSFieldCopier &operator=(const StringFITSFieldCopier &other);
+ private:
+  RORecordFieldPtr<String> *rec_p;
+  FitsField<char> *fits_p;
+
+  // Undefined and inaccessible.
+  StringFITSFieldCopier(const StringFITSFieldCopier &other);
+  StringFITSFieldCopier &operator=(const StringFITSFieldCopier &other);
 };
 
 // <summary>
@@ -240,93 +239,95 @@ private:
 //   <li> actually document this
 // </todo>
 
-
-template<class recordType, class fitsType> class ArrayFITSFieldCopier :
-  public FITSFieldCopier
-{
-public:
-    ArrayFITSFieldCopier(RORecordFieldPtr<Array<recordType> > *recptr, 
-		 FitsField<fitsType> *fitsptr) : rec_p(recptr), fits_p(fitsptr) {}
-    ~ArrayFITSFieldCopier() {delete rec_p; delete fits_p;}
-  // Copy the current contents of the input RORecordFieldPtr to the 
+template <class recordType, class fitsType>
+class ArrayFITSFieldCopier : public FITSFieldCopier {
+ public:
+  ArrayFITSFieldCopier(RORecordFieldPtr<Array<recordType>> *recptr, FitsField<fitsType> *fitsptr)
+      : rec_p(recptr), fits_p(fitsptr) {}
+  ~ArrayFITSFieldCopier() {
+    delete rec_p;
+    delete fits_p;
+  }
+  // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
-    virtual void copyToFITS() {
-        uInt nfits = fits_p->nelements();
-	uInt narray = (**rec_p).nelements();
-	uInt nmin = narray < nfits ? narray : nfits;
-	Bool deleteIt;
-	const recordType *rptr = (**rec_p).getStorage(deleteIt);
-	for (uInt i=0; i<nmin; i++) {
-	    (*fits_p)(i) = rptr[i];
-	}
-	// pad with nulls
-	for (uInt i=nmin;i<nfits;i++) {
-	    (*fits_p)(i) = recordType(0);
-	}
-	(**rec_p).freeStorage(rptr, deleteIt);
+  virtual void copyToFITS() {
+    uInt nfits = fits_p->nelements();
+    uInt narray = (**rec_p).nelements();
+    uInt nmin = narray < nfits ? narray : nfits;
+    Bool deleteIt;
+    const recordType *rptr = (**rec_p).getStorage(deleteIt);
+    for (uInt i = 0; i < nmin; i++) {
+      (*fits_p)(i) = rptr[i];
     }
-private:
-    RORecordFieldPtr<Array<recordType> > *rec_p;
-    FitsField<fitsType> *fits_p;
+    // pad with nulls
+    for (uInt i = nmin; i < nfits; i++) {
+      (*fits_p)(i) = recordType(0);
+    }
+    (**rec_p).freeStorage(rptr, deleteIt);
+  }
 
-    // Undefined and inaccessible
-    ArrayFITSFieldCopier(const ArrayFITSFieldCopier<recordType,fitsType> &other);
-    ArrayFITSFieldCopier &operator=(
-			    const ArrayFITSFieldCopier<recordType,fitsType> &other);
+ private:
+  RORecordFieldPtr<Array<recordType>> *rec_p;
+  FitsField<fitsType> *fits_p;
+
+  // Undefined and inaccessible
+  ArrayFITSFieldCopier(const ArrayFITSFieldCopier<recordType, fitsType> &other);
+  ArrayFITSFieldCopier &operator=(const ArrayFITSFieldCopier<recordType, fitsType> &other);
 };
 
-template<class recordType, class fitsType> class VariableArrayFITSFieldCopier :
-  public FITSFieldCopier
-{
-public:
-    VariableArrayFITSFieldCopier(RORecordFieldPtr<Array<recordType> > *recptr, 
-			 FitsField<fitsType> *fitsptr,
-			 FitsField<char> *tdirptr) 
+template <class recordType, class fitsType>
+class VariableArrayFITSFieldCopier : public FITSFieldCopier {
+ public:
+  VariableArrayFITSFieldCopier(RORecordFieldPtr<Array<recordType>> *recptr,
+                               FitsField<fitsType> *fitsptr, FitsField<char> *tdirptr)
       : rec_p(recptr), fits_p(fitsptr), tdir_p(tdirptr) {}
-    ~VariableArrayFITSFieldCopier() {delete rec_p; delete fits_p;}
-  // Copy the current contents of the input RORecordFieldPtr to the 
+  ~VariableArrayFITSFieldCopier() {
+    delete rec_p;
+    delete fits_p;
+  }
+  // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
-    virtual void copyToFITS() {
-        uInt nfits = fits_p->nelements();
-	uInt narray = (**rec_p).nelements();
-	uInt nmin = narray < nfits ? narray : nfits;
-	Bool deleteIt;
-	const recordType *rptr = (**rec_p).getStorage(deleteIt);
-	for (uInt i=0; i<nmin; i++) {
-	    (*fits_p)(i) = rptr[i];
-	}
-	for (uInt i=nmin;i<nfits;i++) {
-	    (*fits_p)(i) = recordType(0);
-	}
-	(**rec_p).freeStorage(rptr, deleteIt);
-	// and construct the TDIM value for this array
-	String thisTDIR;
-	FITSKeywordUtil::toTDIM(thisTDIR, (**rec_p).shape());
-	// and store it in the tdir_p FitsField
-	Int fitslength = tdir_p->nelements();
-	Int reclength = thisTDIR.length();
-	Int minlength = fitslength < reclength ? fitslength : reclength;
-	const char *chars = thisTDIR.c_str();
-	Int i;
-	for (i=0; i<minlength; i++) {
-	    (*tdir_p)(i) = chars[i];
-	}
-	for (Int i=minlength; i<fitslength; i++) {
-	    (*tdir_p)(i) = '\0'; // null terminate if possible
-	}
+  virtual void copyToFITS() {
+    uInt nfits = fits_p->nelements();
+    uInt narray = (**rec_p).nelements();
+    uInt nmin = narray < nfits ? narray : nfits;
+    Bool deleteIt;
+    const recordType *rptr = (**rec_p).getStorage(deleteIt);
+    for (uInt i = 0; i < nmin; i++) {
+      (*fits_p)(i) = rptr[i];
     }
-private:
-    RORecordFieldPtr<Array<recordType> > *rec_p;
-    FitsField<fitsType> *fits_p;
-    FitsField<char> *tdir_p;
+    for (uInt i = nmin; i < nfits; i++) {
+      (*fits_p)(i) = recordType(0);
+    }
+    (**rec_p).freeStorage(rptr, deleteIt);
+    // and construct the TDIM value for this array
+    String thisTDIR;
+    FITSKeywordUtil::toTDIM(thisTDIR, (**rec_p).shape());
+    // and store it in the tdir_p FitsField
+    Int fitslength = tdir_p->nelements();
+    Int reclength = thisTDIR.length();
+    Int minlength = fitslength < reclength ? fitslength : reclength;
+    const char *chars = thisTDIR.c_str();
+    Int i;
+    for (i = 0; i < minlength; i++) {
+      (*tdir_p)(i) = chars[i];
+    }
+    for (Int i = minlength; i < fitslength; i++) {
+      (*tdir_p)(i) = '\0';  // null terminate if possible
+    }
+  }
 
-    // Undefined and inaccessible
-    VariableArrayFITSFieldCopier(const VariableArrayFITSFieldCopier<recordType,fitsType> &other);
-    VariableArrayFITSFieldCopier &operator=(
-			    const VariableArrayFITSFieldCopier<recordType,fitsType> &other);
+ private:
+  RORecordFieldPtr<Array<recordType>> *rec_p;
+  FitsField<fitsType> *fits_p;
+  FitsField<char> *tdir_p;
+
+  // Undefined and inaccessible
+  VariableArrayFITSFieldCopier(const VariableArrayFITSFieldCopier<recordType, fitsType> &other);
+  VariableArrayFITSFieldCopier &operator=(
+      const VariableArrayFITSFieldCopier<recordType, fitsType> &other);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

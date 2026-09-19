@@ -1,27 +1,27 @@
-//# FitsKeywordUtil: this defines FitsKeywordUtil
-//# Copyright (C) 2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FitsKeywordUtil: this defines FitsKeywordUtil
+// # Copyright (C) 2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/fits/FITS/FITSKeywordUtil.h>
 
@@ -47,1111 +47,1041 @@
 #include <casacore/casa/stdlib.h>
 #include <map>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Do a reverse lookup since the FITS classes need it.
-static Bool findReservedName(FITS::ReservedName &name, const String &basename)
-{
-    const uInt n = FITS::ResWord.no();
+static Bool findReservedName(FITS::ReservedName &name, const String &basename) {
+  const uInt n = FITS::ResWord.no();
 
-    for (uInt i=0; i<n; i++) {
-	if (basename == FITS::ResWord[i].aname()) {
-	    name = FITS::ResWord[i].name();
-	    return True;
-	}
+  for (uInt i = 0; i < n; i++) {
+    if (basename == FITS::ResWord[i].aname()) {
+      name = FITS::ResWord[i].name();
+      return True;
     }
-    return False;
+  }
+  return False;
 }
 
-static void splitKW1D(String &name, Int &num, String &fullName)
-{
-    name = "";
+static void splitKW1D(String &name, Int &num, String &fullName) {
+  name = "";
 
-    Int where = fullName.length(); // Where to split the number and base name
+  Int where = fullName.length();  // Where to split the number and base name
+  while (--where >= 0 && isdigit(fullName[where])) {
+    ;  // Nothing
+  }
+  where++;
+  // where now points to the start of the numerical part - its
+  // also the length of the number of characters before that
+  name = fullName.substr(0, where);
+  String snum = fullName.substr(where, (fullName.length() - where));
+  num = atol(snum.c_str());
+}
+
+static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName) {
+  name = "";
+
+  if (fullName.find('_') != std::string::npos) {  // assume new matrix syntax  ii_jj or i_j
+    uInt where = 0;                               // Where the frst number starts
+    while (where++ < fullName.length() && !isdigit(fullName[where])) {
+      ;  // Nothing
+    }
+    name = fullName.substr(0, where);
+    // found first non-digit
+    String::size_type where2 = fullName.find('_');
+    if (where2 == String::npos || where2 == fullName.length() - 1) {
+      return False;
+    }
+    String snum1 = fullName.substr(where, where2 - where);
+    Int nc = 2;  // don't use the last digit if there are three
+    if (fullName.length() - where2 < 2) {
+      nc = 1;
+    }
+    String snum2 = fullName.substr(where2 + 1, nc);
+    nrow = atol(snum1.c_str());
+    ncol = atol(snum2.c_str());
+  } else {  // old matrix syntax
+    // We assume that 1/2 the characters belong to each of the two
+    // numbers.
+    Int where = fullName.length();  // Where to split the number and base name
     while (--where >= 0 && isdigit(fullName[where])) {
-	; // Nothing
+      ;  // Nothing
     }
     where++;
     // where now points to the start of the numerical part - its
     // also the length of the number of characters before that
     name = fullName.substr(0, where);
-    String snum = fullName.substr(where, (fullName.length()-where));
-    num = atol(snum.c_str());
-}
-
-static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
-{
-    name = "";
-
-    if(fullName.find('_') != std::string::npos){ // assume new matrix syntax  ii_jj or i_j
-      uInt where = 0;// Where the frst number starts
-      while (where++ < fullName.length() && !isdigit(fullName[where])) {
-	; // Nothing
-      }
-      name = fullName.substr(0, where);
-      // found first non-digit
-      String::size_type where2 = fullName.find('_');
-      if (where2 == String::npos || where2 == fullName.length()-1){
-	return False;
-      }
-      String snum1 = fullName.substr(where, where2-where);
-      Int nc = 2; // don't use the last digit if there are three
-      if(fullName.length()-where2<2){ 
-	nc = 1;
-      }
-      String snum2 = fullName.substr(where2+1, nc);
-      nrow = atol(snum1.c_str());
-      ncol = atol(snum2.c_str());
+    Int numlen = fullName.length() - where;
+    if (numlen != 6) {
+      // 2D arrays must be xxxyyy and so there must be 6 digits
+      return False;
     }
-    else { // old matrix syntax
-      // We assume that 1/2 the characters belong to each of the two
-      // numbers.
-      Int where = fullName.length();// Where to split the number and base name
-      while (--where >= 0 && isdigit(fullName[where])) {
-	; // Nothing
-      }
-      where++;
-      // where now points to the start of the numerical part - its
-      // also the length of the number of characters before that
-      name = fullName.substr(0, where);
-      Int numlen = fullName.length() - where;
-      if (numlen != 6) {
-	// 2D arrays must be xxxyyy and so there must be 6 digits
-	return False;
-      }
-      String snum1 = fullName.substr(where, 3);
-      String snum2 = fullName.substr(where+3, 3);
-      nrow = atol(snum1.c_str());
-      ncol = atol(snum2.c_str());
-    }
+    String snum1 = fullName.substr(where, 3);
+    String snum2 = fullName.substr(where + 3, 3);
+    nrow = atol(snum1.c_str());
+    ncol = atol(snum2.c_str());
+  }
 
-    return True;
+  return True;
 }
 
-FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage)
-{
-    FitsKeywordList retval;
-    if (primHead)
-   	 retval.mk(FITS::SIMPLE, True, "Standard FITS");
-    else
-   	 if (binImage)
-   		 retval.mk(FITS::XTENSION,"IMAGE   ","IMAGE extension");
-   	 else
-   		 retval.mk(FITS::XTENSION,"BINTABLE   ","TABLE extension");
-    return retval;
+FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage) {
+  FitsKeywordList retval;
+  if (primHead)
+    retval.mk(FITS::SIMPLE, True, "Standard FITS");
+  else if (binImage)
+    retval.mk(FITS::XTENSION, "IMAGE   ", "IMAGE extension");
+  else
+    retval.mk(FITS::XTENSION, "BINTABLE   ", "TABLE extension");
+  return retval;
 }
 
-Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, 
-				  const RecordInterface &in)
-{
-    LogIO os(LogOrigin("FITSKeywordUtil", "addKeywords", WHERE));
+Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &in) {
+  LogIO os(LogOrigin("FITSKeywordUtil", "addKeywords", WHERE));
 
-    Bool ok = True;
+  Bool ok = True;
 
-    const uInt n = in.nfields();
-    const std::regex commentName("^COMMENT");
-    const std::regex historyName("^HISTORY");
+  const uInt n = in.nfields();
+  const std::regex commentName("^COMMENT");
+  const std::regex historyName("^HISTORY");
 
-    uInt i = 0;
-    while (i < n) {
-	DataType type = in.type(i);
-	if (isScalar(type)) {
-	    String name = upcase(in.name(i));
-	    if (name.length() > 8) {
-		// silently truncate COMMENT* and HISTORY* - the addCommand and addHistory
-		// functions keep them unique in the RecordInterface by adding a random trailing
-		// number
-		if (!(std::regex_search(name, commentName) || std::regex_search(name, historyName))) {
-		    // this is just a warning, everything is still ok
-		    os << LogIO::WARN
-		       << "Name is too long for keyword " << name
-		       << " - truncated to first 8 characters." << LogIO::POST;
-		}
-		name = name.substr(0, 8);
-	    }
-	    // comments are automatically truncated by the FITS classes
-	    String comment = in.comment(i);
-	    switch(type) {
-	    case TpBool:
-		{
-		    Bool val;
-		    in.get(i, val);
-		    out.mk(name.c_str(), val, comment.c_str());
-		}
-		break;
-	    case TpInt:
-		{
-		    Int val;
-		    in.get(i, val);
-		    out.mk(name.c_str(), val, comment.c_str());
-		}
-	    break;
-	    case TpShort:
-		{
-		    Short val;
-		    in.get(i, val);
-		    out.mk(name.c_str(), val, comment.c_str());
-		}
-	    break;
-	    case TpUInt:
-		{
-		    uInt val;
-		    in.get(i, val);
-		    out.mk(name.c_str(), int(val), comment.c_str());
-		}
-	    break;
-	    case TpFloat:
-		{
-		    Float val;
-		    in.get(i, val);
-		    out.mk(name.c_str(), val, comment.c_str());
-		}
-	    break;
-	    case TpDouble:
-		{
-		    Double val;
-		    in.get(i, val);
-		    out.mk(name.c_str(), val, comment.c_str());
-		}
-	    break;
-	    case TpString:
-		{
-		    String val;
-		    in.get(i, val);
-		    if (std::regex_search(name, commentName)) {
-			if (val == "") {
-			    out.spaces();
-			} else {
-			    out.comment(val.c_str());
-			}
-		    } else if (std::regex_search(name, historyName)) {
-			out.history(val.c_str());
-		    } else {
-			if (val.length() > 68) {
-			    os << LogIO::SEVERE 
-			       << "Value of keyword " << name.c_str() 
-			       << " will be truncated at 68 characters." << LogIO::POST;
-			    ok = False;
-			    val = val.substr(0, 68);
-			}
-			out.mk(name.c_str(), val.c_str(), comment.c_str());
-		    }
-		}
-	    break;
-	    default:
-		os << LogIO::SEVERE << 
-		    "Illegal FITS type " << Int(in.type(i)) << " for field '" <<
-		    name << "': ignoring this field." << LogIO::POST;
-		// Note that we carry on anyway
-		ok = False;
-	    }
-	} else if (isArray(type)) {
-	    // Find out how many like-shaped array columns there are in a row
-	    // and interleave them, i.e. so we have crval1 crpix1 cdelt1,
-	    // crval2 crpix2 cdelt2, ..
-	    Int start = i;
-	    const Int length = in.shape(i).product();
-	    uInt ndim = in.shape(i).nelements();
-
-	    // SPECIAL: NAXIS is both an array AND a scalar!
-	    if (upcase(in.name(i)) == "NAXIS") {
-		out.mk("NAXIS", int(length));
-	    }
-
-	    // To do: special treatment of the PV array here which should not be interleaved
-
-	    if (ndim > 2) {
-		os << LogIO::SEVERE << ndim << " dimensional array found. "
-		    " Flattening to 1 dimension" << LogIO::POST;
-		ok = False;
-		ndim = 1;
-	    }
-	    uInt end = i+1;
-	    while (end < n) {
-		// If it's not an array
-		if (!isArray(in.type(end))) {
-		    break;
-		}
-		// or it's size has changed
-		if (in.shape(end).product() != length) {
-		    break;
-		}
-		// or its dimensionality has changed the run has ended.
-		if (in.shape(end).nelements() != ndim) {
-		    break;
-		}
-		end++;
-	    }
-
-	    // Advance i to the right place so we don't see these fields
-	    // more than once.
-	    i = end - 1;
-
-	    // name length check.  Keyword names must be <= 8 characters.
-	    // also do number of elements check 
-	    // Note that we emit a SEVERE error but go on any way.
-	    for (uInt j=start; j<end; j++) {
-		if (ndim == 2) {
-		    // need ii_jja for this one, only 2 characters left for name
-		    if (in.name(j).length() > 2) {
-			os << LogIO::SEVERE 
-			   << "Name is too long for array field " << in.name(j) 
-			   << " - name will be truncated to first 2 characters." << LogIO::POST;
-			ok = False;
-		    }
-		    // at most, 99 elements per dimension
-		    if (in.shape(i)(0) > 99 || in.shape(i)(1) > 99) {
-			os << LogIO::SEVERE 
-			   << "Too many rows or columns for array field " << in.name(j) 
-			   << " - the first 99 rows and the first 99 columns will be used." << LogIO::POST;
-			ok = False;		    }
-		} else {
-		    // at most 999 elements
-		    if (length > 999) {
-			os << LogIO::SEVERE 
-			   << "Too many elements for field " << in.name(j) 
-			   << " - the first 999 elements will be used." << LogIO::POST;
-			ok = False;
-		    }
-		    String slen = std::to_string(length);
-		    if (in.name(j).length() + slen.length() > 8) {
-			os << LogIO::SEVERE 
-			   << "Name is too long for array field " << in.name(j) 
-			   << " - name will be truncated to first "
-			   << (8-uInt(slen.length())) << " characters." << LogIO::POST;
-			ok = False;
-		    }
-		}
-	    }
-		    
-	    // This is inefficient because we are getting the arrays many
-	    // times. We could optimize this if this is ever a problem.
- 	    for (Int k=0; k<length; k++) {
- 		for (uInt j=start; j<end; j++) {
- 		    DataType type = in.type(j);
- 		    String name = upcase(in.name(j));
-		    String num;
- 		    if (ndim == 2) {
-			if (name.length() > 2) name = name.substr(0, 2);
- 			// Form i_j name
-			Int nrow = in.shape(i)(0);
- 			Int ii = k % nrow + 1;
- 			Int jj = k / nrow + 1;
-			ostringstream ostr;
-			if(nrow>9){ // i.e. the indices have more than one digit
-			  ostr << setfill('0') << setw(2) << ii
-			       << "_"
-			       << setfill('0') << setw(2) << jj;
-			}
-			else{
-			  ostr << setw(1) << ii << "_" << setw(1) << jj;
-			}
-			name += ostr.str();
- 		    } else {
-			ostringstream ostr;
-			ostr << k + 1;
-			num = ostr.str();
-		    }
-		    if (name.length() > (8-num.length())) name = name.substr(0, 8-num.length());
- 		    switch(type) {
- 		    case TpArrayBool:
- 			{
- 			    Array<Bool> val;
- 			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Bool *storage = val.getStorage(deleteIt);
-			    if (ndim == 2) {
-				out.mk(name.c_str(), storage[k]);
-			    } else {
-				FITS::ReservedName fname;
-				if (findReservedName(fname, name)) {
-				    out.mk(int(k+1), fname, storage[k]);
-				} else {
-				    out.mk((name + num).c_str(), storage[k]);
-				}
-			    }
- 			    val.putStorage(storage, deleteIt);
- 			}
- 		    break;
- 		    case TpArrayInt:
- 			{
- 			    Array<Int> val;
- 			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Int *storage = val.getStorage(deleteIt);
-			    if (ndim == 2) {
-				out.mk(name.c_str(), storage[k]);
-			    } else {
-				FITS::ReservedName fname;
-				if (findReservedName(fname, name)) {
-				    out.mk(int(k+1), fname, storage[k]);
-				} else {
-				    out.mk((name + num).c_str(), storage[k]);
-				}
-			    }
- 			    val.putStorage(storage, deleteIt);
- 			}
- 		    break;
- 		    case TpArrayFloat:
- 			{
- 			    Array<Float> val;
- 			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Float *storage = val.getStorage(deleteIt);
-			    if (ndim == 2) {
-				out.mk(name.c_str(), storage[k]);
-			    } else {
-				FITS::ReservedName fname;
-				if (findReservedName(fname, name)) {
-				    out.mk(int(k+1), fname, storage[k]);
-				} else {
-				    out.mk((name + num).c_str(), storage[k]);
-				}
-			    }
- 			    val.putStorage(storage, deleteIt);
- 			}
- 		    break;
- 		    case TpArrayDouble:
- 			{
- 			    Array<Double> val;
- 			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Double *storage = val.getStorage(deleteIt);
-			    if (ndim == 2) {
-				out.mk(name.c_str(), storage[k]);
-			    } else {
-				FITS::ReservedName fname;
-				if (findReservedName(fname, name)) {
-				    out.mk(int(k+1), fname, storage[k]);
-				} else {
-				    out.mk((name + num).c_str(), storage[k]);
-				}
-			    }
- 			    val.putStorage(storage, deleteIt);
- 			}
- 		    break;
- 		    case TpArrayString:
- 			{
- 			    Array<String> val;
- 			    in.get(j, val);
- 			    Bool deleteIt;
- 			    String *storage = val.getStorage(deleteIt);
-			    String thisVal = storage[k];
-			    if (thisVal.length() > 68) {
-				os << LogIO::SEVERE 
-				   << "Value of keyword " << name.c_str() 
-				   << " will be truncated at 68 characters." << LogIO::POST;
-				ok = False;
-				thisVal = thisVal.substr(0, 68);
-			    }
-			    if (ndim == 2) {
-				out.mk(name.c_str(), thisVal.c_str());
-			    } else {
-				FITS::ReservedName fname;
-				if (findReservedName(fname, name)) {
-				    out.mk(int(k+1), fname, thisVal.c_str());
-				} else {
-				    out.mk((name + num).c_str(), thisVal.c_str());
-				}
-			    }
- 			    val.putStorage(storage, deleteIt);
- 			}
- 		    break;
- 		    default:
-			os << LogIO::SEVERE << 
-			    "Illegal FITS type " << Int(type) << " for field '" <<
-			    name << "': ignoring this field." << LogIO::POST;
-			// Note that we carry on anyway
-			ok = False;
- 		    }
- 		}
- 	    }
-	} else {
-	    os << LogIO::SEVERE << 
-		"Illegal FITS type " << Int(in.type(i)) << " for field '" <<
-		in.name(i) << ". 'Must be scalar or array." << LogIO::POST;
-	    // Note that we carry on anyway
-	    ok = False;
-	}
-	i++;
-    }
-
-    return ok;
-}
-
-Bool FITSKeywordUtil::getKeywords(RecordInterface &out, 
-				  ConstFitsKeywordList &in, 
-				  const Vector<String> &ignore,
-				  Bool ignoreHistory)
-{
-    Bool ok = True;
-
-    LogIO os(LogOrigin("FITSKeywordUtil", "getKeywords", WHERE));
-
-    // Reset to the beginning of the KW list
-    in.first();
-
-    const std::regex kw1D("^[a-z0-9]*[a-z][1-9]+"); // We can have X3F, but not XF3
-    // This fails with more than 99 axes.
-    const std::regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
-    const std::regex kw2Dmodern("^[a-z][a-z]?[0-9][0-9]?[_][0-9][0-9]?");
-    const std::regex kw2Dstandard("^[[a-z][a-z]?[0-9]?[_][0-9]?");
-    const std::regex crota("crota");
-    const Regex trailing(" *$");
-    const std::regex cd("^cd[0-9]+[_][0-9]+");
-    const String empty;
-
-    // The complication in this function springs from the fact that we want to
-    // combine all the indexed and matrix (i.e. PCiiijjj or PCii_jja) keywords 
-    // together into array fields in the output record.
-    //
-    // First we take a pass through the keywords noting the array keywords and
-    // their minimum and maximum indexes. Unfortunately we have to ignore the
-    // FITS keyword functions isindexed() etc. because they do not know about
-    // all indexed keywords, e.g. user-defined or "new"
-    // indexed keywords.
-    //
-    // In addition, CROTA is a special case.  It is only found on the latitude
-    // axis of direction coordinates.  If we find a CROTA, we make a full length
-    // vector of it in the output header record.  This is because the FITS
-    // header cracking routines expect all the vector fields to be length naxis
-    // The CROTA vector will be 0, except for the actual axis that had a CROTA
-
-    // CD is another special case.  It is left as scalar keywords to be interpreted
-    // by the CoordinateSystem methods according to rules coded there.
-
-    
-    std::map<String, Int> min1D, max1D, min2Drow, min2Dcol, max2Drow, max2Dcol;
-
-    // this may be a bug in fits that it isn't in.curr()
-    const FitsKeyword *key = in.next();
-//
-    Bool foundCROTA = False;
-    String baseCROTA;
-
-    Int naxis = -1;
-    Int maxis = -1;
-
-    while(key) {
-	String name = downcase(key->name());
-	if (name == "naxis" && !key->isindexed()) {
-	    if (key->type()==FITS::LONG) {
-		naxis = key->asInt();
-	    }
+  uInt i = 0;
+  while (i < n) {
+    DataType type = in.type(i);
+    if (isScalar(type)) {
+      String name = upcase(in.name(i));
+      if (name.length() > 8) {
+        // silently truncate COMMENT* and HISTORY* - the addCommand and addHistory
+        // functions keep them unique in the RecordInterface by adding a random trailing
+        // number
+        if (!(std::regex_search(name, commentName) || std::regex_search(name, historyName))) {
+          // this is just a warning, everything is still ok
+          os << LogIO::WARN << "Name is too long for keyword " << name
+             << " - truncated to first 8 characters." << LogIO::POST;
         }
-	if (name == "maxis" && !key->isindexed()) {
-	    if (key->type()==FITS::LONG) {
-		maxis = key->asInt();
-	    }
+        name = name.substr(0, 8);
+      }
+      // comments are automatically truncated by the FITS classes
+      String comment = in.comment(i);
+      switch (type) {
+        case TpBool: {
+          Bool val;
+          in.get(i, val);
+          out.mk(name.c_str(), val, comment.c_str());
+        } break;
+        case TpInt: {
+          Int val;
+          in.get(i, val);
+          out.mk(name.c_str(), val, comment.c_str());
+        } break;
+        case TpShort: {
+          Short val;
+          in.get(i, val);
+          out.mk(name.c_str(), val, comment.c_str());
+        } break;
+        case TpUInt: {
+          uInt val;
+          in.get(i, val);
+          out.mk(name.c_str(), int(val), comment.c_str());
+        } break;
+        case TpFloat: {
+          Float val;
+          in.get(i, val);
+          out.mk(name.c_str(), val, comment.c_str());
+        } break;
+        case TpDouble: {
+          Double val;
+          in.get(i, val);
+          out.mk(name.c_str(), val, comment.c_str());
+        } break;
+        case TpString: {
+          String val;
+          in.get(i, val);
+          if (std::regex_search(name, commentName)) {
+            if (val == "") {
+              out.spaces();
+            } else {
+              out.comment(val.c_str());
+            }
+          } else if (std::regex_search(name, historyName)) {
+            out.history(val.c_str());
+          } else {
+            if (val.length() > 68) {
+              os << LogIO::SEVERE << "Value of keyword " << name.c_str()
+                 << " will be truncated at 68 characters." << LogIO::POST;
+              ok = False;
+              val = val.substr(0, 68);
+            }
+            out.mk(name.c_str(), val.c_str(), comment.c_str());
+          }
+        } break;
+        default:
+          os << LogIO::SEVERE << "Illegal FITS type " << Int(in.type(i)) << " for field '" << name
+             << "': ignoring this field." << LogIO::POST;
+          // Note that we carry on anyway
+          ok = False;
+      }
+    } else if (isArray(type)) {
+      // Find out how many like-shaped array columns there are in a row
+      // and interleave them, i.e. so we have crval1 crpix1 cdelt1,
+      // crval2 crpix2 cdelt2, ..
+      Int start = i;
+      const Int length = in.shape(i).product();
+      uInt ndim = in.shape(i).nelements();
+
+      // SPECIAL: NAXIS is both an array AND a scalar!
+      if (upcase(in.name(i)) == "NAXIS") {
+        out.mk("NAXIS", int(length));
+      }
+
+      // To do: special treatment of the PV array here which should not be interleaved
+
+      if (ndim > 2) {
+        os << LogIO::SEVERE << ndim
+           << " dimensional array found. "
+              " Flattening to 1 dimension"
+           << LogIO::POST;
+        ok = False;
+        ndim = 1;
+      }
+      uInt end = i + 1;
+      while (end < n) {
+        // If it's not an array
+        if (!isArray(in.type(end))) {
+          break;
         }
-//
-        if (std::regex_search(name, crota)) {
-	    foundCROTA = True;
-	    baseCROTA = name;
+        // or it's size has changed
+        if (in.shape(end).product() != length) {
+          break;
         }
-//
-
-
-	if ((std::regex_search(name, kw2Dstandard) || std::regex_search(name, kw2D) || std::regex_search(name, kw2Dmodern))
-            && !std::regex_search(name, cd)) {
-	    Int nrow, ncol;
-	    String base;
-	    if (!splitKW2D(base, nrow, ncol, name)) {
-		os << LogIO::SEVERE << "Illegal matrix keyword " << name << 
-		    LogIO::EXCEPTION;
-	    }
-            if (min2Drow.find(base) == min2Drow.end()) min2Drow[base] = 99999;
-            if (min2Dcol.find(base) == min2Dcol.end()) min2Dcol[base] = 99999;
-	    if (nrow < min2Drow[base]) {min2Drow[base] = nrow;}
-	    if (nrow > max2Drow[base]) {max2Drow[base] = nrow;}
-	    if (ncol < min2Dcol[base]) {min2Dcol[base] = ncol;}
-	    if (ncol > max2Dcol[base]) {max2Dcol[base] = ncol;}
-        } 
-	else if ((key->isindexed() || std::regex_search(name, kw1D)) && !std::regex_search(name, cd)) {
-	    String base;
-	    Int num;
-	    if (key->isindexed()) {
-		base = name;
-		num = key->index();
-	    } else {
-		splitKW1D(base, num, name);
-	    }
-            if (min1D.find(base) == min1D.end()) min1D[base] = 99999;
-	    if (num < min1D[base]) {min1D[base] = num;}
-	    if (num > max1D[base]) {max1D[base] = num;}
-	}  
-	key = in.next();
-    }
-
-    if (foundCROTA) {
-	if (naxis==-1) {
-	    os << LogIO::SEVERE << "Failed to decode naxis keyword" << LogIO::EXCEPTION;
-	}
-	if (maxis==-1) {
-	  min1D[baseCROTA] = 1;
-	  max1D[baseCROTA] = naxis;
-	}
-	else{ // apparently a FITS-IDI file
-	  min1D[baseCROTA] = 1;
-	  max1D[baseCROTA] = maxis;
-	}
-
-    }
-
-    // OK, now step through actually writing all the keywords
-
-    in.first();
-    key = in.next(); // I think it's a bug in FITS that this isn't in.curr()
-    while(key) {
-	String fullName = downcase(key->name());
-
-	// Naxis and Maxis are special - it is both a scalar keywords and an
-	// indexed keyword. If we have both ignore the scalar version.
-	if ((fullName == "naxis" || fullName == "maxis") && !key->isindexed()) {
-	    key = in.next();
-	    continue;
-	}
-
-	// OK, it's a keyword we have to process
-	if ((std::regex_search(fullName, kw2Dstandard) || std::regex_search(fullName, kw2D) ||
-	     std::regex_search(fullName, kw2Dmodern)) && !std::regex_search(fullName, cd)) {
-	    Int thisRow, thisCol;
-	    String base;
-	    splitKW2D(base, thisRow, thisCol, fullName);
-	    thisRow -= min2Drow[base];
-	    thisCol -= min2Dcol[base];
-	    Int fnum = out.fieldNumber(base);
-	    Int nrow = max2Drow[base]-min2Drow[base]+1;
-	    Int ncol = max2Dcol[base]-min2Dcol[base]+1;
-	    switch (key->type()) {
-	    case FITS::LOGICAL:
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Bool> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = False;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asBool();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::STRING : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayString) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<String> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = "";
-		    } else {
-			out.get(base, mat);
-		    }
-		    // I think its a bug that the FITS classes leave keywords
-		    // with trailing blank spaces, but they do.  Trailing blanks
-		    // are not significant in FITS keywords.
-		    // at any rate, we need to remove them.
-		    String tmp = key->asString();
-		    RegexReplaceAll(tmp, trailing, empty);
-		    mat(thisRow,thisCol) = tmp;
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::FLOAT :  // Convert to DOUBLE!!
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Double> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = 0.0;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asFloat();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::DOUBLE : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Double> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = 0.0;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asDouble();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::LONG : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Int> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = 0;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asInt();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::COMPLEX : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Complex> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = Complex(0,0);
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asComplex();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::DCOMPLEX : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<DComplex> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = DComplex(0,0);
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asDComplex();
-		    out.define(base, mat);
-		}
-		break;
-	    default:
-		os << LogIO::SEVERE << "Unknown type for keyword '" 
-		   << fullName << "'. Continuing." << LogIO::POST;
-	    }
-	} else if (key->isindexed() || (std::regex_search(fullName, kw1D) && !std::regex_search(fullName, cd))){
-            String base;
-	    Int num;
-	    if (key->isindexed()) {
-		base = fullName;
-		num = key->index();
-	    } else {
-		splitKW1D(base, num, fullName);
-	    }
-	    
-	    Int offset = num - min1D[base];
-	    Int nelm = 0;
-	    Int fnum = out.fieldNumber(base);
-	    switch (key->type()) {
-	    case FITS::LOGICAL:
-		if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
-		    os << LogIO::WARN << "Ignoring field '" << fullName <<
-			"' because its type does not match already created" <<
-			" field " << base << ". Continuing." << LogIO::POST;
-		    break;
-		}
-		if (! out.isDefined(base)) {
-		    Vector<Bool> vec(max1D[base] - min1D[base] + 1);
-		    vec = False;
-		    vec(offset) = key->asBool();
- 		    out.define(base, vec);
-		} else {
-		    Vector<Bool> vec;
-		    out.get(base, vec);
-		    nelm = vec.size();
-		    if(offset<nelm){
-		      vec(offset) = key->asBool();
-		      out.define(base, vec);
-		    }
-		    else{
-		      os << LogIO::WARN << "Ignoring field '" << fullName << 
-			"' because the maximum permitted number " << nelm <<
-			" is already reached. Continuing." << LogIO::POST;
-		    }
-		}
-		break;
-	    case FITS::STRING : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayString) {
-			os << LogIO::WARN << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    String tmp = key->asString();
-		    // I think its a bug that that the FITS classes leave keywords
-		    // with trailing blank spaces, but they do.  Trailing blanks
-		    // are not significant in FITS keywords.
-		    // at any rate, we need to remove them
-		    RegexReplaceAll(tmp, trailing, empty);
-		    if (! out.isDefined(base)) {
-			Vector<String> vec(max1D[base] - min1D[base] + 1);
-			vec = "";
-			vec(offset) = tmp;
-			out.define(base, vec);
-		    } else {
-			Vector<String> vec;
-			out.get(base, vec);
-			nelm = vec.size();
-			if(offset<nelm){
-			  vec(offset) = tmp;
-			  out.define(base, vec);
-			}
-			else{
-			  os << LogIO::WARN << "Ignoring field '" << fullName << 
-			    "' because the maximum permitted number " << nelm << 
-			    " is already reached. Continuing." << LogIO::POST;
-			}
-		    }
-		}
-		break;
-	    case FITS::FLOAT :  // Convert to DOUBLE!!
-		if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-		    os << LogIO::WARN << "Ignoring field '" << fullName <<
-			"' because its type does not match already created" <<
-			" field " << base << ". Continuing." << LogIO::POST;
-		    break;
-		}
-		if (! out.isDefined(base)) {
-		    Vector<Double> vec(max1D[base] - min1D[base] + 1);
-		    vec = 0.0;
-		    vec(offset) = key->asFloat();
-		    out.define(base, vec);
-		} else {
-		    Vector<Double> vec;
-		    out.get(base, vec);
-		    nelm = vec.size();
-		    if(offset<nelm){
-		      vec(offset) = key->asFloat();
-		      out.define(base, vec);
-		    }
-		    else{
-		      os << LogIO::WARN << "Ignoring field '" << fullName << 
-			"' because the maximum permitted number " << nelm <<
-			" is already reached. Continuing." << LogIO::POST;
-		    }
-		}
-		break;
-	    case FITS::DOUBLE : 
-		if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-		    os << LogIO::WARN << "Ignoring field '" << fullName <<
-			"' because its type does not match already created" <<
-			" field " << base << ". Continuing." << LogIO::POST;
-		    break;
-		}
-		if (! out.isDefined(base)) {
-		    Vector<Double> vec(max1D[base] - min1D[base] + 1);
-		    vec = 0.0;
-		    vec(offset) = key->asDouble();
-		    out.define(base, vec);
-		} else {
-		    Vector<Double> vec;
-		    out.get(base, vec);
-		    nelm = vec.size();
-		    if(offset<nelm){
-		      vec(offset) = key->asDouble();
-		      out.define(base, vec);
-		    }
-		    else{
-		      os << LogIO::WARN << "Ignoring field '" << fullName << 
-			"' because the maximum permitted number " << nelm <<
-			" is already reached. Continuing." << LogIO::POST;
-		    }
-		}
-		break;
-	    case FITS::LONG : 
-		if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
-		    os << LogIO::WARN << "Ignoring field '" << fullName <<
-			"' because its type does not match already created" <<
-			" field " << base << ". Continuing." << LogIO::POST;
-		    break;
-		}
-		if (! out.isDefined(base)) {
-		    Vector<Int> vec(max1D[base] - min1D[base] + 1);
-		    vec = 0;
-		    vec(offset) = key->asInt();
-		    out.define(base, vec);
-		} else {
-		    Vector<Int> vec;
-		    out.get(base, vec);
-		    nelm = vec.size();
-		    if(offset<nelm){
-		      vec(offset) = key->asInt();
-		      out.define(base, vec);
-		    }
-		    else{
-		      os << LogIO::WARN << "Ignoring field '" << fullName << 
-			"' because the maximum permitted number " << nelm <<
-			" is already reached. Continuing." << LogIO::POST;
-		    }
-		}
-		break;
-	    case FITS::COMPLEX : 
-		if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
-		    os << LogIO::WARN << "Ignoring field '" << fullName <<
-			"' because its type does not match already created" <<
-			" field " << base << ". Continuing." << LogIO::POST;
-		    break;
-		}
-		if (! out.isDefined(base)) {
-		    Vector<Complex> vec(max1D[base] - min1D[base] + 1);
-		    vec = Complex(0,0);
-		    vec(offset) = key->asComplex();
-		    out.define(base, vec);
-		} else {
-		    Vector<Complex> vec;
-		    out.get(base, vec);
-		    nelm = vec.size();
-		    if(offset<nelm){
-		      vec(offset) = key->asComplex();
-		      out.define(base, vec);
-		    }
-		    else{
-		      os << LogIO::WARN << "Ignoring field '" << fullName << 
-			"' because the maximum permitted number " << nelm <<
-			" is already reached. Continuing." << LogIO::POST;
-		    }
-		}
-		break;
-	    case FITS::DCOMPLEX : 
-		if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
-		    os << LogIO::WARN << "Ignoring field '" << fullName <<
-			"' because its type does not match already created" <<
-			" field " << base << ". Continuing." << LogIO::POST;
-		    break;
-		}
-		if (! out.isDefined(base)) {
-		    Vector<DComplex> vec(max1D[base] - min1D[base] + 1);
-		    vec = DComplex(0,0);
-		    vec(offset) = key->asDComplex();
-		    out.define(base, vec);
-		} else {
-		    Vector<DComplex> vec;
-		    out.get(base, vec);
-		    nelm = vec.size();
-		    if(offset<nelm){
-		      vec(offset) = key->asDComplex();
-		      out.define(base, vec);
-		    }
-		    else{
-		      os << LogIO::WARN << "Ignoring field '" << fullName << 
-			"' because the maximum permitted number " << nelm <<
-			" is already reached. Continuing." << LogIO::POST;
-		    }
-		}
-		break;
-	    default:
-		os << LogIO::SEVERE << "Unknown type for keyword '" 
-		   << fullName << "'. Continuing." << LogIO::POST;
-	    }
-	} else {
-	    // It's a scalar
-	    if (out.isDefined(fullName) && fullName != "naxis") {
-		os << LogIO::WARN << "Scalar keyword " << fullName << 
-		    " will overwrite array field of same name. Continuing." << 
-		    LogIO::POST;
-	    }
-
-	    switch (key->type()) {
-	    case FITS::LOGICAL:
-		out.define(fullName,key->asBool());
-		break;
-	    case FITS::STRING :
-		{
-		    String tmp = key->asString();
-		    // I think its a bug that that the FITS classes leave keywords
-		    // with trailing blank spaces, but they do.  Trailing blanks
-		    // are not significant in FITS keywords.
-		    // at any rate, we need to remove them
-		    RegexReplaceAll(tmp, trailing, empty);
-		    out.define(fullName, tmp);
-		}
-		break;
-	    case FITS::FLOAT : 
-		out.define(fullName,key->asFloat());
-		break;
-	    case FITS::DOUBLE : 
-		out.define(fullName,key->asDouble());
-		break;
-	    case FITS::LONG : 
-		out.define(fullName,key->asInt());
-		break;
-	    case FITS::COMPLEX : 
-		out.define(fullName,key->asComplex());
-		break;
-	    case FITS::DCOMPLEX : 
-		out.define(fullName,key->asDComplex());
-		break;
-	    case FITS::NOVALUE :
-		// Skip all other than history
-		if (!ignoreHistory && key->kw().name() == FITS::HISTORY) {
-		    addHistory(out, key->comm());
-		}
-		break;
-	    default:
-		os << LogIO::SEVERE << "Unknown type for keyword '" << 
-		    fullName << "'. Continuing." << LogIO::POST;
-	    }
+        // or its dimensionality has changed the run has ended.
+        if (in.shape(end).nelements() != ndim) {
+          break;
         }
+        end++;
+      }
 
-	if (out.isDefined(fullName) && key->comm() != 0 && key->commlen()>0) {
-	    out.setComment(fullName, key->comm());
-	}
+      // Advance i to the right place so we don't see these fields
+      // more than once.
+      i = end - 1;
 
-	key = in.next();
-    }
+      // name length check.  Keyword names must be <= 8 characters.
+      // also do number of elements check
+      // Note that we emit a SEVERE error but go on any way.
+      for (uInt j = start; j < end; j++) {
+        if (ndim == 2) {
+          // need ii_jja for this one, only 2 characters left for name
+          if (in.name(j).length() > 2) {
+            os << LogIO::SEVERE << "Name is too long for array field " << in.name(j)
+               << " - name will be truncated to first 2 characters." << LogIO::POST;
+            ok = False;
+          }
+          // at most, 99 elements per dimension
+          if (in.shape(i)(0) > 99 || in.shape(i)(1) > 99) {
+            os << LogIO::SEVERE << "Too many rows or columns for array field " << in.name(j)
+               << " - the first 99 rows and the first 99 columns will be used." << LogIO::POST;
+            ok = False;
+          }
+        } else {
+          // at most 999 elements
+          if (length > 999) {
+            os << LogIO::SEVERE << "Too many elements for field " << in.name(j)
+               << " - the first 999 elements will be used." << LogIO::POST;
+            ok = False;
+          }
+          String slen = std::to_string(length);
+          if (in.name(j).length() + slen.length() > 8) {
+            os << LogIO::SEVERE << "Name is too long for array field " << in.name(j)
+               << " - name will be truncated to first " << (8 - uInt(slen.length()))
+               << " characters." << LogIO::POST;
+            ok = False;
+          }
+        }
+      }
 
-
-    removeKeywords(out, ignore);
-    return ok;
-}
-
-void FITSKeywordUtil::removeKeywords(RecordInterface &out,
-				     const Vector<String> &ignore)
-{
-    LogIO os(LogOrigin("FITSKeywordUtil", "removeKeywords", WHERE));
-
-    const Int nregex = ignore.nelements();
-    std::vector<std::regex> regexlist(nregex);
-    Int i;
-    for (i=0; i < nregex; i++) {
-        regexlist[i] = std::regex(ignore(i));
-    }
-
-    const Int nfields = out.nfields();
-    // Go backwards because removing a field causes the previous fields to
-    // be renumbered.
-    String nametmp;
-    for (i=nfields - 1; i>= 0; i--) {
-	nametmp = out.name(i);
-	for (Int j=0; j<nregex; j++) {
-	    if (std::regex_search(nametmp, regexlist[j])) {
-		out.removeField(i);
-		break;
-	    }
-	}
-    }
-}
-
-Bool FITSKeywordUtil::fromTDIM(IPosition& shape, const String& tdim)
-{
-    Bool ok = True;
-    // verify that it has the right form
-    // whitespace ( anything ) whitespace
-    if (RegexMatches(tdim, Regex("[:space:]*[(].*[)][:space:]*"))) {
-	// count commas to get number of elements
-	std::string fields(tdim);
-	fields = GetStringAfter(fields, "(");
-	fields = GetStringUpToExcluding(fields, ")");
-	Int nelem = std::count(fields.begin(), fields.end(), ',') + 1;
-	String * carrst = new String [nelem];
-       	if (split(fields, carrst, nelem, ',') != nelem) {
-	    ok = False;
-	} else {
-	    shape.resize(nelem);
-	    for (Int i=0;i<nelem;i++) {
-		shape(i) = atoi(carrst[i].c_str());
-	    }
-	}
-	delete [] carrst;
+      // This is inefficient because we are getting the arrays many
+      // times. We could optimize this if this is ever a problem.
+      for (Int k = 0; k < length; k++) {
+        for (uInt j = start; j < end; j++) {
+          DataType type = in.type(j);
+          String name = upcase(in.name(j));
+          String num;
+          if (ndim == 2) {
+            if (name.length() > 2) name = name.substr(0, 2);
+            // Form i_j name
+            Int nrow = in.shape(i)(0);
+            Int ii = k % nrow + 1;
+            Int jj = k / nrow + 1;
+            ostringstream ostr;
+            if (nrow > 9) {  // i.e. the indices have more than one digit
+              ostr << setfill('0') << setw(2) << ii << "_" << setfill('0') << setw(2) << jj;
+            } else {
+              ostr << setw(1) << ii << "_" << setw(1) << jj;
+            }
+            name += ostr.str();
+          } else {
+            ostringstream ostr;
+            ostr << k + 1;
+            num = ostr.str();
+          }
+          if (name.length() > (8 - num.length())) name = name.substr(0, 8 - num.length());
+          switch (type) {
+            case TpArrayBool: {
+              Array<Bool> val;
+              in.get(j, val);
+              Bool deleteIt;
+              Bool *storage = val.getStorage(deleteIt);
+              if (ndim == 2) {
+                out.mk(name.c_str(), storage[k]);
+              } else {
+                FITS::ReservedName fname;
+                if (findReservedName(fname, name)) {
+                  out.mk(int(k + 1), fname, storage[k]);
+                } else {
+                  out.mk((name + num).c_str(), storage[k]);
+                }
+              }
+              val.putStorage(storage, deleteIt);
+            } break;
+            case TpArrayInt: {
+              Array<Int> val;
+              in.get(j, val);
+              Bool deleteIt;
+              Int *storage = val.getStorage(deleteIt);
+              if (ndim == 2) {
+                out.mk(name.c_str(), storage[k]);
+              } else {
+                FITS::ReservedName fname;
+                if (findReservedName(fname, name)) {
+                  out.mk(int(k + 1), fname, storage[k]);
+                } else {
+                  out.mk((name + num).c_str(), storage[k]);
+                }
+              }
+              val.putStorage(storage, deleteIt);
+            } break;
+            case TpArrayFloat: {
+              Array<Float> val;
+              in.get(j, val);
+              Bool deleteIt;
+              Float *storage = val.getStorage(deleteIt);
+              if (ndim == 2) {
+                out.mk(name.c_str(), storage[k]);
+              } else {
+                FITS::ReservedName fname;
+                if (findReservedName(fname, name)) {
+                  out.mk(int(k + 1), fname, storage[k]);
+                } else {
+                  out.mk((name + num).c_str(), storage[k]);
+                }
+              }
+              val.putStorage(storage, deleteIt);
+            } break;
+            case TpArrayDouble: {
+              Array<Double> val;
+              in.get(j, val);
+              Bool deleteIt;
+              Double *storage = val.getStorage(deleteIt);
+              if (ndim == 2) {
+                out.mk(name.c_str(), storage[k]);
+              } else {
+                FITS::ReservedName fname;
+                if (findReservedName(fname, name)) {
+                  out.mk(int(k + 1), fname, storage[k]);
+                } else {
+                  out.mk((name + num).c_str(), storage[k]);
+                }
+              }
+              val.putStorage(storage, deleteIt);
+            } break;
+            case TpArrayString: {
+              Array<String> val;
+              in.get(j, val);
+              Bool deleteIt;
+              String *storage = val.getStorage(deleteIt);
+              String thisVal = storage[k];
+              if (thisVal.length() > 68) {
+                os << LogIO::SEVERE << "Value of keyword " << name.c_str()
+                   << " will be truncated at 68 characters." << LogIO::POST;
+                ok = False;
+                thisVal = thisVal.substr(0, 68);
+              }
+              if (ndim == 2) {
+                out.mk(name.c_str(), thisVal.c_str());
+              } else {
+                FITS::ReservedName fname;
+                if (findReservedName(fname, name)) {
+                  out.mk(int(k + 1), fname, thisVal.c_str());
+                } else {
+                  out.mk((name + num).c_str(), thisVal.c_str());
+                }
+              }
+              val.putStorage(storage, deleteIt);
+            } break;
+            default:
+              os << LogIO::SEVERE << "Illegal FITS type " << Int(type) << " for field '" << name
+                 << "': ignoring this field." << LogIO::POST;
+              // Note that we carry on anyway
+              ok = False;
+          }
+        }
+      }
     } else {
-	ok = False;
+      os << LogIO::SEVERE << "Illegal FITS type " << Int(in.type(i)) << " for field '" << in.name(i)
+         << ". 'Must be scalar or array." << LogIO::POST;
+      // Note that we carry on anyway
+      ok = False;
     }
-    return ok;
+    i++;
+  }
+
+  return ok;
 }
 
-Bool FITSKeywordUtil::toTDIM(String& tdim, const IPosition& shape)
-{
-    Bool ok = True;
+Bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in,
+                                  const Vector<String> &ignore, Bool ignoreHistory) {
+  Bool ok = True;
 
-    ostringstream ostr;
-    ostr << "(";
-    if (shape.nelements()>0) ostr << shape(0);
-    for (uInt i=1;i<shape.nelements();i++) {
-	ostr << "," << shape(i);
+  LogIO os(LogOrigin("FITSKeywordUtil", "getKeywords", WHERE));
+
+  // Reset to the beginning of the KW list
+  in.first();
+
+  const std::regex kw1D("^[a-z0-9]*[a-z][1-9]+");  // We can have X3F, but not XF3
+  // This fails with more than 99 axes.
+  const std::regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
+  const std::regex kw2Dmodern("^[a-z][a-z]?[0-9][0-9]?[_][0-9][0-9]?");
+  const std::regex kw2Dstandard("^[[a-z][a-z]?[0-9]?[_][0-9]?");
+  const std::regex crota("crota");
+  const Regex trailing(" *$");
+  const std::regex cd("^cd[0-9]+[_][0-9]+");
+  const String empty;
+
+  // The complication in this function springs from the fact that we want to
+  // combine all the indexed and matrix (i.e. PCiiijjj or PCii_jja) keywords
+  // together into array fields in the output record.
+  //
+  // First we take a pass through the keywords noting the array keywords and
+  // their minimum and maximum indexes. Unfortunately we have to ignore the
+  // FITS keyword functions isindexed() etc. because they do not know about
+  // all indexed keywords, e.g. user-defined or "new"
+  // indexed keywords.
+  //
+  // In addition, CROTA is a special case.  It is only found on the latitude
+  // axis of direction coordinates.  If we find a CROTA, we make a full length
+  // vector of it in the output header record.  This is because the FITS
+  // header cracking routines expect all the vector fields to be length naxis
+  // The CROTA vector will be 0, except for the actual axis that had a CROTA
+
+  // CD is another special case.  It is left as scalar keywords to be interpreted
+  // by the CoordinateSystem methods according to rules coded there.
+
+  std::map<String, Int> min1D, max1D, min2Drow, min2Dcol, max2Drow, max2Dcol;
+
+  // this may be a bug in fits that it isn't in.curr()
+  const FitsKeyword *key = in.next();
+  //
+  Bool foundCROTA = False;
+  String baseCROTA;
+
+  Int naxis = -1;
+  Int maxis = -1;
+
+  while (key) {
+    String name = downcase(key->name());
+    if (name == "naxis" && !key->isindexed()) {
+      if (key->type() == FITS::LONG) {
+        naxis = key->asInt();
+      }
     }
-    ostr << ")";
-    tdim = ostr.str();
-    if (tdim.length() > 71) {
-	ok = False;
+    if (name == "maxis" && !key->isindexed()) {
+      if (key->type() == FITS::LONG) {
+        maxis = key->asInt();
+      }
     }
-    return ok;
+    //
+    if (std::regex_search(name, crota)) {
+      foundCROTA = True;
+      baseCROTA = name;
+    }
+    //
+
+    if ((std::regex_search(name, kw2Dstandard) || std::regex_search(name, kw2D) ||
+         std::regex_search(name, kw2Dmodern)) &&
+        !std::regex_search(name, cd)) {
+      Int nrow, ncol;
+      String base;
+      if (!splitKW2D(base, nrow, ncol, name)) {
+        os << LogIO::SEVERE << "Illegal matrix keyword " << name << LogIO::EXCEPTION;
+      }
+      if (min2Drow.find(base) == min2Drow.end()) min2Drow[base] = 99999;
+      if (min2Dcol.find(base) == min2Dcol.end()) min2Dcol[base] = 99999;
+      if (nrow < min2Drow[base]) {
+        min2Drow[base] = nrow;
+      }
+      if (nrow > max2Drow[base]) {
+        max2Drow[base] = nrow;
+      }
+      if (ncol < min2Dcol[base]) {
+        min2Dcol[base] = ncol;
+      }
+      if (ncol > max2Dcol[base]) {
+        max2Dcol[base] = ncol;
+      }
+    } else if ((key->isindexed() || std::regex_search(name, kw1D)) &&
+               !std::regex_search(name, cd)) {
+      String base;
+      Int num;
+      if (key->isindexed()) {
+        base = name;
+        num = key->index();
+      } else {
+        splitKW1D(base, num, name);
+      }
+      if (min1D.find(base) == min1D.end()) min1D[base] = 99999;
+      if (num < min1D[base]) {
+        min1D[base] = num;
+      }
+      if (num > max1D[base]) {
+        max1D[base] = num;
+      }
+    }
+    key = in.next();
+  }
+
+  if (foundCROTA) {
+    if (naxis == -1) {
+      os << LogIO::SEVERE << "Failed to decode naxis keyword" << LogIO::EXCEPTION;
+    }
+    if (maxis == -1) {
+      min1D[baseCROTA] = 1;
+      max1D[baseCROTA] = naxis;
+    } else {  // apparently a FITS-IDI file
+      min1D[baseCROTA] = 1;
+      max1D[baseCROTA] = maxis;
+    }
+  }
+
+  // OK, now step through actually writing all the keywords
+
+  in.first();
+  key = in.next();  // I think it's a bug in FITS that this isn't in.curr()
+  while (key) {
+    String fullName = downcase(key->name());
+
+    // Naxis and Maxis are special - it is both a scalar keywords and an
+    // indexed keyword. If we have both ignore the scalar version.
+    if ((fullName == "naxis" || fullName == "maxis") && !key->isindexed()) {
+      key = in.next();
+      continue;
+    }
+
+    // OK, it's a keyword we have to process
+    if ((std::regex_search(fullName, kw2Dstandard) || std::regex_search(fullName, kw2D) ||
+         std::regex_search(fullName, kw2Dmodern)) &&
+        !std::regex_search(fullName, cd)) {
+      Int thisRow, thisCol;
+      String base;
+      splitKW2D(base, thisRow, thisCol, fullName);
+      thisRow -= min2Drow[base];
+      thisCol -= min2Dcol[base];
+      Int fnum = out.fieldNumber(base);
+      Int nrow = max2Drow[base] - min2Drow[base] + 1;
+      Int ncol = max2Dcol[base] - min2Dcol[base] + 1;
+      switch (key->type()) {
+        case FITS::LOGICAL: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<Bool> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = False;
+          } else {
+            out.get(base, mat);
+          }
+          mat(thisRow, thisCol) = key->asBool();
+          out.define(base, mat);
+        } break;
+        case FITS::STRING: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayString) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<String> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = "";
+          } else {
+            out.get(base, mat);
+          }
+          // I think its a bug that the FITS classes leave keywords
+          // with trailing blank spaces, but they do.  Trailing blanks
+          // are not significant in FITS keywords.
+          // at any rate, we need to remove them.
+          String tmp = key->asString();
+          RegexReplaceAll(tmp, trailing, empty);
+          mat(thisRow, thisCol) = tmp;
+          out.define(base, mat);
+        } break;
+        case FITS::FLOAT:  // Convert to DOUBLE!!
+        {
+          if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<Double> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = 0.0;
+          } else {
+            out.get(base, mat);
+          }
+          mat(thisRow, thisCol) = key->asFloat();
+          out.define(base, mat);
+        } break;
+        case FITS::DOUBLE: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<Double> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = 0.0;
+          } else {
+            out.get(base, mat);
+          }
+          mat(thisRow, thisCol) = key->asDouble();
+          out.define(base, mat);
+        } break;
+        case FITS::LONG: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<Int> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = 0;
+          } else {
+            out.get(base, mat);
+          }
+          mat(thisRow, thisCol) = key->asInt();
+          out.define(base, mat);
+        } break;
+        case FITS::COMPLEX: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<Complex> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = Complex(0, 0);
+          } else {
+            out.get(base, mat);
+          }
+          mat(thisRow, thisCol) = key->asComplex();
+          out.define(base, mat);
+        } break;
+        case FITS::DCOMPLEX: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
+            os << LogIO::SEVERE << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          Matrix<DComplex> mat;
+          if (!out.isDefined(base)) {
+            mat.resize(nrow, ncol);
+            mat = DComplex(0, 0);
+          } else {
+            out.get(base, mat);
+          }
+          mat(thisRow, thisCol) = key->asDComplex();
+          out.define(base, mat);
+        } break;
+        default:
+          os << LogIO::SEVERE << "Unknown type for keyword '" << fullName << "'. Continuing."
+             << LogIO::POST;
+      }
+    } else if (key->isindexed() ||
+               (std::regex_search(fullName, kw1D) && !std::regex_search(fullName, cd))) {
+      String base;
+      Int num;
+      if (key->isindexed()) {
+        base = fullName;
+        num = key->index();
+      } else {
+        splitKW1D(base, num, fullName);
+      }
+
+      Int offset = num - min1D[base];
+      Int nelm = 0;
+      Int fnum = out.fieldNumber(base);
+      switch (key->type()) {
+        case FITS::LOGICAL:
+          if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          if (!out.isDefined(base)) {
+            Vector<Bool> vec(max1D[base] - min1D[base] + 1);
+            vec = False;
+            vec(offset) = key->asBool();
+            out.define(base, vec);
+          } else {
+            Vector<Bool> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = key->asBool();
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+          break;
+        case FITS::STRING: {
+          if (fnum >= 0 && out.type(fnum) != TpArrayString) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          String tmp = key->asString();
+          // I think its a bug that that the FITS classes leave keywords
+          // with trailing blank spaces, but they do.  Trailing blanks
+          // are not significant in FITS keywords.
+          // at any rate, we need to remove them
+          RegexReplaceAll(tmp, trailing, empty);
+          if (!out.isDefined(base)) {
+            Vector<String> vec(max1D[base] - min1D[base] + 1);
+            vec = "";
+            vec(offset) = tmp;
+            out.define(base, vec);
+          } else {
+            Vector<String> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = tmp;
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+        } break;
+        case FITS::FLOAT:  // Convert to DOUBLE!!
+          if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          if (!out.isDefined(base)) {
+            Vector<Double> vec(max1D[base] - min1D[base] + 1);
+            vec = 0.0;
+            vec(offset) = key->asFloat();
+            out.define(base, vec);
+          } else {
+            Vector<Double> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = key->asFloat();
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+          break;
+        case FITS::DOUBLE:
+          if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          if (!out.isDefined(base)) {
+            Vector<Double> vec(max1D[base] - min1D[base] + 1);
+            vec = 0.0;
+            vec(offset) = key->asDouble();
+            out.define(base, vec);
+          } else {
+            Vector<Double> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = key->asDouble();
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+          break;
+        case FITS::LONG:
+          if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          if (!out.isDefined(base)) {
+            Vector<Int> vec(max1D[base] - min1D[base] + 1);
+            vec = 0;
+            vec(offset) = key->asInt();
+            out.define(base, vec);
+          } else {
+            Vector<Int> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = key->asInt();
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+          break;
+        case FITS::COMPLEX:
+          if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          if (!out.isDefined(base)) {
+            Vector<Complex> vec(max1D[base] - min1D[base] + 1);
+            vec = Complex(0, 0);
+            vec(offset) = key->asComplex();
+            out.define(base, vec);
+          } else {
+            Vector<Complex> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = key->asComplex();
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+          break;
+        case FITS::DCOMPLEX:
+          if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
+            os << LogIO::WARN << "Ignoring field '" << fullName
+               << "' because its type does not match already created" << " field " << base
+               << ". Continuing." << LogIO::POST;
+            break;
+          }
+          if (!out.isDefined(base)) {
+            Vector<DComplex> vec(max1D[base] - min1D[base] + 1);
+            vec = DComplex(0, 0);
+            vec(offset) = key->asDComplex();
+            out.define(base, vec);
+          } else {
+            Vector<DComplex> vec;
+            out.get(base, vec);
+            nelm = vec.size();
+            if (offset < nelm) {
+              vec(offset) = key->asDComplex();
+              out.define(base, vec);
+            } else {
+              os << LogIO::WARN << "Ignoring field '" << fullName
+                 << "' because the maximum permitted number " << nelm
+                 << " is already reached. Continuing." << LogIO::POST;
+            }
+          }
+          break;
+        default:
+          os << LogIO::SEVERE << "Unknown type for keyword '" << fullName << "'. Continuing."
+             << LogIO::POST;
+      }
+    } else {
+      // It's a scalar
+      if (out.isDefined(fullName) && fullName != "naxis") {
+        os << LogIO::WARN << "Scalar keyword " << fullName
+           << " will overwrite array field of same name. Continuing." << LogIO::POST;
+      }
+
+      switch (key->type()) {
+        case FITS::LOGICAL:
+          out.define(fullName, key->asBool());
+          break;
+        case FITS::STRING: {
+          String tmp = key->asString();
+          // I think its a bug that that the FITS classes leave keywords
+          // with trailing blank spaces, but they do.  Trailing blanks
+          // are not significant in FITS keywords.
+          // at any rate, we need to remove them
+          RegexReplaceAll(tmp, trailing, empty);
+          out.define(fullName, tmp);
+        } break;
+        case FITS::FLOAT:
+          out.define(fullName, key->asFloat());
+          break;
+        case FITS::DOUBLE:
+          out.define(fullName, key->asDouble());
+          break;
+        case FITS::LONG:
+          out.define(fullName, key->asInt());
+          break;
+        case FITS::COMPLEX:
+          out.define(fullName, key->asComplex());
+          break;
+        case FITS::DCOMPLEX:
+          out.define(fullName, key->asDComplex());
+          break;
+        case FITS::NOVALUE:
+          // Skip all other than history
+          if (!ignoreHistory && key->kw().name() == FITS::HISTORY) {
+            addHistory(out, key->comm());
+          }
+          break;
+        default:
+          os << LogIO::SEVERE << "Unknown type for keyword '" << fullName << "'. Continuing."
+             << LogIO::POST;
+      }
+    }
+
+    if (out.isDefined(fullName) && key->comm() != 0 && key->commlen() > 0) {
+      out.setComment(fullName, key->comm());
+    }
+
+    key = in.next();
+  }
+
+  removeKeywords(out, ignore);
+  return ok;
 }
 
-static void addText(RecordInterface &header, const String &comment,
-		    const char *leader)
-{
-    static MLCG random;
-    static Bool init = False;
-    if (!init) {
-	Time now;
-	init = True;
-	random.seed1(long(now.modifiedJulianDay()*86400.0));
+void FITSKeywordUtil::removeKeywords(RecordInterface &out, const Vector<String> &ignore) {
+  LogIO os(LogOrigin("FITSKeywordUtil", "removeKeywords", WHERE));
+
+  const Int nregex = ignore.nelements();
+  std::vector<std::regex> regexlist(nregex);
+  Int i;
+  for (i = 0; i < nregex; i++) {
+    regexlist[i] = std::regex(ignore(i));
+  }
+
+  const Int nfields = out.nfields();
+  // Go backwards because removing a field causes the previous fields to
+  // be renumbered.
+  String nametmp;
+  for (i = nfields - 1; i >= 0; i--) {
+    nametmp = out.name(i);
+    for (Int j = 0; j < nregex; j++) {
+      if (std::regex_search(nametmp, regexlist[j])) {
+        out.removeField(i);
+        break;
+      }
     }
+  }
+}
 
-    Vector<String> lines = stringToVector(comment, '\n');
-    // Use a random number to prevent a CUBIC behaviour:
-    //   (N cards * N passes through the following loop * N for isDefined)
-    String keyname;
-    for (uInt i=0; i<lines.nelements(); i++) {
-        Int offset = static_cast<Int>(random.asuInt());
-	do {
-	    ostringstream os;
-	    os << offset;
-	    keyname = leader + os.str();
-	    offset++;
-	} while (header.isDefined(keyname));
-	header.define(keyname, lines(i));
+Bool FITSKeywordUtil::fromTDIM(IPosition &shape, const String &tdim) {
+  Bool ok = True;
+  // verify that it has the right form
+  // whitespace ( anything ) whitespace
+  if (RegexMatches(tdim, Regex("[:space:]*[(].*[)][:space:]*"))) {
+    // count commas to get number of elements
+    std::string fields(tdim);
+    fields = GetStringAfter(fields, "(");
+    fields = GetStringUpToExcluding(fields, ")");
+    Int nelem = std::count(fields.begin(), fields.end(), ',') + 1;
+    String *carrst = new String[nelem];
+    if (split(fields, carrst, nelem, ',') != nelem) {
+      ok = False;
+    } else {
+      shape.resize(nelem);
+      for (Int i = 0; i < nelem; i++) {
+        shape(i) = atoi(carrst[i].c_str());
+      }
     }
+    delete[] carrst;
+  } else {
+    ok = False;
+  }
+  return ok;
 }
 
-void FITSKeywordUtil::addComment(RecordInterface &header, const String &comment)
-{
-    addText(header, comment, "comment");
+Bool FITSKeywordUtil::toTDIM(String &tdim, const IPosition &shape) {
+  Bool ok = True;
+
+  ostringstream ostr;
+  ostr << "(";
+  if (shape.nelements() > 0) ostr << shape(0);
+  for (uInt i = 1; i < shape.nelements(); i++) {
+    ostr << "," << shape(i);
+  }
+  ostr << ")";
+  tdim = ostr.str();
+  if (tdim.length() > 71) {
+    ok = False;
+  }
+  return ok;
 }
 
-void FITSKeywordUtil::addHistory(RecordInterface &header, const String &comment)
-{
-    addText(header, comment, "history");
+static void addText(RecordInterface &header, const String &comment, const char *leader) {
+  static MLCG random;
+  static Bool init = False;
+  if (!init) {
+    Time now;
+    init = True;
+    random.seed1(long(now.modifiedJulianDay() * 86400.0));
+  }
+
+  Vector<String> lines = stringToVector(comment, '\n');
+  // Use a random number to prevent a CUBIC behaviour:
+  //   (N cards * N passes through the following loop * N for isDefined)
+  String keyname;
+  for (uInt i = 0; i < lines.nelements(); i++) {
+    Int offset = static_cast<Int>(random.asuInt());
+    do {
+      ostringstream os;
+      os << offset;
+      keyname = leader + os.str();
+      offset++;
+    } while (header.isDefined(keyname));
+    header.define(keyname, lines(i));
+  }
 }
 
-} //# NAMESPACE CASACORE - END
+void FITSKeywordUtil::addComment(RecordInterface &header, const String &comment) {
+  addText(header, comment, "comment");
+}
 
+void FITSKeywordUtil::addHistory(RecordInterface &header, const String &comment) {
+  addText(header, comment, "history");
+}
+
+}  // namespace casacore
