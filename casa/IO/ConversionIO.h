@@ -136,6 +136,13 @@ private:
     // Initialize the <src>itsSize</src> and <src>itsCopy</src> variables.
     void init();
 
+    template<typename T>
+    void initType(uInt& size, Bool& copy) const;
+
+    template<typename T>
+    size_t writeGeneric (size_t nvalues, const T* value, size_t type_size, bool copy);
+    template<typename T>
+    size_t readGeneric (size_t nvalues, T* value, size_t type_size, bool copy);
 
     //# The data.
     std::shared_ptr<DataConversion> itsConversion;
