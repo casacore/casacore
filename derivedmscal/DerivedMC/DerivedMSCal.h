@@ -1,32 +1,32 @@
-//# DerivedMSCal.h: Virtual column engine to return derived MS values
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # DerivedMSCal.h: Virtual column engine to return derived MS values
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef DERIVEDMSCAL_DERIVEDMSCAL_H
 #define DERIVEDMSCAL_DERIVEDMSCAL_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
@@ -43,7 +43,7 @@ namespace casacore {
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> The Table Data Managers concept as described in module file
 //        <linkto module="Tables:Data Managers">Tables.h</linkto>
 //   <li> MeasurementSet
@@ -127,17 +127,15 @@ namespace casacore {
 //  <li> Have a conversion engine per field/antenna/feed?
 // </todo>
 
-
-class DerivedMSCal : public VirtualColumnEngine
-{
-public:
-    // Create the data manager.
+class DerivedMSCal : public VirtualColumnEngine {
+ public:
+  // Create the data manager.
   DerivedMSCal();
 
   // Create a Lofar storage manager with the given name.
   // The specifications are part of the record (as created by dataManagerSpec).
-  explicit DerivedMSCal (const Record& spec);
-  
+  explicit DerivedMSCal(const Record& spec);
+
   ~DerivedMSCal();
 
   // Clone this object.
@@ -148,61 +146,57 @@ public:
 
   // Get the type name of the data manager (i.e. DerivedMSCal).
   virtual String dataManagerType() const;
-  
+
   // Record a record containing data manager specifications.
   virtual Record dataManagerSpec() const;
 
   // Columns can be added.
   virtual Bool canAddColumn() const;
-  
+
   // Columns can be removed.
   virtual Bool canRemoveColumn() const;
-  
+
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
   // The caller has to delete the object.
   // The dataManName is not used.
-  static DataManager* makeObject (const String& dataManName,
-                                  const Record& spec);
+  static DataManager* makeObject(const String& dataManName, const Record& spec);
 
   // Register the class name and the static makeObject "constructor".
   // This will make the engine known to the table system.
   static void registerClass();
 
-private:
+ private:
   // Copy constructor cannot be used.
-  DerivedMSCal (const DerivedMSCal& that);
+  DerivedMSCal(const DerivedMSCal& that);
 
   // Assignment cannot be used.
-  DerivedMSCal& operator= (const DerivedMSCal& that);
-  
+  DerivedMSCal& operator=(const DerivedMSCal& that);
+
   // Do the final addition of a column.
   // It won't do anything.
-  virtual void addColumn (DataManagerColumn*);
-  
+  virtual void addColumn(DataManagerColumn*);
+
   // Remove a column from the data file.
   // It won't do anything.
-  virtual void removeColumn (DataManagerColumn*);
-  
+  virtual void removeColumn(DataManagerColumn*);
+
   // Create a column in the storage manager on behalf of a table column.
   // The caller has to delete the newly created object.
   // <group>
   // Create a scalar column.
-  virtual DataManagerColumn* makeScalarColumn (const String& aName,
-					       int aDataType,
-					       const String& aDataTypeID);
+  virtual DataManagerColumn* makeScalarColumn(const String& aName, int aDataType,
+                                              const String& aDataTypeID);
   // Create an indirect array column.
-  virtual DataManagerColumn* makeIndArrColumn (const String& aName,
-					       int aDataType,
-					       const String& aDataTypeID);
+  virtual DataManagerColumn* makeIndArrColumn(const String& aName, int aDataType,
+                                              const String& aDataTypeID);
   // </group>
 
-  //# Declare member variables.
-  MSCalEngine                 itsEngine;
-  vector<DataManagerColumn*>  itsColumns;
+  // # Declare member variables.
+  MSCalEngine itsEngine;
+  vector<DataManagerColumn*> itsColumns;
 };
 
-
-} //# end namespace
+}  // namespace casacore
 
 #endif

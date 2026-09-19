@@ -1,32 +1,32 @@
-//# UDFMSCal.h: TaQL UDFs to calculate derived MS values
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # UDFMSCal.h: TaQL UDFs to calculate derived MS values
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef DERIVEDMSCAL_UDFMSCAL_H
 #define DERIVEDMSCAL_UDFMSCAL_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
 #include <casacore/ms/MeasurementSets/StokesConverter.h>
@@ -46,7 +46,7 @@ namespace casacore {
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> UDFBase
 // </prerequisite>
 
@@ -112,169 +112,170 @@ namespace casacore {
 // to add columns for them.
 // </motivation>
 
-  class UDFMSCal: public UDFBase
-  {
-  public:
-    // Define the possible 'column' types.
-    enum ColType {HA, HADEC, PA, LAST, AZEL, ITRF, UVWWVL, UVWWVLS,
-                  NEWUVW, NEWUVWWVL, NEWUVWWVLS, DELAY,
-                  STOKES, SELECTION, GETVALUE};
-    // Define the possible selection types.
-    enum SelType {BASELINE, CORR, TIME, UVDIST, SPW, FIELD,
-                  FEED, ARRAY, SCAN, STATE, OBS};
-
-    // Create object the given ColType and SelType.
-    UDFMSCal (ColType, Int arg);
-
-    // Create the object for getting a value from a column in a subtable.
-    // <group>
-    explicit UDFMSCal (const String& funcName);
-    UDFMSCal (const String& funcName, const String& subtabName,
-              const String& idColName, Int arg=0);
-    UDFMSCal (const String& funcName, const String& subtabName,
-              const String& idColName, const String& colName);
-    // </group>
-
-    // Function to create an object.
-    static UDFBase* makeHA       (const String&);
-    static UDFBase* makeHA1      (const String&);
-    static UDFBase* makeHA2      (const String&);
-    static UDFBase* makeHADEC    (const String&);
-    static UDFBase* makeHADEC1   (const String&);
-    static UDFBase* makeHADEC2   (const String&);
-    static UDFBase* makePA1      (const String&);
-    static UDFBase* makePA2      (const String&);
-    static UDFBase* makeLAST     (const String&);
-    static UDFBase* makeLAST1    (const String&);
-    static UDFBase* makeLAST2    (const String&);
-    static UDFBase* makeAZEL     (const String&);
-    static UDFBase* makeAZEL1    (const String&);
-    static UDFBase* makeAZEL2    (const String&);
-    static UDFBase* makeITRF     (const String&);
-    static UDFBase* makeUvwWvl   (const String&);
-    static UDFBase* makeUvwWvls  (const String&);
-    static UDFBase* makeUvwJ2000 (const String&);
-    static UDFBase* makeWvlJ2000 (const String&);
-    static UDFBase* makeWvlsJ2000(const String&);
-    static UDFBase* makeUvwAPP   (const String&);
-    static UDFBase* makeWvlAPP   (const String&);
-    static UDFBase* makeWvlsAPP  (const String&);
-    static UDFBase* makeDelay    (const String&);
-    static UDFBase* makeDelay1   (const String&);
-    static UDFBase* makeDelay2   (const String&);
-    static UDFBase* makeStokes   (const String&);
-    static UDFBase* makeBaseline (const String&);
-    static UDFBase* makeCorr     (const String&);
-    static UDFBase* makeTime     (const String&);
-    static UDFBase* makeUVDist   (const String&);
-    static UDFBase* makeSpw      (const String&);
-    static UDFBase* makeField    (const String&);
-    static UDFBase* makeFeed     (const String&);
-    static UDFBase* makeArray    (const String&);
-    static UDFBase* makeScan     (const String&);
-    static UDFBase* makeState    (const String&);
-    static UDFBase* makeObs      (const String&);
-    static UDFBase* makeAnt1Name (const String&);
-    static UDFBase* makeAnt2Name (const String&);
-    static UDFBase* makeAnt1Col  (const String&);
-    static UDFBase* makeAnt2Col  (const String&);
-    static UDFBase* makeStateCol (const String&);
-    static UDFBase* makeObsCol   (const String&);
-    static UDFBase* makeSpwCol   (const String&);
-    static UDFBase* makePolCol   (const String&);
-    static UDFBase* makeFieldCol (const String&);
-    static UDFBase* makeProcCol  (const String&);
-    static UDFBase* makeSubCol   (const String&);
-
-    // Setup the object.
-    virtual void setup (const Table&, const TaQLStyle&);
-
-    // Get the value.
-    virtual Bool     getBool     (const TableExprId& id);
-    virtual Int64    getInt      (const TableExprId& id);
-    virtual Double   getDouble   (const TableExprId& id);
-    virtual DComplex getDComplex (const TableExprId& id);
-    virtual String   getString   (const TableExprId& id);
-    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
-    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
-    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
-    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual MArray<String>   getArrayString   (const TableExprId& id);
-
-    // Let a derived class recreate its column objects in case a selection
-    // has to be applied.
-    virtual void recreateColumnObjects (const Vector<rownr_t>& rownrs);
-
-  private:
-    // Setup the Stokes conversion.
-    void setupStokes (const Table& table,
-                      std::vector<TENShPtr>& operands);
-
-    // Setup the baseline selection.
-    void setupSelection (const Table& table,
-                         std::vector<TENShPtr>& operands);
-
-    // Setup direction conversion if a direction is explicitly given.
-    void setupDir (TENShPtr& operand);
-
-    // Setup getting column values from a subtable.
-    void setupGetValue (const Table& table,
-                        std::vector<TENShPtr>& operands);
-
-    // Setup getting the wavelength information.
-    void setupWvls (const Table& table,
-                    std::vector<TENShPtr>& operands,
-                    uInt nargMax);
-
-    // Get the rownr in the subtable for GetValue.
-    // If itsArg==1 it uses indirection using itsDDIds.
-    Int64 getRowNr (const TableExprId& id);
-
-    // Convert the UVW coordinates to wavelengths for the full spectrum.
-    Array<Double> toWvls (const TableExprId&);
-
-    //# Data members.
-    MSCalEngine     itsEngine;
-    StokesConverter itsStokesConv;
-    TableExprNode   itsDataNode;   //# for stokes, selections and getvalues
-    TableExprNode   itsIdNode;     //# node giving rowid for getvalues
-    ArrayColumn<Double> itsUvwCol;
-    ColType         itsType;
-    Int             itsArg;        //# antnr or SelType or getValueType
-                                   //# -1 subtable can be empty
-                                   //#  0 normal subtable
-                                   //#  1 indirect subtable via DATA_DESC_ID
-    String          itsFuncName;
-    String          itsSubTabName;
-    String          itsIdColName;
-    String          itsSubColName;
-    //# Preallocate arrays to avoid having to construct them too often.
-    //# Makes it thread-unsafe though.
-    Vector<Double>  itsTmpVector;
-    Array<Double>   itsTmpUvwWvl;
-    Vector<Int>     itsDDIds;      //# spw or pol ids from DATA_DESCRIPTION
-    vector<Double>          itsWavel;
-    vector<Vector<Double> > itsWavels;
+class UDFMSCal : public UDFBase {
+ public:
+  // Define the possible 'column' types.
+  enum ColType {
+    HA,
+    HADEC,
+    PA,
+    LAST,
+    AZEL,
+    ITRF,
+    UVWWVL,
+    UVWWVLS,
+    NEWUVW,
+    NEWUVWWVL,
+    NEWUVWWVLS,
+    DELAY,
+    STOKES,
+    SELECTION,
+    GETVALUE
   };
+  // Define the possible selection types.
+  enum SelType { BASELINE, CORR, TIME, UVDIST, SPW, FIELD, FEED, ARRAY, SCAN, STATE, OBS };
 
+  // Create object the given ColType and SelType.
+  UDFMSCal(ColType, Int arg);
 
-  // <summary>
-  // Error handler class for MSSel selection
-  // </summary>
-  // <synopsis>
-  // This error handler ignores the errors rising from the MSSel parsers.
-  // </synopsis>
-  class UDFMSCalErrorHandler : public MSSelectionErrorHandler
-  {
-  public:
-    ~UDFMSCalErrorHandler() override = default;
-    void handleError (MSSelectionError&) override
-      {}
-    void reportError (const char*, const String) override
-      {}
-  };
+  // Create the object for getting a value from a column in a subtable.
+  // <group>
+  explicit UDFMSCal(const String& funcName);
+  UDFMSCal(const String& funcName, const String& subtabName, const String& idColName, Int arg = 0);
+  UDFMSCal(const String& funcName, const String& subtabName, const String& idColName,
+           const String& colName);
+  // </group>
 
+  // Function to create an object.
+  static UDFBase* makeHA(const String&);
+  static UDFBase* makeHA1(const String&);
+  static UDFBase* makeHA2(const String&);
+  static UDFBase* makeHADEC(const String&);
+  static UDFBase* makeHADEC1(const String&);
+  static UDFBase* makeHADEC2(const String&);
+  static UDFBase* makePA1(const String&);
+  static UDFBase* makePA2(const String&);
+  static UDFBase* makeLAST(const String&);
+  static UDFBase* makeLAST1(const String&);
+  static UDFBase* makeLAST2(const String&);
+  static UDFBase* makeAZEL(const String&);
+  static UDFBase* makeAZEL1(const String&);
+  static UDFBase* makeAZEL2(const String&);
+  static UDFBase* makeITRF(const String&);
+  static UDFBase* makeUvwWvl(const String&);
+  static UDFBase* makeUvwWvls(const String&);
+  static UDFBase* makeUvwJ2000(const String&);
+  static UDFBase* makeWvlJ2000(const String&);
+  static UDFBase* makeWvlsJ2000(const String&);
+  static UDFBase* makeUvwAPP(const String&);
+  static UDFBase* makeWvlAPP(const String&);
+  static UDFBase* makeWvlsAPP(const String&);
+  static UDFBase* makeDelay(const String&);
+  static UDFBase* makeDelay1(const String&);
+  static UDFBase* makeDelay2(const String&);
+  static UDFBase* makeStokes(const String&);
+  static UDFBase* makeBaseline(const String&);
+  static UDFBase* makeCorr(const String&);
+  static UDFBase* makeTime(const String&);
+  static UDFBase* makeUVDist(const String&);
+  static UDFBase* makeSpw(const String&);
+  static UDFBase* makeField(const String&);
+  static UDFBase* makeFeed(const String&);
+  static UDFBase* makeArray(const String&);
+  static UDFBase* makeScan(const String&);
+  static UDFBase* makeState(const String&);
+  static UDFBase* makeObs(const String&);
+  static UDFBase* makeAnt1Name(const String&);
+  static UDFBase* makeAnt2Name(const String&);
+  static UDFBase* makeAnt1Col(const String&);
+  static UDFBase* makeAnt2Col(const String&);
+  static UDFBase* makeStateCol(const String&);
+  static UDFBase* makeObsCol(const String&);
+  static UDFBase* makeSpwCol(const String&);
+  static UDFBase* makePolCol(const String&);
+  static UDFBase* makeFieldCol(const String&);
+  static UDFBase* makeProcCol(const String&);
+  static UDFBase* makeSubCol(const String&);
 
-} //end namespace
+  // Setup the object.
+  virtual void setup(const Table&, const TaQLStyle&);
+
+  // Get the value.
+  virtual Bool getBool(const TableExprId& id);
+  virtual Int64 getInt(const TableExprId& id);
+  virtual Double getDouble(const TableExprId& id);
+  virtual DComplex getDComplex(const TableExprId& id);
+  virtual String getString(const TableExprId& id);
+  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<Int64> getArrayInt(const TableExprId& id);
+  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
+  virtual MArray<String> getArrayString(const TableExprId& id);
+
+  // Let a derived class recreate its column objects in case a selection
+  // has to be applied.
+  virtual void recreateColumnObjects(const Vector<rownr_t>& rownrs);
+
+ private:
+  // Setup the Stokes conversion.
+  void setupStokes(const Table& table, std::vector<TENShPtr>& operands);
+
+  // Setup the baseline selection.
+  void setupSelection(const Table& table, std::vector<TENShPtr>& operands);
+
+  // Setup direction conversion if a direction is explicitly given.
+  void setupDir(TENShPtr& operand);
+
+  // Setup getting column values from a subtable.
+  void setupGetValue(const Table& table, std::vector<TENShPtr>& operands);
+
+  // Setup getting the wavelength information.
+  void setupWvls(const Table& table, std::vector<TENShPtr>& operands, uInt nargMax);
+
+  // Get the rownr in the subtable for GetValue.
+  // If itsArg==1 it uses indirection using itsDDIds.
+  Int64 getRowNr(const TableExprId& id);
+
+  // Convert the UVW coordinates to wavelengths for the full spectrum.
+  Array<Double> toWvls(const TableExprId&);
+
+  // # Data members.
+  MSCalEngine itsEngine;
+  StokesConverter itsStokesConv;
+  TableExprNode itsDataNode;  // # for stokes, selections and getvalues
+  TableExprNode itsIdNode;    // # node giving rowid for getvalues
+  ArrayColumn<Double> itsUvwCol;
+  ColType itsType;
+  Int itsArg;  // # antnr or SelType or getValueType
+               // # -1 subtable can be empty
+               // #  0 normal subtable
+               // #  1 indirect subtable via DATA_DESC_ID
+  String itsFuncName;
+  String itsSubTabName;
+  String itsIdColName;
+  String itsSubColName;
+  // # Preallocate arrays to avoid having to construct them too often.
+  // # Makes it thread-unsafe though.
+  Vector<Double> itsTmpVector;
+  Array<Double> itsTmpUvwWvl;
+  Vector<Int> itsDDIds;  // # spw or pol ids from DATA_DESCRIPTION
+  vector<Double> itsWavel;
+  vector<Vector<Double>> itsWavels;
+};
+
+// <summary>
+// Error handler class for MSSel selection
+// </summary>
+// <synopsis>
+// This error handler ignores the errors rising from the MSSel parsers.
+// </synopsis>
+class UDFMSCalErrorHandler : public MSSelectionErrorHandler {
+ public:
+  ~UDFMSCalErrorHandler() override = default;
+  void handleError(MSSelectionError&) override {}
+  void reportError(const char*, const String) override {}
+};
+
+}  // namespace casacore
 
 #endif
