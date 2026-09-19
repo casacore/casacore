@@ -216,11 +216,11 @@ void DataManagerColumn::GetCells(const RefRows& rownrs, ArrayBase& arr) {
           const T* cptr = static_cast<const T*>(colCache_p.dataPtr()) + inx;
           rownr_t endrow = std::min (end, colCache_p.end());
           while (rownr <= endrow) {
-	    vec[i++] = *cptr;
+	        vec[i++] = *cptr;
             rownr += incr;
-	    cptr += incr * colCache_p.incr();
+	        cptr += incr * colCache_p.incr();
           }
-	}
+	    }
       }
       iter++;
     }
@@ -234,10 +234,10 @@ void DataManagerColumn::GetCells(const RefRows& rownrs, ArrayBase& arr) {
       rownr_t strow  = colCache_p.start();
       rownr_t endrow = colCache_p.end();
       for (rownr_t i=0; i<nr; ++i) {
-	rownr_t rownr = rows[i];
+	    rownr_t rownr = rows[i];
         if (rownr >= strow  &&  rownr <= endrow) {
-	  vec[i] = cptr[(rownr-strow)*colCache_p.incr()];
-	} else {
+	      vec[i] = cptr[(rownr-strow)*colCache_p.incr()];
+	    } else {
           getGeneric<T>(rownr, &(vec[i]));
           cptr = static_cast<const T*>(colCache_p.dataPtr());
           strow  = colCache_p.start();
