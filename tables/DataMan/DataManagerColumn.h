@@ -33,6 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <memory>
+#include <type_traits>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
