@@ -31,7 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/tables/DataMan/ISMBase.h>
+#include <casacore/tables/Tables/RefRows.h>
 #include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/OS/Conversion.h>
