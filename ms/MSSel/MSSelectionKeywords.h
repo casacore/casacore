@@ -1,27 +1,27 @@
-//# MSSelectionKeywords.h: selection keywords for the MS
-//# Copyright (C) 1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSSelectionKeywords.h: selection keywords for the MS
+// # Copyright (C) 1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSSELECTIONKEYWORDS_H
 #define MS_MSSELECTIONKEYWORDS_H
@@ -29,9 +29,10 @@
 #include <casacore/casa/aips.h>
 #include <map>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template <class T> class Block;
+template <class T>
+class Block;
 
 // forward declare the class so we can typedef it
 class MSSelectionKeywords;
@@ -61,7 +62,7 @@ typedef MSSelectionKeywords MSS;
 //
 // <synopsis>
 // This class is used to specify selections on a MeasurementSet.
-// It is a purely static class that just defines a mapping from 
+// It is a purely static class that just defines a mapping from
 // Strings to Enums, and provides these for use by classes like
 // MSSelector and MSRange
 //
@@ -83,15 +84,14 @@ typedef MSSelectionKeywords MSS;
 //   <li> add this feature
 // </todo>
 
-class MSSelectionKeywords
-{
-public:
+class MSSelectionKeywords {
+ public:
   // The fields in the MS for which selection and range operations are
   // defined. Some of these directly correspond to columns in the table,
   // others are derived quantities or columns in subtables.
-  enum Field { 
+  enum Field {
     // undefined field
-    UNDEFINED=0, 
+    UNDEFINED = 0,
     // the range of visibility amplitude
     AMPLITUDE,
     // the range of corrected vis amplitude
@@ -124,7 +124,7 @@ public:
     DATA,
     // the complex corrected data
     CORRECTED_DATA,
-    //the complex model data
+    // the complex model data
     MODEL_DATA,
     // the ratio corrected data/model data
     RATIO_DATA,
@@ -204,8 +204,8 @@ public:
     ROWS,
     // the list of scan_number values
     SCAN_NUMBER,
-    //# the list of spectral window id values
-    //# SPECTRAL_WINDOW_ID,
+    // # the list of spectral window id values
+    // # SPECTRAL_WINDOW_ID,
     // the per spectrum sigmas
     SIGMA,
     // the range of times
@@ -217,11 +217,11 @@ public:
     // the uvw coordinates
     UVW,
     // the (range of the) U coordinate (m)
-//#    Note:order of U, V and W is important, no intervening items allowed
-//#    without changing select() code.
+    // #    Note:order of U, V and W is important, no intervening items allowed
+    // #    without changing select() code.
     U,
     // the (range of the) V coordinate (m)
-    V, 
+    V,
     // the (range of the) W coordinate (m)
     W,
     // the (range of the) UV-distance (m)
@@ -230,8 +230,7 @@ public:
     WEIGHT,
     // Number of keywords
     NUMBER_KEYWORDS
-};
-
+  };
 
   // convert a keyword string to the corresponding enum
   static Field field(const String& keyword);
@@ -239,26 +238,25 @@ public:
   // convert an enum value to the corresponding keyword string
   static const String& keyword(Field field);
 
-private:
+ private:
   // This class is purely static, no instances are allowed.
   MSSelectionKeywords();
   MSSelectionKeywords(const MSSelectionKeywords& other);
   MSSelectionKeywords& operator=(const MSSelectionKeywords& other);
 
   // Get the static map.
-  static std::map<String,Int>& getMap();
+  static std::map<String, Int>& getMap();
 
   // Get the static reverse map.
   static Block<String>& getReverseMap();
 
   // Create an initialized map.
-  static std::map<String,Int> initMap();
+  static std::map<String, Int> initMap();
 
-    // Create an initialized reverse map.
+  // Create an initialized reverse map.
   static Block<String> initReverseMap();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

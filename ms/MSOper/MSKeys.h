@@ -1,26 +1,26 @@
-//# Copyright (C) 1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSKEYS_H
 #define MS_MSKEYS_H
@@ -38,10 +38,10 @@ class String;
 // and field ID. Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct SubScanKey {
-    Int obsID;
-    Int arrayID;
-    Int scan;
-    Int fieldID;
+  Int obsID;
+  Int arrayID;
+  Int scan;
+  Int fieldID;
 };
 
 // define operator<() so it can be used as a key in std::map
@@ -55,18 +55,18 @@ std::ostream& operator<<(std::ostream& os, const SubScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ScanKey {
-    Int obsID;
-    Int arrayID;
-    Int scan;
+  Int obsID;
+  Int arrayID;
+  Int scan;
 };
 
 // create a ScanKey from a SubScanKey, just omits the SubScanKey's fieldID
 inline ScanKey scanKey(const SubScanKey& subScanKey) {
-    ScanKey key;
-    key.obsID = subScanKey.obsID;
-    key.arrayID = subScanKey.arrayID;
-    key.scan = subScanKey.scan;
-    return key;
+  ScanKey key;
+  key.obsID = subScanKey.obsID;
+  key.arrayID = subScanKey.arrayID;
+  key.scan = subScanKey.scan;
+  return key;
 }
 
 std::string toString(const ScanKey& scanKey);
@@ -85,29 +85,27 @@ std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ArrayKey {
-    Int obsID;
-    Int arrayID;
+  Int obsID;
+  Int arrayID;
 };
 
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
 
 inline Bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
-    return lhs.arrayID == rhs.arrayID && lhs.obsID == rhs.obsID;
+  return lhs.arrayID == rhs.arrayID && lhs.obsID == rhs.obsID;
 }
 
-inline Bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) {
-    return ! (lhs == rhs);
-}
+inline Bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) { return !(lhs == rhs); }
 
 // construct scan keys given a set of scan numbers and an ArrayKey
 std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
 
 // represents primary key in the SOURCE table
 struct SourceKey {
-    // SOURCE_ID column
-    uInt id;
-    uInt spw;
+  // SOURCE_ID column
+  uInt id;
+  uInt spw;
 };
 
 // define operator<() so it can be used as a key in std::map
@@ -119,6 +117,6 @@ std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys);
 // given a set of scan keys, return the subset that matches the given array key
 std::set<ScanKey> filter(const std::set<ScanKey> scans, const ArrayKey& arrayKey);
 
-}
+}  // namespace casacore
 
 #endif

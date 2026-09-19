@@ -1,34 +1,34 @@
-//# MSHistoryEnums.h: Defns for the MeasurementSet HISTORY table
-//# Copyright (C) 1996,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSHistoryEnums.h: Defns for the MeasurementSet HISTORY table
+// # Copyright (C) 1996,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSHISTORYENUMS_H
 #define MS_MSHISTORYENUMS_H
 
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>
 
@@ -55,13 +55,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 
 class MSHistoryEnums {
-public:
-    // The HISTORY table colums with predefined meaning.
-    // Keys: TIME, OBSERVATION_ID
-    enum PredefinedColumns {
+ public:
+  // The HISTORY table colums with predefined meaning.
+  // Keys: TIME, OBSERVATION_ID
+  enum PredefinedColumns {
     // "True" columns are defined.<BR>
     // TYPE - UNIT - MEASURE
-    UNDEFINED_COLUMN=0,
+    UNDEFINED_COLUMN = 0,
     // Application name <BR>
     // String
     APPLICATION,
@@ -91,22 +91,22 @@ public:
     TIME,
     //
     // Number of required columns
-    NUMBER_REQUIRED_COLUMNS=TIME,
+    NUMBER_REQUIRED_COLUMNS = TIME,
     // Not a column, but just a final enum specifying the number of enums.
-    NUMBER_PREDEFINED_COLUMNS=NUMBER_REQUIRED_COLUMNS
-    };
-  
-    // Keywords with a predefined meaning
-    enum PredefinedKeywords {
+    NUMBER_PREDEFINED_COLUMNS = NUMBER_REQUIRED_COLUMNS
+  };
+
+  // Keywords with a predefined meaning
+  enum PredefinedKeywords {
     //
-    // "True" keywords are defined. 
-    UNDEFINED_KEYWORD=0,
+    // "True" keywords are defined.
+    UNDEFINED_KEYWORD = 0,
     //
     // Not a keyword, but just a final enum specifying the number of enums.
-    NUMBER_PREDEFINED_KEYWORDS=0
-    };
+    NUMBER_PREDEFINED_KEYWORDS = 0
+  };
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

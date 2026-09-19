@@ -1,39 +1,39 @@
-//# MSObservationParse.h: Classes to hold results from scan grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSObservationParse.h: Classes to hold results from scan grammar parser
+// # Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSOBSERVATIONPARSE_H
 #define MS_MSOBSERVATIONPARSE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/measures/Measures/MEpoch.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 // <summary>
 // Class to hold values from scan grammar parser
@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 // </prerequisite>
 
 // <etymology>
@@ -77,55 +77,54 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // of a table or to sort a table.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-class MSObservationParse : public MSParse
-{
-
-public:
+class MSObservationParse : public MSParse {
+ public:
   // Default constructor
-  MSObservationParse ();
-  
+  MSObservationParse();
+
   // Associate the ms and the shorthand.
-  MSObservationParse (const MeasurementSet* ms, const MSObservation& obsSubtable,
-		      const TableExprNode& colAsTEN);
-  ~MSObservationParse() {columnAsTEN_p=TableExprNode();}
+  MSObservationParse(const MeasurementSet* ms, const MSObservation& obsSubtable,
+                     const TableExprNode& colAsTEN);
+  ~MSObservationParse() { columnAsTEN_p = TableExprNode(); }
 
-  const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
-  const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
-  const TableExprNode *selectObservationIds(const Vector<Int>& scanids);
-  inline const TableExprNode *selectObservationIds() {return selectObservationIds(Vector<Int>(parsedIDList_p));}
-  const TableExprNode *selectObservationIdsGT(const Vector<Int>& scanids);
-  const TableExprNode *selectObservationIdsLT(const Vector<Int>& scanids);
-  const TableExprNode *selectObservationIdsGTEQ(const Vector<Int>& scanids);
-  const TableExprNode *selectObservationIdsLTEQ(const Vector<Int>& scanids);
-  std::vector<Int>& accumulateIDs(const Int id0, const Int id1=-1);
+  const TableExprNode* selectRangeGTAndLT(const Int& n0, const Int& n1);
+  const TableExprNode* selectRangeGEAndLE(const Int& n0, const Int& n1);
+  const TableExprNode* selectObservationIds(const Vector<Int>& scanids);
+  inline const TableExprNode* selectObservationIds() {
+    return selectObservationIds(Vector<Int>(parsedIDList_p));
+  }
+  const TableExprNode* selectObservationIdsGT(const Vector<Int>& scanids);
+  const TableExprNode* selectObservationIdsLT(const Vector<Int>& scanids);
+  const TableExprNode* selectObservationIdsGTEQ(const Vector<Int>& scanids);
+  const TableExprNode* selectObservationIdsLTEQ(const Vector<Int>& scanids);
+  std::vector<Int>& accumulateIDs(const Int id0, const Int id1 = -1);
 
-    // Get table expression node object.
+  // Get table expression node object.
   const TableExprNode node();
 
   Vector<Int> selectedIDs();
 
-  void reset(){idList.resize(0);}
+  void reset() { idList.resize(0); }
   void cleanup() {}
 
-  void setMaxObs(const Int& n) {maxObs_p=n;}
+  void setMaxObs(const Int& n) { maxObs_p = n; }
 
   static MSObservationParse* thisMSObsParser;
 
-private:
+ private:
   TableExprNode node_p;
-  Vector<Int> idList,obsIDList_p;
-  std::vector<Int>  parsedIDList_p;
+  Vector<Int> idList, obsIDList_p;
+  std::vector<Int> parsedIDList_p;
   const String colName;
   void appendToIDList(const Vector<Int>& v);
   Int maxObs_p;
   static TableExprNode columnAsTEN_p;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

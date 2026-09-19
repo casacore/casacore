@@ -1,28 +1,28 @@
 // -*- C++ -*-
-//# MSSelectableTable.h: The generic interface for tables that can be used with MSSelection
-//# Copyright (C) 1996,1997,1998,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSSelectableTable.h: The generic interface for tables that can be used with MSSelection
+// # Copyright (C) 1996,1997,1998,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSSELECTABLETABLE_H
 #define MS_MSSELECTABLETABLE_H
@@ -37,9 +37,9 @@
 #include <casacore/ms/MeasurementSets/MSMainEnums.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/ms/MSSel/MSSelectableMainColumn.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-// <summary> 
+// <summary>
 //
 // MSSelectableTable: An interface class used by MSSelection module to
 // access the sub-tables and main-table columns of MS-like tables.
@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // From "msselection" and "table".
 // </etymology>
 //
-//<synopsis> 
+//<synopsis>
 //
 // This is a pure virtual base-class to provide a table-type agnostic
 // interface to the <linkto
@@ -90,37 +90,36 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <todo asof="19/03/13">
 // </todo>
 
-  class MSSelectableTable
-  {
-  public:
-    enum MSSDataType {BASELINE_BASED=0, PURE_ANTENNA_BASED, REF_ANTENNA_BASED};
+class MSSelectableTable {
+ public:
+  enum MSSDataType { BASELINE_BASED = 0, PURE_ANTENNA_BASED, REF_ANTENNA_BASED };
 
-    MSSelectableTable()                       {}
-    MSSelectableTable(const Table& table)     {table_p = &table;}
-    virtual ~MSSelectableTable()              {}
+  MSSelectableTable() {}
+  MSSelectableTable(const Table& table) { table_p = &table; }
+  virtual ~MSSelectableTable() {}
 
-    virtual void setTable(const Table& table) {table_p = &table;}
-    const Table* table()                      {return table_p;}
-    TableExprNode col(const String& colName)  {return table()->col(colName);}
+  virtual void setTable(const Table& table) { table_p = &table; }
+  const Table* table() { return table_p; }
+  TableExprNode col(const String& colName) { return table()->col(colName); }
 
-    virtual Bool isMS()                       = 0;
-    virtual MSSDataType dataType()            = 0;
-    virtual const MSAntenna& antenna()        = 0;
-    virtual const MSField& field()            = 0;
-    virtual const MSSpectralWindow& spectralWindow() = 0;
-    virtual const MSDataDescription& dataDescription() = 0;
-    virtual const MSObservation& observation() = 0;
+  virtual Bool isMS() = 0;
+  virtual MSSDataType dataType() = 0;
+  virtual const MSAntenna& antenna() = 0;
+  virtual const MSField& field() = 0;
+  virtual const MSSpectralWindow& spectralWindow() = 0;
+  virtual const MSDataDescription& dataDescription() = 0;
+  virtual const MSObservation& observation() = 0;
 
-    virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) = 0;
-    virtual const MeasurementSet* asMS() = 0;
-    
-    virtual MSSelectableMainColumn* mainColumns() = 0;
+  virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) = 0;
+  virtual const MeasurementSet* asMS() = 0;
 
-  protected:
-    const Table *table_p;
-  };
+  virtual MSSelectableMainColumn* mainColumns() = 0;
 
-// <summary> 
+ protected:
+  const Table* table_p;
+};
+
+// <summary>
 //
 // MSInterface: A specialization of MSSelectableTable for accessing
 // MS.
@@ -140,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // </etymology>
 //
-//<synopsis> 
+//<synopsis>
 //
 // A class that can be passed around as MSSelectableTable, with most of
 // the methods overloaded to work with the underlaying MS.
@@ -190,27 +189,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <todo asof="19/03/13">
 // </todo>
 
-  class MSInterface: public MSSelectableTable
-  {
-  public:
-    MSInterface():msMainCols_p(NULL)                   {}
-    MSInterface(const Table& table);
-    virtual ~MSInterface()                             {if (msMainCols_p) delete msMainCols_p;}
-    virtual const MSAntenna& antenna()                 {return asMS()->antenna();}
-    virtual const MSField& field()                     {return asMS()->field();}
-    virtual const MSSpectralWindow& spectralWindow()   {return asMS()->spectralWindow();}
-    virtual const MSDataDescription& dataDescription() {return asMS()->dataDescription();}
-    virtual const MSObservation& observation()         {return asMS()->observation();}
-    virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) {return MS::columnName(nameEnum);}
-    virtual Bool isMS()                                {return True;}
-    virtual MSSDataType dataType()                     {return MSSelectableTable::BASELINE_BASED;}
+class MSInterface : public MSSelectableTable {
+ public:
+  MSInterface() : msMainCols_p(NULL) {}
+  MSInterface(const Table& table);
+  virtual ~MSInterface() {
+    if (msMainCols_p) delete msMainCols_p;
+  }
+  virtual const MSAntenna& antenna() { return asMS()->antenna(); }
+  virtual const MSField& field() { return asMS()->field(); }
+  virtual const MSSpectralWindow& spectralWindow() { return asMS()->spectralWindow(); }
+  virtual const MSDataDescription& dataDescription() { return asMS()->dataDescription(); }
+  virtual const MSObservation& observation() { return asMS()->observation(); }
+  virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) {
+    return MS::columnName(nameEnum);
+  }
+  virtual Bool isMS() { return True; }
+  virtual MSSDataType dataType() { return MSSelectableTable::BASELINE_BASED; }
 
-    virtual const MeasurementSet *asMS(){return static_cast<const MeasurementSet *>(table());}
-    virtual MSSelectableMainColumn* mainColumns()
-    {msMainCols_p = new MSMainColInterface(*table_p); return msMainCols_p;}
-  private:
-    MSMainColInterface *msMainCols_p;
-  };
-} //# NAMESPACE CASACORE - END
+  virtual const MeasurementSet* asMS() { return static_cast<const MeasurementSet*>(table()); }
+  virtual MSSelectableMainColumn* mainColumns() {
+    msMainCols_p = new MSMainColInterface(*table_p);
+    return msMainCols_p;
+  }
+
+ private:
+  MSMainColInterface* msMainCols_p;
+};
+}  // namespace casacore
 
 #endif

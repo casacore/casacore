@@ -1,27 +1,27 @@
-//# MSPolColumns.h: provides easy access to MSPolarization columns
-//# Copyright (C) 1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSPolColumns.h: provides easy access to MSPolarization columns
+// # Copyright (C) 1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSPOLCOLUMNS_H
 #define MS_MSPOLCOLUMNS_H
@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/measures/Measures/Stokes.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class MSPolarization;
 
@@ -69,33 +69,32 @@ class MSPolarization;
 // See <linkto class=MSColumns> MSColumns</linkto> for the motivation.
 // </motivation>
 
-class MSPolarizationColumns
-{
-public:
+class MSPolarizationColumns {
+ public:
   // Create a columns object that accesses the data in the specified Table
   MSPolarizationColumns(const MSPolarization& msPolarization);
-  
+
   // The destructor does nothing special
   ~MSPolarizationColumns();
-  
+
   // Access to required columns
   // <group>
-  ArrayColumn<Int>& corrProduct() {return corrProduct_p;}
-  ArrayColumn<Int>& corrType() {return corrType_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-  ScalarColumn<Int>& numCorr() {return numCorr_p;}
+  ArrayColumn<Int>& corrProduct() { return corrProduct_p; }
+  ArrayColumn<Int>& corrType() { return corrType_p; }
+  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<Int>& numCorr() { return numCorr_p; }
   // </group>
-  
+
   // Const access to required columns
   // <group>
-  const ArrayColumn<Int>& corrProduct() const {return corrProduct_p;}
-  const ArrayColumn<Int>& corrType() const {return corrType_p;}
-  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ScalarColumn<Int>& numCorr() const {return numCorr_p;}
+  const ArrayColumn<Int>& corrProduct() const { return corrProduct_p; }
+  const ArrayColumn<Int>& corrType() const { return corrType_p; }
+  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<Int>& numCorr() const { return numCorr_p; }
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
-  rownr_t nrow() const {return corrProduct_p.nrow();}
+  rownr_t nrow() const { return corrProduct_p.nrow(); }
 
   // returns the last row that contains the an entry in the CORR_TYPE column
   // that matches, in length and value, the supplied corrType Vector.  Returns
@@ -104,37 +103,37 @@ public:
   // others are tested. Setting tryRow to a positive value greater than the
   // table length will throw an exception (AipsError), when compiled in debug
   // mode.
-  Int64 match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow=-1);
+  Int64 match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow = -1);
 
-protected:
-  //# default constructor creates a object that is not usable. Use the attach
-  //# function correct this.
+ protected:
+  // # default constructor creates a object that is not usable. Use the attach
+  // # function correct this.
   MSPolarizationColumns();
 
-  //# attach this object to the supplied table.
+  // # attach this object to the supplied table.
   void attach(const MSPolarization& msPolarization);
 
-private:
-  //# Make the assignment operator and the copy constructor private to prevent
-  //# any compiler generated one from being used.
+ private:
+  // # Make the assignment operator and the copy constructor private to prevent
+  // # any compiler generated one from being used.
   MSPolarizationColumns(const MSPolarizationColumns&);
   MSPolarizationColumns& operator=(const MSPolarizationColumns&);
 
-  //# Functions which check the supplied values against the relevant column and
-  //# the specified row.
+  // # Functions which check the supplied values against the relevant column and
+  // # the specified row.
   Bool matchCorrType(rownr_t row, const Vector<Int>& polType) const;
   Bool matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const;
 
-  //# required columns
+  // # required columns
   ArrayColumn<Int> corrProduct_p;
   ArrayColumn<Int> corrType_p;
   ScalarColumn<Bool> flagRow_p;
   ScalarColumn<Int> numCorr_p;
 };
 
-//# Define the RO version for backward compatibility.
+// # Define the RO version for backward compatibility.
 typedef MSPolarizationColumns ROMSPolarizationColumns;
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

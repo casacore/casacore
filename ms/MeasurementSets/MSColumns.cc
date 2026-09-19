@@ -1,67 +1,63 @@
-//# MSColumns.cc:  provides easy access to MeasurementSet columns
-//# Copyright (C) 1996,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSColumns.cc:  provides easy access to MeasurementSet columns
+// # Copyright (C) 1996,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Instantiate extern templates for often used types.
-  template class ArrayMeasColumn<MDirection>;
-  template class ScalarMeasColumn<MPosition>;
-  template class ScalarMeasColumn<MEpoch>;
-  template class ArrayQuantColumn<Double>;
-  template class ScalarQuantColumn<Double>;
+// # Instantiate extern templates for often used types.
+template class ArrayMeasColumn<MDirection>;
+template class ScalarMeasColumn<MPosition>;
+template class ScalarMeasColumn<MEpoch>;
+template class ArrayQuantColumn<Double>;
+template class ScalarQuantColumn<Double>;
 
-
-MSColumns::MSColumns(const MeasurementSet& ms):
-  MSMainColumns(ms),
-  antenna_p(ms.antenna()),
-  dataDesc_p(ms.dataDescription()),
-  doppler_p(ms.doppler()),
-  feed_p(ms.feed()),
-  field_p(ms.field()),
-  flagCmd_p(ms.flagCmd()),
-  freqOffset_p(ms.freqOffset()),
-  history_p(ms.history()),
-  observation_p(ms.observation()),
-  pointing_p(ms.pointing()),
-  polarization_p(ms.polarization()),
-  processor_p(ms.processor()),
-  source_p(ms.source()),
-  spectralWindow_p(ms.spectralWindow()),
-  state_p(ms.state()),
-  sysCal_p(ms.sysCal()),
-  weather_p(ms.weather())
-{
-}
+MSColumns::MSColumns(const MeasurementSet& ms)
+    : MSMainColumns(ms),
+      antenna_p(ms.antenna()),
+      dataDesc_p(ms.dataDescription()),
+      doppler_p(ms.doppler()),
+      feed_p(ms.feed()),
+      field_p(ms.field()),
+      flagCmd_p(ms.flagCmd()),
+      freqOffset_p(ms.freqOffset()),
+      history_p(ms.history()),
+      observation_p(ms.observation()),
+      pointing_p(ms.pointing()),
+      polarization_p(ms.polarization()),
+      processor_p(ms.processor()),
+      source_p(ms.source()),
+      spectralWindow_p(ms.spectralWindow()),
+      state_p(ms.state()),
+      sysCal_p(ms.sysCal()),
+      weather_p(ms.weather()) {}
 
 MSColumns::~MSColumns() {}
 
-void MSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
-{
+void MSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
   // Adjust the relevant columns in the main table
   MSMainColumns::setEpochRef(ref, tableMustBeEmpty);
   // Now the same for the subtables.
@@ -85,8 +81,7 @@ void MSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
   }
 }
 
-void MSColumns::setDirectionRef(MDirection::Types ref)
-{
+void MSColumns::setDirectionRef(MDirection::Types ref) {
   field().setDirectionRef(ref);
   pointing().setDirectionRef(ref);
   if (!source_p.isNull()) {
@@ -94,5 +89,4 @@ void MSColumns::setDirectionRef(MDirection::Types ref)
   }
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

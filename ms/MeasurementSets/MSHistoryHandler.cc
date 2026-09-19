@@ -1,27 +1,27 @@
-//# MSHistoryHandler: helper class to modify/access history
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify
-//# it under the terms of the GNU General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or
-//# (at your option) any later version.
-//#
-//# This program is distributed in the hope that it will be useful,
-//# but WITHOUT ANY WARRANTY; without even the implied warranty of
-//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//# GNU General Public License for more details.
-//# 
-//# You should have received a copy of the GNU General Public License
-//# along with this program; if not, write to the Free Software
-//# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSHistoryHandler: helper class to modify/access history
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify
+// # it under the terms of the GNU General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or
+// # (at your option) any later version.
+// #
+// # This program is distributed in the hope that it will be useful,
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// # GNU General Public License for more details.
+// #
+// # You should have received a copy of the GNU General Public License
+// # along with this program; if not, write to the Free Software
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/ms/MeasurementSets/MSHistoryHandler.h>
 #include <casacore/casa/Logging/LogIO.h>
@@ -30,71 +30,61 @@
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <casacore/casa/ostream.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, const String& app){
+MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, const String& app) {
   histTable_p = ms.history();
-  msHistCol_p= new MSHistoryColumns(histTable_p);
-  application_p=app;
+  msHistCol_p = new MSHistoryColumns(histTable_p);
+  application_p = app;
 }
 
-
-MSHistoryHandler &MSHistoryHandler::operator=(const MSHistoryHandler& other){
-
-  if(this != &other){
-    histTable_p=other.histTable_p;
-    msHistCol_p=other.msHistCol_p;
-    application_p=other.application_p;
+MSHistoryHandler& MSHistoryHandler::operator=(const MSHistoryHandler& other) {
+  if (this != &other) {
+    histTable_p = other.histTable_p;
+    msHistCol_p = other.msHistCol_p;
+    application_p = other.application_p;
   }
 
   return *this;
 }
 
-
-MSHistoryHandler::~MSHistoryHandler(){
+MSHistoryHandler::~MSHistoryHandler() {
   histTable_p.flush();
   delete msHistCol_p;
 }
 
-void MSHistoryHandler::addMessage(MeasurementSet& ms, const String& message,
-				  const String& app,
-				  const String& cliComm,
-				  const String& origin){
-
+void MSHistoryHandler::addMessage(MeasurementSet& ms, const String& message, const String& app,
+                                  const String& cliComm, const String& origin) {
   if (message.length() == 0 && cliComm.length() == 0) {
     // No need to record an entry.
     return;
   }
-  MSHistory &histTable=ms.history();
+  MSHistory& histTable = ms.history();
   rownr_t row = histTable.nrow();
   MSHistoryColumns msHistCol(histTable);
   histTable.addRow();
   Time date;
   MEpoch now(MVEpoch(date.modifiedJulianDay()), MEpoch::Ref(MEpoch::UTC));
   msHistCol.timeMeas().put(row, now);
-  msHistCol.observationId().put(row,-1);
-  msHistCol.priority().put(row,"INFO");
+  msHistCol.observationId().put(row, -1);
+  msHistCol.priority().put(row, "INFO");
   if (origin.length() != 0) {
-    msHistCol.origin().put(row,origin);
+    msHistCol.origin().put(row, origin);
   } else {
-    msHistCol.origin().put(row,"MSHistoryHandler::addMessage()");
+    msHistCol.origin().put(row, "MSHistoryHandler::addMessage()");
   }
-  msHistCol.message().put(row,message);
-  msHistCol.application().put(row,app);
+  msHistCol.message().put(row, message);
+  msHistCol.application().put(row, app);
   Vector<String> cliseq(1);
-  cliseq[0]=cliComm;
+  cliseq[0] = cliComm;
   msHistCol.cliCommand().put(row, cliseq);
-  cliseq[0]="";
+  cliseq[0] = "";
   msHistCol.appParams().put(row, cliseq);
   histTable.flush();
 }
 
-
-
 void MSHistoryHandler::addMessage(const String& message, const String& cliComm,
-				  const String& origin){
-
+                                  const String& origin) {
   if (message.length() == 0 && cliComm.length() == 0) {
     // No need to record an entry.
     return;
@@ -105,48 +95,46 @@ void MSHistoryHandler::addMessage(const String& message, const String& cliComm,
   Time date;
   MEpoch now(MVEpoch(date.modifiedJulianDay()), MEpoch::Ref(MEpoch::UTC));
   msHistCol_p->timeMeas().put(row, now);
-  msHistCol_p->observationId().put(row,-1);
-  msHistCol_p->priority().put(row,"INFO");
+  msHistCol_p->observationId().put(row, -1);
+  msHistCol_p->priority().put(row, "INFO");
   if (origin.length() != 0) {
-    msHistCol_p->origin().put(row,origin);
+    msHistCol_p->origin().put(row, origin);
   } else {
-    msHistCol_p->origin().put(row,"MSHistoryHandler::addMessage()");
+    msHistCol_p->origin().put(row, "MSHistoryHandler::addMessage()");
   }
-  msHistCol_p->message().put(row,message);
-  msHistCol_p->application().put(row,application_p);
+  msHistCol_p->message().put(row, message);
+  msHistCol_p->application().put(row, application_p);
   Vector<String> cliseq(1);
-  cliseq[0]=cliComm;
+  cliseq[0] = cliComm;
   msHistCol_p->cliCommand().put(row, cliseq);
-  cliseq[0]="";
+  cliseq[0] = "";
   msHistCol_p->appParams().put(row, cliseq);
 }
 
-void MSHistoryHandler::addMessage(LogSinkInterface& sink, const String& cliComm){
-
+void MSHistoryHandler::addMessage(LogSinkInterface& sink, const String& cliComm) {
   rownr_t row = histTable_p.nrow();
   rownr_t newrows = sink.nelements();
   if (newrows == 0 && cliComm.length() == 0) {
     // No need to record an entry
     return;
   }
-  if (newrows == 0) { // cliComm.length() > 0
+  if (newrows == 0) {  // cliComm.length() > 0
     String m("");
     String o("MSHistoryHandler::addMessage()");
-    this->addMessage(m,cliComm,o);
+    this->addMessage(m, cliComm, o);
   }
   histTable_p.addRow(newrows);
-  for (rownr_t k=0; k< newrows; ++k){
-    
+  for (rownr_t k = 0; k < newrows; ++k) {
     msHistCol_p->time().put(row, sink.getTime(k));
     msHistCol_p->observationId().put(row, -1);
-    msHistCol_p->priority().put(row,sink.getPriority(k));
-    msHistCol_p->origin().put(row,sink.getLocation(k));
-    msHistCol_p->message().put(row,sink.getMessage(k));
-    msHistCol_p->application().put(row,application_p);
+    msHistCol_p->priority().put(row, sink.getPriority(k));
+    msHistCol_p->origin().put(row, sink.getLocation(k));
+    msHistCol_p->message().put(row, sink.getMessage(k));
+    msHistCol_p->application().put(row, application_p);
     Vector<String> cliseq(1);
-    cliseq[0]=cliComm;
-    msHistCol_p->cliCommand().put(row, cliseq); 
-    cliseq[0]="";
+    cliseq[0] = cliComm;
+    msHistCol_p->cliCommand().put(row, cliseq);
+    cliseq[0] = "";
     msHistCol_p->appParams().put(row, cliseq);
     ++row;
   }
@@ -154,48 +142,40 @@ void MSHistoryHandler::addMessage(LogSinkInterface& sink, const String& cliComm)
   sink.clearLocally();
 }
 
-void MSHistoryHandler::addMessage(LogIO& os, const String& cliComm){
-
+void MSHistoryHandler::addMessage(LogIO& os, const String& cliComm) {
   addMessage(os.localSink(), cliComm);
 }
 
-void MSHistoryHandler::cliCommand(const String& cliComm){
+void MSHistoryHandler::cliCommand(const String& cliComm) {
   String m("");
   String o("MSHistoryHandler::cliCommand()");
-  this->addMessage(m,cliComm,o);
+  this->addMessage(m, cliComm, o);
 }
 
-void MSHistoryHandler::cliCommand(LogIO& cliComm){
+void MSHistoryHandler::cliCommand(LogIO& cliComm) { cliCommand(cliComm.localSink()); }
+void MSHistoryHandler::cliCommand(LogSinkInterface& sink) {
+  uInt numCliComm = sink.nelements();
+  if (numCliComm == 0) return;
 
-  cliCommand(cliComm.localSink());
+  String emptyMessage("");
+  rownr_t row = histTable_p.nrow();
+  histTable_p.addRow();
+  Vector<String> cliComm(numCliComm);
+  for (uInt k = 0; k < numCliComm; ++k) {
+    cliComm[k] = sink.getMessage(k);
+  }
+  msHistCol_p->time().put(row, sink.getTime(0));
+  msHistCol_p->observationId().put(row, -1);
+  msHistCol_p->priority().put(row, sink.getPriority(0));
+  msHistCol_p->origin().put(row, sink.getLocation(0));
+  msHistCol_p->cliCommand().put(row, cliComm);
+  msHistCol_p->message().put(row, emptyMessage);
+  msHistCol_p->application().put(row, application_p);
+  Vector<String> dum(1);
+  dum[0] = "";
+  msHistCol_p->appParams().put(row, dum);
 
-}
-void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
-
- uInt numCliComm=sink.nelements();
- if (numCliComm == 0)
-   return;
-
- String emptyMessage("");
- rownr_t row = histTable_p.nrow();
- histTable_p.addRow();
- Vector<String> cliComm(numCliComm);
- for (uInt k=0; k< numCliComm; ++k){
-   cliComm[k]=sink.getMessage(k);   
- }
- msHistCol_p->time().put(row, sink.getTime(0));
- msHistCol_p->observationId().put(row, -1);
- msHistCol_p->priority().put(row,sink.getPriority(0));
- msHistCol_p->origin().put(row,sink.getLocation(0));
- msHistCol_p->cliCommand().put(row, cliComm);
- msHistCol_p->message().put(row,emptyMessage);
- msHistCol_p->application().put(row,application_p);
- Vector<String> dum(1);
- dum[0]="";
- msHistCol_p->appParams().put(row, dum);
-
- sink.clearLocally();
+  sink.clearLocally();
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

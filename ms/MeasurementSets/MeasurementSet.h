@@ -1,27 +1,27 @@
-//# MeasurementSet.h: A Table to hold astronomical data (a set of Measurements)
-//# Copyright (C) 1996,1997,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasurementSet.h: A Table to hold astronomical data (a set of Measurements)
+// # Copyright (C) 1996,1997,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MEASUREMENTSET_H
 #define MS_MEASUREMENTSET_H
@@ -48,107 +48,105 @@
 #include <casacore/ms/MeasurementSets/MSWeather.h>
 #include <set>
 
- 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-class MrsEligibility { // Memory Resident Subtable (Mrs) Eligibility (no pun intended)
+class MrsEligibility {  // Memory Resident Subtable (Mrs) Eligibility (no pun intended)
 
-public:
+ public:
+  typedef MSMainEnums::PredefinedKeywords SubtableId;
 
-    typedef MSMainEnums::PredefinedKeywords SubtableId;
+  friend MrsEligibility operator-(const MrsEligibility& a, SubtableId subtableId);
+  friend MrsEligibility operator+(const MrsEligibility& a, SubtableId subtableId);
+  friend MrsEligibility operator-(const MrsEligibility& a, const MrsEligibility& b);
+  friend MrsEligibility operator+(const MrsEligibility& a, const MrsEligibility& b);
 
-    friend MrsEligibility operator- (const MrsEligibility & a, SubtableId subtableId);
-    friend MrsEligibility operator+ (const MrsEligibility & a, SubtableId subtableId);
-    friend MrsEligibility operator- (const MrsEligibility & a, const MrsEligibility & b);
-    friend MrsEligibility operator+ (const MrsEligibility & a, const MrsEligibility & b);
+  // Returns true if the specified subtable is in the set of subtables
+  // eligible for memory residency.
+  Bool isEligible(SubtableId subtableId) const;
 
-    // Returns true if the specified subtable is in the set of subtables
-    // eligible for memory residency.
-    Bool isEligible (SubtableId subtableId) const;
+  // Factory methods to create MrsEligibility sets.  The two functions with
+  // parameter packs used to be variable argument functions. Because of this,
+  // it used to be required to use the id MSMainEnums::UNDEFINED_KEYWORD as the
+  // last parameter.
+  // Now that the functions use parameter packs, this is no longer required,
+  // and a value of UNDEFINED_KEYWORD is ignored.
+  static MrsEligibility allEligible();
+  static MrsEligibility defaultEligible();
+  static MrsEligibility noneEligible();
 
-    // Factory methods to create MrsEligibility sets.  The two functions with 
-    // parameter packs used to be variable argument functions. Because of this,
-    // it used to be required to use the id MSMainEnums::UNDEFINED_KEYWORD as the
-    // last parameter.
-    // Now that the functions use parameter packs, this is no longer required,
-    // and a value of UNDEFINED_KEYWORD is ignored.
-    static MrsEligibility allEligible ();
-    static MrsEligibility defaultEligible ();
-    static MrsEligibility noneEligible ();
-    
-    template <typename... SubtableIds>
-    static MrsEligibility eligibleSubtables (SubtableIds... subtableIds) {
-      MrsEligibility eligible;
-      for(const SubtableId subtableId : {subtableIds...}) {
-        // This function was converted from variable argument functions
-        // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
-        // as the last parameter, which can just be ignored.
-        if (subtableId != MSMainEnums::UNDEFINED_KEYWORD){
-          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + std::to_string (subtableId));
-          eligible.eligible_p.insert(subtableId);
-        }
+  template <typename... SubtableIds>
+  static MrsEligibility eligibleSubtables(SubtableIds... subtableIds) {
+    MrsEligibility eligible;
+    for (const SubtableId subtableId : {subtableIds...}) {
+      // This function was converted from variable argument functions
+      // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
+      // as the last parameter, which can just be ignored.
+      if (subtableId != MSMainEnums::UNDEFINED_KEYWORD) {
+        ThrowIf(!isSubtable(subtableId), "Invalid subtable ID: " + std::to_string(subtableId));
+        eligible.eligible_p.insert(subtableId);
       }
-      return eligible;
     }
-    
-    template <typename... SubtableIds>
-    static MrsEligibility allButTheseSubtables (SubtableIds... subtableIds) {
-      MrsEligibility ineligible;
-      for(const SubtableId subtableId : {subtableIds...}) {
-        // This function was converted from variable argument functions
-        // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
-        // as the last parameter, which can just be ignored.
-        if (subtableId != MSMainEnums::UNDEFINED_KEYWORD) {
-          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + std::to_string (subtableId));
-          ineligible.eligible_p.insert (subtableId);
-        }
-      }
+    return eligible;
+  }
 
-      // Get the set of all subtables and then subtract off the
-      // caller specified columns.  Return the result
-      MrsEligibility eligible;
-      set_difference (allSubtables_p.eligible_p.begin(), allSubtables_p.eligible_p.end(),
-                      ineligible.eligible_p.begin(), ineligible.eligible_p.end(),
-                      inserter (eligible.eligible_p, eligible.eligible_p.begin()));
-      return eligible;
+  template <typename... SubtableIds>
+  static MrsEligibility allButTheseSubtables(SubtableIds... subtableIds) {
+    MrsEligibility ineligible;
+    for (const SubtableId subtableId : {subtableIds...}) {
+      // This function was converted from variable argument functions
+      // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
+      // as the last parameter, which can just be ignored.
+      if (subtableId != MSMainEnums::UNDEFINED_KEYWORD) {
+        ThrowIf(!isSubtable(subtableId), "Invalid subtable ID: " + std::to_string(subtableId));
+        ineligible.eligible_p.insert(subtableId);
+      }
     }
 
-private:
+    // Get the set of all subtables and then subtract off the
+    // caller specified columns.  Return the result
+    MrsEligibility eligible;
+    set_difference(allSubtables_p.eligible_p.begin(), allSubtables_p.eligible_p.end(),
+                   ineligible.eligible_p.begin(), ineligible.eligible_p.end(),
+                   inserter(eligible.eligible_p, eligible.eligible_p.begin()));
+    return eligible;
+  }
 
-    typedef std::set<MSMainEnums::PredefinedKeywords> Eligible;
+ private:
+  typedef std::set<MSMainEnums::PredefinedKeywords> Eligible;
 
-    Eligible eligible_p;
+  Eligible eligible_p;
 
-    static const MrsEligibility allSubtables_p;
+  static const MrsEligibility allSubtables_p;
 
-    static Bool isSubtable (SubtableId subtableId);
+  static Bool isSubtable(SubtableId subtableId);
 };
 
 // Creates a new MrsEligibilitySet by adding or removing the specified subtable or
 // the specified set of subtables.
-MrsEligibility operator- (const MrsEligibility & a, MrsEligibility::SubtableId subtableId);
-MrsEligibility operator+ (const MrsEligibility & a, MrsEligibility::SubtableId subtableId);
-MrsEligibility operator- (const MrsEligibility & a, const MrsEligibility & b);
-MrsEligibility operator+ (const MrsEligibility & a, const MrsEligibility & b);
+MrsEligibility operator-(const MrsEligibility& a, MrsEligibility::SubtableId subtableId);
+MrsEligibility operator+(const MrsEligibility& a, MrsEligibility::SubtableId subtableId);
+MrsEligibility operator-(const MrsEligibility& a, const MrsEligibility& b);
+MrsEligibility operator+(const MrsEligibility& a, const MrsEligibility& b);
 
-//# Forward Declarations, more could be if they weren't part of the
-//# static classes 
+// # Forward Declarations, more could be if they weren't part of the
+// # static classes
 class SetupNewTable;
-template <class T> class Block;
+template <class T>
+class Block;
 class MDirection;
 class MEpoch;
 class MFrequency;
 class MPosition;
 class Record;
 
-//# forward declared so that the following typedef is up-front
+// # forward declared so that the following typedef is up-front
 class MeasurementSet;
 
 // MeasurementSet is too cumbersome for a number of common uses,
 // so we give a typedef here.
 typedef MeasurementSet MS;
 
-// <summary> 
+// <summary>
 // A Table intended to hold astronomical data (a set of Measurements).
 // </summary>
 
@@ -158,21 +156,21 @@ typedef MeasurementSet MS;
 
 // <prerequisite>
 //   <li> <linkto module="Tables:description">Tables</linkto> module
-//   <li> <linkto class="MSTable">MSTable</linkto> 
+//   <li> <linkto class="MSTable">MSTable</linkto>
 // </prerequisite>
 //
 // <etymology>
 // The MeasurementSet is where all data are ultimately to be found
-// in Casacore.  Since, this is a collection of 
+// in Casacore.  Since, this is a collection of
 // measurements (either actual or simulated), the term MeasurementSet
 // seems appropriate.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // A MeasurementSet is a Table.  Most operations on a MeasurementSet are
-// Table operations. See the <linkto module="Tables:description">Tables</linkto> 
+// Table operations. See the <linkto module="Tables:description">Tables</linkto>
 // module for a list of those operations.  The member functions provided by this
-// class are primarily convenience functions to help users follow the 
+// class are primarily convenience functions to help users follow the
 // agreed upon column and keyword naming conventions.  They are useful when
 // creating a Table following the MeasurementSet conventions from
 // scratch as well as when creating the column objects to access those
@@ -184,7 +182,7 @@ typedef MeasurementSet MS;
 // run time).  We have therefore decided to use an enumeration
 // to specify columns so that many mistakes will be caught at compile
 // time.  This requires functions to map to and from this enumeration
-// to the strings that are ultimately used. 
+// to the strings that are ultimately used.
 //
 // Upon destruction, the table is checked to see that the
 // MeasurementSet remains valid, i.e., all required columns are present
@@ -203,12 +201,12 @@ typedef MeasurementSet MS;
 // too long for many common uses.  The typedef MS is provided as
 // a convenient shorthand for MeasurementSet.  The example below uses this
 // typedef.
-// 
+//
 // Due to the inheritance scheme, it was necessary to separate the enumerations
-// used by MeasurementSet into a separate class, 
+// used by MeasurementSet into a separate class,
 // <linkto class=MSMainEnums>MSMainEnums</linkto>.
 //
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // This example illustrates a simple use of the MeasurementSet class.
@@ -235,7 +233,7 @@ typedef MeasurementSet MS;
 //      ArrayColumn<Double> antpos(simpleMS.antenna(),
 //                                 MSAntenna::columnName(MSAntenna::POSITION));
 //      simpleMS.antenna().addRow();
-//      Array<Double> position(3); 
+//      Array<Double> position(3);
 //      position(0)=1.; position(1)=2.; position(2)=3.;
 //      antpos.put(0,position);
 //      // etc.
@@ -244,43 +242,40 @@ typedef MeasurementSet MS;
 // </example>
 //
 // <motivation>
-// The Table module is more than adequate as a container of data.  
-// However, in order for applications to be useful with data from 
-// different sources, some conventions need to be adopted in the use 
+// The Table module is more than adequate as a container of data.
+// However, in order for applications to be useful with data from
+// different sources, some conventions need to be adopted in the use
 // of Tables to store data.  The MeasurementSet is
 // where those conventions are defined and, to some extent, enforced.
 //
 // There are a number of reasons why MeasurementSet is more
 // than just a Table.
 // <ul>
-// <li> To provide one location where the column and keyword names, data 
+// <li> To provide one location where the column and keyword names, data
 //      types, and table comment strings are found.
 // <li> To provide one location where the required table descriptor for
-//      the MeasurementSet is found. 
+//      the MeasurementSet is found.
 // <li> To provide a means of verifying the validity of a MeasurementSet
 //      at construction and destruction.
 // <li> To allow application programmers to catch name or data type
 //      mistakes at compile time rather than at run time.
 // </ul>
-// 
+//
 // </motivation>
 //
 // <todo asof="1996/2/22">
-// <li> referenceCopy() should be more flexible with the storage managers used 
+// <li> referenceCopy() should be more flexible with the storage managers used
 //      for the columns which are not merely references.
 // <li> When ForwardColumnEngine is fixed so that it can deal with
 //      tables already in the cache, modify the test program.  It may also
 //      be necessary to modify referenceCopy().
 // </todo>
 
-class MeasurementSet : public MSTable<MSMainEnums>,
-		       public MSMainEnums
-{
-
-public:
+class MeasurementSet : public MSTable<MSMainEnums>, public MSMainEnums {
+ public:
   // This constructs an empty MeasurementSet, only useful to assign to
   // (it is not a valid MS yet).
-  MeasurementSet ();
+  MeasurementSet();
 
   // These constructors mirror the Table ones with additional checking
   // on validity (verifying that the MS will have the required columns
@@ -291,33 +286,29 @@ public:
   // </thrown>
   // <group name=tableLikeConstructors>
 
-  MeasurementSet (const String &tableName, TableOption = Table::Old);
-  MeasurementSet (const String &tableName, const TableLock& lockOptions,
-		          TableOption = Table::Old);
+  MeasurementSet(const String& tableName, TableOption = Table::Old);
+  MeasurementSet(const String& tableName, const TableLock& lockOptions, TableOption = Table::Old);
 
-  MeasurementSet (const String &tableName, const TableLock& lockOptions,
-		          bool doNotLockSubtables, TableOption = Table::Old);
-      // Allows keeping subtables unlocked/read-locked independent of lock
-      // mode of main table.
+  MeasurementSet(const String& tableName, const TableLock& lockOptions, bool doNotLockSubtables,
+                 TableOption = Table::Old);
+  // Allows keeping subtables unlocked/read-locked independent of lock
+  // mode of main table.
 
-  MeasurementSet (const String &tableName, const String &tableDescName,
-		  TableOption = Table::Old);
-  MeasurementSet (const String &tableName, const String &tableDescName,
-		  const TableLock& lockOptions, TableOption = Table::Old);
-  MeasurementSet (SetupNewTable &newTab, rownr_t nrrow = 0,
-		  Bool initialize = False);
-  MeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
-		  rownr_t nrrow = 0, Bool initialize = False);
-  MeasurementSet (const Table &table, const MeasurementSet * otherMs = NULL);
+  MeasurementSet(const String& tableName, const String& tableDescName, TableOption = Table::Old);
+  MeasurementSet(const String& tableName, const String& tableDescName, const TableLock& lockOptions,
+                 TableOption = Table::Old);
+  MeasurementSet(SetupNewTable& newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MeasurementSet(SetupNewTable& newTab, const TableLock& lockOptions, rownr_t nrrow = 0,
+                 Bool initialize = False);
+  MeasurementSet(const Table& table, const MeasurementSet* otherMs = NULL);
 
 #ifdef HAVE_MPI
-  MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, rownr_t nrrow = 0,
-		  Bool initialize = False);
-  MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions,
-		  rownr_t nrrow = 0, Bool initialize = False);
-#endif // HAVE_MPI
+  MeasurementSet(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MeasurementSet(MPI_Comm comm, SetupNewTable& newTab, const TableLock& lockOptions,
+                 rownr_t nrrow = 0, Bool initialize = False);
+#endif  // HAVE_MPI
 
-  MeasurementSet (const MeasurementSet &other);
+  MeasurementSet(const MeasurementSet& other);
   // </group>
 
   // As with tables, the destructor writes the table if necessary.
@@ -337,15 +328,14 @@ public:
   // Each forwarded column has the same writable status as the underlying
   // column. The mentioned columns all use the AipsIO storage manager.
   // The main use of this is for the synthesis package where corrected and
-  // model visibilities are stored as new DATA columns in an MS which 
+  // model visibilities are stored as new DATA columns in an MS which
   // references the raw MS for the other columns. Except for these special
   // cases, the use of this function will be rare.
   MeasurementSet referenceCopy(const String& newTableName,
-			       const Block<String>& writableColumns) const;
+                               const Block<String>& writableColumns) const;
 
   // Converts the MS to make the specified set of subtables memory resident.
-  void
-  setMemoryResidentSubtables (const MrsEligibility & mrsEligibility);
+  void setMemoryResidentSubtables(const MrsEligibility& mrsEligibility);
 
   // Return the name of each of the subtables. This should be used by the
   // filler to create the subtables in the correct location.
@@ -368,62 +358,62 @@ public:
   String sysCalTableName() const;
   String weatherTableName() const;
   // </group>
-    
+
   // Access functions for the subtables, using the MS-like interface for each
   // <group>
-  MSAntenna& antenna() {return antenna_p;}
-  MSDataDescription& dataDescription() {return dataDesc_p;}
-  MSDoppler& doppler() {return doppler_p;}
-  MSFeed& feed() {return feed_p;}
-  MSField& field() {return field_p;}
-  MSFlagCmd& flagCmd() {return flagCmd_p;}
-  MSFreqOffset& freqOffset() {return freqOffset_p;}
-  MSHistory& history() {return history_p;}
-  MSObservation& observation() {return observation_p;}
-  MSPointing& pointing() {return pointing_p;}
-  MSPolarization& polarization() {return polarization_p;}
-  MSProcessor& processor() {return processor_p;}
-  MSSource& source() {return source_p;}
-  MSSpectralWindow& spectralWindow() {return spectralWindow_p;}
-  MSState& state() {return state_p;}
-  MSSysCal& sysCal() {return sysCal_p;}
-  MSWeather& weather() {return weather_p;}
-  const MSAntenna& antenna() const {return antenna_p;}
-  const MSDataDescription& dataDescription() const {return dataDesc_p;}
-  const MSDoppler& doppler() const {return doppler_p;}
-  const MSFeed& feed() const {return feed_p;}
-  const MSField& field() const {return field_p;}
-  const MSFlagCmd& flagCmd() const {return flagCmd_p;}
-  const MSFreqOffset& freqOffset() const {return freqOffset_p;}
-  const MSHistory& history() const {return history_p;}
-  const MSObservation& observation() const {return observation_p;}
-  const MSPointing& pointing() const {return pointing_p;}
-  const MSPolarization& polarization() const {return polarization_p;}
-  const MSProcessor& processor() const {return processor_p;}
-  const MSSource& source() const {return source_p;}
-  const MSSpectralWindow& spectralWindow() const {return spectralWindow_p;}
-  const MSState& state() const {return state_p;}
-  const MSSysCal& sysCal() const {return sysCal_p;}
-  const MSWeather& weather() const {return weather_p;}
+  MSAntenna& antenna() { return antenna_p; }
+  MSDataDescription& dataDescription() { return dataDesc_p; }
+  MSDoppler& doppler() { return doppler_p; }
+  MSFeed& feed() { return feed_p; }
+  MSField& field() { return field_p; }
+  MSFlagCmd& flagCmd() { return flagCmd_p; }
+  MSFreqOffset& freqOffset() { return freqOffset_p; }
+  MSHistory& history() { return history_p; }
+  MSObservation& observation() { return observation_p; }
+  MSPointing& pointing() { return pointing_p; }
+  MSPolarization& polarization() { return polarization_p; }
+  MSProcessor& processor() { return processor_p; }
+  MSSource& source() { return source_p; }
+  MSSpectralWindow& spectralWindow() { return spectralWindow_p; }
+  MSState& state() { return state_p; }
+  MSSysCal& sysCal() { return sysCal_p; }
+  MSWeather& weather() { return weather_p; }
+  const MSAntenna& antenna() const { return antenna_p; }
+  const MSDataDescription& dataDescription() const { return dataDesc_p; }
+  const MSDoppler& doppler() const { return doppler_p; }
+  const MSFeed& feed() const { return feed_p; }
+  const MSField& field() const { return field_p; }
+  const MSFlagCmd& flagCmd() const { return flagCmd_p; }
+  const MSFreqOffset& freqOffset() const { return freqOffset_p; }
+  const MSHistory& history() const { return history_p; }
+  const MSObservation& observation() const { return observation_p; }
+  const MSPointing& pointing() const { return pointing_p; }
+  const MSPolarization& polarization() const { return polarization_p; }
+  const MSProcessor& processor() const { return processor_p; }
+  const MSSource& source() const { return source_p; }
+  const MSSpectralWindow& spectralWindow() const { return spectralWindow_p; }
+  const MSState& state() const { return state_p; }
+  const MSSysCal& sysCal() const { return sysCal_p; }
+  const MSWeather& weather() const { return weather_p; }
   // </group>
 
-  MrsEligibility getMrsEligibility () const;
+  MrsEligibility getMrsEligibility() const;
 
   // Initialize the references to the subtables. You need to call
   // this only if you assign new subtables to the table keywords.
   // This also checks for validity of the table and its subtables.
   // Set clear to True to clear the subtable references (used in assignment)
-  void initRefs(Bool clear=False);
+  void initRefs(Bool clear = False);
 
   // Create default subtables: fills the required subtable keywords with
   // tables of the correct type, mainly for testing and as an example of
   // how to do this for specific fillers. In practice these tables will
   // often have more things specified, like dimensions of arrays and
   // storage managers for the various columns.
-  void createDefaultSubtables(Table::TableOption option=Table::Scratch);
+  void createDefaultSubtables(Table::TableOption option = Table::Scratch);
 #ifdef HAVE_MPI
-  void createDefaultSubtables(MPI_Comm comm, Table::TableOption option=Table::Scratch);
-#endif // HAVE_MPI
+  void createDefaultSubtables(MPI_Comm comm, Table::TableOption option = Table::Scratch);
+#endif  // HAVE_MPI
 
   // Initialize the statics appropriately. This does not need to be
   // called by users, it is called by the implementation class
@@ -442,43 +432,36 @@ public:
   // MeasurementSet. This function calls the Table::flush() function on the
   // main table and all the standard subtables including optional
   // subtables. See the Table class for a description of the sync argument.
-  void flush(Bool sync=False);
+  void flush(Bool sync = False);
 
   // Return a record of the indices that the msselection selection selected
-  Record msseltoindex(const String& spw="", const String& field="", 
-		      const String& baseline="", const String& time="", 
-		      const String& scan="", const String& uvrange="", 
-		      const String& observation="", const String& poln="",
-		      const String& taql="");
+  Record msseltoindex(const String& spw = "", const String& field = "", const String& baseline = "",
+                      const String& time = "", const String& scan = "", const String& uvrange = "",
+                      const String& observation = "", const String& poln = "",
+                      const String& taql = "");
 
-protected:
-
-
+ protected:
   // Clears all of the subtable components of this object (i.e., set to
   // value of subtable's default constructor).
-  void clearSubtables ();
+  void clearSubtables();
 
   // Assigns one subtable to another if the original subtable (otherSubtable)
   // is not null and is also memory resident
-  void copySubtable (const Table & otherSubtable, Table & subTable);
+  void copySubtable(const Table& otherSubtable, Table& subTable);
 
   // Copies (assigns) all of the non-null subtables from the other MS into this one.
-  void copySubtables (const MeasurementSet & other);
+  void copySubtables(const MeasurementSet& other);
 
   // Returns true if the named subtable is eligible for memory residency.
-  Bool isEligibleForMemoryResidency (const String & subtableName) const;
+  Bool isEligibleForMemoryResidency(const String& subtableName) const;
 
   // Opens all of the eligible subtables in memory resident form
-  void openMrSubtables ();
+  void openMrSubtables();
 
   // The top level name for MRS related CASARC settings
-  static String getMrsAipsRcBase ()
-  {
-    return "MemoryResidentSubtables";
-  }
+  static String getMrsAipsRcBase() { return "MemoryResidentSubtables"; }
 
-private:
-
+ private:
   // temporary function to add the CATEGORY keyword to the FLAG_CATEGORY
   // column if it isn't there yet. 2000/08/22
   //  remove this and the calls next MS update
@@ -489,48 +472,45 @@ private:
 
   // Creates subtables using an explicit MPI communicator (if MPI support
   // is enabled)
-  template<typename T>
+  template <typename T>
   void createDefaultSubtables_impl(Table::TableOption option, T comm);
 
   // Opens a single subtable as memory resident (if permitted).
   template <typename Subtable>
-  void
-  openMrSubtable (Subtable & subtable, const String & subtableName);
+  void openMrSubtable(Subtable& subtable, const String& subtableName);
 
   // Opens a single subtable if not present in MS object but defined in on-disk MS
   template <typename Subtable>
-  void
-  openSubtable (Subtable & subtable, const String & subtableName, Bool useLock);
+  void openSubtable(Subtable& subtable, const String& subtableName, Bool useLock);
 
   // keep references to the subtables
   MSAntenna antenna_p;
   MSDataDescription dataDesc_p;
-  MSDoppler doppler_p; //optional
+  MSDoppler doppler_p;  // optional
   MSFeed feed_p;
   MSField field_p;
   MSFlagCmd flagCmd_p;
-  MSFreqOffset freqOffset_p; //optional
+  MSFreqOffset freqOffset_p;  // optional
   MSHistory history_p;
   MSObservation observation_p;
   MSPointing pointing_p;
   MSPolarization polarization_p;
   MSProcessor processor_p;
-  MSSource source_p; //optional
+  MSSource source_p;  // optional
   MSSpectralWindow spectralWindow_p;
   MSState state_p;
-  MSSysCal sysCal_p; //optional
-  MSWeather weather_p; //optional
+  MSSysCal sysCal_p;    // optional
+  MSWeather weather_p;  // optional
 
-  bool doNotLockSubtables_p; // used to prevent subtable locking to allow parallel interprocess sharing
-  int mrsDebugLevel_p; // logging level currently enabled
-  Bool hasBeenDestroyed_p; // required by the need to throw an exception in the destructor
+  bool doNotLockSubtables_p;  // used to prevent subtable locking to allow parallel interprocess
+                              // sharing
+  int mrsDebugLevel_p;        // logging level currently enabled
+  Bool hasBeenDestroyed_p;    // required by the need to throw an exception in the destructor
   TableLock mainLock_p;
   Bool memoryResidentSubtables_p;   // true if memory resident subtables are enabled
   MrsEligibility mrsEligibility_p;  // subtables which can be made memory resident
-
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,32 +1,32 @@
-//# MSPolnParse.h: Classes to hold results from poln grammar parseing
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSPolnParse.h: Classes to hold results from poln grammar parseing
+// # Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSPOLNPARSE_H
 #define MS_MSPOLNPARSE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/ms/MeasurementSets/MSPolarization.h>
@@ -34,10 +34,9 @@
 #include <casacore/ms/MSSel/MSPolIndex.h>
 #include <casacore/ms/MSSel/MSDataDescIndex.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // Class to hold values from field grammar parser
@@ -49,14 +48,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 // </prerequisite>
 
 // <etymology>
 // MSPolnParse is the class used to parse a polarization selection command.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 //
 // MSPolnParse is used by the parser of polarization sub-expression
 // statements of the type [SPW:]POLN.  Since this is a relatively
@@ -73,65 +72,64 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // </synopsis>
 
-// <motivation> 
+// <motivation>
 // It is necessary to be able to give a data selection
 // command in ASCII.  This can be used in a CLI or in the table
 // browser to get a subset of a table or to sort a table.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-class MSPolnParse : public MSParse
-{
-public:
+class MSPolnParse : public MSParse {
+ public:
   // Default constructor
-  MSPolnParse ();
+  MSPolnParse();
   //  ~MSPolnParse() {cleanup();}
 
   // Associate the ms and the shorthand.
-  MSPolnParse (const MeasurementSet* ms);
+  MSPolnParse(const MeasurementSet* ms);
 
   const TableExprNode selectFromIDList(const Vector<Int>& ddIDs);
 
   // Get table expression node object.
   const TableExprNode node();
   //  static MSPolnParse* thisMSSParser;
-  void reset() {polMap_p.clear(); ddIDList_p.resize(0);}
-  void cleanup() {/*if (node_p) delete node_p;node_p=0x0;*/}
-  Int theParser(const String& command); 
-		// Vector<Int>& selectedDDIDs, 
-		// Matrix<Int>& selectedSpwPolnMap);
-  std::map<Int, Vector<Int> > selectedPolnMap()             {return polMap_p;}
-  std::map<Int, Vector<Vector<Int> > > selectedSetupMap()   {return setupMap_p;}
-  Vector<Int> selectedDDIDs()                               {return ddIDList_p;}
-private:
+  void reset() {
+    polMap_p.clear();
+    ddIDList_p.resize(0);
+  }
+  void cleanup() { /*if (node_p) delete node_p;node_p=0x0;*/ }
+  Int theParser(const String& command);
+  // Vector<Int>& selectedDDIDs,
+  // Matrix<Int>& selectedSpwPolnMap);
+  std::map<Int, Vector<Int>> selectedPolnMap() { return polMap_p; }
+  std::map<Int, Vector<Vector<Int>>> selectedSetupMap() { return setupMap_p; }
+  Vector<Int> selectedDDIDs() { return ddIDList_p; }
+
+ private:
   Vector<Int> getMapToDDIDs(MSDataDescIndex& msDDNdx, MSPolarizationIndex& msPolNdx,
-			    const Vector<Int>& spwIDs, Vector<Int>& polnIDs,
-			    Vector<Int>& polIndices);
+                            const Vector<Int>& spwIDs, Vector<Int>& polnIDs,
+                            Vector<Int>& polIndices);
   Vector<Int> matchPolIDsToPolTableRow(const Vector<Int>& polIds,
-				       std::map<Int, Vector<Int> >& polIndexMap,
-				       Vector<Int>& polIndices,
-				       Bool addToMap=False);
+                                       std::map<Int, Vector<Int>>& polIndexMap,
+                                       Vector<Int>& polIndices, Bool addToMap = False);
   Vector<Int> getPolnIDs(const String& polSpec, Vector<Int>& polIndices);
   Vector<Int> getPolnIndices(const Int& polnID, const Vector<Int>& polnIDList);
   //
   // These are the versions used in the code.
   Vector<Int> getPolnIDsV2(const String& polSpec, Vector<Int>& polTypes);
-  Vector<Int> getMapToDDIDsV2(const String& polExpr, 
-			      const Vector<Int>& spwIDs, 
-			      Vector<Int>& polnIDs,
-			      Vector<Int>& polnIndices);
+  Vector<Int> getMapToDDIDsV2(const String& polExpr, const Vector<Int>& spwIDs,
+                              Vector<Int>& polnIDs, Vector<Int>& polnIndices);
   TableExprNode node_p;
   Vector<Int> ddIDList_p;
-  std::map<Int, Vector<Int> > polMap_p;
-  std::map<Int, Vector<Vector<Int> > > setupMap_p;
+  std::map<Int, Vector<Int>> polMap_p;
+  std::map<Int, Vector<Vector<Int>>> setupMap_p;
 
   void setIDLists(const Int key, const Int ndx, Vector<Int>& val);
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

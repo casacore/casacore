@@ -1,27 +1,27 @@
-//# tMSDataDescColumns.cc:
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tMSDataDescColumns.cc:
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -63,9 +63,8 @@ void getData(const MSDataDescColumns& cols) {
 int main() {
   try {
     const String filename = "tMSDataDescColumns_tmp.table";
-    { // Check the RW class
-      SetupNewTable setup(filename, MSDataDescription::requiredTableDesc(), 
-			  Table::New);
+    {  // Check the RW class
+      SetupNewTable setup(filename, MSDataDescription::requiredTableDesc(), Table::New);
       MSDataDescription table(setup, 5);
       // Check the constructor
       MSDataDescColumns cols(table);
@@ -75,21 +74,20 @@ int main() {
       putData(cols);
       // Check the data is still there
       getData(cols);
-    } // Close the table
+    }  // Close the table
 
-    {// Check the RO class
+    {  // Check the RO class
       const MSDataDescription table(filename, Table::Old);
       // Check the constructor
       const MSDataDescColumns cols(table);
       // Check the data is still there
       getData(cols);
     }
-    {// Delete the table
+    {  // Delete the table
       MSDataDescription table(filename, Table::Old);
       table.markForDelete();
     }
-  }
-  catch (std::exception& x) {
+  } catch (std::exception& x) {
     cerr << x.what() << std::endl;
     cout << "FAIL" << std::endl;
     return 1;
@@ -97,6 +95,6 @@ int main() {
   cout << "OK" << std::endl;
 }
 
-// Local Variables: 
+// Local Variables:
 // compile-command: "gmake OPTLIB=1 XLIBLIST=0 tMSDataDescColumns"
-// End: 
+// End:
