@@ -1,27 +1,27 @@
-//# LatticeFit.h: Fit every line of pixels parallel to any axis in a Lattice.
-//# Copyright (C) 1994,1995,1999,2000,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeFit.h: Fit every line of pixels parallel to any axis in a Lattice.
+// # Copyright (C) 1994,1995,1999,2000,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICEFIT_H
 #define LATTICES_LATTICEFIT_H
@@ -31,10 +31,9 @@
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/scimath/Fitting/LinearFit.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-// <summary> 
+// <summary>
 // Fit every line of pixels parallel to any axis in a Lattice.
 // </summary>
 
@@ -45,13 +44,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=Lattice>Lattice</linkto>
 // </prerequisite>
 //
-// <synopsis> 
+// <synopsis>
 
 // For every line in the lattice parallel to axis number <src>whichAxis</src>
 // (often axis number 2, typically the frequency axis in a spectral line cube)
 // independently fit the functions in fitter at the positions where
-// <src>fitMask</src> is true. 
-// </synopsis> 
+// <src>fitMask</src> is true.
+// </synopsis>
 //
 // <example>
 // Suppose one wanted to subtract a linear polynomial from every spectrum (3d
@@ -60,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    Image<Float> myImage("myimage"); // Get the image
 //    uInt nchan = myImage.shape()(2); // 0 relative axis number
 //    // Set up the fitter
-//    Polynomial<AutoDiff<Float> > linear(1);    
+//    Polynomial<AutoDiff<Float> > linear(1);
 //    LinearFitSVD<Float> fitter;
 //    fitter.setFunction(linear);
 //    Vector<Float> fittedParameters,
@@ -92,33 +91,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </linkfrom>
 
 class LatticeFit {
+ public:
+  // Fit baseline to lattice.   Presently the fit parameters, other than the last
+  // one(s) in fitter, are lost.  If <src>returnResiduals</src> is True,
+  // return data-fit, otherwise return the fit.  For baseline and continuum
+  // subtraction, returnResiduals would normally be True.
+  static uInt fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedParameters,
+                          LinearFit<Float>& fitter, const Lattice<Float>& inImage, uInt whichAxis,
+                          const Vector<Bool>& fitMask, Bool returnResiduals);
 
-public:
-
-// Fit baseline to lattice.   Presently the fit parameters, other than the last
-// one(s) in fitter, are lost.  If <src>returnResiduals</src> is True, 
-// return data-fit, otherwise return the fit.  For baseline and continuum 
-// subtraction, returnResiduals would normally be True.
-   static uInt fitProfiles (Lattice<Float>& outImage,
-			    Vector<Float>& fittedParameters,
-			    LinearFit<Float>& fitter, 
-			    const Lattice<Float>& inImage,
-			    uInt whichAxis,
-			    const Vector<Bool>& fitMask,
-			    Bool returnResiduals);
-
-// Fit baseline to MaskedLattice.  Fit and residuals can be optionally
-// written (leave pointers at zero to not write out these lattices)
-// You can optionally specify a weights lattice (1.0 if not given).
-   static uInt fitProfiles (MaskedLattice<Float>* pOutFit,
-                           MaskedLattice<Float>* pOutResid,
-                           MaskedLattice<Float>& in,
-                           Lattice<Float>* pSigma,
-                           LinearFit<Float>& fitter, 
-                           uInt axis, Bool showProgress=False);
+  // Fit baseline to MaskedLattice.  Fit and residuals can be optionally
+  // written (leave pointers at zero to not write out these lattices)
+  // You can optionally specify a weights lattice (1.0 if not given).
+  static uInt fitProfiles(MaskedLattice<Float>* pOutFit, MaskedLattice<Float>* pOutResid,
+                          MaskedLattice<Float>& in, Lattice<Float>* pSigma,
+                          LinearFit<Float>& fitter, uInt axis, Bool showProgress = False);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

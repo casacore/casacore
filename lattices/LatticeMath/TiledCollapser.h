@@ -1,40 +1,39 @@
-//# TiledCollapser.h: Abstract base class to collapse chunks for LatticeApply
-//# Copyright (C) 1996,1997,1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledCollapser.h: Abstract base class to collapse chunks for LatticeApply
+// # Copyright (C) 1996,1997,1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_TILEDCOLLAPSER_H
 #define LATTICES_TILEDCOLLAPSER_H
- 
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class IPosition;
 
 // <summary>
@@ -84,81 +83,73 @@ class IPosition;
 // <motivation>
 // </motivation>
 
-// <todo asof="1997/08/01">   
-//   <li> 
+// <todo asof="1997/08/01">
+//   <li>
 // </todo>
 
+template <class T, class U = T>
+class TiledCollapser {
+ public:
+  // Destructor
+  virtual ~TiledCollapser();
 
-template <class T, class U=T> class TiledCollapser
-{
-public:
+  // The init function for a derived class.
+  // It can be used to check if <src>nOutPixelsPerCollapse</src>
+  // corresponds with the number of pixels produced per collapsed chunk.
+  // <br><src>processAxis</src> is the axis of the line being passed
+  // to the <src>process</src> function.
+  virtual void init(uInt nOutPixelsPerCollapse) = 0;
 
-// Destructor
-    virtual ~TiledCollapser();
+  // Can the process function in the derived class handle a null mask pointer?
+  // If not, LatticeApply ensures that it'll always pass a mask block,
+  // even if the lattice does not have a mask (in that case that mask block
+  // contains all True values).
+  // <br>The default implementation returns False.
+  // <br>The function is there to make optimization possible when no masks
+  // are involved. On the other side, it allows the casual user to ignore
+  // optimization.
+  virtual Bool canHandleNullMask() const;
 
-// The init function for a derived class.
-// It can be used to check if <src>nOutPixelsPerCollapse</src>
-// corresponds with the number of pixels produced per collapsed chunk.
-// <br><src>processAxis</src> is the axis of the line being passed
-// to the <src>process</src> function.
-    virtual void init (uInt nOutPixelsPerCollapse) = 0;
+  // Create and initialize the accumulator.
+  // The accumulator can be a cube with shape [n1,n2,n3],
+  // where <src>n2</src> is equal to <src>nOutPixelsPerCollapse</src>.
+  // However, one can also use several matrices as accumulator.
+  // <br> The data type of the accumulator can be any. E.g. when
+  // accumulating Float lattices, the accumulator could be of
+  // type Double to have enough precision.
+  // <br>In the <src>endAccumulator</src> function the accumulator
+  // data has to be copied into an Array object with the correct
+  // shape and data type.
+  virtual void initAccumulator(uInt64 n1, uInt64 n3) = 0;
 
-// Can the process function in the derived class handle a null mask pointer?
-// If not, LatticeApply ensures that it'll always pass a mask block,
-// even if the lattice does not have a mask (in that case that mask block
-// contains all True values).
-// <br>The default implementation returns False.
-// <br>The function is there to make optimization possible when no masks
-// are involved. On the other side, it allows the casual user to ignore
-// optimization.
-    virtual Bool canHandleNullMask() const;
+  // Collapse the given input data containing (<src>nrval</src> values
+  // with an increment of <src>inDataIncr</src> elements).
+  // <src>inMask</src> is a Bool block representing a mask with the
+  // same nr of values and increment as the input data. If a mask
+  // value is False, the corresponding input value is masked off.
+  // <br>When function <src>canHandleNullMask</src> returned True,
+  // it is possible that <src>inMask</src> is a null pointer indicating
+  // that the input has no mask, thus all values are valid.
+  // <br>
+  // The result(s) have to be stored in the accumulator at the given indices.
+  // <br><src>startPos</src> gives the lattice position of the first value.
+  // The position of other values can be calculated from index and shape
+  // using function <src>toPositionInArray</src> in class
+  // <linkto class=IPosition>IPosition</linkto>.
+  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const Bool* inMask,
+                       uInt inDataIncr, uInt inMaskIncr, uInt nrval, const IPosition& startPos,
+                       const IPosition& shape) = 0;
 
-// Create and initialize the accumulator.
-// The accumulator can be a cube with shape [n1,n2,n3],
-// where <src>n2</src> is equal to <src>nOutPixelsPerCollapse</src>.
-// However, one can also use several matrices as accumulator.
-// <br> The data type of the accumulator can be any. E.g. when
-// accumulating Float lattices, the accumulator could be of
-// type Double to have enough precision.
-// <br>In the <src>endAccumulator</src> function the accumulator
-// data has to be copied into an Array object with the correct
-// shape and data type.
-    virtual void initAccumulator (uInt64 n1, uInt64 n3) = 0;
-
-// Collapse the given input data containing (<src>nrval</src> values
-// with an increment of <src>inDataIncr</src> elements).
-// <src>inMask</src> is a Bool block representing a mask with the
-// same nr of values and increment as the input data. If a mask
-// value is False, the corresponding input value is masked off.
-// <br>When function <src>canHandleNullMask</src> returned True,
-// it is possible that <src>inMask</src> is a null pointer indicating
-// that the input has no mask, thus all values are valid.
-// <br>
-// The result(s) have to be stored in the accumulator at the given indices.
-// <br><src>startPos</src> gives the lattice position of the first value.
-// The position of other values can be calculated from index and shape
-// using function <src>toPositionInArray</src> in class
-// <linkto class=IPosition>IPosition</linkto>.
-    virtual void process (uInt accumIndex1, uInt accumIndex3,
-			  const T* inData, const Bool* inMask,
-                          uInt inDataIncr, uInt inMaskIncr,
-                          uInt nrval,
-			  const IPosition& startPos,
-			  const IPosition& shape) = 0;
-
-// End the accumulator. It should return the accumulator as an
-// Array of datatype U (e.g. double the precision of type T) 
-// with the given shape. The accumulator should thereafter be deleted when needed.
-    virtual void endAccumulator (Array<U>& result, 
-                                 Array<Bool>& resultMask,
-				 const IPosition& shape) = 0;
+  // End the accumulator. It should return the accumulator as an
+  // Array of datatype U (e.g. double the precision of type T)
+  // with the given shape. The accumulator should thereafter be deleted when needed.
+  virtual void endAccumulator(Array<U>& result, Array<Bool>& resultMask,
+                              const IPosition& shape) = 0;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/TiledCollapser.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,38 +1,37 @@
-//# LCConcatenation.h: Combine multiple LCRegion's into a new dimension
-//# Copyright (C) 1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LCConcatenation.h: Combine multiple LCRegion's into a new dimension
+// # Copyright (C) 1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LCCONCATENATION_H
 #define LATTICES_LCCONCATENATION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LRegions/LCRegionMulti.h>
 #include <casacore/lattices/LRegions/LCBox.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Combine multiple LCRegion's into a new dimension.
@@ -47,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=LCRegion>LCRegion</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // The LCConcatenation class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
 // It makes it possible to combine multiple LCRegion's and to add a
@@ -70,10 +69,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // E.g. One can define a different polygon in the RA-DEC plane of each
 // channel. LCConcatenation makes it possible to combine the polygons
 // to one 3D region in the RA-DEC-Freq cube.
-// </synopsis> 
+// </synopsis>
 
 // <example>
-// This example combines <src>n</src> (relative) circles 
+// This example combines <src>n</src> (relative) circles
 // given in the x-z plane along the y-axis.
 // In this example the regions used are circles with the same centers,
 // but it is also  possible to combine differently shaped regions.
@@ -93,98 +92,86 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="1997/11/11">
-//# <li> 
-//# </todo>
+// # <todo asof="1997/11/11">
+// # <li>
+// # </todo>
 
-class LCConcatenation: public LCRegionMulti
-{
-public:
-    LCConcatenation();
+class LCConcatenation : public LCRegionMulti {
+ public:
+  LCConcatenation();
 
-    // Combine the given regions.
-    // When <src>takeOver</src> is True, the destructor will delete the
-    // given regions. Otherwise a copy of the regions is made.
-    // The extend range has to be given as a 1-dimensional box.
-    // The default range is the entire axis.
-    // <group>
-    LCConcatenation (Bool takeOver, const Block<const LCRegion*>& regions,
-		     Int extendAxis);
-    LCConcatenation (Bool takeOver, const Block<const LCRegion*>& regions,
-		     Int extendAxis, const LCBox& extendRange);
-    // </group>
+  // Combine the given regions.
+  // When <src>takeOver</src> is True, the destructor will delete the
+  // given regions. Otherwise a copy of the regions is made.
+  // The extend range has to be given as a 1-dimensional box.
+  // The default range is the entire axis.
+  // <group>
+  LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis);
+  LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis,
+                  const LCBox& extendRange);
+  // </group>
 
-    // Copy constructor (copy semantics).
-    LCConcatenation (const LCConcatenation& other);
+  // Copy constructor (copy semantics).
+  LCConcatenation(const LCConcatenation& other);
 
-    virtual ~LCConcatenation();
+  virtual ~LCConcatenation();
 
-    // Assignment (copy semantics).
-    LCConcatenation& operator= (const LCConcatenation& other);
+  // Assignment (copy semantics).
+  LCConcatenation& operator=(const LCConcatenation& other);
 
-    // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
- 
-    // Make a copy of the derived object.
-    virtual LCRegion* cloneRegion() const;
+  // Comparison
+  virtual Bool operator==(const LCRegion& other) const;
 
-     // Get the extend axis.
-    Int extendAxis() const;
+  // Make a copy of the derived object.
+  virtual LCRegion* cloneRegion() const;
 
-    // Get the extend box.
-    const LCBox& extendBox() const;
+  // Get the extend axis.
+  Int extendAxis() const;
 
-    // Get the class name (to store in the record).
-    static String className();
+  // Get the extend box.
+  const LCBox& extendBox() const;
 
-    // Get the region type.  Returns the class name.
-    virtual String type() const;
- 
-    // Convert the (derived) object to a record.
-    virtual TableRecord toRecord (const String& tableName) const;
+  // Get the class name (to store in the record).
+  static String className();
 
-    // Convert correct object from a record.
-    static LCConcatenation* fromRecord (const TableRecord&,
-					const String& tableName);
+  // Get the region type.  Returns the class name.
+  virtual String type() const;
 
-protected:
-    // Construct another LCRegion (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box and mask.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
+  // Convert the (derived) object to a record.
+  virtual TableRecord toRecord(const String& tableName) const;
 
-    // Do the actual getting of the mask.
-    virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
+  // Convert correct object from a record.
+  static LCConcatenation* fromRecord(const TableRecord&, const String& tableName);
 
-    // This function is needed here because the niceCursorShape of the
-    // contributing region does not make any sense (other dimensionality). 
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+ protected:
+  // Construct another LCRegion (for e.g. another lattice) by moving
+  // this one. It recalculates the bounding box and mask.
+  // A positive translation value indicates "to right".
+  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
+                                const IPosition& newLatticeShape) const;
 
-private:
-    // Fill the object.
-    // <group>
-    void fillRegionAxes();
-    void fill();
-    // </group>
+  // Do the actual getting of the mask.
+  virtual void multiGetSlice(Array<Bool>& buffer, const Slicer& section);
 
-    Int       itsExtendAxis;
-    IPosition itsRegionAxes;
-    LCBox     itsExtendBox;
+  // This function is needed here because the niceCursorShape of the
+  // contributing region does not make any sense (other dimensionality).
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+
+ private:
+  // Fill the object.
+  // <group>
+  void fillRegionAxes();
+  void fill();
+  // </group>
+
+  Int itsExtendAxis;
+  IPosition itsRegionAxes;
+  LCBox itsExtendBox;
 };
 
+inline Int LCConcatenation::extendAxis() const { return itsExtendAxis; }
+inline const LCBox& LCConcatenation::extendBox() const { return itsExtendBox; }
 
-inline Int LCConcatenation::extendAxis() const
-{
-    return itsExtendAxis;
-}
-inline const LCBox& LCConcatenation::extendBox() const
-{
-    return itsExtendBox;
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

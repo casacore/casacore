@@ -1,46 +1,42 @@
-//# LCLELMask.h: Class to define a mask as a LEL expression
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
-
+// # LCLELMask.h: Class to define a mask as a LEL expression
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LCLELMASK_H
 #define LATTICES_LCLELMASK_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LRegions/LCRegionSingle.h>
 #include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/lattices/LEL/LatticeExpr.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations
+// # Forward Declarations
 class TableRecord;
 class IPosition;
-
 
 // <summary>
 // Class to define a mask as a LEL expression
@@ -56,7 +52,7 @@ class IPosition;
 //   <li> <linkto class=ImageExpr>ImageExpr</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // The LCLELMask class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
 // <br>
@@ -71,49 +67,48 @@ class IPosition;
 // persistent on-the-fly mask. It means that normally a WCLELMask should
 // be used (which gets converted to an LCLELMask when applied to an image).
 // </note>
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // </example>
 
 // <motivation>
-// LCLELMask is needed to make 
+// LCLELMask is needed to make
 // </motivation>
 
-//# <todo asof="1998/05/20">
-//#   <li> 
-//# </todo>
+// # <todo asof="1998/05/20">
+// #   <li>
+// # </todo>
 
-class LCLELMask : public LCRegionSingle
-{
-public:
+class LCLELMask : public LCRegionSingle {
+ public:
   LCLELMask();
 
-  // Construct from vectors of world coordinates 
+  // Construct from vectors of world coordinates
   // defining the box corners.  It is assumed that the
   // order of the values is in the order of the pixel axes.
-  explicit LCLELMask (const LatticeExpr<Bool>& expr);
+  explicit LCLELMask(const LatticeExpr<Bool>& expr);
 
   // Copy constructor (copy semantics).
-  LCLELMask (const LCLELMask& other);
+  LCLELMask(const LCLELMask& other);
 
   // Destructor
   virtual ~LCLELMask();
 
-  // Assignment (copy semantics) 
-  LCLELMask& operator= (const LCLELMask& other);
+  // Assignment (copy semantics)
+  LCLELMask& operator=(const LCLELMask& other);
 
   // Comparison
-  virtual Bool operator== (const LCRegion& other) const;
+  virtual Bool operator==(const LCRegion& other) const;
 
   // Clone a LCLELMask object.
   virtual LCRegion* cloneRegion() const;
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the PagedArray object with the lattice file.
@@ -133,28 +128,25 @@ public:
   // Returns LCLELMask
   static String className();
 
-  // Return region type.  Returns the class name 
+  // Return region type.  Returns the class name
   virtual String type() const;
- 
+
   // Convert the LCLELMask object to a record.
   // This cannot be done as a Lattice expression cannot be made persistent
   // (only Image expressions can, thus only WCLELMask is persistent).
   // <br>So this function throws an exception.
-  virtual TableRecord toRecord (const String& tableName) const;
+  virtual TableRecord toRecord(const String& tableName) const;
 
-
-protected:
+ protected:
   // Translating an LCLELMask is not possible, so it throws an exception.
-  virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				 const IPosition& newLatticeShape) const;
+  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
+                                const IPosition& newLatticeShape) const;
 
-private:
-  LCBox             itsBox;
+ private:
+  LCBox itsBox;
   LatticeExpr<Bool> itsExpr;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

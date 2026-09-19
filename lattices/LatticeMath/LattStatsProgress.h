@@ -1,38 +1,37 @@
-//# LattStatsProgress.h: progress meter for LatticeStatistics
-//# Copyright (C) 1996,1997,1998,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LattStatsProgress.h: progress meter for LatticeStatistics
+// # Copyright (C) 1996,1997,1998,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTSTATSPROGRESS_H
 #define LATTICES_LATTSTATSPROGRESS_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LatticeMath/LatticeProgress.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class ProgressMeter;
 
@@ -54,50 +53,44 @@ class ProgressMeter;
 //   Progress meters can be displayed by the <src>LatticeApply</src> class
 //   which is used by <src>LatticeStatistics</src> in order to optimally iterate
 //   through the lattice.  To do this,  one must derive a
-//   class from <src>LatticeProgress</src>. <src>LatticeApply</src> calls 
-//   methods declared in <src>LatticeProgress</src> and  implemented in 
+//   class from <src>LatticeProgress</src>. <src>LatticeApply</src> calls
+//   methods declared in <src>LatticeProgress</src> and  implemented in
 //   the derived class.
 // </synopsis>
-// 
+//
 // <motivation>
 //  I like progress meters !
 // </motivation>
-// 
+//
 // <todo asof="1998/01/10">
 // </todo>
- 
 
-class LattStatsProgress : public LatticeProgress
-{
-public:
+class LattStatsProgress : public LatticeProgress {
+ public:
+  // Constructor makes a null object
+  LattStatsProgress() : _meter(), _currentStep(0) {};
 
-	// Constructor makes a null object
-    LattStatsProgress() : _meter(), _currentStep(0) {};
+  // Destructor deletes the ProgressMeter pointer
+  virtual ~LattStatsProgress();
 
-    // Destructor deletes the ProgressMeter pointer
-    virtual ~LattStatsProgress();
+  // increment the current step (postfix version)
+  void operator++(Int);
 
-    // increment the current step (postfix version)
-    void operator++(Int);
+  // Initialize this object.  Here we create the ProgressMeter
+  // This function is called by the <src>init</src> in LatticeProgress
+  virtual void initDerived();
 
-    // Initialize this object.  Here we create the ProgressMeter
-    // This function is called by the <src>init</src> in LatticeProgress
-    virtual void initDerived();
+  // Tell the number of steps done so far.
+  virtual void nstepsDone(uInt nsteps);
 
-    // Tell the number of steps done so far.
-    virtual void nstepsDone (uInt nsteps);
+  // The process has ended so clean things up.
+  virtual void done();
 
-    // The process has ended so clean things up.
-    virtual void done();
-
-private:
-    std::shared_ptr<ProgressMeter> _meter;
-    uInt _currentStep;
+ private:
+  std::shared_ptr<ProgressMeter> _meter;
+  uInt _currentStep;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

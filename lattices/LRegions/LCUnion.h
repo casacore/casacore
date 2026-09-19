@@ -1,37 +1,36 @@
-//# LCUnion.h: Make the union of 2 or more regions
-//# Copyright (C) 1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LCUnion.h: Make the union of 2 or more regions
+// # Copyright (C) 1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LCUNION_H
 #define LATTICES_LCUNION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LRegions/LCRegionMulti.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Make the union of 2 or more regions.
@@ -46,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=LCRegion>LCRegion</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // The LCUnion class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
 // It makes it possible to extend a LCRegion along straight lines to
@@ -58,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // the lattice.
 // <p>
 // The center of the union must be inside the lattice
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -69,75 +68,65 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> Expand along (slanted) cone lines
 // </todo>
 
-class LCUnion: public LCRegionMulti
-{
-public:
-    LCUnion();
+class LCUnion : public LCRegionMulti {
+ public:
+  LCUnion();
 
-    // Construct the union of the given regions.
-    LCUnion (const LCRegion& region1, const LCRegion& region2);
+  // Construct the union of the given regions.
+  LCUnion(const LCRegion& region1, const LCRegion& region2);
 
-    // Construct from multiple regions.
-    // When <src>takeOver</src> is True, the destructor will delete the
-    // given regions. Otherwise a copy of the regions is made.
-    // <group>
-    LCUnion (Bool takeOver, const LCRegion* region1,
-	     const LCRegion* region2 = 0,
-	     const LCRegion* region3 = 0,
-	     const LCRegion* region4 = 0,
-	     const LCRegion* region5 = 0,
-	     const LCRegion* region6 = 0,
-	     const LCRegion* region7 = 0,
-	     const LCRegion* region8 = 0,
-	     const LCRegion* region9 = 0,
-	     const LCRegion* region10 = 0);
-    LCUnion (Bool takeOver, const Block<const LCRegion*>& regions);
-    // </group>
+  // Construct from multiple regions.
+  // When <src>takeOver</src> is True, the destructor will delete the
+  // given regions. Otherwise a copy of the regions is made.
+  // <group>
+  LCUnion(Bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
+          const LCRegion* region3 = 0, const LCRegion* region4 = 0, const LCRegion* region5 = 0,
+          const LCRegion* region6 = 0, const LCRegion* region7 = 0, const LCRegion* region8 = 0,
+          const LCRegion* region9 = 0, const LCRegion* region10 = 0);
+  LCUnion(Bool takeOver, const Block<const LCRegion*>& regions);
+  // </group>
 
-    // Copy constructor (copy semantics).
-    LCUnion (const LCUnion& other);
+  // Copy constructor (copy semantics).
+  LCUnion(const LCUnion& other);
 
-    virtual ~LCUnion();
+  virtual ~LCUnion();
 
-    // Assignment (copy semantics).
-    LCUnion& operator= (const LCUnion& other);
+  // Assignment (copy semantics).
+  LCUnion& operator=(const LCUnion& other);
 
-    // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
+  // Comparison
+  virtual Bool operator==(const LCRegion& other) const;
 
-    // Make a copy of the derived object.
-    virtual LCRegion* cloneRegion() const;
+  // Make a copy of the derived object.
+  virtual LCRegion* cloneRegion() const;
 
-    // Get the class name (to store in the record).
-    static String className();
+  // Get the class name (to store in the record).
+  static String className();
 
-    // Get the region type.  Returns className()
-    virtual String type() const;
+  // Get the region type.  Returns className()
+  virtual String type() const;
 
-    // Convert the (derived) object to a record.
-    virtual TableRecord toRecord (const String& tableName) const;
+  // Convert the (derived) object to a record.
+  virtual TableRecord toRecord(const String& tableName) const;
 
-    // Convert correct object from a record.
-    static LCUnion* fromRecord (const TableRecord&,
-				const String& tableName);
+  // Convert correct object from a record.
+  static LCUnion* fromRecord(const TableRecord&, const String& tableName);
 
-protected:
-    // Construct another LCRegion (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box and mask.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
+ protected:
+  // Construct another LCRegion (for e.g. another lattice) by moving
+  // this one. It recalculates the bounding box and mask.
+  // A positive translation value indicates "to right".
+  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
+                                const IPosition& newLatticeShape) const;
 
-    // Do the actual getting of the mask.
-    virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
+  // Do the actual getting of the mask.
+  virtual void multiGetSlice(Array<Bool>& buffer, const Slicer& section);
 
-private:
-    // Make the bounding box and determine the offsets.
-    void defineBox();
+ private:
+  // Make the bounding box and determine the offsets.
+  void defineBox();
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

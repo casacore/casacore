@@ -1,44 +1,42 @@
-//# RebinLattice.h: rebin a masked lattices
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have receied a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # RebinLattice.h: rebin a masked lattices
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have receied a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_REBINLATTICE_H
 #define LATTICES_REBINLATTICE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 class IPosition;
-
 
 // <summary>
 // Rebin a masked lattice.
@@ -54,7 +52,7 @@ class IPosition;
 // </prerequisite>
 
 // <synopsis>
-//  This class enables you to rebin (data are averaged over bin) a MaskedLattice by 
+//  This class enables you to rebin (data are averaged over bin) a MaskedLattice by
 //  a given factor per axis
 // </synopsis>
 
@@ -72,12 +70,9 @@ class IPosition;
 // <motivation>
 // </motivation>
 
-
-template<class T>
-class RebinLattice : public MaskedLattice<T>
-{
-public:
-
+template <class T>
+class RebinLattice : public MaskedLattice<T> {
+ public:
   // Default constructor (Object is unuseable)
   RebinLattice();
 
@@ -113,9 +108,9 @@ public:
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -142,9 +137,9 @@ public:
 
   // Returns the shape of the lattice.
   virtual IPosition shape() const;
-  
+
   // Return the name of the parent lattice.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name(Bool stripPath = False) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
@@ -155,44 +150,40 @@ public:
 
   // Do the actual getting of an array of values.
   // Slicers with non-unit stride are not yet supported
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual putting of an array of values.
   // The lattice is not writable.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
-  
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
+
   // Get a section of the mask.
   // Slicers with non-unit stride are not yet supported
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // Static function needed by LEL.  Applies binning factors
   // to shape to give the shape of the output lattice.  Will
   // give the same result as function 'shape'
-  static IPosition rebinShape (const IPosition& shapeLatticeIn,
-			       const IPosition& bin);  
+  static IPosition rebinShape(const IPosition& shapeLatticeIn, const IPosition& bin);
 
-private:
-  Slicer findOriginalSlicer (const Slicer& section) const;
-  void getDataAndMask (const Slicer& section);
+ private:
+  Slicer findOriginalSlicer(const Slicer& section) const;
+  void getDataAndMask(const Slicer& section);
   void bin(const Array<T>& dataIn);
   void bin(const Array<T>& dataIn, const Array<Bool>& maskIn);
-//
+  //
   MaskedLattice<T>* itsLatticePtr;
   IPosition itsBin;
-  Bool      itsAllUnity;
-// Cache
-  Array<T>    itsData;
+  Bool itsAllUnity;
+  // Cache
+  Array<T> itsData;
   Array<Bool> itsMask;
-  Slicer      itsSlicer;
+  Slicer itsSlicer;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/RebinLattice.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

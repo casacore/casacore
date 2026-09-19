@@ -1,51 +1,50 @@
-//# Lattices.h: Regular N-dimensional data structures.
-//# Copyright (C) 1996,1997,1998,1999,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Lattices.h: Regular N-dimensional data structures.
+// # Copyright (C) 1996,1997,1998,1999,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICES_H
 #define LATTICES_LATTICES_H
 
+// #include <casacore/casa/Arrays/ArrayLattice.h>
+// #include <casacore/casa/Arrays/PagedArray.h>
+// #include <casacore/casa/Arrays/TempLattice.h>
+// #include <casacore/casa/Arrays/LatticeLocker.h>
+// #include <casacore/casa/Arrays/TiledShape.h>
 
-//#include <casacore/casa/Arrays/ArrayLattice.h>
-//#include <casacore/casa/Arrays/PagedArray.h>
-//#include <casacore/casa/Arrays/TempLattice.h>
-//#include <casacore/casa/Arrays/LatticeLocker.h>
-//#include <casacore/casa/Arrays/TiledShape.h>
+// #include <casacore/casa/Arrays/LatticeApply.h>
+// #include <casacore/casa/Arrays/LatticeIterator.h>
+// #include <casacore/casa/Arrays/LatticeStepper.h>
+// #include <casacore/casa/Arrays/TileStepper.h>
+// #include <casacore/casa/Arrays/TiledLineStepper.h>
 
-//#include <casacore/casa/Arrays/LatticeApply.h>
-//#include <casacore/casa/Arrays/LatticeIterator.h>
-//#include <casacore/casa/Arrays/LatticeStepper.h>
-//#include <casacore/casa/Arrays/TileStepper.h>
-//#include <casacore/casa/Arrays/TiledLineStepper.h>
+// #include <casacore/lattices/Lattices/SubLattice.h>
 
-//#include <casacore/lattices/Lattices/SubLattice.h>
+// #include <casacore/lattices/LRegions.h>
+// #include <casacore/lattices/LEL.h>
+// #include <casacore/lattices/LatticeMath.h>
 
-//#include <casacore/lattices/LRegions.h>
-//#include <casacore/lattices/LEL.h>
-//#include <casacore/lattices/LatticeMath.h>
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -80,7 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <synopsis>
 // The Lattice module may be broken up into a few areas:
-// <ol> 
+// <ol>
 //
 // <li> Lattices - the actual holders of lattice-like data which all share a
 // common <linkto class="Lattice">interface</linkto>.  The following items
@@ -88,7 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // called for.
 //  <ul>
 //   <li>The <linkto class="ArrayLattice">ArrayLattice</linkto> class adds
-//   the interface requirements of a Lattice to a Casacore 
+//   the interface requirements of a Lattice to a Casacore
 //   <linkto class="Array">Array</linkto>. The data inside an ArrayLattice
 //   are not stored on disk.  This n-dimensional array class is the simplest
 //   of the Lattices.  Users construct the ArrayLattice with an argument
@@ -102,14 +101,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   classes. It makes it possible to concentrate on the algorithm.
 // <srcblock>
 // // Make an Array of shape 3x4x5
-// 
+//
 // Array<Float> simpleArray(IPosition(3,3,4,5));
 //
 // // fill it with a gradient
 //
 // for (Int k=0; k<5; k++)
 //   for (Int j=0; j<4; j++)
-//     for (Int i=0; i<3; i++) 
+//     for (Int i=0; i<3; i++)
 //       simpleArray(IPosition(3,i,j,k)) = i+j+k;
 //
 // // use the array to create an ArrayLattice.
@@ -122,10 +121,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   and pages it into random access memory for use.  Paging is
 //   used here to describe the process of getting pieces of data small
 //   enough to fit into active memory even if the whole data set is much too
-//   large.  This class "feels" like an array but may hold very large amounts 
+//   large.  This class "feels" like an array but may hold very large amounts
 //   of data.  The paging has an added effect: all the data may be made
 //   persistent, so it stays around after the application ends.
-//   When you use PagedArrays - use 
+//   When you use PagedArrays - use
 //   them because you need persistent data and/or paging into large data sets.
 //   <br>
 //   The persistence is done using a <linkto module="Tables">Table</linkto>,
@@ -142,7 +141,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   (like the LatticeIterator.)
 //
 // <srcblock>
-// // Create a PagedArray from a Table already existing on disk.  
+// // Create a PagedArray from a Table already existing on disk.
 //
 // PagedArray<Float> lattice(fileName);
 //
@@ -151,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // LatticeIterator<Float> iter(lattice);
 //
-// // Iterate through and do something simple; here we just 
+// // Iterate through and do something simple; here we just
 // // sum up all the values in the Lattice
 //
 // Float dSum = 0;
@@ -186,12 +185,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  moved through the Lattice in an orderly fashion also defined by the user.
 //  Since the cursor is "read-only" it can only be used to "get" the data
 //  out of the Lattice.  RO_LatticeIterators are constructed with the Lattice
-//  to be iterated as the first argument. The optional second constructor 
-//  argument is either an IPosition which defines the shape of the cursor 
+//  to be iterated as the first argument. The optional second constructor
+//  argument is either an IPosition which defines the shape of the cursor
 //  or a <linkto class=LatticeNavigator>LatticeNavigator</linkto> argument.
 //  The IPosition argument cause the iterator
 //  to move the cursor in a simple pattern; the cursor starts at the Lattice's
-//  origin and moves in the direction of the x-axis, then the y-axis, then 
+//  origin and moves in the direction of the x-axis, then the y-axis, then
 //  the z-axis, etc..  If a LatticeNavigator argument is given, more
 //  control over the cursor shape and path are available. If no second
 //  argument is given, the optimal
@@ -209,7 +208,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //   <li> The <linkto class="LatticeIterator">LatticeIterator</linkto> class
 //   name reflects its role as a means of iterating a read and write cursor
-//   through a Lattice based object.  Not only does the cursor allow you to 
+//   through a Lattice based object.  Not only does the cursor allow you to
 //   inspect the Lattice data but you may also change the Lattice via
 //   operations on the cursor. This class provides optimized read and write
 //   iteration through any class derived from Lattice.  The technique is
@@ -219,7 +218,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   useful for the PagedArray and PagedImage classes.  These two classes
 //   are constructed empty and need iteration to fill in the Lattice data.
 // <srcblock>
-// // make an empty PagedArray and fill it.   The Table that stores the 
+// // make an empty PagedArray and fill it.   The Table that stores the
 // // PagedArray is deleted when the PagedArray goes out of scope
 //
 // PagedArray<Float> lattice(IPosition(4,100,200,300,50));
@@ -268,7 +267,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // IPosition cursorShape(3, lattticeShape(0), 1, latticeShape(2));
 //
 // // Define the path the cursor should follow, we list x and z first, even though
-// // no iterations will be done along those axes since the cursor is an 
+// // no iterations will be done along those axes since the cursor is an
 // // integral subshape of the Lattice. The cursor will move along the y-axis
 // // and then increment the t-axis.  The construct the Navigator and Iterator
 //
@@ -277,7 +276,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // LatticeIterator<Float> iter(image, nav);
 // </srcblock>
 //
-// <li> 
+// <li>
 //  The <linkto class="TiledLineStepper">TiledLineStepper</linkto> class
 //  allows you to iterate through a Lattice with a Vector cursor.
 //  However, it steps through the Lattice in an order which is
@@ -289,12 +288,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // Set up a TiledLineStepper to return profiles along the specified
 // // axis from a PagedArray (not all Lattices have the tileShape member
 // // function).  Then create the iterator as well.
-// 
+//
 // TiledLineStepper nav(lattice.shape(), lattice.tileShape(), axis);
 // LatticeIterator<Complex> nav(lattice, nav);
 // </srcblock>
 //
-// <li> 
+// <li>
 //  The <linkto class="TileStepper">TileStepper</linkto> class
 //  allows you to iterate through a Lattice in the optimum way.
 //  It steps through the lattice tile by tile minimizing I/O and memory usage.
@@ -336,14 +335,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  classes which can be used to define a LatticeRegion in pixel coordinates.
 //  They are described in module
 //  <a href="group__LRegions__module.html">LRegions</a>.
-//  
+//
 //  <li> Module <a href="group__LEL__module.html">LEL</a> contains classes to
 //  form a mathematical expression of lattices. All standard operators, regions,
 //  and many, many <linkto class=LatticeExprNode>functions</linkto>
 //  can be used in an expression.
 //  </ul>
 //
-// <li> <linkto class=LatticeLocker>LatticeLocker</linkto> 
+// <li> <linkto class=LatticeLocker>LatticeLocker</linkto>
 // can be used to acquire a (user) lock on a lattice.
 // The lock can be a read or write lock.
 // The destructor releases the lock when needed.
@@ -353,8 +352,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Usually the default locking mechanism is sufficient.
 // LatticeLocker is useful when finer locking control is needed for a
 // disk-based lattice.
-// 
-// <note role=warning> The following are listed for low-level programmers.  
+//
+// <note role=warning> The following are listed for low-level programmers.
 // Lattice users need not understand them.</note>  The Lattice directory
 // contains several files relevant only to implementation.
 //
@@ -370,7 +369,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> The <linkto class="LatticeNavigator">LatticeNavigator</linkto>
 //   class name defines the interface used for navigating through a Lattice
 //   by iteration.  This class is an abstract base.  Classes derived from
-//   this (currently 
+//   this (currently
 //   <linkto class="LatticeStepper">LatticeStepper</linkto>,
 //   <linkto class="TiledLineStepper">TiledLineStepper</linkto>, and
 //   <linkto class="TileStepper">TileStepper</linkto>) must
@@ -381,7 +380,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   class contains the currently defined Lattice and sub-Lattice shape. It
 //   is used only by navigator classes as it contains
 //   member functions for moving a cursor through a defined sub-Lattice.
-//   <li> The 
+//   <li> The
 //   <linkto class="LatticeIterInterface">LatticeIterInterface</linkto>
 //   class defines the interface for a specific Lattice's iterator.  This
 //   class is a base class with a default iterator implementation.
@@ -399,7 +398,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </synopsis>
 
 // <motivation>
-// Lattices allow the various holders of data to assume a general method 
+// Lattices allow the various holders of data to assume a general method
 // of treatment; by making interfaces in terms of the Lattice class,
 // the programmer can  polymorphically operate on objects derived  from the
 // Lattice class.
@@ -411,7 +410,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // </module>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

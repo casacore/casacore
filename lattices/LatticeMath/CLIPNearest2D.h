@@ -1,42 +1,41 @@
-//# CLIPNearest2D.h: Nearest neighbour interpolator for CurvedLattice2D
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have receied a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # CLIPNearest2D.h: Nearest neighbour interpolator for CurvedLattice2D
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have receied a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_CLIPNEAREST2D_H
 #define LATTICES_CLIPNEAREST2D_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LatticeMath/CLInterpolator2D.h>
 #include <casacore/casa/Arrays/AxesMapping.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template<class T> class Lattice;
-
+// # Forward Declarations
+template <class T>
+class Lattice;
 
 // <summary>
 // Arbitrarily shaped 1-dim lattice crosscut
@@ -48,7 +47,7 @@ template<class T> class Lattice;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=CLInterpolator2D>CLInterpolator2D</linkto>
 // </prerequisite>
 
@@ -66,11 +65,9 @@ template<class T> class Lattice;
 // the axis to be used in the interpolation.
 // </synopsis>
 
-
-template<class T>
-class CLIPNearest2D: public CLInterpolator2D<T>
-{
-public:
+template <class T>
+class CLIPNearest2D : public CLInterpolator2D<T> {
+ public:
   // Only default constructor is needed.
   // The set function in the base class defines the lattice and axes.
   CLIPNearest2D();
@@ -80,20 +77,16 @@ public:
 
   // Get the data for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
-  virtual void getData (Array<T>& buffer,
-			const Vector<Float>& x,
-			const Vector<Float>& y,
-			const Slicer& section);
+  virtual void getData(Array<T>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+                       const Slicer& section);
 
   // Get the mask for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
-  virtual void getMask (Array<Bool>& buffer,
-			const Vector<Float>& x,
-			const Vector<Float>& y,
-			const Slicer& section);
+  virtual void getMask(Array<Bool>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+                       const Slicer& section);
 
-  //# Make members of parent class known.
-protected:
+  // # Make members of parent class known.
+ protected:
   using CLInterpolator2D<T>::itsAxesMap;
   using CLInterpolator2D<T>::itsAxis1;
   using CLInterpolator2D<T>::itsAxis2;
@@ -102,11 +95,9 @@ protected:
   using CLInterpolator2D<T>::itsLatticePtr;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/CLIPNearest2D.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
-#endif 
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
+#endif

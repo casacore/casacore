@@ -1,39 +1,38 @@
-//# MaskedLatticeIterator.h: Iterators for Masked Lattices: readonly
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MaskedLatticeIterator.h: Iterators for Masked Lattices: readonly
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_MASKEDLATTICEITERATOR_H
 #define LATTICES_MASKEDLATTICEITERATOR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <memory>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A readonly iterator for masked Lattices.
@@ -55,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // examining and possibly extracting its contents, but not for modifying it.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // This class provides a convenient way to traverse any class derived from
 // MaskedLattice. It is derived from class
 // <linkto class=RO_LatticeIterator>RO_LatticeIterator</linkto>, so it
@@ -105,21 +104,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // to develop this class.
 // </motivation>
 
-//# <todo asof="2003/11/10">
-//#  <li>
-//# </todo>
+// # <todo asof="2003/11/10">
+// #  <li>
+// # </todo>
 
-
-template<class T> class RO_MaskedLatticeIterator: public RO_LatticeIterator<T>
-{
-  //# Make members of parent class known.
-public:
+template <class T>
+class RO_MaskedLatticeIterator : public RO_LatticeIterator<T> {
+  // # Make members of parent class known.
+ public:
   using RO_LatticeIterator<T>::isNull;
   using RO_LatticeIterator<T>::position;
   using RO_LatticeIterator<T>::endPosition;
   using RO_LatticeIterator<T>::cursorShape;
 
-public:
+ public:
   // The default constructor creates an empty object which is practically
   // unusable.
   // It can only be used as the source or target of an assignment. It can
@@ -134,31 +132,28 @@ public:
   // useRef=True means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
-  explicit RO_MaskedLatticeIterator (const MaskedLattice<T>& data,
-				     Bool useRef=True);
+  explicit RO_MaskedLatticeIterator(const MaskedLattice<T>& data, Bool useRef = True);
 
   // Construct the Iterator with the supplied data, and iteration strategy
-  RO_MaskedLatticeIterator (const MaskedLattice<T>& data,
-			    const LatticeNavigator& method,
-			    Bool useRef=True);
+  RO_MaskedLatticeIterator(const MaskedLattice<T>& data, const LatticeNavigator& method,
+                           Bool useRef = True);
 
   // Construct the Iterator with the supplied data.
   // It uses a LatticeStepper with the supplied cursor shape as the
   // iteration strategy.
-  RO_MaskedLatticeIterator (const MaskedLattice<T>& data,
-			    const IPosition& cursorShape,
-			    Bool useRef=True);
+  RO_MaskedLatticeIterator(const MaskedLattice<T>& data, const IPosition& cursorShape,
+                           Bool useRef = True);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
-  RO_MaskedLatticeIterator (const RO_MaskedLatticeIterator<T>& other);
- 
+  RO_MaskedLatticeIterator(const RO_MaskedLatticeIterator<T>& other);
+
   // Destructor (cleans up dangling references and releases memory)
   ~RO_MaskedLatticeIterator();
 
   // Assignment uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
-  RO_MaskedLatticeIterator<T>& operator= (const RO_MaskedLatticeIterator<T>&);
+  RO_MaskedLatticeIterator<T>& operator=(const RO_MaskedLatticeIterator<T>&);
 
   // Make a copy of the iterator object.
   // This means that an independent navigator object is created to
@@ -170,26 +165,23 @@ public:
   RO_MaskedLatticeIterator<T> copy() const;
 
   // Return the underlying MaskedLattice object.
-  MaskedLattice<T>& lattice() const
-    { return const_cast<MaskedLattice<T>&>(*itsMaskLattPtr); }
+  MaskedLattice<T>& lattice() const { return const_cast<MaskedLattice<T>&>(*itsMaskLattPtr); }
 
   // Is the underlying MaskedLattice really masked?
-  Bool isMasked() const
-    { return itsMaskLattPtr->isMasked(); }
+  Bool isMasked() const { return itsMaskLattPtr->isMasked(); }
 
   // Get the mask for the current position.
   // It returns the same flag as
   // <linkto class=MaskedLattice>MaskedLattice::getMaskSlice</linkto>.
   // <group>
-  Bool getMask (COWPtr<Array<Bool>>&, Bool removeDegenerateAxes=False) const;
-  Bool getMask (Array<Bool>&, Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMask (Bool removeDegenerateAxes=False) const;
+  Bool getMask(COWPtr<Array<Bool>>&, Bool removeDegenerateAxes = False) const;
+  Bool getMask(Array<Bool>&, Bool removeDegenerateAxes = False) const;
+  Array<Bool> getMask(Bool removeDegenerateAxes = False) const;
   // </group>
 
-private:
+ private:
   // Construct from a LatticeIterator (for copy function).
-  RO_MaskedLatticeIterator (const RO_LatticeIterator<T>&,
-			    const RO_MaskedLatticeIterator<T>&);
+  RO_MaskedLatticeIterator(const RO_LatticeIterator<T>&, const RO_MaskedLatticeIterator<T>&);
 
   // Fill the pointer with a pointer to the masked lattice.
   // This pointer is a casted copy of the lattice pointer in the base class.
@@ -199,21 +191,19 @@ private:
   // result in 2 evaluations of the expression.
   // However, the lattice can be a PagedArray (for example, for PagedImage).
   // In that case a clone of the original MaskedLattice is used.
-  void fillPtr (const MaskedLattice<T>& mlattice);
+  void fillPtr(const MaskedLattice<T>& mlattice);
 
   // The shared pointer is used for automatic deletion.
   // If not null, it is the same as the normal pointer below.
   std::shared_ptr<MaskedLattice<T>> itsMaskLattShrPtr;
   // Pointer to the MaskedLattice.
   // Deletion (if needed) is done by the shared pointer above.
-  MaskedLattice<T>*                 itsMaskLattPtr;
+  MaskedLattice<T>* itsMaskLattPtr;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/MaskedLatticeIterator.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

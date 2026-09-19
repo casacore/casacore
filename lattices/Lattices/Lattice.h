@@ -1,47 +1,48 @@
-//# Lattice.h:  Lattice is an abstract base class for array-like classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Lattice.h:  Lattice is an abstract base class for array-like classes
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICE_H
 #define LATTICES_LATTICE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/lattices/Lattices/LatticeBase.h>
 #include <casacore/casa/Arrays/Slicer.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class IPosition;
 class LatticeNavigator;
-template <class T> class COWPtr;
-template <class Domain, class Range> class Functional;
-template <class T> class LatticeIterInterface;
-
+template <class T>
+class COWPtr;
+template <class Domain, class Range>
+class Functional;
+template <class T>
+class LatticeIterInterface;
 
 // <summary>
 // A templated, abstract base class for array-like objects.
@@ -61,7 +62,7 @@ template <class T> class LatticeIterInterface;
 // </prerequisite>
 
 // <etymology>
-// Lattice: "A regular, periodic configuration of points, particles, 
+// Lattice: "A regular, periodic configuration of points, particles,
 // or objects, throughout an area of a space..." (American Heritage Directory)
 // This definition matches our own: an n-dimensional arrangement of items,
 // on regular orthogonal axes.
@@ -69,22 +70,22 @@ template <class T> class LatticeIterInterface;
 
 // <synopsis>
 // This pure abstract base class defines the operations which may be performed
-// on any concrete class derived from it.  It has only a few non-pure virtual 
+// on any concrete class derived from it.  It has only a few non-pure virtual
 // member functions.
-// The fundamental contribution of this class, therefore, is that it 
+// The fundamental contribution of this class, therefore, is that it
 // defines the operations derived classes must provide:
 // <ul>
 //    <li> how to extract a "slice" (or sub-array, or subsection) from
 //         a Lattice.
 //    <li> how to copy a slice in.
-//    <li> how to get and put a single element 
+//    <li> how to get and put a single element
 //    <li> how to apply a function to all elements
 //    <li> various shape related functions.
 // </ul>
 // The base class <linkto class=LatticeBase>LatticeBase</linkto> contains
 // several functions not dependent on the template parameter.
 // <note role=tip> Lattices always have a zero origin. </note>
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // Because Lattice is an abstract base class, an actual instance of this
@@ -92,7 +93,7 @@ template <class T> class LatticeIterInterface;
 // inside a function. This is always recommended as it allows functions
 // which have Lattices as arguments to work for any derived class.
 // <p>
-// I will give a few examples here and then refer the reader to the 
+// I will give a few examples here and then refer the reader to the
 // <linkto class="ArrayLattice">ArrayLattice</linkto> class (a memory resident
 // Lattice) and the <linkto class="PagedArray">PagedArray</linkto> class (a
 // disk based Lattice) which contain further examples with concrete
@@ -108,7 +109,7 @@ template <class T> class LatticeIterInterface;
 // functions). The <src>LatticeIterator::cursor()</src> function then returns
 // each of these chunks as an Array and the standard Array based functions are
 // used to calculate the mean on each of these chunks. Functions like this one
-// are the recommended way to access Lattices as the 
+// are the recommended way to access Lattices as the
 // <linkto class="LatticeIterator">LatticeIterator</linkto> will correctly
 // setup any required caches.
 //
@@ -119,7 +120,7 @@ template <class T> class LatticeIterInterface;
 //   const IPosition latticeShape = lat.shape();
 //   Complex currentSum = 0.0f;
 //   size_t nPixels = 0u;
-//   RO_LatticeIterator<Complex> iter(lat, 
+//   RO_LatticeIterator<Complex> iter(lat,
 // 				   LatticeStepper(latticeShape, cursorShape));
 //   for (iter.reset(); !iter.atEnd(); iter++){
 //     currentSum += sum(iter.cursor());
@@ -141,7 +142,7 @@ template <class T> class LatticeIterInterface;
 // LatticeIterators.
 //
 // <srcblock>
-// void FFT2DReal2Complex(Lattice<Complex>& result, 
+// void FFT2DReal2Complex(Lattice<Complex>& result,
 // 		       const Lattice<Float>& input){
 //   AlwaysAssert(input.ndim() == 4, AipsError);
 //   const IPosition shape = input.shape();
@@ -150,7 +151,7 @@ template <class T> class LatticeIterInterface;
 //   const uInt ny = shape(1);
 //   AlwaysAssert (ny > 1, AipsError);
 //   const uInt npol = shape(2);
-//   const uInt nchan = shape(3); 
+//   const uInt nchan = shape(3);
 //   const IPosition resultShape = result.shape();
 //   AlwaysAssert(resultShape.nelements() == 4, AipsError);
 //   AlwaysAssert(resultShape(3) == nchan, AipsError);
@@ -160,11 +161,11 @@ template <class T> class LatticeIterInterface;
 //
 //   const IPosition inputSliceShape(4,nx,ny,1,1);
 //   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
-//   COWPtr<Array<Float>> 
+//   COWPtr<Array<Float>>
 //     inputArrPtr(new Array<Float>(inputSliceShape.nonDegenerate()));
 //   Array<Complex> resultArray(resultSliceShape.nonDegenerate());
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
-//  
+//
 //   IPosition start(4,0);
 //   Bool isARef;
 //   for (uInt c = 0; c < nchan; c++){
@@ -214,10 +215,10 @@ template <class T> class LatticeIterInterface;
 // <ul>
 // <li> It allows functions common to all arrays to be written independent
 // of the way the data is stored. This is illustrated in the three examples
-// above. 
+// above.
 // <li> It reduces the learning curve for new users who only have to become
 // familiar with one interface (ie. Lattice) rather than distinct interfaces
-// for different array types. 
+// for different array types.
 // </ul>
 // </motivation>
 
@@ -225,10 +226,9 @@ template <class T> class LatticeIterInterface;
 //   <li> Make PagedArray cache functions virtual in this base class.
 // </todo>
 
-
-template <class T> class Lattice : public LatticeBase
-{
-public: 
+template <class T>
+class Lattice : public LatticeBase {
+ public:
   // a virtual destructor is needed so that it will use the actual destructor
   // in the derived class
   virtual ~Lattice();
@@ -240,16 +240,16 @@ public:
   virtual DataType dataType() const;
 
   // Return the value of the single element located at the argument
-  // IPosition.  
+  // IPosition.
   // <br> The default implementation uses getSlice.
   // <group>
-  T operator() (const IPosition& where) const;
-  virtual T getAt (const IPosition& where) const;
+  T operator()(const IPosition& where) const;
+  virtual T getAt(const IPosition& where) const;
   // </group>
-  
+
   // Put the value of a single element.
   // <br> The default implementation uses putSlice.
-  virtual void putAt (const T& value, const IPosition& where);
+  virtual void putAt(const T& value, const IPosition& where);
 
   // Functions which extract an Array of values from a Lattice. All the
   // IPosition arguments must have the same number of axes as the underlying
@@ -258,83 +258,73 @@ public:
   // <ul>
   // <li> buffer: a <src>COWPtr<Array<T>></src> or an
   //      <src>Array<T></src>. See example 2 above for an example.
-  // <li> start: The starting position (or Bottom Left Corner), within 
+  // <li> start: The starting position (or Bottom Left Corner), within
   //      the Lattice, of the data to be extracted.
   // <li> shape: The shape of the data to be extracted.  This is not a
-  //      position within the Lattice but the actual shape the buffer will 
+  //      position within the Lattice but the actual shape the buffer will
   //      have after this function is called.  This argument added
   //      to the "start" argument should be the "Top Right Corner".
   // <li> stride: The increment for each axis.  A stride of
   //      one will return every data element, a stride of two will return
   //      every other element.  The IPosition elements may be different for
   //      each respective axis.  Thus, a stride of IPosition(3,1,2,3) says:
-  //      fill the buffer with every element whose position has a first 
+  //      fill the buffer with every element whose position has a first
   //      index between start(0) and start(0)+shape(0), a second index
-  //      which is every other element between start(1) and 
-  //      (start(1)+shape(1))*2, and a third index of every third element 
+  //      which is every other element between start(1) and
+  //      (start(1)+shape(1))*2, and a third index of every third element
   //      between start(2) and (start(2)+shape(2))*3.
   // <li> section: Another way of specifying the start, shape and stride
-  // <li> removeDegenerateAxes: a Bool which dictates whether to remove 
-  //      "empty" axis created in buffer. (e.g. extracting an n-dimensional 
-  //      from an (n+1)-dimensional will fill 'buffer' with an array that 
-  //      has a degenerate axis (i.e. one axis will have a length = 1.) 
-  //      Setting removeDegenerateAxes = True will return a buffer with 
+  // <li> removeDegenerateAxes: a Bool which dictates whether to remove
+  //      "empty" axis created in buffer. (e.g. extracting an n-dimensional
+  //      from an (n+1)-dimensional will fill 'buffer' with an array that
+  //      has a degenerate axis (i.e. one axis will have a length = 1.)
+  //      Setting removeDegenerateAxes = True will return a buffer with
   //      a shape that doesn't reflect these superfluous axes.)
   // </ul>
-  // 
+  //
   // The derived implementations of these functions return
-  // 'True' if "buffer" is a reference to Lattice data and 'False' if it  
-  // is a copy. 
-  // <group>   
-  Bool get (COWPtr<Array<T>>& buffer,
-	    Bool removeDegenerateAxes=False) const;
-  Bool getSlice (COWPtr<Array<T>>& buffer, const Slicer& section,
-		 Bool removeDegenerateAxes=False) const;
-  Bool getSlice (COWPtr<Array<T>>& buffer, const IPosition& start, 
-		 const IPosition& shape,
-		 Bool removeDegenerateAxes=False) const;
-  Bool getSlice (COWPtr<Array<T>>& buffer, const IPosition& start, 
-		 const IPosition& shape, const IPosition& stride,
-		 Bool removeDegenerateAxes=False) const;
-  Bool get (Array<T>& buffer,
-	    Bool removeDegenerateAxes=False);
-  Bool getSlice (Array<T>& buffer, const Slicer& section,
-		 Bool removeDegenerateAxes=False);
-  Bool getSlice (Array<T>& buffer, const IPosition& start,
-		 const IPosition& shape,
-		 Bool removeDegenerateAxes=False);
-  Bool getSlice (Array<T>& buffer, const IPosition& start,
-		 const IPosition& shape, const IPosition& stride,
-		 Bool removeDegenerateAxes=False);
-  Array<T> get (Bool removeDegenerateAxes=False) const;
-  Array<T> getSlice (const Slicer& section,
-		     Bool removeDegenerateAxes=False) const;
-  Array<T> getSlice (const IPosition& start,
-		     const IPosition& shape,
-		     Bool removeDegenerateAxes=False) const;
-  Array<T> getSlice (const IPosition& start,
-		     const IPosition& shape, const IPosition& stride,
-		     Bool removeDegenerateAxes=False) const;
+  // 'True' if "buffer" is a reference to Lattice data and 'False' if it
+  // is a copy.
+  // <group>
+  Bool get(COWPtr<Array<T>>& buffer, Bool removeDegenerateAxes = False) const;
+  Bool getSlice(COWPtr<Array<T>>& buffer, const Slicer& section,
+                Bool removeDegenerateAxes = False) const;
+  Bool getSlice(COWPtr<Array<T>>& buffer, const IPosition& start, const IPosition& shape,
+                Bool removeDegenerateAxes = False) const;
+  Bool getSlice(COWPtr<Array<T>>& buffer, const IPosition& start, const IPosition& shape,
+                const IPosition& stride, Bool removeDegenerateAxes = False) const;
+  Bool get(Array<T>& buffer, Bool removeDegenerateAxes = False);
+  Bool getSlice(Array<T>& buffer, const Slicer& section, Bool removeDegenerateAxes = False);
+  Bool getSlice(Array<T>& buffer, const IPosition& start, const IPosition& shape,
+                Bool removeDegenerateAxes = False);
+  Bool getSlice(Array<T>& buffer, const IPosition& start, const IPosition& shape,
+                const IPosition& stride, Bool removeDegenerateAxes = False);
+  Array<T> get(Bool removeDegenerateAxes = False) const;
+  Array<T> getSlice(const Slicer& section, Bool removeDegenerateAxes = False) const;
+  Array<T> getSlice(const IPosition& start, const IPosition& shape,
+                    Bool removeDegenerateAxes = False) const;
+  Array<T> getSlice(const IPosition& start, const IPosition& shape, const IPosition& stride,
+                    Bool removeDegenerateAxes = False) const;
   // </group>
-  
+
   // A function which places an Array of values within this instance of the
-  // Lattice at the location specified by the IPosition "where", incrementing 
+  // Lattice at the location specified by the IPosition "where", incrementing
   // by "stride".  All of the IPosition arguments must be of the same
   // dimensionality as the Lattice.  The sourceBuffer array may (and probably
   // will) have less axes than the Lattice. The stride defaults to one if
-  // not specified. 
-  // <group>   
-  void putSlice (const Array<T>& sourceBuffer, const IPosition& where,
-		 const IPosition& stride)
-    { doPutSlice (sourceBuffer, where, stride); }
-  void putSlice (const Array<T>& sourceBuffer, const IPosition& where);
-  void put (const Array<T>& sourceBuffer);
-  
-  // </group>   
+  // not specified.
+  // <group>
+  void putSlice(const Array<T>& sourceBuffer, const IPosition& where, const IPosition& stride) {
+    doPutSlice(sourceBuffer, where, stride);
+  }
+  void putSlice(const Array<T>& sourceBuffer, const IPosition& where);
+  void put(const Array<T>& sourceBuffer);
+
+  // </group>
 
   // Set all elements in the Lattice to the given value.
-  virtual void set (const T& value);
-  
+  virtual void set(const T& value);
+
   // Replace every element, x, of the Lattice with the result of f(x).  You
   // must pass in the address of the function -- so the function must be
   // declared and defined in the scope of your program.  All versions of
@@ -347,32 +337,28 @@ public:
   // issue for large Lattices stored in memory, where disk access is not an
   // issue.
   // <group>
-  virtual void apply (T (*function)(T));
-  virtual void apply (T (*function)(const T&));
-  virtual void apply (const Functional<T,T>& function);
+  virtual void apply(T (*function)(T));
+  virtual void apply(T (*function)(const T&));
+  virtual void apply(const Functional<T, T>& function);
   // </group>
 
   // Add, subtract, multiple, or divide by another Lattice.
   // The other Lattice can be a scalar (e.g. the result of LatticeExpr).
   // Possible masks are not taken into account.
   // <group>
-  void operator+= (const Lattice<T>& other)
-  { handleMath (other, 0); }
-  void operator-= (const Lattice<T>& other)
-    { handleMath (other, 1); }
-  void operator*= (const Lattice<T>& other)
-    { handleMath (other, 2); }
-  void operator/= (const Lattice<T>& other)
-    { handleMath (other, 3); }
+  void operator+=(const Lattice<T>& other) { handleMath(other, 0); }
+  void operator-=(const Lattice<T>& other) { handleMath(other, 1); }
+  void operator*=(const Lattice<T>& other) { handleMath(other, 2); }
+  void operator/=(const Lattice<T>& other) { handleMath(other, 3); }
   // </group>
 
   // Copy the data from the given lattice to this one.
   // The default implementation uses function <src>copyDataTo</src>.
-  virtual void copyData (const Lattice<T>& from);
+  virtual void copyData(const Lattice<T>& from);
 
   // Copy the data from this lattice to the given lattice.
   // The default implementation only copies data (thus no mask, etc.).
-  virtual void copyDataTo (Lattice<T>& to) const;
+  virtual void copyDataTo(Lattice<T>& to) const;
 
   // This function returns the advised maximum number of pixels to
   // include in the cursor of an iterator. The default implementation
@@ -384,8 +370,7 @@ public:
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use.
   // <br>The default implementation creates a LatticeIterInterface object.
-  virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-					     Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
 
   // The functions (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the
@@ -395,12 +380,12 @@ public:
   // should normally use one of the get(Slice) functions. doGetSlice
   // should be used with care and only when performance is an issue.
   // <group>
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section) = 0;
-  virtual void doPutSlice (const Array<T>& buffer, const IPosition& where,
-			   const IPosition& stride) = 0;
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section) = 0;
+  virtual void doPutSlice(const Array<T>& buffer, const IPosition& where,
+                          const IPosition& stride) = 0;
   // </group>
 
-protected:
+ protected:
   // Define default constructor to satisfy compiler.
   Lattice() {};
 
@@ -408,38 +393,35 @@ protected:
   // They work similarly to copyData(To).
   // However, they are not defined for Bool types, thus specialized below.
   // <group>
-  virtual void handleMath (const Lattice<T>& from, int oper);
-  virtual void handleMathTo (Lattice<T>& to, int oper) const;
+  virtual void handleMath(const Lattice<T>& from, int oper);
+  virtual void handleMathTo(Lattice<T>& to, int oper) const;
   // </group>
 
   // Copy constructor and assignment can only be used by derived classes.
   // <group>
-  Lattice (const Lattice<T>&)
-    : LatticeBase() {}
-  Lattice<T>& operator= (const Lattice<T>&)
-    { return *this; }
+  Lattice(const Lattice<T>&) : LatticeBase() {}
+  Lattice<T>& operator=(const Lattice<T>&) { return *this; }
   // </group>
 };
 
+template <>
+inline void Lattice<Bool>::handleMathTo(Lattice<Bool>&, int) const {
+  throwBoolMath();
+}
 
-template<> inline
-void Lattice<Bool>::handleMathTo (Lattice<Bool>&, int) const
-  { throwBoolMath(); }
+// # Declare extern templates for often used types.
+extern template class Lattice<Float>;
+extern template class Lattice<Complex>;
 
-//# Declare extern templates for often used types.
-  extern template class Lattice<Float>;
-  extern template class Lattice<Complex>;
+}  // namespace casacore
 
-
-} //# NAMESPACE CASACORE - END
-
-//# There is a problem in including Lattice.tcc, because it needs
-//# LatticeIterator.h which in its turn includes Lattice.h again.
-//# So in a source file including LatticeIterator.h, Lattice::set fails
-//# to compile, because the LatticeIterator declarations are not seen yet.
-//# Therefore LatticeIterator.h is included here, while LatticeIterator.h
-//# includes Lattice.tcc.
+// # There is a problem in including Lattice.tcc, because it needs
+// # LatticeIterator.h which in its turn includes Lattice.h again.
+// # So in a source file including LatticeIterator.h, Lattice::set fails
+// # to compile, because the LatticeIterator declarations are not seen yet.
+// # Therefore LatticeIterator.h is included here, while LatticeIterator.h
+// # includes Lattice.tcc.
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeIterator.h>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

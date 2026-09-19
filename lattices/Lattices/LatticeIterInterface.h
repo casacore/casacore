@@ -1,51 +1,52 @@
-//# LatticeIterInterface.h: A base class for Lattice iterators
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeIterInterface.h: A base class for Lattice iterators
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICEITERINTERFACE_H
 #define LATTICES_LATTICEITERINTERFACE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class Lattice;
-template <class T> class LatticeIterator;
-template <class T> class RO_LatticeIterator;
-
+// # Forward Declarations
+template <class T>
+class Lattice;
+template <class T>
+class LatticeIterator;
+template <class T>
+class RO_LatticeIterator;
 
 // <summary>
 // A base class for Lattice iterators
 // </summary>
 
-// <use visibility=local> 
+// <use visibility=local>
 
 // <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeIterator.cc" demos="">
 // </reviewed>
@@ -64,26 +65,26 @@ template <class T> class RO_LatticeIterator;
 // <synopsis>
 // This class is only for authors of Lattice letters for the LatticeIterator
 // envelope.  General users should see LatticeIterator.
-// 
+//
 // The LatticeIterInterface class defines an abstract base for the standard
 // methods of iteration required by Lattices.  Declaring an Iterator that is
 // derived from this class forces it to meet the virtual requirements.
 //
 // The author of a Lattice derived class should consider the following:
 // <ul>
-// <li> The LatticeStepper class has strong effects on how the cursor is 
-// filled.  A non-integral shape of the cursor may allow a step of 
+// <li> The LatticeStepper class has strong effects on how the cursor is
+// filled.  A non-integral shape of the cursor may allow a step of
 // iteration to be only partially "touching" the Lattice.  We have dubbed
 // this "hangover."
-// <li> If the cursor has "hangover" it should be filled with a value that 
+// <li> If the cursor has "hangover" it should be filled with a value that
 // indicates the cursor is in undefined space.
-// <li> The cursor cannot be a reference to a part of the Lattice since 
-// hangover would imply a reference to undefined memory.  To enclose the 
-// Lattice with a zero valued hangover buffer would be inefficient.  The 
-// method thus forced upon the programmer is to "update" the cursor with 
-// Lattice values after each move or iteration and to "write" the possibly 
+// <li> The cursor cannot be a reference to a part of the Lattice since
+// hangover would imply a reference to undefined memory.  To enclose the
+// Lattice with a zero valued hangover buffer would be inefficient.  The
+// method thus forced upon the programmer is to "update" the cursor with
+// Lattice values after each move or iteration and to "write" the possibly
 // changed cursor values back into the Lattice before each iteration. An
-// algorithm which does the cursor update/write actions (and is independent 
+// algorithm which does the cursor update/write actions (and is independent
 // of Lattice dimensionality) may be copied from ArrLatticeIter::cursorUpdate()
 // and ArrLatticeIter::cursorWrite(), respectively.
 // <li> The majority of the code in a new letter for LatticeIterator may be
@@ -97,50 +98,46 @@ template <class T> class RO_LatticeIterator;
 // </example>
 
 // <motivation>
-// The is class provides a tidy base for letter/envelope techniques of 
-// iteration. 
+// The is class provides a tidy base for letter/envelope techniques of
+// iteration.
 // </motivation>
 
 // <todo asof="1997/01/12">
-//  <li> IPositions are returned by value.  This a reflection of the 
+//  <li> IPositions are returned by value.  This a reflection of the
 //       LatticeNavigator base class' inability to predict the
 //       availibility of data members for references.
 // </todo>
 
+template <class T>
+class LatticeIterInterface {
+  friend class Lattice<T>;
+  friend class LatticeIterator<T>;
+  friend class RO_LatticeIterator<T>;
 
-template <class T> class LatticeIterInterface 
-{
-friend class Lattice<T>;
-friend class LatticeIterator<T>;
-friend class RO_LatticeIterator<T>;
-
-public:
+ public:
   // Construct with the given navigator.
-  LatticeIterInterface (const Lattice<T>& lattice,
-			const LatticeNavigator& navigator,
-			Bool useRef);
+  LatticeIterInterface(const Lattice<T>& lattice, const LatticeNavigator& navigator, Bool useRef);
 
   // A virtual destructor. A virtual is needed to ensure that derived
   // classes declared as pointers to a LatticeIterInterface will scope their
   // destructor to the derived class destructor.
   virtual ~LatticeIterInterface();
 
-protected:
+ protected:
   // Default constructor (for derived classes).
   LatticeIterInterface();
 
   // Copy constructor (copy semantics).
-  LatticeIterInterface (const LatticeIterInterface<T>& other);
-   
+  LatticeIterInterface(const LatticeIterInterface<T>& other);
+
   // Assignment (copy semantics).
-  LatticeIterInterface& operator= (const LatticeIterInterface<T>& other);
-   
+  LatticeIterInterface& operator=(const LatticeIterInterface<T>& other);
+
   // Clone the object.
   virtual LatticeIterInterface<T>* clone() const;
 
   // Return the underlying lattice.
-  Lattice<T>& lattice()
-    { return *itsLattPtr; }
+  Lattice<T>& lattice() { return *itsLattPtr; }
 
   // Increment operator - increment the cursor to the next position. The
   // implementation of the prefix operator calls the postfix one.
@@ -173,12 +170,12 @@ protected:
   // all cursor movement since doing N increments followed by N decrements
   // does not necessarily put the cursor back at the origin of the Lattice.
   uInt nsteps() const;
-  
+
   // Function which returns the current position of the beginning of the
   // cursor within the Lattice. The returned IPosition will have the same
   // number of axes as the underlying Lattice.
   IPosition position() const;
-  
+
   // Function which returns the current position of the end of the
   // cursor. The returned IPosition will have the same number of axes as the
   // underlying Lattice.
@@ -206,10 +203,10 @@ protected:
   // <br>The <src>autoRewrite</src> flag indicates if the data has to be
   // rewritten when the iterator state changes (e.g. moved, destructed).
   // <group>
-  virtual Vector<T>& vectorCursor (Bool doRead, Bool autoRewrite);
-  virtual Matrix<T>& matrixCursor (Bool doRead, Bool autoRewrite);
-  virtual Cube<T>& cubeCursor (Bool doRead, Bool autoRewrite);
-  virtual Array<T>& cursor (Bool doRead, Bool autoRewrite);
+  virtual Vector<T>& vectorCursor(Bool doRead, Bool autoRewrite);
+  virtual Matrix<T>& matrixCursor(Bool doRead, Bool autoRewrite);
+  virtual Cube<T>& cubeCursor(Bool doRead, Bool autoRewrite);
+  virtual Array<T>& cursor(Bool doRead, Bool autoRewrite);
   //</group>
 
   // Function which checks the internals of the class for consistency.
@@ -217,9 +214,9 @@ protected:
   // implementation of this function always returns True.
   Bool ok() const;
 
-protected:
+ protected:
   // Do the actual read of the data.
-  virtual void readData (Bool doRead);
+  virtual void readData(Bool doRead);
 
   // Rewrite the cursor data and clear the rewrite flag.
   virtual void rewriteData();
@@ -237,96 +234,85 @@ protected:
   void setCurPtr2Cursor();
 
   // Copy the base data of the other object.
-  void copyBase (const LatticeIterInterface<T>& other);
-
+  void copyBase(const LatticeIterInterface<T>& other);
 
   // Pointer to the method of Lattice transversal
   LatticeNavigator* itsNavPtr;
   // Pointer to the Lattice
-  Lattice<T>*       itsLattPtr;
+  Lattice<T>* itsLattPtr;
   // A buffer to hold the data. Usually itsCursor shares the data
   // with this buffer, but for an ArrayLattice itsCursor might reference
   // the lattice directly instead of making a copy in the buffer.
-  Array<T>          itsBuffer;
+  Array<T> itsBuffer;
   // Polymorphic pointer to the data in itsCursor.
-  Array<T>*         itsCurPtr;
+  Array<T>* itsCurPtr;
   // An Array which references the same data as the itsCurPtr, but has all
   // the degenerate axes. This is an optimization to avoid the overhead of
   // having to add the degenerate axes for each iteration.
-  Array<T>          itsCursor;
+  Array<T> itsCursor;
   // Keep a reference to the data (if possible).
-  Bool              itsUseRef;
+  Bool itsUseRef;
   // Is the cursor a reference to the lattice?
-  Bool              itsIsRef;
+  Bool itsIsRef;
   // Have the data been read after a cursor update? (False=not read)
-  Bool              itsHaveRead;
+  Bool itsHaveRead;
   // Rewrite the cursor data before moving or destructing?
-  Bool              itsRewrite;
+  Bool itsRewrite;
   // The axes forming the cursor.
-  IPosition         itsCursorAxes;
+  IPosition itsCursorAxes;
 };
-
-
 
 template <class T>
 inline Bool LatticeIterInterface<T>::operator++() {
-  return operator++ (0);
+  return operator++(0);
 }
 
 template <class T>
 inline Bool LatticeIterInterface<T>::operator--() {
-  return operator-- (0);
+  return operator--(0);
 }
 
-template<class T>
-inline Bool LatticeIterInterface<T>::atStart() const
-{
+template <class T>
+inline Bool LatticeIterInterface<T>::atStart() const {
   return itsNavPtr->atStart();
 }
 
-template<class T>
-inline Bool LatticeIterInterface<T>::atEnd() const
-{
+template <class T>
+inline Bool LatticeIterInterface<T>::atEnd() const {
   return itsNavPtr->atEnd();
 }
 
-template<class T>
-inline uInt LatticeIterInterface<T>::nsteps() const
-{
+template <class T>
+inline uInt LatticeIterInterface<T>::nsteps() const {
   return itsNavPtr->nsteps();
 }
 
-template<class T>
-inline IPosition LatticeIterInterface<T>::position() const
-{
+template <class T>
+inline IPosition LatticeIterInterface<T>::position() const {
   return itsNavPtr->position();
 }
 
-template<class T>
-inline IPosition LatticeIterInterface<T>::endPosition() const
-{
+template <class T>
+inline IPosition LatticeIterInterface<T>::endPosition() const {
   return itsNavPtr->endPosition();
 }
 
-template<class T>
-inline IPosition LatticeIterInterface<T>::latticeShape() const
-{
+template <class T>
+inline IPosition LatticeIterInterface<T>::latticeShape() const {
   return itsNavPtr->latticeShape();
 }
 
-template<class T>
-inline IPosition LatticeIterInterface<T>::cursorShape() const
-{
+template <class T>
+inline IPosition LatticeIterInterface<T>::cursorShape() const {
   return itsNavPtr->cursorShape();
 }
 
-//# Declare extern templates for often used types.
-  extern template class LatticeIterInterface<Float>;
+// # Declare extern templates for often used types.
+extern template class LatticeIterInterface<Float>;
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeIterInterface.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

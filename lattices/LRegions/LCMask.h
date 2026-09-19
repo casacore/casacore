@@ -1,39 +1,37 @@
-//# LCMask.h: Class to define a rectangular mask as a temporary region
-//# Copyright (C) 2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LCMask.h: Class to define a rectangular mask as a temporary region
+// # Copyright (C) 2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LCMASK_H
 #define LATTICES_LCMASK_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class to define a rectangular mask as a temporary region
@@ -48,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=LCRegion>LCRegion</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // The LCMask class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
 // <br>
@@ -58,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // can also define it for part of a lattice. In the latter case a
 // <linkto class=LCBox>LCBox</linkto> has to be given as well to
 // define for which part of the image the mask has to be used.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -68,39 +66,38 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <todo asof="1997/11/11">
 // </todo>
 
-class LCMask: public LCRegionSingle
-{
-public:
+class LCMask : public LCRegionSingle {
+ public:
   LCMask();
 
   // Construct an LCMask object for a full lattice with the given shape.
   // It creates a TempLattice<Bool> to hold the mask.
-  explicit LCMask (const IPosition& latticeShape);
+  explicit LCMask(const IPosition& latticeShape);
 
   // Construct an LCMask object for a full lattice with the shape of the mask.
   // It clones the mask object.
-  explicit LCMask (Lattice<Bool>& mask);
+  explicit LCMask(Lattice<Bool>& mask);
 
   // Construct an LCMask object for the part of a lattice given by the box.
   // The box defines the position of the mask in the lattice.
   // The box shape and given mask shape should be equal.
   // It creates a TempImage<Bool> to hold the mask.
-  LCMask (const IPosition& maskShape, const LCBox& box);
+  LCMask(const IPosition& maskShape, const LCBox& box);
 
   // Construct an LCMask object for the part of a lattice given by the box.
   // The box defines the position of the mask in the lattice.
   // The box shape and given mask shape should be equal.
   // It clones the mask object.
-  LCMask (Lattice<Bool>& mask, const LCBox& box);
+  LCMask(Lattice<Bool>& mask, const LCBox& box);
 
   // Copy constructor (copy semantics).
-  LCMask (const LCMask& other);
+  LCMask(const LCMask& other);
 
   // Destructor
   virtual ~LCMask();
 
   // Assignment (reference semantics).
-  LCMask& operator= (const LCMask& other);
+  LCMask& operator=(const LCMask& other);
 
   // Comparison
   virtual Bool operator==(const LCRegion& other) const;
@@ -110,49 +107,46 @@ public:
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<Bool>* makeIter
-                                   (const LatticeNavigator& navigator,
-				    Bool useRef) const;
+  // for general use.
+  virtual LatticeIterInterface<Bool>* makeIter(const LatticeNavigator& navigator,
+                                               Bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor.
-  // This is the number of pixels in a tile. 
+  // This is the number of pixels in a tile.
   virtual uInt advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
   virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize(uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
-  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
-				     const IPosition& windowStart,
-				     const IPosition& windowLength,
-				     const IPosition& axisPath);
+  virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
+                                    const IPosition& windowLength, const IPosition& axisPath);
 
   // Set the actual cache size for this Array to be be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
-  // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  // tiles. Tiles are cached using a first in first out algorithm.
+  virtual void setCacheSizeInTiles(uInt howManyTiles);
 
-  // Clears and frees up the caches, but the maximum allowed cache size is 
+  // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
   virtual void clearCache();
 
   // Report on cache success.
-  virtual void showCacheStatistics (std::ostream& os) const;
+  virtual void showCacheStatistics(std::ostream& os) const;
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the object with the contenta tof the possible file.
@@ -180,25 +174,23 @@ public:
 
   // Convert the (derived) object to a record.
   // This cannot be done and results in an exception.
-  virtual TableRecord toRecord (const String& tableName) const;
+  virtual TableRecord toRecord(const String& tableName) const;
 
   // An LCMask is writable if the underlying Lattice is.
   virtual Bool isWritable() const;
 
-protected:
+ protected:
   // Construct another LCMask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				 const IPosition& newLatticeShape) const;
+  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
+                                const IPosition& newLatticeShape) const;
 
-private:
-  LCBox          itsBox;
+ private:
+  LCBox itsBox;
   Lattice<Bool>* itsMask;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

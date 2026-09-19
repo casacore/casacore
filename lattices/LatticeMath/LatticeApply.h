@@ -1,43 +1,47 @@
-//# LatticeApply.h: Optimally iterate through a Lattice and apply provided function object
-//# Copyright (C) 1997,1998,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeApply.h: Optimally iterate through a Lattice and apply provided function object
+// # Copyright (C) 1997,1998,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICEAPPLY_H
 #define LATTICES_LATTICEAPPLY_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T, class U> class TiledCollapser;
-template <class T, class U> class LineCollapser;
-template <class T> class Lattice;
-template <class T> class MaskedLattice;
+// # Forward Declarations
+template <class T, class U>
+class TiledCollapser;
+template <class T, class U>
+class LineCollapser;
+template <class T>
+class Lattice;
+template <class T>
+class MaskedLattice;
 class LatticeProgress;
 class IPosition;
 class LatticeRegion;
@@ -95,7 +99,7 @@ class LatticeRegion;
 // or even for the entire lattice.
 // </ol>
 // The user has to supply a function object derived from the abstract base
-// class <linkto class=LineCollapser>LineCollapser</linkto> or 
+// class <linkto class=LineCollapser>LineCollapser</linkto> or
 // <linkto class=TiledCollapser>TiledCollapser</linkto>, resp..
 // The <src>process</src> function in these classes has to process
 // the chunk of data passed in. The <src>nstepsDone</src> function
@@ -127,132 +131,106 @@ class LatticeRegion;
 // of iterating through a lattice.
 // </motivation>
 
-//# <todo asof="1997/08/01">   
-//#   <li> 
-//# </todo>
+// # <todo asof="1997/08/01">
+// #   <li>
+// # </todo>
 
- 
-template <class T, class U=T> class LatticeApply
-{
-public:
+template <class T, class U = T>
+class LatticeApply {
+ public:
+  // This function iterates line by line through an input lattice and applies
+  // a user supplied function object to each line along the specified axis.
+  // The scalar result of the function object is written into the output
+  // lattice at the location of the collapsed line. The output lattice must
+  // be supplied with the correct shape (the shape of the supplied region).
+  // The default region is the entire input lattice.
+  // <group>
+  static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
+                        LineCollapser<T, U>& collapser, uInt collapseAxis,
+                        LatticeProgress* tellProgress = 0);
+  static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
+                        const LatticeRegion& region, LineCollapser<T, U>& collapser,
+                        uInt collapseAxis, LatticeProgress* tellProgress = 0);
+  // </group>
 
-// This function iterates line by line through an input lattice and applies
-// a user supplied function object to each line along the specified axis.
-// The scalar result of the function object is written into the output
-// lattice at the location of the collapsed line. The output lattice must
-// be supplied with the correct shape (the shape of the supplied region).
-// The default region is the entire input lattice.
-// <group>
-    static void lineApply (MaskedLattice<U>& latticeOut, 
-			   const MaskedLattice<T>& latticeIn,
-			   LineCollapser<T,U>& collapser,
-			   uInt collapseAxis,
-			   LatticeProgress* tellProgress = 0);
-    static void lineApply (MaskedLattice<U>& latticeOut, 
-			   const MaskedLattice<T>& latticeIn,
-			   const LatticeRegion& region,
-			   LineCollapser<T,U>& collapser,
-			   uInt collapseAxis,
-			   LatticeProgress* tellProgress = 0);
-// </group>
-    
-// This function iterates line by line through an input lattice and applies
-// a user supplied function object to each line along the specified axis.
-// The vector result of the function object is written into the output
-// lattices at the location of the collapsed line (1 value per lattice).
-// The output lattices must be supplied with the correct shape (the shape
-// of the supplied region).
-// The default region is the entire input lattice.
-// <group>
-    static void lineMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
-				const MaskedLattice<T>& latticeIn,
-				LineCollapser<T,U>& collapser,
-				uInt collapseAxis,
-				LatticeProgress* tellProgress = 0);
+  // This function iterates line by line through an input lattice and applies
+  // a user supplied function object to each line along the specified axis.
+  // The vector result of the function object is written into the output
+  // lattices at the location of the collapsed line (1 value per lattice).
+  // The output lattices must be supplied with the correct shape (the shape
+  // of the supplied region).
+  // The default region is the entire input lattice.
+  // <group>
+  static void lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
+                             const MaskedLattice<T>& latticeIn, LineCollapser<T, U>& collapser,
+                             uInt collapseAxis, LatticeProgress* tellProgress = 0);
 
-    static void lineMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
-				const MaskedLattice<T>& latticeIn,
-				const LatticeRegion& region,
-				LineCollapser<T,U>& collapser,
-				uInt collapseAxis,
-				LatticeProgress* tellProgress = 0);
-// </group>
+  static void lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
+                             const MaskedLattice<T>& latticeIn, const LatticeRegion& region,
+                             LineCollapser<T, U>& collapser, uInt collapseAxis,
+                             LatticeProgress* tellProgress = 0);
+  // </group>
 
-// This function iterates tile by tile through an input lattice and applies
-// a user supplied function object to each chunk along the specified axes.
-// A chunk can be a line, plane, etc. which is determined by the argument
-// <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
-// axes 1 and 2 (thus y,z planes).
-// The result of the function object is written into the output
-// lattice at the location of the collapsed chunk. The output lattice must
-// be supplied with the correct shape (the shape of the supplied region
-// plus the number of values resulting from the collapse).
-// The default region is the entire input lattice.
-// <group>
-    static void tiledApply (MaskedLattice<U>& latticeOut,
-			    const MaskedLattice<T>& latticeIn,
-			    TiledCollapser<T,U>& collapser,
-			    const IPosition& collapseAxes,
-			    Int newOutAxis = -1,
-			    LatticeProgress* tellProgress = 0);
-    static void tiledApply (MaskedLattice<U>& latticeOut,
-			    const MaskedLattice<T>& latticeIn,
-			    const LatticeRegion& region,
-			    TiledCollapser<T,U>& collapser,
-			    const IPosition& collapseAxes,
-			    Int newOutAxis = -1,
-			    LatticeProgress* tellProgress = 0);
-// </group>
+  // This function iterates tile by tile through an input lattice and applies
+  // a user supplied function object to each chunk along the specified axes.
+  // A chunk can be a line, plane, etc. which is determined by the argument
+  // <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
+  // axes 1 and 2 (thus y,z planes).
+  // The result of the function object is written into the output
+  // lattice at the location of the collapsed chunk. The output lattice must
+  // be supplied with the correct shape (the shape of the supplied region
+  // plus the number of values resulting from the collapse).
+  // The default region is the entire input lattice.
+  // <group>
+  static void tiledApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
+                         TiledCollapser<T, U>& collapser, const IPosition& collapseAxes,
+                         Int newOutAxis = -1, LatticeProgress* tellProgress = 0);
+  static void tiledApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
+                         const LatticeRegion& region, TiledCollapser<T, U>& collapser,
+                         const IPosition& collapseAxes, Int newOutAxis = -1,
+                         LatticeProgress* tellProgress = 0);
+  // </group>
 
-// This function iterates tile by tile through an input lattice and applies
-// a user supplied function object to each chunk along the specified axes.
-// A chunk can be a line, plane, etc. which is determined by the argument
-// <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
-// axes 1 and 2 (thus y,z planes).
-// The result of the function object is written into the output
-// lattices at the location of the collapsed chunk. The output lattices must
-// be supplied with the correct shape (the shape of the supplied region).
-// The default region is the entire input lattice.
-// <note role=warning>
-// These functions are only declared, but not implemented yet.
-// Thus they cannot be used yet.
-// </note>
-// <group>
-    static void tiledMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
-				 const MaskedLattice<T>& latticeIn,
-				 TiledCollapser<T,U>& collapser,
-				 const IPosition& collapseAxes,
-				 LatticeProgress* tellProgress = 0);
-    static void tiledMultiApply (Block<MaskedLattice<U>*>& latticeOut, 
-				 const MaskedLattice<T>& latticeIn,
-				 const LatticeRegion& region,
-				 TiledCollapser<T,U>& collapser,
-				 const IPosition& collapseAxes,
-				 LatticeProgress* tellProgress = 0);
-// </group>
+  // This function iterates tile by tile through an input lattice and applies
+  // a user supplied function object to each chunk along the specified axes.
+  // A chunk can be a line, plane, etc. which is determined by the argument
+  // <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
+  // axes 1 and 2 (thus y,z planes).
+  // The result of the function object is written into the output
+  // lattices at the location of the collapsed chunk. The output lattices must
+  // be supplied with the correct shape (the shape of the supplied region).
+  // The default region is the entire input lattice.
+  // <note role=warning>
+  // These functions are only declared, but not implemented yet.
+  // Thus they cannot be used yet.
+  // </note>
+  // <group>
+  static void tiledMultiApply(Block<MaskedLattice<U>*>& latticeOut,
+                              const MaskedLattice<T>& latticeIn, TiledCollapser<T, U>& collapser,
+                              const IPosition& collapseAxes, LatticeProgress* tellProgress = 0);
+  static void tiledMultiApply(Block<MaskedLattice<U>*>& latticeOut,
+                              const MaskedLattice<T>& latticeIn, const LatticeRegion& region,
+                              TiledCollapser<T, U>& collapser, const IPosition& collapseAxes,
+                              LatticeProgress* tellProgress = 0);
+  // </group>
 
+ private:
+  // Do some checks on the given arguments.
+  // It returns an IPosition with the same length as shapeOut.
+  // It contains a mapping of output to input axes. A value of -1
+  // indicates that the axis is new (to contain the collapse result).
+  // <br>Argument newOutAxis tells the output axis to store the results.
+  // -1 means that the function has to find it out itself; it takes the
+  // first axis with a length mismatching the corresponding input axis.
+  static IPosition prepare(const IPosition& shapeIn, const IPosition& shapeOut,
+                           const IPosition& collapseAxes, Int newOutAxis);
 
-private:
-    // Do some checks on the given arguments.
-    // It returns an IPosition with the same length as shapeOut.
-    // It contains a mapping of output to input axes. A value of -1
-    // indicates that the axis is new (to contain the collapse result).
-    // <br>Argument newOutAxis tells the output axis to store the results.
-    // -1 means that the function has to find it out itself; it takes the
-    // first axis with a length mismatching the corresponding input axis.
-    static IPosition prepare (const IPosition& shapeIn,
-			      const IPosition& shapeOut,
-			      const IPosition& collapseAxes,
-			      Int newOutAxis);
-
-    static IPosition _chunkShape(
-        uInt axis, const MaskedLattice<T>& latticeIn
-    );
+  static IPosition _chunkShape(uInt axis, const MaskedLattice<T>& latticeIn);
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/LatticeApply.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

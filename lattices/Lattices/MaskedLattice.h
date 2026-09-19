@@ -1,41 +1,39 @@
-//# MaskedLattice.h: Abstract base class for array-like classes with masks
-//# Copyright (C) 1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MaskedLattice.h: Abstract base class for array-like classes with masks
+// # Copyright (C) 1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_MASKEDLATTICE_H
 #define LATTICES_MASKEDLATTICE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class LatticeRegion;
-
 
 // <summary>
 // A templated, abstract base class for array-like objects with masks.
@@ -53,7 +51,7 @@ class LatticeRegion;
 // </prerequisite>
 
 // <etymology>
-// Lattice: "A regular, periodic configuration of points, particles, 
+// Lattice: "A regular, periodic configuration of points, particles,
 // or objects, throughout an area of a space..." (American Heritage Directory)
 // This definition matches our own: an n-dimensional arrangement of items,
 // on regular orthogonal axes.
@@ -61,20 +59,20 @@ class LatticeRegion;
 
 // <synopsis>
 // This pure abstract base class defines the operations which may be performed
-// on any concrete class derived from it.  It has only a few non-pure virtual 
+// on any concrete class derived from it.  It has only a few non-pure virtual
 // member functions.
-// The fundamental contribution of this class, therefore, is that it 
+// The fundamental contribution of this class, therefore, is that it
 // defines the operations derived classes must provide:
 // <ul>
 //    <li> how to extract a "slice" (or sub-array, or subsection) from
 //         a Lattice.
 //    <li> how to copy a slice in.
-//    <li> how to get and put a single element 
+//    <li> how to get and put a single element
 //    <li> how to apply a function to all elements
 //    <li> various shape related functions.
 // </ul>
 // <note role=tip> Lattices are always zero origined. </note>
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // Because Lattice is an abstract base class, an actual instance of this
@@ -82,7 +80,7 @@ class LatticeRegion;
 // inside a function. This is always recommended as it allows Functions
 // which have Lattices as arguments to work for any derived class.
 //
-// I will give a few examples here and then refer the reader to the 
+// I will give a few examples here and then refer the reader to the
 // <linkto class="ArrayLattice">ArrayLattice</linkto> class (a memory resident
 // Lattice) and the <linkto class="PagedArray">PagedArray</linkto> class (a
 // disk based Lattice) which contain further examples with concrete
@@ -98,7 +96,7 @@ class LatticeRegion;
 // functions). The <src>LatticeIterator::cursor()</src> function then returns
 // each of these chunks as an Array and the standard Array based functions are
 // used to calculate the mean on each of these chunks. Functions like this one
-// are the recommended way to access Lattices as the 
+// are the recommended way to access Lattices as the
 // <linkto class="LatticeIterator">LatticeIterator</linkto> will correctly
 // setup any required caches.
 //
@@ -109,7 +107,7 @@ class LatticeRegion;
 //   const IPosition latticeShape = lat.shape();
 //   Complex currentSum = 0.0f;
 //   size_t nPixels = 0;
-//   RO_LatticeIterator<Complex> iter(lat, 
+//   RO_LatticeIterator<Complex> iter(lat,
 // 				   LatticeStepper(latticeShape, cursorShape));
 //   for (iter.reset(); !iter.atEnd(); iter++){
 //     currentSum += sum(iter.cursor());
@@ -131,7 +129,7 @@ class LatticeRegion;
 // LatticeIterators.
 //
 // <srcblock>
-// void FFT2DReal2Complex(Lattice<Complex>& result, 
+// void FFT2DReal2Complex(Lattice<Complex>& result,
 // 		       const Lattice<Float>& input){
 //   AlwaysAssert(input.ndim() == 4, AipsError);
 //   const IPosition shape = input.shape();
@@ -140,7 +138,7 @@ class LatticeRegion;
 //   const uInt ny = shape(1);
 //   AlwaysAssert (ny > 1, AipsError);
 //   const uInt npol = shape(2);
-//   const uInt nchan = shape(3); 
+//   const uInt nchan = shape(3);
 //   const IPosition resultShape = result.shape();
 //   AlwaysAssert(resultShape.nelements() == 4, AipsError);
 //   AlwaysAssert(resultShape(3) == nchan, AipsError);
@@ -150,11 +148,11 @@ class LatticeRegion;
 //
 //   const IPosition inputSliceShape(4,nx,ny,1,1);
 //   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
-//   COWPtr<Array<Float>> 
+//   COWPtr<Array<Float>>
 //     inputArrPtr(new Array<Float>(inputSliceShape.nonDegenerate()));
 //   Array<Complex> resultArray(resultSliceShape.nonDegenerate());
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
-//  
+//
 //   IPosition start(4,0);
 //   Bool isARef;
 //   for (uInt c = 0; c < nchan; c++){
@@ -201,31 +199,30 @@ class LatticeRegion;
 // <ul>
 // <li> It allows functions common to all arrays to be written independent
 // of the way the data is stored. This is illustrated in the three examples
-// above. 
+// above.
 // <li> It reduces the learning curve for new users who only have to become
 // familiar with one interface (ie. Lattice) rather than distinct interfaces
-// for different array types. 
+// for different array types.
 // </ul>
 // </motivation>
 
-//# <todo asof="1996/07/01">
-//#  <li>
-//# </todo>
+// # <todo asof="1996/07/01">
+// #  <li>
+// # </todo>
 
-template <class T> class MaskedLattice : public Lattice<T>
-{
-  //# Make members of parent class known.
-public:
+template <class T>
+class MaskedLattice : public Lattice<T> {
+  // # Make members of parent class known.
+ public:
   using Lattice<T>::ndim;
   using Lattice<T>::shape;
 
-public: 
+ public:
   // Default constructor.
-  MaskedLattice()
-    : itsDefRegPtr(0) {;}
+  MaskedLattice() : itsDefRegPtr(0) { ; }
 
   // Copy constructor.
-  MaskedLattice (const MaskedLattice<T>&);
+  MaskedLattice(const MaskedLattice<T>&);
 
   // a virtual destructor is needed so that it will use the actual destructor
   // in the derived class
@@ -264,38 +261,28 @@ public:
   // lattice and the possible mask of the region taken from the lattice.
   // If there is no mask, it still works fine.
   // In that case it sizes the buffer correctly and sets it to True.
-  // <group>   
-  Bool getMask (COWPtr<Array<Bool>>& buffer,
-		Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool>>& buffer, const Slicer& section,
-		     Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool>>& buffer, const IPosition& start, 
-		     const IPosition& shape,
-		     Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool>>& buffer, const IPosition& start, 
-		     const IPosition& shape, const IPosition& stride,
-		     Bool removeDegenerateAxes=False) const;
-  Bool getMask (Array<Bool>& buffer,
-		Bool removeDegenerateAxes=False);
-  Bool getMaskSlice (Array<Bool>& buffer, const Slicer& section,
-		     Bool removeDegenerateAxes=False);
-  Bool getMaskSlice (Array<Bool>& buffer, const IPosition& start,
-		     const IPosition& shape,
-		     Bool removeDegenerateAxes=False);
-  Bool getMaskSlice (Array<Bool>& buffer, const IPosition& start,
-		     const IPosition& shape, const IPosition& stride,
-		     Bool removeDegenerateAxes=False);
-  Array<Bool> getMask (Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMaskSlice (const Slicer& section,
-			    Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMaskSlice (const IPosition& start,
-			    const IPosition& shape,
-			    Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMaskSlice (const IPosition& start,
-			    const IPosition& shape, const IPosition& stride,
-			    Bool removeDegenerateAxes=False) const;
+  // <group>
+  Bool getMask(COWPtr<Array<Bool>>& buffer, Bool removeDegenerateAxes = False) const;
+  Bool getMaskSlice(COWPtr<Array<Bool>>& buffer, const Slicer& section,
+                    Bool removeDegenerateAxes = False) const;
+  Bool getMaskSlice(COWPtr<Array<Bool>>& buffer, const IPosition& start, const IPosition& shape,
+                    Bool removeDegenerateAxes = False) const;
+  Bool getMaskSlice(COWPtr<Array<Bool>>& buffer, const IPosition& start, const IPosition& shape,
+                    const IPosition& stride, Bool removeDegenerateAxes = False) const;
+  Bool getMask(Array<Bool>& buffer, Bool removeDegenerateAxes = False);
+  Bool getMaskSlice(Array<Bool>& buffer, const Slicer& section, Bool removeDegenerateAxes = False);
+  Bool getMaskSlice(Array<Bool>& buffer, const IPosition& start, const IPosition& shape,
+                    Bool removeDegenerateAxes = False);
+  Bool getMaskSlice(Array<Bool>& buffer, const IPosition& start, const IPosition& shape,
+                    const IPosition& stride, Bool removeDegenerateAxes = False);
+  Array<Bool> getMask(Bool removeDegenerateAxes = False) const;
+  Array<Bool> getMaskSlice(const Slicer& section, Bool removeDegenerateAxes = False) const;
+  Array<Bool> getMaskSlice(const IPosition& start, const IPosition& shape,
+                           Bool removeDegenerateAxes = False) const;
+  Array<Bool> getMaskSlice(const IPosition& start, const IPosition& shape, const IPosition& stride,
+                           Bool removeDegenerateAxes = False) const;
   // </group>
-  
+
   // The function (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the
   // various Lattice classes.
@@ -305,25 +292,23 @@ public:
   // should be used with care and only when performance is an issue.
   // <br>The default implementation gets the mask from the region
   // and fills the buffer with True values if there is no region.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
-protected:
+ protected:
   // Assignment can only be used by derived classes.
-  MaskedLattice<T>& operator= (const MaskedLattice<T>&);
+  MaskedLattice<T>& operator=(const MaskedLattice<T>&);
 
   // Get a pointer to the region used.
   // It can return 0 meaning that the MaskedLattice is the full lattice.
   virtual const LatticeRegion* getRegionPtr() const = 0;
 
-private:
+ private:
   mutable LatticeRegion* itsDefRegPtr;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/MaskedLattice.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

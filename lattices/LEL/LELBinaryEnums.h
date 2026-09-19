@@ -1,33 +1,33 @@
-//# LELBinaryEnums.h: Enums of binary arithmetic operation on arrays 
-//# Copyright (C) 1997
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LELBinaryEnums.h: Enums of binary arithmetic operation on arrays
+// # Copyright (C) 1997
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT//# ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or # FITNESS FOR A PARTICULAR PURPOSE.  See
+// the GNU Library General Public # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LELBINARYENUMS_H
 #define LATTICES_LELBINARYENUMS_H
 
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL binary operation is described in this enum  </summary>
 //
@@ -51,57 +51,54 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 //  Each binary operator accepted by the bridging class LatticeExprNode
-//  and passed  on to the LELBinary letter classes is labelled internally 
-//  with a value from this enum.  
-// </synopsis> 
+//  and passed  on to the LELBinary letter classes is labelled internally
+//  with a value from this enum.
+// </synopsis>
 //
 //
 // <todo asof="1998/01/21">
 // </todo>
 
-class LELBinaryEnums 
-{
-public:
-   enum Operation{
+class LELBinaryEnums {
+ public:
+  enum Operation {
 
-// Addition
-   ADD, 
+    // Addition
+    ADD,
 
-// Subtraction
-   SUBTRACT, 
+    // Subtraction
+    SUBTRACT,
 
-// Multiplication
-   MULTIPLY, 
+    // Multiplication
+    MULTIPLY,
 
-// Division
-   DIVIDE,
+    // Division
+    DIVIDE,
 
-// Logical and
-   AND,
+    // Logical and
+    AND,
 
-// Logical or
-   OR,
+    // Logical or
+    OR,
 
-// ==
-   EQ,
+    // ==
+    EQ,
 
-// > (and reversed <)
-   GT,
+    // > (and reversed <)
+    GT,
 
-// >= (and reversed <=)
-   GE,
+    // >= (and reversed <=)
+    GE,
 
-// !=
-   NE,
+    // !=
+    NE,
 
-// Total number
-   NOPS
+    // Total number
+    NOPS
 
+  };
 };
 
-};
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

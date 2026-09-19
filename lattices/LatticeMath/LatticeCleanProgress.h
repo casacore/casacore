@@ -1,32 +1,32 @@
-//# LatticeCleanProgress.h: Abstract base class to monitor progress in lattice operations
-//# Copyright (C) 1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeCleanProgress.h: Abstract base class to monitor progress in lattice operations
+// # Copyright (C) 1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICECLEANPROGRESS_H
 #define LATTICES_LATTICECLEANPROGRESS_H
- 
-//# Includes
+
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/lattices/Lattices/Lattice.h>
@@ -36,9 +36,9 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class PGPlotter;
 
 // <summary>
@@ -79,40 +79,28 @@ class PGPlotter;
 // (or any other class showing the progress).
 // </motivation>
 //
-//# <todo asof="1997/08/01">   
-//#   <li> 
-//# </todo>
-
+// # <todo asof="1997/08/01">
+// #   <li>
+// # </todo>
 
 class LatticeCleanProgress {
-public:
-  LatticeCleanProgress(PGPlotter* pgplotter=0);
+ public:
+  LatticeCleanProgress(PGPlotter* pgplotter = 0);
 
   virtual ~LatticeCleanProgress();
-  
 
   // Print and plot the information.
   // Currently, not all information is utilized.
-  Bool info(const Bool lastcall,
-	    const Int iteration,
-	    const Int numberIterations,
-	    const Vector<Float>& maxima,
-	    const Block<IPosition>& posMaximum,
-	    const Float strengthOptimum,
-	    const Int optimumScale,
-	    const IPosition& positionOptimum,
-	    const Float& totalFlux,
-	    const Vector<Float>& totalFluxScale,
-	    const Bool resetBase=False);
-  
-protected:
+  Bool info(const Bool lastcall, const Int iteration, const Int numberIterations,
+            const Vector<Float>& maxima, const Block<IPosition>& posMaximum,
+            const Float strengthOptimum, const Int optimumScale, const IPosition& positionOptimum,
+            const Float& totalFlux, const Vector<Float>& totalFluxScale,
+            const Bool resetBase = False);
 
-private:
-
+ protected:
+ private:
   // initizalize the arrays and such
-  void initialize(const uInt nScales, 
-		  const Float& maxResidual, 
-		  const uInt numIterations);
+  void initialize(const uInt nScales, const Float& maxResidual, const uInt numIterations);
 
   // As the iterations trickle in, we will from time to time
   // need to make the Matrices larger.  Increase to 2*n+1
@@ -125,8 +113,7 @@ private:
   void basicSetUp(Bool plotMatrices = False);
 
   // Note: you MUST call  basicSetUp before calling this.
-  void plotOne(const Int iteration, 
-               const Vector<Float>& resid, const Vector<Float>& flux);
+  void plotOne(const Int iteration, const Vector<Float>& resid, const Vector<Float>& flux);
 
   PGPlotter* itsPgplotter;
 
@@ -148,18 +135,15 @@ private:
   Float deltaY;
   Float xMin;
   Float xMax;
-  
+
   Float fluxScaleJump;
   Float residScaleJump;
 
   Float forbidden;
 
   Vector<Float> baseFluxes;
-
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

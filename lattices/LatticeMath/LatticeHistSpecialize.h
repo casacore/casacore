@@ -1,41 +1,41 @@
-//# LatticeHistSpecialize.h:  specialized functions for LatticeHistograms
-//# Copyright (C) 1996,1997,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeHistSpecialize.h:  specialized functions for LatticeHistograms
+// # Copyright (C) 1996,1997,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICEHISTSPECIALIZE_H
 #define LATTICES_LATTICEHISTSPECIALIZE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class PGPlotter;
 
 // <summary> Specialized functions for LatticeHistograms</summary>
@@ -63,84 +63,64 @@ class PGPlotter;
 //
 // <todo asof="1999/10/18">
 // </todo>
-  
 
-class LatticeHistSpecialize
-{
-public:
-// Make historgam cumulative
-   template <class T> static void makeCumulative (Vector<T>& counts,
-                               T& yMax, uInt nBins,
-                               typename NumericTraits<T>::BaseType scale);
-   static void makeCumulative (Vector<Complex>& counts,
-                               Complex& yMax, uInt nBins,
-                               Float scale);
+class LatticeHistSpecialize {
+ public:
+  // Make historgam cumulative
+  template <class T>
+  static void makeCumulative(Vector<T>& counts, T& yMax, uInt nBins,
+                             typename NumericTraits<T>::BaseType scale);
+  static void makeCumulative(Vector<Complex>& counts, Complex& yMax, uInt nBins, Float scale);
 
-// Make histogram logarithmic
-   template <class T> static void makeLogarithmic (Vector<T>& counts,
-                                T& yMax,
-                                uInt nBins);
-   static void makeLogarithmic (Vector<Complex>& counts,
-                                Complex& yMax,
-                                uInt nBins);
+  // Make histogram logarithmic
+  template <class T>
+  static void makeLogarithmic(Vector<T>& counts, T& yMax, uInt nBins);
+  static void makeLogarithmic(Vector<Complex>& counts, Complex& yMax, uInt nBins);
 
-// Multiply.  Real and imaginary treated as independent
-// C1*C2 = (r1*r2,i1*i2)
-   static Float mul(Float v1, Float v2);
-   static Complex mul(Complex v1, Complex v2);
+  // Multiply.  Real and imaginary treated as independent
+  // C1*C2 = (r1*r2,i1*i2)
+  static Float mul(Float v1, Float v2);
+  static Complex mul(Complex v1, Complex v2);
 
-// Plot histograms
-   static void plot(PGPlotter& plot, Bool doGauss, Bool doCumu, Bool doLog,
-                    Float linearSum, Float yMax, Float binWidth, 
-                    const Vector<Float>& values,
-                    const Vector<Float>& counts, const Vector<Float>& stats,
-                    uInt whereLabel, uInt ci, Bool page);
-   static void plot(PGPlotter& plot, Bool doGauss, Bool doCumu, Bool doLog,
-                    Complex linearSum, Complex yMax, Complex binWidth, 
-                    const Vector<Complex>& values,
-                    const Vector<Complex>& counts, const Vector<Complex>& stats,
-                    uInt whereLabel, uInt ci, Bool page);
+  // Plot histograms
+  static void plot(PGPlotter& plot, Bool doGauss, Bool doCumu, Bool doLog, Float linearSum,
+                   Float yMax, Float binWidth, const Vector<Float>& values,
+                   const Vector<Float>& counts, const Vector<Float>& stats, uInt whereLabel,
+                   uInt ci, Bool page);
+  static void plot(PGPlotter& plot, Bool doGauss, Bool doCumu, Bool doLog, Complex linearSum,
+                   Complex yMax, Complex binWidth, const Vector<Complex>& values,
+                   const Vector<Complex>& counts, const Vector<Complex>& stats, uInt whereLabel,
+                   uInt ci, Bool page);
 
-// Process data chunk creating histogram.
-   template <class T> static void process(
-		   const T* pInData, const Bool* pInMask,
-		   Block<T>* pHist, const Vector<T>& clip,
-		   T binWidth, uInt offset, uInt nrval,
-		   uInt nBins, uInt dataIncr, uInt maskIncr
-   );
-//
-   static void process (
-		   const Complex* pInData, const Bool* pInMask,
-		   Block<Complex>* pHist, const Vector<Complex>& clip,
-		   Complex binWidth, uInt offset, uInt nrval,
-		   uInt nBins, uInt dataIncr, uInt maskIncr
-   );
+  // Process data chunk creating histogram.
+  template <class T>
+  static void process(const T* pInData, const Bool* pInMask, Block<T>* pHist, const Vector<T>& clip,
+                      T binWidth, uInt offset, uInt nrval, uInt nBins, uInt dataIncr,
+                      uInt maskIncr);
+  //
+  static void process(const Complex* pInData, const Bool* pInMask, Block<Complex>* pHist,
+                      const Vector<Complex>& clip, Complex binWidth, uInt offset, uInt nrval,
+                      uInt nBins, uInt dataIncr, uInt maskIncr);
 
-// Set bin width.  For complex, real and imaginary treated separately
-   static Float setBinWidth (Float dmin, Float dmax, uInt nBins);
-//
-   static Complex setBinWidth(Complex dmin, Complex dmax, uInt nBins);
+  // Set bin width.  For complex, real and imaginary treated separately
+  static Float setBinWidth(Float dmin, Float dmax, uInt nBins);
+  //
+  static Complex setBinWidth(Complex dmin, Complex dmax, uInt nBins);
 
-private:
-   static uInt bin(Float datum, Float min, Float width, uInt nBins);
-//
-   static void makeGauss(uInt& nGPts, Float& gMax,
-                         Vector<Float>& gX, Vector<Float>& gY,
-                         Float dMean, Float dSigma,
-                         Float dSum, Float xMin,
-                         Float xMax, Float binWidth,
-                         Bool doCumu, Bool doLog);
-//
-   static void plotHist (const Vector<Float>& x,
-                         const Vector<Float>& y,
-                         PGPlotter& plotter);
+ private:
+  static uInt bin(Float datum, Float min, Float width, uInt nBins);
+  //
+  static void makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& gX, Vector<Float>& gY, Float dMean,
+                        Float dSigma, Float dSum, Float xMin, Float xMax, Float binWidth,
+                        Bool doCumu, Bool doLog);
+  //
+  static void plotHist(const Vector<Float>& x, const Vector<Float>& y, PGPlotter& plotter);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/LatticeHistSpecialize2.tcc>
-#endif 
+#endif
 
 #endif
