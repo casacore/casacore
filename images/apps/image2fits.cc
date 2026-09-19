@@ -1,29 +1,29 @@
-//# image2fits.cc: Program to convert an image to FITS format
-//# Copyright (C) 2008
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # image2fits.cc: Program to convert an image to FITS format
+// # Copyright (C) 2008
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Inputs.h>
 #include <casacore/images/Images/ImageOpener.h>
@@ -37,8 +37,7 @@
 
 #include <casacore/casa/namespace.h>
 
-int main (int argc, const char* argv[])
-{
+int main(int argc, const char* argv[]) {
   try {
     // Register the FITS and Miriad image types.
     casacore::FITSImage::registerOpenFunction();
@@ -48,17 +47,13 @@ int main (int argc, const char* argv[])
     Input inputs(1);
     // define the input structure
     inputs.version("20090915GvD");
-    inputs.create ("in", "",
-		   "Name of input Image or image expression",
-		   "string");
-    inputs.create ("out", "",
-		   "Name of output FITS file",
-		   "string");
+    inputs.create("in", "", "Name of input Image or image expression", "string");
+    inputs.create("out", "", "Name of output FITS file", "string");
     // Fill the input structure from the command line.
-    inputs.readArguments (argc, argv);
+    inputs.readArguments(argc, argv);
 
     // Get and check the input specification.
-    String imgin (inputs.getString("in"));
+    String imgin(inputs.getString("in"));
     if (imgin == "") {
       throw AipsError(" an input Image or expression must be given");
     }
@@ -73,7 +68,7 @@ int main (int argc, const char* argv[])
     ImageInterface<Float>* img = 0;
     String error;
     Bool res = True;
-    LatticeBase* lattice = ImageOpener::openImage (imgin);
+    LatticeBase* lattice = ImageOpener::openImage(imgin);
     if (lattice) {
       // Succeeded to open as an image.
       if (lattice->dataType() == TpFloat) {
@@ -87,11 +82,11 @@ int main (int argc, const char* argv[])
     }
     if (img == 0) {
       // Try to interpret it as a LEL expression.
-      LatticeExpr<Float> lat (ImageExprParse::command(imgin));
-      img = new ImageExpr<Float> (lat, imgin);
+      LatticeExpr<Float> lat(ImageExprParse::command(imgin));
+      img = new ImageExpr<Float>(lat, imgin);
     }
     // Now write the fits file.
-    res = ImageFITSConverter::ImageToFITS (error, *img, ffout);
+    res = ImageFITSConverter::ImageToFITS(error, *img, ffout);
     delete img;
     if (!res) {
       throw AipsError(error);
@@ -99,7 +94,7 @@ int main (int argc, const char* argv[])
   } catch (std::exception& x) {
     cout << x.what() << endl;
     return 1;
-  } 
+  }
   cout << "image2fits normally ended" << endl;
   return 0;
 }

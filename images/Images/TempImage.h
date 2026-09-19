@@ -1,40 +1,38 @@
-//# TempImage.h: Temporary astronomical images
-//# Copyright (C) 1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TempImage.h: Temporary astronomical images
+// # Copyright (C) 1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_TEMPIMAGE_H
 #define IMAGES_TEMPIMAGE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Temporary astronomical images.
@@ -56,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // storage.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // The class <src>TempImage</src> is useful for storing temporary images
 // for which it is not known whether they can be held in memory.
 // It uses class <linkto class=TempLattice>TempLattice</linkto> to
@@ -74,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // the number of open files in case a lot of TempImage objects are used.
 // A temporarily closed TempImage will be reopened automatically when needed.
 // It can also be reopened explicitly.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -82,19 +80,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 
 // <motivation>
-// The size of astronomical data can be very large.  The ability to fit an 
-// entire image into random access memory cannot be guaranteed.  Paging from 
+// The size of astronomical data can be very large.  The ability to fit an
+// entire image into random access memory cannot be guaranteed.  Paging from
 // disk pieces of the image appeared to be the way to deal with this problem.
 // </motivation>
 
-//# <todo asof="1998/10/27">
-//#  <li> Maybe move applyMask, maskPtr_p, etc to base class ImageInterface
-//# </todo>
+// # <todo asof="1998/10/27">
+// #  <li> Maybe move applyMask, maskPtr_p, etc to base class ImageInterface
+// # </todo>
 
-
-template<class T> class TempImage: public ImageInterface<T>
-{
-public: 
+template <class T>
+class TempImage : public ImageInterface<T> {
+ public:
   // The default constructor creates an empty image.
   TempImage();
 
@@ -104,22 +101,20 @@ public:
   // be forced to disk by setting maxMemoryinMB=0.
   // The algorithm is the same as in class
   // <linkto class=TempLattice>TempLattice</linkto>.
-  TempImage (const TiledShape& mapShape,
-	     const CoordinateSystem& coordinateInfo,
-	     Int maxMemoryInMB=-1);
+  TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
+            Int maxMemoryInMB = -1);
 
-  TempImage (const TiledShape& mapShape,
-	     const CoordinateSystem& coordinateInfo,
-	     Double maxMemoryInMB);
+  TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
+            Double maxMemoryInMB);
 
   // Copy constructor (reference semantics).
-  TempImage (const TempImage<T>& other);
+  TempImage(const TempImage<T>& other);
 
   // Destructor
   ~TempImage();
 
   // Assignment operator (reference semantics).
-  TempImage<T>& operator= (const TempImage<T>& other);
+  TempImage<T>& operator=(const TempImage<T>& other);
 
   // Make a copy of the object (reference semantics).
   virtual ImageInterface<T>* cloneII() const;
@@ -142,29 +137,27 @@ public:
   // the name as a keyword.
   // If the given regionName is the empty string,
   // the default pixelmask is unset.
-  virtual void setDefaultMask (const String& maskName);
+  virtual void setDefaultMask(const String& maskName);
 
   // Delete the pixel mask attached to the TempImage.
   // Does nothing if there isn't one
-  void removeMask()
-    { setDefaultMask (""); }
+  void removeMask() { setDefaultMask(""); }
 
   // Use the mask as specified.
   // If a mask was already in use, it is replaced by the new one.
-  virtual void useMask (MaskSpecifier = MaskSpecifier());
+  virtual void useMask(MaskSpecifier = MaskSpecifier());
 
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
   // If a mask removed is the default mask, the image gets unmasked.
   // <br>Optionally an exception is thrown if the region does not exist.
-  virtual void removeRegion (const String& name,
-			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool throwIfUnknown = True);
+  virtual void removeRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any,
+                            Bool throwIfUnknown = True);
 
   // Attach a mask to the TempImage.
   // It replaces a probably already attached mask.
   // It has to have the same shape as the image.
-  virtual void attachMask (const Lattice<Bool>& mask);
+  virtual void attachMask(const Lattice<Bool>& mask);
 
   // It a mask attached to the image?
   virtual Bool isMasked() const;
@@ -182,7 +175,7 @@ public:
 
   // Get a section of the mask.
   // It throws an exception if there is no mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // Flush the data.
   virtual void flush();
@@ -196,24 +189,24 @@ public:
   // If needed, reopen a temporarily closed TempLattice.
   virtual void reopen();
 
-  // Function which changes the shape of the image (N.B. the data is thrown 
+  // Function which changes the shape of the image (N.B. the data is thrown
   // away - the Image will be filled with nonsense afterwards)
-  virtual void resize (const TiledShape& newShape);
-  
+  virtual void resize(const TiledShape& newShape);
+
   // Return the name of the current TempImage object.
   // It is always "Temporary_Image"
-  virtual String name (Bool stripPath=False) const;
+  virtual String name(Bool stripPath = False) const;
 
   // Return the shape of the image
   virtual IPosition shape() const;
 
   // Function which sets all of the elements in the Lattice to a value.
-  virtual void set (const T& value);
+  virtual void set(const T& value);
 
   // Replace every element, x, of the lattice with the result of f(x).
   // You must pass in the address of the function -- so the function
-  // must be declared and defined in the scope of your program.  
-  // Both versions of apply require a function that accepts a single 
+  // must be declared and defined in the scope of your program.
+  // Both versions of apply require a function that accepts a single
   // argument of type T (the Lattice template actual type) and returns
   // a result of the same type.  The first apply expects a function with
   // an argument passed by value; the second expects the argument to
@@ -221,99 +214,94 @@ public:
   // for the built-in types, which may be an issue for large images
   // stored in memory, where disk access is not an issue.
   // <group>
-  virtual void apply (T (*function)(T));
-  virtual void apply (T (*function)(const T&));
-  virtual void apply (const Functional<T,T>& function);
+  virtual void apply(T (*function)(T));
+  virtual void apply(T (*function)(const T&));
+  virtual void apply(const Functional<T, T>& function);
   // </group>
-    
+
   // Get or put a single pixel.
   // Note that the function operator () can also be used to get a pixel.
   // <group>
-  virtual T getAt (const IPosition& where) const;
-  virtual void putAt (const T& value, const IPosition& where);
+  virtual T getAt(const IPosition& where) const;
+  virtual void putAt(const T& value, const IPosition& where);
   // </group>
 
   // This is the implementations of the letters for the envelope Iterator
   // class <note> Not for public use </note>
-  virtual LatticeIterInterface<T>* makeIter
-                           (const LatticeNavigator& navigator,
-			    Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor.
-  // This is the number of pixels in a tile. 
+  // This is the number of pixels in a tile.
   virtual uInt advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
   virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize(uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
-  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
-  			             const IPosition& windowStart,
-			             const IPosition& windowLength,
-			             const IPosition& axisPath);
-    
+  virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
+                                    const IPosition& windowLength, const IPosition& axisPath);
+
   // Set the actual cache size for this Array to be be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
-  // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  // tiles. Tiles are cached using a first in first out algorithm.
+  virtual void setCacheSizeInTiles(uInt howManyTiles);
 
-  // Clears and frees up the caches, but the maximum allowed cache size is 
+  // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
   virtual void clearCache();
 
   // Report on cache success.
-  virtual void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics(ostream& os) const;
 
   // Check for symmetry in data members.
   virtual Bool ok() const;
 
-protected:
+ protected:
   // Get the region used (it always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
   // Function which extracts an array from the map.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
-  
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
+
   // Function to replace the values in the map with soureBuffer.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
 
-
-private:  
-  void applyMaskSpecifier (const MaskSpecifier&);
-  void applyMask (const String& maskName);
+ private:
+  void applyMaskSpecifier(const MaskSpecifier&);
+  void applyMask(const String& maskName);
 
   TempLattice<T>* mapPtr_p;
-  Lattice<Bool>*  maskPtr_p;
+  Lattice<Bool>* maskPtr_p;
 
-  //# Make members of parent class known.
-public:
+  // # Make members of parent class known.
+ public:
   using ImageInterface<T>::logger;
   using ImageInterface<T>::coordinates;
   using ImageInterface<T>::getDefaultMask;
   using ImageInterface<T>::hasRegion;
   using ImageInterface<T>::getImageRegionPtr;
   using ImageInterface<T>::setCoordinateInfo;
-protected:
+
+ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
-//# Declare extern templates for often used types.
-  extern template class TempImage<Float>;
-  extern template class TempImage<Complex>;
+// # Declare extern templates for often used types.
+extern template class TempImage<Float>;
+extern template class TempImage<Complex>;
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/TempImage.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,27 +1,27 @@
-//# tLCPolygon.cc: Test program for LCPolygon class
-//# Copyright (C) 1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tLCPolygon.cc: Test program for LCPolygon class
+// # Copyright (C) 1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/images/Regions/WCEllipsoid.h>
 
@@ -80,8 +80,7 @@
   }
 */
 
-int main()
-{
+int main() {
   try {
     CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
     {
@@ -92,16 +91,14 @@ int main()
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch (std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       radius[2] = Quantity(50, "MHz");
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch (std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       center[2] = Quantity(1415, "GHz");
@@ -109,16 +106,14 @@ int main()
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch (std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       pixelAxes = IPosition(3, 0, 0, 1);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch (std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       pixelAxes = IPosition(3, 0, 1, 2);
@@ -126,8 +121,7 @@ int main()
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch (std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
 
@@ -151,9 +145,7 @@ int main()
       IPosition latticeShape(3, 20, 30, 40);
       IPosition pixelAxesMap(3, 0, 1, 2);
       IPosition outOrder(3, 0, 1, 2);
-      LCRegion *lcReg = ellipse.doToLCRegion(
-                                             csys, latticeShape, pixelAxesMap, outOrder
-                                             );
+      LCRegion *lcReg = ellipse.doToLCRegion(csys, latticeShape, pixelAxesMap, outOrder);
       LCEllipsoid *lcEllipse = dynamic_cast<LCEllipsoid *>(lcReg);
       IPosition lcShape = lcReg->shape();
 
@@ -177,14 +169,8 @@ int main()
       outOrder = IPosition(3, 1, 2, 0);
 
       delete lcReg;
-      lcReg = ellipse.doToLCRegion(
-                                   csys, latticeShape, pixelAxesMap, outOrder
-                                   );
-      AlwaysAssert(
-                   lcReg->shape()
-                   == IPosition(3, lcShape[2], lcShape[0], lcShape[1]),
-                   AipsError
-                   );
+      lcReg = ellipse.doToLCRegion(csys, latticeShape, pixelAxesMap, outOrder);
+      AlwaysAssert(lcReg->shape() == IPosition(3, lcShape[2], lcShape[0], lcShape[1]), AipsError);
       lcEllipse = dynamic_cast<LCEllipsoid *>(lcReg);
       lcCenter = lcEllipse->center();
       AlwaysAssert(near(lcCenter[1], 0.0), AipsError);
@@ -199,14 +185,8 @@ int main()
       pixelAxesMap = IPosition(3, 1, 2, 0);
 
       delete lcReg;
-      lcReg = ellipse.doToLCRegion(
-                                   csys, latticeShape, pixelAxesMap, outOrder
-                                   );
-      AlwaysAssert(
-                   lcReg->shape()
-                   == IPosition(3, lcShape[1], lcShape[2], lcShape[0]),
-                   AipsError
-                   );
+      lcReg = ellipse.doToLCRegion(csys, latticeShape, pixelAxesMap, outOrder);
+      AlwaysAssert(lcReg->shape() == IPosition(3, lcShape[1], lcShape[2], lcShape[0]), AipsError);
       lcEllipse = dynamic_cast<LCEllipsoid *>(lcReg);
       lcCenter = lcEllipse->center();
       AlwaysAssert(near(lcCenter[2], 0.0), AipsError);
@@ -221,13 +201,8 @@ int main()
       outOrder = IPosition(3, 1, 2, 0);
 
       delete lcReg;
-      lcReg = ellipse.doToLCRegion(
-                                   csys, latticeShape, pixelAxesMap, outOrder
-                                   );
-      AlwaysAssert(
-                   lcReg->shape() == lcShape,
-                   AipsError
-                   );
+      lcReg = ellipse.doToLCRegion(csys, latticeShape, pixelAxesMap, outOrder);
+      AlwaysAssert(lcReg->shape() == lcShape, AipsError);
       lcEllipse = dynamic_cast<LCEllipsoid *>(lcReg);
       lcCenter = lcEllipse->center();
       AlwaysAssert(near(lcCenter[0], 0.0), AipsError);
@@ -247,19 +222,14 @@ int main()
       Quantity r(1, "arcmin");
       try {
         // unit mismatch between center and radius
-        WCEllipsoid sphere(
-                           center, r, pixelAxes, csys
-                           );
+        WCEllipsoid sphere(center, r, pixelAxes, csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch(std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       pixelAxes.resize(2, True);
       center.resize(2, True);
-      WCEllipsoid sphere(
-                         center, r, pixelAxes, csys
-                         );
+      WCEllipsoid sphere(center, r, pixelAxes, csys);
       AlwaysAssert(sphere == sphere, AipsError);
       WCEllipsoid sphere2 = sphere;
       AlwaysAssert(sphere == sphere2, AipsError);
@@ -281,33 +251,25 @@ int main()
       try {
         // theta unit issue
         Quantity theta(4, "Hz");
-        WCEllipsoid ellipse(
-                            center[0], center[1], radius[0], radius[1],
-                            theta, pixelAxes[0], pixelAxes[1], csys
-                            );
+        WCEllipsoid ellipse(center[0], center[1], radius[0], radius[1], theta, pixelAxes[0],
+                            pixelAxes[1], csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch(std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       try {
         // axes unit mismatch
         Quantity theta(40, "deg");
-        WCEllipsoid ellipse(
-                            center[0], center[1], radius[0], radius[1],
-                            theta, pixelAxes[0], pixelAxes[2], csys
-                            );
+        WCEllipsoid ellipse(center[0], center[1], radius[0], radius[1], theta, pixelAxes[0],
+                            pixelAxes[2], csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch(std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       radius[0].setValue(2);
       Quantity theta(40, "deg");
-      WCEllipsoid ellipse(
-                          center[0], center[1], radius[0], radius[1],
-                          theta, pixelAxes[0], pixelAxes[1], csys
-                          );
+      WCEllipsoid ellipse(center[0], center[1], radius[0], radius[1], theta, pixelAxes[0],
+                          pixelAxes[1], csys);
 
       AlwaysAssert(ellipse == ellipse, AipsError);
       WCEllipsoid ellipse2 = ellipse;
@@ -323,19 +285,14 @@ int main()
       // switch axes order
       try {
         // major axis smaller than minor axis
-        ellipse = WCEllipsoid(
-                              center[1], center[0], radius[1], radius[0],
-                              theta, pixelAxes[1], pixelAxes[0], csys
-                              );
+        ellipse = WCEllipsoid(center[1], center[0], radius[1], radius[0], theta, pixelAxes[1],
+                              pixelAxes[0], csys);
         AlwaysAssert(False, AipsError);
-      }
-      catch(std::exception& x) {
+      } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
-      ellipse = WCEllipsoid(
-                            center[1], center[0], radius[0], radius[1],
-                            theta, pixelAxes[1], pixelAxes[0], csys
-                            );
+      ellipse = WCEllipsoid(center[1], center[0], radius[0], radius[1], theta, pixelAxes[1],
+                            pixelAxes[0], csys);
       AlwaysAssert(ellipse == ellipse, AipsError);
       ellipse2 = ellipse;
       AlwaysAssert(ellipse == ellipse2, AipsError);
@@ -348,10 +305,10 @@ int main()
       delete ellipse3;
     }
 
-  } catch (std::exception& x) {
+  } catch (std::exception &x) {
     cout << "Caught exception: " << x.what() << endl;
     return 1;
-  } 
+  }
   cout << "OK" << endl;
   return 0;
 }

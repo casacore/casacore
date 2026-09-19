@@ -1,33 +1,32 @@
-//# ImageStatistics.h: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ImageStatistics.h: generate statistics from an image
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_IMAGESTATISTICS_H
 #define IMAGES_IMAGESTATISTICS_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -36,10 +35,11 @@
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/iosstrfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class ImageInterface;
+// # Forward Declarations
+template <class T>
+class ImageInterface;
 class IPosition;
 
 // <summary>
@@ -61,8 +61,8 @@ class IPosition;
 // </etymology>
 
 // <synopsis>
-// This class enable you to display and/or retrieve statistics evaluated over 
-// specified regions from an image.  The dimension of the region is arbitrary, but 
+// This class enable you to display and/or retrieve statistics evaluated over
+// specified regions from an image.  The dimension of the region is arbitrary, but
 // the size of each dimension is always the size of the corresponding image axis.
 // The statistics are displayed as a function of location of the axes not
 // used to evaluate the statistics over.  The axes which you evaluate the statistics
@@ -80,7 +80,7 @@ class IPosition;
 // </synopsis>
 //
 // <motivation>
-// The generation of statistical information from an image is a basic 
+// The generation of statistical information from an image is a basic
 // and necessary capability.
 // </motivation>
 
@@ -93,143 +93,122 @@ class IPosition;
 //        accumulation image approach
 // </todo>
 
+template <class T>
+class ImageStatistics : public LatticeStatistics<T> {
+ public:
+  // Constructor takes the image and a <src>LogIO</src> object for logging.
+  // You can specify whether you want to see progress meters or not.
+  // You can force the storage image to be disk based, otherwise
+  // the decision for core or disk is taken for you.
+  // If <src>clone</src> is True, the input image will be cloned, so the caller
+  // can make changes to the input image, but the statistics will reflect the
+  // image as it was at construction. If False, a reference to the input image
+  // is used, and so the caller shouldn't make changes to the input image between
+  // construction and calling statistics computation methods, unless it calls setNewImage()
+  // to update the changed image. Obviously, cloning the image impacts performance
+  // and memory usage.
+  ImageStatistics(const ImageInterface<T>& image, LogIO& os, Bool showProgress = True,
+                  Bool forceDisk = False, Bool clone = True);
 
-template <class T> class ImageStatistics : public LatticeStatistics<T>
-{
-public:
+  // Constructor takes the image only. In the absence of a logger you get no messages.
+  // This includes error messages and potential listing of the statistics.
+  // You can specify whether you want to see progress meters or not.
+  // You can force the storage image to be disk based, otherwise
+  // the decision for core or disk is taken for you.
+  ImageStatistics(const ImageInterface<T>& image, Bool showProgress = True, Bool forceDisk = False,
+                  Bool clone = True);
 
-// Constructor takes the image and a <src>LogIO</src> object for logging.
-// You can specify whether you want to see progress meters or not.
-// You can force the storage image to be disk based, otherwise
-// the decision for core or disk is taken for you.
-// If <src>clone</src> is True, the input image will be cloned, so the caller
-// can make changes to the input image, but the statistics will reflect the
-// image as it was at construction. If False, a reference to the input image
-// is used, and so the caller shouldn't make changes to the input image between
-// construction and calling statistics computation methods, unless it calls setNewImage()
-// to update the changed image. Obviously, cloning the image impacts performance
-// and memory usage.
-   ImageStatistics (const ImageInterface<T>& image, 
-                    LogIO& os,
-                    Bool showProgress=True,
-                    Bool forceDisk=False,
-                    Bool clone=True);
+  // Copy constructor.  Copy semantics are followed.  Therefore any storage image
+  // that has already been created for <src>other</src> is copied to <src>*this</src>
+  ImageStatistics(const ImageStatistics<T>& other);
 
-// Constructor takes the image only. In the absence of a logger you get no messages.
-// This includes error messages and potential listing of the statistics.
-// You can specify whether you want to see progress meters or not.
-// You can force the storage image to be disk based, otherwise
-// the decision for core or disk is taken for you.
-   ImageStatistics (const ImageInterface<T>& image,
-                    Bool showProgress=True,
-                    Bool forceDisk=False,
-                    Bool clone=True);
+  // Destructor
+  virtual ~ImageStatistics();
 
-// Copy constructor.  Copy semantics are followed.  Therefore any storage image 
-// that has already been created for <src>other</src> is copied to <src>*this</src>
-   ImageStatistics(const ImageStatistics<T> &other);
+  // Assignment operator.  Deletes any storage image associated with
+  // the object being assigned to and copies any storage image that has
+  // already been created for "other".
+  ImageStatistics<T>& operator=(const ImageStatistics<T>& other);
 
-// Destructor
-   virtual ~ImageStatistics ();
+  // Set a new ImageInterface object.  A return value of <src>False</src> indicates the
+  // image had an invalid type or that the internal state of the class is bad.
+  // If <src>clone</src> is True, the input image will be cloned, so the caller
+  // can make changes to the input image, but the statistics will reflect the
+  // image as it was at construction. If False, a reference to the input image
+  // is used, and so the caller shouldn't make changes to the input image between
+  // construction and calling statistics computation methods, unless it calls setNewImage()
+  // to update the changed image. Obviously, cloning the image impacts performance
+  // and memory usage.
+  Bool setNewImage(const ImageInterface<T>& image, Bool clone = True);
 
-// Assignment operator.  Deletes any storage image associated with
-// the object being assigned to and copies any storage image that has
-// already been created for "other".
-   ImageStatistics<T> &operator=(const ImageStatistics<T> &other);
+  void setPrecision(Int precision);
 
-// Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
-// image had an invalid type or that the internal state of the class is bad.
-// If <src>clone</src> is True, the input image will be cloned, so the caller
-// can make changes to the input image, but the statistics will reflect the
-// image as it was at construction. If False, a reference to the input image
-// is used, and so the caller shouldn't make changes to the input image between
-// construction and calling statistics computation methods, unless it calls setNewImage()
-// to update the changed image. Obviously, cloning the image impacts performance
-// and memory usage.
-   Bool setNewImage (const ImageInterface<T>& image, Bool clone=True);
+  void setBlc(const IPosition& blc);
 
-   void setPrecision(Int precision);
+  IPosition getBlc() const;
 
-   void setBlc(const IPosition& blc);
+  Int getPrecision() const;
 
-   IPosition getBlc() const;
+  // list robust statistics? Should be called before display()
+  void showRobust(const Bool show);
 
-   Int getPrecision() const;
+  inline void recordMessages(const Bool rm) { _recordMessages = rm; }
 
-   // list robust statistics? Should be called before display()
-   void showRobust(const Bool show);
+  inline vector<String> getMessages() { return _messages; }
 
-   inline void recordMessages(const Bool rm) { _recordMessages = rm; }
+  inline void clearMessages() { _messages.resize(0); }
 
-   inline vector<String> getMessages() { return _messages; }
+  void setListStats(Bool b) { _listStats = b; }
 
-   inline void clearMessages() { _messages.resize(0); }
+ protected:
+  typedef typename NumericTraits<T>::PrecisionType AccumType;
 
-    void setListStats(Bool b) { _listStats = b; }
-protected:
+  virtual Bool _canDoFlux() const;
 
-   typedef typename NumericTraits<T>::PrecisionType AccumType;
+ private:
+  // Data
 
-   virtual Bool _canDoFlux() const;
+  LogIO os_p;
+  const ImageInterface<T>* pInImage_p;
+  std::shared_ptr<const ImageInterface<T>> _inImPtrMgr;
+  IPosition blc_;
+  Int precision_;
+  Bool _showRobust, _recordMessages, _listStats;
+  mutable vector<String> _messages;
 
-private:
-// Data
+  // Virtual functions.  See LatticeStatistics for more information
+  // about these, or see the implementation.
 
-   LogIO os_p;
-   const ImageInterface<T>* pInImage_p;
-   std::shared_ptr<const ImageInterface<T>> _inImPtrMgr;
-   IPosition blc_;
-   Int precision_;
-   Bool _showRobust, _recordMessages, _listStats;
-   mutable vector<String> _messages;
+  // Get label for higher order axes
+  virtual void getLabels(String& higherOrder, String& xAxis, const IPosition& dPos) const;
 
-// Virtual functions.  See LatticeStatistics for more information
-// about these, or see the implementation.
+  // Get beam area in pixels if possible. Return False if the beam area could not be
+  // calculated.
+  virtual Bool _getBeamArea(Array<Double>& beamArea, String& msg) const;
 
-// Get label for higher order axes
-   virtual void getLabels(String& higherOrder, String& xAxis, const IPosition& dPos) const;
+  // List min and max with world coordinates
+  virtual void listMinMax(std::ostringstream& osMin, std::ostringstream& osMax, Int oWidth,
+                          DataType type);
 
-    // Get beam area in pixels if possible. Return False if the beam area could not be
-    // calculated.
-    virtual Bool _getBeamArea(
-    	Array<Double>& beamArea, String& msg
-    ) const;
+  // List the statistics
+  virtual Bool listStats(Bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
 
-// List min and max with world coordinates
-   virtual void listMinMax (std::ostringstream& osMin,
-                            std::ostringstream& osMax,
-                            Int oWidth, DataType type);
+  virtual void displayStats(AccumType nPts, AccumType sum, AccumType median, AccumType medAbsDevMed,
+                            AccumType quartile, AccumType sumSq, AccumType mean, AccumType var,
+                            AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
+                            AccumType q1, AccumType q3);
 
-// List the statistics
-   virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
-                           const Matrix<AccumType>& ord);
+  // If <src>isFluxDensity</src> is False, then the computed value is
+  // a flux (ie flux density integrated over a spectral extent)
+  Quantum<AccumType> _flux(Bool& isFluxDensity, AccumType sum, Double beamAreaInPixels) const;
 
-   virtual void displayStats(
-		   AccumType nPts, AccumType sum, AccumType median,
-           AccumType medAbsDevMed, AccumType quartile,
-           AccumType sumSq, AccumType mean, AccumType var,
-           AccumType rms, AccumType sigma, AccumType dMin,
-           AccumType dMax, AccumType q1, AccumType q3
-   );
+  Bool _computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
+                    const Array<AccumType>& sum);
 
-
-   // If <src>isFluxDensity</src> is False, then the computed value is
-   // a flux (ie flux density integrated over a spectral extent)
-   Quantum<AccumType> _flux(
-		   Bool& isFluxDensity, AccumType sum, Double beamAreaInPixels
-   ) const;
-
-   Bool _computeFlux(
-		   Array<AccumType>& flux, const Array<AccumType>& npts,
-		   const Array<AccumType>& sum
-   );
-
-   Bool _computeFlux(
-		   Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
-   		   Bool posInLattice
-   );
-  //# Make members of parent class known.
-protected:
+  Bool _computeFlux(Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
+                    Bool posInLattice);
+  // # Make members of parent class known.
+ protected:
   using LatticeStatistics<T>::locInLattice;
   using LatticeStatistics<T>::setStream;
   using LatticeStatistics<T>::error_p;
@@ -243,7 +222,8 @@ protected:
   using LatticeStatistics<T>::minPos_p;
   using LatticeStatistics<T>::maxPos_p;
   using LatticeStatistics<T>::blcParent_p;
-public:
+
+ public:
   using LatticeStatistics<T>::NPTS;
   using LatticeStatistics<T>::SUM;
   using LatticeStatistics<T>::FLUX;
@@ -255,14 +235,12 @@ public:
   using LatticeStatistics<T>::MAX;
 };
 
-//# Declare extern templates for often used types.
-  extern template class ImageStatistics<Float>;
+// # Declare extern templates for often used types.
+extern template class ImageStatistics<Float>;
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/ImageStatistics.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
-

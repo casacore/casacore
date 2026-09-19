@@ -1,33 +1,32 @@
-//# ImageAttrHandler.h: Abstract base class for an image attributes handler
-//# Copyright (C) 2012
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ImageAttrHandler.h: Abstract base class for an image attributes handler
+// # Copyright (C) 2012
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_IMAGEATTRHANDLER_H
 #define IMAGES_IMAGEATTRHANDLER_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageAttrGroup.h>
 #include <casacore/casa/Containers/ValueHolder.h>
@@ -53,7 +52,7 @@ namespace casacore {
 // describe atrbitrary meta information.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // For LOFAR it was needed to store extra meta information and to be able to
 // convert it from casacore table format to HDF5 format and vice-versa.
 // Furthermore, it must be possible to access the information in a way that
@@ -64,7 +63,7 @@ namespace casacore {
 // The attributes are divided into group which are handled by ImageAttrGroup.
 // A group (e.g. LOFAR_SOURCES) maps to a subtable in casacore format and a
 // group in HDF5 format.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // This example shows how to get attributes from an image.
@@ -86,12 +85,10 @@ namespace casacore {
 // LOFAR needed functionality to store arbitrary attributes.
 // </motivation>
 
-class ImageAttrHandler
-{
-public: 
+class ImageAttrHandler {
+ public:
   // Default constructor.
-  ImageAttrHandler()
-  {}
+  ImageAttrHandler() {}
 
   virtual ~ImageAttrHandler();
 
@@ -101,7 +98,7 @@ public:
 
   // Test if the given attribute group is present.
   // The default implementation returns False.
-  virtual Bool hasGroup (const String& name);
+  virtual Bool hasGroup(const String& name);
 
   // Get all attribute group names.
   // The default implementation returns an empty vector.
@@ -109,17 +106,17 @@ public:
 
   // Get access to a group.
   // The default implementation throws an exception.
-  virtual ImageAttrGroup& openGroup (const String& groupName);
+  virtual ImageAttrGroup& openGroup(const String& groupName);
 
   // Create an attribute group with the given name.
   // The default implementation throws an exception.
-  virtual ImageAttrGroup& createGroup (const String& groupName);
+  virtual ImageAttrGroup& createGroup(const String& groupName);
 
   // Close the group with the given name.
   // The default implementation does nothing.
-  virtual void closeGroup (const String& groupName);
+  virtual void closeGroup(const String& groupName);
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

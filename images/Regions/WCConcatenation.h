@@ -1,38 +1,37 @@
-//# WCConcatenation.h: Combine multiple ImageRegion's into a new dimension
-//# Copyright (C) 1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # WCConcatenation.h: Combine multiple ImageRegion's into a new dimension
+// # Copyright (C) 1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_WCCONCATENATION_H
 #define IMAGES_WCCONCATENATION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Regions/WCCompound.h>
 #include <casacore/images/Regions/WCBox.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Combine multiple ImageRegion's into a new dimension.
@@ -47,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=WCCompound>WCCompound</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // The WCConcatenation class is a specialization of class
 // <linkto class=WCCompound>WCCompound</linkto>.
 // It makes it possible to combine multiple regions and to add a
@@ -68,10 +67,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // E.g. One can define a different polygon in the RA-DEC plane of each
 // channel. WCConcatenation makes it possible to combine the polygons
 // to one 3D region in the RA-DEC-Freq cube.
-// </synopsis> 
+// </synopsis>
 
 // <example>
-// This example combines <src>n</src> (relative) circles 
+// This example combines <src>n</src> (relative) circles
 // given in the RA,DEC plane along the FREQ-axis.
 // In this example the regions used are circles with the same centers,
 // but it is also  possible to combine differently shaped regions.
@@ -99,71 +98,62 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // is indeed the 2nd axis in the coordinate system.
 // </example>
 
-//# <todo asof="1997/11/11">
-//# <li> 
-//# </todo>
+// # <todo asof="1997/11/11">
+// # <li>
+// # </todo>
 
+class WCConcatenation : public WCCompound {
+ public:
+  // Combine the given regions.
+  // When <src>takeOver</src> is True, the destructor will delete the
+  // given regions. Otherwise a copy of the regions is made.
+  // The extend range has to be given as a 1-dimensional box.
+  // <group>
+  WCConcatenation(const Block<const ImageRegion*>& regions, const WCBox& extendRange);
+  WCConcatenation(Bool takeOver, const Block<const WCRegion*>& regions, const WCBox& extendRange);
+  // </group>
 
-class WCConcatenation: public WCCompound
-{
-public:
-    // Combine the given regions.
-    // When <src>takeOver</src> is True, the destructor will delete the
-    // given regions. Otherwise a copy of the regions is made.
-    // The extend range has to be given as a 1-dimensional box.
-    // <group>
-    WCConcatenation (const Block<const ImageRegion*>& regions,
-		     const WCBox& extendRange);
-    WCConcatenation (Bool takeOver, const Block<const WCRegion*>& regions,
-		     const WCBox& extendRange);
-    // </group>
+  // Copy constructor (copy semantics).
+  WCConcatenation(const WCConcatenation& other);
 
-    // Copy constructor (copy semantics).
-    WCConcatenation (const WCConcatenation& other);
+  virtual ~WCConcatenation();
 
-    virtual ~WCConcatenation();
+  // Assignment (copy semantics).
+  WCConcatenation& operator=(const WCConcatenation& other);
 
-    // Assignment (copy semantics).
-    WCConcatenation& operator= (const WCConcatenation& other);
+  // Comparison
+  virtual Bool operator==(const WCRegion& other) const;
 
-    // Comparison
-    virtual Bool operator== (const WCRegion& other) const;
+  // Make a copy of the derived object.
+  virtual WCRegion* cloneRegion() const;
 
-    // Make a copy of the derived object.
-    virtual WCRegion* cloneRegion() const;
+  // Get the class name (to store in the record).
+  static String className();
 
-    // Get the class name (to store in the record).
-    static String className();
+  // Get the region type.  Returns className()
+  virtual String type() const;
 
-    // Get the region type.  Returns className()
-    virtual String type() const;
+  // Convert the (derived) object to a record.
+  virtual TableRecord toRecord(const String& tableName) const;
 
-    // Convert the (derived) object to a record.
-    virtual TableRecord toRecord (const String& tableName) const;
+  // Convert correct object from a record.
+  static WCConcatenation* fromRecord(const TableRecord&, const String& tableName);
 
-    // Convert correct object from a record.
-    static WCConcatenation* fromRecord (const TableRecord&,
-					const String& tableName);
+ protected:
+  // Convert to an LCRegion using the given coordinate system and shape.
+  // pixelAxesMap(i) gives the pixel axis in cSys of axes <src>i</src>
+  // in the axesDesc.
+  virtual LCRegion* doToLCRegion(const CoordinateSystem& cSys, const IPosition& shape,
+                                 const IPosition& pixelAxesMap, const IPosition& outOrder) const;
 
-protected:
-    // Convert to an LCRegion using the given coordinate system and shape.
-    // pixelAxesMap(i) gives the pixel axis in cSys of axes <src>i</src>
-    // in the axesDesc.
-    virtual LCRegion* doToLCRegion (const CoordinateSystem& cSys,
-				    const IPosition& shape,
-				    const IPosition& pixelAxesMap,
-				    const IPosition& outOrder) const;
+ private:
+  // Do a check and fill the remainder of the object.
+  void fill();
 
-private:
-    // Do a check and fill the remainder of the object.
-    void fill();
-
-    //# Variables
-    WCBox itsExtendBox;
+  // # Variables
+  WCBox itsExtendBox;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

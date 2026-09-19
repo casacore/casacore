@@ -1,33 +1,32 @@
-//# ImageExprParse.h: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999,2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ImageExprParse.h: Classes to hold results from image expression parser
+// # Copyright (C) 1998,1999,2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_IMAGEEXPRPARSE_H
 #define IMAGES_IMAGEEXPRPARSE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/casa/BasicSL/Complex.h>
@@ -36,14 +35,14 @@
 #include <casacore/casa/stdvector.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template<class T> class Block;
+// # Forward Declarations
+template <class T>
+class Block;
 class ImageRegion;
 class Table;
 class Slice;
-
 
 // <summary>
 // Class to hold values from image expression parser
@@ -55,7 +54,7 @@ class Slice;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //  <li> <linkto class=LatticeExpr>LatticeExpr</linkto>
 // </prerequisite>
 
@@ -63,7 +62,7 @@ class Slice;
 // ImageExprParse is the class used to parse an image expression command.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // ImageExprParse is used by the parser of image expression statements.
 // The parser is written in Bison and Flex in files ImageExprGram.y and .l.
 // The statements in there use the routines in this file to act
@@ -193,146 +192,131 @@ class Slice;
 // This can be used in glish to operate on lattices/images.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class ImageExprParse {
+ public:
+  // Parse the given command.
+  // It will open all lattices needed.
+  // It returns the resulting image expression.
+  // <br>The <src>tempLattices/tempRegions</src> arguments make it possible
+  // to use temporary lattices/images and regions in the expression by means
+  // of the <src>$n</src> notation.
+  // <br> If a directory name is given, it is used instead of the working
+  // directory for relative file names.
+  // <group>
+  static LatticeExprNode command(const String& str, const String& dirName = String());
+  static LatticeExprNode command(const String& str, const Block<LatticeExprNode>& tempLattices,
+                                 const Block<const ImageRegion*>& tempRegions,
+                                 const String& dirName = String());
+  // </group>
 
-class ImageExprParse
-{
-public:
+  // Construct a literal object for the given type.
+  // <group>
+  ImageExprParse(Bool value);
+  ImageExprParse(Int value);
+  ImageExprParse(Float value);
+  ImageExprParse(Double value);
+  ImageExprParse(const Complex& value);
+  ImageExprParse(const DComplex& value);
+  ImageExprParse(const Char* value);
+  ImageExprParse(const String& value);
+  // </group>
 
-    // Parse the given command.
-    // It will open all lattices needed.
-    // It returns the resulting image expression.
-    // <br>The <src>tempLattices/tempRegions</src> arguments make it possible
-    // to use temporary lattices/images and regions in the expression by means
-    // of the <src>$n</src> notation.
-    // <br> If a directory name is given, it is used instead of the working
-    // directory for relative file names.
-    // <group>
-    static LatticeExprNode command (const String& str,
-				    const String& dirName = String());
-    static LatticeExprNode command (const String& str,
-				    const Block<LatticeExprNode>& tempLattices,
-				    const Block<const ImageRegion*>& tempRegions,
-				    const String& dirName = String());
-    // </group>
+  // Make a LatticeExprNode for a function.
+  // <group>
+  LatticeExprNode makeFuncNode() const;
+  LatticeExprNode makeFuncNode(const LatticeExprNode& arg1) const;
+  LatticeExprNode makeFuncNode(const LatticeExprNode& arg1, const LatticeExprNode& arg2) const;
+  LatticeExprNode makeFuncNode(const LatticeExprNode& arg1, const LatticeExprNode& arg2,
+                               const LatticeExprNode& arg3) const;
+  // </group>
 
-    // Construct a literal object for the given type.
-    // <group>
-    ImageExprParse (Bool value);
-    ImageExprParse (Int value);
-    ImageExprParse (Float value);
-    ImageExprParse (Double value);
-    ImageExprParse (const Complex& value);
-    ImageExprParse (const DComplex& value);
-    ImageExprParse (const Char* value);
-    ImageExprParse (const String& value);
-    // </group>
+  // Make a LatticeExprNode object for the lattice or region name.
+  LatticeExprNode makeLRNode() const;
 
-    // Make a LatticeExprNode for a function.
-    // <group>
-    LatticeExprNode makeFuncNode () const;
-    LatticeExprNode makeFuncNode (const LatticeExprNode& arg1) const;
-    LatticeExprNode makeFuncNode (const LatticeExprNode& arg1,
-				  const LatticeExprNode& arg2) const;
-    LatticeExprNode makeFuncNode (const LatticeExprNode& arg1,
-				  const LatticeExprNode& arg2,
-				  const LatticeExprNode& arg3) const;
-    // </group>
+  // Make a LatticeExprNode object for the name of constant, lattice,
+  // or region.
+  LatticeExprNode makeLitLRNode() const;
 
-    // Make a LatticeExprNode object for the lattice or region name.
-    LatticeExprNode makeLRNode() const;
+  // Make a LatticeExprNode object for the temporary region number.
+  LatticeExprNode makeRegionNode() const;
 
-    // Make a LatticeExprNode object for the name of constant, lattice,
-    // or region.
-    LatticeExprNode makeLitLRNode() const;
+  // Make a LatticeExprNode object for the literal value.
+  LatticeExprNode makeLiteralNode() const;
 
-    // Make a LatticeExprNode object for the temporary region number.
-    LatticeExprNode makeRegionNode() const;
+  // Make a Slice object from 1-3 literals.
+  // <group>
+  static Slice* makeSlice(const ImageExprParse& start);
+  static Slice* makeSlice(const ImageExprParse& start, const ImageExprParse& end);
+  static Slice* makeSlice(const ImageExprParse& start, const ImageExprParse& end,
+                          const ImageExprParse& incr);
+  // </group>
 
-    // Make a LatticeExprNode object for the literal value.
-    LatticeExprNode makeLiteralNode() const;
+  // Make a node for the INDEXIN function.
+  static LatticeExprNode makeIndexinNode(const LatticeExprNode& axis, const vector<Slice>& slices);
 
-    // Make a Slice object from 1-3 literals.
-    // <group>
-    static Slice* makeSlice (const ImageExprParse& start);
-    static Slice* makeSlice (const ImageExprParse& start,
-			     const ImageExprParse& end);
-    static Slice* makeSlice (const ImageExprParse& start,
-			     const ImageExprParse& end,
-			     const ImageExprParse& incr);
-    // </group>
+  // Make an array from a value list.
+  static LatticeExprNode makeValueList(const Block<LatticeExprNode>& values);
 
-    // Make a node for the INDEXIN function.
-    static LatticeExprNode makeIndexinNode (const LatticeExprNode& axis,
-					    const vector<Slice>& slices);
+  // Make an IPosition containing the binning values.
+  static IPosition makeBinning(const LatticeExprNode& values);
 
-    // Make an array from a value list.
-    static LatticeExprNode makeValueList
-                                  (const Block<LatticeExprNode>& values);
+  // Get the names of the images used in the expression.
+  static const vector<String>& getImageNames() { return theirNames; }
 
-    // Make an IPosition containing the binning values.
-    static IPosition makeBinning (const LatticeExprNode& values);
+  // Set the static node object (used by the .y file).
+  static void setNode(const LatticeExprNode& node) { theirNode = node; }
 
-    // Get the names of the images used in the expression.
-    static const vector<String>& getImageNames()
-        { return theirNames; }
+  // Keep track of the nodes allocated while parsing the expression.
+  // <group>
+  static void addNode(LatticeExprNode* node);
+  static void addNode(ImageExprParse* node);
+  static void deleteNodes();
+  // </group>
 
-    // Set the static node object (used by the .y file).
-    static void setNode (const LatticeExprNode& node)
-        { theirNode = node; }
+  // A function to test addDir. It first sets the directory.
+  static String setAddDir(const String& dirName, const String& fileName);
 
-    // Keep track of the nodes allocated while parsing the expression.
-    // <group>
-    static void addNode (LatticeExprNode* node);
-    static void addNode (ImageExprParse* node);
-    static void deleteNodes();
-    // </group>
+ private:
+  // If a directory was given, prepend it to the file name if relative.
+  static String addDir(const String& fileName);
 
-    // A function to test addDir. It first sets the directory.
-    static String setAddDir (const String& dirName, const String& fileName);
+  // Try if the name represent a lattice or image.
+  // Return False if not.
+  Bool tryLatticeNode(LatticeExprNode& node, const String& name) const;
 
-private:
-    // If a directory was given, prepend it to the file name if relative.
-    static String addDir (const String& fileName);
+  // Make the node from the image name and a mask name.
+  // The mask name can be NOMASK (case insensitive) meaning that no mask
+  // is applied to the image.
+  LatticeExprNode makeImageNode(const String& name, const String& mask) const;
 
-    // Try if the name represent a lattice or image.
-    // Return False if not.
-    Bool tryLatticeNode (LatticeExprNode& node, const String& name) const;
+  // Callback function for RegionHandlerTable to get the table to be used.
+  static Table& getRegionTable(void*, Bool);
 
-    // Make the node from the image name and a mask name.
-    // The mask name can be NOMASK (case insensitive) meaning that no mask
-    // is applied to the image.
-    LatticeExprNode makeImageNode (const String& name,
-				   const String& mask) const;
+  // Callback function for RegionHandlerHDF5 to get the file to be used.
+  static const std::shared_ptr<HDF5File>& getRegionHDF5(void*);
 
-    // Callback function for RegionHandlerTable to get the table to be used.
-    static Table& getRegionTable (void*, Bool);
+  // # A 'global' node object to hold the resulting expression.
+  static LatticeExprNode theirNode;
 
-    // Callback function for RegionHandlerHDF5 to get the file to be used.
-    static const std::shared_ptr<HDF5File>& getRegionHDF5 (void*);
+  // # The names of the images used in the expression.
+  // # and the level of nesting.
+  static vector<String> theirNames;
+  static Int theirLevel;
 
-    //# A 'global' node object to hold the resulting expression.
-    static LatticeExprNode theirNode;
-
-    //# The names of the images used in the expression.
-    //# and the level of nesting.
-    static vector<String> theirNames;
-    static Int theirLevel;
-
-    DataType itsType;
-    Bool     itsBval;              //# boolean literal
-    Int      itsIval;              //# integer literal
-    Float    itsFval;              //# Float literal
-    Double   itsDval;              //# Double literal
-    Complex  itsCval;              //# Complex literal
-    DComplex itsDCval;             //# DComplex literal
-    String   itsSval;              //# lattice name; function name
+  DataType itsType;
+  Bool itsBval;       // # boolean literal
+  Int itsIval;        // # integer literal
+  Float itsFval;      // # Float literal
+  Double itsDval;     // # Double literal
+  Complex itsCval;    // # Complex literal
+  DComplex itsDCval;  // # DComplex literal
+  String itsSval;     // # lattice name; function name
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
