@@ -136,41 +136,41 @@ size_t ConversionIO::read (size_t nvalues, String* value)
 template<typename T>
 size_t ConversionIO::writeGeneric (size_t nvalues, const T* value, size_t type_size, bool copy)
 {
-    const size_t size = nvalues * type_size;
-    if (copy) {
-	itsByteIO->write (size, value);
+  const size_t size = nvalues * type_size;
+  if (copy) {
+    itsByteIO->write (size, value);
+  } else {
+    if (size <= itsBufferLength) {
+      itsConversion->fromLocal (itsBuffer, value, nvalues);
+      itsByteIO->write (size, itsBuffer);
     } else {
-	if (size <= itsBufferLength) {
-	    itsConversion->fromLocal (itsBuffer, value, nvalues);
-	    itsByteIO->write (size, itsBuffer);
-    	} else {
-	    char* tempBuffer = new char [size];
-	    itsConversion->fromLocal (tempBuffer, value, nvalues);
-	    itsByteIO->write (size, tempBuffer);
-	    delete [] tempBuffer;
-	}
+      char* tempBuffer = new char [size];
+      itsConversion->fromLocal (tempBuffer, value, nvalues);
+      itsByteIO->write (size, tempBuffer);
+      delete [] tempBuffer;
     }
-    return size;
+  }
+  return size;
 }
 
 template<typename T>
 size_t ConversionIO::readGeneric (size_t nvalues, T* value, size_t type_size, bool copy)
 {
-    const size_t size = nvalues * type_size;
-    if (copy) {
-	itsByteIO->read (size, value);
+  const size_t size = nvalues * type_size;
+  if (copy) {
+    itsByteIO->read (size, value);
+  } else {
+    if (size <= itsBufferLength) {
+      itsByteIO->read (size, itsBuffer);
+      itsConversion->toLocal (value, itsBuffer, nvalues);
     } else {
-	if (size <= itsBufferLength) {
-	    itsByteIO->read (size, itsBuffer);
-	    itsConversion->toLocal (value, itsBuffer, nvalues);
-	} else {
-	    char* tempBuffer = new char[size];
-	    itsByteIO->read (size, tempBuffer);
-	    itsConversion->toLocal (value, tempBuffer, nvalues);
-	    delete [] tempBuffer;
-	}
+      char* tempBuffer = new char[size];
+      itsByteIO->read (size, tempBuffer);
+      itsConversion->toLocal (value, tempBuffer, nvalues);
+      delete [] tempBuffer;
     }
-    return size;
+  }
+  return size;
 }
 
 size_t ConversionIO::write (size_t nvalues, const Char* data) { return writeGeneric<Char>(nvalues, data, itsSizeChar, itsCopyChar); }
