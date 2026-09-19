@@ -1,27 +1,27 @@
-//# SDObservationFiller.h: fills the OBSERVATION table for the SDFITS filler
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SDObservationFiller.h: fills the OBSERVATION table for the SDFITS filler
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_SDOBSERVATIONHANDLER_H
 #define MS_SDOBSERVATIONHANDLER_H
@@ -31,9 +31,9 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class ColumnsIndex;
 class MeasurementSet;
 class MSObservation;
@@ -83,76 +83,73 @@ class String;
 //   <li> start discussion of this possible extension
 // </todo>
 
-class SDObservationHandler
-{
-public:
-    // default ctor is not attached to a MS and hence is useless until attached
-    SDObservationHandler();
+class SDObservationHandler {
+ public:
+  // default ctor is not attached to a MS and hence is useless until attached
+  SDObservationHandler();
 
-    // attach this to a MS, mark the appropriate columns as handled given
-    // the indicated row
-    SDObservationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // attach this to a MS, mark the appropriate columns as handled given
+  // the indicated row
+  SDObservationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
-    // copy ctor
-    SDObservationHandler(const SDObservationHandler &other);
+  // copy ctor
+  SDObservationHandler(const SDObservationHandler &other);
 
-    ~SDObservationHandler() {clearAll();}
+  ~SDObservationHandler() { clearAll(); }
 
-    // assignment operator, uses copy semantics
-    SDObservationHandler &operator=(const SDObservationHandler &other);
+  // assignment operator, uses copy semantics
+  SDObservationHandler &operator=(const SDObservationHandler &other);
 
-    // attach to a MS, mark the appropriate columns as handled given the row
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // attach to a MS, mark the appropriate columns as handled given the row
+  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
-    // reset internals given indicated row, use the same MS 
-    void resetRow(const Record &row);
-    
-    // fill - a new row is added only when necessary
-    void fill(const Record &row, const String &telescopeName, const Vector<Double> &timeRange);
+  // reset internals given indicated row, use the same MS
+  void resetRow(const Record &row);
 
-    // get the current observation ID
-    Int observationId() {return rownr_p;}
+  // fill - a new row is added only when necessary
+  void fill(const Record &row, const String &telescopeName, const Vector<Double> &timeRange);
 
-    // update the time range
-    void updateTimeRange(const Vector<Double> &timeRange);
-private:
-    ColumnsIndex *index_p;
-    RecordFieldPtr<String> telescopeKey_p, observerKey_p, projectKey_p, ns_obsidKey_p;
-    RecordFieldPtr<Double> releaseDateKey_p;
-    RecordFieldPtr<Bool> flagRowKey_p;
+  // get the current observation ID
+  Int observationId() { return rownr_p; }
 
-    MSObservation *msObs_p;
-    MSObservationColumns *msObsCols_p;
+  // update the time range
+  void updateTimeRange(const Vector<Double> &timeRange);
 
-    Int rownr_p;
+ private:
+  ColumnsIndex *index_p;
+  RecordFieldPtr<String> telescopeKey_p, observerKey_p, projectKey_p, ns_obsidKey_p;
+  RecordFieldPtr<Double> releaseDateKey_p;
+  RecordFieldPtr<Bool> flagRowKey_p;
 
-    ScalarColumn<String> nsObsIdCol_p;
+  MSObservation *msObs_p;
+  MSObservationColumns *msObsCols_p;
 
-    // pointers to fields in record, only used if attached
-    RORecordFieldPtr<String> observer_p, projid_p, obsid_p;
-    RORecordFieldPtr<Double> releaseDate_p;
-    RORecordFieldPtr<Bool> flagRow_p;
-    RORecordFieldPtr<Array<Double> > timeRange_p;
+  Int rownr_p;
 
-    // cleanup everything
-    void clearAll();
+  ScalarColumn<String> nsObsIdCol_p;
 
-    // cleanup things which depend on the row description being fixed
-    void clearRow();
+  // pointers to fields in record, only used if attached
+  RORecordFieldPtr<String> observer_p, projid_p, obsid_p;
+  RORecordFieldPtr<Double> releaseDate_p;
+  RORecordFieldPtr<Bool> flagRow_p;
+  RORecordFieldPtr<Array<Double>> timeRange_p;
 
-    // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // cleanup everything
+  void clearAll();
 
-    // initialize the things which depend on the row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+  // cleanup things which depend on the row description being fixed
+  void clearRow();
 
-    // initialize the index
-    void makeIndex();
+  // initialize everything
+  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+
+  // initialize the things which depend on the row
+  void initRow(Vector<Bool> &handledCols, const Record &row);
+
+  // initialize the index
+  void makeIndex();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

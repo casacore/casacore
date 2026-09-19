@@ -1,27 +1,27 @@
-//# SDSysCalFiller.h: fills the SYSCAL table for the SDFITS filler
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SDSysCalFiller.h: fills the SYSCAL table for the SDFITS filler
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_SDSYSCALHANDLER_H
 #define MS_SDSYSCALHANDLER_H
@@ -30,9 +30,9 @@
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasurementSet;
 class MSSysCal;
 class MSSysCalColumns;
@@ -80,67 +80,64 @@ class Record;
 //   <li> start discussion of this possible extension
 // </todo>
 
-class SDSysCalHandler
-{
-public:
-    // default ctor is not attached to a MS and hence is useless until attached
-    SDSysCalHandler();
+class SDSysCalHandler {
+ public:
+  // default ctor is not attached to a MS and hence is useless until attached
+  SDSysCalHandler();
 
-    // attach this to a MS - mark fields in row as handled
-    SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // attach this to a MS - mark fields in row as handled
+  SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
-    // copy ctor
-    SDSysCalHandler(const SDSysCalHandler &other);
+  // copy ctor
+  SDSysCalHandler(const SDSysCalHandler &other);
 
-    ~SDSysCalHandler() {clearAll();}
+  ~SDSysCalHandler() { clearAll(); }
 
-    // assignment operator, uses copy semantics
-    SDSysCalHandler &operator=(const SDSysCalHandler &other);
+  // assignment operator, uses copy semantics
+  SDSysCalHandler &operator=(const SDSysCalHandler &other);
 
-    // attach to a MS, mark fields in row as handled
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // attach to a MS, mark fields in row as handled
+  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
-    // reset internals given indicated row, use the same MS
-    void resetRow(const Record &row);
-    
-    // fill - a new row is added as necessary, there is no lookback to see if a row could be
-    // reused.  Only the current row might be reused.
-    void fill(const Record &row, Int antennaId, Int feedId, Int spectralWindowId,
-	      Double time, Vector<Double> timeRange, uInt numReceptors);
-private:
-    MSSysCal *msSysCal_p;
-    MSSysCalColumns *msSysCalCols_p;
+  // reset internals given indicated row, use the same MS
+  void resetRow(const Record &row);
 
-    Int rownr_p;
+  // fill - a new row is added as necessary, there is no lookback to see if a row could be
+  // reused.  Only the current row might be reused.
+  void fill(const Record &row, Int antennaId, Int feedId, Int spectralWindowId, Double time,
+            Vector<Double> timeRange, uInt numReceptors);
 
-    uInt nrecpt_p;
+ private:
+  MSSysCal *msSysCal_p;
+  MSSysCalColumns *msSysCalCols_p;
 
-    Int tcalId_p, tsysId_p, trxId_p;
+  Int rownr_p;
 
-    Bool hasTsysCol_p, hasTcalCol_p, hasTrxCol_p;
+  uInt nrecpt_p;
 
-    // fields which come from a previous incarnation as a MS
-    RORecordFieldPtr<Double> intervalField_p, timeField_p;
-    RORecordFieldPtr<Float> phaseDiffField_p;
-    RORecordFieldPtr<Bool> tcalFlagField_p, trxFlagField_p, tsysFlagField_p, phaseDiffFlagField_p;
-    RORecordFieldPtr<Array<Float> > tcalField_p, trxField_p, tsysField_p;
+  Int tcalId_p, tsysId_p, trxId_p;
 
-    // cleanup everything
-    void clearAll();
+  Bool hasTsysCol_p, hasTcalCol_p, hasTrxCol_p;
 
-    // cleanup row-related stuff
-    void clearRow();
+  // fields which come from a previous incarnation as a MS
+  RORecordFieldPtr<Double> intervalField_p, timeField_p;
+  RORecordFieldPtr<Float> phaseDiffField_p;
+  RORecordFieldPtr<Bool> tcalFlagField_p, trxFlagField_p, tsysFlagField_p, phaseDiffFlagField_p;
+  RORecordFieldPtr<Array<Float>> tcalField_p, trxField_p, tsysField_p;
 
-    // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // cleanup everything
+  void clearAll();
 
-    // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+  // cleanup row-related stuff
+  void clearRow();
+
+  // initialize everything
+  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+
+  // intialize the row related stuff
+  void initRow(Vector<Bool> &handledCols, const Record &row);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-
