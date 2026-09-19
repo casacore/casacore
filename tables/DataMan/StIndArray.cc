@@ -484,21 +484,6 @@ void StIndArray::putSliceV (StManArrayFile& ios, const Slicer& ns,
     arr.freeVStorage (value, deleteIt);
 }
 
-void StIndArray::getVecfloatV (StManArrayFile& ios,
-			       Int64 fileOffset,
-			       uInt64 start, uInt64 leng, uInt64 inc,
-			       uInt64 valInx, void* value)
-{
-    float* valp = (float*)value + valInx;
-    if (inc == 1) {
-	ios.get (fileOffset, start, leng, valp);
-    }else{
-	while (leng-- > 0) {
-	    ios.get (fileOffset, start, 1, valp++);
-	    start += inc;
-	}
-    }
-}
 void StIndArray::getSliceData (StManArrayFile& ios, const Slicer& ns,
       void* value, const IPosition& userShape,
       void (*getVec) (StManArrayFile&, Int64, uInt64, uInt64, uInt64, uInt64, void*))
@@ -539,21 +524,6 @@ void StIndArray::getSliceData (StManArrayFile& ios, const Slicer& ns,
     }
 }
 
-void StIndArray::putVecfloatV (StManArrayFile& ios,
-			       Int64 fileOffset,
-			       uInt64 start, uInt64 leng, uInt64 inc,
-			       uInt64 valInx, const void* value)
-{
-    float* valp = (float*)value + valInx;
-    if (inc == 1) {
-	ios.put (fileOffset, start, leng, valp);
-    }else{
-	while (leng-- > 0) {
-	    ios.put (fileOffset, start, 1, valp++);
-	    start += inc;
-	}
-    }
-}
 //# putSliceData works similar to getSliceData.
 void StIndArray::putSliceData (StManArrayFile& ios, const Slicer& ns,
 	const void* value, const IPosition& userShape,
@@ -588,51 +558,5 @@ void StIndArray::putSliceData (StManArrayFile& ios, const Slicer& ns,
     }
 }
     
-
-#define STINDARRAY_GETPUT(T,NM) \
-void StIndArray::aips_name2(getVec,NM) \
-                  (StManArrayFile& ios, Int64 fileOffset, \
-		   uInt64 start, uInt64 leng, uInt64 inc, uInt64 valInx, \
-                   void* value) \
-{ \
-    T* valp = (T*)value + valInx; \
-    if (inc == 1) { \
-	ios.get (fileOffset, start, leng, valp); \
-    }else{ \
-	while (leng-- > 0) { \
-	    ios.get (fileOffset, start, 1, valp++); \
-	    start += inc; \
-	} \
-    } \
-} \
-void StIndArray::aips_name2(putVec,NM) \
-                  (StManArrayFile& ios, Int64 fileOffset, \
-		   uInt64 start, uInt64 leng, uInt64 inc, uInt64 valInx, \
-                   const void* value) \
-{ \
-    T* valp = (T*)value + valInx; \
-    if (inc == 1) { \
-	ios.put (fileOffset, start, leng, valp); \
-    }else{ \
-	while (leng-- > 0) { \
-	    ios.put (fileOffset, start, 1, valp++); \
-	    start += inc; \
-	} \
-    } \
-}
-
-STINDARRAY_GETPUT(Bool,BoolV)
-STINDARRAY_GETPUT(uChar,uCharV)
-STINDARRAY_GETPUT(Short,ShortV)
-STINDARRAY_GETPUT(uShort,uShortV)
-STINDARRAY_GETPUT(Int,IntV)
-STINDARRAY_GETPUT(uInt,uIntV)
-STINDARRAY_GETPUT(Int64,Int64V)
-//#//STINDARRAY_GETPUT(float,floatV)   // done explicitly for debug purposes
-STINDARRAY_GETPUT(double,doubleV)
-STINDARRAY_GETPUT(Complex,ComplexV)
-STINDARRAY_GETPUT(DComplex,DComplexV)
-STINDARRAY_GETPUT(String,StringV)
-
 } //# NAMESPACE CASACORE - END
 

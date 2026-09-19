@@ -189,39 +189,39 @@ private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Get the scalar value in the given row.
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
-    virtual void getfloat    (rownr_t rownr, float* dataPtr);
-    virtual void getdouble   (rownr_t rownr, double* dataPtr);
-    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
-    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
-    virtual void getString   (rownr_t rownr, String* dataPtr);
+    void getBool     (rownr_t rownr, Bool* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getuChar    (rownr_t rownr, uChar* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getShort    (rownr_t rownr, Short* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getuShort   (rownr_t rownr, uShort* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getInt      (rownr_t rownr, Int* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getuInt     (rownr_t rownr, uInt* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getInt64    (rownr_t rownr, Int64* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getfloat    (rownr_t rownr, float* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getdouble   (rownr_t rownr, double* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getComplex  (rownr_t rownr, Complex* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getDComplex (rownr_t rownr, DComplex* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
+    void getString   (rownr_t rownr, String* dataPtr) override { getVirtualScalar (this, rownr, dataPtr); }
     // This function is the get for all non-standard data types.
-    virtual  void getOther   (rownr_t rownr, void* dataPtr);
+    void getOther   (rownr_t rownr, void* dataPtr) override;
     // </group>
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put the scalar value into the given row.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
-    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
-    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
-    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
-    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
-    virtual void putString   (rownr_t rownr, const String* dataPtr);
+    void putBool     (rownr_t rownr, const Bool* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putuChar    (rownr_t rownr, const uChar* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putShort    (rownr_t rownr, const Short* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putuShort   (rownr_t rownr, const uShort* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putInt      (rownr_t rownr, const Int* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putuInt     (rownr_t rownr, const uInt* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putInt64    (rownr_t rownr, const Int64* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putfloat    (rownr_t rownr, const float* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putdouble   (rownr_t rownr, const double* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putComplex  (rownr_t rownr, const Complex* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putDComplex (rownr_t rownr, const DComplex* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
+    void putString   (rownr_t rownr, const String* dataPtr) override { putVirtualScalar (this, rownr, dataPtr); }
     // This function is the put for all non-standard data types.
-    virtual void putOther    (rownr_t rownr, const void* dataPtr);
+    void putOther    (rownr_t rownr, const void* dataPtr) override;
     // </group>
 
     // Get all scalar values in the column.

@@ -159,7 +159,6 @@ DataMan/TSMCubeBuff.cc
 DataMan/TSMCubeMMap.cc
 DataMan/TSMDataColumn.cc
 DataMan/TSMFile.cc
-DataMan/TSMIdColumn.cc
 DataMan/TSMOption.cc
 DataMan/TSMShape.cc
 DataMan/TiledCellStMan.cc

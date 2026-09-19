@@ -337,44 +337,80 @@ private:
     static size_t readStringLE (void* out, const void* in, size_t n);
     // </group>
 
-    void getScaCol (Vector<Bool>&);
-    void getScaCol (Vector<uChar>&);
-    void getScaCol (Vector<Short>&);
-    void getScaCol (Vector<uShort>&);
-    void getScaCol (Vector<Int>&);
-    void getScaCol (Vector<uInt>&);
-    void getScaCol (Vector<Int64>&);
-    void getScaCol (Vector<float>&);
-    void getScaCol (Vector<double>&);
-    void getScaCol (Vector<Complex>&);
-    void getScaCol (Vector<DComplex>&);
-    void getScaCol (Vector<String>&);
+    template<typename T>
+    void getScaCol (Vector<T>& dataPtr) {
+        rownr_t nrrow = dataPtr.nelements();
+        rownr_t rownr = 0;
+        while (rownr < nrrow) {
+            getValueGeneric<T> (rownr, &(dataPtr(rownr)));
+      for (rownr++; rownr<=endRow_p; ++rownr) {
+          dataPtr(rownr) = *(T*)lastValue_p;
+      }
+        }
+    }
 
-    void getScaColCells (const RefRows&, Vector<Bool>&);
-    void getScaColCells (const RefRows&, Vector<uChar>&);
-    void getScaColCells (const RefRows&, Vector<Short>&);
-    void getScaColCells (const RefRows&, Vector<uShort>&);
-    void getScaColCells (const RefRows&, Vector<Int>&);
-    void getScaColCells (const RefRows&, Vector<uInt>&);
-    void getScaColCells (const RefRows&, Vector<Int64>&);
-    void getScaColCells (const RefRows&, Vector<float>&);
-    void getScaColCells (const RefRows&, Vector<double>&);
-    void getScaColCells (const RefRows&, Vector<Complex>&);
-    void getScaColCells (const RefRows&, Vector<DComplex>&);
-    void getScaColCells (const RefRows&, Vector<String>&);
+    template<typename T>
+    void getScaColCells (const RefRows& rownrs, Vector<T>& values) {
+    Bool delV;
+    T* value = values.getStorage (delV);
+    T* valptr = value;
+    if (rownrs.isSliced()) {
+        RefRowsSliceIter iter(rownrs);
+        while (! iter.pastEnd()) {
+            rownr_t rownr = iter.sliceStart();
+            rownr_t end = iter.sliceEnd();
+            rownr_t incr = iter.sliceIncr();
+            while (rownr <= end) {
+                if (isLastValueInvalid (rownr)) {
+                    getValueGeneric<T> (rownr, valptr);
+                    valptr++;
+                    rownr += incr;
+                }
+                const T* cacheValue = (const T*)(lastValue_p);
+                rownr_t endrow = std::min (end, endRow_p);
+                while (rownr <= endrow) {
+	            *valptr++ = *cacheValue;
+                    rownr += incr;
+	        }
+     	    }
+	    iter++;
+        }
+    } else {
+        const Vector<rownr_t>& rowvec = rownrs.rowVector();
+        rownr_t nr = rowvec.nelements();
+        if (nr > 0) {
+            Bool delR;
+            const rownr_t* rows = rowvec.getStorage (delR);
+            if (isLastValueInvalid (rows[0])) {
+                getValueGeneric<T> (0, &(value[0]));
+            }
+            const T* cacheValue = (const T*)(lastValue_p);
+            rownr_t strow = startRow_p;
+            rownr_t endrow = endRow_p;
+            for (rownr_t i=0; i<nr; i++) {
+	        rownr_t rownr = rows[i];
+                if (rownr >= strow  &&  rownr <= endrow) {
+	            value[i] = *cacheValue;
+	        } else {
+	            getValueGeneric<T> (rownr, &(value[i]));
+                    cacheValue = (const T*)(lastValue_p);
+                    strow = startRow_p;
+                    endrow = endRow_p;
+	        }
+	    }
+            rowvec.freeStorage (rows, delR);
+        }
+    }
+    values.putStorage (value, delV);
+    }
 
-    void putScaCol (const Vector<Bool>&);
-    void putScaCol (const Vector<uChar>&);
-    void putScaCol (const Vector<Short>&);
-    void putScaCol (const Vector<uShort>&);
-    void putScaCol (const Vector<Int>&);
-    void putScaCol (const Vector<uInt>&);
-    void putScaCol (const Vector<Int64>&);
-    void putScaCol (const Vector<float>&);
-    void putScaCol (const Vector<double>&);
-    void putScaCol (const Vector<Complex>&);
-    void putScaCol (const Vector<DComplex>&);
-    void putScaCol (const Vector<String>&);
+    template<typename T>
+    void putScaCol (const Vector<T>& dataPtr) {
+      rownr_t nrrow = dataPtr.nelements();
+      for (rownr_t i = 0; i < nrrow; ++i) {
+          putValueGeneric (i, &(dataPtr(i)));
+      }
+    }
 };
 
 

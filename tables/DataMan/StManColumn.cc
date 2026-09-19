@@ -102,28 +102,147 @@ IPosition StManColumn::tileShape (uInt)
 // The following takes care of backward compatibility for external storage managers.
 // It maps the get/putXX functions taking rownr_t to the old get/putXXV taking uInt.
 // As before the default get/putXXV implementations throw a 'not implemented' exception.
-#define STMANCOLUMN_GETPUT_SCALAR(T,NM) \
-void StManColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
-  { aips_name2(get,NM) (rownr, dataPtr); } \
-void StManColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
-  { aips_name2(put,NM) (rownr, dataPtr); } \
-void StManColumn::aips_name2(get,NM) (uInt, T*) \
-  { throwInvalidOp(CASACORE_STRINGIFY(aips_name2(get,NM))); }     \
-void StManColumn::aips_name2(put,NM) (uInt, const T*) \
-  { throwInvalidOp(CASACORE_STRINGIFY(aips_name2(put,NM))); }     \
+void StManColumn::getBool (rownr_t rownr, Bool* dataPtr)
+  { getBoolV (rownr, dataPtr); }
 
-STMANCOLUMN_GETPUT_SCALAR(Bool,BoolV)
-STMANCOLUMN_GETPUT_SCALAR(uChar,uCharV)
-STMANCOLUMN_GETPUT_SCALAR(Short,ShortV)
-STMANCOLUMN_GETPUT_SCALAR(uShort,uShortV)
-STMANCOLUMN_GETPUT_SCALAR(Int,IntV)
-STMANCOLUMN_GETPUT_SCALAR(uInt,uIntV)
-STMANCOLUMN_GETPUT_SCALAR(float,floatV)
-STMANCOLUMN_GETPUT_SCALAR(double,doubleV)
-STMANCOLUMN_GETPUT_SCALAR(Complex,ComplexV)
-STMANCOLUMN_GETPUT_SCALAR(DComplex,DComplexV)
-STMANCOLUMN_GETPUT_SCALAR(String,StringV)
+void StManColumn::putBool (rownr_t rownr, const Bool* dataPtr)
+  { putBoolV (rownr, dataPtr); }
 
+void StManColumn::getBoolV (uInt, Bool*)
+  { throwInvalidOp("getBoolV"); }
+
+void StManColumn::putBoolV (uInt, const Bool*)
+  { throwInvalidOp("putBoolV"); }
+
+
+void StManColumn::getuChar (rownr_t rownr, uChar* dataPtr)
+  { getuCharV (rownr, dataPtr); }
+
+void StManColumn::putuChar (rownr_t rownr, const uChar* dataPtr)
+  { putuCharV (rownr, dataPtr); }
+
+void StManColumn::getuCharV (uInt, uChar*)
+  { throwInvalidOp("getuCharV"); }
+
+void StManColumn::putuCharV (uInt, const uChar*)
+  { throwInvalidOp("putuCharV"); }
+
+
+void StManColumn::getShort (rownr_t rownr, Short* dataPtr)
+  { getShortV (rownr, dataPtr); }
+
+void StManColumn::putShort (rownr_t rownr, const Short* dataPtr)
+  { putShortV (rownr, dataPtr); }
+
+void StManColumn::getShortV (uInt, Short*)
+  { throwInvalidOp("getShortV"); }
+
+void StManColumn::putShortV (uInt, const Short*)
+  { throwInvalidOp("putShortV"); }
+
+
+void StManColumn::getuShort (rownr_t rownr, uShort* dataPtr)
+  { getuShortV (rownr, dataPtr); }
+
+void StManColumn::putuShort (rownr_t rownr, const uShort* dataPtr)
+  { putuShortV (rownr, dataPtr); }
+
+void StManColumn::getuShortV (uInt, uShort*)
+  { throwInvalidOp("getuShortV"); }
+
+void StManColumn::putuShortV (uInt, const uShort*)
+  { throwInvalidOp("putuShortV"); }
+
+
+void StManColumn::getInt (rownr_t rownr, Int* dataPtr)
+  { getIntV (rownr, dataPtr); }
+
+void StManColumn::putInt (rownr_t rownr, const Int* dataPtr)
+  { putIntV (rownr, dataPtr); }
+
+void StManColumn::getIntV (uInt, Int*)
+  { throwInvalidOp("getIntV"); }
+
+void StManColumn::putIntV (uInt, const Int*)
+  { throwInvalidOp("putIntV"); }
+
+
+void StManColumn::getuInt (rownr_t rownr, uInt* dataPtr)
+  { getuIntV (rownr, dataPtr); }
+
+void StManColumn::putuInt (rownr_t rownr, const uInt* dataPtr)
+  { putuIntV (rownr, dataPtr); }
+
+void StManColumn::getuIntV (uInt, uInt*)
+  { throwInvalidOp("getuIntV"); }
+
+void StManColumn::putuIntV (uInt, const uInt*)
+  { throwInvalidOp("putuIntV"); }
+
+
+void StManColumn::getfloat (rownr_t rownr, float* dataPtr)
+  { getfloatV (rownr, dataPtr); }
+
+void StManColumn::putfloat (rownr_t rownr, const float* dataPtr)
+  { putfloatV (rownr, dataPtr); }
+
+void StManColumn::getfloatV (uInt, float*)
+  { throwInvalidOp("getfloatV"); }
+
+void StManColumn::putfloatV (uInt, const float*)
+  { throwInvalidOp("putfloatV"); }
+
+
+void StManColumn::getdouble (rownr_t rownr, double* dataPtr)
+  { getdoubleV (rownr, dataPtr); }
+
+void StManColumn::putdouble (rownr_t rownr, const double* dataPtr)
+  { putdoubleV (rownr, dataPtr); }
+
+void StManColumn::getdoubleV (uInt, double*)
+  { throwInvalidOp("getdoubleV"); }
+
+void StManColumn::putdoubleV (uInt, const double*)
+  { throwInvalidOp("putdoubleV"); }
+
+
+void StManColumn::getComplex (rownr_t rownr, Complex* dataPtr)
+  { getComplexV (rownr, dataPtr); }
+
+void StManColumn::putComplex (rownr_t rownr, const Complex* dataPtr)
+  { putComplexV (rownr, dataPtr); }
+
+void StManColumn::getComplexV (uInt, Complex*)
+  { throwInvalidOp("getComplexV"); }
+
+void StManColumn::putComplexV (uInt, const Complex*)
+  { throwInvalidOp("putComplexV"); }
+
+
+void StManColumn::getDComplex (rownr_t rownr, DComplex* dataPtr)
+  { getDComplexV (rownr, dataPtr); }
+
+void StManColumn::putDComplex (rownr_t rownr, const DComplex* dataPtr)
+  { putDComplexV (rownr, dataPtr); }
+
+void StManColumn::getDComplexV (uInt, DComplex*)
+  { throwInvalidOp("getDComplexV"); }
+
+void StManColumn::putDComplexV (uInt, const DComplex*)
+  { throwInvalidOp("putDComplexV"); }
+
+
+void StManColumn::getString (rownr_t rownr, String* dataPtr)
+  { getStringV (rownr, dataPtr); }
+
+void StManColumn::putString (rownr_t rownr, const String* dataPtr)
+  { putStringV (rownr, dataPtr); }
+
+void StManColumn::getStringV (uInt, String*)
+  { throwInvalidOp("getStringV"); }
+
+void StManColumn::putStringV (uInt, const String*)
+  { throwInvalidOp("putStringV"); }
 
 //# Call the correct getScalarColumnX function depending on the data type.
 void StManColumn::getScalarColumnV (ArrayBase& dataPtr)
@@ -921,23 +1040,50 @@ STMANCOLUMN_GETPUT(float,floatV)
 STMANCOLUMN_GETPUT(double,doubleV)
 STMANCOLUMN_GETPUT(Complex,ComplexV)
 STMANCOLUMN_GETPUT(DComplex,DComplexV)
-STMANCOLUMN_GETPUT(String,StringV)
 
-/*
-    Vector<T> value = *values; \
-    const ColumnCache* cachePtr = columnCachePtr(); \
-    uInt nr = rownrs.nelements(); \
-Timer timer; \
-    for (uInt i=0; i<nr; i++) { \
-	uInt rownr = rownrs(i); \
-	Int off = cachePtr->offset(rownr); \
-	if (off >= 0) { \
-	    value(i) = ((T*)(cachePtr->dataPtr()))[off]; \
-	} else { \
-	    aips_name2(get,NM) (rownr, &(value(i))); \
-	} \
-    } \
-timer.show("a"); \
-*/
+void StManColumn::getScalarColumnStringV (Vector<String>* dataPtr)
+  { getScalarColumnBase (*dataPtr); }
+void StManColumn::putScalarColumnStringV (const Vector<String>* dataPtr)
+  { putScalarColumnBase (*dataPtr); }
+void StManColumn::getArrayStringV (uInt, Array<String>*)
+  { throwInvalidOp("getArrayStringV"); }
+void StManColumn::putArrayStringV (uInt, const Array<String>*)
+  { throwInvalidOp("putArrayStringV"); }
+void StManColumn::getSliceStringV (uInt rownr, const Slicer& slicer,
+                                   Array<String>* arr)
+  { getSliceBase (rownr, slicer, *arr); }
+void StManColumn::putSliceStringV (uInt rownr, const Slicer& slicer,
+                                   const Array<String>* arr)
+  { putSliceBase (rownr, slicer, *arr); }
+void StManColumn::getArrayColumnStringV (Array<String>* arr)
+  { getArrayColumnBase (*arr); }
+void StManColumn::putArrayColumnStringV (const Array<String>* arr)
+  { putArrayColumnBase (*arr); }
+void StManColumn::getColumnSliceStringV (const Slicer& slicer,
+                                         Array<String>* arr)
+  { getColumnSliceBase (slicer, *arr); }
+void StManColumn::putColumnSliceStringV (const Slicer& slicer,
+                                         const Array<String>* arr)
+  { putColumnSliceBase (slicer, *arr); }
+void StManColumn::getScalarColumnCellsStringV (const RefRows& rownrs,
+                                               Vector<String>* values)
+  { getScalarColumnCellsBase (rownrs, *values); }
+void StManColumn::putScalarColumnCellsStringV (const RefRows& rownrs,
+                                               const Vector<String>* values)
+  { putScalarColumnCellsBase (rownrs, *values); }
+void StManColumn::getArrayColumnCellsStringV (const RefRows& rownrs,
+                                              Array<String>* values)
+  { getArrayColumnCellsBase (rownrs, *values); }
+void StManColumn::putArrayColumnCellsStringV (const RefRows& rownrs,
+                                              const Array<String>* values)
+  { putArrayColumnCellsBase (rownrs, *values); }
+void StManColumn::getColumnSliceCellsStringV (const RefRows& rownrs,
+                                              const Slicer& ns,
+                                              Array<String>* values)
+  { getColumnSliceCellsBase (rownrs, ns, *values); }
+void StManColumn::putColumnSliceCellsStringV (const RefRows& rownrs,
+                                              const Slicer& ns,
+                                              const Array<String>* values)
+  { putColumnSliceCellsBase (rownrs, ns, *values); }
 
 } //# NAMESPACE CASACORE - END

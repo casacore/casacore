@@ -220,28 +220,109 @@ void ForwardColumnIndexedRow::putSliceV (rownr_t, const Slicer&, const ArrayBase
 }
 
 
-#define FORWARDCOLUMNINDEXEDROW_GETPUT(T,NM) \
-void ForwardColumnIndexedRow::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
-    { colPtr()->get (convertRownr(rownr), dataPtr); } \
-void ForwardColumnIndexedRow::aips_name2(put,NM) (rownr_t, const T*) \
-{ \
-    throw (DataManInvOper \
-           ("put not supported by data manager ForwardColumnIndexedRow")); \
+void ForwardColumnIndexedRow::getBool (rownr_t rownr, Bool* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putBool (rownr_t, const Bool*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-FORWARDCOLUMNINDEXEDROW_GETPUT(Bool,Bool)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uChar,uChar)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Short,Short)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uShort,uShort)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Int,Int)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uInt,uInt)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Int64,Int64)
-FORWARDCOLUMNINDEXEDROW_GETPUT(float,float)
-FORWARDCOLUMNINDEXEDROW_GETPUT(double,double)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Complex,Complex)
-FORWARDCOLUMNINDEXEDROW_GETPUT(DComplex,DComplex)
-FORWARDCOLUMNINDEXEDROW_GETPUT(String,String)
-FORWARDCOLUMNINDEXEDROW_GETPUT(void,Other)
+void ForwardColumnIndexedRow::getuChar (rownr_t rownr, uChar* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putuChar (rownr_t, const uChar*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getShort (rownr_t rownr, Short* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putShort (rownr_t, const Short*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getuShort (rownr_t rownr, uShort* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putuShort (rownr_t, const uShort*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getInt (rownr_t rownr, Int* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putInt (rownr_t, const Int*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getuInt (rownr_t rownr, uInt* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putuInt (rownr_t, const uInt*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getInt64 (rownr_t rownr, Int64* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putInt64 (rownr_t, const Int64*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getfloat (rownr_t rownr, float* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putfloat (rownr_t, const float*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getdouble (rownr_t rownr, double* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putdouble (rownr_t, const double*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getComplex (rownr_t rownr, Complex* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putComplex (rownr_t, const Complex*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getDComplex (rownr_t rownr, DComplex* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putDComplex (rownr_t, const DComplex*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getString (rownr_t rownr, String* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putString (rownr_t, const String*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
+
+void ForwardColumnIndexedRow::getOther (rownr_t rownr, void* dataPtr)
+    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::putOther (rownr_t, const void*)
+{
+    throw (DataManInvOper
+           ("put not supported by data manager ForwardColumnIndexedRow"));
+}
 
 } //# NAMESPACE CASACORE - END
 

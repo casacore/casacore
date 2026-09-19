@@ -90,10 +90,11 @@ class TSMIdColumn : public TSMColumn
 public:
 
     // Create an id column from the given column.
-    TSMIdColumn (const TSMColumn& column);
+    TSMIdColumn (const TSMColumn& column) :
+      TSMColumn (column) {}
 
     // Frees up the storage.
-    virtual ~TSMIdColumn();
+    virtual ~TSMIdColumn() = default;
 
     // Forbid copy constructor.
     TSMIdColumn (const TSMIdColumn&) = delete;
@@ -105,15 +106,15 @@ public:
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn get function).
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
-    virtual void getfloat    (rownr_t rownr, float* dataPtr);
-    virtual void getdouble   (rownr_t rownr, double* dataPtr);
-    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
-    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
-    virtual void getString   (rownr_t rownr, String* dataPtr);
+    void getBool     (rownr_t rownr, Bool* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getInt      (rownr_t rownr, Int* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getuInt     (rownr_t rownr, uInt* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getInt64    (rownr_t rownr, Int64* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getfloat    (rownr_t rownr, float* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getdouble   (rownr_t rownr, double* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getComplex  (rownr_t rownr, Complex* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getDComplex (rownr_t rownr, DComplex* dataPtr) override { GetGeneric(rownr, dataPtr); }
+    void getString   (rownr_t rownr, String* dataPtr) override { GetGeneric(rownr, dataPtr); }
     // </group>
 
     // Put a scalar value in the given row.
@@ -123,20 +124,34 @@ public:
     // been inserted by the TiledStMan::addHypercube function.
     // The put function is only there to be fully orthogonal.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
-    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
-    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
-    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
-    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
-    virtual void putString   (rownr_t rownr, const String* dataPtr);
+    void putBool     (rownr_t rownr, const Bool* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putInt      (rownr_t rownr, const Int* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putuInt     (rownr_t rownr, const uInt* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putInt64    (rownr_t rownr, const Int64* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putfloat    (rownr_t rownr, const float* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putdouble   (rownr_t rownr, const double* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putComplex  (rownr_t rownr, const Complex* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putDComplex (rownr_t rownr, const DComplex* dataPtr) override { PutGeneric(rownr, dataPtr); }
+    void putString   (rownr_t rownr, const String* dataPtr) override { PutGeneric(rownr, dataPtr); }
     // </group>
+
+private:
+  template<typename T>
+  void GetGeneric (rownr_t rownr, T* dataPtr) {
+    TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
+    hypercube->valueRecord().get (columnName(), *dataPtr);
+  }
+
+  template<typename T>
+  void PutGeneric (rownr_t rownr, const T* dataPtr) {
+    T value;
+    GetGeneric<T> (rownr, &value);
+    if (value != *dataPtr) {
+      throw TSMError ("TSMIdColumn::put: new value mismatches existing"
+                      " in id column " + columnName());
+    }
+  }
 };
-
-
-
 
 } //# NAMESPACE CASACORE - END
 
