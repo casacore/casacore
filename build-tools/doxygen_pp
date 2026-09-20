@@ -249,8 +249,8 @@ sub change_comment_style
   {
     $skip = 0;
     $newstate = $NON_COMMENT_BLOCK;
-    # slash-slash-hash is blanked if not at beginning of file.
-    if ($keephash == 0  &&  $line =~ m|^\s*//\#|)
+    # slash-slash-hash or slash-slash-space-hash is blanked if not at beginning of file.
+    if ($keephash == 0  &&  $line =~ m|^\s*// ?\#|)
     {
       $line = "\n";
     }
