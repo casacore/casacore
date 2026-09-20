@@ -8,6 +8,7 @@
 # Disable globbing. This is needed when defining patterns that have wildcards.
 set -e -f
 
+# Use a specific clang-format version, since formatting may differ between versions.
 CLANG_FORMAT_BINARY=clang-format-21
 
 #Directories that must be excluded from formatting. These paths are
