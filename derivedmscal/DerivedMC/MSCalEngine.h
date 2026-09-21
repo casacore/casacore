@@ -1,32 +1,32 @@
-//# MSCalEngine.h: Engine to calculate derived MS values
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSCalEngine.h: Engine to calculate derived MS values
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef DERIVEDMSCAL_MSCALENGINE_H
 #define DERIVEDMSCAL_MSCALENGINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -51,7 +51,7 @@ namespace casacore {
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> MeasurementSet
 // </prerequisite>
 
@@ -113,9 +113,8 @@ namespace casacore {
 //  <li> Have a conversion engine per field/antenna/feed?
 // </todo>
 
-class MSCalEngine
-{
-public:
+class MSCalEngine {
+ public:
   // Default constructor.
   MSCalEngine();
 
@@ -123,53 +122,52 @@ public:
   ~MSCalEngine();
 
   // Get the table used.
-  Table getTable() const
-    { return itsTable; }
+  Table getTable() const { return itsTable; }
 
   // Use the given table (MS or CalTable) in the engine.
-  void setTable (const Table&);
+  void setTable(const Table&);
 
   // Set the direction to be used instead of a direction from the FIELD table.
-  void setDirection (const MDirection&);
+  void setDirection(const MDirection&);
 
   // Set the direction column name to use in the FIELD table.
-  void setDirColName (const String& colName);
+  void setDirColName(const String& colName);
 
   // Get the hourangle for the given row.
-  double getHA (Int antnr, rownr_t rownr);
+  double getHA(Int antnr, rownr_t rownr);
 
   // Get the hourangle/DEC for the given row.
-  void getHaDec (Int antnr, rownr_t rownr, Array<Double>&);
+  void getHaDec(Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the parallatic angle for the given row.
-  double getPA (Int antnr, rownr_t rownr);
+  double getPA(Int antnr, rownr_t rownr);
 
   // Get the local sidereal time for the given row.
-  double getLAST (Int antnr, rownr_t rownr);
+  double getLAST(Int antnr, rownr_t rownr);
 
   // Get the azimuth/elevation for the given row.
-  void getAzEl (Int antnr, rownr_t rownr, Array<Double>&);
+  void getAzEl(Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the ITRF coordinates for the given row.
-  void getItrf (Int antnr, rownr_t rownr, Array<Double>&);
+  void getItrf(Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the UVW in J2000 or APP for the given row.
-  void getNewUVW (Bool asApp, rownr_t rownr, Array<Double>&);
+  void getNewUVW(Bool asApp, rownr_t rownr, Array<Double>&);
 
   // Get the delay for the given row.
-  double getDelay (Int antnr, rownr_t rownr);
+  double getDelay(Int antnr, rownr_t rownr);
 
-private:
+ private:
   // Copy constructor cannot be used.
-  MSCalEngine (const MSCalEngine& that);
+  MSCalEngine(const MSCalEngine& that);
 
   // Assignment cannot be used.
-  MSCalEngine& operator= (const MSCalEngine& that);
-  
+  MSCalEngine& operator=(const MSCalEngine& that);
+
   // Set the data in the measure converter machines.
   // The antenna positions are only filled in antnr>=0 or if fillAnt is set.
   // It returns the mount of the antenna.
-  Int setData (Int antnr, rownr_t rownr, Bool fillAnt=False);
+  Int setData(Int antnr, rownr_t rownr, Bool fillAnt = False);
 
   // Initialize the column objects, etc.
   void init();
@@ -179,52 +177,50 @@ private:
 
   // Fill or update the antenna positions from the ANTENNA subtable at
   // row calDescId. It is stored in the calInx-th entry of itsAntPos/itsMount.
-  void fillAntPos (Int calDescId, Int calInx);
+  void fillAntPos(Int calDescId, Int calInx);
 
   // Fill or update the field directions from the FIELD subtable at
   // row calDescId. It is stored in the calInx-th entry of itsFieldDir.
-  void fillFieldDir (Int calDescId, Int calInx);
+  void fillFieldDir(Int calDescId, Int calInx);
 
   // Get a calibration MS subtable for the given id.
-  Table getSubTable (Int calDescId, const String& subTabName,
-                     Bool mustExist=True);
+  Table getSubTable(Int calDescId, const String& subTabName, Bool mustExist = True);
 
-  //# Declare member variables.
-  Table                       itsTable;        //# MS or CalTable to use
-  Int                         itsLastCalInx;   //# id of CAL_DESC last used
-  Int                         itsLastFieldId;  //# id of the field last used
-  Int                         itsLastAntId;    //# -1 is array position used
-  Double                      itsLastTime;
-  ScalarColumn<Int>           itsAntCol[2];    //# ANTENNA1 and ANTENNA2
-  ScalarColumn<Int>           itsFeedCol[2];   //# FEED1 and FEED2
-  ScalarColumn<Int>           itsFieldCol;     //# FIELD_ID
-  ScalarColumn<Double>        itsTimeCol;      //# TIME
-  ScalarMeasColumn<MEpoch>    itsTimeMeasCol;  //# TIME as Measure
-  ScalarColumn<Int>           itsCalCol;       //# CAL_DESC_ID
-  map<std::string,int>        itsCalMap;       //# map of MS name to index
-  vector<Int>                 itsCalIdMap;     //# map of calId to index
-  MPosition                   itsArrayPos;
-  Vector<double>              itsArrayItrf;    //# ITRF array position
-  vector<vector<MPosition> >  itsAntPos;       //# ITRF antenna positions
-  vector<vector<Int> >        itsMount;        //# 1=alt-az  0=else
-  vector<vector<MDirection> > itsFieldDir;     //# J2000 field directions
-  Bool                        itsReadFieldDir; //# False: explicit directions
-  String                      itsDirColName;   //# FIELD DIR column to read
-  vector<vector<MBaseline> >  itsAntMB;        //# J2000 MBaseline per antenna
-  vector<vector<Vector<double> > > itsAntUvw;  //# J2000 UVW per antenna
-  vector<Block<bool> >        itsUvwFilled;    //# is UVW filled for antenna i?
-  MDirection::Convert         itsRADecToAzEl;  //# converter ra/dec to az/el
-  MDirection::Convert         itsPoleToAzEl;   //# converter pole to az/el
-  MDirection::Convert         itsRADecToHADec; //# converter ra/dec to ha/dec
-  MDirection::Convert         itsRADecToItrf;  //# converter ra/dec to itrf
-  MDirection::Convert         itsDirToJ2000;   //# converter direction to J2000
-  MEpoch::Convert             itsUTCToLAST;    //# converter UTC to LAST
-  MBaseline::Convert          itsBLToJ2000;    //# convert ITRF to J2000
-  MeasFrame                   itsFrame;        //# frame used by the converters
-  MDirection                  itsLastDirJ2000; //# itsLastFieldId dir in J2000
+  // # Declare member variables.
+  Table itsTable;      // # MS or CalTable to use
+  Int itsLastCalInx;   // # id of CAL_DESC last used
+  Int itsLastFieldId;  // # id of the field last used
+  Int itsLastAntId;    // # -1 is array position used
+  Double itsLastTime;
+  ScalarColumn<Int> itsAntCol[2];           // # ANTENNA1 and ANTENNA2
+  ScalarColumn<Int> itsFeedCol[2];          // # FEED1 and FEED2
+  ScalarColumn<Int> itsFieldCol;            // # FIELD_ID
+  ScalarColumn<Double> itsTimeCol;          // # TIME
+  ScalarMeasColumn<MEpoch> itsTimeMeasCol;  // # TIME as Measure
+  ScalarColumn<Int> itsCalCol;              // # CAL_DESC_ID
+  map<std::string, int> itsCalMap;          // # map of MS name to index
+  vector<Int> itsCalIdMap;                  // # map of calId to index
+  MPosition itsArrayPos;
+  Vector<double> itsArrayItrf;               // # ITRF array position
+  vector<vector<MPosition>> itsAntPos;       // # ITRF antenna positions
+  vector<vector<Int>> itsMount;              // # 1=alt-az  0=else
+  vector<vector<MDirection>> itsFieldDir;    // # J2000 field directions
+  Bool itsReadFieldDir;                      // # False: explicit directions
+  String itsDirColName;                      // # FIELD DIR column to read
+  vector<vector<MBaseline>> itsAntMB;        // # J2000 MBaseline per antenna
+  vector<vector<Vector<double>>> itsAntUvw;  // # J2000 UVW per antenna
+  vector<Block<bool>> itsUvwFilled;          // # is UVW filled for antenna i?
+  MDirection::Convert itsRADecToAzEl;        // # converter ra/dec to az/el
+  MDirection::Convert itsPoleToAzEl;         // # converter pole to az/el
+  MDirection::Convert itsRADecToHADec;       // # converter ra/dec to ha/dec
+  MDirection::Convert itsRADecToItrf;        // # converter ra/dec to itrf
+  MDirection::Convert itsDirToJ2000;         // # converter direction to J2000
+  MEpoch::Convert itsUTCToLAST;              // # converter UTC to LAST
+  MBaseline::Convert itsBLToJ2000;           // # convert ITRF to J2000
+  MeasFrame itsFrame;                        // # frame used by the converters
+  MDirection itsLastDirJ2000;                // # itsLastFieldId dir in J2000
 };
 
-
-} //# end namespace
+}  // namespace casacore
 
 #endif

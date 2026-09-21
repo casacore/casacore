@@ -1,27 +1,27 @@
-//# tDerivedMSCal.h: Test program for class DerivedMSCal
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tDerivedMSCal.h: Test program for class DerivedMSCal
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
 #include <casacore/ms/MSOper/MSDerivedValues.h>
@@ -43,76 +43,58 @@
 using namespace casacore;
 using namespace std;
 
-void check (MSDerivedValues& mdv,
-            uInt rownr,
-            ScalarColumn<double>& ha,
-            ScalarColumn<double>& last,
-            ArrayColumn<double>& azel)
-{
+void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
+           ArrayColumn<double>& azel) {
   double mha = mdv.hourAngle();
   double tha = ha(rownr);
-  AlwaysAssertExit (near(mha, tha, 1e-10));
+  AlwaysAssertExit(near(mha, tha, 1e-10));
   double mlast = mdv.last().getValue().get();
   double tlast = last(rownr);
-  AlwaysAssertExit (near(mlast, tlast, 1e-10));
+  AlwaysAssertExit(near(mlast, tlast, 1e-10));
   Vector<double> mazel = mdv.azel().getValue().get();
   Vector<double> tazel = azel(rownr);
-  AlwaysAssertExit (allNear(mazel, tazel, 1e-10));
-  AlwaysAssertExit (azel.shape(rownr) == IPosition(1,2));
-  AlwaysAssertExit (azel.ndim(rownr) == 1);
-  AlwaysAssertExit (azel.isDefined(rownr));
+  AlwaysAssertExit(allNear(mazel, tazel, 1e-10));
+  AlwaysAssertExit(azel.shape(rownr) == IPosition(1, 2));
+  AlwaysAssertExit(azel.ndim(rownr) == 1);
+  AlwaysAssertExit(azel.isDefined(rownr));
 }
 
-void check (MSDerivedValues& mdv,
-            uInt rownr,
-            ScalarColumn<double>& ha,
-            ScalarColumn<double>& last,
-            ArrayColumn<double>& azel,
-            ArrayColumn<double>& itrf)
-{
-  check (mdv, rownr, ha, last, azel);
+void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
+           ArrayColumn<double>& azel, ArrayColumn<double>& itrf) {
+  check(mdv, rownr, ha, last, azel);
   Vector<double> titrf = itrf(rownr);
   cout << titrf << endl;
-  AlwaysAssertExit (itrf.shape(rownr) == IPosition(1,2));
-  AlwaysAssertExit (itrf.ndim(rownr) == 1);
-  AlwaysAssertExit (itrf.isDefined(rownr));
+  AlwaysAssertExit(itrf.shape(rownr) == IPosition(1, 2));
+  AlwaysAssertExit(itrf.ndim(rownr) == 1);
+  AlwaysAssertExit(itrf.isDefined(rownr));
 }
 
-void check (MSDerivedValues& mdv,
-            uInt rownr,
-            ScalarColumn<double>& ha,
-            ScalarColumn<double>& last,
-            ScalarColumn<double>& pa,
-            ArrayColumn<double>& azel)
-{
-  check (mdv, rownr, ha, last, azel);
+void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
+           ScalarColumn<double>& pa, ArrayColumn<double>& azel) {
+  check(mdv, rownr, ha, last, azel);
   double mpa = mdv.parAngle();
   double tpa = pa(rownr);
-  AlwaysAssertExit (near(mpa, tpa, 1e-10));
+  AlwaysAssertExit(near(mpa, tpa, 1e-10));
 }
 
-void check (uInt rownr,
-            ArrayColumn<Double>& uvw,
-            ArrayColumn<Double>& uvwJ2000)
-{
+void check(uInt rownr, ArrayColumn<Double>& uvw, ArrayColumn<Double>& uvwJ2000) {
   if (uvw.isNull()) {
-    AlwaysAssertExit (allEQ (uvwJ2000(rownr), 0.));
+    AlwaysAssertExit(allEQ(uvwJ2000(rownr), 0.));
   } else {
-    if (! allNear (uvwJ2000(rownr), uvw(rownr), 1e-7)) {
-      cout <<"UVW diff "<< uvwJ2000(rownr)<< uvw(rownr) << endl;
+    if (!allNear(uvwJ2000(rownr), uvw(rownr), 1e-7)) {
+      cout << "UVW diff " << uvwJ2000(rownr) << uvw(rownr) << endl;
     }
-    AlwaysAssertExit (allNear (uvwJ2000(rownr), uvw(rownr), 1e-5));
+    AlwaysAssertExit(allNear(uvwJ2000(rownr), uvw(rownr), 1e-5));
   }
-  AlwaysAssertExit (uvw.shape(rownr) == IPosition(1,3));
-  AlwaysAssertExit (uvw.ndim(rownr) == 1);
-  AlwaysAssertExit (uvw.isDefined(rownr));
-  AlwaysAssertExit (uvwJ2000.shape(rownr) == IPosition(1,3));
-  AlwaysAssertExit (uvwJ2000.ndim(rownr) == 1);
-  AlwaysAssertExit (uvwJ2000.isDefined(rownr));
+  AlwaysAssertExit(uvw.shape(rownr) == IPosition(1, 3));
+  AlwaysAssertExit(uvw.ndim(rownr) == 1);
+  AlwaysAssertExit(uvw.isDefined(rownr));
+  AlwaysAssertExit(uvwJ2000.shape(rownr) == IPosition(1, 3));
+  AlwaysAssertExit(uvwJ2000.ndim(rownr) == 1);
+  AlwaysAssertExit(uvwJ2000.isDefined(rownr));
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   try {
     DerivedMSCal::registerClass();
     if (argc <= 1) {
@@ -122,37 +104,36 @@ int main(int argc, char* argv[])
     Bool checkUVW = (argc > 2);
     // Copy the input table.
     // Also determine the name of the MS containing ANTENNA, etc.
-    String msName ("tDerivedMSCal_tmp.tab");
+    String msName("tDerivedMSCal_tmp.tab");
     {
       Table tab(argv[1]);
-      tab.deepCopy ("tDerivedMSCal_tmp.tab", Table::New);
+      tab.deepCopy("tDerivedMSCal_tmp.tab", Table::New);
       if (tab.keywordSet().isDefined("CAL_DESC")) {
-        msName = ScalarColumn<String> (tab.keywordSet().asTable("CAL_DESC"),
-                                         "MS_NAME")(0);
+        msName = ScalarColumn<String>(tab.keywordSet().asTable("CAL_DESC"), "MS_NAME")(0);
       }
     }
     // Add the columns.
     {
-      Table tab ("tDerivedMSCal_tmp.tab", Table::Update);
+      Table tab("tDerivedMSCal_tmp.tab", Table::Update);
       TableDesc td;
-      td.addColumn (ScalarColumnDesc<double>("HA"));
-      td.addColumn (ScalarColumnDesc<double>("HA1"));
-      td.addColumn (ScalarColumnDesc<double>("HA2"));
-      td.addColumn (ScalarColumnDesc<double>("PA1"));
-      td.addColumn (ScalarColumnDesc<double>("PA2"));
-      td.addColumn (ScalarColumnDesc<double>("LAST"));
-      td.addColumn (ScalarColumnDesc<double>("LAST1"));
-      td.addColumn (ScalarColumnDesc<double>("LAST2"));
-      td.addColumn (ArrayColumnDesc<double> ("AZEL"));
-      td.addColumn (ArrayColumnDesc<double> ("AZEL1"));
-      td.addColumn (ArrayColumnDesc<double> ("AZEL2"));
-      td.addColumn (ArrayColumnDesc<double> ("ITRF"));
-      td.addColumn (ArrayColumnDesc<double> ("UVW_J2000"));
+      td.addColumn(ScalarColumnDesc<double>("HA"));
+      td.addColumn(ScalarColumnDesc<double>("HA1"));
+      td.addColumn(ScalarColumnDesc<double>("HA2"));
+      td.addColumn(ScalarColumnDesc<double>("PA1"));
+      td.addColumn(ScalarColumnDesc<double>("PA2"));
+      td.addColumn(ScalarColumnDesc<double>("LAST"));
+      td.addColumn(ScalarColumnDesc<double>("LAST1"));
+      td.addColumn(ScalarColumnDesc<double>("LAST2"));
+      td.addColumn(ArrayColumnDesc<double>("AZEL"));
+      td.addColumn(ArrayColumnDesc<double>("AZEL1"));
+      td.addColumn(ArrayColumnDesc<double>("AZEL2"));
+      td.addColumn(ArrayColumnDesc<double>("ITRF"));
+      td.addColumn(ArrayColumnDesc<double>("UVW_J2000"));
       DerivedMSCal dataMan;
-      tab.addColumn (td, dataMan);
+      tab.addColumn(td, dataMan);
     }
     // Loop through all rows and check values.
-    MeasurementSet ms (msName);
+    MeasurementSet ms(msName);
     Table tab("tDerivedMSCal_tmp.tab");
     ScalarColumn<double> ha(tab, "HA");
     ScalarColumn<double> ha1(tab, "HA1");
@@ -172,83 +153,83 @@ int main(int argc, char* argv[])
     ScalarColumn<Int> ant1(tab, "ANTENNA1");
     ScalarColumn<Int> ant2;
     if (tab.tableDesc().isColumn("ANTENNA2")) {
-      ant2.attach (tab, "ANTENNA2");
+      ant2.attach(tab, "ANTENNA2");
     } else {
-      ant2.attach (tab, "ANTENNA1");
+      ant2.attach(tab, "ANTENNA1");
     }
     ArrayColumn<Double> uvw;
     if (tab.tableDesc().isColumn("UVW")) {
-      uvw.attach (tab, "UVW");
+      uvw.attach(tab, "UVW");
     }
     MSDerivedValues mdv;
-    mdv.setMeasurementSet (ms);
+    mdv.setMeasurementSet(ms);
     // Take care that the same array center is used.
     // Find observatory position.
     // If not found, set it to the position of the middle antenna.
     Bool fndObs = False;
     MPosition arrayPos;
-    Table obstab (ms.keywordSet().asTable("OBSERVATION"));
+    Table obstab(ms.keywordSet().asTable("OBSERVATION"));
     if (obstab.nrow() > 0) {
       String telescope = ScalarColumn<String>(obstab, "TELESCOPE_NAME")(0);
-      fndObs = MeasTable::Observatory (arrayPos, telescope);
+      fndObs = MeasTable::Observatory(arrayPos, telescope);
     }
     if (!fndObs) {
       MSAntennaColumns antcol(ms.antenna());
-      arrayPos = antcol.positionMeas()(ms.antenna().nrow()/2);
+      arrayPos = antcol.positionMeas()(ms.antenna().nrow() / 2);
     }
-    mdv.setObservatoryPosition (arrayPos);
+    mdv.setObservatoryPosition(arrayPos);
     // Now loop through quite some rows and compare result of DerivedMSCal
     // with MSDerivedValues.
     rownr_t nr = std::max(tab.nrow(), rownr_t(1000));
     Int lastFldId = -1;
-    for (rownr_t i=0; i<nr; ++i) {
+    for (rownr_t i = 0; i < nr; ++i) {
       Int fldId = fld(i);
       if (fldId != lastFldId) {
-        mdv.setFieldCenter (fldId);
+        mdv.setFieldCenter(fldId);
         lastFldId = fldId;
       }
-      mdv.setEpoch (time(i));
-      mdv.setAntenna (-1);
-      check (mdv, i, ha, last, azel, itrf);
-      mdv.setAntenna (ant1(i));
-      check (mdv, i, ha1, last1, pa1, azel1);
-      mdv.setAntenna (ant2(i));
-      check (mdv, i, ha2, last2, pa2, azel2);
+      mdv.setEpoch(time(i));
+      mdv.setAntenna(-1);
+      check(mdv, i, ha, last, azel, itrf);
+      mdv.setAntenna(ant1(i));
+      check(mdv, i, ha1, last1, pa1, azel1);
+      mdv.setAntenna(ant2(i));
+      check(mdv, i, ha2, last2, pa2, azel2);
       if (checkUVW) {
-        check (i, uvw, uvwJ2000);
+        check(i, uvw, uvwJ2000);
       }
     }
     // Now time getting the hourangle using DataMan and MSDerivedValues.
     [[maybe_unused]] double totha = 0;
     Timer timer;
-    for (uInt i=0; i<tab.nrow(); ++i) {
+    for (uInt i = 0; i < tab.nrow(); ++i) {
       totha += ha(i);
     }
-    timer.show ("DataMan  ha");
+    timer.show("DataMan  ha");
     totha = 0;
     timer.mark();
-    for (uInt i=0; i<tab.nrow(); ++i) {
+    for (uInt i = 0; i < tab.nrow(); ++i) {
       // Note: setFieldCenter is very expensive; takes 95% of the time.
       // Therefore it is omitted in this loop.
       if (i == 0) {
-        mdv.setFieldCenter (fld(i));
+        mdv.setFieldCenter(fld(i));
       }
-      mdv.setEpoch (time(i));
-      mdv.setAntenna (-1);
+      mdv.setEpoch(time(i));
+      mdv.setAntenna(-1);
       totha += mdv.hourAngle();
     }
-    timer.show ("Values   ha");
+    timer.show("Values   ha");
     timer.mark();
-    for (uInt i=0; i<tab.nrow(); ++i) {
+    for (uInt i = 0; i < tab.nrow(); ++i) {
       uvwJ2000(i);
     }
-    timer.show ("DataMan uvw");
-    if (! uvw.isNull()) {
+    timer.show("DataMan uvw");
+    if (!uvw.isNull()) {
       timer.mark();
-      for (uInt i=0; i<tab.nrow(); ++i) {
+      for (uInt i = 0; i < tab.nrow(); ++i) {
         uvw(i);
       }
-      timer.show ("Table   uvw");
+      timer.show("Table   uvw");
     }
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
