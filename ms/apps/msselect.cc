@@ -1,27 +1,27 @@
-//# msselect.cc: Create a persistent selection of an MS
-//# Copyright (C) 2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # msselect.cc: Create a persistent selection of an MS
+// # Copyright (C) 2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/ms/MSSel/MSSelection.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -35,41 +35,37 @@
 using namespace casacore;
 using namespace std;
 
-void select (const String& msin, const String& out, const String& baseline,
-             bool deep)
-{
+void select(const String& msin, const String& out, const String& baseline, bool deep) {
   MeasurementSet ms(msin);
   MSSelection select;
   // Set given selection strings.
   if (!baseline.empty()) {
-    select.setAntennaExpr (baseline);
+    select.setAntennaExpr(baseline);
   }
   // Create the selection table expression for the MS.
-  TableExprNode node = select.toTableExprNode (&ms);
+  TableExprNode node = select.toTableExprNode(&ms);
   // Make the selection and write the resulting RefTable.
   // If no selection was made, create it explicitly from all rows
   // to be sure there is a RefTable.
   Table mssel = ms(node);
   if (mssel.nrow() == ms.nrow()) {
     RowNumbers allRows(ms.nrow());
-    indgen (allRows);
+    indgen(allRows);
     mssel = ms(allRows);
   }
   if (deep) {
-    mssel.deepCopy (out, Table::New);
+    mssel.deepCopy(out, Table::New);
     cout << "Created MeasurementSet " << out;
   } else {
-    mssel.rename (out, Table::New);
+    mssel.rename(out, Table::New);
     cout << "Created RefTable " << out;
   }
-  cout << " containing " << mssel.nrow() << " rows (out of "
-       << ms.nrow() << ')' << std::endl;
+  cout << " containing " << mssel.nrow() << " rows (out of " << ms.nrow() << ')' << std::endl;
 }
 
 // Copy (or symlink) directories that are not a subtable.
 // In that way possible instrument and sky model tables can be copied.
-void copyOtherDirs (const String& msName, const String& outName, bool deep)
-{
+void copyOtherDirs(const String& msName, const String& outName, bool deep) {
   // Get all table keywords.
   Table tab(msName);
   const TableRecord& keys = tab.keywordSet();
@@ -81,10 +77,10 @@ void copyOtherDirs (const String& msName, const String& outName, bool deep)
     // If not, it is an extra directory that needs to be copied.
     if (iter.file().isDirectory()) {
       String bname = iter.file().path().baseName();
-      if (!(keys.isDefined(bname)  &&  keys.dataType(bname) == TpTable)) {
+      if (!(keys.isDefined(bname) && keys.dataType(bname) == TpTable)) {
         if (deep) {
           Directory sdir(iter.file());
-          sdir.copyRecursive (outName + '/' + bname);
+          sdir.copyRecursive(outName + '/' + bname);
           cout << "Copied subdirectory " << bname << std::endl;
         } else {
           // Resolve a possible symlink created by another msselect.
@@ -97,7 +93,7 @@ void copyOtherDirs (const String& msName, const String& outName, bool deep)
           }
           // Create a symlink to the directory.
           SymLink slink(outName + '/' + bname);
-          slink.create (newName.absoluteName(), False);
+          slink.create(newName.absoluteName(), False);
           cout << "Created symlink to subdirectory " << bname << std::endl;
         }
       }
@@ -105,25 +101,17 @@ void copyOtherDirs (const String& msName, const String& outName, bool deep)
   }
 }
 
-int main (int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   try {
     // enable input in no-prompt mode
     Input inputs(1);
     // define the input structure
     inputs.version("20130819GvD");
-    inputs.create ("in", "",
-		   "Name of input MeasurementSet",
-		   "string");
-    inputs.create ("out", "",
-		   "Name of output table",
-		   "string");
-    inputs.create ("deep", "false",
-		   "Is the output a deep copy of the MeasurementSet selection?",
-		   "bool");
-    inputs.create ("baseline", "",
-                   "Selection string for antennae and baselines",
-                   "string");
+    inputs.create("in", "", "Name of input MeasurementSet", "string");
+    inputs.create("out", "", "Name of output table", "string");
+    inputs.create("deep", "false", "Is the output a deep copy of the MeasurementSet selection?",
+                  "bool");
+    inputs.create("baseline", "", "Selection string for antennae and baselines", "string");
     /*
     inputs.create ("time", "",
                    "selection string for times",
@@ -133,10 +121,10 @@ int main (int argc, char* argv[])
                    "string");
     */
     // Fill the input structure from the command line.
-    inputs.readArguments (argc, argv);
+    inputs.readArguments(argc, argv);
 
     // Get and check the input specification.
-    String msin (inputs.getString("in"));
+    String msin(inputs.getString("in"));
     if (msin.empty()) {
       throw AipsError(" an input MeasurementSet must be given");
     }
@@ -150,8 +138,8 @@ int main (int argc, char* argv[])
     // Get the baseline selection string.
     string baseline(inputs.getString("baseline"));
     // Do the selection and copying.
-    select (msin, out, baseline, deep);
-    copyOtherDirs (msin, out, deep);
+    select(msin, out, baseline, deep);
+    copyOtherDirs(msin, out, deep);
   } catch (std::exception& x) {
     cerr << "Error: " << x.what() << std::endl;
     return 1;

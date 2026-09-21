@@ -1,43 +1,43 @@
-//# MSStateParse.h: Classes to hold results from field grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSStateParse.h: Classes to hold results from field grammar parser
+// # Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSSTATEPARSE_H
 #define MS_MSSTATEPARSE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward 
-// <summary>
-// Class to hold values from field grammar parser
-// </summary>
+// # Forward
+//  <summary>
+//  Class to hold values from field grammar parser
+//  </summary>
 
 // <use visibility=local>
 
@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 // </prerequisite>
 
 // <etymology>
@@ -77,38 +77,43 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // of a table or to sort a table.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-class MSStateParse : public MSParse
-{
-public:
+class MSStateParse : public MSParse {
+ public:
   // Default constructor
   MSStateParse();
 
   // Associate the ms and the shorthand.
-  MSStateParse (const MeasurementSet* ms);
+  MSStateParse(const MeasurementSet* ms);
 
   const TableExprNode* selectStateIds(const Vector<Int>& stateIDs);
 
-    // Get table expression node object.
+  // Get table expression node object.
   static const TableExprNode* node();
   static MSStateParse* thisMSSIParser;
   static std::shared_ptr<MSSelectionErrorHandler> thisMSSErrorHandler;
-  //static MSSelectionErrorHandler* thisMSSErrorHandler;
-  static Vector<Int> selectedIDs() {return idList;};
-  static void reset(){idList.resize(0);};
-  static void cleanupNode() {if (node_p) delete node_p;node_p=0x0;}
-  static void cleanupErrorHandler() {thisMSSErrorHandler.reset();}
-  static void cleanup() {cleanupNode(); cleanupErrorHandler();}
-private:
+  // static MSSelectionErrorHandler* thisMSSErrorHandler;
+  static Vector<Int> selectedIDs() { return idList; };
+  static void reset() { idList.resize(0); };
+  static void cleanupNode() {
+    if (node_p) delete node_p;
+    node_p = 0x0;
+  }
+  static void cleanupErrorHandler() { thisMSSErrorHandler.reset(); }
+  static void cleanup() {
+    cleanupNode();
+    cleanupErrorHandler();
+  }
+
+ private:
   static TableExprNode* node_p;
   const String colName;
-  static  Vector<Int> idList;
+  static Vector<Int> idList;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

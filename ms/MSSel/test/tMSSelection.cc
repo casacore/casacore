@@ -1,26 +1,26 @@
-//# Copyright (C) 1995,1996,1997,1999,2001,2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 1995,1996,1997,1999,2001,2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MSSel/MSSelection.h>
@@ -39,230 +39,211 @@ using namespace casacore;
 //
 //-------------------------------------------------------------------------
 //
-void UI(int argc, char **argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy,
-	string& fieldStr, string& timeStr, string& spwStr, string& baselineStr,
-	string& scanStr, string& arrayStr, string& uvdistStr,string& taqlStr, string& polnStr,
-	string& stateObsModeStr, string& observationStr,
-	bool& installEH)
-{
-      Input inputs(1);
+void UI(int argc, char** argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy, string& fieldStr,
+        string& timeStr, string& spwStr, string& baselineStr, string& scanStr, string& arrayStr,
+        string& uvdistStr, string& taqlStr, string& polnStr, string& stateObsModeStr,
+        string& observationStr, bool& installEH) {
+  Input inputs(1);
 
-      inputs.create("ms",MSNBuf,"Input MS Name");
-      inputs.create("outms",OutMSBuf,"Output MS Name");
-      inputs.create("deepcopy","0","Make a deepcopy in the output?");
-      inputs.create("field",fieldStr,"FIELD selection expr.");
-      inputs.create("time",timeStr,"TIME selection expr.");  
-      inputs.create("spw",spwStr,"SPW selection expr.");  
-      inputs.create("poln",polnStr,"POLN selection expr.");  
-      inputs.create("baseline",baselineStr,"BASELINE selection expr.");  
-      inputs.create("scan",scanStr,"SCAN selection expr.");  
-      inputs.create("array",arrayStr,"ARRAY selection expr.");  
-      inputs.create("uvdist",uvdistStr,"UVDIST selection expr.");  
-      inputs.create("stateobsmode",stateObsModeStr,"STATE selection expr.");  
-      inputs.create("observation",observationStr,"OBS selection expr.");  
-      inputs.create("taql",taqlStr,"TaQL selection expr.");  
-      inputs.create("installeh","1","Install LogError handlers?");
-      inputs.readArguments(argc, argv);
+  inputs.create("ms", MSNBuf, "Input MS Name");
+  inputs.create("outms", OutMSBuf, "Output MS Name");
+  inputs.create("deepcopy", "0", "Make a deepcopy in the output?");
+  inputs.create("field", fieldStr, "FIELD selection expr.");
+  inputs.create("time", timeStr, "TIME selection expr.");
+  inputs.create("spw", spwStr, "SPW selection expr.");
+  inputs.create("poln", polnStr, "POLN selection expr.");
+  inputs.create("baseline", baselineStr, "BASELINE selection expr.");
+  inputs.create("scan", scanStr, "SCAN selection expr.");
+  inputs.create("array", arrayStr, "ARRAY selection expr.");
+  inputs.create("uvdist", uvdistStr, "UVDIST selection expr.");
+  inputs.create("stateobsmode", stateObsModeStr, "STATE selection expr.");
+  inputs.create("observation", observationStr, "OBS selection expr.");
+  inputs.create("taql", taqlStr, "TaQL selection expr.");
+  inputs.create("installeh", "1", "Install LogError handlers?");
+  inputs.readArguments(argc, argv);
 
-      MSNBuf=inputs.getString("ms");
-      OutMSBuf=inputs.getString("outms");
-      deepCopy=inputs.getBool("deepcopy");
-      fieldStr=inputs.getString("field");
-      timeStr=inputs.getString("time");
-      spwStr=inputs.getString("spw");
-      polnStr=inputs.getString("poln");
-      baselineStr=inputs.getString("baseline");
-      scanStr=inputs.getString("scan");
-      arrayStr=inputs.getString("array");
-      uvdistStr=inputs.getString("uvdist");
-      stateObsModeStr=inputs.getString("stateobsmode");
-      observationStr=inputs.getString("observation");
-      taqlStr=inputs.getString("taql");
-      installEH=inputs.getBool("installeh");
+  MSNBuf = inputs.getString("ms");
+  OutMSBuf = inputs.getString("outms");
+  deepCopy = inputs.getBool("deepcopy");
+  fieldStr = inputs.getString("field");
+  timeStr = inputs.getString("time");
+  spwStr = inputs.getString("spw");
+  polnStr = inputs.getString("poln");
+  baselineStr = inputs.getString("baseline");
+  scanStr = inputs.getString("scan");
+  arrayStr = inputs.getString("array");
+  uvdistStr = inputs.getString("uvdist");
+  stateObsModeStr = inputs.getString("stateobsmode");
+  observationStr = inputs.getString("observation");
+  taqlStr = inputs.getString("taql");
+  installEH = inputs.getBool("installeh");
 }
 //
 //-------------------------------------------------------------------------
 //
-void showTableCache()
-{
+void showTableCache() {
   const TableCache& cache = PlainTable::tableCache();
   Vector<String> lockedTables = cache.getTableNames();
 
-  Int n=lockedTables.nelements();
-  if(n > 0)
-    cout << std::endl << "####WARNING!!!!: The Table Cache has the following " << n << " entries:"  << std::endl;
-  
-  for (Int i=0; i<n; ++i) 
-    cout << "    " << i << ": \"" <<  lockedTables(i) << "\"" << std::endl;
+  Int n = lockedTables.nelements();
+  if (n > 0)
+    cout << std::endl
+         << "####WARNING!!!!: The Table Cache has the following " << n << " entries:" << std::endl;
+
+  for (Int i = 0; i < n; ++i) cout << "    " << i << ": \"" << lockedTables(i) << "\"" << std::endl;
 }
 //
 //-------------------------------------------------------------------------
 //
-void printBaselineList(Matrix<Int> list,ostream& os)
-{
+void printBaselineList(Matrix<Int> list, ostream& os) {
   os << "\tBaselines = ";
-  IPosition shp=list.shape();
-  for(Int j=0;j<shp(1);j++)
-    {
-      for(Int i=0;i<shp(0);i++)
-	os << list(i,j) << " ";
-      os << std::endl << "\t            " ;
-    }
+  IPosition shp = list.shape();
+  for (Int j = 0; j < shp(1); j++) {
+    for (Int i = 0; i < shp(0); i++) os << list(i, j) << " ";
+    os << std::endl << "\t            ";
+  }
   os << std::endl;
 }
 //
 //-------------------------------------------------------------------------
 //
-void printInfo(MSSelection& msSelection, Int& nRows)
-{
+void printInfo(MSSelection& msSelection, Int& nRows) {
   cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << std::endl;
   cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << std::endl;
   cout << "\tBE: Ant2         = " << msSelection.getAntenna2List() << std::endl;
-  printBaselineList(msSelection.getBaselineList(),cout);
+  printBaselineList(msSelection.getBaselineList(), cout);
   //  cout << "Baselines    = " << msSelection.getBaselineList() << std::endl;
 
   cout << "FE: Field Expr=" << msSelection.getExpr(MSSelection::FIELD_EXPR) << std::endl;
-  cout << "\tFE: Field        = " << msSelection.getFieldList()    << std::endl;
+  cout << "\tFE: Field        = " << msSelection.getFieldList() << std::endl;
 
   cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << std::endl;
-  cout << "\tSE: SPW          = " << msSelection.getSpwList()      << std::endl;
-  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,True)     << std::endl;
-  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << std::endl;
+  cout << "\tSE: SPW          = " << msSelection.getSpwList() << std::endl;
+  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL, 1, True) << std::endl;
+  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL, True) << std::endl;
 
   cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << std::endl;
-  cout << "\tScE: tScan         = " << msSelection.getScanList()     << std::endl;
-  
+  cout << "\tScE: tScan         = " << msSelection.getScanList() << std::endl;
+
   cout << "StE: STATE Expr=" << msSelection.getExpr(MSSelection::STATE_EXPR) << std::endl;
-  cout << "\tStE: StateObsMode = " << msSelection.getStateObsModeList()     << std::endl;
+  cout << "\tStE: StateObsMode = " << msSelection.getStateObsModeList() << std::endl;
 
   cout << "AE: Array Expr=" << msSelection.getExpr(MSSelection::ARRAY_EXPR) << std::endl;
   cout << "\tAE: Array        = " << msSelection.getSubArrayList() << std::endl;
 
   cout << "TE: Time Expr=" << msSelection.getExpr(MSSelection::TIME_EXPR) << std::endl;
-  cout << "\tTE: Time         = " << msSelection.getTimeList()     << std::endl;
+  cout << "\tTE: Time         = " << msSelection.getTimeList() << std::endl;
 
   cout << "UVE: UVRange Expr=" << msSelection.getExpr(MSSelection::UVDIST_EXPR) << std::endl;
-  cout << "\tUVE: UVRange      = " << msSelection.getUVList()       << std::endl;
-  cout << "\tUVE: UV in meters = " << msSelection.getUVUnitsList()  << std::endl;
+  cout << "\tUVE: UVRange      = " << msSelection.getUVList() << std::endl;
+  cout << "\tUVE: UV in meters = " << msSelection.getUVUnitsList() << std::endl;
 
-  cout << "OE: Observation Expr=" << msSelection.getExpr(MSSelection::OBSERVATION_EXPR) << std::endl;
+  cout << "OE: Observation Expr=" << msSelection.getExpr(MSSelection::OBSERVATION_EXPR)
+       << std::endl;
   cout << "\tOE: ObservationIDList    = " << msSelection.getObservationList() << std::endl;
 
   cout << "PE: Poln Expr=" << msSelection.getExpr(MSSelection::POLN_EXPR) << std::endl;
-  cout << "\tPE: PolMap       = " << msSelection.getPolMap()       << std::endl;
-  cout << "\tPE: CorrMap      = " << msSelection.getCorrMap( )     << std::endl;
+  cout << "\tPE: PolMap       = " << msSelection.getPolMap() << std::endl;
+  cout << "\tPE: CorrMap      = " << msSelection.getCorrMap() << std::endl;
 
   cout << std::endl << "===========================================================" << std::endl;
-  cout << "DDIDs(Poln)  = " << msSelection.getDDIDList()     << std::endl;
-  cout << "DDIDs(SPW)   = " << msSelection.getSPWDDIDList()     << std::endl;
+  cout << "DDIDs(Poln)  = " << msSelection.getDDIDList() << std::endl;
+  cout << "DDIDs(SPW)   = " << msSelection.getSPWDDIDList() << std::endl;
   cout << "StateList    = " << msSelection.getStateObsModeList() << std::endl;
 
   if (nRows >= 0) cout << "Number of selected rows: " << nRows << std::endl;
 
-  if (nRows > 0) cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  if (nRows > 0)
+    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
 }
 //
 //-------------------------------------------------------------------------
 //
-int main(int argc, char **argv)
-{
+int main(int argc, char** argv) {
   //
   //---------------------------------------------------
   //
   //  MSSelection msSelection;
-  string MSNBuf,OutMSBuf,fieldStr,timeStr,spwStr,baselineStr,
-    uvdistStr,taqlStr,scanStr,arrayStr, polnStr,stateObsModeStr,
-    observationStr;
-  Bool deepCopy=0,installEH=1;
+  string MSNBuf, OutMSBuf, fieldStr, timeStr, spwStr, baselineStr, uvdistStr, taqlStr, scanStr,
+      arrayStr, polnStr, stateObsModeStr, observationStr;
+  Bool deepCopy = 0, installEH = 1;
 
-  MSNBuf=OutMSBuf=fieldStr=timeStr=spwStr=baselineStr=
-    uvdistStr=taqlStr=scanStr=arrayStr=polnStr=stateObsModeStr=observationStr="";
-  deepCopy=0;
-  fieldStr=spwStr="*";
-  fieldStr=spwStr="";
-  UI(argc, argv, MSNBuf,OutMSBuf, deepCopy,
-     fieldStr,timeStr,spwStr,baselineStr,scanStr,arrayStr,
-     uvdistStr,taqlStr,polnStr,stateObsModeStr,observationStr,
-     installEH);
+  MSNBuf = OutMSBuf = fieldStr = timeStr = spwStr = baselineStr = uvdistStr = taqlStr = scanStr =
+      arrayStr = polnStr = stateObsModeStr = observationStr = "";
+  deepCopy = 0;
+  fieldStr = spwStr = "*";
+  fieldStr = spwStr = "";
+  UI(argc, argv, MSNBuf, OutMSBuf, deepCopy, fieldStr, timeStr, spwStr, baselineStr, scanStr,
+     arrayStr, uvdistStr, taqlStr, polnStr, stateObsModeStr, observationStr, installEH);
   //
   //---------------------------------------------------
   //
   //      MS ms(MSNBuf,Table::Update),selectedMS(ms);
-  
+
   //
   // Make a new scope, outside of which there should be no tables left open.
   //
   {
-    try
-      {
-	MS ms(MSNBuf,TableLock(TableLock::AutoNoReadLocking)),selectedMS(ms);
-	//
-	// Setup the MSSelection thingi
-	//
-    
-	MSInterface msInterface(ms);
-	MSSelection msSelection;
-	if (installEH)
-	  {
-	    //
-	    // Install error handlers such that it also tests user
-	    // defined error handlers having shorter life-cycle than
-	    // the MSSelection object.
-	    //
-	    MSSelectionLogError mssLEA,mssLES, mssLESpw, mssLEF;
-	    msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
-	    msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,True);
-	    msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,True);
-	    msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF,True);
-	  }
+    try {
+      MS ms(MSNBuf, TableLock(TableLock::AutoNoReadLocking)), selectedMS(ms);
+      //
+      // Setup the MSSelection thingi
+      //
 
-    	// msSelection.reset(ms,MSSelection::PARSE_NOW,
-    	// 			timeStr,baselineStr,fieldStr,spwStr,
-    	// 			uvdistStr,taqlStr,polnStr,scanStr,arrayStr,
-    	// 			stateObsModeStr,observationStr);
-    	msSelection.reset(msInterface,MSSelection::PARSE_NOW,
-    			  timeStr,baselineStr,fieldStr,spwStr,
-    			  uvdistStr,taqlStr,polnStr,scanStr,arrayStr,
-    			  stateObsModeStr,observationStr);
-    	// TableExprNode ten=msSelection.toTableExprNode(&msInterface);
-    	// cerr << "TEN rows = " << ten.nrow() << std::endl;
-
-	Int nRows=0;
-	try
-	  {
-	    msSelection.getSelectedMS(selectedMS);
-	    nRows =  selectedMS.nrow();
-	  }
-	catch(MSSelectionNullSelection& x)
-	  {
-	    printInfo(msSelection,nRows);
-	    throw(x);
-	  }
-
-    	printInfo(msSelection,nRows);
-
-    	if (nRows==0)
-    	  {
-    	    cout << "###Informational:  Nothing selected.  ";
-    	    if (OutMSBuf != "")
-    	      cout << "New MS not written." << std::endl;
-    	    else
-    	      cout << std::endl;
-    	  }
-    	else
-	  {
-	    if (OutMSBuf != "")
-	      {
-	      if (deepCopy) selectedMS.deepCopy(OutMSBuf,Table::New);
-	      else          selectedMS.rename(OutMSBuf,Table::New);
-	      }
-	  }
+      MSInterface msInterface(ms);
+      MSSelection msSelection;
+      if (installEH) {
+        //
+        // Install error handlers such that it also tests user
+        // defined error handlers having shorter life-cycle than
+        // the MSSelection object.
+        //
+        MSSelectionLogError mssLEA, mssLES, mssLESpw, mssLEF;
+        msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA, True);
+        msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES, True);
+        msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw, True);
+        msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF, True);
       }
-    catch (MSSelectionError& x)
-      {
-    	cout << "###MSSelectionError: " << x.what() << std::endl;
-	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+
+      // msSelection.reset(ms,MSSelection::PARSE_NOW,
+      // 			timeStr,baselineStr,fieldStr,spwStr,
+      // 			uvdistStr,taqlStr,polnStr,scanStr,arrayStr,
+      // 			stateObsModeStr,observationStr);
+      msSelection.reset(msInterface, MSSelection::PARSE_NOW, timeStr, baselineStr, fieldStr, spwStr,
+                        uvdistStr, taqlStr, polnStr, scanStr, arrayStr, stateObsModeStr,
+                        observationStr);
+      // TableExprNode ten=msSelection.toTableExprNode(&msInterface);
+      // cerr << "TEN rows = " << ten.nrow() << std::endl;
+
+      Int nRows = 0;
+      try {
+        msSelection.getSelectedMS(selectedMS);
+        nRows = selectedMS.nrow();
+      } catch (MSSelectionNullSelection& x) {
+        printInfo(msSelection, nRows);
+        throw(x);
       }
+
+      printInfo(msSelection, nRows);
+
+      if (nRows == 0) {
+        cout << "###Informational:  Nothing selected.  ";
+        if (OutMSBuf != "")
+          cout << "New MS not written." << std::endl;
+        else
+          cout << std::endl;
+      } else {
+        if (OutMSBuf != "") {
+          if (deepCopy)
+            selectedMS.deepCopy(OutMSBuf, Table::New);
+          else
+            selectedMS.rename(OutMSBuf, Table::New);
+        }
+      }
+    } catch (MSSelectionError& x) {
+      cout << "###MSSelectionError: " << x.what() << std::endl;
+      cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+    }
     //
     // Catch any exception thrown by AIPS++ libs.  Do your cleanup here
     // before returning to the UI (if you choose to).  Without this, all
@@ -270,14 +251,11 @@ int main(int argc, char **argv)
     // exception handler (which is installed by the CLLIB as the
     // clDefaultErrorHandler).
     //
-    catch (AipsError& x)
-      {
-    	cout << "###AipsError: " << x.what() << std::endl;
-      }
-    catch (std::exception& x)
-      {
-    	cout << "###std::exception: " << x.what() << std::endl;
-      }
+    catch (AipsError& x) {
+      cout << "###AipsError: " << x.what() << std::endl;
+    } catch (std::exception& x) {
+      cout << "###std::exception: " << x.what() << std::endl;
+    }
   }
   //
   // There should be no tables in the cache outside the scope of the

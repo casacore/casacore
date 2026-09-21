@@ -1,32 +1,32 @@
-//# MSPolIndex: index or lookup in an MS POLARIZATION subtable
-//# Copyright (C) 2000,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSPolIndex: index or lookup in an MS POLARIZATION subtable
+// # Copyright (C) 2000,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSPOLINDEX_H
 #define MS_MSPOLINDEX_H
 
-//# includes
+// # includes
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSPolarization.h>
 #include <casacore/ms/MeasurementSets/MSPolColumns.h>
@@ -34,9 +34,9 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# forward declarations
+// # forward declarations
 
 // <summary>
 // Class to handle lookup or indexing into an MS POLARIZATION subtable
@@ -59,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 // This class provides lookup and indexing into an MS POLARIZATION
 // subtable. These services include returning rows numbers
-// (which for the POLARIZATION subtable are POLARIZATION_ID's) associated 
+// (which for the POLARIZATION subtable are POLARIZATION_ID's) associated
 // with specific data in the subtable.
 // </synopsis>
 //
@@ -77,9 +77,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </thrown>
 //
 
-class MSPolarizationIndex 
-{
-public:
+class MSPolarizationIndex {
+ public:
   // Construct from an MS POLARIZATION subtable
   MSPolarizationIndex(const MSPolarization& polarizationTable);
 
@@ -88,14 +87,13 @@ public:
 
   // Look up POLARIZATION_ID's for a given set of polarization correlation
   // types and receptor cross-products
-  Vector<Int> matchCorrTypeAndProduct(const Vector<Int>& corrType,
-				      const Matrix<Int>& corrProduct);
+  Vector<Int> matchCorrTypeAndProduct(const Vector<Int>& corrType, const Matrix<Int>& corrProduct);
   // ///////////////////  Add for MS selection //////////////////////////////
   // Only Look up POLARIZATION_ID's for a given set of polarization correlation
   // types
-  Vector<Int> matchCorrType(const Vector<Int>& corrType,Bool exactMatch=True);
+  Vector<Int> matchCorrType(const Vector<Int>& corrType, Bool exactMatch = True);
 
-private:
+ private:
   // Disallow null constructor
   MSPolarizationIndex();
 
@@ -107,8 +105,6 @@ private:
   Int nrows_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-    

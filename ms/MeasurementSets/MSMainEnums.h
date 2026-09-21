@@ -1,34 +1,34 @@
-//# MSMainEnums.h: Class with definitions for the main MeasurementSet table
-//# Copyright (C) 1996,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSMainEnums.h: Class with definitions for the main MeasurementSet table
+// # Copyright (C) 1996,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSMAINENUMS_H
 #define MS_MSMAINENUMS_H
 
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>
 
@@ -57,21 +57,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 
 class MSMainEnums {
-public:
-    // The Main table colums with predefined meaning.
-    enum PredefinedColumns {
+ public:
+  // The Main table colums with predefined meaning.
+  enum PredefinedColumns {
     // "True" columns are defined. <BR>
     // TYPE - UNIT - MEASURE
-    UNDEFINED_COLUMN=0,
+    UNDEFINED_COLUMN = 0,
     //
     // ID of first antenna in antenna-pair. This is a key into the
     // ANTENNA table. Ranges from 0 to NUM_ANT-1.<BR>
     // Int
-    ANTENNA1,    
+    ANTENNA1,
     //
     // ID of second antenna in antenna-pair. For SD ANTENNA1==ANTENNA2<BR>
     // Int
-    ANTENNA2,  
+    ANTENNA2,
     //
     // ARRAY id.<BR>
     // Int.
@@ -83,7 +83,7 @@ public:
     //
     // Effective integration time (i.e.<=INTERVAL)<BR>
     // Double - s.
-    EXPOSURE,    
+    EXPOSURE,
     //
     // Feed id on ANTENNA1.<BR>
     // Int.
@@ -95,7 +95,7 @@ public:
     //
     // Unique id for this pointing (or drift scan)<BR>
     // Int
-    FIELD_ID,    
+    FIELD_ID,
     //
     // The data flags, array of bools with same shape as data.
     // Data is flagged bad if FLAG is True.<BR>
@@ -103,8 +103,8 @@ public:
     FLAG,
     //
     // Flag category, allows for multiple categories of flagging, which can
-    // selectively be reset. The cumulative effect is reflected in FLAG. 
-    // This column should have an attached keyword CATEGORY which is a 
+    // selectively be reset. The cumulative effect is reflected in FLAG.
+    // This column should have an attached keyword CATEGORY which is a
     // String (Ncat) of categories (e.g, ONLINE, FLAG_CMD, INTERACTIVE) <BR>
     // Bool (Nc, Nf, Ncat)
     FLAG_CATEGORY,
@@ -115,13 +115,13 @@ public:
     //
     // The extent of this sample, sampling interval.<BR>
     // Double - s.
-    INTERVAL, 
+    INTERVAL,
     //
     // Index into OBSERVATION table. <BR>
     // Int.
     OBSERVATION_ID,
     //
-    // Processor Id, points to PROCESSOR table with information on the 
+    // Processor Id, points to PROCESSOR table with information on the
     // correlator or backend setup. <BR>
     // Int
     PROCESSOR_ID,
@@ -150,7 +150,7 @@ public:
     //
     // UVW coordinates.<BR>
     // Double(3) - m - UVW.
-    UVW,         
+    UVW,
     //
     // Weight of spectrum. This is the weight assigned by the correlator and
     // does NOT get overwritten by e.g. imaging tasks that do weighting.<BR>
@@ -158,8 +158,8 @@ public:
     WEIGHT,
     //
     // Not a column, but just an enum specifying the number of required columns.
-    //# Note: first enum after this one should be assigned value of this enum.
-    NUMBER_REQUIRED_COLUMNS=WEIGHT,
+    // # Note: first enum after this one should be assigned value of this enum.
+    NUMBER_REQUIRED_COLUMNS = WEIGHT,
     //
     // Antenna3 - for triple correlations products. <BR>
     // Int
@@ -192,7 +192,7 @@ public:
     // Float(Nf)
     IMAGING_WEIGHT,
     //
-    // Complex correlation function or lag spectrum for each correlation 
+    // Complex correlation function or lag spectrum for each correlation
     // product <BR>
     // Complex(Nc, Nl)
     LAG_DATA,
@@ -224,7 +224,7 @@ public:
     // Additional precision for TIME if required. Add this to TIME to obtain
     // the exact EPOCH.<BR>
     // Double - s.
-    TIME_EXTRA_PREC, 
+    TIME_EXTRA_PREC,
     //
     // UVW for second pair of triple correlation product. <BR>
     // Double(3) - m
@@ -242,14 +242,14 @@ public:
     CORRECTED_WEIGHT_SPECTRUM,
     //
     // Not a column, but just a final enum specifying the number of enums.
-    NUMBER_PREDEFINED_COLUMNS=CORRECTED_WEIGHT_SPECTRUM
-    };
-  
-    // Keywords with a predefined meaning
-    enum PredefinedKeywords {
+    NUMBER_PREDEFINED_COLUMNS = CORRECTED_WEIGHT_SPECTRUM
+  };
+
+  // Keywords with a predefined meaning
+  enum PredefinedKeywords {
     //
-    // "True" keywords are defined. 
-    UNDEFINED_KEYWORD=0,
+    // "True" keywords are defined.
+    UNDEFINED_KEYWORD = 0,
     //
     // Antenna subtable. Antenna positions, mount-types etc.
     ANTENNA,
@@ -280,7 +280,7 @@ public:
     STATE,
     // Not a keyword, but an enum specifying the number of required keywords
     // The last required keyword should be set to this enum
-    NUMBER_REQUIRED_KEYWORDS=STATE,
+    NUMBER_REQUIRED_KEYWORDS = STATE,
     // Calibration tables associated with this MS. <BR>
     // Table(NUM_CAL_TABLES)
     CAL_TABLES,
@@ -304,11 +304,10 @@ public:
     // Weather subtable. Weather info for each antenna.
     WEATHER,
     // Not a keyword, but just a final enum specifying the number of enums.
-    NUMBER_PREDEFINED_KEYWORDS=WEATHER
-    };
+    NUMBER_PREDEFINED_KEYWORDS = WEATHER
+  };
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-

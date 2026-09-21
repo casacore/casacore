@@ -1,28 +1,28 @@
-//# MSSummary.h: Helper class for applications listing an image header
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-//#
+// # MSSummary.h: Helper class for applications listing an image header
+// # Copyright (C) 1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
+// #
 #ifndef MS_MSSUMMARY_H
 #define MS_MSSUMMARY_H
 
@@ -31,7 +31,7 @@
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 class LogIO;
@@ -39,13 +39,13 @@ class MSMetaData;
 
 // <summary>Provides and lists information about the header of an image</summary>
 // <use visibility=export>
-// 
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+//
 // <prerequisite>
 //   <li> <linkto class=MeasurementSet>MeasurementSet</linkto>
-//   <li> <linkto module=Coordinates>Coordinates</linkto> 
+//   <li> <linkto module=Coordinates>Coordinates</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -68,7 +68,7 @@ class MSMetaData;
 //     LogIO os(or);
 //     header.list(os);
 // </srcBlock>
-// A <src>PagedMS</src> object is constructed and then logged to the 
+// A <src>PagedMS</src> object is constructed and then logged to the
 // supplied <src>LogIO</src> object.
 // </example>
 //
@@ -87,114 +87,107 @@ class MSMetaData;
 //  There are various placeholders which will need to be activated for
 //  Version 2 of the MeasurementSet definition.
 // </todo>
- 
 
-class MSSummary
-{
-public:
-// Constructor
-// <group>
-// <src>maxCacheMB</src> is the maximum cache size in MB to use for the created
-// MSMetaData object.
-   MSSummary (const MeasurementSet& ms, Float maxCacheMB = 50.0);
-   MSSummary (const MeasurementSet* ms, Float maxCacheMB = 50.0);
-   MSSummary (const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
+class MSSummary {
+ public:
+  // Constructor
+  // <group>
+  // <src>maxCacheMB</src> is the maximum cache size in MB to use for the created
+  // MSMetaData object.
+  MSSummary(const MeasurementSet& ms, Float maxCacheMB = 50.0);
+  MSSummary(const MeasurementSet* ms, Float maxCacheMB = 50.0);
+  MSSummary(const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
 
-   // construct the object using an MSMetaDataObject
-   MSSummary (std::shared_ptr<MSMetaData> msmd);
+  // construct the object using an MSMetaDataObject
+  MSSummary(std::shared_ptr<MSMetaData> msmd);
 
-// Destructor
+  // Destructor
   ~MSSummary();
 
-// Retrieve number of rows
-   Int64 nrow() const;
- 
-// Retrieve image name
-   String name() const;
+  // Retrieve number of rows
+  Int64 nrow() const;
 
-// Set a new MS. <src>maxCacheMB</src> is the maximum cache size of the
-// created MSMetaData tool. If negative, the cache size used when this object
-// was created is used.
-   Bool setMS (const MeasurementSet& ms, Float maxCacheMB=-1);
+  // Retrieve image name
+  String name() const;
 
-// List all header information.
-   void list (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
-//Return some useful info in a record too along with os
-   void list (LogIO& os, Record& outRec,  Bool verbose=False,
-              Bool fillRecord=True, Bool oneBased=True) const;
+  // Set a new MS. <src>maxCacheMB</src> is the maximum cache size of the
+  // created MSMetaData tool. If negative, the cache size used when this object
+  // was created is used.
+  Bool setMS(const MeasurementSet& ms, Float maxCacheMB = -1);
 
-// List a title for the Summary.
-   void listTitle (LogIO& os) const;
+  // List all header information.
+  void list(LogIO& os, Bool verbose = False, Bool oneBased = True) const;
+  // Return some useful info in a record too along with os
+  void list(LogIO& os, Record& outRec, Bool verbose = False, Bool fillRecord = True,
+            Bool oneBased = True) const;
 
-// List convenient groupings of tables: list where MS obtained
-// (Observation and Array tables)
-   void listWhere (LogIO& os, Bool verbose=False) const;
+  // List a title for the Summary.
+  void listTitle(LogIO& os) const;
 
-// List what was observed (Field and Main tables)
-   void listWhat (LogIO& os, Bool verbose=False) const;
-   void listWhat (LogIO& os, Record& outRec,  Bool verbose=False,
-                  Bool fillRecord=True) const;
-// List how data were obtained (SpectralWindow, Feed, and Antenna tables)
-   void listHow (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
+  // List convenient groupings of tables: list where MS obtained
+  // (Observation and Array tables)
+  void listWhere(LogIO& os, Bool verbose = False) const;
 
-// List main table
-   void listMain (LogIO& os, Bool verbose=False) const;
-//Return some useful info in a record too along with os
-   void listMain (LogIO& os, Record& outRec, Bool verbose=False,
-                  Bool fillRecord=True) const;
-   // Return a Record with information derived from the main table
-   void getScanSummary (Record& outRec) const;
+  // List what was observed (Field and Main tables)
+  void listWhat(LogIO& os, Bool verbose = False) const;
+  void listWhat(LogIO& os, Record& outRec, Bool verbose = False, Bool fillRecord = True) const;
+  // List how data were obtained (SpectralWindow, Feed, and Antenna tables)
+  void listHow(LogIO& os, Bool verbose = False, Bool oneBased = True) const;
 
-// List subtables
-// <group>
-   void listAntenna (LogIO& os, Bool verbose=False) const;
-   void listFeed (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
-   void listField (LogIO& os, Bool verbose=False) const;
-   void listField (LogIO& os, Record& outRec, Bool verbose=False,
-           Bool fillRecord=True) const;
-   void listObservation (LogIO& os, Bool verbose=False) const;
-   void listHistory (LogIO& os) const;
-   void listPolarization (LogIO& os, Bool verbose=False) const;
-   void listSource (LogIO& os, Bool verbose=False) const;
-   void listSpectralWindow (LogIO& os, Bool verbose=False) const;
-   void getSpectralWindowInfo(Record& outRec) const;
-   void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
-                                Bool oneBased=True) const;
-   void listSysCal (LogIO& os, Bool verbose=False) const;
-   void listWeather (LogIO& os, Bool verbose=False) const;
-// </group>
+  // List main table
+  void listMain(LogIO& os, Bool verbose = False) const;
+  // Return some useful info in a record too along with os
+  void listMain(LogIO& os, Record& outRec, Bool verbose = False, Bool fillRecord = True) const;
+  // Return a Record with information derived from the main table
+  void getScanSummary(Record& outRec) const;
 
-// List table size summary
-   void listTables (LogIO& os, Bool verbose=False) const;
+  // List subtables
+  // <group>
+  void listAntenna(LogIO& os, Bool verbose = False) const;
+  void listFeed(LogIO& os, Bool verbose = False, Bool oneBased = True) const;
+  void listField(LogIO& os, Bool verbose = False) const;
+  void listField(LogIO& os, Record& outRec, Bool verbose = False, Bool fillRecord = True) const;
+  void listObservation(LogIO& os, Bool verbose = False) const;
+  void listHistory(LogIO& os) const;
+  void listPolarization(LogIO& os, Bool verbose = False) const;
+  void listSource(LogIO& os, Bool verbose = False) const;
+  void listSpectralWindow(LogIO& os, Bool verbose = False) const;
+  void getSpectralWindowInfo(Record& outRec) const;
+  void listSpectralAndPolInfo(LogIO& os, Bool verbose = False, Bool oneBased = True) const;
+  void listSysCal(LogIO& os, Bool verbose = False) const;
+  void listWeather(LogIO& os, Bool verbose = False) const;
+  // </group>
 
-   void setListUnflaggedRowCount(Bool v) { _listUnflaggedRowCount = v; }
+  // List table size summary
+  void listTables(LogIO& os, Bool verbose = False) const;
 
-   // OBSOLETE. No longer does anything, kept for compilation backward compatibility.
-   void setMetaDataCacheSizeInMB(Float) {}
+  void setListUnflaggedRowCount(Bool v) { _listUnflaggedRowCount = v; }
 
-private:
-// Pointer to MS
-   const MeasurementSet* pMS;
-   std::shared_ptr<MSMetaData> _msmd;
+  // OBSOLETE. No longer does anything, kept for compilation backward compatibility.
+  void setMetaDataCacheSizeInMB(Float) {}
 
-// Formatting strings
-   const String dashlin1, dashlin2;
+ private:
+  // Pointer to MS
+  const MeasurementSet* pMS;
+  std::shared_ptr<MSMetaData> _msmd;
 
-// Clear formatting flags
-   void clearFlags (LogIO& os) const;
+  // Formatting strings
+  const String dashlin1, dashlin2;
 
-// For keeping track of the number of vis per field
-   mutable Vector<Int> nVisPerField_;
+  // Clear formatting flags
+  void clearFlags(LogIO& os) const;
 
-   // Name of the MS used in the constructor
-   String msname_p;
+  // For keeping track of the number of vis per field
+  mutable Vector<Int> nVisPerField_;
 
-   Bool _listUnflaggedRowCount;
+  // Name of the MS used in the constructor
+  String msname_p;
 
-   Float _cacheSizeMB;
+  Bool _listUnflaggedRowCount;
+
+  Float _cacheSizeMB;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

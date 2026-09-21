@@ -1,32 +1,32 @@
-//# MSFieldIndex: index or lookup in a MeasurementSet FIELD subtable
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSFieldIndex: index or lookup in a MeasurementSet FIELD subtable
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSFIELDINDEX_H
 #define MS_MSFIELDINDEX_H
 
-//# includes
+// # includes
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSField.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
@@ -34,9 +34,9 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# forward declarations
+// # forward declarations
 
 // <summary>
 // Class to handle lookup or indexing into a MS FIELD subtable
@@ -59,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 // This class provides lookup and indexing into an MS FIELD
 // subtable. These services include returning rows numbers
-// (which for the FIELD subtable are FIELD_ID's) associated 
+// (which for the FIELD subtable are FIELD_ID's) associated
 // with specific data in the subtable.
 // </synopsis>
 //
@@ -77,11 +77,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </thrown>
 //
 
-class MSFieldIndex 
-{
-public:
+class MSFieldIndex {
+ public:
   // Construct from an MS FIELD subtable
-  MSFieldIndex(const MSField &field);
+  MSFieldIndex(const MSField& field);
 
   // Null destructor
   virtual ~MSFieldIndex() {}
@@ -92,16 +91,13 @@ public:
   Vector<Int> matchFieldName(const String& name);
   Vector<Int> matchFieldName(const Vector<String>& names);
 
-  //ADD for file name wildcard selection
+  // ADD for file name wildcard selection
   Vector<Int> matchSubFieldName(const String& name);
 
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchFieldRegexOrPattern(const String& pattern,
-				       const Bool regex=False);
-  Vector<Int> matchFieldNameRegexOrPattern(const String& pattern,
-					   const Bool regex=False);
-  Vector<Int> matchFieldCodeRegexOrPattern(const String& pattern,
-					   const Bool regex=False);
+  Vector<Int> matchFieldRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchFieldNameRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchFieldCodeRegexOrPattern(const String& pattern, const Bool regex = False);
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchSourceId(const Int& sourceId);
   Vector<Int> matchSourceId(const Vector<Int>& sourceIds);
@@ -116,7 +112,8 @@ public:
   Vector<Int> matchFieldIDLT(const Int n);
   Vector<Int> matchFieldIDGT(const Int n);
   Vector<Int> matchFieldIDGTAndLT(const Int n0, const int n1);
-private:
+
+ private:
   // Disallow null constructor
   MSFieldIndex();
 
@@ -128,8 +125,6 @@ private:
   Int nrows_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-    

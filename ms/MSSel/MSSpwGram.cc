@@ -1,27 +1,27 @@
-//# MSSpwGram.cc: Grammar for spectral window expressions
-//# Copyright (C) 1998,1999,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSSpwGram.cc: Grammar for spectral window expressions
+// # Copyright (C) 1998,1999,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 // MSSpwGram; grammar for field command lines
 
@@ -31,184 +31,149 @@
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
-//#include <casacore/ms/MeasurementSets/MSSpwColumns.h>
+// #include <casacore/ms/MeasurementSets/MSSpwColumns.h>
 #include <casacore/ms/MSSel/MSSpwGram.h>
 #include <casacore/ms/MSSel/MSSpwParse.h>
 #include <casacore/ms/MSSel/MSSpwIndex.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 
-#include <casacore/tables/TaQL/TableParse.h>       // routines used by bison actions
+#include <casacore/tables/TaQL/TableParse.h>  // routines used by bison actions
 #include <casacore/tables/Tables/TableError.h>
 
-//# stdlib.h is needed for bison 1.28 and needs to be included here
-//# (before the flex/bison files).
-//# Bison defines WHERE, which is also defined in LogOrigin.h (which
-//# is included in auto-template mode).
-//# So undefine WHERE first.
+// # stdlib.h is needed for bison 1.28 and needs to be included here
+// # (before the flex/bison files).
+// # Bison defines WHERE, which is also defined in LogOrigin.h (which
+// # is included in auto-template mode).
+// # So undefine WHERE first.
 #undef WHERE
 #include <casacore/casa/stdlib.h>
 
-//# Let clang and gcc ignore some warnings in bison/flex code.
-//# Undef YY_NULL because flex can redefine it slightly differently (giving a warning).
+// # Let clang and gcc ignore some warnings in bison/flex code.
+// # Undef YY_NULL because flex can redefine it slightly differently (giving a warning).
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wdeprecated-register"
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#include "MSSpwGram.ycc"                  // bison output
+#include "MSSpwGram.ycc"  // bison output
 #ifdef YY_NULL
-# undef YY_NULL
+#undef YY_NULL
 #endif
-#include "MSSpwGram.lcc"                  // flex output
+#include "MSSpwGram.lcc"  // flex output
 #pragma GCC diagnostic pop
 
-
 // Define the yywrap function for flex.
-int MSSpwGramwrap()
-{
-  return 1;
+int MSSpwGramwrap() { return 1; }
+
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
+
+// # Declare a file global pointer to a char* for the input string.
+static const char* strpMSSpwGram = 0;
+static Int posMSSpwGram = 0;
+// MSSpwGramwrap out of namespace
+
+// # Parse the command.
+// # Do a yyrestart(yyin) first to make the flex scanner reentrant.
+int msSpwGramParseCommand(const MeasurementSet* ms, const String& command) {
+  try {
+    Int ret;
+    MSSpwGramrestart(MSSpwGramin);
+    yy_start = 1;
+    strpMSSpwGram = command.c_str();      // get pointer to command string
+    posMSSpwGram = 0;                     // initialize string position
+    MSSpwParse parser(ms);                // setup measurement set
+    MSSpwParse::thisMSSParser = &parser;  // The global pointer to the parser
+    parser.reset();
+    ret = MSSpwGramparse();  // parse command string
+    return ret;
+  } catch (MSSelectionSpwError& x) {
+    String newMesgs;
+    newMesgs = constructMessage(msSpwGramPosition(), command);
+    x.addMessage(newMesgs);
+    throw;
+  }
 }
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-  
-  //# Declare a file global pointer to a char* for the input string.
-  static const char*           strpMSSpwGram = 0;
-  static Int                   posMSSpwGram = 0;
-  // MSSpwGramwrap out of namespace
-  
-  //# Parse the command.
-  //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-  int msSpwGramParseCommand (const MeasurementSet* ms, const String& command) 
-  {
-    try 
-      {
-	Int ret;
-	MSSpwGramrestart (MSSpwGramin);
-	yy_start = 1;
-	strpMSSpwGram = command.c_str();     // get pointer to command string
-	posMSSpwGram  = 0;                   // initialize string position
-	MSSpwParse parser(ms);               // setup measurement set
-	MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
-	parser.reset();
-	ret=MSSpwGramparse();                // parse command string
-	return ret;
-      }
-    catch (MSSelectionSpwError &x)
-      {
-	String newMesgs;
-	newMesgs = constructMessage(msSpwGramPosition(), command);
-	x.addMessage(newMesgs);
-	throw;
-      }
+int baseMSSpwGramParseCommand(MSSpwParse* parser, const String& command, Vector<Int>& selectedIDs,
+                              Matrix<Int>& selectedChans, Vector<Int>& selectedDDIDs) {
+  try {
+    Int ret;
+    MSSpwGramrestart(MSSpwGramin);
+    yy_start = 1;
+    strpMSSpwGram = command.c_str();     // get pointer to command string
+    posMSSpwGram = 0;                    // initialize string position
+    MSSpwParse::thisMSSParser = parser;  // The global pointer to the parser
+    parser->reset();
+    ret = MSSpwGramparse();  // parse command string
+    selectedIDs = parser->selectedIDs();
+    selectedChans = parser->selectedChanIDs();
+    selectedDDIDs = parser->selectedDDIDs();
+    if ((selectedIDs.size() == 0) || (selectedChans.size() == 0))
+      throw(MSSelectionSpwParseError("No valid SPW & Chan combination found"));
+    return ret;
+  } catch (MSSelectionSpwError& x) {
+    String newMesgs;
+    newMesgs = constructMessage(msSpwGramPosition(), command);
+    x.addMessage(newMesgs);
+    throw;
   }
-  
-  int baseMSSpwGramParseCommand (MSSpwParse* parser, const String& command,
-				 Vector<Int>& selectedIDs, Matrix<Int>&selectedChans,
-				 Vector<Int>& selectedDDIDs) 
-  {
-    try 
-      {
-	Int ret;
-	MSSpwGramrestart (MSSpwGramin);
-	yy_start = 1;
-	strpMSSpwGram = command.c_str();     // get pointer to command string
-	posMSSpwGram  = 0;                   // initialize string position
-	MSSpwParse::thisMSSParser = parser; // The global pointer to the parser
-	parser->reset();
-	ret=MSSpwGramparse();                // parse command string
-	selectedIDs = parser->selectedIDs();
-	selectedChans = parser->selectedChanIDs();
-	selectedDDIDs = parser->selectedDDIDs();
-	if ((selectedIDs.size() == 0) ||
-	    (selectedChans.size() == 0))
-	  throw(MSSelectionSpwParseError("No valid SPW & Chan combination found"));
-	return ret;
-      }
-    catch (MSSelectionSpwError &x)
-      {
-	String newMesgs;
-	newMesgs = constructMessage(msSpwGramPosition(), command);
-	x.addMessage(newMesgs);
-	throw;
-      }
-  }
-  
-  int msSpwGramParseCommand (const MSSpectralWindow& spwSubTable, 
-			     const MSDataDescription& ddSubTable, 
-			     const TableExprNode& colAsTEN,
-			     const String& command,
-			     Vector<Int>& selectedIDs,
-			     Matrix<Int>& selectedChans,
-			     Vector<Int>& selectedDDIDs) 
-  {
-    MSSpwParse thisParser(spwSubTable, ddSubTable, colAsTEN);
-    return baseMSSpwGramParseCommand(&thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
-  }
+}
 
-  int msSpwGramParseCommand (const MeasurementSet *ms, 
-			     const String& command,Vector<Int>& selectedIDs,
-			     Matrix<Int>& selectedChans) 
-  {
-    try 
-      {
-    	Int ret;
-    	MSSpwGramrestart (MSSpwGramin);
-    	yy_start = 1;
-    	strpMSSpwGram = command.c_str();     // get pointer to command string
-    	posMSSpwGram  = 0;                   // initialize string position
-    	MSSpwParse parser(ms);               // setup measurement set
-    	MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
-    	parser.reset();
-    	ret=MSSpwGramparse();                // parse command string
-    	selectedIDs = parser.selectedIDs();
-    	selectedChans = parser.selectedChanIDs();
-	if ((selectedIDs.size() == 0) ||
-	    (selectedChans.size() == 0))
-	  throw(MSSelectionSpwParseError("No valie SPW & Chan combination found"));
-    	return ret;
-      }
-    catch (MSSelectionSpwError &x)
-      {
-    	String newMesgs;
-    	newMesgs = constructMessage(msSpwGramPosition(), command);
-    	x.addMessage(newMesgs);
-    	throw;
-      }
+int msSpwGramParseCommand(const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable,
+                          const TableExprNode& colAsTEN, const String& command,
+                          Vector<Int>& selectedIDs, Matrix<Int>& selectedChans,
+                          Vector<Int>& selectedDDIDs) {
+  MSSpwParse thisParser(spwSubTable, ddSubTable, colAsTEN);
+  return baseMSSpwGramParseCommand(&thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
+}
+
+int msSpwGramParseCommand(const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
+                          Matrix<Int>& selectedChans) {
+  try {
+    Int ret;
+    MSSpwGramrestart(MSSpwGramin);
+    yy_start = 1;
+    strpMSSpwGram = command.c_str();      // get pointer to command string
+    posMSSpwGram = 0;                     // initialize string position
+    MSSpwParse parser(ms);                // setup measurement set
+    MSSpwParse::thisMSSParser = &parser;  // The global pointer to the parser
+    parser.reset();
+    ret = MSSpwGramparse();  // parse command string
+    selectedIDs = parser.selectedIDs();
+    selectedChans = parser.selectedChanIDs();
+    if ((selectedIDs.size() == 0) || (selectedChans.size() == 0))
+      throw(MSSelectionSpwParseError("No valie SPW & Chan combination found"));
+    return ret;
+  } catch (MSSelectionSpwError& x) {
+    String newMesgs;
+    newMesgs = constructMessage(msSpwGramPosition(), command);
+    x.addMessage(newMesgs);
+    throw;
   }
-  
-  //# Give the table expression node
-  const TableExprNode* msSpwGramParseNode()
-  {
-    return MSSpwParse::node();
-  }
-  
-  void msSpwGramParseDeleteNode()
-  {
-    MSSpwParse::cleanupNode();
-  }
-  
-  //# Give the string position.
-  Int& msSpwGramPosition()
-  {
-    return posMSSpwGram;
-  }
-  
-  //# Get the next input characters for flex.
-  int msSpwGramInput (char* buf, int max_size)
-  {
-    int nr=0;
-    while (*strpMSSpwGram != 0) {
-      if (nr >= max_size) {
-	break;                         // get max. max_size char.
-      }
-      buf[nr++] = *strpMSSpwGram++;
+}
+
+// # Give the table expression node
+const TableExprNode* msSpwGramParseNode() { return MSSpwParse::node(); }
+
+void msSpwGramParseDeleteNode() { MSSpwParse::cleanupNode(); }
+
+// # Give the string position.
+Int& msSpwGramPosition() { return posMSSpwGram; }
+
+// # Get the next input characters for flex.
+int msSpwGramInput(char* buf, int max_size) {
+  int nr = 0;
+  while (*strpMSSpwGram != 0) {
+    if (nr >= max_size) {
+      break;  // get max. max_size char.
     }
-    return nr;
+    buf[nr++] = *strpMSSpwGram++;
   }
-  
-  void MSSpwGramerror (const char*)
-  {
-    throw (MSSelectionSpwParseError("Spw Expression: Parse error at or near '" +
-				    String(MSSpwGramtext) + "'"));
-  }
-  
-} //# NAMESPACE CASACORE - END
+  return nr;
+}
+
+void MSSpwGramerror(const char*) {
+  throw(MSSelectionSpwParseError("Spw Expression: Parse error at or near '" +
+                                 String(MSSpwGramtext) + "'"));
+}
+
+}  // namespace casacore

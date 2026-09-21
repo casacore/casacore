@@ -1,32 +1,31 @@
-//# Copyright (C) 1995,1996,1997,1999,2001,2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 1995,1996,1997,1999,2001,2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/iostream.h>
-
 
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/Tables/RefRows.h>
@@ -43,7 +42,6 @@
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/ms/MSSel/MSSelection.h>
 
-
 #include <casacore/ms/MSSel/MSAntennaGram.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/tables/Tables/Table.h>
@@ -57,52 +55,44 @@
 
 #include <casacore/casa/namespace.h>
 
+int main(int argc, const char* argv[]) {
+  try {
+    if (argc < 3) {
+      cout << "Please input ms file and selection string on command line " << std::endl;
+      return 3;
+    }
+    const String msName = argv[1];
+    cout << "ms file is  " << msName << std::endl;
+    MeasurementSet ms(msName);
+    MSSelection mss;
+    for (Int i = 2; i < argc; i++) {
+      cout << "Parsing expression: " << argv[i] << std::endl;
+      mss.setAntennaExpr(String(argv[i]));
+    }
+    TableExprNode node = mss.toTableExprNode(&ms);
 
-int main(int argc, const char* argv[])
-{
-  try 
-    {
-      if(argc < 3)  {
-	cout << "Please input ms file and selection string on command line " << std::endl;
-        return 3;
-      }
-      const String msName = argv[1];
-      cout << "ms file is  " << msName << std::endl;
-      MeasurementSet ms(msName);
-      MSSelection mss;
-      for(Int i=2;i<argc;i++)
-	{
-	  cout << "Parsing expression: " << argv[i] << std::endl;
-	  mss.setAntennaExpr(String(argv[i]));
-	}
-      TableExprNode node = mss.toTableExprNode(&ms);
-      
-      MeasurementSet* mssel = 0;
-      cout << "Original table has rows " << ms.nrow() << std::endl;
-      if(node.isNull()) 
-	{
-	  cout << "NULL node " << std::endl;
-	  return 0;
-	}
-      cout << "TableExprNode has rows = " << node.nrow() << std::endl;
-      Table tablesel(ms.tableName(), Table::Update);
-      mssel = new MeasurementSet(tablesel(node, node.nrow() ));
-      mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::New);
-      mssel->flush();
-      if(mssel->nrow()==0) 
-        cout << "Check your input, No data selected" << std::endl;
-      else 
-	{
-	  cout << "selected table has rows " << mssel->nrow() << std::endl;
-	  cout << "selected ant1 = " << mss.getAntenna1List() << std::endl
-	       << "selected ant2 = " << mss.getAntenna2List() << std::endl;
-	}
-      delete mssel;
-    } 
-  catch (std::exception& x) 
-    {
-      cout << "ERROR: " << x.what() << std::endl;
-      return 1;
-    } 
+    MeasurementSet* mssel = 0;
+    cout << "Original table has rows " << ms.nrow() << std::endl;
+    if (node.isNull()) {
+      cout << "NULL node " << std::endl;
+      return 0;
+    }
+    cout << "TableExprNode has rows = " << node.nrow() << std::endl;
+    Table tablesel(ms.tableName(), Table::Update);
+    mssel = new MeasurementSet(tablesel(node, node.nrow()));
+    mssel->rename(ms.tableName() + "/SELECTED_TABLE", Table::New);
+    mssel->flush();
+    if (mssel->nrow() == 0)
+      cout << "Check your input, No data selected" << std::endl;
+    else {
+      cout << "selected table has rows " << mssel->nrow() << std::endl;
+      cout << "selected ant1 = " << mss.getAntenna1List() << std::endl
+           << "selected ant2 = " << mss.getAntenna2List() << std::endl;
+    }
+    delete mssel;
+  } catch (std::exception& x) {
+    cout << "ERROR: " << x.what() << std::endl;
+    return 1;
+  }
   return 0;
 }

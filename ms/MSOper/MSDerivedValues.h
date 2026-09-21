@@ -1,27 +1,27 @@
-//# MSDerivedValues.h: a server for values derived from a MS (e.g. P.A.)
-//# Copyright (C) 1997,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSDerivedValues.h: a server for values derived from a MS (e.g. P.A.)
+// # Copyright (C) 1997,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSDERIVEDVALUES_H
 #define MS_MSDERIVEDVALUES_H
@@ -36,9 +36,9 @@
 #include <casacore/measures/Measures/MCRadialVelocity.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MSAntennaColumns;
 class String;
 // <summary>
@@ -70,7 +70,7 @@ class String;
 // <srcblock>
 // // calculate the parallactic angle and the observatory velocity for the
 // // first time and first source in the MS.
-// // set up 
+// // set up
 // MSDerivedValues msd;
 // MS myMS("myMS");
 // MSColumns msc(myMS);
@@ -90,7 +90,7 @@ class String;
 //
 // <motivation>
 // Values derived from those in a MS are needed in various places, e.g., for
-// plotting purposes. This class combines the commonly needed calculations 
+// plotting purposes. This class combines the commonly needed calculations
 // in one place.
 // </motivation>
 //
@@ -104,20 +104,19 @@ class String;
 //   <li> probably needs speeding up
 // </todo>
 
-class MSDerivedValues
-{
-    friend class VisBufferAsync; // to work around dysfunctional operator= and
-                                 // thread-hostile shared pointers (Jim Jacobs 111104)
-public:
+class MSDerivedValues {
+  friend class VisBufferAsync;  // to work around dysfunctional operator= and
+                                // thread-hostile shared pointers (Jim Jacobs 111104)
+ public:
   MSDerivedValues();
   ~MSDerivedValues();
 
   // Copy constructor, this will initialize with other's MS
   MSDerivedValues(const MSDerivedValues& other);
-  
+
   // Assignment, this will initialize with other's MS
   MSDerivedValues& operator=(const MSDerivedValues& other);
-  
+
   // Set antenna position from an antenna table
   // Returns the number of antennas. Also
   // sets the observatory position to the average of the antenna positions.
@@ -126,37 +125,37 @@ public:
   // Set antenna positions, index in vector is antenna number
   // for calls below.
   MSDerivedValues& setAntennaPositions(const Vector<MPosition>& antPosition);
-  const Vector<MPosition> & getAntennaPositions () const;
-  
+  const Vector<MPosition>& getAntennaPositions() const;
+
   // Set the observatory position. Note that setAntennas will reset this.
   MSDerivedValues& setObservatoryPosition(const MPosition& obsPosition);
 
   // Set antenna mounts, should have same number of entries as
   // antPosition in setAntennaPosition
   MSDerivedValues& setAntennaMount(const Vector<String>& mount);
-  
+
   // Set epoch
   MSDerivedValues& setEpoch(const MEpoch& time);
 
   // Set field center
   MSDerivedValues& setFieldCenter(const MDirection& fieldCenter);
 
-  //If you have used setMeasurementSet then this version of 
-  //setFieldCenter using field id makes sense
-  MSDerivedValues& setFieldCenter(uInt fieldid=0);
+  // If you have used setMeasurementSet then this version of
+  // setFieldCenter using field id makes sense
+  MSDerivedValues& setFieldCenter(uInt fieldid = 0);
 
-  // Set antenna index, sets the position reference for the conversions. 
+  // Set antenna index, sets the position reference for the conversions.
   // Use -1 to set the reference frame to the observatory position.
   MSDerivedValues& setAntenna(Int antenna);
 
-  // Set the velocity frame type (e.g., MRadialVelocity::LSRK) 
+  // Set the velocity frame type (e.g., MRadialVelocity::LSRK)
   MSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
 
-  // Set the velocity frame type (e.g., MRDoppler::RADIO) 
+  // Set the velocity frame type (e.g., MRDoppler::RADIO)
   MSDerivedValues& setVelocityReference(MDoppler::Types dopType);
-  MRadialVelocity::Types getRadialVelocityType () const;
+  MRadialVelocity::Types getRadialVelocityType() const;
 
-  // Set the frequency frame  (e.g., MFrequency::LSRK) 
+  // Set the frequency frame  (e.g., MFrequency::LSRK)
   MSDerivedValues& setFrequencyReference(MFrequency::Types frqType);
 
   // get hour angle
@@ -167,28 +166,25 @@ public:
 
   // get azimuth & elevation
   const MDirection& azel();
-  
+
   // get LAST for given time, antenna
   const MEpoch& last();
 
   // get observatory radial velocity for given epoch, position and direction
   const MRadialVelocity& obsVel();
 
-  //Set an ms does not need to explicity setAntennas and is necessary if 
-  //setRestFreqency(fieldid, spwid) is used  
+  // Set an ms does not need to explicity setAntennas and is necessary if
+  // setRestFreqency(fieldid, spwid) is used
   MSDerivedValues& setMeasurementSet(const MeasurementSet& ms);
 
-
-  //Set restFrequencies...make it look for it for the fieldid, spwid and line 
-  //number defined in the SOURCE table return False if it fails to find the 
-  //restFrquency
-  Bool setRestFrequency(const Int fieldid, const Int spwid, 
-		       const Int linenum=0);
+  // Set restFrequencies...make it look for it for the fieldid, spwid and line
+  // number defined in the SOURCE table return False if it fails to find the
+  // restFrquency
+  Bool setRestFrequency(const Int fieldid, const Int spwid, const Int linenum = 0);
 
   //
   MSDerivedValues& setRestFrequency(const Quantity& restFreq);
-  
-  
+
   // get frequency from velocity
 
   Quantity toFrequency(const Quantity& vel, const Quantity& restFreq);
@@ -198,10 +194,8 @@ public:
   Quantity toVelocity(const Quantity& freq, const Quantity& restFreq);
   Quantity toVelocity(const Quantity& freq);
 
-protected:
-
-private:
-
+ protected:
+ private:
   // initialize data
   void init();
 
@@ -226,11 +220,8 @@ private:
   MRadialVelocity::Types radialVelocityType_p;
 
   //  Vector<Double> receptorAngle_p;
- 
-
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,52 +1,51 @@
-//# MSLister.h: Helper class for applications listing records from an MS
-//# Copyright (C) 1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-//#
+// # MSLister.h: Helper class for applications listing records from an MS
+// # Copyright (C) 1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
+// #
 #ifndef MS_MSLISTER_H
 #define MS_MSLISTER_H
 
-
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogIO.h>
-//#include <casacore/casa/Logging/LogSink.h>
+// #include <casacore/casa/Logging/LogSink.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/ms/MSSel/MSSelector.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 
 // <summary> List visibility records from a Measurement Set </summary>
 // <use visibility=export>
-// 
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+//
 // <prerequisite>
 //   <li> <linkto class=MSSelector>MSSelector</linkto>
-//   <li> <linkto class=MSSummary>MSSummary</linkto> 
+//   <li> <linkto class=MSSummary>MSSummary</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -80,9 +79,9 @@ class MeasurementSet;
 //    // List only selected data, with specified output options
 //    datacolumn = 'corrected'; spw = '3:5~10'; timerange = '<13:34:25.1';
 //    scan = '5'; pagerows = 10; listfile = 'myList.list.out';
-//    // ... define any other parameters, then call function ... 
+//    // ... define any other parameters, then call function ...
 //    myList.list(options, datacolumn, field, spw, antenna, timerange,
-//                correlation, scan, feed, array, uvrange, average, 
+//                correlation, scan, feed, array, uvrange, average,
 //                showflags, msselect, pagerows, listfile);
 // </srcBlock>
 // An <src>MSLister</src> object is constructed from a <src>MS</src>
@@ -113,11 +112,9 @@ class MeasurementSet;
 //   <li> Actually do something with the nDecimal_p number.
 //   <li> There are more formatting options planned.
 // </todo>
- 
 
-class MSLister
-{
-public:
+class MSLister {
+ public:
   // Null constructor
   MSLister();
 
@@ -126,10 +123,10 @@ public:
   // <todo> os is currently not used as the primary steam for log messages.
   //   This should be corrected, or os removed completely from the class.
   // </todo>
-  MSLister (const MeasurementSet& ms, LogIO& os);
+  MSLister(const MeasurementSet& ms, LogIO& os);
 
   // Copy constructor, this will initialise the MSLister's MS with other's MS
-  MSLister (MSLister& other);
+  MSLister(MSLister& other);
 
   // Assignment, this will initialise the MSLister's MS with other's MS
   MSLister& operator=(MSLister& other);
@@ -143,65 +140,43 @@ public:
   // <todo> os is currently not used as the primary steam for log messages.
   //   This should be corrected, or os removed completely from the class.
   // </todo>
-  Bool setNewOS (LogIO& os);
+  Bool setNewOS(LogIO& os);
 
   // Change or set the MS this MSLister refers to, and reinitialise the
   // MSLister object.  Do this after setNewOS() if doing both.
-  Bool setMS (MeasurementSet& ms);
+  Bool setMS(MeasurementSet& ms);
 
   // Page size for various formats, output devices (default for landscape
   // printing).
-  void setPage (const uInt width=120, const uInt height=20);
+  void setPage(const uInt width = 120, const uInt height = 20);
 
   // Format for output, ie data display precision.
-  void setFormat (const uInt ndec=2);
+  void setFormat(const uInt ndec = 2);
 
   // User choices for list precision (sensible defaults):
   //   (time precision for user interface is fraction of sec)
-  void setPrecision ( const Int precTime=1, const Int precUVDist=0,
-		      const Int precAmpl=3, const int precPhase=1,
-		      const Int precWeight=0 );
+  void setPrecision(const Int precTime = 1, const Int precUVDist = 0, const Int precAmpl = 3,
+                    const int precPhase = 1, const Int precWeight = 0);
 
-  // List the visibilities, with optional data selection and output 
+  // List the visibilities, with optional data selection and output
   // specification.
-  void list (const String& options="",
-             const String& datacolumn="",
-             const String& field="", 
-             const String& spw="", 
-             const String& antenna="", 
-             const String& timerange="", 
-             const String& correlation="",
-             const String& scan="",
-             const String& feed="",
-             const String& array="",
-             const String& observation="",
-             const String& uvrange="", 
-             const String& average="",
-             const bool    showflags=False,
-             const String& msSelect="",
-             const long    pagerows=50,
-             const String& listfile="");
+  void list(const String& options = "", const String& datacolumn = "", const String& field = "",
+            const String& spw = "", const String& antenna = "", const String& timerange = "",
+            const String& correlation = "", const String& scan = "", const String& feed = "",
+            const String& array = "", const String& observation = "", const String& uvrange = "",
+            const String& average = "", const bool showflags = False, const String& msSelect = "",
+            const long pagerows = 50, const String& listfile = "");
 
   // Set uv-data selection via MSSelection
-  void selectvis(const String& timerange="",
-                 const String& spw="",
-                 const String& scan="",
-                 const String& field="",
-                 const String& baseline="",
-                 const String& uvrange="",
-                 const String& chanmode="none",
-                 const Int& nchan=1,
-                 const Int& start=0,
-                 const Int& step=1,
-                 const MRadialVelocity& mStart=MRadialVelocity(),
-                 const MRadialVelocity& mStep=MRadialVelocity(),
-                 const String& correlation="",
-                 const String& array="",
-		 const String& observation="",
-                 const String& msSelect="");
+  void selectvis(const String& timerange = "", const String& spw = "", const String& scan = "",
+                 const String& field = "", const String& baseline = "", const String& uvrange = "",
+                 const String& chanmode = "none", const Int& nchan = 1, const Int& start = 0,
+                 const Int& step = 1, const MRadialVelocity& mStart = MRadialVelocity(),
+                 const MRadialVelocity& mStep = MRadialVelocity(), const String& correlation = "",
+                 const String& array = "", const String& observation = "",
+                 const String& msSelect = "");
 
-private:
-
+ private:
   // Initialise the listing.  initList() does things that need to be done
   // once per MS: declares and initialises the private MSSelector object,
   // and gets all the attribute ranges up front.
@@ -211,18 +186,18 @@ private:
   void listHeader();
 
   // Get the ranges of a fixed set of MS key attributes.
-  void getRanges(const MeasurementSet &ms);
+  void getRanges(const MeasurementSet& ms);
 
   // Most of the heavy lifting is in here.  Get the data records and list
   // them.
-  void listData(const int pageRows=50, const String listfile="");
+  void listData(const int pageRows = 50, const String listfile = "");
 
   // Column header line for pagination of output.
   void listColumnHeader(ostream& myout);
 
   // Setup class polarization information for specified MS.
   // pols_p holds the polarization names contained in the MS
-  // in the same order that the polarization data are listed in the 
+  // in the same order that the polarization data are listed in the
   // main table.
   void _polarizationSetup(const uInt selPolID);
 
@@ -230,7 +205,7 @@ private:
   // selected polarizations.  If correlation is empty, all polarizations
   // are selected.
   void polarizationParse(String correlation);
-  
+
   // Calculate column width for a Vector<String>
   Int columnWidth(const Vector<String> antNames);
 
@@ -240,7 +215,7 @@ private:
 
   // Output stream
   LogIO logStream_p;
-  
+
   // A formatting string for convenience
   const String dashline_p;
 
@@ -284,13 +259,13 @@ private:
   Int precTime_p, precUVDist_p, precUVW_p;
   Int precAmpl_p, precPhase_p;
   Int precWeight_p;
-  
+
   // Page params
   Int pageWidth_p, pageHeight_p, nDecimal_p;
   String date_p, lastdate_p;
 
   // for assigning desired columns from the ms
-  Vector <String> items_p;
+  Vector<String> items_p;
 
   // Bools for column showing and to identify FLOAT_DATA column of single dish
   Bool doFld_p, doSpW_p, doChn_p, is_float;
@@ -300,7 +275,7 @@ private:
   // corrected --> "corrected_amplitude", "corrected_phase"
   // model --> "model_amplitude", "model_phase"
   // residual --> "residual_amplitude", "residual_phase"
-  Vector <String> dataColSel;
+  Vector<String> dataColSel;
 
   // The Record object containing the MSSelector ranges
   Record ranges_p;
@@ -312,7 +287,6 @@ private:
   void clearFlags();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
