@@ -1,32 +1,32 @@
-//# DirectionUDF.h: TaQL UDFs for Direction conversions
-//# Copyright (C) 2011
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # DirectionUDF.h: TaQL UDFs for Direction conversions
+// # Copyright (C) 2011
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEAS_DIRECTIONUDF_H
 #define MEAS_DIRECTIONUDF_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/meas/MeasUDF/DirectionEngine.h>
 #include <casacore/meas/MeasUDF/EpochEngine.h>
@@ -45,7 +45,7 @@ namespace casacore {
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> UDFBase
 // </prerequisite>
 
@@ -75,7 +75,7 @@ namespace casacore {
 // a series of RA,DEC in J2000. If given as a set, the last argument of the
 // set can be the reference types of the values in the set. The values can
 // be strings (indicating planetary objects) or value pairs giving lon,lat.
-// The default reference type is J2000. 
+// The default reference type is J2000.
 // </ul>
 // All functions have data type double and unit radian.
 // </synopsis>
@@ -84,49 +84,59 @@ namespace casacore {
 // It makes it possible to handle measures in TaQL.
 // </motivation>
 
-  class DirectionUDF: public UDFBase
-  {
-  public:
-    // Define the possible function types.
-    enum FuncType {DIRECTION, DIRCOS, HADEC, AZEL, APP, J2000, B1950,
-                   ECLIPTIC, GALACTIC, SUPERGALACTIC, ITRF};
-
-    // Create for the given function type.
-    // The Bools tell if rise/set times have to be calculated.
-    explicit DirectionUDF (FuncType, Bool riseSet=False);
-
-    // Function to create an object.
-    static UDFBase* makeDIR     (const String&);
-    static UDFBase* makeDIRCOS  (const String&);
-    static UDFBase* makeHADEC   (const String&);
-    static UDFBase* makeAZEL    (const String&);
-    static UDFBase* makeAPP     (const String&);
-    static UDFBase* makeJ2000   (const String&);
-    static UDFBase* makeB1950   (const String&);
-    static UDFBase* makeECL     (const String&);
-    static UDFBase* makeGAL     (const String&);
-    static UDFBase* makeSGAL    (const String&);
-    static UDFBase* makeITRF    (const String&);
-    static UDFBase* makeRISESET (const String&);
-
-    // Setup the object.
-    virtual void setup (const Table&, const TaQLStyle&);
-
-    // Get the value.
-    virtual Double getDouble (const TableExprId& id);
-    virtual MArray<Double> getArrayDouble (const TableExprId& id);
-    virtual MArray<MVTime> getArrayDate (const TableExprId& id);
-
-  private:
-    //# Data members.
-    DirectionEngine   itsEngine;
-    EpochEngine       itsEpochEngine;
-    PositionEngine    itsPositionEngine;
-    FuncType          itsType;
-    MDirection::Types itsRefType;
-    Bool              itsRiseSet;   //# True = calculate rise/set time
+class DirectionUDF : public UDFBase {
+ public:
+  // Define the possible function types.
+  enum FuncType {
+    DIRECTION,
+    DIRCOS,
+    HADEC,
+    AZEL,
+    APP,
+    J2000,
+    B1950,
+    ECLIPTIC,
+    GALACTIC,
+    SUPERGALACTIC,
+    ITRF
   };
 
-} //end namespace
+  // Create for the given function type.
+  // The Bools tell if rise/set times have to be calculated.
+  explicit DirectionUDF(FuncType, Bool riseSet = False);
+
+  // Function to create an object.
+  static UDFBase* makeDIR(const String&);
+  static UDFBase* makeDIRCOS(const String&);
+  static UDFBase* makeHADEC(const String&);
+  static UDFBase* makeAZEL(const String&);
+  static UDFBase* makeAPP(const String&);
+  static UDFBase* makeJ2000(const String&);
+  static UDFBase* makeB1950(const String&);
+  static UDFBase* makeECL(const String&);
+  static UDFBase* makeGAL(const String&);
+  static UDFBase* makeSGAL(const String&);
+  static UDFBase* makeITRF(const String&);
+  static UDFBase* makeRISESET(const String&);
+
+  // Setup the object.
+  virtual void setup(const Table&, const TaQLStyle&);
+
+  // Get the value.
+  virtual Double getDouble(const TableExprId& id);
+  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<MVTime> getArrayDate(const TableExprId& id);
+
+ private:
+  // # Data members.
+  DirectionEngine itsEngine;
+  EpochEngine itsEpochEngine;
+  PositionEngine itsPositionEngine;
+  FuncType itsType;
+  MDirection::Types itsRefType;
+  Bool itsRiseSet;  // # True = calculate rise/set time
+};
+
+}  // namespace casacore
 
 #endif
