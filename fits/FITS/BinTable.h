@@ -1,33 +1,32 @@
-//# BinTable.h: The class BinaryTable converts a FITS binary table into a Casacore Table.
-//# Copyright (C) 1995,1996,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # BinTable.h: The class BinaryTable converts a FITS binary table into a Casacore Table.
+// # Copyright (C) 1995,1996,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef FITS_BINTABLE_H
 #define FITS_BINTABLE_H
 
-
-//# Includes
+// # Includes
 
 #include <casacore/casa/aips.h>
 #include <casacore/fits/FITS/hdu.h>
@@ -35,9 +34,9 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <map>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-// <summary> 
+// <summary>
 // BinaryTable is used to translate a FITS binary table to a Casacore Table.
 // </summary>
 
@@ -46,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="" date="" tests="tBinTable">
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> FitsInput
 //   <li> HeaderDataUnit
 //   <li> BinaryTableExtension
@@ -59,16 +58,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // it's use but not its name.  A better name should be found.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // The class starts with an already existing FitsInput object, which should
-// be set at a BinaryTableExtension HDU.   Member functions provide a TableDesc 
+// be set at a BinaryTableExtension HDU.   Member functions provide a TableDesc
 // appropriate for the FITS data (to help in constructing a Casacore Table
 // compatible with the BinaryTableExtension), a Table containing the
 // current row of FITS data and a Table containing the next row of FITS data
 // (which can be used to step through the FitsInput, copying each row
-// using the RowCopier class), and a Table containin the entire FITS binary 
+// using the RowCopier class), and a Table containin the entire FITS binary
 // table from the current row to the end of the table.
-// </synopsis> 
+// </synopsis>
 //
 // <motivation>
 // We need a way to get FITS data into Casacore Tables.
@@ -76,7 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // open a FitsInput from a disk file, if the HDU is a BinaryTableExtension,
-// then instantiate a BinTable object and get the entire table.  A fair 
+// then instantiate a BinTable object and get the entire table.  A fair
 // amount of error checking has been eliminated from this example.
 // <srcblock>
 //    FitsInput infits("myFITSFile", FITS::Disk);
@@ -94,7 +93,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //
 // <todo asof="1995/04/10">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //   <li> It would be nice to construct this directly from the BinaryTableExtension.
 //   <li> When random access FITS becomes available, this needs to be able to deal with that.
 //   <li> A corresponding class is needed for conversion from Casacore Tables to FITS.
@@ -105,79 +104,72 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> No attempt use any TDIM columns or keywords to shape arrays.
 // </todo>
 
-class BinaryTable : public BinaryTableExtension
-{
-public: 
+class BinaryTable : public BinaryTableExtension {
+ public:
+  //   The only constructor is from a FitsInput, you can also optionally
+  //   provide a FITS error handler.  If useMiriadSM is True, use
+  //   the Miriad storage manager for all columns, otherwise AipsIO.
+  //   If sdfits is True, all non-reserved and some reserved keyword
+  //   are treated as if they were columns with constant values
+  //   "virtual columns" in the sdfits convention.
+  BinaryTable(FitsInput &, FITSErrorHandler errhandler = FITSError::defaultHandler,
+              Bool useMiriadSM = False, Bool sdfits = False);
 
-    //   The only constructor is from a FitsInput, you can also optionally
-    //   provide a FITS error handler.  If useMiriadSM is True, use
-    //   the Miriad storage manager for all columns, otherwise AipsIO.
-    //   If sdfits is True, all non-reserved and some reserved keyword
-    //   are treated as if they were columns with constant values
-    //   "virtual columns" in the sdfits convention.
-    BinaryTable(FitsInput &,
-		FITSErrorHandler errhandler = FITSError::defaultHandler, 
-		Bool useMiriadSM = False, Bool sdfits = False);
+  ~BinaryTable();
 
-    ~BinaryTable();
+  // Get the full table, using the supplied arguments to construct the table.
+  // The table will contain all data from the current row to the end of the
+  // BinarTableExtension.If useMiriadSM is True, use the Miriad storage
+  // manager for all columns, otherwise AipsIO.
+  Table fullTable(const String &tabName, const Table::TableOption = Table::NewNoReplace,
+                  Bool useMiriadSM = False);
 
-    // Get the full table, using the supplied arguments to construct the table.
-    // The table will contain all data from the current row to the end of the
-    // BinarTableExtension.If useMiriadSM is True, use the Miriad storage
-    // manager for all columns, otherwise AipsIO.
-    Table fullTable(const String& tabName, 
-		    const Table::TableOption = Table::NewNoReplace,
-		    Bool useMiriadSM = False);
+  // This version  of the fullTable return a Memory based table
+  // Its recommended if its being used as a temporary
 
-    // This version  of the fullTable return a Memory based table
-    // Its recommended if its being used as a temporary
+  Table fullTable();
 
-    Table fullTable();
+  //	Get an appropriate TableDesc (this is the same TableDesc used to
+  // construct any Table objects returned by this class.
+  const TableDesc &getDescriptor();
 
-    //	Get an appropriate TableDesc (this is the same TableDesc used to 
-    // construct any Table objects returned by this class.
-    const TableDesc& getDescriptor();
+  //	Return the Table keywords (this is the same TableRecord used
+  //  in any Table objects returned by this class.
+  TableRecord &getKeywords();
 
-    //	Return the Table keywords (this is the same TableRecord used
-    //  in any Table objects returned by this class.
-    TableRecord& getKeywords();
+  // Get a Table with a single row, the current row of the FITS table.
+  // The returned Table is a Scratch table.
+  // The standard BinaryTableExtension manipulation functions are
+  // available to position the FITS input at the desired location.
+  const Table &thisRow();
 
-    // Get a Table with a single row, the current row of the FITS table.
-    // The returned Table is a Scratch table.
-    // The standard BinaryTableExtension manipulation functions are
-    // available to position the FITS input at the desired location.
-    const Table &thisRow();
+  // Get a Table with a single row, the next row of the FITS table.
+  // The returned Table is a Scratch table.
+  // The FITS input is positioned to the next row and the values translated
+  // and returned in a Table object.
+  const Table &nextRow();
 
-    // Get a Table with a single row, the next row of the FITS table.
-    // The returned Table is a Scratch table.
-    // The FITS input is positioned to the next row and the values translated
-    // and returned in a Table object.
-    const Table &nextRow();
+ private:
+  // # Data Members
+  //  This is the Scratch table containing the current row
+  Table *currRowTab;
+  // The number of elements for each column of the BinaryTableExtension
+  Int *nelem;
+  // This is a map from column number to column name
+  std::map<Int, String> *colNames;
 
+  TableRecord kwSet;
 
-private:
+  // These are used by any VADesc columns
+  FITS::ValueType *vatypes_p;
+  void **vaptr_p;
+  VADescFitsField *va_p;
+  char *theheap_p;
 
-    //# Data Members
-    // This is the Scratch table containing the current row
-    Table* currRowTab;
-    // The number of elements for each column of the BinaryTableExtension
-    Int *nelem;
-    // This is a map from column number to column name
-    std::map<Int, String> *colNames;
-
-    TableRecord kwSet;
-
-    // These are used by any VADesc columns
-    FITS::ValueType *vatypes_p;
-    void **vaptr_p;
-    VADescFitsField *va_p;
-    char *theheap_p;
-
-    // this is the function that fills each row in as needed
-    void fillRow();
+  // this is the function that fills each row in as needed
+  void fillRow();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
