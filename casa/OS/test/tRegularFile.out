@@ -5,6 +5,5 @@ RegularFile::create: tRegularFile_tmp/isFile already exists
 22
 RegularFile::copy/move: target directory tRegularFile_tmp/aa/bb is not writable
 RegularFile::copy/move: target file tRegularFile_tmp/isFile already exists
-RegularFile::copy/move: target file tRegularFile_tmp/moveto/isFile1 already exists and is not writable
 RegularFile::copy/move: target file tRegularFile_tmp/moveto/isFile1 already exists
 OK

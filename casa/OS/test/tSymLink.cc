@@ -32,6 +32,8 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/iostream.h>
 
+#include <unistd.h>
+#include <sys/types.h>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -65,6 +67,8 @@ void doIt (Bool doExcp)
 	} 
     }
 
+    const bool is_root_user = (geteuid() == 0);
+
     SymLink newLink(Path("tSymLink_tmp/newLink"));
     SymLink newLink2(Path("tSymLink_tmp/isDir/newLink2"));
     File file("tSymLink_tmp/isDir");
@@ -80,14 +84,15 @@ void doIt (Bool doExcp)
 	} 
 	try {
 	    newLink2.create("a");
+      AlwaysAssertExit(is_root_user);
 	}
 	catch (std::exception& x) {
-	    cout << x.what() << endl;                    // cannot create
+	    // cannot create: permission denied
 	} 
     }
     file.setPermissions (0755);
     AlwaysAssertExit (! file1.exists());
-    AlwaysAssertExit (! file2.exists());
+    AlwaysAssertExit (! file2.exists() || is_root_user);
 
     // Create the new sym links.
     newLink.create ("s");

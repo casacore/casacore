@@ -27,7 +27,7 @@
 #define CASACORE_STRING_H_
 
 // Uncomment this to issue warnings for all use of non-std::string functions
-//#define CASACORE_DEPRECATE_STRING
+#define CASACORE_DEPRECATE_STRING
 
 #ifdef CASACORE_DEPRECATE_STRING
 // Some of the (deprecated) code calls deprecated functions, so disable this
@@ -382,6 +382,7 @@ class String : public std::string {
   // <note role=warning> Note that there is no automatic Char-to-String
   // conversion available. This stops inadvertent conversions of
   // integer to string. </note>
+  DEPRECATED("Use overload String(1, c)")
   explicit String(char c) : std::string(1, c) {}
   // Construct from a SubString
   String(const SubString &str) : std::string(str.ref_p, str.pos_p, str.len_p) {}

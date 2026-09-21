@@ -185,8 +185,10 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    newDir.create();
+      // create() should have thrown an error, unless we are running this a root:
+      AlwaysAssertExit (geteuid() == 0);
 	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // not writable
+    // Throws not writable
 	} 
     }
     tmp.setPermissions (0755);

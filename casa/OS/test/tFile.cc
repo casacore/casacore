@@ -30,6 +30,8 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/iostream.h>
 
+#include <unistd.h>
+#include <sys/types.h>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -105,11 +107,13 @@ void doIt (Bool doExcp)
 	} 
     }
 
+    const bool is_root_user = (geteuid() == 0);
+
     // Test permission setting.
     isFile.setPermissions(0022);
-    AlwaysAssertExit (!isFile.isReadable());
-    AlwaysAssertExit (!isFile.isWritable());
-    AlwaysAssertExit (!isFile.isExecutable());
+    AlwaysAssertExit (!isFile.isReadable() || is_root_user);
+    AlwaysAssertExit (!isFile.isWritable() || is_root_user);
+    AlwaysAssertExit (!isFile.isExecutable() || is_root_user);
     isFile.setPermissions(0722);
     AlwaysAssertExit (isFile.isReadable());
     AlwaysAssertExit (isFile.isWritable());
