@@ -1,32 +1,32 @@
-//# Coordinates.h : Classes to interconvert computation positions with physical
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Coordinates.h : Classes to interconvert computation positions with physical
+// # Copyright (C) 1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef COORDINATES_COORDINATES_H
 #define COORDINATES_COORDINATES_H
 
-//# Module includes
+// # Module includes
 #include <casacore/casa/aips.h>
 #include <casacore/coordinates/Coordinates/Coordinate.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
@@ -39,7 +39,7 @@
 #include <casacore/coordinates/Coordinates/TabularCoordinate.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -50,9 +50,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <prerequisite>
 //   <li> Knowledge of astronomical coordinate conversions in general. Probably the
 //        best documents are the papers by Mark Calabretta and Eric Greisen.
-//        The initial draft from 1996 can be found at 
+//        The initial draft from 1996 can be found at
 //        http://www.atnf.csiro.au/~mcalabre.  It is this draft that the
-//        Coordinate classes are based upon.  Since then, this paper has evolved 
+//        Coordinate classes are based upon.  Since then, this paper has evolved
 //        into three which can be found at the above address, and will be published in the
 //        Astronomy and Astrophysics Supplement Series (probably in 2000).
 //        The design has changed since the initial draft.  When these papers
@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        (Mark Calabretta's implementation of these conventions) will be
 //        revised for the new designs.  At that time, the Coordinate classes
 //        may also be revised.
-//   <li> Generic Casacore classes; especially those in the 
+//   <li> Generic Casacore classes; especially those in the
 //        <linkto module=Arrays>Arrays</linkto> module.
 //   <li> The <linkto module=Measures>Measures</linkto> module.
 // </prerequisite>
@@ -73,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The primary notion is that a <linkto class=Coordinate>Coordinate</linkto>
 // can interconvert between a length "n" Vector<Double> (the
 // pixel coordinate) and a length "m" Vector<Double> (the
-// "world" coordinate). Note that "m" and "n" do not in 
+// "world" coordinate). Note that "m" and "n" do not in
 // principle have to be the same (so that one can get both the RA and DEC from
 // an image slice, for example), however in practice they currently always are.
 // Each Coordinate has the full mapping from pixel to world coordinates, i.e.
@@ -93,26 +93,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <linkto class=Coordinate>Coordinate</linkto> which defines the
 // interface.  Classes derived from it are
 // <ol>
-//   <li> <linkto class=DirectionCoordinate>DirectionCoordinate</linkto> 
-//   <li> <linkto class=LinearCoordinate>LinearCoordinate</linkto> 
-//   <li> <linkto class=SpectralCoordinate>SpectralCoordinate</linkto> 
-//   <li> <linkto class=TabularCoordinate>TabularCoordinate</linkto> 
-//   <li> <linkto class=StokesCoordinate>StokesCoordinate</linkto> 
-//   <li> <linkto class=CoordinateSystem>CoordinateSystem</linkto> 
+//   <li> <linkto class=DirectionCoordinate>DirectionCoordinate</linkto>
+//   <li> <linkto class=LinearCoordinate>LinearCoordinate</linkto>
+//   <li> <linkto class=SpectralCoordinate>SpectralCoordinate</linkto>
+//   <li> <linkto class=TabularCoordinate>TabularCoordinate</linkto>
+//   <li> <linkto class=StokesCoordinate>StokesCoordinate</linkto>
+//   <li> <linkto class=CoordinateSystem>CoordinateSystem</linkto>
 // </ol>
 //
-// Other classes are <linkto class=Projection>Projection</linkto>  
-// which is used to specify an astronomical projection for 
-// DirectionCoordinates, and  <linkto class=LinearXform>LinearXform</linkto>  
+// Other classes are <linkto class=Projection>Projection</linkto>
+// which is used to specify an astronomical projection for
+// DirectionCoordinates, and  <linkto class=LinearXform>LinearXform</linkto>
 // a helper class which the application programmer  will not interact with.
 //
 // <linkto class=CoordinateSystem>CoordinateSystem</linkto> is
 // the class that application programmers will usually interact
-// with. A CoordinateSystem consists of a collection of the other 
+// with. A CoordinateSystem consists of a collection of the other
 // classes derived from Coordinate.  Normally one group will be for
 // RA/DEC, another for a Stokes axis, and another group for the spectral axis.
-// The axes may be transposed arbitrarily, for example RA could be 
-// the first axis, and DEC the third. 
+// The axes may be transposed arbitrarily, for example RA could be
+// the first axis, and DEC the third.
 //
 // Normally the CoordinateSystem being manipulated will be embedded in a PagedImage
 // or other object.    Note that the axes of the PagedImage do not
@@ -125,7 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <br>
 // If a world axis is removed, the corresponding pixel axis is also removed.
 // This means that one can be sure that a pixel axis always has a
-// corresponding world axis (it makes no sense otherwise).  The opposite is 
+// corresponding world axis (it makes no sense otherwise).  The opposite is
 // not necessarily true: a world axis can exist without a pixel axis.
 //
 // The linear transformation and sky projection computations are carried out in an
@@ -160,7 +160,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //         Normally this matrix should be diagonal, however if you wanted
 //         to introduce a rotation or skew, you would do it through this
 //         matrix.
-//    <li> <i>3:</i>This defines the astronomical type of the world 
+//    <li> <i>3:</i>This defines the astronomical type of the world
 //         coordinate. Most of the time it will probably be J2000
 //         or B1950, but there are many other possibilities as listed
 //         in the <linkto class=MDirection>MDirection</linkto> class
@@ -177,7 +177,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //         in DEC.
 //    <li> <i>7:</i> Set the previously defined transformation matrix.
 //    <li> <i>8:</i> Set the zero-relative reference pixel. Note that it does
-//         not have to be incremental. At the reference pixel, the world 
+//         not have to be incremental. At the reference pixel, the world
 //         coordinate has the reference value.
 // </ul>
 //
@@ -272,7 +272,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // </module>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
