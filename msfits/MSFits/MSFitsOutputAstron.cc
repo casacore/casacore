@@ -1,27 +1,27 @@
-//# MSFitsOutputAstron: Astron MS to UVFITS
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify
-//# it under the terms of the GNU General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or
-//# (at your option) any later version.
-//#
-//# This program is distributed in the hope that it will be useful,
-//# but WITHOUT ANY WARRANTY; without even the implied warranty of
-//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//# GNU General Public License for more details.
-//#
-//# You should have received a copy of the GNU General Public License
-//# along with this program; if not, write to the Free Software
-//# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSFitsOutputAstron: Astron MS to UVFITS
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify
+// # it under the terms of the GNU General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or
+// # (at your option) any later version.
+// #
+// # This program is distributed in the hope that it will be useful,
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// # GNU General Public License for more details.
+// #
+// # You should have received a copy of the GNU General Public License
+// # along with this program; if not, write to the Free Software
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/msfits/MSFits/MSFitsOutputAstron.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
@@ -54,81 +54,69 @@
 #include <casacore/casa/System/ProgressMeter.h>
 #include <casacore/tables/LogTables/NewFile.h>
 
-#include <casacore/casa/stdlib.h> // for atoi()
+#include <casacore/casa/stdlib.h>  // for atoi()
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/Logging/LogIO.h>
 
 #include <limits>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-static String toFITSDate(const MVTime &time)
-{
+static String toFITSDate(const MVTime& time) {
   String date, timesys;
   FITSDateUtil::toFITS(date, timesys, time);
   return date;
 }
 
-
 // MJD seconds to day number and day fraction
-void MSFitsOutputAstron::timeToDay(Int &day, Double &dayFraction, Double time)
-{
-  const Double JDofMJD0=2400000.5;
-  time /= C::day; // now in days;
-  time += JDofMJD0; // now in JD
+void MSFitsOutputAstron::timeToDay(Int& day, Double& dayFraction, Double time) {
+  const Double JDofMJD0 = 2400000.5;
+  time /= C::day;    // now in days;
+  time += JDofMJD0;  // now in JD
   day = Int(time);
   dayFraction = time - floor(time);
 }
 
-Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
-				 const MeasurementSet& ms,
-				 const String& column,
-				 Int startchan, Int nchan, Int stepchan,
-				 Bool writeSysCal,
-				 Bool asMultiSource,
-				 Bool combineSpw,
-				 Bool writeStation,
-                                 Double sensitivity)
-{
+Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
+                                       const String& column, Int startchan, Int nchan, Int stepchan,
+                                       Bool writeSysCal, Bool asMultiSource, Bool combineSpw,
+                                       Bool writeStation, Double sensitivity) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFitsFile"));
   // A FITS table can handle only Int nrows.
   if (ms.nrow() > static_cast<rownr_t>(std::numeric_limits<Int>::max())) {
     throw AipsError("MS " + ms.tableName() + " is too big (#rows exceeds MAX_INT)");
   }
   const uInt nrow = ms.nrow();
-  String msfile=ms.tableName();
+  String msfile = ms.tableName();
   String outfile;
   // OK, get the output name
   if (fitsfile == "") {
     const std::string_view kExtension = ".ms";
     if (msfile.ends_with(kExtension)) {
-      String copy = msfile; // need a copy because .before is non-const
+      String copy = msfile;  // need a copy because .before is non-const
       outfile = copy.substr(0, msfile.size() - kExtension.size()) + ".fits";
     } else {
       outfile = msfile + ".fits";
     }
   } else {
-    outfile = fitsfile; // Use the supplied name
+    outfile = fitsfile;  // Use the supplied name
   }
 
   String errmsg;
   NewFile fileOK(True);
   if (!fileOK.valueOK(outfile, errmsg)) {
-    os << LogIO::SEVERE << "Error in output file : " << errmsg
-       << LogIO::POST;
+    os << LogIO::SEVERE << "Error in output file : " << errmsg << LogIO::POST;
     return False;
   }
 
-  os << LogIO::NORMAL << "Converting MeasurementSet " << ms.tableName()
-     << " to FITS file '" <<    outfile << "'" << LogIO::POST;
+  os << LogIO::NORMAL << "Converting MeasurementSet " << ms.tableName() << " to FITS file '"
+     << outfile << "'" << LogIO::POST;
 
   // Determine if this MS is a subset of a main MS.
-  Bool isSubset = (nrow != 1+max(ms.rowNumbers()));
+  Bool isSubset = (nrow != 1 + max(ms.rowNumbers()));
   if (isSubset) {
-    os << LogIO::NORMAL << "MS " << ms.tableName()
-       << " is a subset of another MS" << LogIO::POST;
+    os << LogIO::NORMAL << "MS " << ms.tableName() << " is a subset of another MS" << LogIO::POST;
   }
 
   // Find the number of IF's (spectral-windows).
@@ -137,7 +125,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   uInt nrspw;
   {
     ScalarColumn<Int> ddidcol(ms, MS::columnName(MS::DATA_DESC_ID));
-    nrspw = makeIdMap (spwidMap, spwids, ddidcol.getColumn(), isSubset);
+    nrspw = makeIdMap(spwidMap, spwids, ddidcol.getColumn(), isSubset);
   }
 
   // If not asMultiSource, check if multiple sources are present.
@@ -147,14 +135,16 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
     ScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
     Vector<Int> fldid = fldidcol.getColumn();
     if (!asMultiSource) {
-      if (!allEQ (fldid, fldid(0))) {
-	asMultiSource = True;
-	os << LogIO::WARN << "Multiple sources are present, thus written "
-	  "as a multi-source FITS file" << LogIO::POST;
+      if (!allEQ(fldid, fldid(0))) {
+        asMultiSource = True;
+        os << LogIO::WARN
+           << "Multiple sources are present, thus written "
+              "as a multi-source FITS file"
+           << LogIO::POST;
       }
     }
     Vector<Int> fieldids;
-    nrfield = makeIdMap (fieldidMap, fieldids, fldid, isSubset);
+    nrfield = makeIdMap(fieldidMap, fieldids, fldid, isSubset);
   }
 
   // Write main table. Get freqs and channel-width back.
@@ -164,11 +154,9 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
 
   Int refPixelFreq;
   Double refFreq, refFreq1, chanbw;
-  FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, refFreq1, chanbw,
-				     outfile, ms, column,
-				     spwidMap, nrspw, startchan, nchan,
-				     stepchan, fieldidMap,
-				     asMultiSource, combineSpw);
+  FitsOutput* fitsOutput =
+      writeMain(refPixelFreq, refFreq, refFreq1, chanbw, outfile, ms, column, spwidMap, nrspw,
+                startchan, nchan, stepchan, fieldidMap, asMultiSource, combineSpw);
 
   Bool ok = (fitsOutput != 0);
   if (!ok) {
@@ -177,8 +165,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
     os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
     // Note: handing over refFreq otherwise this goes wrong...The FQ table
     // lists the offset frequencies wrt a single reference.
-    ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq,
-		 chanbw, combineSpw);
+    ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq, chanbw, combineSpw);
   }
   if (!ok) {
     os << LogIO::SEVERE << "Could not write FQ table\n" << LogIO::POST;
@@ -206,7 +193,7 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   // This is needed for WSRT MS's, where the first time in the SYSCAL
   // table is the average at the middle of the observation.
   if (ok && writeSysCal) {
-    Table syscal = handleSysCal (ms, spwids, isSubset);
+    Table syscal = handleSysCal(ms, spwids, isSubset);
 
     os << LogIO::NORMAL << "writing AIPS TY table" << LogIO::POST;
     ok = writeTY(fitsOutput, ms, syscal, spwidMap, nrspw, combineSpw);
@@ -216,8 +203,8 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
       os << LogIO::NORMAL << "Writing AIPS GC table" << LogIO::POST;
       // Note: handing over refFreq1 instead of refFreq; see above.
       // Only the refreq1 of the first IF is needed.
-      ok = writeGC(fitsOutput, ms, syscal, spwidMap, nrspw, combineSpw,
-		   sensitivity, refPixelFreq, refFreq1, chanbw);
+      ok = writeGC(fitsOutput, ms, syscal, spwidMap, nrspw, combineSpw, sensitivity, refPixelFreq,
+                   refFreq1, chanbw);
     }
     if (!ok) {
       os << LogIO::SEVERE << "Could not write GC table\n" << LogIO::POST;
@@ -230,22 +217,13 @@ Bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile,
   return ok;
 }
 
-
-FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
-				    Double& refFreq,
-				    Double& refFreq1,
-				    Double& chanbw,
-				    const String &outFITSFile,
-				    const MeasurementSet &rawms,
-				    const String &column,
-				    const Block<Int>& spwidMap,
-				    Int nrspw, Int chanstart, Int nchan,
-				    Int chanstep,
-				    const Block<Int>& fieldidMap,
-				    Bool asMultiSource,
-				    Bool combineSpw)
-{
-  FitsOutput *outfile = 0;
+FitsOutput* MSFitsOutputAstron::writeMain(Int& refPixelFreq, Double& refFreq, Double& refFreq1,
+                                          Double& chanbw, const String& outFITSFile,
+                                          const MeasurementSet& rawms, const String& column,
+                                          const Block<Int>& spwidMap, Int nrspw, Int chanstart,
+                                          Int nchan, Int chanstep, const Block<Int>& fieldidMap,
+                                          Bool asMultiSource, Bool combineSpw) {
+  FitsOutput* outfile = 0;
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeMain"));
   const uInt nrow = rawms.nrow();
   if (nrow == 0) {
@@ -258,8 +236,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     MSObservation obsTable(rawms.observation());
     if (obsTable.nrow() > 0) {
       ScalarColumn<String> inarrayname(obsTable,
-					 MSObservation::columnName
-					 (MSObservation::TELESCOPE_NAME));
+                                       MSObservation::columnName(MSObservation::TELESCOPE_NAME));
       doWsrt = inarrayname(0) == "WSRT";
     }
   }
@@ -267,7 +244,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   MSField fieldTable(rawms.field());
   MSFieldColumns msfc(fieldTable);
   Vector<Double> radec = msfc.phaseDirMeas(0).getAngle().getValue();
-  radec *=180.0/M_PI; // convert to degrees for FITS
+  radec *= 180.0 / M_PI;  // convert to degrees for FITS
   if (radec(0) < 0) {
     radec(0) += 360;
   }
@@ -295,21 +272,19 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     return 0;
   }
   ScalarColumn<Int> spwId(ddTable,
-	 MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
+                          MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
   ScalarColumn<Int> polId(ddTable,
-	 MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
-  ScalarColumn<Int> numcorr(polTable,
-	      MSPolarization::columnName(MSPolarization::NUM_CORR));
+                          MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
+  ScalarColumn<Int> numcorr(polTable, MSPolarization::columnName(MSPolarization::NUM_CORR));
   ScalarColumn<Int> numchan(spectralTable,
-	      MSSpectralWindow::columnName(MSSpectralWindow::NUM_CHAN));
+                            MSSpectralWindow::columnName(MSSpectralWindow::NUM_CHAN));
   ArrayColumn<Double> frequencies(spectralTable,
-	    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-  ArrayColumn<Int> stokesTypes(polTable,
-				 MSPolarization::columnName(MSPolarization::CORR_TYPE));
+                                  MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
+  ArrayColumn<Int> stokesTypes(polTable, MSPolarization::columnName(MSPolarization::CORR_TYPE));
   ScalarColumn<Double> totalbw(spectralTable,
-	      MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+                               MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   ScalarColumn<Int> meas_freq_ref(spectralTable,
-	      MSSpectralWindow::columnName(MSSpectralWindow::MEAS_FREQ_REF));
+                                  MSSpectralWindow::columnName(MSSpectralWindow::MEAS_FREQ_REF));
 
   // Also find out what the Stokes are and make sure that they are the same
   // throughout the MS. In principle we could handle the same stokes in
@@ -320,46 +295,44 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 
   // Must be a vector<Double>
   Double f0 = 0;
-  Double f0_org = 0 ; // Needed for WSRT, to remember the frequency of chan0
+  Double f0_org = 0;  // Needed for WSRT, to remember the frequency of chan0
   Double bw0 = 0;
   Vector<Int> stokes;
   uInt i;
-  for (i=0; i<ndds; i++) {
-    if (i < spwidMap.nelements()  &&  spwidMap[i] >= 0) {
+  for (i = 0; i < ndds; i++) {
+    if (i < spwidMap.nelements() && spwidMap[i] >= 0) {
       const Int s = spwId(i);
       const Int p = polId(i);
       // Get channel width.
       Vector<Double> freqs = frequencies(s);
       if (freqs.nelements() > 1) {
- 	delta = freqs(1) - freqs(0);
+        delta = freqs(1) - freqs(0);
       } else {
- 	delta = totalbw(0);
-	if (doWsrt && (delta > 0)) delta = - delta;
+        delta = totalbw(0);
+        if (doWsrt && (delta > 0)) delta = -delta;
       }
       // If first time, set the various values.
       if (numcorr0 == 0) {
- 	numcorr0 = numcorr(p);
- 	numchan0 = numchan(s);
- 	if (numcorr0 <= 0 || numchan0 <= 0) {
- 	  os << LogIO::SEVERE
- 	     << "Number of correlations or channels is zero" << LogIO::POST;
- 	  return 0;
- 	}
-	f0 = freqs(0);
-	bw0 = delta;
-	chanbw = abs(delta);
-	stokes = stokesTypes(p);
+        numcorr0 = numcorr(p);
+        numchan0 = numchan(s);
+        if (numcorr0 <= 0 || numchan0 <= 0) {
+          os << LogIO::SEVERE << "Number of correlations or channels is zero" << LogIO::POST;
+          return 0;
+        }
+        f0 = freqs(0);
+        bw0 = delta;
+        chanbw = abs(delta);
+        stokes = stokesTypes(p);
 
-	if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0)
-	&& ((nchan*chanstep+chanstart) <= numchan0) ){
-
-	  f0 = freqs(chanstart);
-	  bw0= delta*chanstep;
-	} else {
-	  nchan=numchan0;
-	  chanstep=1;
-	  chanstart=0;
-	}
+        if ((nchan > 0) && (chanstep > 0) && (chanstart >= 0) &&
+            ((nchan * chanstep + chanstart) <= numchan0)) {
+          f0 = freqs(chanstart);
+          bw0 = delta * chanstep;
+        } else {
+          nchan = numchan0;
+          chanstep = 1;
+          chanstart = 0;
+        }
       }
 
       // If WSRT line, we need to take the central frequency from the NFRA_
@@ -370,98 +343,91 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
       // it is in the MS
       // Do this for the first IVC-band only!
 
-      if (doWsrt && meas_freq_ref(0) != 5 && i ==0 ) {
+      if (doWsrt && meas_freq_ref(0) != 5 && i == 0) {
         f0_org = f0;
-	if (rawms.keywordSet().isDefined ("NFRA_TMS_PARAMETERS")) {
-	  Table tmsParm = rawms.keywordSet().asTable ("NFRA_TMS_PARAMETERS");
-	  Table sel;
-	  TableColumn tc(tmsParm, "NAME");
-	  String tmp;
-	  tc.getScalar(0, tmp);
+        if (rawms.keywordSet().isDefined("NFRA_TMS_PARAMETERS")) {
+          Table tmsParm = rawms.keywordSet().asTable("NFRA_TMS_PARAMETERS");
+          Table sel;
+          TableColumn tc(tmsParm, "NAME");
+          String tmp;
+          tc.getScalar(0, tmp);
 
-	  //
-	  // Get FW1.GeoSkyFreq
-	  //
-	  Double fw1_geoskyfreq;
-	  sel = tmsParm (tmsParm.col("NAME") == "FW1.GeoSkyFreq");
-	  if (sel.nrow() == 0){
-	    cout << "ERROR - FW1.GeoSkyFreq not found - cannot process this MS.\n";
-	    return 0;
-	  } else {
-	    String aValue;
-	    aValue = ScalarColumn<String>(sel, "VALUE")(0);
+          //
+          // Get FW1.GeoSkyFreq
+          //
+          Double fw1_geoskyfreq;
+          sel = tmsParm(tmsParm.col("NAME") == "FW1.GeoSkyFreq");
+          if (sel.nrow() == 0) {
+            cout << "ERROR - FW1.GeoSkyFreq not found - cannot process this MS.\n";
+            return 0;
+          } else {
+            String aValue;
+            aValue = ScalarColumn<String>(sel, "VALUE")(0);
 
-	    //
-	    // Find the comma's,
-	    // Add the substring as Double
-	    //
-	    // The first comma is located before the loop
-	    // The last Double is added after the loop
-	    //
-	    vector<Double> rtn;
-	    Int j = aValue.find(',');
-	    while (j > 0){
-	      Double d = atof(aValue.substr(0, j).c_str());
-	      rtn.push_back(d);
-	      aValue = aValue.substr(j+1);
-	      j = aValue.find(',');
-	    }
-	    // Line ends like "0,0 MHz"; make sure the 'MHz' is stripped off.
-	    j = aValue.find(' ');
-	    Double d = atof(aValue.substr(0, j).c_str());
-	    rtn.push_back(d);
-	    fw1_geoskyfreq = rtn[i] * 1e+6;
-	    f0 = fw1_geoskyfreq - bw0 * nchan/2;
-	  }
-	}
+            //
+            // Find the comma's,
+            // Add the substring as Double
+            //
+            // The first comma is located before the loop
+            // The last Double is added after the loop
+            //
+            vector<Double> rtn;
+            Int j = aValue.find(',');
+            while (j > 0) {
+              Double d = atof(aValue.substr(0, j).c_str());
+              rtn.push_back(d);
+              aValue = aValue.substr(j + 1);
+              j = aValue.find(',');
+            }
+            // Line ends like "0,0 MHz"; make sure the 'MHz' is stripped off.
+            j = aValue.find(' ');
+            Double d = atof(aValue.substr(0, j).c_str());
+            rtn.push_back(d);
+            fw1_geoskyfreq = rtn[i] * 1e+6;
+            f0 = fw1_geoskyfreq - bw0 * nchan / 2;
+          }
+        }
       }
 
       // Check if values match.
       if (numcorr(p) != numcorr0) {
- 	os << LogIO::SEVERE << "Number of correlations varies in the MS"
-	   << LogIO::POST;
- 	return 0;
+        os << LogIO::SEVERE << "Number of correlations varies in the MS" << LogIO::POST;
+        return 0;
       }
       if (numchan(s) != numchan0) {
-	os << LogIO::SEVERE << "Number of channels varies in the MS"
-	   << LogIO::POST;
-	return 0;
+        os << LogIO::SEVERE << "Number of channels varies in the MS" << LogIO::POST;
+        return 0;
       }
       if (!allEQ(stokes, stokesTypes(p))) {
-	os << LogIO::SEVERE
-	   << "Stokes types vary for different spectral windows"
-	   << LogIO::POST;
-	return 0;
+        os << LogIO::SEVERE << "Stokes types vary for different spectral windows" << LogIO::POST;
+        return 0;
       }
       if (!near(abs(delta), chanbw, 1.0e-5)) {
-	os << LogIO::SEVERE << "Bandwidth varies across spectral windows"
-	   << LogIO::POST;
-	return 0;
+        os << LogIO::SEVERE << "Bandwidth varies across spectral windows" << LogIO::POST;
+        return 0;
       }
-      for (uInt j=1; j<freqs.nelements(); j++) {
-	if (!near(delta, freqs(j) - freqs(j-1), 1.0e-5)) {
-	  os << LogIO::SEVERE << "Channel width varies across the band"
-	     << LogIO::POST;
-	  return 0;
-	}
+      for (uInt j = 1; j < freqs.nelements(); j++) {
+        if (!near(delta, freqs(j) - freqs(j - 1), 1.0e-5)) {
+          os << LogIO::SEVERE << "Channel width varies across the band" << LogIO::POST;
+          return 0;
+        }
       }
     }
   }
-  Int f0RefPix = nchan/2;
+  Int f0RefPix = nchan / 2;
   if (doWsrt) {
     refFreq = f0 + f0RefPix * bw0;
   } else {
-    refFreq = f0 + (f0RefPix-1) * bw0;
+    refFreq = f0 + (f0RefPix - 1) * bw0;
   }
-  if(f0RefPix==0 && !doWsrt) {
-    f0RefPix=1;
-    refFreq=f0 + bw0/2.0 -delta/2.0;
+  if (f0RefPix == 0 && !doWsrt) {
+    f0RefPix = 1;
+    refFreq = f0 + bw0 / 2.0 - delta / 2.0;
   }
   refPixelFreq = f0RefPix;
 
-
   // OK, turn the stokes into FITS values.
-  for (Int j=0; j<numcorr0; j++) {
+  for (Int j = 0; j < numcorr0; j++) {
     stokes(j) = Stokes::FITSValue(Stokes::StokesTypes(stokes(j)));
   }
 
@@ -469,64 +435,57 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // stokes(0) >= 0, or descending order if < 0.
   Vector<uInt> stokesIndex(numcorr0);
   if (stokes(0) >= 0) {
-    GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes);
+    GenSortIndirect<Int, uInt>::sort(stokesIndex, stokes);
   } else {
-    GenSortIndirect<Int,uInt>::sort(stokesIndex, stokes, Sort::Descending);
+    GenSortIndirect<Int, uInt>::sort(stokesIndex, stokes, Sort::Descending);
   }
 
   // OK, make sure that we can represent the stokes in FITS
   if (stokes.nelements() > 2) {
     Int delta = stokes(stokesIndex(1)) - stokes(stokesIndex(0));
-    for (i=2; i<stokes.nelements(); i++) {
-      if (stokes(stokesIndex(i)) - stokes(stokesIndex(i-1))!= delta) {
-	os << LogIO::SEVERE << "These STOKES are not representable in FITS"
-	   << LogIO::POST;
-	return 0;
+    for (i = 2; i < stokes.nelements(); i++) {
+      if (stokes(stokesIndex(i)) - stokes(stokesIndex(i - 1)) != delta) {
+        os << LogIO::SEVERE << "These STOKES are not representable in FITS" << LogIO::POST;
+        return 0;
       }
     }
   }
 
-
   // DATA: COMPLEX(2)+WEIGHT, NUM_CORR, NUM_CHAN, IF, RA, DEC
   RecordDesc desc;
   String columnName;
-  String col=column;
+  String col = column;
   ToUpperCaseInPlace(col);
-  if (col=="OBSERVED" || col==MS::columnName(MS::DATA)) {
+  if (col == "OBSERVED" || col == MS::columnName(MS::DATA)) {
     columnName = MS::columnName(MS::DATA);
     os << "Writing DATA column" << LogIO::POST;
-  } else if(col=="MODEL" || col=="MODEL_DATA") {
-    if(rawms.tableDesc().isColumn("MODEL_DATA")) {
+  } else if (col == "MODEL" || col == "MODEL_DATA") {
+    if (rawms.tableDesc().isColumn("MODEL_DATA")) {
       columnName = "MODEL_DATA";
       os << "Writing MODEL_DATA column" << LogIO::POST;
     } else {
       columnName = MS::columnName(MS::DATA);
-      os << LogIO::SEVERE << "MODEL_DATA does not exist, writing DATA"
-	 << LogIO::POST;
+      os << LogIO::SEVERE << "MODEL_DATA does not exist, writing DATA" << LogIO::POST;
     }
-  } else if(col=="CORRECTED" || col=="CORRECTED_DATA") {
-    if(rawms.tableDesc().isColumn("CORRECTED_DATA")) {
-      columnName="CORRECTED_DATA";
+  } else if (col == "CORRECTED" || col == "CORRECTED_DATA") {
+    if (rawms.tableDesc().isColumn("CORRECTED_DATA")) {
+      columnName = "CORRECTED_DATA";
       os << "Writing CORRECTED_DATA column" << LogIO::POST;
     } else {
-      columnName=MS::columnName(MS::DATA);
-      os << LogIO::NORMAL << "CORRECTED_DATA does not exist, writing DATA"
-	 << LogIO::POST;
+      columnName = MS::columnName(MS::DATA);
+      os << LogIO::NORMAL << "CORRECTED_DATA does not exist, writing DATA" << LogIO::POST;
     }
   } else {
-    columnName=MS::columnName(MS::DATA);
-    os << LogIO::SEVERE << "Unrecognized column "<<column<<", writing DATA"
-       << LogIO::POST;
+    columnName = MS::columnName(MS::DATA);
+    os << LogIO::SEVERE << "Unrecognized column " << column << ", writing DATA" << LogIO::POST;
   }
 
   // Does the MS have a WEIGHT_SPECTRUM?
-  Bool hasWeightArray = rawms.tableDesc().
-                           isColumn(MS::columnName(MS::WEIGHT_SPECTRUM));
+  Bool hasWeightArray = rawms.tableDesc().isColumn(MS::columnName(MS::WEIGHT_SPECTRUM));
 
-  if(hasWeightArray){
+  if (hasWeightArray) {
     MSMainColumns tempCols(rawms);
-    if(!tempCols.weightSpectrum().isDefined(0))
-      hasWeightArray=False;
+    if (!tempCols.weightSpectrum().isDefined(0)) hasWeightArray = False;
   }
 
   IPosition dataShape(6, 3, numcorr0, nchan, 1, 1, 1);
@@ -546,8 +505,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // BASELINE
   desc.addField("baseline", TpFloat);
   // FREQSEL
-  ScalarColumn<Int> inddid(rawms,
-			     MS::columnName(MS::DATA_DESC_ID));
+  ScalarColumn<Int> inddid(rawms, MS::columnName(MS::DATA_DESC_ID));
   desc.addField("freqsel", TpFloat);
   // SOURCE and INTTIM only in multi-source table
   if (asMultiSource) {
@@ -556,15 +514,15 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   }
 
   // "Optional" keywords
-  Record ek; // ek == extra keys
+  Record ek;  // ek == extra keys
   // BSCALE BZERO BUNIT
   ek.define("bscale", 1.0);
   ek.define("bzero", 0.0);
   String bunit = "UNCALIB";
   {
-    TableColumn indata (rawms, columnName);
+    TableColumn indata(rawms, columnName);
     if (indata.keywordSet().isDefined("QuantumUnit") &&
-	indata.keywordSet().dataType("QuantumUnit") == TpString) {
+        indata.keywordSet().dataType("QuantumUnit") == TpString) {
       indata.keywordSet().get("QuantumUnit", bunit);
       ToUpperCaseInPlace(bunit);
     }
@@ -579,10 +537,9 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ek.define("crota2", 0.0);
 
   ek.define("ctype3", "STOKES");
-  ek.define("crval3", stokes(stokesIndex(0))*1.0);
+  ek.define("crval3", stokes(stokesIndex(0)) * 1.0);
   if (stokes.nelements() > 1) {
-    ek.define("cdelt3", (stokes(stokesIndex(1)) -
-			 stokes(stokesIndex(0)))*1.0);
+    ek.define("cdelt3", (stokes(stokesIndex(1)) - stokes(stokesIndex(0))) * 1.0);
   } else {
     ek.define("cdelt3", 1.0);
   }
@@ -593,8 +550,8 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ek.define("crval4", refFreq);
   ek.define("cdelt4", bw0);
   if (doWsrt) {
-    if (refPixelFreq != 1){
-      ek.define("crpix4", Double(1+refPixelFreq));
+    if (refPixelFreq != 1) {
+      ek.define("crpix4", Double(1 + refPixelFreq));
     } else {
       ek.define("crpix4", Double(refPixelFreq));
     }
@@ -620,7 +577,6 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ek.define("cdelt7", 1.0);
   ek.define("crpix7", 1.0);
   ek.define("crota7", 0.0);
-
 
   // PTYPE PSCALE PZERO
   ek.define("ptype1", "UU");
@@ -671,7 +627,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // OBS-TIME
   {
     ScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
-    ek.define("date-obs", toFITSDate(intm(0)/C::day)); // First time entry
+    ek.define("date-obs", toFITSDate(intm(0) / C::day));  // First time entry
   }
 
   // EPOCH
@@ -685,8 +641,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     foundEpoch = True;
   }
   if (!foundEpoch) {
-    os << LogIO::SEVERE << "Cannot deduce MS epoch. Assuming J2000"
-       << LogIO::POST;
+    os << LogIO::SEVERE << "Cannot deduce MS epoch. Assuming J2000" << LogIO::POST;
     ek.define("epoch", 2000.0);
   }
 
@@ -705,25 +660,25 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   // It is the proper AIPS way to do it as a history record.
   ek.define("history", "AIPS WTSCAL = 1.0");
 
-
   // Check that an integral number of SPWs fit in the MS.
   uInt nif = 1;
   if (combineSpw) {
     nif = nrspw;
-    if (nrow%nif != 0) {
-      os << LogIO::SEVERE << "The number of rows per spectral-window varies;"
-	" cannot combine spectral windows"
-	 << LogIO::POST;
+    if (nrow % nif != 0) {
+      os << LogIO::SEVERE
+         << "The number of rows per spectral-window varies;"
+            " cannot combine spectral windows"
+         << LogIO::POST;
       return 0;
     }
   }
 
   // Finally, make the writer
-  FITSGroupWriter writer(outFITSFile, desc, nrow/nif, ek, False);
+  FITSGroupWriter writer(outFITSFile, desc, nrow / nif, ek, False);
   outfile = writer.writer();
 
   // DATA - out
-  RecordFieldPtr< Array<Float> > odata(writer.row(), "data");
+  RecordFieldPtr<Array<Float>> odata(writer.row(), "data");
 
   RecordFieldPtr<Float> ouu(writer.row(), "u");
   RecordFieldPtr<Float> ovv(writer.row(), "v");
@@ -735,27 +690,27 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   RecordFieldPtr<Float> osource;
   RecordFieldPtr<Float> ointtim;
   if (asMultiSource) {
-    osource = RecordFieldPtr<Float> (writer.row(), "source");
-    ointtim = RecordFieldPtr<Float> (writer.row(), "inttim");
+    osource = RecordFieldPtr<Float>(writer.row(), "source");
+    ointtim = RecordFieldPtr<Float>(writer.row(), "inttim");
   }
 
   Bool deleteIptr;
   Array<Complex> indatatmp(IPosition(2, numcorr0, numchan0));
-  const Complex *iptr = indatatmp.getStorage(deleteIptr);
+  const Complex* iptr = indatatmp.getStorage(deleteIptr);
 
   Bool deleteWtPtr;
   Matrix<Float> inwttmp(numcorr0, numchan0);
-  const Float *wptr = inwttmp.getStorage(deleteWtPtr);
+  const Float* wptr = inwttmp.getStorage(deleteWtPtr);
 
   Bool deleteFlagPtr;
   Array<Bool> inflagtmp(IPosition(2, numcorr0, numchan0));
-  const Bool *fptr = inflagtmp.getStorage(deleteFlagPtr);
+  const Bool* fptr = inflagtmp.getStorage(deleteFlagPtr);
 
   Bool deleteOptr;
-  Float *optr = (*odata).getStorage(deleteOptr);
+  Float* optr = (*odata).getStorage(deleteOptr);
 
   Bool deleteIndPtr;
-  const uInt *indptr = stokesIndex.getStorage(deleteIndPtr);
+  const uInt* indptr = stokesIndex.getStorage(deleteIndPtr);
 
   // Do we need to check units? I think the MS rules are that units cannot
   // be changed.
@@ -774,12 +729,11 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   sortNames[2] = MS::columnName(MS::ANTENNA2);
   sortNames[3] = MS::columnName(MS::FIELD_ID);
   sortNames[4] = MS::columnName(MS::DATA_DESC_ID);
-  Table sortTable = rawms.sort (sortNames);
+  Table sortTable = rawms.sort(sortNames);
 
   // Make objects for the various columns.
   ArrayColumn<Complex> indata(sortTable, columnName);
-  ArrayColumn<Float> inweightscalar(sortTable,
-				      MS::columnName(MS::WEIGHT));
+  ArrayColumn<Float> inweightscalar(sortTable, MS::columnName(MS::WEIGHT));
   ArrayColumn<Float> inweightarray;
   if (hasWeightArray) {
     inweightarray.attach(sortTable, MS::columnName(MS::WEIGHT_SPECTRUM));
@@ -791,34 +745,31 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   ScalarColumn<Int> inant1(sortTable, MS::columnName(MS::ANTENNA1));
   ScalarColumn<Int> inant2(sortTable, MS::columnName(MS::ANTENNA2));
   ScalarColumn<Int> inarray(sortTable, MS::columnName(MS::ARRAY_ID));
-  ScalarColumn<Int> inspwinid(sortTable,
-				MS::columnName(MS::DATA_DESC_ID));
+  ScalarColumn<Int> inspwinid(sortTable, MS::columnName(MS::DATA_DESC_ID));
   ScalarColumn<Int> infieldid;
   ScalarColumn<Double> inexposure;
   if (asMultiSource) {
-    infieldid.attach (sortTable, MS::columnName(MS::FIELD_ID));
-    inexposure.attach (sortTable, MS::columnName(MS::EXPOSURE));
+    infieldid.attach(sortTable, MS::columnName(MS::FIELD_ID));
+    inexposure.attach(sortTable, MS::columnName(MS::EXPOSURE));
   }
 
   // Check if first cell has a WEIGHT of correct shape.
   if (hasWeightArray) {
     IPosition shp = inweightarray.shape(0);
-    if (shp.nelements() > 0  &&  !shp.isEqual(inwttmp.shape())) {
+    if (shp.nelements() > 0 && !shp.isEqual(inwttmp.shape())) {
       hasWeightArray = False;
-      os << LogIO::WARN << "WEIGHT_SPECTRUM is ignored (incorrect shape)"
-	 << LogIO::POST;
+      os << LogIO::WARN << "WEIGHT_SPECTRUM is ignored (incorrect shape)" << LogIO::POST;
     }
   }
 
   // Loop through all rows.
-  ProgressMeter meter(0.0, nrow*1.0, "UVFITS Writer", "Rows copied", "", "",
-		      True, nrow/100);
+  ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Writer", "Rows copied", "", "", True, nrow / 100);
 
   Int rownr = -1;
-  for (i=0; i<nrow; i+=nif) {
-    meter.update((rownr+1)*1.0);
-    Float* outptr = optr;               // reset for each spectral-window
-    for (uInt m=0; m<nif; m++) {
+  for (i = 0; i < nrow; i += nif) {
+    meter.update((rownr + 1) * 1.0);
+    Float* outptr = optr;  // reset for each spectral-window
+    for (uInt m = 0; m < nif; m++) {
       rownr++;
 
       // DATA matrix
@@ -830,61 +781,61 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
       // WEIGHT_SPECTRUM (defaults to WEIGHT)
       Bool getwt = True;
       if (hasWeightArray) {
-	IPosition shp = inweightarray.shape(rownr);
-	if (shp.isEqual(inwttmp.shape())) {
-	  inweightarray.get(rownr, inwttmp);
-	  getwt = False;
-	}
+        IPosition shp = inweightarray.shape(rownr);
+        if (shp.isEqual(inwttmp.shape())) {
+          inweightarray.get(rownr, inwttmp);
+          getwt = False;
+        }
       }
       if (getwt) {
-	const Vector<Float> wght = inweightscalar(rownr);
-	for (Int p = 0; p < numcorr0; p++) {
-	  inwttmp.row(p) = wght(p);
-	}
+        const Vector<Float> wght = inweightscalar(rownr);
+        for (Int p = 0; p < numcorr0; p++) {
+          inwttmp.row(p) = wght(p);
+        }
       }
       // We should optimize this loop more, probably do frequency as
       // the inner loop?
-      Vector<Float> realcorr(numcorr0); realcorr.set(0);
-      Vector<Float> imagcorr(numcorr0); imagcorr.set(0);
-      Vector<Float> wgtaver(numcorr0);  wgtaver.set(0);
-      Int chancounter=0;
-      for (Int k=chanstart; k< (nchan*chanstep+chanstart); k++) {
-	if(chancounter == chanstep){
-	  realcorr.set(0); imagcorr.set(0); wgtaver.set(0);
-	  chancounter=0;
-	}
-	++chancounter;
-	for (Int j=0; j<numcorr0; j++) {
+      Vector<Float> realcorr(numcorr0);
+      realcorr.set(0);
+      Vector<Float> imagcorr(numcorr0);
+      imagcorr.set(0);
+      Vector<Float> wgtaver(numcorr0);
+      wgtaver.set(0);
+      Int chancounter = 0;
+      for (Int k = chanstart; k < (nchan * chanstep + chanstart); k++) {
+        if (chancounter == chanstep) {
+          realcorr.set(0);
+          imagcorr.set(0);
+          wgtaver.set(0);
+          chancounter = 0;
+        }
+        ++chancounter;
+        for (Int j = 0; j < numcorr0; j++) {
+          Int offset = indptr[j] + k * numcorr0;
+          if (!fptr[offset]) {
+            realcorr[j] += iptr[offset].real() * wptr[k];
+            imagcorr[j] += iptr[offset].imag() * wptr[k];
+            wgtaver[j] += wptr[k];
+          }
 
-
-	  Int offset = indptr[j] + k*numcorr0;
-	  if(!fptr[offset]){
-	    realcorr[j] += iptr[offset].real()*wptr[k];
-	    imagcorr[j] += iptr[offset].imag()*wptr[k];
-	    wgtaver[j] += wptr[k];
-	  }
-
-	  if(chancounter==chanstep){
-	    if(wgtaver[j] > 0){
-	      outptr[0] = realcorr[j]/wgtaver[j];
-	      outptr[1] = imagcorr[j]/wgtaver[j];
-	    }
-	    else{
-	      outptr[0]=0.0;
-	      outptr[1]=0.0;
-	    }
-	    if (rowFlag) {
-	      // FLAGged
-	      outptr[2] = -wgtaver[j];
-	    } else {
-	      // NOT FLAGged
-	      outptr[2] = wgtaver[j];
-	    }
-	    outptr += 3;
-	  }
-
-	}
-
+          if (chancounter == chanstep) {
+            if (wgtaver[j] > 0) {
+              outptr[0] = realcorr[j] / wgtaver[j];
+              outptr[1] = imagcorr[j] / wgtaver[j];
+            } else {
+              outptr[0] = 0.0;
+              outptr[1] = 0.0;
+            }
+            if (rowFlag) {
+              // FLAGged
+              outptr[2] = -wgtaver[j];
+            } else {
+              // NOT FLAGged
+              outptr[2] = wgtaver[j];
+            }
+            outptr += 3;
+          }
+        }
       }
     }
 
@@ -901,7 +852,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     *odate2 = dayFraction;
 
     // BASELINE
-    *obaseline = (inant1(i)+1)*256 + inant2(i) + 1 + inarray(i)*0.01;
+    *obaseline = (inant1(i) + 1) * 256 + inant2(i) + 1 + inarray(i) * 0.01;
 
     // FREQSEL (in the future it might be FREQ_GRP+1)
     if (combineSpw) {
@@ -920,7 +871,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
     writer.write();
   }
   // changing chanbw to output one
-  chanbw=bw0;
+  chanbw = bw0;
 
   // Make sure refFreq is again the frequency as in the spectral window table
   // This is required to correctly write the FQ table (uses refFreq and the
@@ -937,23 +888,17 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   return outfile;
 }
 
-
-Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
-			   const Block<Int>& spwidMap, Int nrspw,
-			   Double refFreq, Int refPixelFreq,
-			   Double chanbw, Bool combineSpw)
-{
+Bool MSFitsOutputAstron::writeFQ(FitsOutput* output, const MeasurementSet& ms,
+                                 const Block<Int>& spwidMap, Int nrspw, Double refFreq,
+                                 Int refPixelFreq, Double chanbw, Bool combineSpw) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeFQ"));
   MSSpectralWindow specTable(ms.spectralWindow());
-  ArrayColumn<Double> inchanfreq
-            (specTable,
-	     MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-  ScalarColumn<Double> intotbw
-            (specTable,
-	     MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
-  ScalarColumn<Int> insideband
-            (specTable,
-	     MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
+  ArrayColumn<Double> inchanfreq(specTable,
+                                 MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
+  ScalarColumn<Double> intotbw(specTable,
+                               MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  ScalarColumn<Int> insideband(specTable,
+                               MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
 
   Bool doWsrt = False;
   String telescopeName;
@@ -961,20 +906,17 @@ Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     MSObservation obsTable(ms.observation());
     if (obsTable.nrow() > 0) {
       ScalarColumn<String> inarrayname(obsTable,
-					 MSObservation::columnName
-					 (MSObservation::TELESCOPE_NAME));
+                                       MSObservation::columnName(MSObservation::TELESCOPE_NAME));
       doWsrt = inarrayname(0) == "WSRT";
-      telescopeName=inarrayname(0);
+      telescopeName = inarrayname(0);
     }
   }
-
 
   // ##### Header
   Record header;
   // NO_IF
   const uInt nwin = specTable.nrow();
-  os << LogIO::NORMAL << "Found " << nrspw << " spectral windows "
-     << LogIO::POST;
+  os << LogIO::NORMAL << "Found " << nrspw << " spectral windows " << LogIO::POST;
 
   // If all spw's are combined, we have a single freq group.
   // Otherwise each spectral-window is a group.
@@ -985,65 +927,64 @@ Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     nentr = 1;
   }
 
-  header.define("EXTNAME", "AIPS FQ");             // EXTNAME
-  header.define("EXTVER", 1);                      // EXTVER
-  header.define("NO_IF", Int(shape(0)));           // NO_IF
+  header.define("EXTNAME", "AIPS FQ");    // EXTNAME
+  header.define("EXTVER", 1);             // EXTVER
+  header.define("NO_IF", Int(shape(0)));  // NO_IF
 
   // Table description
   RecordDesc desc;
-  Record stringLengths; // no strings
+  Record stringLengths;  // no strings
   Record units;
-  desc.addField("FRQSEL", TpInt);                         // FRQSEL
-  desc.addField("IF FREQ", TpArrayDouble, shape);         // IF FREQ
-  units.define ("IF FREQ", "HZ");
-  desc.addField("CH WIDTH", TpArrayFloat, shape);         // CH WIDTH
-  units.define ("CH WIDTH", "HZ");
+  desc.addField("FRQSEL", TpInt);                  // FRQSEL
+  desc.addField("IF FREQ", TpArrayDouble, shape);  // IF FREQ
+  units.define("IF FREQ", "HZ");
+  desc.addField("CH WIDTH", TpArrayFloat, shape);  // CH WIDTH
+  units.define("CH WIDTH", "HZ");
   desc.addField("TOTAL BANDWIDTH", TpArrayFloat, shape);  // TOTAL BANDWIDTH
-  units.define ("TOTAL BANDWIDTH", "HZ");
-  desc.addField("SIDEBAND", TpArrayInt, shape);           // SIDEBAND
+  units.define("TOTAL BANDWIDTH", "HZ");
+  desc.addField("SIDEBAND", TpArrayInt, shape);  // SIDEBAND
 
-  FITSTableWriter writer(output,
-			 desc, stringLengths, nentr, header, units, False);
+  FITSTableWriter writer(output, desc, stringLengths, nentr, header, units, False);
   RecordFieldPtr<Int> freqsel(writer.row(), "FRQSEL");
-  RecordFieldPtr< Array<Double> > iffreq(writer.row(), "IF FREQ");
-  RecordFieldPtr< Array<Float> > ifwidth(writer.row(), "CH WIDTH");
-  RecordFieldPtr< Array<Float> > totbw(writer.row(), "TOTAL BANDWIDTH");
-  RecordFieldPtr< Array<Int> > sideband(writer.row(), "SIDEBAND");
+  RecordFieldPtr<Array<Double>> iffreq(writer.row(), "IF FREQ");
+  RecordFieldPtr<Array<Float>> ifwidth(writer.row(), "CH WIDTH");
+  RecordFieldPtr<Array<Float>> totbw(writer.row(), "TOTAL BANDWIDTH");
+  RecordFieldPtr<Array<Int>> sideband(writer.row(), "SIDEBAND");
 
-  IPosition inx(1,0);
-  for (uInt i=0; i<nwin; i++) {
-    if (i < spwidMap.nelements()  &&  spwidMap[i] >= 0) {
+  IPosition inx(1, 0);
+  for (uInt i = 0; i < nwin; i++) {
+    if (i < spwidMap.nelements() && spwidMap[i] >= 0) {
       *freqsel = 1 + spwidMap[i];
       Vector<Double> freqs = inchanfreq(i);
       if (telescopeName == "IRAM PDB" || telescopeName == "IRAM_PDB") {
-	(*iffreq)(inx)=0.0;
+        (*iffreq)(inx) = 0.0;
       } else {
-	(*iffreq)(inx) = freqs(refPixelFreq-1) - refFreq;
+        (*iffreq)(inx) = freqs(refPixelFreq - 1) - refFreq;
       }
       if (freqs.nelements() > 1) {
-	if (doWsrt) {
-	  (*ifwidth)(inx) = abs(chanbw);
-	} else {
-	  (*ifwidth)(inx) = (chanbw);
-	}
+        if (doWsrt) {
+          (*ifwidth)(inx) = abs(chanbw);
+        } else {
+          (*ifwidth)(inx) = (chanbw);
+        }
       } else {
-	(*ifwidth)(inx) = intotbw(i);
+        (*ifwidth)(inx) = intotbw(i);
       }
       (*totbw)(inx) = intotbw(i);
       if (doWsrt) {
-	if (freqs(1) < freqs(0)) {
-	  (*sideband)(inx) = -1;
-	} else {
-	  (*sideband)(inx) = 1;
-	}
+        if (freqs(1) < freqs(0)) {
+          (*sideband)(inx) = -1;
+        } else {
+          (*sideband)(inx) = 1;
+        }
       } else {
-	(*sideband)(inx) = insideband(i);
+        (*sideband)(inx) = insideband(i);
       }
       // Write the current row if not combined.
       if (combineSpw) {
-	inx(0)++;
+        inx(0)++;
       } else {
-	writer.write();
+        writer.write();
       }
     }
   }
@@ -1055,14 +996,12 @@ Bool MSFitsOutputAstron::writeFQ(FitsOutput *output, const MeasurementSet &ms,
   return True;
 }
 
-Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
-			   Double refFreq, Bool writeStation)
-{
+Bool MSFitsOutputAstron::writeAN(FitsOutput* output, const MeasurementSet& ms, Double refFreq,
+                                 Bool writeStation) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeAN"));
   MSObservation obsTable(ms.observation());
   ScalarColumn<String> inarrayname(obsTable,
-				     MSObservation::columnName
-				     (MSObservation::TELESCOPE_NAME));
+                                   MSObservation::columnName(MSObservation::TELESCOPE_NAME));
 
   const uInt narray = obsTable.nrow();
   if (narray == 0) {
@@ -1074,9 +1013,9 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
   MEpoch measTime = MSColumns(ms).timeMeas()(0);
 
-  MEpoch utctime = MEpoch::Convert (measTime, MEpoch::UTC) ();
-  MEpoch iattime = MEpoch::Convert (measTime, MEpoch::IAT) ();
-  MEpoch ut1time = MEpoch::Convert (measTime, MEpoch::UT1) ();
+  MEpoch utctime = MEpoch::Convert(measTime, MEpoch::UTC)();
+  MEpoch iattime = MEpoch::Convert(measTime, MEpoch::IAT)();
+  MEpoch ut1time = MEpoch::Convert(measTime, MEpoch::UT1)();
   Double utcsec = utctime.get("s").getValue();
   Double ut1sec = ut1time.get("s").getValue();
   Double iatsec = iattime.get("s").getValue();
@@ -1087,109 +1026,107 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
   {
     // Use IAT=0 to get GST:
     Quantum<Double> itime(iatday, "d");
-    MEpoch ia0time (itime, MEpoch::UTC);
-    MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
+    MEpoch ia0time(itime, MEpoch::UTC);
+    MEpoch gsttime = MEpoch::Convert(ia0time, MEpoch::GMST)();
     gstday = gsttime.get("d").getValue();
-
   }
   Double gstdeg = 360 * (gstday - floor(gstday));
   {
     // #degrees/IATday is the difference between this and the next day.
-    Quantum<Double> itime(iatday+1, "d");
-    MEpoch ia0time (itime, MEpoch::UTC);
-    MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
+    Quantum<Double> itime(iatday + 1, "d");
+    MEpoch ia0time(itime, MEpoch::UTC);
+    MEpoch gsttime = MEpoch::Convert(ia0time, MEpoch::GMST)();
     gstday1 = gsttime.get("d").getValue();
   }
   Double degpdy = 360 * (gstday1 - gstday);
   // PolarMotion gives -x and -y.
   // Need to be multiplied by earth radius to get them in meters.
-  const Euler& polarMotion = MeasTable::polarMotion (utcday);
+  const Euler& polarMotion = MeasTable::polarMotion(utcday);
 
   // Each array gets its own antenna table
-  for (uInt arraynum=0; arraynum < narray; arraynum++) {
+  for (uInt arraynum = 0; arraynum < narray; arraynum++) {
     // Get the observatory's position and convert to ITRF.
     String obsName = inarrayname(arraynum);
     MPosition pos;
     MeasTable::Observatory(pos, obsName);
-    MPosition itrfpos = MPosition::Convert (pos, MPosition::ITRF)();
+    MPosition itrfpos = MPosition::Convert(pos, MPosition::ITRF)();
     MVPosition mvpos = itrfpos.getValue();
     Vector<Double> arraypos = mvpos.getValue();
 
     // Prepare handling of peculiar UVFITS antenna position conventions:
     // VLA and WSRT requires rotation into local frame:
     String arrayName = inarrayname(arraynum);
-    Bool doRot = (arrayName=="VLA" || arrayName=="WSRT");
-    Matrix<Double> posRot = Rot3D(0,0.0);
+    Bool doRot = (arrayName == "VLA" || arrayName == "WSRT");
+    Matrix<Double> posRot = Rot3D(0, 0.0);
 
     if (doRot) {
       // form rotation around Z-axis by longitude:
       Double posLong = mvpos.getLong();
-      posRot=Rot3D(2,-posLong);  // opposite rotation cf MSFitsInput
+      posRot = Rot3D(2, -posLong);  // opposite rotation cf MSFitsInput
     }
     // "VLBI" (==arraypos<1000m) requires y-axis reflection:
     //   (ATCA looks like VLBI in UVFITS, but is already RHed.)
     // It looks as if WSRT needs y-axis reflection for UVFIX.
-    Bool doRefl=((arrayName=="WSRT")  ||
-		((arrayName!="ATCA") && allLE(abs(arraypos),1000.0)));
+    Bool doRefl =
+        ((arrayName == "WSRT") || ((arrayName != "ATCA") && allLE(abs(arraypos), 1000.0)));
 
     // #### Header
     Record header;
-    header.define("EXTNAME", "AIPS AN");             // EXTNAME
-    header.define("EXTVER", Int(arraynum+1));        // EXTVER
-    header.define("ARRAYX", arraypos(0));            // ARRAYX
-    header.define("ARRAYY", arraypos(1));            // ARRAYY
-    header.define("ARRAYZ", arraypos(2));            // ARRAYZ
-    header.define("GSTIA0", gstdeg);                 // GSTIA0
-    header.define("DEGPDY", degpdy);                 // DEGPDY
-    header.define("FREQ", refFreq);                  // FREQ
-    header.define("RDATE", toFITSDate(measTime.get("s")));   // RDATE
+    header.define("EXTNAME", "AIPS AN");                    // EXTNAME
+    header.define("EXTVER", Int(arraynum + 1));             // EXTVER
+    header.define("ARRAYX", arraypos(0));                   // ARRAYX
+    header.define("ARRAYY", arraypos(1));                   // ARRAYY
+    header.define("ARRAYZ", arraypos(2));                   // ARRAYZ
+    header.define("GSTIA0", gstdeg);                        // GSTIA0
+    header.define("DEGPDY", degpdy);                        // DEGPDY
+    header.define("FREQ", refFreq);                         // FREQ
+    header.define("RDATE", toFITSDate(measTime.get("s")));  // RDATE
     header.define("POLARX", -polarMotion(0) * 6356752.31);  // POLARX
     header.define("POLARY", -polarMotion(1) * 6356752.31);  // POLARY
-    header.define("UT1UTC", ut1sec-utcsec);          // UT1UTC
-    header.define("IATUTC", iatsec-utcsec);          // IATUTC
-    header.define("TIMSYS", measTime.getRefString()); // TIMSYS
-    header.define("ARRNAM", inarrayname(arraynum));  // ARRNAM
-    header.define("NUMORB", 0);                      // NUMORB
-    header.define("NOPCAL", 0);                      // NOPCAL
-    header.define("POLTYPE", "        ");            // POLTYPE
+    header.define("UT1UTC", ut1sec - utcsec);               // UT1UTC
+    header.define("IATUTC", iatsec - utcsec);               // IATUTC
+    header.define("TIMSYS", measTime.getRefString());       // TIMSYS
+    header.define("ARRNAM", inarrayname(arraynum));         // ARRNAM
+    header.define("NUMORB", 0);                             // NUMORB
+    header.define("NOPCAL", 0);                             // NOPCAL
+    header.define("POLTYPE", "        ");                   // POLTYPE
 
     // NOT in going aips
     // header.define("DATUTC", 0.0);
     // header.define("P_REFANT", 15);
     // header.define("P_DIFF01", 0.0);
 
-
     // #### Row description
     RecordDesc desc;
     Record strlengths, units;
-    desc.addField("ANNAME", TpString);               // ANNAME
+    desc.addField("ANNAME", TpString);  // ANNAME
     strlengths.define("ANNAME", 8);
-    desc.addField("STABXYZ", TpArrayDouble,          // STABXYZ
-		  IPosition(1, 3));
-    units.define ("STABXYZ", "METERS");
-    desc.addField("ORBPARM", TpArrayDouble,          // ORBPARM
-		  IPosition(1,0));
-    desc.addField("NOSTA", TpInt);                   // NOSTA
-    desc.addField("MNTSTA", TpInt);                  // MNTSTA
-    desc.addField("STAXOF", TpFloat);                // STAXOF
-    units.define ("STAXOF", "METERS");
-    desc.addField("POLTYA", TpString);               // POLTYA
+    desc.addField("STABXYZ", TpArrayDouble,  // STABXYZ
+                  IPosition(1, 3));
+    units.define("STABXYZ", "METERS");
+    desc.addField("ORBPARM", TpArrayDouble,  // ORBPARM
+                  IPosition(1, 0));
+    desc.addField("NOSTA", TpInt);     // NOSTA
+    desc.addField("MNTSTA", TpInt);    // MNTSTA
+    desc.addField("STAXOF", TpFloat);  // STAXOF
+    units.define("STAXOF", "METERS");
+    desc.addField("POLTYA", TpString);  // POLTYA
     strlengths.define("POLTYA", 1);
-    desc.addField("POLAA", TpFloat);                 // POLAA
-    units.define ("POLAA", "DEGREES");
+    desc.addField("POLAA", TpFloat);  // POLAA
+    units.define("POLAA", "DEGREES");
     ///    desc.addField("POLCALA", TpArrayFloat,           // POLCALA
     ///		  IPosition(1,0));
-    desc.addField("POLCALA", TpFloat);           // POLCALA
-    desc.addField("POLTYB", TpString);               // POLTYB
+    desc.addField("POLCALA", TpFloat);  // POLCALA
+    desc.addField("POLTYB", TpString);  // POLTYB
     strlengths.define("POLTYB", 1);
-    desc.addField("POLAB", TpFloat);                 // POLAB
-    units.define ("POLAB", "DEGREES");
+    desc.addField("POLAB", TpFloat);  // POLAB
+    units.define("POLAB", "DEGREES");
     ///    desc.addField("POLCALB", TpArrayFloat,           // POLCALB
     ///		  IPosition(1,0));
-    desc.addField("POLCALB", TpFloat);           // POLCALB
+    desc.addField("POLCALB", TpFloat);  // POLCALB
 
     MSAntenna antennaTable = ms.antenna();
-    MSAntennaColumns antennaCols (antennaTable);
+    MSAntennaColumns antennaCols(antennaTable);
 
     // SELECT antennas for the current sub-array
     //    MSAntenna antennaTable = ms.antenna()
@@ -1202,20 +1139,19 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     MPosition::ScalarColumn inantposition(antennaCols.positionMeas());
     ArrayColumn<Double> inantoffset(antennaCols.offset());
     const uInt nant = antennaTable.nrow();
-    os << LogIO::NORMAL << "Found " << nant << " antennas in array #"
-       << arraynum+1 << LogIO::POST;
+    os << LogIO::NORMAL << "Found " << nant << " antennas in array #" << arraynum + 1
+       << LogIO::POST;
 
     MSFeed feedTable = ms.feed();
-    MSFeedColumns feedCols (feedTable);
+    MSFeedColumns feedCols(feedTable);
     ArrayColumn<String> inpoltype(feedCols.polarizationType());
     ScalarColumn<Int> inantid(feedCols.antennaId());
 
-    FITSTableWriter writer(output, desc, strlengths, nant,
-			   header, units, False);
+    FITSTableWriter writer(output, desc, strlengths, nant, header, units, False);
 
     RecordFieldPtr<String> anname(writer.row(), "ANNAME");
-    RecordFieldPtr< Array<Double> > stabxyz(writer.row(), "STABXYZ");
-    RecordFieldPtr< Array<Double> > orbparm(writer.row(), "ORBPARM");
+    RecordFieldPtr<Array<Double>> stabxyz(writer.row(), "STABXYZ");
+    RecordFieldPtr<Array<Double>> orbparm(writer.row(), "ORBPARM");
     RecordFieldPtr<Int> nosta(writer.row(), "NOSTA");
     RecordFieldPtr<Int> mntsta(writer.row(), "MNTSTA");
     RecordFieldPtr<Float> staxof(writer.row(), "STAXOF");
@@ -1240,17 +1176,17 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     Block<Int> id(nant);
     Bool useAntId = True;
     for (uInt a = 0; a < nant; a++) {
-      const String& antName = antid(a) ;
+      const String& antName = antid(a);
       if (RegexMatches(antName, RXint)) {
-	id[a] = atoi(antName.c_str());
+        id[a] = atoi(antName.c_str());
       } else {
-	useAntId = False;
-	break;
+        useAntId = False;
+        break;
       }
     }
     if (useAntId == False) {
       for (uInt a = 0; a < nant; a++) {
-	id[a] = a + 1; // 1 relative antenna numbers in FITS
+        id[a] = a + 1;  // 1 relative antenna numbers in FITS
       }
     }
     // A hack for old WSRT observations which stored the antenna name
@@ -1260,38 +1196,38 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
     // for the output fits file (input fits file tends to have this).
     Vector<String> anames = antid.getColumn();
     if (anames.nelements() > 0) {
-      if (writeStation || allEQ (anames, anames(0))) {
-	Vector<String> stations = inantname.getColumn();
-	if (! allEQ (stations, stations(0))) {
-	  anames = stations;
-	}
+      if (writeStation || allEQ(anames, anames(0))) {
+        Vector<String> stations = inantname.getColumn();
+        if (!allEQ(stations, stations(0))) {
+          anames = stations;
+        }
       }
     }
-    for (uInt antnum=0; antnum<nant; antnum++) {
+    for (uInt antnum = 0; antnum < nant; antnum++) {
       *anname = anames(antnum);
 
       // Get antenna position in ITRF coordinates.
       // Take difference with array position.
-      MPosition antpos = inantposition.convert (antnum, MPosition::ITRF);
+      MPosition antpos = inantposition.convert(antnum, MPosition::ITRF);
       Vector<Double> corstabxyz = antpos.getValue().getValue() - arraypos;
 
       // Do UVFITS-dependent position corrections:
-      if (doRot) corstabxyz = product(posRot,corstabxyz);
-      if (doRefl) corstabxyz(1)=-corstabxyz(1);
+      if (doRot) corstabxyz = product(posRot, corstabxyz);
+      if (doRefl) corstabxyz(1) = -corstabxyz(1);
       *stabxyz = corstabxyz;
 
       *nosta = id[antnum];
       String mount = upcase(inantmount(antnum));
       if (StringContains(mount, "ALT-AZ")) {
-	*mntsta = 0;
+        *mntsta = 0;
       } else if (StringContains(mount, "EQUATORIAL")) {
-	*mntsta = 1;
+        *mntsta = 1;
       } else if (StringContains(mount, "ORBIT")) {
-	*mntsta = 2;
+        *mntsta = 2;
       } else {
-	*mntsta = -1; // ???
+        *mntsta = -1;  // ???
       }
-      *staxof = inantoffset(antnum)(IPosition(1,0));
+      *staxof = inantoffset(antnum)(IPosition(1, 0));
       // OK, try to find if we're L/R or X/Y
       // This probably breaks down when we have more than one
       // polarization type on different feeds (unlikely) or
@@ -1300,41 +1236,38 @@ Bool MSFitsOutputAstron::writeAN(FitsOutput *output, const MeasurementSet &ms,
       Bool found = False;
       *poltya = " ";
       *poltyb = " ";
-      for (uInt i=0; i<nmax; i++) {
-	if (Int(antnum) == inantid(i)) {
-	  found = True;
-	  Vector<String> poltypes = inpoltype(i);
-	  if (poltypes.nelements() >= 1) {
-	    *poltya = poltypes(0);
-	  }
-	  if (poltypes.nelements() >= 2) {
-	    *poltyb = poltypes(1);
-	  }
-	}
+      for (uInt i = 0; i < nmax; i++) {
+        if (Int(antnum) == inantid(i)) {
+          found = True;
+          Vector<String> poltypes = inpoltype(i);
+          if (poltypes.nelements() >= 1) {
+            *poltya = poltypes(0);
+          }
+          if (poltypes.nelements() >= 2) {
+            *poltyb = poltypes(1);
+          }
+        }
       }
       if (!found) {
-	os << LogIO::SEVERE
-	   << "Could not find polarization types for antenna "
-	   << antnum << LogIO::POST;
+        os << LogIO::SEVERE << "Could not find polarization types for antenna " << antnum
+           << LogIO::POST;
       }
       writer.write();
     }
-
   }
 
   return True;
 }
 
-Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
-			   const Block<Int>& fieldidMap, Int nrfield,
-			   const Block<Int>& /*spwidMap*/, Int nrspw)
-{
+Bool MSFitsOutputAstron::writeSU(FitsOutput* output, const MeasurementSet& ms,
+                                 const Block<Int>& fieldidMap, Int nrfield,
+                                 const Block<Int>& /*spwidMap*/, Int nrspw) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeSU"));
   // Basically we make the FIELD_ID the source ID.
   MSField fieldTable(ms.field());
   MSFieldColumns msfc(fieldTable);
-  const ScalarColumn<Int>& insrcid=msfc.sourceId();
-  const ScalarColumn<String>& inname=msfc.name();
+  const ScalarColumn<Int>& insrcid = msfc.sourceId();
+  const ScalarColumn<String>& inname = msfc.name();
 
   // If source table exists, access it
 
@@ -1346,17 +1279,17 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
   // This is for case where SOURCE may not exist:
   //   (doesn't work yet!)
-  MSSource* sourceTable=0;
-  MSSourceColumns* sourceColumns=0;
-  ColumnsIndex* srcInx=0;
-  RecordFieldPtr<Int>* srcInxFld=0;
+  MSSource* sourceTable = 0;
+  MSSourceColumns* sourceColumns = 0;
+  ColumnsIndex* srcInx = 0;
+  RecordFieldPtr<Int>* srcInxFld = 0;
   if (!ms.source().isNull()) {
     sourceTable = new MSSource(ms.source());
     sourceColumns = new MSSourceColumns(*sourceTable);
     // Create an index for the SOURCE table.
     // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
-    srcInx=new ColumnsIndex(*sourceTable, "SOURCE_ID");
-    srcInxFld= new RecordFieldPtr<Int>(srcInx->accessKey(), "SOURCE_ID");
+    srcInx = new ColumnsIndex(*sourceTable, "SOURCE_ID");
+    srcInxFld = new RecordFieldPtr<Int>(srcInx->accessKey(), "SOURCE_ID");
   }
 
   MSSpectralWindow spectralTable(ms.spectralWindow());
@@ -1371,16 +1304,16 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
     return False;
   }
   ScalarColumn<Double> totalbw(spectralTable,
-		   MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+                               MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   Double totalBandwidth = totalbw(0);
   //    const uInt nsource = sourceTable.nrow(); // this is allowed to be 0
 
   // #### Header
   Record header;
-  header.define("EXTNAME", "AIPS SU");             // EXTNAME
-  header.define("EXTVER", 1);                      // EXTVER
+  header.define("EXTNAME", "AIPS SU");  // EXTNAME
+  header.define("EXTVER", 1);           // EXTVER
   header.define("NO_IF", nrspw);
-  header.define ("FREQID", 1);
+  header.define("FREQID", 1);
   String velDef;
   String velType;
   // WSRT specific issue:
@@ -1389,13 +1322,13 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // table are NFRA_VELOCDEFINITION and NFRA_CONVERSIONTYPE , respectively!
   // Note that datasets with mixed vel.frames or mixed line/continuum cannot
   // be handled.
-  if (spectralTable.tableDesc().isColumn ("NFRA_VELOCDEFINITION")) {
-    ScalarColumn<String> velTypeCol (spectralTable, "NFRA_VELOCDEFINITION");
+  if (spectralTable.tableDesc().isColumn("NFRA_VELOCDEFINITION")) {
+    ScalarColumn<String> velTypeCol(spectralTable, "NFRA_VELOCDEFINITION");
     velType = velTypeCol(0);
     ToUpperCaseInPlace(velType);
     header.define("VELTYP", velType);
-    if (spectralTable.tableDesc().isColumn ("NFRA_CONVERSIONTYPE")) {
-      ScalarColumn<String> velDefCol (spectralTable, "NFRA_CONVERSIONTYPE");
+    if (spectralTable.tableDesc().isColumn("NFRA_CONVERSIONTYPE")) {
+      ScalarColumn<String> velDefCol(spectralTable, "NFRA_CONVERSIONTYPE");
       velDef = velDefCol(0);
       ToUpperCaseInPlace(velDef);
       header.define("VELDEF", velDef);
@@ -1414,56 +1347,55 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   desc.addField("CALCODE", TpString);
   strlengths.define("CALCODE", 4);
   desc.addField("IFLUX", TpArrayFloat, IPosition(1, nrspw));
-  units.define ("IFLUX", "JY");
+  units.define("IFLUX", "JY");
   desc.addField("QFLUX", TpArrayFloat, IPosition(1, nrspw));
-  units.define ("QFLUX", "JY");
+  units.define("QFLUX", "JY");
   desc.addField("UFLUX", TpArrayFloat, IPosition(1, nrspw));
-  units.define ("UFLUX", "JY");
+  units.define("UFLUX", "JY");
   desc.addField("VFLUX", TpArrayFloat, IPosition(1, nrspw));
-  units.define ("VFLUX", "JY");
+  units.define("VFLUX", "JY");
   desc.addField("FREQOFF", TpArrayDouble, IPosition(1, nrspw));
-  units.define ("FREQOFF", "HZ");
+  units.define("FREQOFF", "HZ");
   desc.addField("BANDWIDTH", TpDouble);
-  units.define ("BANDWIDTH", "HZ");
+  units.define("BANDWIDTH", "HZ");
   desc.addField("RAEPO", TpDouble);
-  units.define ("RAEPO", "DEGREES");
+  units.define("RAEPO", "DEGREES");
   desc.addField("DECEPO", TpDouble);
-  units.define ("DECEPO", "DEGREES");
+  units.define("DECEPO", "DEGREES");
   desc.addField("EPOCH", TpDouble);
-  units.define ("EPOCH", "YEARS");
+  units.define("EPOCH", "YEARS");
   desc.addField("RAAPP", TpDouble);
-  units.define ("RAAPP", "DEGREES");
+  units.define("RAAPP", "DEGREES");
   desc.addField("DECAPP", TpDouble);
-  units.define ("DECAPP", "DEGREES");
+  units.define("DECAPP", "DEGREES");
   desc.addField("LSRVEL", TpArrayDouble, IPosition(1, nrspw));
-  units.define ("LSRVEL", "M/SEC");
+  units.define("LSRVEL", "M/SEC");
   desc.addField("RESTFREQ", TpArrayDouble, IPosition(1, nrspw));
-  units.define ("RESTFREQ", "HZ");
+  units.define("RESTFREQ", "HZ");
   desc.addField("PMRA", TpDouble);
-  units.define ("PMRA", "DEG/DAY");
+  units.define("PMRA", "DEG/DAY");
   desc.addField("PMDEC", TpDouble);
-  units.define ("PMDEC", "DEG/DAY");
+  units.define("PMDEC", "DEG/DAY");
 
-  FITSTableWriter writer(output, desc, strlengths, nrfield,
-			 header, units, False);
+  FITSTableWriter writer(output, desc, strlengths, nrfield, header, units, False);
 
   RecordFieldPtr<Int> idno(writer.row(), "ID. NO.");
   RecordFieldPtr<String> source(writer.row(), "SOURCE");
   RecordFieldPtr<Int> qual(writer.row(), "QUAL");
   RecordFieldPtr<String> calcode(writer.row(), "CALCODE");
-  RecordFieldPtr< Array<Float> > iflux(writer.row(), "IFLUX");
-  RecordFieldPtr< Array<Float> > qflux(writer.row(), "QFLUX");
-  RecordFieldPtr< Array<Float> > uflux(writer.row(), "UFLUX");
-  RecordFieldPtr< Array<Float> > vflux(writer.row(), "VFLUX");
-  RecordFieldPtr< Array<Double> > freqoff(writer.row(), "FREQOFF");
+  RecordFieldPtr<Array<Float>> iflux(writer.row(), "IFLUX");
+  RecordFieldPtr<Array<Float>> qflux(writer.row(), "QFLUX");
+  RecordFieldPtr<Array<Float>> uflux(writer.row(), "UFLUX");
+  RecordFieldPtr<Array<Float>> vflux(writer.row(), "VFLUX");
+  RecordFieldPtr<Array<Double>> freqoff(writer.row(), "FREQOFF");
   RecordFieldPtr<Double> bandwidth(writer.row(), "BANDWIDTH");
   RecordFieldPtr<Double> raepo(writer.row(), "RAEPO");
   RecordFieldPtr<Double> decepo(writer.row(), "DECEPO");
   RecordFieldPtr<Double> epoch(writer.row(), "EPOCH");
   RecordFieldPtr<Double> raapp(writer.row(), "RAAPP");
   RecordFieldPtr<Double> decapp(writer.row(), "DECAPP");
-  RecordFieldPtr< Array<Double> > lsrvel(writer.row(), "LSRVEL");
-  RecordFieldPtr< Array<Double> > restfreq(writer.row(), "RESTFREQ");
+  RecordFieldPtr<Array<Double>> lsrvel(writer.row(), "LSRVEL");
+  RecordFieldPtr<Array<Double>> restfreq(writer.row(), "RESTFREQ");
   RecordFieldPtr<Double> pmra(writer.row(), "PMRA");
   RecordFieldPtr<Double> pmdec(writer.row(), "PMDEC");
 
@@ -1493,13 +1425,13 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
   // Only take those fields which are part of the fieldidMap
   // (which represents the fields written in the main table).
-  for (uInt fieldnum=0; fieldnum<nrow; fieldnum++) {
-    if (fieldnum < fieldidMap.nelements()  &&  fieldidMap[fieldnum] >= 0) {
+  for (uInt fieldnum = 0; fieldnum < nrow; fieldnum++) {
+    if (fieldnum < fieldidMap.nelements() && fieldidMap[fieldnum] >= 0) {
       *idno = 1 + fieldidMap[fieldnum];
-      dir=msfc.phaseDirMeas(fieldnum);
+      dir = msfc.phaseDirMeas(fieldnum);
       *source = inname(fieldnum) + "                ";
-      if (dir.getRef().getType()==MDirection::B1950) {
-	*epoch = 1950.;
+      if (dir.getRef().getType() == MDirection::B1950) {
+        *epoch = 1950.;
       }
 
       // Use info from SOURCE table if available.
@@ -1509,53 +1441,54 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
       //  Optional access to SOURCE table
       if (sourceTable) {
-      	**srcInxFld = insrcid(fieldnum);
-      	Vector<rownr_t> rownrs = srcInx->getRowNumbers();
-      	if (rownrs.nelements() > 0) {
-      	  uInt rownr = rownrs(0);
-	  // Name in SOURCE table overides name in FIELD table
-      	  *source = sourceColumns->name()(rownr) + "                ";;
-	  if(sourceColumns->sysvel().isDefined(rownr)) {
-	    Vector<Double> sv (sourceColumns->sysvel()(rownr));
-	    if (sv.nelements() > 0) {
-	      *lsrvel = sv(0);
-	    }
-	  }
-	  if(sourceColumns->restFrequency().isDefined(rownr)) {
-	    Vector<Double> rf (sourceColumns->restFrequency()(rownr));
-	    if (rf.nelements() > 0) {
-	      *restfreq = rf(0);
-	    }
-	  }
-      	  if (sourceColumns->properMotion().isDefined(rownr)) {
-      	    Vector<Double> pm = sourceColumns->properMotion()(rownr);
-      	    *pmra = pm(0);
-      	    *pmdec = pm(1);
-      	  }
-      	  *qual = sourceColumns->calibrationGroup()(rownr);
-      	  *calcode = sourceColumns->code()(rownr) + "    ";
+        **srcInxFld = insrcid(fieldnum);
+        Vector<rownr_t> rownrs = srcInx->getRowNumbers();
+        if (rownrs.nelements() > 0) {
+          uInt rownr = rownrs(0);
+          // Name in SOURCE table overides name in FIELD table
+          *source = sourceColumns->name()(rownr) + "                ";
+          ;
+          if (sourceColumns->sysvel().isDefined(rownr)) {
+            Vector<Double> sv(sourceColumns->sysvel()(rownr));
+            if (sv.nelements() > 0) {
+              *lsrvel = sv(0);
+            }
+          }
+          if (sourceColumns->restFrequency().isDefined(rownr)) {
+            Vector<Double> rf(sourceColumns->restFrequency()(rownr));
+            if (rf.nelements() > 0) {
+              *restfreq = rf(0);
+            }
+          }
+          if (sourceColumns->properMotion().isDefined(rownr)) {
+            Vector<Double> pm = sourceColumns->properMotion()(rownr);
+            *pmra = pm(0);
+            *pmdec = pm(1);
+          }
+          *qual = sourceColumns->calibrationGroup()(rownr);
+          *calcode = sourceColumns->code()(rownr) + "    ";
 
-      	  // Directions have to be converted from radians to degrees.
-      	  if (sourceColumns->direction().isDefined(rownr)) {
-      	    dir = sourceColumns->directionMeas()(rownr);
-      	  }
-      	  if (dir.getRef().getType()==MDirection::B1950) {
-      	    *epoch = 1950.;
-      	  }
-      	}
+          // Directions have to be converted from radians to degrees.
+          if (sourceColumns->direction().isDefined(rownr)) {
+            dir = sourceColumns->directionMeas()(rownr);
+          }
+          if (dir.getRef().getType() == MDirection::B1950) {
+            *epoch = 1950.;
+          }
+        }
       }
 
       // Write ra/dec as epoch and apparent (in degrees).
       // Use the time in the field table to calculate apparent.
       {
-	*raepo = dir.getAngle("deg").getValue()(0);
-	*decepo = dir.getAngle("deg").getValue()(1);
-	MeasFrame frame;
-	frame.set(msfc.timeMeas()(fieldnum));
-	MDirection::Ref typeout (MDirection::APP, frame);
-	MDirection dirout = MDirection::Convert(dir, typeout)();
-	*raapp = dirout.getAngle("deg").getValue()(0);
-	*decapp = dirout.getAngle("deg").getValue()(1);
+        *raepo = dir.getAngle("deg").getValue()(0);
+        *decepo = dir.getAngle("deg").getValue()(1);
+        MeasFrame frame;
+        frame.set(msfc.timeMeas()(fieldnum));
+        MDirection::Ref typeout(MDirection::APP, frame);
+        MDirection dirout = MDirection::Convert(dir, typeout)();
+        *raapp = dirout.getAngle("deg").getValue()(0);
+        *decapp = dirout.getAngle("deg").getValue()(1);
       }
       writer.write();
     }
@@ -1571,16 +1504,13 @@ Bool MSFitsOutputAstron::writeSU(FitsOutput *output, const MeasurementSet &ms,
   return True;
 }
 
-Bool MSFitsOutputAstron::writeTY(FitsOutput *output, const MeasurementSet &ms,
-			   const Table& syscal,
-			   const Block<Int>& spwidMap, uInt nrif,
-			   Bool combineSpw)
-{
+Bool MSFitsOutputAstron::writeTY(FitsOutput* output, const MeasurementSet& ms, const Table& syscal,
+                                 const Block<Int>& spwidMap, uInt nrif, Bool combineSpw) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeTY"));
   const MSSysCal subtable(syscal);
   MSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
-  if (nrow == 0  ||  sysCalColumns.tsys().isNull()) {
+  if (nrow == 0 || sysCalColumns.tsys().isNull()) {
     os << LogIO::SEVERE << "No SysCal TY info!" << LogIO::POST;
     return False;
   }
@@ -1590,68 +1520,67 @@ Bool MSFitsOutputAstron::writeTY(FitsOutput *output, const MeasurementSet &ms,
   if (!combineSpw) {
     nrif = 1;
   }
-  IPosition ifShape(1,nrif);
+  IPosition ifShape(1, nrif);
   const uInt nentries = nrow / nrif;
 
-  os << LogIO::NORMAL << "Found " << nentries
-     << " TY table entries (" << nrif << " IFs)" << LogIO::POST;
+  os << LogIO::NORMAL << "Found " << nentries << " TY table entries (" << nrif << " IFs)"
+     << LogIO::POST;
 
   // Get reference time (i.e. start time) from the main table.
   Double refTime;
-  {                                // get starttime (truncated to days)
+  {  // get starttime (truncated to days)
     MSColumns mscol(ms);
     refTime = floor(mscol.time()(0) / C::day) * C::day;
   }
   // ##### Header
   Record header;
-  header.define("EXTNAME", "AIPS TY");             // EXTNAME
-  header.define("EXTVER", 1);                      // EXTVER
-  header.define("NO_IF", Int(nrif));               // NO_IF
-  header.define("NO_POL", npol);                   // NO_POL
-  header.define("REVISION", 10);                   // REVISION
+  header.define("EXTNAME", "AIPS TY");  // EXTNAME
+  header.define("EXTVER", 1);           // EXTVER
+  header.define("NO_IF", Int(nrif));    // NO_IF
+  header.define("NO_POL", npol);        // NO_POL
+  header.define("REVISION", 10);        // REVISION
 
   // Table description
   RecordDesc desc;
-  Record stringLengths; // no strings
+  Record stringLengths;  // no strings
   Record units;
   desc.addField("TIME", TpFloat);
-  units.define ("TIME", "DAYS");
+  units.define("TIME", "DAYS");
   desc.addField("TIME INTERVAL", TpFloat);
-  units.define ("TIME INTERVAL", "DAYS");
+  units.define("TIME INTERVAL", "DAYS");
   desc.addField("SOURCE ID", TpInt);
   desc.addField("ANTENNA NO.", TpInt);
   desc.addField("SUBARRAY", TpInt);
   desc.addField("FREQ ID", TpInt);
   desc.addField("TSYS 1", TpArrayFloat, ifShape);
-  units.define ("TSYS 1", "KELVINS");
+  units.define("TSYS 1", "KELVINS");
   desc.addField("TANT 1", TpArrayFloat, ifShape);
-  units.define ("TANT 1", "KELVINS");
+  units.define("TANT 1", "KELVINS");
   if (npol == 2) {
     desc.addField("TSYS 2", TpArrayFloat, ifShape);
-    units.define ("TSYS 2", "KELVINS");
+    units.define("TSYS 2", "KELVINS");
     desc.addField("TANT 2", TpArrayFloat, ifShape);
-    units.define ("TANT 2", "KELVINS");
+    units.define("TANT 2", "KELVINS");
   }
 
-  FITSTableWriter writer(output, desc, stringLengths,
-			 nentries, header, units, False);
+  FITSTableWriter writer(output, desc, stringLengths, nentries, header, units, False);
   RecordFieldPtr<Float> time(writer.row(), "TIME");
   RecordFieldPtr<Float> interval(writer.row(), "TIME INTERVAL");
   RecordFieldPtr<Int> sourceId(writer.row(), "SOURCE ID");
   RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA NO.");
   RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
   RecordFieldPtr<Int> spwId(writer.row(), "FREQ ID");
-  RecordFieldPtr<Array<Float> > tsys1(writer.row(), "TSYS 1");
-  RecordFieldPtr<Array<Float> > tant1(writer.row(), "TANT 1");
-  RecordFieldPtr<Array<Float> > tsys2;
-  RecordFieldPtr<Array<Float> > tant2;
+  RecordFieldPtr<Array<Float>> tsys1(writer.row(), "TSYS 1");
+  RecordFieldPtr<Array<Float>> tant1(writer.row(), "TANT 1");
+  RecordFieldPtr<Array<Float>> tsys2;
+  RecordFieldPtr<Array<Float>> tant2;
   if (npol == 2) {
-    tsys2 = RecordFieldPtr<Array<Float> > (writer.row(), "TSYS 2");
-    tant2 = RecordFieldPtr<Array<Float> > (writer.row(), "TANT 2");
+    tsys2 = RecordFieldPtr<Array<Float>>(writer.row(), "TSYS 2");
+    tant2 = RecordFieldPtr<Array<Float>>(writer.row(), "TANT 2");
   }
 
   Vector<Float> tsysval;
-  for (uInt i=0; i<nrow; i+=nrif) {
+  for (uInt i = 0; i < nrow; i += nrif) {
     Double tim = sysCalColumns.time()(i);
     *time = (tim - refTime) / C::day;
     *interval = sysCalColumns.interval()(i) / C::day;
@@ -1659,25 +1588,26 @@ Bool MSFitsOutputAstron::writeTY(FitsOutput *output, const MeasurementSet &ms,
     *antenna = 1 + sysCalColumns.antennaId()(i);
     *arrayId = 1;
     *spwId = 1 + spwidMap[sysCalColumns.spectralWindowId()(i)];
-    sysCalColumns.tsys().get (i, tsysval);
+    sysCalColumns.tsys().get(i, tsysval);
     Vector<Float> ts1(nrif);
     Vector<Float> ts2(nrif);
     Vector<Float> ta(nrif);
     ta = 0.;
-    for (uInt j=0; j<nrif; j++) {
-      sysCalColumns.tsys().get (i+j, tsysval);
+    for (uInt j = 0; j < nrif; j++) {
+      sysCalColumns.tsys().get(i + j, tsysval);
       ts1(j) = tsysval(0);
       if (npol == 2) {
-	ts2(j) = tsysval(1);
+        ts2(j) = tsysval(1);
       }
       if (j > 0) {
-	if (sysCalColumns.time()(i+j) != tim) {
-	  throw (AipsError ("Irregularity in times in SYSCAL subtable"));
-	}
+        if (sysCalColumns.time()(i + j) != tim) {
+          throw(AipsError("Irregularity in times in SYSCAL subtable"));
+        }
       }
     }
     *tsys1 = ts1;
-    *tant1 = ta;;
+    *tant1 = ta;
+    ;
     if (npol == 2) {
       *tsys2 = ts2;
       *tant2 = ta;
@@ -1688,11 +1618,10 @@ Bool MSFitsOutputAstron::writeTY(FitsOutput *output, const MeasurementSet &ms,
   return True;
 }
 
-Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
-			   const Table& syscal, const Block<Int>& /*spwidMap*/,
-			   uInt nrif, Bool combineSpw, Double sensitivity,
-			   Int refPixelFreq, Double refFreq, Double chanbw)
-{
+Bool MSFitsOutputAstron::writeGC(FitsOutput* output, const MeasurementSet& ms, const Table& syscal,
+                                 const Block<Int>& /*spwidMap*/, uInt nrif, Bool combineSpw,
+                                 Double sensitivity, Int refPixelFreq, Double refFreq,
+                                 Double chanbw) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeGC"));
 
   // We need to write an entry per antenna (and spw if !combineSpw).
@@ -1701,16 +1630,14 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   Block<String> sortNames(2);
   sortNames[0] = MSSysCal::columnName(MSSysCal::ANTENNA_ID);
   sortNames[1] = MSSysCal::columnName(MSSysCal::TIME);
-  Table sorcal = syscal.sort (sortNames, Sort::Ascending,
-			      Sort::InsSort + Sort::NoDuplicates);
+  Table sorcal = syscal.sort(sortNames, Sort::Ascending, Sort::InsSort + Sort::NoDuplicates);
   // Sort again (without duplicates) to get the nr of antennas.
   // Remove TIME from the sort columns.
   // Use insertion sort, because the table is already in order.
   Int nrant;
-  sortNames.resize (1, True, True);
+  sortNames.resize(1, True, True);
   {
-    Table sorcal2 = sorcal.sort (sortNames, Sort::Ascending,
-				 Sort::InsSort + Sort::NoDuplicates);
+    Table sorcal2 = sorcal.sort(sortNames, Sort::Ascending, Sort::InsSort + Sort::NoDuplicates);
     nrant = sorcal2.nrow();
   }
   if (nrant == 0) {
@@ -1725,12 +1652,11 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   }
   // Get #pol from 1st row in FEED table.
   const Int npol = MSFeedColumns(ms.feed()).numReceptors()(0);
-  IPosition ifShape(1,nrif);
-  const uInt nentries = nrant*nrspw;
+  IPosition ifShape(1, nrif);
+  const uInt nentries = nrant * nrspw;
 
-  os << LogIO::NORMAL << "Found " << nentries
-     << " GC table entries (" << nrif << " IFs, "
-     << npol << " polarizations)" << LogIO::POST;
+  os << LogIO::NORMAL << "Found " << nentries << " GC table entries (" << nrif << " IFs, " << npol
+     << " polarizations)" << LogIO::POST;
 
   // Get some info from the main table.
   Int nchan, nstk;
@@ -1741,61 +1667,59 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
     nstk = shp(0);
     nchan = shp(1);
     // Find the start time and HA (from the first row).
-    getStartHA (startTime, startHA, ms, 0);
+    getStartHA(startTime, startHA, ms, 0);
   }
 
   // Create an iterator (on antenna) for the already sorted table.
   // Use the first chunk to create the hourangle vector.
-  TableIterator tabiter (sorcal, sortNames, TableIterator::Ascending,
-			 TableIterator::NoSort);
+  TableIterator tabiter(sorcal, sortNames, TableIterator::Ascending, TableIterator::NoSort);
   Vector<Float> havec;
   {
-    Table tableChunk (tabiter.table());
+    Table tableChunk(tabiter.table());
     uInt n = tableChunk.nrow();
-    MSSysCal syscal (tableChunk);
-    MSSysCalColumns sysCalColumns (syscal);
+    MSSysCal syscal(tableChunk);
+    MSSysCalColumns sysCalColumns(syscal);
     // Fill the hourangle vector (which is the same for all subsets).
     // Its unit is degrees; startHA is in fractions of a circle.
     // The time is in seconds, so convert that to a full day (circle).
     // Start the hourangle in degrees.
-    havec.resize (n);
-    Double factor = (Double(366.25) / 365.25) / (24*3600);
-    for (uInt i=0; i<n; i++) {
-      havec(i) = 360 * (startHA + factor * (sysCalColumns.time()(i) -
-					    startTime));
+    havec.resize(n);
+    Double factor = (Double(366.25) / 365.25) / (24 * 3600);
+    for (uInt i = 0; i < n; i++) {
+      havec(i) = 360 * (startHA + factor * (sysCalColumns.time()(i) - startTime));
     }
   }
   // For the time being write only 2 values (first and last HA).
   // Until we know how to calculate the gain factor resulting
   // from the deformation of the mirror at given hourangles.
-  IPosition shape (1,2);
-  Vector<Float> havec2(2*nrif, 0.);
-  for (uInt i=0; i<nrif; i++) {
-    havec2(2*i) = havec(0);
-    havec2(2*i+1) = havec(havec.nelements() - 1);
+  IPosition shape(1, 2);
+  Vector<Float> havec2(2 * nrif, 0.);
+  for (uInt i = 0; i < nrif; i++) {
+    havec2(2 * i) = havec(0);
+    havec2(2 * i + 1) = havec(havec.nelements() - 1);
   }
 
   // Write the data for each antenna.
   // ##### Header
   Record header;
-  header.define("EXTNAME", "AIPS GC");             // EXTNAME
-  header.define("EXTVER", 1);                      // EXTVER
-  header.define("OBSCODE","");                     // OBSCODE
-  header.define("NO_POL", npol);                   // NO_POL
-  header.define("NO_STKD", nstk);                  // NO_STKD
-  header.define("STK_1", -5);                      // STK_1  (XX = -5)
-  header.define("NO_BAND", Int(nrif));             // NO_BAND
-  header.define("NO_CHAN", nchan);                 // NO_CHAN
-  header.define("REF_FREQ", refFreq);              // REF_FREQ
-  header.define("CHAN_BW", abs(chanbw));      // CHAN_BW
-  header.define("REF_PIXL", Double(1+refPixelFreq)); // REF_PIXL (==CRPIX4)
-  header.define("NO_TABS", Int(shape(0)));         // NO_TABS
-  header.define("TABREV", 2);                      // TABREV
+  header.define("EXTNAME", "AIPS GC");                  // EXTNAME
+  header.define("EXTVER", 1);                           // EXTVER
+  header.define("OBSCODE", "");                         // OBSCODE
+  header.define("NO_POL", npol);                        // NO_POL
+  header.define("NO_STKD", nstk);                       // NO_STKD
+  header.define("STK_1", -5);                           // STK_1  (XX = -5)
+  header.define("NO_BAND", Int(nrif));                  // NO_BAND
+  header.define("NO_CHAN", nchan);                      // NO_CHAN
+  header.define("REF_FREQ", refFreq);                   // REF_FREQ
+  header.define("CHAN_BW", abs(chanbw));                // CHAN_BW
+  header.define("REF_PIXL", Double(1 + refPixelFreq));  // REF_PIXL (==CRPIX4)
+  header.define("NO_TABS", Int(shape(0)));              // NO_TABS
+  header.define("TABREV", 2);                           // TABREV
 
   // Table description
   RecordDesc desc;
-  Record stringLengths; // no strings
-  Record units; // default to Hz
+  Record stringLengths;  // no strings
+  Record units;          // default to Hz
   desc.addField("ANTENNA_NO", TpInt);
   desc.addField("SUBARRAY", TpInt);
   desc.addField("FREQ ID", TpInt);
@@ -1804,89 +1728,88 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   desc.addField("X_TYP_1", TpArrayInt, ifShape);
   desc.addField("Y_TYP_1", TpArrayInt, ifShape);
   desc.addField("X_VAL_1", TpArrayFloat, ifShape);
-  desc.addField("Y_VAL_1", TpArrayFloat, shape*nrif);
-  units.define ("Y_VAL_1", "DEGREES");
-  desc.addField("GAIN_1", TpArrayFloat, shape*nrif);
+  desc.addField("Y_VAL_1", TpArrayFloat, shape * nrif);
+  units.define("Y_VAL_1", "DEGREES");
+  desc.addField("GAIN_1", TpArrayFloat, shape * nrif);
   desc.addField("SENS_1", TpArrayFloat, ifShape);
-  units.define ("SENS_1", "K/JY");
+  units.define("SENS_1", "K/JY");
   if (npol == 2) {
     desc.addField("TYPE_2", TpArrayInt, ifShape);
     desc.addField("NTERM_2", TpArrayInt, ifShape);
     desc.addField("X_TYP_2", TpArrayInt, ifShape);
     desc.addField("Y_TYP_2", TpArrayInt, ifShape);
     desc.addField("X_VAL_2", TpArrayFloat, ifShape);
-    desc.addField("Y_VAL_2", TpArrayFloat, shape*nrif);
-    units.define ("Y_VAL_2", "DEGREES");
-    desc.addField("GAIN_2", TpArrayFloat, shape*nrif);
+    desc.addField("Y_VAL_2", TpArrayFloat, shape * nrif);
+    units.define("Y_VAL_2", "DEGREES");
+    desc.addField("GAIN_2", TpArrayFloat, shape * nrif);
     desc.addField("SENS_2", TpArrayFloat, ifShape);
-    units.define ("SENS_2", "K/JY");
+    units.define("SENS_2", "K/JY");
   }
 
-  FITSTableWriter writer(output, desc, stringLengths,
-			 nentries, header, units, False);
+  FITSTableWriter writer(output, desc, stringLengths, nentries, header, units, False);
   RecordFieldPtr<Int> antenna(writer.row(), "ANTENNA_NO");
   RecordFieldPtr<Int> arrayId(writer.row(), "SUBARRAY");
   RecordFieldPtr<Int> spwId(writer.row(), "FREQ ID");
-  RecordFieldPtr<Array<Int> > type1(writer.row(), "TYPE_1");
-  RecordFieldPtr<Array<Int> > nterm1(writer.row(), "NTERM_1");
-  RecordFieldPtr<Array<Int> > xtype1(writer.row(), "X_TYP_1");
-  RecordFieldPtr<Array<Int> > ytype1(writer.row(), "Y_TYP_1");
-  RecordFieldPtr<Array<Float> > xval1(writer.row(), "X_VAL_1");
-  RecordFieldPtr<Array<Float> > yval1(writer.row(), "Y_VAL_1");
-  RecordFieldPtr<Array<Float> > gain1(writer.row(), "GAIN_1");
-  RecordFieldPtr<Array<Float> > sens1(writer.row(), "SENS_1");
-  RecordFieldPtr<Array<Int> > type2;
-  RecordFieldPtr<Array<Int> > nterm2;
-  RecordFieldPtr<Array<Int> > xtype2;
-  RecordFieldPtr<Array<Int> > ytype2;
-  RecordFieldPtr<Array<Float> > xval2;
-  RecordFieldPtr<Array<Float> > yval2;
-  RecordFieldPtr<Array<Float> > gain2;
-  RecordFieldPtr<Array<Float> > sens2;
+  RecordFieldPtr<Array<Int>> type1(writer.row(), "TYPE_1");
+  RecordFieldPtr<Array<Int>> nterm1(writer.row(), "NTERM_1");
+  RecordFieldPtr<Array<Int>> xtype1(writer.row(), "X_TYP_1");
+  RecordFieldPtr<Array<Int>> ytype1(writer.row(), "Y_TYP_1");
+  RecordFieldPtr<Array<Float>> xval1(writer.row(), "X_VAL_1");
+  RecordFieldPtr<Array<Float>> yval1(writer.row(), "Y_VAL_1");
+  RecordFieldPtr<Array<Float>> gain1(writer.row(), "GAIN_1");
+  RecordFieldPtr<Array<Float>> sens1(writer.row(), "SENS_1");
+  RecordFieldPtr<Array<Int>> type2;
+  RecordFieldPtr<Array<Int>> nterm2;
+  RecordFieldPtr<Array<Int>> xtype2;
+  RecordFieldPtr<Array<Int>> ytype2;
+  RecordFieldPtr<Array<Float>> xval2;
+  RecordFieldPtr<Array<Float>> yval2;
+  RecordFieldPtr<Array<Float>> gain2;
+  RecordFieldPtr<Array<Float>> sens2;
   if (npol == 2) {
-    type2  = RecordFieldPtr<Array<Int> > (writer.row(), "TYPE_2");
-    nterm2 = RecordFieldPtr<Array<Int> > (writer.row(), "NTERM_2");
-    xtype2 = RecordFieldPtr<Array<Int> > (writer.row(), "X_TYP_2");
-    ytype2 = RecordFieldPtr<Array<Int> > (writer.row(), "Y_TYP_2");
-    xval2  = RecordFieldPtr<Array<Float> > (writer.row(), "X_VAL_2");
-    yval2  = RecordFieldPtr<Array<Float> > (writer.row(), "Y_VAL_2");
-    gain2  = RecordFieldPtr<Array<Float> > (writer.row(), "GAIN_2");
-    sens2  = RecordFieldPtr<Array<Float> > (writer.row(), "SENS_2");
+    type2 = RecordFieldPtr<Array<Int>>(writer.row(), "TYPE_2");
+    nterm2 = RecordFieldPtr<Array<Int>>(writer.row(), "NTERM_2");
+    xtype2 = RecordFieldPtr<Array<Int>>(writer.row(), "X_TYP_2");
+    ytype2 = RecordFieldPtr<Array<Int>>(writer.row(), "Y_TYP_2");
+    xval2 = RecordFieldPtr<Array<Float>>(writer.row(), "X_VAL_2");
+    yval2 = RecordFieldPtr<Array<Float>>(writer.row(), "Y_VAL_2");
+    gain2 = RecordFieldPtr<Array<Float>>(writer.row(), "GAIN_2");
+    sens2 = RecordFieldPtr<Array<Float>>(writer.row(), "SENS_2");
   }
 
   // Iterate through the table.
   // Each chunk should have the same size.
   while (!tabiter.pastEnd()) {
-    Table tableChunk (tabiter.table());
-    MSSysCal syscal (tableChunk);
-    MSSysCalColumns sysCalColumns (syscal);
+    Table tableChunk(tabiter.table());
+    MSSysCal syscal(tableChunk);
+    MSSysCalColumns sysCalColumns(syscal);
     *antenna = sysCalColumns.antennaId()(0) + 1;
     //    *arrayId = sysCalColumns.arrayId()(0) + 1;
     *arrayId = 1;
     if (tableChunk.nrow() != havec.nelements()) {
       os << LogIO::SEVERE << "SysCal table is irregular!"
-	 << " Mismatching #rows for antenna " << *antenna << LogIO::POST;
+         << " Mismatching #rows for antenna " << *antenna << LogIO::POST;
       return False;
     }
-    for (Int spw=0; spw<nrspw; spw++) {
-      *spwId = spw+1;
-      *type1 = 1;               // tabulated values
+    for (Int spw = 0; spw < nrspw; spw++) {
+      *spwId = spw + 1;
+      *type1 = 1;  // tabulated values
       *nterm1 = shape(0);
-      *xtype1 = 0;              // none
-      *ytype1 = 3;              // hourangle
+      *xtype1 = 0;  // none
+      *ytype1 = 3;  // hourangle
       *xval1 = 0;
       *yval1 = havec2;
       *gain1 = 1.0;
       *sens1 = sensitivity;
       if (npol == 2) {
-	*type2 = 1;               // tabulated values
-	*nterm2 = shape(0);
-	*xtype2 = 0;
-	*ytype2 = 3;
-	*xval2 = 0;
-	*yval2 = havec2;
-	*gain2 = 1.0;
-	*sens2 = sensitivity;
+        *type2 = 1;  // tabulated values
+        *nterm2 = shape(0);
+        *xtype2 = 0;
+        *ytype2 = 3;
+        *xval2 = 0;
+        *yval2 = havec2;
+        *gain2 = 1.0;
+        *sens2 = sensitivity;
       }
       // Write the current row
       writer.write();
@@ -1896,34 +1819,30 @@ Bool MSFitsOutputAstron::writeGC(FitsOutput *output, const MeasurementSet &ms,
   return True;
 }
 
-void MSFitsOutputAstron::getStartHA (Double& startTime, Double& startHA,
-			       const MeasurementSet& ms, uInt rownr)
-{
-    MSColumns mscol(ms);
-    startTime = mscol.time()(rownr);
-    MEpoch stTime = mscol.timeMeas()(rownr);
-    Int fieldId = mscol.fieldId()(rownr);
-    Int obsId = mscol.observationId()(rownr);
-    // Get RA and DEC with their unit.
-    MDirection delay (mscol.field().delayDirMeas(fieldId));
+void MSFitsOutputAstron::getStartHA(Double& startTime, Double& startHA, const MeasurementSet& ms,
+                                    uInt rownr) {
+  MSColumns mscol(ms);
+  startTime = mscol.time()(rownr);
+  MEpoch stTime = mscol.timeMeas()(rownr);
+  Int fieldId = mscol.fieldId()(rownr);
+  Int obsId = mscol.observationId()(rownr);
+  // Get RA and DEC with their unit.
+  MDirection delay(mscol.field().delayDirMeas(fieldId));
 
-    // Get the observatory's position.
-    String obsName = mscol.observation().telescopeName()(obsId);
-    MPosition pos;
-    MeasTable::Observatory(pos, obsName);
+  // Get the observatory's position.
+  String obsName = mscol.observation().telescopeName()(obsId);
+  MPosition pos;
+  MeasTable::Observatory(pos, obsName);
 
-    // Use this position in a frame
-    MeasFrame frame(pos);
-    frame.set (stTime);
-    MDirection out = MDirection::Convert (delay,
-       MDirection::Ref (MDirection::HADEC, frame)) ();
-    startHA = out.getAngle().getBaseValue()(0)/C::circle;
+  // Use this position in a frame
+  MeasFrame frame(pos);
+  frame.set(stTime);
+  MDirection out = MDirection::Convert(delay, MDirection::Ref(MDirection::HADEC, frame))();
+  startHA = out.getAngle().getBaseValue()(0) / C::circle;
 }
 
-
-Table MSFitsOutputAstron::handleSysCal (const MeasurementSet& ms,
-				  const Vector<Int>& spwids, Bool isSubset)
-{
+Table MSFitsOutputAstron::handleSysCal(const MeasurementSet& ms, const Vector<Int>& spwids,
+                                       Bool isSubset) {
   LogIO os(LogOrigin("MSFitsOutputAstron", "handleSysCal"));
   Table syscal(ms.sysCal());
   // Only take the antennas found in the main table.
@@ -1938,103 +1857,101 @@ Table MSFitsOutputAstron::handleSysCal (const MeasurementSet& ms,
     Vector<Int> ant1 = ant1col.getColumn();
     Vector<Int> ant2 = ant2col.getColumn();
     Int minant1, minant2, maxant1, maxant2;
-    minMax (minant1, maxant1, ant1);
-    minMax (minant2, maxant2, ant2);
-    if (minant1 < 0  ||  minant2 < 0) {
-      throw (AipsError ("Antenna1 or antenna2 < 0 in MS " + ms.tableName()));
+    minMax(minant1, maxant1, ant1);
+    minMax(minant2, maxant2, ant2);
+    if (minant1 < 0 || minant2 < 0) {
+      throw(AipsError("Antenna1 or antenna2 < 0 in MS " + ms.tableName()));
     }
     // Make an array which contains a flag True for all antennas in the
     // main table.
-    Int nrant = 1 + max (maxant1, maxant2);
-    antFlag.resize (nrant);
+    Int nrant = 1 + max(maxant1, maxant2);
+    antFlag.resize(nrant);
     antFlag = False;
     Bool delAnt1, delAnt2;
-    const Int* ant1ptr = ant1.getStorage (delAnt1);
-    const Int* ant2ptr = ant2.getStorage (delAnt2);
+    const Int* ant1ptr = ant1.getStorage(delAnt1);
+    const Int* ant2ptr = ant2.getStorage(delAnt2);
     uInt nrrow = ant1.nelements();
-    for (uInt i=0; i<nrrow; i++) {
+    for (uInt i = 0; i < nrrow; i++) {
       antFlag[ant1ptr[i]] = True;
       antFlag[ant2ptr[i]] = True;
     }
-    ant1.freeStorage (ant1ptr, delAnt1);
-    ant2.freeStorage (ant2ptr, delAnt2);
+    ant1.freeStorage(ant1ptr, delAnt1);
+    ant2.freeStorage(ant2ptr, delAnt2);
   }
   {
     // Now skip all antennas in SYSCAL not present in the main table.
-    ScalarColumn<Int> antcol(syscal,
-			       MSSysCal::columnName(MSSysCal::ANTENNA_ID));
+    ScalarColumn<Int> antcol(syscal, MSSysCal::columnName(MSSysCal::ANTENNA_ID));
     Vector<Int> ant = antcol.getColumn();
     Int minant, maxant;
-    minMax (minant, maxant, ant);
+    minMax(minant, maxant, ant);
     if (minant < 0) {
-      throw (AipsError ("Antenna_id < 0 in SYSCAL " + syscal.tableName()));
+      throw(AipsError("Antenna_id < 0 in SYSCAL " + syscal.tableName()));
     }
     uInt nrrow = ant.nelements();
     Block<Bool> rowFlag(nrrow);
     rowFlag = True;
     Bool flagged = False;
     Bool delAnt;
-    const Int* antptr = ant.getStorage (delAnt);
-    for (uInt i=0; i<nrrow; i++) {
-      if (! antFlag[antptr[i]]) {
-	rowFlag[i] = False;
-	flagged = True;
+    const Int* antptr = ant.getStorage(delAnt);
+    for (uInt i = 0; i < nrrow; i++) {
+      if (!antFlag[antptr[i]]) {
+        rowFlag[i] = False;
+        flagged = True;
       }
     }
-    ant.freeStorage (antptr, delAnt);
+    ant.freeStorage(antptr, delAnt);
     if (flagged) {
       syscal = syscal(rowFlag);
-      os << LogIO::NORMAL << "Skipped unused antennas in SYSCAL table ("
-	 << nrrow-syscal.nrow() << " entries)" << LogIO::POST;
+      os << LogIO::NORMAL << "Skipped unused antennas in SYSCAL table (" << nrrow - syscal.nrow()
+         << " entries)" << LogIO::POST;
     }
   }
   // Skip first rows which maybe contain an average for each antenna.
   // This is an old WSRT feature/problem.
   {
-    MSSysCalColumns sysCalColumns (ms.sysCal());
+    MSSysCalColumns sysCalColumns(ms.sysCal());
     Double sttim = sysCalColumns.time()(0);
     uInt nrow = sysCalColumns.time().nrow();
-    for (uInt i=0; i<nrow; i++) {
+    for (uInt i = 0; i < nrow; i++) {
       Double tim = sysCalColumns.time()(i);
       if (tim != sttim) {
-	if (tim < sttim) {
-	  os << LogIO::NORMAL << "First time in SYSCAL table is "
-	    "an average and will be skipped" << LogIO::POST;
-	  syscal = syscal (syscal.nodeRownr() >= Int(i));
-	}
-	break;
+        if (tim < sttim) {
+          os << LogIO::NORMAL
+             << "First time in SYSCAL table is "
+                "an average and will be skipped"
+             << LogIO::POST;
+          syscal = syscal(syscal.nodeRownr() >= Int(i));
+        }
+        break;
       }
     }
   }
   // If the table is a subset, select the spectral-windows found in
   // the MS.
   if (isSubset) {
-    syscal = syscal
-      (syscal.col(MSSysCal::columnName(MSSysCal::SPECTRAL_WINDOW_ID))
-       .in (TableExprNode(spwids)));
+    syscal = syscal(
+        syscal.col(MSSysCal::columnName(MSSysCal::SPECTRAL_WINDOW_ID)).in(TableExprNode(spwids)));
   }
   // Sort the SYSCAL table in order of antenna, time, spectral-window.
   Block<String> sortNames(3);
   sortNames[0] = MSSysCal::columnName(MSSysCal::ANTENNA_ID);
   sortNames[1] = MSSysCal::columnName(MSSysCal::TIME);
   sortNames[2] = MSSysCal::columnName(MSSysCal::SPECTRAL_WINDOW_ID);
-  return syscal.sort (sortNames);
+  return syscal.sort(sortNames);
 }
 
-
-Int MSFitsOutputAstron::makeIdMap (Block<Int>& map, Vector<Int>& selids,
-			     const Vector<Int>& allids, Bool isSubset)
-{
+Int MSFitsOutputAstron::makeIdMap(Block<Int>& map, Vector<Int>& selids, const Vector<Int>& allids,
+                                  Bool isSubset) {
   // Determine the number of ids and make a mapping of
   // id number in the table to id number in fits.
   // Only if the MS is a subset, we have to determine this mapping
   // explicitly (because then some ids might be left out).
   Int nrid = 1 + max(allids);
-  map.resize (nrid, True, True);
+  map.resize(nrid, True, True);
   map = -1;
   if (!isSubset) {
-    selids.resize (nrid);
-    for (Int i=0; i<nrid; i++) {
+    selids.resize(nrid);
+    for (Int i = 0; i < nrid; i++) {
       map[i] = i;
       selids(i) = i;
     }
@@ -2042,24 +1959,24 @@ Int MSFitsOutputAstron::makeIdMap (Block<Int>& map, Vector<Int>& selids,
     // Find out which fields are actually used, because only those
     // fields need to be written from the FIELD table.
     Bool deleteIt;
-    const Int* data = allids.getStorage (deleteIt);
+    const Int* data = allids.getStorage(deleteIt);
     Block<Bool> idUsed(nrid, False);
     Int nrow = allids.nelements();
-    for (Int i=0; i<nrow; i++) {
+    for (Int i = 0; i < nrow; i++) {
       idUsed[data[i]] = True;
     }
-    allids.freeStorage (data, deleteIt);
+    allids.freeStorage(data, deleteIt);
     Int nr = 0;
-    for (Int i=0; i<nrid; i++) {
+    for (Int i = 0; i < nrid; i++) {
       if (idUsed[i]) {
-	map[i] = nr++;                // form the mapping
+        map[i] = nr++;  // form the mapping
       }
     }
-    selids.resize (nr);
+    selids.resize(nr);
     nr = 0;
-    for (Int i=0; i<nrid; i++) {
+    for (Int i = 0; i < nrid; i++) {
       if (idUsed[i]) {
-	selids(nr++) = i;             // determine which ids are selected
+        selids(nr++) = i;  // determine which ids are selected
       }
     }
     nrid = nr;
@@ -2067,4 +1984,4 @@ Int MSFitsOutputAstron::makeIdMap (Block<Int>& map, Vector<Int>& selids,
   return nrid;
 }
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore

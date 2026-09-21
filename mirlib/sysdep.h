@@ -39,7 +39,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-
 #ifndef Null
 #define Null '\0'
 #endif
@@ -91,7 +90,7 @@ typedef long long int int8;
 
 #ifdef unicos
 #include <fortran.h>
-#define FORT_TRUE  _btol(1)
+#define FORT_TRUE _btol(1)
 #define FORT_FALSE _btol(0)
 #define FORT_LOGICAL(a) (_ltob((&(a))))
 #define BUFDBUFF 0
@@ -108,9 +107,9 @@ typedef long long int int8;
 
 #ifndef defined_params
 #if defined(convex) || defined(alpha) || defined(__alpha)
-#  define FORT_TRUE  -1
+#define FORT_TRUE -1
 #else
-#  define FORT_TRUE 1
+#define FORT_TRUE 1
 #endif
 
 #define FORT_FALSE 0
@@ -127,9 +126,8 @@ typedef long long int int8;
 /* Moving check for strerror into configure steps to define HAVE_STRERROR */
 /* left old style build compatible check in bug.c */
 
-
 /*  Short cut routines when no conversion is necessary. These are
-    used for any IEEE floating point machine with FITS ordered bytes.	
+    used for any IEEE floating point machine with FITS ordered bytes.
 
     WORDS_BIGENDIAN is also defined though the 'autoconf' package
     and should appear in config.h if it's used (sun's, linuxppc, etc.)
@@ -138,27 +136,26 @@ typedef long long int int8;
 
  */
 
-
 #ifndef WORDS_BIGENDIAN
-# if defined (sun) || defined (convex) || defined (mips) || defined(sgi) || defined(hpux)
-#  define WORDS_BIGENDIAN
-# endif
-# if defined(PPC) || defined(powerpc) || defined(darwin_ppc)
-#  define WORDS_BIGENDIAN
-# endif
+#if defined(sun) || defined(convex) || defined(mips) || defined(sgi) || defined(hpux)
+#define WORDS_BIGENDIAN
+#endif
+#if defined(PPC) || defined(powerpc) || defined(darwin_ppc)
+#define WORDS_BIGENDIAN
+#endif
 #endif
 
 #if defined(i386)
 #undef WORDS_BIGENDIAN
 #endif
 
-#ifdef WORDS_BIGENDIAN 
-#  define packr_c(a,b,c)    memcpy((b),(char *)(a),sizeof(float)*(c))
-#  define unpackr_c(a,b,c)  memcpy((char *)(b),(a),sizeof(float)*(c))
-#  define packd_c(a,b,c)    memcpy((b),(char *)(a),sizeof(double)*(c))
-#  define unpackd_c(a,b,c)  memcpy((char *)(b),(a),sizeof(double)*(c))
-#  define pack32_c(a,b,c)   memcpy((b),(char *)(a),sizeof(int)*(c))
-#  define unpack32_c(a,b,c) memcpy((char *)(b),(a),sizeof(int)*(c))
+#ifdef WORDS_BIGENDIAN
+#define packr_c(a, b, c) memcpy((b), (char *)(a), sizeof(float) * (c))
+#define unpackr_c(a, b, c) memcpy((char *)(b), (a), sizeof(float) * (c))
+#define packd_c(a, b, c) memcpy((b), (char *)(a), sizeof(double) * (c))
+#define unpackd_c(a, b, c) memcpy((char *)(b), (a), sizeof(double) * (c))
+#define pack32_c(a, b, c) memcpy((b), (char *)(a), sizeof(int) * (c))
+#define unpack32_c(a, b, c) memcpy((char *)(b), (a), sizeof(int) * (c))
 
 void pack16_c(int *in, char *out, int n);
 void unpack16_c(char *in, int *out, int n);

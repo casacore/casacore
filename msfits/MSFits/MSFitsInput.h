@@ -1,27 +1,27 @@
-//# MSFitsInput:  simple uvfits (random group) to MeasurementSet conversion
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify
-//# it under the terms of the GNU General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or
-//# (at your option) any later version.
-//#
-//# This program is distributed in the hope that it will be useful,
-//# but WITHOUT ANY WARRANTY; without even the implied warranty of
-//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//# GNU General Public License for more details.
-//#
-//# You should have received a copy of the GNU General Public License
-//# along with this program; if not, write to the Free Software
-//# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSFitsInput:  simple uvfits (random group) to MeasurementSet conversion
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify
+// # it under the terms of the GNU General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or
+// # (at your option) any later version.
+// #
+// # This program is distributed in the hope that it will be useful,
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// # GNU General Public License for more details.
+// #
+// # You should have received a copy of the GNU General Public License
+// # along with this program; if not, write to the Free Software
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_MSFITSINPUT_H
 #define MS_MSFITSINPUT_H
@@ -41,12 +41,13 @@
 #include <casacore/ms/MeasurementSets/MSTileLayout.h>
 #include <casacore/tables/Tables/BaseTable.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class FitsInput;
 class BinaryTable;
 class MSColumns;
-template <class T> class ScalarColumn;
+template <class T>
+class ScalarColumn;
 
 // <summary>
 // A helper class for MSFitsInput
@@ -57,15 +58,14 @@ template <class T> class ScalarColumn;
 // </etymology>
 // <synopsis>
 // This is a helper class to avoid cumbersome switch statements on the
-// template type of the primary array 
+// template type of the primary array
 // It forwards all the PrimaryArray member functions we need in the filler.
 // </synopsis>
-class MSPrimaryTableHolder
-{
+class MSPrimaryTableHolder {
   // This is a helper class to avoid cumbersome switch statements on the
   // template type of the primary array
   // It forwards all the PrimaryTable member function we need in the filler.
-public:
+ public:
   // Construct an empty holder, used to attach to later
   MSPrimaryTableHolder();
 
@@ -82,55 +82,51 @@ public:
   // Detach from the input file
   void detach();
 
-  //# forwarding functions
+  // # forwarding functions
 
   // Number of dimensions
-  Int dims()
-  {return hdu_p->dims();}
+  Int dims() { return hdu_p->dims(); }
 
   // Length of i'th axis
-  Int dim(Int i)
-  {return hdu_p->dim(i);}
+  Int dim(Int i) { return hdu_p->dim(i); }
 
   // Coordinate type
-  Char* ctype(Int i)
-  { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i));}
+  Char* ctype(Int i) { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i)); }
 
   // Coordinate reference value
-  Double crval(Int i)
-  { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i));}
+  Double crval(Int i) { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i)); }
 
   // Coordinate reference pixel
-  Double crpix(Int i)
-  { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i));}
+  Double crpix(Int i) { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i)); }
 
   // Coordinate delta
-  Double cdelt(Int i)
-  { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i));}
+  Double cdelt(Int i) { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i)); }
 
   // Keyword of given type
-  const FitsKeyword* kw(const FITS::ReservedName& n)
-  { return hdu_p->kw(n);}
+  const FitsKeyword* kw(const FITS::ReservedName& n) { return hdu_p->kw(n); }
 
   // All keywords
-  ConstFitsKeywordList& kwlist()
-  { return hdu_p->kwlist();}
+  ConstFitsKeywordList& kwlist() { return hdu_p->kwlist(); }
 
   // Advance to next keyword
-  const FitsKeyword* nextkw()
-  { return hdu_p->nextkw();}
+  const FitsKeyword* nextkw() { return hdu_p->nextkw(); }
 
   // Read the next group
   Int read() {
-     if (pf) return pf->read(); 
-     else if (pl) return pl->read(); 
-     else if (ps) return ps->read(); 
-     else if (pb) return pb->read(); 
-     else cout << "can not read the table" << endl;
-     return 0;
+    if (pf)
+      return pf->read();
+    else if (pl)
+      return pl->read();
+    else if (ps)
+      return ps->read();
+    else if (pb)
+      return pb->read();
+    else
+      cout << "can not read the table" << endl;
+    return 0;
   }
 
-private:
+ private:
   HeaderDataUnit* hdu_p;
   PrimaryTable<Short>* ps;
   PrimaryTable<FitsLong>* pl;
@@ -150,12 +146,11 @@ private:
 // template type of the primary group
 // It forwards all the PrimaryGroup member functions we need in the filler.
 // </synopsis>
-class MSPrimaryGroupHolder
-{
+class MSPrimaryGroupHolder {
   // This is a helper class to avoid cumbersome switch statements on the
   // template type of the primary group
   // It forwards all the PrimaryGroup member function we need in the filler.
-public:
+ public:
   // Construct an empty holder, used to attach to later
   MSPrimaryGroupHolder();
 
@@ -172,69 +167,54 @@ public:
   // Detach from the input file
   void detach();
 
-  //# forwarding functions
+  // # forwarding functions
 
   // Number of dimensions
-  Int dims()
-  {return hdu_p->dims();}
+  Int dims() { return hdu_p->dims(); }
 
   // Length of i'th axis
-  Int dim(Int i)
-  {return hdu_p->dim(i);}
+  Int dim(Int i) { return hdu_p->dim(i); }
 
   // Coordinate type
-  Char* ctype(Int i)
-  { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i));}
+  Char* ctype(Int i) { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i)); }
 
   // Coordinate reference value
-  Double crval(Int i)
-  { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i));}
+  Double crval(Int i) { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i)); }
 
   // Coordinate reference pixel
-  Double crpix(Int i)
-  { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i));}
+  Double crpix(Int i) { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i)); }
 
   // Coordinate delta
-  Double cdelt(Int i)
-  { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i));}
+  Double cdelt(Int i) { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i)); }
 
   // Keyword of given type
-  const FitsKeyword* kw(const FITS::ReservedName& n)
-  { return hdu_p->kw(n);}
+  const FitsKeyword* kw(const FITS::ReservedName& n) { return hdu_p->kw(n); }
 
   // All keywords
-  ConstFitsKeywordList& kwlist()
-  { return hdu_p->kwlist();}
+  ConstFitsKeywordList& kwlist() { return hdu_p->kwlist(); }
 
   // Advance to next keyword
-  const FitsKeyword* nextkw()
-  { return hdu_p->nextkw();}
+  const FitsKeyword* nextkw() { return hdu_p->nextkw(); }
 
   // Number of groups
-  Int gcount() const
-  { return pf ? pf->gcount() : ( pl ? pl->gcount() : ps->gcount());}
+  Int gcount() const { return pf ? pf->gcount() : (pl ? pl->gcount() : ps->gcount()); }
 
   // Number of parameters
-  Int pcount() const
-  { return pf ? pf->pcount() : ( pl ? pl->pcount() : ps->pcount());}
+  Int pcount() const { return pf ? pf->pcount() : (pl ? pl->pcount() : ps->pcount()); }
 
   // Parameter type
-  Char* ptype(Int i) const
-  { return pf ? pf->ptype(i) : ( pl ? pl->ptype(i) : ps->ptype(i));}
+  Char* ptype(Int i) const { return pf ? pf->ptype(i) : (pl ? pl->ptype(i) : ps->ptype(i)); }
 
   // Read the next group
-  Int read()
-  { return pf ? pf->read() : ( pl ? pl->read() : ps->read());}
+  Int read() { return pf ? pf->read() : (pl ? pl->read() : ps->read()); }
 
   // Get i'th parameter
-  Double parm(Int i)
-  { return pf ? pf->parm(i) : ( pl ? pl->parm(i) : ps->parm(i));}
+  Double parm(Int i) { return pf ? pf->parm(i) : (pl ? pl->parm(i) : ps->parm(i)); }
 
   // Get group data with index i, scaled and converted to Double
-  Double operator () (Int i) const
-  { return pf ? (*pf)(i) : ( pl ? (*pl)(i) : (*ps)(i));}
+  Double operator()(Int i) const { return pf ? (*pf)(i) : (pl ? (*pl)(i) : (*ps)(i)); }
 
-private:
+ private:
   HeaderDataUnit* hdu_p;
   PrimaryGroup<Short>* ps;
   PrimaryGroup<FitsLong>* pl;
@@ -263,17 +243,16 @@ private:
 // introduced by DBCON.
 // </synopsis>
 
-class MSFitsInput
-{
+class MSFitsInput {
   // This is an implementation helper class used to store 'local' data
   // during the filling process.
-public:
+ public:
   MSFitsInput() = delete;
 
   // Create from output and input file names. This function opens the input
   // file, and checks the output file is writable.
-  MSFitsInput(const String& msFile, const String& fitsFile, const Bool NewNameStyle=False);
-  
+  MSFitsInput(const String& msFile, const String& fitsFile, const Bool NewNameStyle = False);
+
   MSFitsInput(const MSFitsInput& other) = delete;
 
   // The destructor is fairly trivial.
@@ -283,10 +262,10 @@ public:
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
-  // 
+  //
   void readFitsFile(Int obsType = MSTileLayout::Standard);
 
-private:
+ private:
   FitsInput* _infile;
   String _msFile;
   MSPrimaryGroupHolder _priGroup;
@@ -301,7 +280,7 @@ private:
   Vector<Double> _refVal, _refPix, _delta;
   String _array, _object, _timsys;
   Double _epoch;
-  MDirection::Types _epochRef; // This is a direction measure reference code
+  MDirection::Types _epochRef;  // This is a direction measure reference code
                                 // determined by epoch_p, hence the name and type.
   // unique antennas found in the visibility data
   // NOTE These are 1-based
@@ -311,7 +290,7 @@ private:
   Int _nArray;
   Vector<Double> _receptorAngle;
   MFrequency::Types _freqsys;
-  Double _restfreq; // used for images
+  Double _restfreq;  // used for images
   Bool _addSourceTable;
   LogIO _log;
   Record _header;
@@ -321,7 +300,7 @@ private:
   Bool _newNameStyle;
   Vector<Double> _obsTime;
 
-  Matrix<Double> _restFreq; // used for UVFITS
+  Matrix<Double> _restFreq;  // used for UVFITS
   Matrix<Double> _sysVel;
   Bool _msCreated;
 
@@ -337,8 +316,8 @@ private:
   // If useTSM is True, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM. Use obsType to choose the tiling
   // scheme.
-  void setupMeasurementSet(const String& MSFileName, Bool useTSM=True,
-               Int obsType = MSTileLayout::Standard);
+  void setupMeasurementSet(const String& MSFileName, Bool useTSM = True,
+                           Int obsType = MSTileLayout::Standard);
 
   ///////////////fillers for primary table form uvfits//////////////////////
   // Read a binary table extension of type AIPS AN and create an antenna table
@@ -350,20 +329,20 @@ private:
   // Read a binary table extension and update history table
   void fillObservationTable(ConstFitsKeywordList& kwl);
 
-  //extract axis information
+  // extract axis information
   void getAxisInfo(ConstFitsKeywordList&);
 
-  //extract axis information
+  // extract axis information
   void sortPolarizations();
 
   void fillPolarizationTable();
 
-  //verify that the fits contains visibility data
+  // verify that the fits contains visibility data
   void checkRequiredAxis();
 
   void fillSpectralWindowTable(BinaryTable& bt);
 
-  // fill Field table 
+  // fill Field table
   void fillFieldTable(BinaryTable& bt);
   void fillFieldTable(double, double, String);
 
@@ -383,7 +362,7 @@ private:
   // Fill the main table from the Primary group data
   // if we have enough memory try to do it in mem
   void fillMSMainTableColWise(Int& nField, Int& nSpW);
-  //else do it row by row
+  // else do it row by row
   void fillMSMainTable(Int& nField, Int& nSpW);
 
   // fill spectralwindow table from FITS FQ table + header info
@@ -409,7 +388,7 @@ private:
   // Returns the Direction Measure reference for UVW and other appropriate columns
   // in msc_p (which must exist but have empty columns before you can set it!).
   MDirection::Types getDirectionFrame(Double epoch);
-  
+
   // Check the frame if there is an SU table
   void setFreqFrameVar(BinaryTable& binTab);
 
@@ -426,19 +405,13 @@ private:
 
   void _doFillSysPowerSingleIF(
       const String& casaTableName, const ScalarColumn<Double>& timeCol,
-      const ScalarColumn<Float>& intervalCol,
-      const ScalarColumn<Int>& antNoCol, const ScalarColumn<Int>& freqIDCol,
-      const ScalarColumn<Float>& powerDif1Col,
-      const ScalarColumn<Float>& powerSum1Col,
-      const ScalarColumn<Float>& postGain1Col,
-      const ScalarColumn<Float>& powerDif2Col,
-      const ScalarColumn<Float>& powerSum2Col,
-      const ScalarColumn<Float>& postGain2Col
-  );
-
+      const ScalarColumn<Float>& intervalCol, const ScalarColumn<Int>& antNoCol,
+      const ScalarColumn<Int>& freqIDCol, const ScalarColumn<Float>& powerDif1Col,
+      const ScalarColumn<Float>& powerSum1Col, const ScalarColumn<Float>& postGain1Col,
+      const ScalarColumn<Float>& powerDif2Col, const ScalarColumn<Float>& powerSum2Col,
+      const ScalarColumn<Float>& postGain2Col);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -21,35 +21,31 @@
 #include "hio.h"
 #include <unistd.h>
 
-#define ITEM_HDR_SIZE		4
+#define ITEM_HDR_SIZE 4
 
 #if 1
 
 /*  MIRIAD3 and below data structures */
 
-
-static char 	binary_item[ITEM_HDR_SIZE]	= {0,0,0,0},
-		real_item[ITEM_HDR_SIZE]	= {0,0,0,H_REAL},
-		int_item[ITEM_HDR_SIZE]		= {0,0,0,H_INT},
-		int2_item[ITEM_HDR_SIZE]	= {0,0,0,H_INT2},
-		int8_item[ITEM_HDR_SIZE]	= {0,0,0,H_INT8},
-		char_item[ITEM_HDR_SIZE]	= {0,0,0,H_BYTE},
-		dble_item[ITEM_HDR_SIZE]	= {0,0,0,H_DBLE},
-		cmplx_item[ITEM_HDR_SIZE]	= {0,0,0,H_CMPLX};
+static char binary_item[ITEM_HDR_SIZE] = {0, 0, 0, 0}, real_item[ITEM_HDR_SIZE] = {0, 0, 0, H_REAL},
+            int_item[ITEM_HDR_SIZE] = {0, 0, 0, H_INT},
+            int2_item[ITEM_HDR_SIZE] = {0, 0, 0, H_INT2},
+            int8_item[ITEM_HDR_SIZE] = {0, 0, 0, H_INT8},
+            char_item[ITEM_HDR_SIZE] = {0, 0, 0, H_BYTE},
+            dble_item[ITEM_HDR_SIZE] = {0, 0, 0, H_DBLE},
+            cmplx_item[ITEM_HDR_SIZE] = {0, 0, 0, H_CMPLX};
 
 #else
 
 /*  MIRIAD4 data structures - not finalized on this though */
 
-static char 	binary_item[ITEM_HDR_SIZE]	= {1,0,0,0},
-		real_item[ITEM_HDR_SIZE]	= {1,0,0,H_REAL},
-		int_item[ITEM_HDR_SIZE]		= {1,0,0,H_INT},
-		int2_item[ITEM_HDR_SIZE]	= {1,0,0,H_INT2},
-		int8_item[ITEM_HDR_SIZE]	= {1,0,0,H_INT8},
-		char_item[ITEM_HDR_SIZE]	= {1,0,0,H_BYTE},
-		dble_item[ITEM_HDR_SIZE]	= {1,0,0,H_DBLE},
-		cmplx_item[ITEM_HDR_SIZE]	= {1,0,0,H_CMPLX};
-
+static char binary_item[ITEM_HDR_SIZE] = {1, 0, 0, 0}, real_item[ITEM_HDR_SIZE] = {1, 0, 0, H_REAL},
+            int_item[ITEM_HDR_SIZE] = {1, 0, 0, H_INT},
+            int2_item[ITEM_HDR_SIZE] = {1, 0, 0, H_INT2},
+            int8_item[ITEM_HDR_SIZE] = {1, 0, 0, H_INT8},
+            char_item[ITEM_HDR_SIZE] = {1, 0, 0, H_BYTE},
+            dble_item[ITEM_HDR_SIZE] = {1, 0, 0, H_DBLE},
+            cmplx_item[ITEM_HDR_SIZE] = {1, 0, 0, H_CMPLX};
 
 #endif
 

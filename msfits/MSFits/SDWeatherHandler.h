@@ -1,27 +1,27 @@
-//# SDWeatherFiller.h: fills the WEATHER table for the SDFITS filler
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SDWeatherFiller.h: fills the WEATHER table for the SDFITS filler
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MS_SDWEATHERHANDLER_H
 #define MS_SDWEATHERHANDLER_H
@@ -30,9 +30,9 @@
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/RecordField.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasurementSet;
 class MSWeather;
 class MSWeatherColumns;
@@ -80,61 +80,58 @@ class Record;
 //   <li> start discussion of this possible extension
 // </todo>
 
-class SDWeatherHandler
-{
-public:
-    // default ctor is not attached to a MS and hence is useless until attached
-    SDWeatherHandler();
+class SDWeatherHandler {
+ public:
+  // default ctor is not attached to a MS and hence is useless until attached
+  SDWeatherHandler();
 
-    // attach this to a MS - mark fields in row as handled
-    SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // attach this to a MS - mark fields in row as handled
+  SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
-    // copy ctor
-    SDWeatherHandler(const SDWeatherHandler &other);
+  // copy ctor
+  SDWeatherHandler(const SDWeatherHandler &other);
 
-    ~SDWeatherHandler() {clearAll();}
+  ~SDWeatherHandler() { clearAll(); }
 
-    // assignment operator, uses copy semantics
-    SDWeatherHandler &operator=(const SDWeatherHandler &other);
+  // assignment operator, uses copy semantics
+  SDWeatherHandler &operator=(const SDWeatherHandler &other);
 
-    // attach to a MS, mark fields in row as handled
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // attach to a MS, mark fields in row as handled
+  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
-    // reset internals given indicated row, use the same MS
-    void resetRow(const Record &row);
-    
-    // fill - a new row is added as necessary, there is no lookback to see if a row could be
-    // reused.  Only the current row might be reused.
-    void fill(const Record &row, Int antennaId, Double time, Vector<Double> &timeRange);
-private:
-    MSWeather *msWeather_p;
-    MSWeatherColumns *msWeatherCols_p;
+  // reset internals given indicated row, use the same MS
+  void resetRow(const Record &row);
 
-    Int rownr_p;
+  // fill - a new row is added as necessary, there is no lookback to see if a row could be
+  // reused.  Only the current row might be reused.
+  void fill(const Record &row, Int antennaId, Double time, Vector<Double> &timeRange);
 
-    Int humidityId_p, tambientId_p, pressureId_p, dewpointId_p, windspeeId_p, winddireId_p;
+ private:
+  MSWeather *msWeather_p;
+  MSWeatherColumns *msWeatherCols_p;
 
-    // additional fields from an SDFITS file that had a previous life as a MS
-    RORecordFieldPtr<Float> H2OField_p, ionosElectronField_p, pressureField_p, 
-	humidityField_p, temperatureField_p, windDirField_p, windSpeedField_p;
-    RORecordFieldPtr<Double> timeField_p, intervalField_p;
+  Int rownr_p;
 
-    // cleanup everything
-    void clearAll();
+  Int humidityId_p, tambientId_p, pressureId_p, dewpointId_p, windspeeId_p, winddireId_p;
 
-    // cleanup row-related stuff
-    void clearRow();
+  // additional fields from an SDFITS file that had a previous life as a MS
+  RORecordFieldPtr<Float> H2OField_p, ionosElectronField_p, pressureField_p, humidityField_p,
+      temperatureField_p, windDirField_p, windSpeedField_p;
+  RORecordFieldPtr<Double> timeField_p, intervalField_p;
 
-    // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  // cleanup everything
+  void clearAll();
 
-    // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+  // cleanup row-related stuff
+  void clearRow();
+
+  // initialize everything
+  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+
+  // intialize the row related stuff
+  void initRow(Vector<Bool> &handledCols, const Record &row);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-
