@@ -1,43 +1,43 @@
-//# CurvedImage2D.h: An image crosscut based on a curve in a plane
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # CurvedImage2D.h: An image crosscut based on a curve in a plane
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_CURVEDIMAGE2D_H
 #define IMAGES_CURVEDIMAGE2D_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class CurvedLattice2D;
-template <class T> class CLInterpolator2D;
+// # Forward Declarations
+template <class T>
+class CurvedLattice2D;
+template <class T>
+class CLInterpolator2D;
 class PixelCurve1D;
-
 
 // <summary>
 // An image crosscut based on a curve in a plane.
@@ -53,7 +53,7 @@ class PixelCurve1D;
 //   <li> <linkto class=CurvedLattice2D>CurvedLattice2D</linkto>
 // </prerequisite>
 //
-// <synopsis> 
+// <synopsis>
 // Class CurvedImage2D can be used to make a crosscut through an image
 // with a dimensionality >= 2. The dimensionality of the resulting image
 // is one less.
@@ -74,7 +74,7 @@ class PixelCurve1D;
 // <linkto class=CLInterpolator2D>CLInterpolator2D</linkto>, so any
 // interpolation scheme is possible. Currently only the nearest neighbour
 // scheme is implemented (<linkto class=CLIPNearest2D>CLIPNearest2D</linkto>).
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // The following example uses a 3-dim image.
@@ -104,13 +104,12 @@ class PixelCurve1D;
 // Users like to view arbitrary image crosscuts.
 // </motivation>
 //
-//# <todo asof="1998/02/09">
-//# </todo>
+// # <todo asof="1998/02/09">
+// # </todo>
 
-
-template <class T> class CurvedImage2D: public ImageInterface<T>
-{
-public: 
+template <class T>
+class CurvedImage2D : public ImageInterface<T> {
+ public:
   // The default constructor
   CurvedImage2D();
 
@@ -130,17 +129,16 @@ public:
   // or if the given axes numbers are too high.
   // Note that the output CoordinateSystem of the CurvedImage is just a dummy
   // LinearCoordinate at this point.  The values are all arbitrary.
-  CurvedImage2D (const ImageInterface<T>&, const CLInterpolator2D<T>&,
-		 const PixelCurve1D&, uInt axis1, uInt axis2,
-		 Int curveAxis=-1);
-  
+  CurvedImage2D(const ImageInterface<T>&, const CLInterpolator2D<T>&, const PixelCurve1D&,
+                uInt axis1, uInt axis2, Int curveAxis = -1);
+
   // Copy constructor (reference semantics).
-  CurvedImage2D (const CurvedImage2D<T>& other);
-    
+  CurvedImage2D(const CurvedImage2D<T>& other);
+
   virtual ~CurvedImage2D();
 
   // Assignment (reference semantics).
-  CurvedImage2D<T>& operator= (const CurvedImage2D<T>& other);
+  CurvedImage2D<T>& operator=(const CurvedImage2D<T>& other);
 
   // Make a copy of the object (reference semantics).
   // <group>
@@ -179,7 +177,7 @@ public:
 
   // Returns the shape of the CurvedImage2D
   virtual IPosition shape() const;
-  
+
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
   virtual uInt advisedMaxPixels() const;
@@ -188,9 +186,9 @@ public:
   // Throws an exception as resizing an CurvedImage2D is not possible.
   virtual void resize(const TiledShape& newShape);
 
-  // Return the name of the parent ImageInterface object. 
-  virtual String name (Bool stripPath=False) const;
-  
+  // Return the name of the parent ImageInterface object.
+  virtual String name(Bool stripPath = False) const;
+
   // Check class invariants.
   virtual Bool ok() const;
 
@@ -198,57 +196,53 @@ public:
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler(Bool createHandler = False);
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Putting data is not possible.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
-  
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
+
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<T>* makeIter
-                            (const LatticeNavigator& navigator,
-			     Bool useRef) const;
+  // for general use.
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   virtual void flush();
   virtual void tempClose();
   virtual void reopen();
   // </group>
 
-private:
-  //# itsImagePtr points to the parent image.
-  ImageInterface<T>*  itsImagePtr;
+ private:
+  // # itsImagePtr points to the parent image.
+  ImageInterface<T>* itsImagePtr;
   CurvedLattice2D<T>* itsCurLatPtr;
 
-  //# Make members of parent class known.
-public:
+  // # Make members of parent class known.
+ public:
   using ImageInterface<T>::logger;
-protected:
+
+ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/CurvedImage2D.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

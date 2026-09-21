@@ -1,33 +1,32 @@
-//# FITSImage.h: Class providing native access to FITS images
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FITSImage.h: Class providing native access to FITS images
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_FITSIMAGE_H
 #define IMAGES_FITSIMAGE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/images/Images/ImageInterface.h>
@@ -39,13 +38,14 @@
 #include <casacore/casa/Utilities/DataType.h>
 
 #ifndef WCSLIB_GETWCSTAB
- #define WCSLIB_GETWCSTAB
+#define WCSLIB_GETWCSTAB
 #endif
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class Lattice;
+// # Forward Declarations
+template <class T>
+class Lattice;
 //
 class MaskSpecifier;
 class IPosition;
@@ -53,7 +53,6 @@ class Slicer;
 class CoordinateSystem;
 class FITSMask;
 class FitsInput;
-
 
 // <summary>
 // Class providing native access to FITS images.
@@ -70,12 +69,12 @@ class FitsInput;
 // </prerequisite>
 
 // <etymology>
-//  This class provides native access to FITS images. 
-//  64bit, 32bit floating point, 32 bit and 16bit integer FITS images are 
+//  This class provides native access to FITS images.
+//  64bit, 32bit floating point, 32 bit and 16bit integer FITS images are
 //  presently supported.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 //  A FITSImage provides native access to FITS images by accessing them
 //  with the TiledFileAccess class.  The FITSImage is read only.
 //  We could implement a writable FITSImage but putting the mask
@@ -84,11 +83,11 @@ class FitsInput;
 //
 //  Because FITS uses magic value blanking, the mask is generated
 //  on the fly as needed.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
-//    FITSImage im("in.fits"); 
+//    FITSImage im("in.fits");
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(im, logger);
 //    Bool ok = stats.display();                              // Display statistics
@@ -99,18 +98,16 @@ class FitsInput;
 // This provides native access to FITS images.
 // </motivation>
 
-//# <todo asof="2001/02/09">
-//# </todo>
+// # <todo asof="2001/02/09">
+// # </todo>
 
-
-class FITSImage: public ImageInterface<Float>
-{
-public: 
+class FITSImage : public ImageInterface<Float> {
+ public:
   // Construct a FITSImage from the disk FITS file name  and extension and apply mask.
-  explicit FITSImage(const String& name, uInt whichRep=0, uInt whichHDU=0);
+  explicit FITSImage(const String& name, uInt whichRep = 0, uInt whichHDU = 0);
 
   // Construct a FITSImage from the disk FITS file name and extension and apply mask or not.
-  FITSImage(const String& name, const MaskSpecifier& mask, uInt whichRep=0, uInt whichHDU=0);
+  FITSImage(const String& name, const MaskSpecifier& mask, uInt whichRep = 0, uInt whichHDU = 0);
 
   // Copy constructor (reference semantics)
   FITSImage(const FITSImage& other);
@@ -122,20 +119,19 @@ public:
   FITSImage& operator=(const FITSImage& other);
 
   // Function to open a FITS image (new parser)
-  static LatticeBase* openFITSImage (const String& name,
-				     const MaskSpecifier&);
+  static LatticeBase* openFITSImage(const String& name, const MaskSpecifier&);
 
   // Register the open function.
   static void registerOpenFunction();
 
   // Separate any extension specification and return the pure fitsname
-  static String get_fitsname(const String &fullname);
+  static String get_fitsname(const String& fullname);
 
   // Get the extension index for any extension specification given in the full name
-  static uInt get_hdunum(const String &fullname);
+  static uInt get_hdunum(const String& fullname);
 
-  //# ImageInterface virtual functions
-  
+  // # ImageInterface virtual functions
+
   // Make a copy of the object with new (reference semantics).
   virtual ImageInterface<Float>* cloneII() const;
 
@@ -150,7 +146,7 @@ public:
   // Throws an exception as FITSImage is not writable.
   virtual void resize(const TiledShape& newShape);
 
-  //# MaskedLattice virtual functions
+  // # MaskedLattice virtual functions
 
   // Has the object really a mask?  The FITSImage always
   // has a pixel mask and never has a region mask so this
@@ -166,27 +162,25 @@ public:
   virtual Lattice<Bool>& pixelMask();
   // </group>
 
-  // Do the actual get of the mask data.   The return value is always 
+  // Do the actual get of the mask data.   The return value is always
   // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
-  // Get the region used.  There is no region. 
+  // Get the region used.  There is no region.
   // Always returns 0.
   virtual const LatticeRegion* getRegionPtr() const;
 
- 
-  //# Lattice virtual functions
+  // # Lattice virtual functions
 
   // Do the actual get of the data.
   // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice (Array<Float>& buffer, const Slicer& theSlice);
+  virtual Bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.
-  virtual void doPutSlice (const Array<Float>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
+  virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
 
-  //# LatticeBase virtual functions
+  // # LatticeBase virtual functions
 
   // The lattice is paged to disk.
   virtual Bool isPaged() const;
@@ -198,19 +192,19 @@ public:
   virtual Bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name (Bool stripPath=False) const;
-  
+  virtual String name(Bool stripPath = False) const;
+
   // return the shape of the FITSImage
   virtual IPosition shape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
-  // the number of pixels in a tile. 
+  // the number of pixels in a tile.
   virtual uInt advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
-  // cursor. 
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  // cursor.
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -225,112 +219,97 @@ public:
   virtual DataType dataType() const;
 
   // Return the (internal) data type.
-  DataType internalDataType() const
-    { return dataType_p; }
+  DataType internalDataType() const { return dataType_p; }
 
   // Return the HDU number
-  uInt whichHDU () const
-    { return whichHDU_p; }
+  uInt whichHDU() const { return whichHDU_p; }
 
   // Maximum size - not necessarily all used. In pixels.
   virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize(uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
-  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
-  			             const IPosition& windowStart,
-			             const IPosition& windowLength,
-			             const IPosition& axisPath);
-    
+  virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
+                                    const IPosition& windowLength, const IPosition& axisPath);
+
   // Set the actual cache size for this Array to be be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
-  // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  // tiles. Tiles are cached using a first in first out algorithm.
+  virtual void setCacheSizeInTiles(uInt howManyTiles);
 
-  // Clears and frees up the caches, but the maximum allowed cache size is 
+  // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
   virtual void clearCache();
 
   // Report on cache success.
-  virtual void showCacheStatistics (ostream& os) const;
+  virtual void showCacheStatistics(ostream& os) const;
 
-protected:
+ protected:
   // Set the masking of values 0.0
   void setMaskZero(Bool filterZero);
 
-private:  
-  String         name_p;
-  String         fullname_p;
-  MaskSpecifier  maskSpec_p;
+ private:
+  String name_p;
+  String fullname_p;
+  MaskSpecifier maskSpec_p;
   std::shared_ptr<TiledFileAccess> pTiledFile_p;
-  std::unique_ptr<Lattice<Bool>>   pPixelMask_p;
-  TiledShape     shape_p;
-  Float          scale_p;
-  Float          offset_p;
-  Short          shortMagic_p;
-  uChar          uCharMagic_p;
-  Int            longMagic_p;
-  Bool           hasBlanks_p;
-  DataType       dataType_p;
-  Int64          fileOffset_p;
-  Bool           isClosed_p;
-  Bool           filterZeroMask_p;
-  uInt           whichRep_p;
-  uInt           whichHDU_p;
-  Bool           _hasBeamsTable;
+  std::unique_ptr<Lattice<Bool>> pPixelMask_p;
+  TiledShape shape_p;
+  Float scale_p;
+  Float offset_p;
+  Short shortMagic_p;
+  uChar uCharMagic_p;
+  Int longMagic_p;
+  Bool hasBlanks_p;
+  DataType dataType_p;
+  Int64 fileOffset_p;
+  Bool isClosed_p;
+  Bool filterZeroMask_p;
+  uInt whichRep_p;
+  uInt whichHDU_p;
+  Bool _hasBeamsTable;
 
-// Reopen the image if needed.
-   void reopenIfNeeded() const
-     { if (isClosed_p) const_cast<FITSImage*>(this)->reopen(); }
+  // Reopen the image if needed.
+  void reopenIfNeeded() const {
+    if (isClosed_p) const_cast<FITSImage*>(this)->reopen();
+  }
 
-// Setup the object (used by constructors).
-   void setup();
+  // Setup the object (used by constructors).
+  void setup();
 
-// Open the image (used by setup and reopen).
-   void open();
+  // Open the image (used by setup and reopen).
+  void open();
 
-// Fish things out of the FITS file
-   void getImageAttributes (CoordinateSystem& cSys,
-                            IPosition& shape, ImageInfo& info,
-                            Unit& brightnessUnit, RecordInterface& miscInfo, 
-                            Int& recsize, Int& recno,
-                            FITS::ValueType& dataType,
-                            Float& scale, Float& offset, 
-			    uChar& uCharMagic, Short& shortMagic, 
-                            Int& longMagic, Bool& hasBlanks, const String& name,
-                            uInt whichRep, uInt whichHDU);
+  // Fish things out of the FITS file
+  void getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& info,
+                          Unit& brightnessUnit, RecordInterface& miscInfo, Int& recsize, Int& recno,
+                          FITS::ValueType& dataType, Float& scale, Float& offset, uChar& uCharMagic,
+                          Short& shortMagic, Int& longMagic, Bool& hasBlanks, const String& name,
+                          uInt whichRep, uInt whichHDU);
 
-// Crack a primary header
-   template <typename T>
-   void crackHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                     Unit& brightnessUnit, RecordInterface& miscInfo,
-                     Float& scale, Float& offset, uChar& magicUChar, Short& magicShort,
-                     Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
-                     uInt whichRep);
+  // Crack a primary header
+  template <typename T>
+  void crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
+                   Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale, Float& offset,
+                   uChar& magicUChar, Short& magicShort, Int& magicLong, Bool& hasBlanks, LogIO& os,
+                   FitsInput& infile, uInt whichRep);
 
-// Crack an image extension header
-   template <typename T>
-   void crackExtHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                        Unit& brightnessUnit, RecordInterface& miscInfo,
-                        Float& scale, Float& offset, uChar& uCharMagic,
-			Short& magicShort,
-                        Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
-                        uInt whichRep);
-		     
+  // Crack an image extension header
+  template <typename T>
+  void crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
+                      Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale, Float& offset,
+                      uChar& uCharMagic, Short& magicShort, Int& magicLong, Bool& hasBlanks,
+                      LogIO& os, FitsInput& infile, uInt whichRep);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/FITS2Image.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 
 #endif
-
-

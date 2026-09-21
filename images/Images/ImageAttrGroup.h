@@ -1,33 +1,32 @@
-//# ImageAttrGroup.h: Abstract base class for an image attributes group
-//# Copyright (C) 2012
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ImageAttrGroup.h: Abstract base class for an image attributes group
+// # Copyright (C) 2012
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_IMAGEATTRGROUP_H
 #define IMAGES_IMAGEATTRGROUP_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -52,7 +51,7 @@ namespace casacore {
 // describe atrbitrary meta information.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // For LOFAR it is needed to store extra meta information and be possible to
 // convert it from casacore table format to HDF5 format and vice-versa.
 // Furthermore, it must be possible to access the information in a way that
@@ -71,7 +70,7 @@ namespace casacore {
 // All attributes in a group must have the same number of values, where each
 // value can be a scalar or (small) array. The unit and measure info have
 // only one value, thus all values of an attribute have the same unit.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // This example shows how to get attributes from an image.
@@ -111,12 +110,10 @@ namespace casacore {
 // LOFAR needed functionality to store arbitrary attributes.
 // </motivation>
 
-class ImageAttrGroup
-{
-public: 
+class ImageAttrGroup {
+ public:
   // Default constructor.
-  ImageAttrGroup()
-  {}
+  ImageAttrGroup() {}
 
   virtual ~ImageAttrGroup();
 
@@ -124,40 +121,39 @@ public:
   virtual uInt nrows() const = 0;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr (const String& attrName) const = 0;
+  virtual Bool hasAttr(const String& attrName) const = 0;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const = 0;
 
   // Get the datatype of a attribute.
   // It returns TpOther if the attribute is not defined.
-  virtual DataType dataType (const String& attrName) const = 0;
+  virtual DataType dataType(const String& attrName) const = 0;
 
   // Get the data of the given attribute in the given row
-  virtual ValueHolder getData (const String& attrName, uInt rownr) = 0;
+  virtual ValueHolder getData(const String& attrName, uInt rownr) = 0;
 
   // Get the data of all attributes in a rows.
-  virtual Record getDataRow (uInt rownr) = 0;
+  virtual Record getDataRow(uInt rownr) = 0;
 
   // Get the possible units of the values.
   // An empty vector is returned if the attribute has no units.
-  virtual Vector<String> getUnit (const String& attrName) = 0;
+  virtual Vector<String> getUnit(const String& attrName) = 0;
 
   // Get the possible measure info as type and Ref.
   // An empty vector is returned if the attribute has no MEASINFO.
-  virtual Vector<String> getMeasInfo (const String& attrName) = 0;
+  virtual Vector<String> getMeasInfo(const String& attrName) = 0;
 
   // Put the data of the given attribute in the given row.
   // If the row or attribute is new, it will be added. Note that the
   // new row must be directly after the last row in the group.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, uInt rownr,
-                        const ValueHolder& data,
-                        const Vector<String>& units = Vector<String>(),
-                        const Vector<String>& measInfo = Vector<String>()) = 0;
+  virtual void putData(const String& attrName, uInt rownr, const ValueHolder& data,
+                       const Vector<String>& units = Vector<String>(),
+                       const Vector<String>& measInfo = Vector<String>()) = 0;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,30 +1,30 @@
-//# tPagedImage.cc: This program tests the PagedImage class
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or(at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-//#--------------------------------------------------------------------------
+// # tPagedImage.cc: This program tests the PagedImage class
+// # Copyright (C) 1994,1995,1996,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or(at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
+// #--------------------------------------------------------------------------
 
-#include<casacore/casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/PagedImage.h>
 
 #include <casacore/casa/Arrays/Vector.h>
@@ -39,10 +39,7 @@
 
 #include <casacore/casa/namespace.h>
 
-int main()
-{
-    cout << "untested" << endl;
-}
+int main() { cout << "untested" << endl; }
 
 /*
 //#predeclarations
@@ -83,7 +80,7 @@ int main(int argc, const char* argv[])
     cout << "OK" << endl;
   } catch (std::exception x) {
     cerr << "Caught Exception: " << x.what() << endl;
-  } 
+  }
   return 0;
 }
 
@@ -139,7 +136,7 @@ void describeImage(const String &message, const PagedImage<Float> &image)
   cout << "             shape: "
        << image.coordinates().imageShape() << endl;
 // * /
-  cout << "             ok: "<< image.ok()<< endl; 
+  cout << "             ok: "<< image.ok()<< endl;
 }
 
 // build a set of ImageCoordinates in three dimensions
@@ -159,7 +156,7 @@ ImageCoordinate build3Dcoords()
   // Let's create an EarthPosition with full description of all parameters.
   // We need a type - GEOCENTRIC seems good.
   EarthPosition::Type theType(EarthPosition::GEOCENTRIC);
-  // We need the time and date of the observation... 
+  // We need the time and date of the observation...
   Double julianDate = 2449376.0;
   // and we can add on the UT.
   julianDate += 16.52/24.0;
@@ -171,11 +168,11 @@ ImageCoordinate build3Dcoords()
   ourPosition(1) = 34.1562394;
   // geocentric radius (in meters) goes in the last field.
   ourPosition(2) = 6372139.592;
-  // then use these to build our EarthPosition. 
+  // then use these to build our EarthPosition.
   EarthPosition myObs(theType, julianDate, ourPosition);
   // we need to know a rotation - here it is zero.
   Double myRot = 0;
-  // we need to know where the spherical position is to be on our 2-d 
+  // we need to know where the spherical position is to be on our 2-d
   // projection i.e. what pixel is associated with my object's position?
   Vector<Double> thePixel(2);
   thePixel(0) = 55.0;
@@ -187,11 +184,11 @@ ImageCoordinate build3Dcoords()
   theBinning(1) = 3.6255e-03;
   // Now we can make fruit of our labor - the ProjectedPosition itself.
   ProjectedPosition myMapping(myMethod, myVectorType, myEpoch, myCoords,
-			      myObs, myRot, thePixel, theBinning);
-  
+                              myObs, myRot, thePixel, theBinning);
+
   // we need to know what the units are of the measured value
   MeasuredValue::Type myValueUnit(MeasuredValue::RADIO_VELOCITY);
-  // we need to know what the above units are in reference 
+  // we need to know what the above units are in reference
   // here it is the velocity of the earth.
   ReferenceValue myRefValue(ReferenceValue::VELOCITY, 9.56e+03);
   // we need to know the value of the measurement
@@ -202,7 +199,7 @@ ImageCoordinate build3Dcoords()
   Double myValuePos(27.3);
   // Now we may construct the LinearAxis itself.
   LinearAxis myLinearAxis(myValueUnit,myValue,myRefValue,myBin,myValuePos);
-  
+
   ImageCoordinate coords;
   coords.addAxis(myMapping);
   coords.addAxis(myLinearAxis);
@@ -213,20 +210,20 @@ ImageCoordinate build3Dcoords()
 void createStandardImageOnDisk(const String &filename)
 {
   if(verbose_) cout<< "-- createStandardImageOnDisk --"<< endl;
-  
+
   ImageCoordinate coords(build3Dcoords());
   IPosition imageShape(3, 50,47,31);
-  
+
   PagedImage<Float> standard(imageShape, coords, filename);
   standard.set(TEST_PIXEL_VALUE);
-  
+
   if(verbose_) describeImage("standard image", standard);
 }
 
 // these are the constructors to test:
 //   PagedImage(const IPosition &shape, const MinimalCoords &coordinateInfo,
 //              const String &nameOfNewFile, uInt rowNumber);
-//   PagedImage(const IPosition &shape, const Array<T> &array, 
+//   PagedImage(const IPosition &shape, const Array<T> &array,
 //              const MinimalCoords &coordinateInfo,
 //              const String &nameOfNewFile, uInt rowNumber);
 //   PagedImage(const String &filename, uInt rowNumber);
@@ -240,12 +237,12 @@ void testConstructors()
     ImageCoordinate coords(build3Dcoords());
 
     PagedImage<Float> image1(shape, coords, NAME0);
-    if (verbose_) 
+    if (verbose_)
       describeImage("shape, coords, filename ctor: ", image1);
 
     PagedImage<Float> image2(shape, coords, NAME1, True);
-			     
-    if (verbose_) 
+
+    if (verbose_)
       describeImage("array, array, coords, filename, masking? ctor: ", image2);
 
     PagedImage<Float> image3(STANDARD);
@@ -264,10 +261,10 @@ void testConstructors()
       throw(AipsError("file-constructed image not ok"));
     delete image4;
     }
-  
+
   deleteFile(NAME0);
   deleteFile(NAME1);
-} 
+}
 
 // test some of the data member manipulation functions
 void testSetMemberFunctions()
@@ -277,29 +274,29 @@ void testSetMemberFunctions()
     ImageCoordinate coords;
     {
       PagedImage<Float> image6(IPosition(3,10,10,4), coords, NAME2);
-      
+
       if(verbose_) describeImage("shape, coords, filename ctor: ", image6);
       if(image6.ok())
-	throw(AipsError("shape-constructed image6 is ok, but shouldn't be!"));
+        throw(AipsError("shape-constructed image6 is ok, but shouldn't be!"));
     }
 
     coords = build3Dcoords();
     PagedImage<Float> image6(IPosition(3,10,10,4), coords, NAME2);
     if(!image6.ok())
-      throw(AipsError("shape-constructed image6 - is not ok!"));			     
+      throw(AipsError("shape-constructed image6 - is not ok!"));
     image6.rename(NAME2);
     if(verbose_) describeImage("image6, after rename", image6);
     if(!image6.ok())
       throw(AipsError("image6 after rename - not ok"));
-    
+
     image6.setCoordinateInfo(build3Dcoords());
     if(verbose_) describeImage("image6, after setCoordinates", image6);
     if(!image6.ok())
       throw(AipsError("image6 after setCoordinates - not ok"));
   }
-  
+
   deleteFile(NAME2);
-} 
+}
 
 //
 void testArrayofImagesAndAssignmentOperator()
@@ -318,7 +315,7 @@ void testArrayofImagesAndAssignmentOperator()
   filenames [7] = NAME7;
   filenames [8] = NAME8;
   filenames [9] = NAME9;
-  { 
+  {
     Image<Float> images [max];
     for(uInt i=0; i< max; i++) {
       if(verbose_) cout<< "-- image array "<< i<< " --"<< endl;
@@ -326,14 +323,14 @@ void testArrayofImagesAndAssignmentOperator()
         images [i] = Image<Float>(IPosition(2,10,10));
         images [i].setCoordinateInfo(MinimalCoords());
         images [i].setName(filenames [i]);
-        if(verbose_) 
+        if(verbose_)
           describeImage("shape constructed image, setCoords, setName in array",
                          images [i]);
         } // if i is odd
       else {
         images [i] =
           Image<Float>(IPosition(i+1,5), MinimalCoords(), filenames [i]);
-        if(verbose_) 
+        if(verbose_)
           describeImage("shape,coords,name constructed image in array,",
                          images [i]);
         } // else
@@ -341,7 +338,7 @@ void testArrayofImagesAndAssignmentOperator()
         throw(AipsError("one of array of images not ok"));
       } // for i
     } // scope
-  
+
   if(verbose_) cout<< "-- about to delete image files --"<< endl;
 
   for(uInt i=0; i< max; i++)

@@ -1,33 +1,32 @@
-//# ImageAttrHandlerHDF5.h: Attributes handler for HDF5 images
-//# Copyright (C) 2012
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ImageAttrHandlerHDF5.h: Attributes handler for HDF5 images
+// # Copyright (C) 2012
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_IMAGEATTRHANDLERHDF5_H
 #define IMAGES_IMAGEATTRHANDLERHDF5_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageAttrHandler.h>
 #include <casacore/images/Images/ImageAttrGroupHDF5.h>
@@ -54,7 +53,7 @@ namespace casacore {
 // describe atrbitrary meta information.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // For LOFAR it was needed to store extra meta information and to be able to
 // convert it from casacore table format to HDF5 format and vice-versa.
 // Furthermore, it must be possible to access the information in a way that
@@ -64,7 +63,7 @@ namespace casacore {
 // of the image or in a handler in HDF5. All attributes in a handler have the
 // same number of values, where each value can be a scalar or (small) array.
 // It is possible to define units and measure info for an attribute.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // This example shows how to get attributes from an image.
@@ -83,9 +82,8 @@ namespace casacore {
 // LOFAR needed functionality to store arbitrary attributes.
 // </motivation>
 
-class ImageAttrHandlerHDF5 : public ImageAttrHandler
-{
-public: 
+class ImageAttrHandlerHDF5 : public ImageAttrHandler {
+ public:
   // Default construct from the image table.
   ImageAttrHandlerHDF5();
 
@@ -95,8 +93,7 @@ public:
   // If the keyword does not exist, it will be added if <src>createHandler</src>
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
-  ImageAttrHandlerHDF5& attachTable (const Table& image,
-                                     Bool createHandler = False);
+  ImageAttrHandlerHDF5& attachTable(const Table& image, Bool createHandler = False);
 
   virtual ~ImageAttrHandlerHDF5();
 
@@ -106,35 +103,33 @@ public:
   // If the group does not exist, it will be added if <src>createHandler</src>
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
-  ImageAttrHandlerHDF5& attachHid (const HDF5Object& hid,
-                                   Bool createHandler,
-                                   Bool isWritable);
+  ImageAttrHandlerHDF5& attachHid(const HDF5Object& hid, Bool createHandler, Bool isWritable);
 
   // Flush the attibrutes if needed.
   virtual void flush();
 
   // Test if the given attribute group is present.
-  virtual Bool hasGroup (const String& name);
+  virtual Bool hasGroup(const String& name);
 
   // Get all attribute group names.
   virtual Vector<String> groupNames() const;
 
   // Get access to a group.
-  virtual ImageAttrGroup& openGroup (const String& groupName);
+  virtual ImageAttrGroup& openGroup(const String& groupName);
 
   // Create an attribute group with the given name.
-  virtual ImageAttrGroup& createGroup (const String& groupName);
+  virtual ImageAttrGroup& createGroup(const String& groupName);
 
   // Close the group with the given name. It will flush its attributes.
   // Nothing is done if it is not open.
-  virtual void closeGroup (const String& groupName);
+  virtual void closeGroup(const String& groupName);
 
-private:
-  Bool                                itsCanWrite;    //# writable?
-  std::shared_ptr<HDF5Group>          itsGroup;       //# HDF5 group to add to
-  std::map<String,ImageAttrGroupHDF5> itsGroupMap;    //# attribute groups
+ private:
+  Bool itsCanWrite;                                  // # writable?
+  std::shared_ptr<HDF5Group> itsGroup;               // # HDF5 group to add to
+  std::map<String, ImageAttrGroupHDF5> itsGroupMap;  // # attribute groups
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

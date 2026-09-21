@@ -1,41 +1,41 @@
-//# ExtendImage.h: An extension of an ImageInterface object
-//# Copyright (C) 2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ExtendImage.h: An extension of an ImageInterface object
+// # Copyright (C) 2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_EXTENDIMAGE_H
 #define IMAGES_EXTENDIMAGE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class ExtendLattice;
+// # Forward Declarations
+template <class T>
+class ExtendLattice;
 
 // <summary>
 // An extension of an ImageInterface object.
@@ -51,13 +51,13 @@ template <class T> class ExtendLattice;
 //   <li> <linkto class=ExtendLattice>ExtendLattice</linkto>
 // </prerequisite>
 //
-// <synopsis> 
+// <synopsis>
 // Class ExtendImage can be used to (virtually) extend an image
 // along axes with length 1 and/or to add new axes. In this way such
 // an image can be made conformant with another image.
 // E.g. it can be used to extend the continuum channel to
 // subtract it from each channel in an image cube.
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // <srcblock>
@@ -68,30 +68,28 @@ template <class T> class ExtendLattice;
 // Used by LEL to handle images with different dimensionalities.
 // </motivation>
 //
-//# <todo asof="1998/02/09">
-//# </todo>
+// # <todo asof="1998/02/09">
+// # </todo>
 
-
-template <class T> class ExtendImage: public ImageInterface<T>
-{
-public: 
+template <class T>
+class ExtendImage : public ImageInterface<T> {
+ public:
   // The default constructor
   ExtendImage();
 
   // Create a ExtendImage from a Image.
   // The coordinate system of the given image should be a subset of the
   // new coordinate system. The same is true for the shape.
-  ExtendImage (const ImageInterface<T>& image,
-	       const IPosition& newShape,
-	       const CoordinateSystem& newCsys);
-  
+  ExtendImage(const ImageInterface<T>& image, const IPosition& newShape,
+              const CoordinateSystem& newCsys);
+
   // Copy constructor (reference semantics).
-  ExtendImage (const ExtendImage<T>& other);
-    
+  ExtendImage(const ExtendImage<T>& other);
+
   virtual ~ExtendImage();
 
   // Assignment (reference semantics).
-  ExtendImage<T>& operator= (const ExtendImage<T>& other);
+  ExtendImage<T>& operator=(const ExtendImage<T>& other);
 
   // Make a copy of the object (reference semantics).
   // <group>
@@ -130,7 +128,7 @@ public:
 
   // Returns the shape of the ExtendImage
   virtual IPosition shape() const;
-  
+
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
   virtual uInt advisedMaxPixels() const;
@@ -139,9 +137,9 @@ public:
   // Throws an exception as resizing an ExtendImage is not possible.
   virtual void resize(const TiledShape& newShape);
 
-  // Return the name of the parent ImageInterface object. 
-  virtual String name (Bool stripPath=False) const;
-  
+  // Return the name of the parent ImageInterface object.
+  virtual String name(Bool stripPath = False) const;
+
   // Check class invariants.
   virtual Bool ok() const;
 
@@ -149,57 +147,53 @@ public:
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler(Bool createHandler = False);
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Putting data is not possible.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
-  
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
+
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<T>* makeIter
-                            (const LatticeNavigator& navigator,
-			     Bool useRef) const;
+  // for general use.
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   virtual void flush();
   virtual void tempClose();
   virtual void reopen();
   // </group>
 
-private:
-  //# itsImagePtr points to the parent image.
+ private:
+  // # itsImagePtr points to the parent image.
   std::unique_ptr<ImageInterface<T>> itsImagePtr;
-  std::unique_ptr<ExtendLattice<T>>  itsExtLatPtr;
+  std::unique_ptr<ExtendLattice<T>> itsExtLatPtr;
 
-  //# Make members of parent class known.
-public:
+  // # Make members of parent class known.
+ public:
   using ImageInterface<T>::logger;
-protected:
+
+ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/ExtendImage.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

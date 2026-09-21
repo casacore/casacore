@@ -1,46 +1,44 @@
-//# RegionHandler.h: Abstract base class for handling regions in images
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # RegionHandler.h: Abstract base class for handling regions in images
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_REGIONHANDLER_H
 #define IMAGES_REGIONHANDLER_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Table;
 class ImageRegion;
 class LatticeBase;
 class LCPagedMask;
 class String;
-
 
 // <summary>
 // Base class for handling regions in images
@@ -56,7 +54,7 @@ class String;
 //   <li> <linkto class=ImageRegion>ImageRegion</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // Persistent regions are stored as subrecords of the table keywords
 // "regions" and "masks". The user can choose one of both keywords.
 // Keyword "masks" is meant for true image masks, i.e. telling for
@@ -69,7 +67,7 @@ class String;
 // <p>
 // Another function performed by this class for PagedImage is the
 // definition of the default region to be used with an image.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // </example>
@@ -83,29 +81,23 @@ class String;
 // </ol>
 // </motivation>
 
-//# <todo asof="1999/02/16">
-//# <li>
-//# </todo>
+// # <todo asof="1999/02/16">
+// # <li>
+// # </todo>
 
-
-class RegionHandler
-{
-public: 
+class RegionHandler {
+ public:
   virtual ~RegionHandler();
 
   // Define the possible group types (regions or masks).
-  enum GroupType {
-    Regions,
-    Masks,
-    Any      
-  };
+  enum GroupType { Regions, Masks, Any };
 
   // Make a copy of the object.
   virtual RegionHandler* clone() const;
 
   // Set the object pointer (for RegionHandlerTable's callback).
   // Default implementation does nothing.
-  virtual void setObjectPtr (void* objectPtr);
+  virtual void setObjectPtr(void* objectPtr);
 
   // Can the class indeed define and handle regions?
   // The default implementation returns False.
@@ -116,7 +108,7 @@ public:
   // If the table is writable, the setting is persistent by writing
   // the name as a keyword.
   // If the given maskName is the empty string, the default mask is unset.
-  virtual void setDefaultMask (const String& maskName);
+  virtual void setDefaultMask(const String& maskName);
 
   // Get the name of the default mask.
   // An empty string is returned if no default mask.
@@ -128,42 +120,35 @@ public:
   // already exists in the "regions" or "masks" keyword.
   // Otherwise the region will be removed first.
   // <br>A False status is returned if the table is not writable
-  virtual Bool defineRegion (const String& name,
-			     const ImageRegion& region,
-			     RegionHandler::GroupType,
-			     Bool overwrite = False);
+  virtual Bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
+                            Bool overwrite = False);
 
   // Does the table have a region with the given name?
-  virtual Bool hasRegion (const String& name,
-			  RegionHandler::GroupType = RegionHandler::Any) const;
-  
+  virtual Bool hasRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any) const;
+
   // Get a region belonging to the table.
   // A zero pointer is returned if the region does not exist.
   // The caller has to delete the <src>ImageRegion</src> object created.
   // <br>No exception is thrown if the region does not exist.
-  virtual ImageRegion* getRegion (const String& name,
-				  RegionHandler::GroupType = Any,
-				  Bool throwIfUnknown = True) const;
+  virtual ImageRegion* getRegion(const String& name, RegionHandler::GroupType = Any,
+                                 Bool throwIfUnknown = True) const;
 
   // Rename a region.
   // If a region with the new name already exists, it is deleted or
   // an exception is thrown (depending on <src>overwrite</src>).
   // The region name is looked up in the given group(s).
   // <br>An exception is thrown if the old region name does not exist.
-  virtual Bool renameRegion (const String& newName,
-			     const String& oldName,
-			     RegionHandler::GroupType = Any,
-			     Bool overwrite = False);
+  virtual Bool renameRegion(const String& newName, const String& oldName,
+                            RegionHandler::GroupType = Any, Bool overwrite = False);
 
   // Remove a region belonging to the table.
   // <br>Optionally an exception is thrown if the region does not exist.
   // <br>A False status is returned if the table is not writable
-  virtual Bool removeRegion (const String& name,
-			     RegionHandler::GroupType = Any,
-			     Bool throwIfUnknown = True);
+  virtual Bool removeRegion(const String& name, RegionHandler::GroupType = Any,
+                            Bool throwIfUnknown = True);
 
   // Get the names of all regions/masks.
-  virtual Vector<String> regionNames (RegionHandler::GroupType = Any) const;
+  virtual Vector<String> regionNames(RegionHandler::GroupType = Any) const;
 
   // Make a unique region name from the given root name, thus make it such
   // that the name is not already in use for a region or mask.
@@ -171,19 +156,13 @@ public:
   // Otherwise a number is appended to the root name to make it unique.
   // The number starts at the given number and is incremented until the name
   // is unique.
-  String makeUniqueRegionName (const std::string& rootName,
-			       uInt startNumber=1) const;
+  String makeUniqueRegionName(const std::string& rootName, uInt startNumber = 1) const;
 
   // Make a mask for a lattice (e.g. a PagedImage or TempImage).
   // It creates it with the shape and tile shape of the lattice.
-  virtual ImageRegion makeMask (const LatticeBase& lattice,
-				const String& name);
+  virtual ImageRegion makeMask(const LatticeBase& lattice, const String& name);
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-

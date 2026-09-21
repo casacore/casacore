@@ -1,33 +1,32 @@
-//# ImageExpr.h: contains expressions involving images
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ImageExpr.h: contains expressions involving images
+// # Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef IMAGES_IMAGEEXPR_H
 #define IMAGES_IMAGEEXPR_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/images/Images/ImageInterface.h>
@@ -35,16 +34,16 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Quanta/Unit.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class JsonKVMap;
 class IPosition;
 class Slicer;
 class LatticeNavigator;
-template <class T> class LatticeIterInterface;
+template <class T>
+class LatticeIterInterface;
 class String;
-
 
 // <summary>
 // Hold mathematical expressions involving ImageInterface objects
@@ -65,17 +64,17 @@ class String;
 //  ImageInterface hence ImageExpr
 // </etymology>
 //
-// <synopsis> 
-//  An ImageExpr object holds a LatticeExpr object which can be used 
+// <synopsis>
+//  An ImageExpr object holds a LatticeExpr object which can be used
 //  to evaluate mathematical expressions involving Lattices.  ImageExpr
-//  exists so that direct manipulation of LatticeExpr objects by methods 
-//  expecting an ImageInterface, rather than a Lattice can occur.  
+//  exists so that direct manipulation of LatticeExpr objects by methods
+//  expecting an ImageInterface, rather than a Lattice can occur.
 //
 //  The ImageExpr object is constructed from a LatticeExpr object, but
 //  only if the latter has true Coordinates associated with it.
 //  The ImageExpr object is not writable, so the ImageExpr object
 //  functions like a read only ImageInterface.
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // <srcblock>
@@ -90,10 +89,10 @@ class String;
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(iExpr, logger);
 //    Bool ok = stats.display();                              // Display statistics
-//    
+//
 // </srcblock>
-// The ImageExpr object is evaluated during the call to 
-// <src>stats.dislay()</src>.  Previously, the expression tree 
+// The ImageExpr object is evaluated during the call to
+// <src>stats.dislay()</src>.  Previously, the expression tree
 //  has been constructed, but not evaluated.
 // </example>
 //
@@ -105,10 +104,9 @@ class String;
 // <todo asof="1998/02/09">
 // </todo>
 
-
-template <class T> class ImageExpr: public ImageInterface<T>
-{
-public: 
+template <class T>
+class ImageExpr : public ImageInterface<T> {
+ public:
   // The default constructor
   ImageExpr();
 
@@ -119,13 +117,12 @@ public:
   // An exception is thrown if the expression has no coordinates.
   ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr,
             const String& fileName = String());
-  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr,
-            const String& fileName, const JsonKVMap&);
+  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr, const String& fileName,
+            const JsonKVMap&);
 
   // Same as previous constructor, but the coordinates are taken from the
   // given LELImageCoord object.
-  ImageExpr(const LatticeExpr<T>& latticeExpr,
-            const String& expr, const String& fileName,
+  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr, const String& fileName,
             const LELImageCoord& imCoord);
 
   // Copy constructor (reference semantics)
@@ -136,21 +133,20 @@ public:
 
   // Assignment (reference semantics)
   ImageExpr<T>& operator=(const ImageExpr<T>& other);
-  
+
   // Make a copy of the object (reference semantics).
   virtual ImageInterface<T>* cloneII() const;
 
   // Save the image in an AipsIO file with the given name.
   // It can be opened by ImageOpener::openExpr.
-  virtual void save (const String& fileName) const;
+  virtual void save(const String& fileName) const;
 
   // Set the file name.
-  void setFileName (const String& name)
-    { fileName_p = name; }
+  void setFileName(const String& name) { fileName_p = name; }
 
   // Replace the miscinfo in the ImageExpr, which writes the image.expr file.
   // It can fail if, e.g., the directory to write to is not writable.
-  virtual Bool setMiscInfo (const RecordInterface& newInfo);
+  virtual Bool setMiscInfo(const RecordInterface& newInfo);
 
   // Get the image type (returns name of derived class).
   virtual String imageType() const;
@@ -171,28 +167,25 @@ public:
   // Do the actual get of the mask data.
   // The return value is always False, thus the buffer does not reference
   // another array.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // Do the actual get of the data.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
 
   // putSlice is not possible on an expression, so it throws an exception.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
 
   // If the object is persistent, the file name is given.
   // Otherwise it returns the expression string given in the constructor.
-  virtual String name (Bool stripPath=False) const;
-  
+  virtual String name(Bool stripPath = False) const;
+
   // Check class invariants.
   virtual Bool ok() const;
-  
+
   // These are the implementations of the LatticeIterator letters.
   // <note> not for public use </note>
-  virtual LatticeIterInterface<T>* makeIter(
-                                 const LatticeNavigator& navigator,
-				 Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
 
   // Returns False, as the ImageExpr is not writable.
   virtual Bool isWritable() const;
@@ -202,41 +195,36 @@ public:
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
-  // cursor. 
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  // cursor.
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Handle the (un)locking and syncing.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   virtual void tempClose();
   virtual void reopen();
   // </group>
 
   // Get the lattice expression.
-  const LatticeExpr<T>& expression() const
-    { return latticeExpr_p; }
+  const LatticeExpr<T>& expression() const { return latticeExpr_p; }
 
+ private:
+  void init(const LatticeExpr<T>& latticeExpr, const String& expr, const String& fileName,
+            const JsonKVMap&);
 
-private:  
-  void init (const LatticeExpr<T>& latticeExpr, const String& expr,
-             const String& fileName, const JsonKVMap&);
-
-  //# Data members
+  // # Data members
   LatticeExpr<T> latticeExpr_p;
   Unit unit_p;
   String exprString_p;
   mutable String fileName_p;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/ImageExpr.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
