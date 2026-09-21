@@ -114,9 +114,6 @@ class LCEllipsoid : public LCRegionFixed {
   // Assignment (copy semantics).
   LCEllipsoid& operator=(const LCEllipsoid& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -150,6 +147,9 @@ class LCEllipsoid : public LCRegionFixed {
                                 const IPosition& newLatticeShape) const;
 
  private:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Fill the itsCenter vector from an IPosition.
   void fillCenter(const IPosition& center);
 

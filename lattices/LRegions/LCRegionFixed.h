@@ -88,15 +88,15 @@ class LCRegionFixed : public LCRegionSingle {
   // Destructor
   virtual ~LCRegionFixed();
 
-  // Comparison. Mask is not checked. Use the
-  // LCRegionSingle::masksEqual function as well if
-  // you want to check the masks
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Return the mask
   const ArrayLattice<Bool>& getMask() const;
 
  protected:
+  // Comparison. Mask is not checked. Use the
+  // LCRegionSingle::masksEqual function as well if
+  // you want to check the masks
+  Bool equals(const LCRegion& other) const override { return LCRegion::equals(other); }
+
   // Assignment (copy semantics) is only useful for derived classes.
   LCRegionFixed& operator=(const LCRegionFixed& other);
 

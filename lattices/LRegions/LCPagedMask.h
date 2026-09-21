@@ -81,9 +81,6 @@ class LCPagedMask : public LCRegionSingle {
   // Assignment (reference semantics).
   LCPagedMask& operator=(const LCPagedMask& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -172,6 +169,9 @@ class LCPagedMask : public LCRegionSingle {
   virtual Bool isWritable() const;
 
  protected:
+  // Comparison
+  virtual Bool equals(const LCRegion& other) const;
+
   // Construct another LCPagedMask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".

@@ -64,10 +64,10 @@ LCStretch& LCStretch::operator=(const LCStretch& other) {
   return *this;
 }
 
-Bool LCStretch::operator==(const LCRegion& other) const {
+Bool LCStretch::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionMulti::operator==(other)) {
+  if (!LCRegionMulti::equals(other)) {
     return False;
   }
   const LCStretch& that = (const LCStretch&)other;

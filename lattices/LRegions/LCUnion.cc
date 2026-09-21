@@ -63,7 +63,7 @@ LCUnion& LCUnion::operator=(const LCUnion& other) {
   return *this;
 }
 
-Bool LCUnion::operator==(const LCRegion& other) const { return LCRegionMulti::operator==(other); }
+Bool LCUnion::equals(const LCRegion& other) const { return LCRegionMulti::equals(other); }
 
 LCRegion* LCUnion::cloneRegion() const { return new LCUnion(*this); }
 

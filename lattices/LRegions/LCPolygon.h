@@ -121,9 +121,6 @@ class LCPolygon : public LCRegionFixed {
   // Assignment (copy semantics).
   LCPolygon& operator=(const LCPolygon& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -146,6 +143,9 @@ class LCPolygon : public LCRegionFixed {
   static LCPolygon* fromRecord(const TableRecord&, const String& tablename);
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCPolygon (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box.
   // A positive translation value indicates "to right".

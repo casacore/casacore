@@ -115,10 +115,10 @@ LCBox& LCBox::operator=(const LCBox& other) {
   return *this;
 }
 
-Bool LCBox::operator==(const LCRegion& other) const {
+Bool LCBox::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionFixed::operator==(other)) {
+  if (!LCRegionFixed::equals(other)) {
     return False;
   }
   const LCBox& that = (const LCBox&)other;

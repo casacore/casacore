@@ -139,10 +139,10 @@ LCEllipsoid& LCEllipsoid::operator=(const LCEllipsoid& other) {
   return *this;
 }
 
-Bool LCEllipsoid::operator==(const LCRegion& other) const {
+Bool LCEllipsoid::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionFixed::operator==(other)) {
+  if (!LCRegionFixed::equals(other)) {
     return False;
   }
   const LCEllipsoid& that = (const LCEllipsoid&)other;

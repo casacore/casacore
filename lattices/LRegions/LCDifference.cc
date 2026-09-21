@@ -54,9 +54,7 @@ LCDifference& LCDifference::operator=(const LCDifference& other) {
   return *this;
 }
 
-Bool LCDifference::operator==(const LCRegion& other) const {
-  return LCRegionMulti::operator==(other);
-}
+Bool LCDifference::equals(const LCRegion& other) const { return LCRegionMulti::equals(other); }
 
 LCRegion* LCDifference::cloneRegion() const { return new LCDifference(*this); }
 

@@ -116,10 +116,10 @@ void LCRegionMulti::multiTranslate(Block<const LCRegion*>& regions,
   }
 }
 
-Bool LCRegionMulti::operator==(const LCRegion& other) const {
+Bool LCRegionMulti::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegion::operator==(other)) {
+  if (!LCRegion::equals(other)) {
     return False;
   }
   const LCRegionMulti& that = (const LCRegionMulti&)other;

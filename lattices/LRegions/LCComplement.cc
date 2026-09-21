@@ -50,9 +50,7 @@ LCComplement& LCComplement::operator=(const LCComplement& other) {
   return *this;
 }
 
-Bool LCComplement::operator==(const LCRegion& other) const {
-  return LCRegionMulti::operator==(other);
-}
+Bool LCComplement::equals(const LCRegion& other) const { return LCRegionMulti::equals(other); }
 
 LCRegion* LCComplement::cloneRegion() const { return new LCComplement(*this); }
 

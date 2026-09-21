@@ -97,13 +97,13 @@ class LCRegionMulti : public LCRegion {
   // Assignment (copy semantics).
   LCRegionMulti& operator=(const LCRegionMulti& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Does the region have a mask?
   virtual Bool hasMask() const;
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Store the contributing regions in a record.
   TableRecord makeRecord(const String& tableName) const;
 

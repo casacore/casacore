@@ -78,9 +78,6 @@ class LCHDF5Mask : public LCRegionSingle {
   // Assignment (reference semantics).
   LCHDF5Mask& operator=(const LCHDF5Mask& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -123,6 +120,9 @@ class LCHDF5Mask : public LCRegionSingle {
                                 const IPosition& newLatticeShape) const;
 
  private:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Create the object from a record (for an existing mask).
   LCHDF5Mask(HDF5Lattice<Bool>& mask, const IPosition& blc, const IPosition& latticeShape);
 
