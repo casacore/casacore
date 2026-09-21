@@ -446,23 +446,23 @@ class LatticeStepper : public LatticeNavigator {
 
   LatticeIndexer itsIndexer;  // # Knows about the (sub)-Lattice shape and how
                               // # to traverse it.
-  IPosition itsCursorAxes;    // # the cursor axes
-  IPosition itsCursorShape;   // # The shape of the cursor
-  IPosition itsCursorPos;     // # The current position of the iterator.
-  IPosition itsAxisPath;      // # the heading to follow for the cursor
-  uInt itsNsteps;             // # the number of iterator steps taken thus far;
-                              // # set to 0 on reset ()
-  Bool itsEnd;                // # is the cursor beyond the end?
-  Bool itsStart;              // # is the cursor at the beginning?
-  Bool itsNiceFit;            // # if the cursor shape is a sub-multiple of the
-                              // # Lattice shape then set this to True. Used to
-                              // # avoid needing to test for a cursor hanging
-                              // # over the edge of the lattice.
-  Bool itsHangover;           // # this data member is set by the increment and
-                              // # decrement operators if itsNiceFit == False. It
-                              // # is used to tell if the cursor "Hangs over"
-                              // # the edge of the lattice shape.
-  uInt itsPolicy;             // # what to do if the cursor does hang over
+  IPosition itsCursorAxes;   // # the cursor axes
+  IPosition itsCursorShape;  // # The shape of the cursor
+  IPosition itsCursorPos;    // # The current position of the iterator.
+  IPosition itsAxisPath;     // # the heading to follow for the cursor
+  uInt itsNsteps;            // # the number of iterator steps taken thus far;
+                   // # set to 0 on reset ()
+  Bool itsEnd;      // # is the cursor beyond the end?
+  Bool itsStart;    // # is the cursor at the beginning?
+  Bool itsNiceFit;  // # if the cursor shape is a sub-multiple of the
+                    // # Lattice shape then set this to True. Used to
+                    // # avoid needing to test for a cursor hanging
+                    // # over the edge of the lattice.
+  Bool itsHangover;  // # this data member is set by the increment and
+                     // # decrement operators if itsNiceFit == False. It
+                     // # is used to tell if the cursor "Hangs over"
+                     // # the edge of the lattice shape.
+  uInt itsPolicy;  // # what to do if the cursor does hang over
 };
 
 }  // namespace casacore
