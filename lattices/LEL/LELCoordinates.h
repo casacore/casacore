@@ -1,41 +1,39 @@
-//# LELCoordinates.h: Envelope class for Lattice coordinates in LEL
-//# Copyright (C) 1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LELCoordinates.h: Envelope class for Lattice coordinates in LEL
+// # Copyright (C) 1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LELCOORDINATES_H
 #define LATTICES_LELCOORDINATES_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class LELLattCoordBase;
-
 
 // <summary>
 // Envelope class to handle Lattice Coordinates in LEL.
@@ -51,14 +49,14 @@ class LELLattCoordBase;
 //   <li> <linkto class="LELLattCoordBase">LELLattCoordBase</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 //  The LatticeExpression classes (LatticeExpr, LatticeExprNode, LEL*)
-//  exist so that the C++ programmer can manipulate mathematical 
-//  expressions involving Lattices.  A further usage of these classes 
-//  is to manipulate ImageInterface objects (which inherit from Lattice) such 
-//  as PagedImages.  These objects have Coordinates as well as the Lattice 
-//  pixels.  In order that Coordinate conformance be enforcable, we must 
-//  give the LatticeExpression classes access to the Coordinates of the 
+//  exist so that the C++ programmer can manipulate mathematical
+//  expressions involving Lattices.  A further usage of these classes
+//  is to manipulate ImageInterface objects (which inherit from Lattice) such
+//  as PagedImages.  These objects have Coordinates as well as the Lattice
+//  pixels.  In order that Coordinate conformance be enforcable, we must
+//  give the LatticeExpression classes access to the Coordinates of the
 //  ImageInterface objects.
 //
 //  This is done through the interface of the LELCoordinates class.
@@ -72,8 +70,8 @@ class LELLattCoordBase;
 //  base class of the letter classes.  For Lattices such as ImageInterface,
 //  this pointer actually points at the derived letter class LELImageCoord.
 //  This class in turn contains a pointer (a std::shared_ptr) to the actual
-//  CoordinateSystem object.   
-// 
+//  CoordinateSystem object.
+//
 //  Note that every time the <src>lelCoordinates</src> function is called,
 //  the <linkto class=LELLattCoord>LELLattCoord</linkto>
 //  and <linkto class=LELImageCoord>LELImageCoord</linkto>
@@ -113,59 +111,54 @@ class LELLattCoordBase;
 //  module.
 // </motivation>
 
-//# <todo asof="1995/09/12">
-//#  <li>
-//# </todo>
+// # <todo asof="1995/09/12">
+// #  <li>
+// # </todo>
 
+class LELCoordinates {
+ public:
+  // Define the possible comparison results.
+  // The default constructor creates a null object.
+  LELCoordinates();
 
-class LELCoordinates
-{
-public:
-    // Define the possible comparison results.
-    // The default constructor creates a null object.
-    LELCoordinates();
+  // Construct the object from the given letter class.
+  // It takes over the pointer and takes care of destructing
+  // the LELLattCoordBase object.
+  LELCoordinates(LELLattCoordBase* coordinates);
 
-    // Construct the object from the given letter class.
-    // It takes over the pointer and takes care of destructing
-    // the LELLattCoordBase object.
-    LELCoordinates (LELLattCoordBase* coordinates);
+  // Copy constructor (reference semantics).
+  LELCoordinates(const LELCoordinates& that);
 
-    // Copy constructor (reference semantics).
-    LELCoordinates (const LELCoordinates& that);
+  ~LELCoordinates();
 
-    ~LELCoordinates();
+  // Assignment (reference semantics).
+  LELCoordinates& operator=(const LELCoordinates& that);
 
-    // Assignment (reference semantics).
-    LELCoordinates& operator= (const LELCoordinates& that);
+  // Is the coordinates a null object?
+  Bool isNull() const { return !coords_p; }
 
-    // Is the coordinates a null object?
-    Bool isNull() const
-      { return !coords_p; }
+  // Does the class have true coordinates?
+  // It returns False if this is a null object.
+  Bool hasCoordinates() const;
 
-    // Does the class have true coordinates?
-    // It returns False if this is a null object.
-    Bool hasCoordinates() const;
+  // Check how the coordinates of this and that compare.
+  // The return value tells how they compare.
+  // <br>-1: this is subset
+  // <br>0: equal
+  // <br>1: this is superset
+  // <br>9: invalid (mismatch)
+  Int compare(const LELCoordinates& other) const;
 
-    // Check how the coordinates of this and that compare.
-    // The return value tells how they compare.
-    // <br>-1: this is subset
-    // <br>0: equal 
-    // <br>1: this is superset
-    // <br>9: invalid (mismatch)
-    Int compare (const LELCoordinates& other) const;
+  // Return the underlying letter object.
+  // This should in general not be used, but for specific (Image) cases
+  // it might be needed.
+  const LELLattCoordBase& coordinates() const;
 
-    // Return the underlying letter object.
-    // This should in general not be used, but for specific (Image) cases
-    // it might be needed.
-    const LELLattCoordBase& coordinates() const;
-
-private:
-    // The pointer to the underlying object.
-    std::shared_ptr<LELLattCoordBase> coords_p;
+ private:
+  // The pointer to the underlying object.
+  std::shared_ptr<LELLattCoordBase> coords_p;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

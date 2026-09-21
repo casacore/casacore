@@ -1,39 +1,38 @@
-//# TiledLineStepper.h: Step a Vector cursor optimally through a tiled Lattice
-//# Copyright (C) 1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledLineStepper.h: Step a Vector cursor optimally through a tiled Lattice
+// # Copyright (C) 1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_TILEDLINESTEPPER_H
 #define LATTICES_TILEDLINESTEPPER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 #include <casacore/lattices/Lattices/LatticeIndexer.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Step a Vector cursor optimally through a tiled Lattice.
@@ -52,7 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // a Lattice that is tiled.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // When you wish to traverse a Lattice (say, a PagedArray or an Image) you
 // will usually create a LatticeIterator.  Once created, you may attach a
 // LatticeNavigator to the iterator. A TiledLineStepper, is a concrete class
@@ -103,7 +102,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // move the beginning of the Vector cursor in the following pattern.
 // <srcblock>
 // [0,0,0,0], [0,1,0,0], [0,2,0,0], ... [0,15,0,0]
-// [0,0,1,0], [0,1,1,0],            ... [0,15,1,0], 
+// [0,0,1,0], [0,1,1,0],            ... [0,15,1,0],
 //                                  ... [0,15,3,0],
 // [0,0,0,1], ...                       [0,15,3,15]
 // </srcblock>
@@ -114,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // back into memory. All the data in those tiles has already been
 // accessed. Using a TiledLineStepper rather than a LatticeStepper has,
 // in this example, resulted in a drop in the required cache size from
-// 64MBytes down to 2MBytes. 
+// 64MBytes down to 2MBytes.
 // <p>
 // In constructing a TiledLineStepper, you specify the Lattice shape, the
 // tile shape and the axis the Vector cursor will be aligned with. Specifying
@@ -132,8 +131,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // (assuming we have a cursor oriented along the z-axis). In general the lower
 // dimensions will be exhausted (within a tile) before moving the cursor
 // through higher dimensions. This intra-tile behaviour for cursor movement
-// extends to the inter-tile movement of the cursor between tiles. 
-// </synopsis> 
+// extends to the inter-tile movement of the cursor between tiles.
+// </synopsis>
 
 // <example>
 // This example is of a global function that will do a 2-D inplace
@@ -179,35 +178,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <motivation>
 // Moving through a Lattice by equal sized chunks, and without regard
-// to the nature of the data, is a basic and common procedure.  
+// to the nature of the data, is a basic and common procedure.
 // </motivation>
 
 // <todo asof="1997/03/28">
 //  <li> Support for Matrix and higher dimensional cursors can be used.
 // </todo>
 
-
-class TiledLineStepper : public LatticeNavigator
-{
-public:
-
+class TiledLineStepper : public LatticeNavigator {
+ public:
   // Construct a TiledLineStepper by specifying the Lattice shape,
   // a tile shape and the axis along which the Vector cursor will lie
   // (0 means the x-axis). Is is nearly always advisable to make the
   // tileShape identical to the Lattice tileShape. This can be obtained by
   // <src>lat.niceCursorShape(lat.advisedMaxPixels())</src>
   // where <src>lat</src> is a Lattice object.
-  TiledLineStepper (const IPosition& latticeShape, 
-		    const IPosition& tileShape, 
-		    const uInt axis);
+  TiledLineStepper(const IPosition& latticeShape, const IPosition& tileShape, const uInt axis);
 
   // The copy constructor uses copy semantics.
-  TiledLineStepper (const TiledLineStepper& other);
-    
+  TiledLineStepper(const TiledLineStepper& other);
+
   ~TiledLineStepper();
 
   // The assignment operator uses copy semantics.
-  TiledLineStepper& operator= (const TiledLineStepper& other);
+  TiledLineStepper& operator=(const TiledLineStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
   // forward one step. Returns True if the cursor was moved.
@@ -218,7 +212,7 @@ public:
   virtual Bool operator--(int);
 
   // Function to move the cursor to the beginning of the Lattice. Also
-  // resets the number of steps (<src>nsteps</src> function) to zero. 
+  // resets the number of steps (<src>nsteps</src> function) to zero.
   virtual void reset();
 
   // Function which returns "True" if the cursor is at the beginning of the
@@ -253,7 +247,7 @@ public:
   // Functions which returns the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
   // Lattice while <src>subLatticeShape</src> returns the shape of any
-  // sub-Lattice defined using the <src>subSection</src> function. 
+  // sub-Lattice defined using the <src>subSection</src> function.
   // <group>
   virtual IPosition latticeShape() const;
   virtual IPosition subLatticeShape() const;
@@ -286,9 +280,8 @@ public:
   // (trc), and step size (inc), on ALL of its axes, including degenerate
   // axes. The step size defaults to one if not specified.
   // <group>
-  virtual void subSection (const IPosition& blc, const IPosition& trc);
-  virtual void subSection (const IPosition& blc, const IPosition& trc, 
-			   const IPosition& inc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc, const IPosition& inc);
   // </group>
 
   // Return the bottom left hand corner (blc), top right corner (trc) or
@@ -307,46 +300,42 @@ public:
   // description and examples.
   virtual const IPosition& axisPath() const;
 
-  // Function which returns a pointer to dynamic memory of an exact copy 
+  // Function which returns a pointer to dynamic memory of an exact copy
   // of this instance.  The pointer returned by this function must
   // be deleted externally.
   virtual LatticeNavigator* clone() const;
 
   // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. 
+  // dimensionality and consistant values.
   // Returns True if everything is fine otherwise returns False
   virtual Bool ok() const;
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize (const IPosition& cubeShape,
-                              const IPosition& tileShape,
-                              uInt maxCacheSize, uInt bucketSize) const;
+  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                             uInt maxCacheSize, uInt bucketSize) const;
 
-private:
+ private:
   // Prevent the default constructor from being used.
   TiledLineStepper();
 
-
-  IPosition itsBlc;              //# Bottom Left Corner
-  IPosition itsTrc;              //# Top Right Corner
-  IPosition itsInc;              //# Increment
-  LatticeIndexer itsSubSection;  //# The current subsection
-  LatticeIndexer itsIndexer;     //# For moving within a tile
-  LatticeIndexer itsTiler;       //# For moving between tiles
-  IPosition itsIndexerCursorPos; //# The current position of the iterator.
-  IPosition itsTilerCursorPos;   //# The current position of the iterator.
-  IPosition itsCursorShape;      //# The shape of the cursor for itsIndexer
-  IPosition itsTileShape;        //# The tile shape (= itsTiler cursor shape)
-  IPosition itsAxisPath;         //# Path for traversing
-  uInt itsNsteps;                //# The number of iterator steps taken so far; 
-  uInt itsAxis;                  //# The axis containing the data vector
-  Bool itsEnd;                   //# Is the cursor beyond the end?
-  Bool itsStart;                 //# Is the cursor at the beginning?
+  IPosition itsBlc;               // # Bottom Left Corner
+  IPosition itsTrc;               // # Top Right Corner
+  IPosition itsInc;               // # Increment
+  LatticeIndexer itsSubSection;   // # The current subsection
+  LatticeIndexer itsIndexer;      // # For moving within a tile
+  LatticeIndexer itsTiler;        // # For moving between tiles
+  IPosition itsIndexerCursorPos;  // # The current position of the iterator.
+  IPosition itsTilerCursorPos;    // # The current position of the iterator.
+  IPosition itsCursorShape;       // # The shape of the cursor for itsIndexer
+  IPosition itsTileShape;         // # The tile shape (= itsTiler cursor shape)
+  IPosition itsAxisPath;          // # Path for traversing
+  uInt itsNsteps;                 // # The number of iterator steps taken so far;
+  uInt itsAxis;                   // # The axis containing the data vector
+  Bool itsEnd;                    // # Is the cursor beyond the end?
+  Bool itsStart;                  // # Is the cursor at the beginning?
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

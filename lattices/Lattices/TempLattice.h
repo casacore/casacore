@@ -1,39 +1,37 @@
-//# TempLattice.h: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999,2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TempLattice.h: A Lattice that can be used for temporary storage
+// # Copyright (C) 1997,1998,1999,2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_TEMPLATTICE_H
 #define LATTICES_TEMPLATTICE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/TempLatticeImpl.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A Lattice that can be used for temporary storage
@@ -119,20 +117,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       this class.
 // </templating>
 
-//# <todo asof="yyyy/mm/dd">
-//#   <li> add this feature
-//#   <li> fix this bug
-//#   <li> start discussion of this possible extension
-//# </todo>
+// # <todo asof="yyyy/mm/dd">
+// #   <li> add this feature
+// #   <li> fix this bug
+// #   <li> start discussion of this possible extension
+// # </todo>
 
-
-template<class T> class TempLattice : public Lattice<T>
-{
-public:
+template <class T>
+class TempLattice : public Lattice<T> {
+ public:
   // The default constructor creates a TempLattice containing a
   // default ArrayLattice object.
-  TempLattice()
-    : itsImpl (new TempLatticeImpl<T>()) {}
+  TempLattice() : itsImpl(new TempLatticeImpl<T>()) {}
 
   // Create a TempLattice of the specified shape. You can specify how much
   // memory the Lattice can consume before it becomes disk based by giving a
@@ -141,26 +137,24 @@ public:
   // (this algorithm may change). Setting maxMemoryInMB to zero will force
   // the lattice to disk.
   // <group>
-  explicit TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1)
-    : itsImpl (new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
-  TempLattice (const TiledShape& shape, Double maxMemoryInMB)
-    : itsImpl (new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
+  explicit TempLattice(const TiledShape& shape, Int maxMemoryInMB = -1)
+      : itsImpl(new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
+  TempLattice(const TiledShape& shape, Double maxMemoryInMB)
+      : itsImpl(new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
   // </group>
-  
+
   // The copy constructor uses reference semantics. ie modifying data in the
   // copied TempLattice also modifies the data in the original TempLattice.
   // Passing by value doesn't make sense, because it may require the creation
   // of a temporary (but possibly huge) file on disk.
-  TempLattice (const TempLattice<T>& other)
-    : Lattice<T>(other), itsImpl (other.itsImpl) {}
-    
+  TempLattice(const TempLattice<T>& other) : Lattice<T>(other), itsImpl(other.itsImpl) {}
+
   // The destructor removes the Lattice from memory and if necessary disk.
   virtual ~TempLattice();
 
   // The assignment operator with reference semantics. As with the copy
   // constructor assigning by value does not make sense.
-  TempLattice<T>& operator= (const TempLattice<T>& other)
-    { itsImpl = other.itsImpl; }
+  TempLattice<T>& operator=(const TempLattice<T>& other) { itsImpl = other.itsImpl; }
 
   // Make a copy of the object (reference semantics).
   virtual Lattice<T>* clone() const;
@@ -188,9 +182,9 @@ public:
   // Return the shape of the Lattice including all degenerate axes.
   // (ie. axes with a length of one)
   virtual IPosition shape() const;
-  
+
   // Set all of the elements in the Lattice to the given value.
-  virtual void set (const T& value);
+  virtual void set(const T& value);
 
   // Replace every element, x, of the Lattice with the result of f(x).  You
   // must pass in the address of the function -- so the function must be
@@ -204,9 +198,9 @@ public:
   // issue for large Lattices stored in memory, where disk access is not an
   // issue.
   // <group>
-  virtual void apply (T (*function)(T));
-  virtual void apply (T (*function)(const T&));
-  virtual void apply (const Functional<T,T>& function);
+  virtual void apply(T (*function)(T));
+  virtual void apply(T (*function)(const T&));
+  virtual void apply(const Functional<T, T>& function);
   // </group>
 
   // This function returns the recommended maximum number of pixels to
@@ -214,67 +208,61 @@ public:
   virtual uInt advisedMaxPixels() const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
   virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize(uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
-  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
-  			             const IPosition& windowStart,
-			             const IPosition& windowLength,
-			             const IPosition& axisPath);
-    
+  virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
+                                    const IPosition& windowLength, const IPosition& axisPath);
+
   // Set the actual cache size for this Array to be be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
-  // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  // tiles. Tiles are cached using a first in first out algorithm.
+  virtual void setCacheSizeInTiles(uInt howManyTiles);
 
-  // Clears and frees up the caches, but the maximum allowed cache size is 
+  // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
   virtual void clearCache();
 
   // Report on cache success.
-  virtual void showCacheStatistics (std::ostream& os) const;
+  virtual void showCacheStatistics(std::ostream& os) const;
 
   // Get or put a single element in the lattice.
   // Note that Lattice::operator() can also be used to get a single element.
   // <group>
-  virtual T getAt (const IPosition& where) const;
-  virtual void putAt (const T& value, const IPosition& where);
+  virtual T getAt(const IPosition& where) const;
+  virtual void putAt(const T& value, const IPosition& where);
   // </group>
-  
+
   // Check class internals - used for debugging. Should always return True
   virtual Bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-					     Bool useRef) const;
+  // for general use.
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
-  
-private:
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
+
+ private:
   std::shared_ptr<TempLatticeImpl<T>> itsImpl;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/TempLattice.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

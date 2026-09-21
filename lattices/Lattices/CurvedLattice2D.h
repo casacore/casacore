@@ -1,43 +1,41 @@
-//# CurvedLattice2D.h: A lattice crosscut based on a curve in a plane
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have receied a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # CurvedLattice2D.h: A lattice crosscut based on a curve in a plane
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have receied a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_CURVEDLATTICE2D_H
 #define LATTICES_CURVEDLATTICE2D_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/Lattices/PixelCurve1D.h>
 #include <casacore/lattices/LatticeMath/CLInterpolator2D.h>
 #include <casacore/casa/Arrays/AxesMapping.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // A lattice crosscut based on a curve in a plane.
@@ -49,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=PixelCurve1D>PixelCurve1D</linkto>
 //   <li> <linkto class=CLInterpolator2D>CLInterpolator2D</linkto>
 // </prerequisite>
@@ -75,12 +73,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Users like to view arbitrary image crosscuts.
 // </motivation>
 
-
-template<class T>
-class CurvedLattice2D: public MaskedLattice<T>
-{
-public:
-
+template <class T>
+class CurvedLattice2D : public MaskedLattice<T> {
+ public:
   // Default constructor
   CurvedLattice2D();
 
@@ -101,9 +96,8 @@ public:
   // last axis.
   // An exception is thrown if the dimensionality of the input lattice is < 2
   // or if the given axes numbers are too high.
-  CurvedLattice2D (const MaskedLattice<T>&, const CLInterpolator2D<T>&,
-		   const PixelCurve1D&, uInt axis1, uInt axis2,
-		   Int curveAxis=-1);
+  CurvedLattice2D(const MaskedLattice<T>&, const CLInterpolator2D<T>&, const PixelCurve1D&,
+                  uInt axis1, uInt axis2, Int curveAxis = -1);
 
   // Copy constructor (reference semantics)
   CurvedLattice2D(const CurvedLattice2D<T>& other);
@@ -133,9 +127,9 @@ public:
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -162,9 +156,9 @@ public:
 
   // Returns the shape of the lattice.
   virtual IPosition shape() const;
-  
+
   // Return the name of the parent lattice.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name(Bool stripPath = False) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
@@ -174,39 +168,34 @@ public:
   virtual Bool ok() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
-  
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
+
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
-
-private:
+ private:
   // Make the AxesMapping object to map input to output axes.
-  void makeMapping (uInt axis1, uInt axis2, Int curveAxis);
+  void makeMapping(uInt axis1, uInt axis2, Int curveAxis);
 
-
-  MaskedLattice<T>*       itsLatticePtr;
-  CLInterpolator2D<T>*    itsInterpolator;
-  PixelCurve1D            itsCurve;
-  uInt                    itsAxis1;
-  uInt                    itsAxis2;
-  uInt                    itsCurveAxis;
-  AxesMapping             itsAxesMap;
+  MaskedLattice<T>* itsLatticePtr;
+  CLInterpolator2D<T>* itsInterpolator;
+  PixelCurve1D itsCurve;
+  uInt itsAxis1;
+  uInt itsAxis2;
+  uInt itsCurveAxis;
+  AxesMapping itsAxesMap;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/CurvedLattice2D.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,39 +1,38 @@
-//# LCPolygon.h: Define a 2-dimensional region by a polygon
-//# Copyright (C) 1998,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LCPolygon.h: Define a 2-dimensional region by a polygon
+// # Copyright (C) 1998,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LCPOLYGON_H
 #define LATTICES_LCPOLYGON_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LRegions/LCRegionFixed.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Define a 2-dimensional region by a polygon.
@@ -48,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=LCRegion>LCRegion</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // The LCPolygon class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
 // It makes it possible to define a 2-dimensional region by means
@@ -66,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <br>A lattice pixel is part of the polygon surface if the center of
 // the pixel is on or inside the polygon. Note that 0 is the beginning ond
 // 1 is the end of the first pixel. Thus 0.5 is its center.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -97,108 +96,94 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="1997/11/11">
-//# <li>
-//# </todo>
+// # <todo asof="1997/11/11">
+// # <li>
+// # </todo>
 
+class LCPolygon : public LCRegionFixed {
+ public:
+  LCPolygon();
 
-class LCPolygon: public LCRegionFixed
-{
-public:
-    LCPolygon();
+  // Construct from the given x and y values.
+  // The latticeShape must define a 2-dimensional lattice.
+  // <br>LCPolygon can be used for an N-dimensional lattice by making
+  // another lattice representing any 2 axes from the original lattice.
+  // <group>
+  LCPolygon(const Vector<Float>& x, const Vector<Float>& y, const IPosition& latticeShape);
+  LCPolygon(const Vector<Double>& x, const Vector<Double>& y, const IPosition& latticeShape);
+  // </group>
 
-    // Construct from the given x and y values.
-    // The latticeShape must define a 2-dimensional lattice.
-    // <br>LCPolygon can be used for an N-dimensional lattice by making
-    // another lattice representing any 2 axes from the original lattice.
-    // <group>
-    LCPolygon (const Vector<Float>& x, const Vector<Float>& y,
-	       const IPosition& latticeShape);
-    LCPolygon (const Vector<Double>& x, const Vector<Double>& y,
-	       const IPosition& latticeShape);
-    // </group>
+  // Copy constructor (reference semantics).
+  LCPolygon(const LCPolygon& other);
 
-    // Copy constructor (reference semantics).
-    LCPolygon (const LCPolygon& other);
+  virtual ~LCPolygon();
 
-    virtual ~LCPolygon();
+  // Assignment (copy semantics).
+  LCPolygon& operator=(const LCPolygon& other);
 
-    // Assignment (copy semantics).
-    LCPolygon& operator= (const LCPolygon& other);
+  // Comparison
+  virtual Bool operator==(const LCRegion& other) const;
 
-    // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
+  // Make a copy of the derived object.
+  virtual LCRegion* cloneRegion() const;
 
-    // Make a copy of the derived object.
-    virtual LCRegion* cloneRegion() const;
+  // Get the X-values.
+  const Vector<Float>& x() const;
 
-    // Get the X-values.
-    const Vector<Float>& x() const;
+  // Get the Y-values.
+  const Vector<Float>& y() const;
 
-    // Get the Y-values.
-    const Vector<Float>& y() const;
+  // Get the class name (to store in the record).
+  static String className();
 
-    // Get the class name (to store in the record).
-    static String className();
+  // Get the region type.  Returns className()
+  virtual String type() const;
 
-    // Get the region type.  Returns className()
-    virtual String type() const;
+  // Convert the (derived) object to a record.
+  virtual TableRecord toRecord(const String& tableName) const;
 
-    // Convert the (derived) object to a record.
-    virtual TableRecord toRecord (const String& tableName) const;
+  // Convert correct object from a record.
+  static LCPolygon* fromRecord(const TableRecord&, const String& tablename);
 
-    // Convert correct object from a record.
-    static LCPolygon* fromRecord (const TableRecord&,
-				  const String& tablename);
+ protected:
+  // Construct another LCPolygon (for e.g. another lattice) by moving
+  // this one. It recalculates the bounding box.
+  // A positive translation value indicates "to right".
+  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
+                                const IPosition& newLatticeShape) const;
 
-protected:
-    // Construct another LCPolygon (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
+ private:
+  // Make the bounding box.
+  void defineBox();
 
-private:
-    // Make the bounding box.
-    void defineBox();
+  // Define the mask to indicate which elements are inside the polygon.
+  void defineMask();
 
-    // Define the mask to indicate which elements are inside the polygon.
-    void defineMask();
+  // Fill the mask from the given points.
+  void fillMask(Bool* mask, Int nx, Int ny, Int blcx, Int blcy, const Float* ptrX,
+                const Float* ptrY, uInt nrline);
 
-    // Fill the mask from the given points.
-    void fillMask (Bool* mask, Int nx, Int ny, Int blcx, Int blcy,
-		   const Float* ptrX, const Float* ptrY, uInt nrline);
+  // Truncate a start value to a pixel point.
+  // A pixel point is taken if near the value, otherwise floor(value+1).
+  // The returned value is never < 0.
+  Int truncateStart(Float v);
 
-    // Truncate a start value to a pixel point.
-    // A pixel point is taken if near the value, otherwise floor(value+1).
-    // The returned value is never < 0.
-    Int truncateStart (Float v);
+  // Truncate an end value to a pixel point.
+  // A pixel point is taken if near the value, otherwise floor(value).
+  // The returned value is never > maxEnd.
+  Int truncateEnd(Float v, Int maxEnd);
 
-    // Truncate an end value to a pixel point.
-    // A pixel point is taken if near the value, otherwise floor(value).
-    // The returned value is never > maxEnd.
-    Int truncateEnd (Float v, Int maxEnd);
+  // takes into account when one value is zero and the other is absolutely (as
+  // opposed to relatively) near zero.
+  static Bool _isNear(Float val1, Float val2);
 
-    // takes into account when one value is zero and the other is absolutely (as
-    // opposed to relatively) near zero.
-    static Bool _isNear(Float val1, Float val2);
-    
-    Vector<Float> itsX;
-    Vector<Float> itsY;
+  Vector<Float> itsX;
+  Vector<Float> itsY;
 };
 
+inline const Vector<Float>& LCPolygon::x() const { return itsX; }
+inline const Vector<Float>& LCPolygon::y() const { return itsY; }
 
-inline const Vector<Float>& LCPolygon::x() const
-{
-    return itsX;
-}
-inline const Vector<Float>& LCPolygon::y() const
-{
-    return itsY;
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

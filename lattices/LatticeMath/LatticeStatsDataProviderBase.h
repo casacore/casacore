@@ -1,26 +1,26 @@
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICESTATSDATAPROVIDERBASE_H
 #define LATTICES_LATTICESTATSDATAPROVIDERBASE_H
@@ -39,73 +39,75 @@ class LatticeProgress;
 
 // Abstract base class of data providers which allows stats framework to iterate through a lattice.
 
-template <class T> class LatticeStatsDataProviderBase
-	: public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const Bool*> {
+template <class T>
+class LatticeStatsDataProviderBase
+    : public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const Bool*> {
+ public:
+  virtual ~LatticeStatsDataProviderBase();
 
-public:
+  // estimated number of steps to iterate through the the lattice
+  virtual uInt estimatedSteps() const = 0;
 
-	virtual ~LatticeStatsDataProviderBase();
+  virtual void finalize();
 
-	// estimated number of steps to iterate through the the lattice
-	virtual uInt estimatedSteps() const = 0;
+  // Get the stride for the current mask (only called if hasMask() returns True).
+  uInt getMaskStride();
 
-	virtual void finalize();
+  // Get the associated range(s) of the current dataset. Only called if hasRanges() returns True;
+  std::vector<
+      std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType>>
+  getRanges();
 
-	// Get the stride for the current mask (only called if hasMask() returns True).
-	uInt getMaskStride();
+  // Get the stride for the current data set.
+  uInt getStride();
 
-	// Get the associated range(s) of the current dataset. Only called if hasRanges() returns True;
-	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > getRanges();
+  // Returns NULL; lattices do not have associated weights.
+  const T* getWeights();
 
-	// Get the stride for the current data set.
-	uInt getStride();
+  // Does the current data set have associated range(s)?
+  Bool hasRanges() const;
 
-	// Returns NULL; lattices do not have associated weights.
-	const T* getWeights();
+  // returns False; lattices do not have associated weights.
+  Bool hasWeights() const;
 
-	// Does the current data set have associated range(s)?
-	Bool hasRanges() const;
+  // If the associated data set has ranges, are these include (return True) or
+  // exclude (return False) ranges?
+  Bool isInclude() const;
 
-	// returns False; lattices do not have associated weights.
-	Bool hasWeights() const;
+  // get the positions of the min and max
+  void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
 
-	// If the associated data set has ranges, are these include (return True) or
-	// exclude (return False) ranges?
-	Bool isInclude() const;
+  virtual void reset();
 
-	// get the positions of the min and max
-	void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
+  void setProgressMeter(std::shared_ptr<LattStatsProgress> pm);
 
-	virtual void reset();
+  // set the data ranges
+  void setRanges(const std::vector<std::pair<typename NumericTraits<T>::PrecisionType,
+                                             typename NumericTraits<T>::PrecisionType>>& ranges,
+                 Bool isInclude);
 
-	void setProgressMeter(std::shared_ptr<LattStatsProgress> pm);
+ protected:
+  LatticeStatsDataProviderBase();
 
-	// set the data ranges
-	void setRanges(
-		const std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> >& ranges,
-		Bool isInclude
-	);
+  void _updateMaxPos(const IPosition& maxPos) { _maxPos = maxPos; }
 
-protected:
-	LatticeStatsDataProviderBase();
+  void _updateMinPos(const IPosition& minPos) { _minPos = minPos; }
 
-	void _updateMaxPos(const IPosition& maxPos) { _maxPos = maxPos; }
+  void _updateProgress();
 
-	void _updateMinPos(const IPosition& minPos) { _minPos = minPos; }
-
-	void _updateProgress();
-
-private:
-	Bool _hasRanges, _isInclude;
-	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > _ranges;
-	std::shared_ptr<LattStatsProgress> _progressMeter;
-	IPosition _minPos, _maxPos;
+ private:
+  Bool _hasRanges, _isInclude;
+  std::vector<
+      std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType>>
+      _ranges;
+  std::shared_ptr<LattStatsProgress> _progressMeter;
+  IPosition _minPos, _maxPos;
 };
 
-}
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProviderBase.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 
 #endif

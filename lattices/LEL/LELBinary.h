@@ -1,41 +1,39 @@
-//# LELBinary.h:  LELBinary.h
-//# Copyright (C) 1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LELBinary.h:  LELBinary.h
+// # Copyright (C) 1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LELBINARY_H
 #define LATTICES_LELBINARY_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LEL/LELInterface.h>
 #include <casacore/lattices/LEL/LELBinaryEnums.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary> This LEL class handles numerical binary operators </summary>
 //
@@ -53,35 +51,35 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 //
 // <etymology>
-//  This derived LEL letter class handles numerical binary 
-//  operators 
+//  This derived LEL letter class handles numerical binary
+//  operators
 // </etymology>
 //
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply numerical binary
 // operators to Lattice expressions.  They operate on numerical
-// Lattice (Float,Double,Complex,DComplex) expressions and return the 
-// same numerical type. The available C++ operators  
-// are  <src>+,-,*,/</src> with  equivalents in the enum 
+// Lattice (Float,Double,Complex,DComplex) expressions and return the
+// same numerical type. The available C++ operators
+// are  <src>+,-,*,/</src> with  equivalents in the enum
 // of ADD, SUBTRACT, MULTIPLY, and DIVIDE.
 //
 // A description of the implementation details of the LEL classes can
 // be found in
 // <a href="../notes/216.html">Note 216</a>
 //
-// </synopsis> 
+// </synopsis>
 //
 // <example>
-// Examples are not very useful as the user would never use 
-// these classes directly.  Look in LatticeExprNode.cc to see 
+// Examples are not very useful as the user would never use
+// these classes directly.  Look in LatticeExprNode.cc to see
 // how it invokes these classes.  Examples of how the user
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
 // ArrayLattice<Float> x(shape); x.set(1.0);
 // ArrayLattice<Float> y(shape); y.set(2.0);
-// ArrayLattice<Float> z(shape); 
+// ArrayLattice<Float> z(shape);
 // z.copyData(x+y);                 // z = x + y;
 // z.copyData(x-y);                 // z = x - y;
 // z.copyData(x*y);                 // z = x * y;
@@ -90,58 +88,52 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 //
 // <motivation>
-// Numerical binary operations are a basic mathematical expression. 
+// Numerical binary operations are a basic mathematical expression.
 // </motivation>
 //
 // <todo asof="1998/01/20">
 // </todo>
- 
 
-template <class T> class LELBinary : public LELInterface<T>
-{
-  //# Make members of parent class known.
-protected:
+template <class T>
+class LELBinary : public LELInterface<T> {
+  // # Make members of parent class known.
+ protected:
   using LELInterface<T>::setAttr;
 
-public: 
-// Constructor takes operation and left and right expressions
-// to be operated upon
-   LELBinary(const LELBinaryEnums::Operation op, 
-	     const std::shared_ptr<LELInterface<T>>& pLeftExpr,
-	     const std::shared_ptr<LELInterface<T>>& pRightExpr);
+ public:
+  // Constructor takes operation and left and right expressions
+  // to be operated upon
+  LELBinary(const LELBinaryEnums::Operation op, const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+            const std::shared_ptr<LELInterface<T>>& pRightExpr);
 
-// Destructor 
+  // Destructor
   ~LELBinary();
 
-// Recursively evaluate the expression 
-   virtual void eval (LELArray<T>& result,
-                      const Slicer& section) const;
+  // Recursively evaluate the expression
+  virtual void eval(LELArray<T>& result, const Slicer& section) const;
 
-// Recursively efvaluate the scalar expression 
-   virtual LELScalar<T> getScalar() const;
+  // Recursively efvaluate the scalar expression
+  virtual LELScalar<T> getScalar() const;
 
-// Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+  // Do further preparations (e.g. optimization) on the expression.
+  virtual Bool prepareScalarExpr();
 
-// Get class name
-   virtual String className() const;    
+  // Get class name
+  virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
-private:
-   LELBinaryEnums::Operation op_p;
-   std::shared_ptr<LELInterface<T>> pLeftExpr_p;
-   std::shared_ptr<LELInterface<T>> pRightExpr_p;
+ private:
+  LELBinaryEnums::Operation op_p;
+  std::shared_ptr<LELInterface<T>> pLeftExpr_p;
+  std::shared_ptr<LELInterface<T>> pRightExpr_p;
 };
-
-
-
 
 // <summary> This LEL class handles relational binary numerical operators </summary>
 //
@@ -159,35 +151,35 @@ private:
 // </prerequisite>
 //
 // <etymology>
-//  This derived LEL letter class handles relational numerical binary 
-//  operators 
+//  This derived LEL letter class handles relational numerical binary
+//  operators
 // </etymology>
 //
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
-// is used to construct LEL objects that apply relational numerical 
+// is used to construct LEL objects that apply relational numerical
 // binary operators to Lattice expressions.  They operate on numerical
-// (Float,Double,Complex,DComplex) Lattice expressions and result 
-// in a Bool.  The available C++ operators are  
-// <src>==,!=>,>=,<,<=,</src> with equivalents in the enum of 
+// (Float,Double,Complex,DComplex) Lattice expressions and result
+// in a Bool.  The available C++ operators are
+// <src>==,!=>,>=,<,<=,</src> with equivalents in the enum of
 // EQ, NE, GT, GE, LT, and LE
 //
 // A description of the implementation details of the LEL classes can
 // be found in
 // <a href="../notes/216.html">Note 216</a>
 //
-// </synopsis> 
+// </synopsis>
 //
 // <example>
-// Examples are not very useful as the user would never use 
-// these classes directly.  Look in LatticeExprNode.cc to see 
+// Examples are not very useful as the user would never use
+// these classes directly.  Look in LatticeExprNode.cc to see
 // how it invokes these classes.  Examples of how the user
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
 // ArrayLattice<Float> x(shape); x.set(1.0);
 // ArrayLattice<Float> y(shape); y.set(2.0);
-// ArrayLattice<Bool> z(shape); 
+// ArrayLattice<Bool> z(shape);
 // z.copyData(x==y);                // z = x == y;
 // z.copyData(x!=y);                // z = x != y;
 // z.copyData(x>y);                 // z = x > y;
@@ -198,55 +190,49 @@ private:
 // </example>
 //
 // <motivation>
-// Numerical relational binary operations are a basic mathematical expression. 
+// Numerical relational binary operations are a basic mathematical expression.
 // </motivation>
 //
 // <todo asof="1998/01/20">
 // </todo>
- 
 
-template<class T> class LELBinaryCmp : public LELInterface<Bool>
-{
-public: 
-   
-// Constructor takes operation and left and right expressions
-// to be operated upon. It can only handle the comparison operators.
-   LELBinaryCmp(const LELBinaryEnums::Operation op, 
-		const std::shared_ptr<LELInterface<T>>& pLeftExpr,
-		const std::shared_ptr<LELInterface<T>>& pRightExpr);
+template <class T>
+class LELBinaryCmp : public LELInterface<Bool> {
+ public:
+  // Constructor takes operation and left and right expressions
+  // to be operated upon. It can only handle the comparison operators.
+  LELBinaryCmp(const LELBinaryEnums::Operation op,
+               const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+               const std::shared_ptr<LELInterface<T>>& pRightExpr);
 
-// Destructor 
+  // Destructor
   ~LELBinaryCmp();
 
-// Recursively evaluate the expression 
-   virtual void eval (LELArray<Bool>& result,
-                      const Slicer& section) const;
+  // Recursively evaluate the expression
+  virtual void eval(LELArray<Bool>& result, const Slicer& section) const;
 
-// Recursively evaluate the scalar expression 
-   virtual LELScalar<Bool> getScalar() const;
+  // Recursively evaluate the scalar expression
+  virtual LELScalar<Bool> getScalar() const;
 
-// Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+  // Do further preparations (e.g. optimization) on the expression.
+  virtual Bool prepareScalarExpr();
 
-// Get class name
-   virtual String className() const;    
+  // Get class name
+  virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
-private:
-   LELBinaryEnums::Operation op_p;
-   std::shared_ptr<LELInterface<T>> pLeftExpr_p;
-   std::shared_ptr<LELInterface<T>> pRightExpr_p;
+ private:
+  LELBinaryEnums::Operation op_p;
+  std::shared_ptr<LELInterface<T>> pLeftExpr_p;
+  std::shared_ptr<LELInterface<T>> pRightExpr_p;
 };
-
-
-
 
 // <summary> This LEL class handles logical binary operators </summary>
 //
@@ -264,26 +250,26 @@ private:
 // </prerequisite>
 
 // <etymology>
-//  This derived LEL letter class handles logical binary operators 
+//  This derived LEL letter class handles logical binary operators
 // </etymology>
 //
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
-// is used to construct LEL objects that apply logical 
+// is used to construct LEL objects that apply logical
 // binary operators to Lattice expressions.  They apply only
-// to Bool Lattice expressions and result in a Bool.  The 
-// available C++ operators are  <src>&&,||,==,!=</src> with 
+// to Bool Lattice expressions and result in a Bool.  The
+// available C++ operators are  <src>&&,||,==,!=</src> with
 // equivalents in the enum of  AND, OR, EQ, and NE
 //
 // A description of the implementation details of the LEL classes can
 // be found in
 // <a href="../notes/216.html">Note 216</a>
 //
-// </synopsis> 
+// </synopsis>
 //
 // <example>
-// Examples are not very useful as the user would never use 
-// these classes directly.  Look in LatticeExprNode.cc to see 
+// Examples are not very useful as the user would never use
+// these classes directly.  Look in LatticeExprNode.cc to see
 // how it invokes these classes.  Examples of how the user
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
@@ -299,59 +285,52 @@ private:
 // </example>
 //
 // <motivation>
-// Logical binary operations are a basic mathematical expression. 
+// Logical binary operations are a basic mathematical expression.
 // </motivation>
 //
 // <todo asof="1998/01/20">
 // </todo>
- 
 
-class LELBinaryBool : public LELInterface<Bool>
-{
-public: 
-   
-// Constructor takes operation and left and right expressions
-// to be operated upon.
-   LELBinaryBool(const LELBinaryEnums::Operation op, 
-		 const std::shared_ptr<LELInterface<Bool>>& pLeftExpr,
-		 const std::shared_ptr<LELInterface<Bool>>& pRightExpr);
+class LELBinaryBool : public LELInterface<Bool> {
+ public:
+  // Constructor takes operation and left and right expressions
+  // to be operated upon.
+  LELBinaryBool(const LELBinaryEnums::Operation op,
+                const std::shared_ptr<LELInterface<Bool>>& pLeftExpr,
+                const std::shared_ptr<LELInterface<Bool>>& pRightExpr);
 
-// Destructor 
+  // Destructor
   ~LELBinaryBool();
 
-// Recursively evaluate the expression 
-   virtual void eval (LELArray<Bool>& result,
-                      const Slicer& section) const;
+  // Recursively evaluate the expression
+  virtual void eval(LELArray<Bool>& result, const Slicer& section) const;
 
-// Recursively evaluate the scalar expression 
-   virtual LELScalar<Bool> getScalar() const;
+  // Recursively evaluate the scalar expression
+  virtual LELScalar<Bool> getScalar() const;
 
-// Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+  // Do further preparations (e.g. optimization) on the expression.
+  virtual Bool prepareScalarExpr();
 
-// Get class name
-   virtual String className() const;    
+  // Get class name
+  virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
-private:
-   LELBinaryEnums::Operation op_p;
-   std::shared_ptr<LELInterface<Bool>> pLeftExpr_p;
-   std::shared_ptr<LELInterface<Bool>> pRightExpr_p;
+ private:
+  LELBinaryEnums::Operation op_p;
+  std::shared_ptr<LELInterface<Bool>> pLeftExpr_p;
+  std::shared_ptr<LELInterface<Bool>> pRightExpr_p;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LEL/LELBinary.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

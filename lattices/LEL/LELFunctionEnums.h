@@ -1,33 +1,33 @@
-//# LELFunctionEnums.h: Enums of function names
-//# Copyright (C) 1997,1998,1999,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LELFunctionEnums.h: Enums of function names
+// # Copyright (C) 1997,1998,1999,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT//# ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or # FITNESS FOR A PARTICULAR PURPOSE.  See
+// the GNU Library General Public # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LELFUNCTIONENUMS_H
 #define LATTICES_LELFUNCTIONENUMS_H
 
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL function is described in this enum </summary>
 //
@@ -52,172 +52,168 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  Each function name accepted by the bridging class LatticeExprNode
 //  and passed on to the
 //  <linkto class="LELFunction1D">LELFunction</linkto>
-//  letter classes is labelled internally 
-//  with a value from this enum.  
-// </synopsis> 
+//  letter classes is labelled internally
+//  with a value from this enum.
+// </synopsis>
 //
 // <todo asof="1998/01/21">
 // </todo>
 
+class LELFunctionEnums {
+ public:
+  enum Function {
 
-class LELFunctionEnums 
-{
-public:
-   enum Function {
+    // sin
+    SIN,
 
-// sin
-   SIN,
+    // sinh
+    SINH,
 
-// sinh
-   SINH,
+    // asin
+    ASIN,
 
-// asin 
-   ASIN,
+    // cos
+    COS,
 
-// cos
-   COS,
+    // cosh
+    COSH,
 
-// cosh
-   COSH,
+    // acos
+    ACOS,
 
-// acos
-   ACOS,
+    // tan
+    TAN,
 
-// tan
-   TAN,
+    // tanh
+    TANH,
 
-// tanh
-   TANH,
+    // atan; atan(x) returns the arc tangent of x in the range -pi/2 to  pi/2.
+    ATAN,
 
-// atan; atan(x) returns the arc tangent of x in the range -pi/2 to  pi/2.
-   ATAN,
+    // atan2; atan2(y,x) computes an arc tangent of y/x in the range -pi to pi
+    ATAN2,
 
-// atan2; atan2(y,x) computes an arc tangent of y/x in the range -pi to pi
-   ATAN2,
+    // exp
+    EXP,
 
-// exp
-   EXP,
+    // log
+    LOG,
 
-// log
-   LOG,
+    // log10
+    LOG10,
 
-// log10
-   LOG10,
+    // power pow(x,y) ==  x**y or x^y
+    POW,
 
-// power pow(x,y) ==  x**y or x^y
-   POW,
+    // sqrt
+    SQRT,
 
-// sqrt
-   SQRT,
+    // round
+    ROUND,
 
-// round
-   ROUND,
+    // sign (-1 if <0; 0 if 0; 1 if >0)
+    SIGN,
 
-// sign (-1 if <0; 0 if 0; 1 if >0)
-   SIGN,
+    // ceil; returns the least  integral  value  greater  than  or  equal  to  x.
+    CEIL,
 
-// ceil; returns the least  integral  value  greater  than  or  equal  to  x. 
-   CEIL,
+    // floor; returns the greatest integral  value  less  than  or equal  to  x.
+    FLOOR,
 
-// floor; returns the greatest integral  value  less  than  or equal  to  x.
-   FLOOR,
+    // abs
+    ABS,
 
-// abs
-   ABS,
+    // phase (of complex number)
+    ARG,
 
-// phase (of complex number)
-   ARG,
+    // real (part of number)
+    REAL,
 
-// real (part of number)
-   REAL,
+    // imag (inary part of complex number)
+    IMAG,
 
-// imag (inary part of complex number)
-   IMAG,
+    // conj (ugate complex number)
+    CONJ,
 
-// conj (ugate complex number)
-   CONJ,
+    // complex (form complex from 2 reals)
+    COMPLEX,
 
-// complex (form complex from 2 reals)
-   COMPLEX,
+    // fmod; fmod(x,y) returns the remainder  of  x  with  respect  to  y;  that is,
+    // the result r is one of the numbers that differ from x by an integral multiple of y.
+    FMOD,
 
-// fmod; fmod(x,y) returns the remainder  of  x  with  respect  to  y;  that is, 
-// the result r is one of the numbers that differ from x by an integral multiple of y.  
-   FMOD,
+    // min; min(x,y)
+    MIN,
 
-// min; min(x,y)
-   MIN,
+    // max; max(x,y)
+    MAX,
 
-// max; max(x,y)
-   MAX,
+    // min; min(x) (is a scalar)
+    MIN1D,
 
-// min; min(x) (is a scalar)
-   MIN1D,
+    // max; max(x) (is a scalar)
+    MAX1D,
 
-// max; max(x) (is a scalar)
-   MAX1D,
+    // mean; mean(x) (is a scalar)
+    MEAN1D,
 
-// mean; mean(x) (is a scalar)
-   MEAN1D,
+    // median; median(x) (is a scalar)
+    MEDIAN1D,
 
-// median; median(x) (is a scalar)
-   MEDIAN1D,
+    // fractile; fractile(x,fraction) (is a scalar)
+    FRACTILE1D,
 
-// fractile; fractile(x,fraction) (is a scalar)
-   FRACTILE1D,
+    // fractilerange; fractilerange(x,fraction1[,fraction2]) (is a scalar)
+    FRACTILERANGE1D,
 
-// fractilerange; fractilerange(x,fraction1[,fraction2]) (is a scalar)
-   FRACTILERANGE1D,
+    // sum; sum(x) (is a scalar)
+    SUM,
 
-// sum; sum(x) (is a scalar)
-   SUM,
+    // nelements; nelements(x) (is a scalar)
+    NELEM,
 
-// nelements; nelements(x) (is a scalar)
-   NELEM,
+    // all (true) (is a scalar)
+    ALL,
 
-// all (true) (is a scalar)
-   ALL,
+    // any (true) (is a scalar)
+    ANY,
 
-// any (true) (is a scalar)
-   ANY,
+    // ntrue
+    NTRUE,
 
-// ntrue 
-   NTRUE,
+    // nfalse
+    NFALSE,
 
-// nfalse
-   NFALSE,
+    // mask
+    MASK,
 
-// mask
-   MASK,
+    // value
+    VALUE,
 
-// value
-   VALUE,
+    // iif (similar to ?: in C++)
+    IIF,
 
-// iif (similar to ?: in C++)
-   IIF,
+    // replace
+    REPLACE,
 
-// replace
-   REPLACE,
+    // dimensionality
+    NDIM,
 
-// dimensionality
-   NDIM,
+    // length (of an axis)
+    LENGTH,
 
-// length (of an axis)
-   LENGTH,
+    // is the value a NaN?
+    ISNAN,
 
-// is the value a NaN?
-   ISNAN,
+    // a bool array telling which indices of an axis are to be used
+    INDEXIN,
 
-// a bool array telling which indices of an axis are to be used
-   INDEXIN,
+    // number of functions
+    NFUNCTIONS
 
-// number of functions
-   NFUNCTIONS
-
+  };
 };
 
-};
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

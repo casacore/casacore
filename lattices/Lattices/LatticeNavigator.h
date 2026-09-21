@@ -1,41 +1,39 @@
-//# LatticeNavigator.h: Abstract base class to steer lattice iterators
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeNavigator.h: Abstract base class to steer lattice iterators
+// # Copyright (C) 1994,1995,1996,1997,1998,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICENAVIGATOR_H
 #define LATTICES_LATTICENAVIGATOR_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class IPosition;
 class ROTiledStManAccessor;
-
 
 // <summary>
 // Abstract base class to steer lattice iterators.
@@ -55,14 +53,14 @@ class ROTiledStManAccessor;
 // Lattice iteration can proceed with a number of different strategies -
 // all of which answer the question:  where do I go from here?
 // You could travel through by making calculations on the lattice subscripts,
-// viewing ascending planes in an image cube, for example, or you could 
-// travel through by making calculations on the data, viewing small 
-// subimage planes in order of descending brightness over the whole cube.  
+// viewing ascending planes in an image cube, for example, or you could
+// travel through by making calculations on the data, viewing small
+// subimage planes in order of descending brightness over the whole cube.
 // Concrete classes derived  from this base class implement different
 // navigation strategies - but they are all "navigators".
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // This abstract base class defines the interface for objects which generate
 // positions for LatticeIterators. This position is not just a single point
 // in the Lattice but a region or "cursor" that is moved through the
@@ -73,10 +71,10 @@ class ROTiledStManAccessor;
 //
 // There may eventually be a large collection of tools for traversing
 // Lattices.  At this writing (December 1999) there are three concrete
-// classes derived from LatticeNavigator: 
+// classes derived from LatticeNavigator:
 // <linkto class="LatticeStepper">LatticeStepper</linkto>,
 // <linkto class="TiledLineStepper">TiledLineStepper</linkto>, and
-// <linkto class="TileStepper">TileStepper</linkto>. 
+// <linkto class="TileStepper">TileStepper</linkto>.
 //
 // The <src>LatticeStepper</src> class moves through a Lattice in fixed
 // steps defined by the user specified cursor, incrementing to the next
@@ -92,7 +90,7 @@ class ROTiledStManAccessor;
 //
 // The most important member functions of this class are those which move
 // the cursor to the next position. These are the <src>operator++</src> and
-// <src>operator--</src> member functions, (in postfix and prefix forms). 
+// <src>operator--</src> member functions, (in postfix and prefix forms).
 //
 // The cursor shape need not be constant as it moves through the Lattice,
 // but may change depending on its current position. For the LatticeStepper
@@ -151,11 +149,11 @@ class ROTiledStManAccessor;
 // LatticeNavigator->operator++() which might resolve to
 // LatticeStepper->operator++(). Other functions like this are documented in
 // the <linkto class="LatticeIterator">LatticeIterator</linkto> class.
-// </synopsis> 
+// </synopsis>
 
 // <example>
-// See the examples in the 
-// <linkto class="LatticeStepper">LatticeStepper</linkto> class, the 
+// See the examples in the
+// <linkto class="LatticeStepper">LatticeStepper</linkto> class, the
 // <linkto class="TiledLineStepper">TiledLineStepper</linkto> class, and the
 // <linkto class="TileStepper">TileStepper</linkto> class.
 // </example>
@@ -176,20 +174,16 @@ class ROTiledStManAccessor;
 //  arbitrary shaped regions.
 // </todo>
 
-
 class LatticeNavigator {
-public:
+ public:
   // Default constructor.
-  LatticeNavigator()
-    {;}
+  LatticeNavigator() { ; }
 
   // Copy constructor.
-  LatticeNavigator (const LatticeNavigator&)
-    {;}
+  LatticeNavigator(const LatticeNavigator&) { ; }
 
   // Assignment.
-  LatticeNavigator& operator= (const LatticeNavigator&)
-    { return *this; }
+  LatticeNavigator& operator=(const LatticeNavigator&) { return *this; }
 
   // A virtual destructor.  A virtual is needed to ensure that derived
   // classes accessed through pointers to a LatticeNavigator will scope
@@ -257,7 +251,7 @@ public:
   virtual IPosition endPosition() const = 0;
   virtual IPosition relativeEndPosition() const;
   // </group>
-  
+
   // Functions which return the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
   // Lattice while <src>subLatticeShape</src> returns the shape of any
@@ -275,7 +269,7 @@ public:
   // Function which returns the current shape of the cursor which is
   // iterating through the Lattice.  The returned IPosition will have the
   // same number of axes as the underlying Lattice.
-  virtual IPosition cursorShape() const = 0;  
+  virtual IPosition cursorShape() const = 0;
 
   // Function which returns the axes of the cursor.
   // These are the axes which should not be removed by the
@@ -299,18 +293,16 @@ public:
   virtual IPosition hangOverTrc() const;
   // </group>
 
-
   // Function to specify a "section" of the Lattice to Navigate over. A
   // section is defined in terms of the Bottom Left Corner (blc), Top Right
   // Corner (trc), and step size (inc), on ALL of its axes, including
-  // degenerate axes. The step size defaults to one if not specified.  
+  // degenerate axes. The step size defaults to one if not specified.
   // In the default implementation of this class subsectioning is not
   // supported and using the <src>subsection</src> function will throw an
   // exception (AipsError).
   // <group>
   virtual void subSection(const IPosition& blc, const IPosition& trc);
-  virtual void subSection(const IPosition& blc, const IPosition& trc, 
-			  const IPosition& inc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc, const IPosition& inc);
   // </group>
 
   // Return the bottom left hand corner (blc), top right corner (trc) or
@@ -333,13 +325,12 @@ public:
   // in the given row of the tiled hypercube.
   // A zero bucket size indicates that the data are not tiled, but in memory.
   // Then a cache size of 0 is returned.
-  virtual uInt calcCacheSize (const IPosition& cubeShape,
-                              const IPosition& tileShape,
-                              uInt maxCacheSize, uInt bucketSize) const = 0;
+  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                             uInt maxCacheSize, uInt bucketSize) const = 0;
 
-  // Function which returns a pointer to dynamic memory of an exact copy 
+  // Function which returns a pointer to dynamic memory of an exact copy
   // of this LatticeNavigator. It is the responsibility of the caller to
-  // release this memory. 
+  // release this memory.
   virtual LatticeNavigator* clone() const = 0;
 
   // Function which checks the internals of the class for consistency.
@@ -348,18 +339,9 @@ public:
   virtual Bool ok() const;
 };
 
+inline Bool LatticeNavigator::operator++() { return operator++(0); }
+inline Bool LatticeNavigator::operator--() { return operator--(0); }
 
-inline Bool LatticeNavigator::operator++()
-{
-  return operator++(0);
-}
-inline Bool LatticeNavigator::operator--()
-{
-  return operator--(0);
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

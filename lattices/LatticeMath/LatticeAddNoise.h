@@ -1,45 +1,45 @@
-//# LatticeAddNoise.h: add noise to a Lattice
-//# Copyright (C) 1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeAddNoise.h: add noise to a Lattice
+// # Copyright (C) 1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICEADDNOISE_H
 #define LATTICES_LATTICEADDNOISE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicMath/Random.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
-template <class T> class MaskedLattice;
-template <class T> class Lattice;
-
+template <class T>
+class MaskedLattice;
+template <class T>
+class Lattice;
 
 // <summary>
 // Add noise from specified distribution to a lattice
@@ -72,72 +72,66 @@ template <class T> class Lattice;
 // </srcblock>
 // </example>
 
+// # <todo asof="yyyy/mm/dd">
+// # </todo>
 
-//# <todo asof="yyyy/mm/dd">
-//# </todo>
+class LatticeAddNoise {
+ public:
+  // Default constructor
+  LatticeAddNoise();
 
-class LatticeAddNoise
-{
-public:
-// Default constructor
-   LatticeAddNoise();
+  // Constructor. An exception will occur if we cannot generate
+  // the distribution (e.g. illegal parameters).  seed1 and seed2
+  // are used to seed the MLCG object.
+  LatticeAddNoise(Random::Types type, const Vector<Double>& parameters, Int seed1 = 0,
+                  Int seed2 = 1);
 
-// Constructor. An exception will occur if we cannot generate 
-// the distribution (e.g. illegal parameters).  seed1 and seed2
-   // are used to seed the MLCG object.
-   LatticeAddNoise (
-		 Random::Types type,
-         const Vector<Double>& parameters,
-         Int seed1=0, Int seed2=1
-   );
+  // Copy constructor (copy semantics)
+  LatticeAddNoise(const LatticeAddNoise& other);
 
-// Copy constructor (copy semantics)
-   LatticeAddNoise (const LatticeAddNoise& other);
+  // Assignment (copy semantics)
+  LatticeAddNoise& operator=(const LatticeAddNoise& other);
 
-// Assignment (copy semantics)
-   LatticeAddNoise& operator=(const LatticeAddNoise& other);
+  // Destructor
+  ~LatticeAddNoise();
 
-// Destructor
-   ~LatticeAddNoise();
+  // Set a new distribution.  An exception will occur if we cannot generate
+  // the distribution (e.g. illegal parameters).
+  void set(Random::Types type, const Vector<Double>& parameters);
 
-// Set a new distribution.  An exception will occur if we cannot generate 
-// the distribution (e.g. illegal parameters).  
-   void set (Random::Types type,
-             const Vector<Double>& parameters);
+  // Add noise of given type to lattice.  For complex types, the
+  // noise is added to real and imaginary separately.
+  // Any mask is ignored when adding the noise. I.e.
+  // noise is added to masked pixels.
+  // <group>
+  template <class T>
+  void add(Lattice<T>& lattice);
+  template <class T>
+  void add(MaskedLattice<T>& lattice);
+  // </group>
+ private:
+  Random::Types itsType;
+  Vector<Double> itsParameters;
+  MLCG itsGen;
+  Random* itsNoise;
 
-// Add noise of given type to lattice.  For complex types, the
-// noise is added to real and imaginary separately.
-// Any mask is ignored when adding the noise. I.e.
-// noise is added to masked pixels.
-// <group>
-   template <class T> void add (Lattice<T>& lattice);
-   template <class T> void add (MaskedLattice<T>& lattice);
-// </group>
-private:
+  // Add noise to array.  For Complex, noise is added to
+  // real and imaginary separately.
+  // <group>
+  void addNoiseToArray(Array<Float>& data);
+  void addNoiseToArray(Array<Complex>& data);
+  void addNoiseToArray(Array<Double>& data);
+  void addNoiseToArray(Array<DComplex>& data);
+  // </group>
 
-   Random::Types itsType;
-   Vector<Double> itsParameters;
-   MLCG itsGen;
-   Random* itsNoise;
-
-// Add noise to array.  For Complex, noise is added to
-// real and imaginary separately.
-// <group>
-   void addNoiseToArray (Array<Float>& data);
-   void addNoiseToArray (Array<Complex>& data);
-   void addNoiseToArray (Array<Double>& data);
-   void addNoiseToArray (Array<DComplex>& data);
-// </group>
-
-// Make noise generator
-   void makeDistribution ();
+  // Make noise generator
+  void makeDistribution();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/LatticeAddNoise2.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 
 #endif

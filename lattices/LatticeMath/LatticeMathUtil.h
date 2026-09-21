@@ -1,27 +1,27 @@
-//# LatticeMathUtil.h: useful global functions for Lattices
-//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeMathUtil.h: useful global functions for Lattices
+// # Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICEMATHUTIL_H
 #define LATTICES_LATTICEMATHUTIL_H
@@ -30,10 +30,12 @@
 #include <casacore/lattices/LatticeMath/LatticeStatsBase.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template <class T> class Lattice;
-template <class T> class MaskedLattice;
+template <class T>
+class Lattice;
+template <class T>
+class MaskedLattice;
 class IPosition;
 class LogIO;
 class Slicer;
@@ -61,34 +63,25 @@ class Slicer;
 // </todo>
 //
 
-
-class LatticeMathUtil
-{
-   public:
-
-// Collapse the specified axes by averaging and recover the
-// pixel values.  If axes is empty, then the data just contains
-// all of the lattice (i.e. no collapse), 
-// but dropDegenerateAxes is stil honoured
-   template <class T>
-   static void collapse (Array<T>& data, const IPosition& axes,
-                         const MaskedLattice<T>& in,
-                         Bool dropDegenerateAxes);
-//
-// Collapse the specified axes by averaging and recover either/and
-// the pixel values and mask. If axes is empty, then the data and mask just contains
-// all of the lattice (i.e. no collapse)
-// but dropDegenerateAxes is stil honoured
-   template <class T>
-   static void collapse (
-	Array<T>& data, Array<Bool>& mask,
-    const IPosition& axes,
-    const MaskedLattice<T>& lat,
-    Bool dropDegenerateAxes,
-    Bool getPixels=True, Bool getMask=True,
-    const LatticeStatsBase::StatisticsTypes stat=LatticeStatsBase::MEAN
-   );
-
+class LatticeMathUtil {
+ public:
+  // Collapse the specified axes by averaging and recover the
+  // pixel values.  If axes is empty, then the data just contains
+  // all of the lattice (i.e. no collapse),
+  // but dropDegenerateAxes is stil honoured
+  template <class T>
+  static void collapse(Array<T>& data, const IPosition& axes, const MaskedLattice<T>& in,
+                       Bool dropDegenerateAxes);
+  //
+  // Collapse the specified axes by averaging and recover either/and
+  // the pixel values and mask. If axes is empty, then the data and mask just contains
+  // all of the lattice (i.e. no collapse)
+  // but dropDegenerateAxes is stil honoured
+  template <class T>
+  static void collapse(Array<T>& data, Array<Bool>& mask, const IPosition& axes,
+                       const MaskedLattice<T>& lat, Bool dropDegenerateAxes, Bool getPixels = True,
+                       Bool getMask = True,
+                       const LatticeStatsBase::StatisticsTypes stat = LatticeStatsBase::MEAN);
 };
 
 // <summary>Global functions on Lattices</summary>
@@ -137,17 +130,14 @@ class LatticeMathUtil
 // the IPositions of the max.  (LEL does not get you the IPositions of the
 // min and max)
 
-   template <class T>
-   void minMax(T & min, T & max, 
-               IPosition & posMin, IPosition & posMax, 
-               const Lattice<T>& lat);
+template <class T>
+void minMax(T& min, T& max, IPosition& posMin, IPosition& posMax, const Lattice<T>& lat);
 
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/LatticeMathUtil.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,37 +1,37 @@
-//# TiledShape.h: Define the shape and tile shape
-//# Copyright (C) 1997,1998,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledShape.h: Define the shape and tile shape
+// # Copyright (C) 1997,1998,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_TILEDSHAPE_H
 #define LATTICES_TILEDSHAPE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Define the shape and tile shape
@@ -50,7 +50,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // TiledShape defines the shape and tile shape of a tiled array.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // TiledShape is a class defining the shape and optionally the tile
 // shape of a lattice. It is used in the constructors of
 // <linkto class=PagedArray>PagedArray</linkto> and
@@ -90,89 +90,73 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // shapes are conforming and the logic to calculate a default tile shape.
 // </motivation>
 
+class TiledShape {
+ public:
+  // Default constructor has empty shape and tile shape.
+  TiledShape();
 
-class TiledShape
-{
-public:
-    // Default constructor has empty shape and tile shape.
-    TiledShape();
+  // Use the given shape.
+  // No tile shape is given, so function <src>tileShape</src>
+  // will calculate it using the size of a tile.
+  TiledShape(const IPosition& shape);
 
-    // Use the given shape.
-    // No tile shape is given, so function <src>tileShape</src>
-    // will calculate it using the size of a tile.
-    TiledShape (const IPosition& shape);
+  // Use the given shape and tile shape.
+  // Both shapes must be conforming (i.e. have same number of elements).
+  TiledShape(const IPosition& shape, const IPosition& tileShape);
 
-    // Use the given shape and tile shape.
-    // Both shapes must be conforming (i.e. have same number of elements).
-    TiledShape (const IPosition& shape, const IPosition& tileShape);
+  // Copy constructor (copy semantics).
+  TiledShape(const TiledShape& that);
 
-    // Copy constructor (copy semantics).
-    TiledShape (const TiledShape& that);
+  ~TiledShape();
 
-    ~TiledShape();
+  // Assignment (copy semantics).
+  TiledShape& operator=(const TiledShape& that);
 
-    // Assignment (copy semantics).
-    TiledShape& operator= (const TiledShape& that);
+  // Is the tile shape defined?
+  Bool isTileShapeDefined() const;
 
-    // Is the tile shape defined?
-    Bool isTileShapeDefined() const;
+  // Return the shape.
+  const IPosition& shape() const;
 
-    // Return the shape.
-    const IPosition& shape() const;
+  // Return the tile shape.
+  // When the tile shape is undefined, the default tile shape will be
+  // calculated using the given tile size and tolerance.
+  // <br> The tolerance is used to determine the boundaries where
+  // it is tried to fit an integral number of tiles.
+  IPosition tileShape(uInt nrPixelsPerTile = 32768, Double tolerance = 0.5) const;
 
-    // Return the tile shape.
-    // When the tile shape is undefined, the default tile shape will be
-    // calculated using the given tile size and tolerance.
-    // <br> The tolerance is used to determine the boundaries where
-    // it is tried to fit an integral number of tiles.
-    IPosition tileShape (uInt nrPixelsPerTile = 32768,
-			 Double tolerance = 0.5) const;
+  // Derive the default tile shape from the shape for the given
+  // number of pixels per tile. It is tried to get the same number
+  // of tiles for each dimension.
+  // When a weight vector is given, the number of tiles for a dimension
+  // is proportional to the weight.
+  // <br>After the initial guess it tries to optimize it by trying to
+  // waste as little space as possible, while trying to keep as close as
+  // possible to the initial guess. The given tolerance (possibly per axis)
+  // gives the minimum and maximum possible length of a tile axis
+  // (minimum = initial_guess*tolerance; maximum = initial_guess/tolerance).
+  // The heuristic is such that a tile axis length dividing the cube length
+  // exactly is always favoured.
+  // The test program <src>tTiledShape</src> can be used to see how
+  // the algorithm works out for a given shape and tile size.
+  // <group>
+  IPosition defaultTileShape(uInt nrPixelsPerTile, Double tolerance) const;
+  IPosition defaultTileShape(uInt nrPixelsPerTile, const Vector<Double>& tolerance,
+                             const Vector<Double>& weight) const;
+  // </group>
 
-    // Derive the default tile shape from the shape for the given
-    // number of pixels per tile. It is tried to get the same number
-    // of tiles for each dimension.
-    // When a weight vector is given, the number of tiles for a dimension
-    // is proportional to the weight.
-    // <br>After the initial guess it tries to optimize it by trying to
-    // waste as little space as possible, while trying to keep as close as
-    // possible to the initial guess. The given tolerance (possibly per axis)
-    // gives the minimum and maximum possible length of a tile axis
-    // (minimum = initial_guess*tolerance; maximum = initial_guess/tolerance).
-    // The heuristic is such that a tile axis length dividing the cube length
-    // exactly is always favoured.
-    // The test program <src>tTiledShape</src> can be used to see how
-    // the algorithm works out for a given shape and tile size.
-    // <group>
-    IPosition defaultTileShape (uInt nrPixelsPerTile, Double tolerance) const;
-    IPosition defaultTileShape (uInt nrPixelsPerTile,
-				const Vector<Double>& tolerance,
-				const Vector<Double>& weight) const;
-    // </group>
-
-private:
-    IPosition itsShape;
-    IPosition itsTileShape;
-    Bool      itsTileDefined;
+ private:
+  IPosition itsShape;
+  IPosition itsTileShape;
+  Bool itsTileDefined;
 };
 
-
-inline Bool TiledShape::isTileShapeDefined() const
-{
-    return itsTileDefined;
-}
-inline const IPosition& TiledShape::shape() const
-{
-    return itsShape;
-}
-inline IPosition TiledShape::tileShape (uInt nrPixelsPerTile,
-					Double tolerance) const
-{
-    return (itsTileDefined  ?  itsTileShape :
-	                       defaultTileShape (nrPixelsPerTile, tolerance));
+inline Bool TiledShape::isTileShapeDefined() const { return itsTileDefined; }
+inline const IPosition& TiledShape::shape() const { return itsShape; }
+inline IPosition TiledShape::tileShape(uInt nrPixelsPerTile, Double tolerance) const {
+  return (itsTileDefined ? itsTileShape : defaultTileShape(nrPixelsPerTile, tolerance));
 }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

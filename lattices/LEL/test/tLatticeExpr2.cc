@@ -1,27 +1,27 @@
-//# LELFunction.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LELFunction.cc:  this defines non-templated classes in LELFunction.h
+// # Copyright (C) 1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/lattices/Lattices/PagedArray.h>
@@ -41,10 +41,8 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
-
 #include <casacore/casa/namespace.h>
-int main(int argc, const char* argv[])
-{
+int main(int argc, const char* argv[]) {
   try {
     Input inp(1);
     inp.version(" ");
@@ -56,12 +54,12 @@ int main(int argc, const char* argv[])
     inp.create("tz", "0", "Number of pixels along the z-axis tile", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
-    const uInt tx=inp.getInt("tx");
-    const uInt ty=inp.getInt("ty");
-    const uInt tz=inp.getInt("tz");
+    const uInt nx = inp.getInt("nx");
+    const uInt ny = inp.getInt("ny");
+    const uInt nz = inp.getInt("nz");
+    const uInt tx = inp.getInt("tx");
+    const uInt ty = inp.getInt("ty");
+    const uInt tz = inp.getInt("tz");
     const IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
@@ -80,10 +78,10 @@ int main(int argc, const char* argv[])
       LatticeIterator<Float> iter(lat, tileShape);
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
- 	iter.woCursor() = arr;
-	arr += Float(tileShape.product());
+        iter.woCursor() = arr;
+        arr += Float(tileShape.product());
       }
-      timer.show ("filling         ");
+      timer.show("filling         ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -92,9 +90,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(2*lat);
-      latout.copyData (expr);
-      timer.show ("2*lat           ");
+      LatticeExpr<Float> expr(2 * lat);
+      latout.copyData(expr);
+      timer.show("2*lat           ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -103,9 +101,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr((mean(lat)-lat.shape().product()/3)*lat);
-      latout.copyData (expr);
-      timer.show ("mean(lat)*lat   ");
+      LatticeExpr<Float> expr((mean(lat) - lat.shape().product() / 3) * lat);
+      latout.copyData(expr);
+      timer.show("mean(lat)*lat   ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -114,9 +112,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(amp(lat,lat));
-      latout.copyData (expr);
-      timer.show ("amp(lat,lat)    ");
+      LatticeExpr<Float> expr(amp(lat, lat));
+      latout.copyData(expr);
+      timer.show("amp(lat,lat)    ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -125,9 +123,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(lat+lat);
-      latout.copyData (expr);
-      timer.show ("lat+lat         ");
+      LatticeExpr<Float> expr(lat + lat);
+      latout.copyData(expr);
+      timer.show("lat+lat         ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -136,9 +134,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(2*min(lat)*2*lat);
-      latout.copyData (expr);
-      timer.show ("2*min(lat)*2*lat");
+      LatticeExpr<Float> expr(2 * min(lat) * 2 * lat);
+      latout.copyData(expr);
+      timer.show("2*min(lat)*2*lat");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -147,9 +145,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(lat*2*min(lat)*2);
-      latout.copyData (expr);
-      timer.show ("lat*2*min(lat)*2");
+      LatticeExpr<Float> expr(lat * 2 * min(lat) * 2);
+      latout.copyData(expr);
+      timer.show("lat*2*min(lat)*2");
     }
     {
       Table t1("tLatticeExpr2_tmp.tab");
@@ -160,9 +158,9 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(2*lat1 + 3*lat2);
-      latout.copyData (expr);
-      timer.show ("2*lat1 + 3*lat2 ");
+      LatticeExpr<Float> expr(2 * lat1 + 3 * lat2);
+      latout.copyData(expr);
+      timer.show("2*lat1 + 3*lat2 ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab3");
@@ -172,13 +170,13 @@ int main(int argc, const char* argv[])
       RO_LatticeIterator<Float> iter(lat, tileShape);
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
-	if (! allEQ (iter.cursor(), float(8)*arr)) {
-	  cout << "result mismatches" << endl;
-	  return 1;
-	}
-	arr += Float(tileShape.product());
+        if (!allEQ(iter.cursor(), float(8) * arr)) {
+          cout << "result mismatches" << endl;
+          return 1;
+        }
+        arr += Float(tileShape.product());
       }
-      timer.show ("checking        ");
+      timer.show("checking        ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
@@ -187,24 +185,24 @@ int main(int argc, const char* argv[])
       Table paTable(paSetup);
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LCPagedMask mask (lat.shape(), lat.tableName() + "/mask");
-      mask.set (True);
-      timer.show ("filling mask    ");
-      SubLattice<Float> sublat (lat, mask);
+      LCPagedMask mask(lat.shape(), lat.tableName() + "/mask");
+      mask.set(True);
+      timer.show("filling mask    ");
+      SubLattice<Float> sublat(lat, mask);
       timer.mark();
-      LatticeExpr<Float> expr(sublat+sublat);
-      latout.copyData (expr);
-      timer.show ("sublat+sublat   ");
+      LatticeExpr<Float> expr(sublat + sublat);
+      latout.copyData(expr);
+      timer.show("sublat+sublat   ");
       timer.mark();
-      LatticeExpr<Float> expr2((mean(sublat)-lat.shape().product()/3)*lat);
-      latout.copyData (expr2);
-      timer.show ("mean(sublat)*lat");
+      LatticeExpr<Float> expr2((mean(sublat) - lat.shape().product() / 3) * lat);
+      latout.copyData(expr2);
+      timer.show("mean(sublat)*lat");
       timer.mark();
-      LatticeExpr<Float> expr3(amp(sublat,lat));
-      latout.copyData (expr3);
-      timer.show ("amp(sublat,lat) ");
+      LatticeExpr<Float> expr3(amp(sublat, lat));
+      latout.copyData(expr3);
+      timer.show("amp(sublat,lat) ");
     }
-    if (latticeShape.product() <= 1024*1024) {
+    if (latticeShape.product() <= 1024 * 1024) {
       Array<Float> arr1(latticeShape);
       Array<Float> arr5(latticeShape);
       indgen(arr1);
@@ -214,64 +212,64 @@ int main(int argc, const char* argv[])
       cout << "arr1+arr1" << endl;
       Timer timer;
       arr5 = arr1 + arr1;
-      timer.show ("as array  ");
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(al1 + al1));
+      timer.show("as lattice");
 
       cout << "arr1+arr1+arr1" << endl;
       timer.mark();
       arr5 = arr1 + arr1 + arr1;
-      timer.show ("as array  ");
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(al1 + al1 + al1));
+      timer.show("as lattice");
 
       cout << "arr1+arr1+arr1+arr1" << endl;
       timer.mark();
       arr5 = arr1 + arr1 + arr1 + arr1;
-      timer.show ("as array  ");
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(al1 + al1 + al1 + al1));
+      timer.show("as lattice");
 
       cout << "arr1+arr1+arr1+arr1+arr1" << endl;
       timer.mark();
       arr5 = arr1 + arr1 + arr1 + arr1 + arr1;
-      timer.show ("as array  ");
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1+al1));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(al1 + al1 + al1 + al1 + al1));
+      timer.show("as lattice");
 
       cout << "((((arr1+arr1)+arr1)+arr1)+arr1)+arr1" << endl;
       timer.mark();
       arr5 = ((((arr1 + arr1) + arr1) + arr1) + arr1) + arr1;
-      timer.show ("as array  ");
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(((((al1+al1)+al1)+al1)+al1)+al1));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(((((al1 + al1) + al1) + al1) + al1) + al1));
+      timer.show("as lattice");
 
       cout << "arr1+(arr1+(arr1+(arr1+(arr1+arr1))))" << endl;
       timer.mark();
       arr5 = arr1 + (arr1 + (arr1 + (arr1 + (arr1 + arr1))));
-      timer.show ("as array  ");
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+(al1+(al1+(al1+(al1+al1))))));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(al1 + (al1 + (al1 + (al1 + (al1 + al1))))));
+      timer.show("as lattice");
 
       cout << "arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1" << endl;
       timer.mark();
-      arr5 = arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1;
-      timer.show ("as array  ");
+      arr5 = arr1 + arr1 + arr1 + arr1 + arr1 + arr1 + arr1 + arr1 + arr1 + arr1;
+      timer.show("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1+al1+al1+al1+al1+al1+al1));
-      timer.show ("as lattice");
+      al5.copyData(LatticeExpr<Float>(al1 + al1 + al1 + al1 + al1 + al1 + al1 + al1 + al1 + al1));
+      timer.show("as lattice");
     }
 
   } catch (std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
     return 1;
-  } 
- 
+  }
+
   return 0;
 }

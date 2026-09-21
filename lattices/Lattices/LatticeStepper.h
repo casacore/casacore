@@ -1,39 +1,38 @@
-//# LatticeStepper.h:  provides 'natural' traversal, by cursor shape
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeStepper.h:  provides 'natural' traversal, by cursor shape
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICESTEPPER_H
 #define LATTICES_LATTICESTEPPER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 #include <casacore/lattices/Lattices/LatticeIndexer.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Traverse a Lattice by cursor shape
@@ -56,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // window.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // When you wish to traverse a Lattice (say, a PagedArray or an Image) you
 // will usually create a LatticeIterator.  Once created, you must attach a
 // LatticeNavigator to the iterator. A LatticeStepper, is a concrete class
@@ -85,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Lattice shape.
 // <br>
 // Also the cursor shape on all axes must be less than or equal to the Lattice
-// shape on that axis. Otherwise an exception will be thrown. 
+// shape on that axis. Otherwise an exception will be thrown.
 // <p>
 // In principle cursor axes with length 1 are degenerate axes. They
 // are removed from the lattice cursor if the
@@ -111,19 +110,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The "path" of the cursor through the Lattice can be controlled by
 // specifying an axisPath during construction of the class. This is an
 // IPosition which has exactly as many elements as the Lattice
-// dimension. Each element must contain an integer between 
+// dimension. Each element must contain an integer between
 // 0 -- Lattice_Dimension-1, and must be unique. For example,
 // <srcblock>
 // axisPath = IPosition(4,0,1,2,3) or
-// axisPath = IPosition(4,3,1,2,0) 
+// axisPath = IPosition(4,3,1,2,0)
 // </srcblock>
 // are valid but
 // <srcblock>
 // axisPath = IPosition(4,1,2,3,4) or
-// axisPath = IPosition(4,0,1,1,3) 
+// axisPath = IPosition(4,0,1,1,3)
 // </srcblock>
 // are not, given the latticeShape specified above. An exception is thrown
-// if the AxisPath is bad. 
+// if the AxisPath is bad.
 // <br>
 // The "axis path" defines which axis will be iterated through fastest as
 // the cursor moves through the Lattice. With the above mentioned
@@ -184,7 +183,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // inc. This first clears the old sub-Lattice, then imposes the newly
 // specified one, and finally moves the cursor to the origin of the
 // new sub-Lattice.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // This example is of a global function that will iterate through a
@@ -203,24 +202,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   // for convenience, get the shape into a local variable
 //   IPosition latticeShape = data.shape();
 //   cout << "Data has shape: " << latticeShape << endl;
-// 
+//
 //   // check that the data has 4 axes.
-//   DebugAssert(latticeShape.nelements() == 4, AipsError); 
-//     
-//   // specify the cursor, or window shape.  Here the cursor is a matrix 
+//   DebugAssert(latticeShape.nelements() == 4, AipsError);
+//
+//   // specify the cursor, or window shape.  Here the cursor is a matrix
 //   // that is the shape of the first plane of our Lattice.
 //   // For convenience, get the first two axis lengths into local vars
 //   uInt nCols = latticeShape(0);
 //   uInt nRows = latticeShape(1);
 //   IPosition cursorShape(2, nCols, nRows);
-// 
+//
 //   // construct a stepper, which needs to know the shape of the lattice
 //   // and the shape of the iterator's cursor. By using cursorShape, which
 //   // is directly determined by the lattice's shape, we can be sure
 //   // that the cursor is a factor of the lattice, and thus that
 //   // all elements will be picked up efficiently during the traversal.
 //   // Because we will not be iterating through the stokes axis this axis
-//   // is made the slowest moving one. 
+//   // is made the slowest moving one.
 //   IPosition axisPath(4, 0, 1, 3, 2)
 //   LatticeStepper stepper(latticeShape, cursorShape, axisPath);
 //
@@ -229,12 +228,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   uInt nFreqs = latticeShape(3);
 //   IPosition blc(4, 0, 0, 0, 0), trc(4, nCols-1, nRows-1, 0, nFreqs-1);
 //   stepper.subSection(blc, trc);
-//  
+//
 //   // construct the iterator.  Since we only want to read the Data,
 //   // use the read-only class, which disallows writing back to the cursor
 //   // (and hence is more efficient).
 //   RO_LatticeIterator<Float> iterator(data, stepper);
-// 
+//
 //   Vector<Float> spectrum(nFreqs);
 //   spectrum = 0.0;
 //   uInt channel = 0;
@@ -247,7 +246,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     }
 //     channel++;
 //   } // for iterator
-//   cout << "Average spectrum is: " 
+//   cout << "Average spectrum is: "
 //        << spectrum / cursorShape.product() << endl;
 // }
 // </srcblock>
@@ -255,31 +254,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <motivation>
 // Moving through a Lattice by equal sized chunks, and without regard
-// to the nature of the data, is a basic and common procedure.  
+// to the nature of the data, is a basic and common procedure.
 // </motivation>
 
-//# <todo asof="1995/08/28">
-//# </todo>
+// # <todo asof="1995/08/28">
+// # </todo>
 
-
-class LatticeStepper: public LatticeNavigator
-{
-public:
-
+class LatticeStepper : public LatticeNavigator {
+ public:
   // The hangOverPolicy enumerator is used in the constructors to indicate
   // what this class should do when the cursor shape hangs over the edge
-  // of the Lattice. 
+  // of the Lattice.
   enum hangOverPolicy {
-  // PAD is the default and means that the cursor size supplied by the user is
-  // kept fixed. But if the cursor overhangs the Lattice the part that
-  // overhangs is filled with a default value that is specified by the
-  // Iterator. Currently the default value is zero. 
-  PAD,
-  // RESIZE means that the cursor shape is adjusted whenever it approaches the
-  // edges of the Lattice so that it is always the right size to include only
-  // the parts of the Lattice that are available. The user specified cursor
-  // shape now becomes the default and largest possible cursor shape. 
-  RESIZE};
+    // PAD is the default and means that the cursor size supplied by the user is
+    // kept fixed. But if the cursor overhangs the Lattice the part that
+    // overhangs is filled with a default value that is specified by the
+    // Iterator. Currently the default value is zero.
+    PAD,
+    // RESIZE means that the cursor shape is adjusted whenever it approaches the
+    // edges of the Lattice so that it is always the right size to include only
+    // the parts of the Lattice that are available. The user specified cursor
+    // shape now becomes the default and largest possible cursor shape.
+    RESIZE
+  };
 
   // The first argument is the shape of the Lattice to be iterated and the
   // second argument is the shape of the cursor. The cursor will increment
@@ -291,14 +288,14 @@ public:
   // The other axes are degenerated and are removed by the functions
   // <src>vectorCursor()</src>, etc., in class
   // <linkto class=RO_LatticeIterator>(RO_)LatticeIterator</linkto>.
-  LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
-		  const uInt hangOverPolicy=PAD);
+  LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
+                 const uInt hangOverPolicy = PAD);
 
   // Same as the above constructor except that the axis path is explicitly
-  // specified. The axis path is described in the synopsis above. 
-  LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
-		  const IPosition& axisPath, const uInt hangOverPolicy=PAD);
-  
+  // specified. The axis path is described in the synopsis above.
+  LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
+                 const IPosition& axisPath, const uInt hangOverPolicy = PAD);
+
   // Same as the above constructor except that the cursor axes are
   // explicitly specified. This can be useful to avoid that cursor axes
   // with length=1 are treated as degenerated axes by the Iterator classes.
@@ -309,17 +306,17 @@ public:
   // The latter means that the cursorShape contains the axes mentioned in
   // cursorAxes.
   // <br>See also the example in the synopsis.
-  LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
-		  const IPosition& cursorAxes,
-		  const IPosition& axisPath, const uInt hangOverPolicy=PAD);
-  
+  LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
+                 const IPosition& cursorAxes, const IPosition& axisPath,
+                 const uInt hangOverPolicy = PAD);
+
   // The copy constructor uses copy semantics.
-  LatticeStepper (const LatticeStepper& other);
-    
+  LatticeStepper(const LatticeStepper& other);
+
   ~LatticeStepper();
 
   // The assignment operator uses copy semantics.
-  LatticeStepper& operator= (const LatticeStepper& other);
+  LatticeStepper& operator=(const LatticeStepper& other);
 
   // Increment operator (postfix version) - move the cursor
   // forward one step. Returns True if the cursor was moved.
@@ -330,7 +327,7 @@ public:
   virtual Bool operator--(int);
 
   // Function to move the cursor to the beginning of the (sub)-Lattice. Also
-  // resets the number of steps (<src>nsteps</src> function) to zero. 
+  // resets the number of steps (<src>nsteps</src> function) to zero.
   virtual void reset();
 
   // Function which returns "True" if the cursor is at the beginning of the
@@ -375,7 +372,7 @@ public:
   // Functions which return the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
   // Lattice while <src>subLatticeShape</src> returns the shape of any
-  // sub-Lattice defined using the <src>subSection</src> function. 
+  // sub-Lattice defined using the <src>subSection</src> function.
   // <group>
   virtual IPosition latticeShape() const;
   virtual IPosition subLatticeShape() const;
@@ -385,9 +382,8 @@ public:
   // the cursor to the beginning of the Lattice (and reset the number of
   // steps to zero).
   // <group>
-  void setCursorShape (const IPosition& cursorShape);
-  void setCursorShape (const IPosition& cursorShape,
-		       const IPosition& cursorAxes);
+  void setCursorShape(const IPosition& cursorShape);
+  void setCursorShape(const IPosition& cursorShape, const IPosition& cursorAxes);
   // </group>
 
   // Function which returns the shape of the cursor. This always includes
@@ -407,9 +403,8 @@ public:
   // (trc), and step size (inc), on ALL of its axes, including degenerate
   // axes. The step size defaults to one if not specified.
   // <group>
-  virtual void subSection (const IPosition& blc, const IPosition& trc);
-  virtual void subSection (const IPosition& blc, const IPosition& trc, 
-			   const IPosition& inc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc, const IPosition& inc);
   // </group>
 
   // Return the bottom left hand corner (blc), top right corner (trc) or
@@ -426,23 +421,22 @@ public:
   // Return the axis path.
   virtual const IPosition& axisPath() const;
 
-  // Function which returns a pointer to dynamic memory of an exact copy 
+  // Function which returns a pointer to dynamic memory of an exact copy
   // of this instance.  The pointer returned by this function must
   // be deleted externally.
   virtual LatticeNavigator* clone() const;
 
   // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. 
+  // dimensionality and consistant values.
   // Returns True if everything is fine otherwise returns False
   virtual Bool ok() const;
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize (const IPosition& cubeShape,
-                              const IPosition& tileShape,
-                              uInt maxCacheSize, uInt bucketSize) const;
+  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                             uInt maxCacheSize, uInt bucketSize) const;
 
-private:
+ private:
   // Prevent the default constructor from being used.
   LatticeStepper();
   // Pad the cursor to the right number of dimensions.
@@ -450,30 +444,27 @@ private:
   // Check if the cursor shape is a factor of the Lattice shape.
   Bool niceFit() const;
 
-
-  LatticeIndexer itsIndexer;//# Knows about the (sub)-Lattice shape and how
-                            //# to traverse it.
-  IPosition itsCursorAxes;  //# the cursor axes
-  IPosition itsCursorShape; //# The shape of the cursor
-  IPosition itsCursorPos;   //# The current position of the iterator.
-  IPosition itsAxisPath;    //# the heading to follow for the cursor 
-  uInt itsNsteps;           //# the number of iterator steps taken thus far; 
-                            //# set to 0 on reset ()
-  Bool itsEnd;              //# is the cursor beyond the end?
-  Bool itsStart;            //# is the cursor at the beginning?
-  Bool itsNiceFit;          //# if the cursor shape is a sub-multiple of the
-                            //# Lattice shape then set this to True. Used to
-			    //# avoid needing to test for a cursor hanging
-			    //# over the edge of the lattice.
-  Bool itsHangover;         //# this data member is set by the increment and
-                            //# decrement operators if itsNiceFit == False. It
-                            //# is used to tell if the cursor "Hangs over"
-                            //# the edge of the lattice shape.
-  uInt itsPolicy;           //# what to do if the cursor does hang over
+  LatticeIndexer itsIndexer;  // # Knows about the (sub)-Lattice shape and how
+                              // # to traverse it.
+  IPosition itsCursorAxes;   // # the cursor axes
+  IPosition itsCursorShape;  // # The shape of the cursor
+  IPosition itsCursorPos;    // # The current position of the iterator.
+  IPosition itsAxisPath;     // # the heading to follow for the cursor
+  uInt itsNsteps;            // # the number of iterator steps taken thus far;
+                   // # set to 0 on reset ()
+  Bool itsEnd;      // # is the cursor beyond the end?
+  Bool itsStart;    // # is the cursor at the beginning?
+  Bool itsNiceFit;  // # if the cursor shape is a sub-multiple of the
+                    // # Lattice shape then set this to True. Used to
+                    // # avoid needing to test for a cursor hanging
+                    // # over the edge of the lattice.
+  Bool itsHangover;  // # this data member is set by the increment and
+                     // # decrement operators if itsNiceFit == False. It
+                     // # is used to tell if the cursor "Hangs over"
+                     // # the edge of the lattice shape.
+  uInt itsPolicy;  // # what to do if the cursor does hang over
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

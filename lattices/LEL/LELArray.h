@@ -1,38 +1,36 @@
-//# LELArray.h: Hold an array with a mask in LEL
-//# Copyright (C) 1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LELArray.h: Hold an array with a mask in LEL
+// # Copyright (C) 1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LELARRAY_H
 #define LATTICES_LELARRAY_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LEL/LELArrayBase.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // This LEL class holds an array with a mask.
@@ -55,50 +53,41 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <todo asof="1998/01/20">
 // </todo>
- 
 
-template <class T> class LELArray : public LELArrayBase
-{
-public: 
-// Constructor takes value.
-// Its mask is set to all True.
-   LELArray (const Array<T>& value)
-      : itsValue (value) {}
+template <class T>
+class LELArray : public LELArrayBase {
+ public:
+  // Constructor takes value.
+  // Its mask is set to all True.
+  LELArray(const Array<T>& value) : itsValue(value) {}
 
-// Constructor takes value and mask.
-   LELArray (const Array<T>& value, const Array<Bool>& mask)
-      : LELArrayBase (mask), itsValue (value) {}
+  // Constructor takes value and mask.
+  LELArray(const Array<T>& value, const Array<Bool>& mask) : LELArrayBase(mask), itsValue(value) {}
 
-// Constructor takes shape.
-// Its mask is set to all True.
-   LELArray (const IPosition& shape);
+  // Constructor takes shape.
+  // Its mask is set to all True.
+  LELArray(const IPosition& shape);
 
-// Copy constructor (reference semantics).
-   LELArray (const LELArray<T>& other);
+  // Copy constructor (reference semantics).
+  LELArray(const LELArray<T>& other);
 
-   ~LELArray();
+  ~LELArray();
 
-   // Assignment (reference semantics).
-   LELArray<T>& operator= (const LELArray<T>& other);
+  // Assignment (reference semantics).
+  LELArray<T>& operator=(const LELArray<T>& other);
 
-// Get shape (of the value).
-   const IPosition& shape() const
-      { return itsValue.shape(); }
+  // Get shape (of the value).
+  const IPosition& shape() const { return itsValue.shape(); }
 
-// Get value.
-// <group>
-   const Array<T>& value() const
-      { return itsValue; }
-   Array<T>& value()
-      { return itsValue; }
-// </group>
+  // Get value.
+  // <group>
+  const Array<T>& value() const { return itsValue; }
+  Array<T>& value() { return itsValue; }
+  // </group>
 
-private:
-   Array<T> itsValue;
+ private:
+  Array<T> itsValue;
 };
-
-
-
 
 // <summary>
 // This LEL class holds a possible referenced array with a mask.
@@ -125,35 +114,29 @@ private:
 
 // <todo asof="1998/01/20">
 // </todo>
- 
 
-template <class T> class LELArrayRef : public LELArray<T>
-{
-public: 
-// Constructor takes shape.
-// Its mask is set to all True.
-   LELArrayRef (const IPosition& shape)
-    : LELArray<T> (shape) {}
+template <class T>
+class LELArrayRef : public LELArray<T> {
+ public:
+  // Constructor takes shape.
+  // Its mask is set to all True.
+  LELArrayRef(const IPosition& shape) : LELArray<T>(shape) {}
 
-   ~LELArrayRef()
-    {}
+  ~LELArrayRef() {}
 
-// Get value.
-   const Array<T>& value() const
-      { return LELArray<T>::value(); }
+  // Get value.
+  const Array<T>& value() const { return LELArray<T>::value(); }
 
-private:
-// Copy constructor is not needed.
-   LELArrayRef (const LELArrayRef<T>& other);
-// Assignment is not needed.
-   LELArrayRef<T>& operator= (const LELArrayRef<T>& other);
+ private:
+  // Copy constructor is not needed.
+  LELArrayRef(const LELArrayRef<T>& other);
+  // Assignment is not needed.
+  LELArrayRef<T>& operator=(const LELArrayRef<T>& other);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LEL/LELArray.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

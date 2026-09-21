@@ -1,41 +1,39 @@
-//# ExtendLattice.h: A subset of a Lattice or MaskedLattice
-//# Copyright (C) 2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ExtendLattice.h: A subset of a Lattice or MaskedLattice
+// # Copyright (C) 2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_EXTENDLATTICE_H
 #define LATTICES_EXTENDLATTICE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/casa/Arrays/ExtendSpecifier.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // An extension of a Lattice or MaskedLattice
@@ -69,12 +67,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       this class.
 // </templating>
 
-//# <todo asof="yyyy/mm/dd">
-//# </todo>
+// # <todo asof="yyyy/mm/dd">
+// # </todo>
 
-template<class T> class ExtendLattice: public MaskedLattice<T>
-{
-public:
+template <class T>
+class ExtendLattice : public MaskedLattice<T> {
+ public:
   // The default constructor creates a ExtendLattice that is useless for just
   // about everything, except that it can be assigned to with the assignment
   // operator.
@@ -90,19 +88,19 @@ public:
   // axes in the new shape have to match the other axes in the old shape.
   // Note that stretched axes have to have length 1 in the old shape.
   // <group>
-  ExtendLattice (const Lattice<T>& lattice, const IPosition& newShape,
-		 const IPosition& extendAxes, const IPosition& stretchAxes);
-  ExtendLattice (const MaskedLattice<T>& lattice, const IPosition& newShape,
-		 const IPosition& newAxes, const IPosition& stretchAxes);
+  ExtendLattice(const Lattice<T>& lattice, const IPosition& newShape, const IPosition& extendAxes,
+                const IPosition& stretchAxes);
+  ExtendLattice(const MaskedLattice<T>& lattice, const IPosition& newShape,
+                const IPosition& newAxes, const IPosition& stretchAxes);
   // </group>
 
   // Copy constructor (reference semantics).
-  ExtendLattice (const ExtendLattice<T>& other);
-    
+  ExtendLattice(const ExtendLattice<T>& other);
+
   virtual ~ExtendLattice();
 
   // Assignment (reference semantics).
-  ExtendLattice<T>& operator= (const ExtendLattice<T>& other);
+  ExtendLattice<T>& operator=(const ExtendLattice<T>& other);
 
   // Make a copy of the object (reference semantics).
   virtual MaskedLattice<T>* cloneML() const;
@@ -126,9 +124,9 @@ public:
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual Bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual Bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -161,12 +159,12 @@ public:
 
   // Get the region used (always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
- 
+
   // Returns the shape of the ExtendLattice.
   virtual IPosition shape() const;
-  
+
   // Return the name of the parent lattice.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name(Bool stripPath = False) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
@@ -176,40 +174,37 @@ public:
   virtual Bool ok() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Putting data is not possible.
-  virtual void doPutSlice (const Array<T>& sourceBuffer,
-			   const IPosition& where,
-			   const IPosition& stride);
-  
+  virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
+                          const IPosition& stride);
+
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
-private:
+ private:
   // Set the various pointer needed to construct the object.
   // One of the pointers should be zero.
   // It takes over the pointer and deletes the object in the destructor.
-  void setPtr (Lattice<T>* latticePtr, MaskedLattice<T>* maskLatPtr);
+  void setPtr(Lattice<T>* latticePtr, MaskedLattice<T>* maskLatPtr);
 
   // Get mask data from mask.
-  Bool getMaskDataSlice (Array<Bool>& buffer, const Slicer& section);
+  Bool getMaskDataSlice(Array<Bool>& buffer, const Slicer& section);
 
-  Lattice<T>*          itsLatticePtr;
-  MaskedLattice<T>*    itsMaskLatPtr;
-  Bool                 itsHasPixelMask;
+  Lattice<T>* itsLatticePtr;
+  MaskedLattice<T>* itsMaskLatPtr;
+  Bool itsHasPixelMask;
   ExtendLattice<Bool>* itsPixelMask;
-  ExtendSpecifier      itsExtendSpec;
+  ExtendSpecifier itsExtendSpec;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/ExtendLattice.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

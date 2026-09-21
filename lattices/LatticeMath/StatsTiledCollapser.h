@@ -1,37 +1,35 @@
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_STATSTILEDCOLLAPSER_H
 #define LATTICES_STATSTILEDCOLLAPSER_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <memory>
 
 namespace casacore {
-
 
 // <summary> Generate statistics, tile by tile, from a masked lattice </summary>
 
@@ -67,8 +65,8 @@ namespace casacore {
 // through a <src>MaskedLattice</src> and allows you to collapse one or more
 // axes, computing some values from it, and placing those values into
 // an output <src>MaskedLattice</src>.  It iterates through the input
-// lattice in optimal tile-sized chunks.    <src>LatticeStatistics</src> 
-// uses a <src>StatsTiledCollapser</src> object which it gives to 
+// lattice in optimal tile-sized chunks.    <src>LatticeStatistics</src>
+// uses a <src>StatsTiledCollapser</src> object which it gives to
 // <src>LatticeApply::tiledApply</src> for digestion.  After it has
 // done its work, <src>LatticeStatistics</src> then accesses the output
 // <src>Lattice</src> that it made.
@@ -78,16 +76,16 @@ namespace casacore {
 // <srcblock>
 //// Create collapser. Control information is passed in via the constructor
 //
-//   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,   
+//   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
 //                                    fixedMinMax_p, blcParent_p);
-// 
+//
 //// This is the first output axis getting  collapsed values. In LatticeStatistics
 //// this is the last axis of the output lattice
-// 
+//
 //   Int newOutAxis = outLattice.ndim()-1;
 //
 //// tiledApply does the work by passing the collapser data in chunks
-//// and by writing the results into the output lattice 
+//// and by writing the results into the output lattice
 //
 //   LatticeApply<T>::tiledApply(outLattice, inLattice,
 //                               collapser, collapseAxes,
@@ -104,79 +102,66 @@ namespace casacore {
 // Lattice iteration to be hidden from the user.
 // </motivation>
 //
-// <todo asof="1998/05/10">   
-//   <li> 
+// <todo asof="1998/05/10">
+//   <li>
 // </todo>
 
-template <class T, class U=T>
+template <class T, class U = T>
 class StatsTiledCollapser : public TiledCollapser<T, U> {
-public:
-    // Constructor provides pixel selection range and whether that
-    // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
-    // and an inclusion range is given, the min and max is set to
-    // that inclusion range.
-    StatsTiledCollapser(
-        const Vector<T>& pixelRange, Bool noInclude,
-        Bool noExclude, Bool fixedMinMax
-    );
+ public:
+  // Constructor provides pixel selection range and whether that
+  // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
+  // and an inclusion range is given, the min and max is set to
+  // that inclusion range.
+  StatsTiledCollapser(const Vector<T>& pixelRange, Bool noInclude, Bool noExclude,
+                      Bool fixedMinMax);
 
-    virtual ~StatsTiledCollapser() {}
+  virtual ~StatsTiledCollapser() {}
 
-    // Initialize process, making some checks
-    virtual void init (uInt nOutPixelsPerCollapse);
+  // Initialize process, making some checks
+  virtual void init(uInt nOutPixelsPerCollapse);
 
-    // Initialiaze the accumulator
-    virtual void initAccumulator (uInt64 n1, uInt64 n3);
+  // Initialiaze the accumulator
+  virtual void initAccumulator(uInt64 n1, uInt64 n3);
 
-    // Process the data in the current chunk.
-    virtual void process (
-        uInt accumIndex1, uInt accumIndex3,
-        const T* inData, const Bool* inMask,
-        uInt dataIncr, uInt maskIncr,
-        uInt nrval,    const IPosition& startPos,
-        const IPosition& shape
-    );
+  // Process the data in the current chunk.
+  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const Bool* inMask,
+                       uInt dataIncr, uInt maskIncr, uInt nrval, const IPosition& startPos,
+                       const IPosition& shape);
 
-    // End the accumulation process and return the result arrays
-    virtual void endAccumulator(Array<U>& result,
-                                Array<Bool>& resultMask,
-                                const IPosition& shape);
+  // End the accumulation process and return the result arrays
+  virtual void endAccumulator(Array<U>& result, Array<Bool>& resultMask, const IPosition& shape);
 
-    // Can handle null mask
-    virtual Bool canHandleNullMask() const {return True;};
+  // Can handle null mask
+  virtual Bool canHandleNullMask() const { return True; };
 
-    // Find the location of the minimum and maximum data values
-    // in the input lattice.
-     void minMaxPos(IPosition& minPos, IPosition& maxPos);
+  // Find the location of the minimum and maximum data values
+  // in the input lattice.
+  void minMaxPos(IPosition& minPos, IPosition& maxPos);
 
-private:
-    Vector<T> _range;
-    Bool _include, _exclude, _fixedMinMax, _isReal;
-    IPosition _minpos, _maxpos;
+ private:
+  Vector<T> _range;
+  Bool _include, _exclude, _fixedMinMax, _isReal;
+  IPosition _minpos, _maxpos;
 
-    // Accumulators for sum, sum squared, number of points
-    // minimum, and maximum
+  // Accumulators for sum, sum squared, number of points
+  // minimum, and maximum
 
-    std::shared_ptr<Block<Double>> _npts;
-    std::shared_ptr<Block<U>> _sum, _sumSq,
-        _mean, _variance, _nvariance, _sigma;
-    std::shared_ptr<Block<T>> _min, _max;
-    std::shared_ptr<Block<Bool>> _initMinMax;
+  std::shared_ptr<Block<Double>> _npts;
+  std::shared_ptr<Block<U>> _sum, _sumSq, _mean, _variance, _nvariance, _sigma;
+  std::shared_ptr<Block<T>> _min, _max;
+  std::shared_ptr<Block<Bool>> _initMinMax;
 
-    uInt64 _n1, _n3;
+  uInt64 _n1, _n3;
 
-    void _convertNPts(
-        Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
-        std::shared_ptr<Block<DComplex>> nptsComplex
-    ) const;
+  void _convertNPts(Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+                    std::shared_ptr<Block<DComplex>> nptsComplex) const;
 
-    void _convertNPts(
-        DComplex*& nptsPtr, std::shared_ptr<Block<Double>> npts,
-        std::shared_ptr<Block<DComplex>> nptsComplex
-    ) const;
+  void _convertNPts(DComplex*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+                    std::shared_ptr<Block<DComplex>> nptsComplex) const;
 };
 
-}
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/StatsTiledCollapser.tcc>

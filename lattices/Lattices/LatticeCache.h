@@ -1,44 +1,45 @@
-//# LatticeCache: Cache for accessing a Lattice in Tiles
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LatticeCache: Cache for accessing a Lattice in Tiles
+// # Copyright (C) 1995,1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef LATTICES_LATTICECACHE_H
 #define LATTICES_LATTICECACHE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
 
-//# Forward Declarations
+// # Forward Declarations
 #include <casacore/casa/iosfwd.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template <class T> class Block;
-template <class T> class Lattice;
+template <class T>
+class Block;
+template <class T>
+class Lattice;
 
 // <summary> a class for caching image access via tiles</summary>
 //
@@ -56,7 +57,7 @@ template <class T> class Lattice;
 // a Cache.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // An image is divided into tiles of a specified shape. Access to the
 // image pixels is via these tiles. A cache of active tiles is kept
 // in memory up to a specified limit in memory allocation. Tiles
@@ -73,7 +74,7 @@ template <class T> class Lattice;
 // Tiles may be overlapped. If there is any overlap then the
 // caller is responsible for dealing with the overlap. Normally
 // one will only want overlapping windows for additive operations
-// in which case the additive flag to the constructor should be 
+// in which case the additive flag to the constructor should be
 // used.
 // </synopsis>
 //
@@ -83,32 +84,31 @@ template <class T> class Lattice;
 //
 // </example>
 //
-// <motivation> 
+// <motivation>
 // To aid in gridding
 // </motivation>
 //
 // <todo asof="1997/02/27">
 // </todo>
 
-template <class T> class LatticeCache 
-{
-public:
-
+template <class T>
+class LatticeCache {
+ public:
   // Constructor: cachesize in units of T. tileOverlap is the fractional
-  // overlap between neighbouring tile. 
-  LatticeCache(Lattice<T> &image, Int cacheSize, IPosition tileShape,
-	       Vector<Float>& tileOverlap, Bool additive);
+  // overlap between neighbouring tile.
+  LatticeCache(Lattice<T>& image, Int cacheSize, IPosition tileShape, Vector<Float>& tileOverlap,
+               Bool additive);
 
-  LatticeCache(const LatticeCache<T> & other);
+  LatticeCache(const LatticeCache<T>& other);
 
-  LatticeCache<T> &operator=(const LatticeCache<T> & other);
+  LatticeCache<T>& operator=(const LatticeCache<T>& other);
 
   virtual ~LatticeCache();
 
   // Return the tile for a given location
   // <group>
-  Array<T>& tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool discard=True);
-  Array<T>& tile(const IPosition& tileLoc, Bool discard=True);
+  Array<T>& tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool discard = True);
+  Array<T>& tile(const IPosition& tileLoc, Bool discard = True);
   // </group>
 
   // const version is needed
@@ -126,8 +126,7 @@ public:
   // Flush contents
   virtual void flush();
 
-protected:
-
+ protected:
   LatticeCache() {};
 
   Int numberTiles;
@@ -155,10 +154,9 @@ protected:
   Lattice<T>* image_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeCache.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
