@@ -1,44 +1,45 @@
-//# ArrayQuantColumn.h: Access to an Array Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrayQuantColumn.h: Access to an Array Quantum Column in a table.
+// # Copyright (C) 1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_ARRAYQUANTCOLUMN_H
 #define MEASURES_ARRAYQUANTCOLUMN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Table;
-template <class T> class ArrayColumn;
-template <class T> class ScalarColumn;
+template <class T>
+class ArrayColumn;
+template <class T>
+class ScalarColumn;
 class String;
-
 
 // <summary>
 // Provides read/write access to Array Quantum columns in Tables.
@@ -50,7 +51,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TableQuantumDesc>TableQuantumDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ArrayColumn>ArrayColumn</linkto>
@@ -91,7 +92,7 @@ class String;
 //    // It gets the quantum array from row 0 and prints it to stdout.
 //    ArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantDouble", "deg");
 //    cout << roaqCol(0) << endl;
-//    // This retrieves the same array with units converted to "m/s".	
+//    // This retrieves the same array with units converted to "m/s".
 //    cout << roaqCol(0, "m/s") << endl;
 // </srcblock>
 // </example>
@@ -105,7 +106,7 @@ class String;
 // </thrown>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 // <li> Support for fixed unit per array element (e.g. for positions)
 //      In that case #units should match first array dimension.
 // <li> Functions like getColumn, getSlice.
@@ -113,10 +114,9 @@ class String;
 // <li> optimize when converting when units are the same for entire array.
 // </todo>
 
-
-template<class T> class ArrayQuantColumn
-{
-public:
+template <class T>
+class ArrayQuantColumn {
+ public:
   // The default constructor creates a null object. It is useful for creating
   // arrays of ArrayQuantColumn objects. Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
@@ -127,34 +127,30 @@ public:
 
   // Create the ArrayQuantColumn from the supplied table and column name.
   // The default unit for data retrieved is the unit in which they were stored.
-  ArrayQuantColumn (const Table& tab, const String& columnName);
+  ArrayQuantColumn(const Table& tab, const String& columnName);
 
   // Create the ArrayQuantColumn from the supplied table and column name.
   // The default unit for data retrieved is the given unit (the data is
   // converted as needed).
   // <group>
-  ArrayQuantColumn (const Table& tab, const String& columnName,
-                    const Unit&);
-  ArrayQuantColumn (const Table& tab, const String& columnName,
-                    const Vector<Unit>&);
+  ArrayQuantColumn(const Table& tab, const String& columnName, const Unit&);
+  ArrayQuantColumn(const Table& tab, const String& columnName, const Vector<Unit>&);
   // </group>
 
   // Copy constructor (copy semantics).
-  ArrayQuantColumn (const ArrayQuantColumn<T>& that);
+  ArrayQuantColumn(const ArrayQuantColumn<T>& that);
 
   ~ArrayQuantColumn();
 
   // Make this object reference the column in "that".
-  void reference (const ArrayQuantColumn<T>& that);
+  void reference(const ArrayQuantColumn<T>& that);
 
   // Attach a column to the object. Optionally supply a default unit.
   // which has the same meaning as the constructor unit argument.
   // <group name="attach">
-  void attach (const Table& tab, const String& columnName);
-  void attach (const Table& tab, const String& columnName,
-	       const Unit&);
-  void attach (const Table& tab, const String& columnName,
-	       const Vector<Unit>&);
+  void attach(const Table& tab, const String& columnName);
+  void attach(const Table& tab, const String& columnName, const Unit&);
+  void attach(const Table& tab, const String& columnName, const Vector<Unit>&);
   // </group>
 
   // Get the quantum array in the specified row.
@@ -162,107 +158,96 @@ public:
   // is not correct. Otherwise a "conformance exception" is thrown
   // if the array is not empty and its shape mismatches.
   // <group name="get">
-  void get (rownr_t rownr, Array<Quantum<T> >& q, Bool resize = False) const;
+  void get(rownr_t rownr, Array<Quantum<T>>& q, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the given unit.
-  void get (rownr_t rownr, Array<Quantum<T> >& q,
-	    const Unit&, Bool resize = False) const;
+  void get(rownr_t rownr, Array<Quantum<T>>& q, const Unit&, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the given units.
-  void get (rownr_t rownr, Array<Quantum<T> >& q,
-	    const Vector<Unit>&, Bool resize = False) const;
+  void get(rownr_t rownr, Array<Quantum<T>>& q, const Vector<Unit>&, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the unit in other.
-  void get (rownr_t rownr, Array<Quantum<T> >& q,
-	    const Quantum<T>& other, Bool resize = False) const;
+  void get(rownr_t rownr, Array<Quantum<T>>& q, const Quantum<T>& other, Bool resize = False) const;
   // </group>
 
   // Return the quantum array stored in the specified row.
   // <group>
-  Array<Quantum<T> > operator() (rownr_t rownr) const;
+  Array<Quantum<T>> operator()(rownr_t rownr) const;
   // Return the quantum array stored in the specified row, converted
   // to the given unit.
-  Array<Quantum<T> > operator() (rownr_t rownr, const Unit&) const;
+  Array<Quantum<T>> operator()(rownr_t rownr, const Unit&) const;
   // Return the quantum array stored in the specified row, converted
   // to the given units.
-  Array<Quantum<T> > operator() (rownr_t rownr, const Vector<Unit>&) const;
+  Array<Quantum<T>> operator()(rownr_t rownr, const Vector<Unit>&) const;
   // Return the quantum array stored in the specified row, converted
   // to the unit in other.
-  Array<Quantum<T> > operator() (rownr_t rownr, const Quantum<T>& other) const;
+  Array<Quantum<T>> operator()(rownr_t rownr, const Quantum<T>& other) const;
   // </group>
 
   // Put an array of quanta into the specified row of the table.
   // If the column supports variable units, the units are stored as well.
   // Otherwise the quanta are converted to the column's units.
-  void put (rownr_t rownr, const Array<Quantum<T> >& q);
+  void put(rownr_t rownr, const Array<Quantum<T>>& q);
 
   // Test whether the Quantum column has variable units
-  Bool isUnitVariable() const
-    { return (itsArrUnitsCol || itsScaUnitsCol); }
+  Bool isUnitVariable() const { return (itsArrUnitsCol || itsScaUnitsCol); }
 
   // Returns the column's units as a vector of strings.
   // An empty vector is returned if the column has no fixed units.
   Vector<String> getUnits() const;
 
   // Test if the object is null.
-  Bool isNull() const
-    { return (itsDataCol == 0); }
+  Bool isNull() const { return (itsDataCol == 0); }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;
 
-protected:
-  //# Quantum column's units (if units not variable)
-  Vector<Unit> itsUnit;    	    	    	
+ protected:
+  // # Quantum column's units (if units not variable)
+  Vector<Unit> itsUnit;
 
   // Get access to itsUnitsCol.
   // <group>
-  const ArrayColumn<String>* arrUnitsCol() const
-    { return itsArrUnitsCol; }
-  const ScalarColumn<String>* scaUnitsCol() const
-    { return itsScaUnitsCol; }
+  const ArrayColumn<String>* arrUnitsCol() const { return itsArrUnitsCol; }
+  const ScalarColumn<String>* scaUnitsCol() const { return itsScaUnitsCol; }
   // </group>
 
-
-private:
-  //# The underlying data column stores the quantum column's data.
+ private:
+  // # The underlying data column stores the quantum column's data.
   ArrayColumn<T>* itsDataCol;
-  //# Variable units array column if applicable.
-  ArrayColumn<String>*  itsArrUnitsCol;
-  //# Variable units scalar column if applicable.
+  // # Variable units array column if applicable.
+  ArrayColumn<String>* itsArrUnitsCol;
+  // # Variable units scalar column if applicable.
   ScalarColumn<String>* itsScaUnitsCol;
-  //# Units to retrieve the data in.
+  // # Units to retrieve the data in.
   Vector<Unit> itsUnitOut;
-  //# Convert unit when getting data?
+  // # Convert unit when getting data?
   Bool itsConvOut;
 
-
   // Initialize the ArrayQuantColumn from the specified table and column.
-  void init (const Table& tab, const String& columnName);
+  void init(const Table& tab, const String& columnName);
 
   // Deletes allocated memory etc. Called by ~tor and any member which needs
   // to reallocate data.
   void cleanUp();
 
   // Get the data without possible conversion.
-  void getData (rownr_t rownr, Array<Quantum<T> >& q, Bool resize) const;
+  void getData(rownr_t rownr, Array<Quantum<T>>& q, Bool resize) const;
 
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.
-  ArrayQuantColumn& operator= (const ArrayQuantColumn<T>& that);
+  ArrayQuantColumn& operator=(const ArrayQuantColumn<T>& that);
 
   // Comparison is not defined, since its semantics are unclear.
-  Bool operator== (const ArrayQuantColumn<T>& that);
+  Bool operator==(const ArrayQuantColumn<T>& that);
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
-
-//# Make old name ROArrayMeasColumn still available.
+// # Make old name ROArrayMeasColumn still available.
 #define ROArrayQuantColumn ArrayQuantColumn
-
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

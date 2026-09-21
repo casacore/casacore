@@ -1,39 +1,38 @@
-//# SolarPos.h: Solar position class
-//# Copyright (C) 1995,1996,1997,1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SolarPos.h: Solar position class
+// # Copyright (C) 1995,1996,1997,1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_SOLARPOS_H
 #define MEASURES_SOLARPOS_H
 
-//# Includes
+// # Includes
 #include <mutex>
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Solar position class and calculations </summary>
 
@@ -43,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class, 
+//   <li> <linkto class=Measure>Measure</linkto> class,
 //		especially <linkto class=MEpoch>MEpoch</linkto>
 //   <li> <linkto class=MeasData>MeasData</linkto> class for constants
 // </prerequisite>
@@ -73,19 +72,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // as SolarPos(epoch), with epoch Double MJD, as an MVPosition vector.<br>
 // It returns the geocentric position of the heliocentre in rectangular
 // coordinates in AU.<br>
-// The derivative (d<sup>-1</sup>) can be obtained as well by 
+// The derivative (d<sup>-1</sup>) can be obtained as well by
 // derivative(epoch), baryEarthDerivative() and barySunDerivative().<br>
 // The Earth's and solar barycentric position can be obtained by the
 // members <src>baryEarth</src> and <src>barySun</src>.
-// The following details can be set with the 
+// The following details can be set with the
 // <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
-//  <li> measures.solarpos.d_interval: approximation interval as time 
+//  <li> measures.solarpos.d_interval: approximation interval as time
 //	(fraction of days is default unit) over which linear approximation
 //	is used
 //  <li> measures.solarpos.b_usejpl: use the JPL database for solar position.
 //	Else analytical expression, relative error about 10<sup>-9</sup>
-//	Note that the JPL database to be used can be set with 
+//	Note that the JPL database to be used can be set with
 //		measures.jpl.ephemeris (at the moment of writing DE200 (default),
 //		or DE405)
 // </ul>
@@ -108,90 +107,89 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class SolarPos {
-public:
-//# Constants
-// Interval to be used for linear approximation (in days)
-    static constexpr Double INTV = 0.04;
+ public:
+  // # Constants
+  //  Interval to be used for linear approximation (in days)
+  static constexpr Double INTV = 0.04;
 
-//# Enumerations
-// Types of known SolarPos calculations (at 1995/09/04 STANDARD == IAU1980)
-    enum SolarPosTypes {STANDARD,NONE};
+  // # Enumerations
+  //  Types of known SolarPos calculations (at 1995/09/04 STANDARD == IAU1980)
+  enum SolarPosTypes { STANDARD, NONE };
 
-//# Constructors
-// Default constructor, generates default J2000 SolarPos identification
-    SolarPos();
-// Copy constructor
-    SolarPos(const SolarPos &other);
-// Constructor with type
-    SolarPos(SolarPosTypes type);
-// Copy assignment
-    SolarPos &operator=(const SolarPos &other);
+  // # Constructors
+  //  Default constructor, generates default J2000 SolarPos identification
+  SolarPos();
+  // Copy constructor
+  SolarPos(const SolarPos &other);
+  // Constructor with type
+  SolarPos(SolarPosTypes type);
+  // Copy assignment
+  SolarPos &operator=(const SolarPos &other);
 
-//# Destructor
-    ~SolarPos();
+  // # Destructor
+  ~SolarPos();
 
-//# Operators
-// Operator () calculates the geocentric Solar Position in AU
-    const MVPosition&operator()(Double epoch);
+  // # Operators
+  //  Operator () calculates the geocentric Solar Position in AU
+  const MVPosition &operator()(Double epoch);
 
-//# General Member Functions
-// <group>
-// Return derivatives of SolarPos (d<sup>-1</sup>)
-    const MVPosition &derivative (Double epoch);
-    const MVPosition &baryEarthDerivative (Double epoch);
-    const MVPosition &barySunDerivative (Double epoch);
-// </group>
-// Barycentric position of Earth
-    const MVPosition &baryEarth(Double epoch);
-// Barycentric position of Sun
-    const MVPosition &barySun(Double epoch);
+  // # General Member Functions
+  //  <group>
+  //  Return derivatives of SolarPos (d<sup>-1</sup>)
+  const MVPosition &derivative(Double epoch);
+  const MVPosition &baryEarthDerivative(Double epoch);
+  const MVPosition &barySunDerivative(Double epoch);
+  // </group>
+  // Barycentric position of Earth
+  const MVPosition &baryEarth(Double epoch);
+  // Barycentric position of Sun
+  const MVPosition &barySun(Double epoch);
 
-// Re-initialise SolarPos object
-// <group>
-    void init();
-    void init(SolarPosTypes type);
-// </group>
+  // Re-initialise SolarPos object
+  // <group>
+  void init();
+  void init(SolarPosTypes type);
+  // </group>
 
-// Refresh calculations
-    void refresh();
+  // Refresh calculations
+  void refresh();
 
-private:
-//# Data menbers
-// Method to be used
-    SolarPosTypes method;
-// Check epoch for linear approximation
-    Double checkEpoch = 1e30;
-    Double checkSunEpoch = 1e30;
-// Cached calculated Earth positions
-    Double eval[3];
-// Cached derivatives
-    Double deval[3];
-// Cached calculated Sun positions
-    Double sval[3];
-// Cached derivatives
-    Double dsval[3];
-// To be able to use references in simple calculations, results are calculated
-// in a circular buffer.
-// Current buffer pointer
-    Int lres;
-// Last calculation
-    MVPosition result[6];
-// Interpolation interval
-    inline static uInt interval_reg;
-// JPL use
-    inline static uInt usejpl_reg;
-    inline static std::once_flag initialize_once_flag;
+ private:
+  // # Data menbers
+  //  Method to be used
+  SolarPosTypes method;
+  // Check epoch for linear approximation
+  Double checkEpoch = 1e30;
+  Double checkSunEpoch = 1e30;
+  // Cached calculated Earth positions
+  Double eval[3];
+  // Cached derivatives
+  Double deval[3];
+  // Cached calculated Sun positions
+  Double sval[3];
+  // Cached derivatives
+  Double dsval[3];
+  // To be able to use references in simple calculations, results are calculated
+  // in a circular buffer.
+  // Current buffer pointer
+  Int lres;
+  // Last calculation
+  MVPosition result[6];
+  // Interpolation interval
+  inline static uInt interval_reg;
+  // JPL use
+  inline static uInt usejpl_reg;
+  inline static std::once_flag initialize_once_flag;
 
-//# Member functions
-    void copy(const SolarPos &other);
-    static void initialize_statics();
-// Calculate heliocentric Earth position for time t
-    void calcEarth(Double t);
-// Calculate heliocentric barycentre position
-    void calcSun(Double t);
+  // # Member functions
+  void copy(const SolarPos &other);
+  static void initialize_statics();
+  // Calculate heliocentric Earth position for time t
+  void calcEarth(Double t);
+  // Calculate heliocentric barycentre position
+  void calcSun(Double t);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

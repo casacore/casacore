@@ -1,49 +1,52 @@
-//# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MFrequency.h: A Measure: wave characteristics
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MFREQUENCY_H
 #define MEASURES_MFREQUENCY_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVFrequency.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MFrequency;
 class MCFrequency;
 class MDoppler;
 class MVDoppler;
-template <class M> class MeasConvert;
-template <class M> class ArrayMeasColumn;
-template <class M> class ScalarMeasColumn;
+template <class M>
+class MeasConvert;
+template <class M>
+class ArrayMeasColumn;
+template <class M>
+class ScalarMeasColumn;
 
-//# Typedefs
+// # Typedefs
 
 // <summary>
 // A Measure: wave characteristics
@@ -55,7 +58,7 @@ template <class M> class ScalarMeasColumn;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 //   <li> <linkto class = MRadialVelocity>MRadialVelocity</linkto> class
 //		for some other background.
 // </prerequisite>
@@ -101,9 +104,9 @@ template <class M> class ScalarMeasColumn;
 // </ul>
 // <p>
 // Conversion between the different types is done with the standard
-// <linkto class=MeasConvert>MeasConvert</linkto> class 
-// (<src>MFrequency::Convert</src> in this case). 
-// Some of the conversions are only possible if frame information has been 
+// <linkto class=MeasConvert>MeasConvert</linkto> class
+// (<src>MFrequency::Convert</src> in this case).
+// Some of the conversions are only possible if frame information has been
 // filled in. The following frame information is necessary if a conversion
 // goes to or from the (different) specified types:
 // <ul>
@@ -117,7 +120,7 @@ template <class M> class ScalarMeasColumn;
 // <ul>
 //  <li> MFrequency::Undefined
 // </ul>
-// is available. Conversions to/from Undefined are not possible. 
+// is available. Conversions to/from Undefined are not possible.
 // If attempted, an exception will be thrown.
 // The name was chosen to be Undefined and not UNDEFINED in order to
 // not collide with the (ugly) WCSLIB macro of the upper case name
@@ -128,7 +131,7 @@ template <class M> class ScalarMeasColumn;
 // <linkto class=QC>QC</linkto> class contains at least <src>QC::HI</src>))
 // by the <src>fromDoppler()</src> member. It can be converted to an MDoppler
 // with the <src>toDoppler()</src>. Comparable methods will be available
-// for <linkto class=MFrequency>MFrequency</linkto> as 
+// for <linkto class=MFrequency>MFrequency</linkto> as
 // <src>toRadial()</src> and <src>fromRadial</src>.<br>
 // If the Doppler shift is known (e.g. from another spectral line), the
 // REST frequency can be determined with the <src>toREST()</src> member.
@@ -146,7 +149,7 @@ template <class M> class ScalarMeasColumn;
 //		MDoppler::Convert( MFrequency( Quantity(1380., "MHz"),
 //					       MFrequency::TOPO).toDoppler(QC::HI),
 //				   MDoppler::Z)() << endl;
-// </srcblock>				   
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -155,25 +158,24 @@ template <class M> class ScalarMeasColumn;
 // <todo asof="2003/03/03">
 // </todo>
 
-class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
-
+class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency>> {
  public:
-  //# Friends
-  // Conversion of data
+  // # Friends
+  //  Conversion of data
   friend class MeasConvert<MFrequency>;
 
-  //# Enumerations
-  // Types of known MFrequencies
-  // <note role=warning> The order defines the order in the translation
-  // matrix FromTo
-  // in the getConvert routine. Do not change the order without
-  // changing the array. Additions should be made before N_types, and
-  // an additional row and column should be coded in FromTo, and
-  // in showType().</note>
+  // # Enumerations
+  //  Types of known MFrequencies
+  //  <note role=warning> The order defines the order in the translation
+  //  matrix FromTo
+  //  in the getConvert routine. Do not change the order without
+  //  changing the array. Additions should be made before N_types, and
+  //  an additional row and column should be coded in FromTo, and
+  //  in showType().</note>
   enum Types {
     REST,
     LSRK,
-    LSRD, 
+    LSRD,
     BARY,
     GEO,
     TOPO,
@@ -186,12 +188,13 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
     // all extra bits
     EXTRA = 64,
     // Defaults
-    DEFAULT=LSRK,
+    DEFAULT = LSRK,
     // Synonyms
-    LSR=LSRK };
+    LSR = LSRK
+  };
 
-  //# Typedefs
-  // Measure value container for this class (i.e. MFrequency::MVType)
+  // # Typedefs
+  //  Measure value container for this class (i.e. MFrequency::MVType)
   typedef MVFrequency MVType;
   // Measure conversion routines for this class (i.e. MFrequency::MCType)
   typedef MCFrequency MCType;
@@ -203,11 +206,11 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   typedef ScalarMeasColumn<MFrequency> ScalarColumn;
   typedef ArrayMeasColumn<MFrequency> ArrayColumn;
 
-  //# Constructors
-  // <note role=tip> In the following constructors and other functions, all 
-  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-  // where no offsets or frames are needed in the reference. </note>
-  // Default constructor; generates a zero rest frequency
+  // # Constructors
+  //  <note role=tip> In the following constructors and other functions, all
+  //  <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  //  where no offsets or frames are needed in the reference. </note>
+  //  Default constructor; generates a zero rest frequency
   MFrequency();
   // Create from data and reference
   // <group>
@@ -220,15 +223,15 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   MFrequency(const Measure *dt);
   MFrequency(const MeasValue *dt);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   virtual ~MFrequency();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Tell me your type
-  // <group>
+
+  // # Operators
+
+  // # General Member Functions
+  //  Tell me your type
+  //  <group>
   virtual const String &tellMe() const;
   static const String &showMe();
   static void assure(const Measure &in);
@@ -248,8 +251,7 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   static Bool getType(MFrequency::Types &tp, const String &in);
 
   // Throws an exception if the type string is not recognized
-  static MFrequency::Types typeFromString(const String& in);
-
+  static MFrequency::Types typeFromString(const String &in);
 
   Bool giveMe(MFrequency::Ref &mr, const String &in);
   // </group>
@@ -261,30 +263,28 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
-  // nextra the number of specials (like planets) that should be at 
+  // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
-  static const String* allMyTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ);
+  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
+  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
   // </group>
-  // Check if all internal tables of types (both enum and String) are 
+  // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
   // necessary.
   // <thrown>
   //   <li> AipsError if a (programming) error in the types.
   // </thrown>
-  // <group> 
+  // <group>
   virtual void checkTypes() const;
   static void checkMyTypes();
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  
+
   // Get frequency in specified units
   Quantity get(const Unit &un) const;
-  
+
   // Make a Doppler velocity from the frequency and the specified rest frequency
   // <group>
   MDoppler toDoppler(const MVFrequency &rest);
@@ -295,37 +295,32 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   // Make a frequency from the Doppler velocity and the specified rest frequency
   // (default reference type LSRK)
   // <group>
-  static MFrequency fromDoppler(const MDoppler &dop,
-				const MVFrequency &rest);
-  static MFrequency fromDoppler(const MDoppler &dop,
-				const MVFrequency &rest,
-				MFrequency::Types type);
+  static MFrequency fromDoppler(const MDoppler &dop, const MVFrequency &rest);
+  static MFrequency fromDoppler(const MDoppler &dop, const MVFrequency &rest,
+                                MFrequency::Types type);
   // For internal use only
-  static MFrequency fromDoppler(const Measure &dop,
-				const MVFrequency &rest,
-				MFrequency::Types type);
+  static MFrequency fromDoppler(const Measure &dop, const MVFrequency &rest,
+                                MFrequency::Types type);
   // </group>
-  
+
   // Make a rest frequency using a Doppler velocity
   MFrequency toRest(const MDoppler &dop) const;
   // For local use only
   static MFrequency toRest(const Measure &in, const Measure &dop);
-  
+
   // Make a copy
   // <group>
   virtual Measure *clone() const;
   // </group>
-  
+
  private:
-  //# Enumerations
-  
-  //# Data
-  
-  //# Member functions
-  
+  // # Enumerations
+
+  // # Data
+
+  // # Member functions
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

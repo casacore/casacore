@@ -1,45 +1,44 @@
-//# TableQuantumDesc.h: Defines a Quantum column in a Table.
-//# Copyright (C) 1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableQuantumDesc.h: Defines a Quantum column in a Table.
+// # Copyright (C) 1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_TABLEQUANTUMDESC_H
 #define MEASURES_TABLEQUANTUMDESC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TableDesc;
 class Table;
 class TableRecord;
 class TableColumn;
 class Unit;
-
 
 // <summary>
 // A class for defining Quantum columns in Tables.
@@ -51,7 +50,7 @@ class Unit;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
 // </prerequisite>
@@ -231,7 +230,7 @@ class Unit;
 // after the table is created. It is meaningless in this case, but
 // it is useful when columns (to be used for quanta) are added to
 // an already existing table.
-// be used as 
+// be used as
 // <srcblock>
 //     // Setup and create the new table as usual.
 //     SetupNewTable newtab("mtab", td, Table::New);
@@ -256,86 +255,76 @@ class Unit;
 //    <li>AipsError during a reconstruct if the column doesn't have a Unit.
 // </thrown>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-class TableQuantumDesc
-{
-public:
+class TableQuantumDesc {
+ public:
   // Constructs a Quantum column descriptor with null units (Unit == "").
   // The column should have already been added to the TableDesc.
   // An exception is thrown if the column doesn't exist.
-  TableQuantumDesc (const TableDesc& td, const String& column);
+  TableQuantumDesc(const TableDesc& td, const String& column);
 
   // Constructs a Quantum column descriptor with the specified Quantum unit.
   // The column should have already been added to the TableDesc.
   // An exception is thrown if the column doesn't exist.
-  TableQuantumDesc (const TableDesc& td, const String& column, const Unit&);
+  TableQuantumDesc(const TableDesc& td, const String& column, const Unit&);
 
   // Constructs a Quantum column descriptor with the specified Quantum units.
   // The column should have already been added to the TableDesc.
   // An exception is thrown if the column doesn't exist.
   // <group>
-  TableQuantumDesc (const TableDesc& td, const String& column,
-		    const Vector<String>& unitNames);
-  TableQuantumDesc (const TableDesc& td, const String& column,
-		    const Vector<Unit>&);
+  TableQuantumDesc(const TableDesc& td, const String& column, const Vector<String>& unitNames);
+  TableQuantumDesc(const TableDesc& td, const String& column, const Vector<Unit>&);
   // </group>
 
   // Constructs a Quantum column descriptor with variable units stored in
   // unitCol.  Both the quantum and unit column should exist in the
   // TableDesc.
-  //# Note that the Char* constructor is needed, otherwise the compiler
-  //# cannot choose between String and Unit.
+  // # Note that the Char* constructor is needed, otherwise the compiler
+  // # cannot choose between String and Unit.
   //<group>
-  TableQuantumDesc (const TableDesc& td, const String& column,
-		    const String& unitCol);
-  TableQuantumDesc (const TableDesc& td, const String& column,
-		    const Char* unitCol);
+  TableQuantumDesc(const TableDesc& td, const String& column, const String& unitCol);
+  TableQuantumDesc(const TableDesc& td, const String& column, const Char* unitCol);
   //</group>
 
   // Copy constructor (copy semantics).
-  TableQuantumDesc (const TableQuantumDesc& that);
+  TableQuantumDesc(const TableQuantumDesc& that);
 
   ~TableQuantumDesc();
 
   // Reconstructs a previously constructed TableQuantumDesc.
-  static TableQuantumDesc* reconstruct (const TableDesc& td,
-					const String& column);
+  static TableQuantumDesc* reconstruct(const TableDesc& td, const String& column);
 
   // Assignment.
-  TableQuantumDesc& operator= (const TableQuantumDesc& that);
+  TableQuantumDesc& operator=(const TableQuantumDesc& that);
 
   // Returns the Quantum column descriptor's units.  A empty vector is
   // returned if units have not been specified.  This could be because the null
   // unit constructor was used or because the units are variable.
-  const Vector<String>& getUnits() const
-    { return itsUnitsName; }
+  const Vector<String>& getUnits() const { return itsUnitsName; }
 
   // Returns True if descriptor set for variable units (one per row)
-  Bool isUnitVariable() const
-    { return (! itsUnitsColName.empty()); }
+  Bool isUnitVariable() const { return (!itsUnitsColName.empty()); }
 
   // Returns the name of the quantum column.
-  const String& columnName() const
-    { return itsColName; }
+  const String& columnName() const { return itsColName; }
 
   // Returns the name of the units column (an empty String is returned
   // if the units are not variable).
-  const String& unitColumnName() const
-    { return itsUnitsColName; }
+  const String& unitColumnName() const { return itsUnitsColName; }
 
   // Makes the TableQuantumDesc persistent (updates the Table Descriptor).
   // <group>
-  void write (TableDesc&);
-  void write (Table&);
+  void write(TableDesc&);
+  void write(Table&);
   // </group>
 
   // Does this column contain table quanta?
-  static Bool hasQuanta (const TableColumn& column);
+  static Bool hasQuanta(const TableColumn& column);
 
-private:
+ private:
   // Name of column which stores the Quantum's values.
   String itsColName;
   // The Quantum's unit as a string.
@@ -343,19 +332,16 @@ private:
   // Name of units column if units are variable.
   String itsUnitsColName;
 
-
   // Write the actual keywords.
-  void writeKeys (TableRecord& columnKeyset);
+  void writeKeys(TableRecord& columnKeyset);
 
   // Throw an exception if the quantum column doesn't exist.
-  void checkColumn (const TableDesc& td) const;
+  void checkColumn(const TableDesc& td) const;
 
   // Throw an exception if the variable units column isn't a string column.
-  void checkUnitsColumn (const TableDesc& td) const;
+  void checkUnitsColumn(const TableDesc& td) const;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

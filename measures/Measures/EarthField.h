@@ -1,43 +1,43 @@
-//# EarthField.h: EarthField class model claculations
-//# Copyright (C) 1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # EarthField.h: EarthField class model claculations
+// # Copyright (C) 1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_EARTHFIELD_H
 #define MEASURES_EARTHFIELD_H
 
-//# Includes
+// # Includes
 #include <mutex>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
-//# Constants
-// Length of P and Q arrays, half length of CL/SL arrays in IGRF model
+// # Constants
+//  Length of P and Q arrays, half length of CL/SL arrays in IGRF model
 const Int PQ_LEN = 104;
 // Interval (m) for derivatives in IGRF model
 const Double DER_INTV = 10000;
@@ -59,7 +59,7 @@ const Double DER_INTV = 10000;
 // </etymology>
 //
 // <synopsis>
-// EarthField forms the class for Earth magnetic field calculations. It is a 
+// EarthField forms the class for Earth magnetic field calculations. It is a
 // simple container with the selected model, and the mean epoch.<br>
 // The method is selected from one of the following:
 // <ul>
@@ -74,13 +74,13 @@ const Double DER_INTV = 10000;
 //   <li> EarthField(method); assuming J2000 as epoch
 //   <li> EarthField(method, epoch) with epoch Double(MJD)
 // </ul>
-// Actual EarthField for a certain position on Earth is calculated by the () 
+// Actual EarthField for a certain position on Earth is calculated by the ()
 // operator. Arguments can be:
 // <ul>
 //   <li> MVPosition: a position on Earth (in the ITRF frame)
 // </ul>
 // The returned value is a 3D vector of the field (in nT) in ITRF coordinates.
-// The derivative (d<sup>-1</sup>) can be obtained as well by 
+// The derivative (d<sup>-1</sup>) can be obtained as well by
 // derivative(MVPosition). <br>
 // An EarthField can be re-initialised with a different method and/or other
 // epoch with the <src>init()</src> functions (same format as constructors).
@@ -89,7 +89,7 @@ const Double DER_INTV = 10000;
 // using the derivative if within about 50 km (error less than about
 // 10<sup>-2</sup> G). A call to refresh() will re-initiate calculations
 // from scratch.<br>
-// The following details can be set with the 
+// The following details can be set with the
 // <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
 //  <li> measures.earthfield.d_interval: approximation radius
@@ -126,15 +126,13 @@ const Double DER_INTV = 10000;
 // </todo>
 
 class EarthField {
-
-public:
-
-  //# Constants
-  // Default interval to be used for linear approximation (in m)
+ public:
+  // # Constants
+  //  Default interval to be used for linear approximation (in m)
   static constexpr Double INTV = 50000;
 
-  //# Enumerations
-  // Known EarthField calculation models
+  // # Enumerations
+  //  Known EarthField calculation models
   enum EarthFieldTypes {
     // Standard IGRF model
     IGRF,
@@ -144,43 +142,43 @@ public:
     STANDARD = IGRF
   };
 
-  //# Constructors
-  // Default constructor, generates default J2000 EarthField identification
+  // # Constructors
+  //  Default constructor, generates default J2000 EarthField identification
   EarthField();
   // Copy constructor
   EarthField(const EarthField &other);
-  // Constructor with epoch in MJulian days (default is J2000) 
-  explicit EarthField(EarthFieldTypes model, Double catepoch=51544.5);
+  // Constructor with epoch in MJulian days (default is J2000)
+  explicit EarthField(EarthFieldTypes model, Double catepoch = 51544.5);
   // Copy assignment
   EarthField &operator=(const EarthField &other);
-  
-  //# Destructor
+
+  // # Destructor
   ~EarthField();
-  
-  //# Operators
-  // Return the EarthField components. Note that the value returned has only
-  // a lifetime as long as the EarthField container exists, and no new
-  // derivative is asked for.
+
+  // # Operators
+  //  Return the EarthField components. Note that the value returned has only
+  //  a lifetime as long as the EarthField container exists, and no new
+  //  derivative is asked for.
   const Vector<Double> &operator()(const MVPosition &pos);
-  
-  //# General Member Functions
-  // Return derivatives of field (to X, Y, Z). Note that the value returned
-  // has only a lifetime as long as the EarthField container exists, and
-  // no new components or derivative is calculated. The returned value should
-  // not be deleted.
+
+  // # General Member Functions
+  //  Return derivatives of field (to X, Y, Z). Note that the value returned
+  //  has only a lifetime as long as the EarthField container exists, and
+  //  no new components or derivative is calculated. The returned value should
+  //  not be deleted.
   const Vector<Double> *derivative(const MVPosition &pos);
   // Re-initialise EarthField object with specified model and epoch, or
   // defaults STANDARD and J2000.
   // <group>
   void init();
-  void init(EarthFieldTypes model, Double catepoch=51544.5);
+  void init(EarthFieldTypes model, Double catepoch = 51544.5);
   // </group>
   // Refresh calculations
   void refresh();
-  
-  private:
-  //# Data members
-  // Method to be used
+
+ private:
+  // # Data members
+  //  Method to be used
   EarthFieldTypes method_p;
   // Fixed epoch to be used (MJD)
   Double fixedEpoch_p;
@@ -209,20 +207,16 @@ public:
   inline static uInt interval_reg_p = 0;
   inline static std::once_flag initialization_once_flag;
 
-  //# Member functions
-  // Make a copy
+  // # Member functions
+  //  Make a copy
   void copy(const EarthField &other);
   // Create correct default fixedEpoch and catalogue field data
   void fillField();
   static void initializeRcValue();
   // Calculate EarthField for longitude and latitude and altitude (m)
   void calcField(const MVPosition &pos);
-
 };
-  
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

@@ -1,237 +1,217 @@
-//# MeasRef.cc:  Reference frame for physical measures
-//# Copyright (C) 1995-2001,2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasRef.cc:  Reference frame for physical measures
+// # Copyright (C) 1995-2001,2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASREF_TCC
 #define MEASURES_MEASREF_TCC
 
-//# Includes
+// # Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/iostream.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+// # Constructors
 
-//# Constructors
+template <class Ms>
+MeasRef<Ms>::MeasRef() {}
 
-template<class Ms>
-MeasRef<Ms>::MeasRef()
-{}
+template <class Ms>
+MeasRef<Ms>::MeasRef(const MeasRef<Ms> &other) : MRBase(other), rep_p(other.rep_p) {}
 
-template<class Ms>
-MeasRef<Ms>::MeasRef(const MeasRef<Ms> &other)
-  : MRBase(other),
-    rep_p (other.rep_p)
-{}
-
-template<class Ms>
-MeasRef<Ms> &
-MeasRef<Ms>::operator=(const MeasRef<Ms> &other) {
+template <class Ms>
+MeasRef<Ms> &MeasRef<Ms>::operator=(const MeasRef<Ms> &other) {
   if (this != &other) {
     rep_p = other.rep_p;
   }
   return *this;
 }
 
-template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp)
-{
+template <class Ms>
+MeasRef<Ms>::MeasRef(const uInt tp) {
   create();
   rep_p->type = Ms::castType(tp);
 }
 
-template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep)
-{
+template <class Ms>
+MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep) {
   create();
   rep_p->type = Ms::castType(tp);
   rep_p->offmp = std::make_unique<Ms>(ep);
 }
 
-template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf)
-{
+template <class Ms>
+MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf) {
   create();
   rep_p->type = Ms::castType(tp);
   rep_p->frame = mf;
 }
 
-template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep)
-{
+template <class Ms>
+MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep) {
   create();
   rep_p->type = Ms::castType(tp);
   rep_p->offmp = std::make_unique<Ms>(ep);
   rep_p->frame = mf;
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::create() {
   if (empty()) {
-    rep_p.reset (new RefRep);
+    rep_p.reset(new RefRep);
   }
 }
 
-//# Destructor
-template<class Ms>
+// # Destructor
+template <class Ms>
 MeasRef<Ms>::~MeasRef() = default;
 
-//# Operators
-template<class Ms>
+// # Operators
+template <class Ms>
 Bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
   return (rep_p == other.rep_p);
 }
 
-template<class Ms>
+template <class Ms>
 Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
   return (rep_p != other.rep_p);
 }
 
-//# Member functions
-template<class Ms>
+// # Member functions
+template <class Ms>
 Bool MeasRef<Ms>::empty() const {
   return !rep_p;
 }
 
-template<class Ms>
+template <class Ms>
 const String &MeasRef<Ms>::showMe() {
   return Ms::showMe();
 }
 
-template<class Ms>
-uInt MeasRef<Ms>::getType() const{
-  return (! empty() ? rep_p->type : 0);
+template <class Ms>
+uInt MeasRef<Ms>::getType() const {
+  return (!empty() ? rep_p->type : 0);
 }
 
-template<class Ms>
+template <class Ms>
 MeasFrame &MeasRef<Ms>::getFrame() {
   create();
   return (rep_p->frame);
 }
 
-template<class Ms>
-const MeasFrame &MeasRef<Ms>::framePosition(MRBase &ref1,
-					    MRBase &ref2) {
+template <class Ms>
+const MeasFrame &MeasRef<Ms>::framePosition(MRBase &ref1, MRBase &ref2) {
   if (!ref1.empty() && ref1.getFrame().position()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().position()) {
   } else {
-    throw(AipsError("No MeasFrame position specified for conversion of " + 
-		    Ms::showMe()));
+    throw(AipsError("No MeasFrame position specified for conversion of " + Ms::showMe()));
   }
   return ref2.getFrame();
 }
 
-template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameEpoch(MRBase &ref1,
-					 MRBase &ref2) {
+template <class Ms>
+const MeasFrame &MeasRef<Ms>::frameEpoch(MRBase &ref1, MRBase &ref2) {
   if (!ref1.empty() && ref1.getFrame().epoch()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().epoch()) {
   } else {
-    throw(AipsError("No MeasFrame epoch specified for conversion of " + 
-		    Ms::showMe()));
+    throw(AipsError("No MeasFrame epoch specified for conversion of " + Ms::showMe()));
   }
   return ref2.getFrame();
 }
 
-template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameDirection(MRBase &ref1,
-					     MRBase &ref2) {
+template <class Ms>
+const MeasFrame &MeasRef<Ms>::frameDirection(MRBase &ref1, MRBase &ref2) {
   if (!ref1.empty() && ref1.getFrame().direction()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().direction()) {
   } else {
-    throw(AipsError("No MeasFrame direction specified for conversion of " + 
-		    Ms::showMe()));
+    throw(AipsError("No MeasFrame direction specified for conversion of " + Ms::showMe()));
   }
   return ref2.getFrame();
 }
 
-template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameRadialVelocity(MRBase &ref1,
-						  MRBase &ref2) {
+template <class Ms>
+const MeasFrame &MeasRef<Ms>::frameRadialVelocity(MRBase &ref1, MRBase &ref2) {
   if (!ref1.empty() && ref1.getFrame().radialVelocity()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().radialVelocity()) {
   } else {
-    throw(AipsError("No MeasFrame specified for conversion of " + 
-		    Ms::showMe()));
+    throw(AipsError("No MeasFrame specified for conversion of " + Ms::showMe()));
   }
   return ref2.getFrame();
 }
 
-template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1,
-					 MRBase &ref2) {
+template <class Ms>
+const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1, MRBase &ref2) {
   if (!ref1.empty() && ref1.getFrame().comet()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().comet()) {
   } else {
-    throw(AipsError("No MeasFrame comet specified for conversion of " + 
-		    Ms::showMe()));
+    throw(AipsError("No MeasFrame comet specified for conversion of " + Ms::showMe()));
   }
   return ref2.getFrame();
 }
 
-template<class Ms>
-const Measure* MeasRef<Ms>::offset() const {
-  return ( ! empty() ? rep_p->offmp.get() : nullptr);
+template <class Ms>
+const Measure *MeasRef<Ms>::offset() const {
+  return (!empty() ? rep_p->offmp.get() : nullptr);
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::setType(uInt tp) {
   set(tp);
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::set(uInt tp) {
   create();
   rep_p->type = Ms::castType(tp);
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::set(const Ms &ep) {
   create();
   rep_p->offmp = std::make_unique<Ms>(ep);
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::set(const Measure &ep) {
   create();
   rep_p->offmp.reset(ep.clone());
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::set(const MeasFrame &mf) {
   create();
   rep_p->frame = mf;
 }
 
-template<class Ms>
+template <class Ms>
 MeasRef<Ms> MeasRef<Ms>::copy() {
   MeasRef<Ms> tmp;
   tmp.create();
@@ -241,9 +221,9 @@ MeasRef<Ms> MeasRef<Ms>::copy() {
   return tmp;
 }
 
-template<class Ms>
+template <class Ms>
 void MeasRef<Ms>::print(ostream &os) const {
-  os << "Reference for an " << showMe(); 
+  os << "Reference for an " << showMe();
   os << " with Type: " << Ms::showType(getType());
   if (offset()) {
     os << ", Offset: " << *(offset());
@@ -254,7 +234,6 @@ void MeasRef<Ms>::print(ostream &os) const {
   }
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore
 
 #endif

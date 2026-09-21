@@ -1,38 +1,37 @@
-//# Aberration.h: Aberration class
-//# Copyright (C) 1995,1996,1997,1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Aberration.h: Aberration class
+// # Copyright (C) 1995,1996,1997,1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_ABERRATION_H
 #define MEASURES_ABERRATION_H
 
-//# Includes
+// # Includes
 #include <mutex>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Aberration class and calculations
@@ -44,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class, 
+//   <li> <linkto class=Measure>Measure</linkto> class,
 //		especially <linkto class=MEpoch>MEpoch</linkto>
 //   <li> <linkto class=MeasData>MeasData</linkto> class for constants
 // </prerequisite>
@@ -76,15 +75,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // MVPosition.<br>
 // The derivative (d<sup>-1</sup>) can be obtained as well by
 // derivative(epoch).<br>
-// The following details can be set with the 
+// The following details can be set with the
 // <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
-//  <li> measures.aberration.d_interval: approximation interval as time 
+//  <li> measures.aberration.d_interval: approximation interval as time
 //	(fraction of days is default unit) over which linear approximation
 //	is used
 //  <li> measures.aberration.b_usejpl: use the JPL database values for IAU1980.
 //	Else analytical expression, relative error about 10<sup>-9</sup>
-//	Note that the JPL database to be used can be set with 
+//	Note that the JPL database to be used can be set with
 //		measures.jpl.ephemeris (at the moment of writing DE200 (default),
 //		or DE405). If using the JPL database, the d_interval (and the
 //		output of derivative()) are irrelevant.
@@ -104,80 +103,76 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <todo asof="1997/12/02">
 // </todo>
 
-class Aberration
-{
-public:
-//# Constants
-// Interval to be used for linear approximation (in days)
-    static constexpr Double INTV = 0.04;
+class Aberration {
+ public:
+  // # Constants
+  //  Interval to be used for linear approximation (in days)
+  static constexpr Double INTV = 0.04;
 
-//# Enumerations
-// Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
-    enum AberrationTypes {STANDARD,NONE,B1950};
+  // # Enumerations
+  //  Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
+  enum AberrationTypes { STANDARD, NONE, B1950 };
 
-//# Constructors
-// Default constructor, generates default J2000 Aberration identification
-    Aberration();
-// Copy constructor
-    Aberration(const Aberration &other);
-// Constructor with type
-    Aberration(AberrationTypes type);
-// Copy assignment
-    Aberration &operator=(const Aberration &other);
+  // # Constructors
+  //  Default constructor, generates default J2000 Aberration identification
+  Aberration();
+  // Copy constructor
+  Aberration(const Aberration &other);
+  // Constructor with type
+  Aberration(AberrationTypes type);
+  // Copy assignment
+  Aberration &operator=(const Aberration &other);
 
-//# Destructor
-    ~Aberration();
+  // # Destructor
+  ~Aberration();
 
-//# Operators
-// Operator () calculates the Aberration direction cosine vector
-    const MVPosition &operator()(Double epoch);
+  // # Operators
+  //  Operator () calculates the Aberration direction cosine vector
+  const MVPosition &operator()(Double epoch);
 
-//# General Member Functions
-// Return derivative of Aberration (d<sup>-1</sup>) w.r.t. time
-    const MVPosition &derivative (Double epoch);
+  // # General Member Functions
+  //  Return derivative of Aberration (d<sup>-1</sup>) w.r.t. time
+  const MVPosition &derivative(Double epoch);
 
-// Re-initialise Aberration object
-// <group>
-    void init(AberrationTypes type = Aberration::STANDARD);
-// </group>
+  // Re-initialise Aberration object
+  // <group>
+  void init(AberrationTypes type = Aberration::STANDARD);
+  // </group>
 
-// Refresh calculations
-    void refresh();
+  // Refresh calculations
+  void refresh();
 
-private:
-//# Data menbers
-// Method to be used
-    AberrationTypes method;
-// Check epoch for linear approximation
-    Double checkEpoch = 1e30;
-// Cached calculated angles
-    Double aval[3];
-// Cached derivatives
-    Double dval[3];
-// To be able to use referenced results in simple calculations, a circular
-// result buffer is used.
-// Current buffer pointer.
-    Int lres;
-// Last calculation
-    MVPosition result[4];
-// Interpolation interval
-    inline static uInt interval_reg;
-// JPL use
-    inline static uInt usejpl_reg;
-    inline static std::once_flag initialize_once_flag;
+ private:
+  // # Data menbers
+  //  Method to be used
+  AberrationTypes method;
+  // Check epoch for linear approximation
+  Double checkEpoch = 1e30;
+  // Cached calculated angles
+  Double aval[3];
+  // Cached derivatives
+  Double dval[3];
+  // To be able to use referenced results in simple calculations, a circular
+  // result buffer is used.
+  // Current buffer pointer.
+  Int lres;
+  // Last calculation
+  MVPosition result[4];
+  // Interpolation interval
+  inline static uInt interval_reg;
+  // JPL use
+  inline static uInt usejpl_reg;
+  inline static std::once_flag initialize_once_flag;
 
-//# Member functions
-// Copy
-    void copy(const Aberration &other);
-// Fill an empty copy
-    static void initialize();
-// Calculate Aberration angles for time t
-    void calcAber(Double t);
+  // # Member functions
+  //  Copy
+  void copy(const Aberration &other);
+  // Fill an empty copy
+  static void initialize();
+  // Calculate Aberration angles for time t
+  void calcAber(Double t);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

@@ -1,32 +1,32 @@
-//# TableMeasDescBase.h: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableMeasDescBase.h: Definition of a Measure in a Table.
+// # Copyright (C) 1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_TABLEMEASDESCBASE_H
 #define MEASURES_TABLEMEASDESCBASE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
 #include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
@@ -34,17 +34,17 @@
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class Table;
 class TableDesc;
 class TableRecord;
 class TableColumn;
 class Measure;
-template<class T> class Quantum;
-
+template <class T>
+class Quantum;
 
 // <summary>
 // Definition of a Measure in a Table.
@@ -56,7 +56,7 @@ template<class T> class Quantum;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
 //   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
@@ -84,22 +84,21 @@ template<class T> class Quantum;
 // </thrown>
 //
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-class TableMeasDescBase
-{
-public:
+class TableMeasDescBase {
+ public:
   // Null constructor.
   TableMeasDescBase();
 
   // Constructor with value and reference descriptors.
   // Note that setMeasType is always called by the derived class.
-  TableMeasDescBase (const TableMeasValueDesc&, const TableMeasRefDesc&);
+  TableMeasDescBase(const TableMeasValueDesc&, const TableMeasRefDesc&);
 
   // Copy constructor.
-  TableMeasDescBase (const TableMeasDescBase& that);
+  TableMeasDescBase(const TableMeasDescBase& that);
 
   virtual ~TableMeasDescBase();
 
@@ -107,115 +106,95 @@ public:
   virtual TableMeasDescBase* clone() const;
 
   // Assignment operator.
-  TableMeasDescBase& operator= (const TableMeasDescBase& that);
+  TableMeasDescBase& operator=(const TableMeasDescBase& that);
 
   // Makes the descriptor persistent.
   // <group>
-  void write (TableDesc&);
-  void write (Table&);
+  void write(TableDesc&);
+  void write(Table&);
   // </group>
 
   // Make the descriptor persistent if there was no refcode vector.
   // This is only needed for old tables without such vectors.
-  void writeIfOld (const Table&);
+  void writeIfOld(const Table&);
 
   // Get the name of the underlying column.
-  const String& columnName() const
-    { return itsValue.columnName(); }
+  const String& columnName() const { return itsValue.columnName(); }
 
   // Return the reference code.
-  uInt getRefCode() const
-    { return itsRef.getRefCode(); }
+  uInt getRefCode() const { return itsRef.getRefCode(); }
 
   // Returns True if the reference varies per row.
-  Bool isRefCodeVariable() const
-    { return itsRef.isRefCodeVariable(); }
+  Bool isRefCodeVariable() const { return itsRef.isRefCodeVariable(); }
 
   // Returns the name of the ref code column when the ref code is variable.
   // The null string is returned if the ref code is not variable.
-  const String& refColumnName() const
-    { return itsRef.columnName(); }
+  const String& refColumnName() const { return itsRef.columnName(); }
 
   // Returns a reference to its measure reference descriptor.
-  const TableMeasRefDesc& getRefDesc() const
-    { return itsRef; }
+  const TableMeasRefDesc& getRefDesc() const { return itsRef; }
 
   // Get the name of the offset column. Empty string is returned if no
   // offset.
-  const String& offsetColumnName() const
-    { return itsRef.offsetColumnName(); }
+  const String& offsetColumnName() const { return itsRef.offsetColumnName(); }
 
   // Returns True if an offset has been defined.
-  Bool hasOffset() const
-    { return itsRef.hasOffset(); }
+  Bool hasOffset() const { return itsRef.hasOffset(); }
 
   // Returns True if the offset is variable.
-  Bool isOffsetVariable() const
-    { return itsRef.isOffsetVariable(); }
+  Bool isOffsetVariable() const { return itsRef.isOffsetVariable(); }
 
   // Returns True if the offset is variable and is stored in an
   // ArrayMeasColumn, i.e., offsets are stored per element.
-  Bool isOffsetArray() const
-    { return itsRef.isOffsetArray(); }
+  Bool isOffsetArray() const { return itsRef.isOffsetArray(); }
 
   // Returns a reference to the offset.
-  const Measure& getOffset() const
-    { return itsRef.getOffset(); }
+  const Measure& getOffset() const { return itsRef.getOffset(); }
 
   // Returns the descriptors measure type as a String.
-  const String& type() const
-    { return itsMeasType.type(); }
+  const String& type() const { return itsMeasType.type(); }
 
   // Returns the reference code for this object given a string.  Throws
   // an exception if the refString is invalid for this object.
-  uInt refCode (const String& refString) const
-    { return itsMeasType.refCode(refString); }
+  uInt refCode(const String& refString) const { return itsMeasType.refCode(refString); }
 
   // Translates the refCode for the descriptors measure type.
-  const String& refType (uInt refCode) const
-    { return itsMeasType.refType(refCode); }
+  const String& refType(uInt refCode) const { return itsMeasType.refType(refCode); }
 
   // Return the Units of the Measure values
-  const Vector<Unit>& getUnits() const
-    { return itsUnits; }
+  const Vector<Unit>& getUnits() const { return itsUnits; }
 
   // Reset the refCode, offset, or units.
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
   // <group>
-  void resetRefCode (uInt refCode)
-    { itsRef.resetRefCode (refCode); }
-  void resetOffset (const Measure& offset)
-    { itsRef.resetOffset (offset); }
-  void resetUnits (const Vector<Unit>& units);
+  void resetRefCode(uInt refCode) { itsRef.resetRefCode(refCode); }
+  void resetOffset(const Measure& offset) { itsRef.resetOffset(offset); }
+  void resetUnits(const Vector<Unit>& units);
   // </group>
 
   // Reconstructs the object for the given table and column name.
-  static TableMeasDescBase* reconstruct (const Table& tab,
-					 const String& columnName);
+  static TableMeasDescBase* reconstruct(const Table& tab, const String& columnName);
 
   // Does this column contain table measures?
-  static Bool hasMeasures (const TableColumn& column);
+  static Bool hasMeasures(const TableColumn& column);
 
-protected:
+ protected:
   // Set the initial reference codes and types in the table.
-  void initTabRef (const MeasureHolder& measHolder);
+  void initTabRef(const MeasureHolder& measHolder);
 
   // Set the measure and possible units.
-  void setMeasUnits (const Measure& meas,
-		     const Vector<Quantum<Double> >& val,
-		     const Vector<Unit>& units);
+  void setMeasUnits(const Measure& meas, const Vector<Quantum<Double>>& val,
+                    const Vector<Unit>& units);
 
-private:
-  TableMeasValueDesc itsValue;    //# The measure value column.
-  TableMeasRefDesc   itsRef;	  //# The reference.
-  //# this gives access to the columns Measure type etc
+ private:
+  TableMeasValueDesc itsValue;  // # The measure value column.
+  TableMeasRefDesc itsRef;      // # The reference.
+  // # this gives access to the columns Measure type etc
   TableMeasType itsMeasType;
-  Vector<Unit>  itsUnits;
+  Vector<Unit> itsUnits;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

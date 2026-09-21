@@ -1,29 +1,29 @@
-//# tMeasJPL.cc: This program test JPL DE functions
-//# Copyright (C) 1997-2002,2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tMeasJPL.cc: This program test JPL DE functions
+// # Copyright (C) 1997-2002,2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -43,18 +43,17 @@
 #include <casacore/casa/fstream.h>
 
 #include <casacore/casa/namespace.h>
-int main()
-{
+int main() {
   try {
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for (int dd=0; dd<4; ++dd) {
-      const MVEpoch dat = 51116 + dd*33;
+    for (int dd = 0; dd < 4; ++dd) {
+      const MVEpoch dat = 51116 + dd * 33;
       ostringstream ostr;
       ostr << dd;
       ofstream os(("tMeasJPL_tmp.out_a" + ostr.str()).c_str());
-      
+
       MVDirection mvd1;
 
       os << "Test measure class MeasJPL" << endl;
@@ -65,13 +64,12 @@ int main()
 
       os << "DE200: " << dat << endl;
       os << "---------------------------" << endl;
-      os << "Mercury0:   " <<
-        MeasTable::Planetary(MeasTable::MERCURY, dat.get()) << endl;
+      os << "Mercury0:   " << MeasTable::Planetary(MeasTable::MERCURY, dat.get()) << endl;
       MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MERCURY, dat);
       os << "Mercury:    " << val << endl;
       MeasJPL::get(val, MeasJPL::DE200, MeasJPL::VENUS, dat);
       os << "Venus:      " << val << endl;
-      for (uInt i=0; i<3; i++) {
+      for (uInt i = 0; i < 3; i++) {
         mvd1(i) = val(i);
       }
       mvd1.adjust();
@@ -93,18 +91,18 @@ int main()
     }
     MeasIERS::closeTables();
     Vector<String> openTables = PlainTable::tableCache().getTableNames();
-    if (openTables.size() > 0){
+    if (openTables.size() > 0) {
       cout << "ERROR: cache not empty!" << endl;
-      for (uInt i=0; i<openTables.size(); ++i) {
-	cout << "    " << i << ": \"" <<  openTables[i] << "\"" << endl;
+      for (uInt i = 0; i < openTables.size(); ++i) {
+        cout << "    " << i << ": \"" << openTables[i] << "\"" << endl;
       }
     }
 
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for (int dd=0; dd<4; ++dd) {
-      const MVEpoch dat = 51116 + dd*33;
+    for (int dd = 0; dd < 4; ++dd) {
+      const MVEpoch dat = 51116 + dd * 33;
       ostringstream ostr;
       ostr << dd;
       ofstream os(("tMeasJPL_tmp.out_b" + ostr.str()).c_str());
@@ -123,7 +121,7 @@ int main()
       os << "Nutation:   " << val << endl;
       MeasJPL::get(val, MeasJPL::DE200, MeasJPL::LIBRATION, dat);
       os << "Libration:  " << val << endl;
-      
+
       os << "DE405: " << dat << endl;
       os << "---------------------------" << endl;
       MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MERCURY, dat);
@@ -159,8 +157,8 @@ int main()
     }
   } catch (const std::exception& x) {
     cout << x.what() << endl;
-  } 
-  
+  }
+
   try {
     const MVEpoch dat = 51116;
     const MEpoch mdat(dat, MEpoch::Ref(MEpoch::TDB));
@@ -189,7 +187,7 @@ int main()
 
     MDirection ven_offset(Quantity(1, "deg"), Quantity(0.5, "deg"), venr);
     MDirection sn_offset(Quantity(1, "deg"), Quantity(0.5, "deg"), sunr);
-    MDirection mon_offset(Quantity(1, "deg"), Quantity(0.5, "deg"),moonr);
+    MDirection mon_offset(Quantity(1, "deg"), Quantity(0.5, "deg"), moonr);
     MDirection::Convert vc1_offset(ven_offset, MDirection::Ref(MDirection::JNAT));
     MDirection::Convert vc2_offset(ven_offset, MDirection::Ref(MDirection::APP));
     MDirection::Convert sc1_offset(sn_offset, MDirection::Ref(MDirection::JNAT));
@@ -208,7 +206,7 @@ int main()
 
   } catch (const std::exception& x) {
     cout << x.what() << endl;
-  } 
-  
+  }
+
   return 0;
 }

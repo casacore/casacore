@@ -1,32 +1,32 @@
-//# MeasComet.h: To define position for comets and other solar system bodies
-//# Copyright (C) 1999,2000,2002,2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasComet.h: To define position for comets and other solar system bodies
+// # Copyright (C) 1999,2000,2002,2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASCOMET_H
 #define MEASURES_MEASCOMET_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRow.h>
@@ -36,9 +36,9 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/measures/Measures/MDirection.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MVRadialVelocity;
 class MVDirection;
 
@@ -60,7 +60,7 @@ class MVDirection;
 // <synopsis>
 // MeasComet is the interface class between generated Comet position
 // tables and the Direction conversion machinery.
-// Tables are found using the aipsrc 
+// Tables are found using the aipsrc
 // (using <src>measures.<table>.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
 // Tables are assumed to have the
@@ -76,10 +76,10 @@ class MVDirection;
 // The <src>get()</src> method will obtain data from the cometary
 // tables. The data obtained will be in the specified frame.
 // Note that the normal usage of these tables is through the Measures system.
-// 
+//
 // <note>
 //	A message is logged (once) if a date outside the range in
-//	the Tables is asked for. 
+//	the Tables is asked for.
 // </note>
 // <thrown>
 //     <li> AipsError if table opened has wrong format or otherwise corrupted.
@@ -100,18 +100,17 @@ class MVDirection;
 // <todo asof="2000/01/20">
 // </todo>
 
-class MeasComet {	
-
+class MeasComet {
  public:
-  //# Constants
-  
-  //# Enumerations
-  // Types of known data
+  // # Constants
+
+  // # Enumerations
+  //  Types of known data
   enum Types {
     // MJD (must be first in list)
     MJD,
     // Columns with data
-    RA, 
+    RA,
     DEC,
     RHO,
     RADVEL,
@@ -119,10 +118,11 @@ class MeasComet {
     DISKLAT,
     // Number of columns
     N_Columns,
-    N_Types };
-  
-  //# Constructors
-  // Construct using the aipsrc value (measures.comet.file)
+    N_Types
+  };
+
+  // # Constructors
+  //  Construct using the aipsrc value (measures.comet.file)
   MeasComet();
   // Construct a table from the named path.
   explicit MeasComet(const String &path);
@@ -133,12 +133,12 @@ class MeasComet {
   // Copy assign
   MeasComet &operator=(const MeasComet &other);
 
-  //# Destructor
+  // # Destructor
   ~MeasComet();
 
-  //# General Member Functions
-  // Is it a valid comet class (i.e. can it be used)
-  Bool ok() const {return measured_p;} ;
+  // # General Member Functions
+  //  Is it a valid comet class (i.e. can it be used)
+  Bool ok() const { return measured_p; };
   // Get the name of the comet
   const String &getName() const;
   // Get the topo position
@@ -165,7 +165,7 @@ class MeasComet {
 
   // Return the mean radius in AU, or -1 if the table does not have it.
   // If squawk is true an error message will also be posted.
-  Double getMeanRad(const Bool squawk);  
+  Double getMeanRad(const Bool squawk);
 
   // Create a clone
   MeasComet *clone() const;
@@ -175,23 +175,21 @@ class MeasComet {
 
   // Convenience function that returns ks[kw] in units of unit, setting
   // success.
-  static Double get_Quantity_keyword(const TableRecord& ks, const String& kw,
-				     const Unit& unit, Bool& success);
+  static Double get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
+                                     Bool &success);
 
   // Convenience function that returns the absolute path to the ephemeris table
   // connected to the MeasComet object
   String getTablePath();
   ////Comet table has posrefsys defined
   Bool hasPosrefsys() const;
-  ///Get the posrefsys dir type
+  /// Get the posrefsys dir type
   MDirection::Types getPosrefsysType() const;
-  
 
  private:
-  
-  //# General member functions
-  // Initialise table from the name given
-  Bool initMeas(const String &which, const Table *tabin=0);
+  // # General member functions
+  //  Initialise table from the name given
+  Bool initMeas(const String &which, const Table *tabin = 0);
   // Fill Table lines
   Bool fillMeas(Double utf) const;
 
@@ -207,7 +205,7 @@ class MeasComet {
   // already true.
   Bool getExtras();
 
-  //# Data members
+  // # Data members
 
   // Initialized in the "initialization list" of the c'tors, so maintain order:
 
@@ -241,18 +239,18 @@ class MeasComet {
   // Whether or not the sub-observer longitude and latitude are available.
   Bool haveDiskLongLat_p;
 
-  uInt ncols_p;	// # of columns.
+  uInt ncols_p;  // # of columns.
 
   // These may be initialized _inside_ the c'tors, but the order here is
   // unimportant:
 
   // Field pointers
-  Vector<RORecordFieldPtr<Double> > rfp_p;
+  Vector<RORecordFieldPtr<Double>> rfp_p;
   // Lines in memory
-  mutable Int lnr_p[2];			    // Why are these mutables here?
+  mutable Int lnr_p[2];  // Why are these mutables here?
   // Last read data (measlow - meashigh)
-  mutable Vector<Double> ldat_p[2];         // They allow declaring a const
-					    // which isn't.
+  mutable Vector<Double> ldat_p[2];  // They allow declaring a const
+                                     // which isn't.
   Bool haveTriedExtras_p;
   Double temperature_p;
   Double mean_rad_p;
@@ -260,9 +258,8 @@ class MeasComet {
   MDirection::Types posrefsystype_p;
 };
 
-//# Inline Implementations
+// # Inline Implementations
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

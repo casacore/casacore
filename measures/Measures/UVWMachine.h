@@ -1,31 +1,31 @@
-//# UVWMachine.h: Converts UVW coordinates between coordinate systems 
-//# Copyright (C) 1998,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # UVWMachine.h: Converts UVW coordinates between coordinate systems
+// # Copyright (C) 1998,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 #ifndef MEASURES_UVWMACHINE_H
 #define MEASURES_UVWMACHINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures.h>
@@ -33,9 +33,9 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasFrame;
 
 // <summary> Converts UVW coordinates between coordinate systems  </summary>
@@ -58,10 +58,10 @@ class MeasFrame;
 // convert UVW coordinates from one coordinate system to another. In addition
 // it can also supply the phase rotation necessary to move to a new position.
 //
-// The constructors need an input 
+// The constructors need an input
 // <linkto class=MDirection>MDirection</linkto>  to specify the input UVW
 // coordinates reference direction and coordinate system.
-// An EW flag can be specified to indicate the different type of UVW 
+// An EW flag can be specified to indicate the different type of UVW
 // coordinates. I.e. projection along polar axis rather than towards
 // observing direction (not implemented yet).
 // A project flag, if set, will re-project the resulting UV plane onto the
@@ -157,27 +157,26 @@ class MeasFrame;
 
 class UVWMachine {
  public:
-  //# Constructors
-  // Constructors have an EW flag, which will give a projection parallel to
-  // the polar axis rather than in the direction of the fieldcenter, and a
-  // project flag. The last will correct the UV coordinates to re-project
-  // them onto the plane specified by the in direction
-  // <group>
-  // Construct a UVW conversion machine from the in coordinate and its
-  // system to the out coordinate system (output absolute direction 
-  // remains the same)
-  UVWMachine(const MDirection::Ref &out, const MDirection &in,
-	     Bool EW=False, Bool project=False);
+  // # Constructors
+  //  Constructors have an EW flag, which will give a projection parallel to
+  //  the polar axis rather than in the direction of the fieldcenter, and a
+  //  project flag. The last will correct the UV coordinates to re-project
+  //  them onto the plane specified by the in direction
+  //  <group>
+  //  Construct a UVW conversion machine from the in coordinate and its
+  //  system to the out coordinate system (output absolute direction
+  //  remains the same)
+  UVWMachine(const MDirection::Ref &out, const MDirection &in, Bool EW = False,
+             Bool project = False);
   // Construct a UVW conversion machine from the in coordinate and its
   // system to the out coordinate and its system
-  UVWMachine(const MDirection &out, const MDirection &in,
-	     Bool EW=False, Bool project=False);
+  UVWMachine(const MDirection &out, const MDirection &in, Bool EW = False, Bool project = False);
   // Construct UVW conversion machine with an explicitly given frame
   // <group>
-  UVWMachine(const MDirection::Ref &out, const MDirection &in,
-	     const MeasFrame &frame, Bool EW=False, Bool project=False);
-  UVWMachine(const MDirection &out, const MDirection &in, 
-	     const MeasFrame &frame, Bool EW=False, Bool project=False);
+  UVWMachine(const MDirection::Ref &out, const MDirection &in, const MeasFrame &frame,
+             Bool EW = False, Bool project = False);
+  UVWMachine(const MDirection &out, const MDirection &in, const MeasFrame &frame, Bool EW = False,
+             Bool project = False);
   // </group>
   // </group>
   // Copy constructor
@@ -185,20 +184,20 @@ class UVWMachine {
   // Copy assignments
   UVWMachine &operator=(const UVWMachine &other);
 
-  //# Destructor
+  // # Destructor
   ~UVWMachine();
 
-  //# Operators
-  // Return converted UVW coordinates
-  // <group>
+  // # Operators
+  //  Return converted UVW coordinates
+  //  <group>
   Vector<Double> operator()(const Vector<Double> &uv) const;
-  Vector<Vector<Double> > operator()(const Vector<Vector<Double> > &uv) const;
+  Vector<Vector<Double>> operator()(const Vector<Vector<Double>> &uv) const;
   MVPosition operator()(const MVPosition &uv) const;
-  Vector<MVPosition > operator()(const Vector<MVPosition > &uv) const;
+  Vector<MVPosition> operator()(const Vector<MVPosition> &uv) const;
   // </group>
 
-  //# Member functions
-  // Return the new phase center coordinates
+  // # Member functions
+  //  Return the new phase center coordinates
   const MDirection &phaseCenter() const;
   // Return if the engine is an effective NOP
   Bool isNOP() { return nop_p; }
@@ -211,21 +210,21 @@ class UVWMachine {
   // replace UVW with converted values
   // <group>
   void convertUVW(Vector<Double> &uv) const;
-  void convertUVW(Vector<Vector<Double> > &uv) const;
+  void convertUVW(Vector<Vector<Double>> &uv) const;
   void convertUVW(MVPosition &uv) const;
-  void convertUVW(Vector<MVPosition > &uv) const;
+  void convertUVW(Vector<MVPosition> &uv) const;
   // </group>
   // Get phase shift (in implied units of UVW), and change input uvw as well
   // <group>
   Double getPhase(Vector<Double> &uv) const;
-  Vector<Double> getPhase(Vector<Vector<Double> > &uv) const;
+  Vector<Double> getPhase(Vector<Vector<Double>> &uv) const;
   Double getPhase(MVPosition &uv) const;
-  Vector<Double> getPhase(Vector<MVPosition > &uv) const;
+  Vector<Double> getPhase(Vector<MVPosition> &uv) const;
   // </group>
   // Replace UVW with converted, and return phase
   // <group>
   void convertUVW(Double &phase, Vector<Double> &uv) const;
-  void convertUVW(Vector<Double> &phase, Vector<Vector<Double> > &uv) const;
+  void convertUVW(Vector<Double> &phase, Vector<Vector<Double>> &uv) const;
   void convertUVW(Double &phase, MVPosition &uv) const;
   void convertUVW(Vector<Double> &phase, Vector<MVPosition> &uv) const;
   // </group>
@@ -234,9 +233,8 @@ class UVWMachine {
   void reCalculate();
 
  private:
-
-  //# Data
-  // EW flag
+  // # Data
+  //  EW flag
   Bool ew_p;
   // Projection flag
   Bool proj_p;
@@ -269,12 +267,12 @@ class UVWMachine {
   // Conversion engine
   MDirection::Convert conv_p;
 
-  //# Constructors
-  // default constructor: not implemented
+  // # Constructors
+  //  default constructor: not implemented
   UVWMachine();
 
-  //# Private Member Functions
-  // Initialise machinery
+  // # Private Member Functions
+  //  Initialise machinery
   void init();
   // Planet handling
   void planetinit();
@@ -282,9 +280,6 @@ class UVWMachine {
   void copy(const UVWMachine &other);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

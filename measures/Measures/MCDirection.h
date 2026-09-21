@@ -1,32 +1,32 @@
-//# MCDirection.h: MDirection conversion routines 
-//# Copyright (C) 1995-2000,2002,2004,2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MCDirection.h: MDirection conversion routines
+// # Copyright (C) 1995-2000,2002,2004,2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MCDIRECTION_H
 #define MEASURES_MCDIRECTION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MeasBase.h>
@@ -38,14 +38,14 @@
 
 #include <mutex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MCDirection;
 class MVPosition;
 class String;
 
-//# Typedefs
+// # Typedefs
 
 // <summary> MDirection conversion routines  </summary>
 
@@ -55,7 +55,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 //   <li> <linkto class=MCBase>MCBase</linkto> base class
 //   <li> <linkto class=MConvertBase>overall conversion</linkto>  class
 // </prerequisite>
@@ -80,32 +80,30 @@ class String;
 //	<li> nothing I know
 // </todo>
 
-class MCDirection : public MCBase { 
-  
-public:
-
-  //# Friends
-  // Conversion of data
+class MCDirection : public MCBase {
+ public:
+  // # Friends
+  //  Conversion of data
   friend class MeasConvert<MDirection>;
-  
-  //# Constructors
-  // Default constructor
+
+  // # Constructors
+  //  Default constructor
   MCDirection();
-  
-  //# Destructor
+
+  // # Destructor
   ~MCDirection();
 
-  //# Member functions
-  // Show the state of the conversion engine (mainly for debugging purposes)
+  // # Member functions
+  //  Show the state of the conversion engine (mainly for debugging purposes)
   static String showState();
 
-private:  
-  //# Enumerations
-  // The list of actual routines provided.
-  // <note role=warning> Each <src>AA_BB</src> in the list points to routine
-  // that can be used in the FromTo list in the getConvert routine.
-  // In addition the type to which each is converted should be in the
-  // ToRef array, again in the proper order. </note>
+ private:
+  // # Enumerations
+  //  The list of actual routines provided.
+  //  <note role=warning> Each <src>AA_BB</src> in the list points to routine
+  //  that can be used in the FromTo list in the getConvert routine.
+  //  In addition the type to which each is converted should be in the
+  //  ToRef array, again in the proper order. </note>
   enum Routes {
     GAL_J2000,
     GAL_B1950,
@@ -171,66 +169,57 @@ private:
     R_NEPTUNE,
     R_PLUTO,
     R_SUN,
-    R_MOON };
-  
-  //# Typedefs
-  
-  //# Operators
-  
-  //# General Member Functions
-  
-  //# Enumerations
-  
-  //# Cached Data
+    R_MOON
+  };
+
+  // # Typedefs
+
+  // # Operators
+
+  // # General Member Functions
+
+  // # Enumerations
+
+  // # Cached Data
   MVPosition *MVPOS1, *MVPOS2, *MVPOS3;
   Vector<Double> *VEC61, *VEC62, *VEC63;
   MeasMath measMath;
 
-  //# State machine data
-  // Transition list
+  // # State machine data
+  //  Transition list
   static uInt ToRef_p[N_Routes][3];
   // Transition matrix
   static uInt FromTo_p[MDirection::N_Types][MDirection::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirInitOnceFlag;
 
-  //# Constructors
-  // Copy constructor (not implemented)
+  // # Constructors
+  //  Copy constructor (not implemented)
   MCDirection(const MCDirection &other);
   // Assignment (not implemented)
   MCDirection &operator=(const MCDirection &other);
-  
-  //# Member functions
-  
+
+  // # Member functions
+
   // Create conversion function pointer
-  virtual void getConvert(MConvertBase &mc,
-			  const MRBase &inref, 
-			  const MRBase &outref);
-  
+  virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref);
+
   // Create help structures for Measure conversion routines
   virtual void initConvert(uInt which, MConvertBase &mc);
-  
+
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert();
-  
+
   // Routines to convert directions from one reference frame to another
-  virtual void doConvert(MeasValue &in,
-			 MRBase &inref,
-			 MRBase &outref,
-			 const MConvertBase &mc);
+  virtual void doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MConvertBase &mc);
   // Conversion routine to cater for inheritance question
-  void doConvert(MVDirection &in,
-		 MRBase &inref,
-		 MRBase &outref,
-		 const MConvertBase &mc);
-  
-private:
+  void doConvert(MVDirection &in, MRBase &inref, MRBase &outref, const MConvertBase &mc);
+
+ private:
   // Fill the global state. Called using theirInitOnce.
   static void doFillState();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-

@@ -1,32 +1,32 @@
-//# MeasJPL.h: Interface to JPL DE tables
-//# Copyright (C) 1996,1997,1998,1999,2002,2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasJPL.h: Interface to JPL DE tables
+// # Copyright (C) 1996,1997,1998,1999,2002,2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASJPL_H
 #define MEASURES_MEASJPL_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRow.h>
@@ -36,9 +36,9 @@
 
 #include <mutex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class MVEpoch;
 
@@ -60,7 +60,7 @@ class MVEpoch;
 // <synopsis>
 // MeasJPL is the interface class to the JPL DE planetary data.
 // It has only static memebers.<br>
-// Tables are found using the aipsrc 
+// Tables are found using the aipsrc
 // (using <src>measures.<table>.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
 // (i.e. in $AIPSROOT/data/ephemerides) Tables are assumed to have the
@@ -78,11 +78,11 @@ class MVEpoch;
 // E.M. Standish et al., JPL IOM 314.10 - 127 for further details.
 // <br>
 // Note that the normal usage of these tables is through the Measures system.
-// 
+//
 // <note>
 // 	A message is Logged (once) if a table cannot be found.
 //	A message is logged (once) if a date outside the range in
-//	the Tables is asked for. 
+//	the Tables is asked for.
 // </note>
 // <thrown>
 //     <li> AipsError if table opened has wrong format or otherwise corrupted.
@@ -116,13 +116,12 @@ class MVEpoch;
 // <todo asof="1998/08/24">
 // </todo>
 
-class MeasJPL {	
+class MeasJPL {
+ public:
+  // # Constants
 
-public:
-  //# Constants
-  
-  //# Enumerations
-  // Types of known data
+  // # Enumerations
+  //  Types of known data
   enum Types {
     // MJD (must be first in list)
     MJD,
@@ -151,8 +150,9 @@ public:
     // Librations
     LIBRATION = 15,
     // Number of types
-    N_Types };
-  
+    N_Types
+  };
+
   // Types of files
   enum Files {
     // DE200
@@ -162,8 +162,9 @@ public:
     // # of known types
     N_Files,
     // Default
-    DEFAULT = DE200 };
-  
+    DEFAULT = DE200
+  };
+
   // Codes for special constants
   enum Codes {
     // Light velocity used in AU/d
@@ -175,53 +176,46 @@ public:
     // Solar radius in AU
     RADS,
     // # of codes
-    N_Codes };
+    N_Codes
+  };
 
-  
-  //# General Member Functions
-  // Get the values from a DE table, interpolated for date(in MJD(TDB)).
-  // The file can be DE200 or DE405, the type as given in enum.
-  static Bool get(Vector<Double> &returnValue,
-		  MeasJPL::Files file, 
-		  MeasJPL::Types type,
-		  const MVEpoch &date);
+  // # General Member Functions
+  //  Get the values from a DE table, interpolated for date(in MJD(TDB)).
+  //  The file can be DE200 or DE405, the type as given in enum.
+  static Bool get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
+                  const MVEpoch &date);
   // Get indicated special constant
-  static Bool getConst(Double &res, MeasJPL::Files which,
-		       MeasJPL::Codes what);
+  static Bool getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what);
   // Get filed constant with name nam
-  static Bool getConst(Double &res, MeasJPL::Files which,
-		       const String &nam);
+  static Bool getConst(Double &res, MeasJPL::Files which, const String &nam);
 
   // Close the set of JPL tables only. Only call it last at end of program.
   static void closeMeas();
 
-private:
-  
-  //# Constructors
-  // Default constructor, NOT defined
+ private:
+  // # Constructors
+  //  Default constructor, NOT defined
   MeasJPL();
-  
+
   // Copy assign, NOT defined
   MeasJPL &operator=(const MeasJPL &other);
-  
-  //# Destructor
-  //  Destructor, NOT defined and not declared to stop warning
-  // ~MeasJPL();
-  
-  //# General member functions
-  // Initialise tables
+
+  // # Destructor
+  //   Destructor, NOT defined and not declared to stop warning
+  //  ~MeasJPL();
+
+  // # General member functions
+  //  Initialise tables
   static Bool initMeasOnce(MeasJPL::Files which);
   static void doInitMeas(MeasJPL::Files which);
   // Get a pointer to the data for the given date. It reads the data if needed.
-  static const Double* fillMeas(Double &intv, MeasJPL::Files which,
-                                const MVEpoch &utf);
+  static const Double *fillMeas(Double &intv, MeasJPL::Files which, const MVEpoch &utf);
   // Interpolate Chebyshev polymomial to res
-  static void interMeas(Double res[], MeasJPL::Files  which, Double intv, 
-			Double ivf, Int ncf, Int ncm, Int na, 
-			const Double buf[]);
+  static void interMeas(Double res[], MeasJPL::Files which, Double intv, Double ivf, Int ncf,
+                        Int ncm, Int na, const Double buf[]);
 
-  //# Data members
-  // Object to ensure safe multi-threaded lazy single initialization
+  // # Data members
+  //  Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirCallOnceFlags[N_Files];
   // Mutex for thread-safety (other than initialization).
   static std::mutex theirMutex;
@@ -242,7 +236,7 @@ private:
   // Dates of the data read in buffer.
   static vector<Int> curDate[N_Files];
   // Data read in.
-  static vector<Vector<Double> > dval[N_Files];
+  static vector<Vector<Double>> dval[N_Files];
   // Some helper data read from the table keywords
   // <group>
   static Double aufac[N_Files];
@@ -251,9 +245,8 @@ private:
   // </group>
 };
 
-//# Inline Implementations
+// # Inline Implementations
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

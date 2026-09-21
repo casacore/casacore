@@ -1,49 +1,52 @@
-//# MRadialVelocity.h: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MRadialVelocity.h: A Measure: radial velocity
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MRADIALVELOCITY_H
 #define MEASURES_MRADIALVELOCITY_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVRadialVelocity.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MRadialVelocity;
 class MCRadialVelocity;
-template <class M> class MeasConvert;
-template <class M> class ArrayMeasColumn;
-template <class M> class ScalarMeasColumn;
+template <class M>
+class MeasConvert;
+template <class M>
+class ArrayMeasColumn;
+template <class M>
+class ScalarMeasColumn;
 class MDoppler;
 class MVDoppler;
 
-//# Typedefs
+// # Typedefs
 
 // <summary>
 // A Measure: radial velocity
@@ -55,7 +58,7 @@ class MVDoppler;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -91,9 +94,9 @@ class MVDoppler;
 // </ul>
 // <p>
 // Conversion between the different types is done with the standard
-// <linkto class=MeasConvert>MeasConvert</linkto> class 
+// <linkto class=MeasConvert>MeasConvert</linkto> class
 // (<src>MRadialVelocity::Convert</src> in this case).<br>
-// Some of the conversions are only possible if frame information has been 
+// Some of the conversions are only possible if frame information has been
 // filled in. The following frame information is necessary if a conversion
 // goes to or from the (different) specified types:
 // <ul>
@@ -108,10 +111,10 @@ class MVDoppler;
 // are correct to first order wrt relativistic effects
 // </note>
 // An MRadialVelocity can be created from an
-// <linkto class=MDoppler>MDoppler</linkto> 
+// <linkto class=MDoppler>MDoppler</linkto>
 // by the <src>fromDoppler()</src> member. It can be converted to an MDoppler
 // with the <src>toDoppler()</src>. Comparable methods are available
-// for <linkto class=MFrequency>MFrequency</linkto> as 
+// for <linkto class=MFrequency>MFrequency</linkto> as
 // <src>toRadial()</src> and <src>fromRadial</src>.<br>
 // </synopsis>
 //
@@ -122,7 +125,7 @@ class MVDoppler;
 //		MDoppler::Convert( MRadialVelocity( Quantity(100., "km/s"),
 //				      MRadialVelocity::TOPO).toDoppler(),
 //				   MDoppler::Z)() << endl;
-// </srcblock>				   
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -131,21 +134,20 @@ class MVDoppler;
 // <todo asof="2003/03/03">
 // </todo>
 
-class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity> > {
-
+class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity>> {
  public:
-  //# Friends
-  // Conversion of data
+  // # Friends
+  //  Conversion of data
   friend class MeasConvert<MRadialVelocity>;
-  
-  //# Enumerations
-  // Types of known MRadialVelocity
-  // <note role=warning> The order defines the order in the translation
-  // matrix FromTo
-  // in the getConvert routine. Do not change the order without
-  // changing the array. Additions should be made before N_types, and
-  // an additional row and column should be coded in FromTo, and
-  // in showType().</note>
+
+  // # Enumerations
+  //  Types of known MRadialVelocity
+  //  <note role=warning> The order defines the order in the translation
+  //  matrix FromTo
+  //  in the getConvert routine. Do not change the order without
+  //  changing the array. Additions should be made before N_types, and
+  //  an additional row and column should be coded in FromTo, and
+  //  in showType().</note>
   enum Types {
     LSRK,
     LSRD,
@@ -157,12 +159,13 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
     CMB,
     N_Types,
     // Defaults
-    DEFAULT=LSRK,
+    DEFAULT = LSRK,
     // Synonyms
-    LSR=LSRK };
-  
-  //# Typedefs
-  // Measure value container for this class (i.e. MRadialVelocity::MVType)
+    LSR = LSRK
+  };
+
+  // # Typedefs
+  //  Measure value container for this class (i.e. MRadialVelocity::MVType)
   typedef MVRadialVelocity MVType;
   // Measure conversion routines for this class (i.e. MRadialVelocity::MCType)
   typedef MCRadialVelocity MCType;
@@ -173,12 +176,12 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   // Measure table Columns (e.g., MRadialVelocity::ScalarColumn)
   typedef ScalarMeasColumn<MRadialVelocity> ScalarColumn;
   typedef ArrayMeasColumn<MRadialVelocity> ArrayColumn;
-  
-  //# Constructors
-  // <note role=tip> In the following constructors and other functions, all 
-  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-  // where no offsets or frames are needed in the reference. </note>
-  // Default constructor; generates a zero rest RadialVelocity
+
+  // # Constructors
+  //  <note role=tip> In the following constructors and other functions, all
+  //  <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  //  where no offsets or frames are needed in the reference. </note>
+  //  Default constructor; generates a zero rest RadialVelocity
   MRadialVelocity();
   // Create from data and reference
   // <group>
@@ -191,15 +194,15 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   MRadialVelocity(const Measure *dt);
   MRadialVelocity(const MeasValue *dt);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   virtual ~MRadialVelocity();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Tell me your type
-  // <group>
+
+  // # Operators
+
+  // # General Member Functions
+  //  Tell me your type
+  //  <group>
   virtual const String &tellMe() const;
   static const String &showMe();
   static void assure(const Measure &in);
@@ -227,62 +230,56 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
-  // nextra the number of specials (like planets) that should be at 
+  // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
-  static const String* allMyTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ);
+  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
+  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
   // </group>
-  // Check if all internal tables of types (both enum and String) are 
+  // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
   // necessary.
   // <thrown>
   //   <li> AipsError if a (programming) error in the types.
   // </thrown>
-  // <group> 
+  // <group>
   virtual void checkTypes() const;
   static void checkMyTypes();
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
-  
+
   // Get radial velocity in specified units
   Quantity get(const Unit &un) const;
-  
+
   // Make a Doppler velocity (as an MDoppler::BETA default) from the RadialVelocity.
   // <group>
   MDoppler toDoppler();
   // Local use only
   static MDoppler toDoppler(const Measure &in);
   // </group>
-  
+
   // Make a RadialVelocity from the Doppler velocity (assuming LSRK default)
   // <group>
   static MRadialVelocity fromDoppler(const MDoppler &dop);
-  static MRadialVelocity fromDoppler(const MDoppler &dop,
-				     MRadialVelocity::Types typ);
+  static MRadialVelocity fromDoppler(const MDoppler &dop, MRadialVelocity::Types typ);
   // For internal use only
-  static MRadialVelocity fromDoppler(const Measure &dop,
-				     MRadialVelocity::Types typ);
+  static MRadialVelocity fromDoppler(const Measure &dop, MRadialVelocity::Types typ);
   // </group>
-  
+
   // Make a copy
   // <group>
   virtual Measure *clone() const;
   // </group>
-  
+
  private:
-  //# Enumerations
-  
-  //# Data
-  
-  //# Member functions
-  
+  // # Enumerations
+
+  // # Data
+
+  // # Member functions
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

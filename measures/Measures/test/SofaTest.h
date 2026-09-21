@@ -1,36 +1,36 @@
-//# SofaTest.h: Wrapping of IAU SOFA Fortran routines and test class
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SofaTest.h: Wrapping of IAU SOFA Fortran routines and test class
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_SOFATEST_H
 #define MEASURES_SOFATEST_H
 
-//# Include files
+// # Include files
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>  Wrapping of IAU SOFA Fortran routines and test class</summary>
 // <use visibility=export>
@@ -40,13 +40,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 // The definition in this file enable the use of the IAU SOFA Fortran routines
-// in the C++ test routines. 
+// in the C++ test routines.
 // By using the provided macro <em>IAUR</em> care is taken of SOFA prefixes
 // and probable extra underscores given by some compilers.
 //
 // For information on SOFA see the SOFA page at
 // <a href="http://ww.iau.org">IAU</a> or at the currenthome of SOFA at
-// <a href="http://www.iau-sofa.rl.ac.uk/">Rutherford</a>  
+// <a href="http://www.iau-sofa.rl.ac.uk/">Rutherford</a>
 //
 // The SofaTest class can be used to provide histogram of test data.
 // The resolution is defaulted to 500 steps, compressed to 40 in the output.
@@ -130,7 +130,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 
 class SofaTest {
-
  public:
   // Constructors
   // Create an empty SofaTest class, ready for accumulation
@@ -148,7 +147,7 @@ class SofaTest {
   // Methods
   // Clear the test class
   void clear();
-  
+
   // Accumulate statistics
   void put(const Double in);
 
@@ -182,12 +181,11 @@ class SofaTest {
   // Methods
   // Copy object
   void copy(const SofaTest &other);
-
 };
 
-//# Global function wraps
-// <summary> Global Fortran function wraps </summary>
-// <group name=IAU_SOFA>
+// # Global function wraps
+//  <summary> Global Fortran function wraps </summary>
+//  <group name=IAU_SOFA>
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)
 #define NEED_FORTRAN_UNDERSCORES 1
@@ -198,97 +196,51 @@ class SofaTest {
 #else
 #define IAUR(x) iau_##x##
 #endif
-extern "C" void 
-IAUR(cal2jd)(const Int &iy, const Int &im, const Int &id,
-	     Double &djm0, Double &djm, Int &j);
-extern "C" void 
-IAUR(epj2jd)(const Double &epj, Double &djm0, Double &djm);
-extern "C" void 
-IAUR(prec76)(const Double &ep01, const Double &ep02,
-	     const Double &ep11, const Double &ep12,
-	     Double &zeta, Double &z,
-	     Double &theta);
-extern "C" void 
-IAUR(pmat76)(const Double &epoch1, const Double &epoch2,
-	     Double *rmatp);
-extern "C" void 
-IAUR(nut80)(const Double &epoch1, const Double &epoch2,
-	    Double &dpsi, Double &deps);
-extern "C" void 
-IAUR(nutm80)(const Double &epoch1, const Double &epoch2,
-	     Double *rmatn);
-extern "C" Double 
-IAUR(obl80)(const Double &epoch1, const Double &epoch2);
-extern "C" void 
-IAUR(pr00)(const Double &epoch1, const Double &epoch2,
-	   Double &dpsi, Double &deps);
-extern "C" void 
-IAUR(bi00)(Double &dpsi, Double &deps, Double &dra);
-extern "C" void 
-IAUR(bp00)(const Double &epoch1, const Double &epoch2,
-	   Double *rb, Double *rp, Double *rbp);
-extern "C" void 
-IAUR(pnm80)(const Double &epoch1, const Double &epoch2,
-	    Double *rmatpn);
-extern "C" void 
-IAUR(pn00a)(const Double &epoch1, const Double &epoch2,
-	    Double &dpsi, Double &deps, Double &epsa,
-	    Double *rb, Double *rp, Double *rbp,
-	    Double *rn, Double *rnpn);
-extern "C" void 
-IAUR(pn00b)(const Double &epoch1, const Double &epoch2,
-	    Double &dpsi, Double &deps, Double &epsa,
-	    Double *rb, Double *rp, Double *rbp,
-	    Double *rn, Double *rnpn);
-extern "C" void 
-IAUR(pr00)(const Double &ep01, const Double &ep02,
-	   Double &dpsipr, Double &depspr);
-extern "C" void 
-IAUR(nut00b)(const Double &epoch1, const Double &epoch2,
-	     Double &dpsi, Double &deps);
-extern "C" void 
-IAUR(nut00a)(const Double &epoch1, const Double &epoch2,
-	     Double &dpsi, Double &deps);
-extern "C" void 
-IAUR(num00a)(const Double &epoch1, const Double &epoch2,
-	     Double *rn);
-extern "C" void 
-IAUR(num00b)(const Double &epoch1, const Double &epoch2,
-	     Double *rn);
-extern "C" void 
-IAUR(c2t00a)(const Double &tta, const Double &ttb, const Double &uta,
-	     const Double &utb, const Double &xp, const Double &yp,
-	     Double *rc2t);
-extern "C" Double 
-IAUR(sp00)(const Double &date1, const Double &date2);
-extern "C" void 
-IAUR(pom00)(const Double &xp, const Double &yp, const Double &sp,
-	    Double *rpom);
-extern "C" Double 
-IAUR(gmst00)(const Double &uta, const Double &utb,
-	     const Double &tta, const Double &ttb);
-extern "C" Double 
-IAUR(era00)(const Double &uta, const Double &utb);
-extern "C" Double 
-IAUR(gmst82)(const Double &dj1, const Double &dj2);
-extern "C" Double 
-IAUR(ee00a)(const Double &date1, const Double &date2);
-extern "C" Double 
-IAUR(eect00)(const Double &date1, const Double &date2);
-extern "C" Double 
-IAUR(eqeq94)(const Double &date1, const Double &date2);
-extern "C" void 
-IAUR(pnm00a)(const Double &date1, const Double &date2, Double *rbpn);
-extern "C" void 
-IAUR(c2teqx)(Double *rbpn, const Double &gst, Double *rpom, Double *rc2t);
-extern "C" void 
-IAUR(rz)(const Double &psi, Double *r);
-extern "C" void 
-IAUR(cr)(Double *r, Double *c);
+extern "C" void IAUR(cal2jd)(const Int &iy, const Int &im, const Int &id, Double &djm0, Double &djm,
+                             Int &j);
+extern "C" void IAUR(epj2jd)(const Double &epj, Double &djm0, Double &djm);
+extern "C" void IAUR(prec76)(const Double &ep01, const Double &ep02, const Double &ep11,
+                             const Double &ep12, Double &zeta, Double &z, Double &theta);
+extern "C" void IAUR(pmat76)(const Double &epoch1, const Double &epoch2, Double *rmatp);
+extern "C" void IAUR(nut80)(const Double &epoch1, const Double &epoch2, Double &dpsi, Double &deps);
+extern "C" void IAUR(nutm80)(const Double &epoch1, const Double &epoch2, Double *rmatn);
+extern "C" Double IAUR(obl80)(const Double &epoch1, const Double &epoch2);
+extern "C" void IAUR(pr00)(const Double &epoch1, const Double &epoch2, Double &dpsi, Double &deps);
+extern "C" void IAUR(bi00)(Double &dpsi, Double &deps, Double &dra);
+extern "C" void IAUR(bp00)(const Double &epoch1, const Double &epoch2, Double *rb, Double *rp,
+                           Double *rbp);
+extern "C" void IAUR(pnm80)(const Double &epoch1, const Double &epoch2, Double *rmatpn);
+extern "C" void IAUR(pn00a)(const Double &epoch1, const Double &epoch2, Double &dpsi, Double &deps,
+                            Double &epsa, Double *rb, Double *rp, Double *rbp, Double *rn,
+                            Double *rnpn);
+extern "C" void IAUR(pn00b)(const Double &epoch1, const Double &epoch2, Double &dpsi, Double &deps,
+                            Double &epsa, Double *rb, Double *rp, Double *rbp, Double *rn,
+                            Double *rnpn);
+extern "C" void IAUR(pr00)(const Double &ep01, const Double &ep02, Double &dpsipr, Double &depspr);
+extern "C" void IAUR(nut00b)(const Double &epoch1, const Double &epoch2, Double &dpsi,
+                             Double &deps);
+extern "C" void IAUR(nut00a)(const Double &epoch1, const Double &epoch2, Double &dpsi,
+                             Double &deps);
+extern "C" void IAUR(num00a)(const Double &epoch1, const Double &epoch2, Double *rn);
+extern "C" void IAUR(num00b)(const Double &epoch1, const Double &epoch2, Double *rn);
+extern "C" void IAUR(c2t00a)(const Double &tta, const Double &ttb, const Double &uta,
+                             const Double &utb, const Double &xp, const Double &yp, Double *rc2t);
+extern "C" Double IAUR(sp00)(const Double &date1, const Double &date2);
+extern "C" void IAUR(pom00)(const Double &xp, const Double &yp, const Double &sp, Double *rpom);
+extern "C" Double IAUR(gmst00)(const Double &uta, const Double &utb, const Double &tta,
+                               const Double &ttb);
+extern "C" Double IAUR(era00)(const Double &uta, const Double &utb);
+extern "C" Double IAUR(gmst82)(const Double &dj1, const Double &dj2);
+extern "C" Double IAUR(ee00a)(const Double &date1, const Double &date2);
+extern "C" Double IAUR(eect00)(const Double &date1, const Double &date2);
+extern "C" Double IAUR(eqeq94)(const Double &date1, const Double &date2);
+extern "C" void IAUR(pnm00a)(const Double &date1, const Double &date2, Double *rbpn);
+extern "C" void IAUR(c2teqx)(Double *rbpn, const Double &gst, Double *rpom, Double *rc2t);
+extern "C" void IAUR(rz)(const Double &psi, Double *r);
+extern "C" void IAUR(cr)(Double *r, Double *c);
 
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

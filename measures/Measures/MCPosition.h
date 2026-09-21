@@ -1,32 +1,32 @@
-//# MCPosition.h: MPosition conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MCPosition.h: MPosition conversion routines
+// # Copyright (C) 1995,1996,1997,1998,1999,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MCPOSITION_H
 #define MEASURES_MCPOSITION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/measures/Measures/MeasBase.h>
@@ -35,13 +35,13 @@
 #include <casacore/measures/Measures/MConvertBase.h>
 #include <casacore/measures/Measures/MPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MCPosition;
 class String;
 
-//# Typedefs
+// # Typedefs
 
 // <summary> MPosition conversion routines </summary>
 
@@ -51,7 +51,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 //   <li> <linkto class=MCBase>MCBase</linkto> base class
 //   <li> <linkto class=MConvertBase>overall conversion</linkto>  class
 // </prerequisite>
@@ -76,91 +76,77 @@ class String;
 // </todo>
 
 class MCPosition : public MCBase {
-
-public:
-
-  //# Friends
-  // Conversion of data
+ public:
+  // # Friends
+  //  Conversion of data
   friend class MeasConvert<MPosition>;
-  
-  //# Constructors
-  // Default constructor
+
+  // # Constructors
+  //  Default constructor
   MCPosition();
-  
-  //# Destructor
+
+  // # Destructor
   ~MCPosition();
 
-  //# Member functions
-  // Show the state of the conversion engine (mainly for debugging purposes)
+  // # Member functions
+  //  Show the state of the conversion engine (mainly for debugging purposes)
   static String showState();
-  
-private:
-  //# Enumerations
-  // The list of actual routines provided.
-  // <note role=warning> Each <src>AA_BB</src> in the list points to routine
-  // that can be used in the FromTo list in the getConvert routine.
-  // In addition the type to which each is converted should be in the
-  // ToRef array, again in the proper order. </note>
-  enum Routes {
-    ITRF_WGS84,
-    WGS84_ITRF,
-    N_Routes };
-  
-  //# Typedefs
-  
-  //# Operators
-  
-  //# General Member Functions
-  
-  //# Enumerations
-  
-  //# Cached Data
+
+ private:
+  // # Enumerations
+  //  The list of actual routines provided.
+  //  <note role=warning> Each <src>AA_BB</src> in the list points to routine
+  //  that can be used in the FromTo list in the getConvert routine.
+  //  In addition the type to which each is converted should be in the
+  //  ToRef array, again in the proper order. </note>
+  enum Routes { ITRF_WGS84, WGS84_ITRF, N_Routes };
+
+  // # Typedefs
+
+  // # Operators
+
+  // # General Member Functions
+
+  // # Enumerations
+
+  // # Cached Data
   Vector<Double> *DVEC1;
 
-  //# State machine data
-  // Transition list
+  // # State machine data
+  //  Transition list
   static uInt ToRef_p[N_Routes][3];
   // Transition matrix
   static uInt FromTo_p[MPosition::N_Types][MPosition::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirInitOnceFlag;
 
-  //# Constructors
-  // Copy constructor (not implemented)
+  // # Constructors
+  //  Copy constructor (not implemented)
   MCPosition(const MCPosition &other);
   // Assignment (not implemented)
   MCPosition &operator=(const MCPosition &other);
-  
-  //# Member functions
-  
+
+  // # Member functions
+
   // Create conversion function pointer
-  virtual void getConvert(MConvertBase &mc, 
-			  const MRBase &inref,
-			  const MRBase &outref);
-  
+  virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref);
+
   // Create help structures for Measure conversion routines
   virtual void initConvert(uInt which, MConvertBase &mc);
-  
+
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert();
-  
+
   // Routine to do actual conversion
-  virtual void doConvert(MeasValue &in, 
-			 MRBase &inref,
-			 MRBase &outref,
-			 const MConvertBase &mc);
+  virtual void doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MConvertBase &mc);
   // Conversion routine to cater for inheritance question
-  void doConvert(MVPosition &in,
-		 MRBase &inref,
-		 MRBase &outref,
-		 const MConvertBase &mc);
-  
-private:
+  void doConvert(MVPosition &in, MRBase &inref, MRBase &outref, const MConvertBase &mc);
+
+ private:
   // Fill the global state. Called using theirInitOnce.
   static void doFillState();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

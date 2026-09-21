@@ -1,43 +1,42 @@
-//# TableMeasColumn.h: Access to Measure Columns in Tables
-//# Copyright (C) 1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableMeasColumn.h: Access to Measure Columns in Tables
+// # Copyright (C) 1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_TABLEMEASCOLUMN_H
 #define MEASURES_TABLEMEASCOLUMN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class Table;
 class TableMeasDescBase;
-
 
 // <summary>
 // Read only access to table scalar Measure columns.
@@ -49,7 +48,7 @@ class TableMeasDescBase;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
 //   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
@@ -73,7 +72,7 @@ class TableMeasDescBase;
 // <srcblock>
 //     // Create the object for measure column Time1.
 //     TableMeasColumn timeCol(tab, "Time1");
-// 	
+//
 //     // print some details about the column
 //     if (timeCol.measDesc().isRefCodeVariable()) {
 //        cout << "The column has variable references." << endl;
@@ -89,13 +88,11 @@ class TableMeasDescBase;
 // derived classes.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# </todo>
+// # <todo asof="$DATE:$">
+// # </todo>
 
-
-class TableMeasColumn
-{
-public:
+class TableMeasColumn {
+ public:
   // The default constructor creates a null object.  Useful for creating
   // arrays of ScalarMeasColumn objects.  Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
@@ -105,34 +102,31 @@ public:
   TableMeasColumn();
 
   // Create the ScalarMeasColumn from the table and column Name.
-  TableMeasColumn (const Table& tab, const String& columnName);
+  TableMeasColumn(const Table& tab, const String& columnName);
 
   // Copy constructor (copy semantics).
-  TableMeasColumn (const TableMeasColumn& that);
+  TableMeasColumn(const TableMeasColumn& that);
 
   virtual ~TableMeasColumn();
 
   // Change the reference to another column.
-  void reference (const TableMeasColumn& that);
+  void reference(const TableMeasColumn& that);
 
   // Attach another column to the object.
-  void attach (const Table& tab, const String& columnName);
+  void attach(const Table& tab, const String& columnName);
 
   // Tests if a row contains a Measure (i.e., if the row has a defined
   // value).
-  Bool isDefined (rownr_t rownr) const;
+  Bool isDefined(rownr_t rownr) const;
 
   // Get access to the TableMeasDescBase describing the column.
   // <group>
-  const TableMeasDescBase& measDesc() const
-    { return *itsDescPtr; }
-  TableMeasDescBase& measDesc()
-    { return *itsDescPtr; }
+  const TableMeasDescBase& measDesc() const { return *itsDescPtr; }
+  TableMeasDescBase& measDesc() { return *itsDescPtr; }
   // </group>
 
   // Test if the object is null.
-  Bool isNull() const
-    { return !itsDescPtr; }
+  Bool isNull() const { return !itsDescPtr; }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;
@@ -155,27 +149,27 @@ public:
   // </note>
   Bool isScalar() const;
 
-protected:
-  //# The measure's value is represented by this many data components.
+ protected:
+  // # The measure's value is represented by this many data components.
   uInt itsNvals;
-  //# The Measure Column description.
+  // # The Measure Column description.
   std::shared_ptr<TableMeasDescBase> itsDescPtr;
-  //# The data column.
+  // # The data column.
   TableColumn itsTabDataCol;
-  //# Does the measure column have a variable reference or offset?
+  // # Does the measure column have a variable reference or offset?
   Bool itsVarRefFlag;
   Bool itsVarOffFlag;
 
-private:
+ private:
   // Assignment makes no sense in a readonly class.
   // Declaring this operator private makes it unusable.
-  TableMeasColumn& operator= (const TableMeasColumn& that);
+  TableMeasColumn& operator=(const TableMeasColumn& that);
 };
 
 // For backwards compatibility:
 
 #define ROTableMeasColumn TableMeasColumn
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

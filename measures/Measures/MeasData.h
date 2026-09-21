@@ -1,37 +1,37 @@
-//# MeasData.h: MeasData provides Measure computing data
-//# Copyright (C) 1995,1996,1997,1999,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasData.h: MeasData provides Measure computing data
+// # Copyright (C) 1995,1996,1997,1999,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASDATA_H
 #define MEASURES_MEASDATA_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class RotMatrix;
 
 // <summary>
@@ -44,7 +44,7 @@ class RotMatrix;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -52,19 +52,19 @@ class RotMatrix;
 // </etymology>
 //
 // <synopsis>
-// MeasData contains the constant data 
-// necessary for precession, nutation and other 
+// MeasData contains the constant data
+// necessary for precession, nutation and other
 // <linkto class=Measure>Measure</linkto> related calculations.<br>
 // Database (Table) related data, or data that can be changed by the user,
 // is available in the <linkto class=MeasTable>MeasTable</linkto> class. <br>
 // All data. apart from a set of simple constants:
 // <srcblock>
 // 	MeasData::MJD2000
-// 	MeasData::MJDB1950 
-// 	MeasData::MJDB1900 
-// 	MeasData::MJDB1850 
-// 	MeasData::TROPCEN 
-// 	MeasData::JDCEN 
+// 	MeasData::MJDB1950
+// 	MeasData::MJDB1900
+// 	MeasData::MJDB1850
+// 	MeasData::TROPCEN
+// 	MeasData::JDCEN
 // 	MeasData::SECinDAY
 // </srcblock>
 // are obtained by calls to a method.
@@ -94,13 +94,11 @@ class RotMatrix;
 // </todo>
 
 class MeasData {
-
-public:
-  
-  //# 	Constants
-  // General constants
-  // <group>
-  // MJD of J2000.0
+ public:
+  // # 	Constants
+  //  General constants
+  //  <group>
+  //  MJD of J2000.0
   static const Double MJD2000;
   // MJD of B1950.0
   static const Double MJDB1950;
@@ -115,8 +113,8 @@ public:
   // Length of day in sec
   static const Double SECinDAY;
   // </group>
-  
-  //# General Member Functions
+
+  // # General Member Functions
 
   // Get the rotation matrices for galactic coordinates
   // <group>
@@ -137,23 +135,21 @@ public:
 
   // J2000 obliquity
   static Double eps0J2000();
-  
-private:
-  
-  //# Constructors
-  // Default constructor, NOT defined
+
+ private:
+  // # Constructors
+  //  Default constructor, NOT defined
   MeasData();
-  
+
   // Copy assign, NOT defined
   MeasData &operator=(const MeasData &other);
-  
-  //# Destructor
-  //  Destructor (NOT defined) and not declared to stop warning
-  // ~MeasData();
-  //# General member functions
+
+  // # Destructor
+  //   Destructor (NOT defined) and not declared to stop warning
+  //  ~MeasData();
+  // # General member functions
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

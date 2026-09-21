@@ -1,44 +1,44 @@
-//# MCBase.h: Base for specific measure conversions
-//# Copyright (C) 1995,1996,1997,1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MCBase.h: Base for specific measure conversions
+// # Copyright (C) 1995,1996,1997,1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MCBASE_H
 #define MEASURES_MCBASE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MeasValue;
 class MCBase;
 class MRBase;
 class MConvertBase;
 class String;
 
-//# Typedefs
+// # Typedefs
 
 // <summary>  Base for specific measure conversions </summary>
 
@@ -62,7 +62,7 @@ class String;
 //
 // It also has a static routine to calculate the state transition table based
 // on a list of transitions. The makeState() method find the shortest route
-// (weighted if necessary) for a given list of state transitions. 
+// (weighted if necessary) for a given list of state transitions.
 //
 // The user of the Measure classes has no direct interaction with this class.
 // </synopsis>
@@ -114,45 +114,37 @@ class String;
 // </todo>
 
 class MCBase {
+ public:
+  // # Typedefs
 
-public:
-  
-  //# Typedefs
-  
-  //# Constructors
-  
-  //# Destructor
+  // # Constructors
+
+  // # Destructor
   virtual ~MCBase();
-  
-  //# Operators
 
-  //# Enumerations
-  // Each derived class should have a list of routines to be called:
-  enum Routes {
-    N_Routes};
-  
-  //# Member functions
-  // All these functions are called by Measure::Convert classes only
-  // <group>  
-  // Create conversion state machine list
-  virtual void getConvert(MConvertBase &mc,
-			  const MRBase &inref,
-			  const MRBase &outref) = 0;
-  
+  // # Operators
+
+  // # Enumerations
+  //  Each derived class should have a list of routines to be called:
+  enum Routes { N_Routes };
+
+  // # Member functions
+  //  All these functions are called by Measure::Convert classes only
+  //  <group>
+  //  Create conversion state machine list
+  virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) = 0;
+
   // Create help structures for Measure conversion routines
   virtual void initConvert(uInt which, MConvertBase &mc) = 0;
-  
+
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert() = 0;
-  
+
   // Routine to convert a Measure from one reference frame to another
-  virtual void doConvert(MeasValue &in,
-			 MRBase &inref,
-			 MRBase &outref,
-			 const MConvertBase &mc) = 0;
+  virtual void doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MConvertBase &mc) = 0;
   // </group>
 
-protected:
+ protected:
   // The following routines create a state transition matrix from a list
   // of all defined transitions. It uses the following information:
   // <ul>
@@ -165,25 +157,18 @@ protected:
   // </ul>
   // <group>
   // Routine to make the transition table if necessary
-  static void makeState(uInt *state,
-			const uInt ntyp, const uInt nrout,
-			const uInt list[][3]);
+  static void makeState(uInt *state, const uInt ntyp, const uInt nrout, const uInt list[][3]);
   // Return a fromatted String with matrix information (based on < 100 types)
-  static String showState(uInt *state,
-			  const uInt ntyp, const uInt nrout,
-			  const uInt list[][3]);
-private:
-  // Routine to find the shortest route between two points 
-  static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
-			Bool *visit, const uInt *tcnt, const uInt *tree,
-			const uInt &in, const uInt &out,
-			const uInt ntyp, const uInt nrout,
-			const uInt list[][3]);
-  // </group>
+  static String showState(uInt *state, const uInt ntyp, const uInt nrout, const uInt list[][3]);
 
+ private:
+  // Routine to find the shortest route between two points
+  static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall, Bool *visit,
+                        const uInt *tcnt, const uInt *tree, const uInt &in, const uInt &out,
+                        const uInt ntyp, const uInt nrout, const uInt list[][3]);
+  // </group>
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

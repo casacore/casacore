@@ -6,21 +6,20 @@
 
 namespace casacore::details {
 
-template<typename T>
+template <typename T>
 class CyclicPtr;
 
 /**
  * Class to hold the state returned by CyclicPtr::Freeze().
  */
 class CyclicState {
-public:
+ public:
   ~CyclicState() noexcept = default;
 
-private:
+ private:
   CyclicState() = delete;
-  constexpr CyclicState(unsigned value) noexcept : value_(value)
-  {}
-  template<typename T>
+  constexpr CyclicState(unsigned value) noexcept : value_(value) {}
+  template <typename T>
   friend class CyclicPtr;
 
   unsigned value_;
@@ -74,32 +73,22 @@ private:
  *
  * It should be clear that this is a dangerous class to use correctly.
  */
-template<typename T>
+template <typename T>
 class CyclicPtr {
-public:
-
+ public:
   CyclicPtr() = default;
 
   CyclicPtr(std::nullptr_t) {}
 
-  explicit CyclicPtr(T* object) : data_(std::make_shared<Data>(object))
-  {}
+  explicit CyclicPtr(T* object) : data_(std::make_shared<Data>(object)) {}
 
-  CyclicPtr(const CyclicPtr& source) : data_(source.data_)
-  {
-    Increase();
-  }
+  CyclicPtr(const CyclicPtr& source) : data_(source.data_) { Increase(); }
 
-  CyclicPtr(CyclicPtr&& source) : data_(std::move(source.data_))
-  {}
+  CyclicPtr(CyclicPtr&& source) : data_(std::move(source.data_)) {}
 
-  ~CyclicPtr() {
-    Decrease();
-  }
+  ~CyclicPtr() { Decrease(); }
 
-  T* Get() const {
-    return (data_ && data_->object_) ? data_->object_ : nullptr;
-  }
+  T* Get() const { return (data_ && data_->object_) ? data_->object_ : nullptr; }
 
   void Reset() {
     Decrease();
@@ -149,29 +138,27 @@ public:
    * Continue 'normal' reference counting.
    */
   void Unfreeze(const CyclicState& frozen_state) {
-    if(data_)
-      data_->counter_.store(frozen_state.value_);
+    if (data_) data_->counter_.store(frozen_state.value_);
   }
 
-private:
+ private:
   struct Data {
-    Data(T* object) : object_(object)
-    {}
+    Data(T* object) : object_(object) {}
 
     T* object_ = nullptr;
     std::atomic<unsigned> counter_ = 1;
   };
 
   void Increase() {
-    if(data_ && data_->object_) {
+    if (data_ && data_->object_) {
       ++(data_->counter_);
     }
   }
 
   void Decrease() {
-    if(data_ && data_->object_) {
+    if (data_ && data_->object_) {
       const unsigned previous_value = data_->counter_.fetch_sub(1);
-      if(previous_value == 1) {
+      if (previous_value == 1) {
         delete data_->object_;
         data_->object_ = nullptr;
       }
@@ -181,11 +168,11 @@ private:
   std::shared_ptr<Data> data_;
 };
 
-template<typename T, typename... Args>
+template <typename T, typename... Args>
 CyclicPtr<T> MakeCyclic(Args&&... args) {
   return CyclicPtr<T>(new T(std::forward<Args>(args)...));
 }
 
-} // namespace casacore::details
+}  // namespace casacore::details
 
 #endif

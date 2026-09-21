@@ -1,32 +1,32 @@
-//# Measures.h:  a module for coordinates
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Measures.h:  a module for coordinates
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASURES_H
 #define MEASURES_MEASURES_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta.h>
 #include <casacore/measures/Measures/Measure.h>
@@ -35,10 +35,10 @@
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
-// 
+//
 
 // <summary> a module for coordinates </summary>
 
@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // units and possibly a reference frame attached.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // The Measure model deals with measures (i.e. quantities with a
 // reference frame).
 // Measures are handled in the <a href="#Measure">Measure</a> section
@@ -79,12 +79,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // When doing actual conversions (see MeasConvert later on), by using the
 // explicit Measure::Convert types, the description of the actual
 // conversions (called MCmeasure, e.g. MCEpoch.h) should be included as well;
-// in adition to general MeasConvert.h. 
+// in adition to general MeasConvert.h.
 //
 //  <anchor name="Measure"><h3> Measures</h3></anchor>
 //
 // Measures are physical quantities within a certain reference frame. Examples
-// are the Hour-angle and Declination of a source at a certain time and 
+// are the Hour-angle and Declination of a source at a certain time and
 // observatory; an Ra/Dec for a certain mean epoch; an apparent frequency at
 // a certain time given in eV; a local sidereal time at an observatory.<br>
 // Measures can be converted from one reference frame to another (and this
@@ -97,7 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //				         Quantity(-10, "deg"),
 //					 MDirection::Ref( MDirection::B1950)),
 //				// to J2000
-//			     MDirection::Ref( MDirection::J2000)) () 
+//			     MDirection::Ref( MDirection::J2000)) ()
 //				// where the constructor sets up a conversion
 //				// engine, and the operator() converts
 //		<< endl;
@@ -147,7 +147,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class="MFrequency">MFrequency</linkto>: the characteristics
 //		of a wave
 //   <li> <linkto class="MDoppler">MDoppler</linkto>: a Doppler shift
-//   <li> <linkto class="MRadialVelocity">MRadialVelocity</linkto>: a 
+//   <li> <linkto class="MRadialVelocity">MRadialVelocity</linkto>: a
 //		radial velocity
 //   <li> <linkto class="MBaseline">MBaseline</linkto>: a baseline
 //   <li> <linkto class="Muvw">Muvw</linkto>: a uvw value
@@ -171,8 +171,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The values are in general measure specific, weakly derived from MeasValue,
 // and named with an initial <em>MV</em>. Examples are:
 // <ul>
-// <li> <linkto class=MVEpoch>MVEpoch</linkto> (a high precision single value), 
-// <li> <linkto class=MVDirection>MVDirection</linkto> (direction cosines), 
+// <li> <linkto class=MVEpoch>MVEpoch</linkto> (a high precision single value),
+// <li> <linkto class=MVDirection>MVDirection</linkto> (direction cosines),
 // <li> <linkto class=MVPosition>MVPosition</linkto> (3-vector positions),
 // <li> <linkto class=MVFrequency>MVFrequency</linkto> (single, unit depended
 // value).
@@ -196,7 +196,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // It has at least a <em>reference code</em>
 // (e.g. MDirection::B1950, MEpoch::LAST), with defaults for each measure
 // (i.e. MDirection::J2000, MEpoch::UTC) if none specified. <br>
-// In addition the reference can contain a <em>reference frame</em> 
+// In addition the reference can contain a <em>reference frame</em>
 // (<linkto class=MeasFrame>MeasFrame</linkto>) to specify from when and/or
 // where the measure was obtained or calculated.<br>
 // A third optional element of the reference is an <em>offset measure</em>, which
@@ -262,18 +262,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <note role=tip>In the above examples in general explicit <em>MV</em>
 // values have been used to specified the measure's value. In many
 // cases (depending on the actual measure) it can be omitted, and the data
-// can be given directly to the measure constructor. See the 
+// can be given directly to the measure constructor. See the
 // constructors for the individual measures for details.<br>
-// If the reference is simple (i.e. no frame and/or offset) the 
+// If the reference is simple (i.e. no frame and/or offset) the
 // <em>Measure::Ref</em> can be omitted, and only the code has to be
 // specified. </note>
 // A <linkto class=MeasFrame>MeasFrame</linkto> is a container for specifying
 // Measures needed to describe the circumstances under which the measure was
 // observed (or for which it has to be calculated).
-// E.g. the position on Earth (an <em>MPosition</em>) is necessary for 
-// sidereal time and coordinates like HA/Dec and Az/El; the time 
+// E.g. the position on Earth (an <em>MPosition</em>) is necessary for
+// sidereal time and coordinates like HA/Dec and Az/El; the time
 // (<em>MEpoch</em>)
-// is necessary for non-standard coordinates (apparent, mean, HA/Dec etc); 
+// is necessary for non-standard coordinates (apparent, mean, HA/Dec etc);
 // the coordinates (<em>MDirection</em>) for radial velocities; etc.<br>
 // Although quite often the value has to be in a specific format (e.g. TBD for
 // precession calculations; astronomical longitude for the LAST), the
@@ -288,8 +288,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	MeasFrame frame1(MEpoch(50236.12));
 //	MeasFrame frame2(frame1);
 // </srcblock>
-// the two frames will be identical, and a change to one means a change to 
-// the other. Furthermore, only the information needed for a specific 
+// the two frames will be identical, and a change to one means a change to
+// the other. Furthermore, only the information needed for a specific
 // calculation will be used (and calculated). This means that one frame can
 // be used specifying all of e.g. the position (which will probably stay the
 // same for a series of calculations) and time; with the time being <em>set()</em>
@@ -321,7 +321,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //				         Quantity(-10, "deg"),
 //					 MDirection::Ref( MDirection::B1950)),
 //				// to J2000
-//			     MDirection::Ref( MDirection::J2000)) () 
+//			     MDirection::Ref( MDirection::J2000)) ()
 //				// where the constructor sets up a conversion
 //				// engine, and the operator() converts
 //		<< endl;
@@ -361,18 +361,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // HA/DEC or so) with (I write the example longer than necessary to indicate
 // the steps, and with explicit reference to MV values):
 // <srcblock>
-// // The observatory position. Note that the reference is geodetic position 
+// // The observatory position. Note that the reference is geodetic position
 //	MPosition myobs(MVPosition ( Quantity(1, "km") ,
 //				     Quantity(150, "deg"),
 //				     Quantity(20, "deg")),
 //				     MPosition::WGS84);
 // // The time I want to observe (note that it could be specified in many
 // // other ways)
-//	MEpoch obstime(MVEpoch(MVTime(1996, 5, 17, (8+18./60.)/24.)), 
+//	MEpoch obstime(MVEpoch(MVTime(1996, 5, 17, (8+18./60.)/24.)),
 //	               MEpoch::UTC);
 // // The frame specification for when and where to observe
 //	MeasFrame frame(myobs, obstime);
-// // The reference for a sidereal time (note the frame could be empty and 
+// // The reference for a sidereal time (note the frame could be empty and
 // // filled at the actual conversion time)
 //	MEpoch::Ref sidref( MEpoch::LAST, frame);
 // // The reference for apparent coordinates:
@@ -381,8 +381,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	MEpoch::Convert tosid(obstime, sidref);
 // // The conversion to sidereal time of obstime
 //	MEpoch sidtime = tosid();
-// // Conversion of UTC 10.8 h 
-//	sidtime = tosid(MVEpoch(MVTime(1996, 5, 17, 10.8/24.))); 
+// // Conversion of UTC 10.8 h
+//	sidtime = tosid(MVEpoch(MVTime(1996, 5, 17, 10.8/24.)));
 // // Show me some time
 //	cout << "LAST for UTC = 11:00: " <<
 //		tosid(MVEpoch( MVTime( 1996, 5, 17, 11, 0))) << endl;
@@ -445,7 +445,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The Measure class derivatives are all called <em>MMeasure</em>.
 // <linkto class=MDirection>MDirection</linkto> (a celestial direction),
 // <linkto class=MPosition>MPosition</linkto> (a position on Earth),
-// <linkto class=MFrequency>MFrequency</linkto> (characteristics of 
+// <linkto class=MFrequency>MFrequency</linkto> (characteristics of
 // 	electro-magnetic wave),
 // <linkto class=MEpoch>MEpoch</linkto> (an instance in time),
 // <linkto class=MDoppler>MDoppler</linkto>,
@@ -470,28 +470,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // two angles) depending on type. The MeasRef can be omitted (will then be
 // defaulted to Measure::DEFAULT, e.g. MEpoch::DEFAULT); can be specified as
 // a full reference as a <em>Measure::Ref</em> (e.g. <em>MDirection::Ref</em>)
-// type; or as a simple reference as <em>Measure::TYPE</em> (e.g. 
+// type; or as a simple reference as <em>Measure::TYPE</em> (e.g.
 // <em>MDirection::J2000</em>).<br>
 // The individual elements of a Measure (i.e the MV value and the reference)
 // can be overwritten (or set) with the <src>set()</src> methods.<br>
-// <src>get()</src> methods (in general <src>get(unit)</src> 
+// <src>get()</src> methods (in general <src>get(unit)</src>
 // to return the internal value in some
 // specified unit as a Quantum; and methods like <src>getAngle()</src>
 // for e.g. MDirection)
 // enable the user to obtain the value of the measure.<br>
-// A <src>String tellMe()</src> will tell the type of Measure; a 
+// A <src>String tellMe()</src> will tell the type of Measure; a
 // <src>void assured(String)</src> and <src>Bool areYou(String)</src> will
 // check the type; while a <src>String showType(Measure::TYPE)</src> will
 // return the string value of a reference type code (e.g. J2000).<br>
 // <p>
 // Recall that a Measure is a value with a reference specified. The MeasConvert
-// engines enable you to convert it into another Measure, with a different 
+// engines enable you to convert it into another Measure, with a different
 // reference (e.g. from J2000 to AZEL). The different get() methods (either
 // directly, or indirectly using additional MV get() functions, or
 // Quantum conversion methods, can convert the internal value into a value
 // (or values) with user preferred units.<br>
 // For reasons of speed (and safety) the allowed reference types for each
-// Measure are enumerated in each measure class. The different reference 
+// Measure are enumerated in each measure class. The different reference
 // types for MDirection are, for example:
 // <srcblock>
 //    		MDirection::J2000,
@@ -506,12 +506,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //		MDirection::AZEL,
 //		MDirection::DEFAULT = MDirection::J2000
 // </srcblock>
-// The MEpoch has a special reference type (<src>MEpoch::RAZE</src>) that 
+// The MEpoch has a special reference type (<src>MEpoch::RAZE</src>) that
 // can only be used
-// in conjuncion with another reference type 
+// in conjuncion with another reference type
 // (e.g. <src> MEpoch::UT1+MEpoch::RAZE)</src>.
 // The meaning is: if a measure with such a reference type is converted to
-// another reference type (say <src>MEpoch::LAST</src>) the 
+// another reference type (say <src>MEpoch::LAST</src>) the
 // resultant (sidereal time)
 // instance will be <em>razed</em> to an integer number of days; hence providing
 // an easy way to specify sidereal times offset with the beginning of the
@@ -532,7 +532,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // In the current implementation, no errors are attached to a Measure. In the
 // original design errors were foreseen, but up till now they have been left
 // out.<br>
-// The addition of errors is in principle an easy process. They could be 
+// The addition of errors is in principle an easy process. They could be
 // attached to either a Measure (as an additial MV value), or the MV's could
 // be expanded to include errors (my preferred option at the moment). An
 // MV being converted will then automatically have its error converted as
@@ -620,7 +620,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //					Quantity( 12.3, "h")));
 // // Note the default reference
 // // For this example we will also specify it as:
-//	MEpoch offtim(tim); 
+//	MEpoch offtim(tim);
 //	offtim.set(MEpoch::DEFAULT+MEpoch::RAZE);
 // // These two could define a frame
 //	MeasFrame frame(tim, obs);
@@ -653,7 +653,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The reference type can be set with a set() function, and set() functions
 // for the offset and frame will be present as well.<br>
 // A <src>Bool empty()</src> checks if the reference is empty; <src>get()</src>
-// functions provide the information in the reference; and a 
+// functions provide the information in the reference; and a
 // <src>String showMe()</src> will return the type of measure (e.g. "Epoch") the
 // MeasRef can be used for.
 //<p>
@@ -687,7 +687,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // used to make the Measure, the default units for inputs to the conversion.
 // // It acts as a 'model' for subsequent input to be converted.
 // // () operator
-//	Measure::Convert(	Measure(Quantum), 
+//	Measure::Convert(	Measure(Quantum),
 // // the second argument gives the output reference
 //				Measure::Ref);
 // </srcblock>
@@ -719,7 +719,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // A simple example to output the J2000 coordinates for a B1950 input (RA=20 deg,
 // DEC=-10 deg):
 // <srcblock>
-//  cout << 	
+//  cout <<
 //	MDirection::Convert( MDirection( Quantity( 20, "deg")
 //			   		 Quantity(-10, "deg"),
 //			     		 MDirection::Ref( MDirection::B1950)),
@@ -751,7 +751,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // <p>
 // For specific purposes it would be very easy to set up a series of simple
-// classes, that would do standard conversions. 
+// classes, that would do standard conversions.
 // <p>
 // <h4> MeasData, MeasTable, MeasBase, other help classes</h4>
 // A series of help classes are present to aid in the conversion, especially
@@ -763,7 +763,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	base class (derived from Measure) for all real Measures
 //  <li> <linkto class=MeasData>MeasData</linkto>:
 //	all constants, polynomial factors, interface to IERS
-//	database etc. which are not stored in Tables. (MeasTable looks after 
+//	database etc. which are not stored in Tables. (MeasTable looks after
 //	these). Mn short it provides all the actual data values necessary
 //	for the conversions (and the other help classes)
 //  <li> <linkto class=MeasTable>MeasTable</linkto>:
@@ -785,7 +785,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // <p>
 
-// </synopsis> 
+// </synopsis>
 //
 // <motivation>
 // The Measures module originated to be able to convert ccordinates between
@@ -801,10 +801,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 // </module>
 
-//# Dummy class definition for extractor
-//# class Measures {};
+// # Dummy class definition for extractor
+// # class Measures {};
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

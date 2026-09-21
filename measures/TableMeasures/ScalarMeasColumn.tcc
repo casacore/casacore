@@ -1,31 +1,31 @@
-//# Copyright (C) 1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Copyright (C) 1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_SCALARMEASCOLUMN_TCC
 #define MEASURES_SCALARMEASCOLUMN_TCC
 
-//# Includes
+// # Includes
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
 #include <casacore/measures/TableMeasures/TableMeasDescBase.h>
 #include <casacore/measures/TableMeasures/TableMeasOffsetDesc.h>
@@ -41,29 +41,26 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template<class M>
+template <class M>
 ScalarMeasColumn<M>::ScalarMeasColumn()
-  :  itsConvFlag  (False),
-     itsArrDataCol(0),
-     itsScaDataCol(0),
-     itsRefIntCol (0),
-     itsRefStrCol (0),
-     itsOffsetCol (0)
-{}
+    : itsConvFlag(False),
+      itsArrDataCol(0),
+      itsScaDataCol(0),
+      itsRefIntCol(0),
+      itsRefStrCol(0),
+      itsOffsetCol(0) {}
 
-template<class M>
-ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
-                                       const String& columnName)
-  : TableMeasColumn (tab, columnName),
-    itsConvFlag  (False),
-    itsArrDataCol(0),
-    itsScaDataCol(0),
-    itsRefIntCol (0),
-    itsRefStrCol (0),
-    itsOffsetCol (0)
-{
+template <class M>
+ScalarMeasColumn<M>::ScalarMeasColumn(const Table& tab, const String& columnName)
+    : TableMeasColumn(tab, columnName),
+      itsConvFlag(False),
+      itsArrDataCol(0),
+      itsScaDataCol(0),
+      itsRefIntCol(0),
+      itsRefStrCol(0),
+      itsOffsetCol(0) {
   TableMeasDescBase& tmDesc = measDesc();
   AlwaysAssert(M::showMe() == tmDesc.type(), AipsError);
 
@@ -72,7 +69,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
   // ArrayColumn is needed to store the data component of the Measures.
   M tMeas;
   itsNvals = tMeas.getValue().getTMRecordValue().nelements();
-  AlwaysAssert (itsNvals <= tmDesc.getUnits().size(), AipsError);
+  AlwaysAssert(itsNvals <= tmDesc.getUnits().size(), AipsError);
   if (itsNvals == 1) {
     itsScaDataCol = new ScalarColumn<Double>(tab, columnName);
   } else {
@@ -88,52 +85,50 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
       itsRefIntCol = new ScalarColumn<Int>(tab, rcName);
     }
   } else {
-    itsMeasRef.set (tmDesc.getRefCode());
+    itsMeasRef.set(tmDesc.getRefCode());
   }
 
   // Set up the offset component of the MeasRef
   if (tmDesc.hasOffset()) {
     if (tmDesc.isOffsetVariable()) {
       if (tmDesc.isOffsetArray()) {
-	throw(AipsError("ScalarMeasColumn::ScalarMeasColumn "
-			"Offset column must be a ScalarMeasColumn."));
+        throw(
+            AipsError("ScalarMeasColumn::ScalarMeasColumn "
+                      "Offset column must be a ScalarMeasColumn."));
       }
       itsOffsetCol = new ScalarMeasColumn<M>(tab, tmDesc.offsetColumnName());
     } else {
-      itsMeasRef.set (tmDesc.getOffset());
+      itsMeasRef.set(tmDesc.getOffset());
     }
-  } 
+  }
 
   // Only need to convert (during a put) if some component of the reference
   // for the column is fixed.
   itsConvFlag = (itsVarRefFlag == False) || (itsOffsetCol == 0);
   // For an old table write the reference codes and types.
   if (tab.isWritable()) {
-    tmDesc.writeIfOld (tab);
+    tmDesc.writeIfOld(tab);
   }
 }
 
-template<class M>
-ScalarMeasColumn<M>::ScalarMeasColumn (const ScalarMeasColumn<M>& that)
-: TableMeasColumn(),
-  itsArrDataCol(0),
-  itsScaDataCol(0),
-  itsRefIntCol (0),
-  itsRefStrCol (0),
-  itsOffsetCol (0)
-{
-  reference (that);
+template <class M>
+ScalarMeasColumn<M>::ScalarMeasColumn(const ScalarMeasColumn<M>& that)
+    : TableMeasColumn(),
+      itsArrDataCol(0),
+      itsScaDataCol(0),
+      itsRefIntCol(0),
+      itsRefStrCol(0),
+      itsOffsetCol(0) {
+  reference(that);
 }
 
-template<class M>
-ScalarMeasColumn<M>::~ScalarMeasColumn()
-{
+template <class M>
+ScalarMeasColumn<M>::~ScalarMeasColumn() {
   cleanUp();
 }
 
-template<class M>
-void ScalarMeasColumn<M>::cleanUp()
-{
+template <class M>
+void ScalarMeasColumn<M>::cleanUp() {
   delete itsArrDataCol;
   delete itsScaDataCol;
   delete itsRefIntCol;
@@ -141,17 +136,16 @@ void ScalarMeasColumn<M>::cleanUp()
   delete itsOffsetCol;
 }
 
-template<class M>
-void ScalarMeasColumn<M>::reference (const ScalarMeasColumn<M>& that)
-{   
+template <class M>
+void ScalarMeasColumn<M>::reference(const ScalarMeasColumn<M>& that) {
   cleanUp();
-  TableMeasColumn::reference (that);
-  itsConvFlag   = that.itsConvFlag;
+  TableMeasColumn::reference(that);
+  itsConvFlag = that.itsConvFlag;
   itsArrDataCol = that.itsArrDataCol;
   itsScaDataCol = that.itsScaDataCol;
-  itsRefIntCol  = that.itsRefIntCol;
-  itsRefStrCol  = that.itsRefStrCol;
-  itsOffsetCol  = that.itsOffsetCol;
+  itsRefIntCol = that.itsRefIntCol;
+  itsRefStrCol = that.itsRefStrCol;
+  itsOffsetCol = that.itsOffsetCol;
   itsMeasRef = that.itsMeasRef;
   if (itsArrDataCol != 0) {
     itsArrDataCol = new ArrayColumn<Double>(*itsArrDataCol);
@@ -170,128 +164,116 @@ void ScalarMeasColumn<M>::reference (const ScalarMeasColumn<M>& that)
   }
 }
 
-template<class M>
-void ScalarMeasColumn<M>::attach (const Table& tab, 
-                                  const String& columnName)
-{
-  reference (ScalarMeasColumn<M>(tab, columnName)); 
+template <class M>
+void ScalarMeasColumn<M>::attach(const Table& tab, const String& columnName) {
+  reference(ScalarMeasColumn<M>(tab, columnName));
 }
-    
-template<class M>
-void ScalarMeasColumn<M>::get (rownr_t rownr, M& meas) const
-{
-  Vector<Quantum<Double> > qvec(itsNvals);
+
+template <class M>
+void ScalarMeasColumn<M>::get(rownr_t rownr, M& meas) const {
+  Vector<Quantum<Double>> qvec(itsNvals);
   const Vector<Unit>& units = measDesc().getUnits();
   if (itsScaDataCol != 0) {
-    qvec(0).setValue ((*itsScaDataCol)(rownr));
-    qvec(0).setUnit (units(0));
+    qvec(0).setValue((*itsScaDataCol)(rownr));
+    qvec(0).setUnit(units(0));
   } else {
     Array<Double> tmpArr((*itsArrDataCol)(rownr));
     Bool deleteData;
-    const Double* d_p = tmpArr.getStorage (deleteData);
-    for (uInt i=0; i<itsNvals; i++) {
-      qvec(i).setValue (d_p[i]);
-      qvec(i).setUnit (units(i));
+    const Double* d_p = tmpArr.getStorage(deleteData);
+    for (uInt i = 0; i < itsNvals; i++) {
+      qvec(i).setValue(d_p[i]);
+      qvec(i).setUnit(units(i));
     }
-    tmpArr.freeStorage (d_p, deleteData);
+    tmpArr.freeStorage(d_p, deleteData);
   }
-  typename M::MVType measVal (qvec);
-  meas.set (measVal, makeMeasRef(rownr));
+  typename M::MVType measVal(qvec);
+  meas.set(measVal, makeMeasRef(rownr));
 }
-    	
-template<class M> 
-M ScalarMeasColumn<M>::convert (rownr_t rownr, const MeasRef<M>& measRef) const
-{
+
+template <class M>
+M ScalarMeasColumn<M>::convert(rownr_t rownr, const MeasRef<M>& measRef) const {
   M tmp;
-  get (rownr, tmp);
+  get(rownr, tmp);
   return typename M::Convert(tmp, measRef)();
 }
 
-template<class M> 
-M ScalarMeasColumn<M>::convert (rownr_t rownr, uInt refCode) const
-{
+template <class M>
+M ScalarMeasColumn<M>::convert(rownr_t rownr, uInt refCode) const {
   M tmp;
-  get (rownr, tmp);
+  get(rownr, tmp);
   return typename M::Convert(tmp, typename M::Types(refCode))();
 }
 
-template<class M> 
-M ScalarMeasColumn<M>::operator() (rownr_t rownr) const
-{
+template <class M>
+M ScalarMeasColumn<M>::operator()(rownr_t rownr) const {
   M meas;
-  get (rownr, meas);
+  get(rownr, meas);
   return meas;
 }
 
-template<class M>
-MeasRef<M> ScalarMeasColumn<M>::makeMeasRef (rownr_t rownr) const
-{
+template <class M>
+MeasRef<M> ScalarMeasColumn<M>::makeMeasRef(rownr_t rownr) const {
   // Fixed reference can be returned immediately.
-  if (!itsVarRefFlag  &&  itsOffsetCol == 0) {
+  if (!itsVarRefFlag && itsOffsetCol == 0) {
     return itsMeasRef;
   }
-  MeasRef<M> locMRef (itsMeasRef);
+  MeasRef<M> locMRef(itsMeasRef);
   if (itsVarRefFlag) {
     // Get reference type as int (from a string or int column).
     if (itsRefStrCol != 0) {
       typename M::Types tp;
-      M::getType (tp, (*itsRefStrCol)(rownr));
-      locMRef.set (tp);
+      M::getType(tp, (*itsRefStrCol)(rownr));
+      locMRef.set(tp);
     } else {
-      locMRef.set (measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
+      locMRef.set(measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
     }
   }
   if (itsOffsetCol != 0) {
-    locMRef.set ((*itsOffsetCol)(rownr));
+    locMRef.set((*itsOffsetCol)(rownr));
   }
   return locMRef;
 }
 
-
-template<class M>
-void ScalarMeasColumn<M>::setDescRefCode (uInt refCode,
-					  Bool tableMustBeEmpty)
-{
+template <class M>
+void ScalarMeasColumn<M>::setDescRefCode(uInt refCode, Bool tableMustBeEmpty) {
   Table tab = table();
-  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
-    throw (AipsError ("ScalarMeasColumn::setDescRefCode cannot be done; "
-		      "the table is not empty"));
+  if (tableMustBeEmpty && tab.nrow() != 0) {
+    throw(
+        AipsError("ScalarMeasColumn::setDescRefCode cannot be done; "
+                  "the table is not empty"));
   }
-  itsDescPtr->resetRefCode (refCode);
-  itsDescPtr->write (tab);
-  itsMeasRef.set (refCode);
+  itsDescPtr->resetRefCode(refCode);
+  itsDescPtr->write(tab);
+  itsMeasRef.set(refCode);
 }
 
-template<class M>
-void ScalarMeasColumn<M>::setDescOffset (const Measure& offset,
-					 Bool tableMustBeEmpty)
-{
+template <class M>
+void ScalarMeasColumn<M>::setDescOffset(const Measure& offset, Bool tableMustBeEmpty) {
   Table tab = table();
-  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
-    throw (AipsError ("ScalarMeasColumn::setDescOffset cannot be done; "
-		      "the table is not empty"));
+  if (tableMustBeEmpty && tab.nrow() != 0) {
+    throw(
+        AipsError("ScalarMeasColumn::setDescOffset cannot be done; "
+                  "the table is not empty"));
   }
-  itsDescPtr->resetOffset (offset);
-  itsDescPtr->write (tab);
-  itsMeasRef.set (offset);
+  itsDescPtr->resetOffset(offset);
+  itsDescPtr->write(tab);
+  itsMeasRef.set(offset);
 }
 
-template<class M>
-void ScalarMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
-					Bool tableMustBeEmpty)
-{
+template <class M>
+void ScalarMeasColumn<M>::setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty) {
   Table tab = table();
-  if (tableMustBeEmpty  &&  tab.nrow() != 0) {
-    throw (AipsError ("ScalarMeasColumn::setDescUnits cannot be done; "
-		      "the table is not empty"));
+  if (tableMustBeEmpty && tab.nrow() != 0) {
+    throw(
+        AipsError("ScalarMeasColumn::setDescUnits cannot be done; "
+                  "the table is not empty"));
   }
-  itsDescPtr->resetUnits (units);
-  itsDescPtr->write (tab);
+  itsDescPtr->resetUnits(units);
+  itsDescPtr->write(tab);
 }
- 
-template<class M>
-void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
-{
+
+template <class M>
+void ScalarMeasColumn<M>::put(rownr_t rownr, const M& meas) {
   // A few things about put:
   // 1. No support for storage of frames so if the meas has a frame and
   //    this column has variable references throw an exception.
@@ -304,19 +286,20 @@ void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
 
   // check if the entered measure is "legal"
   if (itsVarRefFlag) {
-    if (! meas.getRefPtr()->getFrame().empty()) {
-      throw(AipsError("ScalarMeasColumn::put() measure has a frame."
-		      " Illegal for variable reference column."));
+    if (!meas.getRefPtr()->getFrame().empty()) {
+      throw(
+          AipsError("ScalarMeasColumn::put() measure has a frame."
+                    " Illegal for variable reference column."));
     }
   }
   M locMeas = meas;
 
   // Conversion is needed if the reference for the incoming measure is
   // not equal to that of the column (and itsConvFlag is true)
-  if (itsConvFlag  &&  !equalRefs(itsMeasRef, locMeas.getRef())) {
+  if (itsConvFlag && !equalRefs(itsMeasRef, locMeas.getRef())) {
     MeasRef<M> refConv = itsMeasRef;
     if (itsVarRefFlag) {
-      refConv.set (locMeas.getRef().getType());
+      refConv.set(locMeas.getRef().getType());
     }
 
     //        cerr << "\nDOING CONVERT!!!!\n";
@@ -344,13 +327,13 @@ void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
     locMeas = conv();
     //    cerr << " After convert: " << locMeas << locMeas.getRef() << endl;
   }
-    
+
   if (itsVarRefFlag) {
     if (itsRefStrCol != 0) {
       itsRefStrCol->put(rownr, M::showType(locMeas.getRef().getType()));
     } else {
       uInt tp = locMeas.getRef().getType();
-      itsRefIntCol->put(rownr, measDesc().getRefDesc().cur2tab (tp));
+      itsRefIntCol->put(rownr, measDesc().getRefDesc().cur2tab(tp));
     }
   }
   if (itsOffsetCol != 0) {
@@ -362,24 +345,23 @@ void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
   }
 
   const Vector<Unit>& units = measDesc().getUnits();
-  Vector<Quantum<Double> > qvec = locMeas.getValue().getTMRecordValue();
+  Vector<Quantum<Double>> qvec = locMeas.getValue().getTMRecordValue();
   if (itsScaDataCol != 0) {
-    itsScaDataCol->put (rownr, qvec(0).getValue(units(0)));
+    itsScaDataCol->put(rownr, qvec(0).getValue(units(0)));
   } else {
     Vector<Double> d_vec(itsNvals);
-    for (uInt i=0; i<itsNvals; i++) {
+    for (uInt i = 0; i < itsNvals; i++) {
       d_vec(i) = qvec(i).getValue(units(i));
     }
-    itsArrDataCol->put (rownr, d_vec);
+    itsArrDataCol->put(rownr, d_vec);
   }
 }
 
-template<class M>
-Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
-{
+template <class M>
+Bool ScalarMeasColumn<M>::equalRefs(const MRBase& r1, const MRBase& r2) const {
   return ((r1.getType() == r2.getType()) && (r1.offset() == r2.offset()));
 }
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,34 +1,34 @@
-//# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995-1999,2000-2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasTable.h: MeasTable provides Measure computing database data
+// # Copyright (C) 1995-1999,2000-2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEASTABLE_H
 #define MEASURES_MEASTABLE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
-#include <casacore/measures/Measures/MeasJPL.h>      // calcPlanetary(MeasJPL::Files *)
+#include <casacore/measures/Measures/MeasJPL.h>  // calcPlanetary(MeasJPL::Files *)
 #include <casacore/measures/Measures/MeasTableMul.h>
 #include <casacore/measures/Measures/MeasData.h>
 #include <casacore/measures/Measures/MPosition.h>
@@ -39,9 +39,9 @@
 #include <mutex>
 #include <vector>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class RotMatrix;
 class Euler;
 
@@ -55,7 +55,7 @@ class Euler;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Measure>Measure</linkto> class 
+//   <li> <linkto class=Measure>Measure</linkto> class
 //   <li> <linkto class=MeasData>MeasData</linkto> class for constant data
 //   <li> <linkto class=Aipsrc>Aipsrc</linkto> class for data placement
 // </prerequisite>
@@ -66,7 +66,7 @@ class Euler;
 //
 // <synopsis>
 // MeasTable contains the database interface for all
-// data necessary for precession, nutation and other 
+// data necessary for precession, nutation and other
 // <linkto class=Measure>Measure</linkto> related calculations.<br>
 // All data are obtained by calls to a method. E.g.
 // <src> fundArg(1) </src> will provide the first fundamental argument for
@@ -99,11 +99,9 @@ class Euler;
 // </todo>
 
 class MeasTable {
-
-public:
-  
-  //# Enumerations
-  // Types to be used in different calls
+ public:
+  // # Enumerations
+  //  Types to be used in different calls
   enum Types {
     // Planetary information
     MERCURY = 1,
@@ -126,7 +124,8 @@ public:
     // Librations
     LIBRATION = 15,
     // Number of types
-    N_Types };
+    N_Types
+  };
 
   // Codes for JPL constants: order should be same as in MeasJPL, length less
   // than or equal
@@ -140,13 +139,14 @@ public:
     // Solar radius in AU
     RADS,
     // # of codes
-    N_JPLconst };
+    N_JPLconst
+  };
 
-  //# General Member Functions
-  // Selection related data
-  // <group>
-  // Are the IAU2000 precession/nutation to be used or not (IAU1984)
-  // Note that an Aipsrc::reRead() is not reflected in the return value here.
+  // # General Member Functions
+  //  Selection related data
+  //  <group>
+  //  Are the IAU2000 precession/nutation to be used or not (IAU1984)
+  //  Note that an Aipsrc::reRead() is not reflected in the return value here.
   static Bool useIAU2000();
   // If IAU2000 model, do we use the high precision 2000A model?
   // Note that an Aipsrc::reRead() is not reflected in the return value here.
@@ -165,19 +165,16 @@ public:
   // Generate the precession calculation polynomials for a fixed Epoch T
   // in the result area specified.
   // T is given in Julian centuries since J2000.0.
-  static void
-  precessionCoef(Double T, Polynomial<Double> result[3]);
-  
+  static void precessionCoef(Double T, Polynomial<Double> result[3]);
+
   // Generate the precession polynomials for IAU2000 system.
-  static void
-  precessionCoef2000(Polynomial<Double> result[3]);
-  
+  static void precessionCoef2000(Polynomial<Double> result[3]);
+
   // Generate the precession polynomials for 1950 system for a fixed Epoch T
   // in the area specified. T is given in Tropical centuries since B1850.0
-  static void
-  precessionCoef1950(Double T, Polynomial<Double> result[3]);
+  static void precessionCoef1950(Double T, Polynomial<Double> result[3]);
   // </group>
-  
+
   // Nutation related data
   // <group>
   // Generate the polynomial for the fundamental arguments (eps, l, l',
@@ -189,21 +186,21 @@ public:
   // </group>
 
   // Get the planetary arguments (L, L', F, D, Om, Me, Ve, E, Ma, Ju Sa,
-  // Ur, Ne, pre) 
+  // Ur, Ne, pre)
   static const Polynomial<Double> &planetaryArg2000(uInt which);
 
   // Generate the which' vector of the nutation series arguments
   // <group>
-  static const Double* mulArg(uInt which);
-  static const Double* mulArg1950(uInt which);
-  static const Double* mulArg2000A(uInt which);
-  static const Double* mulArg2000B(uInt which);
-  static const Double* mulPlanArg2000A(uInt which);
+  static const Double *mulArg(uInt which);
+  static const Double *mulArg1950(uInt which);
+  static const Double *mulArg2000A(uInt which);
+  static const Double *mulArg2000B(uInt which);
+  static const Double *mulPlanArg2000A(uInt which);
   // </group>
 
   // Generate the which' vector of the equation of equinoxes (IAU2000)
   // complementary terms series arguments
-  static const Double* mulArgEqEqCT2000(uInt which);
+  static const Double *mulArgEqEqCT2000(uInt which);
 
   // Generate the which' vector of the nutation series multipliers
   // at T, measured in Julian centuries since J2000.0, respectively B1900.0
@@ -212,13 +209,13 @@ public:
   static std::shared_ptr<Matrix<Double>> mulSC1950(Double time, Double epsilon);
   static std::shared_ptr<Matrix<Double>> mulSC2000A(Double time, Double epsilon);
   static std::shared_ptr<Matrix<Double>> mulSC2000B(Double time, Double epsilon);
-  static const Double* mulPlanSC2000A(uInt which);
+  static const Double *mulPlanSC2000A(uInt which);
   // </group>
 
   // Generate the which' vector of the equation of equinoxes (IAU2000)
   // complementary terms series multipliers
   // at T, measured in Julian centuries since J2000.0, respectively B1900.0
-  static const Double* mulSCEqEqCT2000(uInt which);
+  static const Double *mulSCEqEqCT2000(uInt which);
 
   // Get nutation angles corrections for UTC T in rad.
   // which = 0 : dPsi as given by IERS for IAU nutation theory;
@@ -248,7 +245,7 @@ public:
 
   // Get _absolute_ path to AntennaResponses table of observatory
   // <src>nam</src>. It returns False if no _valid_ path can be found or the
-  // observatory is unknown. If the observatory is known, antRespPath will 
+  // observatory is unknown. If the observatory is known, antRespPath will
   // be set to the entry in the AntennaResponses column of the
   // Observatories table even if it doesn't describe a valid path; if the
   // entry is not an absolute path, the data directory name will be
@@ -266,7 +263,7 @@ public:
   // Get position of source <src>nam</src> (False if not present)
   static Bool Source(MDirection &obs, const String &nam);
   // </group>
-  
+
   // Rest frequencies
   // <group>
   // Initialise list from internal Table for now
@@ -288,24 +285,24 @@ public:
   // Aberration related data
   // <group>
   // Generate the polynomial for the fundamental arguments (l1-l8, w, D, l,
-  // l', F) for the Ron/Vondrak aberration calculations as a function of 
+  // l', F) for the Ron/Vondrak aberration calculations as a function of
   // Julian centuries(J2000), or the comparable ones for the Gubanov expansion
-  // (B1950). 
+  // (B1950).
   // <group>
   static const Polynomial<Double> &aberArg(uInt which);
   static const Polynomial<Double> &aberArgDeriv(uInt which);
   static const Polynomial<Double> &aber1950Arg(uInt which);
   static const Polynomial<Double> &aber1950ArgDeriv(uInt which);
   // </group>
-  
+
   // Generate the 'which' vector of the aberration series arguments
   // <group>
-  static const Double* mulAberArg(uInt which);
-  static const Double* mulAber1950Arg(uInt which);
-  static const Double* mulAberSunArg(uInt which);
-  static const Double* mulAberEarthArg(uInt which);
+  static const Double *mulAberArg(uInt which);
+  static const Double *mulAber1950Arg(uInt which);
+  static const Double *mulAberSunArg(uInt which);
+  static const Double *mulAberEarthArg(uInt which);
   // </group>
-  
+
   // Generate the 'which' vector of the aberration series multipliers
   // at T, measured in Julian centuries since J2000.0 (or J1900.0, yes,
   // J1900.0, for B1950).
@@ -315,17 +312,17 @@ public:
   static const Vector<Double> &mulSunAber(uInt which);
   static const Vector<Double> &mulEarthAber(uInt which);
   // </group>
-  
+
   // Get the E-terms of Aberration correction (0 for position, 1 for velocity)
   // <group>
   static const Vector<Double> &AberETerm(uInt which);
   // </group>
-  
+
   // </group>
-  
+
   // Diurnal aberration factor
   static Double diurnalAber(Double radius, Double T);
-  
+
   // LSR (kinematical) velocity conversion: 0 gives J2000; 1 gives B1950.
   // In both cases a velocity of 20.0 km/s is assumed, and a B1900 RA/Dec
   // direction of (270,30) degrees. This value has been defined between
@@ -355,19 +352,19 @@ public:
   // </group>
   // Generate the which' vector of the position series arguments
   // <group>
-  static const Double* mulPosEarthXYArg(uInt which);
-  static const Double* mulPosEarthZArg(uInt which);
-  static const Double* mulPosSunXYArg(uInt which);
-  static const Double* mulPosSunZArg(uInt which);
+  static const Double *mulPosEarthXYArg(uInt which);
+  static const Double *mulPosEarthZArg(uInt which);
+  static const Double *mulPosSunXYArg(uInt which);
+  static const Double *mulPosSunZArg(uInt which);
   // </group>
-  
+
   // Generate the which' vector of the position series multipliers
   // at T, measured in Julian centuries since J2000.0
   // <group>
   static std::shared_ptr<Matrix<Double>> mulPosEarthXY(Double time, Double epsilon);
-  static std::shared_ptr<Matrix<Double>> mulPosEarthZ (Double time, Double epsilon);
-  static std::shared_ptr<Matrix<Double>> mulPosSunXY  (Double time, Double epsilon);
-  static std::shared_ptr<Matrix<Double>> mulPosSunZ   (Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosEarthZ(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosSunXY(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosSunZ(Double time, Double epsilon);
   // </group>
   // Get the rotation matrix to change position from ecliptic to rectangular
   // for Soma et al. analytical expression
@@ -383,19 +380,19 @@ public:
   // Based on the IAU 2000 resolutions (the bias matrix)
   static const RotMatrix &ICRSToJ2000();
   // </group>
-  
+
   // Position related routines
   // <group>
   // Equatorial radius (0) and flattening(1) of geodetic reference spheroids
   static Double WGS84(uInt which);
   // </group>
-  
+
   // Polar motion related routines
   // <group>
   // Get the polar motion (-x,-y,0)(2,1,3) angles at the given epoch
   static Euler polarMotion(Double ut);
   // </group>
-  
+
   // Time related routines
   // <note>
   //   WARNING given if correction not obtainable
@@ -409,7 +406,7 @@ public:
   // UT1-UTC (in s) for MJD tai TAI
   static Double dUT1(Double utc);
   // TDT-TAI (in s) for MJD tai TAI. Note this is equal to TT2000-TAI
-  static Double dTAI(Double tai=0.0);
+  static Double dTAI(Double tai = 0.0);
   // TDB-TDT (in s) for MJD ut1 UT1
   static Double dTDT(Double ut1);
   // TCB-TDB (in s) for MJD tai TAI
@@ -430,12 +427,11 @@ public:
   static Double UTtoST(Double ut1);
   // </group>
 
-private:
-  
+ private:
   // Copy assign, NOT defined
   MeasTable &operator=(const MeasTable &other);
-  
-  //# General member functions
+
+  // # General member functions
 
   static void doInitObservatories();
   static void doInitLines();
@@ -447,10 +443,8 @@ private:
 
   // Calculate precessionCoef
   // <group>
-  static void calcPrecesCoef(Double T, Polynomial<Double> result[3],
-			     const Double coeff[3][6]); 
-  static void calcPrecesCoef2000(Polynomial<Double> result[3],
-				 const Double coeff[3][6]); 
+  static void calcPrecesCoef(Double T, Polynomial<Double> result[3], const Double coeff[3][6]);
+  static void calcPrecesCoef2000(Polynomial<Double> result[3], const Double coeff[3][6]);
   // </group>
 
   // Calculate fundArg
@@ -462,7 +456,7 @@ private:
 
   // Calculate planetary data
   // <group>
-  static void calcPlanetary(MeasJPL::Files* fil);
+  static void calcPlanetary(MeasJPL::Files *fil);
   static void calcPlanetaryConstants(Double cn[MeasTable::N_JPLconst]);
   // </group>
 
@@ -515,25 +509,25 @@ private:
   static Polynomial<Double> calcUTtoST();
   // </group>
 
-  //# Data
-  // Planetary table data
-  // <group>
+  // # Data
+  //  Planetary table data
+  //  <group>
   static std::once_flag theirPlanetaryInitOnceFlag;
   static std::once_flag theirPlanetaryConstantsInitOnceFlag;
   // </group>
 
   // Multipliers for nutation, etc.
   // <group>
-  static MeasTableMulSC         theirMulSC;
-  static MeasTableMulSC1950     theirMulSC1950;
-  static MeasTableMulSC2000A    theirMulSC2000A;
-  static MeasTableMulSC2000B    theirMulSC2000B;
-  static MeasTableMulAber       theirMulAber;
-  static MeasTableMulAber1950   theirMulAber1950;
-  static MeasTableMulPosSunXY   theirMulPosSunXY;
-  static MeasTableMulPosSunZ    theirMulPosSunZ;
+  static MeasTableMulSC theirMulSC;
+  static MeasTableMulSC1950 theirMulSC1950;
+  static MeasTableMulSC2000A theirMulSC2000A;
+  static MeasTableMulSC2000B theirMulSC2000B;
+  static MeasTableMulAber theirMulAber;
+  static MeasTableMulAber1950 theirMulAber1950;
+  static MeasTableMulPosSunXY theirMulPosSunXY;
+  static MeasTableMulPosSunZ theirMulPosSunZ;
   static MeasTableMulPosEarthXY theirMulPosEarthXY;
-  static MeasTableMulPosEarthZ  theirMulPosEarthZ;
+  static MeasTableMulPosEarthZ theirMulPosEarthZ;
   // </group>
 
   // Observatories table data
@@ -567,12 +561,11 @@ private:
   static std::vector<Vector<Double>> dIGRF;
   // </group>
 
-  ///#if !defined(USE_THREADS) || defined(__APPLE__)
-  ///  static std::mutex theirdUT1Mutex;
-  ///#endif
+  /// #if !defined(USE_THREADS) || defined(__APPLE__)
+  ///   static std::mutex theirdUT1Mutex;
+  /// #endif
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

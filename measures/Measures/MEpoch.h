@@ -1,47 +1,50 @@
-//# MEpoch.h: A Measure: instant in time
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MEpoch.h: A Measure: instant in time
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef MEASURES_MEPOCH_H
 #define MEASURES_MEPOCH_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVEpoch.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MEpoch;
 class MCEpoch;
-template <class M> class MeasConvert;
-template <class M> class ArrayMeasColumn;
-template <class M> class ScalarMeasColumn;
+template <class M>
+class MeasConvert;
+template <class M>
+class ArrayMeasColumn;
+template <class M>
+class ScalarMeasColumn;
 
-//# Typedefs
+// # Typedefs
 
 // <summary>
 // A Measure: instant in time
@@ -71,7 +74,7 @@ template <class M> class ScalarMeasColumn;
 //	#include <casacore/measures/Measures/MEpoch.h>
 //	#include <casacore/measures/Measures/MCEpoch.h>
 //      #include <casacore/casa/logging/LogIO.h>
-//      
+//
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),
@@ -98,19 +101,18 @@ template <class M> class ScalarMeasColumn;
 //	<li>
 // </todo>
 
-class MEpoch : public MeasBase<MVEpoch, MeasRef<MEpoch> > {
-
-public:
-  //# Friends
+class MEpoch : public MeasBase<MVEpoch, MeasRef<MEpoch>> {
+ public:
+  // # Friends
   friend class MeasConvert<MEpoch>;
-  
-  //# Enumerations
-  // Types of known MEpochs
-  // <note role=caution> The order defines the order in the translation matrix
-  // in the MCEpoch class. Do not change the order without
-  // changing the array. Additions should be made before N_types, and
-  // an additional row and column should be coded in FromTo (MCEpoch), and
-  // in showType().</note>
+
+  // # Enumerations
+  //  Types of known MEpochs
+  //  <note role=caution> The order defines the order in the translation matrix
+  //  in the MCEpoch class. Do not change the order without
+  //  changing the array. Additions should be made before N_types, and
+  //  an additional row and column should be coded in FromTo (MCEpoch), and
+  //  in showType().</note>
   enum Types {
     // Local Apparent Sidereal Time
     LAST,
@@ -135,17 +137,17 @@ public:
     // All extra bits
     EXTRA = RAZE,
     // Synonyms
-    IAT=TAI,	
-    GMST=GMST1,
-    TT=TDT,
-    UT=UT1,
-    ET=TT,
+    IAT = TAI,
+    GMST = GMST1,
+    TT = TDT,
+    UT = UT1,
+    ET = TT,
     // Default
-    DEFAULT=UTC
+    DEFAULT = UTC
   };
-  
-  //# Typedefs
-  // Measure value container for this class (i.e. MEpoch::MVType)
+
+  // # Typedefs
+  //  Measure value container for this class (i.e. MEpoch::MVType)
   typedef MVEpoch MVType;
   // Measure conversion routines for this class (i.e. MEpoch::MCType)
   typedef MCEpoch MCType;
@@ -156,12 +158,12 @@ public:
   // Measure table Columns (e.g., MEpoch::ScalarColumn)
   typedef ScalarMeasColumn<MEpoch> ScalarColumn;
   typedef ArrayMeasColumn<MEpoch> ArrayColumn;
-    
-  //# Constructors
-  // <note role=tip> In the following constructors and other functions, all 
-  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-  // where no offsets or frames are needed in the reference. </note>
-  // Default constructor; generates an instant at MJD 0 UTC
+
+  // # Constructors
+  //  <note role=tip> In the following constructors and other functions, all
+  //  <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  //  where no offsets or frames are needed in the reference. </note>
+  //  Default constructor; generates an instant at MJD 0 UTC
   MEpoch();
   // Create from data and reference
   // <group>
@@ -174,15 +176,15 @@ public:
   MEpoch(const Measure *dt);
   MEpoch(const MeasValue *dt);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   virtual ~MEpoch();
-  
-  //# Operators
-  
-  //# General Member Functions
-  // Tell me your type
-  // <group>
+
+  // # Operators
+
+  // # General Member Functions
+  //  Tell me your type
+  //  <group>
   virtual const String &tellMe() const;
   static const String &showMe();
   static void assure(const Measure &in);
@@ -210,21 +212,19 @@ public:
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
-  // nextra the number of specials (like planets) that should be at 
+  // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
-  static const String* allMyTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ);
+  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
+  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
   // </group>
-  // Check if all internal tables of types (both enum and String) are 
+  // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
   // necessary.
   // <thrown>
   //   <li> AipsError if a (programming) error in the types.
   // </thrown>
-  // <group> 
+  // <group>
   virtual void checkTypes() const;
   static void checkMyTypes();
   // </group>
@@ -233,22 +233,20 @@ public:
 
   // Get time in specified units
   Quantity get(const Unit &inunit) const;
-  
+
   // Create copy
   // <group>
   virtual Measure *clone() const;
   // </group>
-  
-private:
-  //# Enumerations
-  
-  //# Data
-  
-  //# Member functions
-  
+
+ private:
+  // # Enumerations
+
+  // # Data
+
+  // # Member functions
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
