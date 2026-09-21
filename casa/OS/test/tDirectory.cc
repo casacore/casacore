@@ -182,11 +182,13 @@ void doIt (Bool doExcp)
     // Construct and create a new directory.
     Directory newDir ("tDirectory_tmp/newDir");
     tmp.setPermissions (0555);
+    const bool is_root_user = geteuid() == 0;
     if (doExcp) {
 	try {
 	    newDir.create();
       // create() should have thrown an error, unless we are running this a root:
-      AlwaysAssertExit (geteuid() == 0);
+      AlwaysAssertExit (is_root_user);
+      newDir.remove();
 	} catch (std::exception& x) {
     // Throws not writable
 	} 

@@ -78,9 +78,10 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    SymLink symLink1(Path("tSymLink_tmp/isDir/newB"));
+      AlwaysAssertExit(is_root_user);
 	}
 	catch (std::exception& x) {
-	    cout << x.what() << endl;                    // cannot create
+	    // cannot create
 	} 
 	try {
 	    newLink2.create("a");

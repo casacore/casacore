@@ -139,7 +139,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (isDir2.canCreate());
     isDir2.setPermissions(0644);
     AlwaysAssertExit (isDir2.canCreate());
-    AlwaysAssertExit (!test3.canCreate());
+    AlwaysAssertExit (!test3.canCreate() || is_root_user);
     isDir2.setPermissions(0744);
 
     cout << isFile.path().originalName() << endl;
