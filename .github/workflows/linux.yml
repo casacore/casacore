@@ -37,4 +37,4 @@ jobs:
         run: docker build . -t ubuntu2604_format -f docker/ubuntu2604_format.docker
 
       - name: Check formatting
-        run: docker run --rm ubuntu2604_gcc /bin/bash -c 'cd /code && scripts/run-format.sh'
+        run: docker run --rm ubuntu2604_format /bin/bash -c 'cd /code && scripts/run-format.sh'
