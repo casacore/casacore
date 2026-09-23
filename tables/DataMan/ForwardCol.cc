@@ -441,26 +441,70 @@ void ForwardColumn::putColumnSliceCellsV (const RefRows& rownrs,
     { colPtr_p->putColumnSliceCells (rownrs, ns, dataPtr); }
 
 
-
-#define FORWARDCOLUMN_GETPUT(T,NM) \
-void ForwardColumn::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
-    { colPtr_p->get (rownr, dataPtr); } \
-void ForwardColumn::aips_name2(put,NM) (rownr_t rownr, const T* dataPtr) \
+void ForwardColumn::getBool (rownr_t rownr, Bool* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putBool (rownr_t rownr, const Bool* dataPtr)
     { colPtr_p->put (rownr, dataPtr); }
 
-FORWARDCOLUMN_GETPUT(Bool,Bool)
-FORWARDCOLUMN_GETPUT(uChar,uChar)
-FORWARDCOLUMN_GETPUT(Short,Short)
-FORWARDCOLUMN_GETPUT(uShort,uShort)
-FORWARDCOLUMN_GETPUT(Int,Int)
-FORWARDCOLUMN_GETPUT(uInt,uInt)
-FORWARDCOLUMN_GETPUT(Int64,Int64)
-FORWARDCOLUMN_GETPUT(float,float)
-FORWARDCOLUMN_GETPUT(double,double)
-FORWARDCOLUMN_GETPUT(Complex,Complex)
-FORWARDCOLUMN_GETPUT(DComplex,DComplex)
-FORWARDCOLUMN_GETPUT(String,String)
-FORWARDCOLUMN_GETPUT(void,Other)
+void ForwardColumn::getuChar (rownr_t rownr, uChar* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putuChar (rownr_t rownr, const uChar* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getShort (rownr_t rownr, Short* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putShort (rownr_t rownr, const Short* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getuShort (rownr_t rownr, uShort* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putuShort (rownr_t rownr, const uShort* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getInt (rownr_t rownr, Int* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putInt (rownr_t rownr, const Int* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getuInt (rownr_t rownr, uInt* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putuInt (rownr_t rownr, const uInt* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getInt64 (rownr_t rownr, Int64* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putInt64 (rownr_t rownr, const Int64* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getfloat (rownr_t rownr, float* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putfloat (rownr_t rownr, const float* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getdouble (rownr_t rownr, double* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putdouble (rownr_t rownr, const double* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getComplex (rownr_t rownr, Complex* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putComplex (rownr_t rownr, const Complex* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getDComplex (rownr_t rownr, DComplex* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putDComplex (rownr_t rownr, const DComplex* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getString (rownr_t rownr, String* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putString (rownr_t rownr, const String* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
+
+void ForwardColumn::getOther (rownr_t rownr, void* dataPtr)
+    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::putOther (rownr_t rownr, const void* dataPtr)
+    { colPtr_p->put (rownr, dataPtr); }
 
 } //# NAMESPACE CASACORE - END
 

@@ -173,7 +173,7 @@ void DataManagerColumn::GetCol(ArrayBase& arr)
   rownr_t nr = vec.nelements();
   rownr_t rownr = 0;
   while (rownr < nr) {
-    getGeneric<T> (rownr, &vec[rownr]);
+    getValueGeneric<T> (rownr, &vec[rownr]);
     rownr++;
     if (rownr <= colCache_p.end()  &&  rownr > colCache_p.start()) {
       rownr_t last = std::min(nr-1, colCache_p.end());
@@ -192,7 +192,7 @@ void DataManagerColumn::PutCol(const ArrayBase& arr) {
   const Vector<T>& vec = static_cast<const Vector<T>&>(arr);
   rownr_t nr = vec.nelements();
   for (rownr_t rownr=0; rownr<nr; ++rownr) {
-    putGeneric<T> (rownr, &vec[rownr]);
+    putValueGeneric<T> (rownr, &vec[rownr]);
   }
 }
 
@@ -208,7 +208,7 @@ void DataManagerColumn::GetCells(const RefRows& rownrs, ArrayBase& arr) {
       rownr_t incr  = iter.sliceIncr();
       while (rownr <= end) {
         if (rownr < colCache_p.start()  ||  rownr > colCache_p.end()) {
-          getGeneric<T>(rownr, &(vec[i]));
+          getValueGeneric<T>(rownr, &(vec[i]));
           i++;
           rownr += incr;
         } else {
@@ -238,7 +238,7 @@ void DataManagerColumn::GetCells(const RefRows& rownrs, ArrayBase& arr) {
         if (rownr >= strow  &&  rownr <= endrow) {
 	      vec[i] = cptr[(rownr-strow)*colCache_p.incr()];
 	    } else {
-          getGeneric<T>(rownr, &(vec[i]));
+          getValueGeneric<T>(rownr, &(vec[i]));
           cptr = static_cast<const T*>(colCache_p.dataPtr());
           strow  = colCache_p.start();
           endrow = colCache_p.end();
@@ -260,7 +260,7 @@ void DataManagerColumn::PutCells(const RefRows& rownrs,
     rownr_t end   = iter.sliceEnd();
     rownr_t incr  = iter.sliceIncr();
     while (rownr <= end) {
-      putGeneric<T> (rownr, &(vec[i]));
+      putValueGeneric<T> (rownr, &(vec[i]));
       i++;
       rownr += incr;
     }

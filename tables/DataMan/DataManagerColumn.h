@@ -450,38 +450,6 @@ protected:
     virtual void getOther    (rownr_t rownr, void* dataPtr);
     // </group>
 
-    template <typename T>
-    void getGeneric(rownr_t rownr, T* dataPtr)
-    {
-      if constexpr (std::is_same_v<T, Bool>) {
-        getBool(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, uChar>) {
-        getuChar(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Short>) {
-        getShort(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, uShort>) {
-        getuShort(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Int>) {
-        getInt(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, uInt>) {
-        getuInt(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Int64>) {
-        getInt64(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, float>) {
-        getfloat(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, double>) {
-        getdouble(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Complex>) {
-        getComplex(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, DComplex>) {
-        getDComplex(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, String>) {
-        getString(rownr, dataPtr);
-      } else {
-        getOther(rownr, dataPtr);
-      }
-    }
-
     // Put the scalar value into the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
@@ -502,34 +470,66 @@ protected:
     // </group>
 
     template <typename T>
-    void putGeneric(rownr_t rownr, const T* dataPtr)
+    void getValueGeneric (rownr_t rownr, T* dataPtr)
     {
       if constexpr (std::is_same_v<T, Bool>) {
-        putBool(rownr, dataPtr);
+          getBool (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, uChar>) {
-        putuChar(rownr, dataPtr);
+          getuChar (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, Short>) {
-        putShort(rownr, dataPtr);
+          getShort (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, uShort>) {
-        putuShort(rownr, dataPtr);
+          getuShort (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, Int>) {
-        putInt(rownr, dataPtr);
+          getInt (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, uInt>) {
-        putuInt(rownr, dataPtr);
+          getuInt (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, Int64>) {
-        putInt64(rownr, dataPtr);
+          getInt64 (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, float>) {
-        putfloat(rownr, dataPtr);
+          getfloat (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, double>) {
-        putdouble(rownr, dataPtr);
+          getdouble (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, Complex>) {
-        putComplex(rownr, dataPtr);
+          getComplex (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, DComplex>) {
-        putDComplex(rownr, dataPtr);
+          getDComplex (rownr, dataPtr);
       } else if constexpr (std::is_same_v<T, String>) {
-        putString(rownr, dataPtr);
+          getString (rownr, dataPtr);
       } else {
-        putOther(rownr, static_cast<const void*>(dataPtr));
+          getOther (rownr, static_cast<void*>(dataPtr));
+      }
+    }
+
+    template <typename T>
+    void putValueGeneric (rownr_t rownr, const T* dataPtr)
+    {
+      if constexpr (std::is_same_v<T, Bool>) {
+          putBool (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uChar>) {
+          putuChar (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Short>) {
+          putShort (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uShort>) {
+          putuShort (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Int>) {
+          putInt (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, uInt>) {
+          putuInt (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Int64>) {
+          putInt64 (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, float>) {
+          putfloat (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, double>) {
+          putdouble (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, Complex>) {
+          putComplex (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, DComplex>) {
+          putDComplex (rownr, dataPtr);
+      } else if constexpr (std::is_same_v<T, String>) {
+          putString (rownr, dataPtr);
+      } else {
+          putOther (rownr, static_cast<const void*>(dataPtr));
       }
     }
 

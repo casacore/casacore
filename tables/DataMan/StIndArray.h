@@ -230,54 +230,69 @@ private:
     // Get a (type-dependent) vector part of a slice.
     // This function is called for each chunk by putSliceData.
     // <group>
-    static void getVecBoolV     (StManArrayFile&,
+    static void getVecBoolV     (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecuCharV    (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Bool>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecuCharV    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecShortV    (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<uChar>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecShortV    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecuShortV   (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecuShortV   (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecIntV      (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<uShort>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecIntV      (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecuIntV     (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecuIntV     (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecInt64V    (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<uInt>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecInt64V    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecfloatV    (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Int64>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecfloatV    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecdoubleV   (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Float>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecdoubleV   (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecComplexV  (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Double>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecComplexV  (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecDComplexV (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<Complex>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecDComplexV (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
-    static void getVecStringV   (StManArrayFile&,
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<DComplex>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void getVecStringV   (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 uInt64 valueIndex, void* value) { GetVectorGeneric<String>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    template<typename T>
+    static void GetVectorGeneric
+                  (StManArrayFile& ios, Int64 fileOffset,
+		   uInt64 start, uInt64 leng, uInt64 inc, uInt64 valInx,
+                   void* value) {
+    T* valp = (T*)value + valInx;
+    if (inc == 1) {
+	ios.get (fileOffset, start, leng, valp);
+    }else{
+	while (leng-- > 0) {
+	    ios.get (fileOffset, start, 1, valp++);
+	    start += inc;
+	}
+    }
+    }
     // </group>
 
     // Put sliced data, i.e. put a section of an array.
@@ -295,54 +310,71 @@ private:
     // Put a (type-dependent) vector part of a slice.
     // This function is called for each chunk by putSliceData.
     // <group>
-    static void putVecBoolV     (StManArrayFile&,
+    static void putVecBoolV     (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecuCharV    (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<Bool>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecuCharV    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecShortV    (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<uChar>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecShortV    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecuShortV   (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<Short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecuShortV   (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecIntV      (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<uShort>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecIntV      (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecuIntV     (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<Int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecuIntV     (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecInt64V    (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<uInt>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecInt64V    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecfloatV    (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<Int64>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecfloatV    (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecdoubleV   (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<float>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecdoubleV   (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecComplexV  (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<double>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecComplexV  (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecDComplexV (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<Complex>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecDComplexV (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
-    static void putVecStringV   (StManArrayFile&,
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<DComplex>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    static void putVecStringV   (StManArrayFile& ios,
 				 Int64 fileOffset, uInt64 arrayStart,
 				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 uInt64 valueIndex, const void* value) { PutVectorGeneric<String>(ios, fileOffset, arrayStart, length, increment, valueIndex, value); }
+    template<typename T>
+    static void PutVectorGeneric
+                      (StManArrayFile& ios, Int64 fileOffset,
+          uInt64 start, uInt64 leng, uInt64 inc, uInt64 valInx,
+                      const void* value)
+    {
+        T* valp = (T*)value + valInx;
+        if (inc == 1) {
+      ios.put (fileOffset, start, leng, valp);
+        }else{
+      while (leng-- > 0) {
+          ios.put (fileOffset, start, 1, valp++);
+          start += inc;
+      }
+        }
+    }
+
     // </group>
 	
     // Throw an exception if the shape of the given array and the table
