@@ -450,38 +450,6 @@ protected:
     virtual void getOther    (rownr_t rownr, void* dataPtr);
     // </group>
 
-    template <typename T>
-    void getGeneric(rownr_t rownr, T* dataPtr)
-    {
-      if constexpr (std::is_same_v<T, Bool>) {
-        getBool(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, uChar>) {
-        getuChar(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Short>) {
-        getShort(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, uShort>) {
-        getuShort(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Int>) {
-        getInt(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, uInt>) {
-        getuInt(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Int64>) {
-        getInt64(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, float>) {
-        getfloat(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, double>) {
-        getdouble(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, Complex>) {
-        getComplex(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, DComplex>) {
-        getDComplex(rownr, dataPtr);
-      } else if constexpr (std::is_same_v<T, String>) {
-        getString(rownr, dataPtr);
-      } else {
-        getOther(rownr, dataPtr);
-      }
-    }
-
     // Put the scalar value into the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
