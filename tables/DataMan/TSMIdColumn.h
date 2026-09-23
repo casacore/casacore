@@ -31,6 +31,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/tables/DataMan/TSMColumn.h>
 #include <casacore/tables/DataMan/TiledStMan.h>
+#include <casacore/tables/DataMan/TSMCube.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
 
