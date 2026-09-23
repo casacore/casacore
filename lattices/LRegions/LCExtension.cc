@@ -68,10 +68,10 @@ LCExtension& LCExtension::operator=(const LCExtension& other) {
   return *this;
 }
 
-Bool LCExtension::operator==(const LCRegion& other) const {
+Bool LCExtension::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionMulti::operator==(other)) {
+  if (!LCRegionMulti::equals(other)) {
     return False;
   }
   const LCExtension& that = (const LCExtension&)other;

@@ -99,9 +99,6 @@ class LCMask : public LCRegionSingle {
   // Assignment (reference semantics).
   LCMask& operator=(const LCMask& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -180,6 +177,9 @@ class LCMask : public LCRegionSingle {
   virtual Bool isWritable() const;
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCMask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".

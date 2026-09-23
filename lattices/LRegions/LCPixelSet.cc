@@ -56,10 +56,10 @@ LCPixelSet& LCPixelSet::operator=(const LCPixelSet& that) {
   return *this;
 }
 
-Bool LCPixelSet::operator==(const LCRegion& other) const {
+Bool LCPixelSet::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionFixed::operator==(other)) {
+  if (!LCRegionFixed::equals(other)) {
     return False;
   }
   const LCPixelSet& that = (const LCPixelSet&)other;

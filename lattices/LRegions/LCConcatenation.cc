@@ -70,10 +70,10 @@ LCConcatenation& LCConcatenation::operator=(const LCConcatenation& other) {
   return *this;
 }
 
-Bool LCConcatenation::operator==(const LCRegion& other) const {
+Bool LCConcatenation::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionMulti::operator==(other)) {
+  if (!LCRegionMulti::equals(other)) {
     return False;
   }
   const LCConcatenation& that = (const LCConcatenation&)other;

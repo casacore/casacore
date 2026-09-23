@@ -98,9 +98,6 @@ class LCLELMask : public LCRegionSingle {
   // Assignment (copy semantics)
   LCLELMask& operator=(const LCLELMask& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Clone a LCLELMask object.
   virtual LCRegion* cloneRegion() const;
 
@@ -138,6 +135,9 @@ class LCLELMask : public LCRegionSingle {
   virtual TableRecord toRecord(const String& tableName) const;
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Translating an LCLELMask is not possible, so it throws an exception.
   virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
                                 const IPosition& newLatticeShape) const;

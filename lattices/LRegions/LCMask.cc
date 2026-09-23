@@ -96,10 +96,10 @@ LCMask& LCMask::operator=(const LCMask& that) {
   return *this;
 }
 
-Bool LCMask::operator==(const LCRegion& other) const {
+Bool LCMask::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionSingle::operator==(other)) {
+  if (!LCRegionSingle::equals(other)) {
     return False;
   }
   const LCMask& that = (const LCMask&)other;

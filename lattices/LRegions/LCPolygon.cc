@@ -72,10 +72,10 @@ LCPolygon& LCPolygon::operator=(const LCPolygon& other) {
   return *this;
 }
 
-Bool LCPolygon::operator==(const LCRegion& other) const {
+Bool LCPolygon::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionFixed::operator==(other)) {
+  if (!LCRegionFixed::equals(other)) {
     return False;
   }
   const LCPolygon& that = (const LCPolygon&)other;

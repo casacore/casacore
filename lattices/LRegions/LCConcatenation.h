@@ -119,9 +119,6 @@ class LCConcatenation : public LCRegionMulti {
   // Assignment (copy semantics).
   LCConcatenation& operator=(const LCConcatenation& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -144,6 +141,9 @@ class LCConcatenation : public LCRegionMulti {
   static LCConcatenation* fromRecord(const TableRecord&, const String& tableName);
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".

@@ -47,8 +47,6 @@ LCRegionFixed& LCRegionFixed::operator=(const LCRegionFixed& other) {
   return *this;
 }
 
-Bool LCRegionFixed::operator==(const LCRegion& other) const { return LCRegion::operator==(other); }
-
 void LCRegionFixed::setMask(const Array<Bool>& mask) {
   itsMask = mask;
   setMaskPtr(itsMask);

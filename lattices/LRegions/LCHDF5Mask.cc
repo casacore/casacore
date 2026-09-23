@@ -87,10 +87,10 @@ LCHDF5Mask& LCHDF5Mask::operator=(const LCHDF5Mask& that) {
   return *this;
 }
 
-Bool LCHDF5Mask::operator==(const LCRegion& other) const {
+Bool LCHDF5Mask::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionSingle::operator==(other)) {
+  if (!LCRegionSingle::equals(other)) {
     return False;
   }
   const LCHDF5Mask& that = (const LCHDF5Mask&)other;

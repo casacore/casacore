@@ -53,7 +53,7 @@ LCRegion& LCRegion::operator=(const LCRegion& other) {
   return *this;
 }
 
-Bool LCRegion::operator==(const LCRegion& other) const {
+Bool LCRegion::equals(const LCRegion& other) const {
   // Type check.
   if (type() != other.type()) {
     return False;

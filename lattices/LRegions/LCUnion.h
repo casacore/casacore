@@ -94,9 +94,6 @@ class LCUnion : public LCRegionMulti {
   // Assignment (copy semantics).
   LCUnion& operator=(const LCUnion& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -113,6 +110,8 @@ class LCUnion : public LCRegionMulti {
   static LCUnion* fromRecord(const TableRecord&, const String& tableName);
 
  protected:
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".

@@ -55,10 +55,10 @@ LCLELMask& LCLELMask::operator=(const LCLELMask& that) {
   return *this;
 }
 
-Bool LCLELMask::operator==(const LCRegion& that) const {
+Bool LCLELMask::equals(const LCRegion& that) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionSingle::operator==(that)) {
+  if (!LCRegionSingle::equals(that)) {
     return False;
   }
   const LCLELMask& That = dynamic_cast<const LCLELMask&>(that);

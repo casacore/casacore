@@ -91,10 +91,6 @@ class LCBox : public LCRegionFixed {
   // Assignment (copy semantics).
   LCBox& operator=(const LCBox& other);
 
-  // Comparison.  Mask not checked. Use function
-  // LRegionSingle::maskEqual  to do this
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -130,6 +126,10 @@ class LCBox : public LCRegionFixed {
                                 const IPosition& newLatticeShape) const;
 
  private:
+  // Comparison.  Mask not checked. Use function
+  // LRegionSingle::maskEqual  to do this
+  Bool equals(const LCRegion& other) const override;
+
   // Make a box from the blc,trc such that it does not exceed the
   // lattice boundaries.
   void setSlicerBox(const IPosition& blc, const IPosition& trc);

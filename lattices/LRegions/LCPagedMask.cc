@@ -86,10 +86,10 @@ LCPagedMask& LCPagedMask::operator=(const LCPagedMask& that) {
   return *this;
 }
 
-Bool LCPagedMask::operator==(const LCRegion& other) const {
+Bool LCPagedMask::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
-  if (!LCRegionSingle::operator==(other)) {
+  if (!LCRegionSingle::equals(other)) {
     return False;
   }
   const LCPagedMask& that = (const LCPagedMask&)other;

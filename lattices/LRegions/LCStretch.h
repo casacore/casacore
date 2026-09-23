@@ -94,9 +94,6 @@ class LCStretch : public LCRegionMulti {
   // Assignment (copy semantics).
   LCStretch& operator=(const LCStretch& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -122,6 +119,9 @@ class LCStretch : public LCRegionMulti {
   static LCStretch* fromRecord(const TableRecord&, const String& tableName);
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".

@@ -94,9 +94,6 @@ class LCExtension : public LCRegionMulti {
   // Assignment (copy semantics).
   LCExtension& operator=(const LCExtension& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -122,6 +119,9 @@ class LCExtension : public LCRegionMulti {
   static LCExtension* fromRecord(const TableRecord&, const String& tableName);
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".

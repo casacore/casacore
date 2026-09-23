@@ -65,9 +65,7 @@ LCIntersection& LCIntersection::operator=(const LCIntersection& other) {
   return *this;
 }
 
-Bool LCIntersection::operator==(const LCRegion& other) const {
-  return LCRegionMulti::operator==(other);
-}
+Bool LCIntersection::equals(const LCRegion& other) const { return LCRegionMulti::equals(other); }
 
 LCRegion* LCIntersection::cloneRegion() const { return new LCIntersection(*this); }
 

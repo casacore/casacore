@@ -76,9 +76,6 @@ class LCPixelSet : public LCRegionFixed {
   // Assignment (copy semantics).
   LCPixelSet& operator=(const LCPixelSet& other);
 
-  // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
-
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
@@ -95,6 +92,9 @@ class LCPixelSet : public LCRegionFixed {
   static LCPixelSet* fromRecord(const TableRecord&, const String& tablename);
 
  protected:
+  // Comparison
+  Bool equals(const LCRegion& other) const override;
+
   // Construct another LCPixelSet (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
