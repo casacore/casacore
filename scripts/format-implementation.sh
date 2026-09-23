@@ -29,8 +29,8 @@ fi
 if [ -z "$CXX_SOURCES" ]; then CXX_SOURCES=(*.cc *.h *.tcc); fi
 
 # Detect run environment.
-if [ "$GITHUB_ACTIONS" = "true" ] && [ -f /.dockerenv ]; then
-  echo " (dry run on Github)"
+if [ "$RUN_ON_GITHUB" != "" ] then
+  DRYRUN=" (dry run on Github)"
 elif [ -n "$CI" ]; then
   DRYRUN=" (dry run on CI)"
 elif [ -n "$GIT_AUTHOR_DATE" ]; then
