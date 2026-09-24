@@ -1,43 +1,44 @@
-//# FunctionWrapper.h: Construct function objects from C++ functions 
-//# Copyright (C) 2001,2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FunctionWrapper.h: Construct function objects from C++ functions
+// # Copyright (C) 2001,2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCTIONWRAPPER_H
 #define SCIMATH_FUNCTIONWRAPPER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperParam.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
-template <class T> class WrapperBase;
+// # Forward declarations
+template <class T>
+class WrapperBase;
 
-// <summary> Construct nD function objects from C++ functions 
+// <summary> Construct nD function objects from C++ functions
 // </summary>
 //
 // <use visibility=export>
@@ -53,7 +54,7 @@ template <class T> class WrapperBase;
 // <synopsis>
 // This class is provided so that user can quickly construct a function
 // object from a C++ function pointer without having to write a function
-// class. The constructor constructs a function object from a function 
+// class. The constructor constructs a function object from a function
 // pointer, and an optional parameter list.
 // Parameters are necessary if
 // the function has to be used in a functional fitting process (see
@@ -80,35 +81,32 @@ template <class T> class WrapperBase;
 //
 
 template <class T>
-class FunctionWrapper : public WrapperParam<T>
-{
-public:
-  //# Constructors
-  // Default constructor, to enable arrays
+class FunctionWrapper : public WrapperParam<T> {
+ public:
+  // # Constructors
+  //  Default constructor, to enable arrays
   FunctionWrapper();
   // A function with no parameters and no arguments.
-  FunctionWrapper(T(*f)());
+  FunctionWrapper(T (*f)());
   // A function with parameter and no arguments
   // (Note value of isPar irrelevant)
-  FunctionWrapper(T(*f)( const T&), const Bool isPar);
+  FunctionWrapper(T (*f)(const T &), const Bool isPar);
   // A function with parameters and no arguments.
   // (Note value of isPar irrelevant)
-  FunctionWrapper(T(*f)(const Vector<T>&), const Bool isPar);
+  FunctionWrapper(T (*f)(const Vector<T> &), const Bool isPar);
   // Construct a  1-dimensional function with no parameters.
-  FunctionWrapper(T(*f)(const T&));
+  FunctionWrapper(T (*f)(const T &));
   // Construct a  1-dimensional function with parameter.
-  FunctionWrapper(T(*f)(const T&, const T&), const T &par);
+  FunctionWrapper(T (*f)(const T &, const T &), const T &par);
   // Construct a  1-dimensional function with parameters.
-  FunctionWrapper(T(*f)(const T&, const Vector<T>&),
-		    const Vector<T> &par);
+  FunctionWrapper(T (*f)(const T &, const Vector<T> &), const Vector<T> &par);
   // Construct an n-dimensional  function with no parameters.
-  FunctionWrapper(T(*f)(const Vector<T>&), const Int dim=1);
+  FunctionWrapper(T (*f)(const Vector<T> &), const Int dim = 1);
   // Construct an n-dimensional  function with parameter.
-  FunctionWrapper(T(*f)(const Vector<T>&, const T&),
-		    const T &par, const uInt dim=1);
+  FunctionWrapper(T (*f)(const Vector<T> &, const T &), const T &par, const uInt dim = 1);
   // Construct an n-dimensional  function with parameters.
-  FunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
-		    const Vector<T> &par, const uInt dim=1);
+  FunctionWrapper(T (*f)(const Vector<T> &, const Vector<T> &), const Vector<T> &par,
+                  const uInt dim = 1);
   // Copy constructor (reference semantics)
   // <group>
   FunctionWrapper(const FunctionWrapper<T> &other);
@@ -119,36 +117,34 @@ public:
   // Destructor
   virtual ~FunctionWrapper() {}
 
-  //# Operators    
-  // Evaluate the function at <src>x</src>.
-  // <group>
+  // # Operators
+  //  Evaluate the function at <src>x</src>.
+  //  <group>
   virtual T eval(typename Function<T>::FunctionArg x) const;
   // </group>
 
-  //# Member functions
-  // Get the dimensionality
+  // # Member functions
+  //  Get the dimensionality
   virtual uInt ndim() const;
-  // Return a copy of this object from the heap. The caller is responsible 
+  // Return a copy of this object from the heap. The caller is responsible
   // for deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const {
-    return new FunctionWrapper<T>(*this); }
+  virtual Function<T> *clone() const { return new FunctionWrapper<T>(*this); }
   // </group>
 
-protected:
-  //# Data
-  // The function aid object
+ protected:
+  // # Data
+  //  The function aid object
   std::shared_ptr<WrapperBase<T>> doit_p;
 
-  //# Make members of parent classes known.
-protected:
+  // # Make members of parent classes known.
+ protected:
   using WrapperParam<T>::param_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/FunctionWrapper.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

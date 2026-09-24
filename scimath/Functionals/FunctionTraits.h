@@ -1,38 +1,38 @@
-//# FunctionTraits.h: Function data types for parameters and arguments
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FunctionTraits.h: Function data types for parameters and arguments
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCTIONTRAITS_H
 #define SCIMATH_FUNCTIONTRAITS_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 #include <casacore/scimath/Mathematics/AutoDiffA.h>
 #include <casacore/scimath/Mathematics/AutoDiffX.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 //
 // <summary> Function data types for parameters and arguments
@@ -78,7 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	arguments and parameters (note that either could be simple
 //	values with zero derivatives)
 //   <li> <src>AutoDiffX<T></src> : calculate only with respect to
-//	the arguments the derivatives, by using <src>T</src> 
+//	the arguments the derivatives, by using <src>T</src>
 // 	parameters
 // </ol>
 // The following types are defined:
@@ -98,9 +98,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dt> <src>DiffType</src>
 // <dd> The default differentiation type (e.g. <src>AutoDiff<Double></src>
 //		for <src>AutoDiff<Double></src>)
-// <dt> <src>getValue()</src> 
+// <dt> <src>getValue()</src>
 // <dd>		get the value of a simple numeric or of an <src>AutoDiff</src>
-// <dt> <src>setValue()</src> 
+// <dt> <src>setValue()</src>
 // <dd>		set the value of a simple numeric or of an <src>AutoDiff</src>
 // </dl>
 //
@@ -113,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // This class is implemented as a number of specializations for the
 // following data types.
-// <ul> 
+// <ul>
 // <li> <src>T</src>
 // <li> <src>AutoDiff<T></src>
 // <li> <src>AutoDiffA<T></src>
@@ -134,10 +134,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 //
 
-template <class T> class FunctionTraits {
-public:
+template <class T>
+class FunctionTraits {
+ public:
   // Actual template type
-  typedef T Type; 
+  typedef T Type;
   // Template base type
   typedef T BaseType;
   // Numeric type of template
@@ -151,22 +152,22 @@ public:
   // Get the value
   static const T &getValue(const T &in) { return in; }
   // Set a value (and possible derivative)
-  static void setValue(T &out, const T &val, const uInt,
-		       const uInt) { out = val; }
+  static void setValue(T &out, const T &val, const uInt, const uInt) { out = val; }
 };
 
-//# Following are specializations. Naming only for documentation
-//# purposes (a problem with cxx2html)
+// # Following are specializations. Naming only for documentation
+// # purposes (a problem with cxx2html)
 
 #define FunctionTraits_P FunctionTraits
 
 // <summary> FunctionTraits specialization for AutoDiff
 // </summary>
 
-template <class T> class FunctionTraits_P<AutoDiff<T> > {
-public:
+template <class T>
+class FunctionTraits_P<AutoDiff<T>> {
+ public:
   // Actual template type
-  typedef AutoDiff<T> Type; 
+  typedef AutoDiff<T> Type;
   // Template base type
   typedef T BaseType;
   // Template numeric type
@@ -178,11 +179,11 @@ public:
   // Default type for differentiation
   typedef AutoDiff<T> DiffType;
   // Get the value
-  static const T &getValue(const Type &in) {
-    return FunctionTraits<T>::getValue(in.value()); }
+  static const T &getValue(const Type &in) { return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); }
+  static void setValue(Type &out, const T &val, const uInt nder, const uInt i) {
+    out = Type(val, nder, i);
+  }
 };
 
 #undef FunctionTraits_P
@@ -192,10 +193,11 @@ public:
 // <summary> FunctionTraits specialization for AutoDiffA
 // </summary>
 
-template <class T> class FunctionTraits_PA<AutoDiffA<T> > {
-public:
+template <class T>
+class FunctionTraits_PA<AutoDiffA<T>> {
+ public:
   // Actual template type
-  typedef AutoDiffA<T> Type; 
+  typedef AutoDiffA<T> Type;
   // Template base type
   typedef T BaseType;
   // Template numeric type
@@ -207,11 +209,11 @@ public:
   // Default type for differentiation
   typedef AutoDiffA<T> DiffType;
   // Get the value
-  static const T &getValue(const Type &in) {
-    return FunctionTraits<T>::getValue(in.value()); }
+  static const T &getValue(const Type &in) { return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); }
+  static void setValue(Type &out, const T &val, const uInt nder, const uInt i) {
+    out = Type(val, nder, i);
+  }
 };
 
 #undef FunctionTraits_PA
@@ -221,10 +223,11 @@ public:
 // <summary> FunctionTraits specialization for AutoDiffX
 // </summary>
 
-template <class T> class FunctionTraits_PX<AutoDiffX<T> > {
-public:
+template <class T>
+class FunctionTraits_PX<AutoDiffX<T>> {
+ public:
   // Actual template type
-  typedef AutoDiffX<T> Type; 
+  typedef AutoDiffX<T> Type;
   // Template base type
   typedef T BaseType;
   // Template numeric type
@@ -236,16 +239,15 @@ public:
   // Default type for differentiation
   typedef AutoDiffX<T> DiffType;
   // Get the value
-  static const T &getValue(const Type &in) {
-    return FunctionTraits<T>::getValue(in.value()); }
+  static const T &getValue(const Type &in) { return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); }
+  static void setValue(Type &out, const T &val, const uInt nder, const uInt i) {
+    out = Type(val, nder, i);
+  }
 };
 
 #undef FunctionTraits_PX
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,32 +1,32 @@
-//# FFTServer.h: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996,1997,1999,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FFTServer.h: A class with methods for Fast Fourier Transforms
+// # Copyright (C) 1994,1995,1996,1997,1999,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FFTSERVER_H
 #define SCIMATH_FFTSERVER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/FFTW.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <vector>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>Lists the different types of FFT's that can be done</summary>
 // <synopsis>This enumerator is brought out as a separate class because g++
@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // class will go away and this enumerator moved into the FFTServer
 // class</synopsis>
 class FFTEnums {
-public:
+ public:
   enum TransformType {
     // Forward Complex to Complex transforms.
     COMPLEX,
@@ -64,7 +64,7 @@ public:
 // <reviewed reviewer="wbrouw" date="1997/10/29" tests="tFFTServer">
 // </reviewed>
 
-// <prerequisite> 
+// <prerequisite>
 // <li> Basic concepts of Fast Fourier Transforms.
 // <li> <linkto module=Arrays>The Arrays module</linkto>
 // </prerequisite>
@@ -72,7 +72,6 @@ public:
 // <etymology> The FFTServer class, can do Fast Fourier Transforms of
 // any length and dimensionality.
 // </etymology>
-
 
 // <synopsis>
 
@@ -113,7 +112,7 @@ public:
 // is not uniquely defined by the shape of the complex input
 // Array</strong>. This class uses the following algorithm to work out the
 // length of the first axis on the output Array.
-// <ul> 
+// <ul>
 // <li> If the size of the output Array is non-zero then its shape must match
 // the size of the input Array except for the first axis. The length of the
 // first axis must either be 2*cx-2 or 2*cx-1 and this determines the length of
@@ -132,7 +131,7 @@ public:
 // first axis.
 // </ul>
 
-// This class does transforms using 
+// This class does transforms using
 // the highly optimized FFTW package.
 // <br>
 // <em> P.N. Swarztrauber, Vectorizing the FFTs, in Parallel Computations
@@ -186,7 +185,7 @@ public:
 // </synopsis>
 
 // <templating arg=T>
-// <li> The T argument must be of type Float or Double. These are the only 
+// <li> The T argument must be of type Float or Double. These are the only
 // possible instantiations of this class.
 // </templating>
 
@@ -222,10 +221,9 @@ public:
 //   input Array by -1. Then no flipping needs to be done on the output Array.
 // </todo>
 
-template<class T, class S> class FFTServer
-{
-public:
-
+template <class T, class S>
+class FFTServer {
+ public:
   // The default constructor. The server will automatically resize to do
   // transforms of the appropriate length when necessary.
   FFTServer();
@@ -234,22 +232,21 @@ public:
   // shape. The server will, however, resize to do transforms of other lengths
   // if necessary. See the resize function for a description of the
   // TransformType enumerator.
-  FFTServer(const IPosition & fftSize, 
-	    const FFTEnums::TransformType transformType 
-	    = FFTEnums::REALTOCOMPLEX);
-  
+  FFTServer(const IPosition& fftSize,
+            const FFTEnums::TransformType transformType = FFTEnums::REALTOCOMPLEX);
+
   // copy constructor. The copied server is initialised to do transforms of the
   // same length as the other server. Uses copy (and not reference) semantics
   // so that changing the transform length of one server does not affect the
   // other server.
-  FFTServer(const FFTServer<T,S> & other);
+  FFTServer(const FFTServer<T, S>& other);
 
   // destructor
   ~FFTServer();
-  
+
   // The assignment operator which does the same thing as the copy
   // constructor.
-  FFTServer<T,S> & operator=(const FFTServer<T,S> & other);
+  FFTServer<T, S>& operator=(const FFTServer<T, S>& other);
 
   // Modify the FFTServer object to do transforms of the supplied shape. The
   // amount of internal storage, and the initialisation, depends on the type of
@@ -260,9 +257,8 @@ public:
   // to complex transforms are being done). In general it is not necessary to
   // use this function as all the fft & fft0 functions will automatically
   // resize the server, if necessary, to match their input arguments.
-  void resize(const IPosition & fftSize,
-	      const FFTEnums::TransformType transformType
-	      = FFTEnums::REALTOCOMPLEX);
+  void resize(const IPosition& fftSize,
+              const FFTEnums::TransformType transformType = FFTEnums::REALTOCOMPLEX);
 
   // Real to complex fft. The origin of the transform is in the centre of the
   // Array. Because of the Hermitian property the output Array only contains
@@ -271,8 +267,8 @@ public:
   // ie. <src>shape = [(nx+2)/2, ny, nz,...]</src>.  Otherwise an AipsError is
   // thrown. See the synopsis for a description of the constInput flag.
   // <group>
-  void fft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
-  void fft(Array<S> & cResult, const Array<T> & rData);
+  void fft(Array<S>& cResult, Array<T>& rData, const Bool constInput = False);
+  void fft(Array<S>& cResult, const Array<T>& rData);
   // </group>
 
   // Complex to real fft. The origin of the transform is in the centre of the
@@ -283,10 +279,10 @@ public:
   // <src>shape = [2*cx-1, cy, cz,...]</src>.  <br>
   // Otherwise an AipsError is thrown. See the description in the synopsis for
   // the algorithm used to choose between the two possible output shapes and a
-  // description of the constInput Flag.  
+  // description of the constInput Flag.
   // <group>
-  void fft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
-  void fft(Array<T> & rResult, const Array<S> & cData);
+  void fft(Array<T>& rResult, Array<S>& cData, const Bool constInput = False);
+  void fft(Array<T>& rResult, const Array<S>& cData);
   // </group>
 
   // Complex to complex in-place fft. The origin of the transform is in the
@@ -294,7 +290,7 @@ public:
   // toFrequency variable. If True then a forward, or time to frequency,
   // transform is performed. If False a backward or frequency to time transform
   // is done. Scaling is always done on the backward transform.
-  void fft(Array<S> & cValues, const Bool toFrequency=True);
+  void fft(Array<S>& cValues, const Bool toFrequency = True);
 
   // Complex to complex fft. The origin of the transform is in the centre of
   // the Array. The direction of the transform is controlled by the toFrequency
@@ -304,8 +300,7 @@ public:
   // must either either contain no elements or be the same as the input Array,
   // ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an AipsError is
   // thrown.
-  void fft(Array<S> & cResult, const Array<S> & cData,
-	   const Bool toFrequency=True);
+  void fft(Array<S>& cResult, const Array<S>& cData, const Bool toFrequency = True);
 
   // The <src>fft0</src> functions are equivalent to the <src>fft</src>
   // functions described above except that the origin of the transform is the
@@ -315,90 +310,83 @@ public:
   // routines are in general faster than the equivalent ones with the origin
   // at the centre of the Array.
   // <group>
-  void fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
-  void fft0(Array<S> & cResult, const Array<T> & rData);
-  void fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
-  void fft0(Array<T> & rResult, const Array<S> & cData);
-  void fft0(Array<S> & cValues, const Bool toFrequency=True);
-  void fft0(Array<S> & cResult, const Array<S> & cData,
-	    const Bool toFrequency=True);
-  //# void fft0(Array<T> & rValues, const Bool toFrequency=True);
+  void fft0(Array<S>& cResult, Array<T>& rData, const Bool constInput = False);
+  void fft0(Array<S>& cResult, const Array<T>& rData);
+  void fft0(Array<T>& rResult, Array<S>& cData, const Bool constInput = False);
+  void fft0(Array<T>& rResult, const Array<S>& cData);
+  void fft0(Array<S>& cValues, const Bool toFrequency = True);
+  void fft0(Array<S>& cResult, const Array<S>& cData, const Bool toFrequency = True);
+  // # void fft0(Array<T> & rValues, const Bool toFrequency=True);
 
   // </group>
-  //# Flips the quadrants in a complex Array so that the point at
-  //# cData.shape()/2 moves to the origin. This moves, for example, the point
-  //# at [8,3] to the origin ([0,0]) in an array of shape [16,7]. Usually two
-  //# flips will restore an Array to its original state.  But for Array's
-  //# where one or more dimension is an odd length two flips do NOT restore
-  //# the data to its original state.  So the when toZero=False this routine
-  //# does an unflip operation (ie moves the data at [0,0] to the centre) and
-  //# restores the data to its original state for odd length arrays.  When
-  //# passed a Hermitian Array where half the complex plane is implicit (eg as
-  //# produced by a real->complex Transform) it is not necessary to flip the
-  //# first dimension of the Array. In this case the isHermitian flag should
-  //# be set to True.  For complex<->complex transforms this should be False.
+  // # Flips the quadrants in a complex Array so that the point at
+  // # cData.shape()/2 moves to the origin. This moves, for example, the point
+  // # at [8,3] to the origin ([0,0]) in an array of shape [16,7]. Usually two
+  // # flips will restore an Array to its original state.  But for Array's
+  // # where one or more dimension is an odd length two flips do NOT restore
+  // # the data to its original state.  So the when toZero=False this routine
+  // # does an unflip operation (ie moves the data at [0,0] to the centre) and
+  // # restores the data to its original state for odd length arrays.  When
+  // # passed a Hermitian Array where half the complex plane is implicit (eg as
+  // # produced by a real->complex Transform) it is not necessary to flip the
+  // # first dimension of the Array. In this case the isHermitian flag should
+  // # be set to True.  For complex<->complex transforms this should be False.
   // <group>
-  void flip(Array<T> & rData, const Bool toZero, const Bool isHermitian);
-  void flip(Array<S> & cData, const Bool toZero, const Bool isHermitian);
+  void flip(Array<T>& rData, const Bool toZero, const Bool isHermitian);
+  void flip(Array<S>& cData, const Bool toZero, const Bool isHermitian);
   // </group>
 
   // N-D in-place complex->complex FFT shift (FFT - phase-mult - inverse FFT)
-  // If toFrequency is true, the first FFT will be from time to frequency. 
+  // If toFrequency is true, the first FFT will be from time to frequency.
   // relshift is the freq shift normalised to the bandwidth.
-  // Only transform over selected dimension. Iterate over the others. 
-  void fftshift(Array<S> & cValues, const uInt& whichAxis, 
-		const Double& relshift, const Bool toFrequency=True);
+  // Only transform over selected dimension. Iterate over the others.
+  void fftshift(Array<S>& cValues, const uInt& whichAxis, const Double& relshift,
+                const Bool toFrequency = True);
 
   // N-D complex->complex FFT shift (FFT - phase-mult - inverse FFT)
   // with flagging.
-  // If toFrequency is true, the first FFT will be from time to frequency. 
+  // If toFrequency is true, the first FFT will be from time to frequency.
   // relshift is the freq shift normalised to the bandwidth.
-  // Only transform over selected dimension. Iterate over the others. 
-  void fftshift(Array<S> & outValues, Array<Bool> & outFlags,
-		const Array<S> & cValues, const Array<Bool>& inFlags,
-		const uInt& whichAxis, 
-		const Double& relshift, 
-		const Bool goodIsTrue=False,
-		const Bool toFrequency=True);
+  // Only transform over selected dimension. Iterate over the others.
+  void fftshift(Array<S>& outValues, Array<Bool>& outFlags, const Array<S>& cValues,
+                const Array<Bool>& inFlags, const uInt& whichAxis, const Double& relshift,
+                const Bool goodIsTrue = False, const Bool toFrequency = True);
 
   // N-D real->real FFT shift (FFT to complex - phase-mult - inverse FFT)
   // with flagging.
   // relshift is the freq shift normalised to the bandwidth.
-  // Only transform over selected dimension. Iterate over the others. 
-  void fftshift(Array<T> & outValues, Array<Bool> & outFlags,
-		const Array<T> & rValues, const Array<Bool>& inFlags,
-		const uInt& whichAxis, 
-		const Double& relshift, 
-		const Bool goodIsTrue=False);
+  // Only transform over selected dimension. Iterate over the others.
+  void fftshift(Array<T>& outValues, Array<Bool>& outFlags, const Array<T>& rValues,
+                const Array<Bool>& inFlags, const uInt& whichAxis, const Double& relshift,
+                const Bool goodIsTrue = False);
 
-private:
-  //# finds the shape of the output array when doing complex->real transforms
-  IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
+ private:
+  // # finds the shape of the output array when doing complex->real transforms
+  IPosition determineShape(const IPosition& rShape, const Array<S>& cData);
 
-  //# Data members.
-  // The size of the last FFT done by this object
+  // # Data members.
+  //  The size of the last FFT done by this object
   IPosition itsSize;
   // Whether the last FFT was complex<->complex or not
   FFTEnums::TransformType itsTransformType;
   // buffer for copying non-contigious arrays to contigious ones. This is done
   // so that the FFT's have a better chance of fitting into cache and hence
-  // going faster. 
+  // going faster.
   // This buffer is also used as temporary storage when flipping the data.
   Block<S> itsBuffer;
   // FFTW specific members.
-  FFTW           itsFFTW;
+  FFTW itsFFTW;
   std::vector<T> itsWorkIn;
   std::vector<S> itsWorkOut;
   std::vector<S> itsWorkC2C;
 };
 
+}  // namespace casacore
 
-} //# NAMESPACE CASACORE - END
-
-//# Do NOT include the .tcc file here like done for other templated classes.
-//# The instantiations are done explicitly.
-//# In this way the HAVE_FFTW ifdef is only used in .cc files and does
-//# not appear in headers, so other packages using FFTServer do not need
-//# to (un)set HAVE_FFTW.
+// # Do NOT include the .tcc file here like done for other templated classes.
+// # The instantiations are done explicitly.
+// # In this way the HAVE_FFTW ifdef is only used in .cc files and does
+// # not appear in headers, so other packages using FFTServer do not need
+// # to (un)set HAVE_FFTW.
 
 #endif

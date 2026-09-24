@@ -1,29 +1,29 @@
-//# dSparseDiff.cc: Demo program for AutoDiff, including 2nd derivative
-//# Copyright (C) 2007
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # dSparseDiff.cc: Demo program for AutoDiff, including 2nd derivative
+// # Copyright (C) 2007
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/scimath/Mathematics/SparseDiff.h>
 #include <casacore/scimath/Mathematics/SparseDiffA.h>
 #include <casacore/scimath/Mathematics/SparseDiffMath.h>
@@ -34,29 +34,38 @@
 #include <casacore/casa/namespace.h>
 // Define a simple function a^3*b^3*x
 
-template <class T> class f {
-public:
-  T operator()(const T& x) { return a_p*a_p*a_p*b_p*b_p*x; }
-  void set(const T& a, const T& b) { a_p = a; b_p = b; }
-private:
+template <class T>
+class f {
+ public:
+  T operator()(const T& x) { return a_p * a_p * a_p * b_p * b_p * x; }
+  void set(const T& a, const T& b) {
+    a_p = a;
+    b_p = b;
+  }
+
+ private:
   T a_p;
   T b_p;
 };
 
 // Specialization
 
-template <> class f<SparseDiffA<Double> > {
-public:
+template <>
+class f<SparseDiffA<Double>> {
+ public:
   SparseDiffA<Double> operator()(const SparseDiffA<Double>& x) {
-    return SparseDiffA<Double>(a_p.value()*a_p.value()*a_p.value()*
-			       b_p.value()*b_p.value()*x.value(), 0,
-			       3*a_p.value()*a_p.value()*b_p.value()*
-			       b_p.value()*x.value()) +
-      SparseDiffA<Double>(0, 1, 2*a_p.value()*a_p.value()*a_p.value()*
-			  b_p.value()*x.value()) ; }
+    return SparseDiffA<Double>(
+               a_p.value() * a_p.value() * a_p.value() * b_p.value() * b_p.value() * x.value(), 0,
+               3 * a_p.value() * a_p.value() * b_p.value() * b_p.value() * x.value()) +
+           SparseDiffA<Double>(
+               0, 1, 2 * a_p.value() * a_p.value() * a_p.value() * b_p.value() * x.value());
+  }
   void set(const SparseDiff<Double>& a, const SparseDiff<Double>& b) {
-    a_p = a; b_p = b; }
-private:
+    a_p = a;
+    b_p = b;
+  }
+
+ private:
   SparseDiffA<Double> a_p;
   SparseDiffA<Double> b_p;
 };
@@ -67,231 +76,232 @@ int main() {
 
   // By selecting Double a,b,x; f(x) will calculate value
   Double a0(2), b0(3), x0(7);
-  f<Double> f0; f0.set(a0, b0);
+  f<Double> f0;
+  f0.set(a0, b0);
   cout << "Value:      " << f0(x0) << endl;
-  
+
   // By selecting SparseDiff a,b, and x; f(x) will calculate value and
   // partial derivatives wrt a,b
-  SparseDiff<Double> a1(2,0), b1(3,1), x1(7);
-  f<SparseDiff<Double> > f1; f1.set(a1, b1);
+  SparseDiff<Double> a1(2, 0), b1(3, 1), x1(7);
+  f<SparseDiff<Double>> f1;
+  f1.set(a1, b1);
   cout << "Diff a,b:   " << f1(x1) << endl;
 
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   cout << "a: " << a << endl;
-   cout << "b: " << b << endl;
-   cout << "x: " << x << endl;
-   cout << "y: " << y << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    cout << "a: " << a << endl;
+    cout << "b: " << b << endl;
+    cout << "x: " << x << endl;
+    cout << "y: " << y << endl;
   }
   // *=
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a *= a;
-   b *= b;
-   x *= x;
-   y *= y;
-   cout << "a*=a: " << a << endl;
-   cout << "b*=b: " << b << endl;
-   cout << "x*=x: " << x << endl;
-   cout << "y*=y: " << y << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a *= a;
+    b *= b;
+    x *= x;
+    y *= y;
+    cout << "a*=a: " << a << endl;
+    cout << "b*=b: " << b << endl;
+    cout << "x*=x: " << x << endl;
+    cout << "y*=y: " << y << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a *= b;
-   x *= b;
-   cout << "a*=b: " << a << endl;
-   cout << "x*=b: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a *= b;
+    x *= b;
+    cout << "a*=b: " << a << endl;
+    cout << "x*=b: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a *= x;
-   b *= x;
-   cout << "a*=x: " << a << endl;
-   cout << "b*=x: " << b << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a *= x;
+    b *= x;
+    cout << "a*=x: " << a << endl;
+    cout << "b*=x: " << b << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a *= y;
-   b *= y;
-   x *= y;
-   cout << "a*=y: " << a << endl;
-   cout << "b*=y: " << b << endl;
-   cout << "x*=y: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a *= y;
+    b *= y;
+    x *= y;
+    cout << "a*=y: " << a << endl;
+    cout << "b*=y: " << b << endl;
+    cout << "x*=y: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   b *= a;
-   x *= a;
-   cout << "b*=a: " << b << endl;
-   cout << "x*=a: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    b *= a;
+    x *= a;
+    cout << "b*=a: " << b << endl;
+    cout << "x*=a: " << x << endl;
   }
   // +=
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a += a;
-   b += b;
-   x += x;
-   y += y;
-   cout << "a+=a: " << a << endl;
-   cout << "b+=b: " << b << endl;
-   cout << "x+=x: " << x << endl;
-   cout << "y+=y: " << y << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a += a;
+    b += b;
+    x += x;
+    y += y;
+    cout << "a+=a: " << a << endl;
+    cout << "b+=b: " << b << endl;
+    cout << "x+=x: " << x << endl;
+    cout << "y+=y: " << y << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a += b;
-   x += b;
-   cout << "a+=b: " << a << endl;
-   cout << "x+=b: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a += b;
+    x += b;
+    cout << "a+=b: " << a << endl;
+    cout << "x+=b: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a += x;
-   b += x;
-   cout << "a+=x: " << a << endl;
-   cout << "b+=x: " << b << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a += x;
+    b += x;
+    cout << "a+=x: " << a << endl;
+    cout << "b+=x: " << b << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a += y;
-   b += y;
-   x += y;
-   cout << "a+=y: " << a << endl;
-   cout << "b+=y: " << b << endl;
-   cout << "x+=y: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a += y;
+    b += y;
+    x += y;
+    cout << "a+=y: " << a << endl;
+    cout << "b+=y: " << b << endl;
+    cout << "x+=y: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   b += a;
-   x += a;
-   cout << "b+=a: " << b << endl;
-   cout << "x+=a: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    b += a;
+    x += a;
+    cout << "b+=a: " << b << endl;
+    cout << "x+=a: " << x << endl;
   }
   // -=
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   const SparseDiff<Double> aref(a);
-   const SparseDiff<Double> bref(b);
-   const SparseDiff<Double> xref(x);
-   a -= aref;
-   b -= bref;
-   x -= xref;
-   y -= y;
-   cout << "a-=a: " << a << endl;
-   cout << "b-=b: " << b << endl;
-   cout << "x-=x: " << x << endl;
-   cout << "y-=y: " << y << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    const SparseDiff<Double> aref(a);
+    const SparseDiff<Double> bref(b);
+    const SparseDiff<Double> xref(x);
+    a -= aref;
+    b -= bref;
+    x -= xref;
+    y -= y;
+    cout << "a-=a: " << a << endl;
+    cout << "b-=b: " << b << endl;
+    cout << "x-=x: " << x << endl;
+    cout << "y-=y: " << y << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a -= b;
-   x -= b;
-   cout << "a-=b: " << a << endl;
-   cout << "x-=b: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a -= b;
+    x -= b;
+    cout << "a-=b: " << a << endl;
+    cout << "x-=b: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a -= x;
-   b -= x;
-   cout << "a-=x: " << a << endl;
-   cout << "b-=x: " << b << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a -= x;
+    b -= x;
+    cout << "a-=x: " << a << endl;
+    cout << "b-=x: " << b << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a -= y;
-   b -= y;
-   x -= y;
-   cout << "a-=y: " << a << endl;
-   cout << "b-=y: " << b << endl;
-   cout << "x-=y: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a -= y;
+    b -= y;
+    x -= y;
+    cout << "a-=y: " << a << endl;
+    cout << "b-=y: " << b << endl;
+    cout << "x-=y: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   b -= a;
-   x -= a;
-   cout << "b-=a: " << b << endl;
-   cout << "x-=a: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    b -= a;
+    x -= a;
+    cout << "b-=a: " << b << endl;
+    cout << "x-=a: " << x << endl;
   }
   // /=
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   const SparseDiff<Double> aref(a);
-   const SparseDiff<Double> bref(b);
-   const SparseDiff<Double> xref(x);
-   a /= aref;
-   b /= bref;
-   x /= xref;
-   y /= y;
-   cout << "a/=a: " << a << endl;
-   cout << "b/=b: " << b << endl;
-   cout << "x/=x: " << x << endl;
-   cout << "y/=y: " << y << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    const SparseDiff<Double> aref(a);
+    const SparseDiff<Double> bref(b);
+    const SparseDiff<Double> xref(x);
+    a /= aref;
+    b /= bref;
+    x /= xref;
+    y /= y;
+    cout << "a/=a: " << a << endl;
+    cout << "b/=b: " << b << endl;
+    cout << "x/=x: " << x << endl;
+    cout << "y/=y: " << y << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a /= b;
-   x /= b;
-   cout << "a/=b: " << a << endl;
-   cout << "x/=b: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a /= b;
+    x /= b;
+    cout << "a/=b: " << a << endl;
+    cout << "x/=b: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   a /= x;
-   b /= x;
-   cout << "a/=x: " << a << endl;
-   cout << "b/=x: " << b << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    a /= x;
+    b /= x;
+    cout << "a/=x: " << a << endl;
+    cout << "b/=x: " << b << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a /= y;
-   b /= y;
-   x /= y;
-   cout << "a/=y: " << a << endl;
-   cout << "b/=y: " << b << endl;
-   cout << "x/=y: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a /= y;
+    b /= y;
+    x /= y;
+    cout << "a/=y: " << a << endl;
+    cout << "b/=y: " << b << endl;
+    cout << "x/=y: " << x << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   b /= a;
-   x /= a;
-   cout << "b/=a: " << b << endl;
-   cout << "x/=a: " << x << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    b /= a;
+    x /= a;
+    cout << "b/=a: " << b << endl;
+    cout << "x/=a: " << x << endl;
   }
 
-  // Various 
+  // Various
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   b *= a;
-   cout << "b*=a: " << b << endl;
-   b *= b;
-   cout << "b*=a*=b: " << b << endl;
-   b *= x;
-   cout << "b*=a*=b*=x: " << b << endl;
-   b *= y;
-   cout << "b*=a*=b*=x*=y: " << b << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    b *= a;
+    cout << "b*=a: " << b << endl;
+    b *= b;
+    cout << "b*=a*=b: " << b << endl;
+    b *= x;
+    cout << "b*=a*=b*=x: " << b << endl;
+    b *= y;
+    cout << "b*=a*=b*=x*=y: " << b << endl;
   }
   {
-   SparseDiff<Double> a(3,0), b(5,1), x(7);
-   Double y(11);
-   a *= x;
-   b *= y;
-   cout << "a*=x: " << a << endl;
-   cout << "b*=y: " << b << endl;
+    SparseDiff<Double> a(3, 0), b(5, 1), x(7);
+    Double y(11);
+    a *= x;
+    b *= y;
+    cout << "a*=x: " << a << endl;
+    cout << "b*=y: " << b << endl;
   }
-
 
   // No need to use the function object, just calculate the expression:
-  cout << "Same...:    " << (pow(a1,3.0)*pow(b1,2.0)*x1) << endl;
+  cout << "Same...:    " << (pow(a1, 3.0) * pow(b1, 2.0) * x1) << endl;
   /*
 
   // Use the specialization:
@@ -321,7 +331,6 @@ int main() {
   */
 }
 
-
 template class f<Double>;
-template class f<SparseDiff<Double> >;
-///template class f<SparseDiff<SparseDiff<Double> > >;
+template class f<SparseDiff<Double>>;
+/// template class f<SparseDiff<SparseDiff<Double> > >;

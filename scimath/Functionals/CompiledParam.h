@@ -1,38 +1,38 @@
-//# CompiledParam.h: Parameters for a compiled string function
-//# Copyright (C) 2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # CompiledParam.h: Parameters for a compiled string function
+// # Copyright (C) 2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_COMPILEDPARAM_H
 #define SCIMATH_COMPILEDPARAM_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Functionals/FuncExpression.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Parameters for a compiled string function object.
@@ -51,7 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Given a string describing an expression
 // (see <linkto class=FuncExpression>FuncExpression</linkto> class for
 // details of the expression), the <src>CompiledFunction</src>class wraps
-// this expression as a 
+// this expression as a
 // Function (see <linkto class=Function>Function</linkto> class) which can
 // be used in all places where functions can be used (e.g. see
 // <linkto module=Fitting>Fitting</linkto>).
@@ -100,35 +100,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> Nothing I know of
 // </todo>
 
-template <class T> class CompiledParam : public Function<T> {
+template <class T>
+class CompiledParam : public Function<T> {
  public:
-  //# Constructors
-  // The default constructor -- no functions, no parameters, nothing, the
-  // function operator returns a 0.
+  // # Constructors
+  //  The default constructor -- no functions, no parameters, nothing, the
+  //  function operator returns a 0.
   CompiledParam();
   // Make this object a (deep) copy of other.
   // <group>
   CompiledParam(const CompiledParam<T> &other);
   template <class W>
-    CompiledParam(const CompiledParam<W> &other) :
-    Function<T>(other), ndim_p(other.ndim()), msg_p(other.errorMessage()),
-    text_p(other.getText()),
-    functionPtr_p(new FuncExpression(*other.getFunctionPtr())) {}
+  CompiledParam(const CompiledParam<W> &other)
+      : Function<T>(other),
+        ndim_p(other.ndim()),
+        msg_p(other.errorMessage()),
+        text_p(other.getText()),
+        functionPtr_p(new FuncExpression(*other.getFunctionPtr())) {}
   // </group>
   // Make this object a (deep) copy of other.
   CompiledParam<T> &operator=(const CompiledParam<T> &other);
   // Destructor
   virtual ~CompiledParam();
 
-  //# Operators
-  
-  //# Member functions
-  // Give name of function
-  virtual const String &name() const { static String x("compiled");
-    return x; }
+  // # Operators
+
+  // # Member functions
+  //  Give name of function
+  virtual const String &name() const {
+    static String x("compiled");
+    return x;
+  }
 
   // Set a function. The return will be False (and an error message will be
-  // set) if a compilation error occurs 
+  // set) if a compilation error occurs
   Bool setFunction(const String &newFunction);
 
   // Return the error message of the compilation
@@ -144,27 +149,24 @@ template <class T> class CompiledParam : public Function<T> {
   const String &getText() const { return text_p; }
 
   // Returns the function pointer (for debugging)
-  const FuncExpression* getFunctionPtr() const {
-    return functionPtr_p; }
+  const FuncExpression *getFunctionPtr() const { return functionPtr_p; }
 
-protected:
-  //# Data
-  // Number of dimensions of underlying function
+ protected:
+  // # Data
+  //  Number of dimensions of underlying function
   uInt ndim_p;
   // Possible error message
   String msg_p;
   // Input text string
   String text_p;
-  
+
   // Pointer to function
   FuncExpression *functionPtr_p;
-
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/CompiledParam.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

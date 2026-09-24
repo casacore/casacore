@@ -1,27 +1,27 @@
-//# SampledFunctional.h:
-//# Copyright (C) 1996,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SampledFunctional.h:
+// # Copyright (C) 1996,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_SAMPLEDFUNCTIONAL_H
 #define SCIMATH_SAMPLEDFUNCTIONAL_H
@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicMath/Functional.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> A base class for indexing into arbitrary data types </summary>
 
@@ -51,7 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // This abstract class defines an interface for functions that map from the
 // unsigned integers to an arbitrary type. It defines two functions: the
 // operator() function which it inherits from the Functional class, and the
-// nelements function which is necessary to know how many data elements. 
+// nelements function which is necessary to know how many data elements.
 //
 // This class is useful for freeing the writer of other classes from having
 // to know how how a linear data set is stored or represented. For example,
@@ -83,32 +83,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <templating arg=Range>
 // <li> Templating restrictions will depend on the actual derived class that is
-// used. 
+// used.
 // </templating>
 
 // <thrown>
 // <li> Exceptions will depend on derived classes and the templating
 // arguements. This abstract class only defines an interface and does not
-// throw any exceptions. 
+// throw any exceptions.
 // </thrown>
 
 // <todo asof="1996/10/19">
 //   <li> I cannot think of anything
 // </todo>
 
-template <class Range> class SampledFunctional: 
-  public Functional<uInt, Range>
-{
-public:
+template <class Range>
+class SampledFunctional : public Functional<uInt, Range> {
+ public:
   // Access the specified element of the data
   virtual Range operator()(const uInt &index) const = 0;
   // Return the total size of the data set.
   virtual uInt nelements() const = 0;
   // The virtual destructor does nothing
-  virtual ~SampledFunctional(){}
+  virtual ~SampledFunctional() {}
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,45 +1,45 @@
-//# Gaussian1DParam.h:  Parameter handling for one-dimensional Gaussian class
-//# Copyright (C) 2001,2002,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Gaussian1DParam.h:  Parameter handling for one-dimensional Gaussian class
+// # Copyright (C) 2001,2002,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_GAUSSIAN1DPARAM_H
 #define SCIMATH_GAUSSIAN1DPARAM_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/scimath/Functionals/Function1D.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 
 // <summary>  Parameter handling for one dimensional Gaussian class.</summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian1D" 
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian1D"
 // demos="">
 // </reviewed>
 
@@ -48,13 +48,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class="Function1D">Function1D</linkto> class
 // </prerequisite>
 
-// <etymology> 
+// <etymology>
 // A 1-dimensional Gaussian's parameters.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // A <src>Gaussian1D</src> is described by a height, center, and width.
-// The parameters (height, center and width) may be changed at run time. 
+// The parameters (height, center and width) may be changed at run time.
 //
 // The width of the Gaussian (for the constructors or the <src>setWidth
 // </src> function) is always specified in terms of the full width at half
@@ -72,17 +72,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // its peak height but will change its flux. So you should always set the
 // width before setting the flux. </note>
 //
-// The parameter interface (see 
-// <linkto class="FunctionParam">FunctionParam</linkto> class), 
+// The parameter interface (see
+// <linkto class="FunctionParam">FunctionParam</linkto> class),
 // is used to provide an interface to the
-// <linkto module="Fitting">Fitting</linkto> classes. 
+// <linkto module="Fitting">Fitting</linkto> classes.
 //
 // There are 3 parameters that are used to describe the Gaussian:
 // <ol>
-// <li> The height of the Gaussian. This is identical to the value 
+// <li> The height of the Gaussian. This is identical to the value
 //      returned using the <src>height()</src> member function.
 // <li> The center of the Gaussian in the x direction. This is identical to
-//      the value returned using the <src>center()</src> member function. 
+//      the value returned using the <src>center()</src> member function.
 // <li> The width (FWHM) of the Gaussian. To aid convergence of
 //      the non-linear fitting routines this parameter is allowed to be
 //      negative. This does not affect the shape of the Gaussian as the
@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // An enumeration for the <src>HEIGHT</src>, <src>WIDTH</src> and
 // <src>CENTER</src> parameter index is provided, enabling the setting
-// and reading of parameters with the <src>[]</src> operator. The 
+// and reading of parameters with the <src>[]</src> operator. The
 // <src>mask()</src> methods can be used to check and set the parameter masks.
 //
 // This class is in general used implicitly by the <src>Gaussian1D</src>
@@ -103,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    Gaussian1D<Double> gf(5.0, 25.0, 7);
 //    gf(25);            // = 5.0
 //    gf.setHeight(1.0);
-//    gf[WIDTH](2.0);                
+//    gf[WIDTH](2.0);
 //    gf[CENTER](0.0);
 //    gf(1);             // = 0.5*height = 0.5
 // </srcblock>
@@ -123,17 +123,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class Gaussian1DParam : public Function1D<T> {
-public:
-  //# Enumerations
-  enum { HEIGHT=0, CENTER, WIDTH };
-  
-  //# Constructors
-  // Constructs the one dimensional Gaussians. Defaults:
-  // height=1, center=0, width(FWHM)=1.
-  // <note role=warning> Could not use default arguments
-  // that worked both with gcc and IRIX and all templates</note>
-  // <group>
+template <class T>
+class Gaussian1DParam : public Function1D<T> {
+ public:
+  // # Enumerations
+  enum { HEIGHT = 0, CENTER, WIDTH };
+
+  // # Constructors
+  //  Constructs the one dimensional Gaussians. Defaults:
+  //  height=1, center=0, width(FWHM)=1.
+  //  <note role=warning> Could not use default arguments
+  //  that worked both with gcc and IRIX and all templates</note>
+  //  <group>
   Gaussian1DParam();
   explicit Gaussian1DParam(const T &height);
   Gaussian1DParam(const T &height, const T &center);
@@ -144,22 +145,23 @@ public:
   // <group>
   Gaussian1DParam(const Gaussian1DParam<T> &other);
   template <class W>
-    Gaussian1DParam(const Gaussian1DParam<W> &other) :
-    Function1D<T>(other),
-    fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {}
+  Gaussian1DParam(const Gaussian1DParam<W> &other)
+      : Function1D<T>(other), fwhm2int(T(1.0) / sqrt(log(T(16.0)))) {}
   // </group>
   // Copy assignment (deep copy)
   Gaussian1DParam<T> &operator=(const Gaussian1DParam<T> &other);
-    
+
   // Destructor
   virtual ~Gaussian1DParam();
 
-  //# Operators    
+  // # Operators
 
-  //# Member functions
-  // Give name of function
-  virtual const String &name() const { static String x("gaussian1d");
-    return x; }
+  // # Member functions
+  //  Give name of function
+  virtual const String &name() const {
+    static String x("gaussian1d");
+    return x;
+  }
 
   // Get or set the peak height of the Gaussian
   // <group>
@@ -186,21 +188,21 @@ public:
   void setWidth(const T &width) { param_p[WIDTH] = width; }
   // </group>
 
-protected:
+ protected:
   // Constant to scale halfwidth at 1/e to FWHM
-  T fwhm2int; 
+  T fwhm2int;
 
-  //# Make members of parent classes known.
-protected:
+  // # Make members of parent classes known.
+ protected:
   using Function1D<T>::param_p;
-public:
+
+ public:
   using Function1D<T>::nparameters;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/Gaussian1DParam.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

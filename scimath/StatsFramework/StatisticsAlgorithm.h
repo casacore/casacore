@@ -1,27 +1,27 @@
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-//#
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
+// #
 
 #ifndef SCIMATH_STATISTICSALGORITHM_H
 #define SCIMATH_STATISTICSALGORITHM_H
@@ -130,271 +130,218 @@ namespace casacore {
 // QuantileComputer classes should never be explicitly instantiated in code
 // which uses the StatsFramework API.
 
-template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
-    class WeightsIterator=DataIterator
->
+template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+          class WeightsIterator = DataIterator>
 class StatisticsAlgorithm {
+ public:
+  virtual ~StatisticsAlgorithm();
 
-public:
+  // Clone this instance
+  virtual StatisticsAlgorithm<CASA_STATP>* clone() const = 0;
 
-    virtual ~StatisticsAlgorithm();
+  // <group>
+  // Add a dataset to an existing set of datasets on which statistics are to
+  // be calculated. nr is the number of points to be considered. If
+  // <src>dataStride</src> is greater than 1, when
+  // <src>nrAccountsForStride</src>=True indicates that the stride has been
+  // taken into account in the value of <src>nr</src>. Otherwise, it has not
+  // so that the actual number of points to include is nr/dataStride if
+  // nr % dataStride == 0 or (int)(nr/dataStride) + 1 otherwise. if one calls
+  // this method after a data provider has been set, an exception will be
+  // thrown. In this case, one should call setData(), rather than addData(),
+  // to indicate that the underlying data provider should be removed.
+  // <src>dataRanges</src> provide the ranges of data to include if
+  // <src>isInclude</src> is True, or ranges of data to exclude if
+  // <src>isInclude</src> is False. If a datum equals the end point of a data
+  // range, it is considered good (included) if <src>isInclude</src> is True,
+  // and it is considered bad (excluded) if <src>isInclude</src> is False.
 
-    // Clone this instance
-    virtual StatisticsAlgorithm<CASA_STATP>* clone() const = 0;
+  void addData(const DataIterator& first, uInt nr, uInt dataStride = 1,
+               Bool nrAccountsForStride = False);
 
-    // <group>
-    // Add a dataset to an existing set of datasets on which statistics are to
-    // be calculated. nr is the number of points to be considered. If
-    // <src>dataStride</src> is greater than 1, when
-    // <src>nrAccountsForStride</src>=True indicates that the stride has been
-    // taken into account in the value of <src>nr</src>. Otherwise, it has not
-    // so that the actual number of points to include is nr/dataStride if
-    // nr % dataStride == 0 or (int)(nr/dataStride) + 1 otherwise. if one calls
-    // this method after a data provider has been set, an exception will be
-    // thrown. In this case, one should call setData(), rather than addData(),
-    // to indicate that the underlying data provider should be removed.
-    // <src>dataRanges</src> provide the ranges of data to include if
-    // <src>isInclude</src> is True, or ranges of data to exclude if
-    // <src>isInclude</src> is False. If a datum equals the end point of a data
-    // range, it is considered good (included) if <src>isInclude</src> is True,
-    // and it is considered bad (excluded) if <src>isInclude</src> is False.
+  void addData(const DataIterator& first, uInt nr, const DataRanges& dataRanges,
+               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False);
 
-    void addData(
-        const DataIterator& first, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False
-    );
+  void addData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
+               uInt dataStride = 1, Bool nrAccountsForStride = False, uInt maskStride = 1);
 
-    void addData(
-        const DataIterator& first, uInt nr,
-        const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
-        Bool nrAccountsForStride=False
-    );
+  void addData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
+               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
+               Bool nrAccountsForStride = False, uInt maskStride = 1);
 
-    void addData(
-        const DataIterator& first, const MaskIterator& maskFirst,
-        uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False,
-        uInt maskStride=1
-    );
+  void addData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
+               uInt dataStride = 1, Bool nrAccountsForStride = False);
 
-    void addData(
-        const DataIterator& first, const MaskIterator& maskFirst,
-        uInt nr, const DataRanges& dataRanges, Bool isInclude=True,
-        uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
-    );
+  void addData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
+               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
+               Bool nrAccountsForStride = False);
 
-    void addData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False
-    );
+  void addData(const DataIterator& first, const WeightsIterator& weightFirst,
+               const MaskIterator& maskFirst, uInt nr, uInt dataStride = 1,
+               Bool nrAccountsForStride = False, uInt maskStride = 1);
 
-    void addData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        uInt nr, const DataRanges& dataRanges, Bool isInclude=True,
-        uInt dataStride=1, Bool nrAccountsForStride=False
-    );
+  void addData(const DataIterator& first, const WeightsIterator& weightFirst,
+               const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
+               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False,
+               uInt maskStride = 1);
+  // </group>
 
-    void addData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False, uInt maskStride=1
-    );
+  // get the algorithm that this object uses for computing stats
+  virtual StatisticsData::ALGORITHM algorithm() const = 0;
 
-    void addData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-        Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
-        uInt maskStride=1
-    );
-    // </group>
+  virtual AccumType getMedian(std::shared_ptr<uInt64> knownNpts = nullptr,
+                              std::shared_ptr<AccumType> knownMin = nullptr,
+                              std::shared_ptr<AccumType> knownMax = nullptr,
+                              uInt binningThreshholdSizeBytes = 4096 * 4096,
+                              Bool persistSortedArray = False, uInt nBins = 10000) = 0;
 
-    // get the algorithm that this object uses for computing stats
-    virtual StatisticsData::ALGORITHM algorithm() const = 0;
+  // The return value is the median; the quantiles are returned in the
+  // <src>quantileToValue</src> map.
+  virtual AccumType getMedianAndQuantiles(std::map<Double, AccumType>& quantileToValue,
+                                          const std::set<Double>& quantiles,
+                                          std::shared_ptr<uInt64> knownNpts = nullptr,
+                                          std::shared_ptr<AccumType> knownMin = nullptr,
+                                          std::shared_ptr<AccumType> knownMax = nullptr,
+                                          uInt binningThreshholdSizeBytes = 4096 * 4096,
+                                          Bool persistSortedArray = False, uInt nBins = 10000) = 0;
 
-    virtual AccumType getMedian(
-        std::shared_ptr<uInt64> knownNpts=nullptr,
-        std::shared_ptr<AccumType> knownMin=nullptr,
-        std::shared_ptr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
-    ) = 0;
+  // get the median of the absolute deviation about the median of the data.
+  virtual AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
+                                       std::shared_ptr<AccumType> knownMin = nullptr,
+                                       std::shared_ptr<AccumType> knownMax = nullptr,
+                                       uInt binningThreshholdSizeBytes = 4096 * 4096,
+                                       Bool persistSortedArray = False, uInt nBins = 10000) = 0;
 
-    // The return value is the median; the quantiles are returned in the
-    // <src>quantileToValue</src> map.
-    virtual AccumType getMedianAndQuantiles(
-        std::map<Double, AccumType>& quantileToValue,
-        const std::set<Double>& quantiles,
-        std::shared_ptr<uInt64> knownNpts=nullptr,
-        std::shared_ptr<AccumType> knownMin=nullptr,
-        std::shared_ptr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
-    ) = 0;
+  // Purposefully not virtual. Derived classes should not implement.
+  AccumType getQuantile(Double quantile, std::shared_ptr<uInt64> knownNpts = nullptr,
+                        std::shared_ptr<AccumType> knownMin = nullptr,
+                        std::shared_ptr<AccumType> knownMax = nullptr,
+                        uInt binningThreshholdSizeBytes = 4096 * 4096,
+                        Bool persistSortedArray = False, uInt nBins = 10000);
 
-    // get the median of the absolute deviation about the median of the data.
-    virtual AccumType getMedianAbsDevMed(
-        std::shared_ptr<uInt64> knownNpts=nullptr,
-        std::shared_ptr<AccumType> knownMin=nullptr,
-        std::shared_ptr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
-    ) = 0;
+  // get a map of quantiles to values.
+  virtual std::map<Double, AccumType> getQuantiles(const std::set<Double>& quantiles,
+                                                   std::shared_ptr<uInt64> npts = nullptr,
+                                                   std::shared_ptr<AccumType> min = nullptr,
+                                                   std::shared_ptr<AccumType> max = nullptr,
+                                                   uInt binningThreshholdSizeBytes = 4096 * 4096,
+                                                   Bool persistSortedArray = False,
+                                                   uInt nBins = 10000) = 0;
 
-    // Purposefully not virtual. Derived classes should not implement.
-    AccumType getQuantile(
-        Double quantile, std::shared_ptr<uInt64> knownNpts=nullptr,
-        std::shared_ptr<AccumType> knownMin=nullptr,
-        std::shared_ptr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
-    );
+  // get the value of the specified statistic. Purposefully not virtual.
+  // Derived classes should not implement.
+  AccumType getStatistic(StatisticsData::STATS stat);
 
-    // get a map of quantiles to values.
-    virtual std::map<Double, AccumType> getQuantiles(
-        const std::set<Double>& quantiles, std::shared_ptr<uInt64> npts=nullptr,
-        std::shared_ptr<AccumType> min=nullptr, std::shared_ptr<AccumType> max=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
-    ) = 0;
+  // certain statistics such as max and min have locations in the dataset
+  // associated with them. This method gets those locations. The first value
+  // in the returned pair is the zero-based dataset number that was set or
+  // added. The second value is the zero-based index in that dataset. A data
+  // stride of greater than one is not accounted for, so the index represents
+  // the actual location in the data set, independent of the dataStride value.
+  virtual LocationType getStatisticIndex(StatisticsData::STATS stat) = 0;
 
-    // get the value of the specified statistic. Purposefully not virtual.
-    // Derived classes should not implement.
-    AccumType getStatistic(StatisticsData::STATS stat);
+  // Return statistics. Purposefully not virtual. Derived classes should not
+  // implement.
+  StatsData<AccumType> getStatistics();
 
-    // certain statistics such as max and min have locations in the dataset
-    // associated with them. This method gets those locations. The first value
-    // in the returned pair is the zero-based dataset number that was set or
-    // added. The second value is the zero-based index in that dataset. A data
-    // stride of greater than one is not accounted for, so the index represents
-    // the actual location in the data set, independent of the dataStride value.
-    virtual LocationType getStatisticIndex(StatisticsData::STATS stat) = 0;
+  // reset this object by clearing data.
+  virtual void reset();
 
-    // Return statistics. Purposefully not virtual. Derived classes should not
-    // implement.
-    StatsData<AccumType> getStatistics();
+  // <group>
+  // setdata() clears any current datasets or data provider and then adds the
+  // specified data set as the first dataset in the (possibly new) set of data
+  // sets for which statistics are to be calculated. See addData() for
+  // parameter meanings. These methods are purposefully not virtual. Derived
+  // classes should not implement.
+  void setData(const DataIterator& first, uInt nr, uInt dataStride = 1,
+               Bool nrAccountsForStride = False);
 
-    // reset this object by clearing data.
-    virtual void reset();
+  void setData(const DataIterator& first, uInt nr, const DataRanges& dataRanges,
+               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False);
 
-    // <group>
-    // setdata() clears any current datasets or data provider and then adds the
-    // specified data set as the first dataset in the (possibly new) set of data
-    // sets for which statistics are to be calculated. See addData() for
-    // parameter meanings. These methods are purposefully not virtual. Derived
-    // classes should not implement.
-    void setData(
-        const DataIterator& first, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False
-    );
+  void setData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
+               uInt dataStride = 1, Bool nrAccountsForStride = False, uInt maskStride = 1);
 
-    void setData(
-        const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-        Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False
-    );
+  void setData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
+               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
+               Bool nrAccountsForStride = False, uInt maskStride = 1);
 
-    void setData(
-        const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-        uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
-    );
+  void setData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
+               uInt dataStride = 1, Bool nrAccountsForStride = False);
 
-    void setData(
-        const DataIterator& first, const MaskIterator& maskFirst,
-        uInt nr, const DataRanges& dataRanges, Bool isInclude=True,
-        uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
-    );
+  void setData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
+               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
+               Bool nrAccountsForStride = False);
 
-    void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-        uInt dataStride=1, Bool nrAccountsForStride=False
-    );
+  void setData(const DataIterator& first, const WeightsIterator& weightFirst,
+               const MaskIterator& maskFirst, uInt nr, uInt dataStride = 1,
+               Bool nrAccountsForStride = False, uInt maskStride = 1);
 
-    void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-        const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
-        Bool nrAccountsForStride=False
-    );
+  void setData(const DataIterator& first, const WeightsIterator& weightFirst,
+               const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
+               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False,
+               uInt maskStride = 1);
+  // </group>
 
-    void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False, uInt maskStride=1
-    );
+  // instead of setting and adding data "by hand", set the data provider
+  // that will provide all the data sets. Calling this method will clear
+  // any other data sets that have previously been set or added. Method
+  // is virtual to allow derived classes to carry out any necessary
+  // specialized accounting when resetting the data provider.
+  virtual void setDataProvider(StatsDataProvider<CASA_STATP>* dataProvider);
 
-    void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-        Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
-        uInt maskStride=1
-    );
-    // </group>
+  // Provide guidance to algorithms by specifying a priori which statistics
+  // the caller would like calculated.
+  virtual void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 
-    // instead of setting and adding data "by hand", set the data provider
-    // that will provide all the data sets. Calling this method will clear
-    // any other data sets that have previously been set or added. Method
-    // is virtual to allow derived classes to carry out any necessary
-    // specialized accounting when resetting the data provider.
-    virtual void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider);
+ protected:
+  StatisticsAlgorithm();
 
-    // Provide guidance to algorithms by specifying a priori which statistics
-    // the caller would like calculated.
-    virtual void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
+  // use copy semantics, except for the data provider which uses reference
+  // semantics
+  StatisticsAlgorithm(const StatisticsAlgorithm& other);
 
-protected:
-    StatisticsAlgorithm();
+  // use copy semantics, except for the data provider which uses reference
+  // semantics
+  StatisticsAlgorithm& operator=(const StatisticsAlgorithm& other);
 
-    // use copy semantics, except for the data provider which uses reference
-    // semantics
-    StatisticsAlgorithm(const StatisticsAlgorithm& other);
+  // Allows derived classes to do things after data is set or added.
+  // Default implementation does nothing.
+  virtual void _addData() {}
 
-    // use copy semantics, except for the data provider which uses reference
-    // semantics
-    StatisticsAlgorithm& operator=(const StatisticsAlgorithm& other);
+  // <group>
+  // These methods are purposefully not virtual. Derived classes should
+  // not implement.
+  const StatisticsDataset<CASA_STATP>& _getDataset() const { return _dataset; }
 
-    // Allows derived classes to do things after data is set or added.
-    // Default implementation does nothing.
-    virtual void _addData() {}
+  StatisticsDataset<CASA_STATP>& _getDataset() { return _dataset; }
+  // </group>
 
-    // <group>
-    // These methods are purposefully not virtual. Derived classes should
-    // not implement.
-    const StatisticsDataset<CASA_STATP>& _getDataset() const {
-        return _dataset;
-    }
-    
-    StatisticsDataset<CASA_STATP>& _getDataset() { return _dataset; }
-    // </group>
+  virtual AccumType _getStatistic(StatisticsData::STATS stat) = 0;
 
-    virtual AccumType _getStatistic(StatisticsData::STATS stat) = 0;
+  virtual StatsData<AccumType> _getStatistics() = 0;
 
-    virtual StatsData<AccumType> _getStatistics() = 0;
+  const std::set<StatisticsData::STATS> _getStatsToCalculate() const { return _statsToCalculate; }
 
-    const std::set<StatisticsData::STATS> _getStatsToCalculate() const {
-        return _statsToCalculate;
-    }
+  virtual const std::set<StatisticsData::STATS>& _getUnsupportedStatistics() const {
+    return _unsupportedStats;
+  }
 
-    virtual const std::set<StatisticsData::STATS>&
-    _getUnsupportedStatistics() const {
-        return _unsupportedStats;
-    }
+  // Derived classes should normally call this in their constructors, if
+  // applicable.
+  void _setUnsupportedStatistics(const std::set<StatisticsData::STATS>& stats) {
+    _unsupportedStats = stats;
+  }
 
-    // Derived classes should normally call this in their constructors, if
-    // applicable.
-    void _setUnsupportedStatistics(
-        const std::set<StatisticsData::STATS>& stats
-    ) {
-        _unsupportedStats = stats;
-    }
+ private:
+  std::set<StatisticsData::STATS> _statsToCalculate{}, _unsupportedStats{};
+  StatisticsDataset<CASA_STATP> _dataset{};
+  Bool _resetDataset{True};
 
-private:
-    std::set<StatisticsData::STATS> _statsToCalculate{}, _unsupportedStats{};
-    StatisticsDataset<CASA_STATP> _dataset{};
-    Bool _resetDataset{True};
-
-    void _resetExceptDataset();
-
+  void _resetExceptDataset();
 };
 
-}
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithm.tcc>

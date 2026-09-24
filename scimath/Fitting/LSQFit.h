@@ -1,32 +1,32 @@
-//# LSQFit.h: Basic class for least squares fitting
-//# Copyright (C) 1999-2001,2004-2008
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LSQFit.h: Basic class for least squares fitting
+// # Copyright (C) 1999-2001,2004-2008
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_LSQFIT_H
 #define SCIMATH_LSQFIT_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/scimath/Fitting/LSQMatrix.h>
@@ -36,10 +36,10 @@
 #include <utility>
 #include <vector>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
- 
+// # Forward Declarations
+
 // <summary> Basic class for the least squares fitting </summary>
 // <reviewed reviewer="Neil Killeen" date="2000/06/01" tests="tLSQFit"
 //	 demos="">
@@ -47,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <prerequisite>
 //   <li> Some knowledge of Matrix operations
-//   <li> The background information provided in 
+//   <li> The background information provided in
 //        <a href="../notes/224.html">Note 224</a>.
 //   <li> <linkto module="Fitting">Fitting module</linkto>
 // </prerequisite>
@@ -58,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 // The LSQFit class contains the basic functions to do all the fitting
-// described in the 
+// described in the
 // <a href="../notes/224.html">Note</a>
 // about fitting.
 // It handles real, and complex equations;<br>
@@ -80,8 +80,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // This class can  be used as a stand-alone class outside of the Casacore
 // environment.  In that case the aips.h include file
-// can be replaced if necessary by appropriate typedefs for Double, Float and 
-// uInt.<br> 
+// can be replaced if necessary by appropriate typedefs for Double, Float and
+// uInt.<br>
 // The interface to the methods have standard data or standard STL iterator
 // arguments only. They can be used with any container having an STL
 // random-access iterator interface. Especially they can be used with
@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // standard random access STL containers (like <src>std::vector</src>).
 //
 // The normal operation of the class consists of the following steps:
-// <ul> 
+// <ul>
 // <li> Create an LSQFit object.
 //      The information that can be provided in the constructor of the object,
 // either directly, or indirectly using the <src>set()</src> commands, is
@@ -109,7 +109,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // a column in the normal equations, and the hyper-plane through
 // all the other columns. In special cases (e.g. fitting a polynomial
 // in a very narrow bandwidth window, it could be advisable to set this
-// factor to zero if you want a solution (whatever the truth of it maybe). 
+// factor to zero if you want a solution (whatever the truth of it maybe).
 // </note>
 //  <li> A Levenberg-Marquardt adjustment factor (if appropriate,
 //        defaults to 1e-3)
@@ -151,7 +151,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // a non-zero code indicating the ready reason. Reasons for stopping can be:
 // <ul>
 // <li> SOLINCREMENT: the relative change in the norm of the parameter
-// solutions is less than 
+// solutions is less than
 // (a settable, <src>setEpsValue()</src>, default 1e-8) value.
 // <li> DERIVLEVEL: the inf-norm of the known vector of the equations to be
 // solved is less than the settable, <src>setEpsDerivative()</src>, default
@@ -164,10 +164,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> SINGULAR: can only happen due to numeric rounding, since the LM
 // equations are always positive-definite. Best solution is to indicate SVD
 // needed in the <src>solveLoop</src> call, which is cost-free
-// </ul> 
+// </ul>
 //
-// <li>Covariance information in various forms can be obtained with the 
-// <src>getCovariance(), getErrors()</src>, <src>getChi()</src> 
+// <li>Covariance information in various forms can be obtained with the
+// <src>getCovariance(), getErrors()</src>, <src>getChi()</src>
 // (or <src>getChi2</src>), <src>getSD</src> and <src>getWeightedSD</src>
 // methods after a <src>solve()</src> or after the final loop in a non-linear
 // solution (of course, when necessary only).
@@ -195,7 +195,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // The member definitions are split over three files. The second
 // one contains the templated member function definitions, to bypass the
-// problem of duplicate definitions of non-templated members when 
+// problem of duplicate definitions of non-templated members when
 // pre-compiling them. The third contains methods for saving objects as
 // Records or through AipsIO.
 //
@@ -207,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // checked for usage of LSQFit.
 // </note>
 //
-// The contents can be saved in a record (<src>toRecord</src>), 
+// The contents can be saved in a record (<src>toRecord</src>),
 // and an object can be created from a record (<src>fromRecord</src>).
 // The record identifier is 'lfit'.
 // <br>The object can also be saved or restored using AipsIO.
@@ -216,16 +216,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // See the tLSQFit.cc and tLSQaips.cc program for extensive examples.
 //
-// The following example will first create 2 condition equations for 
+// The following example will first create 2 condition equations for
 // 3 unknowns (the third is degenerate). It will first create normal equations
 // for a 2 unknown solution and solve; then it will create normal equations
 // for a 3 unknown solution, and solve (note that the degenerate will be
-// set to 0. The last one will use SVD and one condition equation.r 
+// set to 0. The last one will use SVD and one condition equation.r
 // <srcblock>
 //   #include <casacore/casa/aips.h>
 //   #include <casacore/scimath/Fitting/LSQFit.h>
 //   #include <iostream>
-//   
+//
 //   int main() {
 //     // Condition equations for x+y=2; x-y=4;
 //     Double ce[2][3] = {{1, 1, 0}, {1, -1, 0}};
@@ -235,10 +235,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     Double sd, mu;
 //     uInt rank;
 //     Bool ok;
-//   
+//
 //     // LSQ object
 //     LSQFit fit(2);
-//   
+//
 //     // Make normal equation
 //     for (uInt i=0; i<2; i++) fit.makeNorm(ce[i], 1.0, m[i]);
 //     // Invert(decompose) and show
@@ -250,8 +250,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 //       cout << "sd: "<< sd << "; mu: " << mu << endl;
 //     };
-//     cout << "----------" << endl; 
-//   
+//     cout << "----------" << endl;
+//
 //     // Retry with 3 unknowns: note auto fill of unmentioned one
 //     fit.set(uInt(3));
 //     for (uInt i=0; i<2; i++) fit.makeNorm(ce[i], 1.0, m[i]);
@@ -260,10 +260,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     if (ok) {
 //       fit.solve(sol, &sd, &mu);
 //       for (uInt i=0; i<3; i++) cout << "Sol" << i << ": " << sol[i] << endl;
-//       cout << "sd: "<< sd << "; mu: " << mu << endl; 
+//       cout << "sd: "<< sd << "; mu: " << mu << endl;
 //     };
-//     cout << "----------" << endl; 
-//   
+//     cout << "----------" << endl;
+//
 //     // Retry with 3 unknowns; but 1 condition equation and use SVD
 //     fit.reset();
 //     for (uInt i=0; i<1; i++) fit.makeNorm(ce[i], 1.0, m[i]);
@@ -272,10 +272,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     if (ok) {
 //       fit.solve(sol, &sd, &mu);
 //       for (uInt i=0; i<3; i++) cout << "Sol" << i << ": " << sol[i] << endl;
-//       cout << "sd: "<< sd << "; mu: " << mu << endl; 
+//       cout << "sd: "<< sd << "; mu: " << mu << endl;
 //     };
-//     cout << "----------" << endl; 
-//   
+//     cout << "----------" << endl;
+//
 //     // Without SVD it would be:
 //     fit.reset();
 //     for (uInt i=0; i<1; i++) fit.makeNorm(ce[i], 1.0, m[i]);
@@ -284,10 +284,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     if (ok) {
 //       fit.solve(sol, &sd, &mu);
 //       for (uInt i=0; i<3; i++) cout << "Sol" << i << ": " << sol[i] << endl;
-//       cout << "sd: "<< sd << "; mu: " << mu << endl; 
+//       cout << "sd: "<< sd << "; mu: " << mu << endl;
 //     };
-//     cout << "----------" << endl; 
-//   
+//     cout << "----------" << endl;
+//
 //     exit(0);
 //   }
 // </srcblock>
@@ -328,22 +328,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class LSQFit {
  public:
   // Simple classes to overload templated memberfunctions
-  struct Real      { enum normType { REAL }; };
-  struct Complex   { enum normType { COMPLEX }; };
-  struct Separable { enum normType { SEPARABLE }; };
-  struct AsReal    { enum normType { ASREAL }; };
-  struct Conjugate { enum normType { CONJUGATE }; };
+  struct Real {
+    enum normType { REAL };
+  };
+  struct Complex {
+    enum normType { COMPLEX };
+  };
+  struct Separable {
+    enum normType { SEPARABLE };
+  };
+  struct AsReal {
+    enum normType { ASREAL };
+  };
+  struct Conjugate {
+    enum normType { CONJUGATE };
+  };
   // And values to use
-  static Real      REAL;
-  static Complex   COMPLEX;
+  static Real REAL;
+  static Complex COMPLEX;
   static Separable SEPARABLE;
-  static AsReal    ASREAL;
+  static AsReal ASREAL;
   static Conjugate CONJUGATE;
 
-  //# Public enums
-  // State of the non-linear solution
+  // # Public enums
+  //  State of the non-linear solution
   enum ReadyCode {
-    NONREADY=0,
+    NONREADY = 0,
     SOLINCREMENT,
     DERIVLEVEL,
     MAXITER,
@@ -364,17 +374,17 @@ class LSQFit {
     // Number of error fields
     N_ErrorField
   };
-  //# Constructors
-  // Construct an object with the number of unknowns and
-  // constraints, using the default collinearity factor and the
-  // default Levenberg-Marquardt adjustment factor.
-  // <group>
-  // Assume real
-  explicit LSQFit(uInt nUnknowns, uInt nConstraints=0);
+  // # Constructors
+  //  Construct an object with the number of unknowns and
+  //  constraints, using the default collinearity factor and the
+  //  default Levenberg-Marquardt adjustment factor.
+  //  <group>
+  //  Assume real
+  explicit LSQFit(uInt nUnknowns, uInt nConstraints = 0);
   // Allow explicit Real specification
-  LSQFit(uInt nUnknowns, const LSQReal &, uInt nConstraints=0);
+  LSQFit(uInt nUnknowns, const LSQReal &, uInt nConstraints = 0);
   // Allow explicit Complex specification
-  LSQFit(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0);
+  LSQFit(uInt nUnknowns, const LSQComplex &, uInt nConstraints = 0);
   // </group>
   // Default constructor (empty, only usable after a <src>set(nUnknowns)</src>)
   LSQFit();
@@ -383,55 +393,55 @@ class LSQFit {
   // Assignment (deep copy)
   LSQFit &operator=(const LSQFit &other);
 
-  //# Destructor
+  // # Destructor
   ~LSQFit();
 
-  //# Operators
+  // # Operators
 
-  //# General Member Functions
-  // Triangularize the normal equations and determine
-  // the rank <src>nRank</src> of the normal equations and, in the case of
-  // an <src>SVD</src> solution,  the constraint
-  // equations. The collinearity factor is used
-  // to determine if the system can be solved (in essence it is the square
-  // of the sine of the angle between a column in the normal equations and
-  // the plane suspended by the other columns: if too
-  // parallel, the equations are degenerate).
-  // If <src>doSVD</src> is given as False, False is returned if rank not
-  // maximal, else an <src>SVD</src> solution is done.
-  Bool invert(uInt &nRank, Bool doSVD=False);
+  // # General Member Functions
+  //  Triangularize the normal equations and determine
+  //  the rank <src>nRank</src> of the normal equations and, in the case of
+  //  an <src>SVD</src> solution,  the constraint
+  //  equations. The collinearity factor is used
+  //  to determine if the system can be solved (in essence it is the square
+  //  of the sine of the angle between a column in the normal equations and
+  //  the plane suspended by the other columns: if too
+  //  parallel, the equations are degenerate).
+  //  If <src>doSVD</src> is given as False, False is returned if rank not
+  //  maximal, else an <src>SVD</src> solution is done.
+  Bool invert(uInt &nRank, Bool doSVD = False);
   // Copy date from beg to end; converting if necessary to complex data
   // <group>
   template <class U>
-    void copy(const Double *beg, const Double *end, U &sol, LSQReal); 
+  void copy(const Double *beg, const Double *end, U &sol, LSQReal);
   template <class U>
-    void copy(const Double *beg, const Double *end, U &sol, LSQComplex); 
+  void copy(const Double *beg, const Double *end, U &sol, LSQComplex);
   template <class U>
-    void copy(const Double *beg, const Double *end, U *sol, LSQReal); 
+  void copy(const Double *beg, const Double *end, U *sol, LSQReal);
   template <class U>
-    void copy(const Double *beg, const Double *end, U *sol, LSQComplex); 
+  void copy(const Double *beg, const Double *end, U *sol, LSQComplex);
   template <class U>
-    void uncopy(Double *beg, const Double *end, U &sol, LSQReal); 
+  void uncopy(Double *beg, const Double *end, U &sol, LSQReal);
   template <class U>
-    void uncopy(Double *beg, const Double *end, U &sol, LSQComplex); 
+  void uncopy(Double *beg, const Double *end, U &sol, LSQComplex);
   template <class U>
-    void uncopy(Double *beg, const Double *end, U *sol, LSQReal); 
+  void uncopy(Double *beg, const Double *end, U *sol, LSQReal);
   template <class U>
-    void uncopy(Double *beg, const Double *end, U *sol, LSQComplex); 
+  void uncopy(Double *beg, const Double *end, U *sol, LSQComplex);
   template <class U>
-    void copyDiagonal(U &errors, LSQReal);
+  void copyDiagonal(U &errors, LSQReal);
   template <class U>
-    void copyDiagonal(U &errors, LSQComplex);
+  void copyDiagonal(U &errors, LSQComplex);
   // </group>
   // Solve normal equations.
   // The solution will be given in <src>sol</src>.
   // <group>
   template <class U>
-    void solve(U *sol);
+  void solve(U *sol);
   template <class U>
-    void solve(std::complex<U> *sol);
+  void solve(std::complex<U> *sol);
   template <class U>
-    void solve(U &sol);
+  void solve(U &sol);
   // </group>
   // Solve a loop in a non-linear set.
   // The methods with the  <src>fit</src> argument are deprecated. Use
@@ -446,29 +456,17 @@ class LSQFit {
   // The <src>sol</src> is used for both input (parameter guess) and output.
   // <group>
   template <class U>
-    Bool solveLoop(uInt &nRank,
-		   U *sol,
-		   Bool doSVD=False);
+  Bool solveLoop(uInt &nRank, U *sol, Bool doSVD = False);
   template <class U>
-    Bool solveLoop(uInt &nRank,
-		   std::complex<U> *sol,
-		   Bool doSVD=False);
+  Bool solveLoop(uInt &nRank, std::complex<U> *sol, Bool doSVD = False);
   template <class U>
-    Bool solveLoop(uInt &nRank,
-		   U &sol,
-		   Bool doSVD=False);
+  Bool solveLoop(uInt &nRank, U &sol, Bool doSVD = False);
   template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   U *sol,
-		   Bool doSVD=False);
+  Bool solveLoop(Double &fit, uInt &nRank, U *sol, Bool doSVD = False);
   template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   std::complex<U> *sol,
-		   Bool doSVD=False);
+  Bool solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, Bool doSVD = False);
   template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   U &sol,
-		   Bool doSVD=False);
+  Bool solveLoop(Double &fit, uInt &nRank, U &sol, Bool doSVD = False);
   // </group>
   // Make normal equations using the <src>cEq</src> condition equation (cArray)
   // (with <src>nUnknowns</src> elements) and a weight <src>weight</src>,
@@ -478,7 +476,7 @@ class LSQFit {
   // to e.g. re-use existing normal equations, i.e. the condition equations,
   // but make a new known side (i.e. new observations).
   //
-  // The versions with <src>cEqIndex[]</src> indicate which of the 
+  // The versions with <src>cEqIndex[]</src> indicate which of the
   // <src>nUnknowns</src> are actually present in the condition equation
   // (starting indexing at 0); the other terms are supposed to be zero. E.g.
   // if a 12-telescope array has an equation only using telescopes 2 and 4,
@@ -509,130 +507,88 @@ class LSQFit {
   // on Solaris. Linux was ok.
   // <group>
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight, const U &obs,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const U &obs, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight, const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const U &obs, LSQFit::Real, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Complex,
+                Bool doNorm = True, Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Separable,
+                Bool doNorm = True, Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::AsReal,
+                Bool doNorm = True, Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Conjugate,
+                Bool doNorm = True, Bool doKnown = True);
   //
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight, const U &obs,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
+                Bool doNorm = True, Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const V &cEq2,
-		  const U &weight, const U &obs, const U &obs2,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
+                const U &obs, const U &obs2, Bool doNorm = True, Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight, const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
+                LSQFit::Real, Bool doNorm = True, Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                const std::complex<U> &obs, Bool doNorm = True, Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::Complex, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::Separable, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::AsReal, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::Conjugate, Bool doNorm = True,
+                Bool doKnown = True);
   //
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight, const U &obs,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight, const U &obs,
+                Bool doNorm = True, Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight, const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight, const U &obs,
+                LSQFit::Real, Bool doNorm = True, Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
+                const std::complex<U> &obs, Bool doNorm = True, Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::Complex, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::Separable, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::AsReal, Bool doNorm = True,
+                Bool doKnown = True);
   template <class U, class V>
-    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
-		  const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True);
+  void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
+                const std::complex<U> &obs, LSQFit::Conjugate, Bool doNorm = True,
+                Bool doKnown = True);
   //
   template <class U, class V, class W>
-  void makeNormSorted(uInt nIndex, const W &cEqIndex,
-		      const V &cEq, const U &weight,
-		      const U &obs,
-		      Bool doNorm=True, Bool doKnown=True);
+  void makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
+                      Bool doNorm = True, Bool doKnown = True);
   template <class U, class V, class W>
-  void makeNormSorted(uInt nIndex, const W &cEqIndex,
-		      const V &cEq, const V &cEq2, const U &weight,
-		      const U &obs, const U &obs2,
-		      Bool doNorm=True, Bool doKnown=True);
+  void makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
+                      const U &obs, const U &obs2, Bool doNorm = True, Bool doKnown = True);
   // </group>
   // Get the <src>n-th</src> (from 0 to the rank deficiency, or missing rank,
   // see e.g. <src>getDeficiency()</src>)
@@ -641,47 +597,40 @@ class LSQFit {
   // that nMissing will be equal to the number of unknowns
   // (<src>nUnknowns</src>, or double that for the complex case) minus the
   // rank as returned from the <src>invert()</src> method.
-  // <group> 
-  template <class U> 
-    Bool getConstraint(uInt n, U *cEq) const;
+  // <group>
   template <class U>
-    Bool getConstraint(uInt n, std::complex<U> *cEq) const;
+  Bool getConstraint(uInt n, U *cEq) const;
   template <class U>
-    Bool getConstraint(uInt n, U &cEq) const;
+  Bool getConstraint(uInt n, std::complex<U> *cEq) const;
+  template <class U>
+  Bool getConstraint(uInt n, U &cEq) const;
   // </group>
   // Add a new constraint equation (updating nConstraints); or set a
   // numbered constraint equation (0..nConstraints-1). False if illegal
-  // number n. The constraints are equations with <src>nUnknowns</src> terms, 
+  // number n. The constraints are equations with <src>nUnknowns</src> terms,
   // and a constant value. E.g. measuring three angles of a triangle
   // could lead to equation <src>[1,1,1]</src> with obs as
   // <src>3.1415</src>. Note that each complex constraint will be
-  // converted into two real constraints (see 
+  // converted into two real constraints (see
   // <a href="../notes/224.html">Note 224</a>).
   // <group>
   template <class U, class V>
-    Bool setConstraint(uInt n, const V &cEq, const U &obs);
+  Bool setConstraint(uInt n, const V &cEq, const U &obs);
   template <class U, class V>
-    Bool setConstraint(uInt n, const V &cEq,
-		       const std::complex<U> &obs);
+  Bool setConstraint(uInt n, const V &cEq, const std::complex<U> &obs);
   template <class U, class V, class W>
-    Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex,
-		       const V &cEq, const U &obs);
+  Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs);
   template <class U, class V, class W>
-    Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex,
-		       const V &cEq,
-		       const std::complex<U> &obs);
+  Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq,
+                     const std::complex<U> &obs);
   template <class U, class V>
-    Bool addConstraint(const V &cEq, const U &obs);
+  Bool addConstraint(const V &cEq, const U &obs);
   template <class U, class V>
-    Bool addConstraint(const V &cEq,
-		       const std::complex<U> &obs);
+  Bool addConstraint(const V &cEq, const std::complex<U> &obs);
   template <class U, class V, class W>
-    Bool addConstraint(uInt nIndex, const W &cEqIndex,
-		       const V &cEq, const U &obs);
+  Bool addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs);
   template <class U, class V, class W>
-    Bool addConstraint(uInt nIndex, const W &cEqIndex,
-		       const V &cEq,
-		       const std::complex<U> &obs);
+  Bool addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const std::complex<U> &obs);
   // </group>
   // Merge other <src>LSQFit</src> object (i.e. the normal equation and
   // related information) into <src>this</src>. Both objects must have the
@@ -699,69 +648,68 @@ class LSQFit {
   // <group>
   Bool merge(const LSQFit &other);
   Bool merge(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
-    return mergeIt(other, nIndex, nEqIndex); }
-  Bool merge(const LSQFit &other, uInt nIndex,
-	     const std::vector<uInt> &nEqIndex) {
-    return mergeIt(other, nIndex, &nEqIndex[0]); }
+    return mergeIt(other, nIndex, nEqIndex);
+  }
+  Bool merge(const LSQFit &other, uInt nIndex, const std::vector<uInt> &nEqIndex) {
+    return mergeIt(other, nIndex, &nEqIndex[0]);
+  }
   template <class W>
-    Bool merge(const LSQFit &other, uInt nIndex, const W &nEqIndex) {
+  Bool merge(const LSQFit &other, uInt nIndex, const W &nEqIndex) {
     std::vector<uInt> ix(nIndex);
-    for (uInt i=0; i<nIndex; ++i) ix[i] = nEqIndex[i];
-    return mergeIt(other, nIndex, &ix[0]); }
+    for (uInt i = 0; i < nIndex; ++i) ix[i] = nEqIndex[i];
+    return mergeIt(other, nIndex, &ix[0]);
+  }
   // </group>
   // Reset status to empty
   void reset();
   // Set new sizes (default is for Real)
   // <group>
-  void set(uInt nUnknowns, uInt nConstraints=0);
-  void set(Int nUnknowns, Int nConstraints=0) { 
-    set (static_cast<uInt>(nUnknowns), static_cast<uInt>(nConstraints));
+  void set(uInt nUnknowns, uInt nConstraints = 0);
+  void set(Int nUnknowns, Int nConstraints = 0) {
+    set(static_cast<uInt>(nUnknowns), static_cast<uInt>(nConstraints));
   };
-  void set(uInt nUnknowns, const LSQReal &, uInt nConstraints=0) {
-    set (nUnknowns, nConstraints);
+  void set(uInt nUnknowns, const LSQReal &, uInt nConstraints = 0) {
+    set(nUnknowns, nConstraints);
   };
-  void set(Int nUnknowns, const LSQReal &, Int nConstraints=0) { 
-    set (nUnknowns, nConstraints);
-  };
-  void set(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0); 
-  void set(Int nUnknowns, const LSQComplex &, Int nConstraints=0) { 
-    set (static_cast<uInt>(nUnknowns), LSQComplex(),
-	 static_cast<uInt>(nConstraints));
+  void set(Int nUnknowns, const LSQReal &, Int nConstraints = 0) { set(nUnknowns, nConstraints); };
+  void set(uInt nUnknowns, const LSQComplex &, uInt nConstraints = 0);
+  void set(Int nUnknowns, const LSQComplex &, Int nConstraints = 0) {
+    set(static_cast<uInt>(nUnknowns), LSQComplex(), static_cast<uInt>(nConstraints));
   };
   // </group>
   // Set new factors (collinearity <src>factor</src>, and Levenberg-Marquardt
   // <src>LMFactor</src>)
-  void set(Double factor=1e-6, Double LMFactor=1e-3);
+  void set(Double factor = 1e-6, Double LMFactor = 1e-3);
   // Set new value solution test
-  void setEpsValue(Double epsval=1e-8) {epsval_p = epsval; };
+  void setEpsValue(Double epsval = 1e-8) { epsval_p = epsval; };
   // Set new derivative test
-  void setEpsDerivative(Double epsder=1e-8) {epsder_p = epsder; };
+  void setEpsDerivative(Double epsder = 1e-8) { epsder_p = epsder; };
   // Set maximum number of iterations
-  void setMaxIter(uInt maxiter=0) { maxiter_p = maxiter; };
+  void setMaxIter(uInt maxiter = 0) { maxiter_p = maxiter; };
   // Get number of iterations done
-  uInt nIterations() const { return (maxiter_p>0 ? maxiter_p-niter_p : 0); };
+  uInt nIterations() const { return (maxiter_p > 0 ? maxiter_p - niter_p : 0); };
   // Set the expected form of the normal equations
-  void setBalanced(Bool balanced=False) { balanced_p = balanced; };
+  void setBalanced(Bool balanced = False) { balanced_p = balanced; };
   // Ask the state of the non-linear solutions
   // <group>
   LSQFit::ReadyCode isReady() const { return ready_p; };
   const std::string &readyText() const;
-  // </group>  
-// Get the covariance matrix (of size <src>nUnknowns * nUnknowns</src>)
+  // </group>
+  // Get the covariance matrix (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>
   Bool getCovariance(U *covar);
   template <class U>
-    Bool getCovariance(std::complex<U> *covar);
+  Bool getCovariance(std::complex<U> *covar);
   // </group>
   // Get main diagonal of covariance function (of size <src>nUnknowns</src>)
   // <group>
   template <class U>
-    Bool getErrors(U *errors);
+  Bool getErrors(U *errors);
   template <class U>
-    Bool getErrors(std::complex<U> *errors);
+  Bool getErrors(std::complex<U> *errors);
   template <class U>
-    Bool getErrors(U &errors);
+  Bool getErrors(U &errors);
   // </group>
   // Get the number of unknowns
   uInt nUnknowns() const { return nun_p; };
@@ -770,7 +718,7 @@ class LSQFit {
   // Get the rank deficiency <note role=warning>Note that the number is
   // returned assuming real values. For complex values it has to be halved
   // </note>
-  uInt getDeficiency() const { return n_p-r_p; };
+  uInt getDeficiency() const { return n_p - r_p; };
   // Get chi^2 (both are identical); the standard deviation (per observation)
   // and the standard deviation per weight unit.
   // <group>
@@ -797,10 +745,9 @@ class LSQFit {
   // <li> <src>nonlin = </src> current Levenberg factor-1
   // </ul>
   // Note that all pointers may be 0.
-  void debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank,
-	       Double *&nEq, Double *&known, Double *&constr, Double *&er,
-	       uInt *&piv, Double *&sEq, Double *&sol,
-	       Double &prec, Double &nonlin) const;
+  void debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank, Double *&nEq, Double *&known,
+               Double *&constr, Double *&er, uInt *&piv, Double *&sEq, Double *&sol, Double &prec,
+               Double &nonlin) const;
   //
   // Create an LSQFit object from a record.
   // An error message is generated, and False
@@ -819,20 +766,20 @@ class LSQFit {
   //
   // Save or restore using AipsIO.
   // <group>
-  void toAipsIO (AipsIO&) const;
-  void fromAipsIO (AipsIO&);
+  void toAipsIO(AipsIO &) const;
+  void fromAipsIO(AipsIO &);
   // </group>
   //
  protected:
-  //# enum
-  // Bits that can be set/referenced
+  // # enum
+  //  Bits that can be set/referenced
   enum StateBit {
     // Inverted matrix present
     INVERTED = 1,
     // Triangularised
-    TRIANGLE = 2*INVERTED,
+    TRIANGLE = 2 * INVERTED,
     // Non-linear solution
-    NONLIN = 2*TRIANGLE,
+    NONLIN = 2 * TRIANGLE,
     // Filler for cxx2html
     N_StateBit
   };
@@ -858,10 +805,10 @@ class LSQFit {
   static const String wcov;
   static const String nceq;
   static const String nar;
-  // </group>  
+  // </group>
 
-  //# Data
-  // Bits set to indicate state
+  // # Data
+  //  Bits set to indicate state
   uInt state_p;
   // Number of unknowns
   uInt nun_p;
@@ -888,16 +835,16 @@ class LSQFit {
   // Indicator for a well balanced normal equation. A balanced equation is
   // one with similar values in the main diagonal.
   Bool balanced_p;
-  // Maximum number of iterations for non-linear solution. If a non-zero 
+  // Maximum number of iterations for non-linear solution. If a non-zero
   // maximum number of iterations is set, the value is tested in non-linear
   // loops
   uInt maxiter_p;
   // Iteration count for non-linear solution
-  uInt niter_p; 
+  uInt niter_p;
   // Indicate the non-linear state. A non-zero code indicates that non-linear
   // looping is ready.
-  ReadyCode ready_p; 
- 
+  ReadyCode ready_p;
+
   // Pivot table (n_p)
   uInt *piv_p;
   // Normal equations (triangular nun_p * nun_p)
@@ -925,26 +872,26 @@ class LSQFit {
   Double *wcov_p;
   // </group>
 
-  //# Member functions
-  // Get pointer in rectangular array
-  // <group>
-  Double *rowrt(uInt i) const { return &lar_p[n_p*i]; };
-  Double *rowru(uInt i) const { return &lar_p[nun_p*i]; };
+  // # Member functions
+  //  Get pointer in rectangular array
+  //  <group>
+  Double *rowrt(uInt i) const { return &lar_p[n_p * i]; };
+  Double *rowru(uInt i) const { return &lar_p[nun_p * i]; };
   // </group>
   // Calculate the real or imag part of <src>x*conj(y)</src>
   // <group>
-  static Double realMC(const std::complex<Double> &x,
-		       const std::complex<Double> &y) {
-    return (x.real()*y.real() + x.imag()*y.imag()); };
-  static Double imagMC(const std::complex<Double> &x,
-		       const std::complex<Double> &y) {
-    return (x.imag()*y.real() - x.real()*y.imag()); };
-  static Float realMC(const std::complex<Float> &x,
-		       const std::complex<Float> &y) {
-    return (x.real()*y.real() + x.imag()*y.imag()); };
-  static Float imagMC(const std::complex<Float> &x,
-		       const std::complex<Float> &y) {
-    return (x.imag()*y.real() - x.real()*y.imag()); };
+  static Double realMC(const std::complex<Double> &x, const std::complex<Double> &y) {
+    return (x.real() * y.real() + x.imag() * y.imag());
+  };
+  static Double imagMC(const std::complex<Double> &x, const std::complex<Double> &y) {
+    return (x.imag() * y.real() - x.real() * y.imag());
+  };
+  static Float realMC(const std::complex<Float> &x, const std::complex<Float> &y) {
+    return (x.real() * y.real() + x.imag() * y.imag());
+  };
+  static Float imagMC(const std::complex<Float> &x, const std::complex<Float> &y) {
+    return (x.imag() * y.real() - x.real() * y.imag());
+  };
   // </group>
   // Initialise areas
   void init();
@@ -955,7 +902,7 @@ class LSQFit {
   // Solve normal equations
   void solveIt();
   // One non-linear LM loop
-  Bool solveItLoop(Double &fit, uInt &nRank, Bool doSVD=False);
+  Bool solveItLoop(Double &fit, uInt &nRank, Bool doSVD = False);
   // Solve missing rank part
   void solveMR(uInt nin);
   // Invert rectangular matrix (i.e. when constraints present)
@@ -967,12 +914,12 @@ class LSQFit {
   // Merge sparse normal equations
   Bool mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex);
   // Save current status (or part)
-  void save(Bool all=True);
+  void save(Bool all = True);
   // Restore current status
-  void restore(Bool all=True);
-  // Copy data. If all False, only the relevant data for non-linear 
+  void restore(Bool all = True);
+  // Copy data. If all False, only the relevant data for non-linear
   // solution are copied (normal equations, knows and errors).
-  void copy(const LSQFit &other, Bool all=True);
+  void copy(const LSQFit &other, Bool all = True);
   // Extend the constraint equation area to the specify number of
   // equations.
   void extendConstraints(uInt n);
@@ -986,10 +933,9 @@ class LSQFit {
   //
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/LSQFit2.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

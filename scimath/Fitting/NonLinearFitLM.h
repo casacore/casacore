@@ -1,36 +1,36 @@
-//# NonLinearFitLM.h: Solve non-linear fit using Levenberg-Marquardt method.
-//# Copyright (C) 1995,1999-2002,2004,2006
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # NonLinearFitLM.h: Solve non-linear fit using Levenberg-Marquardt method.
+// # Copyright (C) 1995,1999-2002,2004,2006
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_NONLINEARFITLM_H
 #define SCIMATH_NONLINEARFITLM_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Fitting/NonLinearFit.h>
-namespace casacore { //# begin namespace casa
-//# Forward declarations
+namespace casacore {  // # begin namespace casa
+// # Forward declarations
 
 //
 // <summary>
@@ -64,12 +64,12 @@ namespace casacore { //# begin namespace casa
 // See Numerical Recipes for more information
 // on the Levenberg-Marquardt method.
 // </synopsis>
-// 
+//
 // <templating arg=T>
 // <li> Float
 // <li> Double
 // <li> Complex
-// <li> DComplex   
+// <li> DComplex
 // </templating>
 //
 // <motivation>
@@ -77,46 +77,45 @@ namespace casacore { //# begin namespace casa
 // least-squares fits.  It works well in practice over a wide range of
 // problems.
 // </motivation>
-// 
+//
 // <example>
 // </example>
 
-template<class T> class NonLinearFitLM : public NonLinearFit<T>
-{
-public:
-  //# Constructors
-  // Create a fitter: the normal way to generate a fitter object. Necessary
-  // data will be deduced from the Functional provided with
-  // <src>setFunction()</src>.
-  // Optionally, a fitter with SVD behaviour
-  explicit NonLinearFitLM(Bool svd=False);
+template <class T>
+class NonLinearFitLM : public NonLinearFit<T> {
+ public:
+  // # Constructors
+  //  Create a fitter: the normal way to generate a fitter object. Necessary
+  //  data will be deduced from the Functional provided with
+  //  <src>setFunction()</src>.
+  //  Optionally, a fitter with SVD behaviour
+  explicit NonLinearFitLM(Bool svd = False);
   // Copy constructor (deep copy)
   NonLinearFitLM(const NonLinearFitLM &other);
   // Assignment (deep copy)
   NonLinearFitLM &operator=(const NonLinearFitLM &other);
-  
+
   // Destructor
   virtual ~NonLinearFitLM();
 
-protected:
-  //# Member functions
-  // Generalised fitter
-  virtual Bool fitIt
-    (Vector<typename FunctionTraits<T>::BaseType> &sol, 
-     const Array<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-     const Vector<Bool> *const mask=0);
-  
-private:
-  //# Data
-  // The parameter that makes this the Levenberg-Marquardt method.  
+ protected:
+  // # Member functions
+  //  Generalised fitter
+  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+                     const Array<typename FunctionTraits<T>::BaseType> &x,
+                     const Vector<typename FunctionTraits<T>::BaseType> &y,
+                     const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
+                     const Vector<Bool> *const mask = 0);
+
+ private:
+  // # Data
+  //  The parameter that makes this the Levenberg-Marquardt method.
   Double lamda_p;
   // The current fit state
   Double fitit_p;
 
-protected:
-  //# Make members of parent classes known.
+ protected:
+  // # Make members of parent classes known.
   using NonLinearFit<T>::curiter_p;
   using NonLinearFit<T>::maxiter_p;
   using NonLinearFit<T>::converge_p;
@@ -136,8 +135,8 @@ protected:
   using NonLinearFit<T>::isReady;
 };
 
-} //# End namespace casacore
+}  // namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/NonLinearFitLM.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

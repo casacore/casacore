@@ -1,39 +1,39 @@
-//# LinearFit.h: Class for linear least-squares fit.
-//#
-//# Copyright (C) 1995,1999,2000,2001,2002,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LinearFit.h: Class for linear least-squares fit.
+// #
+// # Copyright (C) 1995,1999,2000,2001,2002,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_LINEARFIT_H
 #define SCIMATH_LINEARFIT_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Fitting/GenericL2Fit.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 
 // <summary> Class for linear least-squares fit.
 // </summary>
@@ -43,14 +43,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class="Functional">Functional</linkto> 
-//   <li> <linkto class="Function">Function</linkto> 
+//   <li> <linkto class="Functional">Functional</linkto>
+//   <li> <linkto class="Function">Function</linkto>
 //   <li> <linkto module="Fitting">Fitting</linkto>
 // </prerequisite>
 //
 // <etymology>
 // A set of data point is fit with some functional equation.
-// The equations solved are linear equations.  The functions 
+// The equations solved are linear equations.  The functions
 // themselves however can be wildly nonlinear.
 // </etymology>
 //
@@ -60,45 +60,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // The following is a brief summary of the linear least-squares fit problem.
 // See module header, <linkto module="Fitting">Fitting</linkto>,
-// for a more complete description.  
+// for a more complete description.
 //
-// Given a set of N data points (measurements), (x(i), y(i)) i = 0,...,N-1, 
-// along with a set of standard deviations, sigma(i), for the data points, 
-// and M specified functions, f(j)(x) j = 0,...,M-1, we form a linear 
-// combination of the functions: 
+// Given a set of N data points (measurements), (x(i), y(i)) i = 0,...,N-1,
+// along with a set of standard deviations, sigma(i), for the data points,
+// and M specified functions, f(j)(x) j = 0,...,M-1, we form a linear
+// combination of the functions:
 // <srcblock>
 // z(i) = a(0)f(0)(x(i)) + a(1)f(1)(x(i)) + ... + a(M-1)f(M-1)(x(i)),
 // </srcblock>
 // where a(j) j = 0,...,M-1 are a set of parameters to be determined.
 // The linear least-squares fit tries to minimize
 // <srcblock>
-// chi-square = [(y(0)-z(0))/sigma(0)]^2 + [(y(1)-z(1))/sigma(1)]^2 + ... 
+// chi-square = [(y(0)-z(0))/sigma(0)]^2 + [(y(1)-z(1))/sigma(1)]^2 + ...
 //              + [(y(N-1)-z(N-1))/sigma(N-1)]^2.
 // </srcblock>
-// by adjusting {a(j)} in the equation. 
+// by adjusting {a(j)} in the equation.
 //
-// For complex numbers, <code>[(y(i)-z(i))/sigma(i)]^2</code> in chi-square 
+// For complex numbers, <code>[(y(i)-z(i))/sigma(i)]^2</code> in chi-square
 // is replaced by
 // <code>[(y(i)-z(i))/sigma(i)]*conjugate([(y(i)-z(i))/sigma(i)])</code>
 //
 // For multidimensional functions, x(i) is a vector, and
-// <srcblock> 
+// <srcblock>
 // f(j)(x(i)) = f(j)(x(i,0), x(i,1), x(i,2), ...)
 // </srcblock>
 //
-// Normally, it is necessary that N > M for the solutions to be valid, since 
+// Normally, it is necessary that N > M for the solutions to be valid, since
 // there must be more data points than model parameters to be solved.
 //
-// If the measurement errors (standard deviation sigma) are not known 
-// at all, they can all be set to one initially.  In this case, we assume all 
+// If the measurement errors (standard deviation sigma) are not known
+// at all, they can all be set to one initially.  In this case, we assume all
 // measurements have the same standard deviation, after minimizing
 // chi-square, we recompute
-// <srcblock>  
-// sigma^2 = {(y(0)-z(0))^2 + (y(1)-z(1))^2 + ... 
+// <srcblock>
+// sigma^2 = {(y(0)-z(0))^2 + (y(1)-z(1))^2 + ...
 //           + (y(N-1)-z(N-1))^2}/(N-M) = chi-square/(N-M).
-// </srcblock> 
+// </srcblock>
 //
-// A statistic weight can also be assigned to each measurement if the 
+// A statistic weight can also be assigned to each measurement if the
 // standard deviation is not available.  sigma can be calculated from
 // <srcblock>
 // sigma = 1/ sqrt(weight)
@@ -111,7 +111,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The function to be fitted to the data can be given as an instance of the
 // <linkto class="Function">Function</linkto> class.
 // One can also form a sum of functions using the
-// <linkto class="CompoundFunction">CompoundFunction</linkto>.  
+// <linkto class="CompoundFunction">CompoundFunction</linkto>.
 //
 // For small datasets the usage of the calls is:
 // <ul>
@@ -126,15 +126,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // Note that the fitter is reusable. An example is given in the following.
 //
-// The solution of a fit always produces the total number of parameters given 
+// The solution of a fit always produces the total number of parameters given
 // to the fitter. I.e. including any parameters that were fixed. In the
 // latter case the solution returned will be the fixed value.
-// 
+//
 // <templating arg=T>
 // <li> Float
 // <li> Double
 // <li> Complex
-// <li> DComplex   
+// <li> DComplex
 // </templating>
 //
 // If there are a large number of unknowns or a large number of data points
@@ -150,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Singular Value Decomposition is supported by the
 // <linkto class=LinearFitSVD>LinearFitSVD</linkto> class,
 // which has a behaviour completely identical to this class (apart from a
-// default collinearity of 1e-8). 
+// default collinearity of 1e-8).
 //
 // Other information (see a.o. <linkto class=LSQFit>LSQFit</linkto>) can
 // be set and obtained as well.
@@ -162,7 +162,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 // <example>
-//# /// redo example
+// # /// redo example
 // In the following a polynomial is fitted through the first 20 prime numbers.
 // The data is given in the x vector (1 to 20) and in the primesTable
 // (2, 3, ..., 71) (see tLinearFitSVD test program). In the following
@@ -175,7 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    	for (uInt i=1; i < nPrimes; i++) {
 //        primesTable(i) =
 //	   Primes::nextLargerPrimeThan(Int(primesTable(i-1)+0.01));
-//      };   
+//      };
 //	Vector<Double> sigma(nPrimes);
 //	sigma = 1.0;
 //	// The fitter
@@ -202,13 +202,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // information, and other examples.
 // </example>
 
-template<class T> class LinearFit : public GenericL2Fit<T>
-{
-public: 
-  //# Constructors
-  // Create a fitter: the normal way to generate a fitter object. Necessary
-  // data will be deduced from the Functional provided with
-  // <src>setFunction()</src>
+template <class T>
+class LinearFit : public GenericL2Fit<T> {
+ public:
+  // # Constructors
+  //  Create a fitter: the normal way to generate a fitter object. Necessary
+  //  data will be deduced from the Functional provided with
+  //  <src>setFunction()</src>
   LinearFit();
   // Copy constructor (deep copy)
   LinearFit(const LinearFit &other);
@@ -217,28 +217,27 @@ public:
 
   // Destructor
   virtual ~LinearFit();
-  
-  //# Member functions
 
-protected:
-  //#Data
+  // # Member functions
 
-  //# Member functions
-  // Generalised fitter
-  virtual Bool fitIt
-    (Vector<typename FunctionTraits<T>::BaseType> &sol,
-     const Array<typename FunctionTraits<T>::BaseType> &x, 
-     const Vector<typename FunctionTraits<T>::BaseType> &y,
-     const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-     const Vector<Bool> *const mask=0);
+ protected:
+  // #Data
 
-private:
-  //# Data
+  // # Member functions
+  //  Generalised fitter
+  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+                     const Array<typename FunctionTraits<T>::BaseType> &x,
+                     const Vector<typename FunctionTraits<T>::BaseType> &y,
+                     const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
+                     const Vector<Bool> *const mask = 0);
 
-  //# Member functions
+ private:
+  // # Data
 
-protected:
-  //# Make members of parent classes known.
+  // # Member functions
+
+ protected:
+  // # Make members of parent classes known.
   using GenericL2Fit<T>::pCount_p;
   using GenericL2Fit<T>::ptr_derive_p;
   using GenericL2Fit<T>::sol_p;
@@ -253,25 +252,9 @@ protected:
   using GenericL2Fit<T>::fillSVDConstraints;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/LinearFit.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

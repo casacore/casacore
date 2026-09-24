@@ -1,57 +1,57 @@
-//# Polynomial.cc: A one dimensional polynomial class
-//# Copyright (C) 1994,1995,1996,1998,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Polynomial.cc: A one dimensional polynomial class
+// # Copyright (C) 1994,1995,1996,1998,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIAL_TCC
 #define SCIMATH_POWERLOGARITHMICPOLYNOMIAL_TCC
 
-//# Includes
+// # Includes
 #include <casacore/scimath/Functionals/PowerLogarithmicPolynomial.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Constructors
+// # Constructors
 
-//# Operators
-template<class T>
+// # Operators
+template <class T>
 T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
   // Test below outcommented, because pointer can never be <0.
   // Test on x[0]<=0 gives compile error if T is AutoDiffA<Double>.
-  ///if (x <= 0) {
-  ///		throw AipsError("PowerLogarithmicPolynomial<T>::eval(): x must be greater than zero");
+  /// if (x <= 0) {
+  ///		throw AipsError("PowerLogarithmicPolynomial<T>::eval(): x must be greater than
+  ///zero");
   ///	}
-	T lnx = log(x[0]);
-	Int j = nparameters();
-	T accum = param_p[--j];
-	while (--j >= 1) {
-		accum *= lnx;
-		accum += param_p[j];
-	}
-	return param_p[0]*pow(x[0], accum);
+  T lnx = log(x[0]);
+  Int j = nparameters();
+  T accum = param_p[--j];
+  while (--j >= 1) {
+    accum *= lnx;
+    accum += param_p[j];
+  }
+  return param_p[0] * pow(x[0], accum);
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore
 
 #endif

@@ -1,37 +1,37 @@
-//# AutoDiffA.h: An automatic differentiating class for functions
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AutoDiffA.h: An automatic differentiating class for functions
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_AUTODIFFA_H
 #define SCIMATH_AUTODIFFA_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class that computes partial derivatives by automatic differentiation.
@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	  AutoDiff<Double> a1(2,2,0), b1(3,2,1), x1(7);
 //	  f<AutoDiff<Double> > f1; f1.set(a1, b1);
 //	  cout << "Diff a,b:   " << f1(x1) << endl;
-//	
+//
 //	  f<AutoDiffA<Double> > f12; f12.set(a1, b1);
 //	  cout << "Same....:   " << f12(x1) << endl;
 //
@@ -113,30 +113,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> Nothing I know
 // </todo>
 
-template <class T> class AutoDiffA : public AutoDiff<T> {
+template <class T>
+class AutoDiffA : public AutoDiff<T> {
  public:
-  //# Constructors
-  // Construct a constant with a value of zero.  Zero derivatives.
+  // # Constructors
+  //  Construct a constant with a value of zero.  Zero derivatives.
   AutoDiffA() : AutoDiff<T>() {}
 
   // Construct a constant with a value of v.  Zero derivatives.
   AutoDiffA(const T &v) : AutoDiff<T>(v) {}
 
-  // A function f(x0,x1,...,xn,...) with a value of v.  The 
-  // total number of derivatives is ndiffs, the nth derivative is one, and all 
-  // others are zero. 
-  AutoDiffA(const T &v, const uInt ndiffs, const uInt n) :
-    AutoDiff<T>(v, ndiffs, n) {} 
+  // A function f(x0,x1,...,xn,...) with a value of v.  The
+  // total number of derivatives is ndiffs, the nth derivative is one, and all
+  // others are zero.
+  AutoDiffA(const T &v, const uInt ndiffs, const uInt n) : AutoDiff<T>(v, ndiffs, n) {}
 
-  // A function f(x0,x1,...,xn,...) with a value of v.  The 
+  // A function f(x0,x1,...,xn,...) with a value of v.  The
   // total number of derivatives is ndiffs.
-  // All derivatives are zero. 
+  // All derivatives are zero.
   AutoDiffA(const T &v, const uInt ndiffs) : AutoDiff<T>(v, ndiffs) {}
 
   // Construct one from another
   AutoDiffA(const AutoDiff<T> &other) : AutoDiff<T>(other) {}
 
-  // Construct a function f(x0,x1,...,xn) of a value v and a vector of 
+  // Construct a function f(x0,x1,...,xn) of a value v and a vector of
   // derivatives derivs(0) = df/dx0, derivs(1) = df/dx1, ...
   AutoDiffA(const T &v, const Vector<T> &derivs) : AutoDiff<T>(v, derivs) {}
 
@@ -156,11 +156,9 @@ template <class T> class AutoDiffA : public AutoDiff<T> {
   }
 
  private:
-  //# Data
-
+  // # Data
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

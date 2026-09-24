@@ -1,32 +1,32 @@
-//# FunctionOrder.h: Container of function description details
-//# Copyright (C) 2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FunctionOrder.h: Container of function description details
+// # Copyright (C) 2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCTIONORDER_H
 #define SCIMATH_FUNCTIONORDER_H
 
-//# Include files
+// # Include files
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
@@ -35,9 +35,9 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 class RecordInterface;
 
 // <summary> Container of function description details
@@ -52,9 +52,9 @@ class RecordInterface;
 // <synopsis>
 // <src>FunctionOrder</src> is used to provide an interface to an entity which
 // has special fixed parameters (like dimension of Gaussian; oder of
-// Polynomial). 
+// Polynomial).
 // This is useful, for example, in implementinggeneric function factories.
-// 
+//
 // </synopsis>
 //
 // <example>
@@ -68,7 +68,7 @@ class RecordInterface;
 //
 // <templating arg=T>
 //  <li> <src>T</src> must have a default constructor, assignment operator,
-//	 and copy constructor (for the Vector interface). 
+//	 and copy constructor (for the Vector interface).
 //  <li> Complex/DComplex or Float/Double supported
 // </templating>
 //
@@ -76,24 +76,25 @@ class RecordInterface;
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class FunctionOrder : public RecordTransformable {
+template <class T>
+class FunctionOrder : public RecordTransformable {
  public:
-  //# Constructors
-  // Construct a default FunctionOrder with 0 parameters
+  // # Constructors
+  //  Construct a default FunctionOrder with 0 parameters
   FunctionOrder();
   // Copy constructor (deep copy)
   FunctionOrder(const FunctionOrder<T> &other);
   // Destructor
   virtual ~FunctionOrder();
 
-  //# Operators
-  // Copy assignment (deep copy)
+  // # Operators
+  //  Copy assignment (deep copy)
   FunctionOrder &operator=(const FunctionOrder<T> &other);
 
-  //# Member functions
-  // Get and set the various parameters (no check for index range).
-  // Automatic extension for write.
-  // <group>
+  // # Member functions
+  //  Get and set the various parameters (no check for index range).
+  //  Automatic extension for write.
+  //  <group>
   Int &getInt(const uInt n);
   const Int &getInt(const uInt n) const;
   T &getPar(const uInt n);
@@ -126,10 +127,10 @@ template<class T> class FunctionOrder : public RecordTransformable {
   ostream &print(ostream &os) const;
 
  private:
-  //# Data
-  // All data vectors can be empty
-  // <group>
-  // Integer details (order etc)
+  // # Data
+  //  All data vectors can be empty
+  //  <group>
+  //  Integer details (order etc)
   Vector<Int> int_p;
   // Double parameters
   Vector<T> double_p;
@@ -144,27 +145,25 @@ template<class T> class FunctionOrder : public RecordTransformable {
   // Width of x (ndim)
   Vector<T> width_p;
   // </group>
-
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output declaration
-template<class T>
+// # Global functions
+//  <summary> Global functions </summary>
+//  <group name=Output>
+//  Output declaration
+template <class T>
 ostream &operator<<(ostream &os, const FunctionOrder<T> &par);
 // </group>
 
-//# Inlines
-template<class T>
+// # Inlines
+template <class T>
 inline ostream &operator<<(ostream &os, const FunctionOrder<T> &par) {
-  return par.print(os); }
+  return par.print(os);
+}
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/FunctionOrder.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif
-

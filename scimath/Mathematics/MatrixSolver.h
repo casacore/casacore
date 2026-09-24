@@ -1,31 +1,30 @@
-//# MatrixSolver.h: the base class for solvers of AX=B
-//# Copyright (C) 1994,1995,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MatrixSolver.h: the base class for solvers of AX=B
+// # Copyright (C) 1994,1995,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_MATRIXSOLVER_H
 #define SCIMATH_MATRIXSOLVER_H
-
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -36,7 +35,7 @@
 #include <casacore/casa/Logging/LogSink.h>
 #include <casacore/casa/Logging/LogMessage.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 typedef Float FType;  // floating type (Float, Double)
 
@@ -57,53 +56,52 @@ typedef Float FType;  // floating type (Float, Double)
 // The MatrixSolver class name reflects its use as the base class for solving
 // Linear Equations of the form AX=B. This class is purely virtual
 // and provides the essential implementation for derived solvers
-// classes.  
+// classes.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // The MatrixSolver class is a purely virtual base class.  The programmer needs
 // to define the following functions in a class derived from MatrixSolver:
 // <ol>
 //  <li> the derived destructor.
-//  <li> <src>void setImageAndPsf(const Array<FType> & image, const 
-//  Array<FType> & psf);</src> Set the image and the Point Spread Function 
-//  (beam).  Setting this should reset the internal state, e.g. 
+//  <li> <src>void setImageAndPsf(const Array<FType> & image, const
+//  Array<FType> & psf);</src> Set the image and the Point Spread Function
+//  (beam).  Setting this should reset the internal state, e.g.
 //  CurrentIter()==0.
 //  <li> <src>Bool solve();</src>  Perform solution of AX=B.
 //       Returns True if algorithm has converged or stop criterium reached.
 // </ol>
-// </synopsis> 
+// </synopsis>
 //
 // <todo asof="">
 // </todo>
 
 class MatrixSolver {
-public:
-
+ public:
   // Default Constructor
   MatrixSolver();
-  
+
   // Copy Constructor
-  MatrixSolver(const MatrixSolver & other);
-  
+  MatrixSolver(const MatrixSolver& other);
+
   // Create a MatrixSolver from a matrix A and a Vector B
-  // <note role=warning> A and B are accessed by reference, so do not 
+  // <note role=warning> A and B are accessed by reference, so do not
   // modify them during the lifetime of the MatrixSolver </note>
-  MatrixSolver(const Matrix<FType> & A, const Vector<FType> & B);
-  
+  MatrixSolver(const Matrix<FType>& A, const Vector<FType>& B);
+
   // Virtual destructor: calls all derived class destructors
   virtual ~MatrixSolver();
-  
-  // Assignment operator: uses reference semantics, i.e., it 
+
+  // Assignment operator: uses reference semantics, i.e., it
   // references the internal arrays of other
-  MatrixSolver & operator=(const MatrixSolver & other);
+  MatrixSolver& operator=(const MatrixSolver& other);
 
   // Set A matrix and B vector
-  void setAB(const Matrix<FType> & A, const Vector<FType> & B);
+  void setAB(const Matrix<FType>& A, const Vector<FType>& B);
 
   // Set initial value of X
-  void setX(const Vector<FType> & X);
-  
+  void setX(const Vector<FType>& X);
+
   // Solve for the X vector.
   virtual Bool solve();
 
@@ -111,20 +109,20 @@ public:
   Bool accurateSolution();
 
   // Return residual vector B-AX
-  const Vector<FType> & getResidual();
-  
+  const Vector<FType>& getResidual();
+
   // Return solution vector
-  const Vector<FType> & getSolution();
+  const Vector<FType>& getSolution();
 
   // Set the tolerance for solution
   void setTolerance(FType tol);
 
   // Return the tolerance for solution
   FType Tolerance();
-  
+
   // Set the maximum number of iterations.
   void setMaxIters(uInt maxiters);
-  
+
   // Return the maximum number of iterations.
   uInt MaxIters();
 
@@ -142,11 +140,10 @@ public:
 
   // Return norm of solution i.e. ||B-AX||
   FType getNorm();
-  
-protected:
 
+ protected:
   LogSink logSink_p;
-  virtual LogSink& logSink() {return logSink_p;}
+  virtual LogSink& logSink() { return logSink_p; }
 
   // the A matrix data member
   Matrix<FType> AMatrix;
@@ -166,11 +163,10 @@ protected:
   // The data norm i.e. ||B||
   FType BNorm;
 
-private:
-
+ private:
   // Tolerance for solution i.e. ||B-AX||/||B|| must be less than this
-  FType SolTolerance; 
- 
+  FType SolTolerance;
+
   // Maximum number of iterations
   uInt MaxIterations;
 
@@ -179,37 +175,26 @@ private:
 
   // Gain
   FType gain;
-
 };
 
-inline void MatrixSolver::setTolerance(FType tol) 
-{SolTolerance=tol;}
+inline void MatrixSolver::setTolerance(FType tol) { SolTolerance = tol; }
 
-inline FType MatrixSolver::Tolerance() 
-{return SolTolerance;}
+inline FType MatrixSolver::Tolerance() { return SolTolerance; }
 
-inline void MatrixSolver::setMaxIters(uInt maxiters) 
-{MaxIterations = maxiters;}
+inline void MatrixSolver::setMaxIters(uInt maxiters) { MaxIterations = maxiters; }
 
-inline uInt MatrixSolver::MaxIters() 
-{return MaxIterations;}
+inline uInt MatrixSolver::MaxIters() { return MaxIterations; }
 
-inline void MatrixSolver::setGain(FType g) 
-{gain=g;}
+inline void MatrixSolver::setGain(FType g) { gain = g; }
 
-inline FType MatrixSolver::Gain() 
-{return gain;}
+inline FType MatrixSolver::Gain() { return gain; }
 
-inline void MatrixSolver::setSolved(Bool s) 
-{solved=s;}
+inline void MatrixSolver::setSolved(Bool s) { solved = s; }
 
-inline Bool MatrixSolver::Solved() 
-{return solved;}
+inline Bool MatrixSolver::Solved() { return solved; }
 
-inline FType MatrixSolver::getNorm()
-{return RNorm;}
+inline FType MatrixSolver::getNorm() { return RNorm; }
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,45 +1,45 @@
-//# FuncExprData.h: Data and enumerations for functional expressions
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FuncExprData.h: Data and enumerations for functional expressions
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef SCIMATH_FUNCEXPRDATA_H
 #define SCIMATH_FUNCEXPRDATA_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/stdmap.h>
 
-//# Forward Declarations
+// # Forward Declarations
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Data and enumerations for functional expressions
 // </summary>
 
-// <use visibility=local> 
+// <use visibility=local>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
@@ -69,11 +69,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class FuncExprData {
-public:
-  //# Enumerations
-  // Operations
+ public:
+  // # Enumerations
+  //  Operations
   enum opTypes {
-    NOP=0,
+    NOP = 0,
     UNAMIN,
     UNAPLUS,
     NON,
@@ -137,16 +137,22 @@ public:
     AMPL,
     PHASE,
     // Number
-    NopTypes };
+    NopTypes
+  };
 
   // Operation category
   enum opCategories {
     // Unary, binary  1 or 2 character
-    UNA2, UNA1, BIN2, BIN1, 
+    UNA2,
+    UNA1,
+    BIN2,
+    BIN1,
     // Special and functions
-    SPEC, FUNC,
+    SPEC,
+    FUNC,
     // Number
-    NopCategories };
+    NopCategories
+  };
   // Special categories
   enum specAction {
     NONE,
@@ -155,7 +161,8 @@ public:
     // Indicate a GOTO
     GOTOPC,
     // Final expression codes
-    FINAL };
+    FINAL
+  };
   // Special priority levels
   enum specPriority {
     // Lowest priority at which right-to-left rather than left-to-right
@@ -164,7 +171,8 @@ public:
     // Priority for specials - start
     SPCPRI = 60,
     // Priority for finals
-    FINPRI = 00 };
+    FINPRI = 00
+  };
 
   // The compilation state descriptor
   struct ExprCompState {
@@ -202,16 +210,16 @@ public:
     ExprCompState state;
   };
 
-  //# Constructors
-  // Construct the data for the expression analysis
+  // # Constructors
+  //  Construct the data for the expression analysis
   FuncExprData();
 
   // Destructor
   ~FuncExprData() {}
 
-  //# Member functions
-  // Accessors of the various maps
-  // <group>
+  // # Member functions
+  //  Accessors of the various maps
+  //  <group>
   map<String, ExprOperator> &unary2() { return una2_p; }
   const map<String, ExprOperator> &unary2() const { return una2_p; }
   map<String, ExprOperator> &unary1() { return una1_p; }
@@ -226,14 +234,13 @@ public:
   const map<String, ExprOperator> &function() const { return func_p; }
   // </group>
   // Print an operator map
-  void print(ostream &os,
-	     const map<String, FuncExprData::ExprOperator> &m) const;
+  void print(ostream &os, const map<String, FuncExprData::ExprOperator> &m) const;
   // Print an operation
   void print(ostream &os, const FuncExprData::ExprOperator &pos) const;
 
-private:
-  //# Data
-  // Unary operators of 2 characters
+ private:
+  // # Data
+  //  Unary operators of 2 characters
   map<String, ExprOperator> una2_p;
   // Unary operators of 1 character
   map<String, ExprOperator> una1_p;
@@ -249,7 +256,7 @@ private:
   map<opTypes, ExprOperator> allop_p;
 };
 
-//# Global Functions
+// # Global Functions
 
 // <summary> Output function </summary>
 
@@ -258,10 +265,6 @@ private:
 ostream &operator<<(ostream &os, const FuncExprData &ed);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-
-
