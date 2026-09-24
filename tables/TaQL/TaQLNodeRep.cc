@@ -76,7 +76,7 @@ String TaQLNodeRep::addEscape(const String& str) const {
   static Regex re("[A-Za-z0-9_./+\\-~$@:]");
   String out;
   for (size_t i = 0; i < str.size(); ++i) {
-    if (!RegexMatches(String(str[i]), re)) {
+    if (!RegexMatches(String(1, str[i]), re)) {
       out += '\\';
     }
     out += str[i];

@@ -255,7 +255,7 @@ Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu) {
         Int delim = atol(sstr.substr(slinx + 1).c_str());
         info.define("NCHAR", maxChars);
         info.define("NELEM", -1);
-        info.define("DELIM", String(Char(delim)));
+        info.define("DELIM", String(1, Char(delim)));
       } else {
         // it must be just an integer at this point
         Int nchars = atol(sstr.c_str());
@@ -265,7 +265,7 @@ Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu) {
         if (nelem < 1) nelem = 1;
         info.define("NCHAR", nchars);
         info.define("NELEM", nelem);
-        info.define("DELIM", String(Char('\0')));
+        info.define("DELIM", String(1, Char('\0')));
       }
       subStringShapes.defineRecord(colname, info);
     }

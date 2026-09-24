@@ -122,7 +122,7 @@ struct Options {
         printCommand(False),  // print command?
         printNRows(True),     // print nr of rows handled?
         maxNRows(50),         // max #rows to print for auto print
-        separator('\t'),      // default separator between printed columns
+        separator(1, '\t'),   // default separator between printed columns
         style("python"),
         outName("stdout"),
         stream(&cout, Deleter(False))  // default stdout

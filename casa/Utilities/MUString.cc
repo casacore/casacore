@@ -43,7 +43,7 @@ MUString::MUString(const Char *in)
   len = str.length();
 }
 
-MUString::MUString(Char in) : str(in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
+MUString::MUString(Char in) : str(1, in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
   len = str.length();
 }
 

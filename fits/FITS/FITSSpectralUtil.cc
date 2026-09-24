@@ -55,11 +55,11 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   const Double offset(oneRelative == True ? 1.0 : 0.0);
   logger << LogOrigin("FITSUtil", "fromFITSHeader", WHERE);
 
-  String n_ctype = String(prefix) + "type";
-  String n_crval = String(prefix) + "rval";
-  String n_crpix = String(prefix) + "rpix";
-  String n_cdelt = String(prefix) + "delt";
-  String n_cunit = String(prefix) + "unit";
+  String n_ctype = String(1, prefix) + "type";
+  String n_crval = String(1, prefix) + "rval";
+  String n_crpix = String(1, prefix) + "rpix";
+  String n_cdelt = String(1, prefix) + "delt";
+  String n_cunit = String(1, prefix) + "unit";
   Int ndim;
 
   // Verify that the required headers exist and are the right type

@@ -73,7 +73,7 @@ Bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
   // Validation
 
   const Int n = cSys.nWorldAxes();
-  String sprefix(prefix);
+  String sprefix(1, prefix);
   if (header.isDefined(sprefix + "rval") || header.isDefined(sprefix + "rpix") ||
       header.isDefined(sprefix + "delt") || header.isDefined(sprefix + "type") ||
       header.isDefined(sprefix + "unit")) {

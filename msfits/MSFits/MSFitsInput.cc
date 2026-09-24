@@ -3426,7 +3426,7 @@ void MSFitsInput::fillSourceTable() {
 
     for (uInt i = 0; i < mainRec.nfields() - 5; i++) {
       Int fnum = mainRec.fieldNumber(String("scan_").append(std::to_string(i + 1)));
-      Record rec = mainRec.subRecord(fnum).subRecord(String('0'));
+      Record rec = mainRec.subRecord(fnum).subRecord(String(1, '0'));
       Double time1 = rec.asDouble("BeginTime");
       Double time2 = rec.asDouble("IntegrationTime");
       Int fid = rec.asInt("FieldId");
