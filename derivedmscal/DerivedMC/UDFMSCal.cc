@@ -546,8 +546,8 @@ void UDFMSCal::setupGetValue(const Table& table, vector<TENShPtr>& operands) {
   for (int i = 0; i < idinx; ++i) {
     if (!operands[i]->isConstant() || operands[i]->valueType() != TableExprNodeRep::VTScalar ||
         operands[i]->dataType() != TableExprNodeRep::NTString) {
-      throw AipsError("First " + std::to_string(idinx) + " argument(s) of function " +
-                      itsFuncName + " must be constant strings");
+      throw AipsError("First " + std::to_string(idinx) + " argument(s) of function " + itsFuncName +
+                      " must be constant strings");
     }
     String str = operands[i]->getString(0);
     if (str.empty()) {
