@@ -1,33 +1,32 @@
-//# TSMDataColumn.h: A data column in Tiled Storage Manager
-//# Copyright (C) 1995,1996,1997,1999,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TSMDataColumn.h: A data column in Tiled Storage Manager
+// # Copyright (C) 1995,1996,1997,1999,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TSMDATACOLUMN_H
 #define TABLES_TSMDATACOLUMN_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TSMColumn.h>
 #include <casacore/tables/DataMan/TSMCube.h>
@@ -36,11 +35,10 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/Conversion.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Slicer;
-
 
 // <summary>
 // A data column in Tiled Storage Manager.
@@ -52,7 +50,7 @@ class Slicer;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TSMColumn>TSMColumn</linkto>
 //   <li> <linkto class=TSMCube>TSMCube</linkto>
 // </prerequisite>
@@ -62,8 +60,8 @@ class Slicer;
 // Storage Manager.
 // </etymology>
 
-// <synopsis> 
-// TSMDataColumn is used by 
+// <synopsis>
+// TSMDataColumn is used by
 // <linkto class=TiledStMan>TiledStMan</linkto>
 // to handle the access to
 // a table column containing data of a tiled hypercube axis.
@@ -79,285 +77,244 @@ class Slicer;
 // The creation of a TSMDataColumn object is done by a TSMColumn object.
 // This process is described in more detail in the class
 // <linkto class=TSMColumn>TSMColumn</linkto>.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // Handling data columns in the Tiled Storage Manager is
 // different from other columns.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class TSMDataColumn : public TSMColumn {
+ public:
+  // Create a data column from the given column.
+  TSMDataColumn(const TSMColumn& column);
 
-class TSMDataColumn : public TSMColumn
-{
-public:
+  // Frees up the storage.
+  virtual ~TSMDataColumn();
 
-    // Create a data column from the given column.
-    TSMDataColumn (const TSMColumn& column);
+  // Forbid copy constructor.
+  TSMDataColumn(const TSMDataColumn&) = delete;
 
-    // Frees up the storage.
-    virtual ~TSMDataColumn();
+  // Forbid assignment.
+  TSMDataColumn& operator=(const TSMDataColumn&) = delete;
 
-    // Forbid copy constructor.
-    TSMDataColumn (const TSMDataColumn&) = delete;
+  // Return the size of a pixel in the tile in external format.
+  uInt tilePixelSize() const;
 
-    // Forbid assignment.
-    TSMDataColumn& operator= (const TSMDataColumn&) = delete;
+  // Return the size of a pixel in the tile in local format.
+  uInt localPixelSize() const;
 
-    // Return the size of a pixel in the tile in external format.
-    uInt tilePixelSize() const;
+  // Determine the length to store the given number of pixels.
+  uInt64 dataLength(uInt64 nrPixels) const;
 
-    // Return the size of a pixel in the tile in local format.
-    uInt localPixelSize() const;
+  // Set column sequence number.
+  void setColumnNumber(uInt colnr);
 
-    // Determine the length to store the given number of pixels.
-    uInt64 dataLength (uInt64 nrPixels) const;
+  // Changing array shapes for non-FixedShape columns when the
+  // parent tiled storage manager can handle it.
+  Bool canChangeShape() const;
 
-    // Set column sequence number.
-    void setColumnNumber (uInt colnr);
+  // Set the shape of the data array in the given row.
+  // It will check if it matches already defined data and coordinates shapes.
+  // It will define undefined data and coordinates shapes.
+  void setShape(rownr_t rownr, const IPosition& shape);
 
-    // Changing array shapes for non-FixedShape columns when the
-    // parent tiled storage manager can handle it.
-    Bool canChangeShape() const;
+  // Set the shape and tile shape of the array in the given row.
+  // It will check if it matches already defined data and coordinates shapes.
+  // It will define undefined data and coordinates shapes.
+  // The tile shape is adjusted to the array shape (size 0 gets set to 1;
+  // size > cubesize gets set to the cubesize).
+  void setShapeTiled(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
 
-    // Set the shape of the data array in the given row.
-    // It will check if it matches already defined data and coordinates shapes.
-    // It will define undefined data and coordinates shapes.
-    void setShape (rownr_t rownr, const IPosition& shape);
+  // Is the value shape defined in the given row?
+  Bool isShapeDefined(rownr_t rownr);
 
-    // Set the shape and tile shape of the array in the given row.
-    // It will check if it matches already defined data and coordinates shapes.
-    // It will define undefined data and coordinates shapes.
-    // The tile shape is adjusted to the array shape (size 0 gets set to 1;
-    // size > cubesize gets set to the cubesize).
-    void setShapeTiled (rownr_t rownr, const IPosition& shape,
-			const IPosition& tileShape);
+  // Get the shape of the item in the given row.
+  IPosition shape(rownr_t rownr);
 
-    // Is the value shape defined in the given row?
-    Bool isShapeDefined (rownr_t rownr);
+  // Get the tile shape of the item in the given row.
+  IPosition tileShape(rownr_t rownr);
 
-    // Get the shape of the item in the given row.
-    IPosition shape (rownr_t rownr);
+  // Get a scalar value in the given row.
+  // The buffer pointed to by dataPtr has to have the correct length
+  // (which is guaranteed by the Scalar/ArrayColumn get function).
+  // <group>
+  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
+  virtual void getShort(rownr_t rownr, Short* dataPtr);
+  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
+  virtual void getInt(rownr_t rownr, Int* dataPtr);
+  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
+  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
+  virtual void getfloat(rownr_t rownr, float* dataPtr);
+  virtual void getdouble(rownr_t rownr, double* dataPtr);
+  virtual void getComplex(rownr_t rownr, Complex* dataPtr);
+  virtual void getDComplex(rownr_t rownr, DComplex* dataPtr);
+  // </group>
 
-    // Get the tile shape of the item in the given row.
-    IPosition tileShape (rownr_t rownr);
+  // Put a scalar value into the given row.
+  // The buffer pointed to by dataPtr has to have the correct length
+  // (which is guaranteed by the Scalar/ArrayColumn put function).
+  // <group>
+  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
+  virtual void putShort(rownr_t rownr, const Short* dataPtr);
+  virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
+  virtual void putInt(rownr_t rownr, const Int* dataPtr);
+  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
+  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
+  virtual void putfloat(rownr_t rownr, const float* dataPtr);
+  virtual void putdouble(rownr_t rownr, const double* dataPtr);
+  virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
+  virtual void putDComplex(rownr_t rownr, const DComplex* dataPtr);
+  // </group>
 
-    // Get a scalar value in the given row.
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the Scalar/ArrayColumn get function).
-    // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
-    virtual void getfloat    (rownr_t rownr, float* dataPtr);
-    virtual void getdouble   (rownr_t rownr, double* dataPtr);
-    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
-    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
-    // </group>
+  // Get the array value in the given row.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn get function).
+  virtual void getArrayV(rownr_t rownr, ArrayBase& data);
 
-    // Put a scalar value into the given row.
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the Scalar/ArrayColumn put function).
-    // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
-    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
-    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
-    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
-    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
-    // </group>
+  // Put the array value into the given row.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn put function).
+  virtual void putArrayV(rownr_t rownr, const ArrayBase& data);
 
-    // Get the array value in the given row.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn get function).
-    virtual void getArrayV (rownr_t rownr, ArrayBase& data);
+  // Get into a section of the array in the given row.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn putSlice function).
+  virtual void getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
-    // Put the array value into the given row.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn put function).
-    virtual void putArrayV (rownr_t rownr, const ArrayBase& data);
+  // Put into a section of the array in the given row.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn putSlice function).
+  virtual void putSliceV(rownr_t rownr, const Slicer& slicer, const ArrayBase& data);
 
-    // Get into a section of the array in the given row.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putSlice function).
-    virtual void getSliceV (rownr_t rownr, const Slicer& slicer,
-                    ArrayBase& dataPtr);
+  // Get all array values in the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumn function).
+  virtual void getArrayColumnV(ArrayBase& arr);
 
-    // Put into a section of the array in the given row.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putSlice function).
-    virtual void putSliceV (rownr_t rownr, const Slicer& slicer,
-                    const ArrayBase& data);
+  // Put all array values in the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumn function).
+  virtual void putArrayColumnV(const ArrayBase& arr);
 
-    // Get all array values in the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    virtual void getArrayColumnV (ArrayBase& arr);
+  // Get the array values in some cells of the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumnCells function).
+  virtual void getArrayColumnCellsV(const RefRows& rownrs, ArrayBase& data);
 
-    // Put all array values in the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    virtual void putArrayColumnV (const ArrayBase& arr);
+  // Put the array values into some cells of the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumn function).
+  virtual void putArrayColumnCellsV(const RefRows& rownrs, const ArrayBase& dataPtr);
 
-    // Get the array values in some cells of the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumnCells function).
-    virtual void getArrayColumnCellsV (const RefRows& rownrs,
-                                       ArrayBase& data);
+  // Get a section of all arrays in the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumn function).
+  virtual void getColumnSliceV(const Slicer& slicer, ArrayBase& arr);
 
-    // Put the array values into some cells of the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    virtual void putArrayColumnCellsV (const RefRows& rownrs,
-                                       const ArrayBase& dataPtr);
+  // Put a section into all array values in the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumn function).
+  virtual void putColumnSliceV(const Slicer& slicer, const ArrayBase& data);
 
-    // Get a section of all arrays in the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    virtual void getColumnSliceV (const Slicer& slicer, ArrayBase& arr);
+  // Get a section from some cells of the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getColumnCells function).
+  virtual void getColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns, ArrayBase& data);
 
-    // Put a section into all array values in the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumn function).
-    virtual void putColumnSliceV (const Slicer& slicer,
-				  const ArrayBase& data);
- 
-    // Get a section from some cells of the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getColumnCells function).
-    virtual void getColumnSliceCellsV (const RefRows& rownrs,
-                                       const Slicer& ns,
-                                       ArrayBase& data);
+  // Put into a section of some cells of the column.
+  // The array given in <src>data</src> has to have the correct shape
+  // (which is guaranteed by the ArrayColumn putColumnSlice function).
+  virtual void putColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns, const ArrayBase& data);
 
-    // Put into a section of some cells of the column.
-    // The array given in <src>data</src> has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putColumnSlice function).
-    virtual void putColumnSliceCellsV (const RefRows& rownrs,
-                                       const Slicer& ns,
-                                       const ArrayBase& data);
+  // Read the data of the column from a tile.
+  // (I.e. convert from external to local format).
+  void readTile(void* to, const void* from, uInt nrPixels);
 
-    // Read the data of the column from a tile.
-    // (I.e. convert from external to local format).
-    void readTile (void* to, const void* from, uInt nrPixels);
+  // Write the data of the column into a tile.
+  // (I.e. convert from local to external format).
+  void writeTile(void* to, const void* from, uInt nrPixels);
 
-    // Write the data of the column into a tile.
-    // (I.e. convert from local to external format).
-    void writeTile (void* to, const void* from, uInt nrPixels);
+  // Get the function to convert from external to local format
+  // (or vice-versa if <src>writeFlag=True</src>).
+  Conversion::ValueFunction* getConvertFunction(Bool writeFlag) const {
+    return writeFlag ? writeFunc_p : readFunc_p;
+  }
 
-    // Get the function to convert from external to local format
-    // (or vice-versa if <src>writeFlag=True</src>).
-    Conversion::ValueFunction* getConvertFunction (Bool writeFlag) const
-      { return writeFlag ?  writeFunc_p : readFunc_p; }
+  // Get nr of elements in a value to convert (usually 1, but 2 for Complex).
+  size_t getNrConvert() const { return convPixelSize_p; }
 
-    // Get nr of elements in a value to convert (usually 1, but 2 for Complex).
-    size_t getNrConvert() const
-      { return convPixelSize_p; }
+  // Does a conversion (byte swap) needs to be done?
+  Bool isConversionNeeded() const { return mustConvert_p; }
 
-    // Does a conversion (byte swap) needs to be done?
-    Bool isConversionNeeded() const
-      { return mustConvert_p; }
+ private:
+  // The (canonical) size of a pixel in a tile.
+  uInt tilePixelSize_p;
+  // The local size of a pixel.
+  uInt localPixelSize_p;
+  // The multiplication factor for a conversion operation.
+  // This is the pixel size when a memcpy can be used, otherwise it is 1.
+  uInt convPixelSize_p;
+  // Is a conversion necessary?
+  Bool mustConvert_p;
+  // The column sequence number.
+  uInt colnr_p;
+  // The conversion function needed when reading.
+  Conversion::ValueFunction* readFunc_p;
+  // The conversion function needed when writing.
+  Conversion::ValueFunction* writeFunc_p;
 
-private:
-    // The (canonical) size of a pixel in a tile.
-    uInt tilePixelSize_p;
-    // The local size of a pixel.
-    uInt localPixelSize_p;
-    // The multiplication factor for a conversion operation.
-    // This is the pixel size when a memcpy can be used, otherwise it is 1.
-    uInt convPixelSize_p;
-    // Is a conversion necessary?
-    Bool mustConvert_p;
-    // The column sequence number.
-    uInt colnr_p;
-    // The conversion function needed when reading.
-    Conversion::ValueFunction* readFunc_p;
-    // The conversion function needed when writing.
-    Conversion::ValueFunction* writeFunc_p;
+  // Read or write a data cell in the cube.
+  // A cell can contain a scalar or an array (depending on the
+  // column definition).
+  void accessCell(rownr_t rownr, const void* dataPtr, Bool writeFlag);
 
+  // Read or write a slice of a data cell in the cube.
+  void accessCellSlice(rownr_t rownr, const Slicer& ns, const void* dataPtr, Bool writeFlag);
 
-    // Read or write a data cell in the cube.
-    // A cell can contain a scalar or an array (depending on the
-    // column definition).
-    void accessCell (rownr_t rownr,
-		     const void* dataPtr, Bool writeFlag);
+  // Read or write an entire column.
+  // This can only be done if one hypercube is used.
+  void accessColumn(const void* dataPtr, Bool writeFlag);
 
-    // Read or write a slice of a data cell in the cube.
-    void accessCellSlice (rownr_t rownr, const Slicer& ns,
-			  const void* dataPtr, Bool writeFlag);
+  // Read or write a slice from the entire column.
+  // This can only be done if one hypercube is used.
+  void accessColumnSlice(const Slicer& ns, const void* dataPtr, Bool writeFlag);
 
-    // Read or write an entire column.
-    // This can only be done if one hypercube is used.
-    void accessColumn (const void* dataPtr, Bool writeFlag);
+  // Read or write some cells in a column.
+  // It tries to optimize by looking for regular row strides.
+  void accessColumnCells(const RefRows& rownrs, const IPosition& shape, const void* dataPtr,
+                         Bool writeFlag);
 
-    // Read or write a slice from the entire column.
-    // This can only be done if one hypercube is used.
-    void accessColumnSlice (const Slicer& ns,
-			    const void* dataPtr, Bool writeFlag);
+  // Read or write some cells in a column.
+  // It tries to optimize by looking for regular row strides.
+  void accessColumnSliceCells(const RefRows& rownrs, const Slicer& ns, const IPosition& shape,
+                              const void* dataPtr, Bool writeFlag);
 
-    // Read or write some cells in a column.
-    // It tries to optimize by looking for regular row strides.
-    void accessColumnCells (const RefRows& rownrs,  const IPosition& shape,
-			    const void* dataPtr, Bool writeFlag);
+  // Read or write the full cells given by start,end,incr.
+  void accessFullCells(TSMCube* hypercube, char* dataPtr, Bool writeFlag, const IPosition& start,
+                       const IPosition& end, const IPosition& incr);
 
-    // Read or write some cells in a column.
-    // It tries to optimize by looking for regular row strides.
-    void accessColumnSliceCells (const RefRows& rownrs, const Slicer& ns,
-				 const IPosition& shape,
-				 const void* dataPtr, Bool writeFlag);
-
-    // Read or write the full cells given by start,end,incr.
-    void accessFullCells (TSMCube* hypercube,
-			  char* dataPtr, Bool writeFlag,
-			  const IPosition& start,
-			  const IPosition& end,
-			  const IPosition& incr);
-
-    // Read or write the sliced cells given by start,end,incr.
-    void accessSlicedCells (TSMCube* hypercube,
-			    char* dataPtr, Bool writeFlag,
-			    const IPosition& start,
-			    const IPosition& end,
-			    const IPosition& incr);
+  // Read or write the sliced cells given by start,end,incr.
+  void accessSlicedCells(TSMCube* hypercube, char* dataPtr, Bool writeFlag, const IPosition& start,
+                         const IPosition& end, const IPosition& incr);
 };
 
-
-inline uInt TSMDataColumn::tilePixelSize() const
-{
-    return tilePixelSize_p;
+inline uInt TSMDataColumn::tilePixelSize() const { return tilePixelSize_p; }
+inline uInt TSMDataColumn::localPixelSize() const { return localPixelSize_p; }
+inline void TSMDataColumn::setColumnNumber(uInt colnr) { colnr_p = colnr; }
+inline void TSMDataColumn::readTile(void* to, const void* from, uInt nrPixels) {
+  readFunc_p(to, from, nrPixels * convPixelSize_p);
 }
-inline uInt TSMDataColumn::localPixelSize() const
-{
-    return localPixelSize_p;
-}
-inline void TSMDataColumn::setColumnNumber (uInt colnr)
-{
-    colnr_p = colnr;
-}
-inline void TSMDataColumn::readTile (void* to, const void* from,
-				     uInt nrPixels)
-{
-    readFunc_p (to, from, nrPixels * convPixelSize_p);
-}
-inline void TSMDataColumn::writeTile (void* to, const void* from,
-				      uInt nrPixels)
-{
-    writeFunc_p (to, from, nrPixels * convPixelSize_p);
+inline void TSMDataColumn::writeTile(void* to, const void* from, uInt nrPixels) {
+  writeFunc_p(to, from, nrPixels * convPixelSize_p);
 }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

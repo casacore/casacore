@@ -22,12 +22,12 @@ BOOST_AUTO_TEST_CASE(resize) {
   const std::complex<float> kValue(2.0f, 3.0f);
   a.Data<std::complex<float>>()[4] = kValue;
   BOOST_CHECK_EQUAL(a.Data<std::complex<float>>()[4], kValue);
-  
+
   // shrink
   a.Resize<std::complex<float>>(3);
   a.Data<std::complex<float>>()[2] = kValue;
   BOOST_CHECK_EQUAL(a.Data<std::complex<float>>()[2], kValue);
-  
+
   // expand
   a.Resize<std::complex<float>>(8);
   BOOST_CHECK_EQUAL(a.Size(), 8);
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(move) {
   BOOST_CHECK(a.Data<char>() == nullptr);
   BOOST_CHECK_EQUAL(empty.Size(), 0);
   BOOST_CHECK(empty.Data<char>() == nullptr);
-  
+
   a.Resize<char>(5);
   a.Data<char>()[4] = 31;
   MorphingArray b(std::move(a));
@@ -56,4 +56,4 @@ BOOST_AUTO_TEST_CASE(move) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-} // namespace casacore
+}  // namespace casacore

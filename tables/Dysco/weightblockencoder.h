@@ -9,19 +9,13 @@
 class WeightBlockEncoder {
  public:
   WeightBlockEncoder(size_t nPolarizations, size_t nChannels, size_t quantCount)
-      : _nPolarizations(nPolarizations),
-        _nChannels(nChannels),
-        _quantCount(quantCount) {}
+      : _nPolarizations(nPolarizations), _nChannels(nChannels), _quantCount(quantCount) {}
 
   size_t MetaDataFloatCount() const { return 1.0; }
 
-  size_t SymbolCount(size_t nRowsInBlock) const {
-    return nRowsInBlock * _nChannels;
-  }
+  size_t SymbolCount(size_t nRowsInBlock) const { return nRowsInBlock * _nChannels; }
 
-  void InitializeDecode(const float *metaBuffer) {
-    _decodeMaxValue = metaBuffer[0];
-  }
+  void InitializeDecode(const float *metaBuffer) { _decodeMaxValue = metaBuffer[0]; }
 
   void Decode(TimeBlockBuffer<float> &buffer, const unsigned int *symbolBuffer,
               size_t blockRow) const {
@@ -37,8 +31,7 @@ class WeightBlockEncoder {
     }
   }
 
-  void Encode(TimeBlockBuffer<float> &buffer, float *metaBuffer,
-              unsigned int *symbolBuffer) const {
+  void Encode(TimeBlockBuffer<float> &buffer, float *metaBuffer, unsigned int *symbolBuffer) const {
     float maxValue = 0.0;
     for (const TimeBlockBuffer<float>::DataRow &row : buffer.GetVector()) {
       for (size_t ch = 0; ch != _nChannels; ++ch) {

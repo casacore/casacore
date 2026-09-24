@@ -1,36 +1,36 @@
-//# TaQLNodeResult.h: Classes holding the result of a node tree visit
-//# Copyright (C) 2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TaQLNodeResult.h: Classes holding the result of a node tree visit
+// # Copyright (C) 2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TAQLNODERESULT_H
 #define TABLES_TAQLNODERESULT_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class to hold the result of a visit to the node tree.
@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
 //   <li> Note 199 describing
 //        <a href="../notes/199.html">
@@ -58,23 +58,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // class <linkto class=TaQLNodeResult>TaQLNodeResult</linkto>.
 // </synopsis>
 
-class TaQLNodeResultRep
-{
-public:
+class TaQLNodeResultRep {
+ public:
   // Default constructor.
-  TaQLNodeResultRep()
-  {}
+  TaQLNodeResultRep() {}
 
   // Destructor.
   virtual ~TaQLNodeResultRep() = default;
 
   // Letter objects cannot be copied.
   // <group>
-  TaQLNodeResultRep (const TaQLNodeResultRep&) = delete;
-  TaQLNodeResultRep& operator= (const TaQLNodeResultRep&) = delete;
+  TaQLNodeResultRep(const TaQLNodeResultRep&) = delete;
+  TaQLNodeResultRep& operator=(const TaQLNodeResultRep&) = delete;
   // </group>
 };
-
 
 // <summary>
 // Envelope class to hold the result of a visit to the node tree.
@@ -86,7 +83,7 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
 //   <li> Note 199 describing
 //        <a href="../notes/199.html">
@@ -101,30 +98,24 @@ public:
 // The counted referenced letter base class for the envelope is
 // class <linkto class=TaQLNodeResultRep>TaQLNodeResultRep</linkto>.
 // </synopsis>
-class TaQLNodeResult
-{
-public:
+class TaQLNodeResult {
+ public:
   // Default constructor has no letter.
-  TaQLNodeResult()
-  {}
+  TaQLNodeResult() {}
 
   // Wrap the given pointer in a shared_ptr.
-  TaQLNodeResult (TaQLNodeResultRep* rep)
-    : itsRep (rep)
-  {}
+  TaQLNodeResult(TaQLNodeResultRep* rep) : itsRep(rep) {}
 
   // Does the envelope hold a letter?
-  Bool isValid() const
-    { return itsRep.get(); }
+  Bool isValid() const { return itsRep.get(); }
 
   // Get the actual underlying object.
-  const TaQLNodeResultRep& getRep() const
-    { return *(itsRep.get()); }
+  const TaQLNodeResultRep& getRep() const { return *(itsRep.get()); }
 
-private:
+ private:
   std::shared_ptr<TaQLNodeResultRep> itsRep;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

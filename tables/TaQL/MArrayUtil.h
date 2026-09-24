@@ -1,37 +1,36 @@
-//# MArrayUtil.h: Utility functions for MArrays
-//# Copyright (C) 2012
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MArrayUtil.h: Utility functions for MArrays
+// # Copyright (C) 2012
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MARRAYUTIL_H
 #define CASA_MARRAYUTIL_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Reorder the axes of the data in an MArray object
@@ -70,20 +69,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 
 // <group name=reorderMArray>
-template<class T>
-MArray<T> reorderArray (const MArray<T>& array,
-                        const IPosition& newAxisOrder,
-                        Bool alwaysCopy = True)
-{
-  return (array.isNull()  ?
-          MArray<T>() :
-          (array.hasMask()  ?
-           MArray<T> (reorderArray(array.array(), newAxisOrder, alwaysCopy),
-                      reorderArray(array.mask(),  newAxisOrder, alwaysCopy)) :
-           MArray<T> (reorderArray(array.array(), newAxisOrder, alwaysCopy))));
+template <class T>
+MArray<T> reorderArray(const MArray<T>& array, const IPosition& newAxisOrder,
+                       Bool alwaysCopy = True) {
+  return (array.isNull()
+              ? MArray<T>()
+              : (array.hasMask()
+                     ? MArray<T>(reorderArray(array.array(), newAxisOrder, alwaysCopy),
+                                 reorderArray(array.mask(), newAxisOrder, alwaysCopy))
+                     : MArray<T>(reorderArray(array.array(), newAxisOrder, alwaysCopy))));
 }
 // </group>
-
 
 // <summary>
 // Reverse the order of one or more axes of an MArray.
@@ -112,21 +108,18 @@ MArray<T> reorderArray (const MArray<T>& array,
 // </example>
 
 // <group name=reverseMArray>
-template<class T>
-MArray<T> reverseArray (const MArray<T>& array,
-                        const IPosition& reversedAxes,
-                        Bool alwaysCopy = True)
-{
-  return (array.isNull()  ?
-          MArray<T>() :
-          (array.hasMask()  ?
-           MArray<T> (reverseArray(array.array(), reversedAxes, alwaysCopy),
-                      reverseArray(array.mask(),  reversedAxes, alwaysCopy)) :
-           MArray<T> (reverseArray(array.array(), reversedAxes, alwaysCopy))));
+template <class T>
+MArray<T> reverseArray(const MArray<T>& array, const IPosition& reversedAxes,
+                       Bool alwaysCopy = True) {
+  return (array.isNull()
+              ? MArray<T>()
+              : (array.hasMask()
+                     ? MArray<T>(reverseArray(array.array(), reversedAxes, alwaysCopy),
+                                 reverseArray(array.mask(), reversedAxes, alwaysCopy))
+                     : MArray<T>(reverseArray(array.array(), reversedAxes, alwaysCopy))));
 }
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -51,9 +51,7 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
 
   /** Get the dimensions of the values in a particular row.
    * The rownr parameter is not used as the shape is the same for all rows. */
-  virtual casacore::IPosition shape(casacore::rownr_t /*rownr*/) override {
-    return _shape;
-  }
+  virtual casacore::IPosition shape(casacore::rownr_t /*rownr*/) override { return _shape; }
 
   /**
    * Read the values for a particular row. This will read the required
@@ -61,10 +59,8 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
    * @param rowNr The row number to get the values for.
    * @param dataPtr The array of values, which should be a contiguous array.
    */
-  virtual void getArrayV(
-      casacore::rownr_t rowNr,
-      casacore::ArrayBase &dataPtr) override {
-      return DyscoStManColumn::getArrayV(rowNr, dataPtr);
+  virtual void getArrayV(casacore::rownr_t rowNr, casacore::ArrayBase &dataPtr) override {
+    return DyscoStManColumn::getArrayV(rowNr, dataPtr);
   }
 
   /**
@@ -74,15 +70,12 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
    * @param rowNr The row number to write the values to.
    * @param dataPtr The data pointer, which should be a contiguous array.
    */
-  virtual void putArrayV(
-      casacore::rownr_t rowNr,
-      const casacore::ArrayBase &dataPtr) override {
+  virtual void putArrayV(casacore::rownr_t rowNr, const casacore::ArrayBase &dataPtr) override {
     return DyscoStManColumn::putArrayV(rowNr, dataPtr);
   }
 
-  virtual void Prepare(DyscoDistribution distribution,
-                       Normalization normalization, double studentsTNu,
-                       double distributionTruncation) override;
+  virtual void Prepare(DyscoDistribution distribution, Normalization normalization,
+                       double studentsTNu, double distributionTruncation) override;
 
   /**
    * Prepare this column for reading/writing. Used internally by the stman.
@@ -93,12 +86,9 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
    * Set the bits per symbol. Should only be called by DyscoStMan.
    * @param bitsPerSymbol New number of bits per symbol.
    */
-  void SetBitsPerSymbol(unsigned bitsPerSymbol) {
-    _bitsPerSymbol = bitsPerSymbol;
-  }
+  void SetBitsPerSymbol(unsigned bitsPerSymbol) { _bitsPerSymbol = bitsPerSymbol; }
 
-  virtual size_t CalculateBlockSize(size_t nRowsInBlock,
-                                    size_t nAntennae) const final override;
+  virtual size_t CalculateBlockSize(size_t nRowsInBlock, size_t nAntennae) const final override;
 
   virtual size_t ExtraHeaderSize() const override { return Header::Size(); }
 
@@ -109,26 +99,23 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
  protected:
   class ThreadDataBase {
    public:
-    virtual ~ThreadDataBase(){};
+    virtual ~ThreadDataBase() {};
   };
 
   typedef typename TimeBlockBuffer<data_t>::symbol_t symbol_t;
 
-  virtual void initializeDecode(TimeBlockBuffer<data_t> *buffer,
-                                const float *metaBuffer, size_t nRow,
-                                size_t nAntennae) = 0;
+  virtual void initializeDecode(TimeBlockBuffer<data_t> *buffer, const float *metaBuffer,
+                                size_t nRow, size_t nAntennae) = 0;
 
-  virtual void decode(TimeBlockBuffer<data_t> *buffer, const symbol_t *data,
-                      size_t blockRow, size_t a1, size_t a2) = 0;
+  virtual void decode(TimeBlockBuffer<data_t> *buffer, const symbol_t *data, size_t blockRow,
+                      size_t a1, size_t a2) = 0;
 
   virtual std::unique_ptr<ThreadDataBase> initializeEncodeThread() = 0;
 
-  virtual void encode(ThreadDataBase *threadData,
-                      TimeBlockBuffer<data_t> *buffer, float *metaBuffer,
-                      symbol_t *symbolBuffer, size_t nAntennae) = 0;
+  virtual void encode(ThreadDataBase *threadData, TimeBlockBuffer<data_t> *buffer,
+                      float *metaBuffer, symbol_t *symbolBuffer, size_t nAntennae) = 0;
 
-  virtual size_t metaDataFloatCount(size_t nRow, size_t nPolarizations,
-                                    size_t nChannels,
+  virtual size_t metaDataFloatCount(size_t nRow, size_t nPolarizations, size_t nChannels,
                                     size_t nAntennae) const = 0;
 
   virtual size_t symbolCount(size_t nRowsInBlock, size_t nPolarizations,
@@ -178,21 +165,16 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
   void putValues(casacore::rownr_t rowNr, const casacore::Array<data_t> *dataPtr);
 
   void stopThreads();
-  void encodeAndWrite(size_t blockIndex, const CacheItem &item,
-                      unsigned char *packedSymbolBuffer,
-                      unsigned int *unpackedSymbolBuffer,
-                      ThreadDataBase *threadUserData);
+  void encodeAndWrite(size_t blockIndex, const CacheItem &item, unsigned char *packedSymbolBuffer,
+                      unsigned int *unpackedSymbolBuffer, ThreadDataBase *threadUserData);
   bool isWriteItemAvailable(typename cache_t::iterator &i);
   void loadBlock(size_t blockIndex);
   void storeBlock();
-  size_t maxCacheSize() const {
-    return ThreadedDyscoColumn::defaultThreadCount() * 12 / 10 + 1;
-  }
+  size_t maxCacheSize() const { return ThreadedDyscoColumn::defaultThreadCount() * 12 / 10 + 1; }
 
   unsigned _bitsPerSymbol;
   casacore::IPosition _shape;
-  std::unique_ptr<casacore::ScalarColumn<int>> _ant1Col, _ant2Col, _fieldCol,
-      _dataDescIdCol;
+  std::unique_ptr<casacore::ScalarColumn<int>> _ant1Col, _ant2Col, _fieldCol, _dataDescIdCol;
   std::unique_ptr<casacore::ScalarColumn<double>> _timeCol;
   double _lastWrittenTime;
   int _lastWrittenField, _lastWrittenDataDescId;
@@ -212,24 +194,24 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
 };
 
 template <>
-inline void ThreadedDyscoColumn<std::complex<float>>::getArrayV(
-    casacore::rownr_t rowNr, casacore::ArrayBase &dataPtr) {
-  getValues(rowNr, static_cast<casacore::Array<std::complex<float>>*>(&dataPtr));
+inline void ThreadedDyscoColumn<std::complex<float>>::getArrayV(casacore::rownr_t rowNr,
+                                                                casacore::ArrayBase &dataPtr) {
+  getValues(rowNr, static_cast<casacore::Array<std::complex<float>> *>(&dataPtr));
 }
 template <>
 inline void ThreadedDyscoColumn<std::complex<float>>::putArrayV(
     casacore::rownr_t rowNr, const casacore::ArrayBase &dataPtr) {
-  putValues(rowNr, static_cast<const casacore::Array<std::complex<float>>*>(&dataPtr));
+  putValues(rowNr, static_cast<const casacore::Array<std::complex<float>> *>(&dataPtr));
 }
 template <>
-inline void ThreadedDyscoColumn<float>::getArrayV(
-    casacore::rownr_t rowNr, casacore::ArrayBase &dataPtr) {
-  getValues(rowNr, static_cast<casacore::Array<float>*>(&dataPtr));
+inline void ThreadedDyscoColumn<float>::getArrayV(casacore::rownr_t rowNr,
+                                                  casacore::ArrayBase &dataPtr) {
+  getValues(rowNr, static_cast<casacore::Array<float> *>(&dataPtr));
 }
 template <>
-inline void ThreadedDyscoColumn<float>::putArrayV(
-    casacore::rownr_t rowNr, const casacore::ArrayBase &dataPtr) {
-  putValues(rowNr, static_cast<const casacore::Array<float>*>(&dataPtr));
+inline void ThreadedDyscoColumn<float>::putArrayV(casacore::rownr_t rowNr,
+                                                  const casacore::ArrayBase &dataPtr) {
+  putValues(rowNr, static_cast<const casacore::Array<float> *>(&dataPtr));
 }
 
 extern template class ThreadedDyscoColumn<std::complex<float>>;

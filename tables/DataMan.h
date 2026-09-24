@@ -1,33 +1,33 @@
-//# DataMan.h: The DataMan module - Casacore table data managers
-//# Copyright (C) 1994-2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # DataMan.h: The DataMan module - Casacore table data managers
+// # Copyright (C) 1994-2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_DATAMAN_H
 #define TABLES_DATAMAN_H
 
-//# Includes
-//#   storage managers
+// # Includes
+// #   storage managers
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/StandardStMan.h>
@@ -41,7 +41,7 @@
 #include <casacore/tables/DataMan/TiledShapeStMan.h>
 #include <casacore/tables/DataMan/MemoryStMan.h>
 
-//#   virtual column engines
+// #   virtual column engines
 #include <casacore/tables/DataMan/RetypedArrayEngine.h>
 #include <casacore/tables/DataMan/RetypedArraySetGet.h>
 #include <casacore/tables/DataMan/ScaledArrayEngine.h>
@@ -52,8 +52,7 @@
 #include <casacore/tables/DataMan/CompressFloat.h>
 #include <casacore/tables/DataMan/VirtualTaQLColumn.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -74,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // DataMan is the abbreviation of data managers.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // Tables are the fundamental storage mechanism for Casacore.
 // Tables themselves are a logical organization of the data.
 // Table data are physically stored (or calculated on the fly)
@@ -88,8 +87,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </synopsis>
 // </module>
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

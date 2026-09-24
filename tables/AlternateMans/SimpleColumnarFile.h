@@ -47,18 +47,16 @@ class SimpleColumnarFile : private RowBasedFile {
     return *this;
   }
 
-  static SimpleColumnarFile CreateNew(const std::string& filename,
-                                      uint64_t header_size, uint64_t stride) {
+  static SimpleColumnarFile CreateNew(const std::string& filename, uint64_t header_size,
+                                      uint64_t stride) {
     return SimpleColumnarFile(filename, header_size, stride);
   }
 
-  static SimpleColumnarFile OpenExisting(const std::string& filename,
-                                         size_t header_size) {
+  static SimpleColumnarFile OpenExisting(const std::string& filename, size_t header_size) {
     return SimpleColumnarFile(filename, header_size);
   }
 
-  void Read(uint64_t row, uint64_t column_offset, std::complex<float>* data,
-            uint64_t n) {
+  void Read(uint64_t row, uint64_t column_offset, std::complex<float>* data, uint64_t n) {
     ReadImplementation(row, column_offset, data, n);
   }
   void Read(uint64_t row, uint64_t column_offset, float* data, uint64_t n) {
@@ -81,28 +79,22 @@ class SimpleColumnarFile : private RowBasedFile {
       UnpackBoolArray(data, packed_buffer_.data(), n);
     }
   }
-  void Write(uint64_t row, uint64_t column_offset,
-             const std::complex<float>* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const std::complex<float>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset,
-             const std::complex<double>* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const std::complex<double>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset, const float* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const float* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset, const double* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const double* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset, const int32_t* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const int32_t* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset, const bool* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const bool* data, uint64_t n) {
     const size_t byte_size = (n + 7) / 8;
     assert(column_offset + byte_size <= Stride());
     PackBoolArray(packed_buffer_.data(), data, n);
@@ -122,10 +114,8 @@ class SimpleColumnarFile : private RowBasedFile {
 
  private:
   // Create or overwrite a new columnar file on disk
-  SimpleColumnarFile(const std::string& filename, uint64_t header_size,
-                     uint64_t stride)
-      : RowBasedFile(filename, header_size, stride),
-        packed_buffer_((stride + 7) / 8) {}
+  SimpleColumnarFile(const std::string& filename, uint64_t header_size, uint64_t stride)
+      : RowBasedFile(filename, header_size, stride), packed_buffer_((stride + 7) / 8) {}
 
   // Open an existing columnar file
   SimpleColumnarFile(const std::string& filename, size_t header_size)
@@ -134,8 +124,7 @@ class SimpleColumnarFile : private RowBasedFile {
   }
 
   template <typename ValueType>
-  void ReadImplementation(uint64_t row, uint64_t column_offset, ValueType* data,
-                          uint64_t n) {
+  void ReadImplementation(uint64_t row, uint64_t column_offset, ValueType* data, uint64_t n) {
     assert(column_offset + n * sizeof(ValueType) <= Stride());
     if (row >= NRows()) {
       std::fill_n(data, n, ValueType());
@@ -146,12 +135,11 @@ class SimpleColumnarFile : private RowBasedFile {
   }
 
   template <typename ValueType>
-  void WriteImplementation(uint64_t row, uint64_t column_offset,
-                           const ValueType* data, uint64_t n) {
+  void WriteImplementation(uint64_t row, uint64_t column_offset, const ValueType* data,
+                           uint64_t n) {
     assert(column_offset + n * sizeof(ValueType) <= Stride());
     Seek(row * Stride() + column_offset + DataLocation(), SEEK_SET);
-    WriteData(reinterpret_cast<const unsigned char*>(data),
-              n * sizeof(ValueType));
+    WriteData(reinterpret_cast<const unsigned char*>(data), n * sizeof(ValueType));
     SetNRows(std::max(row + 1, NRows()));
   }
 

@@ -1,33 +1,32 @@
-//# TableRecord.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1998,2000,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # TableRecord.h: A hierarchical collection of named fields of various types
+// # Copyright (C) 1996,1997,1998,2000,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLERECORD_H
 #define TABLES_TABLERECORD_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/tables/Tables/TableRecordRep.h>
@@ -35,13 +34,12 @@
 #include <casacore/casa/Utilities/COWPtr.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class IPosition;
 class AipsIO;
 class TableLock;
-
 
 // <summary>
 // A hierarchical collection of named fields of various types
@@ -97,7 +95,7 @@ class TableLock;
 // their fields have the identical type in the identical order.
 // The field names do not need to be identical however, only the types.
 // That is, the structure needs to be identical, but
-// not the labels. Note that field order is significant, 
+// not the labels. Note that field order is significant,
 // <src>[ifield(type=Int),ffield(type=Float)]</src>
 // is not the same as <src>[ffield(type=Float),ifield(type=Int)]</src>
 // <br>
@@ -178,390 +176,343 @@ class TableLock;
 //        subarray sliced from an existing array.
 // </todo>
 
+class TableRecord : public RecordInterface {
+  friend class TableRecordRep;
 
-class TableRecord : public RecordInterface
-{
-friend class TableRecordRep;
+ public:
+  // Create a record with no fields.
+  // The record has a variable structure.
+  TableRecord();
 
-public:
-    // Create a record with no fields.
-    // The record has a variable structure.
-    TableRecord();
+  // Create a record with no fields.
+  // The type determines if the record has a fixed or variable structure.
+  // The callback function is called when a field is added to the Record.
+  // That function can check the name and of data type of the new field
+  // (for instance, the Table system uses it to ensure that table columns
+  // and keywords have different names).
+  explicit TableRecord(RecordType type, CheckFieldFunction* = 0, const void* checkArgument = 0);
 
-    // Create a record with no fields.
-    // The type determines if the record has a fixed or variable structure.
-    // The callback function is called when a field is added to the Record.
-    // That function can check the name and of data type of the new field
-    // (for instance, the Table system uses it to ensure that table columns
-    // and keywords have different names).
-    explicit TableRecord (RecordType type,
-			  CheckFieldFunction* = 0,
-			  const void* checkArgument = 0);
+  // Create a record with the given description. If it is not possible to
+  // create all fields (for example, if a field with an unsupported data
+  // type is requested), an exception is thrown.
+  // The type determines if the record has a fixed or variable structure.
+  // All fields are checked by the field checking function (if defined)
+  // (for instance, the Table system uses it to ensure that table columns
+  // and keywords have different names).
+  explicit TableRecord(const RecordDesc& description, RecordType type = Fixed,
+                       CheckFieldFunction* = 0, const void* checkArgument = 0);
 
-    // Create a record with the given description. If it is not possible to 
-    // create all fields (for example, if a field with an unsupported data
-    // type is requested), an exception is thrown.
-    // The type determines if the record has a fixed or variable structure.
-    // All fields are checked by the field checking function (if defined)
-    // (for instance, the Table system uses it to ensure that table columns
-    // and keywords have different names).
-    explicit TableRecord (const RecordDesc& description,
-			  RecordType type = Fixed,
-			  CheckFieldFunction* = 0, 
-			  const void* checkArgument = 0);
+  // Create a copy of other using copy semantics.
+  TableRecord(const TableRecord& other);
 
-    // Create a copy of other using copy semantics.
-    TableRecord (const TableRecord& other);
+  // Create a TableRecord from another type of record.
+  // It uses copy-on-write semantics if possible (i.e. if
+  // <src>other</src> is a TableRecord), otherwise each field is copied.
+  // Subrecords are also copied and converted to TableRecords if needed.
+  TableRecord(const RecordInterface& other);
 
-    // Create a TableRecord from another type of record.
-    // It uses copy-on-write semantics if possible (i.e. if
-    // <src>other</src> is a TableRecord), otherwise each field is copied.
-    // Subrecords are also copied and converted to TableRecords if needed.
-    TableRecord (const RecordInterface& other);
+  // Copy the data in the other record to this record.
+  // It can operate in 2 ways depending on the TableRecord structure flag.
+  // <ul>
+  // <li> For variable structured records the existing fields are
+  //      thrown away and replaced by the new fields.
+  //      This means that RecordFieldPtr's using this record get invalidated.
+  //      Because copy-on-write semantics are used, this kind of
+  //      assignment is a very efficient operation.
+  // <li> For fixed structured records the existing values are replaced
+  //      by the new values. This means that RecordFieldPtr's using this
+  //      record remain valid.
+  //      The structure of the other record has to conform this record
+  //      or this record has to be empty, otherwise an exception is thrown.
+  //      This assignment is less efficient, because it has to check the
+  //      conformance and because each value has to be copied.
+  // </ul>
+  // <note role=warning>
+  // Attributes like fixed structure flag and check function will not
+  // be copied.
+  // </note>
+  TableRecord& operator=(const TableRecord& other);
 
-    // Copy the data in the other record to this record.
-    // It can operate in 2 ways depending on the TableRecord structure flag.
-    // <ul>
-    // <li> For variable structured records the existing fields are
-    //      thrown away and replaced by the new fields.
-    //      This means that RecordFieldPtr's using this record get invalidated.
-    //      Because copy-on-write semantics are used, this kind of
-    //      assignment is a very efficient operation.
-    // <li> For fixed structured records the existing values are replaced
-    //      by the new values. This means that RecordFieldPtr's using this
-    //      record remain valid.
-    //      The structure of the other record has to conform this record
-    //      or this record has to be empty, otherwise an exception is thrown.
-    //      This assignment is less efficient, because it has to check the
-    //      conformance and because each value has to be copied.
-    // </ul>
-    // <note role=warning>
-    // Attributes like fixed structure flag and check function will not
-    // be copied.
-    // </note>
-    TableRecord& operator= (const TableRecord& other);
-    
-    // Release resources associated with this object.
-    ~TableRecord();
+  // Release resources associated with this object.
+  ~TableRecord();
 
-    // Make a copy of this object.
-    virtual RecordInterface* clone() const;
+  // Make a copy of this object.
+  virtual RecordInterface* clone() const;
 
-    // Assign that RecordInterface object to this one.
-    // If <src>that</src> is a TableRecord, copy-on-write is used.
-    // Otherwise each individual field is copied.
-    virtual void assign (const RecordInterface& that);
+  // Assign that RecordInterface object to this one.
+  // If <src>that</src> is a TableRecord, copy-on-write is used.
+  // Otherwise each individual field is copied.
+  virtual void assign(const RecordInterface& that);
 
-    // Convert the TableRecord to a Record (recursively).
-    // A possible Table object is converted to a string containing
-    // the table name preceeded by 'Table: ' (as used by TableProxy).
-    Record toRecord() const;
+  // Convert the TableRecord to a Record (recursively).
+  // A possible Table object is converted to a string containing
+  // the table name preceeded by 'Table: ' (as used by TableProxy).
+  Record toRecord() const;
 
-    // Fill the TableRecord from the given Record.
-    // The fields are appended to the TableRecord.
-    // It is the opposite of toRecord, so a String containing 'Table: '
-    // is handled as a Table (if it exists).
-    void fromRecord (const Record& rec);
+  // Fill the TableRecord from the given Record.
+  // The fields are appended to the TableRecord.
+  // It is the opposite of toRecord, so a String containing 'Table: '
+  // is handled as a Table (if it exists).
+  void fromRecord(const Record& rec);
 
-    // Get or define the value as a ValueHolder.
-    // This is useful to pass around a value of any supported type.
-    // <group>
-    virtual ValueHolder asValueHolder (const RecordFieldId&) const;
-    virtual void defineFromValueHolder (const RecordFieldId&,
-                                        const ValueHolder&);
-    // </group>
+  // Get or define the value as a ValueHolder.
+  // This is useful to pass around a value of any supported type.
+  // <group>
+  virtual ValueHolder asValueHolder(const RecordFieldId&) const;
+  virtual void defineFromValueHolder(const RecordFieldId&, const ValueHolder&);
+  // </group>
 
-    // Get the comment for this field.
-    virtual const String& comment (const RecordFieldId&) const;
+  // Get the comment for this field.
+  virtual const String& comment(const RecordFieldId&) const;
 
-    // Set the comment for this field.
-    virtual void setComment (const RecordFieldId&, const String& comment);
+  // Set the comment for this field.
+  virtual void setComment(const RecordFieldId&, const String& comment);
 
-    // Describes the current structure of this TableRecord.
-    const RecordDesc& description() const;
+  // Describes the current structure of this TableRecord.
+  const RecordDesc& description() const;
 
-    // Change the structure of this TableRecord to contain the fields in
-    // newDescription. After calling restructure, <src>description() ==
-    // newDescription</src>. Any existing RecordFieldPtr objects are
-    // invalidated (their <src>isAttached()</src> members return False) after
-    // this call.
-    // <br>When the new description contains subrecords, those subrecords
-    // will be restructured if <src>recursive=True</src> is given.
-    // Otherwise the subrecord is a variable empty record.
-    // Subrecords will be variable if their description is empty (i.e. does
-    // not contain any field), otherwise they are fixed.
-    // <br>Restructuring is not possible and an exception is thrown
-    // if the Record has a fixed structure.
-    virtual void restructure (const RecordDesc& newDescription,
-			      Bool recursive=True);
+  // Change the structure of this TableRecord to contain the fields in
+  // newDescription. After calling restructure, <src>description() ==
+  // newDescription</src>. Any existing RecordFieldPtr objects are
+  // invalidated (their <src>isAttached()</src> members return False) after
+  // this call.
+  // <br>When the new description contains subrecords, those subrecords
+  // will be restructured if <src>recursive=True</src> is given.
+  // Otherwise the subrecord is a variable empty record.
+  // Subrecords will be variable if their description is empty (i.e. does
+  // not contain any field), otherwise they are fixed.
+  // <br>Restructuring is not possible and an exception is thrown
+  // if the Record has a fixed structure.
+  virtual void restructure(const RecordDesc& newDescription, Bool recursive = True);
 
-    // Returns True if this and other have the same RecordDesc, other
-    // than different names for the fields. That is, the number, type and the
-    // order of the fields must be identical (recursively for fixed
-    // structured sub-Records in this).
-    // <note role=caution>
-    // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-    // <br><src>thatRecord.conform(thisRecord) == True</src>, because
-    // a variable record in one conforms a fixed record in that, but
-    // not vice-versa.
-    // </note>
-    Bool conform (const TableRecord& other) const;
+  // Returns True if this and other have the same RecordDesc, other
+  // than different names for the fields. That is, the number, type and the
+  // order of the fields must be identical (recursively for fixed
+  // structured sub-Records in this).
+  // <note role=caution>
+  // <src>thisRecord.conform(thatRecord) == True</src> does not imply
+  // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+  // a variable record in one conforms a fixed record in that, but
+  // not vice-versa.
+  // </note>
+  Bool conform(const TableRecord& other) const;
 
-    // How many fields does this structure have? A convenient synonym for
-    // <src>description().nfields()</src>.
-    virtual uInt nfields() const;
+  // How many fields does this structure have? A convenient synonym for
+  // <src>description().nfields()</src>.
+  virtual uInt nfields() const;
 
-    // Get the field number from the field name.
-    // -1 is returned if the field name is unknown.
-    virtual Int fieldNumber (const String& fieldName) const;
+  // Get the field number from the field name.
+  // -1 is returned if the field name is unknown.
+  virtual Int fieldNumber(const String& fieldName) const;
 
-    // Get the data type of this field.
-    virtual DataType type (Int whichField) const;
+  // Get the data type of this field.
+  virtual DataType type(Int whichField) const;
 
-    // Remove a field from the record.
-    // <note role=caution>
-    // Removing a field means that the field number of the fields following
-    // it will be decremented. Only the RecordFieldPtr's
-    // pointing to the removed field will be invalidated.
-    // </note>
-    void removeField (const RecordFieldId&);
+  // Remove a field from the record.
+  // <note role=caution>
+  // Removing a field means that the field number of the fields following
+  // it will be decremented. Only the RecordFieldPtr's
+  // pointing to the removed field will be invalidated.
+  // </note>
+  void removeField(const RecordFieldId&);
 
-    // Rename the given field.
-    void renameField (const String& newName, const RecordFieldId&);
+  // Rename the given field.
+  void renameField(const String& newName, const RecordFieldId&);
 
-    // Define a value for the given field.
-    // When the field is unknown, it will be added to the record.
-    // The second version is meant for any type of record (e.g. Record,
-    // TableRecord, GlishRecord). It is converted to a TableRecord using the
-    // TableRecord constructor taking a RecordInterface object.
-    // <group>
-    void defineRecord (const RecordFieldId&, const TableRecord& value,
-		       RecordType type = Variable);
-    virtual void defineRecord (const RecordFieldId&,
-			       const RecordInterface& value,
-			       RecordType = Variable);
-    void defineTable  (const RecordFieldId&, const Table& value,
-		       RecordType type = Variable);
-    // </group>
+  // Define a value for the given field.
+  // When the field is unknown, it will be added to the record.
+  // The second version is meant for any type of record (e.g. Record,
+  // TableRecord, GlishRecord). It is converted to a TableRecord using the
+  // TableRecord constructor taking a RecordInterface object.
+  // <group>
+  void defineRecord(const RecordFieldId&, const TableRecord& value, RecordType type = Variable);
+  virtual void defineRecord(const RecordFieldId&, const RecordInterface& value,
+                            RecordType = Variable);
+  void defineTable(const RecordFieldId&, const Table& value, RecordType type = Variable);
+  // </group>
 
-    // Get the subrecord or table from the given field.
-    // <note>
-    // The non-const version has a different name to prevent that the
-    // copy-on-write mechanism makes a copy when not necessary.
-    // </note>
-    // <group>
-    const TableRecord& subRecord (const RecordFieldId&) const;
-    TableRecord& rwSubRecord (const RecordFieldId&);
-    virtual const RecordInterface& asRecord (const RecordFieldId&) const;
-    virtual RecordInterface& asrwRecord (const RecordFieldId&);
-    // </group>
+  // Get the subrecord or table from the given field.
+  // <note>
+  // The non-const version has a different name to prevent that the
+  // copy-on-write mechanism makes a copy when not necessary.
+  // </note>
+  // <group>
+  const TableRecord& subRecord(const RecordFieldId&) const;
+  TableRecord& rwSubRecord(const RecordFieldId&);
+  virtual const RecordInterface& asRecord(const RecordFieldId&) const;
+  virtual RecordInterface& asrwRecord(const RecordFieldId&);
+  // </group>
 
-    // Get the table from the given field.
-    // By default the read/write option and lock options are inherited
-    // from the parent table.
-    // If openWritable=True, the table is still opened as readonly if the file
-    // permissions do not permit write access.
-    // <group>
-    Table asTable (const RecordFieldId&) const;
-    Table asTable (const RecordFieldId&, const TableLock& lockOptions) const;
-    // </group>
+  // Get the table from the given field.
+  // By default the read/write option and lock options are inherited
+  // from the parent table.
+  // If openWritable=True, the table is still opened as readonly if the file
+  // permissions do not permit write access.
+  // <group>
+  Table asTable(const RecordFieldId&) const;
+  Table asTable(const RecordFieldId&, const TableLock& lockOptions) const;
+  // </group>
 
-    // Get the attributes of a table field.
-    const TableAttr& tableAttributes (const RecordFieldId&) const;
+  // Get the attributes of a table field.
+  const TableAttr& tableAttributes(const RecordFieldId&) const;
 
-    // Merge a field from another record into this record.
-    // The DuplicatesFlag (as described in
-    // <linkto class=RecordInterface>RecordInterface</linkto>) determines
-    // what will be done in case the field name already exists.
-    void mergeField (const TableRecord& other, const RecordFieldId&,
-		     DuplicatesFlag = ThrowOnDuplicates);
+  // Merge a field from another record into this record.
+  // The DuplicatesFlag (as described in
+  // <linkto class=RecordInterface>RecordInterface</linkto>) determines
+  // what will be done in case the field name already exists.
+  void mergeField(const TableRecord& other, const RecordFieldId&,
+                  DuplicatesFlag = ThrowOnDuplicates);
 
-    // Merge all fields from the other record into this record.
-    // The DuplicatesFlag (as described in
-    // <linkto class=RecordInterface>RecordInterface</linkto>) determines
-    // what will be done in case a field name already exists.
-    // An exception will be thrown if other is the same as this
-    // (i.e. if merging the record itself).
-    void merge (const TableRecord& other, DuplicatesFlag = ThrowOnDuplicates);
-    
-    // Close the table in the given field.
-    // When accessed again, it will be opened automatically.
-    // This can be useful to save memory usage.
-    void closeTable (const RecordFieldId&) const;
+  // Merge all fields from the other record into this record.
+  // The DuplicatesFlag (as described in
+  // <linkto class=RecordInterface>RecordInterface</linkto>) determines
+  // what will be done in case a field name already exists.
+  // An exception will be thrown if other is the same as this
+  // (i.e. if merging the record itself).
+  void merge(const TableRecord& other, DuplicatesFlag = ThrowOnDuplicates);
 
-    // Close all open tables.
-    // When accessed again, it will be opened automatically.
-    // This can be useful to save memory usage.
-    void closeTables() const;
+  // Close the table in the given field.
+  // When accessed again, it will be opened automatically.
+  // This can be useful to save memory usage.
+  void closeTable(const RecordFieldId&) const;
 
-    // Flush all open subtables.
-    void flushTables (Bool fsync=False) const;
+  // Close all open tables.
+  // When accessed again, it will be opened automatically.
+  // This can be useful to save memory usage.
+  void closeTables() const;
 
-    // Rename the subtables with a path containing the old parent table name.
-    void renameTables (const String& newParentName,
-		       const String& oldParentName);
+  // Flush all open subtables.
+  void flushTables(Bool fsync = False) const;
 
-    // Are subtables used in other processes.
-    Bool areTablesMultiUsed() const;
+  // Rename the subtables with a path containing the old parent table name.
+  void renameTables(const String& newParentName, const String& oldParentName);
 
-    // Write the TableRecord to an output stream.
-    friend AipsIO& operator<< (AipsIO& os, const TableRecord& rec);
+  // Are subtables used in other processes.
+  Bool areTablesMultiUsed() const;
 
-    // Read the TableRecord from an input stream.
-    friend AipsIO& operator>> (AipsIO& os, TableRecord& rec);
+  // Write the TableRecord to an output stream.
+  friend AipsIO& operator<<(AipsIO& os, const TableRecord& rec);
 
-    // Put the data of a record.
-    // This is used to write a subrecord, whose description has
-    // not been written.
-    void putRecord (AipsIO& os, const TableAttr&) const;
+  // Read the TableRecord from an input stream.
+  friend AipsIO& operator>>(AipsIO& os, TableRecord& rec);
 
-    // Read a record.
-    // This is used to read a subrecord, whose description has
-    // not been read.
-    void getRecord (AipsIO& os, const TableAttr&);
+  // Put the data of a record.
+  // This is used to write a subrecord, whose description has
+  // not been written.
+  void putRecord(AipsIO& os, const TableAttr&) const;
 
-    // Put the data of a record.
-    // This is used to write a subrecord, whose description has
-    // already been written.
-    void putData (AipsIO& os, const TableAttr&) const;
+  // Read a record.
+  // This is used to read a subrecord, whose description has
+  // not been read.
+  void getRecord(AipsIO& os, const TableAttr&);
 
-    // Read the data of a record.
-    // This is used to read a subrecord, whose description has
-    // already been read.
-    void getData (AipsIO& os, uInt version, const TableAttr&);
+  // Put the data of a record.
+  // This is used to write a subrecord, whose description has
+  // already been written.
+  void putData(AipsIO& os, const TableAttr&) const;
 
-    // Print the contents of the record.
-    // Only the first <src>maxNrValues</src> of an array will be printed.
-    // A value < 0 means the entire array.
-    virtual void print (std::ostream&,
-			Int maxNrValues = 25,
-			const String& indent="") const;
+  // Read the data of a record.
+  // This is used to read a subrecord, whose description has
+  // already been read.
+  void getData(AipsIO& os, uInt version, const TableAttr&);
 
-    // Reopen possible tables in keywords as read/write.
-    // Tables are not reopened if they are not writable.
-    void reopenRW();
+  // Print the contents of the record.
+  // Only the first <src>maxNrValues</src> of an array will be printed.
+  // A value < 0 means the entire array.
+  virtual void print(std::ostream&, Int maxNrValues = 25, const String& indent = "") const;
 
-    // Recursively set the attributes of subtables to the ones in the other
-    // record for matching subtable field names. Otherwise set it to defaultAttr.
-    // The name attribute is not changed.
-    // It is primarily a helper function for PlainTable::syncTable
-    // and ColumnSet::syncColumns.
-    // <br>However, it can also be used to achieve that all subtables of a
-    // read/write table are opened as readonly. E.g.:
-    // <srcblock>
-    //   TableAttr newAttr(String(), False, mainTable.lockOptions());
-    //   mainTable.keywordSet().setTableAttr (TableRecord(), newAttr);
-    // </srcblock>
-    void setTableAttr (const TableRecord& other, const TableAttr& defaultAttr);
+  // Reopen possible tables in keywords as read/write.
+  // Tables are not reopened if they are not writable.
+  void reopenRW();
 
-    // Make a unique record representation
-    // (to do copy-on-write in RecordFieldPtr).
-    virtual void makeUnique();
+  // Recursively set the attributes of subtables to the ones in the other
+  // record for matching subtable field names. Otherwise set it to defaultAttr.
+  // The name attribute is not changed.
+  // It is primarily a helper function for PlainTable::syncTable
+  // and ColumnSet::syncColumns.
+  // <br>However, it can also be used to achieve that all subtables of a
+  // read/write table are opened as readonly. E.g.:
+  // <srcblock>
+  //   TableAttr newAttr(String(), False, mainTable.lockOptions());
+  //   mainTable.keywordSet().setTableAttr (TableRecord(), newAttr);
+  // </srcblock>
+  void setTableAttr(const TableRecord& other, const TableAttr& defaultAttr);
 
+  // Make a unique record representation
+  // (to do copy-on-write in RecordFieldPtr).
+  virtual void makeUnique();
 
-protected:
-    // Used by the RecordField classes to attach in a type-safe way to the
-    // correct field.
-    // <group>
-    virtual void* get_pointer (Int whichField, DataType type) const;
-    virtual void* get_pointer (Int whichField, DataType type,
-			       const String& recordType) const;
-    // </group>
+ protected:
+  // Used by the RecordField classes to attach in a type-safe way to the
+  // correct field.
+  // <group>
+  virtual void* get_pointer(Int whichField, DataType type) const;
+  virtual void* get_pointer(Int whichField, DataType type, const String& recordType) const;
+  // </group>
 
-    // Return a const reference to the underlying TableRecordRep.
-    const TableRecordRep& ref() const;
+  // Return a const reference to the underlying TableRecordRep.
+  const TableRecordRep& ref() const;
 
-    // Return a non-const reference to the underlying TableRecordRep.
-    // When needed, the TableRecordRep will be copied and all RecordField
-    // objects will be notified.
-    TableRecordRep& rwRef();
+  // Return a non-const reference to the underlying TableRecordRep.
+  // When needed, the TableRecordRep will be copied and all RecordField
+  // objects will be notified.
+  TableRecordRep& rwRef();
 
-    // Add a field to the record.
-    virtual void addDataField (const String& name, DataType type,
-			       const IPosition& shape, Bool fixedShape,
-			       const void* value);
+  // Add a field to the record.
+  virtual void addDataField(const String& name, DataType type, const IPosition& shape,
+                            Bool fixedShape, const void* value);
 
-    // Define a value in the given field.
-    virtual void defineDataField (Int whichField, DataType type,
-				  const void* value);
+  // Define a value in the given field.
+  virtual void defineDataField(Int whichField, DataType type, const void* value);
 
-private:
-    // Get the description of this record.
-    virtual RecordDesc getDescription() const;
+ private:
+  // Get the description of this record.
+  virtual RecordDesc getDescription() const;
 
-    // Create TableRecord as a subrecord.
-    // When the description is empty, the record has a variable structure.
-    // Otherwise it is fixed.
-    // <group>
-    TableRecord (TableRecordRep* parent, const RecordDesc& description);
-    TableRecord (TableRecordRep* parent, RecordType type);
-    // </group>
+  // Create TableRecord as a subrecord.
+  // When the description is empty, the record has a variable structure.
+  // Otherwise it is fixed.
+  // <group>
+  TableRecord(TableRecordRep* parent, const RecordDesc& description);
+  TableRecord(TableRecordRep* parent, RecordType type);
+  // </group>
 
-    // Set the recordtype of this record and all its subrecords (recursively).
-    void setRecordType (RecordType type);
+  // Set the recordtype of this record and all its subrecords (recursively).
+  void setRecordType(RecordType type);
 
-    // The TableRecord representation.
-    COWPtr<TableRecordRep> rep_p;
-    // The parent TableRecord.
-    TableRecordRep* parent_p;
+  // The TableRecord representation.
+  COWPtr<TableRecordRep> rep_p;
+  // The parent TableRecord.
+  TableRecordRep* parent_p;
 };
 
+inline const TableRecordRep& TableRecord::ref() const { return rep_p.ref(); }
+inline const RecordDesc& TableRecord::description() const { return ref().description(); }
 
-
-inline const TableRecordRep& TableRecord::ref() const
-{
-    return rep_p.ref();
-}
-inline const RecordDesc& TableRecord::description() const
-{
-    return ref().description();
+inline Bool TableRecord::conform(const TableRecord& other) const {
+  return ref().conform(other.ref());
 }
 
-inline Bool TableRecord::conform (const TableRecord& other) const
-{
-    return ref().conform (other.ref());
+inline void TableRecord::putData(AipsIO& os, const TableAttr& parentAttr) const {
+  ref().putData(os, parentAttr);
 }
 
-inline void TableRecord::putData (AipsIO& os,
-				  const TableAttr& parentAttr) const
-{
-    ref().putData (os, parentAttr);
+inline void TableRecord::getData(AipsIO& os, uInt version, const TableAttr& parentAttr) {
+  rwRef().getData(os, version, parentAttr);
 }
 
-inline void TableRecord::getData (AipsIO& os, uInt version,
-				  const TableAttr& parentAttr)
-{
-    rwRef().getData (os, version, parentAttr);
+inline void TableRecord::reopenRW() { rwRef().reopenRW(); }
+
+inline void TableRecord::closeTables() const { ref().closeTables(); }
+
+inline void TableRecord::flushTables(Bool fsync) const { ref().flushTables(fsync); }
+
+inline void TableRecord::renameTables(const String& newParentName, const String& oldParentName) {
+  rwRef().renameTables(newParentName, oldParentName);
 }
 
-inline void TableRecord::reopenRW()
-{
-    rwRef().reopenRW();
-}
+inline Bool TableRecord::areTablesMultiUsed() const { return ref().areTablesMultiUsed(); }
 
-inline void TableRecord::closeTables() const
-{
-    ref().closeTables();
-}
-
-inline void TableRecord::flushTables (Bool fsync) const
-{
-    ref().flushTables (fsync);
-}
-
-inline void TableRecord::renameTables (const String& newParentName,
-				       const String& oldParentName)
-{
-    rwRef().renameTables (newParentName, oldParentName);
-}
-
-inline Bool TableRecord::areTablesMultiUsed() const
-{
-    return ref().areTablesMultiUsed();
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

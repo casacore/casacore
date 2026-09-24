@@ -1,32 +1,32 @@
-//# TaQLNode.h: Envelope class for a node in the raw TaQL parse tree
-//# Copyright (C) 2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TaQLNode.h: Envelope class for a node in the raw TaQL parse tree
+// # Copyright (C) 2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TAQLNODE_H
 #define TABLES_TAQLNODE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TaQLNodeRep.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
@@ -36,9 +36,9 @@
 #include <vector>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declaration.
+// # Forward Declaration.
 class AipsIO;
 class TaQLNodeVisitor;
 class TaQLMultiNode;
@@ -57,7 +57,7 @@ class TaQLQueryNodeRep;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto group=TableGram.h#TableGramFunctions>TableGram</linkto>
 //   <li> Note 199 describing
 //        <a href="../notes/199.html">
@@ -71,87 +71,81 @@ class TaQLQueryNodeRep;
 // the letter in the TaQLNode envelope.
 // <br>The actual scanning/parsing of the command is done using flex/bison
 // as defined in the TableGram files.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // The letter-envelope idiom (counted pointer) makes if much easier
 // to keep track of memory, especially in the case of exceptions.
 // </motivation>
 
-class TaQLNode
-{
-public:
+class TaQLNode {
+ public:
   // Default constructor.
-  TaQLNode()
-    {}
+  TaQLNode() {}
 
   // Construct for given letter. It takes over the pointer.
-  TaQLNode (TaQLNodeRep* rep)
-    { itsRep.reset (rep); }
+  TaQLNode(TaQLNodeRep* rep) { itsRep.reset(rep); }
 
   // Copy constructor (reference semantics).
-  TaQLNode (const TaQLNode& that)
-    { itsRep = that.itsRep; }
+  TaQLNode(const TaQLNode& that) { itsRep = that.itsRep; }
 
   // Assignment (reference semantics).
-  TaQLNode& operator= (const TaQLNode& that)
-    { if (this != &that) {
-        itsRep = that.itsRep;
-      }
-      return *this;
+  TaQLNode& operator=(const TaQLNode& that) {
+    if (this != &that) {
+      itsRep = that.itsRep;
     }
+    return *this;
+  }
 
   // Get the TaQL style.
-  const TaQLStyle& style() const
-    { return itsRep->style(); }
+  const TaQLStyle& style() const { return itsRep->style(); }
 
   virtual ~TaQLNode() noexcept = default;
 
   // Parse a TaQL command and return the result.
   // An exception is thrown in case of parse errors.
   // The parse tree is deleted by function clearNodeCreated.
-  static TaQLNode parse (const String& command);
+  static TaQLNode parse(const String& command);
 
   // Does the envelope contain a letter?
-  Bool isValid() const
-    { return Bool(itsRep); }
+  Bool isValid() const { return Bool(itsRep); }
 
   // Return the type of letter.
-  char nodeType() const
-    { return itsRep->nodeType(); }
+  char nodeType() const { return itsRep->nodeType(); }
 
   // Get read access to the letter.
-  const TaQLNodeRep* getRep() const
-    { return itsRep.get(); }
+  const TaQLNodeRep* getRep() const { return itsRep.get(); }
 
   // Let the visitor visit the node.
   // If no node, return an empty result.
-  TaQLNodeResult visit (TaQLNodeVisitor& visitor) const
-    { return (itsRep  ?  itsRep->visit (visitor) : TaQLNodeResult()); }
+  TaQLNodeResult visit(TaQLNodeVisitor& visitor) const {
+    return (itsRep ? itsRep->visit(visitor) : TaQLNodeResult());
+  }
 
   // Print the node (recursively) in the given stream.
-  void show (std::ostream& os) const
-    { if (itsRep) itsRep->show (os); }
+  void show(std::ostream& os) const {
+    if (itsRep) itsRep->show(os);
+  }
 
   // Save and restore the entire parse tree.
   // <group>
-  void save (AipsIO& aio) const;
-  static TaQLNode restore (AipsIO& aio);
+  void save(AipsIO& aio) const;
+  static TaQLNode restore(AipsIO& aio);
   // </group>
 
-protected:
+ protected:
   std::shared_ptr<TaQLNodeRep> itsRep;
 
-private:
+ private:
   // Delete all nodes that were created by the parser.
   static void clearNodesCreated();
 
-public:
+ public:
   // Helper functions for save/restore of tree.
   // <group>
-  void saveNode (AipsIO& aio) const;
-  static TaQLNode restoreNode (AipsIO& aio);
-  static TaQLMultiNode restoreMultiNode (AipsIO& aio);
+  void saveNode(AipsIO& aio) const;
+  static TaQLNode restoreNode(AipsIO& aio);
+  static TaQLMultiNode restoreMultiNode(AipsIO& aio);
   // </group>
 
   // The object getting the final tree.
@@ -164,7 +158,6 @@ public:
   static std::mutex theirMutex;
 };
 
-
 // <summary>
 // Envelope class for a node containing a constant value.
 // </summary>
@@ -175,17 +168,16 @@ public:
 // This is a specialization of the envelope class
 // <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
 // a constant value.
-// </synopsis> 
-class TaQLConstNode: public TaQLNode
-{
-public:
-  explicit TaQLConstNode (TaQLConstNodeRep* rep);
+// </synopsis>
+class TaQLConstNode : public TaQLNode {
+ public:
+  explicit TaQLConstNode(TaQLConstNodeRep* rep);
   void setIsTableName();
   const String& getString() const;
-private:
+
+ private:
   TaQLConstNodeRep* itsNRep;
 };
-
 
 // <summary>
 // Envelope class for a node containing a constant regex value.
@@ -197,18 +189,17 @@ private:
 // This is a specialization of the envelope class
 // <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
 // a constant regex or pattern value.
-// </synopsis> 
-class TaQLRegexNode: public TaQLNode
-{
-public:
-  explicit TaQLRegexNode (TaQLRegexNodeRep* rep);
+// </synopsis>
+class TaQLRegexNode : public TaQLNode {
+ public:
+  explicit TaQLRegexNode(TaQLRegexNodeRep* rep);
   const String& getString() const;
   Bool caseInsensitive() const;
   Bool negate() const;
-private:
+
+ private:
   TaQLRegexNodeRep* itsNRep;
 };
-
 
 // <summary>
 // Envelope class for a node containing a list of nodes.
@@ -220,25 +211,23 @@ private:
 // This is a specialization of the envelope class
 // <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
 // a list of nodes.
-// </synopsis> 
-class TaQLMultiNode: public TaQLNode
-{
-public:
+// </synopsis>
+class TaQLMultiNode : public TaQLNode {
+ public:
   TaQLMultiNode();
-  explicit TaQLMultiNode (Bool isSetOrArray);
-  TaQLMultiNode (TaQLMultiNodeRep* rep);
-  void add (const TaQLNode& node);
-  void add (TaQLNodeRep* noderep);
+  explicit TaQLMultiNode(Bool isSetOrArray);
+  TaQLMultiNode(TaQLMultiNodeRep* rep);
+  void add(const TaQLNode& node);
+  void add(TaQLNodeRep* noderep);
   void setIsSetOrArray();
-  void setPPFix (const String& prefix, const String& postfix);
-  void setSeparator (const String& sep);
-  void setSeparator (uInt incr, const String& sep);
-  const TaQLMultiNodeRep* getMultiRep() const
-    { return itsNRep; }
-private:
+  void setPPFix(const String& prefix, const String& postfix);
+  void setSeparator(const String& sep);
+  void setSeparator(uInt incr, const String& sep);
+  const TaQLMultiNodeRep* getMultiRep() const { return itsNRep; }
+
+ private:
   TaQLMultiNodeRep* itsNRep;
 };
-
 
 // <summary>
 // Envelope class for a node containing a selection command.
@@ -250,19 +239,18 @@ private:
 // This is a specialization of the envelope class
 // <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
 // a selection command.
-// </synopsis> 
-class TaQLQueryNode: public TaQLNode
-{
-public:
-  TaQLQueryNode (TaQLQueryNodeRep* rep);
+// </synopsis>
+class TaQLQueryNode : public TaQLNode {
+ public:
+  TaQLQueryNode(TaQLQueryNodeRep* rep);
   void setBrackets();
   void setNoExecute();
   void setFromExecute();
-private:
+
+ private:
   TaQLQueryNodeRep* itsNRep;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,42 +1,41 @@
-//# SSMIndex.h: The bucket index for a group of columns in the SSM
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SSMIndex.h: The bucket index for a group of columns in the SSM
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_SSMINDEX_H
 #define TABLES_SSMINDEX_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <map>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class SSMBase;
-
 
 // <summary>
 // The bucket index for a group of columns in the Standard Storage Manager.
@@ -48,7 +47,7 @@ class SSMBase;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=SSMBase>SSMBase</linkto>
 // </prerequisite>
 
@@ -74,33 +73,32 @@ class SSMBase;
 //       will scan the SSMIndex objects to find the hole fitting best.
 // </ol>
 // </synopsis>
-  
+
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //   <li> recreate should recreate the itsLastRow && itsBucketNr as well
 //        (moving them to the front and rearrange the freespace as one
-//        concatenated block) 
+//        concatenated block)
 // </todo>
 
-class SSMIndex 
-{
-public:
+class SSMIndex {
+ public:
   // Create the object with the given number of rows per bucket.
   // Note that the default is needed to create the object for existing
   // tables.
-  explicit SSMIndex (SSMBase* aPtrSSM, uInt rowsPerBucket=0);
+  explicit SSMIndex(SSMBase* aPtrSSM, uInt rowsPerBucket = 0);
 
   ~SSMIndex();
 
   // Read the bucket index from the AipsIO object.
-  void get (AipsIO& anOs);
+  void get(AipsIO& anOs);
 
   // Write the bucket index into the AipsIO object.
-  void put (AipsIO& anOs) const;
+  void put(AipsIO& anOs) const;
 
   // Recreate the object in case all rows are deleted from the table.
   void recreate();
-  
+
   // Return all the bucketnrs used in this index.
   Vector<uInt> getBuckets() const;
 
@@ -108,31 +106,31 @@ public:
   uInt getNrBuckets() const;
 
   // Set nr of columns use this index.
-  void setNrColumns (Int aNrColumns, uInt aSizeUsed);
+  void setNrColumns(Int aNrColumns, uInt aSizeUsed);
 
   // Add some rows.
-  void addRow (rownr_t aNrRows);
+  void addRow(rownr_t aNrRows);
 
   // Show Statistics of index.
-  void showStatistics (ostream& anOs) const;
+  void showStatistics(ostream& anOs) const;
 
   // A column is removed.
   // Set the free space at offset for a field with the given nr of bits.
   // It returns the nr of columns still used in this index.
-  Int removeColumn (Int anOffset, uInt nbits);
+  Int removeColumn(Int anOffset, uInt nbits);
 
   // Try to find free space for a field with a given length (best fit).
   // -1 is returned if no fit is found.
   // Otherwise it returns the nr of bytes left unused.
-  Int getFree (Int& anOffset, uInt nbits) const;
+  Int getFree(Int& anOffset, uInt nbits) const;
 
   // reuse the space at offset for a field with the given nr of bits.
   // This is used when column has been added to this bucket.
-  void addColumn (Int anOffset, uInt nbits);
+  void addColumn(Int anOffset, uInt nbits);
 
   // Delete the given row.
   // It returns the bucket nr if it gets empty, otherwise -1.
-  Int deleteRow (rownr_t aRowNumber);
+  Int deleteRow(rownr_t aRowNumber);
 
   // Get the number of rows that fits in ach bucket.
   uInt getRowsPerBucket() const;
@@ -140,46 +138,39 @@ public:
   // Find the bucket containing the given row.
   // An exception is thrown if not found.
   // It also sets the first and last row number fitting in that bucket.
-  void find (rownr_t aRowNumber, uInt& aBucketNr, rownr_t& aStartRow,
-	     rownr_t& anEndRow, const String& colName) const;
+  void find(rownr_t aRowNumber, uInt& aBucketNr, rownr_t& aStartRow, rownr_t& anEndRow,
+            const String& colName) const;
 
-private:
+ private:
   // Get the index of the bucket containing the given row.
-  uInt getIndex (rownr_t aRowNr, const String& colName) const;
+  uInt getIndex(rownr_t aRowNr, const String& colName) const;
 
-
-  //# Pointer to specific Storage Manager.    
+  // # Pointer to specific Storage Manager.
   SSMBase* itsSSMPtr;
-    
-  //# Nr of entries used in blocks.
+
+  // # Nr of entries used in blocks.
   uInt itsNUsed;
 
-  //# Last row nr indexed together with itsBucketNumber
+  // # Last row nr indexed together with itsBucketNumber
   Block<rownr_t> itsLastRow;
 
-  //# Bucketnumbers indexed together with itsLastRow.
-  //# So itsLastRow[0] contains the last rownumber of the bucket
-  //# in itsBucketNumber[0]
+  // # Bucketnumbers indexed together with itsLastRow.
+  // # So itsLastRow[0] contains the last rownumber of the bucket
+  // # in itsBucketNumber[0]
   Block<uInt> itsBucketNumber;
 
-  //# Map that contains length/offset pairs for free size (size in bytes).
-  std::map<Int,Int> itsFreeSpace;
+  // # Map that contains length/offset pairs for free size (size in bytes).
+  std::map<Int, Int> itsFreeSpace;
 
-  //# How many rows fit in a bucket?
+  // # How many rows fit in a bucket?
   uInt itsRowsPerBucket;
 
-  //# Nr of columns using this index.
+  // # Nr of columns using this index.
   Int itsNrColumns;
 };
 
+inline uInt SSMIndex::getRowsPerBucket() const { return itsRowsPerBucket; }
 
-inline uInt SSMIndex::getRowsPerBucket() const
-{
-  return itsRowsPerBucket;
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

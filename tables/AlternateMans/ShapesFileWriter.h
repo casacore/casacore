@@ -11,8 +11,7 @@ namespace casacore {
 
 class ShapesFileWriter {
  public:
-  ShapesFileWriter(const std::string& filename)
-      : compressor_(9), file_(filename) {}
+  ShapesFileWriter(const std::string& filename) : compressor_(9), file_(filename) {}
 
   ~ShapesFileWriter() {
     if (!buffer_.empty()) Flush();
@@ -31,16 +30,11 @@ class ShapesFileWriter {
   void Flush() {
     const uint32_t uncompressed_size = buffer_.size() * sizeof(uint64_t);
     compressed_buffer_.resize(compressor_.CompressBound(uncompressed_size));
-    std::span input(reinterpret_cast<const std::byte*>(buffer_.data()),
-                    uncompressed_size);
-    const uint32_t compressed_size =
-        compressor_.Compress(input, compressed_buffer_);
-    file_.write(reinterpret_cast<const char*>(&uncompressed_size),
-                sizeof(uint32_t));
-    file_.write(reinterpret_cast<const char*>(&compressed_size),
-                sizeof(uint32_t));
-    file_.write(reinterpret_cast<const char*>(compressed_buffer_.data()),
-                compressed_size);
+    std::span input(reinterpret_cast<const std::byte*>(buffer_.data()), uncompressed_size);
+    const uint32_t compressed_size = compressor_.Compress(input, compressed_buffer_);
+    file_.write(reinterpret_cast<const char*>(&uncompressed_size), sizeof(uint32_t));
+    file_.write(reinterpret_cast<const char*>(&compressed_size), sizeof(uint32_t));
+    file_.write(reinterpret_cast<const char*>(compressed_buffer_.data()), compressed_size);
     buffer_.clear();
   }
 

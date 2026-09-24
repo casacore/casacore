@@ -1,33 +1,33 @@
-//# Tables.h: The Tables module - Casacore data storage
-//# Copyright (C) 1994-2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Tables.h: The Tables module - Casacore data storage
+// # Copyright (C) 1994-2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLES_H
 #define TABLES_TABLES_H
 
-//# Includes
-//#   table description
+// # Includes
+// #   table description
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
@@ -35,7 +35,7 @@
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ScaRecordColDesc.h>
 
-//#   table access
+// #   table access
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableLock.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -48,27 +48,26 @@
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>
 
-//#   keywords
+// #   keywords
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/RecordField.h>
 
-//#   table lookup
+// #   table lookup
 #include <casacore/tables/Tables/ColumnsIndex.h>
 #include <casacore/tables/Tables/ColumnsIndexArray.h>
 
-//#   table vectors
+// #   table vectors
 #include <casacore/tables/Tables/TableVector.h>
 #include <casacore/tables/Tables/TabVecMath.h>
 #include <casacore/tables/Tables/TabVecLogic.h>
 
-//#   data managers
+// #   data managers
 #include <casacore/tables/DataMan.h>
 
-//#   table expressions (for selection of rows)
+// #   table expressions (for selection of rows)
 #include <casacore/tables/TaQL.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -86,7 +85,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 
 // <etymology>
-// "Table" is a formal term from relational database theory: 
+// "Table" is a formal term from relational database theory:
 //   <em> "The organizing principle in a relational database is the TABLE,
 //    a rectangular, row/column arrangement of data values."</em>
 // Casacore tables are extensions to traditional tables, but are similar
@@ -96,10 +95,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // storage mechanism.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // Tables are the fundamental storage mechanism for Casacore. This document
 // explains <A HREF="#Tables:motivation">why</A> they had to be made,
-// <A HREF="#Tables:properties">what</A> their properties are, and 
+// <A HREF="#Tables:properties">what</A> their properties are, and
 // <A HREF="#Tables:open">how</A> to use them. The last subject is
 // discussed and illustrated in a sequence of sections:
 // <UL>
@@ -140,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // as laid out in the
 // <A HREF="http://aips2.cv.nrao.edu/aips++/docs/reference/Database.ps.gz">
 // AIPS++ Database document</A>, from where the following paragraph is taken:
-// 
+//
 // <p>
 // Traditional relational database tables have two features that
 // decisively limit their applicability to scientific data.  First, an item of
@@ -160,7 +159,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // in various states.  The restrictions imposed by the relational model
 // make it very difficult to deal with complex problems of this nature.
 // <p>
-// 
+//
 // In response to these limitations, and other needs, the Casacore tables were
 // designed.
 // </motivation>
@@ -176,7 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       pair for a column could, for instance, define its unit.
 //  <li> Each table has a <A HREF="#Tables:Table Description">description</A>
 //       which specifies the number and type of columns, and maybe initial
-//       keyword sets and default values for the columns. 
+//       keyword sets and default values for the columns.
 //  <li> A cell in a column may contain
 //       <UL>
 //        <LI> a scalar;
@@ -208,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> Table data are stored in a canonical format, so they can be read
 //       on any machine. To avoid needless swapping of bytes, the data can
 //       be stored in big endian (as used on e.g. SUN) or little endian
-//       (as used on Intel PC-s) canonical format. 
+//       (as used on Intel PC-s) canonical format.
 //       By default it uses the format specified in the aipsrc variable
 //       <code>table.endianformat</code> which defaults to
 //       <code>Table::LocalEndian</code> (the endian format of the
@@ -261,7 +260,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 //
 // The constructor option determines whether the table will be opened as
-// readonly or as read/write. A readonly table file must be opened 
+// readonly or as read/write. A readonly table file must be opened
 // as readonly, otherwise an exception is thrown. The functions
 // <linkto class="Table">Table::isWritable(...)</linkto>
 // can be used to determine if a table is writable.
@@ -286,7 +285,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto>.
 // For scalars of a standard data type (i.e. Bool, uChar, Int, Short,
 // uShort, uInt, float, double, Complex, DComplex and String) you could
-// instead use 
+// instead use
 // <linkto class="TableColumn">TableColumn::getScalar(...)</linkto> or
 // <linkto class="TableColumn">TableColumn::asXXX(...)</linkto>.
 // These functions offer an extra: they do automatic data type promotion;
@@ -311,7 +310,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // #include <casacore/casa/Arrays/Slicer.h>
 // #include <casacore/casa/Arrays/ArrayMath.h>
 // #include <iostream>
-// 
+//
 // main()
 // {
 //     // Open the table (readonly).
@@ -366,7 +365,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // creation of a memory table is exactly the same. The only difference
 // is that in call to construct the Table object the Table::Memory
 // type has to be given. Note that in the SetupNewTable object the columns
-// can be bound to any data manager. <src>MemoryTable</src> will rebind 
+// can be bound to any data manager. <src>MemoryTable</src> will rebind
 // stored columns to the <linkto class=MemoryStMan>MemoryStMan</linkto>
 // storage manager, but virtual columns bindings are not changed.
 //
@@ -384,7 +383,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // #include <casacore/tables/Tables/ArrColDesc.h>
 // #include <casacore/tables/Tables/StandardStMan.h>
 // #include <casacore/tables/Tables/IncrementalStMan.h>
-// 
+//
 // main()
 // {
 //     // Step1 -- Build the table description.
@@ -398,7 +397,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     td.addColumn (ArrayColumnDesc<Float> ("arr1",3,ColumnDesc::Direct));
 //     td.addColumn (ArrayColumnDesc<Float> ("arr2",0));
 //     td.addColumn (ArrayColumnDesc<Float> ("arr3",0,ColumnDesc::Direct));
-// 
+//
 //     // Step 2 -- Setup a new table from the description.
 //     SetupNewTable newtab("newtab.data", td, Table::New);
 //
@@ -406,7 +405,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     StandardStMan stmanStand_1;
 //     StandardStMan stmanStand_2;
 //     IncrementalStMan stmanIncr;
-// 
+//
 //     // Step 4 -- First, bind all columns to the first storage
 //     // manager. Then, bind a few columns to another storage manager
 //     // (which will overwrite the previous bindings).
@@ -414,15 +413,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     newtab.bindColumn ("ab", stmanStand_2);
 //     newtab.bindColumn ("ae", stmanIncr);
 //     newtab.bindColumn ("arr3", stmanIncr);
-// 
+//
 //     // Step 5 -- Define the shape of the direct columns.
 //     // (this could have been done in the column description).
 //     newtab.setShapeColumn( "arr1", IPosition(3,2,3,4));
 //     newtab.setShapeColumn( "arr3", IPosition(3,3,4,5));
-// 
+//
 //     // Step 6 -- Finally, create the table consisting of 10 rows.
 //     Table tab(newtab, 10);
-// 
+//
 //     // Now we can fill the table, which is shown in a next section.
 //     // The Table destructor will flush the table to the files.
 // }
@@ -482,7 +481,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // #include <casacore/casa/Arrays/Slicer.h>
 // #include <casacore/casa/Arrays/ArrayMath.h>
 // #include <iostream>
-// 
+//
 // main()
 // {
 //     // First build the table description.
@@ -490,7 +489,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     td.comment() = "A test of class SetupNewTable";
 //     td.addColumn (ScalarColumnDesc<Int> ("ac"));
 //     td.addColumn (ArrayColumnDesc<Float> ("arr2",0));
-// 
+//
 //     // Setup a new table from the description,
 //     // and create the (still empty) table.
 //     // Note that since we do not explicitly bind columns to
@@ -512,7 +511,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //         tab.addRow();               // First add a row.
 //         ac.put (i, i+10);           // value is i+10 in row i
 //         indgen (vec2, float(i+20)); // vec2 gets i+20, i+21, ..., i+119
-//         arr2.put (i, vec2); 
+//         arr2.put (i, vec2);
 //     }
 //
 //     // Finally, show the entire column ac,
@@ -534,7 +533,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     tab.addRow()
 // </srcblock>
 //
-// The classes 
+// The classes
 // <linkto class="TableColumn:description">TableColumn</linkto>,
 // <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>, and
 // <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto>
@@ -681,7 +680,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    Table table ("Table.name");
 //    Table result = table (table.col("RA") > 10);
 // </srcblock>
-// while in the next one we select rows with RA and DEC in the given 
+// while in the next one we select rows with RA and DEC in the given
 // intervals:
 // <srcblock>
 //    Table result = table (table.col("RA") > 10
@@ -903,7 +902,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      Units = mJy
 //      Reference Pixel = 320
 // </srcblock>
-// The class 
+// The class
 // <linkto class="TableRecord:description">TableRecord</linkto>
 // represents the keywords in a table.
 // It is (indirectly) derived from the standard record classes in the class
@@ -1356,7 +1355,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // cells of the two other columns. So the result is that accessing a
 // particular cell of the virtual column invokes the virtual column engine,
 // which then gets the values from the other two columns, and returns their
-// difference. This particular example could be done using 
+// difference. This particular example could be done using
 // <linkto class="VirtualTaQLColumn:description">VirtualTaQLColumn</linkto>.
 // <p>
 // Several virtual column engines exist:
@@ -1827,8 +1826,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </synopsis>
 // </module>
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

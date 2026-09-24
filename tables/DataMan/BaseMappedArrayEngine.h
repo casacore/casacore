@@ -1,43 +1,43 @@
-//# BaseMappedArrayEngine.h: Abstract virtual column engine for virtual->stored mapping
-//# Copyright (C) 1995,1996,1997,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # BaseMappedArrayEngine.h: Abstract virtual column engine for virtual->stored mapping
+// # Copyright (C) 1995,1996,1997,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_BASEMAPPEDARRAYENGINE_H
 #define TABLES_BASEMAPPEDARRAYENGINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
 #include <casacore/tables/DataMan/VirtArrCol.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template<class T> class ArrayColumn;
+// # Forward Declarations
+template <class T>
+class ArrayColumn;
 class TableColumn;
-
 
 // <summary>
 // Templated virtual column engine for a table array of any type.
@@ -49,17 +49,17 @@ class TableColumn;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=VirtualColumnEngine>VirtualColumnEngine</linkto>
 //   <li> <linkto class=VirtualArrayColumn>VirtualArrayColumn</linkto>
 // </prerequisite>
 
 // <etymology>
 // BaseMappedArrayEngine contains for the 1-1 mapping of a virtual
-// column to a stored column (both containing arrays). 
+// column to a stored column (both containing arrays).
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // BaseMappedArrayEngine is an abstract base class for virtual column engines
 // which map data from the arrays in the virtual column to
 // the arrays in the stored column. Note that the stored column does not need
@@ -259,259 +259,239 @@ class TableColumn;
 //  <li> Assignment operator
 // </templating>
 
+template <class VirtualType, class StoredType>
+class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayColumn<VirtualType> {
+ public:
+  // Get the virtual column name.
+  const String& virtualName() const;
 
-template<class VirtualType, class StoredType> class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayColumn<VirtualType>
-{
-public:
-    // Get the virtual column name.
-    const String& virtualName() const;
+  // Get the stored column name.
+  const String& storedName() const;
 
-    // Get the stored column name.
-    const String& storedName() const;
+  // The column is writable if the underlying stored column is writable.
+  virtual Bool isWritable() const;
 
-    // The column is writable if the underlying stored column is writable.
-    virtual Bool isWritable() const;
+ protected:
+  // Construct an engine to convert the virtual column to the stored column.
+  // StoredColumnName is the name of the column where the converted
+  // data will be put and must have data type StoredType.
+  // The virtual column using this engine must have data type VirtualType.
+  // By default the virtual column is assumed to be writable.
+  // Use setWritable to unset it.
+  BaseMappedArrayEngine(const String& virtualColumnName, const String& storedColumnName);
 
-protected:
+  // Destructor is mandatory.
+  ~BaseMappedArrayEngine();
 
-    // Construct an engine to convert the virtual column to the stored column.
-    // StoredColumnName is the name of the column where the converted
-    // data will be put and must have data type StoredType.
-    // The virtual column using this engine must have data type VirtualType.
-    // By default the virtual column is assumed to be writable.
-    // Use setWritable to unset it.
-    BaseMappedArrayEngine (const String& virtualColumnName,
-			   const String& storedColumnName);
+  // The default constructor is required for reconstruction of the
+  // engine when a table is read back.
+  BaseMappedArrayEngine();
 
-    // Destructor is mandatory.
-    ~BaseMappedArrayEngine();
+  // Copy constructor is used by copy constructor of derived classes.
+  BaseMappedArrayEngine(const BaseMappedArrayEngine&);
 
-    // The default constructor is required for reconstruction of the
-    // engine when a table is read back.
-    BaseMappedArrayEngine();
+  // Assignment is not needed and therefore forbidden
+  BaseMappedArrayEngine& operator=(const BaseMappedArrayEngine&) = delete;
 
-    // Copy constructor is used by copy constructor of derived classes.
-    BaseMappedArrayEngine (const BaseMappedArrayEngine&);
+  // Set if the column is writable or not.
+  void setWritable(Bool isWritable);
 
-    // Assignment is not needed and therefore forbidden
-    BaseMappedArrayEngine& operator= (const BaseMappedArrayEngine&) = delete;
+  // Set the virtual and stored column name.
+  void setNames(const String& virtualName, const String& storedName);
 
-    // Set if the column is writable or not.
-    void setWritable (Bool isWritable);
+  // Give access to the stored column.
+  // This can be used by the derived classes to get/put data.
+  inline ArrayColumn<StoredType>& column();
 
-    // Set the virtual and stored column name.
-    void setNames (const String& virtualName, const String& storedName);
+  // Create the column object for the array column in this engine.
+  // It will check if the given column name matches the virtual
+  // column name. This assures that the engine is bound to the
+  // correct column.
+  virtual DataManagerColumn* makeIndArrColumn(const String& columnName, int dataType,
+                                              const String& dataTypeId);
 
-    // Give access to the stored column.
-    // This can be used by the derived classes to get/put data.
-    inline ArrayColumn<StoredType>& column();
+  // Initialize the object for a new table.
+  // It defines a virtual column keyword telling the stored column name.
+  // Initially the table has the given number of rows.
+  // A derived class can have its own create function, but that should
+  // always call this create function.
+  virtual void create64(rownr_t initialNrrow);
 
-    // Create the column object for the array column in this engine.
-    // It will check if the given column name matches the virtual
-    // column name. This assures that the engine is bound to the
-    // correct column.
-    virtual DataManagerColumn* makeIndArrColumn (const String& columnName,
-						 int dataType,
-						 const String& dataTypeId);
+  // Preparing consists of setting the writable switch and
+  // adding the initial number of rows in case of create.
+  // It reads the stored column name from the virtual column keywords.
+  // A derived class can have its own prepare function, but that should
+  // always call this prepare function.
+  virtual void prepare();
 
-    // Initialize the object for a new table.
-    // It defines a virtual column keyword telling the stored column name.
-    // Initially the table has the given number of rows.
-    // A derived class can have its own create function, but that should
-    // always call this create function.
-    virtual void create64 (rownr_t initialNrrow);
+  // Do the 2 stages of the prepare (define columns and adding rows).
+  // <group>
+  void prepare1();
+  void prepare2();
+  // </group>
 
-    // Preparing consists of setting the writable switch and
-    // adding the initial number of rows in case of create.
-    // It reads the stored column name from the virtual column keywords.
-    // A derived class can have its own prepare function, but that should
-    // always call this prepare function.
-    virtual void prepare();
+  // Rows are added to the end of the table.
+  // If the virtual column has FixedShape arrays and the stored not,
+  // the shape in each stored row will be set.
+  // This assures that the arrays are properly defined in each row,
+  // so putSlice can be used without problems.
+  // <br>The second version is used by prepare2, because in case a column is
+  // added to an already existing table, table.nrow() gives the existing
+  // number of columns instead of 0.
+  // <group>
+  virtual void addRow64(rownr_t nrrow);
+  virtual void addRowInit(rownr_t startRow, rownr_t nrrow);
+  // </group>
 
-    // Do the 2 stages of the prepare (define columns and adding rows).
-    // <group>
-    void prepare1();
-    void prepare2();
-    // </group>
+  // Set the shape of the FixedShape arrays in the column.
+  // This function only gets called if the column has FixedShape arrays.
+  // The shape gets saved and used to set the shape of the arrays
+  // in the stored in case the stored has non-FixedShape arrays.
+  // This implementation assumes the shape of virtual and stored arrays
+  // are the same. If not, it has to be overidden in a derived class.
+  virtual void setShapeColumn(const IPosition& shape);
 
-    // Rows are added to the end of the table.
-    // If the virtual column has FixedShape arrays and the stored not,
-    // the shape in each stored row will be set.
-    // This assures that the arrays are properly defined in each row,
-    // so putSlice can be used without problems.
-    // <br>The second version is used by prepare2, because in case a column is
-    // added to an already existing table, table.nrow() gives the existing
-    // number of columns instead of 0.
-    // <group>
-    virtual void addRow64 (rownr_t nrrow);
-    virtual void addRowInit (rownr_t startRow, rownr_t nrrow);
-    // </group>
+  // Define the shape of the array in the given row.
+  // It will define the shape of the (underlying) array.
+  // This implementation assumes the shape of virtual and stored arrays
+  // are the same. If not, it has to be overidden in a derived class.
+  virtual void setShape(rownr_t rownr, const IPosition& shape);
 
-    // Set the shape of the FixedShape arrays in the column.
-    // This function only gets called if the column has FixedShape arrays.
-    // The shape gets saved and used to set the shape of the arrays
-    // in the stored in case the stored has non-FixedShape arrays.
-    // This implementation assumes the shape of virtual and stored arrays
-    // are the same. If not, it has to be overidden in a derived class.
-    virtual void setShapeColumn (const IPosition& shape);
+  // Test if the (underlying) array is defined in the given row.
+  virtual Bool isShapeDefined(rownr_t rownr);
 
-    // Define the shape of the array in the given row.
-    // It will define the shape of the (underlying) array.
-    // This implementation assumes the shape of virtual and stored arrays
-    // are the same. If not, it has to be overidden in a derived class.
-    virtual void setShape (rownr_t rownr, const IPosition& shape);
+  // Get the dimensionality of the (underlying) array in the given row.
+  // This implementation assumes the dimensionality of virtual and
+  // stored arrays are the same. If not, it has to be overidden in a
+  // derived class.
+  virtual uInt ndim(rownr_t rownr);
 
-    // Test if the (underlying) array is defined in the given row.
-    virtual Bool isShapeDefined (rownr_t rownr);
+  // Get the shape of the (underlying) array in the given row.
+  // This implementation assumes the shape of virtual and stored arrays
+  // are the same. If not, it has to be overidden in a derived class.
+  virtual IPosition shape(rownr_t rownr);
 
-    // Get the dimensionality of the (underlying) array in the given row.
-    // This implementation assumes the dimensionality of virtual and
-    // stored arrays are the same. If not, it has to be overidden in a
-    // derived class.
-    virtual uInt ndim (rownr_t rownr);
+  // The data manager can handle changing the shape of an existing array
+  // when the underlying stored column can do it.
+  virtual Bool canChangeShape() const;
 
-    // Get the shape of the (underlying) array in the given row.
-    // This implementation assumes the shape of virtual and stored arrays
-    // are the same. If not, it has to be overidden in a derived class.
-    virtual IPosition shape (rownr_t rownr);
+  // Make a table column object for the given column.
+  // This has to be used in the create function, otherwise it could not
+  // create a TableColumn object to store data in the column keywords.
+  TableColumn makeTableColumn(const String& columnName);
 
-    // The data manager can handle changing the shape of an existing array
-    // when the underlying stored column can do it.
-    virtual Bool canChangeShape() const;
+  // Get an array in the given row.
+  // This will scale and offset from the underlying array.
+  virtual void getArray(rownr_t rownr, Array<VirtualType>& array);
 
-    // Make a table column object for the given column.
-    // This has to be used in the create function, otherwise it could not
-    // create a TableColumn object to store data in the column keywords.
-    TableColumn makeTableColumn (const String& columnName);
+  // Put an array in the given row.
+  // This will scale and offset to the underlying array.
+  virtual void putArray(rownr_t rownr, const Array<VirtualType>& array);
 
-    // Get an array in the given row.
-    // This will scale and offset from the underlying array.
-    virtual void getArray (rownr_t rownr, Array<VirtualType>& array);
+  // Get a section of the array in the given row.
+  // This will scale and offset from the underlying array.
+  virtual void getSlice(rownr_t rownr, const Slicer& slicer, Array<VirtualType>& array);
 
-    // Put an array in the given row.
-    // This will scale and offset to the underlying array.
-    virtual void putArray (rownr_t rownr, const Array<VirtualType>& array);
+  // Put into a section of the array in the given row.
+  // This will scale and offset to the underlying array.
+  virtual void putSlice(rownr_t rownr, const Slicer& slicer, const Array<VirtualType>& array);
 
-    // Get a section of the array in the given row.
-    // This will scale and offset from the underlying array.
-    virtual void getSlice (rownr_t rownr, const Slicer& slicer,
-                           Array<VirtualType>& array);
+  // Get an entire column.
+  // This will scale and offset from the underlying array.
+  virtual void getArrayColumn(Array<VirtualType>& array);
 
-    // Put into a section of the array in the given row.
-    // This will scale and offset to the underlying array.
-    virtual void putSlice (rownr_t rownr, const Slicer& slicer,
-                           const Array<VirtualType>& array);
+  // Put an entire column.
+  // This will scale and offset to the underlying array.
+  virtual void putArrayColumn(const Array<VirtualType>& array);
 
-    // Get an entire column.
-    // This will scale and offset from the underlying array.
-    virtual void getArrayColumn (Array<VirtualType>& array);
+  // Get some array values in the column.
+  // This will scale and offset from the underlying array.
+  virtual void getArrayColumnCells(const RefRows& rownrs, Array<VirtualType>& data);
 
-    // Put an entire column.
-    // This will scale and offset to the underlying array.
-    virtual void putArrayColumn (const Array<VirtualType>& array);
+  // Put some array values in the column.
+  // This will scale and offset to the underlying array.
+  virtual void putArrayColumnCells(const RefRows& rownrs, const Array<VirtualType>& data);
 
-    // Get some array values in the column.
-    // This will scale and offset from the underlying array.
-    virtual void getArrayColumnCells (const RefRows& rownrs,
-				      Array<VirtualType>& data);
+  // Get a section of all arrays in the column.
+  // This will scale and offset from the underlying array.
+  void getColumnSlice(const Slicer& slicer, Array<VirtualType>& array);
 
-    // Put some array values in the column.
-    // This will scale and offset to the underlying array.
-    virtual void putArrayColumnCells (const RefRows& rownrs,
-				      const Array<VirtualType>& data);
+  // Put a section of all arrays in the column.
+  // This will scale and offset to the underlying array.
+  void putColumnSlice(const Slicer& slicer, const Array<VirtualType>& array);
 
-    // Get a section of all arrays in the column.
-    // This will scale and offset from the underlying array.
-    void getColumnSlice (const Slicer& slicer, Array<VirtualType>& array);
+  // Get a section of some arrays in the column.
+  // This will scale and offset from the underlying array.
+  virtual void getColumnSliceCells(const RefRows& rownrs, const Slicer& slicer,
+                                   Array<VirtualType>& data);
 
-    // Put a section of all arrays in the column.
-    // This will scale and offset to the underlying array.
-    void putColumnSlice (const Slicer& slicer, const Array<VirtualType>& array);
+  // Put into a section of some arrays in the column.
+  // This will scale and offset to the underlying array.
+  virtual void putColumnSliceCells(const RefRows& rownrs, const Slicer& slicer,
+                                   const Array<VirtualType>& data);
 
-    // Get a section of some arrays in the column.
-    // This will scale and offset from the underlying array.
-    virtual void getColumnSliceCells (const RefRows& rownrs,
-				      const Slicer& slicer,
-				      Array<VirtualType>& data);
+  // Map the virtual shape to the stored shape.
+  // By default is returns the virtual shape.
+  virtual IPosition getStoredShape(rownr_t rownr, const IPosition& virtualShape);
 
-    // Put into a section of some arrays in the column.
-    // This will scale and offset to the underlying array.
-    virtual void putColumnSliceCells (const RefRows& rownrs,
-				      const Slicer& slicer,
-				      const Array<VirtualType>& data);
+  // Map the slicer for a virtual shape to a stored shape.
+  // By default it returns the virtual input slicer.
+  virtual Slicer getStoredSlicer(const Slicer& virtualSlicer) const;
 
-    // Map the virtual shape to the stored shape.
-    // By default is returns the virtual shape.
-    virtual IPosition getStoredShape (rownr_t rownr,
-                                      const IPosition& virtualShape);
+  // Map StoredType array to VirtualType array.
+  // This is meant when reading an array from the stored column.
+  // The default implementation throws an exception.
+  virtual void mapOnGet(Array<VirtualType>& array, const Array<StoredType>& stored);
 
-    // Map the slicer for a virtual shape to a stored shape.
-    // By default it returns the virtual input slicer.
-    virtual Slicer getStoredSlicer (const Slicer& virtualSlicer) const;
+  // Map Bool array to bit flags array.
+  // This is meant when writing an array into the stored column.
+  // The default implementation throws an exception.
+  virtual void mapOnPut(const Array<VirtualType>& array, Array<StoredType>& stored);
 
-    // Map StoredType array to VirtualType array.
-    // This is meant when reading an array from the stored column.
-    // The default implementation throws an exception.
-    virtual void mapOnGet (Array<VirtualType>& array,
-                           const Array<StoredType>& stored);
-
-    // Map Bool array to bit flags array.
-    // This is meant when writing an array into the stored column.
-    // The default implementation throws an exception.
-    virtual void mapOnPut (const Array<VirtualType>& array,
-                           Array<StoredType>& stored);
-
-
-private:
-    //# Now define the data members.
-    String         virtualName_p;        //# virtual column name
-    String         storedName_p;         //# stored column name
-    Bool           isWritable_p;         //# is virtual column writable?
-    Bool           tempWritable_p;       //# True =  create phase, so column
-    //#                                              is temporarily writable
-    //#                                      False = asks stored column
-    rownr_t        initialNrrow_p;       //# initial #rows in case of create
-    Bool           arrayIsFixed_p;       //# True = virtual is FixedShape array
-    IPosition      shapeFixed_p;         //# shape in case FixedShape array
-    ArrayColumn<StoredType>* column_p;   //# the stored column
+ private:
+  // # Now define the data members.
+  String virtualName_p;  // # virtual column name
+  String storedName_p;   // # stored column name
+  Bool isWritable_p;     // # is virtual column writable?
+  Bool tempWritable_p;   // # True =  create phase, so column
+  // #                                              is temporarily writable
+  // #                                      False = asks stored column
+  rownr_t initialNrrow_p;             // # initial #rows in case of create
+  Bool arrayIsFixed_p;                // # True = virtual is FixedShape array
+  IPosition shapeFixed_p;             // # shape in case FixedShape array
+  ArrayColumn<StoredType>* column_p;  // # the stored column
 };
 
-
-
-template<class VirtualType, class StoredType>
-inline const String&
-BaseMappedArrayEngine<VirtualType, StoredType>::virtualName() const
-    { return virtualName_p; }
-
-template<class VirtualType, class StoredType>
-inline const String&
-BaseMappedArrayEngine<VirtualType, StoredType>::storedName() const
-    { return storedName_p; }
-
-template<class VirtualType, class StoredType>
-inline void
-BaseMappedArrayEngine<VirtualType, StoredType>::setNames
-                    (const String& virtualName, const String& storedName)
-{
-    virtualName_p = virtualName;
-    storedName_p  = storedName;
+template <class VirtualType, class StoredType>
+inline const String& BaseMappedArrayEngine<VirtualType, StoredType>::virtualName() const {
+  return virtualName_p;
 }
 
-template<class VirtualType, class StoredType>
-inline void
-BaseMappedArrayEngine<VirtualType, StoredType>::setWritable (Bool isWritable)
-    { isWritable_p = isWritable; }
+template <class VirtualType, class StoredType>
+inline const String& BaseMappedArrayEngine<VirtualType, StoredType>::storedName() const {
+  return storedName_p;
+}
 
-template<class VirtualType, class StoredType>
-inline ArrayColumn<StoredType>&
-BaseMappedArrayEngine<VirtualType, StoredType>::column()
-    { return *column_p; }
+template <class VirtualType, class StoredType>
+inline void BaseMappedArrayEngine<VirtualType, StoredType>::setNames(const String& virtualName,
+                                                                     const String& storedName) {
+  virtualName_p = virtualName;
+  storedName_p = storedName;
+}
 
+template <class VirtualType, class StoredType>
+inline void BaseMappedArrayEngine<VirtualType, StoredType>::setWritable(Bool isWritable) {
+  isWritable_p = isWritable;
+}
 
+template <class VirtualType, class StoredType>
+inline ArrayColumn<StoredType>& BaseMappedArrayEngine<VirtualType, StoredType>::column() {
+  return *column_p;
+}
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

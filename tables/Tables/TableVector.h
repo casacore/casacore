@@ -1,43 +1,43 @@
-//# TableVector.h: Templated read/write table column vectors
-//# Copyright (C) 1994,1995,1996,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableVector.h: Templated read/write table column vectors
+// # Copyright (C) 1994,1995,1996,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEVECTOR_H
 #define TABLES_TABLEVECTOR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TVec.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Table;
 class TableColumn;
-template<class T> class TableVectorHelper;
+template <class T>
+class TableVectorHelper;
 class String;
-
 
 // <summary>
 // Templated readonly table column vectors
@@ -49,7 +49,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> Vector
 //   <li> Table
 // </prerequisite>
@@ -58,7 +58,7 @@ class String;
 // TableVector allows to operate on a column in a readonly table as a vector.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // A TableVector object is a read/write view of data in a Table.
 // This means that the vector data can be changed if the underlying column
 // is writable.
@@ -83,7 +83,7 @@ class String;
 // referencing anything. Functions like operator() will fail (i.e. result
 // in a segmentation fault) when used on such objects. The functions
 // isNull and throwIfNull can be used to test on this.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -104,193 +104,191 @@ class String;
 // </motivation>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //   <li> derive from Lattice one day
 //   <li> support slicing
 //   <li> support table array columns
 //   <li> do we ever need Row vectors?
 // </todo>
 
+template <class T>
+class TableVector {
+ public:
+  // The default constructor creates a null table vector.
+  // This does not contain an actual vector and cannot be used until
+  // it references an actual vector (using function reference).
+  // Its sole purpose is to be able to construct an array of TableVectors.
+  // Note that operator(), etc. will cause a segmentation fault
+  // when operating on a null object. It was felt it was too expensive
+  // to test on null over and over again. The user should use the isNull
+  // or throwIfNull function in case of doubt.
+  TableVector();
 
-template<class T>
-class TableVector
-{
-public:
-    // The default constructor creates a null table vector.
-    // This does not contain an actual vector and cannot be used until
-    // it references an actual vector (using function reference).
-    // Its sole purpose is to be able to construct an array of TableVectors.
-    // Note that operator(), etc. will cause a segmentation fault
-    // when operating on a null object. It was felt it was too expensive
-    // to test on null over and over again. The user should use the isNull
-    // or throwIfNull function in case of doubt.
-    TableVector();
+  // Create a read/write table vector from the given table column name.
+  // Only scalar columns are supported.
+  TableVector(const Table&, const String& columnName);
 
-    // Create a read/write table vector from the given table column name.
-    // Only scalar columns are supported.
-    TableVector (const Table&, const String& columnName);
+  // Create a read/write table vector from the given table column.
+  // Only scalar columns are supported.
+  // This constructor converts a TableColumn to a TableVector and
+  // allows the use of TableColumn objects in table vector expressions.
+  TableVector(const TableColumn& column);
 
-    // Create a read/write table vector from the given table column.
-    // Only scalar columns are supported.
-    // This constructor converts a TableColumn to a TableVector and
-    // allows the use of TableColumn objects in table vector expressions.
-    TableVector (const TableColumn& column);
+  // Create a table vector from another one (reference semantics)
+  TableVector(const TableVector<T>&);
 
-    // Create a table vector from another one (reference semantics)
-    TableVector (const TableVector<T>&);
+  // Create a table vector containing the given Vector (reference semantics).
+  // This constructor converts a Vector to a TableVector and
+  // allows the use of Vector objects in table vector expressions.
+  TableVector(const Vector<T>&);
 
-    // Create a table vector containing the given Vector (reference semantics).
-    // This constructor converts a Vector to a TableVector and
-    // allows the use of Vector objects in table vector expressions.
-    TableVector (const Vector<T>&);
+  // Create a table vector containing a Vector with the given length.
+  TableVector(rownr_t leng);
 
-    // Create a table vector containing a Vector with the given length.
-    TableVector (rownr_t leng);
+  // Destruct the object.
+  ~TableVector();
 
-    // Destruct the object.
-    ~TableVector();
+  // Assign a table vector to another one (copy semantics).
+  // The vectors must have equal length.
+  TableVector<T>& operator=(const TableVector<T>&);
 
-    // Assign a table vector to another one (copy semantics).
-    // The vectors must have equal length.
-    TableVector<T>& operator= (const TableVector<T>&);
+  // Test if the table vector is null, i.e. has no actual vector.
+  // This is the case if the default constructor has been used.
+  Bool isNull() const;
 
-    // Test if the table vector is null, i.e. has no actual vector.
-    // This is the case if the default constructor has been used.
-    Bool isNull() const;
+  // Throw an exception if the table vector is null, i.e.
+  // if function isNull() is true.
+  void throwIfNull() const;
 
-    // Throw an exception if the table vector is null, i.e.
-    // if function isNull() is true.
-    void throwIfNull() const;
+  // Make a reference to the table vector of the other TableVector.
+  // It will replace an already existing reference.
+  // It handles null objects correctly.
+  void reference(const TableVector<T>&);
 
-    // Make a reference to the table vector of the other TableVector.
-    // It will replace an already existing reference.
-    // It handles null objects correctly.
-    void reference (const TableVector<T>&);
+  // Make a (normal) Vector from a TableVector (copy semantics).
+  Vector<T> makeVector() const;
 
-    // Make a (normal) Vector from a TableVector (copy semantics).
-    Vector<T> makeVector() const;
+  // Get the value of a single pixel.
+  T operator()(rownr_t index) const;
 
-    // Get the value of a single pixel.
-    T operator() (rownr_t index) const;
+  // # Get a slice.
+  // #    TableVector<T> operator() (const NSlice&) const;
 
-    //# Get a slice.
-//#    TableVector<T> operator() (const NSlice&) const;
+  // Set all elements to a value.
+  // <group>
+  TableVector<T>& operator=(const T&);
+  void set(const T& value);
+  // </group>
 
-    // Set all elements to a value.
-    // <group>
-    TableVector<T>& operator= (const T&);
-    void set (const T& value);
-    // </group>
+  // Put a value into a single pixel.
+  // <br><src> tabvec(i) = value; </src>
+  void set(rownr_t index, const T& value);
 
-    // Put a value into a single pixel.
-    // <br><src> tabvec(i) = value; </src>
-    void set (rownr_t index, const T& value);
+  // Get nr of dimensions (is always 1).
+  uInt ndim() const;
 
-    // Get nr of dimensions (is always 1).
-    uInt ndim() const;
+  // Get nr of elements (ie. vector length).
+  rownr_t nelements() const;
 
-    // Get nr of elements (ie. vector length).
-    rownr_t nelements() const;
+  // Test if the shape of the given table vector conforms.
+  Bool conform(const TableVector<T>&) const;
 
-    // Test if the shape of the given table vector conforms.
-    Bool conform (const TableVector<T>&) const;
+  // Test if the shape of the given vector conforms.
+  Bool conform(const Vector<T>&) const;
 
-    // Test if the shape of the given vector conforms.
-    Bool conform (const Vector<T>&) const;
+  // Test if internal state is correct.
+  Bool ok() const;
 
-    // Test if internal state is correct.
-    Bool ok() const;
+ protected:
+  TabVecRep<T>* tabVecPtr_p;
 
-protected:
-    TabVecRep<T>* tabVecPtr_p;
+  // Destruct the object. It decreases the reference count in the
+  // underlying object.
+  void destruct();
 
-    // Destruct the object. It decreases the reference count in the
-    // underlying object.
-    void destruct();
+ public:
+  // Return the TabVecRep reference.
+  TabVecRep<T>& tabVec();
+  const TabVecRep<T>& tabVec() const;
 
-public:
-    // Return the TabVecRep reference.
-    TabVecRep<T>& tabVec();
-    const TabVecRep<T>& tabVec() const;
-
-    // Create a TableVector from a TabVecRep as result of an operation.
-    TableVector (TabVecRep<T>&);
+  // Create a TableVector from a TabVecRep as result of an operation.
+  TableVector(TabVecRep<T>&);
 };
 
-
-template<class T>
-inline Bool TableVector<T>::isNull() const
-    { return (tabVecPtr_p == 0  ?  True : False); }
-
-template<class T>
-inline uInt TableVector<T>::ndim () const
-    { return tabVecPtr_p->ndim(); }
-
-template<class T>
-inline rownr_t TableVector<T>::nelements() const
-    { return tabVecPtr_p->nelements(); }
-
-//# Check if 2 table vectors are conformant.
-template<class T>
-inline Bool TableVector<T>::conform (const TableVector<T>& vec) const
-    { return tabVecPtr_p->conform (*vec.tabVecPtr_p); }
-template<class T>
-inline Bool TableVector<T>::conform (const Vector<T>& vec) const
-    { return tabVecPtr_p->conform (vec); }
-
-//# Get the ith pixel.
-template<class T>
-inline T TableVector<T>::operator() (rownr_t index) const
-    { return tabVecPtr_p->value (index); }
-
-//# Return the TabVecRep (for TabVecMath and Logic).
-template<class T>
-inline const TabVecRep<T>& TableVector<T>::tabVec() const
-    { return *tabVecPtr_p; }
-template<class T>
-inline TabVecRep<T>& TableVector<T>::tabVec()
-    { return *tabVecPtr_p; }
-
-
-//# Create a new object as a result of an addition, etc..
-template<class T>
-inline TableVector<T>::TableVector (TabVecRep<T>& vec)
-    { tabVecPtr_p = vec.link(); }
-
-//# Assign a table vector to this one.
-template<class T>
-inline TableVector<T>& TableVector<T>::operator= (const TableVector<T>& that)
-{
-    tabVecPtr_p->assign (that.tabVec());
-    return *this;
+template <class T>
+inline Bool TableVector<T>::isNull() const {
+  return (tabVecPtr_p == 0 ? True : False);
 }
 
-template<class T>
-inline void TableVector<T>::set (rownr_t index, const T& value)
-{
-    tabVecPtr_p->putVal (index, value);
-}
-template<class T>
-inline void TableVector<T>::set (const T& value)
-{
-    tabVecPtr_p->set (value);
-}
-template<class T>
-inline TableVector<T>& TableVector<T>::operator= (const T& value)
-{
-    tabVecPtr_p->set (value);
-    return *this;
+template <class T>
+inline uInt TableVector<T>::ndim() const {
+  return tabVecPtr_p->ndim();
 }
 
+template <class T>
+inline rownr_t TableVector<T>::nelements() const {
+  return tabVecPtr_p->nelements();
+}
 
-} //# NAMESPACE CASACORE - END
+// # Check if 2 table vectors are conformant.
+template <class T>
+inline Bool TableVector<T>::conform(const TableVector<T>& vec) const {
+  return tabVecPtr_p->conform(*vec.tabVecPtr_p);
+}
+template <class T>
+inline Bool TableVector<T>::conform(const Vector<T>& vec) const {
+  return tabVecPtr_p->conform(vec);
+}
 
+// # Get the ith pixel.
+template <class T>
+inline T TableVector<T>::operator()(rownr_t index) const {
+  return tabVecPtr_p->value(index);
+}
 
-//# Make old name ROTableVector still available.
+// # Return the TabVecRep (for TabVecMath and Logic).
+template <class T>
+inline const TabVecRep<T>& TableVector<T>::tabVec() const {
+  return *tabVecPtr_p;
+}
+template <class T>
+inline TabVecRep<T>& TableVector<T>::tabVec() {
+  return *tabVecPtr_p;
+}
+
+// # Create a new object as a result of an addition, etc..
+template <class T>
+inline TableVector<T>::TableVector(TabVecRep<T>& vec) {
+  tabVecPtr_p = vec.link();
+}
+
+// # Assign a table vector to this one.
+template <class T>
+inline TableVector<T>& TableVector<T>::operator=(const TableVector<T>& that) {
+  tabVecPtr_p->assign(that.tabVec());
+  return *this;
+}
+
+template <class T>
+inline void TableVector<T>::set(rownr_t index, const T& value) {
+  tabVecPtr_p->putVal(index, value);
+}
+template <class T>
+inline void TableVector<T>::set(const T& value) {
+  tabVecPtr_p->set(value);
+}
+template <class T>
+inline TableVector<T>& TableVector<T>::operator=(const T& value) {
+  tabVecPtr_p->set(value);
+  return *this;
+}
+
+}  // namespace casacore
+
+// # Make old name ROTableVector still available.
 #define ROTableVector TableVector
-
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/TableVector.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

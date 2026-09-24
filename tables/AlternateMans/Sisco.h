@@ -20,147 +20,106 @@ struct CompressorState {
 constexpr size_t kCompressedMantissaSize = sizeof(uint32_t);
 constexpr size_t kCompressedExponentSize = sizeof(int8_t);
 
-void DifferenceCompress1D(std::span<const BitFloat> input,
-                          std::span<std::byte> mantissa_data,
+void DifferenceCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                           std::span<std::byte> exponent_data);
 
-void Average2Compress1D(std::span<const BitFloat> input,
-                        std::span<std::byte> mantissa_data,
+void Average2Compress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                         std::span<std::byte> exponent_data);
 
-void LinearCompress1D(std::span<const BitFloat> input,
-                      std::span<std::byte> mantissa_data,
+void LinearCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                       std::span<std::byte> exponent_data);
 
-void Linear3Compress1D(std::span<const BitFloat> input,
-                       std::span<std::byte> mantissa_data,
+void Linear3Compress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                        std::span<std::byte> exponent_data);
 
-void QuadraticCompress1D(std::span<const BitFloat> input,
-                         std::span<std::byte> mantissa_data,
+void QuadraticCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                          std::span<std::byte> exponent_data);
 
-void Quadratic4Compress1D(std::span<const BitFloat> input,
-                          std::span<std::byte> mantissa_data,
+void Quadratic4Compress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                           std::span<std::byte> exponent_data);
 
-void CubicCompress1D(std::span<const BitFloat> input,
-                     std::span<std::byte> mantissa_data,
+void CubicCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data,
                      std::span<std::byte> exponent_data);
 
 void DifferenceDecompress1D(std::span<const std::byte> mantissa_data,
-                            std::span<const std::byte> exponent_data,
-                            std::span<BitFloat> output);
+                            std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
 void Average2Decompress1D(std::span<const std::byte> mantissa_data,
-                          std::span<const std::byte> exponent_data,
-                          std::span<BitFloat> output);
+                          std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
 void LinearDecompress1D(std::span<const std::byte> mantissa_data,
-                        std::span<const std::byte> exponent_data,
-                        std::span<BitFloat> output);
+                        std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
 void Linear3Decompress1D(std::span<const std::byte> mantissa_data,
-                         std::span<const std::byte> exponent_data,
-                         std::span<BitFloat> output);
+                         std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
 void QuadraticDecompress1D(std::span<const std::byte> mantissa_data,
-                           std::span<const std::byte> exponent_data,
-                           std::span<BitFloat> output);
+                           std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
 void Quadratic4Decompress1D(std::span<const std::byte> mantissa_data,
-                            std::span<const std::byte> exponent_data,
-                            std::span<BitFloat> output);
+                            std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
 void CubicDecompress1D(std::span<const std::byte> mantissa_data,
-                       std::span<const std::byte> exponent_data,
-                       std::span<BitFloat> output);
+                       std::span<const std::byte> exponent_data, std::span<BitFloat> output);
 
-void DirectCompress2D(std::span<const float> row,
-                      std::span<std::byte> mantissa_data,
+void DirectCompress2D(std::span<const float> row, std::span<std::byte> mantissa_data,
                       std::span<std::byte> exponent_data);
 
 void DifferenceCompress2D(CompressorState& state, std::span<const float> row,
-                          std::span<std::byte> mantissa_data,
-                          std::span<std::byte> exponent_data);
+                          std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
 void Average2Compress2D(CompressorState& state, std::span<const float> row,
-                        std::span<std::byte> mantissa_data,
-                        std::span<std::byte> exponent_data);
+                        std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
 void LinearCompress2D(CompressorState& state, std::span<const float> row,
-                      std::span<std::byte> mantissa_data,
-                      std::span<std::byte> exponent_data);
+                      std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
-void LinearQuadraticCompress2D(CompressorState& state,
-                               std::span<const float> row,
+void LinearQuadraticCompress2D(CompressorState& state, std::span<const float> row,
                                std::span<std::byte> mantissa_data,
                                std::span<std::byte> exponent_data);
 
 void Linear3Compress2D(CompressorState& state, std::span<const float> row,
-                       std::span<std::byte> mantissa_data,
-                       std::span<std::byte> exponent_data);
+                       std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
 void QuadraticCompress2D(CompressorState& state, std::span<const float> row,
-                         std::span<std::byte> mantissa_data,
-                         std::span<std::byte> exponent_data);
+                         std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
 void Quadratic4Compress2D(CompressorState& state, std::span<const float> row,
-                          std::span<std::byte> mantissa_data,
-                          std::span<std::byte> exponent_data);
+                          std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
 void CubicCompress2D(CompressorState& state, std::span<const float> row,
-                     std::span<std::byte> mantissa_data,
-                     std::span<std::byte> exponent_data);
+                     std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data);
 
-void DirectDecompress2D(std::span<std::byte> mantissa_data,
-                        std::span<std::byte> exponent_data,
+void DirectDecompress2D(std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data,
                         std::span<float> row);
 
-void DifferenceDecompress2D(CompressorState& state,
-                            std::span<std::byte> mantissa_data,
-                            std::span<std::byte> exponent_data,
-                            std::span<float> row);
+void DifferenceDecompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                            std::span<std::byte> exponent_data, std::span<float> row);
 
-void Average2Decompress2D(CompressorState& state,
-                          std::span<std::byte> mantissa_data,
-                          std::span<std::byte> exponent_data,
-                          std::span<float> row);
+void Average2Decompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                          std::span<std::byte> exponent_data, std::span<float> row);
 
-void LinearDecompress2D(CompressorState& state,
-                        std::span<std::byte> mantissa_data,
-                        std::span<std::byte> exponent_data,
-                        std::span<float> row);
+void LinearDecompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                        std::span<std::byte> exponent_data, std::span<float> row);
 
-void LinearQuadraticDecompress2D(CompressorState& state,
-                                 std::span<std::byte> mantissa_data,
-                                 std::span<std::byte> exponent_data,
-                                 std::span<float> row);
+void LinearQuadraticDecompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                                 std::span<std::byte> exponent_data, std::span<float> row);
 
-void Linear3Decompress2D(CompressorState& state,
-                         std::span<std::byte> mantissa_data,
-                         std::span<std::byte> exponent_data,
-                         std::span<float> row);
+void Linear3Decompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                         std::span<std::byte> exponent_data, std::span<float> row);
 
-void QuadraticDecompress2D(CompressorState& state,
-                           std::span<std::byte> mantissa_data,
-                           std::span<std::byte> exponent_data,
-                           std::span<float> row);
+void QuadraticDecompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                           std::span<std::byte> exponent_data, std::span<float> row);
 
-void Quadratic4Decompress2D(CompressorState& state,
-                            std::span<std::byte> mantissa_data,
-                            std::span<std::byte> exponent_data,
-                            std::span<float> row);
+void Quadratic4Decompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                            std::span<std::byte> exponent_data, std::span<float> row);
 
-void CubicDecompress2D(CompressorState& state,
-                       std::span<std::byte> mantissa_data,
-                       std::span<std::byte> exponent_data,
-                       std::span<float> row);
+void CubicDecompress2D(CompressorState& state, std::span<std::byte> mantissa_data,
+                       std::span<std::byte> exponent_data, std::span<float> row);
 
 size_t DefaultThreadCount();
 
-inline void Compress1D(int level, std::span<const BitFloat> row,
-                       std::span<std::byte> mantissa_data,
+inline void Compress1D(int level, std::span<const BitFloat> row, std::span<std::byte> mantissa_data,
                        std::span<std::byte> exponent_data) {
   switch (level) {
     case 0:
@@ -189,8 +148,7 @@ inline void Compress1D(int level, std::span<const BitFloat> row,
 }
 
 inline void Decompress1D(int level, std::span<std::byte> mantissa_data,
-                         std::span<std::byte> exponent_data,
-                         std::span<BitFloat> row) {
+                         std::span<std::byte> exponent_data, std::span<BitFloat> row) {
   switch (level) {
     case 0:
       DifferenceDecompress1D(mantissa_data, exponent_data, row);
@@ -217,10 +175,8 @@ inline void Decompress1D(int level, std::span<std::byte> mantissa_data,
   throw std::runtime_error("Invalid compression level");
 }
 
-inline void Compress2D(int level, CompressorState& state,
-                       std::span<const float> row,
-                       std::span<std::byte> mantissa_data,
-                       std::span<std::byte> exponent_data) {
+inline void Compress2D(int level, CompressorState& state, std::span<const float> row,
+                       std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data) {
   switch (level) {
     case -1:
       DirectCompress2D(row, mantissa_data, exponent_data);
@@ -253,10 +209,8 @@ inline void Compress2D(int level, CompressorState& state,
   throw std::runtime_error("Invalid compression level");
 }
 
-inline void Decompress2D(int level, CompressorState& state,
-                         std::span<std::byte> mantissa_data,
-                         std::span<std::byte> exponent_data,
-                         std::span<float> row) {
+inline void Decompress2D(int level, CompressorState& state, std::span<std::byte> mantissa_data,
+                         std::span<std::byte> exponent_data, std::span<float> row) {
   switch (level) {
     case -1:
       DirectDecompress2D(mantissa_data, exponent_data, row);
@@ -302,8 +256,7 @@ inline constexpr BitFloat PredictThreshold(const BitFloat& value) {
     return value;
 }
 
-inline constexpr BitFloat Predict(const BitFloat& previous,
-                                  int8_t value_exponent) {
+inline constexpr BitFloat Predict(const BitFloat& previous, int8_t value_exponent) {
   if (!previous.AllowsMath()) {
     return BitFloat(0, value_exponent, false);
   } else if (previous.Exponent() == value_exponent) {
@@ -314,8 +267,7 @@ inline constexpr BitFloat Predict(const BitFloat& previous,
     if (shift > 1)
       return BitFloat(0, value_exponent, false);
     else {
-      const BitFloat result(previous.Mantissa() << shift, value_exponent,
-                            previous.Sign());
+      const BitFloat result(previous.Mantissa() << shift, value_exponent, previous.Sign());
       return PredictThreshold(result);
     }
   } else {
@@ -324,21 +276,18 @@ inline constexpr BitFloat Predict(const BitFloat& previous,
     if (shift > 24)
       return BitFloat(0, value_exponent, false);
     else
-      return BitFloat(previous.Mantissa() >> shift, value_exponent,
-                      previous.Sign());
+      return BitFloat(previous.Mantissa() >> shift, value_exponent, previous.Sign());
   }
 }
 
-inline constexpr BitFloat Residual(const BitFloat& previous,
-                                   const BitFloat& value) {
+inline constexpr BitFloat Residual(const BitFloat& previous, const BitFloat& value) {
   const BitFloat predict = Predict(previous, value.Exponent());
   BitFloat residual = value;
   residual -= predict;
   return residual;
 }
 
-inline constexpr BitFloat Predict(const BitFloat& previous2,
-                                  const BitFloat& previous1,
+inline constexpr BitFloat Predict(const BitFloat& previous2, const BitFloat& previous1,
                                   int8_t value_exponent) {
   if (!previous1.AllowsMath()) {
     return Predict(previous2, value_exponent);
@@ -357,8 +306,7 @@ inline constexpr BitFloat Predict(const BitFloat& previous2,
   }
 }
 
-inline constexpr BitFloat Residual(const BitFloat& previous2,
-                                   const BitFloat& previous1,
+inline constexpr BitFloat Residual(const BitFloat& previous2, const BitFloat& previous1,
                                    const BitFloat& value) {
   const BitFloat predict = Predict(previous2, previous1, value.Exponent());
   BitFloat residual = value;
@@ -366,8 +314,7 @@ inline constexpr BitFloat Residual(const BitFloat& previous2,
   return residual;
 }
 
-inline constexpr BitFloat AveragePredict(const BitFloat& previous2,
-                                         const BitFloat& previous1,
+inline constexpr BitFloat AveragePredict(const BitFloat& previous2, const BitFloat& previous1,
                                          int8_t value_exponent) {
   if (!previous1.AllowsMath()) {
     return Predict(previous2, value_exponent);
@@ -386,10 +333,8 @@ inline constexpr BitFloat AveragePredict(const BitFloat& previous2,
   }
 }
 
-inline constexpr BitFloat Predict(const BitFloat& previous3,
-                                  const BitFloat& previous2,
-                                  const BitFloat& previous1,
-                                  int8_t value_exponent) {
+inline constexpr BitFloat Predict(const BitFloat& previous3, const BitFloat& previous2,
+                                  const BitFloat& previous1, int8_t value_exponent) {
   if (!previous1.AllowsMath()) {
     return Predict(previous2, value_exponent);
   } else if (!previous2.AllowsMath()) {
@@ -417,10 +362,8 @@ inline constexpr BitFloat Predict(const BitFloat& previous3,
   }
 }
 
-inline constexpr BitFloat LinearPredict(const BitFloat& previous3,
-                                        const BitFloat& previous2,
-                                        const BitFloat& previous1,
-                                        int8_t value_exponent) {
+inline constexpr BitFloat LinearPredict(const BitFloat& previous3, const BitFloat& previous2,
+                                        const BitFloat& previous1, int8_t value_exponent) {
   if (!previous1.AllowsMath()) {
     return Predict(previous2, value_exponent);
   } else if (!previous2.AllowsMath()) {
@@ -448,10 +391,8 @@ inline constexpr BitFloat LinearPredict(const BitFloat& previous3,
   }
 }
 
-inline constexpr BitFloat Predict(const BitFloat& previous4,
-                                  const BitFloat& previous3,
-                                  const BitFloat& previous2,
-                                  const BitFloat& previous1,
+inline constexpr BitFloat Predict(const BitFloat& previous4, const BitFloat& previous3,
+                                  const BitFloat& previous2, const BitFloat& previous1,
                                   int8_t value_exponent) {
   if (!previous1.AllowsMath()) {
     return Predict(previous2, value_exponent);
@@ -465,8 +406,7 @@ inline constexpr BitFloat Predict(const BitFloat& previous4,
     return BitFloat(0, value_exponent, false);
   } else {
     const std::optional<BitFloat> matched_p4 = Match(previous4, value_exponent);
-    if (!matched_p4)
-      return Predict(previous3, previous2, previous1, value_exponent);
+    if (!matched_p4) return Predict(previous3, previous2, previous1, value_exponent);
     std::optional<BitFloat> matched_p3 = Match(previous3, value_exponent);
     if (!matched_p3) return Predict(previous2, previous1, value_exponent);
     std::optional<BitFloat> matched_p2 = Match(previous2, value_exponent);
@@ -485,10 +425,8 @@ inline constexpr BitFloat Predict(const BitFloat& previous4,
   }
 }
 
-inline constexpr BitFloat QuadraticPredict(const BitFloat& previous4,
-                                           const BitFloat& previous3,
-                                           const BitFloat& previous2,
-                                           const BitFloat& previous1,
+inline constexpr BitFloat QuadraticPredict(const BitFloat& previous4, const BitFloat& previous3,
+                                           const BitFloat& previous2, const BitFloat& previous1,
                                            int8_t value_exponent) {
   if (!previous1.AllowsMath()) {
     return Predict(previous2, value_exponent);
@@ -502,8 +440,7 @@ inline constexpr BitFloat QuadraticPredict(const BitFloat& previous4,
     return BitFloat(0, value_exponent, false);
   } else {
     std::optional<BitFloat> matched_p4 = Match(previous4, value_exponent);
-    if (!matched_p4)
-      return Predict(previous3, previous2, previous1, value_exponent);
+    if (!matched_p4) return Predict(previous3, previous2, previous1, value_exponent);
     std::optional<BitFloat> matched_p3 = Match(previous3, value_exponent);
     if (!matched_p3) return Predict(previous2, previous1, value_exponent);
     std::optional<BitFloat> matched_p2 = Match(previous2, value_exponent);

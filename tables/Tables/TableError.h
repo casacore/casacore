@@ -1,45 +1,42 @@
-//# TableError.h: Table error classes
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableError.h: Table error classes
+// # Copyright (C) 1994,1995,1996,1997,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEERROR_H
 #define TABLES_TABLEERROR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward Declarations.
+// # Forward Declarations.
 class IPosition;
 
-
-//# This header file defines the error classes belonging to the table
-//# descriptor class and its associated classes.
-
+// # This header file defines the error classes belonging to the table
+// # descriptor class and its associated classes.
 
 // <summary>
 // Base error class for storage manager
@@ -48,21 +45,20 @@ class IPosition;
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // This is the generic StMan exception; catching this one means catching
 // all Table* exceptions.
 // Note that you have to catch AipsError to catch all possible exceptions.
-// </synopsis> 
+// </synopsis>
 
 class TableError : public AipsError {
-public:
-    // The default constructor generates the message "Table error".
-    TableError (Category c=GENERAL);
-    // Construct with given message.
-    TableError (const String& message,Category c=GENERAL);
-    ~TableError () noexcept;
+ public:
+  // The default constructor generates the message "Table error".
+  TableError(Category c = GENERAL);
+  // Construct with given message.
+  TableError(const String& message, Category c = GENERAL);
+  ~TableError() noexcept;
 };
-
 
 // <summary>
 // Internal table error
@@ -71,18 +67,17 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Internal table error (should never be thrown).
 // If this is thrown, something is terribly wrong.
-// </synopsis> 
+// </synopsis>
 
 class TableInternalError : public TableError {
-public:
-    // Add given message to string "Internal Table error: ".
-    TableInternalError (const String& message,Category c=GENERAL);
-    ~TableInternalError () noexcept;
+ public:
+  // Add given message to string "Internal Table error: ".
+  TableInternalError(const String& message, Category c = GENERAL);
+  ~TableInternalError() noexcept;
 };
-
 
 // <summary>
 // Table error; table (description) already exists
@@ -91,22 +86,21 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Table (description) with this name already exists.
-// </synopsis> 
+// </synopsis>
 
 class TableDuplFile : public TableError {
-public:
-    // This constructor generates a message telling that the a table
-    // or description with the given name already exists.
-    TableDuplFile (const String& name, Category c=INVALID_ARGUMENT);
-    // This constructor generates a message telling that the a table
-    // or description with the given name already exists.
-    // The given message is appended to it.
-    TableDuplFile (const String& name, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableDuplFile () noexcept;
+ public:
+  // This constructor generates a message telling that the a table
+  // or description with the given name already exists.
+  TableDuplFile(const String& name, Category c = INVALID_ARGUMENT);
+  // This constructor generates a message telling that the a table
+  // or description with the given name already exists.
+  // The given message is appended to it.
+  TableDuplFile(const String& name, const String& message, Category c = INVALID_ARGUMENT);
+  ~TableDuplFile() noexcept;
 };
-
 
 // <summary>
 // Table error; table (description) not found
@@ -115,18 +109,17 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Table (description) with this name could not be found.
-// </synopsis> 
+// </synopsis>
 
 class TableNoFile : public TableError {
-public:
-    // This constructor generates a message telling that the a table
-    // or description with the given name does not exist.
-    TableNoFile (const String& name,Category c=INVALID_ARGUMENT);
-    ~TableNoFile () noexcept;
+ public:
+  // This constructor generates a message telling that the a table
+  // or description with the given name does not exist.
+  TableNoFile(const String& name, Category c = INVALID_ARGUMENT);
+  ~TableNoFile() noexcept;
 };
-
 
 // <summary>
 // Table error; no name given to table description
@@ -135,18 +128,17 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // No name given for the table description.
 // Only scratch descriptions can have no name (i.e. a blank name).
-// </synopsis> 
+// </synopsis>
 
 class TableDescNoName : public TableError {
-public:
-    // The default constructor generates the message.
-    TableDescNoName (Category c=INITIALIZATION);
-    ~TableDescNoName () noexcept;
+ public:
+  // The default constructor generates the message.
+  TableDescNoName(Category c = INITIALIZATION);
+  ~TableDescNoName() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid table (description) option
@@ -155,19 +147,18 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid Table(Desc) option given for the table (description).
-// </synopsis> 
+// </synopsis>
 
 class TableInvOpt : public TableError {
-public:
-    // This constructor generates a message that an invalid option
-    // has been given. The class name is either Table or TableDesc.
-    // The given message will be appended to the total message.
-    TableInvOpt (const String& className, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvOpt () noexcept;
+ public:
+  // This constructor generates a message that an invalid option
+  // has been given. The class name is either Table or TableDesc.
+  // The given message will be appended to the total message.
+  TableInvOpt(const String& className, const String& message, Category c = INVALID_ARGUMENT);
+  ~TableInvOpt() noexcept;
 };
-
 
 // Table error; path is not a directory
 // </summary>
@@ -175,16 +166,16 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Table directory with this name could not be found.
-// </synopsis> 
+// </synopsis>
 
 class TableNoDir : public TableError {
-public:
-    // This constructor generates a message telling that the 
-    // table directory with the given name does not exist.
-    TableNoDir (const String& name,Category c=INVALID_ARGUMENT);
-    ~TableNoDir () noexcept;
+ public:
+  // This constructor generates a message telling that the
+  // table directory with the given name does not exist.
+  TableNoDir(const String& name, Category c = INVALID_ARGUMENT);
+  ~TableNoDir() noexcept;
 };
 
 // <summary>
@@ -194,18 +185,17 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // The table.dat file for this table could not be found.
-// </synopsis> 
+// </synopsis>
 
 class TableNoDatFile : public TableError {
-public:
-    // This constructor generates a message telling that the a table
-    // or datription file does not exist.
-    TableNoDatFile (const String& filename,Category c=INVALID_ARGUMENT);
-    ~TableNoDatFile () noexcept;
+ public:
+  // This constructor generates a message telling that the a table
+  // or datription file does not exist.
+  TableNoDatFile(const String& filename, Category c = INVALID_ARGUMENT);
+  ~TableNoDatFile() noexcept;
 };
-
 
 // <summary>
 // Table error; table type mismatch
@@ -214,21 +204,19 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // The given table type (i.e. name of the table description) does
 // not match the type as stored in the table file.
-// </synopsis> 
+// </synopsis>
 
 class TableInvType : public TableError {
-public:
-    // This constructor generates a message that the in table type
-    // mismatches the table type in the file.
-    TableInvType (const String& tablename,
-                  const String& typeIn, const String& typeFile,
-                  Category c=CONFORMANCE);
-    ~TableInvType () noexcept;
+ public:
+  // This constructor generates a message that the in table type
+  // mismatches the table type in the file.
+  TableInvType(const String& tablename, const String& typeIn, const String& typeFile,
+               Category c = CONFORMANCE);
+  ~TableInvType() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid column description
@@ -237,20 +225,20 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // The description of a column is invalid.
 // The given default manager is unknown
 // (i.e. not registered in DataManReg.cc).
-// </synopsis> 
+// </synopsis>
 
 class TableInvColumnDesc : public TableError {
-public:
-    // This constructor generates a message that the column
-    // with the given name has an invalid description.
-    TableInvColumnDesc (const String& columnName, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvColumnDesc () noexcept;
+ public:
+  // This constructor generates a message that the column
+  // with the given name has an invalid description.
+  TableInvColumnDesc(const String& columnName, const String& message,
+                     Category c = INVALID_ARGUMENT);
+  ~TableInvColumnDesc() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid hypercolumn description
@@ -259,20 +247,20 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // The description of a hypercolumn is invalid.
 // The referenced columns are unknown or invalid.
 // The message explains the reason.
-// </synopsis> 
+// </synopsis>
 
 class TableInvHyperDesc : public TableError {
-public:
-    // This constructor generates a message that the hypercolumn
-    // with the given name has an invalid description.
-    TableInvHyperDesc (const String& hypercolumnName, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvHyperDesc () noexcept;
+ public:
+  // This constructor generates a message that the hypercolumn
+  // with the given name has an invalid description.
+  TableInvHyperDesc(const String& hypercolumnName, const String& message,
+                    Category c = INVALID_ARGUMENT);
+  ~TableInvHyperDesc() noexcept;
 };
-
 
 // <summary>
 // Table error; unknown column description
@@ -281,20 +269,19 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // To be able to reconstruct the correct column description object
 // from a stored table description, each column description type
 // must register itself (see ColumnDesc.h and ColumnReg.cc).
-// </synopsis> 
+// </synopsis>
 
 class TableUnknownDesc : public TableError {
-public:
-    // This constructor generates a message that the class with the
-    // given name is unknown (not registered).
-    TableUnknownDesc (const String& name,Category c=INITIALIZATION);
-    ~TableUnknownDesc () noexcept;
+ public:
+  // This constructor generates a message that the class with the
+  // given name is unknown (not registered).
+  TableUnknownDesc(const String& name, Category c = INITIALIZATION);
+  ~TableUnknownDesc() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid data type
@@ -303,22 +290,21 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Checking of the data type of a column is done at runtime.
 // This error results from non-matching data types when constructing
 // a ScalarColumn or ArrayColumn or from invalid data type promotions
 // when doing a get or put.
-// </synopsis> 
+// </synopsis>
 
 class TableInvDT : public TableError {
-public:
-    // The default constructor generates a generic "invalid data type" message.
-    TableInvDT (Category c=CONFORMANCE);
-    // Put the name of the offending column in the "invalid data type" message.
-    TableInvDT (const String& columName,Category c=CONFORMANCE);
-    ~TableInvDT () noexcept;
+ public:
+  // The default constructor generates a generic "invalid data type" message.
+  TableInvDT(Category c = CONFORMANCE);
+  // Put the name of the offending column in the "invalid data type" message.
+  TableInvDT(const String& columName, Category c = CONFORMANCE);
+  ~TableInvDT() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid operation
@@ -327,23 +313,22 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid operation on a table.
 // A request was done that could not be handled by the table system
 // (e.g. sorting on a column containing arrays).
 // The message tells what is wrong.
-// </synopsis> 
+// </synopsis>
 
 // Invalid operation on a table.
 class TableInvOper : public TableError {
-public:
-    // The default constructor generates a generic "invalid operation" message.
-    TableInvOper (Category c=INVALID_ARGUMENT);
-    // Add given message to string "Invalid Table operation: ".
-    TableInvOper (const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvOper () noexcept;
+ public:
+  // The default constructor generates a generic "invalid operation" message.
+  TableInvOper(Category c = INVALID_ARGUMENT);
+  // Add given message to string "Invalid Table operation: ".
+  TableInvOper(const String& message, Category c = INVALID_ARGUMENT);
+  ~TableInvOper() noexcept;
 };
-
 
 // <summary>
 // Table error; non-conformant array
@@ -352,27 +337,24 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // When putting a direct array, the shape of the array must conform
 // the shape as defined for the table array.
 // When getting an array, the receiving array must be zero-length
 // or it must conform the shape of the table array.
-// </synopsis> 
+// </synopsis>
 
 class TableArrayConformanceError : public TableError {
-public:
-    // This constructor appends ": Table array conformance error"
-    // to the given message.
-    TableArrayConformanceError (const String& message,Category c=CONFORMANCE);
-    // This constructor appends ": Table array conformance error"
-    // to the given message with the given and expected shape.
-    TableArrayConformanceError (const String& message,
-                                const IPosition& shape,
-                                const IPosition& expectedShape,
-                                Category c=CONFORMANCE);
-    ~TableArrayConformanceError () noexcept;
+ public:
+  // This constructor appends ": Table array conformance error"
+  // to the given message.
+  TableArrayConformanceError(const String& message, Category c = CONFORMANCE);
+  // This constructor appends ": Table array conformance error"
+  // to the given message with the given and expected shape.
+  TableArrayConformanceError(const String& message, const IPosition& shape,
+                             const IPosition& expectedShape, Category c = CONFORMANCE);
+  ~TableArrayConformanceError() noexcept;
 };
-
 
 // <summary>
 // Table error; table length conformance error
@@ -381,21 +363,20 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // When putting a column, the length of the vector must match the
 // length of the table (i.e. its number of rows).
 // When getting a column, the length of the vector must be zero or
 // it must match the length of the table.
-// </synopsis> 
+// </synopsis>
 
 class TableConformanceError : public TableError {
-public:
-    // This constructor appends ": Table conformance error (#rows mismatch)"
-    // to the given message.
-    TableConformanceError (const String& message,Category c=CONFORMANCE);
-    ~TableConformanceError () noexcept;
+ public:
+  // This constructor appends ": Table conformance error (#rows mismatch)"
+  // to the given message.
+  TableConformanceError(const String& message, Category c = CONFORMANCE);
+  ~TableConformanceError() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid sort
@@ -404,21 +385,20 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid sort operation on a table.
 // A sort can only be done on a scalar column.
-// </synopsis> 
+// </synopsis>
 
 class TableInvSort : public TableError {
-public:
-    // The default constructor generates a generic "invalid sort" message.
-    TableInvSort (Category c=INVALID_ARGUMENT);
-    // This constructor appends the given message to the "invalid sort"
-    // message.
-    TableInvSort (const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvSort () noexcept;
+ public:
+  // The default constructor generates a generic "invalid sort" message.
+  TableInvSort(Category c = INVALID_ARGUMENT);
+  // This constructor appends the given message to the "invalid sort"
+  // message.
+  TableInvSort(const String& message, Category c = INVALID_ARGUMENT);
+  ~TableInvSort() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid logical operation
@@ -427,20 +407,19 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid logical table operation.
 // When combining tables using a union, difference, etc., the
 // tables involved have to stem from the same root. I.e. they
 // should all refer to the same underlying table.
-// </synopsis> 
+// </synopsis>
 
 class TableInvLogic : public TableError {
-public:
-    // The default constructor generates the message.
-    TableInvLogic (Category c=INVALID_ARGUMENT);
-    ~TableInvLogic () noexcept;
+ public:
+  // The default constructor generates the message.
+  TableInvLogic(Category c = INVALID_ARGUMENT);
+  ~TableInvLogic() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid select expression
@@ -449,21 +428,20 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid table select expression.
 // A column is not a scalar or belongs to another table than
 // the table on which the selection will be done.
-// </synopsis> 
+// </synopsis>
 
 class TableInvExpr : public TableError {
-public:
-    TableInvExpr (const String& message,Category c=INVALID_ARGUMENT);
-    // This constructor generates a message containing the name of
-    // the offending column. It appends the given message.
-    TableInvExpr (const String& columnName, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvExpr () noexcept;
+ public:
+  TableInvExpr(const String& message, Category c = INVALID_ARGUMENT);
+  // This constructor generates a message containing the name of
+  // the offending column. It appends the given message.
+  TableInvExpr(const String& columnName, const String& message, Category c = INVALID_ARGUMENT);
+  ~TableInvExpr() noexcept;
 };
-
 
 // <summary>
 // Table error; non-conformant table vectors
@@ -472,17 +450,16 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Table vectors are not conformant (have different lengths)
-// </synopsis> 
+// </synopsis>
 
 class TableVectorNonConform : public TableError {
-public:
-    // The default constructor generates the message.
-    TableVectorNonConform (Category c=CONFORMANCE);
-    ~TableVectorNonConform () noexcept;
+ public:
+  // The default constructor generates the message.
+  TableVectorNonConform(Category c = CONFORMANCE);
+  ~TableVectorNonConform() noexcept;
 };
-
 
 // <summary>
 // Table error; invalid table command
@@ -491,28 +468,25 @@ public:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // The parser in TableGram/TableParse found an error in
 // the given table command.
-// </synopsis> 
+// </synopsis>
 
 class TableParseError : public TableError {
-public:
-    // This constructor generates a message containing the table command.
-    TableParseError (const String& commandString,
-                     int pos=-1, const String& token=String(),
-                     Category c=INVALID_ARGUMENT);
-    ~TableParseError () noexcept;
+ public:
+  // This constructor generates a message containing the table command.
+  TableParseError(const String& commandString, int pos = -1, const String& token = String(),
+                  Category c = INVALID_ARGUMENT);
+  ~TableParseError() noexcept;
   // Get error position or token.
-  int pos() const
-    {return itsPos; }
-  const String& token() const
-    { return itsToken; }
-private:
-  int    itsPos;
+  int pos() const { return itsPos; }
+  const String& token() const { return itsToken; }
+
+ private:
+  int itsPos;
   String itsToken;
 };
-
 
 // <summary>
 // Table grammar error; invalid table command
@@ -521,29 +495,25 @@ private:
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // The parser in TableGram/TableParse found an error in
 // the given table command.
-// </synopsis> 
+// </synopsis>
 
 class TableGramError : public TableError {
-public:
-    // This constructor generates a message containing the table command.
-    TableGramError (int pos, const String& token,
-                    Category c=INVALID_ARGUMENT);
-    ~TableGramError () noexcept;
+ public:
+  // This constructor generates a message containing the table command.
+  TableGramError(int pos, const String& token, Category c = INVALID_ARGUMENT);
+  ~TableGramError() noexcept;
   // Get error position or token.
-  int pos() const
-    {return itsPos; }
-  const String& token() const
-    { return itsToken; }
-private:
-  int    itsPos;
+  int pos() const { return itsPos; }
+  const String& token() const { return itsToken; }
+
+ private:
+  int itsPos;
   String itsToken;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

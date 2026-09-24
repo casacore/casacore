@@ -1,32 +1,32 @@
-//# TableRow.h: Access to a table row
-//# Copyright (C) 1996,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableRow.h: Access to a table row
+// # Copyright (C) 1996,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEROW_H
 #define TABLES_TABLEROW_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -34,9 +34,9 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TableColumn;
 
 // <summary>
@@ -63,7 +63,7 @@ class TableColumn;
 // around and provide access to the class
 // <linkto class=TableRecord> TableRecord </linkto>.
 // The TableRow delegates much of its behaviour to the TableRecord class.
-// For example: 
+// For example:
 // <srcblock>
 //   Table table ("some.table");
 //   ROTableRow row (table);                 // construct TableRow object
@@ -72,7 +72,7 @@ class TableColumn;
 //   const TableRecord& record = row.get (17);
 //   // column name is "Title", and automatically becomes the record
 //   // key for this field of the record:
-//   String row17title = record.asString ("Title");  
+//   String row17title = record.asString ("Title");
 //   Int    row17count = record.asInt ("Count");
 // </srcblock>
 // The simplest constructor will include all columns in the TableRow object
@@ -84,7 +84,7 @@ class TableColumn;
 // <p>
 // It is possible to have multiple TableRow objects for the same table.
 // They can contain different columns or they can share columns.
-// 
+//
 // <p>
 // On construction an internal <linkto class=TableRecord>TableRecord</linkto>
 // object is created containing the required fields. The contents of this
@@ -132,163 +132,153 @@ class TableColumn;
 // objects can be created in advance.
 // </example>
 
-class ROTableRow
-{
-public:
-    // Create a detached ROTableRow object.
-    // This means that no Table, etc. is contained in it.
-    // Function isAttached will return False for it.
-    // <br>
-    // This constructor should normally not be used, because it does not
-    // result in a valid object. It should only be used when really needed
-    // (e.g. when an array of objects has to be used).
-    ROTableRow();
+class ROTableRow {
+ public:
+  // Create a detached ROTableRow object.
+  // This means that no Table, etc. is contained in it.
+  // Function isAttached will return False for it.
+  // <br>
+  // This constructor should normally not be used, because it does not
+  // result in a valid object. It should only be used when really needed
+  // (e.g. when an array of objects has to be used).
+  ROTableRow();
 
-    // Create a ROTableRow object for the given Table.
-    // Its TableRecord will contain all columns except columns with
-    // datatype TpOther (i.e. non-standard data types).
-    // <br>
-    // If the flag <src>storedColumnsOnly</src> is True, only the
-    // columns actually stored by a storage manager will be selected.
-    // This is useful when the contents of an entire row have to be copied.
-    // Virtual columns are calculated on-the-fly (often using stored columns),
-    // thus it makes no sense to copy their data.
-    // <note role=caution>
-    //  If the table contains columns with large arrays, it may
-    //  be better not to use this constructor. Each get will read in
-    //  all data in the row, thus also the large data array(s).
-    //  In that case it is better to use the constructor which
-    //  includes selected columns only.
-    // </note>
-    explicit ROTableRow (const Table& table, Bool storedColumnsOnly = True);
+  // Create a ROTableRow object for the given Table.
+  // Its TableRecord will contain all columns except columns with
+  // datatype TpOther (i.e. non-standard data types).
+  // <br>
+  // If the flag <src>storedColumnsOnly</src> is True, only the
+  // columns actually stored by a storage manager will be selected.
+  // This is useful when the contents of an entire row have to be copied.
+  // Virtual columns are calculated on-the-fly (often using stored columns),
+  // thus it makes no sense to copy their data.
+  // <note role=caution>
+  //  If the table contains columns with large arrays, it may
+  //  be better not to use this constructor. Each get will read in
+  //  all data in the row, thus also the large data array(s).
+  //  In that case it is better to use the constructor which
+  //  includes selected columns only.
+  // </note>
+  explicit ROTableRow(const Table& table, Bool storedColumnsOnly = True);
 
-    // Create a ROTableRow object for the given Table.
-    // Its TableRecord will contain all columns given in the Vector.
-    // An exception is thrown if an unknown column name is given.
-    // <br>
-    // When exclude=True, all columns except the given columns are taken.
-    // In that case an unknown name does not result in an exception.
-    ROTableRow (const Table& table, const Vector<String>& columnNames,
-		Bool exclude = False);
+  // Create a ROTableRow object for the given Table.
+  // Its TableRecord will contain all columns given in the Vector.
+  // An exception is thrown if an unknown column name is given.
+  // <br>
+  // When exclude=True, all columns except the given columns are taken.
+  // In that case an unknown name does not result in an exception.
+  ROTableRow(const Table& table, const Vector<String>& columnNames, Bool exclude = False);
 
-    // Copy constructor (copy semantics).
-    ROTableRow (const ROTableRow&);
+  // Copy constructor (copy semantics).
+  ROTableRow(const ROTableRow&);
 
-    ~ROTableRow();
+  ~ROTableRow();
 
-    // Assignment (copy semantics).
-    ROTableRow& operator= (const ROTableRow&);
+  // Assignment (copy semantics).
+  ROTableRow& operator=(const ROTableRow&);
 
-    // Test if a Table is attached to this object.
-    Bool isAttached() const;
+  // Test if a Table is attached to this object.
+  Bool isAttached() const;
 
-    // Get the Table used for this object.
-    const Table& table() const;
+  // Get the Table used for this object.
+  const Table& table() const;
 
-    // Get the record containing all fields.
-    const TableRecord& record() const;
+  // Get the record containing all fields.
+  const TableRecord& record() const;
 
-    // Get the number of the last row read.
-    // -1 is returned when no Table is attached or no row has been read yet.
-    Int64 rowNumber() const;
+  // Get the number of the last row read.
+  // -1 is returned when no Table is attached or no row has been read yet.
+  Int64 rowNumber() const;
 
-    // Get a vector consisting of all columns names.
-    // This can, for instance, be used to construct a TableRow object
-    // with the same columns in another table.
-    Vector<String> columnNames() const;
+  // Get a vector consisting of all columns names.
+  // This can, for instance, be used to construct a TableRow object
+  // with the same columns in another table.
+  Vector<String> columnNames() const;
 
-    // Get the values of all columns used from the given row.
-    // When the given row number equals the current one, nothing
-    // will be read unless the alwaysRead flag is set to True.
-    // <br>The TableRecord& returned is the same one as returned by the
-    // record() function. So one can ignore the return value of get().
-    const TableRecord& get (rownr_t rownr, Bool alwaysRead = False) const;
+  // Get the values of all columns used from the given row.
+  // When the given row number equals the current one, nothing
+  // will be read unless the alwaysRead flag is set to True.
+  // <br>The TableRecord& returned is the same one as returned by the
+  // record() function. So one can ignore the return value of get().
+  const TableRecord& get(rownr_t rownr, Bool alwaysRead = False) const;
 
-    // Get the block telling for each column if its value in the row
-    // was indefined in the table.
-    // Note that array values might be undefined in the table, but in
-    // the record they will be represented as empty arrays.
-    const Block<Bool>& getDefined() const;
+  // Get the block telling for each column if its value in the row
+  // was indefined in the table.
+  // Note that array values might be undefined in the table, but in
+  // the record they will be represented as empty arrays.
+  const Block<Bool>& getDefined() const;
 
-protected:
-    // Copy that object to this object.
-    // The writable flag determines if writable or readonly
-    // TableColumn objects will be created.
-    void copy (const ROTableRow& that);
+ protected:
+  // Copy that object to this object.
+  // The writable flag determines if writable or readonly
+  // TableColumn objects will be created.
+  void copy(const ROTableRow& that);
 
-    // Create the record, column, and field objects
-    // for all columns in the table.
-    // The writable flag determines if writable or readonly
-    // TableColumn objects will be created.
-    void create (const Table& table, Bool storedColumnsOnly, Bool writable);
+  // Create the record, column, and field objects
+  // for all columns in the table.
+  // The writable flag determines if writable or readonly
+  // TableColumn objects will be created.
+  void create(const Table& table, Bool storedColumnsOnly, Bool writable);
 
-    // Create the record, column, and field objects for the given columns.
-    // The writable flag determines if writable or readonly
-    // TableColumn objects will be created.
-    void create (const Table& table, const Vector<String>& columnNames,
-		 Bool exclude, Bool writable);
+  // Create the record, column, and field objects for the given columns.
+  // The writable flag determines if writable or readonly
+  // TableColumn objects will be created.
+  void create(const Table& table, const Vector<String>& columnNames, Bool exclude, Bool writable);
 
-    // Put the values found in the internal TableRecord at the given row.
-    // This is a helper function for class TableRow.
-    void putRecord (rownr_t rownr);
+  // Put the values found in the internal TableRecord at the given row.
+  // This is a helper function for class TableRow.
+  void putRecord(rownr_t rownr);
 
-    // Put a value in the given field in the TableRecord into the
-    // given row and column.
-    // This is a helper function for class TableRow.
-    void putField (rownr_t rownr, const TableRecord& record,
-		   Int whichColumn, Int whichField);
+  // Put a value in the given field in the TableRecord into the
+  // given row and column.
+  // This is a helper function for class TableRow.
+  void putField(rownr_t rownr, const TableRecord& record, Int whichColumn, Int whichField);
 
-    // Set the switch to reread when the current row has been put.
-    void setReread (rownr_t rownr);
+  // Set the switch to reread when the current row has been put.
+  void setReread(rownr_t rownr);
 
-    //# The record of all fields.
-    TableRecord* itsRecord;
-    //# The table used.
-    Table        itsTable;
-    //# The following block is actually a Block<TableColumn*>.
-    //# However, using void* (and appropriate casts) saves on template
-    //# instantiations.
-    Block<void*> itsTabCols;
-    //# The following block is actually a Block<Scalar/ArrayColumn<T>>.
-    Block<void*> itsColumns;
-    //# The following block is actually a block of RecordFieldPtr<T>*.
-    //# These are used for fast access to the record.
-    Block<void*> itsFields;
-    //# Block to tell if the corresponding column value is defined.
-    mutable Block<Bool> itsDefined;
-    //# A cache for itsRecord.nfields()
-    uInt         itsNrused;
-    //# The last rownr read (-1 is nothing read yet).
-    mutable Int64 itsLastRow;
-    //# A switch to indicate that the last row has to be reread.
-    //# This is the case when it has been put after being read.
-    mutable Bool  itsReread;
+  // # The record of all fields.
+  TableRecord* itsRecord;
+  // # The table used.
+  Table itsTable;
+  // # The following block is actually a Block<TableColumn*>.
+  // # However, using void* (and appropriate casts) saves on template
+  // # instantiations.
+  Block<void*> itsTabCols;
+  // # The following block is actually a Block<Scalar/ArrayColumn<T>>.
+  Block<void*> itsColumns;
+  // # The following block is actually a block of RecordFieldPtr<T>*.
+  // # These are used for fast access to the record.
+  Block<void*> itsFields;
+  // # Block to tell if the corresponding column value is defined.
+  mutable Block<Bool> itsDefined;
+  // # A cache for itsRecord.nfields()
+  uInt itsNrused;
+  // # The last rownr read (-1 is nothing read yet).
+  mutable Int64 itsLastRow;
+  // # A switch to indicate that the last row has to be reread.
+  // # This is the case when it has been put after being read.
+  mutable Bool itsReread;
 
-private:
-    // Initialize the object.
-    void init();
+ private:
+  // Initialize the object.
+  void init();
 
-    // Make a RecordDesc from the table with some excluded column names.
-    void makeDescExclude (RecordDesc& description,
-			  const Vector<String>& columnNames,
-			  Bool writable);
+  // Make a RecordDesc from the table with some excluded column names.
+  void makeDescExclude(RecordDesc& description, const Vector<String>& columnNames, Bool writable);
 
-    // Add a column to the record.
-    // When skipOther is True, columns with a non-standard data type
-    // will be silently skipped.
-    void addColumnToDesc (RecordDesc& description,
-			  const TableColumn& column, Bool skipOther);
+  // Add a column to the record.
+  // When skipOther is True, columns with a non-standard data type
+  // will be silently skipped.
+  void addColumnToDesc(RecordDesc& description, const TableColumn& column, Bool skipOther);
 
-    // Make the required objects. These are the TableRecord and for
-    // each column a TableColumn and RecordFieldPtr.
-    void makeObjects (const RecordDesc& description);
+  // Make the required objects. These are the TableRecord and for
+  // each column a TableColumn and RecordFieldPtr.
+  void makeObjects(const RecordDesc& description);
 
-    // Delete all objects.
-    void deleteObjects();
+  // Delete all objects.
+  void deleteObjects();
 };
-
-
-
 
 // <summary>
 // Read/write access to a table row
@@ -384,145 +374,117 @@ private:
 // </srcblock>
 // </example>
 
-class TableRow : public ROTableRow
-{
-public:
-    // Create a detached TableRow object.
-    // This means that no Table, etc. is contained in it.
-    // Function isAttached (in the base class) will return False for it.
-    // <br>
-    // This constructor should normally not be used, because it does not
-    // result in a valid object. It should only be used when really needed
-    // (e.g. when an array of objects has to be used).
-    TableRow();
+class TableRow : public ROTableRow {
+ public:
+  // Create a detached TableRow object.
+  // This means that no Table, etc. is contained in it.
+  // Function isAttached (in the base class) will return False for it.
+  // <br>
+  // This constructor should normally not be used, because it does not
+  // result in a valid object. It should only be used when really needed
+  // (e.g. when an array of objects has to be used).
+  TableRow();
 
-    // Create a TableRow object for the given Table.
-    // Its TableRecord will contain all columns except columns with
-    // datatype TpOther and columns which are not writable.
-    // <br>
-    // If the flag <src>storedColumnsOnly</src> is True, only the
-    // columns actually stored by a storage manager will be selected.
-    // This is useful when the contents of an entire row have to be copied.
-    // Virtual columns are calculated on-the-fly (often using stored columns),
-    // thus it makes no sense to copy their data.
-    // <note role=caution>
-    //  If the table contains columns with large arrays, it may
-    //  be better not to use this constructor. Each get will read in
-    //  all data in the row, thus also the large data array(s).
-    //  In that case it is better to use the next constructor which
-    //  works selectively.
-    // </note>
-    explicit TableRow (const Table& table, Bool storedColumnsOnly = True);
+  // Create a TableRow object for the given Table.
+  // Its TableRecord will contain all columns except columns with
+  // datatype TpOther and columns which are not writable.
+  // <br>
+  // If the flag <src>storedColumnsOnly</src> is True, only the
+  // columns actually stored by a storage manager will be selected.
+  // This is useful when the contents of an entire row have to be copied.
+  // Virtual columns are calculated on-the-fly (often using stored columns),
+  // thus it makes no sense to copy their data.
+  // <note role=caution>
+  //  If the table contains columns with large arrays, it may
+  //  be better not to use this constructor. Each get will read in
+  //  all data in the row, thus also the large data array(s).
+  //  In that case it is better to use the next constructor which
+  //  works selectively.
+  // </note>
+  explicit TableRow(const Table& table, Bool storedColumnsOnly = True);
 
-    // Create a TableRow object for the given Table.
-    // Its TableRecord will contain all columns given in the Vector.
-    // An exception is thrown if an unknown column name is given
-    // or if a column is given which is not writable.
-    // <br>
-    // When exclude=True, all columns except the given columns are taken.
-    // In that case an unknown name does not result in an exception
-    // and non-writable columns are simply skipped.
-    TableRow (const Table& table, const Vector<String>& columnNames,
-	      Bool exclude = False);
+  // Create a TableRow object for the given Table.
+  // Its TableRecord will contain all columns given in the Vector.
+  // An exception is thrown if an unknown column name is given
+  // or if a column is given which is not writable.
+  // <br>
+  // When exclude=True, all columns except the given columns are taken.
+  // In that case an unknown name does not result in an exception
+  // and non-writable columns are simply skipped.
+  TableRow(const Table& table, const Vector<String>& columnNames, Bool exclude = False);
 
-    // Copy constructor (copy semantics).
-    TableRow (const TableRow&);
+  // Copy constructor (copy semantics).
+  TableRow(const TableRow&);
 
-    ~TableRow();
+  ~TableRow();
 
-    // Assignment (copy semantics).
-    TableRow& operator= (const TableRow&);
+  // Assignment (copy semantics).
+  TableRow& operator=(const TableRow&);
 
-    // Get non-const access to the TableRecord in this object.
-    // This can be used to change values in it which can thereafter
-    // be put using the function <src>put(rownr)</src>.
-    // <note> The returned TableRecord has a fixed structure, so it is
-    //        not possible to add or remove fields. It is only possible
-    //        to change values.
-    // </note>
-    TableRecord& record();
+  // Get non-const access to the TableRecord in this object.
+  // This can be used to change values in it which can thereafter
+  // be put using the function <src>put(rownr)</src>.
+  // <note> The returned TableRecord has a fixed structure, so it is
+  //        not possible to add or remove fields. It is only possible
+  //        to change values.
+  // </note>
+  TableRecord& record();
 
-    // Put into the last row read.
-    // An exception is thrown if no row has been read yet.
-    // The values in the TableRecord contained in this object are put.
-    // This TableRecord can be accessed and updated using the
-    // function <src>record</src>.
-    void put();
+  // Put into the last row read.
+  // An exception is thrown if no row has been read yet.
+  // The values in the TableRecord contained in this object are put.
+  // This TableRecord can be accessed and updated using the
+  // function <src>record</src>.
+  void put();
 
-    // Put into the given row.
-    // The values in the TableRecord contained in this object are put.
-    // This TableRecord can be accessed and updated using the
-    // function <src>record</src>.
-    void put (rownr_t rownr);
+  // Put into the given row.
+  // The values in the TableRecord contained in this object are put.
+  // This TableRecord can be accessed and updated using the
+  // function <src>record</src>.
+  void put(rownr_t rownr);
 
-    // Put the values found in the TableRecord in the appropriate columns
-    // in the given row.
-    // The names and order of the fields in the TableRecord must conform
-    // those of the description of the TableRow. The data types of numeric
-    // values do not need to conform exactly; they can be promoted
-    // (e.g. an Int value in the record may correspond to a float column).
-    // If not conforming, an exception is thrown.
-    // <note> For performance reasons it is optional to check
-    //        the name order conformance.
-    // </note>
-    // The <src>valuesDefined</src> block tells if the value in the
-    // corresponding field in the record is actually defined.
-    // If not, nothing will be written.
-    // It is meant for array values which might be undefined in a table.
-    // <group>
-    void put (rownr_t rownr, const TableRecord& record,
-	      Bool checkConformance = True);
-    void put (rownr_t rownr, const TableRecord& record,
-	      const Block<Bool>& valuesDefined,
-	      Bool checkConformance = True);
-    // </group>
+  // Put the values found in the TableRecord in the appropriate columns
+  // in the given row.
+  // The names and order of the fields in the TableRecord must conform
+  // those of the description of the TableRow. The data types of numeric
+  // values do not need to conform exactly; they can be promoted
+  // (e.g. an Int value in the record may correspond to a float column).
+  // If not conforming, an exception is thrown.
+  // <note> For performance reasons it is optional to check
+  //        the name order conformance.
+  // </note>
+  // The <src>valuesDefined</src> block tells if the value in the
+  // corresponding field in the record is actually defined.
+  // If not, nothing will be written.
+  // It is meant for array values which might be undefined in a table.
+  // <group>
+  void put(rownr_t rownr, const TableRecord& record, Bool checkConformance = True);
+  void put(rownr_t rownr, const TableRecord& record, const Block<Bool>& valuesDefined,
+           Bool checkConformance = True);
+  // </group>
 
-    // Put the values found in the TableRecord. Only fields with a matching
-    // name in the TableRow object will be put.
-    // This makes it possible to put fields in a selective way.
-    // <br>E.g.: If the TableRow contains columns A and B, and the
-    // record contains fields B and C, only field B will be put.
-    // <br>In principle the data types of the matching fields must match,
-    // but data type promotion of numeric values will be applied.
-    void putMatchingFields (rownr_t rownr, const TableRecord& record);
+  // Put the values found in the TableRecord. Only fields with a matching
+  // name in the TableRow object will be put.
+  // This makes it possible to put fields in a selective way.
+  // <br>E.g.: If the TableRow contains columns A and B, and the
+  // record contains fields B and C, only field B will be put.
+  // <br>In principle the data types of the matching fields must match,
+  // but data type promotion of numeric values will be applied.
+  void putMatchingFields(rownr_t rownr, const TableRecord& record);
 
-private:
-    // Check if the names of the given record match this row.
-    Bool namesConform (const TableRecord& that) const;
+ private:
+  // Check if the names of the given record match this row.
+  Bool namesConform(const TableRecord& that) const;
 };
 
+inline Bool ROTableRow::isAttached() const { return (itsRecord != 0); }
+inline const Table& ROTableRow::table() const { return itsTable; }
+inline Int64 ROTableRow::rowNumber() const { return itsLastRow; }
+inline const TableRecord& ROTableRow::record() const { return *itsRecord; }
+inline const Block<Bool>& ROTableRow::getDefined() const { return itsDefined; }
+inline TableRecord& TableRow::record() { return *itsRecord; }
+inline void TableRow::put(rownr_t rownr) { putRecord(rownr); }
 
-inline Bool ROTableRow::isAttached() const
-{
-    return  (itsRecord != 0);
-}
-inline const Table& ROTableRow::table() const
-{
-    return itsTable;
-}
-inline Int64 ROTableRow::rowNumber() const
-{
-    return itsLastRow;
-}
-inline const TableRecord& ROTableRow::record() const
-{
-    return *itsRecord;
-}
-inline const Block<Bool>& ROTableRow::getDefined() const
-{
-    return itsDefined;
-}
-inline TableRecord& TableRow::record()
-{
-    return *itsRecord;
-}
-inline void TableRow::put (rownr_t rownr)
-{
-    putRecord (rownr);
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

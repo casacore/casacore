@@ -1,45 +1,45 @@
-//# ColumnsIndex.h: Index to one or more columns in a table
-//# Copyright (C) 1998,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ColumnsIndex.h: Index to one or more columns in a table
+// # Copyright (C) 1998,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_COLUMNSINDEX_H
 #define TABLES_COLUMNSINDEX_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class TableColumn;
-template<typename T> class RecordFieldPtr;
+template <typename T>
+class RecordFieldPtr;
 
 // <summary>
 // Index to one or more columns in a table.
@@ -221,220 +221,197 @@ template<typename T> class RecordFieldPtr;
 // very frequently. This class makes that process much easier and faster.
 // </motivation>
 
+class ColumnsIndex {
+ public:
+  // Define the signature of a comparison function.
+  // The first block contains pointers to <src>RecordFieldPtr<T></src>
+  // objects holding the key to be looked up.
+  // The second block contains pointers to the column data.
+  // The <src>index</src> argument gives the index in the column data.
+  // The third block contains data types of those blocks (TpBool, etc.).
+  // The function should return -1 if key is less than data,
+  // 0 if equal, 1 if greater.
+  // <br>An example above shows how a compare function can be used.
+  typedef Int Compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+                      const Block<Int>& dataTypes, rownr_t index);
 
-class ColumnsIndex
-{
-public:
-    // Define the signature of a comparison function.
-    // The first block contains pointers to <src>RecordFieldPtr<T></src>
-    // objects holding the key to be looked up.
-    // The second block contains pointers to the column data.
-    // The <src>index</src> argument gives the index in the column data.
-    // The third block contains data types of those blocks (TpBool, etc.).
-    // The function should return -1 if key is less than data,
-    // 0 if equal, 1 if greater.
-    // <br>An example above shows how a compare function can be used.
-    typedef Int Compare (const Block<void*>& fieldPtrs,
-			 const Block<void*>& dataPtrs,
-			 const Block<Int>& dataTypes,
-			 rownr_t index);
+  // Create an index on the given table for the given column.
+  // The column has to be a scalar column.
+  // If <src>noSort==True</src>, the table is already in order of that
+  // column and the sort step will not be done.
+  // The default compare function is provided by this class. It simply
+  // compares each field in the key.
+  ColumnsIndex(const Table&, const String& columnName, Compare* compareFunction = 0,
+               Bool noSort = False);
 
-    // Create an index on the given table for the given column.
-    // The column has to be a scalar column.
-    // If <src>noSort==True</src>, the table is already in order of that
-    // column and the sort step will not be done.
-    // The default compare function is provided by this class. It simply
-    // compares each field in the key.
-    ColumnsIndex (const Table&, const String& columnName,
-		  Compare* compareFunction = 0, Bool noSort = False);
+  // Create an index on the given table for the given columns, thus
+  // the key is formed by multiple columns.
+  // The columns have to be scalar columns.
+  // If <src>noSort==True</src>, the table is already in order of those
+  // columns and the sort step will not be done.
+  // The default compare function is provided by this class. It simply
+  // compares each field in the key.
+  ColumnsIndex(const Table&, const Vector<String>& columnNames, Compare* compareFunction = 0,
+               Bool noSort = False);
 
-    // Create an index on the given table for the given columns, thus
-    // the key is formed by multiple columns.
-    // The columns have to be scalar columns.
-    // If <src>noSort==True</src>, the table is already in order of those
-    // columns and the sort step will not be done.
-    // The default compare function is provided by this class. It simply
-    // compares each field in the key.
-    ColumnsIndex (const Table&, const Vector<String>& columnNames,
-		  Compare* compareFunction = 0, Bool noSort = False);
+  // Copy constructor (copy semantics).
+  ColumnsIndex(const ColumnsIndex& that);
 
-    // Copy constructor (copy semantics).
-    ColumnsIndex (const ColumnsIndex& that);
+  ~ColumnsIndex();
 
-    ~ColumnsIndex();
+  // Assignment (copy semantics).
+  ColumnsIndex& operator=(const ColumnsIndex& that);
 
-    // Assignment (copy semantics).
-    ColumnsIndex& operator= (const ColumnsIndex& that);
+  // Are all keys in the index unique?
+  Bool isUnique() const;
 
-    // Are all keys in the index unique?
-    Bool isUnique() const;
+  // Return the names of the columns forming the index.
+  Vector<String> columnNames() const;
 
-    // Return the names of the columns forming the index.
-    Vector<String> columnNames() const;
+  // Get the table for which this index is created.
+  const Table& table() const;
 
-    // Get the table for which this index is created.
-    const Table& table() const;
+  // Something has changed in the table, so the index has to be recreated.
+  // The 2nd version indicates that a specific column has changed,
+  // so only that column is reread. If that column is not part of the
+  // index, nothing will be done.
+  // <br>Note that the class itself is keeping track if the number of
+  // rows in the table changes.
+  // <group>
+  void setChanged();
+  void setChanged(const String& columnName);
+  // </group>
 
-    // Something has changed in the table, so the index has to be recreated.
-    // The 2nd version indicates that a specific column has changed,
-    // so only that column is reread. If that column is not part of the
-    // index, nothing will be done.
-    // <br>Note that the class itself is keeping track if the number of
-    // rows in the table changes.
-    // <group>
-    void setChanged();
-    void setChanged (const String& columnName);
-    // </group>
+  // Access the key values.
+  // These functions allow you to create RecordFieldPtr<T> objects
+  // for each field in the key. In this way you can quickly fill in
+  // the key.
+  // <br>The records have a fixed type, so you cannot add or delete fields.
+  // <group>
+  Record& accessKey();
+  Record& accessLowerKey();
+  Record& accessUpperKey();
+  // </group>
 
-    // Access the key values.
-    // These functions allow you to create RecordFieldPtr<T> objects
-    // for each field in the key. In this way you can quickly fill in
-    // the key.
-    // <br>The records have a fixed type, so you cannot add or delete fields.
-    // <group>
-    Record& accessKey();
-    Record& accessLowerKey();
-    Record& accessUpperKey();
-    // </group>
+  // Find the row number matching the key. All keys have to be unique,
+  // otherwise an exception is thrown.
+  // If no match is found, <src>found</src> is set to False.
+  // The 2nd version makes it possible to pass in your own Record
+  // instead of using the internal record via the <src>accessKey</src>
+  // functions. Note that the given Record will be copied to the internal
+  // record, thus overwrites it.
+  // <group>
+  rownr_t getRowNumber(Bool& found);
+  rownr_t getRowNumber(Bool& found, const Record& key);
+  // </group>
 
-    // Find the row number matching the key. All keys have to be unique,
-    // otherwise an exception is thrown.
-    // If no match is found, <src>found</src> is set to False.
-    // The 2nd version makes it possible to pass in your own Record
-    // instead of using the internal record via the <src>accessKey</src>
-    // functions. Note that the given Record will be copied to the internal
-    // record, thus overwrites it.
-    // <group>
-    rownr_t getRowNumber (Bool& found);
-    rownr_t getRowNumber (Bool& found, const Record& key);
-    // </group>
+  // Find the row numbers matching the key. It should be used instead
+  // of <src>getRowNumber</src> if the same key can exist multiple times.
+  // The 2nd version makes it possible to pass in your own Record
+  // instead of using the internal record via the <src>accessKey</src>
+  // functions. Note that the given Record will be copied to the internal
+  // record, thus overwrites it.
+  // <group>
+  RowNumbers getRowNumbers();
+  RowNumbers getRowNumbers(const Record& key);
+  // </group>
 
-    // Find the row numbers matching the key. It should be used instead
-    // of <src>getRowNumber</src> if the same key can exist multiple times.
-    // The 2nd version makes it possible to pass in your own Record
-    // instead of using the internal record via the <src>accessKey</src>
-    // functions. Note that the given Record will be copied to the internal
-    // record, thus overwrites it.
-    // <group>
-    RowNumbers getRowNumbers();
-    RowNumbers getRowNumbers (const Record& key);
-    // </group>
+  // Find the row numbers matching the key range. The boolean arguments
+  // tell if the lower and upper key are part of the range.
+  // The 2nd version makes it possible to pass in your own Records
+  // instead of using the internal records via the
+  // <src>accessLower/UpperKey</src> functions.
+  // Note that the given Records will be copied to the internal
+  // records, thus overwrite them.
+  // <group>
+  RowNumbers getRowNumbers(Bool lowerInclusive, Bool upperInclusive);
+  RowNumbers getRowNumbers(const Record& lower, const Record& upper, Bool lowerInclusive,
+                           Bool upperInclusive);
+  // </group>
 
-    // Find the row numbers matching the key range. The boolean arguments
-    // tell if the lower and upper key are part of the range.
-    // The 2nd version makes it possible to pass in your own Records
-    // instead of using the internal records via the
-    // <src>accessLower/UpperKey</src> functions.
-    // Note that the given Records will be copied to the internal
-    // records, thus overwrite them.
-    // <group>
-    RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive);
-    RowNumbers getRowNumbers (const Record& lower, const Record& upper,
-                              Bool lowerInclusive, Bool upperInclusive);
-    // </group>
+  // Fill the internal key field from the corresponding external key.
+  // The data type may differ.
+  static void copyKeyField(void* field, int dtype, const Record& key);
 
-    // Fill the internal key field from the corresponding external key.
-    // The data type may differ.
-    static void copyKeyField (void* field, int dtype, const Record& key);
+ protected:
+  // Copy that object to this.
+  void copy(const ColumnsIndex& that);
 
-protected:
-    // Copy that object to this.
-    void copy (const ColumnsIndex& that);
+  // Delete all data in the object.
+  void deleteObjects();
 
-    // Delete all data in the object.
-    void deleteObjects();
+  // Add a column to the record description for the keys.
+  void addColumnToDesc(RecordDesc& description, const TableColumn& column);
 
-    // Add a column to the record description for the keys.
-    void addColumnToDesc (RecordDesc& description,
-			  const TableColumn& column);
+  // Create the various members in the object.
+  void create(const Table& table, const Vector<String>& columnNames, Compare* compareFunction,
+              Bool noSort);
 
-    // Create the various members in the object.
-    void create (const Table& table, const Vector<String>& columnNames,
-		 Compare* compareFunction, Bool noSort);
+  // Make the various internal <src>RecordFieldPtr</src> objects.
+  void makeObjects(const RecordDesc& description);
 
-    // Make the various internal <src>RecordFieldPtr</src> objects.
-    void makeObjects (const RecordDesc& description);
+  // Read the data of the columns forming the index, sort them and
+  // form the index.
+  void readData();
 
-    // Read the data of the columns forming the index, sort them and
-    // form the index.
-    void readData();
+  // Do a binary search on <src>itsUniqueIndex</src> for the key in
+  // <src>fieldPtrs</src>.
+  // If the key is found, <src>found</src> is set to True and the index
+  // in <src>itsUniqueIndex</src> is returned.
+  // If not found, <src>found</src> is set to False and the index
+  // of the next higher key is returned.
+  rownr_t bsearch(Bool& found, const Block<void*>& fieldPtrs) const;
 
-    // Do a binary search on <src>itsUniqueIndex</src> for the key in
-    // <src>fieldPtrs</src>.
-    // If the key is found, <src>found</src> is set to True and the index
-    // in <src>itsUniqueIndex</src> is returned.
-    // If not found, <src>found</src> is set to False and the index
-    // of the next higher key is returned.
-    rownr_t bsearch (Bool& found, const Block<void*>& fieldPtrs) const;
+  // Compare the key in <src>fieldPtrs</src> with the given index entry.
+  // -1 is returned when less, 0 when equal, 1 when greater.
+  static Int compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+                     const Block<Int>& dataTypes, rownr_t index);
 
-    // Compare the key in <src>fieldPtrs</src> with the given index entry.
-    // -1 is returned when less, 0 when equal, 1 when greater.
-    static Int compare (const Block<void*>& fieldPtrs,
-			const Block<void*>& dataPtrs,
-			const Block<Int>& dataTypes,
-			rownr_t index);
+  // Fill the row numbers vector for the given start till end in the
+  // <src>itsUniqueIndex</src> vector (end is not inclusive).
+  void fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t end) const;
 
-    // Fill the row numbers vector for the given start till end in the
-    // <src>itsUniqueIndex</src> vector (end is not inclusive).
-    void fillRowNumbers (Vector<rownr_t>& rows, rownr_t start, rownr_t end) const;
+ private:
+  // Fill the internal key fields from the corresponding external key.
+  void copyKey(Block<void*> fields, const Record& key);
 
-private:
-    // Fill the internal key fields from the corresponding external key.
-    void copyKey (Block<void*> fields, const Record& key);
+  // Fill the internal key field from the corresponding external key.
+  // The data type may differ.
+  template <typename T>
+  static void copyKeyField(RecordFieldPtr<T>& field, const Record& key) {
+    key.get(field.name(), *field);
+  }
 
-    // Fill the internal key field from the corresponding external key.
-    // The data type may differ.
-    template <typename T>
-    static void copyKeyField (RecordFieldPtr<T>& field, const Record& key)
-    {
-      key.get (field.name(), *field);
-    }
-
-    Table   itsTable;
-    rownr_t itsNrrow;
-    Record* itsLowerKeyPtr;
-    Record* itsUpperKeyPtr;
-    Block<Int>      itsDataTypes;
-    Block<void*>    itsDataVectors;
-    Block<void*>    itsData;              //# pointer to data in itsDataVectors
-    //# The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
-    //# They are used for fast access to the records.
-    Block<void*>    itsLowerFields;
-    Block<void*>    itsUpperFields;
-    Block<Bool>     itsColumnChanged;
-    Bool            itsChanged;
-    Bool            itsNoSort;            //# True = sort is not needed
-    Compare*        itsCompare;           //# Compare function
-    Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
-    //# Indices in itsDataIndex for each unique key
-    Vector<rownr_t> itsUniqueIndex;
-    rownr_t*        itsDataInx;           //# pointer to data in itsDataIndex
-    rownr_t*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
+  Table itsTable;
+  rownr_t itsNrrow;
+  Record* itsLowerKeyPtr;
+  Record* itsUpperKeyPtr;
+  Block<Int> itsDataTypes;
+  Block<void*> itsDataVectors;
+  Block<void*> itsData;  // # pointer to data in itsDataVectors
+  // # The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
+  // # They are used for fast access to the records.
+  Block<void*> itsLowerFields;
+  Block<void*> itsUpperFields;
+  Block<Bool> itsColumnChanged;
+  Bool itsChanged;
+  Bool itsNoSort;                // # True = sort is not needed
+  Compare* itsCompare;           // # Compare function
+  Vector<rownr_t> itsDataIndex;  // # Row numbers of all keys
+  // # Indices in itsDataIndex for each unique key
+  Vector<rownr_t> itsUniqueIndex;
+  rownr_t* itsDataInx;    // # pointer to data in itsDataIndex
+  rownr_t* itsUniqueInx;  // # pointer to data in itsUniqueIndex
 };
 
+inline Bool ColumnsIndex::isUnique() const {
+  return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
+}
+inline const Table& ColumnsIndex::table() const { return itsTable; }
+inline Record& ColumnsIndex::accessKey() { return *itsLowerKeyPtr; }
+inline Record& ColumnsIndex::accessLowerKey() { return *itsLowerKeyPtr; }
+inline Record& ColumnsIndex::accessUpperKey() { return *itsUpperKeyPtr; }
 
-inline Bool ColumnsIndex::isUnique() const
-{
-    return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
-}
-inline const Table& ColumnsIndex::table() const
-{
-    return itsTable;
-}
-inline Record& ColumnsIndex::accessKey()
-{
-    return *itsLowerKeyPtr;
-}
-inline Record& ColumnsIndex::accessLowerKey()
-{
-    return *itsLowerKeyPtr;
-}
-inline Record& ColumnsIndex::accessUpperKey()
-{
-    return *itsUpperKeyPtr;
-}
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

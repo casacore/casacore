@@ -1,127 +1,115 @@
-//# ConcatScalarColumn.h: A typed scalar column in a concatenated table
-//# Copyright (C) 2008
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ConcatScalarColumn.h: A typed scalar column in a concatenated table
+// # Copyright (C) 2008
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_CONCATSCALARCOLUMN_H
 #define TABLES_CONCATSCALARCOLUMN_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ConcatColumn.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-  // <summary>
-  // A typed column in a concatenated table
-  // </summary>
+// <summary>
+// A typed column in a concatenated table
+// </summary>
 
-  // <use visibility=local>
+// <use visibility=local>
 
-  // <reviewed reviewer="UNKNOWN" date="" tests="">
-  // </reviewed>
+// <reviewed reviewer="UNKNOWN" date="" tests="">
+// </reviewed>
 
-  // <prerequisite>
-  //# Classes you should understand before using this one.
-  //   <li> ConcatTable
-  //   <li> BaseColumn
-  // </prerequisite>
+// <prerequisite>
+// # Classes you should understand before using this one.
+//   <li> ConcatTable
+//   <li> BaseColumn
+// </prerequisite>
 
-  // <etymology>
-  // ConcatTable represents a column in a ConcatTable. A ConcatTable is a table
-  // referencing another table, usually as the result of a select, etc..
-  // </etymology>
+// <etymology>
+// ConcatTable represents a column in a ConcatTable. A ConcatTable is a table
+// referencing another table, usually as the result of a select, etc..
+// </etymology>
 
-  // <synopsis> 
-  // ConcatColumn handles the access of a column in a ConcatTable.
-  // It calls the corresponding function in the referenced column
-  // while converting the given row number to the row number in the
-  // referenced table.
-  // </synopsis> 
+// <synopsis>
+// ConcatColumn handles the access of a column in a ConcatTable.
+// It calls the corresponding function in the referenced column
+// while converting the given row number to the row number in the
+// referenced table.
+// </synopsis>
 
-  // <motivation>
-  // This class is untyped, i.e. not templated.
-  // Every call is sent to the underlying referenced BaseColumn which
-  // is typed by the virtual function mechanism.
-  // A ConcatColumn can never be used directly. A user always has to
-  // construct a typed ArrayColumn or ScalarColumn object to access a column.
-  // This means everyting is fully type safe.
-  // </motivation>
+// <motivation>
+// This class is untyped, i.e. not templated.
+// Every call is sent to the underlying referenced BaseColumn which
+// is typed by the virtual function mechanism.
+// A ConcatColumn can never be used directly. A user always has to
+// construct a typed ArrayColumn or ScalarColumn object to access a column.
+// This means everyting is fully type safe.
+// </motivation>
 
-  // <todo asof="$DATE:$">
-  //# A List of bugs, limitations, extensions or planned refinements.
-  //   <li> Act upon removal of rows or the underlying column
-  // </todo>
+// <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+//   <li> Act upon removal of rows or the underlying column
+// </todo>
 
-  template<typename T>
-  class ConcatScalarColumn : public ConcatColumn
-  {
-  public:
-    // Construct the ConcatColumn. It will point to the given column
-    // description, ConcatTable and referenced column.
-    // The ConcatTable will be used to convert the rownr to the rownr
-    // in the apprpriate table.
-    ConcatScalarColumn (const BaseColumnDesc*, ConcatTable*);
+template <typename T>
+class ConcatScalarColumn : public ConcatColumn {
+ public:
+  // Construct the ConcatColumn. It will point to the given column
+  // description, ConcatTable and referenced column.
+  // The ConcatTable will be used to convert the rownr to the rownr
+  // in the apprpriate table.
+  ConcatScalarColumn(const BaseColumnDesc*, ConcatTable*);
 
-    ~ConcatScalarColumn();
+  ~ConcatScalarColumn();
 
-    // Get the vector of all scalar values in a column.
-    virtual void getScalarColumn (ArrayBase& dataPtr) const;
+  // Get the vector of all scalar values in a column.
+  virtual void getScalarColumn(ArrayBase& dataPtr) const;
 
-    // Get the vector of some scalar values in a column.
-    virtual void getScalarColumnCells (const RefRows& rownrs,
-				       ArrayBase& dataPtr) const;
+  // Get the vector of some scalar values in a column.
+  virtual void getScalarColumnCells(const RefRows& rownrs, ArrayBase& dataPtr) const;
 
-    // Put the vector of all scalar values in the column.
-    virtual void putScalarColumn (const ArrayBase& dataPtr);
+  // Put the vector of all scalar values in the column.
+  virtual void putScalarColumn(const ArrayBase& dataPtr);
 
-    // Get the vector of some scalar values in a column.
-    virtual void putScalarColumnCells (const RefRows& rownrs,
-				       const ArrayBase& dataPtr);
+  // Get the vector of some scalar values in a column.
+  virtual void putScalarColumnCells(const RefRows& rownrs, const ArrayBase& dataPtr);
 
-    // Handle the creation and deletion of sort keys.
-    // <group>
-    virtual void makeSortKey (Sort& sortobj,
-                              std::shared_ptr<BaseCompare>& cmpObj,
-			      Int order,
-			      std::shared_ptr<ArrayBase>& dataSave);
-    virtual void makeRefSortKey (Sort& sortobj,
-                                 std::shared_ptr<BaseCompare>& cmpObj,
-				 Int order,
-				 const Vector<rownr_t>& rownrs,
-				 std::shared_ptr<ArrayBase>& dataSave);
-    virtual void fillSortKey (const Vector<T>* vecPtr,
-			      Sort& sortobj,
-                              std::shared_ptr<BaseCompare>& cmpObj,
-			      Int order);
-    // </group>
+  // Handle the creation and deletion of sort keys.
+  // <group>
+  virtual void makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+                           std::shared_ptr<ArrayBase>& dataSave);
+  virtual void makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+                              const Vector<rownr_t>& rownrs, std::shared_ptr<ArrayBase>& dataSave);
+  virtual void fillSortKey(const Vector<T>* vecPtr, Sort& sortobj,
+                           std::shared_ptr<BaseCompare>& cmpObj, Int order);
+  // </group>
+};
 
-  };
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/ConcatScalarColumn.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

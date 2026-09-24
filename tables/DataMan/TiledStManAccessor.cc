@@ -1,29 +1,29 @@
-//# TiledStManAccessor.cc: Gives access to some TiledStMan functions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledStManAccessor.cc: Gives access to some TiledStMan functions
+// # Copyright (C) 1994,1995,1996,1997,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/tables/DataMan/TiledStManAccessor.h>
 #include <casacore/tables/DataMan/TiledStMan.h>
 #include <casacore/tables/DataMan/TSMCube.h>
@@ -31,174 +31,113 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/BasicSL/String.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
-					    const String& name,
-                                            Bool byColumn)
-  : RODataManAccessor (table, name, byColumn),
-    dataManPtr_p (0)
-{
-    dataManPtr_p = dynamic_cast<TiledStMan*>(baseDataManager());
-    if (dataManPtr_p == 0) {
-	throw (DataManError ("ROTiledStManAccessor " + name +
-                             " constructed for data manager type "
-			     + baseDataManager()->dataManagerType() +
-			     "; expected Tiled*StMan"));
-    }
+ROTiledStManAccessor::ROTiledStManAccessor(const Table& table, const String& name, Bool byColumn)
+    : RODataManAccessor(table, name, byColumn), dataManPtr_p(0) {
+  dataManPtr_p = dynamic_cast<TiledStMan*>(baseDataManager());
+  if (dataManPtr_p == 0) {
+    throw(DataManError("ROTiledStManAccessor " + name + " constructed for data manager type " +
+                       baseDataManager()->dataManagerType() + "; expected Tiled*StMan"));
+  }
 }
 
-ROTiledStManAccessor::ROTiledStManAccessor()
-{}
+ROTiledStManAccessor::ROTiledStManAccessor() {}
 
-ROTiledStManAccessor::~ROTiledStManAccessor()
-{}
+ROTiledStManAccessor::~ROTiledStManAccessor() {}
 
-ROTiledStManAccessor::ROTiledStManAccessor
-                               (const ROTiledStManAccessor& that)
-: RODataManAccessor(that),
-  dataManPtr_p (that.dataManPtr_p)
-{}
+ROTiledStManAccessor::ROTiledStManAccessor(const ROTiledStManAccessor& that)
+    : RODataManAccessor(that), dataManPtr_p(that.dataManPtr_p) {}
 
-ROTiledStManAccessor& ROTiledStManAccessor::operator=
-	                       (const ROTiledStManAccessor& that)
-{
-    if (this != &that) {
-        RODataManAccessor::operator= (that);
-        dataManPtr_p = that.dataManPtr_p;
-    }
-    return *this;
+ROTiledStManAccessor& ROTiledStManAccessor::operator=(const ROTiledStManAccessor& that) {
+  if (this != &that) {
+    RODataManAccessor::operator=(that);
+    dataManPtr_p = that.dataManPtr_p;
+  }
+  return *this;
 }
 
+DataManager* ROTiledStManAccessor::getDataManager() const { return dataManPtr_p; }
 
-DataManager* ROTiledStManAccessor::getDataManager() const
-{
-    return dataManPtr_p;
+void ROTiledStManAccessor::setMaximumCacheSize(uInt size) {
+  dataManPtr_p->setMaximumCacheSize(size);
+}
+uInt ROTiledStManAccessor::maximumCacheSize() const { return dataManPtr_p->maximumCacheSize(); }
+
+uInt ROTiledStManAccessor::cacheSize(rownr_t rownr) const { return dataManPtr_p->cacheSize(rownr); }
+
+const IPosition& ROTiledStManAccessor::hypercubeShape(rownr_t rownr) const {
+  return dataManPtr_p->hypercubeShape(rownr);
 }
 
-void ROTiledStManAccessor::setMaximumCacheSize (uInt size)
-{
-    dataManPtr_p->setMaximumCacheSize (size);
-}
-uInt ROTiledStManAccessor::maximumCacheSize() const
-{
-    return dataManPtr_p->maximumCacheSize();
+const IPosition& ROTiledStManAccessor::tileShape(rownr_t rownr) const {
+  return dataManPtr_p->tileShape(rownr);
 }
 
-uInt ROTiledStManAccessor::cacheSize (rownr_t rownr) const
-{
-    return dataManPtr_p->cacheSize (rownr);
+uInt ROTiledStManAccessor::bucketSize(rownr_t rownr) const {
+  return dataManPtr_p->bucketSize(rownr);
 }
 
-const IPosition& ROTiledStManAccessor::hypercubeShape (rownr_t rownr) const
-{
-    return dataManPtr_p->hypercubeShape (rownr);
+const Record& ROTiledStManAccessor::valueRecord(rownr_t rownr) const {
+  return dataManPtr_p->getHypercube(rownr)->valueRecord();
 }
 
-const IPosition& ROTiledStManAccessor::tileShape (rownr_t rownr) const
-{
-    return dataManPtr_p->tileShape (rownr);
+uInt ROTiledStManAccessor::nhypercubes() const { return dataManPtr_p->nhypercubes(); }
+
+uInt ROTiledStManAccessor::getCacheSize(uInt hypercube) const {
+  return dataManPtr_p->getTSMCube(hypercube)->cacheSize();
 }
 
-uInt ROTiledStManAccessor::bucketSize (rownr_t rownr) const
-{
-    return dataManPtr_p->bucketSize (rownr);
+const IPosition& ROTiledStManAccessor::getHypercubeShape(uInt hypercube) const {
+  return dataManPtr_p->getTSMCube(hypercube)->cubeShape();
 }
 
-const Record& ROTiledStManAccessor::valueRecord (rownr_t rownr) const
-{
-    return dataManPtr_p->getHypercube(rownr)->valueRecord();
+const IPosition& ROTiledStManAccessor::getTileShape(uInt hypercube) const {
+  return dataManPtr_p->getTSMCube(hypercube)->tileShape();
 }
 
-uInt ROTiledStManAccessor::nhypercubes() const
-{
-    return dataManPtr_p->nhypercubes();
+uInt ROTiledStManAccessor::getBucketSize(uInt hypercube) const {
+  return dataManPtr_p->getTSMCube(hypercube)->bucketSize();
 }
 
-uInt ROTiledStManAccessor::getCacheSize (uInt hypercube) const
-{
-    return dataManPtr_p->getTSMCube(hypercube)->cacheSize();
+const Record& ROTiledStManAccessor::getValueRecord(uInt hypercube) const {
+  return dataManPtr_p->getTSMCube(hypercube)->valueRecord();
 }
 
-const IPosition& ROTiledStManAccessor::getHypercubeShape (uInt hypercube) const
-{
-    return dataManPtr_p->getTSMCube(hypercube)->cubeShape();
+uInt ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                                         const IPosition& axisPath) const {
+  return dataManPtr_p->calcCacheSize(rownr, sliceShape, IPosition(), IPosition(), axisPath);
+}
+uInt ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                                         const IPosition& windowStart,
+                                         const IPosition& windowLength,
+                                         const IPosition& axisPath) const {
+  return dataManPtr_p->calcCacheSize(rownr, sliceShape, windowStart, windowLength, axisPath);
 }
 
-const IPosition& ROTiledStManAccessor::getTileShape (uInt hypercube) const
-{
-    return dataManPtr_p->getTSMCube(hypercube)->tileShape();
+void ROTiledStManAccessor::setCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                                        const IPosition& axisPath, Bool forceSmaller) {
+  dataManPtr_p->setCacheSize(rownr, sliceShape, IPosition(), IPosition(), axisPath, forceSmaller);
+}
+void ROTiledStManAccessor::setCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                                        const IPosition& windowStart, const IPosition& windowLength,
+                                        const IPosition& axisPath, Bool forceSmaller) {
+  dataManPtr_p->setCacheSize(rownr, sliceShape, windowStart, windowLength, axisPath, forceSmaller);
 }
 
-uInt ROTiledStManAccessor::getBucketSize (uInt hypercube) const
-{
-    return dataManPtr_p->getTSMCube(hypercube)->bucketSize();
+void ROTiledStManAccessor::setCacheSize(rownr_t rownr, uInt nbuckets, Bool forceSmaller) {
+  dataManPtr_p->setCacheSize(rownr, nbuckets, forceSmaller);
 }
 
-const Record& ROTiledStManAccessor::getValueRecord (uInt hypercube) const
-{
-    return dataManPtr_p->getTSMCube(hypercube)->valueRecord();
+void ROTiledStManAccessor::setHypercubeCacheSize(uInt hypercube, uInt nbuckets, Bool forceSmaller) {
+  // Allow the cache to be sized only if the hypercube is not empty.
+
+  if (getBucketSize(hypercube) > 0) {
+    static_cast<TiledStMan*>(dataManPtr_p)
+        ->setHypercubeCacheSize(hypercube, nbuckets, forceSmaller);
+  }
 }
 
-uInt ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
-					  const IPosition& sliceShape,
-					  const IPosition& axisPath) const
-{
-    return dataManPtr_p->calcCacheSize (rownr, sliceShape, IPosition(),
-					IPosition(), axisPath);
-}
-uInt ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
-					  const IPosition& sliceShape,
-					  const IPosition& windowStart,
-					  const IPosition& windowLength,
-					  const IPosition& axisPath) const
-{
-    return dataManPtr_p->calcCacheSize (rownr, sliceShape, windowStart,
-					windowLength, axisPath);
-}
+void ROTiledStManAccessor::clearCaches() { dataManPtr_p->emptyCaches(); }
 
-void ROTiledStManAccessor::setCacheSize (rownr_t rownr,
-					 const IPosition& sliceShape,
-					 const IPosition& axisPath,
-					 Bool forceSmaller)
-{
-    dataManPtr_p->setCacheSize (rownr, sliceShape, IPosition(),
-				IPosition(), axisPath,
-				forceSmaller);
-}
-void ROTiledStManAccessor::setCacheSize (rownr_t rownr,
-					 const IPosition& sliceShape,
-					 const IPosition& windowStart,
-					 const IPosition& windowLength,
-					 const IPosition& axisPath,
-					 Bool forceSmaller)
-{
-    dataManPtr_p->setCacheSize (rownr, sliceShape, windowStart,
-				windowLength, axisPath,
-				forceSmaller);
-}
-
-void ROTiledStManAccessor::setCacheSize (rownr_t rownr, uInt nbuckets,
-					 Bool forceSmaller)
-{
-    dataManPtr_p->setCacheSize (rownr, nbuckets, forceSmaller);
-}
-
-void ROTiledStManAccessor::setHypercubeCacheSize (uInt hypercube, uInt nbuckets,
-                                                  Bool forceSmaller)
-{
-    // Allow the cache to be sized only if the hypercube is not empty.
-
-    if (getBucketSize(hypercube) > 0){
-	static_cast<TiledStMan *> (dataManPtr_p)->setHypercubeCacheSize (hypercube, nbuckets, forceSmaller);
-    } 
-}
-
-void ROTiledStManAccessor::clearCaches()
-{
-    dataManPtr_p->emptyCaches();
-}
-
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

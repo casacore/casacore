@@ -78,18 +78,15 @@ class SiscoStManColumn final : public StManColumn {
       return false;
     }
   }
-  bool isShapeDefined(unsigned row) final {
-    return isShapeDefined(static_cast<rownr_t>(row));
-  }
+  bool isShapeDefined(unsigned row) final { return isShapeDefined(static_cast<rownr_t>(row)); }
 
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {
     if (shape.size() != 2) {
-      throw std::runtime_error(
-          "Sisco storage manager is used for a column with " +
-          std::to_string(shape.size()) +
-          " dimensions, but it can only be used for "
-          "columns with exactly 2 dimensions");
+      throw std::runtime_error("Sisco storage manager is used for a column with " +
+                               std::to_string(shape.size()) +
+                               " dimensions, but it can only be used for "
+                               "columns with exactly 2 dimensions");
     }
     fixed_shape_ = shape;
   }
@@ -106,9 +103,7 @@ class SiscoStManColumn final : public StManColumn {
       return IPosition{0, 0};
     }
   }
-  IPosition shape(unsigned row) final {
-    return shape(static_cast<rownr_t>(row));
-  }
+  IPosition shape(unsigned row) final { return shape(static_cast<rownr_t>(row)); }
 
   /**
    * Read the values for a particular row.
@@ -116,8 +111,7 @@ class SiscoStManColumn final : public StManColumn {
    * @param dataPtr The array of values.
    */
   void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
-    Array<std::complex<float>> &array =
-        static_cast<Array<std::complex<float>> &>(dataPtr);
+    Array<std::complex<float>> &array = static_cast<Array<std::complex<float>> &>(dataPtr);
     PrepareReadingOfRow(row);
 
     const IPosition *shape;
@@ -136,17 +130,15 @@ class SiscoStManColumn final : public StManColumn {
         bool ownership;
         Complex *storage = array.getStorage(ownership);
         buffer_.resize(n_channels);
-        for (int polarization = 0; polarization != n_polarizations;
-             ++polarization) {
+        for (int polarization = 0; polarization != n_polarizations; ++polarization) {
           reader_->GetNextResult(buffer_);
           for (size_t channel = 0; channel != n_channels; ++channel) {
-            storage[channel * n_polarizations + polarization] =
-                buffer_[channel];
+            storage[channel * n_polarizations + polarization] = buffer_[channel];
           }
         }
-        if(store_mode_ == SiscoStoreMode::StokesI) {
+        if (store_mode_ == SiscoStoreMode::StokesI) {
           ExpandFromStokesI(storage, n_channels);
-        } else if(store_mode_ == SiscoStoreMode::Diagonal) {
+        } else if (store_mode_ == SiscoStoreMode::Diagonal) {
           ExpandFromDiagonal(storage, n_channels);
         }
         array.putStorage(storage, ownership);
@@ -178,9 +170,12 @@ class SiscoStManColumn final : public StManColumn {
     const int antenna2 = antenna2_column_(current_write_row_);
     if (array.shape().size() >= 2) {
       const int n_column_correlations = array.shape()[0];
-      if((store_mode_ == SiscoStoreMode::StokesI || store_mode_ == SiscoStoreMode::Diagonal) && n_column_correlations != 4)
-      {
-        throw std::runtime_error("Trying to store invalid number of correlations in Sisco column: Sisco was set to store full-correlation values as Stokes I or diagonal visibilities: can only store shape 4 values in this mode");
+      if ((store_mode_ == SiscoStoreMode::StokesI || store_mode_ == SiscoStoreMode::Diagonal) &&
+          n_column_correlations != 4) {
+        throw std::runtime_error(
+            "Trying to store invalid number of correlations in Sisco column: Sisco was set to "
+            "store full-correlation values as Stokes I or diagonal visibilities: can only store "
+            "shape 4 values in this mode");
       }
       const size_t n_channels = array.shape()[1];
 
@@ -189,24 +184,20 @@ class SiscoStManColumn final : public StManColumn {
         bool ownership;
         const std::complex<float> *storage = array.getStorage(ownership);
         buffer_.resize(n_channels);
-        if(store_mode_ == SiscoStoreMode::Diagonal)
-          CheckIsDiagonal(storage, n_channels);
-        for (int polarization = 0; polarization != n_polarizations;
-             ++polarization) {
-          const size_t baseline_id = GetBaselineId(
-              field_id, data_desc_id, antenna1, antenna2, polarization);
-          if(store_mode_ == SiscoStoreMode::StokesI) {
+        if (store_mode_ == SiscoStoreMode::Diagonal) CheckIsDiagonal(storage, n_channels);
+        for (int polarization = 0; polarization != n_polarizations; ++polarization) {
+          const size_t baseline_id =
+              GetBaselineId(field_id, data_desc_id, antenna1, antenna2, polarization);
+          if (store_mode_ == SiscoStoreMode::StokesI) {
             TransformToStokesI(storage, buffer_.data(), n_channels);
-          } else if(store_mode_ == SiscoStoreMode::Diagonal) {
-            const size_t diagonal_index = polarization * 3; // 0 or 3
+          } else if (store_mode_ == SiscoStoreMode::Diagonal) {
+            const size_t diagonal_index = polarization * 3;  // 0 or 3
             for (size_t channel = 0; channel != n_channels; ++channel) {
-              buffer_[channel] =
-                  storage[channel * 4 + diagonal_index];
+              buffer_[channel] = storage[channel * 4 + diagonal_index];
             }
           } else {
             for (size_t channel = 0; channel != n_channels; ++channel) {
-              buffer_[channel] =
-                  storage[channel * n_column_correlations + polarization];
+              buffer_[channel] = storage[channel * n_column_correlations + polarization];
             }
           }
           writer_->Write(baseline_id, buffer_);
@@ -265,8 +256,7 @@ class SiscoStManColumn final : public StManColumn {
         std::filesystem::rename(filename + kTemporaryExtension, filename);
         if (!isFixedShape()) {
           const std::string shapes_filename = ShapesFilename();
-          std::filesystem::rename(shapes_filename + kTemporaryExtension,
-                                  shapes_filename);
+          std::filesystem::rename(shapes_filename + kTemporaryExtension, shapes_filename);
         }
         has_temporary_file_ = false;
       }
@@ -294,7 +284,7 @@ class SiscoStManColumn final : public StManColumn {
     std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
     uint16_t storage_mode_tag = 0;
-    switch(store_mode_) {
+    switch (store_mode_) {
       case SiscoStoreMode::StokesI:
         storage_mode_tag = 0x8000;
         break;
@@ -306,12 +296,10 @@ class SiscoStManColumn final : public StManColumn {
         break;
     }
     const uint16_t major_and_mode = kVersionMajor | storage_mode_tag;
-    std::copy_n(reinterpret_cast<const char *>(&major_and_mode), 2,
-                &header_buffer[kMagicSize]);
-    std::copy_n(reinterpret_cast<const char *>(&kVersionMinor), 2,
-                &header_buffer[kMagicSize + 2]);
-    std::span<const std::byte> header(
-        reinterpret_cast<const std::byte *>(header_buffer), kHeaderSize);
+    std::copy_n(reinterpret_cast<const char *>(&major_and_mode), 2, &header_buffer[kMagicSize]);
+    std::copy_n(reinterpret_cast<const char *>(&kVersionMinor), 2, &header_buffer[kMagicSize + 2]);
+    std::span<const std::byte> header(reinterpret_cast<const std::byte *>(header_buffer),
+                                      kHeaderSize);
     writer_->Open(header);
 
     if (!isFixedShape()) shapes_writer_.emplace(shapes_filename);
@@ -328,32 +316,28 @@ class SiscoStManColumn final : public StManColumn {
     }
     reader_.emplace(parent_.fileName());
     char header_buffer[kHeaderSize];
-    std::span<std::byte> header(reinterpret_cast<std::byte *>(header_buffer),
-                                kHeaderSize);
+    std::span<std::byte> header(reinterpret_cast<std::byte *>(header_buffer), kHeaderSize);
     reader_->Open(header);
     char magic_tag[kMagicSize];
     uint16_t version_major_and_mode;
     uint16_t version_minor;
     std::copy_n(&header_buffer[0], kMagicSize, magic_tag);
-    std::copy_n(&header_buffer[kMagicSize], 2,
-                reinterpret_cast<char *>(&version_major_and_mode));
-    std::copy_n(&header_buffer[kMagicSize + 2], 2,
-                reinterpret_cast<char *>(&version_minor));
+    std::copy_n(&header_buffer[kMagicSize], 2, reinterpret_cast<char *>(&version_major_and_mode));
+    std::copy_n(&header_buffer[kMagicSize + 2], 2, reinterpret_cast<char *>(&version_minor));
     const uint16_t version_major = version_major_and_mode & 0x3FFF;
     if (version_major != kVersionMajor) {
-      throw std::runtime_error(
-          "The file on disk is written as a Sisco version " +
-          std::to_string(version_major) +
-          " file, whereas this Casacore version supports only version " +
-          std::to_string(kVersionMajor));
+      throw std::runtime_error("The file on disk is written as a Sisco version " +
+                               std::to_string(version_major) +
+                               " file, whereas this Casacore version supports only version " +
+                               std::to_string(kVersionMajor));
     }
 
     const uint16_t store_mode_tag = version_major_and_mode & 0xC000;
-    if(store_mode_tag == 0) {
+    if (store_mode_tag == 0) {
       store_mode_ = SiscoStoreMode::Original;
-    } else if(store_mode_tag == 0x4000) {
+    } else if (store_mode_tag == 0x4000) {
       store_mode_ = SiscoStoreMode::Diagonal;
-    } else if(store_mode_tag == 0x8000) {
+    } else if (store_mode_tag == 0x8000) {
       store_mode_ = SiscoStoreMode::StokesI;
     } else {
       throw std::runtime_error("File specifies an unknown store mode");
@@ -381,39 +365,33 @@ class SiscoStManColumn final : public StManColumn {
   }
 
   void RequestOneMoreRow() {
-    const casacore::IPosition shape =
-        isFixedShape() ? fixed_shape_ : shapes_reader_->Read();
-    const bool eof = current_requested_reading_row_ >= row_count_ ||
-                     (!isFixedShape() && shapes_reader_->Eof());
+    const casacore::IPosition shape = isFixedShape() ? fixed_shape_ : shapes_reader_->Read();
+    const bool eof =
+        current_requested_reading_row_ >= row_count_ || (!isFixedShape() && shapes_reader_->Eof());
     if (!eof && shape.size() >= 2) {
       const int field_id = field_id_column_(current_requested_reading_row_);
-      const int data_desc_id =
-          data_desc_id_column_(current_requested_reading_row_);
+      const int data_desc_id = data_desc_id_column_(current_requested_reading_row_);
       const int antenna1 = antenna1_column_(current_requested_reading_row_);
       const int antenna2 = antenna2_column_(current_requested_reading_row_);
       const int n_polarizations = GetNStoredCorrelations(shape[0]);
       const int n_channels = shape[1];
-      for (int polarization = 0; polarization != n_polarizations;
-           ++polarization) {
-        const size_t baseline_id = GetBaselineId(
-            field_id, data_desc_id, antenna1, antenna2, polarization);
+      for (int polarization = 0; polarization != n_polarizations; ++polarization) {
+        const size_t baseline_id =
+            GetBaselineId(field_id, data_desc_id, antenna1, antenna2, polarization);
         reader_->Request(baseline_id, n_channels);
       }
     }
     if (!isFixedShape()) {
       shape_buffer_[shape_write_position_] = shape;
-      shape_write_position_ =
-          (shape_write_position_ + 1) % shape_buffer_.size();
+      shape_write_position_ = (shape_write_position_ + 1) % shape_buffer_.size();
     }
     current_requested_reading_row_++;
   }
 
-  size_t GetBaselineId(int field_id, int data_desc_id, int antenna1,
-                       int antenna2, int polarization) {
-    const std::array<int, 5> baseline{field_id, data_desc_id, antenna1,
-                                      antenna2, polarization};
-    std::map<std::array<int, 5>, size_t>::const_iterator iterator =
-        baseline_ids_.find(baseline);
+  size_t GetBaselineId(int field_id, int data_desc_id, int antenna1, int antenna2,
+                       int polarization) {
+    const std::array<int, 5> baseline{field_id, data_desc_id, antenna1, antenna2, polarization};
+    std::map<std::array<int, 5>, size_t>::const_iterator iterator = baseline_ids_.find(baseline);
     if (iterator == baseline_ids_.end()) {
       iterator = baseline_ids_.emplace(baseline, baseline_count_).first;
       ++baseline_count_;
@@ -421,9 +399,7 @@ class SiscoStManColumn final : public StManColumn {
     return iterator->second;
   }
 
-  std::string ShapesFilename() const {
-    return parent_.fileName() + kShapesExtension;
-  }
+  std::string ShapesFilename() const { return parent_.fileName() + kShapesExtension; }
 
   void WriteEmptyRow() {
     if (isFixedShape()) {
@@ -434,10 +410,9 @@ class SiscoStManColumn final : public StManColumn {
       const int data_desc_id = data_desc_id_column_(current_write_row_);
       const int antenna1 = antenna1_column_(current_write_row_);
       const int antenna2 = antenna2_column_(current_write_row_);
-      for (int polarization = 0; polarization != n_polarizations;
-           ++polarization) {
-        const size_t baseline_id = GetBaselineId(
-            field_id, data_desc_id, antenna1, antenna2, polarization);
+      for (int polarization = 0; polarization != n_polarizations; ++polarization) {
+        const size_t baseline_id =
+            GetBaselineId(field_id, data_desc_id, antenna1, antenna2, polarization);
         writer_->Write(baseline_id, buffer_);
       }
     } else {
@@ -459,8 +434,7 @@ class SiscoStManColumn final : public StManColumn {
       const int n_channels = (*shape)[1];
       if (n_channels) {
         buffer_.resize(n_channels);
-        for (int polarization = 0; polarization != n_polarizations;
-             ++polarization) {
+        for (int polarization = 0; polarization != n_polarizations; ++polarization) {
           reader_->GetNextResult(buffer_);
         }
       }
@@ -470,10 +444,10 @@ class SiscoStManColumn final : public StManColumn {
   }
 
   constexpr int GetNStoredCorrelations(const size_t n_column_correlations) const {
-    switch(store_mode_) {
+    switch (store_mode_) {
       case SiscoStoreMode::StokesI:
         return 1;
-       case SiscoStoreMode::Diagonal:
+      case SiscoStoreMode::Diagonal:
         return 2;
       case SiscoStoreMode::Original:
         return n_column_correlations;

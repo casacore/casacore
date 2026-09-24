@@ -1,43 +1,41 @@
-//# SSMStringHandler.h: Store strings in the Standard Storage Manager
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
- 
+// # SSMStringHandler.h: Store strings in the Standard Storage Manager
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
+
 #ifndef TABLES_SSMSTRINGHANDLER_H
 #define TABLES_SSMSTRINGHANDLER_H
- 
- 
-//# Includes
+
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations.
+// # Forward Declarations.
 class SSMBase;
-
 
 // <summary>
 // Store strings in the Standard Storage Manager.
@@ -49,7 +47,7 @@ class SSMBase;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=SSMBase>SSMBase</linkto>
 // </prerequisite>
 
@@ -110,29 +108,28 @@ class SSMBase;
 // It also keeps the bucket number of the last bucket where data were
 // added to. It tells which bucket to use when new data has to be stored.
 // </synopsis>
-  
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
 
-class SSMStringHandler
-{
-public:
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
+
+class SSMStringHandler {
+ public:
   // Default constructor initializes last string bucket to -1.
-  SSMStringHandler (SSMBase* aBase);
+  SSMStringHandler(SSMBase* aBase);
 
   ~SSMStringHandler();
 
   // Forbid copy constructor.
-  SSMStringHandler (const SSMStringHandler&) = delete;
+  SSMStringHandler(const SSMStringHandler&) = delete;
 
   // Forbid assignment.
-  SSMStringHandler& operator= (const SSMStringHandler&) = delete;
+  SSMStringHandler& operator=(const SSMStringHandler&) = delete;
 
   // Set or get last string bucketnr.
   // Setting is needed when an existing table is opened.
   // <group>
-  void setLastStringBucket (Int lastStringBucket);
+  void setLastStringBucket(Int lastStringBucket);
   Int lastStringBucket() const;
   // </group>
 
@@ -147,10 +144,8 @@ public:
   // If <src>handleShape</src> is True (for variable shaped arrays), the
   // shape will be put first.
   // <group>
-  void put (Int& bucketNr, Int& offset, Int& length, 
-	    const String& string);
-  void put (Int& bucketNr, Int& offset, Int& length, 
-	    const Array<String>& string, Bool handleShape);
+  void put(Int& bucketNr, Int& offset, Int& length, const String& string);
+  void put(Int& bucketNr, Int& offset, Int& length, const Array<String>& string, Bool handleShape);
   // </group>
 
   // Put a single string or an array of strings into a bucket.
@@ -159,32 +154,30 @@ public:
   // Otherwise it adds the data to the last string bucket.
   // It fills the offset and bucketnr where stored and the
   // length occupied in the buckets.
-  void putShape (Int& bucketNr, Int& offset, Int& length, 
-		 const IPosition& aShape);
+  void putShape(Int& bucketNr, Int& offset, Int& length, const IPosition& aShape);
 
   // Get the shape in the given bucket and offset.
   // It sets the offset to the data right after the shape.
   // The IPosition object is resized as needed.
-  void getShape (IPosition& aShape, Int bucket, Int& offset, Int length);
+  void getShape(IPosition& aShape, Int bucket, Int& offset, Int length);
 
   // Remove data with the given length from a bucket.
   // If the data are continued in next bucket(s), they will be
   // removed there as well.
-  void remove (Int bucketNr, Int offset, Int length);
+  void remove(Int bucketNr, Int offset, Int length);
 
   // Get a string or an array of strings.
   // The array must have the correct shape.
   // <src>handleShape</src> will be True for variable shaped arrays
   // indicating that the data are preceeded by the shape.
   // <group>
-  void get (String& string, Int bucket, Int offset, Int length);
-  void get (Array<String>& string, Int bucket, Int offset, 
-	    Int length, Bool handleShape);
+  void get(String& string, Int bucket, Int offset, Int length);
+  void get(Array<String>& string, Int bucket, Int offset, Int length, Bool handleShape);
   // </group>
 
   // Flush the currently used string bucket.
   void flush();
-  
+
   // Initialize the StringHandler
   void init();
 
@@ -192,72 +185,62 @@ public:
   // It clears the itsCurrentBucket variable to assure that buckets
   // are reread.
   void resync();
-  
-private:
+
+ private:
   // Get the given bucket and make it current.
   // It first writes the current bucket if it has changed.
   // <br>
   // If <src>isNew</src> is True the bucket is new,
   // so the Ints at its beginning do not have to be interpreted.
-  void getBucket (uInt bucketNr, Bool isNew=False);
+  void getBucket(uInt bucketNr, Bool isNew = False);
 
   // Get a new bucket and make it current.
   // If <src>doConcat</src> is True, the new bucket is a continuation,
   // so <src>itsNextBucket</src> in the currently used bucket is filled
   // with the new bucket number.
-  void getNewBucket (Bool doConcat);
+  void getNewBucket(Bool doConcat);
 
   // Put the data with the given length at the end of the current bucket.
   // If they do not fit, they are continued in a new bucket.
-  void putData (Int length, const Char* data);
+  void putData(Int length, const Char* data);
 
   // Get the data with the given length from the curent bucket at the
   // given offset. If sets the offset to the byte after the data read.
   // Continuation buckets are followed (and made current).
-  void getData (Int length, Char* data, Int& offset);
+  void getData(Int length, Char* data, Int& offset);
 
   // Replace the current data with the new data.
   // It is used by <src>put</src> after having assured that the
   // new length does not exceed the current one.
   // It follows continuation buckets as needed.
   // <group>
-  void replace (Int bucketNr, Int offset, Int length, 
-		const String& string);
-  void replace (Int bucketNr, Int offset, Int length, Int totalLength, 
-		const IPosition& aShape);
-  void replace (Int bucketNr, Int offset, Int length, Int totalLength,
-		const Array<String>& string, Bool handleShape);
-  void replaceData (Int& offset,Int length, const Char* data);
+  void replace(Int bucketNr, Int offset, Int length, const String& string);
+  void replace(Int bucketNr, Int offset, Int length, Int totalLength, const IPosition& aShape);
+  void replace(Int bucketNr, Int offset, Int length, Int totalLength, const Array<String>& string,
+               Bool handleShape);
+  void replaceData(Int& offset, Int length, const Char* data);
   // </group>
 
-
-  SSMBase* itsSSMPtr;      // Pointer to SSMBase stucture
-  Int   itsCurrentBucket;  // bucketnr of current string bucket (-1 is none)
-  Int   itsLength;         // length of bucket in use (only the string part)
-  Int   itsNDeleted;       // #bytes deleted from the string part of the bucket
-  Int   itsUsedLength;     // #bytes used from the string part of the bucket
-  Int   itsNextBucket;     // next bucket for long strings
-  char* itsData;           // bucket string data
-  char* itsIntBuf;         // buffer for initialisation params
-  Bool  isChanged;         // has current bucket been changed?
-  uInt  itsIntSize;        // size of integers in this system
-  Int   itsLastBucket;     // last string bucket used
-  uInt  itsStart;          // Start position of actual data in bucket
+  SSMBase* itsSSMPtr;    // Pointer to SSMBase stucture
+  Int itsCurrentBucket;  // bucketnr of current string bucket (-1 is none)
+  Int itsLength;         // length of bucket in use (only the string part)
+  Int itsNDeleted;       // #bytes deleted from the string part of the bucket
+  Int itsUsedLength;     // #bytes used from the string part of the bucket
+  Int itsNextBucket;     // next bucket for long strings
+  char* itsData;         // bucket string data
+  char* itsIntBuf;       // buffer for initialisation params
+  Bool isChanged;        // has current bucket been changed?
+  uInt itsIntSize;       // size of integers in this system
+  Int itsLastBucket;     // last string bucket used
+  uInt itsStart;         // Start position of actual data in bucket
 };
 
-
-inline void SSMStringHandler::setLastStringBucket (Int lastStringBucket)
-{ 
+inline void SSMStringHandler::setLastStringBucket(Int lastStringBucket) {
   itsLastBucket = lastStringBucket;
-}  
+}
 
-inline Int SSMStringHandler::lastStringBucket() const
-{ 
-  return itsLastBucket; 
-}  
+inline Int SSMStringHandler::lastStringBucket() const { return itsLastBucket; }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

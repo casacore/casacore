@@ -24,8 +24,7 @@ namespace casacore::sisco {
  */
 class SiscoWriter {
  public:
-  SiscoWriter(const std::string& filename, int predict_level,
-              int deflate_level);
+  SiscoWriter(const std::string& filename, int predict_level, int deflate_level);
   SiscoWriter(SiscoWriter&&) = delete;
   ~SiscoWriter() {
     if (file_.is_open()) Close();
@@ -74,8 +73,7 @@ class SiscoWriter {
   void RemoveChunk(const Chunk* chunk);
   void PreprocessLoop();
   void WriteLoop();
-  void Preprocess(SiscoWriter::PreprocessingTask& task,
-                  std::unique_lock<std::mutex>& lock);
+  void Preprocess(SiscoWriter::PreprocessingTask& task, std::unique_lock<std::mutex>& lock);
   void WriteChunk(size_t uncompressed_size, std::span<const std::byte> data);
   void DeflateChunk(Chunk& chunk);
 

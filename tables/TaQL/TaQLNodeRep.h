@@ -1,41 +1,41 @@
-//# TaQLNodeRep.h: Representation of a node in the raw TaQL parse tree
-//# Copyright (C) 2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TaQLNodeRep.h: Representation of a node in the raw TaQL parse tree
+// # Copyright (C) 2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TAQLNODEREP_H
 #define TABLES_TAQLNODEREP_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TaQLNodeResult.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <iosfwd>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declaration.
+// # Forward Declaration.
 class AipsIO;
 class TaQLNodeVisitor;
 
@@ -49,7 +49,7 @@ class TaQLNodeVisitor;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNode>TaQLNode</linkto>
 //   <li> Note 199 describing
 //        <a href="../notes/199.html">
@@ -61,7 +61,7 @@ class TaQLNodeVisitor;
 // TaQLNodeRep is the abstract base class for all classes used in the
 // raw TaQL parse tree
 // (e.g. <linkto class=TaQLConstNodeRep>TaQLConstNodeRep</linkto>).
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // The envelope/letter idiom (aka counted referencing) is a nice means
@@ -71,94 +71,90 @@ class TaQLNodeVisitor;
 // management straightforward.
 // </motivation>
 
-class TaQLNodeRep
-{
-public:
-  // Define the various derived types (to be stored with AipsIO).
-  //# They are easier to use than an enum.
-  //# Do not change these definitions, since these values are stored in files.
-  // <group>
-  #define TaQLNode_Null     char(0)
-  #define TaQLNode_Const    char(1)
-  #define TaQLNode_Unary    char(2)
-  #define TaQLNode_Binary   char(3)
-  #define TaQLNode_Multi    char(4)
-  #define TaQLNode_Func     char(5)
-  #define TaQLNode_Range    char(6)
-  #define TaQLNode_Index    char(7)
-  #define TaQLNode_KeyCol   char(8)
-  #define TaQLNode_Table    char(9)
-  #define TaQLNode_Col      char(10)
-  #define TaQLNode_Columns  char(11)
-  #define TaQLNode_Join     char(12)
-  #define TaQLNode_SortKey  char(13)
-  #define TaQLNode_Sort     char(14)
-  #define TaQLNode_LimitOff char(15)
-  #define TaQLNode_Giving   char(16)
-  #define TaQLNode_UpdExpr  char(17)
-  #define TaQLNode_Select   char(18)
-  #define TaQLNode_Update   char(19)
-  #define TaQLNode_Insert   char(20)
-  #define TaQLNode_Delete   char(21)
-  #define TaQLNode_Calc     char(22)
-  #define TaQLNode_CreTab   char(23)
-  #define TaQLNode_ColSpec  char(24)
-  #define TaQLNode_RecFld   char(25)
-  #define TaQLNode_Unit     char(26)
-  #define TaQLNode_Regex    char(27)
-  #define TaQLNode_Count    char(28)
-  #define TaQLNode_Groupby  char(29)
-  #define TaQLNode_AltTab   char(30)
-  #define TaQLNode_AddCol   char(31)
-  #define TaQLNode_SetKey   char(32)
-  #define TaQLNode_RenDrop  char(33)
-  #define TaQLNode_AddRow   char(34)
-  #define TaQLNode_ConcTab  char(35)
-  #define TaQLNode_Show     char(36)
-  #define TaQLNode_CopyCol  char(37)
-  #define TaQLNode_DropTab  char(38)
+class TaQLNodeRep {
+ public:
+// Define the various derived types (to be stored with AipsIO).
+// # They are easier to use than an enum.
+// # Do not change these definitions, since these values are stored in files.
+// <group>
+#define TaQLNode_Null char(0)
+#define TaQLNode_Const char(1)
+#define TaQLNode_Unary char(2)
+#define TaQLNode_Binary char(3)
+#define TaQLNode_Multi char(4)
+#define TaQLNode_Func char(5)
+#define TaQLNode_Range char(6)
+#define TaQLNode_Index char(7)
+#define TaQLNode_KeyCol char(8)
+#define TaQLNode_Table char(9)
+#define TaQLNode_Col char(10)
+#define TaQLNode_Columns char(11)
+#define TaQLNode_Join char(12)
+#define TaQLNode_SortKey char(13)
+#define TaQLNode_Sort char(14)
+#define TaQLNode_LimitOff char(15)
+#define TaQLNode_Giving char(16)
+#define TaQLNode_UpdExpr char(17)
+#define TaQLNode_Select char(18)
+#define TaQLNode_Update char(19)
+#define TaQLNode_Insert char(20)
+#define TaQLNode_Delete char(21)
+#define TaQLNode_Calc char(22)
+#define TaQLNode_CreTab char(23)
+#define TaQLNode_ColSpec char(24)
+#define TaQLNode_RecFld char(25)
+#define TaQLNode_Unit char(26)
+#define TaQLNode_Regex char(27)
+#define TaQLNode_Count char(28)
+#define TaQLNode_Groupby char(29)
+#define TaQLNode_AltTab char(30)
+#define TaQLNode_AddCol char(31)
+#define TaQLNode_SetKey char(32)
+#define TaQLNode_RenDrop char(33)
+#define TaQLNode_AddRow char(34)
+#define TaQLNode_ConcTab char(35)
+#define TaQLNode_Show char(36)
+#define TaQLNode_CopyCol char(37)
+#define TaQLNode_DropTab char(38)
   // </group>
 
   // Constructor for derived classes specifying the type.
-  explicit TaQLNodeRep (int nodeType);
+  explicit TaQLNodeRep(int nodeType);
 
   virtual ~TaQLNodeRep();
 
   // Letter objects cannot be copied.
   // <group>
-  TaQLNodeRep (const TaQLNodeRep&) = delete;
-  TaQLNodeRep& operator= (const TaQLNodeRep&) = delete;
+  TaQLNodeRep(const TaQLNodeRep&) = delete;
+  TaQLNodeRep& operator=(const TaQLNodeRep&) = delete;
   // </group>
 
   // Get the node type of the derived class.
-  char nodeType() const
-    { return itsNodeType; }
+  char nodeType() const { return itsNodeType; }
 
   // Get the TaQL style.
-  const TaQLStyle& style() const
-    { return itsStyle; }
+  const TaQLStyle& style() const { return itsStyle; }
 
   // Visit a node for tree traversal.
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const = 0;
+  virtual TaQLNodeResult visit(TaQLNodeVisitor&) const = 0;
 
   // Print the object in an ostream.
-  virtual void show (std::ostream& os) const = 0;
+  virtual void show(std::ostream& os) const = 0;
 
   // Save the object.
-  virtual void save (AipsIO& aio) const = 0;
+  virtual void save(AipsIO& aio) const = 0;
 
   // Check the data type string and return its standard form.
-  static String checkDataType (const String&);
+  static String checkDataType(const String&);
 
   // Add escape characters to a table name where needed.
-  String addEscape (const String& str) const;
+  String addEscape(const String& str) const;
 
-private:
-  char      itsNodeType;
+ private:
+  char itsNodeType;
   TaQLStyle itsStyle;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -88,8 +88,7 @@ class SiscoStMan final : public casacore::DataManager {
  private:
   friend class SiscoStManColumn;
 
-  casacore::Bool flush(casacore::AipsIO &,
-                       [[maybe_unused]] casacore::Bool doFsync) final {
+  casacore::Bool flush(casacore::AipsIO &, [[maybe_unused]] casacore::Bool doFsync) final {
     return false;
   }
 
@@ -104,19 +103,16 @@ class SiscoStMan final : public casacore::DataManager {
   // Create a column in the storage manager on behalf of a table column.
   // The caller will NOT delete the newly created object.
   // Create a scalar column.
-  casacore::DataManagerColumn *makeScalarColumn(
-      const casacore::String &name, int dataType,
-      const casacore::String &dataTypeID) final;
+  casacore::DataManagerColumn *makeScalarColumn(const casacore::String &name, int dataType,
+                                                const casacore::String &dataTypeID) final;
 
   // Create a direct array column.
-  casacore::DataManagerColumn *makeDirArrColumn(
-      const casacore::String &name, int dataType,
-      const casacore::String &dataTypeID) final;
+  casacore::DataManagerColumn *makeDirArrColumn(const casacore::String &name, int dataType,
+                                                const casacore::String &dataTypeID) final;
 
   // Create an indirect array column.
-  casacore::DataManagerColumn *makeIndArrColumn(
-      const casacore::String &name, int dataType,
-      const casacore::String &dataTypeID) final;
+  casacore::DataManagerColumn *makeIndArrColumn(const casacore::String &name, int dataType,
+                                                const casacore::String &dataTypeID) final;
 
   casacore::rownr_t resync64(casacore::rownr_t nRow) final;
 

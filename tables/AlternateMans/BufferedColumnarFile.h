@@ -105,8 +105,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
    * @param header Optional header.
    * @param stride The number of bytes in one row (total over all columns).
    */
-  static VarBufferedColumnarFile CreateNew(const std::string& filename,
-                                           uint64_t header_size,
+  static VarBufferedColumnarFile CreateNew(const std::string& filename, uint64_t header_size,
                                            uint64_t stride) {
     return VarBufferedColumnarFile(filename, header_size, stride);
   }
@@ -117,8 +116,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
    * @param header Optional header.
    * @param stride The number of bytes in one row (total over all columns).
    */
-  static VarBufferedColumnarFile OpenExisting(const std::string& filename,
-                                              size_t header_size) {
+  static VarBufferedColumnarFile OpenExisting(const std::string& filename, size_t header_size) {
     return VarBufferedColumnarFile(filename, header_size);
   }
 
@@ -152,8 +150,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
   /**
    * Read array of complex floats. See float version for documentation.
    */
-  void Read(uint64_t row, uint64_t column_offset, std::complex<float>* data,
-            uint64_t n) {
+  void Read(uint64_t row, uint64_t column_offset, std::complex<float>* data, uint64_t n) {
     ReadImplementation(row, column_offset, data, n);
   }
 
@@ -177,40 +174,35 @@ class VarBufferedColumnarFile : private RowBasedFile {
    * Write one cell containing an array of floats. If the row is past the end of
    * the file, the file is enlarged (making NRows() = row + 1).
    */
-  void Write(uint64_t row, uint64_t column_offset, const float* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const float* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
 
   /**
    * Write an array of doubles. See float version for documentation.
    */
-  void Write(uint64_t row, uint64_t column_offset, const double* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const double* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
 
   /**
    * Write an array of int32_t. See float version for documentation.
    */
-  void Write(uint64_t row, uint64_t column_offset, const int32_t* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const int32_t* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
 
   /**
    * Write an array of complex floats. See float version for documentation.
    */
-  void Write(uint64_t row, uint64_t column_offset,
-             const std::complex<float>* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const std::complex<float>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
 
   /**
    * Write an array of complex doubles. See float version for documentation.
    */
-  void Write(uint64_t row, uint64_t column_offset,
-             const std::complex<double>* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const std::complex<double>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
 
@@ -218,8 +210,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
    * Write an array of bools. Bools are stored with bit-packing. See float
    * version for documentation.
    */
-  void Write(uint64_t row, uint64_t column_offset, const bool* data,
-             uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const bool* data, uint64_t n) {
     const size_t byte_size = (n + 7) / 8;
     assert(column_offset + byte_size <= Stride());
     ActivateBlock(row);
@@ -237,20 +228,17 @@ class VarBufferedColumnarFile : private RowBasedFile {
     RowBasedFile::SetStride(new_stride);
     packed_buffer_.resize(new_stride);
     active_block_ = std::numeric_limits<uint64_t>::max();
-    rows_per_block_ =
-        new_stride == 0 ? 0 : std::max<size_t>(1, BufferSize / new_stride);
+    rows_per_block_ = new_stride == 0 ? 0 : std::max<size_t>(1, BufferSize / new_stride);
     block_buffer_.resize(rows_per_block_ * new_stride);
     block_changed_ = false;
   }
 
  private:
   // Create or overwrite a new columnar file on disk
-  VarBufferedColumnarFile(const std::string& filename, uint64_t header_size,
-                          uint64_t stride)
+  VarBufferedColumnarFile(const std::string& filename, uint64_t header_size, uint64_t stride)
       : RowBasedFile(filename, header_size, stride),
         packed_buffer_(stride),
-        rows_per_block_(stride == 0 ? 0
-                                    : std::max<size_t>(1, BufferSize / stride)),
+        rows_per_block_(stride == 0 ? 0 : std::max<size_t>(1, BufferSize / stride)),
         block_buffer_(rows_per_block_ * stride) {}
 
   // Open an existing columnar file
@@ -279,16 +267,14 @@ class VarBufferedColumnarFile : private RowBasedFile {
       // Fill the remainder of block_buffer_ with zeroes. Doing it here makes
       // the code robust and avoids the need for inserting zeroes when adding
       // rows out-of-order, e.g., when adding row 5 while NRows() is 2."
-      std::fill(block_buffer_.begin() + n_rows_to_read * Stride(),
-                block_buffer_.end(), 0);
+      std::fill(block_buffer_.begin() + n_rows_to_read * Stride(), block_buffer_.end(), 0);
 
       active_block_ = block;
     }
   }
 
   template <typename ValueType>
-  void ReadImplementation(uint64_t row, uint64_t column_offset, ValueType* data,
-                          uint64_t n) {
+  void ReadImplementation(uint64_t row, uint64_t column_offset, ValueType* data, uint64_t n) {
     assert(column_offset + n * sizeof(ValueType) <= Stride());
     if (row >= NRows()) {
       std::fill_n(data, n, ValueType());
@@ -297,21 +283,18 @@ class VarBufferedColumnarFile : private RowBasedFile {
       const uint64_t block_row = active_block_ * rows_per_block_;
       const unsigned char* position =
           block_buffer_.data() + (row - block_row) * Stride() + column_offset;
-      std::copy_n(position, n * sizeof(ValueType),
-                  reinterpret_cast<unsigned char*>(data));
+      std::copy_n(position, n * sizeof(ValueType), reinterpret_cast<unsigned char*>(data));
     }
   }
 
   template <typename ValueType>
-  void WriteImplementation(uint64_t row, uint64_t column_offset,
-                           const ValueType* data, uint64_t n) {
+  void WriteImplementation(uint64_t row, uint64_t column_offset, const ValueType* data,
+                           uint64_t n) {
     assert(column_offset + n * sizeof(ValueType) <= Stride());
     ActivateBlock(row);
     const uint64_t block_row = active_block_ * rows_per_block_;
-    unsigned char* position =
-        block_buffer_.data() + (row - block_row) * Stride() + column_offset;
-    std::copy_n(reinterpret_cast<const unsigned char*>(data),
-                n * sizeof(ValueType), position);
+    unsigned char* position = block_buffer_.data() + (row - block_row) * Stride() + column_offset;
+    std::copy_n(reinterpret_cast<const unsigned char*>(data), n * sizeof(ValueType), position);
     SetNRows(std::max(row + 1, NRows()));
     block_changed_ = true;
   }

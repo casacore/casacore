@@ -41,7 +41,7 @@ inline void ExpandFromStokesI(bool *data, size_t n) {
  */
 template <typename T>
 inline void ExpandFromDiagonal(T *data, size_t n) {
-  for (size_t i = n*2; i > 0; i -= 2) {
+  for (size_t i = n * 2; i > 0; i -= 2) {
     const size_t index = i - 2;
     data[index * 2 + 3] = data[index + 1];
     data[index * 2 + 2] = T();

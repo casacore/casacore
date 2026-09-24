@@ -1,41 +1,40 @@
-//# TableAttr.h: Some attributes of a table
-//# Copyright (C) 2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableAttr.h: Some attributes of a table
+// # Copyright (C) 2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEATTR_H
 #define TABLES_TABLEATTR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/TableLock.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Table;
-
 
 // <summary>
 // Some attributes of a table.
@@ -47,7 +46,7 @@ class Table;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TableRecord>TableRecord</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 // </prerequisite>
@@ -67,65 +66,56 @@ class Table;
 // having to alter the classes using subtables.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class TableAttr {
+ public:
+  // Default constructor results in empty name.
+  TableAttr();
 
-class TableAttr
-{
-public:
-    // Default constructor results in empty name.
-    TableAttr();
+  // Construct the attributes from the table.
+  explicit TableAttr(const Table& table);
 
-    // Construct the attributes from the table.
-    explicit TableAttr (const Table& table);
+  // Construct with given values.
+  // <group>
+  explicit TableAttr(const String& name, Bool openWritable = False);
+  TableAttr(const String& name, Bool openWritable, const TableLock&);
+  // </group>
 
-    // Construct with given values.
-    // <group>
-    explicit TableAttr (const String& name, Bool openWritable = False);
-    TableAttr (const String& name, Bool openWritable, const TableLock&);
-    // </group>
+  // Copy constructor (copy semantics).
+  TableAttr(const TableAttr& that);
 
-    // Copy constructor (copy semantics).
-    TableAttr (const TableAttr& that);
+  // Assignment (copy semantics).
+  // <group>
+  TableAttr& operator=(const TableAttr& that);
+  TableAttr& operator=(const Table& table);
+  // </group>
 
-    // Assignment (copy semantics).
-    // <group>
-    TableAttr& operator= (const TableAttr& that);
-    TableAttr& operator= (const Table& table);
-    // </group>
+  ~TableAttr();
 
-    ~TableAttr();
+  // Set the object to for another table.
+  void set(const Table& table);
 
-    // Set the object to for another table.
-    void set (const Table& table);
+  // Set the keyword to read/write access.
+  void setRW() { openWritable_p = True; }
 
-    // Set the keyword to read/write access.
-    void setRW()
-      { openWritable_p = True; }
+  void setName(const String& name) { name_p = name; }
 
-    void setName (const String& name)
-      { name_p = name; }
+  // Get info.
+  // <group>
+  const String& name() const { return name_p; }
+  Bool openWritable() const { return openWritable_p; }
+  const TableLock& lockOptions() const { return lockOptions_p; }
+  // </group>
 
-    // Get info.
-    // <group>
-    const String& name() const
-      { return name_p; }
-    Bool openWritable() const
-      { return openWritable_p; }
-    const TableLock& lockOptions() const
-      { return lockOptions_p; }
-    // </group>
-
-private:
-    String    name_p;
-    Bool      openWritable_p;
-    TableLock lockOptions_p;
+ private:
+  String name_p;
+  Bool openWritable_p;
+  TableLock lockOptions_p;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

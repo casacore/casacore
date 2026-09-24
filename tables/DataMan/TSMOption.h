@@ -1,36 +1,35 @@
-//# TSMOption.h: Options for the Tiled Storage Manager Access
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have receied a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TSMOption.h: Options for the Tiled Storage Manager Access
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have receied a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TSMOPTION_H
 #define TABLES_TSMOPTION_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Options for the Tiled Storage Manager Access
@@ -42,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TiledStMan>TiledStMan</linkto>
 // </prerequisite>
 
@@ -110,54 +109,48 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // </synopsis>
 
-
-  class TSMOption
-  {
-  public:
-    // Define the possible options how the TiledStMan accesses its data.
-    enum Option {
-      // Use unbuffered file IO with internal TSM caching.
-      Cache,
-      // Use buffered file IO without internal TSM caching.
-      Buffer,
-      // Use memory-mapped IO.
-      MMap,
-      // Use default.
-      Default,
-      // Use as defined in the aipsrc file.
-      Aipsrc
-    };
-
-    // Create an option object.
-    // The parameter values are described in the synopsis.
-    // A size value -2 means reading that size from the aipsrc file.
-    // The buffer size has to be given in bytes.
-    // The maximum cache size has to be given in MibiBytes (1024*1024 bytes).
-    TSMOption (Option option=Aipsrc, Int bufferSize=-2,
-               Int maxCacheSizeMB=-2);
-
-    // Fill the option in case Aipsrc or Default was given.
-    // It is done as explained in the synopsis.
-    void fillOption (Bool newFile);
-
-    // Get the option.
-    Option option() const
-      { return itsOption; }
-
-    // Get the buffer size.
-    Int bufferSize() const
-      { return itsBufferSize; }
-
-    // Get the maximum cache size (in MibiByte). -1 means undefined.
-    Int maxCacheSizeMB() const
-      { return itsMaxCacheSize; }
-
-  private:
-    Option itsOption;
-    Int    itsBufferSize;
-    Int    itsMaxCacheSize;
+class TSMOption {
+ public:
+  // Define the possible options how the TiledStMan accesses its data.
+  enum Option {
+    // Use unbuffered file IO with internal TSM caching.
+    Cache,
+    // Use buffered file IO without internal TSM caching.
+    Buffer,
+    // Use memory-mapped IO.
+    MMap,
+    // Use default.
+    Default,
+    // Use as defined in the aipsrc file.
+    Aipsrc
   };
 
-} //# NAMESPACE CASACORE - END
+  // Create an option object.
+  // The parameter values are described in the synopsis.
+  // A size value -2 means reading that size from the aipsrc file.
+  // The buffer size has to be given in bytes.
+  // The maximum cache size has to be given in MibiBytes (1024*1024 bytes).
+  TSMOption(Option option = Aipsrc, Int bufferSize = -2, Int maxCacheSizeMB = -2);
+
+  // Fill the option in case Aipsrc or Default was given.
+  // It is done as explained in the synopsis.
+  void fillOption(Bool newFile);
+
+  // Get the option.
+  Option option() const { return itsOption; }
+
+  // Get the buffer size.
+  Int bufferSize() const { return itsBufferSize; }
+
+  // Get the maximum cache size (in MibiByte). -1 means undefined.
+  Int maxCacheSizeMB() const { return itsMaxCacheSize; }
+
+ private:
+  Option itsOption;
+  Int itsBufferSize;
+  Int itsMaxCacheSize;
+};
+
+}  // namespace casacore
 
 #endif

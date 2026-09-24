@@ -1,41 +1,40 @@
-//# ExprAggrNode.h: TaQL node representing a scalar aggregate function
-//# Copyright (C) 2013
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ExprAggrNode.h: TaQL node representing a scalar aggregate function
+// # Copyright (C) 2013
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_EXPRAGGRNODE_H
 #define TABLES_EXPRAGGRNODE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprFuncNode.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-  //# Forward Declarations.
-  class TableExprGroupFuncBase;
-  class TableExprGroupFuncSet;
+// # Forward Declarations.
+class TableExprGroupFuncBase;
+class TableExprGroupFuncSet;
 
 // <summary>
 // TaQL node representing a scalar aggregate function
@@ -76,56 +75,50 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // from class UDFBase. Such an aggregate function is instantiated as a
 // TableExprUDFNode(Array) object, not as TabeExprAggrNode(Array).
 // These functions are always lazy.
-// </synopsis> 
+// </synopsis>
 
-  class TableExprAggrNode: public TableExprFuncNode
-  {
-  public:
-    // Constructor.
-    TableExprAggrNode (FunctionType, NodeDataType, ValueType,
-                       const TableExprNodeSet& source,
-                       const vector<TENShPtr>& nodes,
-                       const Block<Int>& dtypeOper);
+class TableExprAggrNode : public TableExprFuncNode {
+ public:
+  // Constructor.
+  TableExprAggrNode(FunctionType, NodeDataType, ValueType, const TableExprNodeSet& source,
+                    const vector<TENShPtr>& nodes, const Block<Int>& dtypeOper);
 
-    // This node does aggregation.
-    virtual Bool isAggregate() const;
-    
-    // Check the operands of the aggregate function and return the
-    // result's data type.
-    static NodeDataType checkOperands (Block<Int>& dtypeOper,
-                                       ValueType& resVT, FunctionType ftype,
-                                       std::vector<TENShPtr>& nodes);
+  // This node does aggregation.
+  virtual Bool isAggregate() const;
 
-    // Get the operand node.
-    TENShPtr operand()
-      { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
+  // Check the operands of the aggregate function and return the
+  // result's data type.
+  static NodeDataType checkOperands(Block<Int>& dtypeOper, ValueType& resVT, FunctionType ftype,
+                                    std::vector<TENShPtr>& nodes);
 
-    // Create the correct aggregate function object.
-    // It is also kept in case it is a lazy aggregate function.
-    virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
+  // Get the operand node.
+  TENShPtr operand() { return (operands().empty() ? TENShPtr() : operands()[0]); }
 
-    // Is the aggregate function a lazy or an immediate one?
-    virtual Bool isLazyAggregate() const;
+  // Create the correct aggregate function object.
+  // It is also kept in case it is a lazy aggregate function.
+  virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
-    // Functions to get the result of an aggregate function.
-    // <group>
-    virtual Bool      getBool     (const TableExprId& id);
-    virtual Int64     getInt      (const TableExprId& id);
-    virtual Double    getDouble   (const TableExprId& id);
-    virtual DComplex  getDComplex (const TableExprId& id);
-    virtual String    getString   (const TableExprId& id);
-    virtual MVTime    getDate     (const TableExprId& id);
-    // </group>
+  // Is the aggregate function a lazy or an immediate one?
+  virtual Bool isLazyAggregate() const;
 
-  private:
-    // Do the actual creation of the correct aggregate function object.
-    TableExprGroupFuncBase* doMakeGroupAggrFunc();
+  // Functions to get the result of an aggregate function.
+  // <group>
+  virtual Bool getBool(const TableExprId& id);
+  virtual Int64 getInt(const TableExprId& id);
+  virtual Double getDouble(const TableExprId& id);
+  virtual DComplex getDComplex(const TableExprId& id);
+  virtual String getString(const TableExprId& id);
+  virtual MVTime getDate(const TableExprId& id);
+  // </group>
 
-    //# Data members.
-    std::shared_ptr<TableExprGroupFuncBase> itsFunc;
-  };
+ private:
+  // Do the actual creation of the correct aggregate function object.
+  TableExprGroupFuncBase* doMakeGroupAggrFunc();
 
+  // # Data members.
+  std::shared_ptr<TableExprGroupFuncBase> itsFunc;
+};
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

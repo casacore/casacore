@@ -1,40 +1,39 @@
-//# ScaRecordColData.h: Access to a table column containing scalar records
-//# Copyright (C) 1998
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ScaRecordColData.h: Access to a table column containing scalar records
+// # Copyright (C) 1998
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_SCARECORDCOLDATA_H
 #define TABLES_SCARECORDCOLDATA_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/tables/Tables/PlainColumn.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class ColumnSet;
 class ScalarRecordColumnDesc;
 class AipsIO;
@@ -49,7 +48,7 @@ class AipsIO;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=PlainColumn>PlainColumn</linkto>
 //   <li> <linkto class=ScalarRecordColumnDesc>ScalarRecordColumnDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
@@ -59,7 +58,7 @@ class AipsIO;
 // ScalarRecordColumnData represents a table column containing scalars.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // The class ScalarRecordColumnData is derived from PlainColumn.
 // It implements the virtual functions accessing a table column
 // containing scalars holding records.
@@ -85,111 +84,100 @@ class AipsIO;
 // </synopsis>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //  <li> Introduce a class ArrayRecordColumnData to support arrays of records.
 // </todo>
 
+class ScalarRecordColumnData : public PlainColumn {
+ public:
+  // Construct a scalar column object from the given description
+  // in the given column set.
+  // This constructor is used by ScalarRecordColumnDesc::makeColumn.
+  ScalarRecordColumnData(const ScalarRecordColumnDesc*, ColumnSet*);
 
-class ScalarRecordColumnData : public PlainColumn
-{
-public:
+  ~ScalarRecordColumnData();
 
-    // Construct a scalar column object from the given description
-    // in the given column set.
-    // This constructor is used by ScalarRecordColumnDesc::makeColumn.
-    ScalarRecordColumnData (const ScalarRecordColumnDesc*, ColumnSet*);
+  // Copy constructor cannot be used.
+  ScalarRecordColumnData(const ScalarRecordColumnData&) = delete;
 
-    ~ScalarRecordColumnData();
+  // Assignment cannot be used.
+  ScalarRecordColumnData& operator=(const ScalarRecordColumnData&) = delete;
 
-    // Copy constructor cannot be used.
-    ScalarRecordColumnData (const ScalarRecordColumnData&) = delete;
+  // Initialize the rows from startRownr till endRownr (inclusive)
+  // with the default value defined in the column description.
+  virtual void initialize(rownr_t startRownr, rownr_t endRownr);
 
-    // Assignment cannot be used.
-    ScalarRecordColumnData& operator= (const ScalarRecordColumnData&) = delete;
+  // Test if the given cell contains a defined value.
+  virtual Bool isDefined(rownr_t rownr) const;
 
-    // Initialize the rows from startRownr till endRownr (inclusive)
-    // with the default value defined in the column description.
-    virtual void initialize (rownr_t startRownr, rownr_t endRownr);
+  // Get the value from a particular cell.
+  virtual void get(rownr_t rownr, void*) const;
 
-    // Test if the given cell contains a defined value.
-    virtual Bool isDefined (rownr_t rownr) const;
+  // Get the array of all values in the column.
+  // The length of the buffer pointed to by dataPtr must match
+  // the actual length. This is checked by ScalarColumn.
+  virtual void getScalarColumn(ArrayBase& dataPtr) const;
 
-    // Get the value from a particular cell.
-    virtual void get (rownr_t rownr, void*) const;
+  // Get the array of some values in the column (on behalf of RefColumn).
+  // The length of the buffer pointed to by dataPtr must match
+  // the actual length. This is checked by ScalarColumn.
+  virtual void getScalarColumnCells(const RefRows& rownrs, ArrayBase& dataPtr) const;
 
-    // Get the array of all values in the column.
-    // The length of the buffer pointed to by dataPtr must match
-    // the actual length. This is checked by ScalarColumn.
-    virtual void getScalarColumn (ArrayBase& dataPtr) const;
+  // Put the value in a particular cell.
+  // The length of the buffer pointed to by dataPtr must match
+  // the actual length. This is checked by ScalarColumn.
+  virtual void put(rownr_t rownr, const void* dataPtr);
 
-    // Get the array of some values in the column (on behalf of RefColumn).
-    // The length of the buffer pointed to by dataPtr must match
-    // the actual length. This is checked by ScalarColumn.
-    virtual void getScalarColumnCells (const RefRows& rownrs,
-				       ArrayBase& dataPtr) const;
+  // Put the array of all values in the column.
+  // The length of the buffer pointed to by dataPtr must match
+  // the actual length. This is checked by ScalarColumn.
+  virtual void putScalarColumn(const ArrayBase& dataPtr);
 
-    // Put the value in a particular cell.
-    // The length of the buffer pointed to by dataPtr must match
-    // the actual length. This is checked by ScalarColumn.
-    virtual void put (rownr_t rownr, const void* dataPtr);
+  // Put the array of some values in the column (on behalf on RefColumn).
+  // The length of the buffer pointed to by dataPtr must match
+  // the actual length. This is checked by ScalarColumn.
+  virtual void putScalarColumnCells(const RefRows& rownrs, const ArrayBase& dataPtr);
 
-    // Put the array of all values in the column.
-    // The length of the buffer pointed to by dataPtr must match
-    // the actual length. This is checked by ScalarColumn.
-    virtual void putScalarColumn (const ArrayBase& dataPtr);
+  // Add this column and its data to the Sort object.
+  // Sorting on records is not supported, so an exception is thrown.
+  // <group>
+  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+                           std::shared_ptr<ArrayBase>& dataSave);
+  // Do it only for the given row numbers.
+  virtual void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+                              const Vector<rownr_t>& rownrs, std::shared_ptr<ArrayBase>& dataSave);
+  // </group>
 
-    // Put the array of some values in the column (on behalf on RefColumn).
-    // The length of the buffer pointed to by dataPtr must match
-    // the actual length. This is checked by ScalarColumn.
-    virtual void putScalarColumnCells (const RefRows& rownrs,
-				       const ArrayBase& dataPtr);
+  // Allocate value buffers for the table iterator.
+  // Iteration based on records is not supported, so an exception is thrown.
+  virtual void allocIterBuf(void*& lastVal, void*& curVal, std::shared_ptr<BaseCompare>& cmpObj);
 
-    // Add this column and its data to the Sort object.
-    // Sorting on records is not supported, so an exception is thrown.
-    // <group>
-    virtual void makeSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
-                              Int order,
-			      std::shared_ptr<ArrayBase>& dataSave);
-    // Do it only for the given row numbers.
-    virtual void makeRefSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
-                                 Int order,
-                                 const Vector<rownr_t>& rownrs,
-                                 std::shared_ptr<ArrayBase>& dataSave);
-    // </group>
+  // Free the value buffers allocated by allocIterBuf.
+  virtual void freeIterBuf(void*& lastVal, void*& curVal);
 
-    // Allocate value buffers for the table iterator.
-    // Iteration based on records is not supported, so an exception is thrown.
-    virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       std::shared_ptr<BaseCompare>& cmpObj);
+  // Create a data manager column object for this column.
+  virtual void createDataManagerColumn();
 
-    // Free the value buffers allocated by allocIterBuf.
-    virtual void freeIterBuf (void*& lastVal, void*& curVal);
+ private:
+  // Write the column data.
+  // The control information is written into the given AipsIO object,
+  // while the data is written/flushed by the data manager.
+  virtual void putFileDerived(AipsIO&);
 
-    // Create a data manager column object for this column.
-    virtual void createDataManagerColumn();
+  // Read the column data back.
+  // The control information is read from the given AipsIO object.
+  // This is used to bind the column to the appropriate data manager.
+  // Thereafter the data manager gets opened.
+  virtual void getFileDerived(AipsIO&, const ColumnSet&);
 
-private:
-    // Write the column data.
-    // The control information is written into the given AipsIO object,
-    // while the data is written/flushed by the data manager.
-    virtual void putFileDerived (AipsIO&);
-
-    // Read the column data back.
-    // The control information is read from the given AipsIO object.
-    // This is used to bind the column to the appropriate data manager.
-    // Thereafter the data manager gets opened.
-    virtual void getFileDerived (AipsIO&, const ColumnSet&);
-
-    // Handle getting and putting a record.
-    // It is stored as a Vector of uChar.
-    // <group>
-    void getRecord (rownr_t rownr, TableRecord& rec) const;
-    void putRecord (rownr_t rownr, const TableRecord& rec);
-    // </group>
+  // Handle getting and putting a record.
+  // It is stored as a Vector of uChar.
+  // <group>
+  void getRecord(rownr_t rownr, TableRecord& rec) const;
+  void putRecord(rownr_t rownr, const TableRecord& rec);
+  // </group>
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

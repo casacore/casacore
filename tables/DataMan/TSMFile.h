@@ -1,38 +1,38 @@
-//# TSMFile.h: File object for Tiled Storage Manager
-//# Copyright (C) 1995,1996,1997,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TSMFile.h: File object for Tiled Storage Manager
+// # Copyright (C) 1995,1996,1997,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TSMFILE_H
 #define TABLES_TSMFILE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/BucketFile.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TSMOption;
 class TiledStMan;
 class MultiFileBase;
@@ -48,7 +48,7 @@ class AipsIO;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TiledStMan>TiledStMan</linkto>
 // </prerequisite>
 
@@ -66,95 +66,82 @@ class AipsIO;
 // <p>
 // Underneath it uses a BucketFile to access the file.
 // In this way the IO details are well encapsulated.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // Encapsulate the Tiled Storage Manager file details.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# </todo>
+// # <todo asof="$DATE:$">
+// # </todo>
 
+class TSMFile {
+ public:
+  // Create a TSMFile object (with corresponding file).
+  // The sequence number gets part of the file name.
+  TSMFile(const TiledStMan* stMan, uInt fileSequenceNr, const TSMOption&,
+          const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
-class TSMFile
-{
-public:
-    // Create a TSMFile object (with corresponding file).
-    // The sequence number gets part of the file name.
-    TSMFile (const TiledStMan* stMan, uInt fileSequenceNr,
-             const TSMOption&,
-             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
+  // Create a TSMFile object for the given existing file.
+  TSMFile(const String& fileName, Bool writable, const TSMOption&,
+          const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
-    // Create a TSMFile object for the given existing file.
-    TSMFile (const String& fileName, Bool writable, const TSMOption&,
-             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
+  // Read the object back.
+  // The file is not opened until the first access,
+  // thus until the file descriptor is asked for the first time.
+  // It checks if the sequence number matches the expected one.
+  TSMFile(const TiledStMan* stMan, AipsIO& ios, uInt seqnr, const TSMOption&,
+          const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
-    // Read the object back.
-    // The file is not opened until the first access,
-    // thus until the file descriptor is asked for the first time.
-    // It checks if the sequence number matches the expected one.
-    TSMFile (const TiledStMan* stMan, AipsIO& ios, uInt seqnr,
-             const TSMOption&,
-             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
+  // The destructor closes the file.
+  ~TSMFile();
 
-    // The destructor closes the file.
-    ~TSMFile();
+  // Forbid copy constructor.
+  TSMFile(const TSMFile&) = delete;
 
-    // Forbid copy constructor.
-    TSMFile (const TSMFile&) = delete;
+  // Forbid assignment.
+  TSMFile& operator=(const TSMFile&) = delete;
 
-    // Forbid assignment.
-    TSMFile& operator= (const TSMFile&) = delete;
+  // Write the object.
+  void putObject(AipsIO& ios) const;
 
-    // Write the object.
-    void putObject (AipsIO& ios) const;
+  // Get the object.
+  void getObject(AipsIO& ios);
 
-    // Get the object.
-    void getObject (AipsIO& ios);
+  // Open the file if not open yet.
+  void open();
 
-    // Open the file if not open yet.
-    void open();
+  // Return the BucketFile object (to be used in the BucketCache).
+  BucketFile* bucketFile();
 
-    // Return the BucketFile object (to be used in the BucketCache).
-    BucketFile* bucketFile();
+  // Return the logical file length.
+  Int64 length() const;
 
-    // Return the logical file length.
-    Int64 length() const;
+  // Return the file sequence number.
+  uInt sequenceNumber() const;
 
-    // Return the file sequence number.
-    uInt sequenceNumber() const;
+  // Increment the logical file length.
+  void extend(Int64 increment);
 
-    // Increment the logical file length.
-    void extend (Int64 increment);
-
-
-private:
-    // The file sequence number.
-    uInt fileSeqnr_p;
-    // The file object.
-    BucketFile* file_p;
-    // The (logical) length of the file.
-    Int64 length_p;
+ private:
+  // The file sequence number.
+  uInt fileSeqnr_p;
+  // The file object.
+  BucketFile* file_p;
+  // The (logical) length of the file.
+  Int64 length_p;
 };
 
+inline Int64 TSMFile::length() const { return length_p; }
 
-inline Int64 TSMFile::length() const
-    { return length_p; }
+inline uInt TSMFile::sequenceNumber() const { return fileSeqnr_p; }
 
-inline uInt TSMFile::sequenceNumber() const
-    { return fileSeqnr_p; }
+inline void TSMFile::extend(Int64 increment) { length_p += increment; }
 
-inline void TSMFile::extend (Int64 increment)
-    { length_p += increment; }
+inline BucketFile* TSMFile::bucketFile() { return file_p; }
 
-inline BucketFile* TSMFile::bucketFile()
-    { return file_p; }
+inline void TSMFile::open() { file_p->open(); }
 
-inline void TSMFile::open()
-    { file_p->open(); }
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

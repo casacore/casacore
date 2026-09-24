@@ -1,27 +1,27 @@
-//# tSSMAddRemove.cc: Test program when adding/removing rows
-//# Copyright (C) 2012
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tSSMAddRemove.cc: Test program when adding/removing rows
+// # Copyright (C) 2012
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -39,21 +39,19 @@ using namespace casacore;
 //
 // The table used is tarred in tSSMAddRemove.in and unpacked by the .run file.
 
-void addRemove()
-{
-  Table tab ("tSSMAddRemove_tmp.tab", Table::Update);
+void addRemove() {
+  Table tab("tSSMAddRemove_tmp.tab", Table::Update);
   cout << "nrow=" << tab.nrow() << endl;
-  tab.addRow (14);
+  tab.addRow(14);
   Vector<rownr_t> rows(14);
-  indgen (rows, rownr_t(28));
-  tab.removeRow (rows);
+  indgen(rows, rownr_t(28));
+  tab.removeRow(rows);
 }
 
-int main()
-{
+int main() {
   try {
     addRemove();
-    Table tab ("tSSMAddRemove_tmp.tab");
+    Table tab("tSSMAddRemove_tmp.tab");
     ScalarColumn<Int> idcol(tab, "SOURCE_ID");
     idcol(27);
   } catch (std::exception& x) {

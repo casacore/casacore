@@ -3,8 +3,7 @@
 
 #include <cstring>
 
-inline void PackBoolArray(unsigned char* packed_buffer, const bool* input,
-                          size_t n) {
+inline void PackBoolArray(unsigned char* packed_buffer, const bool* input, size_t n) {
   const size_t limit = n / 8;
   const bool* end = input + n;
   for (size_t i = 0; i != limit; ++i) {
@@ -26,8 +25,7 @@ inline void PackBoolArray(unsigned char* packed_buffer, const bool* input,
   }
 }
 
-inline void UnpackBoolArray(bool* output, const unsigned char* packed_input,
-                            size_t n) {
+inline void UnpackBoolArray(bool* output, const unsigned char* packed_input, size_t n) {
   bool* end = output + n;
   const size_t limit = n / 8;
   for (size_t i = 0; i != limit; i++) {

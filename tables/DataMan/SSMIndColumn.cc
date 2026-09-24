@@ -1,29 +1,29 @@
-//# SSMIndColumn.cc: Column of Standard storage manager for indirect arrays
-//# Copyright (C) 2000,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SSMIndColumn.cc: Column of Standard storage manager for indirect arrays
+// # Copyright (C) 2000,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/tables/DataMan/SSMIndColumn.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -36,52 +36,41 @@
 #include <casacore/casa/OS/LECanonicalConversion.h>
 #include <casacore/tables/DataMan/DataManError.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
-: SSMColumn    (aParent, aDataType, aColNr),
-  isShapeFixed (False),
-  itsIosFile   (0),
-  itsIndArray  (0)
-{
-    init();
+SSMIndColumn::SSMIndColumn(SSMBase* aParent, int aDataType, uInt aColNr)
+    : SSMColumn(aParent, aDataType, aColNr), isShapeFixed(False), itsIosFile(0), itsIndArray(0) {
+  init();
 }
 
-SSMIndColumn::~SSMIndColumn()
-{}
+SSMIndColumn::~SSMIndColumn() {}
 
-void SSMIndColumn::setMaxLength (uInt)
-{}
+void SSMIndColumn::setMaxLength(uInt) {}
 
-void SSMIndColumn::doCreate (rownr_t aNrRows)
-{
-    // Initialize and create new file.
-    itsIosFile = itsSSMPtr->openArrayFile (ByteIO::New);
-    addRow(aNrRows,0,False);
+void SSMIndColumn::doCreate(rownr_t aNrRows) {
+  // Initialize and create new file.
+  itsIosFile = itsSSMPtr->openArrayFile(ByteIO::New);
+  addRow(aNrRows, 0, False);
 }
 
-void SSMIndColumn::getFile (rownr_t)
-{
-    // Initialize and open existing file.
-    itsIosFile = itsSSMPtr->openArrayFile (itsSSMPtr->fileOption());
+void SSMIndColumn::getFile(rownr_t) {
+  // Initialize and open existing file.
+  itsIosFile = itsSSMPtr->openArrayFile(itsSSMPtr->fileOption());
 }
 
-void SSMIndColumn::addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit)
-{
+void SSMIndColumn::addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit) {
   // init the buckets to zero of needed
   if (doInit) {
-    rownr_t aRowNr=0;
-    rownr_t aNrRows=aNewNrRows;
+    rownr_t aRowNr = 0;
+    rownr_t aNrRows = aNewNrRows;
 
     while (aNrRows > 0) {
       rownr_t aStartRow;
       rownr_t anEndRow;
-      char*   aValPtr;
-      aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
-                                 columnName());
-      aRowNr = anEndRow+1;
-      rownr_t aNr = anEndRow-aStartRow+1;
+      char* aValPtr;
+      aValPtr = itsSSMPtr->find(aRowNr, itsColNr, aStartRow, anEndRow, columnName());
+      aRowNr = anEndRow + 1;
+      rownr_t aNr = anEndRow - aStartRow + 1;
       aNrRows -= aNr;
       memset(aValPtr, 0, aNr * itsExternalSizeBytes);
       itsSSMPtr->setBucketDirty();
@@ -92,143 +81,116 @@ void SSMIndColumn::addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit)
   // Later rows get the value of a previous row, so we don't have to
   // do anything for them.
   if (isShapeFixed) {
-    for (; anOldNrRows<aNewNrRows;anOldNrRows++) {
-      setShape(anOldNrRows,itsFixedShape);
+    for (; anOldNrRows < aNewNrRows; anOldNrRows++) {
+      setShape(anOldNrRows, itsFixedShape);
     }
   }
 }
 
-void SSMIndColumn::setShapeColumn (const IPosition& aShape)
-{
-    itsFixedShape  = aShape;
-    isShapeFixed   = True;
+void SSMIndColumn::setShapeColumn(const IPosition& aShape) {
+  itsFixedShape = aShape;
+  isShapeFixed = True;
 }
 
-void SSMIndColumn::setShape (rownr_t aRowNr, const IPosition& aShape)
-{
+void SSMIndColumn::setShape(rownr_t aRowNr, const IPosition& aShape) {
   // Get the current entry. If none, make empty one.
-  StIndArray* aPtr = getArrayPtr (aRowNr);
+  StIndArray* aPtr = getArrayPtr(aRowNr);
   if (aPtr == 0) {
     itsIndArray = StIndArray(0);
   } else {
     // Note that getArrayPtr sets itsIndArray (which is equal to aPtr).
-    aPtr->getShape (*itsIosFile);
+    aPtr->getShape(*itsIosFile);
   }
   // put the new shape (if changed)
   // when changed put the file offset
-  if (itsIndArray.setShape (*itsIosFile, dataType(), aShape)) {
+  if (itsIndArray.setShape(*itsIosFile, dataType(), aShape)) {
     Int64 anOffset = itsIndArray.fileOffset();
-    putValue (aRowNr, &anOffset);
+    putValue(aRowNr, &anOffset);
   }
 }
 
-StIndArray* SSMIndColumn::getArrayPtr (rownr_t aRowNr)
-{
-  Int64   anOffset;
+StIndArray* SSMIndColumn::getArrayPtr(rownr_t aRowNr) {
+  Int64 anOffset;
   rownr_t aStartRow;
   rownr_t anEndRow;
-  char*   aValue;
+  char* aValue;
 
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
-                            columnName());
-  itsReadFunc (&anOffset, aValue+(aRowNr-aStartRow)*itsExternalSizeBytes,
-	       itsNrCopy);
-
+  aValue = itsSSMPtr->find(aRowNr, itsColNr, aStartRow, anEndRow, columnName());
+  itsReadFunc(&anOffset, aValue + (aRowNr - aStartRow) * itsExternalSizeBytes, itsNrCopy);
 
   if (anOffset != 0) {
-    itsIndArray = StIndArray (anOffset);
+    itsIndArray = StIndArray(anOffset);
     return &itsIndArray;
-  }else{
+  } else {
     return 0;
   }
 }
 
-//# Get the shape for the array (if any) in the given row.
-//# Read shape if not read yet.
-StIndArray* SSMIndColumn::getShape (rownr_t aRowNr)
-{
-    StIndArray* aPtr = getArrayPtr (aRowNr);
-    if (aPtr == 0) {
-      throw DataManInvOper ("SSMIndColumn::getShape: no array in row "+
-                            String(std::to_string(aRowNr)) + " in column "
-                            + columnName()
-                            + " of table " + itsSSMPtr->table().tableName());
-    }
-    aPtr->getShape (*itsIosFile);
-    return aPtr;
+// # Get the shape for the array (if any) in the given row.
+// # Read shape if not read yet.
+StIndArray* SSMIndColumn::getShape(rownr_t aRowNr) {
+  StIndArray* aPtr = getArrayPtr(aRowNr);
+  if (aPtr == 0) {
+    throw DataManInvOper("SSMIndColumn::getShape: no array in row " +
+                         String(std::to_string(aRowNr)) + " in column " + columnName() +
+                         " of table " + itsSSMPtr->table().tableName());
+  }
+  aPtr->getShape(*itsIosFile);
+  return aPtr;
 }
 
-Bool SSMIndColumn::isShapeDefined (rownr_t aRowNr)
-    { return (getArrayPtr(aRowNr) == 0  ?  False : True); }
+Bool SSMIndColumn::isShapeDefined(rownr_t aRowNr) {
+  return (getArrayPtr(aRowNr) == 0 ? False : True);
+}
 
-uInt SSMIndColumn::ndim (rownr_t aRowNr)
-    { return getShape(aRowNr)->shape().nelements(); }
+uInt SSMIndColumn::ndim(rownr_t aRowNr) { return getShape(aRowNr)->shape().nelements(); }
 
-IPosition SSMIndColumn::shape (rownr_t aRowNr)
-    { return getShape(aRowNr)->shape(); }
+IPosition SSMIndColumn::shape(rownr_t aRowNr) { return getShape(aRowNr)->shape(); }
 
-Bool SSMIndColumn::canChangeShape() const
-    { return (isShapeFixed  ?  False : True); }
+Bool SSMIndColumn::canChangeShape() const { return (isShapeFixed ? False : True); }
 
-
-void SSMIndColumn::deleteRow(rownr_t aRowNr)
-{
-  char*   aValue;
+void SSMIndColumn::deleteRow(rownr_t aRowNr) {
+  char* aValue;
   rownr_t aSRow;
   rownr_t anERow;
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow, columnName());
-  
+  aValue = itsSSMPtr->find(aRowNr, itsColNr, aSRow, anERow, columnName());
+
   if (aRowNr < anERow) {
     // remove from bucket
-    shiftRows(aValue,aRowNr,aSRow,anERow);
+    shiftRows(aValue, aRowNr, aSRow, anERow);
     itsSSMPtr->setBucketDirty();
   }
 }
 
-void SSMIndColumn::getArrayV (rownr_t aRowNr, ArrayBase& arr)
-{
-  getShape(aRowNr)->getArrayV (*itsIosFile, arr, dtype());
+void SSMIndColumn::getArrayV(rownr_t aRowNr, ArrayBase& arr) {
+  getShape(aRowNr)->getArrayV(*itsIosFile, arr, dtype());
 }
 
-void SSMIndColumn::putArrayV (rownr_t aRowNr, const ArrayBase& arr)
-{
-  getShape(aRowNr)->putArrayV (*itsIosFile, arr, dtype());
+void SSMIndColumn::putArrayV(rownr_t aRowNr, const ArrayBase& arr) {
+  getShape(aRowNr)->putArrayV(*itsIosFile, arr, dtype());
 }
 
-void SSMIndColumn::getSliceV (rownr_t aRowNr, const Slicer& ns,
-                              ArrayBase& arr)
-{
-  getShape(aRowNr)->getSliceV (*itsIosFile, ns, arr, dtype());
+void SSMIndColumn::getSliceV(rownr_t aRowNr, const Slicer& ns, ArrayBase& arr) {
+  getShape(aRowNr)->getSliceV(*itsIosFile, ns, arr, dtype());
 }
 
-void SSMIndColumn::putSliceV (rownr_t aRowNr, const Slicer& ns,
-                              const ArrayBase& arr)
-{
-  getShape(aRowNr)->putSliceV (*itsIosFile, ns, arr, dtype());
+void SSMIndColumn::putSliceV(rownr_t aRowNr, const Slicer& ns, const ArrayBase& arr) {
+  getShape(aRowNr)->putSliceV(*itsIosFile, ns, arr, dtype());
 }
-    
 
-void SSMIndColumn::init()
-{
-  DebugAssert (itsNrElem==1, AipsError);
+void SSMIndColumn::init() {
+  DebugAssert(itsNrElem == 1, AipsError);
   if (itsSSMPtr->asBigEndian()) {
-    itsReadFunc =
-            CanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    itsWriteFunc =
-            CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    itsExternalSizeBytes =
-            CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
-  }else{
-    itsReadFunc =
-            LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    itsWriteFunc =
-            LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    itsExternalSizeBytes =
-            LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+    itsReadFunc = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
+    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+  } else {
+    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
+    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
   }
   itsNrCopy = 1;
-  itsExternalSizeBits = 8*itsExternalSizeBytes;
+  itsExternalSizeBits = 8 * itsExternalSizeBytes;
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

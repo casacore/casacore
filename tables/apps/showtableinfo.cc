@@ -1,27 +1,27 @@
-//# showtableinfo.cc: This program shows table info and contents.
-//# Copyright (C) 2011
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # showtableinfo.cc: This program shows table info and contents.
+// # Copyright (C) 2011
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/TableParse.h>
@@ -31,17 +31,15 @@
 #include <casacore/casa/Inputs/Input.h>
 #include <stdexcept>
 #include <iostream>
-#include <cstdlib>          // for mkstemp
-#include <casacore/casa/string.h>    // for strerror
+#include <cstdlib>                 // for mkstemp
+#include <casacore/casa/string.h>  // for strerror
 #include <errno.h>
 #include <unistd.h>
 
 using namespace casacore;
 using namespace std;
 
-
-int main (int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   try {
     // Read the input parameters.
     Input inputs(1);
@@ -62,28 +60,28 @@ int main (int argc, char* argv[])
     inputs.readArguments(argc, argv);
 
     // Get and check the input specification.
-    String in (inputs.getString("in"));
+    String in(inputs.getString("in"));
     if (in.empty()) {
       throw AipsError(" an input table name must be given");
     }
-    Bool showdm     = inputs.getBool("dm");
-    Bool showcol    = inputs.getBool("col");
+    Bool showdm = inputs.getBool("dm");
+    Bool showcol = inputs.getBool("col");
     Bool showtabkey = inputs.getBool("tabkey");
     Bool showcolkey = inputs.getBool("colkey");
-    Int  maxval     = inputs.getInt ("maxval");
-    Bool showsub    = inputs.getBool("sub");
-    Bool sortcol    = inputs.getBool("sort");
-    Bool cOrder     = inputs.getBool ("corder");
-    Bool browse     = inputs.getBool("browse");
-    String selcol  (inputs.getString("selcol"));
-    String selrow  (inputs.getString("selrow"));
-    String selsort (inputs.getString("selsort"));
+    Int maxval = inputs.getInt("maxval");
+    Bool showsub = inputs.getBool("sub");
+    Bool sortcol = inputs.getBool("sort");
+    Bool cOrder = inputs.getBool("corder");
+    Bool browse = inputs.getBool("browse");
+    String selcol(inputs.getString("selcol"));
+    String selrow(inputs.getString("selrow"));
+    String selsort(inputs.getString("selsort"));
 
     // Do the selection if needed.
     Table table(in);
     Table seltab(table);
-    if (! (selcol.empty() && selrow.empty() && selsort.empty())) {
-      String command ("select ");
+    if (!(selcol.empty() && selrow.empty() && selsort.empty())) {
+      String command("select ");
       if (!selcol.empty()) {
         command += selcol;
       }
@@ -95,29 +93,29 @@ int main (int argc, char* argv[])
         command += " orderby " + selsort;
       }
       clog << "TaQL command = " << command << endl;
-      seltab = tableCommand (command).table();
+      seltab = tableCommand(command).table();
     }
     // Show the table structure.
-    table.showStructure (cout, showdm, showcol, showsub, sortcol, cOrder);
-    table.showKeywords (cout, showsub, showtabkey, showcolkey, maxval);
+    table.showStructure(cout, showdm, showcol, showsub, sortcol, cOrder);
+    table.showKeywords(cout, showsub, showtabkey, showcolkey, maxval);
     if (browse) {
       // Need to make table persistent for casabrowser.
       String tmpName;
       if (seltab.tableName() != table.tableName()) {
-	// g++ gives a deprecated warning for tempnam.
+        // g++ gives a deprecated warning for tempnam.
         // Therefore we use mkstemp and close/unlink the file immediately.
         char tmpnm[] = "/tmp/shtabXXXXXX";
         int fd = mkstemp(tmpnm);
         tmpName = tmpnm;
-        ///cout << "tmpnm="<<tmpName<<endl;
+        /// cout << "tmpnm="<<tmpName<<endl;
         // Close and delete the file.
         ::close(fd);
         ::unlink(tmpnm);
-        seltab.rename (tmpName, Table::New);
+        seltab.rename(tmpName, Table::New);
       }
       clog << "Starting casabrowser " << seltab.tableName() << " ..." << endl;
-      if (! system (("casabrowser " + seltab.tableName()).c_str())) {
-	clog << "Could not start casabrowser; " << strerror(errno) << endl;
+      if (!system(("casabrowser " + seltab.tableName()).c_str())) {
+        clog << "Could not start casabrowser; " << strerror(errno) << endl;
       }
       if (!tmpName.empty()) {
         seltab = Table();  // close table

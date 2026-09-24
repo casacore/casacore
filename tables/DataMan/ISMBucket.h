@@ -1,40 +1,40 @@
-//# ISMBucket.h: A bucket in the Incremental Storage Manager
-//# Copyright (C) 1996,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ISMBucket.h: A bucket in the Incremental Storage Manager
+// # Copyright (C) 1996,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_ISMBUCKET_H
 #define TABLES_ISMBUCKET_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 class ISMBase;
 
 // <summary>
@@ -47,7 +47,7 @@ class ISMBase;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=IncrementalStMan>IncrementalStMan</linkto>
 //   <li> <linkto class=BucketCache>BucketCache</linkto>
 // </prerequisite>
@@ -122,213 +122,188 @@ class ISMBase;
 // ISMBucket encapsulates the data of a bucket.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class ISMBucket {
+ public:
+  // Create a bucket with the given parent.
+  // When <src>bucketStorage</src> is non-zero, reconstruct the
+  // object from it.
+  // It keeps the pointer to its parent (but does not own it).
+  ISMBucket(ISMBase* parent, const char* bucketStorage);
 
-class ISMBucket
-{
-public:
+  ~ISMBucket();
 
-    // Create a bucket with the given parent.
-    // When <src>bucketStorage</src> is non-zero, reconstruct the
-    // object from it.
-    // It keeps the pointer to its parent (but does not own it).
-    ISMBucket (ISMBase* parent, const char* bucketStorage);
+  // Forbid copy constructor.
+  ISMBucket(const ISMBucket&) = delete;
 
-    ~ISMBucket();
+  // Forbid assignment.
+  ISMBucket& operator=(const ISMBucket&) = delete;
 
-    // Forbid copy constructor.
-    ISMBucket (const ISMBucket&) = delete;
+  // Get the row-interval for given column and row.
+  // It sets the start and end of the interval to which the row belongs
+  // and the offset of its current value.
+  // It returns the index where the row number can be put in the
+  // bucket index.
+  uInt getInterval(uInt colnr, rownr_t rownr, rownr_t bucketNrrow, rownr_t& start, rownr_t& end,
+                   uInt& offset) const;
 
-    // Forbid assignment.
-    ISMBucket& operator= (const ISMBucket&) = delete;
+  // Is the bucket large enough to add a value?
+  Bool canAddData(uInt leng) const;
 
-    // Get the row-interval for given column and row.
-    // It sets the start and end of the interval to which the row belongs
-    // and the offset of its current value.
-    // It returns the index where the row number can be put in the
-    // bucket index.
-    uInt getInterval (uInt colnr, rownr_t rownr, rownr_t bucketNrrow,
-		      rownr_t& start, rownr_t& end, uInt& offset) const;
+  // Add the data to the data part.
+  // It updates the bucket index at the given index.
+  // An exception is thrown if the bucket is too small.
+  void addData(uInt colnr, rownr_t rownr, uInt index, const char* data, uInt leng);
 
-    // Is the bucket large enough to add a value?
-    Bool canAddData (uInt leng) const;
+  // Is the bucket large enough to replace a value?
+  Bool canReplaceData(uInt newLeng, uInt oldLeng) const;
 
-    // Add the data to the data part.
-    // It updates the bucket index at the given index.
-    // An exception is thrown if the bucket is too small.
-    void addData (uInt colnr, rownr_t rownr, uInt index,
-		  const char* data, uInt leng);
+  // Replace a data item.
+  // When its length is variable (indicated by fixedLength=0), the old
+  // value will be removed and the new one appended at the end.
+  // An exception is thrown if the bucket is too small.
+  void replaceData(uInt& offset, const char* data, uInt newLeng, uInt fixedLength);
 
-    // Is the bucket large enough to replace a value?
-    Bool canReplaceData (uInt newLeng, uInt oldLeng) const;
+  // Get a pointer to the data for the given offset.
+  const char* get(uInt offset) const;
 
-    // Replace a data item.
-    // When its length is variable (indicated by fixedLength=0), the old
-    // value will be removed and the new one appended at the end.
-    // An exception is thrown if the bucket is too small.
-    void replaceData (uInt& offset, const char* data, uInt newLeng,
-		      uInt fixedLength);
+  // Get the length of the data value.
+  // It is <src>fixedLength</src> when non-zero,
+  // otherwise read it from the data value.
+  uInt getLength(uInt fixedLength, const char* data) const;
 
-    // Get a pointer to the data for the given offset.
-    const char* get (uInt offset) const;
+  // Get access to the offset of the data for given column and row.
+  // It allows to change it (used for example by replaceData).
+  uInt& getOffset(uInt colnr, rownr_t rownr);
 
-    // Get the length of the data value.
-    // It is <src>fixedLength</src> when non-zero,
-    // otherwise read it from the data value.
-    uInt getLength (uInt fixedLength, const char* data) const;
+  // Get access to the index information for the given column.
+  // This is used by ISMColumn when putting the data.
+  // <group>
+  // Return the row numbers with a stored value.
+  Block<rownr_t>& rowIndex(uInt colnr);
+  // Return the offsets of the values stored in the data part.
+  Block<uInt>& offIndex(uInt colnr);
+  // Return the number of values stored.
+  uInt& indexUsed(uInt colnr);
+  // </group>
 
-    // Get access to the offset of the data for given column and row.
-    // It allows to change it (used for example by replaceData).
-    uInt& getOffset (uInt colnr, rownr_t rownr);
+  // Split the bucket in the middle.
+  // It returns the row number where the bucket was split and the
+  // new left and right bucket. The caller is responsible for
+  // deleting the newly created buckets.
+  // When possible a simple split is done.
+  // <br>
+  // The starting values in the right bucket may be copies of the
+  // values in the left bucket. The duplicated Block contains a switch
+  // per column indicating if the value is copied.
+  rownr_t split(ISMBucket*& left, ISMBucket*& right, Block<Bool>& duplicated,
+                rownr_t bucketStartRow, rownr_t bucketNrrow, uInt colnr, rownr_t rownr,
+                uInt lengToAdd);
 
-    // Get access to the index information for the given column.
-    // This is used by ISMColumn when putting the data.
-    // <group>
-    // Return the row numbers with a stored value.
-    Block<rownr_t>& rowIndex (uInt colnr);
-    // Return the offsets of the values stored in the data part.
-    Block<uInt>& offIndex (uInt colnr);
-    // Return the number of values stored.
-    uInt& indexUsed (uInt colnr);
-    // </group>
+  // Determine whether a simple split is possible. If so, do it.
+  // This is possible if the new row is at the end of the last bucket,
+  // which will often be the case.
+  // <br>A simple split means adding a new bucket for the new row.
+  // If the old bucket already contains values for that row, those
+  // values are moved to the new bucket.
+  // <br>This fuction is only called by split, which created the
+  // left and right bucket.
+  Bool simpleSplit(ISMBucket* left, ISMBucket* right, Block<Bool>& duplicated, rownr_t& splitRownr,
+                   rownr_t rownr);
 
-    // Split the bucket in the middle.
-    // It returns the row number where the bucket was split and the
-    // new left and right bucket. The caller is responsible for
-    // deleting the newly created buckets.
-    // When possible a simple split is done.
-    // <br>
-    // The starting values in the right bucket may be copies of the
-    // values in the left bucket. The duplicated Block contains a switch
-    // per column indicating if the value is copied.
-    rownr_t split (ISMBucket*& left, ISMBucket*& right, Block<Bool>& duplicated,
-                   rownr_t bucketStartRow, rownr_t bucketNrrow,
-                   uInt colnr, rownr_t rownr, uInt lengToAdd);
+  // Return the index where the bucket should be split to get
+  // two parts with almost identical length.
+  uInt getSplit(uInt totLeng, const Block<uInt>& rowLeng, const Block<uInt>& cumLeng);
 
-    // Determine whether a simple split is possible. If so, do it.
-    // This is possible if the new row is at the end of the last bucket,
-    // which will often be the case.
-    // <br>A simple split means adding a new bucket for the new row.
-    // If the old bucket already contains values for that row, those
-    // values are moved to the new bucket.
-    // <br>This fuction is only called by split, which created the
-    // left and right bucket.
-    Bool simpleSplit (ISMBucket* left, ISMBucket* right,
-		      Block<Bool>& duplicated,
-		      rownr_t& splitRownr, rownr_t rownr);
+  // Remove <src>nr</src> items from data and index part by shifting
+  // to the left. The <src>rowIndex</src>, <src>offIndex</src>, and
+  // <src>nused</src> get updated. The caller is responsible for
+  // removing data when needed (e.g. <src>ISMIndColumn</src> removes
+  // the indirect arrays from its file).
+  void shiftLeft(uInt index, uInt nr, Block<rownr_t>& rowIndex, Block<uInt>& offIndex, uInt& nused,
+                 uInt leng);
 
-    // Return the index where the bucket should be split to get
-    // two parts with almost identical length.
-    uInt getSplit (uInt totLeng, const Block<uInt>& rowLeng,
-		   const Block<uInt>& cumLeng);
+  // Copy the contents of that bucket to this bucket.
+  // This is used after a split operation.
+  void copy(const ISMBucket& that);
 
-    // Remove <src>nr</src> items from data and index part by shifting
-    // to the left. The <src>rowIndex</src>, <src>offIndex</src>, and
-    // <src>nused</src> get updated. The caller is responsible for
-    // removing data when needed (e.g. <src>ISMIndColumn</src> removes
-    // the indirect arrays from its file).
-    void shiftLeft (uInt index, uInt nr, Block<rownr_t>& rowIndex,
-		    Block<uInt>& offIndex, uInt& nused, uInt leng);
+  // Callback function when BucketCache reads a bucket.
+  // It creates an ISMBucket object and converts the raw bucketStorage
+  // to that object.
+  // It returns the pointer to ISMBucket object which gets part of the cache.
+  // The object gets deleted by the deleteCallBack function.
+  static char* readCallBack(void* owner, const char* bucketStorage);
 
-    // Copy the contents of that bucket to this bucket.
-    // This is used after a split operation.
-    void copy (const ISMBucket& that);
+  // Callback function when BucketCache writes a bucket.
+  // It converts the ISMBucket bucket object to the raw bucketStorage.
+  static void writeCallBack(void* owner, char* bucketStorage, const char* bucket);
 
-    // Callback function when BucketCache reads a bucket.
-    // It creates an ISMBucket object and converts the raw bucketStorage
-    // to that object.
-    // It returns the pointer to ISMBucket object which gets part of the cache.
-    // The object gets deleted by the deleteCallBack function.
-    static char* readCallBack (void* owner, const char* bucketStorage);
+  // Callback function when BucketCache adds a new bucket to the data file.
+  // This function creates an empty ISMBucket object.
+  // It returns the pointer to ISMBucket object which gets part of the cache.
+  // The object gets deleted by the deleteCallBack function.
+  static char* initCallBack(void* owner);
 
-    // Callback function when BucketCache writes a bucket.
-    // It converts the ISMBucket bucket object to the raw bucketStorage.
-    static void writeCallBack (void* owner, char* bucketStorage,
-			       const char* bucket);
+  // Callback function when BucketCache removes a bucket from the cache.
+  // This function dletes the ISMBucket bucket object.
+  static void deleteCallBack(void*, char* bucket);
 
-    // Callback function when BucketCache adds a new bucket to the data file.
-    // This function creates an empty ISMBucket object.
-    // It returns the pointer to ISMBucket object which gets part of the cache.
-    // The object gets deleted by the deleteCallBack function.
-    static char* initCallBack (void* owner);
+  // Show the layout of the bucket.
+  void show(ostream& os) const;
 
-    // Callback function when BucketCache removes a bucket from the cache.
-    // This function dletes the ISMBucket bucket object.
-    static void deleteCallBack (void*, char* bucket);
+  // Check that there are no repeated rowIds in the bucket
+  Bool check(uInt& offendingCol, uInt& offendingIndex, rownr_t& offendingRow,
+             rownr_t& offendingPrevRow) const;
 
-    // Show the layout of the bucket.
-    void show (ostream& os) const;
+ private:
+  // Remove a data item with the given length.
+  // If the length is zero, its variable length is read first.
+  void removeData(uInt offset, uInt leng);
 
-    // Check that there are no repeated rowIds in the bucket
-    Bool check (uInt& offendingCol, uInt& offendingIndex,
-                rownr_t& offendingRow, rownr_t& offendingPrevRow) const;
+  // Insert a data value by appending it to the end.
+  // It returns the offset of the data value.
+  uInt insertData(const char* data, uInt leng);
 
-private:
-    // Remove a data item with the given length.
-    // If the length is zero, its variable length is read first.
-    void removeData (uInt offset, uInt leng);
+  // Copy a data item from this bucket to the other bucket.
+  uInt copyData(ISMBucket& other, uInt colnr, rownr_t toRownr, uInt fromIndex, uInt toIndex) const;
 
-    // Insert a data value by appending it to the end.
-    // It returns the offset of the data value.
-    uInt insertData (const char* data, uInt leng);
+  // Read the data from the storage into this bucket.
+  void read(const char* bucketStorage);
 
-    // Copy a data item from this bucket to the other bucket.
-    uInt copyData (ISMBucket& other, uInt colnr, rownr_t toRownr,
-		   uInt fromIndex, uInt toIndex) const;
+  // Write the bucket into the storage.
+  void write(char* bucketStorage) const;
 
-    // Read the data from the storage into this bucket.
-    void read (const char* bucketStorage);
-
-    // Write the bucket into the storage.
-    void write (char* bucketStorage) const;
-
-
-    //# Declare member variables.
-    // Pointer to the parent storage manager.
-    ISMBase*          stmanPtr_p;
-    // The size (in bytes) of an uInt and rownr_t (used in index, etc.).
-    uInt              uIntSize_p;
-    uInt              rownrSize_p;
-    // The size (in bytes) of the data.
-    uInt              dataLeng_p;
-    // The size (in bytes) of the index.
-    uInt              indexLeng_p;
-    // The row index per column; each index contains the row number
-    // of each value stored in the bucket (for that column).
-    Block<Block<rownr_t>*> rowIndex_p;
-    // The offset index per column; each index contains the offset (in bytes)
-    // of each value stored in the bucket (for that column).
-    Block<Block<uInt>*> offIndex_p;
-    // Nr of used elements in each index; i.e. the number of stored values
-    // per column.
-    Block<uInt>       indexUsed_p;
-    // The data space (in external (e.g. canonical) format).
-    char*             data_p;
+  // # Declare member variables.
+  //  Pointer to the parent storage manager.
+  ISMBase* stmanPtr_p;
+  // The size (in bytes) of an uInt and rownr_t (used in index, etc.).
+  uInt uIntSize_p;
+  uInt rownrSize_p;
+  // The size (in bytes) of the data.
+  uInt dataLeng_p;
+  // The size (in bytes) of the index.
+  uInt indexLeng_p;
+  // The row index per column; each index contains the row number
+  // of each value stored in the bucket (for that column).
+  Block<Block<rownr_t>*> rowIndex_p;
+  // The offset index per column; each index contains the offset (in bytes)
+  // of each value stored in the bucket (for that column).
+  Block<Block<uInt>*> offIndex_p;
+  // Nr of used elements in each index; i.e. the number of stored values
+  // per column.
+  Block<uInt> indexUsed_p;
+  // The data space (in external (e.g. canonical) format).
+  char* data_p;
 };
 
+inline const char* ISMBucket::get(uInt offset) const { return data_p + offset; }
+inline Block<rownr_t>& ISMBucket::rowIndex(uInt colnr) { return *(rowIndex_p[colnr]); }
+inline Block<uInt>& ISMBucket::offIndex(uInt colnr) { return *(offIndex_p[colnr]); }
+inline uInt& ISMBucket::indexUsed(uInt colnr) { return indexUsed_p[colnr]; }
 
-inline const char* ISMBucket::get (uInt offset) const
-{
-    return data_p + offset;
-}
-inline Block<rownr_t>& ISMBucket::rowIndex (uInt colnr)
-{
-    return *(rowIndex_p[colnr]);
-}
-inline Block<uInt>& ISMBucket::offIndex (uInt colnr)
-{
-    return *(offIndex_p[colnr]);
-}
-inline uInt& ISMBucket::indexUsed (uInt colnr)
-{
-    return indexUsed_p[colnr];
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

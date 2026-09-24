@@ -1,40 +1,38 @@
-//# SSMIndStringColumn.h: An Indirect String Array Column in the SSM
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SSMIndStringColumn.h: An Indirect String Array Column in the SSM
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_SSMINDSTRINGCOLUMN_H
 #define TABLES_SSMINDSTRINGCOLUMN_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/SSMDirColumn.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
-
+// # Forward declarations
 
 // <summary>
 // An Indirect String Array Column in the Standard Storage Manager.
@@ -46,14 +44,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=SSMBase>SSMBase</linkto>
 //   <li> <linkto class=SSMDirColumn>SSMColumn</linkto>
 //   <li> <linkto class=SSMStringHandler>SSMStringHandler</linkto>
 // </prerequisite>
 
 // <etymology>
-// SSMIndStringColumn represents an Indirect String Array Column in the 
+// SSMIndStringColumn represents an Indirect String Array Column in the
 // Standard Storage Manager.
 // </etymology>
 
@@ -68,7 +66,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The only thing it does is accessing the bucketnr, offset, and length
 // in the data bucket.
 // </synopsis>
-  
+
 // <motivation>
 // The reason that indirect string arrays are handled here instead of
 // in <linkto class=SSMIndColumn>SSMIndColumn</linkto> is that the string
@@ -76,56 +74,48 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // updated.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-
-class SSMIndStringColumn : public SSMDirColumn
-{
-public:
+class SSMIndStringColumn : public SSMDirColumn {
+ public:
   // Create a SSMIndStringColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  SSMIndStringColumn (SSMBase* aParent, int aDataType, uInt aColNr);
-  
+  SSMIndStringColumn(SSMBase* aParent, int aDataType, uInt aColNr);
+
   virtual ~SSMIndStringColumn();
 
   // Forbid copy constructor.
-  SSMIndStringColumn (const SSMIndStringColumn&) = delete;
-  
+  SSMIndStringColumn(const SSMIndStringColumn&) = delete;
+
   // Forbid assignment.
-  SSMIndStringColumn& operator= (const SSMIndStringColumn&) = delete;
+  SSMIndStringColumn& operator=(const SSMIndStringColumn&) = delete;
 
   // Get an array value in the given row.
   // An exception is thrown if no array is defined in this row.
-  virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
-  
+  virtual void getArrayV(rownr_t rownr, ArrayBase& dataPtr);
+
   // Put an array value in the given row.
-  virtual void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
+  virtual void putArrayV(rownr_t rownr, const ArrayBase& dataPtr);
 
   // Set the shape of the array in the given row.
-  void setShape (rownr_t aRowNr, const IPosition& aShape);
-  
+  void setShape(rownr_t aRowNr, const IPosition& aShape);
+
   // Get the shape of the array in the given row.
-  virtual IPosition shape (rownr_t aRowNr);
-  
+  virtual IPosition shape(rownr_t aRowNr);
+
   // This storage manager can handle changing array shapes.
   Bool canChangeShape() const;
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined (rownr_t aRowNr);
+  virtual Bool isShapeDefined(rownr_t aRowNr);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (rownr_t aRowNr);
+  virtual uInt ndim(rownr_t aRowNr);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-
-
-

@@ -1,36 +1,35 @@
-//# StorageOption.h: Options defining how table files are organized
-//# Copyright (C) 2014
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have receied a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # StorageOption.h: Options defining how table files are organized
+// # Copyright (C) 2014
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have receied a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_STORAGEOPTION_H
 #define TABLES_STORAGEOPTION_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Options defining how table files are organized
@@ -70,68 +69,61 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // </synopsis>
 
-
-  class StorageOption
-  {
-  public:
-    // Define the possible options how table files are organized.
-    enum Option {
-      // Let storage managers use a combined MultiFile.
-      MultiFile,
-      // Let storage managers use a combined MultiHDF5.
-      MultiHDF5,
-      // Let storage managers use separate files.
-      SepFile,
-      // Use default (currently SepFile).
-      Default,
-      // Use as defined in the aipsrc file.
-      Aipsrc
-    };
-
-    // Create an option object.
-    // The parameter values are described in the synopsis.
-    // The blocksize has to be given in bytes.
-    // A size value -2 means reading that size from the aipsrc file.
-    // A size value -1 means use the default of 4*1024*1024.
-    // <br>useODirect<0 means reading the option from the aipsrc file.
-    // It is only set if the OS supports O_DIRECT.
-    StorageOption (Option option=Aipsrc, Int blockSize=-2, Int useODirect=-3);
-
-    // Fill the option in case Aipsrc or Default was given.
-    // It is done as explained in the synopsis.
-    void fillOption();
-
-    // Get the option.
-    Option option() const
-      { return itsOption; }
-
-    // Set the option.
-    void setOption (Option option)
-      { itsOption = option; }
-
-    // Get the block size (in bytes).
-    uInt blockSize() const
-      { return itsBlockSize; }
-
-    // Set the block size (in bytes).
-    void setBlockSize (Int blockSize)
-      { itsBlockSize = blockSize; }
-
-    // Get the O_DIRECT option.
-    Bool useODirect() const
-      { return itsUseODirect; }
-
-    // Set the O_DIRECT option.
-    // It is only set if the OS supports O_DIRECT.
-    void setUseODirect (Bool useODirect);
-
-  private:
-    Option itsOption;
-    Int    itsBlockSize;
-    Bool   itsUseODirect;
-    Bool   itsUseAipsrcODirect;
+class StorageOption {
+ public:
+  // Define the possible options how table files are organized.
+  enum Option {
+    // Let storage managers use a combined MultiFile.
+    MultiFile,
+    // Let storage managers use a combined MultiHDF5.
+    MultiHDF5,
+    // Let storage managers use separate files.
+    SepFile,
+    // Use default (currently SepFile).
+    Default,
+    // Use as defined in the aipsrc file.
+    Aipsrc
   };
 
-} //# NAMESPACE CASACORE - END
+  // Create an option object.
+  // The parameter values are described in the synopsis.
+  // The blocksize has to be given in bytes.
+  // A size value -2 means reading that size from the aipsrc file.
+  // A size value -1 means use the default of 4*1024*1024.
+  // <br>useODirect<0 means reading the option from the aipsrc file.
+  // It is only set if the OS supports O_DIRECT.
+  StorageOption(Option option = Aipsrc, Int blockSize = -2, Int useODirect = -3);
+
+  // Fill the option in case Aipsrc or Default was given.
+  // It is done as explained in the synopsis.
+  void fillOption();
+
+  // Get the option.
+  Option option() const { return itsOption; }
+
+  // Set the option.
+  void setOption(Option option) { itsOption = option; }
+
+  // Get the block size (in bytes).
+  uInt blockSize() const { return itsBlockSize; }
+
+  // Set the block size (in bytes).
+  void setBlockSize(Int blockSize) { itsBlockSize = blockSize; }
+
+  // Get the O_DIRECT option.
+  Bool useODirect() const { return itsUseODirect; }
+
+  // Set the O_DIRECT option.
+  // It is only set if the OS supports O_DIRECT.
+  void setUseODirect(Bool useODirect);
+
+ private:
+  Option itsOption;
+  Int itsBlockSize;
+  Bool itsUseODirect;
+  Bool itsUseAipsrcODirect;
+};
+
+}  // namespace casacore
 
 #endif

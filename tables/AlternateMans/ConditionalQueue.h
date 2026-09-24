@@ -69,8 +69,7 @@ class ConditionalQueue {
    * owned when the condition function is called.
    */
   template <typename Condition>
-  bool PopIf(T& result, std::unique_lock<std::mutex>& lock,
-             Condition condition) {
+  bool PopIf(T& result, std::unique_lock<std::mutex>& lock, Condition condition) {
     assert(lock.owns_lock());
 
     typename std::list<T>::iterator iterator = GetNext(condition);
@@ -117,8 +116,7 @@ class ConditionalQueue {
  private:
   template <typename Condition>
   std::list<T>::iterator GetNext(Condition&& condition) {
-    for (typename std::list<T>::iterator i = values_.begin();
-         i != values_.end(); ++i) {
+    for (typename std::list<T>::iterator i = values_.begin(); i != values_.end(); ++i) {
       if (condition(*i)) return i;
     }
     return values_.end();

@@ -42,18 +42,15 @@ class StochasticEncoder {
    * to the real stddev, the more accurate the encoder will be.
    * @param gaussianMapping Used for testing with non-gaussian distributions.
    */
-  StochasticEncoder(size_t quantCount, ValueType stddev,
-                    bool gaussianMapping = true);
+  StochasticEncoder(size_t quantCount, ValueType stddev, bool gaussianMapping = true);
 
-  static StochasticEncoder StudentTEncoder(size_t quantCount, double nu,
-                                           double rms) {
+  static StochasticEncoder StudentTEncoder(size_t quantCount, double nu, double rms) {
     StochasticEncoder<ValueType> encoder(quantCount);
     encoder.initializeStudentT(nu, rms);
     return encoder;
   }
 
-  static StochasticEncoder TruncatedGausEncoder(size_t quantCount, double trunc,
-                                                double rms) {
+  static StochasticEncoder TruncatedGausEncoder(size_t quantCount, double trunc, double rms) {
     StochasticEncoder<ValueType> encoder(quantCount);
     encoder.initializeTruncatedGaussian(trunc, rms);
     return encoder;
@@ -102,17 +99,13 @@ class StochasticEncoder {
    */
   symbol_t EncodeWithDithering(ValueType value, unsigned ditherValue) const {
     if (std::isfinite(value)) {
-      const typename Dictionary::const_iterator lowerBound =
-          _decDictionary.lower_bound(value);
-      if (lowerBound == _decDictionary.begin())
-        return _decDictionary.symbol(lowerBound);
-      if (lowerBound == _decDictionary.end())
-        return _decDictionary.symbol(lowerBound - 1);
+      const typename Dictionary::const_iterator lowerBound = _decDictionary.lower_bound(value);
+      if (lowerBound == _decDictionary.begin()) return _decDictionary.symbol(lowerBound);
+      if (lowerBound == _decDictionary.end()) return _decDictionary.symbol(lowerBound - 1);
       const ValueType rightValue = _decDictionary.value(lowerBound);
       const ValueType leftValue = _decDictionary.value(lowerBound - 1);
 
-      ValueType ditherMark =
-          ValueType(1u << 31) * (value - leftValue) / (rightValue - leftValue);
+      ValueType ditherMark = ValueType(1u << 31) * (value - leftValue) / (rightValue - leftValue);
       if (ditherMark > ditherValue)
         return _decDictionary.symbol(lowerBound);
       else
@@ -140,9 +133,7 @@ class StochasticEncoder {
    * @param symbol Symbol to be decoded
    * @returns The best estimate of the original value.
    */
-  ValueType Decode(symbol_t symbol) const {
-    return _decDictionary.value(symbol);
-  }
+  ValueType Decode(symbol_t symbol) const { return _decDictionary.value(symbol); }
 
   size_t QuantizationCount() const { return _decDictionary.size() + 1; }
 

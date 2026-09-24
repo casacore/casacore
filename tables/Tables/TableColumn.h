@@ -1,54 +1,50 @@
-//# TableColumn.h: Access to a table column
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableColumn.h: Access to a table column
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLECOLUMN_H
 #define TABLES_TABLECOLUMN_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/Tables/BaseTable.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Table;
 class BaseTable;
 
-
-//# Check the number of rows in debug mode.
+// # Check the number of rows in debug mode.
 #if defined(AIPS_DEBUG)
-# define TABLECOLUMNCHECKROW(ROWNR) \
-    (checkRowNumber (ROWNR))
+#define TABLECOLUMNCHECKROW(ROWNR) (checkRowNumber(ROWNR))
 #else
-# define TABLECOLUMNCHECKROW(ROWNR)
+#define TABLECOLUMNCHECKROW(ROWNR)
 #endif
-
 
 // <summary>
 // Read/write access to a table column
@@ -68,7 +64,7 @@ class BaseTable;
 // The class TableColumn gives read and write access to a column
 // in a table. In particular access to the column description
 // (for name, data type, etc.) and to the column keyword set
-// can be obtained. 
+// can be obtained.
 // Another important function is isDefined, which tests if a
 // cell (i.e. table row) in a column contains a value.
 //
@@ -92,324 +88,386 @@ class BaseTable;
 // See module <linkto module="Tables#open">Tables</linkto>.
 // </example>
 
+class TableColumn {
+  friend class ForwardColumn;  // # for function baseColPtr()
 
-class TableColumn
-{
-friend class ForwardColumn;      //# for function baseColPtr()
+ public:
+  // The default constructor creates a null object, i.e. it
+  // does not reference a table column.
+  // The sole purpose of this constructor is to allow construction
+  // of an array of TableColumn objects.
+  // The functions reference and attach can be used to make a null object
+  // reference a column.
+  // Note that get functions, etc. will cause a segmentation fault
+  // when operating on a null object. It was felt it was too expensive
+  // to test on null over and over again. The user should use the isNull
+  // or throwIfNull function in case of doubt.
+  TableColumn();
 
-public:
+  // Construct the object for a column in the table using its name.
+  TableColumn(const Table&, const String& columnName);
 
-    // The default constructor creates a null object, i.e. it
-    // does not reference a table column.
-    // The sole purpose of this constructor is to allow construction
-    // of an array of TableColumn objects.
-    // The functions reference and attach can be used to make a null object
-    // reference a column.
-    // Note that get functions, etc. will cause a segmentation fault
-    // when operating on a null object. It was felt it was too expensive
-    // to test on null over and over again. The user should use the isNull
-    // or throwIfNull function in case of doubt.
-    TableColumn();
+  // Construct the object for a column in the table using its index.
+  // This allows to loop through all columns in a table as:
+  // <srcblock>
+  //    for (uInt=0; i<tab.ncolumn(); i++) {
+  //        TableColumn tabcol(tab,i);
+  //    }
+  // </srcblock>
+  TableColumn(const Table&, uInt columnIndex);
 
-    // Construct the object for a column in the table using its name.
-    TableColumn (const Table&, const String& columnName);
+  // Copy constructor (reference semantics).
+  TableColumn(const TableColumn&);
 
-    // Construct the object for a column in the table using its index.
-    // This allows to loop through all columns in a table as:
-    // <srcblock>
-    //    for (uInt=0; i<tab.ncolumn(); i++) {
-    //        TableColumn tabcol(tab,i);
-    //    }
-    // </srcblock>
-    TableColumn (const Table&, uInt columnIndex);
+  virtual ~TableColumn();
 
-    // Copy constructor (reference semantics).
-    TableColumn (const TableColumn&);
+  // Assignment has reference semantics.
+  // It copies the object, not the data of that column to this column.
+  // Function <src>putColumn</src> can be used to copy the data of a column.
+  // <br>It does the same as the reference function.
+  TableColumn& operator=(const TableColumn&);
 
-    virtual ~TableColumn();
+  // Clone the object.
+  virtual TableColumn* clone() const;
 
-    // Assignment has reference semantics.
-    // It copies the object, not the data of that column to this column.
-    // Function <src>putColumn</src> can be used to copy the data of a column.
-    // <br>It does the same as the reference function.
-    TableColumn& operator= (const TableColumn&);	
+  // Change the reference to another column.
+  // This is in fact an assignment operator with reference semantics.
+  // It removes the reference to the current column and creates
+  // a reference to the column referenced in the other object.
+  // It will handle null objects correctly.
+  void reference(const TableColumn&);
 
-    // Clone the object.
-    virtual TableColumn* clone() const;
+  // Attach a column to the object.
+  // This is in fact only a shorthand for
+  // <<br><src> reference (TableColumn (table, columnName)); </src>
+  // <group>
+  void attach(const Table& table, const String& columnName) {
+    reference(TableColumn(table, columnName));
+  }
+  void attach(const Table& table, uInt columnIndex) { reference(TableColumn(table, columnIndex)); }
+  // </group>
 
-    // Change the reference to another column.
-    // This is in fact an assignment operator with reference semantics.
-    // It removes the reference to the current column and creates
-    // a reference to the column referenced in the other object.
-    // It will handle null objects correctly.
-    void reference (const TableColumn&);
+  // Test if the object is null, i.e. does not reference a column.
+  Bool isNull() const { return (baseColPtr_p == 0 ? True : False); }
 
-    // Attach a column to the object.
-    // This is in fact only a shorthand for 
-    // <<br><src> reference (TableColumn (table, columnName)); </src>
-    // <group>
-    void attach (const Table& table, const String& columnName)
-	{ reference (TableColumn (table, columnName)); }
-    void attach (const Table& table, uInt columnIndex)
-	{ reference (TableColumn (table, columnIndex)); }
-    // </group>
+  // Throw an exception if the object is null, i.e.
+  // if function isNull() is True.
+  void throwIfNull() const;
 
-    // Test if the object is null, i.e. does not reference a column.
-    Bool isNull() const
-	{ return (baseColPtr_p == 0  ?  True : False); }
+  // Test if the column can be written to, thus if the column and
+  // the underlying table can be written to.
+  Bool isWritable() const { return baseTabPtr_p->isWritable() && isColWritable_p; }
 
-    // Throw an exception if the object is null, i.e.
-    // if function isNull() is True.
-    void throwIfNull() const;
+  // Test if the column is writable at all (virtual columns might not be).
+  // Note that keywords can always be written, even for virtual columns.
+  Bool isWritableAtAll() const { return isColWritable_p; }
 
-    // Test if the column can be written to, thus if the column and
-    // the underlying table can be written to.
-    Bool isWritable() const
-        { return baseTabPtr_p->isWritable()  &&  isColWritable_p; }
+  // Check if the column is writable and throw an exception if not.
+  void checkWritable() const {
+    if (!isWritable()) throwNotWritable();
+  }
 
-    // Test if the column is writable at all (virtual columns might not be).
-    // Note that keywords can always be written, even for virtual columns.
-    Bool isWritableAtAll() const
-        { return isColWritable_p; }
+  // Get readonly access to the column keyword set.
+  const TableRecord& keywordSet() const { return baseColPtr_p->keywordSet(); }
 
-    // Check if the column is writable and throw an exception if not.
-    void checkWritable() const
-        { if (!isWritable()) throwNotWritable(); }
+  // Get read/write access to the column keyword set.
+  // An exception is thrown if the table is not writable.
+  TableRecord& rwKeywordSet();
 
-    // Get readonly access to the column keyword set.
-    const TableRecord& keywordSet() const
-	{ return baseColPtr_p->keywordSet(); }
+  // Get const access to the column description.
+  // ColumnDesc functions have to be used to get the data type, etc..
+  const ColumnDesc& columnDesc() const;
 
-    // Get read/write access to the column keyword set.
-    // An exception is thrown if the table is not writable.
-    TableRecord& rwKeywordSet();
+  // Get the Table object this column belongs to.
+  Table table() const;
 
-    // Get const access to the column description.
-    // ColumnDesc functions have to be used to get the data type, etc..
-    const ColumnDesc& columnDesc() const;
+  // Get the number of rows in the column.
+  rownr_t nrow() const { return baseColPtr_p->nrow(); }
 
-    // Get the Table object this column belongs to.
-    Table table() const;
+  // Can the shape of an already existing non-FixedShape array be changed?
+  // This depends on the storage manager. Most storage managers
+  // can handle it, but TiledDataStMan and TiledColumnStMan can not.
+  Bool canChangeShape() const { return canChangeShape_p; }
 
-    // Get the number of rows in the column.
-    rownr_t nrow() const
-	{ return baseColPtr_p->nrow(); }
+  // Get the global #dimensions of an array (ie. for all cells in column).
+  // This is always set for fixed shape arrays.
+  // Otherwise, 0 will be returned.
+  uInt ndimColumn() const { return baseColPtr_p->ndimColumn(); }
 
-    // Can the shape of an already existing non-FixedShape array be changed?
-    // This depends on the storage manager. Most storage managers
-    // can handle it, but TiledDataStMan and TiledColumnStMan can not.
-    Bool canChangeShape() const
-        { return canChangeShape_p; }
+  // Get the global shape of an array (ie. for all cells in the column).
+  // This is always set for fixed shape arrays.
+  // Otherwise, a 0-dim shape will be returned.
+  IPosition shapeColumn() const { return baseColPtr_p->shapeColumn(); }
 
-    // Get the global #dimensions of an array (ie. for all cells in column).
-    // This is always set for fixed shape arrays.
-    // Otherwise, 0 will be returned.
-    uInt ndimColumn() const
-	{ return baseColPtr_p->ndimColumn(); }
+  // Test if the given cell contains a defined value.
+  Bool isDefined(rownr_t rownr) const {
+    TABLECOLUMNCHECKROW(rownr);
+    return baseColPtr_p->isDefined(rownr);
+  }
 
-    // Get the global shape of an array (ie. for all cells in the column).
-    // This is always set for fixed shape arrays.
-    // Otherwise, a 0-dim shape will be returned.
-    IPosition shapeColumn() const
-	{ return baseColPtr_p->shapeColumn(); }
+  // Does the column has content in the given row (default is the first row)?
+  // It has if it is defined and does not contain an empty array.
+  Bool hasContent(rownr_t rownr = 0) const;
 
-    // Test if the given cell contains a defined value.
-    Bool isDefined (rownr_t rownr) const
-	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->isDefined (rownr); }
+  // Get the #dimensions of an array in a particular cell.
+  uInt ndim(rownr_t rownr) const {
+    TABLECOLUMNCHECKROW(rownr);
+    return baseColPtr_p->ndim(rownr);
+  }
 
-    // Does the column has content in the given row (default is the first row)?
-    // It has if it is defined and does not contain an empty array.
-    Bool hasContent (rownr_t rownr=0) const;
+  // Get the shape of an array in a particular cell.
+  IPosition shape(rownr_t rownr) const {
+    TABLECOLUMNCHECKROW(rownr);
+    return baseColPtr_p->shape(rownr);
+  }
 
-    // Get the #dimensions of an array in a particular cell.
-    uInt ndim (rownr_t rownr) const
-	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
+  // Get the tile shape of an array in a particular cell.
+  IPosition tileShape(rownr_t rownr) const {
+    TABLECOLUMNCHECKROW(rownr);
+    return baseColPtr_p->tileShape(rownr);
+  }
 
-    // Get the shape of an array in a particular cell.
-    IPosition shape (rownr_t rownr) const
-	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->shape (rownr); }
+  // Get the value of a scalar in the given row.
+  // Data type promotion is possible.
+  // These functions only work for the standard data types.
+  // <group>
+  void getScalar(rownr_t rownr, Bool& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, uChar& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, Short& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, uShort& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, Int& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, uInt& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, Int64& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, float& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, double& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, Complex& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, DComplex& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  void getScalar(rownr_t rownr, String& value) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value);
+  }
+  // </group>
 
-    // Get the tile shape of an array in a particular cell.
-    IPosition tileShape (rownr_t rownr) const
-	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->tileShape (rownr); }
+  // Get the value from the row and convert it to the required type.
+  // This can only be used for scalar columns with a standard data type.
+  // <group>
+  Bool asBool(rownr_t rownr) const;
+  uChar asuChar(rownr_t rownr) const;
+  Short asShort(rownr_t rownr) const;
+  uShort asuShort(rownr_t rownr) const;
+  Int asInt(rownr_t rownr) const;
+  uInt asuInt(rownr_t rownr) const;
+  Int64 asInt64(rownr_t rownr) const;
+  float asfloat(rownr_t rownr) const;
+  double asdouble(rownr_t rownr) const;
+  Complex asComplex(rownr_t rownr) const;
+  DComplex asDComplex(rownr_t rownr) const;
+  String asString(rownr_t rownr) const;
+  // </group>
 
-    // Get the value of a scalar in the given row.
-    // Data type promotion is possible.
-    // These functions only work for the standard data types.
-    // <group>
-    void getScalar (rownr_t rownr, Bool& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, uChar& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, Short& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, uShort& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, Int& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, uInt& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, Int64& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, float& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, double& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, Complex& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, DComplex& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    void getScalar (rownr_t rownr, String& value) const
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
-    // </group>
+  // Get the value of a scalar in the given row.
+  // These functions work for all data types.
+  // Data type promotion is possible for the standard data types.
+  // The functions are primarily meant for ScalarColumn<T>.
+  // <group>
+  void getScalarValue(rownr_t rownr, Bool* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, uChar* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, Short* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, uShort* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, Int* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, uInt* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, Int64* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, float* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, double* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, Complex* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, DComplex* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, String* value, const String&) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, *value);
+  }
+  void getScalarValue(rownr_t rownr, void* value, const String& dataTypeId) const {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->getScalar(rownr, value, dataTypeId);
+  }
+  // </group>
 
-    // Get the value from the row and convert it to the required type.
-    // This can only be used for scalar columns with a standard data type.
-    // <group>
-    Bool     asBool     (rownr_t rownr) const;
-    uChar    asuChar    (rownr_t rownr) const;
-    Short    asShort    (rownr_t rownr) const;
-    uShort   asuShort   (rownr_t rownr) const;
-    Int      asInt      (rownr_t rownr) const;
-    uInt     asuInt     (rownr_t rownr) const;
-    Int64    asInt64    (rownr_t rownr) const;
-    float    asfloat    (rownr_t rownr) const;
-    double   asdouble   (rownr_t rownr) const;
-    Complex  asComplex  (rownr_t rownr) const;
-    DComplex asDComplex (rownr_t rownr) const;
-    String   asString   (rownr_t rownr) const;
-    // </group>
+  // Copy the value of a cell of that column to a cell of this column.
+  // This function only works for the standard data types.
+  // Data type promotion will be done if needed.
+  // An exception is thrown if this column is not writable or if
+  // the data cannot be converted.
+  // <group>
+  // Use the same row numbers for both cells.
+  void put(rownr_t rownr, const TableColumn& that, Bool preserveTileShape = False) {
+    put(rownr, that, rownr, preserveTileShape);
+  }
+  // Use possibly different row numbers for that (i.e. input) and
+  // and this (i.e. output) cell.
+  virtual void put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
+                   Bool preserveTileShape = False);
+  // </group>
 
-    // Get the value of a scalar in the given row.
-    // These functions work for all data types.
-    // Data type promotion is possible for the standard data types.
-    // The functions are primarily meant for ScalarColumn<T>.
-    // <group>
-    void getScalarValue (rownr_t rownr, Bool* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, uChar* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, Short* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, uShort* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, Int* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, uInt* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, Int64* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, float* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, double* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, Complex* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, DComplex* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, String* value, const String&) const
-        { TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr,*value); }
-    void getScalarValue (rownr_t rownr, void* value,
-			 const String& dataTypeId) const
-        { TABLECOLUMNCHECKROW(rownr);
-	  baseColPtr_p->getScalar (rownr,value,dataTypeId); }
-    // </group>
+  // Copy the values of that column to this column.
+  // The numbers of rows in both columns must be equal.
+  // Data type promotion is possible.
+  // An exception is thrown if the data cannot be converted.
+  // This function is useful to copy one column to another without
+  // knowing their data types.
+  // In fact, this function is an assignment operator with copy semantics.
+  void putColumn(const TableColumn& that);
 
-    // Copy the value of a cell of that column to a cell of this column.
-    // This function only works for the standard data types.
-    // Data type promotion will be done if needed.
-    // An exception is thrown if this column is not writable or if
-    // the data cannot be converted.
-    // <group>
-    // Use the same row numbers for both cells.
-    void put (rownr_t rownr, const TableColumn& that,
-              Bool preserveTileShape=False)
-      { put (rownr, that, rownr, preserveTileShape); }
-    // Use possibly different row numbers for that (i.e. input) and
-    // and this (i.e. output) cell.
-    virtual void put (rownr_t thisRownr, const TableColumn& that,
-		      rownr_t thatRownr, Bool preserveTileShape=False);
-    // </group>
+  // Put the value of a scalar in the given row.
+  // Data type promotion is possible.
+  // These functions only work for the standard data types.
+  // <group>
+  void putScalar(rownr_t rownr, const Bool& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const uChar& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const Short& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const uShort& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const Int& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const uInt& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const Int64& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const float& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const double& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const Complex& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const DComplex& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const String& value) {
+    TABLECOLUMNCHECKROW(rownr);
+    baseColPtr_p->putScalar(rownr, value);
+  }
+  void putScalar(rownr_t rownr, const Char* value) { putScalar(rownr, String(value)); }
+  // </group>
 
-    // Copy the values of that column to this column.
-    // The numbers of rows in both columns must be equal.
-    // Data type promotion is possible.
-    // An exception is thrown if the data cannot be converted.
-    // This function is useful to copy one column to another without
-    // knowing their data types.
-    // In fact, this function is an assignment operator with copy semantics.
-    void putColumn (const TableColumn& that);
+  // Check if the row number is valid.
+  // It throws an exception if out of range.
+  void checkRowNumber(rownr_t rownr) const { baseTabPtr_p->checkRowNumber(rownr); }
 
-    // Put the value of a scalar in the given row.
-    // Data type promotion is possible.
-    // These functions only work for the standard data types.
-    // <group>
-    void putScalar (rownr_t rownr, const Bool& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const uChar& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const Short& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const uShort& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const Int& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const uInt& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const Int64& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const float& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const double& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const Complex& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const DComplex& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const String& value)
-	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
-    void putScalar (rownr_t rownr, const Char* value)
-	{ putScalar (rownr, String(value)); }
-    // </group>
+  // Set the maximum cache size (in bytes) to be used by a storage manager.
+  void setMaximumCacheSize(uInt nbytes) const { baseColPtr_p->setMaximumCacheSize(nbytes); }
 
-    // Check if the row number is valid.
-    // It throws an exception if out of range.
-    void checkRowNumber (rownr_t rownr) const
-        { baseTabPtr_p->checkRowNumber (rownr); }
+ protected:
+  BaseTable* baseTabPtr_p;
+  BaseColumn* baseColPtr_p;  // # pointer to real column object
+  const ColumnCache* colCachePtr_p;
+  Bool canChangeShape_p;
+  Bool isColWritable_p;  // # is the column writable at all?
 
-    // Set the maximum cache size (in bytes) to be used by a storage manager.
-    void setMaximumCacheSize (uInt nbytes) const
-        { baseColPtr_p->setMaximumCacheSize (nbytes); }
+  // Get the baseColPtr_p of this TableColumn object.
+  BaseColumn* baseColPtr() const { return baseColPtr_p; }
 
-protected:
-    BaseTable*  baseTabPtr_p;
-    BaseColumn* baseColPtr_p;                //# pointer to real column object
-    const ColumnCache* colCachePtr_p;
-    Bool canChangeShape_p;
-    Bool isColWritable_p;                    //# is the column writable at all?
+  // Get the baseColPtr_p of another TableColumn object.
+  // This is needed for function put, because baseColPtr_p is a
+  // protected member of TableColumn. Another TableColumn has
+  // no access to that.
+  BaseColumn* baseColPtr(const TableColumn& that) const { return that.baseColPtr_p; }
 
-
-    // Get the baseColPtr_p of this TableColumn object.
-    BaseColumn* baseColPtr () const
-	{ return baseColPtr_p; }
-
-    // Get the baseColPtr_p of another TableColumn object.
-    // This is needed for function put, because baseColPtr_p is a
-    // protected member of TableColumn. Another TableColumn has
-    // no access to that.
-    BaseColumn* baseColPtr (const TableColumn& that) const
-	{ return that.baseColPtr_p; }
-
-private:
-    // Throw the exception that the column is not writable.
-    void throwNotWritable() const;
+ private:
+  // Throw the exception that the column is not writable.
+  void throwNotWritable() const;
 };
-
 
 // Define ROTableColumn for backward compatibility.
 typedef TableColumn ROTableColumn;
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

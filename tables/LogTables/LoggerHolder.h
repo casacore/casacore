@@ -1,40 +1,40 @@
-//# LoggerHolder.h: Class holding a hierarchy of loggers
-//# Copyright (C) 2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LoggerHolder.h: Class holding a hierarchy of loggers
+// # Copyright (C) 2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_LOGGERHOLDER_H
 #define TABLES_LOGGERHOLDER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Containers/Block.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class LoggerHolderRep;
 class LoggerHolderIterator;
 class TableLogSink;
@@ -111,31 +111,30 @@ class TableLogSink;
 // This class simplifies and unifies all Image logging activities.
 // </motivation>
 
-//# <todo asof="2001/06/14">
-//# </todo>
+// # <todo asof="2001/06/14">
+// # </todo>
 
-class LoggerHolder
-{
-public:
+class LoggerHolder {
+ public:
   // Create with a NullSink or MemoryLogSink (default).
-  explicit LoggerHolder (Bool nullSink = False);
+  explicit LoggerHolder(Bool nullSink = False);
 
   // Create with a TableLogSink.
-  LoggerHolder (const String& logTableName, Bool isWritable);
+  LoggerHolder(const String& logTableName, Bool isWritable);
 
   // Copy constructor (reference semantics).
-  LoggerHolder (const LoggerHolder&);
+  LoggerHolder(const LoggerHolder&);
 
   ~LoggerHolder();
 
   // Assignment (reference semantics).
-  LoggerHolder& operator= (const LoggerHolder&);
+  LoggerHolder& operator=(const LoggerHolder&);
 
   // Add a logger from a parent.
-  void addParent (const LoggerHolder&);
+  void addParent(const LoggerHolder&);
 
   // Append the entries of the other logger to this one.
-  void append (const LoggerHolder& other);
+  void append(const LoggerHolder& other);
 
   // Reopen a readonly logtable for read/write (if needed).
   void reopenRW();
@@ -145,7 +144,7 @@ public:
 
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
-  void tempClose (Bool closeParents = True) const;
+  void tempClose(Bool closeParents = True) const;
 
   // Unlock the log table.
   void unlock();
@@ -200,13 +199,9 @@ public:
   const_iterator end() const;
   // </group>
 
-
-private:
+ private:
   std::shared_ptr<LoggerHolderRep> itsRep;
 };
-
-
-
 
 // <summary>
 // Representation of the class holding a hierarchy of loggers.
@@ -232,43 +227,43 @@ private:
 // object after the (ImageInterface) object containing it is gone.
 // </motivation>
 
-//# <todo asof="2001/06/14">
-//# </todo>
+// # <todo asof="2001/06/14">
+// # </todo>
 
-class LoggerHolderRep
-{
-public:
+class LoggerHolderRep {
+ public:
   // Create with a NullSink or MemoryLogSink (default).
-  LoggerHolderRep (Bool nullSink);
+  LoggerHolderRep(Bool nullSink);
 
   // Create with a TableLogSink.
-  LoggerHolderRep (const String& logTableName, Bool isWritable);
+  LoggerHolderRep(const String& logTableName, Bool isWritable);
 
   // Copy constructor.
-  LoggerHolderRep (const LoggerHolderRep&);
+  LoggerHolderRep(const LoggerHolderRep&);
 
   ~LoggerHolderRep();
 
   // Assignment.
   // It removes the current parents.
-  LoggerHolderRep& operator= (const LoggerHolderRep&);
+  LoggerHolderRep& operator=(const LoggerHolderRep&);
 
   // Add a logger from a parent.
-  void addParent (const LoggerHolder&);
+  void addParent(const LoggerHolder&);
 
   // Append the entries of the other logger to this one.
-  void append (const LoggerHolder& other);
+  void append(const LoggerHolder& other);
 
   // Reopen a readonly logtable for read/write (if needed).
   void reopenRW();
 
   // Reopen the log table if needed (after a tempClose).
-  void reopen()
-    { if (itsIsClosed) doReopen(); }
+  void reopen() {
+    if (itsIsClosed) doReopen();
+  }
 
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
-  void tempClose (Bool closeParents = True);
+  void tempClose(Bool closeParents = True);
 
   // Unlock the log table.
   void unlock();
@@ -280,8 +275,7 @@ public:
   void resync();
 
   // Is the log table temporarily closed?
-  Bool isTempClosed() const
-    { return itsIsClosed; }
+  Bool isTempClosed() const { return itsIsClosed; }
 
   // Get access to the logger.
   // It assumes that it will be used to post a message, so it reopens
@@ -301,8 +295,7 @@ public:
   void removeParents();
 
   // Return the block of parents.
-  const Block<LoggerHolder>& parents() const
-    { return itsParents; }
+  const Block<LoggerHolder>& parents() const { return itsParents; }
 
   // Define the STL-style iterators.
   // Only a const forward iterator is available.
@@ -322,23 +315,18 @@ public:
   const_iterator end() const;
   // </group>
 
-
-private:
+ private:
   // Do the actual reopen.
   void doReopen();
 
-
   Block<LoggerHolder> itsParents;
-  LogSink             itsSink;
-  LogIO               itsLogger;
-  String              itsTableName;
-  TableLogSink*       itsTablePtr;
-  Bool                itsIsWritable;
-  Bool                itsIsClosed;
+  LogSink itsSink;
+  LogIO itsLogger;
+  String itsTableName;
+  TableLogSink* itsTablePtr;
+  Bool itsIsWritable;
+  Bool itsIsClosed;
 };
-
-
-
 
 // <summary>
 // Class representing an entry in a LoggerHolder.
@@ -359,45 +347,36 @@ private:
 // Function like <src>time()</src> can be used to retrieve the message parts.
 // </synopsis>
 
-class LogHolderIterEntry
-{
-public:
-  LogHolderIterEntry()
-    : itsSink(0), itsIndex(0) {}
+class LogHolderIterEntry {
+ public:
+  LogHolderIterEntry() : itsSink(0), itsIndex(0) {}
 
-  LogHolderIterEntry (const LogSink* sink, uInt index)
-    : itsSink(sink), itsIndex(index) {}
+  LogHolderIterEntry(const LogSink* sink, uInt index) : itsSink(sink), itsIndex(index) {}
 
-  LogHolderIterEntry (const LogHolderIterEntry& that)
-    : itsSink(that.itsSink), itsIndex(that.itsIndex) {}
+  LogHolderIterEntry(const LogHolderIterEntry& that)
+      : itsSink(that.itsSink), itsIndex(that.itsIndex) {}
 
-  ~LogHolderIterEntry()
-    {}
+  ~LogHolderIterEntry() {}
 
-  LogHolderIterEntry& operator= (const LogHolderIterEntry& that)
-    { itsSink=that.itsSink; itsIndex=that.itsIndex; return *this; }
+  LogHolderIterEntry& operator=(const LogHolderIterEntry& that) {
+    itsSink = that.itsSink;
+    itsIndex = that.itsIndex;
+    return *this;
+  }
 
   // Get the message parts.
   // <group>
-  Double time() const
-    { return itsSink->getTime(itsIndex); }
-  String message() const
-    { return itsSink->getMessage(itsIndex); }
-  String priority() const
-    { return itsSink->getPriority(itsIndex); }
-  String location() const
-    { return itsSink->getLocation(itsIndex); }
-  String objectID() const
-    { return itsSink->getObjectID(itsIndex); }
+  Double time() const { return itsSink->getTime(itsIndex); }
+  String message() const { return itsSink->getMessage(itsIndex); }
+  String priority() const { return itsSink->getPriority(itsIndex); }
+  String location() const { return itsSink->getLocation(itsIndex); }
+  String objectID() const { return itsSink->getObjectID(itsIndex); }
   // </group>
 
-private:
+ private:
   const LogSink* itsSink;
-  uInt           itsIndex;
+  uInt itsIndex;
 };
-
-
-
 
 // <summary>
 // Class doing the actual iteration through an LoggerHolder.
@@ -421,40 +400,35 @@ private:
 // construction of an LoggerHolderIterator.
 // </synopsis>
 
-class LogHolderIter
-{
-public:
+class LogHolderIter {
+ public:
   // Construct the iterator on the given LoggerHolderRep.
-  LogHolderIter (const LoggerHolder*);
+  LogHolderIter(const LoggerHolder*);
 
   ~LogHolderIter();
 
   // Copy constructor is not needed, thus forbidden.
-  LogHolderIter (const LogHolderIter&) = delete;
+  LogHolderIter(const LogHolderIter&) = delete;
 
   // Assignment is not needed, thus forbidden.
-  LogHolderIter& operator= (const LogHolderIter&) = delete;
+  LogHolderIter& operator=(const LogHolderIter&) = delete;
 
   // Increment to next message.
   // Returns False if at the end.
   Bool next();
 
   // Get the entry.
-  const LogHolderIterEntry& getEntry() const
-    { return itsEntry; }
+  const LogHolderIterEntry& getEntry() const { return itsEntry; }
 
-  const LoggerHolder& logger() const
-    { return *itsLogger; }
+  const LoggerHolder& logger() const { return *itsLogger; }
 
-private:
+ private:
   const LoggerHolder* itsLogger;
-  Bool                itsTempClosed;
-  LogHolderIter*      itsParentIter;
-  uInt                itsCounter;
-  LogHolderIterEntry  itsEntry;
+  Bool itsTempClosed;
+  LogHolderIter* itsParentIter;
+  uInt itsCounter;
+  LogHolderIterEntry itsEntry;
 };
-
-
 
 // <summary>
 // Class to iterate through an LoggerHolder.
@@ -489,92 +463,54 @@ private:
 // </srcblock>
 // </example>
 
-class LoggerHolderIterator
-{
-public:
-  LoggerHolderIterator()
-    : itsIter(0), itsNotAtEnd(False) {}
+class LoggerHolderIterator {
+ public:
+  LoggerHolderIterator() : itsIter(0), itsNotAtEnd(False) {}
 
-  LoggerHolderIterator (const LoggerHolder*);
+  LoggerHolderIterator(const LoggerHolder*);
 
-  LoggerHolderIterator (const LoggerHolderIterator&);
+  LoggerHolderIterator(const LoggerHolderIterator&);
 
-  ~LoggerHolderIterator()
-    { delete itsIter; }
+  ~LoggerHolderIterator() { delete itsIter; }
 
-  LoggerHolderIterator& operator= (const LoggerHolderIterator&);
+  LoggerHolderIterator& operator=(const LoggerHolderIterator&);
 
   // Increment to next message.
   // <group>
-  void operator++()
-    { next(); }
-  void operator++ (int)
-    { next(); }
+  void operator++() { next(); }
+  void operator++(int) { next(); }
   // </group>
 
   // Is the iterator not at the end yet?
-  Bool operator!= (const LoggerHolderIterator&)
-    { return itsNotAtEnd; }
+  Bool operator!=(const LoggerHolderIterator&) { return itsNotAtEnd; }
 
   // Get the entry.
   // <group>
-  const LogHolderIterEntry& operator*() const
-    { return itsIter->getEntry(); }
-  const LogHolderIterEntry* operator->() const
-    { return &(itsIter->getEntry()); }
+  const LogHolderIterEntry& operator*() const { return itsIter->getEntry(); }
+  const LogHolderIterEntry* operator->() const { return &(itsIter->getEntry()); }
   // </group>
 
-  const LoggerHolder& logger() const
-    { return itsIter->logger(); }
+  const LoggerHolder& logger() const { return itsIter->logger(); }
 
-private:
+ private:
   // Get the next entry (if available).
-  void next()
-    { itsNotAtEnd = itsIter->next(); }
-
+  void next() { itsNotAtEnd = itsIter->next(); }
 
   LogHolderIter* itsIter;
-  Bool           itsNotAtEnd;
+  Bool itsNotAtEnd;
 };
 
+inline void LoggerHolder::reopen() { itsRep->reopen(); }
+inline Bool LoggerHolder::isTempClosed() const { return itsRep->isTempClosed(); }
+inline LogIO& LoggerHolder::logio() { return itsRep->logio(); }
+inline LogSink& LoggerHolder::sink() { return itsRep->sink(); }
+inline const LogSink& LoggerHolder::sink() const { return itsRep->sink(); }
+inline const Block<LoggerHolder>& LoggerHolder::parents() const { return itsRep->parents(); }
+inline LoggerHolder::const_iterator LoggerHolder::begin() const {
+  return LoggerHolderIterator(this);
+}
+inline LoggerHolder::const_iterator LoggerHolder::end() const { return LoggerHolderIterator(); }
 
-
-inline void LoggerHolder::reopen()
-{
-  itsRep->reopen();
-}
-inline Bool LoggerHolder::isTempClosed() const
-{
-  return itsRep->isTempClosed();
-}
-inline LogIO& LoggerHolder::logio()
-{
-  return itsRep->logio();
-}
-inline LogSink& LoggerHolder::sink()
-{
-  return itsRep->sink();
-}
-inline const LogSink& LoggerHolder::sink() const
-{
-  return itsRep->sink();
-}
-inline const Block<LoggerHolder>& LoggerHolder::parents() const
-{
-  return itsRep->parents();
-}
-inline LoggerHolder::const_iterator LoggerHolder::begin() const
-{
-  return LoggerHolderIterator (this);
-}
-inline LoggerHolder::const_iterator LoggerHolder::end() const
-{
-  return LoggerHolderIterator();
-}
-
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

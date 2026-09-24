@@ -60,18 +60,15 @@ class StokesIStManColumn final : public casacore::StManColumn {
    * @param rowNr The row number to get the values for.
    * @param dataPtr The array of values.
    */
-  void getArrayComplexV(casacore::uInt rowNr,
-                        casacore::Array<casacore::Complex> *dataPtr) final {
+  void getArrayComplexV(casacore::uInt rowNr, casacore::Array<casacore::Complex> *dataPtr) final {
     getArrayGeneric(rowNr, dataPtr);
   }
 
-  void getArrayfloatV(casacore::uInt rowNr,
-                      casacore::Array<float> *dataPtr) final {
+  void getArrayfloatV(casacore::uInt rowNr, casacore::Array<float> *dataPtr) final {
     getArrayGeneric(rowNr, dataPtr);
   }
 
-  void getArrayBoolV(casacore::uInt rowNr,
-                     casacore::Array<casacore::Bool> *dataPtr) final {
+  void getArrayBoolV(casacore::uInt rowNr, casacore::Array<casacore::Bool> *dataPtr) final {
     getArrayGeneric(rowNr, dataPtr);
   }
 
@@ -80,26 +77,21 @@ class StokesIStManColumn final : public casacore::StManColumn {
    * @param rowNr The row number to write the values to.
    * @param dataPtr The data pointer.
    */
-  void putArrayComplexV(
-      casacore::uInt rowNr,
-      const casacore::Array<casacore::Complex> *dataPtr) final {
+  void putArrayComplexV(casacore::uInt rowNr,
+                        const casacore::Array<casacore::Complex> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
-  void putArrayDComplexV(
-      casacore::uInt rowNr,
-      const casacore::Array<casacore::DComplex> *dataPtr) final {
+  void putArrayDComplexV(casacore::uInt rowNr,
+                         const casacore::Array<casacore::DComplex> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
-  void putArraydoubleV(casacore::uInt rowNr,
-                       const casacore::Array<double> *dataPtr) final {
+  void putArraydoubleV(casacore::uInt rowNr, const casacore::Array<double> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
-  void putArrayfloatV(casacore::uInt rowNr,
-                      const casacore::Array<float> *dataPtr) final {
+  void putArrayfloatV(casacore::uInt rowNr, const casacore::Array<float> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
-  void putArrayBoolV(casacore::uInt rowNr,
-                     const casacore::Array<casacore::Bool> *dataPtr) final {
+  void putArrayBoolV(casacore::uInt rowNr, const casacore::Array<casacore::Bool> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
 
@@ -128,8 +120,7 @@ class StokesIStManColumn final : public casacore::StManColumn {
   }
 
   template <typename T>
-  void putArrayGeneric(casacore::uInt rowNr,
-                       const casacore::Array<T> *dataPtr) {
+  void putArrayGeneric(casacore::uInt rowNr, const casacore::Array<T> *dataPtr) {
     bool ownership;
     const T *storage = dataPtr->getStorage(ownership);
     const size_t n_values = shape_[1];
@@ -152,9 +143,7 @@ class StokesIStManColumn final : public casacore::StManColumn {
 
 namespace casacore {
 
-inline void StokesIStManColumn::updateStride() {
-  parent_.CalculateAndUpdateStride();
-}
+inline void StokesIStManColumn::updateStride() { parent_.CalculateAndUpdateStride(); }
 
 }  // namespace casacore
 

@@ -1,37 +1,36 @@
-//# MappedArrayEngine.h: Templated virtual column engine to map a table array
-//# Copyright (C) 2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MappedArrayEngine.h: Templated virtual column engine to map a table array
+// # Copyright (C) 2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_MAPPEDARRAYENGINE_H
 #define TABLES_MAPPEDARRAYENGINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Templated virtual column engine to map the data type of a table array
@@ -43,12 +42,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> VirtualColumnEngine
 //   <li> VirtualArrayColumn
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // MappedArrayEngine is a virtual column engine which maps an array
 // of one type to another type (without any scaling).
 //
@@ -63,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // virtual array can be stored in the stored array. Thus a fixed shaped
 // virtual can use a variable shaped stored, but not vice versa.
 // A fixed shape indirect virtual can use a stored with direct arrays.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // For precision it is sometimes needed to store the visibility data in a
@@ -117,41 +116,41 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> only suited for built-in numerics data types
 // </templating>
 
-template<class VirtualType, class StoredType> class MappedArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType>
-{
-  //# Make members of parent class known.
-public:
-  using BaseMappedArrayEngine<VirtualType,StoredType>::virtualName;
-protected:
-  using BaseMappedArrayEngine<VirtualType,StoredType>::storedName;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::table;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::column;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::setNames;
+template <class VirtualType, class StoredType>
+class MappedArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType> {
+  // # Make members of parent class known.
+ public:
+  using BaseMappedArrayEngine<VirtualType, StoredType>::virtualName;
 
-public:
+ protected:
+  using BaseMappedArrayEngine<VirtualType, StoredType>::storedName;
+  using BaseMappedArrayEngine<VirtualType, StoredType>::table;
+  using BaseMappedArrayEngine<VirtualType, StoredType>::column;
+  using BaseMappedArrayEngine<VirtualType, StoredType>::setNames;
+
+ public:
   // Construct an engine to map all arrays in a column.
   // StoredColumnName is the name of the column where the mapped
   // data will be put and must have data type StoredType.
   // The virtual column using this engine must have data type VirtualType.
-  MappedArrayEngine (const String& virtualColumnName,
-		     const String& storedColumnName);
+  MappedArrayEngine(const String& virtualColumnName, const String& storedColumnName);
 
   // Construct from a record specification as created by dataManagerSpec().
-  MappedArrayEngine (const Record& spec);
+  MappedArrayEngine(const Record& spec);
 
   // Destructor is mandatory.
   ~MappedArrayEngine();
 
   // Assignment is not needed and therefore forbidden.
-  MappedArrayEngine<VirtualType,StoredType>& operator=
-                       (const MappedArrayEngine<VirtualType,StoredType>&) = delete;
+  MappedArrayEngine<VirtualType, StoredType>& operator=(
+      const MappedArrayEngine<VirtualType, StoredType>&) = delete;
 
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
   // Get the name given to the engine (is the virtual column name).
   virtual String dataManagerName() const;
-  
+
   // Record a record containing data manager specifications.
   virtual Record dataManagerSpec() const;
 
@@ -167,39 +166,33 @@ public:
   // (or added to DataManReg.cc).
   static void registerClass();
 
-private:
+ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
-  MappedArrayEngine (const MappedArrayEngine<VirtualType,StoredType>&);
+  MappedArrayEngine(const MappedArrayEngine<VirtualType, StoredType>&);
 
   // Clone the engine object.
   DataManager* clone() const;
 
   // Copy the stored array to the virtual array.
-  virtual void mapOnGet (Array<VirtualType>& array,
-                         const Array<StoredType>& stored);
+  virtual void mapOnGet(Array<VirtualType>& array, const Array<StoredType>& stored);
 
   // Copy the virtual array to the stored array.
-  virtual void mapOnPut (const Array<VirtualType>& array,
-                         Array<StoredType>& stored);
+  virtual void mapOnPut(const Array<VirtualType>& array, Array<StoredType>& stored);
 
-
-public:
+ public:
   // Define the "constructor" to construct this engine when a
   // table is read back.
   // This "constructor" has to be registered by the user of the engine.
   // If the engine is commonly used, its registration can be added
-  // to the registerAllCtor function in DataManReg.cc. 
+  // to the registerAllCtor function in DataManReg.cc.
   // That function gets automatically invoked by the table system.
-  static DataManager* makeObject (const String& dataManagerType,
-				  const Record& spec);
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/MappedArrayEngine.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -27,9 +27,7 @@ class DyscoStManColumn : public casacore::StManColumnBase {
    * @param dtype The column's type as defined by Casacore.
    */
   explicit DyscoStManColumn(DyscoStMan *parent, int dtype)
-      : casacore::StManColumnBase(dtype),
-        _offsetInBlock(0),
-        _storageManager(parent) {}
+      : casacore::StManColumnBase(dtype), _offsetInBlock(0), _storageManager(parent) {}
 
   /** Destructor */
   virtual ~DyscoStManColumn() {}
@@ -43,14 +41,12 @@ class DyscoStManColumn : public casacore::StManColumnBase {
    */
   virtual casacore::Bool isWritable() const override { return true; }
 
-  virtual void Prepare(DyscoDistribution distribution,
-                       Normalization normalization, double studentsTNu,
-                       double distributionTruncation) = 0;
+  virtual void Prepare(DyscoDistribution distribution, Normalization normalization,
+                       double studentsTNu, double distributionTruncation) = 0;
 
   virtual void InitializeAfterNRowsPerBlockIsKnown() = 0;
 
-  virtual size_t CalculateBlockSize(size_t nRowsInBlock,
-                                    size_t nAntennae) const = 0;
+  virtual size_t CalculateBlockSize(size_t nRowsInBlock, size_t nAntennae) const = 0;
 
   /**
    * Get number of bytes needed for column header of this column. This is
@@ -65,9 +61,7 @@ class DyscoStManColumn : public casacore::StManColumnBase {
 
   size_t OffsetInBlock() const { return _offsetInBlock; }
 
-  void SetOffsetInBlock(size_t offsetInBlock) {
-    _offsetInBlock = offsetInBlock;
-  }
+  void SetOffsetInBlock(size_t offsetInBlock) { _offsetInBlock = offsetInBlock; }
 
  protected:
   /** Get the storage manager for this column */
@@ -87,8 +81,7 @@ class DyscoStManColumn : public casacore::StManColumnBase {
    * @param data The data buffer containing Stride() bytes.
    * @param size The nr of bytes to be written.
    */
-  void writeCompressedData(size_t blockIndex, const unsigned char *data,
-                           size_t size);
+  void writeCompressedData(size_t blockIndex, const unsigned char *data, size_t size);
 
   /**
    * Get the actual number of blocks in the file.
@@ -123,33 +116,25 @@ class DyscoStManColumn : public casacore::StManColumnBase {
 
 namespace dyscostman {
 
-inline void DyscoStManColumn::readCompressedData(size_t blockIndex,
-                                                 unsigned char *dest,
+inline void DyscoStManColumn::readCompressedData(size_t blockIndex, unsigned char *dest,
                                                  size_t size) {
   _storageManager->readCompressedData(blockIndex, this, dest, size);
 }
 
-inline void DyscoStManColumn::writeCompressedData(size_t blockIndex,
-                                                  const unsigned char *data,
+inline void DyscoStManColumn::writeCompressedData(size_t blockIndex, const unsigned char *data,
                                                   size_t size) {
   _storageManager->writeCompressedData(blockIndex, this, data, size);
 }
 
-inline uint64_t DyscoStManColumn::nBlocksInFile() const {
-  return _storageManager->nBlocksInFile();
-}
+inline uint64_t DyscoStManColumn::nBlocksInFile() const { return _storageManager->nBlocksInFile(); }
 
 inline size_t DyscoStManColumn::getBlockIndex(uint64_t row) const {
   return _storageManager->getBlockIndex(row);
 }
 
-inline size_t DyscoStManColumn::nRowsInBlock() const {
-  return _storageManager->nRowsInBlock();
-}
+inline size_t DyscoStManColumn::nRowsInBlock() const { return _storageManager->nRowsInBlock(); }
 
-inline size_t DyscoStManColumn::nAntennae() const {
-  return _storageManager->nAntennae();
-}
+inline size_t DyscoStManColumn::nAntennae() const { return _storageManager->nAntennae(); }
 
 inline uint64_t DyscoStManColumn::getRowIndex(size_t block) const {
   return _storageManager->getRowIndex(block);
@@ -163,8 +148,7 @@ inline bool DyscoStManColumn::areOffsetsInitialized() const {
   return _storageManager->areOffsetsInitialized();
 }
 
-inline void DyscoStManColumn::initializeRowsPerBlock(size_t rowsPerBlock,
-                                                     size_t antennaCount) {
+inline void DyscoStManColumn::initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount) {
   _storageManager->initializeRowsPerBlock(rowsPerBlock, antennaCount, true);
 }
 

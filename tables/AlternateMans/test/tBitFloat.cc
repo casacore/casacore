@@ -84,23 +84,26 @@ BOOST_AUTO_TEST_CASE(to_float) {
 
   constexpr BitFloat subnormal(1e-40f);
   BOOST_CHECK(subnormal.ToFloat() == 1e-40f);
-   BOOST_CHECK(BitFloat::GetKind(subnormal.ToFloat()) == BitFloatKind::Subnormal);
- 
+  BOOST_CHECK(BitFloat::GetKind(subnormal.ToFloat()) == BitFloatKind::Subnormal);
+
   constexpr BitFloat nan_value(std::numeric_limits<float>::quiet_NaN());
   BOOST_CHECK(BitFloat::GetKind(nan_value.ToFloat()) == BitFloatKind::NaN);
   BOOST_CHECK(std::isnan(nan_value.ToFloat()));
-  
+
   constexpr float negative_nan_float = -std::numeric_limits<float>::quiet_NaN();
   constexpr BitFloat negative_nan_value(negative_nan_float);
   BOOST_CHECK(BitFloat::GetKind(negative_nan_value.ToFloat()) == BitFloatKind::NaN);
   BOOST_CHECK(std::isnan(negative_nan_value.ToFloat()));
   BOOST_CHECK(negative_nan_value.Sign());
-  BOOST_CHECK_EQUAL(std::bit_cast<uint32_t>(negative_nan_value.ToFloat()), std::bit_cast<uint32_t>(negative_nan_float));
-  
-  constexpr BitFloat mantissa_copy(negative_nan_value.Mantissa(), negative_nan_value.Exponent(), negative_nan_value.Sign());
+  BOOST_CHECK_EQUAL(std::bit_cast<uint32_t>(negative_nan_value.ToFloat()),
+                    std::bit_cast<uint32_t>(negative_nan_float));
+
+  constexpr BitFloat mantissa_copy(negative_nan_value.Mantissa(), negative_nan_value.Exponent(),
+                                   negative_nan_value.Sign());
   BOOST_CHECK(std::isnan(mantissa_copy.ToFloat()));
   BOOST_CHECK(mantissa_copy.Sign());
-  BOOST_CHECK_EQUAL(std::bit_cast<uint32_t>(mantissa_copy.ToFloat()), std::bit_cast<uint32_t>(negative_nan_float));
+  BOOST_CHECK_EQUAL(std::bit_cast<uint32_t>(mantissa_copy.ToFloat()),
+                    std::bit_cast<uint32_t>(negative_nan_float));
 }
 
 BOOST_AUTO_TEST_CASE(add_to_positive) {
@@ -249,13 +252,13 @@ void CheckMantissaPacking(float f) {
   const uint32_t to_float_ui32 = std::bit_cast<uint32_t>(original.ToFloat());
   const uint32_t expected_ui32 = std::bit_cast<uint32_t>(f);
   BOOST_CHECK_EQUAL(expected_ui32, to_float_ui32);
-  
+
   BitFloat decompressed(BitFloat::FromCompressed(original.PackMantissa(), original.Exponent()));
   BOOST_CHECK_EQUAL(original.Mantissa(), decompressed.Mantissa());
   BOOST_CHECK_EQUAL(original.Sign(), decompressed.Sign());
   BOOST_CHECK_EQUAL(original.Exponent(), decompressed.Exponent());
   const float result(decompressed.ToFloat());
-  if(std::isfinite(f)) {
+  if (std::isfinite(f)) {
     BOOST_CHECK_EQUAL(f, original.ToFloat());
   }
   const uint32_t result_ui32 = std::bit_cast<uint32_t>(result);
@@ -275,15 +278,24 @@ BOOST_AUTO_TEST_CASE(allows_math) {
 BOOST_AUTO_TEST_CASE(mantissa_packing) {
   const uint32_t nan_mantissa = BitFloat(std::numeric_limits<float>::quiet_NaN()).Mantissa();
   BOOST_CHECK_EQUAL(BitFloat(std::numeric_limits<float>::quiet_NaN()).PackMantissa(), nan_mantissa);
-  BOOST_CHECK_EQUAL(BitFloat(-std::numeric_limits<float>::quiet_NaN()).PackMantissa(), nan_mantissa + 0x80000000);
-  
+  BOOST_CHECK_EQUAL(BitFloat(-std::numeric_limits<float>::quiet_NaN()).PackMantissa(),
+                    nan_mantissa + 0x80000000);
+
   BOOST_CHECK(!BitFloat::UnpackMantissa(BitFloat(0.0f).PackMantissa()).second);
-  BOOST_CHECK(!BitFloat::UnpackMantissa(BitFloat(std::numeric_limits<float>::quiet_NaN()).PackMantissa()).second);
-  BOOST_CHECK(!BitFloat::UnpackMantissa(BitFloat(std::numeric_limits<float>::infinity()).PackMantissa()).second);
+  BOOST_CHECK(
+      !BitFloat::UnpackMantissa(BitFloat(std::numeric_limits<float>::quiet_NaN()).PackMantissa())
+           .second);
+  BOOST_CHECK(
+      !BitFloat::UnpackMantissa(BitFloat(std::numeric_limits<float>::infinity()).PackMantissa())
+           .second);
   BOOST_CHECK(BitFloat::UnpackMantissa(BitFloat(-0.0f).PackMantissa()).second);
-  BOOST_CHECK(BitFloat::UnpackMantissa(BitFloat(-std::numeric_limits<float>::quiet_NaN()).PackMantissa()).second);
-  BOOST_CHECK(BitFloat::UnpackMantissa(BitFloat(-std::numeric_limits<float>::infinity()).PackMantissa()).second);
-  
+  BOOST_CHECK(
+      BitFloat::UnpackMantissa(BitFloat(-std::numeric_limits<float>::quiet_NaN()).PackMantissa())
+          .second);
+  BOOST_CHECK(
+      BitFloat::UnpackMantissa(BitFloat(-std::numeric_limits<float>::infinity()).PackMantissa())
+          .second);
+
   CheckMantissaPacking(1.0);
   CheckMantissaPacking(-1.0);
   CheckMantissaPacking(0.0);
@@ -324,10 +336,11 @@ BOOST_AUTO_TEST_CASE(match) {
 
   // Zero has a 'special' exponent value (-127) but should be properly matched...
   BOOST_REQUIRE(Match(zero, big.Exponent()));
-  BOOST_CHECK_EQUAL(static_cast<int>(Match(zero, big.Exponent())->Exponent()), static_cast<int>(big.Exponent()));
+  BOOST_CHECK_EQUAL(static_cast<int>(Match(zero, big.Exponent())->Exponent()),
+                    static_cast<int>(big.Exponent()));
   BOOST_CHECK_EQUAL(Match(zero, big.Exponent())->ToFloat(), 0.0f);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
 
-} // namespace casacore
+}  // namespace casacore

@@ -1,27 +1,27 @@
-//# TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/DataMan/TiledCellStMan.h>
 #include <casacore/tables/DataMan/TSMColumn.h>
@@ -39,188 +39,150 @@
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/tables/DataMan/DataManError.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TiledCellStMan::TiledCellStMan ()
-: TiledStMan ()
-{}
+TiledCellStMan::TiledCellStMan() : TiledStMan() {}
 
-TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
-				const IPosition& defaultTileShape,
-				uInt64 maximumCacheSize)
-: TiledStMan         (hypercolumnName, maximumCacheSize),
-  defaultTileShape_p (defaultTileShape)
-{}
+TiledCellStMan::TiledCellStMan(const String& hypercolumnName, const IPosition& defaultTileShape,
+                               uInt64 maximumCacheSize)
+    : TiledStMan(hypercolumnName, maximumCacheSize), defaultTileShape_p(defaultTileShape) {}
 
-TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
-				const Record& spec)
-: TiledStMan  (hypercolumnName, 0)
-{
-    if (spec.isDefined ("DEFAULTTILESHAPE")) {
-        defaultTileShape_p = IPosition (spec.toArrayInt ("DEFAULTTILESHAPE"));
+TiledCellStMan::TiledCellStMan(const String& hypercolumnName, const Record& spec)
+    : TiledStMan(hypercolumnName, 0) {
+  if (spec.isDefined("DEFAULTTILESHAPE")) {
+    defaultTileShape_p = IPosition(spec.toArrayInt("DEFAULTTILESHAPE"));
+  }
+  if (spec.isDefined("MAXIMUMCACHESIZE")) {
+    setPersMaxCacheSize(spec.asInt64("MAXIMUMCACHESIZE"));
+  }
+}
+
+TiledCellStMan::~TiledCellStMan() {}
+
+DataManager* TiledCellStMan::clone() const {
+  TiledCellStMan* smp =
+      new TiledCellStMan(hypercolumnName_p, defaultTileShape_p, maximumCacheSize());
+  return smp;
+}
+
+DataManager* TiledCellStMan::makeObject(const String& group, const Record& spec) {
+  TiledCellStMan* smp = new TiledCellStMan(group, spec);
+  return smp;
+}
+
+String TiledCellStMan::dataManagerType() const { return "TiledCellStMan"; }
+
+IPosition TiledCellStMan::defaultTileShape() const { return defaultTileShape_p; }
+
+Bool TiledCellStMan::canChangeShape() const { return True; }
+
+void TiledCellStMan::setShape(rownr_t, TSMCube* hypercube, const IPosition& shape,
+                              const IPosition& tileShape) {
+  hypercube->setShape(shape, tileShape);
+}
+
+void TiledCellStMan::setupCheck(const TableDesc& tableDesc, const Vector<String>& dataNames) const {
+  // The data columns should only contain arrays matching the
+  // dimensionality of the hypercolumn.
+  for (uInt i = 0; i < dataNames.nelements(); i++) {
+    const ColumnDesc& columnDesc = tableDesc.columnDesc(dataNames(i));
+    if (!columnDesc.isArray()) {
+      throw(TSMError("TiledCellStMan cannot handle scalar column " + dataNames(i)));
     }
-    if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asInt64 ("MAXIMUMCACHESIZE"));
+    if (Int(nrdim_p) != columnDesc.ndim()) {
+      throw(TSMError("Dimensionality of column " + dataNames(i) +
+                     " should be equal to hypercolumn"
+                     " definition when used in TiledCellStMan"));
     }
+  }
+  // There shouldn't be ID columns.
+  if (idColSet_p.nelements() > 0) {
+    throw TSMError("ID columns cannot be used with TiledCellStMan");
+  }
 }
 
-TiledCellStMan::~TiledCellStMan()
-{}
-
-DataManager* TiledCellStMan::clone() const
-{
-    TiledCellStMan* smp = new TiledCellStMan (hypercolumnName_p,
-					      defaultTileShape_p,
-					      maximumCacheSize());
-    return smp;
+void TiledCellStMan::create64(rownr_t nrrow) {
+  // Set up the various things.
+  setup(0);
+  // Create the one and single TSMFile object.
+  createFile(0);
+  // Add the rows for the given number of rows.
+  addRow64(nrrow);
 }
 
-DataManager* TiledCellStMan::makeObject (const String& group,
-					 const Record& spec)
-{
-    TiledCellStMan* smp = new TiledCellStMan (group, spec);
-    return smp;
+Bool TiledCellStMan::flush(AipsIO&, Bool fsync) {
+  // Flush the caches.
+  // Exit if nothing has changed.
+  if (!flushCaches(fsync)) {
+    return False;
+  }
+  // Create the header file and write data in it.
+  // A zero pointer is returned when nothing has changed, thus nothing
+  // has to be written.
+  AipsIO* headerFile = headerFileCreate();
+  if (headerFile == 0) {
+    return False;
+  }
+  headerFile->putstart("TiledCellStMan", 1);
+  *headerFile << defaultTileShape_p;
+  // Let the base class write its data.
+  headerFilePut(*headerFile, nrrow_p);
+  headerFile->putend();
+  headerFileClose(headerFile);
+  return True;
 }
 
-String TiledCellStMan::dataManagerType() const
-    { return "TiledCellStMan"; }
-
-
-IPosition TiledCellStMan::defaultTileShape() const
-{
-    return defaultTileShape_p;
+void TiledCellStMan::readHeader(rownr_t tabNrrow, Bool firstTime) {
+  // Open the header file and read data from it.
+  AipsIO* headerFile = headerFileOpen();
+  headerFile->getstart("TiledCellStMan");
+  *headerFile >> defaultTileShape_p;
+  // Let the base class read and initialize its data.
+  headerFileGet(*headerFile, tabNrrow, firstTime, 0);
+  headerFile->getend();
+  headerFileClose(headerFile);
 }
 
-Bool TiledCellStMan::canChangeShape() const
-{
-    return True;
-}
-
-void TiledCellStMan::setShape (rownr_t, TSMCube* hypercube,
-			       const IPosition& shape,
-			       const IPosition& tileShape)
-{
-    hypercube->setShape (shape, tileShape);
-}
-
-
-void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
-				 const Vector<String>& dataNames) const
-{
-    // The data columns should only contain arrays matching the
-    // dimensionality of the hypercolumn.
-    for (uInt i=0; i<dataNames.nelements(); i++) {
-	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
-	if (! columnDesc.isArray()) {
-	    throw (TSMError ("TiledCellStMan cannot handle scalar column " +
-			     dataNames(i)));
-	}
-	if (Int(nrdim_p) != columnDesc.ndim()) {
-	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
-			     " should be equal to hypercolumn"
-			     " definition when used in TiledCellStMan"));
-	}
-    }
-    // There shouldn't be ID columns.
-    if (idColSet_p.nelements() > 0) {
-        throw TSMError("ID columns cannot be used with TiledCellStMan");
-    }
-}
-
-
-void TiledCellStMan::create64 (rownr_t nrrow)
-{
-    // Set up the various things.
-    setup(0);
-    // Create the one and single TSMFile object.
-    createFile (0);
-    // Add the rows for the given number of rows.
-    addRow64 (nrrow);
-}
-	    
-
-Bool TiledCellStMan::flush (AipsIO&, Bool fsync)
-{
-    // Flush the caches.
-    // Exit if nothing has changed.
-    if (! flushCaches (fsync)) {
-	return False;
-    }
-    // Create the header file and write data in it.
-    // A zero pointer is returned when nothing has changed, thus nothing
-    // has to be written.
-    AipsIO* headerFile = headerFileCreate();
-    if (headerFile == 0) {
-	return False;
-    }
-    headerFile->putstart ("TiledCellStMan", 1);
-    *headerFile << defaultTileShape_p;
-    // Let the base class write its data.
-    headerFilePut (*headerFile, nrrow_p);
-    headerFile->putend();
-    headerFileClose (headerFile);
-    return True;
-}
-
-void TiledCellStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
-{
-    // Open the header file and read data from it.
-    AipsIO* headerFile = headerFileOpen();
-    headerFile->getstart ("TiledCellStMan");
-    *headerFile >> defaultTileShape_p;
-    // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime, 0);
-    headerFile->getend();
-    headerFileClose (headerFile);
-}
-
-
-void TiledCellStMan::addRow64 (rownr_t nrow)
-{
-    // Resize block when needed.
-    uInt64 size = cubeSet_p.nelements();
+void TiledCellStMan::addRow64(rownr_t nrow) {
+  // Resize block when needed.
+  uInt64 size = cubeSet_p.nelements();
+  if (size < nrrow_p + nrow) {
+    size += 32;
     if (size < nrrow_p + nrow) {
-	size += 32;
-	if (size < nrrow_p + nrow) {
-	    size = nrrow_p + nrow;
-	}
-	cubeSet_p.resize (size);
-	for (uInt64 i=nrrow_p; i<cubeSet_p.nelements(); i++) {
-	    cubeSet_p[i] = 0;
-	}
+      size = nrrow_p + nrow;
     }
-    for (rownr_t i=nrrow_p; i<nrrow_p+nrow; i++) {
-        TSMCube* hypercube = makeTSMCube (fileSet_p[0], IPosition(),
-                                          IPosition(), Record());
-	cubeSet_p[i] = hypercube;
-	if (fixedCellShape_p.nelements() > 0) {
-	    hypercube->setShape (fixedCellShape_p, defaultTileShape_p);
-	}
+    cubeSet_p.resize(size);
+    for (uInt64 i = nrrow_p; i < cubeSet_p.nelements(); i++) {
+      cubeSet_p[i] = 0;
     }
-    nrrow_p += nrow;
-    setDataChanged();
+  }
+  for (rownr_t i = nrrow_p; i < nrrow_p + nrow; i++) {
+    TSMCube* hypercube = makeTSMCube(fileSet_p[0], IPosition(), IPosition(), Record());
+    cubeSet_p[i] = hypercube;
+    if (fixedCellShape_p.nelements() > 0) {
+      hypercube->setShape(fixedCellShape_p, defaultTileShape_p);
+    }
+  }
+  nrrow_p += nrow;
+  setDataChanged();
 }
 
-
-TSMCube* TiledCellStMan::getHypercube (rownr_t rownr)
-{
-    // Check if the row number is correct.
-    if (rownr >= nrrow_p) {
-	throw (TSMError ("getHypercube: rownr is too high"));
-    }
-    return cubeSet_p[rownr];
+TSMCube* TiledCellStMan::getHypercube(rownr_t rownr) {
+  // Check if the row number is correct.
+  if (rownr >= nrrow_p) {
+    throw(TSMError("getHypercube: rownr is too high"));
+  }
+  return cubeSet_p[rownr];
 }
-TSMCube* TiledCellStMan::getHypercube (rownr_t rownr, IPosition& position)
-{
-    // Check if the row number is correct.
-    if (rownr >= nrrow_p) {
-	throw (TSMError ("getHypercube: rownr is too high"));
-    }
-    TSMCube* hypercube = cubeSet_p[rownr];
-    position.resize (0);
-    position = hypercube->cubeShape();
-    return hypercube;
+TSMCube* TiledCellStMan::getHypercube(rownr_t rownr, IPosition& position) {
+  // Check if the row number is correct.
+  if (rownr >= nrrow_p) {
+    throw(TSMError("getHypercube: rownr is too high"));
+  }
+  TSMCube* hypercube = cubeSet_p[rownr];
+  position.resize(0);
+  position = hypercube->cubeShape();
+  return hypercube;
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

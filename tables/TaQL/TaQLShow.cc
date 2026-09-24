@@ -1,30 +1,29 @@
-//# TaQLShow.cc: Class to get various TaQL-related info
-//# Copyright (C) 2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TaQLShow.cc: Class to get various TaQL-related info
+// # Copyright (C) 2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-
-//# Includes
+// # Includes
 #include <casacore/tables/TaQL/TaQLShow.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -36,24 +35,22 @@
 
 using namespace std;
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-  // This function concatenates the help info below to a single string.
-  String concHelp (const char* str[], size_t n)
-  {
-    std::string s;
-    for (size_t i=0; i<n; ++i) {
-      s.append (str[i]);
-      s.append ("\n");
-    }
-    return s;
+// This function concatenates the help info below to a single string.
+String concHelp(const char* str[], size_t n) {
+  std::string s;
+  for (size_t i = 0; i < n; ++i) {
+    s.append(str[i]);
+    s.append("\n");
   }
+  return s;
+}
 
 // Macro to get the full help string.
 #define getHelp(arg) concHelp(arg, sizeof(arg) / sizeof(arg[0]))
 
-
-  const char* infoHelp[] = {
+const char* infoHelp[] = {
     "Possible show/help commands:",
     "  show table tablename              table information (a la showtableinfo)",
     "  show command(s) [command]         TaQL commands and their syntax",
@@ -79,22 +76,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "A command can be followed by ; and/or by #anycomment (that are ignored).",
     "See http://casacore.github.io/casacore-notes/199.html for a full",
-    "description of TaQL."
-  };
+    "description of TaQL."};
 
-  const char* tableHelp[] = {
-    "Usage:   show table tablename [opt1 opt2 ...]",
-    "    Options   Default",
-    "         dm      nodm   show data managers?",
-    "        col       col   show column descriptions?",
-    "       sort    nosort   show columns alphabetically?",
-    "        key     nokey   show table and column keywords?",
-    "     tabkey  notabkey   show table keywords?",
-    "     colkey  nocolkey   show column keywords?",
-    "      recur   norecur   show subtables recursively?"
-  };
+const char* tableHelp[] = {"Usage:   show table tablename [opt1 opt2 ...]",
+                           "    Options   Default",
+                           "         dm      nodm   show data managers?",
+                           "        col       col   show column descriptions?",
+                           "       sort    nosort   show columns alphabetically?",
+                           "        key     nokey   show table and column keywords?",
+                           "     tabkey  notabkey   show table keywords?",
+                           "     colkey  nocolkey   show column keywords?",
+                           "      recur   norecur   show subtables recursively?"};
 
-  const char* commandHelp[] = {
+const char* commandHelp[] = {
     "Select a subset from a table, possibly calculating new values.",
     "  SELECT [[DISTINCT] expression_list] [INTO table [AS options]]",
     "    [FROM table_list]",
@@ -143,9 +137,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "Use 'show command <command>' for more information about a command.",
     "    'show expr(essions)'     for more information about forming expressions.",
     "See http://casacore.github.io/casacore-notes/199.html for full info.",
-  };
+};
 
-  const char* selectHelp[] = {
+const char* selectHelp[] = {
     " [WITH table_list]",
     "SELECT",
     "  [[DISTINCT] expression_list]",
@@ -264,20 +258,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "DMINFO datamanagers",
     "  can be used by expert users to define data managers for the output columns.",
-    "  Use 'show dminfo' for more information."
-  };
+    "  Use 'show dminfo' for more information."};
 
-  const char* calcHelp[] = {
+const char* calcHelp[] = {
     " [WITH table_list]",
     "CALC expression [FROM table_list]",
     "",
     "This command evaluates the given expression, which can contain columns from",
     "the given tables. It is basically the same as",
     "  SELECT expression [FROM table_list]",
-    "but does not create an output table as SELECT always does."
-  };
+    "but does not create an output table as SELECT always does."};
 
-  const char* updateHelp[] = {
+const char* updateHelp[] = {
     " [WITH table_list]",
     "UPDATE",
     "  table_list",
@@ -315,10 +307,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  A table can be any type (as in the FROM clause of the SELECT command).",
     "",
     "WHERE, ORDERBY, LIMIT, OFFSET",
-    "  Using these clauses (similar to SELECT) a subset of the table can be updated."
-  };
+    "  Using these clauses (similar to SELECT) a subset of the table can be updated."};
 
-  const char* insertHelp[] = {
+const char* insertHelp[] = {
     " [WITH table_list]",
     "INSERT INTO table_list SET column=expr, column=expr, ...",
     "  Add one row.",
@@ -350,10 +341,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "SELECT_command",
     "  The rows resulting from the SELECT command are added.",
     "  The resulting column names and data types have to match the column_list,",
-    "  but their order can differ."
-  };
+    "  but their order can differ."};
 
-  const char* deleteHelp[] = {
+const char* deleteHelp[] = {
     " [WITH table_list]",
     "DELETE FROM table_list",
     "  [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]",
@@ -364,10 +354,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "WHERE, ORDERBY, LIMIT, OFFSET",
     "  Only rows matching these selection criteria are removed.",
-    "  See 'help command select' for a brief description of these clauses."
-  };
+    "  See 'help command select' for a brief description of these clauses."};
 
-  const char* createHelp[] = {
+const char* createHelp[] = {
     " [WITH table_list]",
     "CREATE TABLE table [AS options]",
     "  [LIKE other_table [DROP COLUMN column_list]]",
@@ -415,10 +404,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "DMINFO datamanagers",
     "  can be used by expert users to define data managers for the columns.",
-    "  Use 'show dminfo' for more information."
-  };
+    "  Use 'show dminfo' for more information."};
 
-  const char* alterHelp[] = {
+const char* alterHelp[] = {
     " [WITH table_list]",
     "ALTER TABLE table [FROM table_list] subcommand1 subcommand2 ...",
     "  Alter the table with the given name.",
@@ -463,10 +451,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  Remove one or more table and/or column keywords, possibly nested ones.",
     "",
     " ADD ROW expression",
-    "  The expression gives the number of rows to be added to the table."
-  };
+    "  The expression gives the number of rows to be added to the table."};
 
-  const char* countHelp[] = {
+const char* countHelp[] = {
     " [WITH table_list]",
     "COUNT [column_list] FROM table_list [WHERE expression]",
     "",
@@ -480,10 +467,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  SELECT col1,col2,gcount() as _COUNT_ FROM my.ms",
     "  WHERE expression GROUPBY col1,col2",
     "",
-    "SELECT/GROUPBY is much more powerful, but the COUNT command can still be used."
-  };
+    "SELECT/GROUPBY is much more powerful, but the COUNT command can still be used."};
 
-  const char* exprHelp[] = {
+const char* exprHelp[] = {
     "A TaQL expression can use scalar and/or arrays (as in numpy).",
     "The following elements can be used:",
     "  operators         see 'show oper(ators)'",
@@ -503,10 +489,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  Nested keywords can be used (e.g., col::key.subkey.fld)",
     "- In the HAVING and ORDERBY clause an expression can use a column",
     "  created in the SELECT clause.",
-    "- Aggregate functions are only possible in the SELECT and HAVING clause."
-  };
+    "- Aggregate functions are only possible in the SELECT and HAVING clause."};
 
-  const char* operHelp[] = {
+const char* operHelp[] = {
     "Available TaQL operators in order of precedence (high to low):",
     "    **",
     "    !  ~  +  -       (unary operators)",
@@ -544,10 +529,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    INCONE        cone searching",
     "    EXISTS        does subquery have at least 1 match?",
     "    x BETWEEN a AND b         is x in bounded interval <a,b>?",
-    "    x AROUND m IN w           is x in bounded interval <m-w/2,m+w/2>?"
-  };
+    "    x AROUND m IN w           is x in bounded interval <m-w/2,m+w/2>?"};
 
-  const char* constHelp[] = {
+const char* constHelp[] = {
     "Scalar constants of following data types:",
     "  bool       TRUE or FALSE (case-insensitive), T or F",
     "  int        integer; also hexadecimal like 0xffff",
@@ -569,10 +553,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "Masked array (True value means bad (as in numpy)):",
     "             array[mask]  such as  [1,2,3][[T,F,T]]",
-    "          or using function MARRAY"
-  };
+    "          or using function MARRAY"};
 
-  const char* dtypeHelp[] = {
+const char* dtypeHelp[] = {
     "Internally TaQL supports the data types bool, int64, double, dcomplex,",
     "string, regex and datetime.",
     "'show constants' shows how to define constants for those types.",
@@ -596,10 +579,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "      EPOCH",
     "",
     "EPOCH can be used for a datetime value. It uses a column with data type",
-    "double and sets the column keywords defining the Measure type MEpoch."
-  };
+    "double and sets the column keywords defining the Measure type MEpoch."};
 
-  const char* taboptHelp[] = {
+const char* taboptHelp[] = {
     "One or more of the following key=value options can be used to specify",
     "how a table has to be created. If multiple options are given, they have",
     "to be enclosed in square brackets separated by commas.",
@@ -627,10 +609,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "  BLOCKSIZE=n   the blocksize (in bytes) to use for MULTIFILE or MULTIHDF5",
     "",
-    "  OVERWRITE=T|F overwrite an existing table? Default is T"
-      };
+    "  OVERWRITE=T|F overwrite an existing table? Default is T"};
 
-  const char* dminfoHelp[] = {
+const char* dminfoHelp[] = {
     "DMINFO [NAME=name, TYPE=type, SPEC=[...] COLUMNS=[col1, col2, ...]], ...",
     "  defines the data managers to be used by columns. It is a comma separated",
     "  list of key=value definitions enclosed in square brackets.",
@@ -662,10 +643,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    dminfo [NAME='ISM1',TYPE='IncrementalStMan',COLUMNS=['col1']],",
     "           [NAME='SSM1',TYPE='StandardStMan',",
     "            SPEC=[BUCKETSIZE=1000],COLUMNS=['col2','col3']]",
-    "  defines 2 data managers (one for col1 and the other for col2 and col3)."
-  };
+    "  defines 2 data managers (one for col1 and the other for col2 and col3)."};
 
-  const char* setHelp[] = {
+const char* setHelp[] = {
     "A set is a series of values, ranges and/or intervals enclosed in brackets.",
     "Often the IN operator is used on a set, but a set can also be used as an array.",
     "",
@@ -698,9 +678,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "A set can be created from a subquery as used in:",
     "  ANTENNA1 IN [select rowid() from ::ANTENNA where NAME~p/CS*/]",
-  };
+};
 
-  const char* allFuncHelp[] = {
+const char* allFuncHelp[] = {
     "About all TaQL functions operate on scalars and arrays (and mixed)",
     "math functions:",
     "  pi          e           c           rand",
@@ -746,44 +726,41 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  gany        gall        gntrue      gnfalse",
     "    plural forms of above aggregate functions (e.g., gmins)",
     "  gmedian     gfractile   ghist       gstack",
-    "  countall    gcount      gfirst      glast "
-  };
+    "  countall    gcount      gfirst      glast "};
 
-  const char* mathFuncHelp[] = {
-    "Mathematical functions",
-    "",
-    "  double  PI    ()",
-    "  double  E     ()",
-    "  double  C     ()                      m/s",
-    "  double  RAND  ()",
-    "  numeric SIN   (numeric)",
-    "  numeric SINH  (numeric)",
-    "  double  ASIN  (real)                  rad",
-    "  numeric COS   (numeric)",
-    "  numeric COSH  (numeric)",
-    "  double  ACOS  (real)                  rad",
-    "  double  TAN   (real)",
-    "  double  TANH  (real)",
-    "  double  ATAN  (real)                  rad",
-    "  double  ATAN2 (real y, real x)        rad",
-    "  numeric EXP   (numeric)",
-    "  numeric LOG   (numeric)",
-    "  numeric LOG10 (numeric)",
-    "  numeric POW   (numeric, numeric exp)",
-    "  numeric SQRT  (numeric)",
-    "  numeric SQR   (numeric)      aka SQUARE",
-    "  numeric CUBE  (numeric)",
-    "  real    NORM  (numeric)",
-    "  real    ABS   (numeric)      aka AMPLITUDE",
-    "  double  ARG   (numeric)      aka PHASE",
-    "  real    FMOD  (real, real)   modulo as in C; sign of dividend",
-    "  real    SIGN  (real)",
-    "  real    ROUND (real)         round(-1.6) = -2",
-    "  real    FLOOR (real)         floor(-2.2) = -3",
-    "  real    CEIL  (real)         ceil (-2.2) = -2"
-  };
+const char* mathFuncHelp[] = {"Mathematical functions",
+                              "",
+                              "  double  PI    ()",
+                              "  double  E     ()",
+                              "  double  C     ()                      m/s",
+                              "  double  RAND  ()",
+                              "  numeric SIN   (numeric)",
+                              "  numeric SINH  (numeric)",
+                              "  double  ASIN  (real)                  rad",
+                              "  numeric COS   (numeric)",
+                              "  numeric COSH  (numeric)",
+                              "  double  ACOS  (real)                  rad",
+                              "  double  TAN   (real)",
+                              "  double  TANH  (real)",
+                              "  double  ATAN  (real)                  rad",
+                              "  double  ATAN2 (real y, real x)        rad",
+                              "  numeric EXP   (numeric)",
+                              "  numeric LOG   (numeric)",
+                              "  numeric LOG10 (numeric)",
+                              "  numeric POW   (numeric, numeric exp)",
+                              "  numeric SQRT  (numeric)",
+                              "  numeric SQR   (numeric)      aka SQUARE",
+                              "  numeric CUBE  (numeric)",
+                              "  real    NORM  (numeric)",
+                              "  real    ABS   (numeric)      aka AMPLITUDE",
+                              "  double  ARG   (numeric)      aka PHASE",
+                              "  real    FMOD  (real, real)   modulo as in C; sign of dividend",
+                              "  real    SIGN  (real)",
+                              "  real    ROUND (real)         round(-1.6) = -2",
+                              "  real    FLOOR (real)         floor(-2.2) = -3",
+                              "  real    CEIL  (real)         ceil (-2.2) = -2"};
 
-  const char* convFuncHelp[] = {
+const char* convFuncHelp[] = {
     "Conversion functions",
     "",
     "  string HMS       (real RAD)    convert angles to e.g. 12h34m56.789",
@@ -791,10 +768,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  string HDMS      (realarray)   convert angles alternately to HMS and DMS",
     "  string STR       (string, int WIDTH)    make string WIDTH long",
     "  string STR       (numeric, )    make string WIDTH long",
-    "  string STR       (string, int WIDTH)    make string WIDTH long"
-  };
+    "  string STR       (string, int WIDTH)    make string WIDTH long"};
 
-  const char* logicalFuncHelp[] = {
+const char* logicalFuncHelp[] = {
     "Logical functions",
     "",
     "  bool    NEAR      (numeric, numeric, double tol)    relative near",
@@ -810,10 +786,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "  numeric MIN (numeric, numeric)",
     "  numeric MAX (numeric, numeric)",
-    "  anytype IIF (bool cond, arg1, arg2)   arg1 if cond is True, else arg2"
-  };
+    "  anytype IIF (bool cond, arg1, arg2)   arg1 if cond is True, else arg2"};
 
-  const char* dateTimeFuncHelp[] = {
+const char* dateTimeFuncHelp[] = {
     "Date/time functions",
     "Functions taking a datetime, use current UTC date/time if not given",
     "",
@@ -831,10 +806,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  string   CDATE     (datetime)               DD-MMM-YYYY",
     "  string   CTIME     (datetime)               HH:MM:SS.SSS",
     "  string   CMONTH    (datetime)               Jan..Dec",
-    "  string   CWEEKDAY  (datetime)   aka CDOW    Mon..Sun"
-  };
+    "  string   CWEEKDAY  (datetime)   aka CDOW    Mon..Sun"};
 
-  const char* stringFuncHelp[] = {
+const char* stringFuncHelp[] = {
     "String functions",
     "",
     "  int    LEN        (string)      aka STRLENGTH",
@@ -854,10 +828,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  regex  SQLPATTERN (string)      make regex from SQL-style pattern string",
     "",
     "'show func conversion'  for functions converting values to string",
-    "'show func datetime'    for functions converting date/time to string"
-  };
+    "'show func datetime'    for functions converting date/time to string"};
 
-  const char* arrayFuncHelp[] = {
+const char* arrayFuncHelp[] = {
     "Array creation/manipulation functions",
     "",
     "  array ARRAY     (value, shape)          create array and fill with value",
@@ -886,10 +859,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  array REPLACEMASKED   (arr1, arr2)",
     "    replace masked elements in arr1 by corresponding value in arr2",
     "  array REPLACEUNMASKED (arr1, arr2)",
-    "    replace unmasked elements in arr1 by corresponding value in arr2"
-  };
+    "    replace unmasked elements in arr1 by corresponding value in arr2"};
 
-  const char* reduceFuncHelp[] = {
+const char* reduceFuncHelp[] = {
     "Array reduce functions (use unmasked elements only)",
     " XXX        (array)               reduces to a scalar",
     " XXXS       (array, reduceAxes)   reduces to a (N-M)-dim array",
@@ -914,10 +886,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  double  AVDEV    (numeric)   average deviation",
     "  double  RMS      (real)      root-mean-square",
     "  double  MEDIAN   (real)      median (the middle element)",
-    "  double  FRACTILE (real, fraction)   element at given fraction"
-  };
+    "  double  FRACTILE (real, fraction)   element at given fraction"};
 
-  const char* astroFuncHelp[] = {
+const char* astroFuncHelp[] = {
     "Astronomical functions",
     "",
     "  double ANGDIST    (arg1,arg2)     aka ANGULARDISTANCE",
@@ -946,17 +917,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "'show func meas'   for measures functions converting between reference frames",
     "'show func mscal'  for mscal functions handling measures in MeasurementSets",
-  };
+};
 
-  const char* miscFuncHelp[] = {
+const char* miscFuncHelp[] = {
     "Miscellaneous functions",
     "",
     "  int ROWNR()   aka ROWNUMBER    return row number in current table",
     "  int ROWID()                    return row number in input table",
     "      MSID(column)               use column if existing, otherwise ROWID()",
-  };
+};
 
-  const char* aggrFuncHelp[] = {
+const char* aggrFuncHelp[] = {
     "Aggregate functions operating per group (using GROUPBY)",
     "",
     "The following functions result in a scalar value",
@@ -989,60 +960,51 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "The following functions result in an array",
     "  double  GHIST  (data, nbin, start, end)   histogram of the data",
-    "  anytype GSTACK (anytype)    stack the data to an array      aka GAGGR"
-  };
+    "  anytype GSTACK (anytype)    stack the data to an array      aka GAGGR"};
 
-  const char* positionHelp[] = {
-      "Position types:",
-      "    ITRF",
-      "    WGS84"
-  };
+const char* positionHelp[] = {"Position types:", "    ITRF", "    WGS84"};
 
-  const char* epochHelp[] = {
-      "Epoch types:",
-      "    LAST           Local Apparent Sidereal Time",
-      "    LMST           Local Mean Sidereal Time",
-      "    GMST1, GMST    Greenwich Mean ST1",
-      "    GAST           Greenwich Apparent ST",
-      "    UT1, UT        Universal Time",
-      "    UT2            Universal Time",
-      "    UTC            Coordinated Universal Time",
-      "    TAI, IAT       International Atomic Time",
-      "    TDT, TT, ET    Terrestrial Dynamical Time",
-      "    TCG            Geocentric Coordinate Time",
-      "    TDB            Barycentric Dynamical Time",
-      "    TCB            Barycentric Coordinate Time"
-  };
+const char* epochHelp[] = {"Epoch types:",
+                           "    LAST           Local Apparent Sidereal Time",
+                           "    LMST           Local Mean Sidereal Time",
+                           "    GMST1, GMST    Greenwich Mean ST1",
+                           "    GAST           Greenwich Apparent ST",
+                           "    UT1, UT        Universal Time",
+                           "    UT2            Universal Time",
+                           "    UTC            Coordinated Universal Time",
+                           "    TAI, IAT       International Atomic Time",
+                           "    TDT, TT, ET    Terrestrial Dynamical Time",
+                           "    TCG            Geocentric Coordinate Time",
+                           "    TDB            Barycentric Dynamical Time",
+                           "    TCB            Barycentric Coordinate Time"};
 
-  const char* directionHelp[] = {
-    "Direction types:",
-    "    J2000       mean equator and equinox at J2000.0 (FK5)",
-    "    JNAT        geocentric natural frame",
-    "    JMEAN       mean equator and equinox at frame epoch",
-    "    JTRUE       true equator and equinox at frame epoch",
-    "    APP         apparent geocentric position",
-    "    B1950       mean epoch and ecliptic at B1950.0",
-    "    B1950_VLA   mean epoch(1979.9)) and ecliptic at B1950.0",
-    "    BMEAN       mean equator and equinox at frame epoch",
-    "    BTRUE       true equator and equinox at frame epoch",
-    "    HADEC       topocentric hourangle and declination",
-    "    AZEL        topocentric Azimuth and Elevation (N through E)",
-    "    AZELNE      topocentric Azimuth and Elevation (N through E)",
-    "    AZELSW      topocentric Azimuth and Elevation (S through W)",
-    "    AZELGEO     geodetic Azimuth and Elevation (N through E)",
-    "    AZELNEGEO   geodetic Azimuth and Elevation (N through E)",
-    "    AZELSWGEO   geodetic Azimuth and Elevation (S through W)",
-    "    ECLIPTIC    ecliptic for J2000 equator and equinox",
-    "    MECLIPTIC   ecliptic for mean equator of date",
-    "    TECLIPTIC   ecliptic for true equator of date",
-    "    GALACTIC    galactic coordinates",
-    "    SUPERGAL    supergalactic coordinates",
-    "    ITRF        coordinates wrt ITRF Earth frame",
-    "    TOPO        apparent topocentric position",
-    "    ICRS        International Celestial Reference System"
-  };
+const char* directionHelp[] = {"Direction types:",
+                               "    J2000       mean equator and equinox at J2000.0 (FK5)",
+                               "    JNAT        geocentric natural frame",
+                               "    JMEAN       mean equator and equinox at frame epoch",
+                               "    JTRUE       true equator and equinox at frame epoch",
+                               "    APP         apparent geocentric position",
+                               "    B1950       mean epoch and ecliptic at B1950.0",
+                               "    B1950_VLA   mean epoch(1979.9)) and ecliptic at B1950.0",
+                               "    BMEAN       mean equator and equinox at frame epoch",
+                               "    BTRUE       true equator and equinox at frame epoch",
+                               "    HADEC       topocentric hourangle and declination",
+                               "    AZEL        topocentric Azimuth and Elevation (N through E)",
+                               "    AZELNE      topocentric Azimuth and Elevation (N through E)",
+                               "    AZELSW      topocentric Azimuth and Elevation (S through W)",
+                               "    AZELGEO     geodetic Azimuth and Elevation (N through E)",
+                               "    AZELNEGEO   geodetic Azimuth and Elevation (N through E)",
+                               "    AZELSWGEO   geodetic Azimuth and Elevation (S through W)",
+                               "    ECLIPTIC    ecliptic for J2000 equator and equinox",
+                               "    MECLIPTIC   ecliptic for mean equator of date",
+                               "    TECLIPTIC   ecliptic for true equator of date",
+                               "    GALACTIC    galactic coordinates",
+                               "    SUPERGAL    supergalactic coordinates",
+                               "    ITRF        coordinates wrt ITRF Earth frame",
+                               "    TOPO        apparent topocentric position",
+                               "    ICRS        International Celestial Reference System"};
 
-  const char* earthMagneticHelp[] = {
+const char* earthMagneticHelp[] = {
     "EarthMagnetic types:",
     "    IGRF        IGRF model",
     "    J2000       mean equator and equinox at J2000.0 (FK5)",
@@ -1068,258 +1030,237 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    SUPERGAL    supergalactic coordinates",
     "    ITRF        coordinates wrt ITRF Earth frame",
     "    TOPO        apparent topocentric position",
-    "    ICRS        International Celestial Reference System"
-  };
+    "    ICRS        International Celestial Reference System"};
 
-  const char* frequencyHelp[] = {
+const char* frequencyHelp[] = {
     "Frequency types",
     "    REST     Rest frequency",
-    "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)",
-    "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = [270,+30] deg (B1900.0)",
+    "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in "
+    "galactic coordinates)",
+    "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = "
+    "[270,+30] deg (B1900.0)",
     "    BARY     Barycentric (J2000)",
     "    GEO      Geocentric",
     "    TOPO     Topocentric",
     "    GALACTO  Galacto centric (with rotation of 220 km/s in direction l,b = [90,0] deg",
     "    LGROUP   Local group velocity -- 308km/s towards l,b = [105,-7] deg (F. Ghigo)",
-    "    CMB      CMB velocity -- 369.5km/s towards l,b = [264.4, 48.4] deg (F. Ghigo)"
-  };
+    "    CMB      CMB velocity -- 369.5km/s towards l,b = [264.4, 48.4] deg (F. Ghigo)"};
 
-  const char* radialVelocityHelp[] = {
+const char* radialVelocityHelp[] = {
     "RadialVelocity types",
-    "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)",
-    "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = [270,+30] deg (B1900.0)",
+    "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in "
+    "galactic coordinates)",
+    "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = "
+    "[270,+30] deg (B1900.0)",
     "    BARY     Barycentric (J2000)",
     "    GEO      Geocentric",
     "    TOPO     Topocentric",
     "    GALACTO  Galacto centric (with rotation of 220 km/s in direction l,b = [90,0] deg",
     "    LGROUP   Local group velocity -- 308km/s towards l,b = [105,-7] deg (F. Ghigo)",
-    "    CMB      CMB velocity -- 369.5km/s towards l,b = [264.4, 48.4] deg (F. Ghigo)"
-  };
+    "    CMB      CMB velocity -- 369.5km/s towards l,b = [264.4, 48.4] deg (F. Ghigo)"};
 
-  const char* dopplerHelp[] = {
-    "Doppler types (with F = f/f0, the frequency ratio)",
-    "    Z, OPTICAL      -1 + 1/F",
-    "    RATIO           F",
-    "    RADIO           1  - F",
-    "    BETA, TRUE      (1 - F**2)/(1 + F**2)",
-    "    RELATIVISTIC = BETA (= v/c)",
-    "    GAMMA           (1 + F**2)/2F"
-  };
+const char* dopplerHelp[] = {"Doppler types (with F = f/f0, the frequency ratio)",
+                             "    Z, OPTICAL      -1 + 1/F",
+                             "    RATIO           F",
+                             "    RADIO           1  - F",
+                             "    BETA, TRUE      (1 - F**2)/(1 + F**2)",
+                             "    RELATIVISTIC = BETA (= v/c)",
+                             "    GAMMA           (1 + F**2)/2F"};
 
-
-  String TaQLShow::getInfo (const Vector<String>& parts,
-                            const TaQLStyle& style)
-  {
-    // parts contains the possible command, type and subtypes.
-    if (parts.empty()) {
-      return getHelp (infoHelp);
-    }
-    String cmd(parts[0]);
-    ToLowerCaseInPlace(cmd);
-    String type;
-    if (parts.size() > 1) type = parts[1];
-    String origType(type);
-    ToLowerCaseInPlace(type);
-    if (cmd == "table") {
-      return showTable (parts);
-    } else if (cmd == "command"  ||  cmd == "commands") {
-      return showCommand (type);
-    } else if (cmd == "expr"  ||  cmd == "expression") {
-      return getHelp (exprHelp);
-    } else if (cmd == "oper"  ||  cmd == "operator"  ||
-               cmd == "operators") {
-      return getHelp (operHelp);
-    } else if (cmd == "const"  ||  cmd == "constant"  ||
-               cmd == "constants") {
-      return getHelp (constHelp);
-    } else if (cmd == "dtype"  ||  cmd == "datatype"  ||
-               cmd == "datatypes") {
-      return getHelp (dtypeHelp);
-    } else if (cmd == "tabopt"  ||  cmd == "tableoption"  ||
-               cmd == "tableoptions") {
-      return getHelp (taboptHelp);
-    } else if (cmd == "dminfo") {
-      return getHelp (dminfoHelp);
-    } else if (cmd == "set"  ||  cmd == "interval"  ||
-               cmd == "sets"  ||  cmd == "intervals") {
-      return getHelp (setHelp);
-    } else if (cmd == "func"  ||  cmd == "function"  ||
-               cmd == "functions") {
-      return showFuncs (type, parts, style);
-    } else if (cmd == "meastype"  ||  cmd == "meastypes") {
-      return showMeasTypes (type);
-    } else if (cmd == "unit"  ||  cmd == "units") {
-      return showUnits (origType);
-    }
-    throw TableInvExpr (cmd + " is an unknown SHOW command");
+String TaQLShow::getInfo(const Vector<String>& parts, const TaQLStyle& style) {
+  // parts contains the possible command, type and subtypes.
+  if (parts.empty()) {
+    return getHelp(infoHelp);
   }
-
-  String TaQLShow::showTable (const Vector<String>& parts)
-  {
-    AlwaysAssert (parts.size() < 2, AipsError);
-    return getHelp (tableHelp);
+  String cmd(parts[0]);
+  ToLowerCaseInPlace(cmd);
+  String type;
+  if (parts.size() > 1) type = parts[1];
+  String origType(type);
+  ToLowerCaseInPlace(type);
+  if (cmd == "table") {
+    return showTable(parts);
+  } else if (cmd == "command" || cmd == "commands") {
+    return showCommand(type);
+  } else if (cmd == "expr" || cmd == "expression") {
+    return getHelp(exprHelp);
+  } else if (cmd == "oper" || cmd == "operator" || cmd == "operators") {
+    return getHelp(operHelp);
+  } else if (cmd == "const" || cmd == "constant" || cmd == "constants") {
+    return getHelp(constHelp);
+  } else if (cmd == "dtype" || cmd == "datatype" || cmd == "datatypes") {
+    return getHelp(dtypeHelp);
+  } else if (cmd == "tabopt" || cmd == "tableoption" || cmd == "tableoptions") {
+    return getHelp(taboptHelp);
+  } else if (cmd == "dminfo") {
+    return getHelp(dminfoHelp);
+  } else if (cmd == "set" || cmd == "interval" || cmd == "sets" || cmd == "intervals") {
+    return getHelp(setHelp);
+  } else if (cmd == "func" || cmd == "function" || cmd == "functions") {
+    return showFuncs(type, parts, style);
+  } else if (cmd == "meastype" || cmd == "meastypes") {
+    return showMeasTypes(type);
+  } else if (cmd == "unit" || cmd == "units") {
+    return showUnits(origType);
   }
+  throw TableInvExpr(cmd + " is an unknown SHOW command");
+}
 
-  String TaQLShow::showCommand (const String& cmd)
-  {
-    if (cmd.empty()) {
-      return getHelp (commandHelp);
-    } else if (cmd == "select") {
-      return getHelp (selectHelp);
-    } else if (cmd == "calc") {
-      return getHelp (calcHelp);
-    } else if (cmd == "update") {
-      return getHelp (updateHelp);
-    } else if (cmd == "insert") {
-      return getHelp (insertHelp);
-    } else if (cmd == "delete") {
-      return getHelp (deleteHelp);
-    } else if (cmd == "create") {
-      return getHelp (createHelp);
-    } else if (cmd == "alter") {
-      return getHelp (alterHelp);
-    } else if (cmd == "count") {
-      return getHelp (countHelp);
-    }
-    throw TableInvExpr (cmd +
-                        " is an unknown command for 'show command <command>'\n"
-                        "   use select, calc, update, insert, delete, create,"
-                        " alter or count\n");
+String TaQLShow::showTable(const Vector<String>& parts) {
+  AlwaysAssert(parts.size() < 2, AipsError);
+  return getHelp(tableHelp);
+}
+
+String TaQLShow::showCommand(const String& cmd) {
+  if (cmd.empty()) {
+    return getHelp(commandHelp);
+  } else if (cmd == "select") {
+    return getHelp(selectHelp);
+  } else if (cmd == "calc") {
+    return getHelp(calcHelp);
+  } else if (cmd == "update") {
+    return getHelp(updateHelp);
+  } else if (cmd == "insert") {
+    return getHelp(insertHelp);
+  } else if (cmd == "delete") {
+    return getHelp(deleteHelp);
+  } else if (cmd == "create") {
+    return getHelp(createHelp);
+  } else if (cmd == "alter") {
+    return getHelp(alterHelp);
+  } else if (cmd == "count") {
+    return getHelp(countHelp);
   }
+  throw TableInvExpr(cmd +
+                     " is an unknown command for 'show command <command>'\n"
+                     "   use select, calc, update, insert, delete, create,"
+                     " alter or count\n");
+}
 
-  String TaQLShow::showFuncs (const String& type,
-                              const Vector<String>& parts,
-                              const TaQLStyle& style)
-  {
-    if (type.empty()  ||  type == "all") {
-      return getHelp (allFuncHelp);
-    } else if (type == "math") {
-      return getHelp (mathFuncHelp);
-    } else if (type == "conversion"  ||  type == "conv") {
-      return getHelp (convFuncHelp);
-    } else if (type == "logical") {
-      return getHelp (logicalFuncHelp);
-    } else if (type == "datetime") {
-      return getHelp (dateTimeFuncHelp);
-    } else if (type == "string") {
-      return getHelp (stringFuncHelp);
-    } else if (type == "array") {
-      return getHelp (arrayFuncHelp);
-    } else if (type == "reduce") {
-      return getHelp (reduceFuncHelp);
-    } else if (type == "astro") {
-      return getHelp (astroFuncHelp);
-    } else if (type == "misc") {
-      return getHelp (miscFuncHelp);
-    } else if (type == "aggr") {
-      return getHelp (aggrFuncHelp);
-    }
-    try {
-      TableExprNodeSet operands;
-      String ftype;
-      if (parts.size() > 2) ftype = parts[2];
-      operands.add (TableExprNodeSetElem(ftype));
-      // Make a node for the UDF library given by type to use its help function.
-      // It takes an argument (which can be empty).
-      TableExprNode node = TableExprNode::newUDFNode (type+".help",
-                                                      operands,
-                                                      TableExprInfo(), style);
-      return node.getString(0);   // get the UDF help info as a string
-    } catch (const std::exception&) {
-      return type + " is an unknown type in 'show functions <type>'\n"
-        "  (maybe an unknown UDF library)\n";
+String TaQLShow::showFuncs(const String& type, const Vector<String>& parts,
+                           const TaQLStyle& style) {
+  if (type.empty() || type == "all") {
+    return getHelp(allFuncHelp);
+  } else if (type == "math") {
+    return getHelp(mathFuncHelp);
+  } else if (type == "conversion" || type == "conv") {
+    return getHelp(convFuncHelp);
+  } else if (type == "logical") {
+    return getHelp(logicalFuncHelp);
+  } else if (type == "datetime") {
+    return getHelp(dateTimeFuncHelp);
+  } else if (type == "string") {
+    return getHelp(stringFuncHelp);
+  } else if (type == "array") {
+    return getHelp(arrayFuncHelp);
+  } else if (type == "reduce") {
+    return getHelp(reduceFuncHelp);
+  } else if (type == "astro") {
+    return getHelp(astroFuncHelp);
+  } else if (type == "misc") {
+    return getHelp(miscFuncHelp);
+  } else if (type == "aggr") {
+    return getHelp(aggrFuncHelp);
+  }
+  try {
+    TableExprNodeSet operands;
+    String ftype;
+    if (parts.size() > 2) ftype = parts[2];
+    operands.add(TableExprNodeSetElem(ftype));
+    // Make a node for the UDF library given by type to use its help function.
+    // It takes an argument (which can be empty).
+    TableExprNode node =
+        TableExprNode::newUDFNode(type + ".help", operands, TableExprInfo(), style);
+    return node.getString(0);  // get the UDF help info as a string
+  } catch (const std::exception&) {
+    return type +
+           " is an unknown type in 'show functions <type>'\n"
+           "  (maybe an unknown UDF library)\n";
+  }
+}
+
+void TaQLShow::showUnitKind(ostream& os, const UnitVal& kind, const map<String, UnitName>& units) {
+  for (map<String, UnitName>::const_iterator iter = units.begin(); iter != units.end(); ++iter) {
+    if (Unit(iter->first).getValue() == kind) {
+      os << "    " << iter->second << endl;
     }
   }
+}
 
-
-  void TaQLShow::showUnitKind (ostream& os, const UnitVal& kind,
-                               const map<String, UnitName>& units)
-  {
-    for (map<String,UnitName>::const_iterator iter = units.begin();
-         iter != units.end(); ++iter) {
-      if (Unit(iter->first).getValue() == kind) {
-        os << "    " << iter->second << endl;
-      }
-    }
-  }
-
-  String TaQLShow::showUnits (const String& type)
-  {
-    ostringstream os;
-    if (type.empty()) {
-      UnitMap::list (os);
-    } else if (type == "prefix") {
-      UnitMap::listPref (os);
+String TaQLShow::showUnits(const String& type) {
+  ostringstream os;
+  if (type.empty()) {
+    UnitMap::list(os);
+  } else if (type == "prefix") {
+    UnitMap::listPref(os);
+  } else {
+    UnitVal kind;
+    if (type == "length") {
+      kind = UnitVal::LENGTH;
+    } else if (type == "mass") {
+      kind = UnitVal::MASS;
+    } else if (type == "time") {
+      kind = UnitVal::TIME;
+    } else if (type == "current") {
+      kind = UnitVal::CURRENT;
+    } else if (type == "temperature") {
+      kind = UnitVal::TEMPERATURE;
+    } else if (type == "intensity") {
+      kind = UnitVal::INTENSITY;
+    } else if (type == "molar") {
+      kind = UnitVal::MOLAR;
+    } else if (type == "angle") {
+      kind = UnitVal::ANGLE;
+    } else if (type == "solidangle") {
+      kind = UnitVal::SOLIDANGLE;
     } else {
-      UnitVal kind;
-      if (type == "length") {
-        kind = UnitVal::LENGTH;
-      } else if (type == "mass") {
-        kind = UnitVal::MASS;
-      } else if (type == "time") {
-        kind = UnitVal::TIME;
-      } else if (type == "current") {
-        kind = UnitVal::CURRENT;
-      } else if (type == "temperature") {
-        kind = UnitVal::TEMPERATURE;
-      } else if (type == "intensity") {
-        kind = UnitVal::INTENSITY;
-      } else if (type == "molar") {
-        kind = UnitVal::MOLAR;
-      } else if (type == "angle") {
-        kind = UnitVal::ANGLE;
-      } else if (type == "solidangle") {
-        kind = UnitVal::SOLIDANGLE;
-      } else {
-        try {
-          Unit unit(type);
-          kind = unit.getValue();
-        } catch (const AipsError&) {
-          throw TableInvExpr ("Unknown kind or unit given in command "
-                              "'show units " + type + "'\nUse 'show' to "
-                              "show the valid kinds");
-        }
+      try {
+        Unit unit(type);
+        kind = unit.getValue();
+      } catch (const AipsError&) {
+        throw TableInvExpr(
+            "Unknown kind or unit given in command "
+            "'show units " +
+            type +
+            "'\nUse 'show' to "
+            "show the valid kinds");
       }
-      showUnitKind (os, kind, UnitMap::giveDef());
-      showUnitKind (os, kind, UnitMap::giveSI());
-      showUnitKind (os, kind, UnitMap::giveCust());
-      showUnitKind (os, kind, UnitMap::giveUser());
     }
-    return os.str();
+    showUnitKind(os, kind, UnitMap::giveDef());
+    showUnitKind(os, kind, UnitMap::giveSI());
+    showUnitKind(os, kind, UnitMap::giveCust());
+    showUnitKind(os, kind, UnitMap::giveUser());
   }
+  return os.str();
+}
 
-  String TaQLShow::showMeasTypes (const String& type)
-  {
-    // Because libtables cannot be dependent on libmeasures,
-    // no Measures functions can be used to show the types.
-    if (type.empty()) {
-      return getHelp (positionHelp) +
-        getHelp (epochHelp) +
-        getHelp (directionHelp) +
-        getHelp (earthMagneticHelp) +
-        getHelp (frequencyHelp) +
-        getHelp (radialVelocityHelp) +
-        getHelp (dopplerHelp) +
-        "\nSee also 'show functions meas "
-        "pos|epoch|dir|em|freq|radvel|doppler\n";
-    } else if (type == "pos"  ||  type == "position") {
-      return getHelp (positionHelp);
-    } else if (type == "epoch") {
-      return getHelp (epochHelp);
-    } else if (type == "dir"  ||  type == "direction") {
-      return getHelp (directionHelp);
-    } else if (type == "em"  ||  type == "earthmagnetic") {
-      return getHelp (earthMagneticHelp);
-    } else if (type == "freq"  ||  type == "frequency") {
-      return getHelp (frequencyHelp);
-    } else if (type == "rv"  ||  type == "radvel"  ||  type == "radialvelocity") {
-      return getHelp (radialVelocityHelp);
-    } else if (type == "doppler") {
-      return getHelp (dopplerHelp);
-    }
-    throw TableInvExpr (type +
-                        " is an unknown type for command "
-                        "'show meastypes <type>'");
+String TaQLShow::showMeasTypes(const String& type) {
+  // Because libtables cannot be dependent on libmeasures,
+  // no Measures functions can be used to show the types.
+  if (type.empty()) {
+    return getHelp(positionHelp) + getHelp(epochHelp) + getHelp(directionHelp) +
+           getHelp(earthMagneticHelp) + getHelp(frequencyHelp) + getHelp(radialVelocityHelp) +
+           getHelp(dopplerHelp) +
+           "\nSee also 'show functions meas "
+           "pos|epoch|dir|em|freq|radvel|doppler\n";
+  } else if (type == "pos" || type == "position") {
+    return getHelp(positionHelp);
+  } else if (type == "epoch") {
+    return getHelp(epochHelp);
+  } else if (type == "dir" || type == "direction") {
+    return getHelp(directionHelp);
+  } else if (type == "em" || type == "earthmagnetic") {
+    return getHelp(earthMagneticHelp);
+  } else if (type == "freq" || type == "frequency") {
+    return getHelp(frequencyHelp);
+  } else if (type == "rv" || type == "radvel" || type == "radialvelocity") {
+    return getHelp(radialVelocityHelp);
+  } else if (type == "doppler") {
+    return getHelp(dopplerHelp);
   }
+  throw TableInvExpr(type +
+                     " is an unknown type for command "
+                     "'show meastypes <type>'");
+}
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore

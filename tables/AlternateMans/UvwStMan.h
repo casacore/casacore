@@ -51,8 +51,7 @@ class UvwStMan final : public DataManager {
 
   rownr_t open64(rownr_t nRow, AipsIO &) final;
 
-  DataManagerColumn *makeScalarColumn(const String &, int,
-                                      const String &) final {
+  DataManagerColumn *makeScalarColumn(const String &, int, const String &) final {
     throw std::runtime_error(
         "makeScalarColumn() called on a UvwStMan. UvwStMan can only make array "
         "columns");
@@ -61,8 +60,7 @@ class UvwStMan final : public DataManager {
   DataManagerColumn *makeDirArrColumn(const String &name, int dataType,
                                       const String &dataTypeID) final;
 
-  DataManagerColumn *makeIndArrColumn(const String &, int,
-                                      const String &) final {
+  DataManagerColumn *makeIndArrColumn(const String &, int, const String &) final {
     throw std::runtime_error(
         "makeIndArrColumn() called on a UvwStMan. UvwStMan can only make "
         "direct columns");

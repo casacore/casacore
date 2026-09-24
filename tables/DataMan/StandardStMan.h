@@ -1,37 +1,36 @@
-//# StandardStMan.h: The Standard Storage Manager
-//# Copyright (C) 2000,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # StandardStMan.h: The Standard Storage Manager
+// # Copyright (C) 2000,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_STANDARDSTMAN_H
 #define TABLES_STANDARDSTMAN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/SSMBase.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // The Standard Storage Manager
@@ -43,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> The Table Data Managers concept as described in module file
 //        <linkto module="Tables:Data Managers">Tables.h</linkto>
 //   <li> <linkto class=ROStandardStManAccessor>
@@ -103,7 +102,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // less space.
 // <p>
 // As said above all string arrays and variable length scalar strings
-// are stored in separate string buckets. 
+// are stored in separate string buckets.
 // </synopsis>
 
 // <motivation>
@@ -139,52 +138,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class StandardStMan : public SSMBase {
+ public:
+  // Create a Standard storage manager with the given name.
+  // If no name is used, it is set to "SSM"
+  // The name can be used to construct a
+  // <linkto class=ROStandardStManAccessor>ROStandardStManAccessor
+  // </linkto> object (e.g. to set the cache size).
+  // <br>
+  // The cache size has to be given in buckets.
+  // <br>
+  // The bucket size can be given in 2 ways:
+  // <br>- A positive number gives the bucket size in bytes.
+  // The number of rows per bucket will be calculated from it.
+  // <br>- A negative number gives the number of rows per bucket.
+  // The bucket size in bytes will be calculated from it.
+  // Note that in this way the maximum bucketsize is 32768 (minimum is 128).
+  // <br>- The default 0 means that 32 rows will be stored in a bucket.
+  // <br>Note that the default is only suitable for small tables.
+  // In general it makes sense to give the expected number of table rows.
+  // In that way the buckets will be small enough for small tables
+  // and not too small for large tables.
+  // <group>
+  explicit StandardStMan(Int bucketSize = 0, uInt cacheSize = 1);
+  explicit StandardStMan(const String& dataManagerName, Int bucketSize = 0, uInt cacheSize = 1);
+  // </group>
 
-class StandardStMan : public SSMBase
-{
-public:
-    // Create a Standard storage manager with the given name.
-    // If no name is used, it is set to "SSM"
-    // The name can be used to construct a
-    // <linkto class=ROStandardStManAccessor>ROStandardStManAccessor
-    // </linkto> object (e.g. to set the cache size).
-    // <br>
-    // The cache size has to be given in buckets.
-    // <br>
-    // The bucket size can be given in 2 ways:
-    // <br>- A positive number gives the bucket size in bytes.
-    // The number of rows per bucket will be calculated from it.
-    // <br>- A negative number gives the number of rows per bucket.
-    // The bucket size in bytes will be calculated from it.
-    // Note that in this way the maximum bucketsize is 32768 (minimum is 128).
-    // <br>- The default 0 means that 32 rows will be stored in a bucket.
-    // <br>Note that the default is only suitable for small tables.
-    // In general it makes sense to give the expected number of table rows.
-    // In that way the buckets will be small enough for small tables
-    // and not too small for large tables.
-    // <group>
-    explicit StandardStMan (Int bucketSize = 0,
-			    uInt cacheSize = 1);
-    explicit StandardStMan (const String& dataManagerName,
-			    Int bucketSize = 0,
-			    uInt cacheSize = 1);
-    // </group>
+  ~StandardStMan();
 
-    ~StandardStMan();
+  // Copy constructor cannot be used.
+  StandardStMan(const StandardStMan&) = delete;
 
-    // Copy constructor cannot be used.
-    StandardStMan (const StandardStMan&) = delete;
-
-    // Assignment cannot be used.
-    StandardStMan& operator= (const StandardStMan&) = delete;
+  // Assignment cannot be used.
+  StandardStMan& operator=(const StandardStMan&) = delete;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

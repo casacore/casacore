@@ -1,27 +1,27 @@
-//# tRecordGram.cc: Test program for the expression grammar on a table
-//# Copyright (C) 2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tRecordGram.cc: Test program for the expression grammar on a table
+// # Copyright (C) 2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/TaQL/RecordGram.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -40,116 +40,107 @@
 
 // This program tests the class RecordGram to do expressions on a table.
 
-
-void doIt (const String& str)
-{
+void doIt(const String& str) {
   String name = "$testsrcdir/../../Tables/test/tTable_2.data_v0";
   Table tab(name);
-  TableExprNode expr = RecordGram::parse (tab, str);
+  TableExprNode expr = RecordGram::parse(tab, str);
   cout << str << ": ";
   if (expr.isScalar()) {
     Vector<rownr_t> rownrs(expr.nrow());
-    indgen (rownrs);
+    indgen(rownrs);
     switch (expr.getColumnDataType()) {
-    case TpBool:
-      cout << expr.getColumnBool (rownrs);
-      break;
-    case TpUChar:
-      cout << expr.getColumnuChar (rownrs);
-      break;
-    case TpShort:
-      cout << expr.getColumnShort (rownrs);
-      break;
-    case TpUShort:
-      cout << expr.getColumnuShort (rownrs);
-      break;
-    case TpInt:
-      cout << expr.getColumnInt (rownrs);
-      break;
-    case TpUInt:
-      cout << expr.getColumnuInt (rownrs);
-      break;
-    case TpInt64:
-      cout << expr.getColumnInt64 (rownrs);
-      break;
-    case TpFloat:
-      cout << expr.getColumnFloat (rownrs);
-      break;
-    case TpDouble:
-      cout << expr.getColumnDouble (rownrs);
-      break;
-    case TpComplex:
-      cout << expr.getColumnComplex (rownrs);
-      break;
-    case TpDComplex:
-      cout << expr.getColumnDComplex (rownrs);
-      break;
-    case TpString:
-      cout << expr.getColumnString (rownrs);
-      break;
-    default:
-      cout << "Unknown expression scalar type " << expr.getColumnDataType();
+      case TpBool:
+        cout << expr.getColumnBool(rownrs);
+        break;
+      case TpUChar:
+        cout << expr.getColumnuChar(rownrs);
+        break;
+      case TpShort:
+        cout << expr.getColumnShort(rownrs);
+        break;
+      case TpUShort:
+        cout << expr.getColumnuShort(rownrs);
+        break;
+      case TpInt:
+        cout << expr.getColumnInt(rownrs);
+        break;
+      case TpUInt:
+        cout << expr.getColumnuInt(rownrs);
+        break;
+      case TpInt64:
+        cout << expr.getColumnInt64(rownrs);
+        break;
+      case TpFloat:
+        cout << expr.getColumnFloat(rownrs);
+        break;
+      case TpDouble:
+        cout << expr.getColumnDouble(rownrs);
+        break;
+      case TpComplex:
+        cout << expr.getColumnComplex(rownrs);
+        break;
+      case TpDComplex:
+        cout << expr.getColumnDComplex(rownrs);
+        break;
+      case TpString:
+        cout << expr.getColumnString(rownrs);
+        break;
+      default:
+        cout << "Unknown expression scalar type " << expr.getColumnDataType();
     }
     cout << endl;
   } else {
-    for (rownr_t i=0; i<tab.nrow(); i++) {
+    for (rownr_t i = 0; i < tab.nrow(); i++) {
       cout << "  row " << i << ":" << endl;
       switch (expr.dataType()) {
-      case TpBool:
-	{
-	  MArray<Bool> arr;
-	  expr.get (i, arr);
-	  cout << arr.array();
-	  break;
-	}
-      case TpDouble:
-	{
-	  MArray<Double> arr;
-	  expr.get (i, arr);
-	  cout << arr.array();
-	  break;
-	}
-      case TpDComplex:
-	{
-	  MArray<DComplex> arr;
-	  expr.get (i, arr);
-	  cout << arr.array();
-	  break;
-	}
-      case TpString:
-	{
-	  MArray<String> arr;
-	  expr.get (i, arr);
-	  cout << arr.array();
-	  break;
-	}
-      default:
-	cout << "Unknown expression array type " << expr.dataType();
+        case TpBool: {
+          MArray<Bool> arr;
+          expr.get(i, arr);
+          cout << arr.array();
+          break;
+        }
+        case TpDouble: {
+          MArray<Double> arr;
+          expr.get(i, arr);
+          cout << arr.array();
+          break;
+        }
+        case TpDComplex: {
+          MArray<DComplex> arr;
+          expr.get(i, arr);
+          cout << arr.array();
+          break;
+        }
+        case TpString: {
+          MArray<String> arr;
+          expr.get(i, arr);
+          cout << arr.array();
+          break;
+        }
+        default:
+          cout << "Unknown expression array type " << expr.dataType();
       }
     }
   }
 }
 
 // Ask and execute command till empty string is given.
-void docomm()
-{
+void docomm() {
   char comm[1025];
   while (True) {
     cout << "Table command (q=quit): ";
-    cin.getline (comm, 1024);
+    cin.getline(comm, 1024);
     String str(comm);
-    if (str.empty()  ||  str == "q") 
-      break;
+    if (str.empty() || str == "q") break;
     try {
-      doIt (str);
+      doIt(str);
     } catch (std::exception& x) {
       cout << x.what() << endl;
-    } 
+    }
   }
 }
 
-int main (int argc, const char* argv[])
-{
+int main(int argc, const char* argv[]) {
   if (argc < 2) {
     docomm();
     return 0;

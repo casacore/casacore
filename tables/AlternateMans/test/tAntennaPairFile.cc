@@ -6,7 +6,7 @@ using casacore::AntennaPairFile;
 
 namespace {
 const std::string kFilename = "antenna_pair_file_test.tmp";
-} // namespace
+}  // namespace
 
 BOOST_AUTO_TEST_SUITE(antenna_pair_file)
 
@@ -105,8 +105,8 @@ BOOST_AUTO_TEST_CASE(conisistency_checking) {
   BOOST_CHECK_EQUAL(file.NRowsInPattern(), 2);
 
   // Writing inconsistent patterns should throw
-  BOOST_CHECK_THROW(file.WriteAntenna1(5, 1), std::runtime_error); // should be 3
-  BOOST_CHECK_THROW(file.WriteAntenna2(5, 3), std::runtime_error); // should be 1
+  BOOST_CHECK_THROW(file.WriteAntenna1(5, 1), std::runtime_error);  // should be 3
+  BOOST_CHECK_THROW(file.WriteAntenna2(5, 3), std::runtime_error);  // should be 1
 
   // Reading any further rows should return the same pattern
   BOOST_CHECK_EQUAL(file.ReadAntenna1(6), 3);
@@ -121,30 +121,20 @@ BOOST_AUTO_TEST_CASE(conisistency_checking) {
 BOOST_AUTO_TEST_CASE(write_and_read) {
   // Define pirate language
   using Arr = std::array<int32_t, 2>;
-  const std::array<Arr, 11> data = {
-    Arr{ 0, 1 },
-    Arr{ 0, 2 },
-    Arr{ 0, 3 },
-    Arr{ 0, 5 },
-    Arr{ 1, 2 },
-    Arr{ 1, 3 },
-    Arr{ 1, 5 },
-    Arr{ 2, 3 },
-    Arr{ 2, 5 },
-    Arr{ 3, 5 }
-  };
+  const std::array<Arr, 11> data = {Arr{0, 1}, Arr{0, 2}, Arr{0, 3}, Arr{0, 5}, Arr{1, 2},
+                                    Arr{1, 3}, Arr{1, 5}, Arr{2, 3}, Arr{2, 5}, Arr{3, 5}};
 
   {
     AntennaPairFile file = AntennaPairFile::CreateNew(kFilename);
     // Only write 4 lines, to see if we can continue an unfinished file
-    for(size_t i=0; i!=4; ++i) {
+    for (size_t i = 0; i != 4; ++i) {
       file.WritePair(i, data[i][0], data[i][1]);
     }
   }
 
   {
     AntennaPairFile file = AntennaPairFile::OpenExisting(kFilename);
-    for(size_t i=0; i!=4; ++i) {
+    for (size_t i = 0; i != 4; ++i) {
       BOOST_CHECK_EQUAL(file.ReadAntenna1(i), data[i][0]);
       BOOST_CHECK_EQUAL(file.ReadAntenna2(i), data[i][1]);
     }
@@ -156,8 +146,8 @@ BOOST_AUTO_TEST_CASE(write_and_read) {
     AntennaPairFile file = AntennaPairFile::OpenExisting(kFilename);
     uint64_t row = 0;
     const size_t repeat_count = 3;
-    for(size_t repeat = 0; repeat != repeat_count; ++repeat) {
-      for(const Arr& row_data : data) {
+    for (size_t repeat = 0; repeat != repeat_count; ++repeat) {
+      for (const Arr& row_data : data) {
         file.WritePair(row, row_data[0], row_data[1]);
         ++row;
       }
@@ -170,8 +160,8 @@ BOOST_AUTO_TEST_CASE(write_and_read) {
     BOOST_CHECK_EQUAL(file.NRowsInPattern(), data.size());
     uint64_t row = 0;
     const size_t repeat_count = 4;
-    for(size_t repeat = 0; repeat != repeat_count; ++repeat) {
-      for(const Arr& row_data : data) {
+    for (size_t repeat = 0; repeat != repeat_count; ++repeat) {
+      for (const Arr& row_data : data) {
         BOOST_CHECK_EQUAL(file.ReadAntenna1(row), row_data[0]);
         BOOST_CHECK_EQUAL(file.ReadAntenna2(row), row_data[1]);
         ++row;
@@ -181,6 +171,5 @@ BOOST_AUTO_TEST_CASE(write_and_read) {
 
   unlink(kFilename.c_str());
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()

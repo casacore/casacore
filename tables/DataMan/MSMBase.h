@@ -1,42 +1,40 @@
-//# MSMBase.h: Base class for storage manager for tables using memory
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSMBase.h: Base class for storage manager for tables using memory
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_MSMBASE_H
 #define TABLES_MSMBASE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MSMColumn;
-
 
 // <summary>
 // Base class for memory-based table storage manager class
@@ -48,7 +46,7 @@ class MSMColumn;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=DataManager>DataManager</linkto>
 // </prerequisite>
 
@@ -56,16 +54,13 @@ class MSMColumn;
 // MSMBase is the base class for MemoryStMan.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // See class <linkto class=MemoryStMan>MemoryStMan</linkto> for
 // the description.
-// </synopsis> 
+// </synopsis>
 
-
-class MSMBase : public DataManager
-{
-public:
-
+class MSMBase : public DataManager {
+ public:
   // Create a memory storage manager.
   // Its name will be blank.
   MSMBase();
@@ -76,8 +71,8 @@ public:
   // <br> Note that the 2nd constructor is needed for table creation
   // from a record specification.
   // <group>
-  MSMBase (const String& storageManagerName);
-  MSMBase (const String& storageManagerName, const Record&);
+  MSMBase(const String& storageManagerName);
+  MSMBase(const String& storageManagerName, const Record&);
   // </group>
 
   virtual ~MSMBase();
@@ -94,12 +89,10 @@ public:
 
   // Set the hasPut_p flag. In this way the StManAipsIOColumn objects
   // can indicate that data have been put.
-  void setHasPut()
-    { hasPut_p = True; }
+  void setHasPut() { hasPut_p = True; }
 
   // Get the nr of rows in this storage manager.
-  rownr_t nrow() const
-    { return nrrow_p; }
+  rownr_t nrow() const { return nrrow_p; }
 
   // Does the storage manager allow to add rows? (yes)
   virtual Bool canAddRow() const;
@@ -115,21 +108,19 @@ public:
 
   // Make the object from the string.
   // This function gets registered in the DataManager "constructor" map.
-  static DataManager* makeObject (const String& dataManagerType,
-				  const Record& spec);
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 
-
-private:
+ private:
   // Flush and optionally fsync the data.
   // It does not done anything and always returns a False status.
-  virtual Bool flush (AipsIO&, Bool fsync);
+  virtual Bool flush(AipsIO&, Bool fsync);
 
   // Let the storage manager create the nr of rows needed.
-  virtual void create64 (rownr_t nrrow);
+  virtual void create64(rownr_t nrrow);
 
   // Open the storage manager file for an existing table.
   // It fills the rows with 0 values.
-  virtual rownr_t open64 (rownr_t nrrow, AipsIO&);
+  virtual rownr_t open64(rownr_t nrrow, AipsIO&);
 
   // Let the data manager initialize itself further.
   // It creates nr of rows (given to create) if needed.
@@ -140,7 +131,7 @@ private:
   // It adds or removes rows as needed.
   // It cannot know which rows are deleted, so it always deletes
   // the last rows.
-  virtual rownr_t resync64 (rownr_t nrrow);
+  virtual rownr_t resync64(rownr_t nrrow);
 
   // The data manager will be deleted (because all its columns are
   // requested to be deleted).
@@ -148,22 +139,22 @@ private:
   virtual void deleteManager();
 
   // Add rows to all columns.
-  virtual void addRow64 (rownr_t nrrow);
+  virtual void addRow64(rownr_t nrrow);
 
   // Delete a row from all columns.
-  virtual void removeRow64 (rownr_t rownr);
+  virtual void removeRow64(rownr_t rownr);
 
   // Create a column in the storage manager on behalf of a table column.
   // <group>
   // Create a scalar column.
-  virtual DataManagerColumn* makeScalarColumn (const String& name, int dataType,
-                                               const String& dataTypeID);
+  virtual DataManagerColumn* makeScalarColumn(const String& name, int dataType,
+                                              const String& dataTypeID);
   // Create a direct array column.
-  virtual DataManagerColumn* makeDirArrColumn (const String& name, int dataType,
-                                               const String& dataTypeID);
+  virtual DataManagerColumn* makeDirArrColumn(const String& name, int dataType,
+                                              const String& dataTypeID);
   // Create an indirect array column.
-  virtual DataManagerColumn* makeIndArrColumn (const String& name, int dataType,
-                                               const String& dataTypeID);
+  virtual DataManagerColumn* makeIndArrColumn(const String& name, int dataType,
+                                              const String& dataTypeID);
   // </group>
 
   // The MemoryStMan wants to do reallocateColumn.
@@ -173,17 +164,17 @@ private:
   // It returns a pointer to the new column object.
   // It is used to replace an MSMIndColumn object for indirect array with
   // a fixed shape by an MSMDirColumn object.
-  virtual DataManagerColumn* reallocateColumn (DataManagerColumn* column);
+  virtual DataManagerColumn* reallocateColumn(DataManagerColumn* column);
 
   // Add a column.
-  virtual void addColumn (DataManagerColumn*);
+  virtual void addColumn(DataManagerColumn*);
 
   // Delete a column.
-  virtual void removeColumn (DataManagerColumn*);
+  virtual void removeColumn(DataManagerColumn*);
 
-protected:
+ protected:
   // Name given by user to this storage manager.
-  String  stmanName_p;
+  String stmanName_p;
   // The number of rows in the columns.
   rownr_t nrrow_p;
   // The number of rows in create().
@@ -191,10 +182,9 @@ protected:
   // The assembly of all columns.
   Block<MSMColumn*> colSet_p;
   // Has anything been put since the last flush?
-  Bool    hasPut_p;
+  Bool hasPut_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

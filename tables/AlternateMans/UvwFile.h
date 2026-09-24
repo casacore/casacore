@@ -97,30 +97,24 @@ class UvwFile {
   /**
    * Create a new UVW file on disk with the given filename.
    */
-  static UvwFile CreateNew(const std::string& filename) {
-    return UvwFile(filename);
-  }
+  static UvwFile CreateNew(const std::string& filename) { return UvwFile(filename); }
 
   /**
    * Open an already existing UVW file from disk with the given filename.
    */
-  static UvwFile OpenExisting(const std::string& filename) {
-    return UvwFile(filename, true);
-  }
+  static UvwFile OpenExisting(const std::string& filename) { return UvwFile(filename, true); }
 
   /**
    * Write a single row to the column. This has to be done in a reasonable
    * order; see the class description.
    * @param row denotes the row in the Casacore measurement set to be read.
    */
-  void WriteUvw(uint64_t row, size_t antenna1, size_t antenna2,
-                const double* uvw) {
+  void WriteUvw(uint64_t row, size_t antenna1, size_t antenna2, const double* uvw) {
     assert(file_.IsOpen());
     if (row > n_rows_) {
-      throw std::runtime_error(
-          "Uvw data must be written in order (writing row " +
-          std::to_string(row) + ", after writing " + std::to_string(n_rows_) +
-          " rows)");
+      throw std::runtime_error("Uvw data must be written in order (writing row " +
+                               std::to_string(row) + ", after writing " + std::to_string(n_rows_) +
+                               " rows)");
     }
     // The row/block is zero when there's not yet a full block written.
     if (rows_per_block_ == 0) {
@@ -130,8 +124,7 @@ class UvwFile {
         n_antennas_ = std::max(antenna1, antenna2) + 1;
         block_uvws_.resize(n_antennas_, kUnsetPosition);
         block_uvws_[reference_antenna_] = {0.0, 0.0, 0.0};
-      } else if (antenna1 == reference_antenna_ &&
-                 antenna2 == start_antenna_2_) {
+      } else if (antenna1 == reference_antenna_ && antenna2 == start_antenna_2_) {
         // This baseline is the first baseline of a new block, so the block size
         // can be determined
         rows_per_block_ = n_rows_;
@@ -159,15 +152,15 @@ class UvwFile {
         // baseline = a2 - a1. Given a1:
         // a2 = baseline + a1
         const std::array<double, 3> ant1_uvw = block_uvws_[antenna1];
-        const std::array<double, 3> ant2_uvw{
-            uvw[0] + ant1_uvw[0], uvw[1] + ant1_uvw[1], uvw[2] + ant1_uvw[2]};
+        const std::array<double, 3> ant2_uvw{uvw[0] + ant1_uvw[0], uvw[1] + ant1_uvw[1],
+                                             uvw[2] + ant1_uvw[2]};
         StoreOrCheck(antenna2, ant2_uvw);
       } else if (IsSet(antenna2)) {
         // baseline = a2 - a1. Given a2:
         // a1 = a2 - baseline
         const std::array<double, 3> ant2_uvw = block_uvws_[antenna2];
-        const std::array<double, 3> ant1_uvw{
-            ant2_uvw[0] - uvw[0], ant2_uvw[1] - uvw[1], ant2_uvw[2] - uvw[2]};
+        const std::array<double, 3> ant1_uvw{ant2_uvw[0] - uvw[0], ant2_uvw[1] - uvw[1],
+                                             ant2_uvw[2] - uvw[2]};
         StoreOrCheck(antenna1, ant1_uvw);
       } else {
         throw std::runtime_error(
@@ -196,12 +189,11 @@ class UvwFile {
   void ReadUvw(uint64_t row, size_t antenna1, size_t antenna2, double* uvw) {
     assert(file_.IsOpen());
     if (row >= n_rows_ || antenna1 >= n_antennas_ || antenna2 >= n_antennas_) {
-      throw std::runtime_error(
-          "Invalid read for Uvw data: row " + std::to_string(row) +
-          ", baseline (" + std::to_string(antenna1) + ", " +
-          std::to_string(antenna2) + ") was requested. File has only " +
-          std::to_string(n_rows_) + " rows with " +
-          std::to_string(n_antennas_) + " antennas.");
+      throw std::runtime_error("Invalid read for Uvw data: row " + std::to_string(row) +
+                               ", baseline (" + std::to_string(antenna1) + ", " +
+                               std::to_string(antenna2) + ") was requested. File has only " +
+                               std::to_string(n_rows_) + " rows with " +
+                               std::to_string(n_antennas_) + " antennas.");
     }
     if (rows_per_block_ != 0) {
       const uint64_t block = row / rows_per_block_;
@@ -246,8 +238,7 @@ class UvwFile {
    * Create a new file on disk.
    */
   UvwFile(const std::string& filename)
-      : file_(BufferedColumnarFile::CreateNew(filename, kHeaderSize,
-                                              sizeof(double) * 3)) {}
+      : file_(BufferedColumnarFile::CreateNew(filename, kHeaderSize, sizeof(double) * 3)) {}
 
   /**
    * Open an existing file from disk. The last parameter is a dummy
@@ -259,10 +250,9 @@ class UvwFile {
     active_block_ = std::numeric_limits<uint64_t>::max();
     if (n_antennas_ > 1) {
       if (file_.NRows() % (n_antennas_ - 1) != 0) {
-        throw std::runtime_error(
-            "Uvw file has an incorrect number of rows (" +
-            std::to_string(file_.NRows()) + ", expecting multiple of " +
-            std::to_string(n_antennas_ - 1) + "): file corrupted?");
+        throw std::runtime_error("Uvw file has an incorrect number of rows (" +
+                                 std::to_string(file_.NRows()) + ", expecting multiple of " +
+                                 std::to_string(n_antennas_ - 1) + "): file corrupted?");
       }
       const uint64_t n_blocks = file_.NRows() / (n_antennas_ - 1);
       n_rows_ = n_blocks * rows_per_block_;
@@ -289,14 +279,13 @@ class UvwFile {
     if (IsSet(antenna)) {
       if (!AreNear(block_uvws_[antenna], antenna_uvw)) {
         std::ostringstream msg;
-        msg << "Inconsistent UVW value written for antenna " << antenna
-            << ": old value is " << UvwAsString(block_uvws_[antenna])
-            << ", new value is " << UvwAsString(antenna_uvw) << ".";
+        msg << "Inconsistent UVW value written for antenna " << antenna << ": old value is "
+            << UvwAsString(block_uvws_[antenna]) << ", new value is " << UvwAsString(antenna_uvw)
+            << ".";
         throw std::runtime_error(msg.str());
       }
     } else {
-      if (block_uvws_.size() <= antenna)
-        block_uvws_.resize(antenna + 1, kUnsetPosition);
+      if (block_uvws_.size() <= antenna) block_uvws_.resize(antenna + 1, kUnsetPosition);
       block_uvws_[antenna] = antenna_uvw;
       block_is_changed_ = true;
     }
@@ -319,9 +308,8 @@ class UvwFile {
       block_uvws_.clear();
       for (size_t antenna = 0; antenna != n_antennas_; ++antenna) {
         if (antenna != reference_antenna_) {
-          const uint64_t row = antenna < reference_antenna_
-                                   ? block_start_row + antenna
-                                   : block_start_row + antenna - 1;
+          const uint64_t row = antenna < reference_antenna_ ? block_start_row + antenna
+                                                            : block_start_row + antenna - 1;
           std::array<double, 3>& uvw = block_uvws_.emplace_back();
           file_.Read(row, 0, uvw.data(), 3);
         } else {
@@ -340,9 +328,8 @@ class UvwFile {
     const uint64_t block_start_row = (n_antennas_ - 1) * active_block_;
     for (size_t antenna = 0; antenna != n_antennas_; ++antenna) {
       if (antenna != reference_antenna_) {
-        const uint64_t row = antenna < reference_antenna_
-                                 ? block_start_row + antenna
-                                 : block_start_row + antenna - 1;
+        const uint64_t row = antenna < reference_antenna_ ? block_start_row + antenna
+                                                          : block_start_row + antenna - 1;
         file_.Write(row, 0, block_uvws_[antenna].data(), 3);
       }
     }
@@ -372,8 +359,7 @@ class UvwFile {
   }
 
   bool IsSet(size_t antenna) const {
-    return block_uvws_.size() > antenna &&
-           block_uvws_[antenna] != kUnsetPosition;
+    return block_uvws_.size() > antenna && block_uvws_[antenna] != kUnsetPosition;
   }
   static bool AreNear(std::array<double, 3> a, std::array<double, 3> b) {
     return AreNear(a[0], b[0]) && AreNear(a[1], b[1]) && AreNear(a[2], b[2]);
@@ -397,9 +383,9 @@ class UvwFile {
    */
   constexpr static size_t kHeaderSize = 32;
   constexpr static const char kMagicHeaderTag[8] = "Uvw-col";
-  constexpr static std::array<double, 3> kUnsetPosition = {
-      std::numeric_limits<double>::max(), std::numeric_limits<double>::max(),
-      std::numeric_limits<double>::max()};
+  constexpr static std::array<double, 3> kUnsetPosition = {std::numeric_limits<double>::max(),
+                                                           std::numeric_limits<double>::max(),
+                                                           std::numeric_limits<double>::max()};
   BufferedColumnarFile file_;
   /**
    * Number of rows in the Uvw column. It is increased when writing a new

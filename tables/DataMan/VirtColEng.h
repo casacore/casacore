@@ -1,39 +1,38 @@
-//# VirtColEng.h: Abstract base class for virtual column handling
-//# Copyright (C) 1994,1995,1996,1997,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # VirtColEng.h: Abstract base class for virtual column handling
+// # Copyright (C) 1994,1995,1996,1997,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_VIRTCOLENG_H
 #define TABLES_VIRTCOLENG_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManager.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // Abstract base class for virtual column handling
@@ -45,7 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> DataManager
 //   <li> Table
 // </prerequisite>
@@ -55,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // classes (engines) handling a group of virtual columns.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // VirtualColumnEngine is the data manager for classes handling
 // a group of virtual columns in tables. It is an abstract base class
 // for the specialized virtual column engines.
@@ -90,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // An example of a virtual column engine can be found in dVirtColEng.{h,cc}
 // in the test directory of the Tables module.
 // Another exanple is class ScaledComplexData.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // It is nice if a table column can be expressed as a function
@@ -102,130 +101,118 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 // </todo>
 
+class VirtualColumnEngine : public DataManager {
+ public:
+  // Create the object.
+  VirtualColumnEngine() {};
 
-class VirtualColumnEngine : public DataManager
-{
-public:
+  virtual ~VirtualColumnEngine();
 
-    // Create the object.
-    VirtualColumnEngine()
-        {};
+  // The copy constructor cannot be used for this base class.
+  // The clone function should be used instead.
+  VirtualColumnEngine(const VirtualColumnEngine&) = delete;
 
-    virtual ~VirtualColumnEngine();
+  // Assignment cannot be used for this base class.
+  VirtualColumnEngine& operator=(const VirtualColumnEngine&) = delete;
 
-    // The copy constructor cannot be used for this base class.
-    // The clone function should be used instead.
-    VirtualColumnEngine (const VirtualColumnEngine&) = delete;
+ private:
+  // The data manager is not a storage manager?
+  virtual Bool isStorageManager() const;
 
-    // Assignment cannot be used for this base class.
-    VirtualColumnEngine& operator= (const VirtualColumnEngine&) = delete;
+  // Does the data manager allow to add rows? (default no)
+  virtual Bool canAddRow() const;
 
-private:
-    // The data manager is not a storage manager?
-    virtual Bool isStorageManager() const;
+  // Does the data manager allow to delete rows? (default no)
+  virtual Bool canRemoveRow() const;
 
-    // Does the data manager allow to add rows? (default no)
-    virtual Bool canAddRow() const;
+  // Add rows to all columns.
+  // The default implementation does nothing.
+  virtual void addRow64(rownr_t nrrow);
 
-    // Does the data manager allow to delete rows? (default no)
-    virtual Bool canRemoveRow() const;
+  // Delete a row from all columns.
+  // The default implementation does nothing.
+  virtual void removeRow64(rownr_t rownr);
 
-    // Add rows to all columns.
-    // The default implementation does nothing.
-    virtual void addRow64 (rownr_t nrrow);
+  // Flush the data in the engine object.
+  // If the object contains persistent data, this is the place to write them.
+  // This can be done in two ways:
+  // <ul>
+  // <li>
+  // They can be written in the main table file (using the AipsIO argument).
+  // This should preferably be used if the object contains only little data.
+  // <li>
+  // They can be written in a file of its own. A unique filename
+  // can be acquired using DataManager::fileName().
+  // This way is preferred when the object contains a lot of data.
+  // Possibly this file could already be created in function create
+  // and only be flushed and closed in this function. This allows
+  // getting and putting of data as needed.
+  // </ul>
+  // Another way of storing information is by storing it as a keyword
+  // in the table. In this case it is important to know that close
+  // is called AFTER the keywords are written. Thus, in this way the
+  // information has to be stored and read back in create, open and/or
+  // prepare.
+  // It returns a True status if it had to flush (i.e. if data have changed).
+  // <br>The default implementation does nothing and returns False.
+  virtual Bool flush(AipsIO&, Bool fsync);
 
-    // Delete a row from all columns.
-    // The default implementation does nothing.
-    virtual void removeRow64 (rownr_t rownr);
+  // Resync the storage manager with the new file contents.
+  // This is done by clearing the cache.
+  // The default implementation does nothing.
+  virtual rownr_t resync64(rownr_t nrrow);
 
-    // Flush the data in the engine object.
-    // If the object contains persistent data, this is the place to write them.
-    // This can be done in two ways:
-    // <ul>
-    // <li>
-    // They can be written in the main table file (using the AipsIO argument).
-    // This should preferably be used if the object contains only little data.
-    // <li>
-    // They can be written in a file of its own. A unique filename
-    // can be acquired using DataManager::fileName().
-    // This way is preferred when the object contains a lot of data.
-    // Possibly this file could already be created in function create
-    // and only be flushed and closed in this function. This allows
-    // getting and putting of data as needed.
-    // </ul>
-    // Another way of storing information is by storing it as a keyword
-    // in the table. In this case it is important to know that close
-    // is called AFTER the keywords are written. Thus, in this way the
-    // information has to be stored and read back in create, open and/or
-    // prepare.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    // <br>The default implementation does nothing and returns False.
-    virtual Bool flush (AipsIO&, Bool fsync);
+  // Initialize the object for a new table containing initially nrrow rows.
+  // It can be used to initialize variables (possibly using data
+  // from other columns in the table).
+  // The default implementation does nothing.
+  virtual void create64(rownr_t initialNrrow);
 
-    // Resync the storage manager with the new file contents.
-    // This is done by clearing the cache.
-    // The default implementation does nothing.
-    virtual rownr_t resync64 (rownr_t nrrow);
+  // Initialize the object for an existing table containing nrrow rows.
+  // It can be used to read values back (written by close) and/or
+  // to initialize variables (possibly using data from other columns
+  // in the table).
+  // The default implementation does nothing.
+  virtual rownr_t open64(rownr_t nrrow, AipsIO& mainTableFile);
 
-    // Initialize the object for a new table containing initially nrrow rows.
-    // It can be used to initialize variables (possibly using data
-    // from other columns in the table).
-    // The default implementation does nothing.
-    virtual void create64 (rownr_t initialNrrow);
+  // Let the data manager initialize itself further.
+  // Prepare is called after create/open has been called for all
+  // columns. In this way one can be sure that referenced columns
+  // are read back and partly initialized.
+  // The default implementation does nothing.
+  virtual void prepare();
 
-    // Initialize the object for an existing table containing nrrow rows.
-    // It can be used to read values back (written by close) and/or
-    // to initialize variables (possibly using data from other columns
-    // in the table).
-    // The default implementation does nothing.
-    virtual rownr_t open64 (rownr_t nrrow, AipsIO& mainTableFile);
+  // The data manager will be deleted (because all its columns are
+  // requested to be deleted).
+  // So clean up the things needed (e.g. delete files).
+  // By default it assumes that nothing has to be done.
+  virtual void deleteManager();
 
-    // Let the data manager initialize itself further.
-    // Prepare is called after create/open has been called for all
-    // columns. In this way one can be sure that referenced columns
-    // are read back and partly initialized.
-    // The default implementation does nothing.
-    virtual void prepare();
-
-    // The data manager will be deleted (because all its columns are
-    // requested to be deleted).
-    // So clean up the things needed (e.g. delete files).
-    // By default it assumes that nothing has to be done.
-    virtual void deleteManager();
-
-    // Make a column object in the engine on behalf of a table column.
-    // This column object class is derived from VirtualScalarColumn
-    // or VirtualArrayColumn. It handles the gets and puts of data.
-    // <group>
-    // Create a scalar column.
-    // The default implementation throws an exception that it cannot
-    // do it for this column.
-    virtual DataManagerColumn* makeScalarColumn (const String& columnName,
-						 int dataType,
-						 const String& dataTypeId);
-    // Create a direct array column.
-    // The default implementation calls makeIndArrColumn
-    // (when reading the user sees no difference between direct and indirect).
-    virtual DataManagerColumn* makeDirArrColumn (const String& columnName,
-						 int dataType,
-						 const String& dataTypeId);
-    // Create an indirect array column.
-    // The default implementation throws an exception that it cannot
-    // do it for this column.
-    virtual DataManagerColumn* makeIndArrColumn (const String& columnName,
-						 int dataType,
-						 const String& dataTypeId);
-    // </group>
+  // Make a column object in the engine on behalf of a table column.
+  // This column object class is derived from VirtualScalarColumn
+  // or VirtualArrayColumn. It handles the gets and puts of data.
+  // <group>
+  // Create a scalar column.
+  // The default implementation throws an exception that it cannot
+  // do it for this column.
+  virtual DataManagerColumn* makeScalarColumn(const String& columnName, int dataType,
+                                              const String& dataTypeId);
+  // Create a direct array column.
+  // The default implementation calls makeIndArrColumn
+  // (when reading the user sees no difference between direct and indirect).
+  virtual DataManagerColumn* makeDirArrColumn(const String& columnName, int dataType,
+                                              const String& dataTypeId);
+  // Create an indirect array column.
+  // The default implementation throws an exception that it cannot
+  // do it for this column.
+  virtual DataManagerColumn* makeIndArrColumn(const String& columnName, int dataType,
+                                              const String& dataTypeId);
+  // </group>
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-
-

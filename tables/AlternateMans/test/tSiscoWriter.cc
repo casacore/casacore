@@ -9,16 +9,14 @@ namespace casacore::sisco {
 
 namespace {
 const std::string kFilename = "sisco-test.tmp";
-} // namespace
+}  // namespace
 
 BOOST_AUTO_TEST_SUITE(sisco_writer)
 
 struct FileFixture {
-  FileFixture() {
-    std::filesystem::remove(kFilename);
-  }
+  FileFixture() { std::filesystem::remove(kFilename); }
   ~FileFixture() {
-    //std::filesystem::remove(kFilename);
+    // std::filesystem::remove(kFilename);
   }
 };
 
@@ -38,8 +36,8 @@ BOOST_FIXTURE_TEST_CASE(construct, FileFixture) {
 
 BOOST_FIXTURE_TEST_CASE(write_and_read, FileFixture) {
   std::array<int, 9> kLevels{-1, 0, 1, 2, 3, 10, 11, 12, 21};
-  
-  for(int predict_level : kLevels) {
+
+  for (int predict_level : kLevels) {
     constexpr size_t kHeaderSize = 20;
     // 20 bytes string, nullptr not included
     constexpr char kHeader[] = "This is a testfile  ";
@@ -63,8 +61,9 @@ BOOST_FIXTURE_TEST_CASE(write_and_read, FileFixture) {
     SiscoReader reader(kFilename);
     char read_header[kHeaderSize];
     reader.Open(std::span(reinterpret_cast<std::byte*>(read_header), kHeaderSize));
-    BOOST_CHECK_EQUAL_COLLECTIONS(read_header, read_header+kHeaderSize, kHeader, kHeader+kHeaderSize);
-    
+    BOOST_CHECK_EQUAL_COLLECTIONS(read_header, read_header + kHeaderSize, kHeader,
+                                  kHeader + kHeaderSize);
+
     std::vector<std::complex<float>> result_0(100);
     std::vector<std::complex<float>> result_1(75);
     std::vector<std::complex<float>> result_2(1);
@@ -77,7 +76,7 @@ BOOST_FIXTURE_TEST_CASE(write_and_read, FileFixture) {
     reader.Request(0, result_0.size());
     reader.Request(2, result_2.size());
     reader.Request(2, result_2.size());
-    
+
     reader.GetNextResult(result_0);
     BOOST_CHECK_EQUAL_COLLECTIONS(data_0.begin(), data_0.end(), result_0.begin(), result_0.end());
     reader.GetNextResult(result_1);
@@ -101,4 +100,4 @@ BOOST_FIXTURE_TEST_CASE(write_and_read, FileFixture) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-} // namespace casacore::sisco
+}  // namespace casacore::sisco

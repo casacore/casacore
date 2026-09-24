@@ -15,8 +15,7 @@ class DyscoStManError : public casacore::DataManError {
   /** Construct with message.
    * @param message The exception message. */
   explicit DyscoStManError(const std::string &message)
-      : casacore::DataManError(
-            message + " -- Error occured inside the Dysco Storage Manager") {}
+      : casacore::DataManError(message + " -- Error occured inside the Dysco Storage Manager") {}
 };
 
 }  // namespace dyscostman

@@ -1,29 +1,29 @@
-//# tExprUDFNode.cc: Test program for class TableExprUDFNode
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tExprUDFNode.cc: Test program for class TableExprUDFNode
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -38,68 +38,60 @@
 
 using namespace casacore;
 
-class TestUDF: public UDFBase
-{
-public:
+class TestUDF : public UDFBase {
+ public:
   TestUDF() {}
-  static UDFBase* makeObject (const String&) { return new TestUDF(); }
-  virtual void setup (const Table&, const TaQLStyle&)
-  {
-    AlwaysAssert (operands().size() == 1, AipsError);
-    AlwaysAssert (operands()[0]->dataType() == TableExprNodeRep::NTInt, AipsError);
-    AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
-    setDataType (TableExprNodeRep::NTBool);
-    setNDim (0);   //scalar
+  static UDFBase* makeObject(const String&) { return new TestUDF(); }
+  virtual void setup(const Table&, const TaQLStyle&) {
+    AlwaysAssert(operands().size() == 1, AipsError);
+    AlwaysAssert(operands()[0]->dataType() == TableExprNodeRep::NTInt, AipsError);
+    AlwaysAssert(operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
+    setDataType(TableExprNodeRep::NTBool);
+    setNDim(0);  // scalar
   }
-  Bool getBool (const TableExprId& id) {return operands()[0]->getInt(id) == 1;}
+  Bool getBool(const TableExprId& id) { return operands()[0]->getInt(id) == 1; }
 };
 
-class TestUDFAggr: public UDFBase
-{
-public:
+class TestUDFAggr : public UDFBase {
+ public:
   TestUDFAggr() {}
-  static UDFBase* makeObject (const String&) { return new TestUDFAggr(); }
-  virtual void setup (const Table&, const TaQLStyle&)
-  {
-    AlwaysAssert (operands().size() == 1, AipsError);
-    AlwaysAssert (operands()[0]->dataType() == TableExprNodeRep::NTInt, AipsError);
-    AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
-    setDataType (TableExprNodeRep::NTInt);
-    setNDim (0);           // scalar
-    setAggregate (True);   // aggregate function
+  static UDFBase* makeObject(const String&) { return new TestUDFAggr(); }
+  virtual void setup(const Table&, const TaQLStyle&) {
+    AlwaysAssert(operands().size() == 1, AipsError);
+    AlwaysAssert(operands()[0]->dataType() == TableExprNodeRep::NTInt, AipsError);
+    AlwaysAssert(operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
+    setDataType(TableExprNodeRep::NTInt);
+    setNDim(0);          // scalar
+    setAggregate(True);  // aggregate function
   }
-  Int64 getInt (const TableExprId& id)
-  {
-    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+  Int64 getInt(const TableExprId& id) {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
     const std::vector<TableExprId>& ids = aid.result().ids(id.rownr());
     Int64 sum3 = 0;
-    for (std::vector<TableExprId>::const_iterator it=ids.begin();
-         it!=ids.end(); ++it){
+    for (std::vector<TableExprId>::const_iterator it = ids.begin(); it != ids.end(); ++it) {
       Int64 v = operands()[0]->getInt(*it);
-        sum3 += v*v*v;
+      sum3 += v * v * v;
     }
     return sum3;
   }
 };
 
-void makeTable()
-{
+void makeTable() {
   TableDesc td;
-  td.addColumn (ScalarColumnDesc<Int>("ANTENNA1"));
+  td.addColumn(ScalarColumnDesc<Int>("ANTENNA1"));
   SetupNewTable newtab("tExprNodeUDF_tmp.tab", td, Table::New);
   Table tab(newtab);
   ScalarColumn<Int> ant1(tab, "ANTENNA1");
-  tab.addRow (10);
-  for (uInt i=0; i<tab.nrow(); ++i) {
-    ant1.put (i, i%3);
+  tab.addRow(10);
+  for (uInt i = 0; i < tab.nrow(); ++i) {
+    ant1.put(i, i % 3);
   }
 }
 
-int main()
-{
+int main() {
   try {
-    UDFBase::registerUDF ("Test.UDF", TestUDF::makeObject);
-    UDFBase::registerUDF ("Test.UDFAggr", TestUDFAggr::makeObject);
+    UDFBase::registerUDF("Test.UDF", TestUDF::makeObject);
+    UDFBase::registerUDF("Test.UDFAggr", TestUDFAggr::makeObject);
     makeTable();
     Table tab("tExprNodeUDF_tmp.tab");
     TableExprInfo tabInfo(tab);
@@ -107,41 +99,40 @@ int main()
       // Test a normal user defined function.
       TableExprNode node1(tab.col("ANTENNA1"));
       TableExprNodeSet set;
-      set.add (TableExprNodeSetElem(node1));
-      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDF", set, tabInfo));
+      set.add(TableExprNodeSetElem(node1));
+      TableExprNode node2(TableExprNode::newUDFNode("Test.UDF", set, tabInfo));
       Table seltab(tab(node2));
-      cout << "selected " << seltab.nrow() << " rows" << endl; 
-      AlwaysAssertExit (seltab.nrow() == 3);
-      Table seltab2 = tab(tab.col("ANTENNA1")==1);
-      Table seltab3 = seltab(seltab.col("ANTENNA1")==1);
-      cout << "selected " << seltab2.nrow() <<' '<<seltab3.nrow()<< " rows" << endl;
-      AlwaysAssertExit (seltab2.nrow() == 3);
-      AlwaysAssertExit (seltab3.nrow() == 3);
+      cout << "selected " << seltab.nrow() << " rows" << endl;
+      AlwaysAssertExit(seltab.nrow() == 3);
+      Table seltab2 = tab(tab.col("ANTENNA1") == 1);
+      Table seltab3 = seltab(seltab.col("ANTENNA1") == 1);
+      cout << "selected " << seltab2.nrow() << ' ' << seltab3.nrow() << " rows" << endl;
+      AlwaysAssertExit(seltab2.nrow() == 3);
+      AlwaysAssertExit(seltab3.nrow() == 3);
     }
     {
       // Test an aggregate user defined function.
       TableExprNode node1(tab.col("ANTENNA1"));
       TableExprNodeSet set;
-      set.add (TableExprNodeSetElem(node1));
-      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tabInfo));
+      set.add(TableExprNodeSetElem(node1));
+      TableExprNode node2(TableExprNode::newUDFNode("Test.UDFAggr", set, tabInfo));
       TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getRep().get());
-      std::vector<TableExprNodeRep*> aggrNodes = TableExprNodeUtil::getAggrNodes (rep);
-      AlwaysAssertExit (aggrNodes.size() == 1);
-      AlwaysAssertExit (aggrNodes[0]->isLazyAggregate());
+      std::vector<TableExprNodeRep*> aggrNodes = TableExprNodeUtil::getAggrNodes(rep);
+      AlwaysAssertExit(aggrNodes.size() == 1);
+      AlwaysAssertExit(aggrNodes[0]->isLazyAggregate());
       std::shared_ptr<std::vector<TableExprId>> ids(new std::vector<TableExprId>());
-      for (uInt i=0; i<tab.nrow(); ++i) {
-        ids->push_back (TableExprId(i));
+      for (uInt i = 0; i < tab.nrow(); ++i) {
+        ids->push_back(TableExprId(i));
       }
       std::vector<std::shared_ptr<std::vector<TableExprId>>> idVec(1, ids);
       std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcVec(1);
-      std::shared_ptr<TableExprGroupResult> res
-        (new TableExprGroupResult(funcVec, idVec));
+      std::shared_ptr<TableExprGroupResult> res(new TableExprGroupResult(funcVec, idVec));
       TableExprIdAggr aid(res);
-      aid.setRownr (0);
+      aid.setRownr(0);
       Int64 val = node2.getInt(aid);
       cout << "aggregated value=" << val << endl;
-      Vector<Int> colval (ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
-      AlwaysAssertExit (val == sum(colval*colval*colval));
+      Vector<Int> colval(ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
+      AlwaysAssertExit(val == sum(colval * colval * colval));
     }
   } catch (std::exception& x) {
     cout << "Unexpected exception " << x.what() << endl;

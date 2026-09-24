@@ -1,44 +1,43 @@
-//# SubTabDesc.h: Description of columns containing tables
-//# Copyright (C) 1994,1995,1996,1997,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # SubTabDesc.h: Description of columns containing tables
+// # Copyright (C) 1994,1995,1996,1997,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_SUBTABDESC_H
 #define TABLES_SUBTABDESC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class PlainColumn;
 class ColumnSet;
 class TableDesc;
 class String;
 class AipsIO;
-
 
 // <summary>
 // Description of columns containing tables
@@ -50,7 +49,7 @@ class AipsIO;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableDesc
 //   <li> BaseColumnDesc
 // </prerequisite>
@@ -60,7 +59,7 @@ class AipsIO;
 // columns of the parent table.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // SubTableDesc describes a table column containing subtables.
 // The semantics of subtables are described below.
 // The column description is constructed using a table description
@@ -97,8 +96,8 @@ class AipsIO;
 // in the column must have the same description and it is therefore not
 // possible to change a description.
 // The subtables in indirect columns will be stored in separate files.
-// The cells in indirect columns can contain different tables. 
-// </synopsis> 
+// The cells in indirect columns can contain different tables.
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -130,95 +129,89 @@ class AipsIO;
 // </motivation>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //   <li> Probably only direct table descriptions should be allowed.
 //          Indirect arrays can have a shape in the description
 //          (although they can have #dim), so tables should behave
 //          similarly.
 // </todo>
 
+class SubTableDesc : public BaseColumnDesc {
+ public:
+  friend class ColumnDesc;
 
-class SubTableDesc : public BaseColumnDesc
-{
-public:
-friend class ColumnDesc;
+ public:
+  // Construct from a table description with the given name.
+  // The description does not need to exist yet. Only when the
+  // table gets created, the description will be read and must exist.
+  // This means that the table description is not frozen; the most
+  // recent description will be used when creating the column.
+  SubTableDesc(const String& columnName, const String& comment, const String& tableDescName,
+               int options = 0);
 
-public:
-    // Construct from a table description with the given name.
-    // The description does not need to exist yet. Only when the
-    // table gets created, the description will be read and must exist.
-    // This means that the table description is not frozen; the most
-    // recent description will be used when creating the column.
-    SubTableDesc (const String& columnName, const String& comment,
-		  const String& tableDescName, int options = 0);
+  // Construct from the given table description, which will be copied
+  // and frozen.
+  SubTableDesc(const String& columnName, const String& comment, const TableDesc&, int options = 0);
 
-    // Construct from the given table description, which will be copied
-    // and frozen.
-    SubTableDesc (const String& columnName, const String& comment,
-		  const TableDesc&, int options = 0);
+  // Construct from the given table description, which will be used
+  // directly. The description gets frozen when the column is written.
+  // Care should be taken, because the given table description must
+  // not be deleted before the column description gets destructed.
+  SubTableDesc(const String& columnName, const String& comment, TableDesc*, int options = 0);
 
-    // Construct from the given table description, which will be used
-    // directly. The description gets frozen when the column is written.
-    // Care should be taken, because the given table description must
-    // not be deleted before the column description gets destructed.
-    SubTableDesc (const String& columnName, const String& comment,
-		  TableDesc*, int options = 0);
+  // Copy constructor (copy semantics).
+  SubTableDesc(const SubTableDesc&);
 
-    // Copy constructor (copy semantics).
-    SubTableDesc (const SubTableDesc&);
+  ~SubTableDesc();
 
-    ~SubTableDesc();
+  // Assignment (copy semantics).
+  SubTableDesc& operator=(const SubTableDesc&);
 
-    // Assignment (copy semantics).
-    SubTableDesc& operator= (const SubTableDesc&);
+  // Clone this column description to another.
+  BaseColumnDesc* clone() const;
 
-    // Clone this column description to another.
-    BaseColumnDesc* clone() const;
+  // Get the table description.
+  // <thrown>
+  //   <li> TableNoFile
+  // </thrown>
+  TableDesc* tableDesc();
 
-    // Get the table description.
-    // <thrown>
-    //   <li> TableNoFile
-    // </thrown>
-    TableDesc* tableDesc();
+  // Get the name of this class.
+  String className() const;
 
-    // Get the name of this class.
-    String className() const;
+  // Create a Column column object out of this.
+  // This is used by class ColumnSet to construct a table column object.
+  PlainColumn* makeColumn(ColumnSet*) const;
 
-    // Create a Column column object out of this.
-    // This is used by class ColumnSet to construct a table column object.
-    PlainColumn* makeColumn (ColumnSet*) const;
+  // Show the column.
+  void show(ostream& os) const;
 
-    // Show the column.
-    void show (ostream& os) const;
+  // Create the object from AipsIO (this function is registered).
+  static BaseColumnDesc* makeDesc(const String& name);
 
-    // Create the object from AipsIO (this function is registered).
-    static BaseColumnDesc* makeDesc(const String& name);
+ protected:
+  // Put the object.
+  virtual void putDesc(AipsIO&) const;
 
-protected:
-    // Put the object.
-    virtual void putDesc (AipsIO&) const;
+  // Get the object.
+  virtual void getDesc(AipsIO&);
 
-    // Get the object.
-    virtual void getDesc (AipsIO&);
+ private:
+  TableDesc* tabDescPtr_p;  // # pointer to Table Description
+  String tabDescTyp_p;      // # type of table description
+  Bool byName_p;            // # True = TableDesc name is given
+  Bool allocSelf_p;         // # True = allocated tdptr itself
+  Bool shallowCopy_p;       // # True = make shallow copy
+  // #                                         (is only set when !allocSelf)
 
-private:
-    TableDesc*  tabDescPtr_p;               //# pointer to Table Description
-    String      tabDescTyp_p;               //# type of table description
-    Bool        byName_p;                   //# True = TableDesc name is given
-    Bool        allocSelf_p;                //# True = allocated tdptr itself
-    Bool        shallowCopy_p;              //# True = make shallow copy
-    //#                                         (is only set when !allocSelf)
+  // Read table description (if passed by name).
+  // If the table description is not found, a False value is returned.
+  Bool readTableDesc();
 
-    // Read table description (if passed by name).
-    // If the table description is not found, a False value is returned.
-    Bool readTableDesc();
-
-    // Handle the addition of the subtable description (clear the flag).
-    void handleAdd (ColumnDescSet&);
+  // Handle the addition of the subtable description (clear the flag).
+  void handleAdd(ColumnDescSet&);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
