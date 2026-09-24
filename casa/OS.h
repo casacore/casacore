@@ -1,32 +1,32 @@
-//# OS.h: Classes for operating system services, and assorted other things
-//# Copyright (C) 1995,1996,1998,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # OS.h: Classes for operating system services, and assorted other things
+// # Copyright (C) 1995,1996,1998,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_OS_H
 #define CASA_OS_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
 #include <casacore/casa/OS/EnvVar.h>
@@ -47,8 +47,7 @@
 #include <casacore/casa/OS/Memory.h>
 #include <casacore/casa/OS/MemoryTrace.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -71,7 +70,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 // This module's main purpose is to provide convenient and uniform
 // access to operating system features:  environment variables, file
-// and directory access, time and date services, and uniform data 
+// and directory access, time and date services, and uniform data
 // representation (which solves the variety of ways the fundamental
 // data types are represented in hardware).
 // <p>
@@ -98,7 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       format,
 //       <linkto class=VAXConversion:description>VAX</linkto> format, and
 //       <linkto class=IBMConversion:description>IBM/360</linkto> format.
-//       The structure of the framework is shown in the 
+//       The structure of the framework is shown in the
 //       <a href="OS/OS_1.html">OMT diagram</a>.
 //  <li> A class to encapsulate <linkto class=Memory>Memory</linkto> usage.
 //       Class MemoryTrace makes it possible to trace all memory (de)allocations
@@ -113,7 +112,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 //
 // <motivation>
-// We want to provide a simple and uniform interface to OS services and 
+// We want to provide a simple and uniform interface to OS services and
 // features for the application and library programmer.  To pick a few
 // examples:
 // <ol>
@@ -124,9 +123,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 // <todo asof="1995/06/02">
-//   <li> The OS module is a bit fuzzy: for example, canonical data 
-//        format conversion is more a matter of hardware than of operating 
-//        system differences.  Perhaps these particular classes should be 
+//   <li> The OS module is a bit fuzzy: for example, canonical data
+//        format conversion is more a matter of hardware than of operating
+//        system differences.  Perhaps these particular classes should be
 //        moved to a new module.
 //   <li> Time and Date classes should be revised after studying
 //        similar classes designed by others.  Roel Martinez is tenatively
@@ -141,7 +140,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // </module>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

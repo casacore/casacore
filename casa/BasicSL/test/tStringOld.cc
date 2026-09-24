@@ -1,29 +1,29 @@
-//# tString.cc: This program tests Strings
-//# Copyright (C) 1993-1999,2000,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tString.cc: This program tests Strings
+// # Copyright (C) 1993-1999,2000,2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Regex.h>
@@ -42,9 +42,9 @@ String X = "Hello";
 String Y = "world";
 String N = "123";
 String c;
-const Char*  s = ",";
-Regex  r ("e[a-z]*o");
-} // namespace
+const Char* s = ",";
+Regex r("e[a-z]*o");
+}  // namespace
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -57,7 +57,7 @@ void decltest() {
   cout << "A string initialized to Hello:" << y << endl;
   AlwaysAssertExit(y == "Hello");
 
-  if (y[y.length()-1] == 'o') y = y + '\n';
+  if (y[y.length() - 1] == 'o') y = y + '\n';
   AlwaysAssertExit(y == "Hello\n");
   y = "Hello";
 
@@ -66,7 +66,7 @@ void decltest() {
   AlwaysAssertExit(a == "Hello");
   AlwaysAssertExit(a == y);
 
-  String b (a.at(1, 2));
+  String b(a.at(1, 2));
   cout << "A string initialized to previous string.at(1, 2):" << b << endl;
   AlwaysAssertExit(b == "el");
 
@@ -119,30 +119,30 @@ void comparetest() {
   AlwaysAssertExit(x != y);
   AlwaysAssertExit(x == "Hello");
   AlwaysAssertExit(x != z.at(0, 4));
-  AlwaysAssertExit (x < y);
+  AlwaysAssertExit(x < y);
   AlwaysAssertExit(!(x >= z.at(0, 6)));
   AlwaysAssertExit(x.contains("He"));
-  AlwaysAssertExit (z.contains(x));
+  AlwaysAssertExit(z.contains(x));
   AlwaysAssertExit(x.contains(r));
-  
+
   AlwaysAssertExit(!(x.matches(r)));
   AlwaysAssertExit(x.matches(RXalpha));
   AlwaysAssertExit(!(n.matches(RXalpha)));
   AlwaysAssertExit(n.matches(RXint));
   AlwaysAssertExit(n.matches(RXdouble));
-  
+
   AlwaysAssertExit(x.index("lo") == 3);
   AlwaysAssertExit(x.index("l", 2) == 2);
-  AlwaysAssertExit(x.index("l", -1) == 3); // negative pos!
-  AlwaysAssertExit(x.index(r)  == 1);
+  AlwaysAssertExit(x.index("l", -1) == 3);  // negative pos!
+  AlwaysAssertExit(x.index(r) == 1);
   AlwaysAssertExit(x.index(r, -2) == 1);
 
   AlwaysAssertExit(x.contains("el", 1));
   AlwaysAssertExit(x.contains("el"));
-  
+
   AlwaysAssertExit(common_prefix(x, "Help") == "Hel");
   AlwaysAssertExit(common_suffix(x, "to") == "o");
-  
+
   AlwaysAssertExit(fcompare(x, "hello") == 0);
   AlwaysAssertExit(fcompare(x, "hellox") < 0);
   AlwaysAssertExit(fcompare(x, "hell") > 0);
@@ -185,17 +185,17 @@ void substrtest() {
   x.at("He") = "je";
   cout << "x.at(He) = je; x = " << x << endl;
   AlwaysAssertExit(x == "jello");
-  
+
   x = X;
   x.at("l", -1) = "i";
   cout << "x.at(l, -1) = i; x = " << x << endl;
   AlwaysAssertExit(x == "Helio");
-  
+
   x = X;
   z = x.at(r);
   cout << "z = x.at(r) = " << z << endl;
   AlwaysAssertExit(z == "ello");
-  
+
   z = x.before("o");
   cout << "z = x.before(o) = " << z << endl;
   AlwaysAssertExit(z == "Hell");
@@ -221,16 +221,16 @@ void substrtest() {
   AlwaysAssertExit(z == "o");
 
   z = "  a bc";
-  z  = z.after(RXwhite);
+  z = z.after(RXwhite);
   cout << "z =   a bc; z = z.after(RXwhite); z =" << z << endl;
   AlwaysAssertExit(z == "a bc");
 }
 
 void utiltest() {
   String x = X;
-  
+
   Int matches = x.gsub("l", "ll");
-  
+
   cout << "x.gsub(l, ll); x = " << x << endl;
   AlwaysAssertExit(matches == 2);
   AlwaysAssertExit(x == "Hellllo");
@@ -244,7 +244,7 @@ void utiltest() {
   matches = x.gsub(RXwhite, "#");
   cout << "x.gsub(RXwhite, #); x = " << x << endl;
   AlwaysAssertExit(matches == 7);
-  
+
   String z = X + Y;
   z.del("loworl");
   cout << "z = x+y; z.del(loworl); z = " << z << endl;
@@ -328,7 +328,7 @@ void identitytest(String a, String b) {
   AlwaysAssertExit(reverse(x) == reverse(b) + reverse(a));
 
   AlwaysAssertExit((a + b + a) == (a + (b + a)));
-  
+
   ///  x.del(b, -1);
   x.del(b);
   AlwaysAssertExit(x == a);
@@ -337,7 +337,7 @@ void identitytest(String a, String b) {
   AlwaysAssertExit(y == (b + b));
   y.at(b) = a;
   AlwaysAssertExit(y == (a + b));
-  
+
   x = a + reverse(a);
   for (Int i = 0; i < 7; ++i) {
     y = x;
@@ -347,87 +347,86 @@ void identitytest(String a, String b) {
   }
 }
 
-
 void freqtest() {
   String x = "Hello World";
-  String y = x.at(0,5);
-  AlwaysAssertExit(x.freq('l') == 3);	// Char
-  AlwaysAssertExit(x.freq("lo") == 1);	// Char*
-  AlwaysAssertExit(x.freq(x) == 1);	// String
-  AlwaysAssertExit(x.freq(y) == 1);	// SubString
+  String y = x.at(0, 5);
+  AlwaysAssertExit(x.freq('l') == 3);   // Char
+  AlwaysAssertExit(x.freq("lo") == 1);  // Char*
+  AlwaysAssertExit(x.freq(x) == 1);     // String
+  AlwaysAssertExit(x.freq(y) == 1);     // SubString
 }
 
 void toDouble() {
-    String x = "1.5";
-    Double y = String::toDouble(x);
-    AlwaysAssertExit(y == 1.5);
-    x = "frodo";
-    AlwaysAssertExit (String::toDouble(x) == 0);
-    bool ok = false;
-    try {
-      y = String::toDouble(x, True);
-    } catch (const std::exception&) {
-      ok = true;
-    }
-    AlwaysAssertExit(ok);
+  String x = "1.5";
+  Double y = String::toDouble(x);
+  AlwaysAssertExit(y == 1.5);
+  x = "frodo";
+  AlwaysAssertExit(String::toDouble(x) == 0);
+  bool ok = false;
+  try {
+    y = String::toDouble(x, True);
+  } catch (const std::exception&) {
+    ok = true;
+  }
+  AlwaysAssertExit(ok);
 }
 
 void toFloat() {
-    String x = "1.5";
-    Float y = String::toFloat(x);
-    AlwaysAssertExit(y == 1.5);
-    x = "1.5 aa";
-    AlwaysAssertExit(String::toFloat(x) == 1.5);
-    bool ok = false;
-    try {
-      y = String::toFloat(x, True);
-    } catch (const std::exception&) {
-      ok = true;
-    }
-    AlwaysAssertExit(ok);
+  String x = "1.5";
+  Float y = String::toFloat(x);
+  AlwaysAssertExit(y == 1.5);
+  x = "1.5 aa";
+  AlwaysAssertExit(String::toFloat(x) == 1.5);
+  bool ok = false;
+  try {
+    y = String::toFloat(x, True);
+  } catch (const std::exception&) {
+    ok = true;
+  }
+  AlwaysAssertExit(ok);
 }
 
 void toInt() {
-    String x = "4";
-    Int y = String::toInt(x);
-    AlwaysAssertExit(y == 4);
-    x = "-12";
-    y = String::toInt(x);
-    AlwaysAssertExit(y == -12);
-    x = "6.9999";
-    AlwaysAssertExit (String::toInt(x) == 6);
-    bool ok = false;
-    try {
-      y = String::toInt(x, True);
-    } catch (const std::exception&) {
-      ok = true;
-    }
-    AlwaysAssertExit(ok);
+  String x = "4";
+  Int y = String::toInt(x);
+  AlwaysAssertExit(y == 4);
+  x = "-12";
+  y = String::toInt(x);
+  AlwaysAssertExit(y == -12);
+  x = "6.9999";
+  AlwaysAssertExit(String::toInt(x) == 6);
+  bool ok = false;
+  try {
+    y = String::toInt(x, True);
+  } catch (const std::exception&) {
+    ok = true;
+  }
+  AlwaysAssertExit(ok);
 }
 
 void trim() {
-    String myString = "\t  \t  \n\r  my string \n\r \t ";
-    myString.trim();
-    AlwaysAssertExit(myString == "my string");
-    myString = "\t  \t  \n\r  my string";
-    myString.trim();
-    AlwaysAssertExit(myString == "my string");
-    myString = "my string \n\r \t ";
-    myString.trim();
-    AlwaysAssertExit(myString == "my string");
-    myString = "\n \t\t\r  ";
-    myString.trim();
-    AlwaysAssertExit(myString.empty());
-    myString = "    ";
-    myString.trim();
-    AlwaysAssertExit(myString.empty());
+  String myString = "\t  \t  \n\r  my string \n\r \t ";
+  myString.trim();
+  AlwaysAssertExit(myString == "my string");
+  myString = "\t  \t  \n\r  my string";
+  myString.trim();
+  AlwaysAssertExit(myString == "my string");
+  myString = "my string \n\r \t ";
+  myString.trim();
+  AlwaysAssertExit(myString == "my string");
+  myString = "\n \t\t\r  ";
+  myString.trim();
+  AlwaysAssertExit(myString.empty());
+  myString = "    ";
+  myString.trim();
+  AlwaysAssertExit(myString.empty());
 }
 
 void startsWith() {
-    String myString = "Gozer the Destroyer";
-    AlwaysAssertExit(myString.startsWith("G"));
-    AlwaysAssertExit(myString.startsWith("Gozer t"));
-    AlwaysAssertExit(! myString.startsWith("oz"));
+  String myString = "Gozer the Destroyer";
+  AlwaysAssertExit(myString.startsWith("G"));
+  AlwaysAssertExit(myString.startsWith("Gozer t"));
+  AlwaysAssertExit(!myString.startsWith("oz"));
 }
 
 /* void hashtest()
@@ -464,9 +463,9 @@ int main() {
   freqtest();
   identitytest(X, X);
   identitytest(X, Y);
-  identitytest(X+Y+N+X+Y+N,
-	       "A string that will be used in identitytest but is otherwise "
-	       "just another useless string.");
+  identitytest(X + Y + N + X + Y + N,
+               "A string that will be used in identitytest but is otherwise "
+               "just another useless string.");
   ///  hashtest();
   iotest();
   toDouble();
@@ -477,11 +476,11 @@ int main() {
   {
     // Test to see if String hash works.
     std::unordered_set<String> sset;
-    sset.insert ("abc");
-    AlwaysAssertExit (sset.size() == 1);
-    AlwaysAssertExit (sset.find("abc") != sset.end());
-    AlwaysAssertExit (sset.find("abd") == sset.end());
+    sset.insert("abc");
+    AlwaysAssertExit(sset.size() == 1);
+    AlwaysAssertExit(sset.find("abc") != sset.end());
+    AlwaysAssertExit(sset.find("abd") == sset.end());
   }
   cout << "\nEnd of test\n";
-  return(0);
+  return (0);
 }

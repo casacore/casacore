@@ -1,42 +1,41 @@
-//# QLogical.h: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # QLogical.h: class to manipulate physical, dimensioned quantities
+// # Copyright (C) 1994,1995,1996,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QLOGICAL_H
 #define CASA_QLOGICAL_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
-//# Typedefs
+// # Typedefs
 
 // <summary>
 //   Logical operations for the Quantum class.
@@ -55,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // QLogical derived from Quantum logical functions
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Quantities are values with a unit. Their basic specification can be one of
 // two forms:
 // <srcblock>
@@ -73,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // They can be subdivided into various groupings:
 // <ul>
-//   <li> <linkto file="QLogical.h#equality">Straight comparisons: 
+//   <li> <linkto file="QLogical.h#equality">Straight comparisons:
 //          unequal if non-conforming units or different values</linkto>
 //   <li> <linkto file="QLogical.h#compare">Comparisons</linkto>
 //   <li> <linkto file="QLogical.h#foreign">Special make Bool routines
@@ -82,12 +81,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // The operations defined are:
 // <ul>
-//   <li> Quantum<T> == Quantum<T> or ==T 
-//   <li> Quantum<T> != Quantum<T> or !=T 
+//   <li> Quantum<T> == Quantum<T> or ==T
+//   <li> Quantum<T> != Quantum<T> or !=T
 //   <li> > < >= <= of Quantum<T> or T and Quantum<T>
-//   <li> near, nearAbs(Quantum<T> or T, Quantum<T> or T [, tolerance]) 
+//   <li> near, nearAbs(Quantum<T> or T, Quantum<T> or T [, tolerance])
 // </ul>
-// </synopsis> 
+// </synopsis>
 //
 // <motivation>
 // To separate the logical operations from Quantum
@@ -134,36 +133,29 @@ Bool operator!=(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
 Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
-	  Double tol);
+Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
 template <class Qtype>
 Bool near(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool near(const Quantum<Qtype> &left, const Qtype &other,
-	  Double tol);
+Bool near(const Quantum<Qtype> &left, const Qtype &other, Double tol);
 template <class Qtype>
 Bool near(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool near(const Qtype &left, const Quantum<Qtype> &other,
-	  Double tol);
+Bool near(const Qtype &left, const Quantum<Qtype> &other, Double tol);
 template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
-	  Double tol);
+Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
-	  const Quantum<Qtype>& tol);
+Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, const Quantum<Qtype> &tol);
 template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other,
-	  Double tol);
+Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, Double tol);
 template <class Qtype>
 Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other,
-	  Double tol);
+Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol);
 // </group>
 //
 // Comparisons. The comparisons are done on values at equal units with
@@ -204,14 +196,13 @@ Bool QMakeBool(Int val);
 Bool QMakeBool(const LogicalArray &val);
 // </group>
 
-//# Inline Implementations
+// # Inline Implementations
 
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Quanta/QLogical.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

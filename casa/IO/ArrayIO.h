@@ -1,44 +1,45 @@
-//# ArrayIO.h: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        charlottesville, VA 22903-2475 USA
+// # ArrayIO.h: text output and binary IO for an array of any dimensionality.
+// # Copyright (C) 1993,1994,1995,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_ARRAYIO_2_H
 #define CASA_ARRAYIO_2_H
 
-//# Includes
+// # Includes
 #include <vector>
 #include <ostream>
 #include <regex>
 
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class AipsIO;
 class LogIO;
 class IPosition;
-template<typename T> class Block;
+template <typename T>
+class Block;
 class String;
 
 // <summary>
@@ -62,17 +63,16 @@ class String;
 //  ArrayIO is simply the conventional shorthand for "array input/output".
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // These global functions provide easy input and output of (possibly)
 // large and (possibly) multi-dimensional arrays.  Iteration through
 // entire arrays is done behind the scenes, with no effort required
-// of the client programmer.  
+// of the client programmer.
 // These functions are global, rather than member functions of the
 // Array class, because of the well-known C++ requirement that the first
-// argument to an operator function (as it is declared) is the 
+// argument to an operator function (as it is declared) is the
 // left operand when the function is called.
 // </synopsis>
-
 
 // <example>
 // <srcblock>
@@ -97,8 +97,8 @@ class String;
 
 // Write a formatted copy of the array to the LogIO output object. Merely calls
 // the ostream operator<< in turn.
-template<typename T, typename Alloc>
-LogIO &operator<<(LogIO &os, const Array<T> &a);
+template <typename T, typename Alloc>
+LogIO& operator<<(LogIO& os, const Array<T>& a);
 
 // Read or write a binary representation of an Array to a file. Very
 // useful for saving arrays and restoring them later.
@@ -107,14 +107,14 @@ LogIO &operator<<(LogIO &os, const Array<T> &a);
 //
 // <group>
 
-template<typename T, typename Alloc>
-AipsIO &operator<< (AipsIO &, const Array<T> &);
+template <typename T, typename Alloc>
+AipsIO& operator<<(AipsIO&, const Array<T>&);
 
-template<typename T, typename Alloc>
-void putArray (AipsIO &, const Array<T> &, const char* name);
+template <typename T, typename Alloc>
+void putArray(AipsIO&, const Array<T>&, const char* name);
 
-template<typename T, typename Alloc>
-AipsIO &operator>> (AipsIO &, Array<T> &);
+template <typename T, typename Alloc>
+AipsIO& operator>>(AipsIO&, Array<T>&);
 
 // </group>
 
@@ -170,11 +170,12 @@ AipsIO &operator>> (AipsIO &, Array<T> &);
 // </note>
 // <group>
 template <typename T, typename Alloc>
-void write_array (const Array<T>& the_array, const std::string& fileName);
+void write_array(const Array<T>& the_array, const std::string& fileName);
 
 template <typename T, typename Alloc>
-inline void write_array (const Array<T>& the_array, const char* fileName)
-    { write_array (the_array, std::string(fileName)); }
+inline void write_array(const Array<T>& the_array, const char* fileName) {
+  write_array(the_array, std::string(fileName));
+}
 // </group>
 
 // Read the values of an array in binary format from a file with
@@ -186,11 +187,12 @@ inline void write_array (const Array<T>& the_array, const char* fileName)
 // </note>
 // <group>
 template <typename T, typename Alloc>
-void read_array (Array<T>& the_array, const std::string& fileName);
+void read_array(Array<T>& the_array, const std::string& fileName);
 
 template <typename T, typename Alloc>
-inline void read_array (Array<T>& the_array, const char* fileName)
-    { read_array (the_array, std::string(fileName)); }
+inline void read_array(Array<T>& the_array, const char* fileName) {
+  read_array(the_array, std::string(fileName));
+}
 // </group>
 
 // </group>
@@ -202,28 +204,28 @@ inline void read_array (Array<T>& the_array, const char* fileName)
 
 // <group>
 template <typename T, typename Alloc>
-void readAsciiVector (Vector<T>& vec, const char* fileName);
+void readAsciiVector(Vector<T>& vec, const char* fileName);
 
 template <typename T, typename Alloc>
-void writeAsciiVector (const Vector<T>& vec, const char* fileName);
+void writeAsciiVector(const Vector<T>& vec, const char* fileName);
 // </group>
 
 // </group>
 
-AipsIO& operator<< (AipsIO& aio, const IPosition& ip);
-AipsIO& operator>> (AipsIO& aio, IPosition& ip);
-LogIO& operator<< (LogIO& os, const IPosition& ip);
+AipsIO& operator<<(AipsIO& aio, const IPosition& ip);
+AipsIO& operator>>(AipsIO& aio, IPosition& ip);
+LogIO& operator<<(LogIO& os, const IPosition& ip);
 
-template<typename T, typename Alloc>
+template <typename T, typename Alloc>
 Block<T> makeBlock(const Array<T>& array);
 
-template<typename T>
+template <typename T>
 Vector<T> makeVector(const Block<T>& block);
 
-Vector<String> stringToVector (const String& string, char delim = ',');
-Vector<String> stringToVector (const String& string, const std::regex& delim);
+Vector<String> stringToVector(const String& string, char delim = ',');
+Vector<String> stringToVector(const String& string, const std::regex& delim);
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #include <casacore/casa/IO/ArrayIO.tcc>
 

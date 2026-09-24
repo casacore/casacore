@@ -1,37 +1,37 @@
-//# FiledesIO.h: Class for unbuffered IO on a file
-//# Copyright (C) 1996,1997,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FiledesIO.h: Class for unbuffered IO on a file
+// # Copyright (C) 1996,1997,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_FILEDESIO_H
 #define CASA_FILEDESIO_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class for unbuffered IO on a file.
@@ -42,12 +42,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="Friso Olnon" date="1996/11/06" tests="tByteIO" demos="">
 // </reviewed>
 
-// <prerequisite> 
+// <prerequisite>
 //    <li> <linkto class=ByteIO>ByteIO</linkto> class
 //    <li> file descriptors
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class is a specialization of class
 // <linkto class=ByteIO>ByteIO</linkto>. It uses a file descriptor
 // to read/write data.
@@ -77,118 +77,111 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-// <motivation> 
+// <motivation>
 // Make it possible to use the Casacore IO functionality on any file.
 // In this way any device can be hooked to the IO framework.
 // </motivation>
 
+class FiledesIO : public ByteIO {
+ public:
+  // Default constructor.
+  // A stream can be attached using the attach function.
+  FiledesIO();
 
-class FiledesIO: public ByteIO
-{
-public: 
-    // Default constructor.
-    // A stream can be attached using the attach function.
-    FiledesIO();
+  // Construct from the given file descriptor.
+  // The file name is only used in possible error messages.
+  explicit FiledesIO(int fd, const String& fileName = String());
 
-    // Construct from the given file descriptor.
-    // The file name is only used in possible error messages.
-    explicit FiledesIO (int fd, const String& fileName=String());
+  // Attach to the given file descriptor.
+  // An exception is thrown if it is not in a detached state.
+  // The file name is only used in error messages.
+  void attach(int fd, const String& fileName);
 
-    // Attach to the given file descriptor.
-    // An exception is thrown if it is not in a detached state.
-    // The file name is only used in error messages.
-    void attach (int fd, const String& fileName);
+  // Detach from the file descriptor. The file is not closed.
+  void detach();
 
-    // Detach from the file descriptor. The file is not closed.
-    void detach();
+  // The destructor detaches, but does not close the file.
+  virtual ~FiledesIO();
 
-    // The destructor detaches, but does not close the file.
-    virtual ~FiledesIO();
+  // Write the number of bytes.
+  virtual void write(Int64 size, const void* buf);
 
-    // Write the number of bytes.
-    virtual void write (Int64 size, const void* buf);
+  // Write the number of bytes at offset from start of the file.
+  // The file offset is not changed
+  virtual void pwrite(Int64 size, Int64 offset, const void* buf);
 
-    // Write the number of bytes at offset from start of the file.
-    // The file offset is not changed
-    virtual void pwrite (Int64 size, Int64 offset, const void* buf);
+  // Read <src>size</src> bytes from the descriptor. Returns the number of
+  // bytes actually read or a negative number if an error occurred. Will throw
+  // an Exception (AipsError) if the requested number of bytes could not be
+  // read, or an error occured, unless throwException is set to False. Will
+  // always throw an exception if the descriptor is not readable or the
+  // system call returned an undocumented value.
+  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
 
-    // Read <src>size</src> bytes from the descriptor. Returns the number of
-    // bytes actually read or a negative number if an error occurred. Will throw
-    // an Exception (AipsError) if the requested number of bytes could not be
-    // read, or an error occured, unless throwException is set to False. Will
-    // always throw an exception if the descriptor is not readable or the
-    // system call returned an undocumented value.
-    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
+  // Like read except reads from offset of the start of the file.
+  // The file offset is not changed
+  virtual Int64 pread(Int64 size, Int64 offset, void* buf, Bool throwException = True);
 
-    // Like read except reads from offset of the start of the file.
-    // The file offset is not changed
-    virtual Int64 pread (Int64 size, Int64 offset, void* buf, Bool throwException=True);
+  // Get the length of the byte stream.
+  virtual Int64 length();
 
-    // Get the length of the byte stream.
-    virtual Int64 length();
-       
-    // Is the IO stream readable?
-    virtual Bool isReadable() const;
+  // Is the IO stream readable?
+  virtual Bool isReadable() const;
 
-    // Is the IO stream writable?
-    virtual Bool isWritable() const;
+  // Is the IO stream writable?
+  virtual Bool isWritable() const;
 
-    // Is the IO stream seekable?
-    virtual Bool isSeekable() const;
+  // Is the IO stream seekable?
+  virtual Bool isSeekable() const;
 
-    // Set that the IO stream is writable.
-    void setWritable()
-      { itsWritable = True; }
+  // Set that the IO stream is writable.
+  void setWritable() { itsWritable = True; }
 
-    // Get the file name of the file attached.
-    virtual String fileName() const;
+  // Get the file name of the file attached.
+  virtual String fileName() const;
 
-    // Fsync the file (i.e. force the data to be physically written).
-    virtual void fsync();
+  // Fsync the file (i.e. force the data to be physically written).
+  virtual void fsync();
 
-    // Truncate the file to the given size.
-    virtual void truncate (Int64 size);
-  
-    // Some static convenience functions for file create/open/close.
-    // Close is only done if the fd is non-negative.
-    // <group>
-    static int create (const Char* name, int mode = 0666);
-    static int open   (const Char* name, Bool writable = False,
-		       Bool throwExcp = True);
-    static void close (int fd);
-    // </group>
+  // Truncate the file to the given size.
+  virtual void truncate(Int64 size);
 
+  // Some static convenience functions for file create/open/close.
+  // Close is only done if the fd is non-negative.
+  // <group>
+  static int create(const Char* name, int mode = 0666);
+  static int open(const Char* name, Bool writable = False, Bool throwExcp = True);
+  static void close(int fd);
+  // </group>
 
-protected:
-    // Get the file descriptor.
-    int fd() const
-      { return itsFile; }
+ protected:
+  // Get the file descriptor.
+  int fd() const { return itsFile; }
 
-    // Determine if the file descriptor is readable and/or writable.
-    void fillRWFlags (int fd);
+  // Determine if the file descriptor is readable and/or writable.
+  void fillRWFlags(int fd);
 
-    // Determine if the file is seekable.
-    void fillSeekable();
+  // Determine if the file is seekable.
+  void fillSeekable();
 
-    // Reset the position pointer to the given value. It returns the
-    // new position.
-    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+  // Reset the position pointer to the given value. It returns the
+  // new position.
+  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
 
-private:
-    Bool   itsSeekable;
-    Bool   itsReadable;
-    Bool   itsWritable;
-    int    itsFile;
-    String itsFileName;
+ private:
+  Bool itsSeekable;
+  Bool itsReadable;
+  Bool itsWritable;
+  int itsFile;
+  String itsFileName;
 
-    // Copy constructor, should not be used.
-    FiledesIO (const FiledesIO& that);
+  // Copy constructor, should not be used.
+  FiledesIO(const FiledesIO& that);
 
-    // Assignment, should not be used.
-    FiledesIO& operator= (const FiledesIO& that);
+  // Assignment, should not be used.
+  FiledesIO& operator=(const FiledesIO& that);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,27 +1,27 @@
-//# COWPtr.h: this defines the Copy-On-Write-Pointer class.
-//# Copyright (C) 1996,1997,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # COWPtr.h: this defines the Copy-On-Write-Pointer class.
+// # Copyright (C) 1996,1997,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_COWPTR_H
 #define CASA_COWPTR_H
@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Copy-On-Write-Pointer class - allows control of copy based on constness.
@@ -45,9 +45,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 //
 // <etymology>
-// The COWPtr class name is a contraction of Copy-On-Write-Pointer 
-// and is a reflection of its role as a carrier of objects which need to 
-// minimize their copying and control their destruction.  Such objects only 
+// The COWPtr class name is a contraction of Copy-On-Write-Pointer
+// and is a reflection of its role as a carrier of objects which need to
+// minimize their copying and control their destruction.  Such objects only
 // need to copy if written to.
 // </etymology>
 //
@@ -125,20 +125,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    };
 //</srcblock>
 // <h4>Example 2:</h4>
-// This function requires a const Array be passed out from the local scope.  
+// This function requires a const Array be passed out from the local scope.
 // The Array is created with non-const functions out of necessity (i.e. no
 // const versions of the Array::getSlice() function exist.)  Preventing
 // copies of the Array from being made forces us to use a COWPtr.  The COWPtr
 // has arguments which allow us to declare the Array as const and not make
 // any copies until a write operation is performed.
-// <srcblock> 
+// <srcblock>
 // void myFunc(COWPtr<Array<Float> > &obj){
 // // make a nonconst from some static const Array that exists "out there"
 // Array<Float> &nonConstArray = (Array<Float> &)staticConstArray;
 // // "fill" the COWPtr and bring back constness without copying. The first
 // // "True" argument indicates the caller of this function may take
 // // control of the dynamic pointer's destruction.  The second "True"
-// // argument indicates the array is read only and should make a copy of 
+// // argument indicates the array is read only and should make a copy of
 // // itself if writing is needed.
 // obj.set(new Array<Float>(nonConstArray.getSlice(...), True, True));
 // }
@@ -179,37 +179,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li> none
 // </todo>
 
-template <class T> class COWPtr
-{
-private:
+template <class T>
+class COWPtr {
+ private:
   // Helper class to make deletion of object optional.
   class Deleter {
-  public:
-    Deleter (Bool deleteIt) : deleteIt_p (deleteIt)
-      {}
-    void operator() (T * data) const
-      { if (deleteIt_p) delete data; }
-  private:
+   public:
+    Deleter(Bool deleteIt) : deleteIt_p(deleteIt) {}
+    void operator()(T *data) const {
+      if (deleteIt_p) delete data;
+    }
+
+   private:
     Bool deleteIt_p;
   };
 
-  
-public:
-  // The default constructor: used to create a null pointer which is 
+ public:
+  // The default constructor: used to create a null pointer which is
   // delete-able by the destructor.  It is not "readOnly" so that it may be
   // changed by the COWPtr<T>::set() function.
-  inline COWPtr(); 
-  
-  // The dynamic "pointer to object" constructor: default behavior is to 
-  // delete the allocated memory when this instance's of COWPtr is destructed. 
-  // Or the Boolean argument of "deleteIt = False" implies the pointer is 
-  // being maintained by an object other than this instance of COWPtr and 
-  // will not delete the allocated memory upon this instance's destruction. 
+  inline COWPtr();
+
+  // The dynamic "pointer to object" constructor: default behavior is to
+  // delete the allocated memory when this instance's of COWPtr is destructed.
+  // Or the Boolean argument of "deleteIt = False" implies the pointer is
+  // being maintained by an object other than this instance of COWPtr and
+  // will not delete the allocated memory upon this instance's destruction.
   // Control of copying is provided by the Boolean "readOnly" argument.  The
   // default value of "readOnly = False" forces a copy if the number of
   // references to the dynamic memory is greater than one.  Copying is always
-  // done if the constructor is given an argument of "readOnly = True".  
-  // <note> The only copying done (if ever) is upon a call to 
+  // done if the constructor is given an argument of "readOnly = True".
+  // <note> The only copying done (if ever) is upon a call to
   // COWPtr<T>::rwRef().</note>
   explicit COWPtr(T *obj, Bool deleteIt = True, Bool readOnly = False);
 
@@ -220,22 +220,22 @@ public:
   inline COWPtr &operator=(const COWPtr<T> &other);
 
   // return a pointer to a const object.  This prevents "write" operations.
-  inline const T *operator->() const;  
+  inline const T *operator->() const;
 
   // return a reference to a const object.  This prevents "write" operations.
   inline const T &operator*() const;
 
-  // Function used to change this instance of COWPtr. The pointer must be 
-  // dynamically allocated.  Default behavior is to 
-  // delete the allocated memory when this instance's of COWPtr is destructed. 
-  // Or the Boolean argument of "deleteIt = False" implies the pointer is 
-  // being maintained by an object other than this instance of COWPtr and 
-  // will not delete the allocated memory upon this instance's destruction. 
+  // Function used to change this instance of COWPtr. The pointer must be
+  // dynamically allocated.  Default behavior is to
+  // delete the allocated memory when this instance's of COWPtr is destructed.
+  // Or the Boolean argument of "deleteIt = False" implies the pointer is
+  // being maintained by an object other than this instance of COWPtr and
+  // will not delete the allocated memory upon this instance's destruction.
   // Control of copying is provided by the Boolean "readOnly" argument.  The
   // default value of "readOnly = False" forces a copy if the number of
   // references to the dynamic memory is greater than one.  Copying is always
-  // done if the constructor is given an argument of "readOnly = True".  
-  // <note> The only copying done (if ever) is upon a call to 
+  // done if the constructor is given an argument of "readOnly = True".
+  // <note> The only copying done (if ever) is upon a call to
   // COWPtr<T>::rwRef().
   // </note>
   void set(T *obj, Bool deleteIt = True, Bool readOnly = False);
@@ -244,8 +244,8 @@ public:
   inline const T &ref() const;
 
   // return a readable and writable reference to this instance.  Instances of
-  // COWPtr constructed with argument "readOnly = True" will be made a copy.  
-  // Additionally, all instances of COWPtr with more than one reference to 
+  // COWPtr constructed with argument "readOnly = True" will be made a copy.
+  // Additionally, all instances of COWPtr with more than one reference to
   // the allocated memory stored within will be copied.
   inline T &rwRef();
 
@@ -253,93 +253,84 @@ public:
   inline Bool isNull() const;
 
   // returns True if the object is const, otherwise, return False.
-  inline Bool isReadOnly() const; 
+  inline Bool isReadOnly() const;
 
   // returns True if the object is the only instance, otherwise, return False.
-  inline Bool isUnique() const; 
+  inline Bool isUnique() const;
 
-  // Return True if copied, otherwise, False.  This function will make this 
-  // instance's object a copy if it is constructed with 
-  // "readOnly = True."  Additionally, all instances of COWPtr with more 
-  // than one reference to the allocated memory stored within will be 
-  // copied. 
-  Bool makeUnique(); 
+  // Return True if copied, otherwise, False.  This function will make this
+  // instance's object a copy if it is constructed with
+  // "readOnly = True."  Additionally, all instances of COWPtr with more
+  // than one reference to the allocated memory stored within will be
+  // copied.
+  Bool makeUnique();
 
-protected:
+ protected:
   std::shared_ptr<T> obj_p;
   Bool const_p;
 };
 
-
-
-//# Make our own default pointer - deleteIt==True by default, const_p==False
-template <class T> inline COWPtr<T>::COWPtr()
-  : obj_p   (nullptr, Deleter(True)),
-    const_p (False)
-{
-  // does nothing
-} 
-
-//# copy ctor with reference semantics
-template <class T> inline COWPtr<T>::COWPtr(const COWPtr<T> &other)
-  : obj_p   (other.obj_p),
-    const_p (other.const_p)
-{
+// # Make our own default pointer - deleteIt==True by default, const_p==False
+template <class T>
+inline COWPtr<T>::COWPtr() : obj_p(nullptr, Deleter(True)), const_p(False) {
   // does nothing
 }
 
-//assignment operator with reference semantics
-template <class T> 
-inline COWPtr<T> &COWPtr<T>::operator=(const COWPtr<T> &other)
-{
+// # copy ctor with reference semantics
+template <class T>
+inline COWPtr<T>::COWPtr(const COWPtr<T> &other) : obj_p(other.obj_p), const_p(other.const_p) {
+  // does nothing
+}
+
+// assignment operator with reference semantics
+template <class T>
+inline COWPtr<T> &COWPtr<T>::operator=(const COWPtr<T> &other) {
   if (this != &other) {
-    obj_p   = other.obj_p;
+    obj_p = other.obj_p;
     const_p = other.const_p;
   }
   return *this;
 }
 
-template <class T> inline const T *COWPtr<T>::operator->() const
-{
+template <class T>
+inline const T *COWPtr<T>::operator->() const {
   return obj_p.operator->();
 }
 
-template <class T> inline const T &COWPtr<T>::operator*() const
-{
+template <class T>
+inline const T &COWPtr<T>::operator*() const {
   return obj_p.operator*();
 }
 
-template <class T> inline const T &COWPtr<T>::ref() const
-{
+template <class T>
+inline const T &COWPtr<T>::ref() const {
   return *obj_p;
 }
 
-template <class T> inline T &COWPtr<T>::rwRef()
-{
+template <class T>
+inline T &COWPtr<T>::rwRef() {
   makeUnique();
   return *obj_p;
 }
 
-template <class T> inline Bool COWPtr<T>::isNull() const
-{
+template <class T>
+inline Bool COWPtr<T>::isNull() const {
   return !obj_p;
 }
 
-template <class T> inline Bool COWPtr<T>::isReadOnly() const
-{
-  return const_p; 
+template <class T>
+inline Bool COWPtr<T>::isReadOnly() const {
+  return const_p;
 }
 
-template <class T> inline Bool COWPtr<T>::isUnique() const
-{
-  return (const_p || obj_p.use_count()>1) ? False : True;
+template <class T>
+inline Bool COWPtr<T>::isUnique() const {
+  return (const_p || obj_p.use_count() > 1) ? False : True;
 }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/COWPtr.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

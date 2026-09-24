@@ -1,38 +1,37 @@
-//# ExtendSpecifier.h: Specification of new and stretched lattice axes
-//# Copyright (C) 2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ExtendSpecifier.h: Specification of new and stretched lattice axes
+// # Copyright (C) 2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_EXTENDSPECIFIER_2_H
 #define CASA_EXTENDSPECIFIER_2_H
 
-
-//# Includes
+// # Includes
 #include "IPosition.h"
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Slicer;
 
 // <summary>
@@ -79,61 +78,51 @@ class Slicer;
 // (to 8 according to newShape).
 // </example>
 
-//# <todo asof="yyyy/mm/dd">
-//# </todo>
+// # <todo asof="yyyy/mm/dd">
+// # </todo>
 
-class ExtendSpecifier
-{
-public:
+class ExtendSpecifier {
+ public:
   // Default constructor generates empty IPositions.
   ExtendSpecifier();
 
   // Tell if no or all degenerate axes have to be removed.
-  ExtendSpecifier (const IPosition& oldShape,
-		   const IPosition& newShape,
-		   const IPosition& newAxes,
-		   const IPosition& stretchAxes);
+  ExtendSpecifier(const IPosition& oldShape, const IPosition& newShape, const IPosition& newAxes,
+                  const IPosition& stretchAxes);
 
   // Return the new shape.
-  const IPosition& newShape() const
-    { return itsNewShape; }
+  const IPosition& newShape() const { return itsNewShape; }
 
   // Return the new axes.
-  const IPosition& newAxes() const
-    { return itsNewAxes; }
+  const IPosition& newAxes() const { return itsNewAxes; }
 
   // Return the axes to be stretched.
-  const IPosition& stretchAxes() const
-    { return itsStretchAxes; }
+  const IPosition& stretchAxes() const { return itsStretchAxes; }
 
   // Return the old shape.
-  const IPosition& oldShape() const
-    { return itsOldShape; }
+  const IPosition& oldShape() const { return itsOldShape; }
 
   // Return the axes to be extended (i.e. new and stretch axes).
-  const IPosition& extendAxes() const
-    { return itsExtendAxes; }
+  const IPosition& extendAxes() const { return itsExtendAxes; }
 
   // Return the old axes (i.e. axes new nor stretched) as in old shape.
-  const IPosition& oldOldAxes() const
-    { return itsOldOldAxes; }
+  const IPosition& oldOldAxes() const { return itsOldOldAxes; }
 
   // Return the old axes as in new shape.
-  const IPosition& oldNewAxes() const
-    { return itsOldNewAxes; }
+  const IPosition& oldNewAxes() const { return itsOldNewAxes; }
 
   // Convert the slicer to the specification for the old shape.
   // It fills <src>shape</src> with the shape to reform the section
   // length such that it contains the new axes.
-  Slicer convert (IPosition& shape, const Slicer& section) const;
+  Slicer convert(IPosition& shape, const Slicer& section) const;
 
   // Convert a shape to the specification for the new shape.
-  IPosition convertNew (const IPosition& oldShape) const;
+  IPosition convertNew(const IPosition& oldShape) const;
 
-private:
+ private:
   // Fill the flags for the given axes.
   // It throws an exception if the axis is invalid or multiply given.
-  void fill (bool* flags, size_t nrdim, const IPosition& axes) const;
+  void fill(bool* flags, size_t nrdim, const IPosition& axes) const;
 
   IPosition itsOldShape;
   IPosition itsNewShape;
@@ -144,6 +133,6 @@ private:
   IPosition itsOldNewAxes;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,46 +1,46 @@
-//# Quanta.h:  a module for units and quantities
-//# Copyright (C) 1998,1999,2000,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Quanta.h:  a module for units and quantities
+// # Copyright (C) 1998,1999,2000,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QUANTA_H
 #define CASA_QUANTA_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
 #include <casacore/casa/Quanta/Unit.h>
-//# Next one at this place
+// # Next one at this place
 #include <casacore/casa/Quanta/QC.h>
 #include <casacore/casa/Quanta/UnitMap.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/QMath.h>
 #include <casacore/casa/Quanta/QLogical.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
-// 
+//
 
 // <summary> a module for units and quantities </summary>
 
@@ -58,11 +58,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // units attached.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // The Quanta model deals with units and physical quantities
 // (i.e. values with a unit).
 // Units are handled in the <a href="#Unit">Unit</a> section
-// (see <linkto class="Unit">Unit.h</linkto>). 
+// (see <linkto class="Unit">Unit.h</linkto>).
 // Quantities are handled in the <a href="#Quantum">Quantum</a> section
 // (see <linkto class="Quantum">Quantum.h</linkto>).
 // In addition the module contains some more general support classes
@@ -96,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // String, the checking will be postponed
 // until any use is made of the information in the string.
 //
-// A unit is a string of one or more fields separated 
+// A unit is a string of one or more fields separated
 // by 'space' or '.' (to indicate multiply) or '/' (to indicate divide).
 // Multiple separators are acted upon (i.e. <src>m//s == m.s</src>).
 // Separators are acted upon left-to-right (i.e. <src>m/s/A == (m/s)/A</src>;
@@ -113,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <note role=tip>
 // <ul>
 //   <li> <src>'</src> is used for arcmin
-//   <li> <src>''</src> or <src>"</src> for arcsec 
+//   <li> <src>''</src> or <src>"</src> for arcsec
 //   <li> : :: and ::: are used for h, min, s respectively.
 // </ul>
 // </note>
@@ -121,15 +121,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // are all in lowercase, unless derived from a person's name, when they start
 // with a capital letter. Notable exceptions are some of the astronomical
 // SI related units (e.g. AU).
-// </note> 
+// </note>
 // A name can be preceded by a (standard) decimal prefix.
 //
 // A name must be defined in a Unit map before it can be used.
 //
 // All SI units and some customary units are part of the classes. User
 // defined names can be added by the UnitMap::putUser() function (see
-// <linkto class="UnitMap">UnitMap</linkto>). A special set of FITS related 
-// units can be added by the <src>UnitMap::addFITS()</src> function. For 
+// <linkto class="UnitMap">UnitMap</linkto>). A special set of FITS related
+// units can be added by the <src>UnitMap::addFITS()</src> function. For
 // details, see <linkto class="UnitMap">UnitMap</linkto>.
 //
 // Example:
@@ -148,7 +148,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // using the MapUnit::list() routine.
 //
 // The definitions that were current on 990915 are given at end of this file
-// 
+//
 // <note role=caution>
 // There is a difference between units without a dimension (non-dimensioned
 // I will call them), and undimensioned units. Non-dimensioned examples are
@@ -203,10 +203,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </note>
 //
 // See the <linkto class="UnitVal">UnitVal</linkto>
-// for details of calculating with units. 
+// for details of calculating with units.
 // See the <linkto class="UnitMap">UnitMap</linkto>
 // for the details of defining/viewing named units.
-// 
+//
 //
 //  <anchor name="Quantum"><h3> Quantums and Quantities </h3></anchor>
 // A Quantum is a  value with a unit. Quantums are templated on their value
@@ -229,10 +229,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The following list of constructors is available.
 // <note role=tip>
 // In the following 'Unit' can be replaced by 'String' (or "string" everywhere.
-// The only difference being a check for a legitimate unit string being 
+// The only difference being a check for a legitimate unit string being
 // executed if Unit specified (with exception if error), and a much faster
 // execution of the Unit is used repeatedly.
-// <src>Quantum<Type></src> can, if Type equals Double, be replaced with 
+// <src>Quantum<Type></src> can, if Type equals Double, be replaced with
 // <src>Quantity</src>
 // </note>
 // <ul>
@@ -258,8 +258,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   			(else exception)
 //   <li> 	-	negate Quantum
 //   <li> <src>== !=	compare unit dimensions and value of same <type></src>.
-//			They will be unequal if the unit dimensions do not 
-//			match or the values (converted to common 
+//			They will be unequal if the unit dimensions do not
+//			match or the values (converted to common
 //			base units) are unequal
 //   <li> <src>< >	compare unit dimensions of same <type></src>.
 //			 Exception if no match,
@@ -272,7 +272,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> asin, acos, atan(Quant), atan2(Q,Q) correct units used
 //   <li> near, nearAbs
 // </ul>
-// 
+//
 //
 // Quanta can be converted to other units by the following set of member
 // functions:
@@ -281,7 +281,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //				E.g. given myval=Quantity(5.,"Jy"),
 //				myval.convert() will make myval have the value
 //				Quantity(5.e-26,"kg.s-2")
-//   <li> get()			will return the quantum converted to 
+//   <li> get()			will return the quantum converted to
 //				canonical units
 //   <li> convert(Unit unit) will convert the quantum to the
 //				specified unit with any remaining dimensions
@@ -325,7 +325,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	<src>cout << myval;</src> will produce:
 //	"5.0 mJy"; while <src>cout << myval.get("yW/m2")</src> will produce:
 //	".00005 yW/m2.s"
-// 
+//
 //
 //  <h3> QC class of constant quantities </h3>
 // In parallel with the 'C' class of undimensioned constants, the QC class
@@ -351,7 +351,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li>  <src>Quantum<Double> R0;	// Solar radius</src>
 //   <li>  <src>Quantum<Double> k2;	// IAU Gaussian grav. const **2</src>
 // </ul>
-// 
+//
 // <p>
 //  <anchor name="MeasValue"><h3> Values for Measures </h3></anchor>
 // The MeasValue class derivatives are all named <em>MVmeasure</em>, e.g.
@@ -399,7 +399,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // normalise to a value of 1 (e.g. MVDirection), or recalculates high
 // precision values (e.g. MVEpoch) functions.<br>
 // Information can be viewed with many <em>get</em> functions. In most cases
-// getValue() will return the internal value as either Double or 
+// getValue() will return the internal value as either Double or
 // Vector<Double>; get() will return the same, or converted values (e.g.
 // a vector of length, angle, angle for MVPosition; while special
 // one like getAngle() or getAngle(unit), getTime() etc will return Quantums
@@ -407,12 +407,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // In general the Measure classes can be used without worrying about the
 // MeasValues, since most Measure constructors have enough flexibility (and
 // their own get()'s) to be able to use them independently).<br>
-// Special cases are <linkto class=MVAngle>MVAngle</linkto> and 
+// Special cases are <linkto class=MVAngle>MVAngle</linkto> and
 // <linkto class=MVTime>MVTime</linkto>, which can do special formatting for
 // time and angles (in earlier documentation they were called HMS etc.).
 // <p>
 
-// </synopsis> 
+// </synopsis>
 //
 // <motivation>
 // The Quanta model originated to handle physical quantities independent of their
@@ -430,9 +430,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <h3> Known units on 960509 </h3>
 // <srcblock>
 // // UnitMap::list() will produce the following list:
-//List all defined symbols
+// List all defined symbols
 //
-//Prefix table (20):
+// Prefix table (20):
 //    E         (exa)                        1e+18
 //    G         (giga)                       1000000000
 //    M         (mega)                       1000000
@@ -453,7 +453,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    u         (micro)                      1e-06
 //    y         (yocto)                      1e-24
 //    z         (zepto)                      1e-21
-//Defining unit table (10):
+// Defining unit table (10):
 //    A         (ampere)                     1 A
 //    K         (kelvin)                     1 K
 //    _         (undimensioned)              1 _
@@ -464,7 +464,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    rad       (radian)                     1 rad
 //    s         (second)                     1 s
 //    sr        (steradian)                  1 sr
-//SI unit table (50):
+// SI unit table (50):
 //    $         (currency)                   1 _
 //    %         (percent)                    0.01
 //    %%        (permille)                   0.001
@@ -515,7 +515,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    s         (second)                     1 s
 //    sr        (steradian)                  1 sr
 //    t         (tonne)                      1000 kg
-//Customary unit table (74):
+// Customary unit table (74):
 //    "         (arcsec)                     4.8481368111e-06 rad
 //    "_2       (square arcsec)              2.35044305391e-11 sr
 //    '         (arcmin)                     0.000290888208666 rad
@@ -596,13 +596,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 // </module>
 
-//# Dummy class definition for extractor
-//# class Quanta {};
+// # Dummy class definition for extractor
+// # class Quanta {};
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-
-

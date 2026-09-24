@@ -1,36 +1,36 @@
-//# DataConversion.h: Abstract base class with functions to convert any format
-//# Copyright (C) 1996,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # DataConversion.h: Abstract base class with functions to convert any format
+// # Copyright (C) 1996,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_DATACONVERSION_H
 #define CASA_DATACONVERSION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Conversion.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class with functions to convert any format
@@ -76,187 +76,151 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> Support data type long double.
 // </todo>
 
+class DataConversion {
+ public:
+  // Construct the object.
+  DataConversion();
 
-class DataConversion
-{
-public:
-    // Construct the object.
-    DataConversion();
+  virtual ~DataConversion();
 
-    virtual ~DataConversion();
+  template <typename T>
+  size_t toLocalGeneric(T& to, const void* from) const {
+    return toLocal(to, from);
+  }
 
-    template <typename T>
-    size_t toLocalGeneric (T& to, const void* from) const {
-      return toLocal(to, from);
-    }
+  template <typename T>
+  size_t toLocalGeneric(T* to, const void* from, size_t nr) const {
+    return toLocal(to, from, nr);
+  }
 
-    template <typename T>
-    size_t toLocalGeneric (T* to, const void* from, size_t nr) const {
-      return toLocal(to, from, nr);
-    }
+  template <typename T>
+  size_t fromLocalGeneric(void* to, T from) const {
+    return fromLocal(to, from);
+  }
 
-    template <typename T>
-    size_t fromLocalGeneric (void* to, T from) const {
-      return fromLocal(to, from);
-    }
+  template <typename T>
+  size_t fromLocalGeneric(void* to, const T* from, size_t nr) const {
+    return fromLocal(to, from, nr);
+  }
 
-    template <typename T>
-    size_t fromLocalGeneric (void* to, const T* from, size_t nr) const {
-      return fromLocal(to, from, nr);
-    }
+  template <typename T>
+  bool canCopyGeneric() const {
+    return canCopy(static_cast<const T*>(nullptr));
+  }
 
-    template <typename T>
-    bool canCopyGeneric() const {
-      return canCopy(static_cast<const T*>(nullptr));
-    }
+  template <typename T>
+  unsigned int externalSizeGeneric() const {
+    return externalSize(static_cast<const T*>(nullptr));
+  }
 
-    template <typename T>
-    unsigned int externalSizeGeneric () const {
-      return externalSize(static_cast<const T*>(nullptr));
-    }
+  // Convert one value from foreign format to local format.
+  // The from and to buffer should not overlap.
+  // <note>
+  // The char version handles characters (thus may involve conversion
+  // EBCDIC to ASCII), while the unsigned chars are simply bytes.
+  // </note>
+  // <group>
+  virtual size_t toLocal(char& to, const void* from) const = 0;
+  virtual size_t toLocal(unsigned char& to, const void* from) const = 0;
+  virtual size_t toLocal(short& to, const void* from) const = 0;
+  virtual size_t toLocal(unsigned short& to, const void* from) const = 0;
+  virtual size_t toLocal(int& to, const void* from) const = 0;
+  virtual size_t toLocal(unsigned int& to, const void* from) const = 0;
+  virtual size_t toLocal(Int64& to, const void* from) const = 0;
+  virtual size_t toLocal(uInt64& to, const void* from) const = 0;
+  virtual size_t toLocal(float& to, const void* from) const = 0;
+  virtual size_t toLocal(double& to, const void* from) const = 0;
+  // </group>
 
-    // Convert one value from foreign format to local format.
-    // The from and to buffer should not overlap.
-    // <note>
-    // The char version handles characters (thus may involve conversion
-    // EBCDIC to ASCII), while the unsigned chars are simply bytes.
-    // </note>
-    // <group>
-    virtual size_t toLocal (char&           to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (unsigned char&  to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (short&          to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (unsigned short& to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (int&            to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (unsigned int&   to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (Int64&          to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (uInt64&         to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (float&          to,
-				  const void* from) const = 0;
-    virtual size_t toLocal (double&         to,
-				  const void* from) const = 0;
-    // </group>
-    
-    // Convert nr values from foreign format to local format.
-    // The from and to buffer should not overlap.
-    // <note>
-    // The char version handles characters (thus may involve conversion
-    // EBCDIC to ASCII), while the unsigned chars are simply bytes.
-    // </note>
-    // <group>
-    virtual size_t toLocal (char*           to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (unsigned char*  to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (short*          to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (unsigned short* to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (int*            to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (unsigned int*   to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (Int64*          to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (uInt64*         to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (float*          to, const void* from,
-                            size_t nr) const = 0;
-    virtual size_t toLocal (double*         to, const void* from,
-                            size_t nr) const = 0;
-    // </group>
+  // Convert nr values from foreign format to local format.
+  // The from and to buffer should not overlap.
+  // <note>
+  // The char version handles characters (thus may involve conversion
+  // EBCDIC to ASCII), while the unsigned chars are simply bytes.
+  // </note>
+  // <group>
+  virtual size_t toLocal(char* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(unsigned char* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(short* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(unsigned short* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(int* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(unsigned int* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(Int64* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(uInt64* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(float* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(double* to, const void* from, size_t nr) const = 0;
+  // </group>
 
-    // Convert one value from local format to foreign format.
-    // The from and to buffer should not overlap.
-    // <note>
-    // The char version handles characters (thus may involve conversion
-    // ASCII to EBCDIC), while the unsigned chars are simply bytes.
-    // </note>
-    // <group>
-    virtual size_t fromLocal (void* to, char           from) const = 0;
-    virtual size_t fromLocal (void* to, unsigned char  from) const = 0;
-    virtual size_t fromLocal (void* to, short          from) const = 0;
-    virtual size_t fromLocal (void* to, unsigned short from) const = 0;
-    virtual size_t fromLocal (void* to, int            from) const = 0;
-    virtual size_t fromLocal (void* to, unsigned int   from) const = 0;
-    virtual size_t fromLocal (void* to, Int64          from) const = 0;
-    virtual size_t fromLocal (void* to, uInt64         from) const = 0;
-    virtual size_t fromLocal (void* to, float          from) const = 0;
-    virtual size_t fromLocal (void* to, double         from) const = 0;
-    // </group>
-    
-    // Convert nr values from local format to foreign format.
-    // The from and to buffer should not overlap.
-    // <note>
-    // The char version handles characters (thus may involve conversion
-    // ASCII to EBCDIC), while the unsigned chars are simply bytes.
-    // </note>
-    // <group>
-    virtual size_t fromLocal (void* to, const char*           from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const unsigned char*  from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const short*          from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const unsigned short* from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const int*            from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const unsigned int*   from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const Int64*          from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const uInt64*         from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const float*          from,
-                              size_t nr) const = 0;
-    virtual size_t fromLocal (void* to, const double*         from,
-                              size_t nr) const = 0;
-    // </group>
+  // Convert one value from local format to foreign format.
+  // The from and to buffer should not overlap.
+  // <note>
+  // The char version handles characters (thus may involve conversion
+  // ASCII to EBCDIC), while the unsigned chars are simply bytes.
+  // </note>
+  // <group>
+  virtual size_t fromLocal(void* to, char from) const = 0;
+  virtual size_t fromLocal(void* to, unsigned char from) const = 0;
+  virtual size_t fromLocal(void* to, short from) const = 0;
+  virtual size_t fromLocal(void* to, unsigned short from) const = 0;
+  virtual size_t fromLocal(void* to, int from) const = 0;
+  virtual size_t fromLocal(void* to, unsigned int from) const = 0;
+  virtual size_t fromLocal(void* to, Int64 from) const = 0;
+  virtual size_t fromLocal(void* to, uInt64 from) const = 0;
+  virtual size_t fromLocal(void* to, float from) const = 0;
+  virtual size_t fromLocal(void* to, double from) const = 0;
+  // </group>
 
-    // Determine if the data for a data type can be simply copied, thus
-    // if no conversion is needed.
-    // <group>
-    virtual Bool canCopy (const char*) const = 0;
-    virtual Bool canCopy (const unsigned char*) const = 0;
-    virtual Bool canCopy (const short*) const = 0;
-    virtual Bool canCopy (const unsigned short*) const = 0;
-    virtual Bool canCopy (const int*) const = 0;
-    virtual Bool canCopy (const unsigned int*) const = 0;
-    virtual Bool canCopy (const Int64*) const = 0;
-    virtual Bool canCopy (const uInt64*) const = 0;
-    virtual Bool canCopy (const float*) const = 0;
-    virtual Bool canCopy (const double*) const = 0;
-    // </group>
+  // Convert nr values from local format to foreign format.
+  // The from and to buffer should not overlap.
+  // <note>
+  // The char version handles characters (thus may involve conversion
+  // ASCII to EBCDIC), while the unsigned chars are simply bytes.
+  // </note>
+  // <group>
+  virtual size_t fromLocal(void* to, const char* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const unsigned char* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const short* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const unsigned short* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const int* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const unsigned int* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const Int64* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const uInt64* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const float* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const double* from, size_t nr) const = 0;
+  // </group>
 
-    // Get the external size of the data type.
-    // <group>
-    virtual unsigned int externalSize (const char*) const = 0;
-    virtual unsigned int externalSize (const unsigned char*) const = 0;
-    virtual unsigned int externalSize (const short*) const = 0;
-    virtual unsigned int externalSize (const unsigned short*) const = 0;
-    virtual unsigned int externalSize (const int*) const = 0;
-    virtual unsigned int externalSize (const unsigned int*) const = 0;
-    virtual unsigned int externalSize (const Int64*) const = 0;
-    virtual unsigned int externalSize (const uInt64*) const = 0;
-    virtual unsigned int externalSize (const float*) const = 0;
-    virtual unsigned int externalSize (const double*) const = 0;
-    // </group>
+  // Determine if the data for a data type can be simply copied, thus
+  // if no conversion is needed.
+  // <group>
+  virtual Bool canCopy(const char*) const = 0;
+  virtual Bool canCopy(const unsigned char*) const = 0;
+  virtual Bool canCopy(const short*) const = 0;
+  virtual Bool canCopy(const unsigned short*) const = 0;
+  virtual Bool canCopy(const int*) const = 0;
+  virtual Bool canCopy(const unsigned int*) const = 0;
+  virtual Bool canCopy(const Int64*) const = 0;
+  virtual Bool canCopy(const uInt64*) const = 0;
+  virtual Bool canCopy(const float*) const = 0;
+  virtual Bool canCopy(const double*) const = 0;
+  // </group>
+
+  // Get the external size of the data type.
+  // <group>
+  virtual unsigned int externalSize(const char*) const = 0;
+  virtual unsigned int externalSize(const unsigned char*) const = 0;
+  virtual unsigned int externalSize(const short*) const = 0;
+  virtual unsigned int externalSize(const unsigned short*) const = 0;
+  virtual unsigned int externalSize(const int*) const = 0;
+  virtual unsigned int externalSize(const unsigned int*) const = 0;
+  virtual unsigned int externalSize(const Int64*) const = 0;
+  virtual unsigned int externalSize(const uInt64*) const = 0;
+  virtual unsigned int externalSize(const float*) const = 0;
+  virtual unsigned int externalSize(const double*) const = 0;
+  // </group>
 };
 
+inline DataConversion::DataConversion() {}
 
-inline DataConversion::DataConversion()
-{}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

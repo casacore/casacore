@@ -1,58 +1,54 @@
-//# MUString.cc: Pointed String class to ais analysis of quantity strings
-//# Copyright (C) 1996,1997,1998,1999,2001,2002,2003,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MUString.cc: Pointed String class to ais analysis of quantity strings
+// # Copyright (C) 1996,1997,1998,1999,2001,2002,2003,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/casa/Utilities/MUString.h>
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Regex.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Constructors
-MUString::MUString() :
-  str(), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {}
+MUString::MUString() : str(), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {}
 
-MUString::MUString(const String &in) :
-  str(in), ptr(0), len(in.length()), stack(0), stpt(0), stat(True), lget() {
-  }
+MUString::MUString(const String &in)
+    : str(in), ptr(0), len(in.length()), stack(0), stpt(0), stat(True), lget() {}
 
-MUString::MUString(const Char *in) :
-  str(in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
-    len = str.length();
-  }
+MUString::MUString(const Char *in)
+    : str(in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
+  len = str.length();
+}
 
-MUString::MUString(Char in) :
-  str(in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
-    len = str.length();
-  }
+MUString::MUString(Char in) : str(in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
+  len = str.length();
+}
 
-MUString::MUString(const MUString &other) :
-  str(other.str), ptr(other.ptr), len(other.len), 
-  stack(0), stpt(0), stat(True), lget() {}
+MUString::MUString(const MUString &other)
+    : str(other.str), ptr(other.ptr), len(other.len), stack(0), stpt(0), stat(True), lget() {}
 
 MUString &MUString::operator=(const MUString &other) {
   if (this != &other) {
@@ -71,50 +67,39 @@ MUString &MUString::operator=(const MUString &other) {
 MUString::~MUString() {}
 
 // Operators
-String MUString::operator()() {
-  return get();
-}
+String MUString::operator()() { return get(); }
 
 // General member functions
 void MUString::push() {
-  while (stpt >= stack.nelements()) stack.resize(2*stpt + 1);
+  while (stpt >= stack.nelements()) stack.resize(2 * stpt + 1);
   stack[stpt++] = ptr;
 }
 
-void MUString::pop() {
-  ptr = stpt > 0 ? stack[--stpt] : 0;
-}
+void MUString::pop() { ptr = stpt > 0 ? stack[--stpt] : 0; }
 
 void MUString::unpush() {
   if (stpt > 0) --stpt;
 }
 
 void MUString::skipBlank() {
-  while (ptr < len && testBlank())  ptr++;
+  while (ptr < len && testBlank()) ptr++;
 }
 
-Bool MUString::testBlank() const {
-  return (ptr >= len || str[ptr] == ' ' || str[ptr] == '\t');
-}
+Bool MUString::testBlank() const { return (ptr >= len || str[ptr] == ' ' || str[ptr] == '\t'); }
 
-Bool MUString::tSkipBlank() {
-  return ((ptr < len && testBlank()) ? (skipBlank(), True) : False);
-}
+Bool MUString::tSkipBlank() { return ((ptr < len && testBlank()) ? (skipBlank(), True) : False); }
 
-Bool MUString::testSign() const {
-  return (ptr < len && (str[ptr] == '-' || str[ptr] == '+'));
-}
+Bool MUString::testSign() const { return (ptr < len && (str[ptr] == '-' || str[ptr] == '+')); }
 
 void MUString::skipSign() {
   while (testSign()) ptr++;
 }
 
-Bool MUString::tSkipSign() {
-  return (testSign() ? (skipSign(), True) : False);
-}
+Bool MUString::tSkipSign() { return (testSign() ? (skipSign(), True) : False); }
 
 Int MUString::getSign() {
-  Int t = 1; Int p = initLast();
+  Int t = 1;
+  Int p = initLast();
   if (testSign()) {
     while (testSign()) {
       if (str[ptr++] == '-') t = -t;
@@ -130,19 +115,17 @@ Bool MUString::testInt() const {
 }
 
 Bool MUString::tSkipInt() {
-  return (testInt() ? (skipInt(), True) : False);;
+  return (testInt() ? (skipInt(), True) : False);
+  ;
 }
 
-Bool MUString::testuInt() const {
-  return testNum();
-}
+Bool MUString::testuInt() const { return testNum(); }
 
-Bool MUString::tSkipuInt() {
-  return (testuInt() ? (skipuInt(), True) : False);
-}
+Bool MUString::tSkipuInt() { return (testuInt() ? (skipuInt(), True) : False); }
 
 Int MUString::getInt() {
-  Int s = 0; Int p = initLast();
+  Int s = 0;
+  Int p = initLast();
   if (testInt()) {
     s = getSign();
     s *= getuInt();
@@ -151,15 +134,14 @@ Int MUString::getInt() {
   return s;
 }
 
-void MUString::skipInt() {
-  getInt();
-}
+void MUString::skipInt() { getInt(); }
 
 uInt MUString::getuInt() {
-  Int t = 0; Int p = initLast();
+  Int t = 0;
+  Int p = initLast();
   if (testuInt()) {
     while (testNum()) {
-      t *= 10; 
+      t *= 10;
       t += str[ptr++] - '0';
     }
     setLast(p);
@@ -167,27 +149,19 @@ uInt MUString::getuInt() {
   return t;
 }
 
-void MUString::skipuInt() {
-  getuInt();
-}
+void MUString::skipuInt() { getuInt(); }
 
 Bool MUString::testDouble() const {
-  static Regex ex
-    ("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
+  static Regex ex("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
   return testString(ex);
 }
 
-void MUString::skipDouble() {
-  getDouble();
-}
+void MUString::skipDouble() { getDouble(); }
 
-Bool MUString::tSkipDouble() {
-  return (testDouble() ? (skipDouble(), True) : False);
-}
+Bool MUString::tSkipDouble() { return (testDouble() ? (skipDouble(), True) : False); }
 
 Double MUString::getDouble() {
-  static Regex ex
-    ("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
+  static Regex ex("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
   Double res = 0.0;
   if (ptr < len && testDouble()) {
     istringstream instr(RegexSubStr(str, ex, ptr));
@@ -197,25 +171,19 @@ Double MUString::getDouble() {
   return res;
 }
 
-void MUString::skipChar(Int n) {
-  adjustPtr(ptr + n);
-}
+void MUString::skipChar(Int n) { adjustPtr(ptr + n); }
 
 void MUString::skipChar(Char ch) {
-  while (testChar(ch))  ptr++;
+  while (testChar(ch)) ptr++;
 }
 
-Bool MUString::tSkipChar(Char ch) {
-  return (testChar(ch) ? (skipChar(ch), True) : False);
-}
+Bool MUString::tSkipChar(Char ch) { return (testChar(ch) ? (skipChar(ch), True) : False); }
 
 void MUString::skipCharNC(Char ch) {
   while (testCharNC(ch)) ptr++;
 }
 
-Bool MUString::tSkipCharNC(Char ch) {
-  return (testCharNC(ch) ? (skipCharNC(ch), True) : False);
-}
+Bool MUString::tSkipCharNC(Char ch) { return (testCharNC(ch) ? (skipCharNC(ch), True) : False); }
 
 Bool MUString::tSkipOneChar(Char ch) {
   if (testChar(ch)) {
@@ -237,17 +205,13 @@ void MUString::skipChar(const Regex &ex) {
   while (testChar(ex)) ptr++;
 }
 
-Bool MUString::tSkipChar(const Regex &ex) {
-  return (testChar(ex) ? (skipChar(ex), True) : False);
-}
+Bool MUString::tSkipChar(const Regex &ex) { return (testChar(ex) ? (skipChar(ex), True) : False); }
 
 void MUString::skipAlpha() {
   while (testAlpha()) ptr++;
 }
 
-Bool MUString::tSkipAlpha() {
-  return (testAlpha() ? (skipAlpha(), True) : False);
-}
+Bool MUString::tSkipAlpha() { return (testAlpha() ? (skipAlpha(), True) : False); }
 
 void MUString::skipAlphaNum() {
   if (testAlpha()) {
@@ -256,24 +220,18 @@ void MUString::skipAlphaNum() {
   }
 }
 
-Bool MUString::tSkipAlphaNum() {
-  return (testAlpha() ? (skipAlphaNum(), True) : False);
-}
+Bool MUString::tSkipAlphaNum() { return (testAlpha() ? (skipAlphaNum(), True) : False); }
 
 void MUString::skipNum() {
   while (testNum()) ptr++;
 }
 
-Bool MUString::tSkipNum() {
-  return (testNum() ? (skipNum(), True) : False);
-}
+Bool MUString::tSkipNum() { return (testNum() ? (skipNum(), True) : False); }
 
-Bool MUString::testChar(Char ch) const {
-  return (ptr < len && str[ptr] == ch);
-}
+Bool MUString::testChar(Char ch) const { return (ptr < len && str[ptr] == ch); }
 
 Bool MUString::testCharNC(Char ch) const {
-  return (ptr < len && (str[ptr] == toupper(ch)  ||  str[ptr] == tolower(ch)));
+  return (ptr < len && (str[ptr] == toupper(ch) || str[ptr] == tolower(ch)));
 }
 
 Bool MUString::testChar(const Regex &ex) const {
@@ -291,18 +249,17 @@ Bool MUString::testNum() const {
 }
 
 Bool MUString::testAlphaNum() const {
-  static Regex ex ("[a-zA-Z_0-9]");
+  static Regex ex("[a-zA-Z_0-9]");
   return testChar(ex);
 }
 
-Char MUString::getChar() {
-  return (ptr < len ? str[ptr++] : ' ');
-}
+Char MUString::getChar() { return (ptr < len ? str[ptr++] : ' '); }
 
 String MUString::getAlpha() {
   Int p = initLast();
   if (tSkipAlpha()) setLast(p);
-  return lget;;
+  return lget;
+  ;
 }
 
 String MUString::getAlphaNum() {
@@ -312,14 +269,13 @@ String MUString::getAlphaNum() {
 }
 
 Bool MUString::testString(const Regex &ex) const {
-  return (ptr < len &&
-	  RegexIndex(str.substr(ptr), ex) == 0);
+  return (ptr < len && RegexIndex(str.substr(ptr), ex) == 0);
 }
 
 Bool MUString::testString(const String &ex) const {
   if (ptr < len) {
-    Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
-    String t = str.substr(ptr,tl);
+    Int tl = (len - ptr < ex.length()) ? len - ptr : ex.length();
+    String t = str.substr(ptr, tl);
     return t == ex;
   }
   return False;
@@ -327,9 +283,11 @@ Bool MUString::testString(const String &ex) const {
 
 Bool MUString::testStringNC(const String &ex) const {
   if (ptr < len) {
-    Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
-    String t = str.substr(ptr,tl); ToLowerCaseInPlace(t);
-    String u = ex; ToLowerCaseInPlace(u);
+    Int tl = (len - ptr < ex.length()) ? len - ptr : ex.length();
+    String t = str.substr(ptr, tl);
+    ToLowerCaseInPlace(t);
+    String u = ex;
+    ToLowerCaseInPlace(u);
     return t == u;
   }
   return False;
@@ -395,7 +353,7 @@ Bool MUString::matchPair(Char nd) {
     skipChar();
     return True;
   }
-  adjustPtr(p-1);
+  adjustPtr(p - 1);
   return False;
 }
 
@@ -407,16 +365,12 @@ Int MUString::freqChar(Char ch) const {
   return c;
 }
 
-String MUString::get() {
-  return get(ptr, len);
-}
+String MUString::get() { return get(ptr, len); }
 
-String MUString::get(uInt st) {
-  return get(st, len);
-}
+String MUString::get(uInt st) { return get(st, len); }
 
 String MUString::get(uInt st, uInt nd) {
-  push(); 
+  push();
   adjustPtr(st);
   Int p = initLast();
   adjustPtr(nd);
@@ -425,78 +379,67 @@ String MUString::get(uInt st, uInt nd) {
   return lget;
 }
 
-Int MUString::getPtr() const {
-  return ptr;
-}
+Int MUString::getPtr() const { return ptr; }
 
-void MUString::setPtr(Int in) {
-  adjustPtr(in);
-}
+void MUString::setPtr(Int in) { adjustPtr(in); }
 
-Bool MUString::eos() const {
-  return (ptr >= len);
-}
+Bool MUString::eos() const { return (ptr >= len); }
 
-Bool MUString::status() const {
-  return stat;
-}
+Bool MUString::status() const { return stat; }
 
-const String &MUString::lastGet() const {
-  return lget;
-}
+const String &MUString::lastGet() const { return lget; }
 
-void MUString::adjustPtr(Int in) {
-  ptr = in<0 ? 0 : (in>(Int)len ? len : in);
-}
- 
+void MUString::adjustPtr(Int in) { ptr = in < 0 ? 0 : (in > (Int)len ? len : in); }
+
 Int MUString::initLast() {
   static String em;
-  stat = False; lget = em;
+  stat = False;
+  lget = em;
   return ptr;
 }
 
 void MUString::setLast(Int st) {
   if (st < (Int)ptr) {
-    stat = True; lget = str.substr(st, ptr-st);
+    stat = True;
+    lget = str.substr(st, ptr - st);
   }
 }
 
-uInt MUString::minimaxNC(const String &in, Int N_name, 
-			const String tname[]) {
-    Int i;
-    String a = upcase(in);
-// Exact fit?
-    for (i=0; i<N_name; i++) {
-	if (a == upcase(tname[i])) break;
+uInt MUString::minimaxNC(const String &in, Int N_name, const String tname[]) {
+  Int i;
+  String a = upcase(in);
+  // Exact fit?
+  for (i = 0; i < N_name; i++) {
+    if (a == upcase(tname[i])) break;
+  }
+  // Now look for partial
+  if (i >= N_name) {
+    size_t ia = a.length();
+    for (i = 0; i < N_name; i++) {
+      String b = upcase(tname[i]);
+      size_t ib = b.length();
+      ib = ia < ib ? ia : ib;
+      if (a.substr(0, ib) == b.substr(0, ib)) {
+        Int j;
+        // Look for more partials
+        for (j = i + 1; j < N_name; j++) {
+          b = upcase(tname[j]);
+          ib = b.length();
+          ib = ia < ib ? ia : ib;
+          if (a.substr(0, ib) == b.substr(0, ib)) break;
+        }
+        // Found duplicate
+        if (j < N_name) i = N_name;
+        break;
+      }
     }
-// Now look for partial
-    if (i >= N_name) {
-	size_t ia = a.length();
-	for (i=0; i<N_name; i++) {
-	    String b = upcase(tname[i]);
-	    size_t ib = b.length();
-	    ib = ia < ib ? ia : ib;
-	    if (a.substr(0,ib) == b.substr(0,ib)) {
-		Int j;
-// Look for more partials
-		for (j=i+1; j<N_name; j++) {
-		    b = upcase(tname[j]);
-		    ib = b.length();
-		    ib = ia < ib ? ia : ib;
-		    if (a.substr(0,ib) == b.substr(0,ib)) break;
-		}
-// Found duplicate
-		if (j<N_name) i=N_name;
-		break;
-	    }
-	}
-    }
-    return i;
+  }
+  return i;
 }
 
-uInt MUString::minimaxNC(const String &in,
-			const Vector<String> &tname) {
-  Bool delIt; const String *stor = tname.getStorage(delIt);
+uInt MUString::minimaxNC(const String &in, const Vector<String> &tname) {
+  Bool delIt;
+  const String *stor = tname.getStorage(delIt);
   uInt rt = minimaxNC(in, tname.nelements(), stor);
   tname.freeStorage(stor, delIt);
   return rt;
@@ -507,5 +450,4 @@ ostream &operator<<(ostream &os, const MUString &in) {
   return os;
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

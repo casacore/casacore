@@ -1,34 +1,34 @@
-//# MaskArrIO.h: Write out an ascii representation of a MaskedArray.
-//# Copyright (C) 1993,1994,1995,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MaskArrIO.h: Write out an ascii representation of a MaskedArray.
+// # Copyright (C) 1993,1994,1995,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MASKARRIO_2_H
 #define CASA_MASKARRIO_2_H
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template<typename T>
+template <typename T>
 class MaskedArray;
 
 // <summary>
@@ -80,20 +80,17 @@ class MaskedArray;
 //
 // <group name="MaskedArray IO">
 
-
-// 
+//
 // Write out an ascii representation of a MaskedArray.
 // The component Array and LogicalArray are written out sequentially.
-template<typename T>
-std::ostream & operator<< (std::ostream &, const MaskedArray<T> &);
-
+template <typename T>
+std::ostream &operator<<(std::ostream &, const MaskedArray<T> &);
 
 // </group>
-template<typename T>
+template <typename T>
 std::string to_string(const MaskedArray<T> &);
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore
 
 #include "MaskArrIO.tcc"
 

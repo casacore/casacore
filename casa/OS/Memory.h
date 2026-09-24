@@ -1,36 +1,36 @@
-//# Memory.h: Memory related information and utilities.
-//# Copyright (C) 1997,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Memory.h: Memory related information and utilities.
+// # Copyright (C) 1997,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MEMORY_H
 #define CASA_MEMORY_H
 
 #include <casacore/casa/aips.h>
-//# The following is used to get size_t.
+// # The following is used to get size_t.
 #include <casacore/casa/stdlib.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>Memory related information and utilities.</summary>
 
@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 // This class should generally not be used by general application programmers.
-// Instead you should use the memory information available in the 
+// Instead you should use the memory information available in the
 // <linkto class=AppInfo>AppInfo</linkto> class.
 //
 // This class reports on the dynamic ("heap") memory used by this process, and
@@ -83,7 +83,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // We could attempt to return memory to the OS when we are wasting a lot
-// of memory as follows. 
+// of memory as follows.
 // <srcBlock>
 // if (Memory::assignedMemoryInBytes() - Memory::allocatedMemoryInBytes() >
 //     1024*1024) {
@@ -104,30 +104,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        be portable.
 // </todo>
 
-class Memory
-{
-public:
-    // Attempt to release memory which has been assigned but not allocated.
-    // On many systems this will be a no-op, and even on systems in which it
-    // does something the amount of reclaimed memory cannot be specified.
-    // Since this function may be somewhat expensive to call it should not
-    // be called too often.
-    [[deprecated("This function calls malloc_trim(), which is is mostly an artefact and not effective on modern systems")]]
-    static void releaseMemory();
+class Memory {
+ public:
+  // Attempt to release memory which has been assigned but not allocated.
+  // On many systems this will be a no-op, and even on systems in which it
+  // does something the amount of reclaimed memory cannot be specified.
+  // Since this function may be somewhat expensive to call it should not
+  // be called too often.
+  [[deprecated(
+      "This function calls malloc_trim(), which is is mostly an artefact and not effective on "
+      "modern systems")]]
+  static void releaseMemory();
 
-    // setMemoryOptions and setMemoryOption are typically front ends for mallopt
-    // which lets the user control some memory allocation parameters.  setMemoryOptions
-    // is intended to be called only once at the start of a program while setMemoryOption
-    // could be called where desired (but see mallopt man page for possible side effects).
-    // Note: these two functions were added to address in a general way a memory
-    // fragmentation problem encountered on by the MIPSpro C++ compiler on the SGI.
-    static void setMemoryOptions();
-    static int  setMemoryOption(int, int);
+  // setMemoryOptions and setMemoryOption are typically front ends for mallopt
+  // which lets the user control some memory allocation parameters.  setMemoryOptions
+  // is intended to be called only once at the start of a program while setMemoryOption
+  // could be called where desired (but see mallopt man page for possible side effects).
+  // Note: these two functions were added to address in a general way a memory
+  // fragmentation problem encountered on by the MIPSpro C++ compiler on the SGI.
+  static void setMemoryOptions();
+  static int setMemoryOption(int, int);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

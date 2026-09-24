@@ -1,27 +1,27 @@
-//# LogOrigin.h: The source code location of the originator of a LogMessageLogOrig
-//# Copyright (C) 1996,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LogOrigin.h: The source code location of the originator of a LogMessageLogOrig
+// # Copyright (C) 1996,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_LOGORIGIN_H
 #define CASA_LOGORIGIN_H
@@ -31,11 +31,11 @@
 #include <casacore/casa/System/ObjectID.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 struct SourceLocation;
 
-// <summary> 
+// <summary>
 // LogOrigin: The source code location of the originator of a LogMessage.
 // </summary>
 
@@ -54,7 +54,7 @@ struct SourceLocation;
 // Log[message] Origin[ation point].
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // The <src>LogOriging</src> class is used to record the location at which a
 // <linkto class="LogMessage">LogMessage</linkto> originates. It consists of:
 // <ul>
@@ -67,11 +67,11 @@ struct SourceLocation;
 // <li> A line number, usually filled in with the <src>__LINE__</src> or
 //      <src>WHERE</src> macros.
 // <li> An <linkto class="ObjectID">ObjectID</linkto> if the log message comes
-//      from a distributed object (if you don't know what this means, 
+//      from a distributed object (if you don't know what this means,
 //      you don't need to worry about it).
 // <li> Eventually we may want to canonicalize the path in the filename.
 // </ul>
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 
@@ -88,104 +88,100 @@ struct SourceLocation;
 //   <li> Nothing known
 // </todo>
 
-class LogOrigin 
-{
-public:
+class LogOrigin {
+ public:
+  // The default constructor sets a null class name, function name, object id,
+  // source file name, and sets the line number to zero.
+  LogOrigin();
 
-    // The default constructor sets a null class name, function name, object id,
-    // source file name, and sets the line number to zero.
-    LogOrigin();
+  // Use this constructor if the log message origination is from a
+  // global function. Normally <src>where</src> is provided using
+  // the <src>WHERE</src> macro.
+  LogOrigin(const String &globalFunctionName);
+  LogOrigin(const String &globalFunctionName, const SourceLocation &where);
 
-    // Use this constructor if the log message origination is from a
-    // global function. Normally <src>where</src> is provided using
-    // the <src>WHERE</src> macro.
-    LogOrigin(const String &globalFunctionName);
-    LogOrigin(const String &globalFunctionName, const SourceLocation &where);
-  
-    // Use this constructor if the log message origination is from a
-    // class member function. Normally <src>where</src> is provided using
-    // the <src>WHERE</src> macro.
-    LogOrigin(const String &className, const String &memberFuncName);
-    LogOrigin(const String &className, const String &memberFuncName,
-	      const SourceLocation &where);
+  // Use this constructor if the log message origination is from a
+  // class member function. Normally <src>where</src> is provided using
+  // the <src>WHERE</src> macro.
+  LogOrigin(const String &className, const String &memberFuncName);
+  LogOrigin(const String &className, const String &memberFuncName, const SourceLocation &where);
 
-    // Use this constructor if the log message origination is from a
-    // distributed object (don't worry if you don't know what this
-    // means). Normally <src>where</src> is provided using the
-    // <src>WHERE</src> macro.
-    LogOrigin(const String &className, const String &memberFuncName,
-	      const ObjectID &id);
-    LogOrigin(const String &className, const String &memberFuncName,
-	      const ObjectID &id, const SourceLocation &where);
+  // Use this constructor if the log message origination is from a
+  // distributed object (don't worry if you don't know what this
+  // means). Normally <src>where</src> is provided using the
+  // <src>WHERE</src> macro.
+  LogOrigin(const String &className, const String &memberFuncName, const ObjectID &id);
+  LogOrigin(const String &className, const String &memberFuncName, const ObjectID &id,
+            const SourceLocation &where);
 
-    // Make <src>this</src> LogOrigin a copy of <src>other</src>.
-    // <group>
-    LogOrigin(const LogOrigin &other);
-    LogOrigin &operator=(const LogOrigin &other);
-    // </group>
+  // Make <src>this</src> LogOrigin a copy of <src>other</src>.
+  // <group>
+  LogOrigin(const LogOrigin &other);
+  LogOrigin &operator=(const LogOrigin &other);
+  // </group>
 
-    ~LogOrigin();
+  ~LogOrigin();
 
-    // Get or set the corresponding element of the source location. Note that
-    // the "set" functions can be strung together:
-    // <srcBlock>
-    // LogOrigin where;
-    // ...
-    // where.function("anotherFunc").line(__LINE__);
-    // </srcBlock>
-    // <group>
-    const String &taskName() const;
-    LogOrigin &taskName(const String &funcName);
+  // Get or set the corresponding element of the source location. Note that
+  // the "set" functions can be strung together:
+  // <srcBlock>
+  // LogOrigin where;
+  // ...
+  // where.function("anotherFunc").line(__LINE__);
+  // </srcBlock>
+  // <group>
+  const String &taskName() const;
+  LogOrigin &taskName(const String &funcName);
 
-    const String &functionName() const;
-    LogOrigin &functionName(const String &funcName);
+  const String &functionName() const;
+  LogOrigin &functionName(const String &funcName);
 
-    const String &className() const;
-    LogOrigin &className(const String &className);
+  const String &className() const;
+  LogOrigin &className(const String &className);
 
-    const ObjectID &objectID() const;
-    LogOrigin &objectID(const ObjectID &id);
+  const ObjectID &objectID() const;
+  LogOrigin &objectID(const ObjectID &id);
 
-    uInt line() const;
-    LogOrigin &line(uInt which);
+  uInt line() const;
+  LogOrigin &line(uInt which);
 
-    const String &fileName() const;
-    LogOrigin &fileName(const String &fileName);
-    // </group>
+  const String &fileName() const;
+  LogOrigin &fileName(const String &fileName);
+  // </group>
 
-    // Set the file name and line number at the same time. Normally
-    // <src>where</src> will be defined with the <src>WHERE</src> macro.
-    LogOrigin &sourceLocation(const SourceLocation *where);
+  // Set the file name and line number at the same time. Normally
+  // <src>where</src> will be defined with the <src>WHERE</src> macro.
+  LogOrigin &sourceLocation(const SourceLocation *where);
 
-    // Returns <src>class\::function</src> for a member function, or
-    // <src>\::function</src> for a global function.
-    String fullName() const;
+  // Returns <src>class\::function</src> for a member function, or
+  // <src>\::function</src> for a global function.
+  String fullName() const;
 
-    // Turn the entire origin into a String.
-    String toString() const;
+  // Turn the entire origin into a String.
+  String toString() const;
 
-    // Turns the entire origin except for the ObjectID into a String. The
-    // ObjectID can be turned into a string vie ObjectID::toString.
-    String location() const;
+  // Turns the entire origin except for the ObjectID into a String. The
+  // ObjectID can be turned into a string vie ObjectID::toString.
+  String location() const;
 
-    // Return true if the line number and file name are not set.
-    Bool isUnset() const;
+  // Return true if the line number and file name are not set.
+  Bool isUnset() const;
 
-private:
-    String task_p;
-    String function_p;
-    String class_p;
-    ObjectID id_p = True;
-    uInt line_p = 0;
-    String file_p;
-    String node_p;
+ private:
+  String task_p;
+  String function_p;
+  String class_p;
+  ObjectID id_p = True;
+  uInt line_p = 0;
+  String file_p;
+  String node_p;
 
-    // Return a String with the MPI rank
-    String getNode();
+  // Return a String with the MPI rank
+  String getNode();
 
-    // Provide common implementation for copy constructor and
-    // assignment operator.
-    void copy_other(const LogOrigin &other);
+  // Provide common implementation for copy constructor and
+  // assignment operator.
+  void copy_other(const LogOrigin &other);
 };
 
 // <summary>
@@ -193,7 +189,7 @@ private:
 // </summary>
 // Write a LogOrigin as a string to an ostream. Merely calls
 // <src>LogOrigin::toString()</src>
-// <group name=LogOrigin_ostream>  
+// <group name=LogOrigin_ostream>
 ostream &operator<<(ostream &os, const LogOrigin &origin);
 // </group>
 
@@ -202,18 +198,16 @@ ostream &operator<<(ostream &os, const LogOrigin &origin);
 // </summary>
 // The user should only use the <src>WHERE</src> macro.
 // <group name=SourceLocation>
-struct SourceLocation
-{
-    const char *fileName;
-    Int lineNumber;
-    static SourceLocation canonicalize(const char *file, Int line);
+struct SourceLocation {
+  const char *fileName;
+  Int lineNumber;
+  static SourceLocation canonicalize(const char *file, Int line);
 };
 
 #define WHERE casacore::SourceLocation::canonicalize(__FILE__, __LINE__)
 
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,36 +1,35 @@
-//# BinarySearch.h: Binary search through linear, sorted, data structures
-//# Copyright (C) 1995,1996,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # BinarySearch.h: Binary search through linear, sorted, data structures
+// # Copyright (C) 1995,1996,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_BINARYSEARCH_H
 #define CASA_BINARYSEARCH_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Binary search a sorted, linear, data structure.
@@ -49,9 +48,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // It is assumed that the container uses zero-based indexing.
 //
 // The container must be sorted (sorting is available through the
-// <linkto class="Sort">Sort</linkto> and 
+// <linkto class="Sort">Sort</linkto> and
 // <linkto class="GenSort">GenSort</linkto>
-// classes, and from various 
+// classes, and from various
 // <linkto class="Table">Table</linkto> sort functions). The returned index
 // is in the range [0..n] inclusive. That is, from the first element of the
 // container to one past the last element of the container (zero-based indices).
@@ -96,12 +95,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       cout << val << " is not in the vector, but it belongs at " <<
 //            where << endl;
 //     }
-// } 
+// }
 // </srcblock>
 // </example>
 //
 // <motivation>
-// I found that I (BEG) was writing binary search functions several times, 
+// I found that I (BEG) was writing binary search functions several times,
 // for example when checking whether the cached off and gain scans in time
 // sorted data needed to be refilled. It generally seems like a useful little
 // utility function.
@@ -110,7 +109,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <templating arg=Container>
 //    <li> operator(Int) or operator[Int] needs to be defined.
 //    <li> The index must be zero based.
-//    <li> The result of that indexing must be an expression that can be 
+//    <li> The result of that indexing must be an expression that can be
 //         compared with an object of class ElType. Normally in fact it would
 //         be a temporary of class ElType.
 // </templating>
@@ -122,13 +121,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <todo asof="yyyy/mm/dd">
 //   <li> I suspect that an implementation is possible that only calls
 //        operator() or [] once during each evaluation of the while loop.
-//   <li> MACROize implementation so that code isn't repeated twice. Or, 
+//   <li> MACROize implementation so that code isn't repeated twice. Or,
 //        possibly implement one using the other (e.g. by introducing an adapter
 //        class that turns (i) into [i].
 // </todo>
 
-
-// <group name=binarysearch>  
+// <group name=binarysearch>
 
 // Search <i>container</i> for <i>value</i>. There are assumed to be at least
 // <i>n</i> elements in the container. The container will be searched for
@@ -137,20 +135,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // less than or equal to (descending order) the value.
 // <group>
 // This version of the function is for containers that use () for indexing.
-template<class Container, class ElType>
-     Int binarySearch(Bool &found, const Container &container, 
-		      const ElType &value, uInt n, Int lower=0);
+template <class Container, class ElType>
+Int binarySearch(Bool &found, const Container &container, const ElType &value, uInt n,
+                 Int lower = 0);
 // This version of the function is for containers that use [] for indexing.
-template<class Container, class ElType>
-     Int binarySearchBrackets(Bool &found, const Container &container, 
-			      const ElType &value, uInt n, Int lower=0);
+template <class Container, class ElType>
+Int binarySearchBrackets(Bool &found, const Container &container, const ElType &value, uInt n,
+                         Int lower = 0);
 // </group>
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/BinarySearch.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

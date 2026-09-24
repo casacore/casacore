@@ -1,39 +1,37 @@
-//# FilebufIO.h: Class for buffered IO on a file
-//# Copyright (C) 1996,1997,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # FilebufIO.h: Class for buffered IO on a file
+// # Copyright (C) 1996,1997,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_FILEBUFIO_H
 #define CASA_FILEBUFIO_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Class for buffered IO on a file.</summary>
 
@@ -42,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tByteIO" demos="">
 // </reviewed>
 
-// <prerequisite> 
+// <prerequisite>
 //  <li> <linkto class=ByteIO>ByteIO</linkto>
 // </prerequisite>
 
@@ -81,127 +79,122 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-// <motivation> 
+// <motivation>
 // The stdio package was used, but it proved to be very slow on SOlaris.
 // After a seek the buffer was refreshed, which increased the number
 // of file accesses enormously.
 // Also the interaction between reads and writes in stdio was poor.
 // </motivation>
 
+class FilebufIO : public ByteIO {
+ public:
+  // Default constructor.
+  // A stream can be attached using the attach function.
+  FilebufIO();
 
-class FilebufIO: public ByteIO
-{
-public: 
-    // Default constructor.
-    // A stream can be attached using the attach function.
-    FilebufIO();
+  // Construct from the given file descriptor.
+  // Note that the destructor and the detach function implicitly close
+  // the file descriptor.
+  explicit FilebufIO(int fd, uInt bufferSize = 16384);
 
-    // Construct from the given file descriptor.
-    // Note that the destructor and the detach function implicitly close
-    // the file descriptor.
-    explicit FilebufIO (int fd, uInt bufferSize=16384);
+  // Attach to the given file descriptor.
+  // Note that the destructor and the detach function implicitly close
+  // the file descriptor.
+  void attach(int fd, uInt bufferSize = 16384);
 
-    // Attach to the given file descriptor.
-    // Note that the destructor and the detach function implicitly close
-    // the file descriptor.
-    void attach (int fd, uInt bufferSize=16384);
+  // The destructor closes the file when it was owned and opened and not
+  // closed yet.
+  virtual ~FilebufIO();
 
-    // The destructor closes the file when it was owned and opened and not
-    // closed yet.
-    virtual ~FilebufIO();
-    
-    // Write the number of bytes.
-    virtual void write (Int64 size, const void* buf);
+  // Write the number of bytes.
+  virtual void write(Int64 size, const void* buf);
 
-    // Read <src>size</src> bytes from the File. Returns the number of bytes
-    // actually read. Will throw an exception (AipsError) if the requested
-    // number of bytes could not be read unless throwException is set to
-    // False. Will always throw an exception if the file is not readable or
-    // the system call returns an undocumented value.
-    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
+  // Read <src>size</src> bytes from the File. Returns the number of bytes
+  // actually read. Will throw an exception (AipsError) if the requested
+  // number of bytes could not be read unless throwException is set to
+  // False. Will always throw an exception if the file is not readable or
+  // the system call returns an undocumented value.
+  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
 
-    // Flush the current buffer.
-    virtual void flush();
+  // Flush the current buffer.
+  virtual void flush();
 
-    // Resync the file (i.e. empty the current buffer).
-    virtual void resync();
-  
-    // Truncate the file to the given size.
-    virtual void truncate (Int64 size);
-  
-    // Get the length of the byte stream.
-    virtual Int64 length();
-       
-    // Is the IO stream readable?
-    virtual Bool isReadable() const;
+  // Resync the file (i.e. empty the current buffer).
+  virtual void resync();
 
-    // Is the IO stream writable?
-    virtual Bool isWritable() const;
+  // Truncate the file to the given size.
+  virtual void truncate(Int64 size);
 
-    // Is the IO stream seekable?
-    virtual Bool isSeekable() const;
+  // Get the length of the byte stream.
+  virtual Int64 length();
 
-    // Get the file name of the file attached.
-    virtual String fileName() const;
+  // Is the IO stream readable?
+  virtual Bool isReadable() const;
 
-    // Get the buffer size.
-    uInt bufferSize() const
-      { return itsBufSize; }
+  // Is the IO stream writable?
+  virtual Bool isWritable() const;
 
-protected:
-    // Detach the FILE. Close it when needed.
-    void detach (Bool closeFile=False);
+  // Is the IO stream seekable?
+  virtual Bool isSeekable() const;
 
-    // Determine if the file descriptor is readable and/or writable.
-    void fillRWFlags (int fd);
+  // Get the file name of the file attached.
+  virtual String fileName() const;
 
-    // Determine if the file is seekable.
-    void fillSeekable();
+  // Get the buffer size.
+  uInt bufferSize() const { return itsBufSize; }
 
-    // Reset the position pointer to the given value. It returns the
-    // new position.
-    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+ protected:
+  // Detach the FILE. Close it when needed.
+  void detach(Bool closeFile = False);
 
-    // Set a new buffer size.
-    // If a buffer was already existing, flush and delete it.
-    void setBuffer (Int64 bufSize);
+  // Determine if the file descriptor is readable and/or writable.
+  void fillRWFlags(int fd);
 
-    // Write a buffer of given length into the file at given offset.
-    void writeBuffer (Int64 offset, const char* buf, Int64 size);
+  // Determine if the file is seekable.
+  void fillSeekable();
 
-    // Read a buffer of given length from the file at given offset.
-    Int64 readBuffer (Int64 offset, char* buf, Int64 size,
-		     Bool throwException);
+  // Reset the position pointer to the given value. It returns the
+  // new position.
+  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
 
-    // Write a block into the stream at the current offset.
-    // It is guaranteed that the block fits in a single buffer.
-    void writeBlock (Int64 size, const char* buf);
+  // Set a new buffer size.
+  // If a buffer was already existing, flush and delete it.
+  void setBuffer(Int64 bufSize);
 
-    // Read a block from the stream at the current offset.
-    // It is guaranteed that the block fits in a single buffer.
-    Int64 readBlock (Int64 size, char* buf, Bool throwException);
+  // Write a buffer of given length into the file at given offset.
+  void writeBuffer(Int64 offset, const char* buf, Int64 size);
 
-private:
-    Bool        itsSeekable;
-    Bool        itsReadable;
-    Bool        itsWritable;
-    int         itsFile;
-    Int64       itsBufSize;          // the buffer size
-    Int64       itsBufLen;           // the current buffer length used
-    char*       itsBuffer;
-    Int64       itsBufOffset;        // file offset of current buffer
-    Int64       itsOffset;           // current file offset
-    Int64       itsSeekOffset;       // offset last seeked
-    Bool        itsDirty;            // data written into current buffer?
+  // Read a buffer of given length from the file at given offset.
+  Int64 readBuffer(Int64 offset, char* buf, Int64 size, Bool throwException);
 
-    // Copy constructor, should not be used.
-    FilebufIO (const FilebufIO& that);
+  // Write a block into the stream at the current offset.
+  // It is guaranteed that the block fits in a single buffer.
+  void writeBlock(Int64 size, const char* buf);
 
-    // Assignment, should not be used.
-    FilebufIO& operator= (const FilebufIO& that);
+  // Read a block from the stream at the current offset.
+  // It is guaranteed that the block fits in a single buffer.
+  Int64 readBlock(Int64 size, char* buf, Bool throwException);
+
+ private:
+  Bool itsSeekable;
+  Bool itsReadable;
+  Bool itsWritable;
+  int itsFile;
+  Int64 itsBufSize;  // the buffer size
+  Int64 itsBufLen;   // the current buffer length used
+  char* itsBuffer;
+  Int64 itsBufOffset;   // file offset of current buffer
+  Int64 itsOffset;      // current file offset
+  Int64 itsSeekOffset;  // offset last seeked
+  Bool itsDirty;        // data written into current buffer?
+
+  // Copy constructor, should not be used.
+  FilebufIO(const FilebufIO& that);
+
+  // Assignment, should not be used.
+  FilebufIO& operator=(const FilebufIO& that);
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

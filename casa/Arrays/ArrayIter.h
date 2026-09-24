@@ -1,27 +1,27 @@
-//# ArrayIter.h: Iterate an Array cursor through another Array.
-//# Copyright (C) 1993,1994,1995,1996,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrayIter.h: Iterate an Array cursor through another Array.
+// # Copyright (C) 1993,1994,1995,1996,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_ARRAYITER2_H
 #define CASA_ARRAYITER2_H
@@ -29,10 +29,9 @@
 #include "ArrayPosIter.h"
 #include "Array.h"
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-// 
+//
 // <summary> Iterate an Array cursor through another Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -59,83 +58,81 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     toiter.array() = fromiter.array();  // copy vector by vector
 //     toiter.next(); fromiter.next();
 // }
-// 
+//
 // </srcblock>
 //
 // <linkfrom anchor=ArrayIterator classes="Array Vector Matrix Cube">
 //    <here>ArrayIterator</here> -- Iterate an Array cursor through another Array.
 // </linkfrom>
 //
-template<typename T> class ArrayIterator : public ArrayPositionIterator
-{
-public:
-    // Step through array "arr" over the first byDim axes
-    // (using a cursor of dimensionality "byDim").
-    explicit ArrayIterator(const Array<T> &arr, size_t byDim=1);
+template <typename T>
+class ArrayIterator : public ArrayPositionIterator {
+ public:
+  // Step through array "arr" over the first byDim axes
+  // (using a cursor of dimensionality "byDim").
+  explicit ArrayIterator(const Array<T> &arr, size_t byDim = 1);
 
-    // Step through an array using the given axes.
-    // The axes can be given in two ways:
-    // <ol>
-    // <li>axesAreCursor=true means that the axes form the cursor axes.
-    //     The remaining axes will form the iteration axes.
-    //     This is the default.
-    // <li>axesAreCursor=false means the opposite.
-    //     In this case the iteration axes can be given in any order.
-    // </ol>
-    // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
-    // iteration step returns a cursor (containing the data of axis 1).
-    // During the iteration axis 2 will vary most rapidly (as it was
-    // given first).
-    ArrayIterator(const Array<T> &arr, const IPosition &axes,
-		  bool axesAreCursor = true);
+  // Step through an array using the given axes.
+  // The axes can be given in two ways:
+  // <ol>
+  // <li>axesAreCursor=true means that the axes form the cursor axes.
+  //     The remaining axes will form the iteration axes.
+  //     This is the default.
+  // <li>axesAreCursor=false means the opposite.
+  //     In this case the iteration axes can be given in any order.
+  // </ol>
+  // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
+  // iteration step returns a cursor (containing the data of axis 1).
+  // During the iteration axis 2 will vary most rapidly (as it was
+  // given first).
+  ArrayIterator(const Array<T> &arr, const IPosition &axes, bool axesAreCursor = true);
 
-    // Move the cursor to the next position.
-    virtual void next() override;
+  // Move the cursor to the next position.
+  virtual void next() override;
 
-    // Set the cursor to the given position.
-    // The position can only contain the iteration axes or it can be the full
-    // position.
-    // <br>In the first case the position must to be given in the order
-    // of the iteration axes as given in the constructor.
-    // In the latter case the position must be given in natural order
-    // (as given by function <src>pos</src> and only the cursor axes are taken
-    // into account.
-    virtual void set (const IPosition& cursorPos) override;
+  // Set the cursor to the given position.
+  // The position can only contain the iteration axes or it can be the full
+  // position.
+  // <br>In the first case the position must to be given in the order
+  // of the iteration axes as given in the constructor.
+  // In the latter case the position must be given in natural order
+  // (as given by function <src>pos</src> and only the cursor axes are taken
+  // into account.
+  virtual void set(const IPosition &cursorPos) override;
 
-    // Reset the cursor to the beginning.
-    // <group>
-    virtual void reset() override;
-    // </group>
+  // Reset the cursor to the beginning.
+  // <group>
+  virtual void reset() override;
+  // </group>
 
-    // Return the cursor. (Perhaps we should have a fn() that returns a
-    // reference to the original array as well?)
-    // <group>
-    Array<T> &array() {return *ap_p;}
-    virtual ArrayBase& getArray() override;
-    // </group>
+  // Return the cursor. (Perhaps we should have a fn() that returns a
+  // reference to the original array as well?)
+  // <group>
+  Array<T> &array() { return *ap_p; }
+  virtual ArrayBase &getArray() override;
+  // </group>
 
+ protected:
+  // The cursor
+  std::unique_ptr<Array<T>> ap_p;
 
-protected:
-    // The cursor
-    std::unique_ptr<Array<T>> ap_p;
+ private:
+  // helper function to centralize construction work
+  void init(const Array<T> &);
+  // helper function to set the pointer to the new data position in ap
+  // after a step in the given dimension. -1 resets it to the beginning.
+  void apSetPointer(int stepDim);
 
-private:
-    // helper function to centralize construction work
-    void init(const Array<T> &);
-    // helper function to set the pointer to the new data position in ap
-    // after a step in the given dimension. -1 resets it to the beginning.
-    void apSetPointer(int stepDim);
+  Array<T> pOriginalArray_p;
+  IPosition offset_p;
+  T *dataPtr_p;
 
-    Array<T> pOriginalArray_p;
-    IPosition offset_p;
-    T* dataPtr_p;
-
-    //# Presently the following are not defined.
-    ArrayIterator(const ArrayIterator<T> &);
-    ArrayIterator<T> &operator=(const ArrayIterator<T> &);
+  // # Presently the following are not defined.
+  ArrayIterator(const ArrayIterator<T> &);
+  ArrayIterator<T> &operator=(const ArrayIterator<T> &);
 };
 
-// 
+//
 // <summary> Iterate a const Array cursor through a const Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -157,7 +154,7 @@ private:
 // </srcblock>
 // <note role=tip> This class is not derived from ArrayPositionIterator. For simplicity
 //        it merely contains an ArrayIterator to which it forwards requests
-//        and returns (const) results. The iterator classes should be 
+//        and returns (const) results. The iterator classes should be
 //        rethought and reimplemented.
 // </note>
 //
@@ -166,62 +163,59 @@ private:
 //     a const Array.
 // </linkfrom>
 //
-template<typename T> class ReadOnlyArrayIterator
-{
-public:
-    // Step through array "arr" using a cursor of dimensionality "byDim".
-    explicit ReadOnlyArrayIterator(const Array<T> &arr, size_t byDim=1)
-	: ai(const_cast<Array<T>&>(arr),byDim) {}
+template <typename T>
+class ReadOnlyArrayIterator {
+ public:
+  // Step through array "arr" using a cursor of dimensionality "byDim".
+  explicit ReadOnlyArrayIterator(const Array<T> &arr, size_t byDim = 1)
+      : ai(const_cast<Array<T> &>(arr), byDim) {}
 
-    // Step through an array for the given iteration axes.
-  ReadOnlyArrayIterator(const Array<T> &arr, const IPosition &axes,
-			bool axesAreCursor = true)
-	: ai(const_cast<Array<T>&>(arr),axes,axesAreCursor) {}
+  // Step through an array for the given iteration axes.
+  ReadOnlyArrayIterator(const Array<T> &arr, const IPosition &axes, bool axesAreCursor = true)
+      : ai(const_cast<Array<T> &>(arr), axes, axesAreCursor) {}
 
-    // Move the cursor to the next position.
-    void next() {ai.next();}
+  // Move the cursor to the next position.
+  void next() { ai.next(); }
 
-    // Set the cursor to the given position.
-    // The position can only contain the iteration axes or it can be the full
-    // position.
-    // <br>In the first case the position must to be given in the order
-    // of the iteration axes as given in the constructor.
-    // In the latter case the position must be given in natural order
-    // (as given by function <src>pos</src> and only the cursor axes are taken
-    // into account.
-    void set (const IPosition& cursorPos) {ai.set(cursorPos);}
+  // Set the cursor to the given position.
+  // The position can only contain the iteration axes or it can be the full
+  // position.
+  // <br>In the first case the position must to be given in the order
+  // of the iteration axes as given in the constructor.
+  // In the latter case the position must be given in natural order
+  // (as given by function <src>pos</src> and only the cursor axes are taken
+  // into account.
+  void set(const IPosition &cursorPos) { ai.set(cursorPos); }
 
-    // Reset the cursor to the beginning.
-    // <group>
-    void reset() {ai.origin();}
-    void origin() {ai.origin();}
-    // </group>
-    
-    // Return the cursor. (Perhaps we should have a fn() that returns a
-    // reference to the original array as well?)
-    const Array<T> &array() {return ai.array();}
-	
-    // The same as the functions in ArrayPositionIterator.
-    // <group>
-    bool atStart() const {return ai.atStart();}
-    bool pastEnd() const {return ai.pastEnd();}
-    const IPosition &pos() const {return ai.pos();}
-    IPosition endPos() const {return ai.endPos();}
-    size_t ndim() const {return ai.ndim();}
-    // </group>
-private:
-    // Not implemented.
-    // <group>
-    ReadOnlyArrayIterator (const ReadOnlyArrayIterator<T> &);
-    ReadOnlyArrayIterator<T> &operator=(const ReadOnlyArrayIterator<T> &);
-    // </group>
-    
-    ArrayIterator<T> ai;
+  // Reset the cursor to the beginning.
+  // <group>
+  void reset() { ai.origin(); }
+  void origin() { ai.origin(); }
+  // </group>
+
+  // Return the cursor. (Perhaps we should have a fn() that returns a
+  // reference to the original array as well?)
+  const Array<T> &array() { return ai.array(); }
+
+  // The same as the functions in ArrayPositionIterator.
+  // <group>
+  bool atStart() const { return ai.atStart(); }
+  bool pastEnd() const { return ai.pastEnd(); }
+  const IPosition &pos() const { return ai.pos(); }
+  IPosition endPos() const { return ai.endPos(); }
+  size_t ndim() const { return ai.ndim(); }
+  // </group>
+ private:
+  // Not implemented.
+  // <group>
+  ReadOnlyArrayIterator(const ReadOnlyArrayIterator<T> &);
+  ReadOnlyArrayIterator<T> &operator=(const ReadOnlyArrayIterator<T> &);
+  // </group>
+
+  ArrayIterator<T> ai;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #include "ArrayIter.tcc"
 

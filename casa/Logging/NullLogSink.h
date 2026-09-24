@@ -1,27 +1,27 @@
-//# NullLogSink.h: Throw away all messages.
-//# Copyright (C) 1996,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # NullLogSink.h: Throw away all messages.
+// # Copyright (C) 1996,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_NULLLOGSINK_H
 #define CASA_NULLLOGSINK_H
@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogSinkInterface.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Throw away all messages.
@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 //
 // <motivation>
-// For testing, or to prevent multiply logging (local and global) to 
+// For testing, or to prevent multiply logging (local and global) to
 // <src>cerr</src> (say).
 // </motivation>
 //
@@ -69,30 +69,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class NullLogSink : public LogSinkInterface {
-public:
-    NullLogSink();
-    explicit NullLogSink(LogMessage::Priority filter);
-    explicit NullLogSink(const LogFilterInterface &filter);
+ public:
+  NullLogSink();
+  explicit NullLogSink(LogMessage::Priority filter);
+  explicit NullLogSink(const LogFilterInterface &filter);
 
-    NullLogSink(const NullLogSink &other);
-    NullLogSink &operator=(const NullLogSink &other);
+  NullLogSink(const NullLogSink &other);
+  NullLogSink &operator=(const NullLogSink &other);
 
-    ~NullLogSink();
+  ~NullLogSink();
 
-    // Always throws the message away, but it does return <src>True</src> or
-    // <src>False</src> depending on whether or not <src>message</src> passes
-    // the filter.
-    virtual Bool postLocally(const LogMessage &message);
+  // Always throws the message away, but it does return <src>True</src> or
+  // <src>False</src> depending on whether or not <src>message</src> passes
+  // the filter.
+  virtual Bool postLocally(const LogMessage &message);
 
-    // Returns the id for this class...
-    static String localId( );
-    // Returns the id of the LogSink in use...
-    String id( ) const;
+  // Returns the id for this class...
+  static String localId();
+  // Returns the id of the LogSink in use...
+  String id() const;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

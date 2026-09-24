@@ -1,40 +1,41 @@
-//# QuantumType.h: Get an integer type for a Qunatum<T>
-//# Copyright (C) 2010
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # QuantumType.h: Get an integer type for a Qunatum<T>
+// # Copyright (C) 2010
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QUANTUMTYPE_H
 #define CASA_QUANTUMTYPE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class Quantum;
+// # Forward Declarations
+template <class T>
+class Quantum;
 
 // <summary> Get an integer type for a Qunatum<T> </summary>
 
@@ -57,49 +58,29 @@ template <class T> class Quantum;
 
 // <group name=QuantumType>
 
- inline uInt quantumType (const Quantum<Double>*)
-   { return 1; }
- inline uInt quantumType (const Quantum<Float>*)
-   { return 2; }
- inline uInt quantumType (const Quantum<Int>*)
-   { return 3; }
- inline uInt quantumType (const Quantum<DComplex>*)
-   { return 4; }
- inline uInt quantumType (const Quantum<Complex>*)
-   { return 5; }
- inline uInt quantumType (const Quantum< Vector<Double> >*)
-   { return 6; }
- inline uInt quantumType (const Quantum< Vector<Float> >*)
-   { return 7; }
- inline uInt quantumType (const Quantum< Vector<Int> >*)
-   { return 8; }
- inline uInt quantumType (const Quantum< Vector<DComplex> >*)
-   { return 9; }
- inline uInt quantumType (const Quantum< Vector<Complex> >*)
-   { return 10; }
- inline uInt quantumType (const Quantum< Array<Double> >*)
-   { return 11; }
- inline uInt quantumType (const Quantum< Array<Float> >*)
-   { return 12; }
- inline uInt quantumType (const Quantum< Array<Int> >*)
-   { return 13; }
- inline uInt quantumType (const Quantum< Array<DComplex> >*)
-   { return 14; }
- inline uInt quantumType (const Quantum< Array<Complex> >*)
-   { return 15; }
- inline uInt quantumType (const Quantum< Matrix<Double> >*)
-   { return 16; }
- inline uInt quantumType (const Quantum< Matrix<Float> >*)
-   { return 17; }
- inline uInt quantumType (const Quantum< Matrix<Int> >*)
-   { return 18; }
- inline uInt quantumType (const Quantum< Matrix<DComplex> >*)
-   { return 19; }
- inline uInt quantumType (const Quantum< Matrix<Complex> >*)
-   { return 20; }
+inline uInt quantumType(const Quantum<Double>*) { return 1; }
+inline uInt quantumType(const Quantum<Float>*) { return 2; }
+inline uInt quantumType(const Quantum<Int>*) { return 3; }
+inline uInt quantumType(const Quantum<DComplex>*) { return 4; }
+inline uInt quantumType(const Quantum<Complex>*) { return 5; }
+inline uInt quantumType(const Quantum<Vector<Double>>*) { return 6; }
+inline uInt quantumType(const Quantum<Vector<Float>>*) { return 7; }
+inline uInt quantumType(const Quantum<Vector<Int>>*) { return 8; }
+inline uInt quantumType(const Quantum<Vector<DComplex>>*) { return 9; }
+inline uInt quantumType(const Quantum<Vector<Complex>>*) { return 10; }
+inline uInt quantumType(const Quantum<Array<Double>>*) { return 11; }
+inline uInt quantumType(const Quantum<Array<Float>>*) { return 12; }
+inline uInt quantumType(const Quantum<Array<Int>>*) { return 13; }
+inline uInt quantumType(const Quantum<Array<DComplex>>*) { return 14; }
+inline uInt quantumType(const Quantum<Array<Complex>>*) { return 15; }
+inline uInt quantumType(const Quantum<Matrix<Double>>*) { return 16; }
+inline uInt quantumType(const Quantum<Matrix<Float>>*) { return 17; }
+inline uInt quantumType(const Quantum<Matrix<Int>>*) { return 18; }
+inline uInt quantumType(const Quantum<Matrix<DComplex>>*) { return 19; }
+inline uInt quantumType(const Quantum<Matrix<Complex>>*) { return 20; }
 
 // </group>
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

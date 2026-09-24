@@ -1,41 +1,39 @@
-//# RecordFieldId.h: The identification of a record field
-//# Copyright (C) 1995,1996
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # RecordFieldId.h: The identification of a record field
+// # Copyright (C) 1995,1996
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_RECORDFIELDID_H
 #define CASA_RECORDFIELDID_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class RecordInterface;
-
 
 // <summary>
 // The identification of a record field.
@@ -81,80 +79,53 @@ class RecordInterface;
 // object explicitly.
 // </motivation>
 
-//# <todo asof="1996/03/12">
-//# </todo>
+// # <todo asof="1996/03/12">
+// # </todo>
 
+class RecordFieldId {
+ public:
+  // Construct it from a field number.
+  RecordFieldId(Int fieldNumber);
 
-class RecordFieldId
-{
-public:
-    // Construct it from a field number.
-    RecordFieldId (Int fieldNumber);
+  // Construct it from a field name.
+  // <group>
+  RecordFieldId(const String& name);
+  RecordFieldId(const std::string& name);
+  RecordFieldId(const Char* name);
+  // </group>
 
-    // Construct it from a field name.
-    // <group>
-    RecordFieldId (const String& name);
-    RecordFieldId (const std::string& name);
-    RecordFieldId (const Char* name);
-    // </group>
+  // Get the field number.
+  Int fieldNumber() const;
 
-    // Get the field number.
-    Int fieldNumber() const;
+  // Get the field name.
+  const String& fieldName() const;
 
-    // Get the field name.
-    const String& fieldName() const;
+  // Is the id given by name?
+  Bool byName() const;
 
-    // Is the id given by name?
-    Bool byName() const;
-
-private:
-    Bool    byName_p;
-    Int     number_p;
-    String  name_p;
+ private:
+  Bool byName_p;
+  Int number_p;
+  String name_p;
 };
 
+inline RecordFieldId::RecordFieldId(Int fieldNumber) : byName_p(False), number_p(fieldNumber) {}
 
+inline RecordFieldId::RecordFieldId(const String& fieldName)
+    : byName_p(True), number_p(-1), name_p(fieldName) {}
 
-inline RecordFieldId::RecordFieldId (Int fieldNumber)
-: byName_p (False),
-  number_p (fieldNumber)
-{}
+inline RecordFieldId::RecordFieldId(const std::string& fieldName)
+    : byName_p(True), number_p(-1), name_p(fieldName) {}
 
-inline RecordFieldId::RecordFieldId (const String& fieldName)
-: byName_p (True),
-  number_p (-1),
-  name_p   (fieldName)
-{}
+inline RecordFieldId::RecordFieldId(const Char* fieldName)
+    : byName_p(True), number_p(-1), name_p(fieldName) {}
 
-inline RecordFieldId::RecordFieldId (const std::string& fieldName)
-: byName_p (True),
-  number_p (-1),
-  name_p   (fieldName)
-{}
+inline Int RecordFieldId::fieldNumber() const { return number_p; }
 
-inline RecordFieldId::RecordFieldId (const Char* fieldName)
-: byName_p (True),
-  number_p (-1),
-  name_p   (fieldName)
-{}
+inline const String& RecordFieldId::fieldName() const { return name_p; }
 
-inline Int RecordFieldId::fieldNumber() const
-{
-    return number_p;
-}
+inline Bool RecordFieldId::byName() const { return byName_p; }
 
-inline const String& RecordFieldId::fieldName() const
-{
-    return name_p;
-}
-
-inline Bool RecordFieldId::byName() const
-{
-    return byName_p;
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

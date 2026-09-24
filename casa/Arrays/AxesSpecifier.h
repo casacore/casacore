@@ -1,39 +1,38 @@
-//# AxesSpecifier.h: Specification of axes to keep or remove
-//# Copyright (C) 2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AxesSpecifier.h: Specification of axes to keep or remove
+// # Copyright (C) 2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_AXESSPECIFIER_2_H
 #define CASA_AXESSPECIFIER_2_H
 
-//# Includes
+// # Includes
 #include "IPosition.h"
 #include "AxesMapping.h"
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // Specification of axes to keep or remove
@@ -101,28 +100,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="yyyy/mm/dd">
-//# </todo>
+// # <todo asof="yyyy/mm/dd">
+// # </todo>
 
-class AxesSpecifier
-{
-public:
+class AxesSpecifier {
+ public:
   // The default constructor keeps all axes.
   AxesSpecifier();
 
   // Tell if no or all degenerate axes have to be removed.
-  explicit AxesSpecifier (bool keepDegenerate);
+  explicit AxesSpecifier(bool keepDegenerate);
 
   // Tell if no or all degenerate axes have to be removed.
   // <br>The argument <src>axisPath</src> makes it possible to specify in
   // which order the KEPT axes have to be used. Unspecified axes are
   // appended to the end. It gives a means to reorder the axes of a lattice.
   // <br>E.g. for a 4-dim lattice axisPath [2,0] means axis order [2,0,1,3].
-  explicit AxesSpecifier (bool keepDegenerate, const IPosition& axisPath);
+  explicit AxesSpecifier(bool keepDegenerate, const IPosition& axisPath);
 
   // Tell which (degenerate) axes have to be kept.
   // Non-degenerate axes will always be kept.
-  explicit AxesSpecifier (const IPosition& keepAxes);
+  explicit AxesSpecifier(const IPosition& keepAxes);
 
   // The argument <src>keepAxes</src> tells which degenerate axes have
   // to be kept. Non-degenerate axes will always be kept.
@@ -130,24 +128,22 @@ public:
   // which order the KEPT axes have to be used. Unspecified axes are
   // appended to the end. It gives a means to reorder the axes of a lattice.
   // <br>E.g. for a 4-dim lattice axisPath [2,0] means axis order [2,0,1,3].
-  AxesSpecifier (const IPosition& keepAxes, const IPosition& axisPath);
+  AxesSpecifier(const IPosition& keepAxes, const IPosition& axisPath);
 
   // Apply the specification to a shape.
   // It returns an <linkto class=AxesMapping>AxesMapping</linkto>
   // object which takes care of mapping old to new axes order.
-  AxesMapping apply (const IPosition& shape) const;
+  AxesMapping apply(const IPosition& shape) const;
 
   // Are we keeping all degenerate axes ?
-  bool keep() const {return itsKeep;};
+  bool keep() const { return itsKeep; };
 
-private:
+ private:
   IPosition itsAxes;
   IPosition itsPath;
-  bool      itsKeep;
+  bool itsKeep;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

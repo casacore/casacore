@@ -1,41 +1,40 @@
-//# MUString.h: Pointed String class to aid analysis of quantity strings
-//# Copyright (C) 1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MUString.h: Pointed String class to aid analysis of quantity strings
+// # Copyright (C) 1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MUSTRING_H
 #define CASA_MUSTRING_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Block.h>
 
-//# Forward Declarations
+// # Forward Declarations
 #include <casacore/casa/iosfwd.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class Regex;
 
@@ -56,9 +55,9 @@ class Regex;
 // <synopsis>
 // The MUString is a class with a String and an embedded pointer. It can be used
 // to linearly analyse a string for its semantics. Imagine for instance a
-// string that represents an angle. It could be formatted as 
+// string that represents an angle. It could be formatted as
 // <src>[+-]hh:mm:ss.ttt</src>
-// or as <src>[+-]hh[hH]mm[mM]</src> or as 
+// or as <src>[+-]hh[hH]mm[mM]</src> or as
 // <src>[+-]dd.mm.ss.ttt</src>  or with <src>.'s</src> replaced with
 // <src>dms</src> or as <src>[+-]ddd.fff deg</src> etc.<br>
 // The available methods aid in analysing this string (see example).<br>
@@ -69,7 +68,7 @@ class Regex;
 //   <li> testX(arg)  -- all test methods test if the next available
 //		character(s) fulfill the specified argument test. E.g.
 //		<src>Bool testSign()</src> test if current character is + or -.
-//		If at end of string; False is returned, except for 
+//		If at end of string; False is returned, except for
 //		<src>testBlank()</src>. No pointer update. Any method with
 //		<em>NC</em> at the end (for no-case) will test irrespective
 //		of the case.
@@ -81,12 +80,12 @@ class Regex;
 //		Pointer updated
 //   <li> getX(arg)   -- will get the indicated X value from the string.
 //		Pointer updated. A get will always return a valid result.
-//		However, if the value did not exist (e.g. 
+//		However, if the value did not exist (e.g.
 //		<src>Double getDouble()</src> form a string like <src>"abc"</src>
 //		will return 0.0) a False status will be saved. It can be
 //		interrogated by the <src>Bool status()</src> function.
 //		The string part used in producing the value is also
-//		saved, and can be obtained with 
+//		saved, and can be obtained with
 //		<src>const String &lastGet()</src>.
 //		No saving in case of a simple getChar() is done.
 //   <li> stack -- if it is necessary to save the current position of the
@@ -95,7 +94,7 @@ class Regex;
 //   <li> pointer -- the pointer can be manipulated with <src>void setPtr()</src>
 //		 and <src>Int getPtr()</src>. Pointers are always protected in
 //		their value.
-// </ul> 
+// </ul>
 // The following types (<em>X</em> in the above list) are available
 // <ul>
 //   <li> Char -- a single character
@@ -115,7 +114,7 @@ class Regex;
 // General string aids are available. The main one a minimax, caseless
 // check of an input String against a vector:
 // <src>static uInt minimaxNC(String in, Int N_name, String name[])</src>
-// and its vector equivalent: 
+// and its vector equivalent:
 // <src>static uInt minimaxNC(String in, Vector<String> name)</src>.
 // Success is indicated by a return value less than N_name or the
 // vector length.
@@ -224,17 +223,15 @@ class Regex;
 //   <li> nothing I know of
 // </todo>
 
-class MUString
-{
-public:
-
-//# Friends
-  // Output String starting at pointer
+class MUString {
+ public:
+  // # Friends
+  //  Output String starting at pointer
   friend ostream &operator<<(ostream &os, const MUString &in);
-//# Enumerations
+  // # Enumerations
 
-//# Constructors
-  // Default constructor creates an empty string
+  // # Constructors
+  //  Default constructor creates an empty string
   MUString();
   // Create from String; setting pointer at start
   // <group>
@@ -250,12 +247,12 @@ public:
   // Destructor
   ~MUString();
 
-//# Operators
-  // Obtain remaining string (same as <src>get()</src>).
+  // # Operators
+  //  Obtain remaining string (same as <src>get()</src>).
   String operator()();
 
-//# General Member Functions
-  // Save current pointer on internal stack
+  // # General Member Functions
+  //  Save current pointer on internal stack
   void push();
   // Restore pointer from stack (or set to start if stack empty)
   void pop();
@@ -299,7 +296,7 @@ public:
 
   // Act on character(s)
   // <group>
-  void skipChar(Int n=1);
+  void skipChar(Int n = 1);
   void skipChar(Char ch);
   Bool tSkipChar(Char nc);
   void skipCharNC(Char ch);
@@ -342,7 +339,7 @@ public:
   // </group>
 
   // Match a pair of opening(at pointer)/closing characters (e.g. ( and )).
-  // Return False if wrong semantics. The string between the pair 
+  // Return False if wrong semantics. The string between the pair
   // (excluding them)
   // will be put in Last. If false, the ptr will be as originally; if True
   // it will point beyond the matched closing character
@@ -362,7 +359,7 @@ public:
   Int getPtr() const;
 
   // (Re-)set pointer
-  void setPtr(Int in=0);
+  void setPtr(Int in = 0);
 
   // test for end of string
   Bool eos() const;
@@ -375,14 +372,13 @@ public:
 
   // Do minimax check on list of Strings
   // <group>
-  static uInt minimaxNC(const String &in, Int N_name, 
-			const String tname[]);
+  static uInt minimaxNC(const String &in, Int N_name, const String tname[]);
   static uInt minimaxNC(const String &in, const Vector<String> &tname);
   // </group>
 
-private:
- // Data
- // String value
+ private:
+  // Data
+  // String value
   String str;
   // 0-based pointer into string
   uInt ptr;
@@ -405,17 +401,15 @@ private:
   Int initLast();
   // Set last settings
   void setLast(Int st);
-
 };
 
 // Global functions
 // <summary> Output global functions </summary>
 // Output
-// <group name=output>  
+// <group name=output>
 ostream &operator<<(ostream &os, const MUString &in);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,27 +1,27 @@
-//# Casarc.h: Class to read the casa general resource files
-//# Copyright (C) 2009
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Casarc.h: Class to read the casa general resource files
+// # Copyright (C) 2009
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_CASARC_H
 #define CASA_CASARC_H
@@ -33,123 +33,128 @@
 #include <list>
 #include <map>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-    class Casarc {
+class Casarc {
+  friend class CasarcCleanup;
 
-	friend class CasarcCleanup;
+ public:
+  typedef std::map<std::string, std::string>::const_iterator iterator;
 
-	public:
+  // return default casarc file, e.g. ~/.casarc
+  static Casarc &instance();
 
-	    typedef std::map<std::string,std::string>::const_iterator iterator;
+  // set and clear the default casarc path (to something other than ~/.casarc)
+  static void setDefaultPath(const std::string &path);
+  static void clearDefaultPath();
 
-	    // return default casarc file, e.g. ~/.casarc
-	    static Casarc &instance( );
+  // return a casarc object attached to a particular file
+  static Casarc &instance(const std::string &path);
 
-	    // set and clear the default casarc path (to something other than ~/.casarc)
-	    static void setDefaultPath( const std::string &path );
-	    static void clearDefaultPath( );
+  // return the list of rcfiles that have been loaded
+  static const std::list<Casarc *> &list();
 
-	    // return a casarc object attached to a particular file
-	    static Casarc &instance( const std::string &path );
+  // adds the keyword->value mapping
+  void put(const std::string &keyword, const std::string &value);
 
-	    // return the list of rcfiles that have been loaded
-            static const std::list<Casarc*> & list( );
+  // retrieves the mapping for keyword (or "" if the mapping is not defined)
+  std::string get(const std::string &keyword);
 
-	    // adds the keyword->value mapping
-	    void put( const std::string &keyword, const std::string &value );
+  // retrieves the mapping for keyword in value (and returns true if the
+  // mapping is defined or false otherwise)
+  bool get(const std::string &keyword, std::string &value);
 
-	    // retrieves the mapping for keyword (or "" if the mapping is not defined)
-	    std::string get( const std::string &keyword );
+  size_t size() const;
 
-	    // retrieves the mapping for keyword in value (and returns true if the
-	    // mapping is defined or false otherwise)
-	    bool get( const std::string &keyword, std::string &value );
+  // path to the file that this Casarc mirrors...
+  const std::string &path() const { return filename; }
 
-	    size_t size( ) const;
+  iterator begin();
+  iterator end();
 
-	    // path to the file that this Casarc mirrors...
-	    const std::string &path( ) const { return filename; }
+ private:
+  class meta_entry_ {
+   public:
+    meta_entry_(off_t keys_, int keyl_, off_t vals_, int vall_, off_t times_, int timel_)
+        : key_offset_(keys_),
+          key_len_(keyl_),
+          val_offset_(vals_),
+          val_len_(vall_),
+          time_offset_(times_),
+          time_len_(timel_) {}
 
-	    iterator begin( );
-	    iterator end( );
+    off_t key_offset() const { return key_offset_; }
+    int key_length() const { return key_len_; }
 
-	private:
+    off_t value_offset() const { return val_offset_; }
+    int value_length() const { return val_len_; }
 
-	    class meta_entry_ {
-	    public:
-		meta_entry_( off_t keys_, int keyl_, off_t vals_, int vall_, off_t times_, int timel_ ) : 
-					key_offset_(keys_), key_len_(keyl_), 
-					val_offset_(vals_), val_len_(vall_),
-					time_offset_(times_), time_len_(timel_) { }
+    off_t time_offset() const { return time_offset_; }
+    int time_length() const { return time_len_; }
 
-		off_t key_offset( ) const { return key_offset_; }
-		int key_length( ) const { return key_len_; }
+   private:
+    off_t key_offset_;
+    int key_len_;
+    off_t val_offset_;
+    int val_len_;
+    off_t time_offset_;
+    int time_len_;
+  };
 
-		off_t value_offset( ) const { return val_offset_; }
-		int value_length( ) const { return val_len_; }
+  char *mapped_file;
+  off_t mapped_file_size;
 
-		off_t time_offset( ) const { return time_offset_; }
-		int time_length( ) const { return time_len_; }
+  std::list<int> stale_fds;
+  void close(int);
 
-	    private:
-		off_t key_offset_;
-		int key_len_;
-		off_t val_offset_;
-		int val_len_;
-		off_t time_offset_;
-		int time_len_;
-	    };
+  std::list<pid_t> have_lock;
 
-	    char *mapped_file;
-	    off_t mapped_file_size;
+  enum lock_mode { READ, READ_WRITE, WRITE, APPEND };
+  // returns a file descriptor or -1 on error...
+  int lock(lock_mode mode);
+  void unlock(int fd);
 
-	    std::list<int> stale_fds;
-	    void close( int );
+  void sync();
+  double current_modification_time(struct stat &buf);
 
-	    std::list<pid_t> have_lock;
+  std::string filename;
+  double timestamp;
 
-	    enum lock_mode { READ, READ_WRITE, WRITE, APPEND };
-	    // returns a file descriptor or -1 on error...
-	    int lock( lock_mode mode );
-	    void unlock( int fd );
+  std::map<std::string, std::string> rcmap;
+  // this is broken off separate from the rcmap to allow the
+  // rcmap to be used for iteration by users of this class...
+  std::map<std::string, meta_entry_> rcmetamap;
 
-	    void sync( );
-	    double current_modification_time( struct stat &buf );
+  void read_file();
 
-	    std::string filename;
-	    double timestamp;
+  ino_t inode;
 
-	    std::map<std::string,std::string> rcmap;
-	    // this is broken off separate from the rcmap to allow the
-	    // rcmap to be used for iteration by users of this class...
-	    std::map<std::string,meta_entry_> rcmetamap;
+  // singleton Casarcs, (inode->casarc)
+  static std::map<ino_t, Casarc *> *rcfiles;
+  static std::map<std::string, Casarc *> *filenames;
+  static std::list<Casarc *> *rclist;
+  static std::string *default_path;
+  // path is the path to the .casarc (or .aipsrc file)
+  Casarc(const std::string &path);
+  static bool initialized;
+  static void startup();
+  static void shutdown();
+  ~Casarc() {}
+};
 
-	    void read_file( );
+static class CasarcCleanup {
+ public:
+  CasarcCleanup() { creation_count += 1; }
+  ~CasarcCleanup() {
+    if (--creation_count == 0) {
+      Casarc::shutdown();
+    }
+  }
 
-	    ino_t inode;
+ private:
+  static unsigned int creation_count;
+} local_cleanup_object;
 
-	    // singleton Casarcs, (inode->casarc)
-	    static std::map<ino_t,Casarc*> *rcfiles;
-	    static std::map<std::string,Casarc*> *filenames;
-	    static std::list<Casarc*> *rclist;
-	    static std::string *default_path;
-	    // path is the path to the .casarc (or .aipsrc file)
-	    Casarc( const std::string &path );
-	    static bool initialized;
-	    static void startup( );
-	    static void shutdown( );
-	    ~Casarc( ) { }
-    };
-
-    static class CasarcCleanup {
-	public:
-	    CasarcCleanup( ) { creation_count += 1; }
-	    ~CasarcCleanup( ) { if ( --creation_count == 0 ) { Casarc::shutdown( ); } }
-	private:
-	    static unsigned int creation_count;
-    } local_cleanup_object;
-  
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

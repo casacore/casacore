@@ -7,19 +7,19 @@
 #include <ostream>
 
 namespace casacore {
-  
+
 // Write out an ascii representation of an array of any dimensionality.
 // Arrays of dimensionality 3 or greater are written out vector by vector,
 // preceeded by the position of the start of the vector. If the origin of
 // the array isn't zero it is printed. The shape of the array is always
 // printed.
-template<typename T>
-std::ostream &operator << (std::ostream &, const Array<T> &);
+template <typename T>
+std::ostream &operator<<(std::ostream &, const Array<T> &);
 
 // Read an ascii representation of an array. All types with an <src><<</src>
 // operator can be handled. The basic format of the input should be:
 // <srcblock>
-//	[element element element ....] 
+//	[element element element ....]
 // </srcblock>
 // Elements are separated by whitespace, or a comma, optionally surrounded
 // by white space. <br>
@@ -41,7 +41,7 @@ std::ostream &operator << (std::ostream &, const Array<T> &);
 // the result will stay in the form asked.<br>
 // Input order is row major, however by preceding the input with:
 // <srcblock>
-//	{T[shape]}	
+//	{T[shape]}
 // </srcblock>
 // the order will be reversed.<br>
 // Reshaping of the Array provided will depend on the type of Array and its
@@ -55,12 +55,11 @@ std::ostream &operator << (std::ostream &, const Array<T> &);
 // transpose (it) (which can be undone by the user specifying transpose).
 //
 // <group>
-template<typename T>
-std::istream &operator>> (std::istream &s, Array<T> &x);
+template <typename T>
+std::istream &operator>>(std::istream &s, Array<T> &x);
 
-template<typename T>
-bool read(std::istream &s, Array<T> &x,
-			    const IPosition *ip=0, bool it=false);
+template <typename T>
+bool read(std::istream &s, Array<T> &x, const IPosition *ip = 0, bool it = false);
 // </group>
 
 // General read support function for matrices.
@@ -76,10 +75,9 @@ bool read(std::istream &s, Array<T> &x,
 // input not equal to ip (if specified); the shape given by user as input
 // does not conform to ip (if given) or the number of elements input.<br>
 // trans will be true if transpose asked by user; or if forced by it.
-template<typename T> bool readArrayBlock(std::istream &s, bool &trans,
-  IPosition &p,
-  std::vector<T> &x,
-  const IPosition *ip=0, bool it=false);
+template <typename T>
+bool readArrayBlock(std::istream &s, bool &trans, IPosition &p, std::vector<T> &x,
+                    const IPosition *ip = 0, bool it = false);
 
 // <summary>
 // Global functions for Matrix/Vector input/output using ASCII format.
@@ -117,7 +115,7 @@ template<typename T> bool readArrayBlock(std::istream &s, bool &trans,
 
 // These routines read and write a Matrix of data.  The first line of
 // input will be examined to determine the number of columns in the matrix.
-// The maximum number of columns provided for is 100.  Each item may be up 
+// The maximum number of columns provided for is 100.  Each item may be up
 // to 50 characters long.
 //
 // Each item must be separated from others by one (or more) blank column.
@@ -125,22 +123,22 @@ template<typename T> bool readArrayBlock(std::istream &s, bool &trans,
 // contain the SAME number of items as the first line but may be any length
 // (up to 1024 characters).
 //
-// The matrix need NOT be square.  
+// The matrix need NOT be square.
 //
 // The matrix should be declared but NOT dimensioned in the calling program.
 
 // <group>
 template <typename T>
-void readAsciiMatrix (Matrix<T>& mat, const char* fileName);
+void readAsciiMatrix(Matrix<T> &mat, const char *fileName);
 
 template <typename T>
-void writeAsciiMatrix (const Matrix<T>& mat, const char* fileName);
+void writeAsciiMatrix(const Matrix<T> &mat, const char *fileName);
 // </group>
 
-template<typename T>
+template <typename T>
 std::string to_string(const Array<T> array);
 
-}
+}  // namespace casacore
 
 #include "ArrayStr.tcc"
 

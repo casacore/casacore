@@ -1,33 +1,32 @@
-//# Record.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # Record.h: A hierarchical collection of named fields of various types
+// # Copyright (C) 1995,1996,1997,1998,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_RECORD_H
 #define CASA_RECORD_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/RecordInterface.h>
@@ -35,12 +34,11 @@
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/Utilities/COWPtr.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class IPosition;
 class AipsIO;
-
 
 // <summary>
 // A hierarchical collection of named fields of various types
@@ -94,7 +92,7 @@ class AipsIO;
 // fields have the identical type in the identical order.
 // The field names do not need to be identical however, only the types.
 // That is, the structure needs to be identical, but
-// not the labels. Note that field order is significant, 
+// not the labels. Note that field order is significant,
 // <src>[ifield(type=Int),ffield(type=float)]</src>
 // is not the same as <src>[ffield(type=float),ifield(type=Int)]</src>
 // <br>
@@ -148,7 +146,7 @@ class AipsIO;
 // salaryA = salaryB;
 // *salaryA = *salaryB;
 // </srcBlock>
-// Do very different things; the first line is a pointer copy; salaryA and 
+// Do very different things; the first line is a pointer copy; salaryA and
 // salaryB now point to the same field in salaryB. The second line is a value
 // copy.
 //
@@ -173,305 +171,269 @@ class AipsIO;
 //        subarray sliced from an existing array.
 // </todo>
 
+class Record : public RecordInterface {
+  friend class RecordRep;
 
-class Record : public RecordInterface
-{
-friend class RecordRep;
+ public:
+  // Create a record with no fields.
+  // The record has a variable structure.
+  Record();
 
-public:
-    // Create a record with no fields.
-    // The record has a variable structure.
-    Record();
+  // Create a record with no fields.
+  // The type determines if the record has a fixed or variable structure.
+  // The callback function is called when a field is added to the Record.
+  // That function can check the name and of data type of the new field
+  // (for instance, the Table system uses it to ensure that table columns
+  // and keywords have different names).
+  explicit Record(RecordType type, CheckFieldFunction* = 0, const void* checkArgument = 0);
 
-    // Create a record with no fields.
-    // The type determines if the record has a fixed or variable structure.
-    // The callback function is called when a field is added to the Record.
-    // That function can check the name and of data type of the new field
-    // (for instance, the Table system uses it to ensure that table columns
-    // and keywords have different names).
-    explicit Record (RecordType type,
-		     CheckFieldFunction* = 0, const void* checkArgument = 0);
+  // Create a record with the given description. If it is not possible to
+  // create all fields (for example, if a field with an unsupported data
+  // type is requested), an exception is thrown.
+  // The type determines if the record has a fixed or variable structure.
+  // All fields are checked by the field checking function (if defined)
+  // (for instance, the Table system uses it to ensure that table columns
+  // and keywords have different names).
+  explicit Record(const RecordDesc& description, RecordType type = Fixed, CheckFieldFunction* = 0,
+                  const void* checkArgument = 0);
 
-    // Create a record with the given description. If it is not possible to 
-    // create all fields (for example, if a field with an unsupported data
-    // type is requested), an exception is thrown.
-    // The type determines if the record has a fixed or variable structure.
-    // All fields are checked by the field checking function (if defined)
-    // (for instance, the Table system uses it to ensure that table columns
-    // and keywords have different names).
-    explicit Record (const RecordDesc& description, RecordType type = Fixed,
-		     CheckFieldFunction* = 0, const void* checkArgument = 0);
+  // Create a copy of other using copy semantics.
+  Record(const Record& other);
 
-    // Create a copy of other using copy semantics.
-    Record (const Record& other);
+  // Create a Record from another type of record using copy semantics.
+  // Subrecords are also converted to a Record.
+  Record(const RecordInterface& other);
 
-    // Create a Record from another type of record using copy semantics.
-    // Subrecords are also converted to a Record.
-    Record (const RecordInterface& other);
+  // Copy the data in the other record to this record.
+  // It can operate in 2 ways depending on the Record structure flag.
+  // <ul>
+  // <li> For variable structured records the existing fields are
+  //      thrown away and replaced by the new fields.
+  //      This means that RecordFieldPtr's using this record get invalidated.
+  //      Because copy-on-write semantics are used, this kind of
+  //      assignment is a very efficient operation.
+  // <li> For fixed structured records the existing values are replaced
+  //      by the new values. This means that RecordFieldPtr's using this
+  //      record remain valid.
+  //      The structure of the other record has to conform this record
+  //      or this record has to be empty, otherwise an exception is thrown.
+  //      This assignment is less efficient, because it has to check the
+  //      conformance and because each value has to be copied.
+  // </ul>
+  // <note role=warning>
+  // Attributes like fixed structure flag and check function will not
+  // be copied.
+  // </note>
+  Record& operator=(const Record& other);
 
-    // Copy the data in the other record to this record.
-    // It can operate in 2 ways depending on the Record structure flag.
-    // <ul>
-    // <li> For variable structured records the existing fields are
-    //      thrown away and replaced by the new fields.
-    //      This means that RecordFieldPtr's using this record get invalidated.
-    //      Because copy-on-write semantics are used, this kind of
-    //      assignment is a very efficient operation.
-    // <li> For fixed structured records the existing values are replaced
-    //      by the new values. This means that RecordFieldPtr's using this
-    //      record remain valid.
-    //      The structure of the other record has to conform this record
-    //      or this record has to be empty, otherwise an exception is thrown.
-    //      This assignment is less efficient, because it has to check the
-    //      conformance and because each value has to be copied.
-    // </ul>
-    // <note role=warning>
-    // Attributes like fixed structure flag and check function will not
-    // be copied.
-    // </note>
-    Record& operator= (const Record& other);
-    
-    // Release resources associated with this object.
-    ~Record();
+  // Release resources associated with this object.
+  ~Record();
 
-    // Make a copy of this object.
-    RecordInterface* clone() const override;
+  // Make a copy of this object.
+  RecordInterface* clone() const override;
 
-    // Assign that RecordInterface object to this one.
-    // Unlike <src>operator=</src> it copies all data in the derived
-    // class.
-    void assign (const RecordInterface& that) override;
+  // Assign that RecordInterface object to this one.
+  // Unlike <src>operator=</src> it copies all data in the derived
+  // class.
+  void assign(const RecordInterface& that) override;
 
-    // Get the comment for this field.
-    const String& comment (const RecordFieldId&) const override;
+  // Get the comment for this field.
+  const String& comment(const RecordFieldId&) const override;
 
-    // Set the comment for this field.
-    void setComment (const RecordFieldId&, const String& comment) override;
+  // Set the comment for this field.
+  void setComment(const RecordFieldId&, const String& comment) override;
 
-    // Describes the current structure of this Record.
-    const RecordDesc& description() const;
+  // Describes the current structure of this Record.
+  const RecordDesc& description() const;
 
-    // Change the structure of this Record to contain the fields in
-    // newDescription. After calling restructure, <src>description() ==
-    // newDescription</src>. Any existing RecordFieldPtr objects are
-    // invalidated (their <src>isAttached()</src> members return False) after
-    // this call.
-    // <br>When the new description contains subrecords, those subrecords
-    // will be restructured if <src>recursive=True</src> is given.
-    // Otherwise the subrecord is a variable empty record.
-    // Subrecords will be variable if their description is empty (i.e. does
-    // not contain any field), otherwise they are fixed. The 2nd form of
-    // the <src>restructure</src> function will overwrite those implicit
-    // record types with the given record type. The new type will also
-    // be given to this top record.
-    // <br>Restructuring is not possible and an exception is thrown
-    // if the Record has a fixed structure.
-    void restructure (const RecordDesc& newDescription,
-                      Bool recursive = True) override;
+  // Change the structure of this Record to contain the fields in
+  // newDescription. After calling restructure, <src>description() ==
+  // newDescription</src>. Any existing RecordFieldPtr objects are
+  // invalidated (their <src>isAttached()</src> members return False) after
+  // this call.
+  // <br>When the new description contains subrecords, those subrecords
+  // will be restructured if <src>recursive=True</src> is given.
+  // Otherwise the subrecord is a variable empty record.
+  // Subrecords will be variable if their description is empty (i.e. does
+  // not contain any field), otherwise they are fixed. The 2nd form of
+  // the <src>restructure</src> function will overwrite those implicit
+  // record types with the given record type. The new type will also
+  // be given to this top record.
+  // <br>Restructuring is not possible and an exception is thrown
+  // if the Record has a fixed structure.
+  void restructure(const RecordDesc& newDescription, Bool recursive = True) override;
 
-    // Returns True if this and other have the same RecordDesc, other
-    // than different names for the fields. That is, the number, type and the
-    // order of the fields must be identical (recursively for fixed
-    // structured sub-Records in this).
-    // <note role=caution>
-    // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-    // <br><src>thatRecord.conform(thisRecord) == True</src>, because
-    // a variable record in one conforms a fixed record in that, but
-    // not vice-versa.
-    // </note>
-    Bool conform (const Record& other) const;
+  // Returns True if this and other have the same RecordDesc, other
+  // than different names for the fields. That is, the number, type and the
+  // order of the fields must be identical (recursively for fixed
+  // structured sub-Records in this).
+  // <note role=caution>
+  // <src>thisRecord.conform(thatRecord) == True</src> does not imply
+  // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+  // a variable record in one conforms a fixed record in that, but
+  // not vice-versa.
+  // </note>
+  Bool conform(const Record& other) const;
 
-    // How many fields does this structure have? A convenient synonym for
-    // <src>description().nfields()</src>.
-    uInt nfields() const override;
+  // How many fields does this structure have? A convenient synonym for
+  // <src>description().nfields()</src>.
+  uInt nfields() const override;
 
-    // Get the field number from the field name.
-    // -1 is returned if the field name is unknown.
-    Int fieldNumber (const String& fieldName) const override;
+  // Get the field number from the field name.
+  // -1 is returned if the field name is unknown.
+  Int fieldNumber(const String& fieldName) const override;
 
-    // Get the data type of this field.
-    DataType type (Int whichField) const override;
+  // Get the data type of this field.
+  DataType type(Int whichField) const override;
 
-    // Remove a field from the record.
-    // <note role=caution>
-    // Removing a field means that the field number of the fields following
-    // it will be decremented. Only the RecordFieldPtr's
-    // pointing to the removed field will be invalidated.
-    // </note>
-    void removeField (const RecordFieldId&) override;
+  // Remove a field from the record.
+  // <note role=caution>
+  // Removing a field means that the field number of the fields following
+  // it will be decremented. Only the RecordFieldPtr's
+  // pointing to the removed field will be invalidated.
+  // </note>
+  void removeField(const RecordFieldId&) override;
 
-    // Rename the given field.
-    void renameField (const String& newName, const RecordFieldId&);
+  // Rename the given field.
+  void renameField(const String& newName, const RecordFieldId&);
 
-    // Define a value for the given field containing a subrecord.
-    // When the field is unknown, it will be added to the record.
-    // The second version is meant for any type of record (e.g. Record,
-    // TableRecord, GlishRecord). It is converted to a Record using the
-    // Record constructor taking a RecordInterface object.
-    // <group>
-    void defineRecord (const RecordFieldId&, const Record& value,
-		       RecordType type = Variable);
-    void defineRecord (const RecordFieldId&,
-                       const RecordInterface& value,
-                       RecordType = Variable) override;
-    // </group>
+  // Define a value for the given field containing a subrecord.
+  // When the field is unknown, it will be added to the record.
+  // The second version is meant for any type of record (e.g. Record,
+  // TableRecord, GlishRecord). It is converted to a Record using the
+  // Record constructor taking a RecordInterface object.
+  // <group>
+  void defineRecord(const RecordFieldId&, const Record& value, RecordType type = Variable);
+  void defineRecord(const RecordFieldId&, const RecordInterface& value,
+                    RecordType = Variable) override;
+  // </group>
 
-    // Get the subrecord from the given field.
-    // <note>
-    // The non-const version has a different name to prevent that the
-    // copy-on-write mechanism makes a copy when not necessary.
-    // </note>
-    // <group>
-    const Record& subRecord (const RecordFieldId&) const;
-    Record& rwSubRecord (const RecordFieldId&);
-    const RecordInterface& asRecord (const RecordFieldId&) const override;
-    RecordInterface& asrwRecord (const RecordFieldId&) override;
-    // </group>
+  // Get the subrecord from the given field.
+  // <note>
+  // The non-const version has a different name to prevent that the
+  // copy-on-write mechanism makes a copy when not necessary.
+  // </note>
+  // <group>
+  const Record& subRecord(const RecordFieldId&) const;
+  Record& rwSubRecord(const RecordFieldId&);
+  const RecordInterface& asRecord(const RecordFieldId&) const override;
+  RecordInterface& asrwRecord(const RecordFieldId&) override;
+  // </group>
 
-    // Get or define the value as a ValueHolder.
-    // This is useful to pass around a value of any supported type.
-    // <group>
-    ValueHolder asValueHolder (const RecordFieldId&) const override;
-    void defineFromValueHolder (const RecordFieldId&,
-                                const ValueHolder&) override;
-    // </group>
+  // Get or define the value as a ValueHolder.
+  // This is useful to pass around a value of any supported type.
+  // <group>
+  ValueHolder asValueHolder(const RecordFieldId&) const override;
+  void defineFromValueHolder(const RecordFieldId&, const ValueHolder&) override;
+  // </group>
 
-    // Merge a field from another record into this record.
-    // The DuplicatesFlag (as described in
-    // <linkto class=RecordInterface>RecordInterface</linkto>) determines
-    // what will be done in case the field name already exists.
-    void mergeField (const Record& other, const RecordFieldId&,
-		     DuplicatesFlag = ThrowOnDuplicates);
+  // Merge a field from another record into this record.
+  // The DuplicatesFlag (as described in
+  // <linkto class=RecordInterface>RecordInterface</linkto>) determines
+  // what will be done in case the field name already exists.
+  void mergeField(const Record& other, const RecordFieldId&, DuplicatesFlag = ThrowOnDuplicates);
 
-    // Merge all fields from the other record into this record.
-    // The DuplicatesFlag (as described in
-    // <linkto class=RecordInterface>RecordInterface</linkto>) determines
-    // what will be done in case a field name already exists.
-    // An exception will be thrown if other is the same as this
-    // (i.e. if merging the record itself).
-    void merge (const Record& other, DuplicatesFlag = ThrowOnDuplicates);
-    
-    // Write the Record to an output stream.
-    friend AipsIO& operator<< (AipsIO& os, const Record& rec);
-    
-    // Read the Record from an input stream.
-    friend AipsIO& operator>> (AipsIO& os, Record& rec);
+  // Merge all fields from the other record into this record.
+  // The DuplicatesFlag (as described in
+  // <linkto class=RecordInterface>RecordInterface</linkto>) determines
+  // what will be done in case a field name already exists.
+  // An exception will be thrown if other is the same as this
+  // (i.e. if merging the record itself).
+  void merge(const Record& other, DuplicatesFlag = ThrowOnDuplicates);
 
-    // Write the Record to an output stream.
-    // This is used to write a subrecord, whose description has
-    // not been written.
-    void putRecord (AipsIO& os) const;
-    
-    // Read the Record from an input stream.
-    // This is used to read a subrecord, whose description has
-    // not been read.
-    void getRecord (AipsIO& os);
+  // Write the Record to an output stream.
+  friend AipsIO& operator<<(AipsIO& os, const Record& rec);
 
-    // Put the data of a record.
-    // This is used to write a subrecord, whose description has
-    // already been written.
-    void putData (AipsIO& os) const;
+  // Read the Record from an input stream.
+  friend AipsIO& operator>>(AipsIO& os, Record& rec);
 
-    // Read the data of a record.
-    // This is used to read a subrecord, whose description has
-    // already been read.
-    void getData (AipsIO& os, uInt version);
+  // Write the Record to an output stream.
+  // This is used to write a subrecord, whose description has
+  // not been written.
+  void putRecord(AipsIO& os) const;
 
-    // Make a unique record representation
-    // (to do copy-on-write in RecordFieldPtr).
-    void makeUnique() override;
+  // Read the Record from an input stream.
+  // This is used to read a subrecord, whose description has
+  // not been read.
+  void getRecord(AipsIO& os);
 
-    // Print the contents of the record.
-    // Only the first <src>maxNrValues</src> of an array will be printed.
-    // A value < 0 means the entire array.
-    void print (std::ostream&,
-                Int maxNrValues = 25,
-                const String& indent="") const override;
+  // Put the data of a record.
+  // This is used to write a subrecord, whose description has
+  // already been written.
+  void putData(AipsIO& os) const;
 
+  // Read the data of a record.
+  // This is used to read a subrecord, whose description has
+  // already been read.
+  void getData(AipsIO& os, uInt version);
 
-protected:
-    // Used by the RecordField classes to attach in a type-safe way to the
-    // correct field.
-    // <group>
-    void* get_pointer (Int whichField, DataType type) const override;
-    void* get_pointer (Int whichField, DataType type,
-                       const String& recordType) const override;
-    // </group>
+  // Make a unique record representation
+  // (to do copy-on-write in RecordFieldPtr).
+  void makeUnique() override;
 
-    // Return a const reference to the underlying RecordRep.
-    const RecordRep& ref() const;
+  // Print the contents of the record.
+  // Only the first <src>maxNrValues</src> of an array will be printed.
+  // A value < 0 means the entire array.
+  void print(std::ostream&, Int maxNrValues = 25, const String& indent = "") const override;
 
-    // Return a non-const reference to the underlying RecordRep.
-    // When needed, the RecordRep will be copied and all RecordField
-    // objects will be notified.
-    RecordRep& rwRef();
+ protected:
+  // Used by the RecordField classes to attach in a type-safe way to the
+  // correct field.
+  // <group>
+  void* get_pointer(Int whichField, DataType type) const override;
+  void* get_pointer(Int whichField, DataType type, const String& recordType) const override;
+  // </group>
 
-    // Add a field to the record.
-    void addDataField (const String& name, DataType type,
-                       const IPosition& shape, Bool fixedShape,
-                       const void* value) override;
+  // Return a const reference to the underlying RecordRep.
+  const RecordRep& ref() const;
 
-    // Define a value in the given field.
-    void defineDataField (Int whichField, DataType type,
-                          const void* value) override;
+  // Return a non-const reference to the underlying RecordRep.
+  // When needed, the RecordRep will be copied and all RecordField
+  // objects will be notified.
+  RecordRep& rwRef();
 
-private:
-    // Get the description of this record.
-    RecordDesc getDescription() const override;
+  // Add a field to the record.
+  void addDataField(const String& name, DataType type, const IPosition& shape, Bool fixedShape,
+                    const void* value) override;
 
-    // Create Record as a subrecord.
-    // When the description is empty, the record has a variable structure.
-    // Otherwise it is fixed.
-    // <group>
-    Record (RecordRep* parent, const RecordDesc& description);
-    Record (RecordRep* parent, RecordType type);
-    // </group>
+  // Define a value in the given field.
+  void defineDataField(Int whichField, DataType type, const void* value) override;
 
-    // The Record representation.
-    COWPtr<RecordRep> rep_p;
-    // The parent Record.
-    RecordRep* parent_p;
+ private:
+  // Get the description of this record.
+  RecordDesc getDescription() const override;
+
+  // Create Record as a subrecord.
+  // When the description is empty, the record has a variable structure.
+  // Otherwise it is fixed.
+  // <group>
+  Record(RecordRep* parent, const RecordDesc& description);
+  Record(RecordRep* parent, RecordType type);
+  // </group>
+
+  // The Record representation.
+  COWPtr<RecordRep> rep_p;
+  // The parent Record.
+  RecordRep* parent_p;
 };
 
+inline const RecordRep& Record::ref() const { return rep_p.ref(); }
+inline const RecordDesc& Record::description() const { return ref().description(); }
 
+inline Bool Record::conform(const Record& other) const { return ref().conform(other.ref()); }
 
-inline const RecordRep& Record::ref() const
-{
-    return rep_p.ref();
+inline AipsIO& operator<<(AipsIO& os, const Record& rec) {
+  rec.putRecord(os);
+  return os;
 }
-inline const RecordDesc& Record::description() const
-{
-    return ref().description();
+inline void Record::putData(AipsIO& os) const { ref().putData(os); }
+
+inline AipsIO& operator>>(AipsIO& os, Record& rec) {
+  rec.getRecord(os);
+  return os;
 }
+inline void Record::getData(AipsIO& os, uInt version) { rwRef().getData(os, version); }
 
-inline Bool Record::conform (const Record& other) const
-{
-    return ref().conform (other.ref());
-}
-
-inline AipsIO& operator<< (AipsIO& os, const Record& rec)
-{
-    rec.putRecord (os);
-    return os;
-}
-inline void Record::putData (AipsIO& os) const
-{
-    ref().putData (os);
-}
-
-inline AipsIO& operator>> (AipsIO& os, Record& rec)
-{
-    rec.getRecord (os);
-    return os;
-}
-inline void Record::getData (AipsIO& os, uInt version)
-{
-    rwRef().getData (os, version);
-}
-
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

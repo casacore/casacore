@@ -1,42 +1,40 @@
-//# RecordField.h: Access to an individual field in a record
-//# Copyright (C) 1995,1996,1997
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # RecordField.h: Access to an individual field in a record
+// # Copyright (C) 1995,1996,1997
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_RECORDFIELD_H
 #define CASA_RECORDFIELD_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TableRecord;
 class Table;
-
 
 // <summary>
 // Access to an individual field in a record.
@@ -107,80 +105,76 @@ class Table;
 // RecordFieldPtr provides a fast way to access the data in a record.
 // </motivation>
 
-template<class T> class RecordFieldPtr
-{
-public:
-    // This object does not point to any field, i.e. 
-    // <src>this->isAttached() == False;</src>
-    RecordFieldPtr();
+template <class T>
+class RecordFieldPtr {
+ public:
+  // This object does not point to any field, i.e.
+  // <src>this->isAttached() == False;</src>
+  RecordFieldPtr();
 
-    // Attach this field pointer to the given field. If it does not exist
-    // an exception is thrown.
-    // <group>
-    RecordFieldPtr (RecordInterface& record, Int whichField);
-    RecordFieldPtr (RecordInterface& record, const RecordFieldId&);
-    // </group>
+  // Attach this field pointer to the given field. If it does not exist
+  // an exception is thrown.
+  // <group>
+  RecordFieldPtr(RecordInterface& record, Int whichField);
+  RecordFieldPtr(RecordInterface& record, const RecordFieldId&);
+  // </group>
 
-    // Change our pointer to the supplied field. If it doesn't exist an
-    // exception is thrown.
-    // <group>
-    void attachToRecord (RecordInterface& record, Int whichField);
-    void attachToRecord (RecordInterface& record, const RecordFieldId&);
-    // </group>
+  // Change our pointer to the supplied field. If it doesn't exist an
+  // exception is thrown.
+  // <group>
+  void attachToRecord(RecordInterface& record, Int whichField);
+  void attachToRecord(RecordInterface& record, const RecordFieldId&);
+  // </group>
 
-    // Point to no field in any Record.
-    void detach();
+  // Point to no field in any Record.
+  void detach();
 
-    // Provide access to the field's value.
-    // <note>
-    // To be sure a const function is called, it is best to use get().
-    // For a non-const object, a non-const function is called, even if
-    // used as an rvalue.
-    // </note>
-    // <group>
-    T& operator*();
-    const T& operator*() const { return get(); }
-    const T& get() const { return *get_typed_ptr(parent_p, fieldNumber_p); }
-    // </group>
+  // Provide access to the field's value.
+  // <note>
+  // To be sure a const function is called, it is best to use get().
+  // For a non-const object, a non-const function is called, even if
+  // used as an rvalue.
+  // </note>
+  // <group>
+  T& operator*();
+  const T& operator*() const { return get(); }
+  const T& get() const { return *get_typed_ptr(parent_p, fieldNumber_p); }
+  // </group>
 
-    // Store a value in the field using redefinition.
-    // Define differs from assignment w.r.t. arrays.
-    // For define a variable shaped array is deleted first with the
-    // effect that array conformance rules are not applied for them.
-    void define (const T& value);
+  // Store a value in the field using redefinition.
+  // Define differs from assignment w.r.t. arrays.
+  // For define a variable shaped array is deleted first with the
+  // effect that array conformance rules are not applied for them.
+  void define(const T& value);
 
-    // Get the comment of this field.
-    const String& comment() const;
+  // Get the comment of this field.
+  const String& comment() const;
 
-    // Set the comment for this field.
-    void setComment (const String& comment);
+  // Set the comment for this field.
+  void setComment(const String& comment);
 
-    // Return the fieldnumber of this field.
-    Int fieldNumber() const
-	{return fieldNumber_p;}
+  // Return the fieldnumber of this field.
+  Int fieldNumber() const { return fieldNumber_p; }
 
-    // Return the name of the field.
-    String name() const
-        {return parent_p->name (fieldNumber_p);}
+  // Return the name of the field.
+  String name() const { return parent_p->name(fieldNumber_p); }
 
-    // Is this field pointer attached to a valid record? Operations which
-    // might cause it to become detached are:
-    // <ol>
-    //     <li> Destruction of the Record
-    //     <li> Restructuring of the record.
-    //     <li> Explicit call of the detach() member.
-    // </ol>
-    //# This inherited function is shown for documentation purposes.
-    Bool isAttached() const
-	{return parent_p;}
+  // Is this field pointer attached to a valid record? Operations which
+  // might cause it to become detached are:
+  // <ol>
+  //     <li> Destruction of the Record
+  //     <li> Restructuring of the record.
+  //     <li> Explicit call of the detach() member.
+  // </ol>
+  // # This inherited function is shown for documentation purposes.
+  Bool isAttached() const { return parent_p; }
 
-private:
-    static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
-  
-    RecordInterface* parent_p;
-    Int              fieldNumber_p;
+ private:
+  static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
+
+  RecordInterface* parent_p;
+  Int fieldNumber_p;
 };
-
 
 // <summary>
 //  Read-Only access to an individual field from a Record.
@@ -205,46 +199,47 @@ private:
 // It would allow RecordFieldPtr to attach to a const RecordInterface object.
 // </synopsis>
 
-template<class T> class RORecordFieldPtr
-{
-public:
-    RORecordFieldPtr() {}
-    RORecordFieldPtr (const RecordInterface& record, Int whichField)
-	: fieldPtr_p((RecordInterface&)record, whichField) {}
-    RORecordFieldPtr (const RecordInterface& record, const RecordFieldId& id)
-	: fieldPtr_p((RecordInterface&)record, id) {}
-    RORecordFieldPtr (const RecordFieldPtr<T>& other)
-	: fieldPtr_p(other) {}
-    RORecordFieldPtr (const RORecordFieldPtr<T>& other)
-	: fieldPtr_p(other.fieldPtr_p) {}
-    RORecordFieldPtr<T>& operator= (const RORecordFieldPtr<T>& other)
-	{ fieldPtr_p = other.fieldPtr_p; return *this;}
+template <class T>
+class RORecordFieldPtr {
+ public:
+  RORecordFieldPtr() {}
+  RORecordFieldPtr(const RecordInterface& record, Int whichField)
+      : fieldPtr_p((RecordInterface&)record, whichField) {}
+  RORecordFieldPtr(const RecordInterface& record, const RecordFieldId& id)
+      : fieldPtr_p((RecordInterface&)record, id) {}
+  RORecordFieldPtr(const RecordFieldPtr<T>& other) : fieldPtr_p(other) {}
+  RORecordFieldPtr(const RORecordFieldPtr<T>& other) : fieldPtr_p(other.fieldPtr_p) {}
+  RORecordFieldPtr<T>& operator=(const RORecordFieldPtr<T>& other) {
+    fieldPtr_p = other.fieldPtr_p;
+    return *this;
+  }
 
-    ~RORecordFieldPtr() {}
+  ~RORecordFieldPtr() {}
 
-    void attachToRecord (const RecordInterface& record, Int whichField)
-        { fieldPtr_p.attachToRecord ((RecordInterface&)record, whichField); }
-    void attachToRecord (const RecordInterface& record, const RecordFieldId& id)
-        { fieldPtr_p.attachToRecord ((RecordInterface&)record, id); }
-    
-    const T& operator*() const  {return *fieldPtr_p;}
-    const T& get() const  {return fieldPtr_p.get();}
+  void attachToRecord(const RecordInterface& record, Int whichField) {
+    fieldPtr_p.attachToRecord((RecordInterface&)record, whichField);
+  }
+  void attachToRecord(const RecordInterface& record, const RecordFieldId& id) {
+    fieldPtr_p.attachToRecord((RecordInterface&)record, id);
+  }
 
-    const String& comment() const  {return fieldPtr_p.comment();}
+  const T& operator*() const { return *fieldPtr_p; }
+  const T& get() const { return fieldPtr_p.get(); }
 
-    Int fieldNumber() const
-	{return fieldPtr_p.fieldNumber();}
+  const String& comment() const { return fieldPtr_p.comment(); }
 
-    void detach() {fieldPtr_p.detach(); }
-    Bool isAttached() const {return fieldPtr_p.isAttached(); }
+  Int fieldNumber() const { return fieldPtr_p.fieldNumber(); }
 
-private:
-    RecordFieldPtr<T> fieldPtr_p;
+  void detach() { fieldPtr_p.detach(); }
+  Bool isAttached() const { return fieldPtr_p.isAttached(); }
+
+ private:
+  RecordFieldPtr<T> fieldPtr_p;
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/RecordField.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

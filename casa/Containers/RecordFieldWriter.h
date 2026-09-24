@@ -1,27 +1,27 @@
-//# RecordFieldWriter.h: Various copiers to move fields between records.
-//# Copyright (C) 1996,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # RecordFieldWriter.h: Various copiers to move fields between records.
+// # Copyright (C) 1996,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_RECORDFIELDWRITER_H
 #define CASA_RECORDFIELDWRITER_H
@@ -30,7 +30,7 @@
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Record field writer.  Base class for the copiers.
 // </summary>
@@ -60,11 +60,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> fully document this
 // </todo>
 
-class RecordFieldWriter
-{
-public:
-    virtual ~RecordFieldWriter();
-    virtual void writeField() = 0;
+class RecordFieldWriter {
+ public:
+  virtual ~RecordFieldWriter();
+  virtual void writeField() = 0;
 };
 
 // <summary> Record field copier.  Copies field to field as is.
@@ -84,19 +83,17 @@ public:
 // This type of copy can be inlined.
 // </motivation>
 
-template<class outType, class inType> 
-class RecordFieldCopier : public RecordFieldWriter
-{
-public:
-    RecordFieldCopier(RecordInterface &outRecord, 
-		      RecordFieldId whichOutField,
-		      const RecordInterface &inRecord, 
-		      RecordFieldId whichInField);
-    void copy() {*out_p = outType(*in_p);}
-    virtual void writeField();
-private:
-    RecordFieldPtr<outType>   out_p;
-    RORecordFieldPtr<inType> in_p;
+template <class outType, class inType>
+class RecordFieldCopier : public RecordFieldWriter {
+ public:
+  RecordFieldCopier(RecordInterface &outRecord, RecordFieldId whichOutField,
+                    const RecordInterface &inRecord, RecordFieldId whichInField);
+  void copy() { *out_p = outType(*in_p); }
+  virtual void writeField();
+
+ private:
+  RecordFieldPtr<outType> out_p;
+  RORecordFieldPtr<inType> in_p;
 };
 
 // <summary> Unequal shape copier.
@@ -119,17 +116,16 @@ private:
 // </motivation>
 //
 
-template<class T> class UnequalShapeCopier : public RecordFieldWriter
-{
-public:
-    UnequalShapeCopier(RecordInterface &outRecord, 
-		       RecordFieldId whichOutField,
-		       const RecordInterface &inRecord, 
-		       RecordFieldId whichInField);
-    virtual void writeField();
-private:
-    RecordFieldPtr<Array<T> >   out_p;
-    RORecordFieldPtr<Array<T> > in_p;
+template <class T>
+class UnequalShapeCopier : public RecordFieldWriter {
+ public:
+  UnequalShapeCopier(RecordInterface &outRecord, RecordFieldId whichOutField,
+                     const RecordInterface &inRecord, RecordFieldId whichInField);
+  virtual void writeField();
+
+ private:
+  RecordFieldPtr<Array<T>> out_p;
+  RORecordFieldPtr<Array<T>> in_p;
 };
 
 // <summary> Multi field writer.  Copy many fields with a single call.
@@ -150,22 +146,21 @@ private:
 // </motivation>
 //
 
-class MultiRecordFieldWriter
-{
-public:
+class MultiRecordFieldWriter {
+ public:
   void addWriter(RecordFieldWriter *fromNew);
   void copy();
   ~MultiRecordFieldWriter();
-private:
+
+ private:
   // Make faster by having the RecordFieldCopiers split out so straight copying
   // is inline.
   Block<RecordFieldWriter *> writers_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/RecordFieldWriter.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

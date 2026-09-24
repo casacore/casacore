@@ -1,27 +1,27 @@
-//# tMath.cc:
-//# Copyright (C) 1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tMath.cc:
+// # Copyright (C) 1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -81,47 +81,46 @@ int main() {
     {
       Double x = 321.544;
       AlwaysAssert(roundDouble(x) == 320, AipsError);
-      AlwaysAssert(roundDouble(x,3) == 322, AipsError);
+      AlwaysAssert(roundDouble(x, 3) == 322, AipsError);
       x = 21.45554;
-      AlwaysAssert(roundDouble(x,2) == 21, AipsError);
+      AlwaysAssert(roundDouble(x, 2) == 21, AipsError);
       AlwaysAssert(roundDouble(x) == 21.5, AipsError);
       x = -11.324;
-      AlwaysAssert(roundDouble(x,2) == -11, AipsError);
+      AlwaysAssert(roundDouble(x, 2) == -11, AipsError);
       x = -4502034;
       AlwaysAssert(roundDouble(x) == -4500000, AipsError);
       x = -0.012345;
-      AlwaysAssert(nearAbs(roundDouble(x,4), -0.01235, 1e-8), AipsError);
+      AlwaysAssert(nearAbs(roundDouble(x, 4), -0.01235, 1e-8), AipsError);
       x = 0;
       AlwaysAssert(roundDouble(x) == 0, AipsError);
-      AlwaysAssert(floormod(5,3) == 2, AipsError);
-      AlwaysAssert(floormod(-5,3) == 1, AipsError);
-      AlwaysAssert(floormod(5,-3) == -1, AipsError);
-      AlwaysAssert(floormod(-5,-3) == -2, AipsError);
-      AlwaysAssert(floormod(5.,3.) == 2., AipsError);
-      AlwaysAssert(floormod(-5.,3.) == 1., AipsError);
-      AlwaysAssert(floormod(5.,-3.) == -1., AipsError);
-      AlwaysAssert(floormod(-5.,-3.) == -2., AipsError);
-      AlwaysAssert(floormod(3.,3.) == 0., AipsError);
-      AlwaysAssert(floormod(-3.,3.) == 0., AipsError);
-      AlwaysAssert(floormod(3.,-3.) == 0., AipsError);
-      AlwaysAssert(floormod(-3.,-3.) == 0., AipsError);
+      AlwaysAssert(floormod(5, 3) == 2, AipsError);
+      AlwaysAssert(floormod(-5, 3) == 1, AipsError);
+      AlwaysAssert(floormod(5, -3) == -1, AipsError);
+      AlwaysAssert(floormod(-5, -3) == -2, AipsError);
+      AlwaysAssert(floormod(5., 3.) == 2., AipsError);
+      AlwaysAssert(floormod(-5., 3.) == 1., AipsError);
+      AlwaysAssert(floormod(5., -3.) == -1., AipsError);
+      AlwaysAssert(floormod(-5., -3.) == -2., AipsError);
+      AlwaysAssert(floormod(3., 3.) == 0., AipsError);
+      AlwaysAssert(floormod(-3., 3.) == 0., AipsError);
+      AlwaysAssert(floormod(3., -3.) == 0., AipsError);
+      AlwaysAssert(floormod(-3., -3.) == 0., AipsError);
     }
     {
       // min/max uInt64
       uInt64 a = 9876543210;
       uInt64 b = 9876543211;
-      AlwaysAssert(min(a,b) == a, AipsError);
-      AlwaysAssert(max(a,b) == b, AipsError);
+      AlwaysAssert(min(a, b) == a, AipsError);
+      AlwaysAssert(max(a, b) == b, AipsError);
     }
-  }
-  catch (std::exception& x) {
+  } catch (std::exception& x) {
     cerr << x.what() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } 
+  }
   cout << "OK" << endl;
   return 0;
 }
-// Local Variables: 
+// Local Variables:
 // compile-command: "gmake OPTLIB=1 tMath"
-// End: 
+// End:

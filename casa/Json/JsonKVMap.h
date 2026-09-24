@@ -1,27 +1,27 @@
-//# JsonKVMap.h: Class to hold a collection of JSON key:value pairs
-//# Copyright (C) 2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # JsonKVMap.h: Class to hold a collection of JSON key:value pairs
+// # Copyright (C) 2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_JSONKVMAP_H
 #define CASA_JSONKVMAP_H
@@ -32,86 +32,84 @@
 
 namespace casacore {
 
-  //# Forward Declarations
-  class ValueHolder;
+// # Forward Declarations
+class ValueHolder;
 
-  // <summary>
-  // Class to hold a collection of JSON key:value pairs.
-  // </summary>
-  
-  // <use visibility=export>
-  // <reviewed reviewer="" date="" tests="tJsonKVMap">
-  // </reviewed>
+// <summary>
+// Class to hold a collection of JSON key:value pairs.
+// </summary>
 
-  //# <prerequisite>
-  //# </prerequisite>
+// <use visibility=export>
+// <reviewed reviewer="" date="" tests="tJsonKVMap">
+// </reviewed>
 
-  // <synopsis>
-  // A JsonKVMap object is the result of a JSON file parsed by JsonParser.
-  // It is a map of name to a JsonValue object holding an arbitrary value
-  // (including a JsonKVMap for nested structs).
-  //
-  // JsonKVMap has functions to test if a given field is present and to
-  // get its JsonValue. It also has functions to get a scalar value
-  // where a default value is used if the key is undefined.
-  //
-  // JsonKVMap is derived from std::map, so all its functions are available.
-  // Iterators make standard iteration possible.
-  // </synopsis>
+// # <prerequisite>
+// # </prerequisite>
 
-  // <motivation>
-  // JSON is a commonly used interchange format.
-  // </motivation>
+// <synopsis>
+// A JsonKVMap object is the result of a JSON file parsed by JsonParser.
+// It is a map of name to a JsonValue object holding an arbitrary value
+// (including a JsonKVMap for nested structs).
+//
+// JsonKVMap has functions to test if a given field is present and to
+// get its JsonValue. It also has functions to get a scalar value
+// where a default value is used if the key is undefined.
+//
+// JsonKVMap is derived from std::map, so all its functions are available.
+// Iterators make standard iteration possible.
+// </synopsis>
 
-  //# <todo asof="1996/03/10">
-  //#   <li> 
-  //# </todo>
+// <motivation>
+// JSON is a commonly used interchange format.
+// </motivation>
 
-  class JsonKVMap: public std::map<String, JsonValue>
-  {
-  public:
-    // Define the iterator types.
-    typedef std::map<String,JsonValue>::const_iterator const_iterator;
-    typedef std::map<String,JsonValue>::iterator iterator;
+// # <todo asof="1996/03/10">
+// #   <li>
+// # </todo>
 
-    // Construct an empty map.
-    JsonKVMap();
-      
-    // Copy constructor (copy semantics)
-    JsonKVMap (const JsonKVMap& that);
-      
-    ~JsonKVMap();
-      
-    // Assignment (copy semantics)
-    JsonKVMap& operator= (const JsonKVMap& that);
-      
-    // Is a key defined?
-    Bool isDefined (const String& name) const
-      { return find(name) != end(); }
+class JsonKVMap : public std::map<String, JsonValue> {
+ public:
+  // Define the iterator types.
+  typedef std::map<String, JsonValue>::const_iterator const_iterator;
+  typedef std::map<String, JsonValue>::iterator iterator;
 
-    // Get the value of a key. An exception is thrown if undefined.
-    const JsonValue& get (const String& name) const;
+  // Construct an empty map.
+  JsonKVMap();
 
-    // \name Get the typed value of a key
-    // Use the default if not existing.
-    // <group>
-    Bool getBool (const String& name, Bool defVal) const;
-    Int64 getInt (const String& name, Int64 defVal) const;
-    double getDouble (const String& name, double defVal) const;
-    DComplex getDComplex (const String& name, const DComplex& defVal) const;
-    const String& getString (const String& name, const String& defVal) const;
-    // </group>
+  // Copy constructor (copy semantics)
+  JsonKVMap(const JsonKVMap& that);
 
-    // Convert the map to a Record.
-    Record toRecord() const;
+  ~JsonKVMap();
 
-    // \name Show the contents of the object
-    // <group>
-    void show (ostream&) const;
-    friend ostream& operator<< (ostream&, const JsonKVMap&);
-    // </group>
-  };
+  // Assignment (copy semantics)
+  JsonKVMap& operator=(const JsonKVMap& that);
 
-} //end namespace
+  // Is a key defined?
+  Bool isDefined(const String& name) const { return find(name) != end(); }
 
-#endif 
+  // Get the value of a key. An exception is thrown if undefined.
+  const JsonValue& get(const String& name) const;
+
+  // \name Get the typed value of a key
+  // Use the default if not existing.
+  // <group>
+  Bool getBool(const String& name, Bool defVal) const;
+  Int64 getInt(const String& name, Int64 defVal) const;
+  double getDouble(const String& name, double defVal) const;
+  DComplex getDComplex(const String& name, const DComplex& defVal) const;
+  const String& getString(const String& name, const String& defVal) const;
+  // </group>
+
+  // Convert the map to a Record.
+  Record toRecord() const;
+
+  // \name Show the contents of the object
+  // <group>
+  void show(ostream&) const;
+  friend ostream& operator<<(ostream&, const JsonKVMap&);
+  // </group>
+};
+
+}  // namespace casacore
+
+#endif

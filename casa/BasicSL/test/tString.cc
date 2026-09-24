@@ -4,8 +4,7 @@
 
 BOOST_AUTO_TEST_SUITE(string_operations)
 
-BOOST_AUTO_TEST_CASE(TrimInPlace)
-{
+BOOST_AUTO_TEST_CASE(TrimInPlace) {
   using casacore::TrimInPlace;
 
   std::string empty;
@@ -387,8 +386,8 @@ BOOST_AUTO_TEST_CASE(GetStringAfter) {
 }
 
 BOOST_AUTO_TEST_CASE(ToUpperAndToLower) {
-  using casacore::ToUpperCaseInPlace;
   using casacore::ToLowerCaseInPlace;
+  using casacore::ToUpperCaseInPlace;
   const std::string kStart = "Hello? HELLO?!?";
   const std::string kLower = "hello? hello?!?";
   const std::string kUpper = "HELLO? HELLO?!?";
@@ -510,9 +509,9 @@ BOOST_AUTO_TEST_CASE(EqualStringsAndNotEmpty) {
   BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "xyxy", -1));
   BOOST_CHECK(EqualStringsAndNotEmpty("xyxy", "xy", -2));
 
-  //BOOST_CHECK(!cStr.matches(std::string("x"), 1000));
+  // BOOST_CHECK(!cStr.matches(std::string("x"), 1000));
   BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "x", 1000));
-  //BOOST_CHECK(!cStr.matches(std::string("x"), -1000));
+  // BOOST_CHECK(!cStr.matches(std::string("x"), -1000));
   BOOST_CHECK(!EqualStringsAndNotEmpty("xyxy", "x", -1000));
 }
 

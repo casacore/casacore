@@ -1,40 +1,39 @@
-//# Unit.h: defines the Unit class
-//# Copyright (C) 1994-1996,1998-2000,2008
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Unit.h: defines the Unit class
+// # Copyright (C) 1994-1996,1998-2000,2008
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_UNIT_H
 #define CASA_UNIT_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 // <summary>
 // defines physical units
@@ -45,13 +44,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tUnit">
 // </reviewed>
 //
-//# // <prerequisite>
-//# // </prerequisite>
+// # // <prerequisite>
+// # // </prerequisite>
 //
-//# // <etymology>
-//# // </etymology>
+// # // <etymology>
+// # // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Physical units are basically used as quantities (see the
 // <linkto class=Quantum>Quantum</linkto> class), i.e.
 // a value and a dimension. The Unit class, or one of its subsidaries,  will
@@ -71,13 +70,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // e.g. <linkto class=Quantum>Quantity(5,"deg")</linkto> </note>
 // <note role=caution>
 // If using an explicit Unit variable (e.g. <src>Unit a("5Bolton/beam")</src>),
-// the check on the legality of the given string, and the conversion to the 
+// the check on the legality of the given string, and the conversion to the
 // cached canonical value in the variable 'a', is only done at creation time. This
-// means that if the user changes the value of a unit involved by the 
+// means that if the user changes the value of a unit involved by the
 // <linkto class=UnitMap>putUser()</linkto> method, the unit using it should be
 // re-created (<src> a = Unit("5Bolton/beam");</src>).
 // </note>
-// A unit is a string of one or more fields separated 
+// A unit is a string of one or more fields separated
 // by 'space' or '.' or '*' (FITS option)
 // (to indicate multiply) or '/' (to indicate divide).
 // Multiple separators are acted upon (i.e. m//s == m.s).
@@ -140,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </note>
 //
 //  <h3> Unit class </h3>
-// The Unit class is not directly based on the String class, but Strings and 
+// The Unit class is not directly based on the String class, but Strings and
 // Units are interchangeable in all Unit and Quantum related calls.
 // (But notice the earlier note on speed if using explicit Strings often.)
 //
@@ -155,8 +154,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // Bool UnitVal::check("string");
 // </srcblock>
-// 
-// </synopsis> 
+//
+// </synopsis>
 //
 // <example>
 // <srcblock>
@@ -185,62 +184,61 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class Unit {
-    public:
-//# Constructors
-// Default empty string constructor
-    Unit();
-// Copy constructor
-    Unit(const Unit &other);
-// String based constructors.
-// <thrown>
-//   <li> AipsError if illegal unit string
-// </thrown>
-// <group name="constructor">
-    Unit(const std::string &other);
-    Unit(const Char *other);
-    explicit Unit(Char other);
-    Unit(const Char *other, Int len);
-// </group>
-// Destructor
-    ~Unit();
+ public:
+  // # Constructors
+  //  Default empty string constructor
+  Unit();
+  // Copy constructor
+  Unit(const Unit &other);
+  // String based constructors.
+  // <thrown>
+  //   <li> AipsError if illegal unit string
+  // </thrown>
+  // <group name="constructor">
+  Unit(const std::string &other);
+  Unit(const Char *other);
+  explicit Unit(Char other);
+  Unit(const Char *other, Int len);
+  // </group>
+  // Destructor
+  ~Unit();
 
-//* Operators
-// Copy assignment
-    Unit& operator=(const Unit &other);
-// Comparisons. Comparisons are done on the basis of the inherent units. I.e.
-// <src>m/s</src> are identical to <src>AU/cy</src>.
-// <group>
-    Bool operator==(const Unit &other) const;
-    Bool operator!=(const Unit &other) const;
-// Fast check for "" units
-    Bool empty() const;
-// </group>
-//# Member functions
-// Get the unit value
-    const UnitVal &getValue() const;
-// Get the unit name
-    const String &getName() const;
-// Set the unit value
-    void setValue(const UnitVal &in);
-// Set the unit name
-    void setName(const String &in);
+  //* Operators
+  // Copy assignment
+  Unit &operator=(const Unit &other);
+  // Comparisons. Comparisons are done on the basis of the inherent units. I.e.
+  // <src>m/s</src> are identical to <src>AU/cy</src>.
+  // <group>
+  Bool operator==(const Unit &other) const;
+  Bool operator!=(const Unit &other) const;
+  // Fast check for "" units
+  Bool empty() const;
+  // </group>
+  // # Member functions
+  // Get the unit value
+  const UnitVal &getValue() const;
+  // Get the unit name
+  const String &getName() const;
+  // Set the unit value
+  void setValue(const UnitVal &in);
+  // Set the unit name
+  void setName(const String &in);
 
-private:
-//# Data
-    String uName;
-    UnitVal uVal;
+ private:
+  // # Data
+  String uName;
+  UnitVal uVal;
 
-//# Member functions
-// Check format of unit string
-// <thrown>
-//   <li> AipsError
-// </thrown>
-    void check();
+  // # Member functions
+  //  Check format of unit string
+  //  <thrown>
+  //    <li> AipsError
+  //  </thrown>
+  void check();
 };
 
-//# Inline Implementations
+// # Inline Implementations
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

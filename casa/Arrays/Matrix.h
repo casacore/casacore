@@ -1,35 +1,35 @@
-//# Matrix.h: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Matrix.h: A 2-D Specialization of the Array Class
+// # Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MATRIX_2_H
 #define CASA_MATRIX_2_H
 
-//# Includes
+// # Includes
 #include "Array.h"
 
-namespace casacore { //#Begin casa namespace
+namespace casacore {  // #Begin casa namespace
 
 // <summary> A 2-D Specialization of the Array class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -42,7 +42,7 @@ namespace casacore { //#Begin casa namespace
 // "AIPS++ Programming Manual".
 //
 // Generally the member functions of Array are also available in
-// Matrix versions which take a pair of integers where the array 
+// Matrix versions which take a pair of integers where the array
 // needs an IPosition. Since the Matrix
 // is two-dimensional, the IPositions are overkill, although you may
 // use those versions if you want to.
@@ -51,7 +51,7 @@ namespace casacore { //#Begin casa namespace
 // mi.resize(50,50);         // Shape now 50x50
 // </srcblock>
 //
-// Slices may be taken with the Slice class. To take a slice, one "indexes" 
+// Slices may be taken with the Slice class. To take a slice, one "indexes"
 // with one Slice(start, length, inc) for each axis,
 // where end and inc are optional.
 // Additionally, there are row(), column() and diagonal()
@@ -68,7 +68,7 @@ namespace casacore { //#Begin casa namespace
 // for (size_t j=0; j<mi.ncolumn(); j++) {
 //    for (size_t i=0; i<mi.nrow(); i++) {
 //       mi(i,j) = i*j;
-//    }      
+//    }
 // }
 // </srcblock>
 //
@@ -83,252 +83,241 @@ namespace casacore { //#Begin casa namespace
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<typename T> class Matrix : public Array<T>
-{
-public:
-    // A Matrix of length zero in each dimension; zero origin.
-    Matrix();
+template <typename T>
+class Matrix : public Array<T> {
+ public:
+  // A Matrix of length zero in each dimension; zero origin.
+  Matrix();
 
-    // A Matrix with "l1" rows and "l2" columns.
-    // Fill it with the initial value.
-    Matrix(size_t l1, size_t l2, const T &initialValue = T());
+  // A Matrix with "l1" rows and "l2" columns.
+  // Fill it with the initial value.
+  Matrix(size_t l1, size_t l2, const T &initialValue = T());
 
-    // An uninitialized Matrix with "l1" rows and "l2" columns.
-    Matrix(size_t l1, size_t l2, typename Array<T>::uninitializedType);
+  // An uninitialized Matrix with "l1" rows and "l2" columns.
+  Matrix(size_t l1, size_t l2, typename Array<T>::uninitializedType);
 
-    // A matrix of shape with shape "len".
-    // Fill it with the initial value.
-    Matrix(const IPosition &len, const T &initialValue = T());
+  // A matrix of shape with shape "len".
+  // Fill it with the initial value.
+  Matrix(const IPosition &len, const T &initialValue = T());
 
-    // An uninitialized matrix of shape with shape "len".
-    Matrix(const IPosition &len, typename Array<T>::uninitializedType);
+  // An uninitialized matrix of shape with shape "len".
+  Matrix(const IPosition &len, typename Array<T>::uninitializedType);
 
-    // The copy/move constructor uses reference semantics.
-    Matrix(const Matrix<T>& source);
-    Matrix(Matrix<T>&& source);
+  // The copy/move constructor uses reference semantics.
+  Matrix(const Matrix<T> &source);
+  Matrix(Matrix<T> &&source);
 
-    // Construct a Matrix by reference from "source". "source must have
-    // ndim() of 2 or less.
-    Matrix(const Array<T>& source);
-    Matrix(Array<T>&& source);
+  // Construct a Matrix by reference from "source". "source must have
+  // ndim() of 2 or less.
+  Matrix(const Array<T> &source);
+  Matrix(Array<T> &&source);
 
-    // Create an Matrix of a given shape from a pointer.
-    Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
-    // Create an Matrix of a given shape from a pointer. Because the pointer
-    // is const, a copy is always made.
-    Matrix(const IPosition &shape, const T *storage);
+  // Create an Matrix of a given shape from a pointer.
+  Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
+  // Create an Matrix of a given shape from a pointer. Because the pointer
+  // is const, a copy is always made.
+  Matrix(const IPosition &shape, const T *storage);
 
-    // Create an identity matrix of side length n. (Could not do this as a constructor
-    // because of ambiguities with other constructors).
-    static Matrix<T> identity (size_t n);
+  // Create an identity matrix of side length n. (Could not do this as a constructor
+  // because of ambiguities with other constructors).
+  static Matrix<T> identity(size_t n);
 
-    // Resize to the given shape
-    // <group>
-    using Array<T>::resize;
-    void resize(size_t nx, size_t ny, bool copyValues=false);
-     // </group>
+  // Resize to the given shape
+  // <group>
+  using Array<T>::resize;
+  void resize(size_t nx, size_t ny, bool copyValues = false);
+  // </group>
 
-    Matrix<T>& operator=(const Matrix<T>& source)
-    { return assign_conforming(source); }
-    Matrix<T>& operator=(Matrix<T>&& source)
-    { return assign_conforming(std::move(source)); }
-    Matrix<T>& operator=(const Array<T>& source)
-    { return assign_conforming(source); }
-    Matrix<T>& operator=(Array<T>&& source)
-    { return assign_conforming(std::move(source)); }
-   
-    // Copy the values from other to this Matrix. If this matrix has zero
-    // elements then it will resize to be the same shape as other; otherwise
-    // other must conform to this.
-    // Note that the assign function can be used to assign a
-    // non-conforming matrix.
-    // <group>
-    Matrix<T>& assign_conforming(const Matrix<T>& source)
-    { Array<T>::assign_conforming(source); return *this; }
-    Matrix<T>& assign_conforming(Matrix<T>&& source)
-    { Array<T>::assign_conforming(std::move(source)); return *this; }
-    
-    Matrix<T>& assign_conforming(const Array<T>& source)
-    {
-      // TODO Should be supported by the Array class,
-      // see Cube::operator=(const Array&)
-      
-      if (source.ndim() == 2) {
-        Array<T>::assign_conforming(source);
-      } else {
-        // This might work if a.ndim == 1 or 2
-        (*this) = Matrix<T>(source);
-      }
-      return *this;
+  Matrix<T> &operator=(const Matrix<T> &source) { return assign_conforming(source); }
+  Matrix<T> &operator=(Matrix<T> &&source) { return assign_conforming(std::move(source)); }
+  Matrix<T> &operator=(const Array<T> &source) { return assign_conforming(source); }
+  Matrix<T> &operator=(Array<T> &&source) { return assign_conforming(std::move(source)); }
+
+  // Copy the values from other to this Matrix. If this matrix has zero
+  // elements then it will resize to be the same shape as other; otherwise
+  // other must conform to this.
+  // Note that the assign function can be used to assign a
+  // non-conforming matrix.
+  // <group>
+  Matrix<T> &assign_conforming(const Matrix<T> &source) {
+    Array<T>::assign_conforming(source);
+    return *this;
+  }
+  Matrix<T> &assign_conforming(Matrix<T> &&source) {
+    Array<T>::assign_conforming(std::move(source));
+    return *this;
+  }
+
+  Matrix<T> &assign_conforming(const Array<T> &source) {
+    // TODO Should be supported by the Array class,
+    // see Cube::operator=(const Array&)
+
+    if (source.ndim() == 2) {
+      Array<T>::assign_conforming(source);
+    } else {
+      // This might work if a.ndim == 1 or 2
+      (*this) = Matrix<T>(source);
     }
-   
-    Matrix<T>& assign_conforming(Array<T>&& source)
-    {
-      if (source.ndim() == 2) {
-        Array<T>::assign_conforming(std::move(source));
-      } else {
-        (*this) = Matrix<T>(std::move(source));
-      }
-      return *this;
+    return *this;
+  }
+
+  Matrix<T> &assign_conforming(Array<T> &&source) {
+    if (source.ndim() == 2) {
+      Array<T>::assign_conforming(std::move(source));
+    } else {
+      (*this) = Matrix<T>(std::move(source));
     }
-    // </group>
+    return *this;
+  }
+  // </group>
 
-    // Copy val into every element of this Matrix; i.e. behaves as if
-    // val were a constant conformant matrix.
-    Array<T>& operator=(const T &val)
-      { return Array<T>::operator=(val); }
+  // Copy val into every element of this Matrix; i.e. behaves as if
+  // val were a constant conformant matrix.
+  Array<T> &operator=(const T &val) { return Array<T>::operator=(val); }
 
-    // Copy to this those values in marray whose corresponding elements
-    // in marray's mask are true.
-    Matrix<T>& assign_conforming (const MaskedArray<T> &marray)
-      { Array<T>::assign_conforming(marray); return *this; }
+  // Copy to this those values in marray whose corresponding elements
+  // in marray's mask are true.
+  Matrix<T> &assign_conforming(const MaskedArray<T> &marray) {
+    Array<T>::assign_conforming(marray);
+    return *this;
+  }
 
-    // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
-    // bounds checking is performed.
-    // <group>
-    T &operator()(const IPosition &i)
-      { return Array<T>::operator()(i); }
-    const T &operator()(const IPosition &i) const 
-      { return Array<T>::operator()(i); }
-    T &operator()(size_t i1, size_t i2)
-      {
-	return this->contiguous_p ? this->begin_p[i1 + i2*yinc()] :
-	                            this->begin_p[i1*xinc() + i2*yinc()];
-      }
+  // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
+  // bounds checking is performed.
+  // <group>
+  T &operator()(const IPosition &i) { return Array<T>::operator()(i); }
+  const T &operator()(const IPosition &i) const { return Array<T>::operator()(i); }
+  T &operator()(size_t i1, size_t i2) {
+    return this->contiguous_p ? this->begin_p[i1 + i2 * yinc()]
+                              : this->begin_p[i1 * xinc() + i2 * yinc()];
+  }
 
-    const T &operator()(size_t i1, size_t i2) const
-      {
-	return this->contiguous_p ? this->begin_p[i1 + i2*yinc()] :
-                                    this->begin_p[i1*xinc() + i2*yinc()];
-      }
-    // </group>
+  const T &operator()(size_t i1, size_t i2) const {
+    return this->contiguous_p ? this->begin_p[i1 + i2 * yinc()]
+                              : this->begin_p[i1 * xinc() + i2 * yinc()];
+  }
+  // </group>
 
+  // The array is masked by the input LogicalArray.
+  // This mask must conform to the array.
+  // <group>
 
-    // The array is masked by the input LogicalArray.
-    // This mask must conform to the array.
-    // <group>
+  // Return a MaskedArray.
+  MaskedArray<T> operator()(const LogicalArray &mask) const { return Array<T>::operator()(mask); }
 
-    // Return a MaskedArray.
-    MaskedArray<T> operator() (const LogicalArray &mask) const
-      { return Array<T>::operator() (mask); }
+  // Return a MaskedArray.
+  MaskedArray<T> operator()(const LogicalArray &mask) { return Array<T>::operator()(mask); }
 
-    // Return a MaskedArray.
-    MaskedArray<T> operator() (const LogicalArray &mask)
-      { return Array<T>::operator() (mask); }
+  // </group>
 
-    // </group>
+  // The array is masked by the input MaskedLogicalArray.
+  // The mask is effectively the AND of the internal LogicalArray
+  // and the internal mask of the MaskedLogicalArray.
+  // The MaskedLogicalArray must conform to the array.
+  // <group>
 
+  // Return a MaskedArray.
+  MaskedArray<T> operator()(const MaskedLogicalArray &mask) const {
+    return Array<T>::operator()(mask);
+  }
 
-    // The array is masked by the input MaskedLogicalArray.
-    // The mask is effectively the AND of the internal LogicalArray
-    // and the internal mask of the MaskedLogicalArray.
-    // The MaskedLogicalArray must conform to the array.
-    // <group>
+  // Return a MaskedArray.
+  MaskedArray<T> operator()(const MaskedLogicalArray &mask) { return Array<T>::operator()(mask); }
 
-    // Return a MaskedArray.
-    MaskedArray<T> operator() (const MaskedLogicalArray &mask) const
-      { return Array<T>::operator() (mask); }
+  // </group>
 
-    // Return a MaskedArray.
-    MaskedArray<T> operator() (const MaskedLogicalArray &mask)
-      { return Array<T>::operator() (mask); }
+  // Returns a reference to the i'th row.
+  // <group>
+  Vector<T> row(size_t i);
+  const Vector<T> row(size_t i) const;
+  // </group>
 
-    // </group>
+  // Returns a reference to the j'th column
+  // <group>
+  Vector<T> column(size_t j);
+  const Vector<T> column(size_t j) const;
+  // </group>
 
+  // Returns a diagonal from the Matrix. The Matrix must be square.
+  // n==0 is the main diagonal. n>0 is above the main diagonal, n<0
+  // is below it.
+  // <group>
+  Vector<T> diagonal(long long n = 0);
+  const Vector<T> diagonal(long long n = 0) const;
+  // </group>
 
-    // Returns a reference to the i'th row.
-    // <group>
-    Vector<T> row(size_t i);
-    const Vector<T> row(size_t i) const;
-    // </group>
+  // Take a slice of this matrix. Slices are always indexed starting
+  // at zero. This uses reference semantics, i.e. changing a value
+  // in the slice changes the original.
+  // <srcblock>
+  // Matrix<double> vd(100,100);
+  // //...
+  // vd(Slice(0,10),Slice(10,10)) = -1.0; // 10x10 sub-matrix set to -1.0
+  // </srcblock>
+  // <group>
+  Matrix<T> operator()(const Slice &sliceX, const Slice &sliceY);
+  const Matrix<T> operator()(const Slice &sliceX, const Slice &sliceY) const;
+  // </group>
 
-    // Returns a reference to the j'th column
-    // <group>
-    Vector<T> column(size_t j);
-    const Vector<T> column(size_t j) const;
-    // </group>
+  // Slice using IPositions. Required to be defined, otherwise the base
+  // class versions are hidden.
+  // <group>
+  Array<T> operator()(const IPosition &blc, const IPosition &trc, const IPosition &incr) {
+    return Array<T>::operator()(blc, trc, incr);
+  }
+  const Array<T> operator()(const IPosition &blc, const IPosition &trc,
+                            const IPosition &incr) const {
+    return Array<T>::operator()(blc, trc, incr);
+  }
+  Array<T> operator()(const IPosition &blc, const IPosition &trc) {
+    return Array<T>::operator()(blc, trc);
+  }
+  const Array<T> operator()(const IPosition &blc, const IPosition &trc) const {
+    return Array<T>::operator()(blc, trc);
+  }
+  Array<T> operator()(const Slicer &slicer) { return Array<T>::operator()(slicer); }
+  const Array<T> operator()(const Slicer &slicer) const { return Array<T>::operator()(slicer); }
+  // </group>
 
-    // Returns a diagonal from the Matrix. The Matrix must be square.
-    // n==0 is the main diagonal. n>0 is above the main diagonal, n<0
-    // is below it.
-    // <group>
-    Vector<T> diagonal(long long n=0);
-    const Vector<T> diagonal(long long n=0) const;
-    // </group>
+  // The length of each axis of the Matrix.
+  const IPosition &shape() const { return this->length_p; }
+  void shape(int &s1, int &s2) const {
+    s1 = this->length_p(0);
+    s2 = this->length_p(1);
+  }
 
-    // Take a slice of this matrix. Slices are always indexed starting
-    // at zero. This uses reference semantics, i.e. changing a value
-    // in the slice changes the original.
-    // <srcblock>
-    // Matrix<double> vd(100,100);
-    // //...
-    // vd(Slice(0,10),Slice(10,10)) = -1.0; // 10x10 sub-matrix set to -1.0
-    // </srcblock>
-    // <group>
-    Matrix<T> operator()(const Slice &sliceX, const Slice &sliceY);
-    const Matrix<T> operator()(const Slice &sliceX, const Slice &sliceY) const;
-    // </group>
+  // The number of rows in the Matrix, i.e. the length of the first axis.
+  size_t nrow() const { return this->length_p(0); }
 
-    // Slice using IPositions. Required to be defined, otherwise the base
-    // class versions are hidden.
-    // <group>
-    Array<T> operator()(const IPosition &blc, const IPosition &trc,
-			const IPosition &incr)
-      { return Array<T>::operator()(blc,trc,incr); }
-    const Array<T> operator()(const IPosition &blc, const IPosition &trc,
-                              const IPosition &incr) const
-      { return Array<T>::operator()(blc,trc,incr); }
-    Array<T> operator()(const IPosition &blc, const IPosition &trc)
-      { return Array<T>::operator()(blc,trc); }
-    const Array<T> operator()(const IPosition &blc, const IPosition &trc) const
-      { return Array<T>::operator()(blc,trc); }
-    Array<T> operator()(const Slicer& slicer)
-      { return Array<T>::operator()(slicer); }
-    const Array<T> operator()(const Slicer& slicer) const
-      { return Array<T>::operator()(slicer); }
-    // </group>
+  // The number of columns in the Matrix, i.e. the length of the 2nd axis.
+  size_t ncolumn() const { return this->length_p(1); }
 
-    // The length of each axis of the Matrix.
-    const IPosition &shape() const
-      { return this->length_p; }
-    void shape(int &s1, int &s2) const
-      { s1 = this->length_p(0); s2=this->length_p(1); }
+  // Checks that the Matrix is consistent (invariants check out).
+  virtual bool ok() const override;
 
-    // The number of rows in the Matrix, i.e. the length of the first axis.
-    size_t nrow() const
-      { return this->length_p(0); }
+ protected:
+  virtual void preTakeStorage(const IPosition &shape) override;
+  // Remove the degenerate axes from other and store result in this matrix.
+  // An exception is thrown if removing degenerate axes does not result
+  // in a matrix.
+  virtual void doNonDegenerate(const Array<T> &other, const IPosition &ignoreAxes) override;
 
-    // The number of columns in the Matrix, i.e. the length of the 2nd axis.
-    size_t ncolumn() const
-      { return this->length_p(1); }
+  virtual size_t fixedDimensionality() const override { return 2; }
 
-    // Checks that the Matrix is consistent (invariants check out).
-    virtual bool ok() const override;
+ private:
+  // Cached constants to improve indexing.
+  // size_t xinc_p, yinc_p;
 
-protected:
-    virtual void preTakeStorage(const IPosition &shape) override;
-    // Remove the degenerate axes from other and store result in this matrix.
-    // An exception is thrown if removing degenerate axes does not result
-    // in a matrix.
-    virtual void doNonDegenerate(const Array<T> &other,
-                                 const IPosition &ignoreAxes) override;
-                                 
-    virtual size_t fixedDimensionality() const override { return 2; }
-
-private:
-    // Cached constants to improve indexing.
-    // size_t xinc_p, yinc_p;
-    
-    size_t xinc() const { return this->inc_p(0); }
-    size_t yinc() const { return this->inc_p(1)*this->originalLength_p(0); }
+  size_t xinc() const { return this->inc_p(0); }
+  size_t yinc() const { return this->inc_p(1) * this->originalLength_p(0); }
 };
 
-//# Declare extern templates for often used types.
-  extern template class Matrix<bool>;
-  extern template class Matrix<float>;
-  extern template class Matrix<double>;
+// # Declare extern templates for often used types.
+extern template class Matrix<bool>;
+extern template class Matrix<float>;
+extern template class Matrix<double>;
 
-} //#End casa namespace
+}  // namespace casacore
 
 #include "Matrix.tcc"
 

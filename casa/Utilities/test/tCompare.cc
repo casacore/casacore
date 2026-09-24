@@ -1,29 +1,29 @@
-//# tCompare.cc: Test program for the Compare classes
-//# Copyright (C) 2013
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tCompare.cc: Test program for the Compare classes
+// # Copyright (C) 2013
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 
 #include <casacore/casa/Utilities/Sort.h>
 #include <casacore/casa/Utilities/Compare.h>
@@ -40,8 +40,7 @@
 // compares the output with a reference output file.
 
 // Test case-insensitive sort.
-void sort1 (Int option)
-{
+void sort1(Int option) {
   String arr[10];
   arr[0] = "aaa";
   arr[1] = "aaac";
@@ -55,18 +54,17 @@ void sort1 (Int option)
   arr[9] = "aaab1";
   std::shared_ptr<BaseCompare> cmp(new CompareNoCase());
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(String));
+  sort.sortKey(arr, cmp, sizeof(String));
   Vector<uInt> inx;
-  sort.sort (inx, 10, option);
-  for (uInt i=0; i<inx.size(); ++i) {
+  sort.sort(inx, 10, option);
+  for (uInt i = 0; i < inx.size(); ++i) {
     cout << arr[inx[i]] << ' ';
   }
   cout << endl;
 }
 
 // Test real interval sort.
-void sort2 (Int option)
-{
+void sort2(Int option) {
   Double arr[10];
   arr[0] = 1;
   arr[1] = 12;
@@ -78,20 +76,19 @@ void sort2 (Int option)
   arr[7] = 9;
   arr[8] = 8.99;
   arr[9] = -5;
-  std::shared_ptr<BaseCompare> cmp(new CompareIntervalReal<Double>(2,1));
+  std::shared_ptr<BaseCompare> cmp(new CompareIntervalReal<Double>(2, 1));
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(Double));
+  sort.sortKey(arr, cmp, sizeof(Double));
   Vector<uInt> inx;
-  sort.sort (inx, 10, option);
-  for (uInt i=0; i<inx.size(); ++i) {
+  sort.sort(inx, 10, option);
+  for (uInt i = 0; i < inx.size(); ++i) {
     cout << arr[inx[i]] << ' ';
   }
   cout << endl;
 }
 
 // Test other interval.
-void sort3 (Int option)
-{
+void sort3(Int option) {
   Double arr[10];
   arr[0] = 1;
   arr[1] = 12;
@@ -103,19 +100,18 @@ void sort3 (Int option)
   arr[7] = 9;
   arr[8] = -8;
   arr[9] = -5;
-  std::shared_ptr<BaseCompare> cmp(new CompareIntervalReal<Double>(3,0));
+  std::shared_ptr<BaseCompare> cmp(new CompareIntervalReal<Double>(3, 0));
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(Double));
+  sort.sortKey(arr, cmp, sizeof(Double));
   Vector<uInt> inx;
-  sort.sort (inx, 10, option);
-  for (uInt i=0; i<inx.size(); ++i) {
+  sort.sort(inx, 10, option);
+  for (uInt i = 0; i < inx.size(); ++i) {
     cout << arr[inx[i]] << ' ';
   }
   cout << endl;
 }
 
-int main()
-{
+int main() {
   sort1(Sort::ParSort);
   sort1(Sort::QuickSort);
   sort1(Sort::HeapSort);
@@ -143,5 +139,5 @@ int main()
   sort3(Sort::HeapSort + Sort::NoDuplicates);
   sort3(Sort::InsSort + Sort::NoDuplicates);
 
-  return 0;                              // exit with success status
+  return 0;  // exit with success status
 }

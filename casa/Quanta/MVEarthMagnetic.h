@@ -1,39 +1,38 @@
-//# MVEarthMagnetic.h: A 3D Earth magnetic field vector
-//# Copyright (C) 1996,1997,1998,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVEarthMagnetic.h: A 3D Earth magnetic field vector
+// # Copyright (C) 1996,1997,1998,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MVEARTHMAGNETIC_H
 #define CASA_MVEARTHMAGNETIC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary> A 3D Earth magnetic field vector </summary>
 
@@ -65,13 +64,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //		specified values in tesla
 //   <li> MVEarthMagnetic(Quantity length,Double, Double) creates an
 //		 MVEarthMagnetic assuming
-//		that the two values are (in radians) angle along 'equator' 
+//		that the two values are (in radians) angle along 'equator'
 //		and towards 'pole'.
 //   <li> MVEarthMagnetic(Quantity length, Quantity, Quantity) creates an
-//		 MVEarthMagnetic 
+//		 MVEarthMagnetic
 //		assuming angles as in previous, or (x,y,z) fields
-//   <li> <src>MVEarthMagnetic(Quantity, Quantum<Vector<Double> >)</src> creates a 
-//		MVEarthMagnetic from angle vector, using first two angles, and 
+//   <li> <src>MVEarthMagnetic(Quantity, Quantum<Vector<Double> >)</src> creates a
+//		MVEarthMagnetic from angle vector, using first two angles, and
 //		assuming second as zero if not present, and pole if length 0.
 //   <li> <src>MVEarthMagnetic(Quantum<Vector<Double> ></src> creates from
 //		angles or fields, depending on the units in the
@@ -87,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // A void adjust(Double) function normalises the vector to a length of 1;
 // a get() returns as a
 // Double 3-vector the length and angles of the EarthMagnetic vector;
-// a getAngle() returns a Quantum 2-vector, (uInt) returns the indicated 
+// a getAngle() returns a Quantum 2-vector, (uInt) returns the indicated
 // element, and getValue returns the vector.<br>
 // EarthMagnetics can be added and subtracted.<br>
 // The multiplication of two EarthMagnetics produces the in-product.<br>
@@ -105,14 +104,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	<li> nothing I know of
 // </todo>
 
-class MVEarthMagnetic : public MVPosition {	
+class MVEarthMagnetic : public MVPosition {
+ public:
+  // # Friends
 
-public:
-
-  //# Friends
-  
-  //# Constructors
-  // Default constructor generates a (0,0,0) EarthMagnetic
+  // # Constructors
+  //  Default constructor generates a (0,0,0) EarthMagnetic
   MVEarthMagnetic();
   // Creates from an MVPosition
   MVEarthMagnetic(const MVPosition &other);
@@ -130,33 +127,32 @@ public:
   //    <li> AipsError if quantities not in angle format
   // </thrown>
   // <group>
-  MVEarthMagnetic(const Quantity &l, const Quantity &angle0, 
-		  const Quantity &angle1);
+  MVEarthMagnetic(const Quantity &l, const Quantity &angle0, const Quantity &angle1);
   // If not enough angles: pole assumed (if none), or elevation =0 (if 1)
-  MVEarthMagnetic(const Quantum<Vector<Double> > &angle);
-  MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double> > &angle);
+  MVEarthMagnetic(const Quantum<Vector<Double>> &angle);
+  MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double>> &angle);
   // </group>
   // Create from specified length and/or angles and/or EarthMagnetic
   // <group>
   MVEarthMagnetic(const Vector<Double> &other);
   MVEarthMagnetic(const Vector<Quantity> &other);
   // </group>
-  
-  //# Operators
-  // Multiplication defined as in-product
-  // <group>
+
+  // # Operators
+  //  Multiplication defined as in-product
+  //  <group>
   Double operator*(const MVEarthMagnetic &other) const;
   // </group>
-  
+
   // Equality comparisons
   // <group>
-  Bool operator== (const MVEarthMagnetic &other) const;
-  Bool operator!= (const MVEarthMagnetic &other) const;
-  Bool near(const MVEarthMagnetic &other, Double tol=1e-13) const;
+  Bool operator==(const MVEarthMagnetic &other) const;
+  Bool operator!=(const MVEarthMagnetic &other) const;
+  Bool near(const MVEarthMagnetic &other, Double tol = 1e-13) const;
   Bool near(const MVEarthMagnetic &other, Quantity tol) const;
-  Bool nearAbs(const MVEarthMagnetic &other, Double tol=1e-13) const;
+  Bool nearAbs(const MVEarthMagnetic &other, Double tol = 1e-13) const;
   // </group>
-  
+
   // Addition and subtraction
   // <group>
   MVEarthMagnetic operator-() const;
@@ -165,14 +161,14 @@ public:
   MVEarthMagnetic &operator-=(const MVEarthMagnetic &right);
   MVEarthMagnetic operator-(const MVEarthMagnetic &right) const;
   // </group>
-  
-  //# General Member Functions
-  
+
+  // # General Member Functions
+
   // Tell me your type
   // <group>
   static void assure(const MeasValue &in);
   // </group>
-  
+
   // Normalise direction aspects by adjusting the length to 1
   // <group>
   virtual void adjust();
@@ -186,9 +182,9 @@ public:
   // Generate a 3-vector of x,y,z in tesla
   const Vector<Double> &getValue() const;
   // Generate angle 2-vector (in rad)
-  Quantum<Vector<Double> > getAngle() const;
+  Quantum<Vector<Double>> getAngle() const;
   // and with specified units
-  Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+  Quantum<Vector<Double>> getAngle(const Unit &unit) const;
   // Generate the length
   Quantity getLength() const;
   // and generate it with the specified units
@@ -197,18 +193,16 @@ public:
   // the direction from one to the pole, and from one to the other.
   // <group>
   Double earthMagneticAngle(const MVEarthMagnetic &other) const;
-  Quantity earthMagneticAngle(const MVEarthMagnetic &other, 
-			      const Unit &unit) const;
+  Quantity earthMagneticAngle(const MVEarthMagnetic &other, const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.
   // <group>
   Double separation(const MVEarthMagnetic &other) const;
-  Quantity separation(const MVEarthMagnetic &other, 
-		      const Unit &unit) const;
+  Quantity separation(const MVEarthMagnetic &other, const Unit &unit) const;
   // </group>
   // Produce the cross product
   MVEarthMagnetic crossProduct(const MVEarthMagnetic &other) const;
-  
+
   // Print data
   virtual void print(ostream &os) const;
   // Clone
@@ -221,16 +215,15 @@ public:
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
-
+  virtual Bool putValue(const Vector<Quantum<Double>> &in);
 };
 
-//# Global functions
-// Rotate a EarthMagnetic vector with rotation matrix and other multiplications
-// <group>
+// # Global functions
+//  Rotate a EarthMagnetic vector with rotation matrix and other multiplications
+//  <group>
 MVEarthMagnetic operator*(const RotMatrix &left, const MVEarthMagnetic &right);
 MVEarthMagnetic operator*(const MVEarthMagnetic &left, const RotMatrix &right);
 MVEarthMagnetic operator*(Double left, const MVEarthMagnetic &right);
@@ -241,7 +234,6 @@ Double operator*(const MVPosition &left, const MVEarthMagnetic &right);
 Double operator*(const MVEarthMagnetic &left, const MVPosition &right);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

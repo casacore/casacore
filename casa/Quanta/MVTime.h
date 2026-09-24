@@ -1,45 +1,44 @@
-//# MVTime.h: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVTime.h: Class to handle date/time type conversions and I/O
+// # Copyright (C) 1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MVTIME_H
 #define CASA_MVTIME_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class MVEpoch;
 class Time;
 
-//# Constants (SUN compiler does not accept non-simple default arguments)
+// # Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary>
 // Class to handle date/time type conversions and I/O
@@ -63,7 +62,7 @@ class Time;
 //
 // <synopsis>
 // An MVTime is a simple Double for date/time conversions and I/O.
-// Its internal value is in MJD. For high precision the 
+// Its internal value is in MJD. For high precision the
 // <linkto class=MVEpoch>MVEpoch</linkto> class should be used.<br>
 // It can be constructed from a Double (in which case MJD are assumed),
 // or from a Quantity (<src>Quantum<Double></src>). Quantities must be in
@@ -73,7 +72,7 @@ class Time;
 // and output. An <src>MVTime(Time)</src> constructor exists, as well
 // as a <src>Time getTime()</src>.<br>
 // Construction from year, month, day is also supported.
-// <note role=caution> Dates before 16 Oct 1582 are considered to be Julian, 
+// <note role=caution> Dates before 16 Oct 1582 are considered to be Julian,
 // rather than Gregorian</note>
 // It has an automatic conversion to Double, so all standard mathematical
 // operations can operate on it.<br>
@@ -84,7 +83,7 @@ class Time;
 //   <li> <src>Double minute()</src> will return value in minutes
 //   <li> <src>Double second()</src> will return value in seconds
 //   <li> <src>Quantity get()</src> will return days
-//   <li> <src>Quantity get(Unit)</src> will return in specified units 
+//   <li> <src>Quantity get(Unit)</src> will return in specified units
 //		(angle(in which case it will be between -pi and +pi) or time)
 //   <li> <src>uInt weekday()</src> will return day of week (1=Mon, 7=Sun)
 //   <li> <src>uInt month()</src> will return month (1=Jan)
@@ -121,13 +120,13 @@ class Time;
 //	  <li> <5 : hh:mm:
 //	  <li> <7 : hh:mm:ss
 //	  <li> >6 : with precision-6 t's added
-//	</ul> 
-//	comparable for angle. <note role=tip> The added colons are 
+//	</ul>
+//	comparable for angle. <note role=tip> The added colons are
 //	to enable input
 //	checking of the format. Look at the 'clean' types to bypass them.
 //	</note>
 //	The <src>MVTime::YMD</src> format implies TIME, and will
-//	precede the time with 'yyyy/mm/dd/' (or use 
+//	precede the time with 'yyyy/mm/dd/' (or use
 //	<src>MVTime::YMD_ONLY</src> to include <src>NO_TIME</src>
 //	modifier).<br>
 //	The <src>MVTime::DMY</src> format implies TIME, and will
@@ -141,8 +140,8 @@ class Time;
 //      of slash between date and time).
 //	<br>
 //	The output format can be modified with modifiers (specify as
-//	MVTime::TIME | MVTime::MOD (or + MVTime::MOD)). 
-//	<note role=caution> For overloading/casting 
+//	MVTime::TIME | MVTime::MOD (or + MVTime::MOD)).
+//	<note role=caution> For overloading/casting
 //	problems with some compilers, the
 //	use of modifiers necessitates either the presence of a precision
 //	(i.e. <src>(A|B, prec)</src>), or an explicit cast:
@@ -188,14 +187,14 @@ class Time;
 //		be used to export local times in standard format.</note>
 //	</ul>
 // </ul>
-// The default formatting can be overwritten by a 
-// <src> MVTime::setFormat(); </src> statement; which returns an 
+// The default formatting can be overwritten by a
+// <src> MVTime::setFormat(); </src> statement; which returns an
 // MVTime::Format
 // structure, that can be used in a subsequent one to reset to previous.
 // The format set holds for all MVTime output on all streams.<br>
 // Temporary formats (i.e. for one MVTime output only), can be set by
 // outputting a format (i.e. <src> stream << MVTime::Format() << ... </src>).
-// <note role=caution> A setFormat() will also 
+// <note role=caution> A setFormat() will also
 // reset any lingering temporary format.
 // A setFormat(getFormat()) will reset without changing. Problems could
 // arise in parallel processors. </note>
@@ -228,7 +227,7 @@ class Time;
 //				MMM can be at least first three characters
 //				of month name; or a month number (1 == Jan).
 //				Omitted month indicates day is day number.
-//   <li> ccyy-mm-dd[Ttime[Z|+-hh[:mm]]]  -- new FITS format the 'T' as time 
+//   <li> ccyy-mm-dd[Ttime[Z|+-hh[:mm]]]  -- new FITS format the 'T' as time
 //				separator. Time should be UTC.
 //				The 'Z' separator (for UTC) is part of an
 //				earlier FITS proposal, and will be recognised
@@ -236,12 +235,12 @@ class Time;
 //				A signed hh or hh:mm can be present to
 //				indicate time zone. This value will be
 //				subtracted to give UTC. To recognise this
-//				format, the year should be greater than 1000. 
+//				format, the year should be greater than 1000.
 //				<note role=caution> The time-zone information
 //				is not part of the FITS standard, but of the
 //				underlying ISO standard.</note>
 // </ul>
-// The time can be expressed as described in 
+// The time can be expressed as described in
 // <linkto class=MVAngle>MVAngle</linkto>
 // Examples of valid strings:
 // <srcblock>
@@ -266,124 +265,120 @@ class Time;
 // </todo>
 
 class MVTime {
+ public:
+  // # Enumerations
+  //  Format types
+  enum formatTypes {
+    ANGLE,
+    TIME,
+    CLEAN = 4,
+    NO_D = 8,
+    NO_DM = NO_D + 16,
+    YMD = TIME + 32,
+    DMY = TIME + 64,
+    DAY = 128,
+    NO_TIME = 256,
+    MJD = TIME + 512,
+    DIG2 = 1024,
+    FITS = TIME + 2048,
+    LOCAL = 4096,
+    USE_SPACE = 8192,
+    ALPHA = 16384,
+    USE_Z = 32768,
+    ISO = FITS + USE_Z + USE_SPACE + CLEAN,
+    BOOST = DMY + USE_SPACE,
+    NO_H = NO_D,
+    NO_HM = NO_DM,
+    ANGLE_CLEAN = ANGLE + CLEAN,
+    ANGLE_NO_D = ANGLE + NO_D,
+    ANGLE_NO_DM = ANGLE + NO_DM,
+    ANGLE_CLEAN_NO_D = ANGLE + CLEAN + NO_D,
+    ANGLE_CLEAN_NO_DM = ANGLE + CLEAN + NO_DM,
+    TIME_CLEAN = TIME + CLEAN,
+    TIME_NO_H = TIME + NO_H,
+    TIME_NO_HM = TIME + NO_HM,
+    TIME_CLEAN_NO_H = TIME + CLEAN + NO_H,
+    TIME_CLEAN_NO_HM = TIME + CLEAN + NO_HM,
+    YMD_ONLY = YMD + NO_TIME,
+    MOD_MASK = CLEAN + NO_DM + DAY + NO_TIME + DIG2 + LOCAL + USE_SPACE + USE_Z + ALPHA
+  };
 
-    public:
-
-//# Enumerations
-// Format types
-    enum formatTypes {
-	ANGLE,
-	TIME,
-	CLEAN 			= 4,
-	NO_D 			= 8,
-	NO_DM 			= NO_D+16,
-	YMD			= TIME+32,
-	DMY			= TIME+64,
-	DAY			= 128,
-	NO_TIME			= 256,
-	MJD			= TIME+512,
-	DIG2			= 1024,
-	FITS			= TIME+2048,
-	LOCAL			= 4096,
-        USE_SPACE               = 8192,
-        ALPHA                   = 16384,
-        USE_Z                   = 32768,
-        ISO                     = FITS + USE_Z + USE_SPACE + CLEAN,
-        BOOST                   = DMY + USE_SPACE,
-	NO_H 			= NO_D,
-	NO_HM 			= NO_DM,
-	ANGLE_CLEAN 		= ANGLE + CLEAN,
-	ANGLE_NO_D 		= ANGLE + NO_D,
-	ANGLE_NO_DM 		= ANGLE + NO_DM,
-	ANGLE_CLEAN_NO_D	= ANGLE + CLEAN + NO_D,
-	ANGLE_CLEAN_NO_DM	= ANGLE + CLEAN + NO_DM,
-	TIME_CLEAN 		= TIME + CLEAN,
-	TIME_NO_H 		= TIME + NO_H,
-	TIME_NO_HM 		= TIME + NO_HM,
-	TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
-	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM,
-	YMD_ONLY		= YMD + NO_TIME,
-	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2 +
-                                  LOCAL + USE_SPACE + USE_Z + ALPHA
+  // # Local structure
+  //  Format structure
+  class Format {
+   public:
+    friend class MVTime;
+    Format(MVTime::formatTypes intyp = MVTime::TIME, uInt inprec = 0) : typ(intyp), prec(inprec) {
+      ;
     };
+    Format(uInt inprec) : typ(MVTime::TIME), prec(inprec) { ; };
+    // Construct from type and precision (present due to overlaoding problems)
+    Format(uInt intyp, uInt inprec) : typ((MVTime::formatTypes)intyp), prec(inprec) { ; };
 
-//# Local structure
-// Format structure
-    class Format {
-	public:
-	friend class MVTime;
-	Format(MVTime::formatTypes intyp = MVTime::TIME,
-	       uInt inprec = 0) :
-	typ(intyp), prec(inprec) {;};
-	Format(uInt inprec) :
-	typ(MVTime::TIME), prec(inprec) {;};
-// Construct from type and precision (present due to overlaoding problems)
-	Format(uInt intyp, uInt inprec) :
-	typ((MVTime::formatTypes)intyp), prec(inprec) {;};
-	private:
-	MVTime::formatTypes typ;
-	uInt prec;
-    };
+   private:
+    MVTime::formatTypes typ;
+    uInt prec;
+  };
 
-//# Friends
-// Output a date/time
-    friend ostream &operator<<(ostream &os, const MVTime &meas);
-// Input a date/time
-    friend istream &operator>>(istream &is, MVTime &meas);
-// Set a temporary format
-    friend ostream &operator<<(ostream &os, const MVTime::Format &form);
+  // # Friends
+  //  Output a date/time
+  friend ostream &operator<<(ostream &os, const MVTime &meas);
+  // Input a date/time
+  friend istream &operator>>(istream &is, MVTime &meas);
+  // Set a temporary format
+  friend ostream &operator<<(ostream &os, const MVTime::Format &form);
 
-//# Constructors
-// Default constructor: generate a zero value
-    MVTime();
-// Copy constructor
-    MVTime(const MVTime &other);
-// Copy assignment
-    MVTime &operator=(const MVTime &other);
-// Constructor from Double (in MJD)
-    MVTime(Double d);
-// Constructor from Quantum : value can be an angle or time
-// <thrown>
-//   <li> AipsError if not a time or angle
-// </thrown>
-    MVTime(const Quantity &other);
-// Constructor from Time
-    MVTime(const Time &other);
-// Constructor from MVEpoch;
-    MVTime(const MVEpoch &other);
-// Constructor from yy, mm, dd, dd (all dd with fractions allowed)
-    MVTime(Int yy, Int mm, Double dd, Double d=0.0);
+  // # Constructors
+  //  Default constructor: generate a zero value
+  MVTime();
+  // Copy constructor
+  MVTime(const MVTime &other);
+  // Copy assignment
+  MVTime &operator=(const MVTime &other);
+  // Constructor from Double (in MJD)
+  MVTime(Double d);
+  // Constructor from Quantum : value can be an angle or time
+  // <thrown>
+  //   <li> AipsError if not a time or angle
+  // </thrown>
+  MVTime(const Quantity &other);
+  // Constructor from Time
+  MVTime(const Time &other);
+  // Constructor from MVEpoch;
+  MVTime(const MVEpoch &other);
+  // Constructor from yy, mm, dd, dd (all dd with fractions allowed)
+  MVTime(Int yy, Int mm, Double dd, Double d = 0.0);
 
-//# Destructor
-    ~MVTime();
+  // # Destructor
+  ~MVTime();
 
-//# Operators
-// Conversion operator
-    operator Double() const;
+  // # Operators
+  //  Conversion operator
+  operator Double() const;
 
-//# General member functions
-  // Make res time Quantity from string. The String version will accept
-  // a time/angle Quantity as well. It returns False in case of an error.
-  // chk=True means that the entire string should be consumed.
-  // throwExcp=True means that an exception is thrown in case of an error.
-  // <group>
-  static Bool read(Quantity &res, const String &in, Bool chk=True);
-  static Bool read(Quantity &res, MUString &in, Bool chk=True);
+  // # General member functions
+  //  Make res time Quantity from string. The String version will accept
+  //  a time/angle Quantity as well. It returns False in case of an error.
+  //  chk=True means that the entire string should be consumed.
+  //  throwExcp=True means that an exception is thrown in case of an error.
+  //  <group>
+  static Bool read(Quantity &res, const String &in, Bool chk = True);
+  static Bool read(Quantity &res, MUString &in, Bool chk = True);
   static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
   static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
   // </group>
-// Get value of date/time (MJD) in given units
-// <group>
-    Double day() const;
-    Double hour() const;
-    Double minute() const;
-    Double second() const;
-    Quantity get() const;
-    Quantity get(const Unit &inunit) const;
-    Time getTime() const;
-// </group>
-// Get indicated part of the time/date
-// <group>
+  // Get value of date/time (MJD) in given units
+  // <group>
+  Double day() const;
+  Double hour() const;
+  Double minute() const;
+  Double second() const;
+  Quantity get() const;
+  Quantity get(const Unit &inunit) const;
+  Time getTime() const;
+  // </group>
+  // Get indicated part of the time/date
+  // <group>
   const String &dayName() const;
   static const String &dayName(uInt which);
   const String &monthName() const;
@@ -397,60 +392,59 @@ class MVTime {
   Int ymd() const;
   uInt yearday() const;
   uInt yearweek() const;
-// </group>
-// Output data.
-// <note role=warning>
-// The first function below is thread-unsafe because it uses the result of
-// the setFormat function which changes a static class member.
-// The other functions are thread-safe because the format is directly given.
-// </note>
-// <group>
-    String string() const;
-    String string(MVTime::formatTypes intyp, uInt inprec = 0) const;
-    String string(uInt intyp, uInt inprec) const;
-    String string(uInt inprec) const;
-    String string(const MVTime::Format &form) const;
-    void print(ostream &oss, const MVTime::Format &form) const;
-// </group>
-// Set default format
-// <note role=warning>
-// It is thread-unsafe to print using the setFormat functions because they
-// change a static class member. The only thred-safe way to print a time is
-// to use the print function above. 
-// </note>
-// <group>
-    static Format setFormat(MVTime::formatTypes intyp, 
-			    uInt inprec = 0);
-    static Format setFormat(uInt intyp, uInt inprec);
-    static Format setFormat(uInt inprec = 0);
-    static Format setFormat(const Format &form);
-// </group>
+  // </group>
+  // Output data.
+  // <note role=warning>
+  // The first function below is thread-unsafe because it uses the result of
+  // the setFormat function which changes a static class member.
+  // The other functions are thread-safe because the format is directly given.
+  // </note>
+  // <group>
+  String string() const;
+  String string(MVTime::formatTypes intyp, uInt inprec = 0) const;
+  String string(uInt intyp, uInt inprec) const;
+  String string(uInt inprec) const;
+  String string(const MVTime::Format &form) const;
+  void print(ostream &oss, const MVTime::Format &form) const;
+  // </group>
+  // Set default format
+  // <note role=warning>
+  // It is thread-unsafe to print using the setFormat functions because they
+  // change a static class member. The only thred-safe way to print a time is
+  // to use the print function above.
+  // </note>
+  // <group>
+  static Format setFormat(MVTime::formatTypes intyp, uInt inprec = 0);
+  static Format setFormat(uInt intyp, uInt inprec);
+  static Format setFormat(uInt inprec = 0);
+  static Format setFormat(const Format &form);
+  // </group>
   // Get default format
   static Format getFormat();
   // Get code belonging to string. 0 if not known
-  static MVTime::formatTypes  giveMe(const String &in);
+  static MVTime::formatTypes giveMe(const String &in);
   // Get time zone offset (in days)
-static Double timeZone();
+  static Double timeZone();
 
-    private:
-//# Data
-// Value
-    Double val;
-// Default format
-    static MVTime::Format defaultFormat;
-// Temporary format
-// <group>
-    static MVTime::Format interimFormat;
-    static Bool interimSet;
-// </group>
+ private:
+  // # Data
+  //  Value
+  Double val;
+  // Default format
+  static MVTime::Format defaultFormat;
+  // Temporary format
+  // <group>
+  static MVTime::Format interimFormat;
+  static Bool interimSet;
+  // </group>
 
-//# Member functions
-  // Get the y,m,d values
+  // # Member functions
+  //  Get the y,m,d values
   void ymd(Int &yyyy, Int &mm, Int &dd) const;
 };
 
 // Global functions.
-// Output 
+// Output
 // <group>
 ostream &operator<<(ostream &os, const MVTime &meas);
 ostream &operator>>(ostream &is, MVTime &meas);
@@ -459,21 +453,25 @@ ostream &operator<<(ostream &os, const MVTime::Format &form);
 // </group>
 
 // equality and comparison operators, use operator Double which returns days
-inline Bool operator==(const MVTime &lh, const MVTime &rh) 
-{ return (lh.operator Double() == rh.operator Double());}
-inline Bool operator!=(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() != rh.operator Double());}
-inline Bool operator<(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() < rh.operator Double());}
-inline Bool operator<=(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() <= rh.operator Double());}
-inline Bool operator>(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() > rh.operator Double());}
-inline Bool operator>=(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() >= rh.operator Double());}
+inline Bool operator==(const MVTime &lh, const MVTime &rh) {
+  return (lh.operator Double() == rh.operator Double());
+}
+inline Bool operator!=(const MVTime &lh, const MVTime &rh) {
+  return (lh.operator Double() != rh.operator Double());
+}
+inline Bool operator<(const MVTime &lh, const MVTime &rh) {
+  return (lh.operator Double() < rh.operator Double());
+}
+inline Bool operator<=(const MVTime &lh, const MVTime &rh) {
+  return (lh.operator Double() <= rh.operator Double());
+}
+inline Bool operator>(const MVTime &lh, const MVTime &rh) {
+  return (lh.operator Double() > rh.operator Double());
+}
+inline Bool operator>=(const MVTime &lh, const MVTime &rh) {
+  return (lh.operator Double() >= rh.operator Double());
+}
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

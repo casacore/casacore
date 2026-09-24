@@ -1,27 +1,27 @@
-//# Arrays.h:  A module implementing multidimensional arrays and operations
-//# Copyright (C) 1995,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Arrays.h:  A module implementing multidimensional arrays and operations
+// # Copyright (C) 1995,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_ARRAYS_H
 #define CASA_ARRAYS_H
@@ -59,8 +59,7 @@
 #include <casacore/casa/Arrays/MaskArrIO.h>
 #include <casacore/casa/Arrays/MaskLogiArr.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -135,11 +134,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <li>
 // <linkto group="ArrayMath.h#Array mathematical operations">Mathematical</linkto>,
 // <linkto group="ArrayLogical.h#Array logical operations">logical</linkto>,
-// <linkto group="ArrayPartMath.h#Array partial operations">chunked mathematical and logical</linkto>,
-// <linkto group="ArrayIO.h#Array IO">IO</linkto>,
-// and other useful operations are provided for
-// Arrays and MaskedArrays.
-// 
+// <linkto group="ArrayPartMath.h#Array partial operations">chunked mathematical and
+// logical</linkto>, <linkto group="ArrayIO.h#Array IO">IO</linkto>, and other useful operations are
+// provided for Arrays and MaskedArrays.
+//
 // ArrayMath also defines various STL-style transform functions that use the
 // Array iterators and functors like Plus to apply the mathematical and logical
 // operations. They can, however, also be used directly on arrays of
@@ -184,11 +182,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 //
 //   <li> The <linkto class="Slicer">Slicer</linkto> class name may be
-//   thought of as a short form of "n-Dimensional Slice Specifier."  
+//   thought of as a short form of "n-Dimensional Slice Specifier."
 //   This object is used to bundle into one place all the information
 //   necessary to specify a regular subregion within an Array or Lattice.
 //   In other words, Slicer holds the location of a "slice" of a
-//   greater whole.  Construction is with up to 3 IPositions: the start 
+//   greater whole.  Construction is with up to 3 IPositions: the start
 //   location of the subspace within the greater space; the shape or end
 //   location of the subspace within the greater space; and the stride,
 //   or multiplier to be used for each axis.  The stride gives the user
@@ -244,7 +242,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // </module>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

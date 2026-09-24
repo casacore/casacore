@@ -1,29 +1,29 @@
-//# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003,2004,2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Aipsrc.cc: Class to read the aipsrc general resource files
+// # Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003,2004,2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 
 #include <casacore/casa/System/Aipsrc.h>
 #include <casacore/casa/Exceptions.h>
@@ -40,63 +40,50 @@
 #include <casacore/casa/fstream.h>
 #include <casacore/casa/sstream.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.
 
-Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
-			  uInt start) {
-  for (uInt i=start; i<keywordPattern.nelements(); i++) {
-     if (std::regex_search(keyword, std::regex(keywordPattern[i]))) {
-       where = i;
-       return True;
-     }
-   }
-   return False;
-} 
+Bool Aipsrc::matchKeyword(uInt &where, const String &keyword, uInt start) {
+  for (uInt i = start; i < keywordPattern.nelements(); i++) {
+    if (std::regex_search(keyword, std::regex(keywordPattern[i]))) {
+      where = i;
+      return True;
+    }
+  }
+  return False;
+}
 
-Bool Aipsrc::find(String &value,	
-		  const String &keyword,
-		  uInt start) {
+Bool Aipsrc::find(String &value, const String &keyword, uInt start) {
   std::call_once(theirCallOnceFlag, parse);
   return findNoParse(value, keyword, start);
 }
 
-Bool Aipsrc::findNoParse(String &value,
-                         const String &keyword,
-                         uInt start) {
+Bool Aipsrc::findNoParse(String &value, const String &keyword, uInt start) {
   uInt keyInMap;
   if (matchKeyword(keyInMap, keyword, start)) {
     value = keywordValue[keyInMap];
     return True;
   }
-  return False; 
+  return False;
 }
 
-Bool Aipsrc::find(String &value,
-		  const String &keyword) {
-  return find(value, keyword, 0);
-}
+Bool Aipsrc::find(String &value, const String &keyword) { return find(value, keyword, 0); }
 
-Bool Aipsrc::findNoHome(String &value,
-			const String &keyword) {
+Bool Aipsrc::findNoHome(String &value, const String &keyword) {
   return find(value, keyword, fileEnd);
 }
 
-Bool Aipsrc::find(String &value, const String &keyword, 
-		  const String &default_value)
-{
+Bool Aipsrc::find(String &value, const String &keyword, const String &default_value) {
   return (find(value, keyword) ? True : (value = default_value, False));
 }
 
-Bool Aipsrc::findNoHome(String &value, const String &keyword,
-			  const String &default_value) {
+Bool Aipsrc::findNoHome(String &value, const String &keyword, const String &default_value) {
   return (findNoHome(value, keyword) ? True : (value = default_value, False));
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword,
-		  Int Nname, const String tname[]) {
+Bool Aipsrc::find(uInt &value, const String &keyword, Int Nname, const String tname[]) {
   String res;
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, Nname, tname);
@@ -105,8 +92,7 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   return False;
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword,
-		  const Vector<String> &tname) {
+Bool Aipsrc::find(uInt &value, const String &keyword, const Vector<String> &tname) {
   String res;
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, tname);
@@ -115,8 +101,8 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   return False;
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword,
-		  Int Nname, const String tname[], const String &default_value) {
+Bool Aipsrc::find(uInt &value, const String &keyword, Int Nname, const String tname[],
+                  const String &default_value) {
   if (!find(value, keyword, Nname, tname)) {
     value = MUString::minimaxNC(default_value, Nname, tname);
     return False;
@@ -124,8 +110,8 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   return True;
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword,
-		  const Vector<String> &tname, const String &default_value) {
+Bool Aipsrc::find(uInt &value, const String &keyword, const Vector<String> &tname,
+                  const String &default_value) {
   if (!find(value, keyword, tname)) {
     value = MUString::minimaxNC(default_value, tname);
     return False;
@@ -133,11 +119,8 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   return True;
 }
 
-Bool Aipsrc::findDir(String& foundDir, const String& lastPart,
-                     const Vector<String>& prepends,
-                     const Vector<String>& appends,
-                     Bool useStds)
-{
+Bool Aipsrc::findDir(String &foundDir, const String &lastPart, const Vector<String> &prepends,
+                     const Vector<String> &appends, Bool useStds) {
   // Setup a string that is either "/" + lastPart or blank.
   String myLastPart("");
   if (lastPart != "") {
@@ -154,7 +137,7 @@ Bool Aipsrc::findDir(String& foundDir, const String& lastPart,
   }
   if (useStds) {
     // Test . using lastPart or ., not "".
-    if (lastPart!= "") {
+    if (lastPart != "") {
       foundDir = lastPart;
     } else {
       foundDir = ".";
@@ -185,12 +168,10 @@ Bool Aipsrc::findDir(String& foundDir, const String& lastPart,
 }
 
 void Aipsrc::reRead() {
-  parse(); // i.e. bypass theirCallOnce(parse)
+  parse();  // i.e. bypass theirCallOnce(parse)
 }
 
-Double Aipsrc::lastRead() {
-  return lastParse;
-}
+Double Aipsrc::lastRead() { return lastParse; }
 
 const Block<String> &Aipsrc::values() {
   std::call_once(theirCallOnceFlag, parse);
@@ -205,10 +186,11 @@ const Block<String> &Aipsrc::patterns() {
 void Aipsrc::fillAips() {
   uhome = EnvironmentVariable::get("HOME");
   if (uhome.empty()) {
-    throw AipsError(String("The HOME environment variable has not been set"
-                           "\n\t(see system administrator)"));
+    throw AipsError(
+        String("The HOME environment variable has not been set"
+               "\n\t(see system administrator)"));
   }
- 
+
   String aipsPath;
   if (extAipsPath.empty()) {
     aipsPath = EnvironmentVariable::get("CASAPATH");
@@ -223,20 +205,21 @@ void Aipsrc::fillAips() {
     setAipsPath(uhome);
     aipsPath = extAipsPath;
   }
-  Int n = std::count(aipsPath.begin(), aipsPath.end(), ' ') + std::count(aipsPath.begin(), aipsPath.end(), '	') + 4;
+  Int n = std::count(aipsPath.begin(), aipsPath.end(), ' ') +
+          std::count(aipsPath.begin(), aipsPath.end(), '	') + 4;
   String *newdir = new String[n];
   n = split(aipsPath, newdir, n, Regex("[ 	]"));
   // Cater for non-existing fields
-  for (Int i=n; i<4; i++) {
+  for (Int i = n; i < 4; i++) {
     newdir[i] = "UnKnOwN";
   }
   root = newdir[0];
   arch = root + "/" + newdir[1];
   site = arch + "/" + newdir[2];
   host = site + "/" + newdir[3];
-  delete [] newdir;
+  delete[] newdir;
 }
-  
+
 void Aipsrc::setAipsPath(const String &path) {
   if (extAipsPath.empty()) {
     extAipsPath = path + " ";
@@ -269,82 +252,75 @@ const String &Aipsrc::aipsHome() {
 }
 
 uInt Aipsrc::registerRC(const String &keyword, std::vector<String> &nlst) {
-  for (uInt n=0; n<nlst.size(); n++) {
-    if (nlst[n] == keyword) return n+1;
+  for (uInt n = 0; n < nlst.size(); n++) {
+    if (nlst[n] == keyword) return n + 1;
   }
   nlst.push_back(keyword);
   return nlst.size();
 }
 
-uInt Aipsrc::registerRC(const String &keyword,
-			const String &default_value) {
+uInt Aipsrc::registerRC(const String &keyword, const String &default_value) {
   const uInt n = Aipsrc::registerRC(keyword, string_names_);
-  if(n > string_values_.size())
-    string_values_.resize(n);
-  find (string_values_[n-1], keyword, default_value);
+  if (n > string_values_.size()) string_values_.resize(n);
+  find(string_values_[n - 1], keyword, default_value);
   return n;
 }
 
-uInt Aipsrc::registerRC(const String &keyword,
-			Int Nname, const String tname[], 
-			const String &default_value) {
+uInt Aipsrc::registerRC(const String &keyword, Int Nname, const String tname[],
+                        const String &default_value) {
   const uInt n = Aipsrc::registerRC(keyword, coded_names_);
-  if(n > coded_values_.size())
-    coded_values_.resize(n);
-  find (coded_values_[n-1], keyword, Nname, tname, default_value);
+  if (n > coded_values_.size()) coded_values_.resize(n);
+  find(coded_values_[n - 1], keyword, Nname, tname, default_value);
   return n;
 }
 
-uInt Aipsrc::registerRC(const String &keyword,
-			const Vector<String> &tname, const String &default_value) {
+uInt Aipsrc::registerRC(const String &keyword, const Vector<String> &tname,
+                        const String &default_value) {
   const uInt n = Aipsrc::registerRC(keyword, coded_names_);
-  if(n > coded_values_.size())
-    coded_values_.resize(n);
-  find (coded_values_[n-1], keyword, tname, default_value);
+  if (n > coded_values_.size()) coded_values_.resize(n);
+  find(coded_values_[n - 1], keyword, tname, default_value);
   return n;
 }
 
 const String &Aipsrc::get(uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=string_values_.size(), AipsError);
-  return string_values_[keyword-1];
+  AlwaysAssert(keyword > 0 && keyword <= string_values_.size(), AipsError);
+  return string_values_[keyword - 1];
 }
 
 const uInt &Aipsrc::get(uInt &code, uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  code = coded_values_[keyword-1];
-  return coded_values_[keyword-1];
+  AlwaysAssert(keyword > 0 && keyword <= coded_values_.size(), AipsError);
+  code = coded_values_[keyword - 1];
+  return coded_values_[keyword - 1];
 }
 
 void Aipsrc::set(uInt keyword, const String &default_value) {
-  AlwaysAssert(keyword>0 && keyword<=string_values_.size(), AipsError);
-  string_values_[keyword-1] = default_value;
-}
-	       
-void Aipsrc::set(uInt keyword,
-		 Int Nname, const String tname[], const String &default_value) {
-  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  find (coded_values_[keyword-1], std::to_string(keyword), Nname, tname, default_value);
+  AlwaysAssert(keyword > 0 && keyword <= string_values_.size(), AipsError);
+  string_values_[keyword - 1] = default_value;
 }
 
-void Aipsrc::set(uInt keyword,
-		 const Vector<String> &tname, const String &default_value) {
-  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  find (coded_values_[keyword-1], std::to_string(keyword), tname, default_value);
+void Aipsrc::set(uInt keyword, Int Nname, const String tname[], const String &default_value) {
+  AlwaysAssert(keyword > 0 && keyword <= coded_values_.size(), AipsError);
+  find(coded_values_[keyword - 1], std::to_string(keyword), Nname, tname, default_value);
+}
+
+void Aipsrc::set(uInt keyword, const Vector<String> &tname, const String &default_value) {
+  AlwaysAssert(keyword > 0 && keyword <= coded_values_.size(), AipsError);
+  find(coded_values_[keyword - 1], std::to_string(keyword), tname, default_value);
 }
 
 void Aipsrc::save(uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=string_values_.size(), AipsError);
-  Aipsrc::save(string_names_[keyword-1], string_values_[keyword-1]);
+  AlwaysAssert(keyword > 0 && keyword <= string_values_.size(), AipsError);
+  Aipsrc::save(string_names_[keyword - 1], string_values_[keyword - 1]);
 }
 
 void Aipsrc::save(uInt keyword, const String tname[]) {
-  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  Aipsrc::save(coded_names_[keyword-1], tname[coded_values_[keyword-1]]);
+  AlwaysAssert(keyword > 0 && keyword <= coded_values_.size(), AipsError);
+  Aipsrc::save(coded_names_[keyword - 1], tname[coded_values_[keyword - 1]]);
 }
 
 void Aipsrc::save(uInt keyword, const Vector<String> &tname) {
-  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
-  Aipsrc::save(coded_names_[keyword-1], tname(coded_values_[keyword-1]));
+  AlwaysAssert(keyword > 0 && keyword <= coded_values_.size(), AipsError);
+  Aipsrc::save(coded_names_[keyword - 1], tname(coded_values_[keyword - 1]));
 }
 
 // Note that the parameters should not be references!
@@ -362,57 +338,56 @@ void Aipsrc::save(const String keyword, const String val) {
     filo.remove();
   }
   ofstream ostr(filn.c_str(), ios::out);
-  ostr << editTxt << 
-    MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
+  ostr << editTxt << MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   ostr << keyword << ":	" << val << endl;
   fil = RegularFile(filno);
-  Char *buf = new Char[8192];	// Single lines must fit in this
+  Char *buf = new Char[8192];  // Single lines must fit in this
   if (fil.exists()) {
     String buffer;
-    Int nv = atoi(Aipsrc::get(nv_r).c_str());	// number to keep
-    Bool editSeen = False;	// if edit line seen
-    String editBuf;		// edit line buffer
-    Int editCnt = 0;		// count for edits
-    String kwt = keyword + ":";  // keyword test
-    ifstream istr(filno.c_str(), ios::in );
+    Int nv = atoi(Aipsrc::get(nv_r).c_str());  // number to keep
+    Bool editSeen = False;                     // if edit line seen
+    String editBuf;                            // edit line buffer
+    Int editCnt = 0;                           // count for edits
+    String kwt = keyword + ":";                // keyword test
+    ifstream istr(filno.c_str(), ios::in);
     while (istr.getline(buf, 8192)) {
       buffer = buf;
       if (editSeen) {
-	if (buffer.starts_with(kwt)) {
-	  editCnt++;
-	  if (editCnt < nv) { // copy
-	    ostr << editBuf << endl;
-	    ostr << buffer << endl;
-	  }
-	  editSeen = False;
-	  continue;
-	} else {
-	  ostr << editBuf << endl;
-	}
+        if (buffer.starts_with(kwt)) {
+          editCnt++;
+          if (editCnt < nv) {  // copy
+            ostr << editBuf << endl;
+            ostr << buffer << endl;
+          }
+          editSeen = False;
+          continue;
+        } else {
+          ostr << editBuf << endl;
+        }
       }
       editSeen = (buffer.starts_with(editTxt));
       if (editSeen) {
-	editBuf = buffer;
+        editBuf = buffer;
       } else {
-	ostr << buffer << endl;
+        ostr << buffer << endl;
       }
     }
   }
-  delete [] buf;
+  delete[] buf;
 }
-  
+
 void Aipsrc::parse() {
   // Refill basic data
   fillAips();
 
   // If defined, use setting of CASARCFILES. Make sure it ends with a colon.
   String filelist = EnvironmentVariable::get("CASARCFILES");
-  if (! filelist.empty()) {
+  if (!filelist.empty()) {
     filelist += ':';
   } else {
     // Otherwise use CASAPATH.
     // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
-    filelist  = uhome + String("/.casarc:");
+    filelist = uhome + String("/.casarc:");
     filelist += uhome + String("/.casa/rc:");
     filelist += uhome + String("/.aipsrc:");
     filelist += (root + String("/.aipsrc:"));
@@ -433,16 +408,15 @@ void Aipsrc::parse() {
 
 void Aipsrc::doParse(String &fileList) {
   Time x;
-  lastParse = x.modifiedJulianDay();	// Save time of parse
-  Int nkw = Aipsrc::genParse(Aipsrc::keywordPattern,
-                             Aipsrc::keywordValue, 
-                             Aipsrc::fileEnd, fileList);
-  const String gs00(".");	// make correct patterns
+  lastParse = x.modifiedJulianDay();  // Save time of parse
+  Int nkw =
+      Aipsrc::genParse(Aipsrc::keywordPattern, Aipsrc::keywordValue, Aipsrc::fileEnd, fileList);
+  const String gs00(".");  // make correct patterns
   const String gs01("\\.");
   const String gs10("*");
   const String gs11(".*");
   String keyword;
-  for (Int i=0; i<nkw; i++) {
+  for (Int i = 0; i < nkw; i++) {
     keyword = keywordPattern[i];
     ReplaceAllInPlace(keyword, gs00, gs01);
     ReplaceAllInPlace(keyword, gs10, gs11);
@@ -450,65 +424,63 @@ void Aipsrc::doParse(String &fileList) {
   }
 }
 
-uInt Aipsrc::genParse(Block<String> &keywordPattern, 
-		      Block<String> &keywordValue,
-		      uInt &fileEnd, const String &fileList) {
+uInt Aipsrc::genParse(Block<String> &keywordPattern, Block<String> &keywordValue, uInt &fileEnd,
+                      const String &fileList) {
   keywordValue.resize(0, True);  // Clear the old values if any
   keywordPattern.resize(0, True);
   Block<String> keywordFile;
   fileEnd = 0;
-  uInt nkw = 0;			// # of keywords found
-  Int nfile = 0;		// # of files found
-  
+  uInt nkw = 0;   // # of keywords found
+  Int nfile = 0;  // # of files found
+
   // This here be the parse function. It looks through all the directories
   // looking for files to parse.
-  
-  Int dirCount(std::count(fileList.begin() ,fileList.end(), ':') + 1);
+
+  Int dirCount(std::count(fileList.begin(), fileList.end(), ':') + 1);
   String *directories = new String[dirCount];
   dirCount = split(fileList, directories, dirCount, ":");
   keywordFile.resize(dirCount);
   Char *buf = new Char[8192];
-  for (Int i=0; i<dirCount; i++) {
+  for (Int i = 0; i < dirCount; i++) {
     keywordFile[nfile] = directories[i];
     if (i == 0) fileEnd = nkw;
 
     //   Ok now if we have a filename let's see if we can open it
-    if (! keywordFile[nfile].empty()) {
+    if (!keywordFile[nfile].empty()) {
       File fil(keywordFile[nfile]);
       if (fil.exists()) {
-	ifstream fileAipsrc(keywordFile[nfile].c_str(), ios::in);
-	String buffer;
-	String keyword;
-	String value;
-	const std::regex comm("^[ 	]*#");	// Comment line
-	while (fileAipsrc.getline(buf, 8192)) {
-	  buffer = buf;
-	  if (buffer.empty() || std::regex_search(buffer, comm))	// Ignore comments
-	    continue;
+        ifstream fileAipsrc(keywordFile[nfile].c_str(), ios::in);
+        String buffer;
+        String keyword;
+        String value;
+        const std::regex comm("^[ 	]*#");  // Comment line
+        while (fileAipsrc.getline(buf, 8192)) {
+          buffer = buf;
+          if (buffer.empty() || std::regex_search(buffer, comm))  // Ignore comments
+            continue;
           String::size_type inx = buffer.find(':');
           if (inx != String::npos) {
-	    keyword = buffer.substr(0, inx);
-	    value = buffer.substr(inx + 1);
+            keyword = buffer.substr(0, inx);
+            value = buffer.substr(inx + 1);
             TrimInPlace(keyword);
             TrimInPlace(value);
-	    if (keyword.length() < 1)
-	      continue;
-	    while (nkw >= keywordPattern.nelements()) {
-	      keywordPattern.resize(2*keywordPattern.nelements() + 1);
-	      keywordValue.resize(keywordPattern.nelements());
-	    }
-	    keywordValue[nkw] = value;
-	    keywordPattern[nkw] = keyword;
-	    nkw++;
-	    if (i == 0) fileEnd = nkw;
-	  }            
-	}
+            if (keyword.length() < 1) continue;
+            while (nkw >= keywordPattern.nelements()) {
+              keywordPattern.resize(2 * keywordPattern.nelements() + 1);
+              keywordValue.resize(keywordPattern.nelements());
+            }
+            keywordValue[nkw] = value;
+            keywordPattern[nkw] = keyword;
+            nkw++;
+            if (i == 0) fileEnd = nkw;
+          }
+        }
       }
     }
     nfile++;
   }
-  delete [] buf;
-  delete [] directories;
+  delete[] buf;
+  delete[] directories;
 
   // Resize static lists
   keywordValue.resize(nkw, True);
@@ -517,9 +489,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
   return keywordValue.nelements();
 }
 
-void Aipsrc::show() {
-  show(cout);
-}
+void Aipsrc::show() { show(cout); }
 
 void Aipsrc::show(ostream &oStream) {
   std::call_once(theirCallOnceFlag, parse);
@@ -528,21 +498,17 @@ void Aipsrc::show(ostream &oStream) {
   const String gs01("*");
   const String gs10("\\.");
   const String gs11(".");
-  oStream << keywordValue.nelements() <<
-    " keyword/value pairs found:" << endl;
-  for (uInt j = 0; j<keywordValue.nelements(); j++) {
+  oStream << keywordValue.nelements() << " keyword/value pairs found:" << endl;
+  for (uInt j = 0; j < keywordValue.nelements(); j++) {
     nam = keywordPattern[j];
     ReplaceAllInPlace(nam, gs00, gs01);
     ReplaceAllInPlace(nam, gs10, gs11);
-    oStream << j << ":	" << 
-      nam << ":	" <<
-      keywordValue[j] << endl;
+    oStream << j << ":	" << nam << ":	" << keywordValue[j] << endl;
   }
 }
 
 // General usage routines
-uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
-			const String &fileList) {
+uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst, const String &fileList) {
   uInt ef;
   Block<String> nl;
   Block<String> vl;
@@ -550,12 +516,11 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
   std::vector<String> names_la;
   std::vector<String> values_la;
   uInt n;
-  for (Int i=nkw-1; i>=0; i--) {	// reverse order to do aipsrc like
-    if (nl[i].find('*') == std::string::npos) {		// no wild cards
+  for (Int i = nkw - 1; i >= 0; i--) {           // reverse order to do aipsrc like
+    if (nl[i].find('*') == std::string::npos) {  // no wild cards
       n = Aipsrc::registerRC(nl[i], names_la);
-      if(n > values_la.size())
-        values_la.resize(n);
-      values_la[n-1] = vl[i];
+      if (n > values_la.size()) values_la.resize(n);
+      values_la[n - 1] = vl[i];
     }
   }
   namlst = Vector<String>(names_la.begin(), names_la.end());
@@ -563,8 +528,7 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
   return namlst.nelements();
 }
 
-void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
-		     const String &fnam) {
+void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst, const String &fnam) {
   static String editTxt = "# Saved at ";
   String filno(fnam + ".old");
   RegularFile fil(fnam);
@@ -575,73 +539,70 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
     filo.remove();
   }
   ofstream ostr(fnam.c_str(), ios::out);
-  ostr << editTxt << 
-    MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
-  for (Int i=namlst.nelements()-1; i>=0; i--) {
+  ostr << editTxt << MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
+  for (Int i = namlst.nelements() - 1; i >= 0; i--) {
     ostr << namlst(i) << ":	" << vallst(i) << endl;
   }
 }
 
-void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
-		    const String &nam, const String &val) {
+void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam,
+                    const String &val) {
   std::vector<String> nl(namlst.begin(), namlst.end());
   uInt n = Aipsrc::registerRC(nam, nl);
   if (n > vallst.nelements()) vallst.resize(n, True);
-  vallst(n-1) = val;
-//   if (n > namlst.nelements()) namlst.resize(n, True);
+  vallst(n - 1) = val;
+  //   if (n > namlst.nelements()) namlst.resize(n, True);
   namlst.resize(0);
   namlst = Vector<String>(nl.begin(), nl.end());
 }
 
-Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst,
-		      const String &nam) {
+Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam) {
   uInt n;
   uInt N = namlst.nelements();
-  for (n=0; n<N; n++) {
+  for (n = 0; n < N; n++) {
     if (namlst(n) == nam) break;
   }
   n++;
-  if (n>N) return False;
-  for (uInt i=n; i<N; i++) {
-    namlst(i-1) = namlst(i);
-    vallst(i-1) = vallst(i);
+  if (n > N) return False;
+  for (uInt i = n; i < N; i++) {
+    namlst(i - 1) = namlst(i);
+    vallst(i - 1) = vallst(i);
   }
-  namlst.resize(N-1, True);
-  vallst.resize(N-1, True);
+  namlst.resize(N - 1, True);
+  vallst.resize(N - 1, True);
   return True;
 }
 
 Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
-		    const String &nam) {
+                    const String &nam) {
   uInt n;
-  for (n=0; n<namlst.nelements(); n++) {
+  for (n = 0; n < namlst.nelements(); n++) {
     if (namlst(n) == nam) break;
   }
   n++;
-  if (n>vallst.nelements()) return False;
-  val = vallst(n-1);
+  if (n > vallst.nelements()) return False;
+  val = vallst(n - 1);
   return True;
 }
 
-  // Static Initializations -- Only really want to read the files once
+// Static Initializations -- Only really want to read the files once
 
-  std::once_flag Aipsrc::theirCallOnceFlag;
-  Double Aipsrc::lastParse = 0;
-  Block<String> Aipsrc::keywordPattern(0);
-  Block<String> Aipsrc::keywordValue(0);
-  uInt Aipsrc::fileEnd = 0;
-  String Aipsrc::extAipsPath  = String();
-  String Aipsrc::root = String();
-  String Aipsrc::arch = String();
-  String Aipsrc::site = String();
-  String Aipsrc::host = String();
-  String Aipsrc::home = String();
-  String Aipsrc::uhome= String();
-  Bool Aipsrc::filled = False;
-  std::vector<String> Aipsrc::string_values_;
-  std::vector<String> Aipsrc::string_names_;
-  std::vector<uInt> Aipsrc::coded_values_;
-  std::vector<String> Aipsrc::coded_names_;
+std::once_flag Aipsrc::theirCallOnceFlag;
+Double Aipsrc::lastParse = 0;
+Block<String> Aipsrc::keywordPattern(0);
+Block<String> Aipsrc::keywordValue(0);
+uInt Aipsrc::fileEnd = 0;
+String Aipsrc::extAipsPath = String();
+String Aipsrc::root = String();
+String Aipsrc::arch = String();
+String Aipsrc::site = String();
+String Aipsrc::host = String();
+String Aipsrc::home = String();
+String Aipsrc::uhome = String();
+Bool Aipsrc::filled = False;
+std::vector<String> Aipsrc::string_values_;
+std::vector<String> Aipsrc::string_names_;
+std::vector<uInt> Aipsrc::coded_values_;
+std::vector<String> Aipsrc::coded_names_;
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

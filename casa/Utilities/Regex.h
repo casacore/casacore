@@ -1,38 +1,38 @@
-//# Regex.h: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Regex.h: Regular expression class
+// # Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_REGEX_H
 #define CASA_REGEX_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 #include <regex>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Regular expression class (based on std::regex)
@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="Friso Olnon" date="1995/03/20" tests="tRegex" demos="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // This class provides regular expression functionality, such as
 // matching and searching in strings, comparison of expressions, and
 // input/output. It is built on the standard C++ regular expression class
@@ -169,7 +169,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The static member function <src>makeCaseInsensitive</src> returns a
 // new regular expression string containing the case-insensitive version of
 // the given expression string.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -193,22 +193,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="2001/07/15">
-//# </todo>
+// # <todo asof="2001/07/15">
+// # </todo>
 
-
-class Regex: public std::regex
-{
-public:
+class Regex : public std::regex {
+ public:
   // Default constructor uses a zero-length regular expression.
   Regex();
-    
+
   // Construct a regular expression from the string.
   // If toECMAScript=True, function toEcma is called to convert the old cregex
   // syntax to the new ECMAScript syntax.
   // If fast=True, matching efficiency is preferred over efficiency constructing
   // the regex object.
-  explicit Regex(const String& exp, Bool fast=False, Bool toECMAScript=True);
+  explicit Regex(const String& exp, Bool fast = False, Bool toECMAScript = True);
 
   // Construct a new regex (using the default Regex constructor arguments).
   void operator=(const String& str);
@@ -239,12 +237,11 @@ public:
   // regular expression string.
   // It does it by inserting the lowercase and uppercase version of
   // characters in the input string into the output string.
-  static String makeCaseInsensitive (const String& str);
+  static String makeCaseInsensitive(const String& str);
 
   // Get the regular expression string.
-  const String& regexp() const
-    { return itsStr; }
-    
+  const String& regexp() const { return itsStr; }
+
   // Test if the regular expression matches (first part of) string <src>s</src>.
   // The return value gives the length of the matching string part,
   // or String::npos if there is no match or an error.
@@ -254,12 +251,10 @@ public:
   //
   // <note role=tip>
   // Use the appropriate <linkto class=String>String</linkto> functions
-  // to test if a string matches a regular expression. 
+  // to test if a string matches a regular expression.
   // <src>Regex::match</src> is pretty low-level.
   // </note>
-  String::size_type match(const Char* s,
-                          String::size_type len,
-                          String::size_type pos=0) const;
+  String::size_type match(const Char* s, String::size_type len, String::size_type pos = 0) const;
 
   // Test if the regular expression matches the entire string.
   Bool fullMatch(const Char* s, String::size_type len) const;
@@ -277,43 +272,36 @@ public:
   // <src>Regex::search</src> is pretty low-level.
   // </note>
   // <group>
-  String::size_type search(const Char* s,
-                           String::size_type len,
-                           Int& matchlen,
-                           Int pos=0) const;
-  String::size_type find(const Char* s, String::size_type len,
-                         Int& matchlen,
-                         String::size_type pos=0) const;
+  String::size_type search(const Char* s, String::size_type len, Int& matchlen, Int pos = 0) const;
+  String::size_type find(const Char* s, String::size_type len, Int& matchlen,
+                         String::size_type pos = 0) const;
   // </group>
 
   // Search backwards.
-  String::size_type searchBack(const Char* s, String::size_type len,
-                               Int& matchlen,
-                               uInt pos) const;
+  String::size_type searchBack(const Char* s, String::size_type len, Int& matchlen, uInt pos) const;
 
   // Write the regex string.
   friend ostream& operator<<(ostream& ios, const Regex& exp);
-    
-protected:
-  String itsStr;                 // the reg. exp. string
-};
 
+ protected:
+  String itsStr;  // the reg. exp. string
+};
 
 // some built in regular expressions
 
-extern const Regex RXwhite;          //# = "[ \n\t\r\v\f]+"
-extern const Regex RXint;            //# = "-?[0-9]+"
-extern const Regex RXdouble;         //# = "-?(([0-9]+\\.[0-9]*)|
-                                     //#    ([0-9]+)|(\\.[0-9]+))
-                                     //#    ([eE][+-]?[0-9]+)?"
-extern const Regex RXalpha;          //# = "[A-Za-z]+"
-extern const Regex RXlowercase;      //# = "[a-z]+"
-extern const Regex RXuppercase;      //# = "[A-Z]+"
-extern const Regex RXalphanum;       //# = "[0-9A-Za-z]+"
-extern const Regex RXidentifier;     //# = "[A-Za-z_][A-Za-z0-9_]*"
+extern const Regex RXwhite;   // # = "[ \n\t\r\v\f]+"
+extern const Regex RXint;     // # = "-?[0-9]+"
+extern const Regex RXdouble;  // # = "-?(([0-9]+\\.[0-9]*)|
+                              // #    ([0-9]+)|(\\.[0-9]+))
+                              // #    ([eE][+-]?[0-9]+)?"
+extern const Regex RXalpha;       // # = "[A-Za-z]+"
+extern const Regex RXlowercase;   // # = "[a-z]+"
+extern const Regex RXuppercase;   // # = "[A-Z]+"
+extern const Regex RXalphanum;    // # = "[0-9A-Za-z]+"
+extern const Regex RXidentifier;  // # = "[A-Za-z_][A-Za-z0-9_]*"
 
 constexpr std::string_view kIntegerCharacters = "-0123456789";
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

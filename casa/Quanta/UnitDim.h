@@ -1,39 +1,38 @@
-//# UnitDim.h: defines the (private) class describing basic SI dimensions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # UnitDim.h: defines the (private) class describing basic SI dimensions
+// # Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_UNITDIM_H
 #define CASA_UNITDIM_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class UnitVal;
 class UnitMap;
@@ -83,87 +82,84 @@ class UnitMap;
 // </todo>
 
 class UnitDim {
+  // # Friends
+  friend class UnitVal;
+  friend class UnitMap;
+  // Output the SI dimensions (e.g. 'km/s/g' as 'm kg-1 s-1')
+  friend ostream &operator<<(ostream &os, const UnitDim &du);
 
-//# Friends
-    friend class UnitVal;
-    friend class UnitMap;
-// Output the SI dimensions (e.g. 'km/s/g' as 'm kg-1 s-1')
-    friend ostream& operator<<(ostream &os, const UnitDim &du);
-
-public:
-//# Enumerations
-// Enumeration of the order and number of the defining SI units.
-// If order or contents changed, change also in dimName() and dimFull().
-    enum Dim {Dm=0, Dkg, Ds, DA, DK, Dcd, Dmol, Drad, Dsr, Dnon, Dnumber};
+ public:
+  // # Enumerations
+  //  Enumeration of the order and number of the defining SI units.
+  //  If order or contents changed, change also in dimName() and dimFull().
+  enum Dim { Dm = 0, Dkg, Ds, DA, DK, Dcd, Dmol, Drad, Dsr, Dnon, Dnumber };
 // Constants
 // Number of Longs to cater for 9 bytes.
 #define UNITDIM_DLNUMBER 3
 
-// Destructor
-    ~UnitDim();
-protected:
-    void init( );
-    void init(Int pos);
+  // Destructor
+  ~UnitDim();
 
-private:
-//# Constructors
-// Construct a unit with zero dimension in all SI units
-    UnitDim() { init( ); }
+ protected:
+  void init();
+  void init(Int pos);
 
-// Copy constructor
-    UnitDim(const UnitDim &other);
+ private:
+  // # Constructors
+  //  Construct a unit with zero dimension in all SI units
+  UnitDim() { init(); }
 
-// Construct a unit dimension with a one in the indicated position (as
-// Dim enumerator) and zeroes in all other units
-    UnitDim(Int pos) { init(pos); }
+  // Copy constructor
+  UnitDim(const UnitDim &other);
 
-//# Operators
-// Assignment (copy semantics)
-    UnitDim &operator=(const UnitDim &other);
-// Operators to combine unit dimensions
-// <group name="combine">
-// Multiplication adds the unit dimensions of all SI units
-    UnitDim &operator*=(const UnitDim &other);
-    UnitDim operator*(const UnitDim &other) const;
+  // Construct a unit dimension with a one in the indicated position (as
+  // Dim enumerator) and zeroes in all other units
+  UnitDim(Int pos) { init(pos); }
 
-// Division subtracts the unit dimensions of all SI units
-    UnitDim &operator/=(const UnitDim &other);
-    UnitDim operator/(const UnitDim &other) const;
-// </group>
-// Compare dimension of units
-// <group name="compare">
-// Compare for equal dimensions
-    Bool operator==(const UnitDim &other) const;
-// Compare for unequal dimensions
-    Bool operator!=(const UnitDim &other) const;
-// </group>
+  // # Operators
+  //  Assignment (copy semantics)
+  UnitDim &operator=(const UnitDim &other);
+  // Operators to combine unit dimensions
+  // <group name="combine">
+  // Multiplication adds the unit dimensions of all SI units
+  UnitDim &operator*=(const UnitDim &other);
+  UnitDim operator*(const UnitDim &other) const;
 
-//# General Member Functions
-// Raise all SI defining units to an integer power
-    UnitDim pow(Int p);
+  // Division subtracts the unit dimensions of all SI units
+  UnitDim &operator/=(const UnitDim &other);
+  UnitDim operator/(const UnitDim &other) const;
+  // </group>
+  // Compare dimension of units
+  // <group name="compare">
+  // Compare for equal dimensions
+  Bool operator==(const UnitDim &other) const;
+  // Compare for unequal dimensions
+  Bool operator!=(const UnitDim &other) const;
+  // </group>
 
-// Get the tag for specified dimension
-  static const String& dimName(uInt which);
+  // # General Member Functions
+  //  Raise all SI defining units to an integer power
+  UnitDim pow(Int p);
 
-// Get the full name for the specified dimension
-  static const String& dimFull(uInt which);
+  // Get the tag for specified dimension
+  static const String &dimName(uInt which);
 
-//# Data Members
-// 1-byte vector to contain the dimensions of the defining SI units
-// (using same storage as Long vector for speed reasons)
-    Long unitLong[UNITDIM_DLNUMBER];
-    signed char *unitDim;
+  // Get the full name for the specified dimension
+  static const String &dimFull(uInt which);
 
+  // # Data Members
+  //  1-byte vector to contain the dimensions of the defining SI units
+  //  (using same storage as Long vector for speed reasons)
+  Long unitLong[UNITDIM_DLNUMBER];
+  signed char *unitDim;
 };
 
+// # Inline Implementations
 
-//# Inline Implementations
+// # Global definitions
+//  Output
+ostream &operator<<(ostream &os, const UnitDim &du);
 
-//# Global definitions
-// Output
-    ostream& operator<<(ostream &os, const UnitDim &du);
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

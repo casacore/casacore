@@ -1,28 +1,27 @@
-//# tDirectory.cc: Test program for class Directory
-//# Copyright (C) 1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # tDirectory.cc: Test program for class Directory
+// # Copyright (C) 1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/OS/RegularFile.h>
@@ -37,7 +36,6 @@
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/iostream.h>
 
-
 #include <casacore/casa/namespace.h>
 // <summary>
 // Test program for class Directory.
@@ -50,304 +48,299 @@
 // When an argument is given, no exceptions will be thrown.
 // This can be used to check if no memory leaks occur in normal operation.
 
+void doIt(Bool doExcp) {
+  // Test the constructors.
+  Directory tmp(Path("tDirectory_tmp/"));
+  Directory test1("tDirectory_tmp/test1");
+  Directory test2("tDirectory_tmp/test2");
+  Directory linkDir(File("tDirectory_tmp/linkDir"));
+  Directory linkDir2(linkDir);
+  Directory linkDir3(linkDir);
+  AlwaysAssertExit(linkDir.isDirectory());
+  AlwaysAssertExit(linkDir2.isDirectory());
+  AlwaysAssertExit(linkDir3.isDirectory());
+  AlwaysAssertExit(linkDir3.path().expandedName() == "tDirectory_tmp/linkDir");
 
-void doIt (Bool doExcp)
-{
-    // Test the constructors.
-    Directory tmp(Path("tDirectory_tmp/"));
-    Directory test1("tDirectory_tmp/test1");
-    Directory test2("tDirectory_tmp/test2");
-    Directory linkDir(File("tDirectory_tmp/linkDir"));
-    Directory linkDir2 (linkDir);
-    Directory linkDir3 (linkDir);
-    AlwaysAssertExit (linkDir.isDirectory());
-    AlwaysAssertExit (linkDir2.isDirectory());
-    AlwaysAssertExit (linkDir3.isDirectory());
-    AlwaysAssertExit (linkDir3.path().expandedName() ==
-		                                "tDirectory_tmp/linkDir");
+  {
+    // Directory::shellExpand
+    Vector<String> list(1);
+    list(0) = "tDirectory_tmp/*";
+    Vector<String> list2 = Directory::shellExpand(list, False);
+    Vector<String> list3 = Directory::shellExpand(list, True);
 
+    genSort(list2);
+    genSort(list3);
+    //
+    AlwaysAssertExit(list2.nelements() == 6);
     {
-        // Directory::shellExpand
-        Vector<String> list(1);
-        list(0) = "tDirectory_tmp/*";
-        Vector<String> list2 = Directory::shellExpand(list, False);
-        Vector<String> list3 = Directory::shellExpand(list, True);
-
-        genSort(list2);
-        genSort(list3);
-//
-        AlwaysAssertExit(list2.nelements()==6);
-        {
-           Path path("./tDirectory_tmp/linkDir");
-           AlwaysAssertExit(list2(0)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/test1");
-           AlwaysAssertExit(list2(1)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/test2");
-           AlwaysAssertExit(list2(2)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/test5");
-           AlwaysAssertExit(list2(3)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/testFile");
-           AlwaysAssertExit(list2(4)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/testLink");
-           AlwaysAssertExit(list2(5)==path.absoluteName());
-        }
-//
-        AlwaysAssertExit(list3.nelements()==6);
-        AlwaysAssertExit(list3(0)==String("linkDir"));
-        AlwaysAssertExit(list3(1)==String("test1"));
-        AlwaysAssertExit(list3(2)==String("test2"));
-        AlwaysAssertExit(list3(3)==String("test5"));
-        AlwaysAssertExit(list3(4)==String("testFile"));
-        AlwaysAssertExit(list3(5)==String("testLink"));
-//
-        list2.resize(0); list3.resize(0);
-        list(0) = "tDirectory_tmp/te*";
-        list2 = Directory::shellExpand(list, False);
-        list3 = Directory::shellExpand(list, True);
-        genSort(list2);
-        genSort(list3);
-//
-        AlwaysAssertExit(list2.nelements()==5);
-        {
-           Path path("./tDirectory_tmp/test1");
-           AlwaysAssertExit(list2(0)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/test2");
-           AlwaysAssertExit(list2(1)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/test5");
-           AlwaysAssertExit(list2(2)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/testFile");
-           AlwaysAssertExit(list2(3)==path.absoluteName());
-        }
-        {
-           Path path("./tDirectory_tmp/testLink");
-           AlwaysAssertExit(list2(4)==path.absoluteName());
-        }
-//
-        AlwaysAssertExit(list3.nelements()==5);
-        AlwaysAssertExit(list3(0)==String("test1"));
-        AlwaysAssertExit(list3(1)==String("test2"));
-        AlwaysAssertExit(list3(2)==String("test5"));
-        AlwaysAssertExit(list3(3)==String("testFile"));
-        AlwaysAssertExit(list3(4)==String("testLink"));
-//
-        list2.resize(0); list3.resize(0);
-        list(0) = "tDirectory_tmp/?ink*";
-        list2 = Directory::shellExpand(list, False);
-        list3 = Directory::shellExpand(list, True);
-        genSort(list2);
-        genSort(list3);
-//
-        AlwaysAssertExit(list2.nelements()==1);
-        {
-           Path path("./tDirectory_tmp/linkDir");
-           AlwaysAssertExit(list2(0)==path.absoluteName());
-        }
-//
-        AlwaysAssertExit(list3.nelements()==1);
-        AlwaysAssertExit(list3(0)==String("linkDir"));
+      Path path("./tDirectory_tmp/linkDir");
+      AlwaysAssertExit(list2(0) == path.absoluteName());
     }
-
     {
-        // Directory::find
-        Vector<String> found = tmp.find (Regex(Regex::fromString("test1")));
-	genSort (found);
-	cout << found << endl;
-        Vector<String> found1 = tmp.find (Regex("test[12]"), True);
-	genSort (found1);
-	cout << found1 << endl;
-        Vector<String> found2 = tmp.find (Regex(".*"), True);
-	genSort (found2);
-	cout << found2 << endl;
+      Path path("./tDirectory_tmp/test1");
+      AlwaysAssertExit(list2(1) == path.absoluteName());
     }
+    {
+      Path path("./tDirectory_tmp/test2");
+      AlwaysAssertExit(list2(2) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/test5");
+      AlwaysAssertExit(list2(3) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/testFile");
+      AlwaysAssertExit(list2(4) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/testLink");
+      AlwaysAssertExit(list2(5) == path.absoluteName());
+    }
+    //
+    AlwaysAssertExit(list3.nelements() == 6);
+    AlwaysAssertExit(list3(0) == String("linkDir"));
+    AlwaysAssertExit(list3(1) == String("test1"));
+    AlwaysAssertExit(list3(2) == String("test2"));
+    AlwaysAssertExit(list3(3) == String("test5"));
+    AlwaysAssertExit(list3(4) == String("testFile"));
+    AlwaysAssertExit(list3(5) == String("testLink"));
+    //
+    list2.resize(0);
+    list3.resize(0);
+    list(0) = "tDirectory_tmp/te*";
+    list2 = Directory::shellExpand(list, False);
+    list3 = Directory::shellExpand(list, True);
+    genSort(list2);
+    genSort(list3);
+    //
+    AlwaysAssertExit(list2.nelements() == 5);
+    {
+      Path path("./tDirectory_tmp/test1");
+      AlwaysAssertExit(list2(0) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/test2");
+      AlwaysAssertExit(list2(1) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/test5");
+      AlwaysAssertExit(list2(2) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/testFile");
+      AlwaysAssertExit(list2(3) == path.absoluteName());
+    }
+    {
+      Path path("./tDirectory_tmp/testLink");
+      AlwaysAssertExit(list2(4) == path.absoluteName());
+    }
+    //
+    AlwaysAssertExit(list3.nelements() == 5);
+    AlwaysAssertExit(list3(0) == String("test1"));
+    AlwaysAssertExit(list3(1) == String("test2"));
+    AlwaysAssertExit(list3(2) == String("test5"));
+    AlwaysAssertExit(list3(3) == String("testFile"));
+    AlwaysAssertExit(list3(4) == String("testLink"));
+    //
+    list2.resize(0);
+    list3.resize(0);
+    list(0) = "tDirectory_tmp/?ink*";
+    list2 = Directory::shellExpand(list, False);
+    list3 = Directory::shellExpand(list, True);
+    genSort(list2);
+    genSort(list3);
+    //
+    AlwaysAssertExit(list2.nelements() == 1);
+    {
+      Path path("./tDirectory_tmp/linkDir");
+      AlwaysAssertExit(list2(0) == path.absoluteName());
+    }
+    //
+    AlwaysAssertExit(list3.nelements() == 1);
+    AlwaysAssertExit(list3(0) == String("linkDir"));
+  }
 
-    AlwaysAssertExit (! tmp.isEmpty());
-    AlwaysAssertExit (tmp.nEntries() == 6);
+  {
+    // Directory::find
+    Vector<String> found = tmp.find(Regex(Regex::fromString("test1")));
+    genSort(found);
+    cout << found << endl;
+    Vector<String> found1 = tmp.find(Regex("test[12]"), True);
+    genSort(found1);
+    cout << found1 << endl;
+    Vector<String> found2 = tmp.find(Regex(".*"), True);
+    genSort(found2);
+    cout << found2 << endl;
+  }
 
-    // Construct and create a new directory.
-    Directory newDir ("tDirectory_tmp/newDir");
-    tmp.setPermissions (0555);
-    const bool is_root_user = geteuid() == 0;
-    if (doExcp) {
-	try {
-	    newDir.create();
+  AlwaysAssertExit(!tmp.isEmpty());
+  AlwaysAssertExit(tmp.nEntries() == 6);
+
+  // Construct and create a new directory.
+  Directory newDir("tDirectory_tmp/newDir");
+  tmp.setPermissions(0555);
+  const bool is_root_user = geteuid() == 0;
+  if (doExcp) {
+    try {
+      newDir.create();
       // create() should have thrown an error, unless we are running this a root:
-      AlwaysAssertExit (is_root_user);
-      newDir.remove();
-	} catch (std::exception& x) {
-    // Throws not writable
-	} 
-    }
-    tmp.setPermissions (0755);
-    AlwaysAssertExit (! newDir.isDirectory());
-    AlwaysAssertExit (! newDir.exists());
-    newDir.create();
-    AlwaysAssertExit (newDir.isDirectory());
-    AlwaysAssertExit (newDir.exists());
-    AlwaysAssertExit (newDir.isEmpty());
-    AlwaysAssertExit (newDir.nEntries() == 0);
-
-    // Some erroneous constructs.
-    if (doExcp) {
-	try {
-	    Directory file1("tDirectory_tmp/test1/testLink2");
-	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // symlink, no directory
-	} 
-	try {
-	    Directory file1("tDirectory_tmp/test1/testFile2");
-	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // symlink, no directory
-	} 
-    }
-    tmp.setPermissions (0555);
-    if (doExcp) {
-	try {
-	    Directory file1("tDirectory_tmp/something");
       AlwaysAssertExit(is_root_user);
-	} catch (std::exception& x) {
-	    // not writable
-	} 
+      newDir.remove();
+    } catch (std::exception& x) {
+      // Throws not writable
     }
-    tmp.setPermissions (0755);
+  }
+  tmp.setPermissions(0755);
+  AlwaysAssertExit(!newDir.isDirectory());
+  AlwaysAssertExit(!newDir.exists());
+  newDir.create();
+  AlwaysAssertExit(newDir.isDirectory());
+  AlwaysAssertExit(newDir.exists());
+  AlwaysAssertExit(newDir.isEmpty());
+  AlwaysAssertExit(newDir.nEntries() == 0);
 
-    // Copy a directory tree to a new directory.
-    test1.copy ("tDirectory_tmp/test3");
-    Directory test3 ("tDirectory_tmp/test3");
-    Directory test3dir ("tDirectory_tmp/test3/isDir1");
-    AlwaysAssertExit (test3.isDirectory());
-    AlwaysAssertExit (test3.nEntries() == 6);
-    AlwaysAssertExit (test3dir.isDirectory());
-    AlwaysAssertExit (test3dir.nEntries() == 3);
-
-    // Copy a directory tree to a existing directory.
-    AlwaysAssertExit (test2.isDirectory());
-    AlwaysAssertExit (test2.nEntries() == 1);
-    test1.copy ("tDirectory_tmp/test2");
-    AlwaysAssertExit (test2.isDirectory());
-    AlwaysAssertExit (test2.nEntries() == 6);
-    AlwaysAssertExit (test1.isDirectory());
-    AlwaysAssertExit (test1.nEntries() == 6);
-
-    // Remove files and directory.
-    test3dir.removeFiles();
-    AlwaysAssertExit (test3dir.isDirectory());
-    AlwaysAssertExit (test3dir.nEntries() == 0);
-    test3dir.remove();
-    AlwaysAssertExit (!test3dir.exists());
-    AlwaysAssertExit (test3.nEntries() == 5);
-    // Do an erroneous remove.
-    if (doExcp) {
-	try {
-	    test3.remove();
-	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // not empty
-	} 
+  // Some erroneous constructs.
+  if (doExcp) {
+    try {
+      Directory file1("tDirectory_tmp/test1/testLink2");
+    } catch (std::exception& x) {
+      cout << x.what() << endl;  // symlink, no directory
     }
-    test3.removeRecursive();
-    AlwaysAssertExit (!test3.exists());
-
-    // Move a directory tree to a new directory.
-    test1.move ("tDirectory_tmp/test3");
-    AlwaysAssertExit (test3.isDirectory());
-    AlwaysAssertExit (test3.nEntries() == 6);
-    AlwaysAssertExit (test3dir.isDirectory());
-    AlwaysAssertExit (test3dir.nEntries() == 3);
-    AlwaysAssertExit (!test1.exists());
-
-    // Move a directory tree to an existing directory.
-    Directory test5 ("tDirectory_tmp/test5");
-    AlwaysAssertExit (test5.isDirectory());
-    AlwaysAssertExit (test5.nEntries() == 1);
-    test2.move ("tDirectory_tmp/test5");
-    AlwaysAssertExit (test5.isDirectory());
-    AlwaysAssertExit (test5.nEntries() == 6);
-    AlwaysAssertExit (!test2.exists());
-
-    // Move a directory tree across a file system and back.
-    Directory testtmp ("/tmp/test5");
-    test5.move ("/tmp/test5");
-    AlwaysAssertExit (testtmp.isDirectory());
-    AlwaysAssertExit (testtmp.nEntries() == 6);
-    AlwaysAssertExit (!test5.exists());
-    testtmp.move ("tDirectory_tmp/test5");
-    AlwaysAssertExit (test5.isDirectory());
-    AlwaysAssertExit (test5.nEntries() == 6);
-    AlwaysAssertExit (!testtmp.exists());
-
-    // Test directory creation.
-    Directory test6;
-    test6 = test5;
-    AlwaysAssertExit (test6.nEntries() == 6);
-    if (doExcp) {
-	try {
-	    test6.create (False);
-	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // already existing
-	} 
+    try {
+      Directory file1("tDirectory_tmp/test1/testFile2");
+    } catch (std::exception& x) {
+      cout << x.what() << endl;  // symlink, no directory
     }
-    test6.create (True);
-    AlwaysAssertExit (test6.isEmpty());
-
-    Directory test7("tDirectory_tmp/newDir2");
-    RegularFile rfile("tDirectory_tmp/newDir2");
-    rfile.create();
-    if (doExcp) {
-	try {
-	    test7.create (False);
-	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // already existing
-	} 
+  }
+  tmp.setPermissions(0555);
+  if (doExcp) {
+    try {
+      Directory file1("tDirectory_tmp/something");
+      AlwaysAssertExit(is_root_user);
+    } catch (std::exception& x) {
+      // not writable
     }
-    rfile.remove();
-    test7.create (False);
-    AlwaysAssertExit (test7.isEmpty());
+  }
+  tmp.setPermissions(0755);
 
-    // Remove a directory via a symlink (which will be removed too).
-    SymLink slink("tDirectory_tmp/newDir2Link");
-    slink.create ("newDir2");
-    Directory test8("tDirectory_tmp/newDir2Link");
-    AlwaysAssertExit (test8.isEmpty());
-    AlwaysAssertExit (test7.exists());
-    AlwaysAssertExit (slink.exists());
+  // Copy a directory tree to a new directory.
+  test1.copy("tDirectory_tmp/test3");
+  Directory test3("tDirectory_tmp/test3");
+  Directory test3dir("tDirectory_tmp/test3/isDir1");
+  AlwaysAssertExit(test3.isDirectory());
+  AlwaysAssertExit(test3.nEntries() == 6);
+  AlwaysAssertExit(test3dir.isDirectory());
+  AlwaysAssertExit(test3dir.nEntries() == 3);
 
-    // Test the freeSpace function.
-    cout << ">>>" << endl;
-    cout << "Free Space: " << test7.freeSpace() << ' '
-	 << test8.freeSpace() << endl;
-    cout << "Free Space in MB: " << test7.freeSpaceInMB() << ' '
-	 << test8.freeSpaceInMB() << endl;
-    cout << "<<<" << endl;
+  // Copy a directory tree to a existing directory.
+  AlwaysAssertExit(test2.isDirectory());
+  AlwaysAssertExit(test2.nEntries() == 1);
+  test1.copy("tDirectory_tmp/test2");
+  AlwaysAssertExit(test2.isDirectory());
+  AlwaysAssertExit(test2.nEntries() == 6);
+  AlwaysAssertExit(test1.isDirectory());
+  AlwaysAssertExit(test1.nEntries() == 6);
 
-    test8.remove();
-    AlwaysAssertExit (!test7.exists());
-    AlwaysAssertExit (!slink.exists());
+  // Remove files and directory.
+  test3dir.removeFiles();
+  AlwaysAssertExit(test3dir.isDirectory());
+  AlwaysAssertExit(test3dir.nEntries() == 0);
+  test3dir.remove();
+  AlwaysAssertExit(!test3dir.exists());
+  AlwaysAssertExit(test3.nEntries() == 5);
+  // Do an erroneous remove.
+  if (doExcp) {
+    try {
+      test3.remove();
+    } catch (std::exception& x) {
+      cout << x.what() << endl;  // not empty
+    }
+  }
+  test3.removeRecursive();
+  AlwaysAssertExit(!test3.exists());
+
+  // Move a directory tree to a new directory.
+  test1.move("tDirectory_tmp/test3");
+  AlwaysAssertExit(test3.isDirectory());
+  AlwaysAssertExit(test3.nEntries() == 6);
+  AlwaysAssertExit(test3dir.isDirectory());
+  AlwaysAssertExit(test3dir.nEntries() == 3);
+  AlwaysAssertExit(!test1.exists());
+
+  // Move a directory tree to an existing directory.
+  Directory test5("tDirectory_tmp/test5");
+  AlwaysAssertExit(test5.isDirectory());
+  AlwaysAssertExit(test5.nEntries() == 1);
+  test2.move("tDirectory_tmp/test5");
+  AlwaysAssertExit(test5.isDirectory());
+  AlwaysAssertExit(test5.nEntries() == 6);
+  AlwaysAssertExit(!test2.exists());
+
+  // Move a directory tree across a file system and back.
+  Directory testtmp("/tmp/test5");
+  test5.move("/tmp/test5");
+  AlwaysAssertExit(testtmp.isDirectory());
+  AlwaysAssertExit(testtmp.nEntries() == 6);
+  AlwaysAssertExit(!test5.exists());
+  testtmp.move("tDirectory_tmp/test5");
+  AlwaysAssertExit(test5.isDirectory());
+  AlwaysAssertExit(test5.nEntries() == 6);
+  AlwaysAssertExit(!testtmp.exists());
+
+  // Test directory creation.
+  Directory test6;
+  test6 = test5;
+  AlwaysAssertExit(test6.nEntries() == 6);
+  if (doExcp) {
+    try {
+      test6.create(False);
+    } catch (std::exception& x) {
+      cout << x.what() << endl;  // already existing
+    }
+  }
+  test6.create(True);
+  AlwaysAssertExit(test6.isEmpty());
+
+  Directory test7("tDirectory_tmp/newDir2");
+  RegularFile rfile("tDirectory_tmp/newDir2");
+  rfile.create();
+  if (doExcp) {
+    try {
+      test7.create(False);
+    } catch (std::exception& x) {
+      cout << x.what() << endl;  // already existing
+    }
+  }
+  rfile.remove();
+  test7.create(False);
+  AlwaysAssertExit(test7.isEmpty());
+
+  // Remove a directory via a symlink (which will be removed too).
+  SymLink slink("tDirectory_tmp/newDir2Link");
+  slink.create("newDir2");
+  Directory test8("tDirectory_tmp/newDir2Link");
+  AlwaysAssertExit(test8.isEmpty());
+  AlwaysAssertExit(test7.exists());
+  AlwaysAssertExit(slink.exists());
+
+  // Test the freeSpace function.
+  cout << ">>>" << endl;
+  cout << "Free Space: " << test7.freeSpace() << ' ' << test8.freeSpace() << endl;
+  cout << "Free Space in MB: " << test7.freeSpaceInMB() << ' ' << test8.freeSpaceInMB() << endl;
+  cout << "<<<" << endl;
+
+  test8.remove();
+  AlwaysAssertExit(!test7.exists());
+  AlwaysAssertExit(!slink.exists());
 }
 
-
-int main (int argc, const char*[])
-{
-    try {
-	doIt ( (argc<2));
-    } catch (std::exception& x) {
-	cout << "Caught an exception: " << x.what() << endl;
-	return 1;
-    } 
-    cout << "OK" << endl;
-    return 0;                           // exit with success status
+int main(int argc, const char*[]) {
+  try {
+    doIt((argc < 2));
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
+    return 1;
+  }
+  cout << "OK" << endl;
+  return 0;  // exit with success status
 }

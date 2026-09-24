@@ -1,253 +1,220 @@
-//# MemoryTrace.cc: Simple memory usage tracing mechanism
-//# Copyright (C) 2015
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MemoryTrace.cc: Simple memory usage tracing mechanism
+// # Copyright (C) 2015
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Comment out for time being because __malloc_hook is deprecated.
-//# Do so by #ifdef on AIPS_LINUX_DEPR instead of AIPS_LINUX.
+// # Comment out for time being because __malloc_hook is deprecated.
+// # Do so by #ifdef on AIPS_LINUX_DEPR instead of AIPS_LINUX.
 
 #include <casacore/casa/OS/MemoryTrace.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
 #ifdef AIPS_LINUX_DEPR
-# include <malloc.h>
+#include <malloc.h>
 #endif
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-  // Initialize statics.
-  Bool MemoryTrace::theirDoTrace = False;
-  std::ofstream MemoryTrace::theirFile;
-  Timer MemoryTrace::theirTimer;
-  void* (*MemoryTrace::theirOldMallocHook)(size_t, const void*) = 0;
-  void (*MemoryTrace::theirOldFreeHook)(void*, const void*) = 0;
+// Initialize statics.
+Bool MemoryTrace::theirDoTrace = False;
+std::ofstream MemoryTrace::theirFile;
+Timer MemoryTrace::theirTimer;
+void* (*MemoryTrace::theirOldMallocHook)(size_t, const void*) = 0;
+void (*MemoryTrace::theirOldFreeHook)(void*, const void*) = 0;
 
-  void MemoryTrace::open()
-  {
-    if (! theirFile.is_open()) {
-      String name (EnvironmentVariable::get ("CASACORE_MEMORYTRACE"));
-      if (name.empty()) {
-        name = "casacore_memorytrace.log";
-      }
-      theirFile.open (name.c_str());
-      if (!theirFile) {
-        throw AipsError ("Could not create memorytrace file " + name);
-      }
+void MemoryTrace::open() {
+  if (!theirFile.is_open()) {
+    String name(EnvironmentVariable::get("CASACORE_MEMORYTRACE"));
+    if (name.empty()) {
+      name = "casacore_memorytrace.log";
+    }
+    theirFile.open(name.c_str());
+    if (!theirFile) {
+      throw AipsError("Could not create memorytrace file " + name);
     }
   }
+}
 
-  void MemoryTrace::start()
-  {
-    if (! theirFile.is_open()) {
-      open();
-    }
-    if (!theirDoTrace) {
+void MemoryTrace::start() {
+  if (!theirFile.is_open()) {
+    open();
+  }
+  if (!theirDoTrace) {
 #ifdef AIPS_LINUX_DEPR
-      theirOldMallocHook = __malloc_hook;
-      theirOldFreeHook   = __free_hook;
-      __malloc_hook      = &mallocHook;
-      __free_hook        = &freeHook;
-#endif
-      theirDoTrace = True;
-    }
-  }
-
-  void MemoryTrace::stop()
-  {
-    if (theirDoTrace) {
-#ifdef AIPS_LINUX_DEPR
-      __malloc_hook = theirOldMallocHook;
-      __free_hook   = theirOldFreeHook;
-#endif
-      theirDoTrace = False;
-    }
-  }
-
-  std::ofstream& MemoryTrace::writeAlloc (const void* ptr, size_t size)
-  {
-    theirFile << Int64(1000 * theirTimer.real()) << " a b-" << ptr
-              << ' ' << size << ' ';
-    return theirFile;
-  }
-
-  std::ofstream& MemoryTrace::writeFree (const void* ptr)
-  {
-    theirFile << Int64(1000 * theirTimer.real()) << " f b-" << ptr
-              << ' ';
-    return theirFile;
-  }
-
-  void MemoryTrace::close()
-  {
-    stop();
-    if (theirFile.is_open()) {
-      theirFile.close();
-    }
-  }
-
-#ifdef AIPS_LINUX_DEPR
-  void* MemoryTrace::mallocHook (size_t size, const void* caller)
-  {
-    if (size == 0) {
-      return NULL;
-    }
-    // Restore the old hooks.
-    __malloc_hook = theirOldMallocHook;
-    __free_hook   = theirOldFreeHook;
-    // Call recursively.
-    void* ptr = malloc(size);
-    // Save hooks (to be safe).
     theirOldMallocHook = __malloc_hook;
-    theirOldFreeHook   = __free_hook;
-    // iostream might call malloc/free; it is protected too.
-    theirFile << Int64(1000 * theirTimer.real()) << " a " << ptr << ' '
-              << size << ' ' << caller << std::endl;
-    // Restore our own hooks.
+    theirOldFreeHook = __free_hook;
     __malloc_hook = &mallocHook;
-    __free_hook   = &freeHook;
-    return ptr;
+    __free_hook = &freeHook;
+#endif
+    theirDoTrace = True;
   }
-#else
-  void* MemoryTrace::mallocHook (size_t, const void*)
-  {
+}
+
+void MemoryTrace::stop() {
+  if (theirDoTrace) {
+#ifdef AIPS_LINUX_DEPR
+    __malloc_hook = theirOldMallocHook;
+    __free_hook = theirOldFreeHook;
+#endif
+    theirDoTrace = False;
+  }
+}
+
+std::ofstream& MemoryTrace::writeAlloc(const void* ptr, size_t size) {
+  theirFile << Int64(1000 * theirTimer.real()) << " a b-" << ptr << ' ' << size << ' ';
+  return theirFile;
+}
+
+std::ofstream& MemoryTrace::writeFree(const void* ptr) {
+  theirFile << Int64(1000 * theirTimer.real()) << " f b-" << ptr << ' ';
+  return theirFile;
+}
+
+void MemoryTrace::close() {
+  stop();
+  if (theirFile.is_open()) {
+    theirFile.close();
+  }
+}
+
+#ifdef AIPS_LINUX_DEPR
+void* MemoryTrace::mallocHook(size_t size, const void* caller) {
+  if (size == 0) {
     return NULL;
   }
+  // Restore the old hooks.
+  __malloc_hook = theirOldMallocHook;
+  __free_hook = theirOldFreeHook;
+  // Call recursively.
+  void* ptr = malloc(size);
+  // Save hooks (to be safe).
+  theirOldMallocHook = __malloc_hook;
+  theirOldFreeHook = __free_hook;
+  // iostream might call malloc/free; it is protected too.
+  theirFile << Int64(1000 * theirTimer.real()) << " a " << ptr << ' ' << size << ' ' << caller
+            << std::endl;
+  // Restore our own hooks.
+  __malloc_hook = &mallocHook;
+  __free_hook = &freeHook;
+  return ptr;
+}
+#else
+void* MemoryTrace::mallocHook(size_t, const void*) { return NULL; }
 #endif
 
 #ifdef AIPS_LINUX_DEPR
-  void MemoryTrace::freeHook (void* ptr, const void* caller)
-  {
-    if (ptr != NULL) {
+void MemoryTrace::freeHook(void* ptr, const void* caller) {
+  if (ptr != NULL) {
+    // Restore the old hooks.
+    __malloc_hook = theirOldMallocHook;
+    __free_hook = theirOldFreeHook;
+    // Call recursively.
+    free(ptr);
+    // Save hooks (to be safe).
+    theirOldMallocHook = __malloc_hook;
+    theirOldFreeHook = __free_hook;
+    // iostream might call malloc/free; it is protected too.
+    theirFile << Int64(1000 * theirTimer.real()) << " f " << ptr << ' ' << caller << std::endl;
+    // Restore our own hooks.
+    __malloc_hook = &mallocHook;
+    __free_hook = &freeHook;
+  }
+}
+#else
+void MemoryTrace::freeHook(void*, const void*) {}
+#endif
+
+void MemoryTrace::writeBlock(const char* msg, const std::string& name) {
+  if (isOpen()) {
+#ifdef AIPS_LINUX_DEPR
+    if (theirDoTrace) {
       // Restore the old hooks.
       __malloc_hook = theirOldMallocHook;
-      __free_hook   = theirOldFreeHook;
-      // Call recursively.
-      free (ptr);
-      // Save hooks (to be safe).
-      theirOldMallocHook = __malloc_hook;
-      theirOldFreeHook   = __free_hook;
-      // iostream might call malloc/free; it is protected too.
-      theirFile << Int64(1000 * theirTimer.real()) << " f " << ptr << ' '
-                << caller << std::endl;
-      // Restore our own hooks.
-      __malloc_hook = &mallocHook;
-      __free_hook   = &freeHook;
+      __free_hook = theirOldFreeHook;
     }
-  }
-#else
-  void MemoryTrace::freeHook (void*, const void*)
-  {}
 #endif
-
-  void MemoryTrace::writeBlock (const char* msg, const std::string& name)
-  {
-    if (isOpen()) {
-#ifdef AIPS_LINUX_DEPR
-      if (theirDoTrace) {
-        // Restore the old hooks.
-        __malloc_hook = theirOldMallocHook;
-        __free_hook   = theirOldFreeHook;
-      }
-#endif
-      theirFile << Int64(1000 * theirTimer.real()) << msg
-                << name << std::endl;
-#ifdef AIPS_LINUX_DEPR
-      if (theirDoTrace) {
-        // Restore our own hooks.
-        __malloc_hook = &mallocHook;
-        __free_hook   = &freeHook;
-      }
-#endif
-    }
-  }
-
-  void MemoryTrace::writeBlock (const char* msg, const char* name)
-  {
-    if (isOpen()) {
-#ifdef AIPS_LINUX_DEPR
-      if (theirDoTrace) {
-        // Restore the old hooks.
-        __malloc_hook = theirOldMallocHook;
-        __free_hook   = theirOldFreeHook;
-      }
-#endif
-      theirFile << Int64(1000 * theirTimer.real()) << msg
-                << name << std::endl;
-#ifdef AIPS_LINUX_DEPR
-      if (theirDoTrace) {
-        // Restore our own hooks.
-        __malloc_hook = &mallocHook;
-        __free_hook   = &freeHook;
-      }
-#endif
-    }
-  }
-
-  std::string MemoryTrace::makeString (const char* name)
-  {
+    theirFile << Int64(1000 * theirTimer.real()) << msg << name << std::endl;
 #ifdef AIPS_LINUX_DEPR
     if (theirDoTrace) {
-      // Restore the old hooks to avoid trace messages when making the string.
+      // Restore our own hooks.
+      __malloc_hook = &mallocHook;
+      __free_hook = &freeHook;
+    }
+#endif
+  }
+}
+
+void MemoryTrace::writeBlock(const char* msg, const char* name) {
+  if (isOpen()) {
+#ifdef AIPS_LINUX_DEPR
+    if (theirDoTrace) {
+      // Restore the old hooks.
       __malloc_hook = theirOldMallocHook;
-      __free_hook   = theirOldFreeHook;
+      __free_hook = theirOldFreeHook;
     }
 #endif
-    std::string str(name);
+    theirFile << Int64(1000 * theirTimer.real()) << msg << name << std::endl;
 #ifdef AIPS_LINUX_DEPR
     if (theirDoTrace) {
       // Restore our own hooks.
       __malloc_hook = &mallocHook;
-      __free_hook   = &freeHook;
+      __free_hook = &freeHook;
     }
 #endif
-    return str;
   }
+}
 
-
-
-
-  MemoryTraceBlock::MemoryTraceBlock (const std::string& name)
-    : itsName (name)
-  {
-    traceMemoryBlockBegin (itsName);
+std::string MemoryTrace::makeString(const char* name) {
+#ifdef AIPS_LINUX_DEPR
+  if (theirDoTrace) {
+    // Restore the old hooks to avoid trace messages when making the string.
+    __malloc_hook = theirOldMallocHook;
+    __free_hook = theirOldFreeHook;
   }
-
-  MemoryTraceBlock::MemoryTraceBlock (const char* name)
-    : itsName (MemoryTrace::makeString(name))
-  {
-    traceMemoryBlockBegin (itsName);
+#endif
+  std::string str(name);
+#ifdef AIPS_LINUX_DEPR
+  if (theirDoTrace) {
+    // Restore our own hooks.
+    __malloc_hook = &mallocHook;
+    __free_hook = &freeHook;
   }
+#endif
+  return str;
+}
 
-  MemoryTraceBlock::~MemoryTraceBlock()
-  {
-    traceMemoryBlockEnd (itsName);
-  }
+MemoryTraceBlock::MemoryTraceBlock(const std::string& name) : itsName(name) {
+  traceMemoryBlockBegin(itsName);
+}
 
+MemoryTraceBlock::MemoryTraceBlock(const char* name) : itsName(MemoryTrace::makeString(name)) {
+  traceMemoryBlockBegin(itsName);
+}
 
-} //# NAMESPACE CASACORE - END
+MemoryTraceBlock::~MemoryTraceBlock() { traceMemoryBlockEnd(itsName); }
 
-
+}  // namespace casacore
 
 // Note: another way to do memory tracing is by preloading a shared library
 // containing the overloaded malloc and free. This could be done in a
@@ -262,7 +229,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #include <stdio.h>
 #include <dlfcn.h>
 #include <stdlib.h>
- 
+
 void* malloc(size_t size) noexcept
 {
   if (size == 0) {
@@ -311,7 +278,8 @@ void free(void* addr) noexcept
 */
 
 /*
-See http://stackoverflow.com/questions/17803456/an-alternative-for-the-deprecated-malloc-hook-functionality-of-glibc
+See
+http://stackoverflow.com/questions/17803456/an-alternative-for-the-deprecated-malloc-hook-functionality-of-glibc
 See also http://elinux.org/images/b/b5/Elc2013_Kobayashi.pdf
 
 My complete hooking function now looks like this:

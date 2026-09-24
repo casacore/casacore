@@ -1,48 +1,46 @@
-//# MaskedArray.h: A templated N-D masked array class with zero origin.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MaskedArray.h: A templated N-D masked array class with zero origin.
+// # Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MASKEDARRAY2_H
 #define CASA_MASKEDARRAY2_H
 
-
-//# Includes
+// # Includes
 #include "ArrayLogical.h"
 #include "ArrayFwd.h"
 #include "IPosition.h"
 #include "MaskLogiArrFwd.h"
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
-//# <note role=warning>
-//#   Array.h cannot be included in this header file.  Anything needed
-//#   from it must be forwarded.  This is why LogicalArrayFwd.h is
-//#   included instead of LogicalArray.h .
-//# </note>
+// # Forward declarations
+// # <note role=warning>
+// #   Array.h cannot be included in this header file.  Anything needed
+// #   from it must be forwarded.  This is why LogicalArrayFwd.h is
+// #   included instead of LogicalArray.h .
+// # </note>
 class Slicer;
-
 
 // <summary> Class for masking an Array for operations on that Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskedArray tMaskArrExcp">
@@ -62,7 +60,7 @@ class Slicer;
 // A MaskedArray is an association between an Array and a mask.  The mask
 // selects elements of the Array.  Only elements of the Array where the
 // corresponding element of the mask is true are defined.  Thus, operations
-// on a MaskedArray only operate on those elements of the Array where the 
+// on a MaskedArray only operate on those elements of the Array where the
 // corresponding element of the mask is true.
 //
 // A MaskedArray should be thought of as a manipulator for an Array, analogous
@@ -317,386 +315,366 @@ class Slicer;
 //          reference semantics when creating the internal mask.
 // </todo>
 
-
-template<typename T>
-class MaskedArray
-{
-
-public:
+template <typename T>
+class MaskedArray {
+ public:
   typedef Array<T> array_type;
   typedef Array<LogicalArrayElem> mask_type;
   typedef MaskedArray<T> masked_array_type;
-  
+
   // Default constructor for a MaskedArray does not allocate any memory
-  // for the Data array or Mask. Hence the masked array 
+  // for the Data array or Mask. Hence the masked array
   // should not be used until some data is allocated to the object using one
   // of the set functions.
   MaskedArray();
   // Reset the data and mask of the the MaskedArray. There should perhaps be
   // a whole family of setData functions with different arguements,
   // analogous to the constructors. However these are sufficient for the
-  // moment. 
-  void setData(const array_type & data, const mask_type& mask, 
-	  bool isReadOnly=false);
-  void setData(const masked_array_type& array, bool isReadOnly=false);
-    // Create a MaskedArray from an Array and a LogicalArray.
-    //
-    // The internal mask is a total copy of the input mask, and is
-    // completely independent of the input mask.
-    //
-    // The Array is copy constructed, which means that it is a really smart
-    // pointer to the underlying Block, and shares this Block with the input
-    // Array.
-    //
-    // By default, the MaskedArray constructed is writeable.  If
-    // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
-    // returned is readonly.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    // </thrown>
-    //
-    // <group>
-    MaskedArray(const array_type &inarray, const LogicalArray &inmask,
-                bool isreadonly);
-    MaskedArray(const array_type &inarray, const LogicalArray &inmask);
-    // </group>
+  // moment.
+  void setData(const array_type &data, const mask_type &mask, bool isReadOnly = false);
+  void setData(const masked_array_type &array, bool isReadOnly = false);
+  // Create a MaskedArray from an Array and a LogicalArray.
+  //
+  // The internal mask is a total copy of the input mask, and is
+  // completely independent of the input mask.
+  //
+  // The Array is copy constructed, which means that it is a really smart
+  // pointer to the underlying Block, and shares this Block with the input
+  // Array.
+  //
+  // By default, the MaskedArray constructed is writeable.  If
+  // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
+  // returned is readonly.
+  //
+  // <thrown>
+  //    <li> ArrayConformanceError
+  // </thrown>
+  //
+  // <group>
+  MaskedArray(const array_type &inarray, const LogicalArray &inmask, bool isreadonly);
+  MaskedArray(const array_type &inarray, const LogicalArray &inmask);
+  // </group>
 
-    // Create a MaskedArray from a MaskedArray and a LogicalArray.
-    //
-    // The internal mask is the AND of the input mask and the mask of
-    // the input MaskedArray.
-    //
-    // The Array from the input MaskedArray is copy constructed, which
-    // means that it is a really smart pointer to the underlying Block, and
-    // shares this Block with the Array from the input MaskedArray.
-    //
-    // By default, the MaskedArray constructed is writeable if the input
-    // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
-    // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
-    // <src>false</src> and the input MaskedArray is readonly, then the
-    // constructed MaskedArray is readonly.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    // </thrown>
-    //
-    // <group>
-    MaskedArray(const masked_array_type &inarray, const LogicalArray &inmask,
-                bool isreadonly);
-    MaskedArray(const masked_array_type &inarray, const LogicalArray &inmask);
-    // </group>
+  // Create a MaskedArray from a MaskedArray and a LogicalArray.
+  //
+  // The internal mask is the AND of the input mask and the mask of
+  // the input MaskedArray.
+  //
+  // The Array from the input MaskedArray is copy constructed, which
+  // means that it is a really smart pointer to the underlying Block, and
+  // shares this Block with the Array from the input MaskedArray.
+  //
+  // By default, the MaskedArray constructed is writeable if the input
+  // MaskedArray is writeable, and readonly if the input MaskedArray
+  // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
+  // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
+  // <src>false</src> and the input MaskedArray is readonly, then the
+  // constructed MaskedArray is readonly.
+  //
+  // <thrown>
+  //    <li> ArrayConformanceError
+  // </thrown>
+  //
+  // <group>
+  MaskedArray(const masked_array_type &inarray, const LogicalArray &inmask, bool isreadonly);
+  MaskedArray(const masked_array_type &inarray, const LogicalArray &inmask);
+  // </group>
 
-    // Create a MaskedArray from an Array and a MaskedLogicalArray.
-    //
-    // The internal mask is the AND of the internal LogicalArray and the
-    // internal mask of the MaskedLogicalArray.
-    //
-    // The Array is copy constructed, which means that it is a really smart
-    // pointer to the underlying Block, and shares this Block with the input
-    // Array.
-    //
-    // By default, the MaskedArray constructed is writeable.  If
-    // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
-    // returned is readonly.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    // </thrown>
-    //
-    // <group>
-    MaskedArray(const array_type &inarray, const MaskedLogicalArray &inmask,
-                bool isreadonly);
-    MaskedArray(const array_type &inarray, const MaskedLogicalArray &inmask);
-    // </group>
+  // Create a MaskedArray from an Array and a MaskedLogicalArray.
+  //
+  // The internal mask is the AND of the internal LogicalArray and the
+  // internal mask of the MaskedLogicalArray.
+  //
+  // The Array is copy constructed, which means that it is a really smart
+  // pointer to the underlying Block, and shares this Block with the input
+  // Array.
+  //
+  // By default, the MaskedArray constructed is writeable.  If
+  // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
+  // returned is readonly.
+  //
+  // <thrown>
+  //    <li> ArrayConformanceError
+  // </thrown>
+  //
+  // <group>
+  MaskedArray(const array_type &inarray, const MaskedLogicalArray &inmask, bool isreadonly);
+  MaskedArray(const array_type &inarray, const MaskedLogicalArray &inmask);
+  // </group>
 
-    // Create a MaskedArray from a MaskedArray and a MaskedLogicalArray.
-    //
-    // The internal mask is the AND of the internal LogicalArray and the
-    // internal mask of the MaskedLogicalArray, ANDed with the mask of
-    // the input MaskedArray.
-    //
-    // The Array from the input MaskedArray is copy constructed, which
-    // means that it is a really smart pointer to the underlying Block, and
-    // shares this Block with the Array from the input MaskedArray.
-    //
-    // By default, the MaskedArray constructed is writeable if the input
-    // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
-    // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
-    // <src>false</src> and the input MaskedArray is readonly, then the
-    // constructed MaskedArray is readonly.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    // </thrown>
-    //
-    // <group>
-    MaskedArray(const masked_array_type &inarray,
-                const MaskedLogicalArray &inmask,
-                bool isreadonly);
-    MaskedArray(const masked_array_type &inarray,
-                const MaskedLogicalArray &inmask);
-    // </group>
+  // Create a MaskedArray from a MaskedArray and a MaskedLogicalArray.
+  //
+  // The internal mask is the AND of the internal LogicalArray and the
+  // internal mask of the MaskedLogicalArray, ANDed with the mask of
+  // the input MaskedArray.
+  //
+  // The Array from the input MaskedArray is copy constructed, which
+  // means that it is a really smart pointer to the underlying Block, and
+  // shares this Block with the Array from the input MaskedArray.
+  //
+  // By default, the MaskedArray constructed is writeable if the input
+  // MaskedArray is writeable, and readonly if the input MaskedArray
+  // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
+  // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
+  // <src>false</src> and the input MaskedArray is readonly, then the
+  // constructed MaskedArray is readonly.
+  //
+  // <thrown>
+  //    <li> ArrayConformanceError
+  // </thrown>
+  //
+  // <group>
+  MaskedArray(const masked_array_type &inarray, const MaskedLogicalArray &inmask, bool isreadonly);
+  MaskedArray(const masked_array_type &inarray, const MaskedLogicalArray &inmask);
+  // </group>
 
-    // Copy constructor.
-    //
-    // The internal mask is a total copy of the mask from the input
-    // MaskedArray, and is completely independent of this input mask.
-    //
-    // The Array from the input MaskedArray is copy constructed, which
-    // means that it is a really smart pointer to the underlying Block, and
-    // shares this Block with the Array from the input MaskedArray.
-    //
-    // By default, the MaskedArray constructed is writeable if the input
-    // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
-    // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
-    // <src>false</src> and the input MaskedArray is readonly, then the
-    // constructed MaskedArray is readonly.
-    //
-    // <group>
-    MaskedArray(const masked_array_type &other, bool isreadonly);
-    MaskedArray(const masked_array_type &other);
-    
-    // The source is left empty after moving
-    MaskedArray(masked_array_type&& source);
-    // </group>
+  // Copy constructor.
+  //
+  // The internal mask is a total copy of the mask from the input
+  // MaskedArray, and is completely independent of this input mask.
+  //
+  // The Array from the input MaskedArray is copy constructed, which
+  // means that it is a really smart pointer to the underlying Block, and
+  // shares this Block with the Array from the input MaskedArray.
+  //
+  // By default, the MaskedArray constructed is writeable if the input
+  // MaskedArray is writeable, and readonly if the input MaskedArray
+  // is readonly.  If <src>isreadonly</src> is <src>true</src>, then
+  // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
+  // <src>false</src> and the input MaskedArray is readonly, then the
+  // constructed MaskedArray is readonly.
+  //
+  // <group>
+  MaskedArray(const masked_array_type &other, bool isreadonly);
+  MaskedArray(const masked_array_type &other);
 
-    // Return a MaskedArray.  The new MaskedArray is masked by the input
-    // LogicalArray "anded" with the mask of the original MaskedArray.
-    // This mask must conform to the array.
-    //
-    // The MaskedArray constructed is writeable if the input
-    // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.
-    //
-    masked_array_type operator() (const LogicalArray &mask) const;
+  // The source is left empty after moving
+  MaskedArray(masked_array_type &&source);
+  // </group>
 
-    // Return a MaskedArray.  The new MaskedArray is masked by the input
-    // MaskedLogicalArray "anded" with the mask of the original MaskedArray.
-    // This mask must conform to the array.
-    //
-    // The MaskedArray constructed is writeable if the input
-    // MaskedArray is writeable, and readonly if the input MaskedArray
-    // is readonly.
-    //
-    masked_array_type operator() (const MaskedLogicalArray &mask) const;
+  // Return a MaskedArray.  The new MaskedArray is masked by the input
+  // LogicalArray "anded" with the mask of the original MaskedArray.
+  // This mask must conform to the array.
+  //
+  // The MaskedArray constructed is writeable if the input
+  // MaskedArray is writeable, and readonly if the input MaskedArray
+  // is readonly.
+  //
+  masked_array_type operator()(const LogicalArray &mask) const;
 
-    // Get a reference to an array part which extends from "start" to end."
-    // <group>
-    masked_array_type operator()(const IPosition &start, const IPosition &end);
-    // Along the ith axis, every inc[i]'th element is chosen.
-    masked_array_type operator()(const IPosition &start, const IPosition &end,
-			      const IPosition &inc);
-    // </group>
+  // Return a MaskedArray.  The new MaskedArray is masked by the input
+  // MaskedLogicalArray "anded" with the mask of the original MaskedArray.
+  // This mask must conform to the array.
+  //
+  // The MaskedArray constructed is writeable if the input
+  // MaskedArray is writeable, and readonly if the input MaskedArray
+  // is readonly.
+  //
+  masked_array_type operator()(const MaskedLogicalArray &mask) const;
 
-    // Get a reference to an array using a Slicer.
-    masked_array_type operator()(const Slicer&);
-  
-    // Make a copy of the masked array.
-    //
-    // This is a deep copy.  The Array and mask components of the returned
-    // MaskedArray are deep copies of the Array and mask in the input
-    // MaskedArray pointed to by this.  In other words, the Array and mask
-    // in the output MaskedArray are completely independent of those in
-    // the input MaskedArray.
-    //
-    // By default, the MaskedArray returned is writeable.  If
-    // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
-    // returned is readonly.
-    //
-    // <group>
-    masked_array_type copy(bool isreadonly) const;
-    masked_array_type copy() const;
-    // </group>
+  // Get a reference to an array part which extends from "start" to end."
+  // <group>
+  masked_array_type operator()(const IPosition &start, const IPosition &end);
+  // Along the ith axis, every inc[i]'th element is chosen.
+  masked_array_type operator()(const IPosition &start, const IPosition &end, const IPosition &inc);
+  // </group>
 
-    // Return the internal Array.
-    const array_type & getArray() const;
+  // Get a reference to an array using a Slicer.
+  masked_array_type operator()(const Slicer &);
 
-    // Return the internal Array, writeable.
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    array_type & getRWArray() const;
+  // Make a copy of the masked array.
+  //
+  // This is a deep copy.  The Array and mask components of the returned
+  // MaskedArray are deep copies of the Array and mask in the input
+  // MaskedArray pointed to by this.  In other words, the Array and mask
+  // in the output MaskedArray are completely independent of those in
+  // the input MaskedArray.
+  //
+  // By default, the MaskedArray returned is writeable.  If
+  // <src>isreadonly</src> is <src>true</src>, then the MaskedArray
+  // returned is readonly.
+  //
+  // <group>
+  masked_array_type copy(bool isreadonly) const;
+  masked_array_type copy() const;
+  // </group>
 
-    // Return the (const) internal Mask.
-    const mask_type & getMask() const;
+  // Return the internal Array.
+  const array_type &getArray() const;
 
-    // The dimensionality of this masked array.
-    size_t ndim() const;
+  // Return the internal Array, writeable.
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  array_type &getRWArray() const;
 
-    // The number of elements of this masked array.
-    // This is the number of elements in the underlying Array.
-    // <group>
-    size_t nelements() const;
-    size_t size() const
-        { return nelements(); }
-    // </group>
+  // Return the (const) internal Mask.
+  const mask_type &getMask() const;
 
-    // The number of valid elements of this masked array.
-    // This is the number of elements of the mask which are TRUE.
-    size_t nelementsValid() const;
+  // The dimensionality of this masked array.
+  size_t ndim() const;
 
+  // The number of elements of this masked array.
+  // This is the number of elements in the underlying Array.
+  // <group>
+  size_t nelements() const;
+  size_t size() const { return nelements(); }
+  // </group>
 
-    // Check to see if the masked array is consistent. This is about the same
-    // thing as checking for invariants. If AIPS_DEBUG is defined, this is
-    // invoked after construction and on entry to most member functions.
-    bool ok() const;
+  // The number of valid elements of this masked array.
+  // This is the number of elements of the mask which are TRUE.
+  size_t nelementsValid() const;
 
-    // Are the shapes identical?
-    // <group>
-    bool conform(const array_type &other) const;
-    bool conform(const masked_array_type &other) const;
-    // </group>
+  // Check to see if the masked array is consistent. This is about the same
+  // thing as checking for invariants. If AIPS_DEBUG is defined, this is
+  // invoked after construction and on entry to most member functions.
+  bool ok() const;
 
-    // The length of each axis.
-    const IPosition& shape() const
-      { return pArray->shape(); }
+  // Are the shapes identical?
+  // <group>
+  bool conform(const array_type &other) const;
+  bool conform(const masked_array_type &other) const;
+  // </group>
 
-    // Is the array read only?
-    bool isReadOnly() const
-      { return isRO; }
+  // The length of each axis.
+  const IPosition &shape() const { return pArray->shape(); }
 
-    // Set the array to be read only.
-    void setReadOnly() const;
+  // Is the array read only?
+  bool isReadOnly() const { return isRO; }
 
+  // Set the array to be read only.
+  void setReadOnly() const;
 
-    // Copy the values in inarray to this, only copying those elements
-    // for which the corresponding mask element is true.
-    // <thrown>
-    //    <li> ArrayConformanceError
-    //    <li> ArrayError
-    // </thrown>
-    // TODO rename, see copy assignment operator.
-    masked_array_type &operator=(const array_type &inarray);
-    masked_array_type &operator=(array_type&& inarray);
+  // Copy the values in inarray to this, only copying those elements
+  // for which the corresponding mask element is true.
+  // <thrown>
+  //    <li> ArrayConformanceError
+  //    <li> ArrayError
+  // </thrown>
+  // TODO rename, see copy assignment operator.
+  masked_array_type &operator=(const array_type &inarray);
+  masked_array_type &operator=(array_type &&inarray);
 
-    // Copies/moves the values in other to this, only copying those elements
-    // for which the logical AND of the corresponding mask elements
-    // of both MaskedArrays is true.
-    //
-    // <thrown>
-    //    <li> ArrayConformanceError
-    //    <li> ArrayError
-    // </thrown>
-    //
-    // <group>
-    // TODO this should be renamed: assignment operator should make
-    // obervable state equal, which should thus include getArray().
-    masked_array_type &operator=(const masked_array_type &other);
-    masked_array_type &operator=(masked_array_type&& other);
-    // </group>
+  // Copies/moves the values in other to this, only copying those elements
+  // for which the logical AND of the corresponding mask elements
+  // of both MaskedArrays is true.
+  //
+  // <thrown>
+  //    <li> ArrayConformanceError
+  //    <li> ArrayError
+  // </thrown>
+  //
+  // <group>
+  // TODO this should be renamed: assignment operator should make
+  // obervable state equal, which should thus include getArray().
+  masked_array_type &operator=(const masked_array_type &other);
+  masked_array_type &operator=(masked_array_type &&other);
+  // </group>
 
-    // Set every element of this array to "value", only setting those elements
-    // for which the corresponding mask element is true.
-    // In other words, a scalar behaves as if it were a constant conformant
-    // array.
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    masked_array_type &operator=(const T &value);
+  // Set every element of this array to "value", only setting those elements
+  // for which the corresponding mask element is true.
+  // In other words, a scalar behaves as if it were a constant conformant
+  // array.
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  masked_array_type &operator=(const T &value);
 
-    // Return a "compressed" Array containing only the valid
-    // elements of the MaskedArray.  The number of elements in the
-    // Array will be <src>nelementsValid()</src> for the
-    // MaskedArray.  The MaskedArray can have any shape.
-    // <group>
+  // Return a "compressed" Array containing only the valid
+  // elements of the MaskedArray.  The number of elements in the
+  // Array will be <src>nelementsValid()</src> for the
+  // MaskedArray.  The MaskedArray can have any shape.
+  // <group>
 
-    // The returned Array will have dimension one.
-    Array<T> getCompressedArray () const;
+  // The returned Array will have dimension one.
+  Array<T> getCompressedArray() const;
 
-    // The returned Array will have the input shape.  This shape must
-    // give the returned Array the required number of elements.
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    Array<T> getCompressedArray (const IPosition & shape) const;
+  // The returned Array will have the input shape.  This shape must
+  // give the returned Array the required number of elements.
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  Array<T> getCompressedArray(const IPosition &shape) const;
 
-    // </group>
+  // </group>
 
-    // Fill the argument "compressed" Array with only the
-    // valid elements of the MaskedArray.  The size of the
-    // Array must be <src>nelementsValid()</src> for the MaskedArray.
-    // The Array can have any shape which meets this requirement.
-    // The MaskedArray can have any shape.
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    void getCompressedArray (array_type & inarr) const;
+  // Fill the argument "compressed" Array with only the
+  // valid elements of the MaskedArray.  The size of the
+  // Array must be <src>nelementsValid()</src> for the MaskedArray.
+  // The Array can have any shape which meets this requirement.
+  // The MaskedArray can have any shape.
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  void getCompressedArray(array_type &inarr) const;
 
-    // Set only the valid elements of the MaskedArray from the argument
-    // "compressed" Array.  The size of the
-    // Array must be <src>nelementsValid()</src> for the MaskedArray.
-    // The Array can have any shape which meets this requirement.
-    // The MaskedArray can have any shape.
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    void setCompressedArray (const array_type& inarr);
+  // Set only the valid elements of the MaskedArray from the argument
+  // "compressed" Array.  The size of the
+  // Array must be <src>nelementsValid()</src> for the MaskedArray.
+  // The Array can have any shape which meets this requirement.
+  // The MaskedArray can have any shape.
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  void setCompressedArray(const array_type &inarr);
 
-    // Manipulate the storage for the underlying Array.
-    // See the description of the corresponding Array functions
-    // for more information.
-    // <group>
-    const T * getArrayStorage (bool &deleteIt) const;
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    T * getRWArrayStorage (bool &deleteIt) const;
-    //
-    void freeArrayStorage(const T *&storage, bool deleteIt) const;
-    //
-    // <thrown>
-    //    <li> ArrayError
-    // </thrown>
-    //
-    void putArrayStorage(T *&storage, bool deleteAndCopy) const;
-    // </group>
+  // Manipulate the storage for the underlying Array.
+  // See the description of the corresponding Array functions
+  // for more information.
+  // <group>
+  const T *getArrayStorage(bool &deleteIt) const;
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  T *getRWArrayStorage(bool &deleteIt) const;
+  //
+  void freeArrayStorage(const T *&storage, bool deleteIt) const;
+  //
+  // <thrown>
+  //    <li> ArrayError
+  // </thrown>
+  //
+  void putArrayStorage(T *&storage, bool deleteAndCopy) const;
+  // </group>
 
+  // Manipulate the storage for the underlying Mask.
+  // See the description of the corresponding Array functions
+  // for more information.
+  // <group>
+  const LogicalArrayElem *getMaskStorage(bool &deleteIt) const;
+  //
+  void freeMaskStorage(const LogicalArrayElem *&storage, bool deleteIt) const;
+  // </group>
 
-    // Manipulate the storage for the underlying Mask.
-    // See the description of the corresponding Array functions
-    // for more information.
-    // <group>
-    const LogicalArrayElem *getMaskStorage (bool &deleteIt) const;
-    //
-    void freeMaskStorage(const LogicalArrayElem *&storage, bool deleteIt) const;
-    // </group>
+ protected:
+  // The array.
+  std::unique_ptr<array_type> pArray;
 
+  // The mask.
+  std::unique_ptr<mask_type> pMask;
 
-protected:
-    // The array.
-    std::unique_ptr<array_type> pArray;
+  // Cache the number of valid elements.
+  size_t nelemValid;
 
-    // The mask.
-    std::unique_ptr<mask_type> pMask;
+  // Is the number of valid elements cache OK?
+  // i.e. has it been calculated?
+  bool nelemValidIsOK;
 
-    // Cache the number of valid elements.
-    size_t nelemValid;
-
-    // Is the number of valid elements cache OK?
-    // i.e. has it been calculated?
-    bool nelemValidIsOK;
-
-    // Is the array read only?
-    bool isRO;
-
+  // Is the array read only?
+  bool isRO;
 };
-
 
 // <summary> General global functions for MaskedArrays, and MaskedArrays and Arrays. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskedArray">
@@ -712,31 +690,31 @@ protected:
 // MaskedArrays, or on MaskedArrays and Arrays.
 // </synopsis>
 //
-// <linkfrom anchor="MaskedArray general global functions" classes="MaskedArray Array Vector Matrix Cube">
+// <linkfrom anchor="MaskedArray general global functions" classes="MaskedArray Array Vector Matrix
+// Cube">
 //   <here>MaskedArray general global functions</here> -- General global
 //   functions for MaskedArrays, and between MaskedArrays and Arrays.
 // </linkfrom>
 //
 // <group name="MaskedArray general global functions">
 
-
 // Test conformance for masked arrays and arrays of different types.
 // Are the shapes identical?
 //
 //   <group name=conform2>
 //
-template<typename TLL, typename TRR>
-  bool conform2 (const MaskedArray<TLL> &left, const Array<TRR> &right);
-template<typename TLL, typename TRR>
-  bool conform2 (const Array<TLL> &left, const MaskedArray<TRR> &right);
-template<typename TLL, typename TRR>
-  bool conform2 (const MaskedArray<TLL> &left, const MaskedArray<TRR> &right);
+template <typename TLL, typename TRR>
+bool conform2(const MaskedArray<TLL> &left, const Array<TRR> &right);
+template <typename TLL, typename TRR>
+bool conform2(const Array<TLL> &left, const MaskedArray<TRR> &right);
+template <typename TLL, typename TRR>
+bool conform2(const MaskedArray<TLL> &left, const MaskedArray<TRR> &right);
 //
 //   </group>
 
 // </group>
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #include "MaskedArray.tcc"
 

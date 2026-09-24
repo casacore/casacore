@@ -1,32 +1,32 @@
-//# Sort.h: Sort objects on one or more keys
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Sort.h: Sort objects on one or more keys
+// # Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_SORT_H
 #define CASA_SORT_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Containers/Block.h>
@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Compare.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Define a Sort key </summary>
 // <use visibility=local>
@@ -52,50 +52,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       stride for keys embedded in a struct;
 //  <li> Sort order -- ascending or descending;
 // </ul>
-// </synopsis> 
+// </synopsis>
 
-class SortKey
-{
-public:
-    friend class Sort;
+class SortKey {
+ public:
+  friend class Sort;
 
-    // Define a sort key in a given data array using the indicated
-    // comparison object, stride and sort order.
-    SortKey (const void* data, const std::shared_ptr<BaseCompare>&,
-             uInt increment, int order);
+  // Define a sort key in a given data array using the indicated
+  // comparison object, stride and sort order.
+  SortKey(const void* data, const std::shared_ptr<BaseCompare>&, uInt increment, int order);
 
-    // Copy constructor (copy semantics).
-    SortKey (const SortKey&);
+  // Copy constructor (copy semantics).
+  SortKey(const SortKey&);
 
-    ~SortKey();
+  ~SortKey();
 
-    // Assignment (copy semantics).
-    SortKey& operator= (const SortKey&);
+  // Assignment (copy semantics).
+  SortKey& operator=(const SortKey&);
 
-    // Try if GenSort can be used for this single key.
-    // If it succeeds, it returns the resulting number of elements.
-    // Otherwise it returns 0.
-    uInt tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const;
-    uInt64 tryGenSort (Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const;
+  // Try if GenSort can be used for this single key.
+  // If it succeeds, it returns the resulting number of elements.
+  // Otherwise it returns 0.
+  uInt tryGenSort(Vector<uInt>& indexVector, uInt nrrec, int opt) const;
+  uInt64 tryGenSort(Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const;
 
-    // Get the sort order.
-    int order() const
-      { return order_p; }
+  // Get the sort order.
+  int order() const { return order_p; }
 
-protected:
-    // sort order; -1 = ascending, 1 = descending
-    int               order_p;
-    // address of first data point
-    const void*       data_p;
-    // increment for next data point
-    uInt              incr_p;
-    // comparison object; use std::shared_ptr for memory management
-    std::shared_ptr<BaseCompare> ccmpObj_p;
-    // comparison object; use raw pointer for performance
-    BaseCompare* cmpObj_p;
+ protected:
+  // sort order; -1 = ascending, 1 = descending
+  int order_p;
+  // address of first data point
+  const void* data_p;
+  // increment for next data point
+  uInt incr_p;
+  // comparison object; use std::shared_ptr for memory management
+  std::shared_ptr<BaseCompare> ccmpObj_p;
+  // comparison object; use raw pointer for performance
+  BaseCompare* cmpObj_p;
 };
-
-
 
 // <summary> Sort on one or more keys, ascending and/or descending </summary>
 // <use visibility=export>
@@ -141,7 +136,7 @@ protected:
 // </DL>
 // The default is to use QuickSort for small arrays or if only a single
 // thread can be used. Otherwise ParSort is the default.
-// 
+//
 // All sort algorithms are <em>stable</em>, which means that the original
 // order is kept when keys are equal.
 //
@@ -150,7 +145,7 @@ protected:
 //  <li> Construct the <src>Sort</src> object.
 //  <li> Define the sort keys. The function <src>sortKey</src> must be
 //       called for each sort key (the most significant one first).
-//       The comparison object can be passed in directly, or a 
+//       The comparison object can be passed in directly, or a
 //       <linkto group="DataType.h#DataType">basic data type</linkto>
 //       can be given. In the latter case the appropriate ObjCompare
 //       comparison object will be created.
@@ -237,217 +232,208 @@ protected:
 //    };
 //    Vector<uInt> inx;
 //    Sort sort;
-//    sort.sortKey (tsarr, compareTs, sizeof(Ts)); 
+//    sort.sortKey (tsarr, compareTs, sizeof(Ts));
 //    sort.sort (inx, nrts);
 // </srcblock>
 
-class Sort
-{
-public:
-    // Enumerate the sort options:
-    enum Option {DefaultSort=0,     // ParSort, but QuickSort for small array
-                 HeapSort=1,        // use Heapsort algorithm
-                 InsSort=2,         // use insertion sort algorithm
-                 QuickSort=4,       // use Quicksort algorithm
-                 ParSort=8,         // use parallel merge sort algorithm
-                 NoDuplicates=16};  // skip data with equal sort keys
+class Sort {
+ public:
+  // Enumerate the sort options:
+  enum Option {
+    DefaultSort = 0,  // ParSort, but QuickSort for small array
+    HeapSort = 1,     // use Heapsort algorithm
+    InsSort = 2,      // use insertion sort algorithm
+    QuickSort = 4,    // use Quicksort algorithm
+    ParSort = 8,      // use parallel merge sort algorithm
+    NoDuplicates = 16
+  };  // skip data with equal sort keys
 
-    // Enumerate the sort order:
-    enum Order {Ascending=-1,
-                Descending=1};
+  // Enumerate the sort order:
+  enum Order { Ascending = -1, Descending = 1 };
 
-    // The default constructor can be used when the data is only passed
-    // in via function <src>sortKey</src>.
-    Sort();
+  // The default constructor can be used when the data is only passed
+  // in via function <src>sortKey</src>.
+  Sort();
 
-    // Construct a Sort object for the given data array with elements
-    // of <src>elementSize</src> bytes.  This data array will be used
-    // when an offset is given to the <src>sortKey</src> functions.
-    // You can still pass additional data arrays to the
-    // <src>sortKey</src> functions.
-    Sort (const void* data, uInt elementSize);
+  // Construct a Sort object for the given data array with elements
+  // of <src>elementSize</src> bytes.  This data array will be used
+  // when an offset is given to the <src>sortKey</src> functions.
+  // You can still pass additional data arrays to the
+  // <src>sortKey</src> functions.
+  Sort(const void* data, uInt elementSize);
 
-    // Copy constructor (copy semantics).
-    Sort (const Sort&);
+  // Copy constructor (copy semantics).
+  Sort(const Sort&);
 
-    ~Sort();
+  ~Sort();
 
-    // Assignment (copy semantics).
-    Sort& operator= (const Sort&);
+  // Assignment (copy semantics).
+  Sort& operator=(const Sort&);
 
-    // Define a sort key (the most significant key should be defined first).
-    // The key contains:
-    // <ul>
-    // <li> A pointer to the start of the data array. --- When structs are
-    //   sorted on an element in the struct, the pointer must point to
-    //   that element in the first struct.
-    // <li> A pointer to the comparison object to be used. --- The
-    //   comparison object can be specified in two ways:
-    //   <ul>
-    //   <li> by giving a
-    //     <linkto group="DataType.h#DataType">basic data type</linkto>,
-    //     in which case the appropriate comparison object will be
-    //     created automatically, or
-    //   <li> by a std::shared_ptr of a comparison object.
-    //     You may want to use the templated comparison classes
-    //     <linkto class=ObjCompare>ObjCompare</linkto>(),
-    //     but you are free to use any other class derived from BaseCompare
-    //     that implements the <src>comp</src> function.
-    //   </ul>
-    // <li> The increment from one data element to the next. --- When
-    //   structs are sorted on an element in the struct, the increment
-    //   should be the size of the struct. If the comparison object is
-    //   automatically created using the data type specified, the default
-    //   increment is the size of the data type.
-    // <li> The sort order. --- <src>Ascending</src> (default) or 
-    //   <src>Descending</src>;
-    // </ul>
-    //
-    // When the data array has been passed to the Sort constructor,
-    // the data pointer and the increment arguments can be replaced by a
-    // single argument: the offset of the key in each element of the array.
-    //
-    // <group>
-    void sortKey (const void* data, DataType, uInt increment = 0,
-		  Order = Ascending);
-    void sortKey (const void* data, const std::shared_ptr<BaseCompare>&,
-                  uInt increment, Order = Ascending);
-    void sortKey (uInt offset, DataType, Order = Ascending);
-    void sortKey (uInt offset, const std::shared_ptr<BaseCompare>&,
-                  Order = Ascending);
-    // </group>
+  // Define a sort key (the most significant key should be defined first).
+  // The key contains:
+  // <ul>
+  // <li> A pointer to the start of the data array. --- When structs are
+  //   sorted on an element in the struct, the pointer must point to
+  //   that element in the first struct.
+  // <li> A pointer to the comparison object to be used. --- The
+  //   comparison object can be specified in two ways:
+  //   <ul>
+  //   <li> by giving a
+  //     <linkto group="DataType.h#DataType">basic data type</linkto>,
+  //     in which case the appropriate comparison object will be
+  //     created automatically, or
+  //   <li> by a std::shared_ptr of a comparison object.
+  //     You may want to use the templated comparison classes
+  //     <linkto class=ObjCompare>ObjCompare</linkto>(),
+  //     but you are free to use any other class derived from BaseCompare
+  //     that implements the <src>comp</src> function.
+  //   </ul>
+  // <li> The increment from one data element to the next. --- When
+  //   structs are sorted on an element in the struct, the increment
+  //   should be the size of the struct. If the comparison object is
+  //   automatically created using the data type specified, the default
+  //   increment is the size of the data type.
+  // <li> The sort order. --- <src>Ascending</src> (default) or
+  //   <src>Descending</src>;
+  // </ul>
+  //
+  // When the data array has been passed to the Sort constructor,
+  // the data pointer and the increment arguments can be replaced by a
+  // single argument: the offset of the key in each element of the array.
+  //
+  // <group>
+  void sortKey(const void* data, DataType, uInt increment = 0, Order = Ascending);
+  void sortKey(const void* data, const std::shared_ptr<BaseCompare>&, uInt increment,
+               Order = Ascending);
+  void sortKey(uInt offset, DataType, Order = Ascending);
+  void sortKey(uInt offset, const std::shared_ptr<BaseCompare>&, Order = Ascending);
+  // </group>
 
-    // Sort the data array of <src>nrrec</src> records.
-    // The result is an array of indices giving the requested order.
-    // It returns the number of resulting records. The indices array
-    // is resized to that number.
-    // <br> By default it'll try if the faster GenSortIndirect can be used
-    // if a sort on a single key is used.
-    uInt sort (Vector<uInt>& indexVector, uInt nrrec,
-               int options = DefaultSort, Bool tryGenSort = True) const;
-    uInt64 sort (Vector<uInt64>& indexVector, uInt64 nrrec,
-                 int options = DefaultSort, Bool tryGenSort = True) const;
+  // Sort the data array of <src>nrrec</src> records.
+  // The result is an array of indices giving the requested order.
+  // It returns the number of resulting records. The indices array
+  // is resized to that number.
+  // <br> By default it'll try if the faster GenSortIndirect can be used
+  // if a sort on a single key is used.
+  uInt sort(Vector<uInt>& indexVector, uInt nrrec, int options = DefaultSort,
+            Bool tryGenSort = True) const;
+  uInt64 sort(Vector<uInt64>& indexVector, uInt64 nrrec, int options = DefaultSort,
+              Bool tryGenSort = True) const;
 
-    // Get all unique records in a sorted array. The array order is
-    // given in the indexVector (as possibly returned by the sort function).
-    // The default indexVector is 0..nrrec-1.
-    // The index of each first unique record is returned in the uniqueVector.
-    // They are indices in the supplied indexVector, so
-    // <src>data[indexVector(uniqueVector(i))]</src>
-    // is giving the i-th unique record.
-    // Note that the records indexed by <src>indexVector(uniqueVector(i))</src>
-    // till <src>indexVector(uniqueVector(i+1))</src> are all the same.
-    // <br>
-    // It returns the number of unique records. The unique array
-    // is resized to that number.
-    // The third version also gives back a vector with the keys that
-    // change in each sorting group. The size of changeKey is the same as
-    // uniqueVector, and for each unique sorting group indicates the index
-    // of the keyword that will change at the end of the group.
-    // <group>
-    uInt unique (Vector<uInt>& uniqueVector, uInt nrrec) const;
-    uInt unique (Vector<uInt>& uniqueVector,
-                 const Vector<uInt>& indexVector) const;
-    uInt unique (Vector<uInt>& uniqueVector,
-                 Vector<size_t>& changeKey,
-                 const Vector<uInt>& indexVector) const;
-    uInt64 unique (Vector<uInt64>& uniqueVector, uInt64 nrrec) const;
-    uInt64 unique (Vector<uInt64>& uniqueVector,
-                   const Vector<uInt64>& indexVector) const;
-    uInt64 unique (Vector<uInt64>& uniqueVector,
-                   Vector<size_t>& changeKey,
-                   const Vector<uInt64>& indexVector) const;
-    // </group>
+  // Get all unique records in a sorted array. The array order is
+  // given in the indexVector (as possibly returned by the sort function).
+  // The default indexVector is 0..nrrec-1.
+  // The index of each first unique record is returned in the uniqueVector.
+  // They are indices in the supplied indexVector, so
+  // <src>data[indexVector(uniqueVector(i))]</src>
+  // is giving the i-th unique record.
+  // Note that the records indexed by <src>indexVector(uniqueVector(i))</src>
+  // till <src>indexVector(uniqueVector(i+1))</src> are all the same.
+  // <br>
+  // It returns the number of unique records. The unique array
+  // is resized to that number.
+  // The third version also gives back a vector with the keys that
+  // change in each sorting group. The size of changeKey is the same as
+  // uniqueVector, and for each unique sorting group indicates the index
+  // of the keyword that will change at the end of the group.
+  // <group>
+  uInt unique(Vector<uInt>& uniqueVector, uInt nrrec) const;
+  uInt unique(Vector<uInt>& uniqueVector, const Vector<uInt>& indexVector) const;
+  uInt unique(Vector<uInt>& uniqueVector, Vector<size_t>& changeKey,
+              const Vector<uInt>& indexVector) const;
+  uInt64 unique(Vector<uInt64>& uniqueVector, uInt64 nrrec) const;
+  uInt64 unique(Vector<uInt64>& uniqueVector, const Vector<uInt64>& indexVector) const;
+  uInt64 unique(Vector<uInt64>& uniqueVector, Vector<size_t>& changeKey,
+                const Vector<uInt64>& indexVector) const;
+  // </group>
 
-private:
-    template<typename T>
-    T doSort (Vector<T>& indexVector, T nrrec,
-              int options = DefaultSort, Bool tryGenSort = True) const;
+ private:
+  template <typename T>
+  T doSort(Vector<T>& indexVector, T nrrec, int options = DefaultSort,
+           Bool tryGenSort = True) const;
 
-    template <typename T>
-    T doUnique (Vector<T>& uniqueVector, T nrrec) const;
-    template <typename T>
-    T doUnique (Vector<T>& uniqueVector, const Vector<T>& indexVector) const;
-    template <typename T>
-    T doUnique (Vector<T>& uniqueVector, Vector<size_t>& changeKey,
-                const Vector<T>& indexVector) const;
+  template <typename T>
+  T doUnique(Vector<T>& uniqueVector, T nrrec) const;
+  template <typename T>
+  T doUnique(Vector<T>& uniqueVector, const Vector<T>& indexVector) const;
+  template <typename T>
+  T doUnique(Vector<T>& uniqueVector, Vector<size_t>& changeKey,
+             const Vector<T>& indexVector) const;
 
-    // Copy that Sort object to this.
-    void copy (const Sort& that);
+  // Copy that Sort object to this.
+  void copy(const Sort& that);
 
-    // Add a sort key giving a data type and stride or the sort key.
-    // <group>
-    void addKey (const void* data, DataType, uInt increment, int options);
-    void addKey (SortKey*);
-    // </group>
+  // Add a sort key giving a data type and stride or the sort key.
+  // <group>
+  void addKey(const void* data, DataType, uInt increment, int options);
+  void addKey(SortKey*);
+  // </group>
 
-    // Do an insertion sort, optionally skipping duplicates.
-    // <group>
-    template<typename T>
-    T insSort (T nr, T* indices) const;
-    template<typename T>
-    T insSortNoDup (T nr, T* indices) const;
-    // </group>
+  // Do an insertion sort, optionally skipping duplicates.
+  // <group>
+  template <typename T>
+  T insSort(T nr, T* indices) const;
+  template <typename T>
+  T insSortNoDup(T nr, T* indices) const;
+  // </group>
 
-    // Do a merge sort, if possible in parallel using OpenMP.
-    // Note that the env.var. OMP_NUM_TRHEADS sets the maximum nr of threads
-    // to use. It defaults to the number of cores.
-    template<typename T>
-    T parSort (int nthr, T nrrec, T* inx) const;
-    template<typename T>
-    void merge (T* inx, T* tmp, T size, T* index,
-                T nparts) const;
+  // Do a merge sort, if possible in parallel using OpenMP.
+  // Note that the env.var. OMP_NUM_TRHEADS sets the maximum nr of threads
+  // to use. It defaults to the number of cores.
+  template <typename T>
+  T parSort(int nthr, T nrrec, T* inx) const;
+  template <typename T>
+  void merge(T* inx, T* tmp, T size, T* index, T nparts) const;
 
-    // Do a quicksort, optionally skipping duplicates
-    // (qkSort is the actual quicksort function).
-    // <group>
-    template<typename T>
-    T quickSort (T nr, T* indices) const;
-    template<typename T>
-    T quickSortNoDup (T nr, T* indices) const;
-    template<typename T>
-    void qkSort (T nr, T* indices) const;
-    // </group>
+  // Do a quicksort, optionally skipping duplicates
+  // (qkSort is the actual quicksort function).
+  // <group>
+  template <typename T>
+  T quickSort(T nr, T* indices) const;
+  template <typename T>
+  T quickSortNoDup(T nr, T* indices) const;
+  template <typename T>
+  void qkSort(T nr, T* indices) const;
+  // </group>
 
-    // Do a heapsort, optionally skipping duplicates.
-    // <group>
-    template<typename T>
-    T heapSort (T nr, T* indices) const;
-    template<typename T>
-    T heapSortNoDup (T nr, T* indices) const;
-    // </group>
+  // Do a heapsort, optionally skipping duplicates.
+  // <group>
+  template <typename T>
+  T heapSort(T nr, T* indices) const;
+  template <typename T>
+  T heapSortNoDup(T nr, T* indices) const;
+  // </group>
 
-    // Siftdown algorithm for heapsort.
-    template<typename T>
-    void siftDown (T low, T up, T* indices) const;
+  // Siftdown algorithm for heapsort.
+  template <typename T>
+  void siftDown(T low, T up, T* indices) const;
 
-    // Compare 2 records based on the comparison functions
-    template<typename T>
-    int compare (T index1, T index2) const;
+  // Compare 2 records based on the comparison functions
+  template <typename T>
+  int compare(T index1, T index2) const;
 
-    // As compare() but it also gives back the index of the first comparison
-    // function that didn't match.
-    template<typename T>
-    int compareChangeIdx(T i1, T i2, size_t& idxComp) const;
+  // As compare() but it also gives back the index of the first comparison
+  // function that didn't match.
+  template <typename T>
+  int compareChangeIdx(T i1, T i2, size_t& idxComp) const;
 
-    // Swap 2 indices.
-    template<typename T>
-    inline void swap (T index1, T index2, T* indices) const
-    {
-      T t = indices[index1];
-      indices[index1] = indices[index2];
-      indices[index2] = t;
-    }
+  // Swap 2 indices.
+  template <typename T>
+  inline void swap(T index1, T index2, T* indices) const {
+    T t = indices[index1];
+    indices[index1] = indices[index2];
+    indices[index2] = t;
+  }
 
-    //# Data memebers
-    Block<SortKey*>    keys_p;                    //# keys to sort on
-    size_t             nrkey_p;                   //# #sort-keys
-    const void*        data_p;                    //# pointer to data records
-    uInt               size_p;                    //# size of data record
-    int                order_p;                   //# -1=asc 0=mixed 1=desc
+  // # Data memebers
+  Block<SortKey*> keys_p;  // # keys to sort on
+  size_t nrkey_p;          // # #sort-keys
+  const void* data_p;      // # pointer to data records
+  uInt size_p;             // # size of data record
+  int order_p;             // # -1=asc 0=mixed 1=desc
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

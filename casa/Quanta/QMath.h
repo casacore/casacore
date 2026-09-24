@@ -1,41 +1,40 @@
-//# QMath.h: Mathematical operations for the Quantum class.
-//# Copyright (C) 1994,1995,1996,1998,1999,2000,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # QMath.h: Mathematical operations for the Quantum class.
+// # Copyright (C) 1994,1995,1996,1998,1999,2000,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QMATH_H
 #define CASA_QMATH_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Typedefs
+// # Typedefs
 
 // <summary>
 //   Mathematical operations for the Quantum class.
@@ -55,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // QMath derived from Quantum Mathematical functions
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Quantities are values with a unit. Their basic specification can be one of
 // two forms:
 // <srcblock>
@@ -74,11 +73,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // They can be subdivided into various groupings:
 // <ul>
 //   <li> <linkto file="QMath.h#prefix">Unary operations</linkto>
-//   <li> <linkto file="QMath.h#in-place">In place arithmetic functions: left hand side changed in place</linkto>
-//   <li> <linkto file="QMath.h#math">Arithmetic functions: return <src>Quantum<T></src></linkto>
-//   <li> <linkto file="QMath.h#arithmetic">Some useful arithmetic (linear) functions</linkto>
-//   <li> <linkto file="QMath.h#trigonometric">Trigonometric functions</linkto>
-//   <li> <linkto file="QMath.h#foreign">Functions to implement integer ceil/floor</linkto>
+//   <li> <linkto file="QMath.h#in-place">In place arithmetic functions: left hand side changed in
+//   place</linkto> <li> <linkto file="QMath.h#math">Arithmetic functions: return
+//   <src>Quantum<T></src></linkto> <li> <linkto file="QMath.h#arithmetic">Some useful arithmetic
+//   (linear) functions</linkto> <li> <linkto file="QMath.h#trigonometric">Trigonometric
+//   functions</linkto> <li> <linkto file="QMath.h#foreign">Functions to implement integer
+//   ceil/floor</linkto>
 // </ul>
 //
 // The operations/functions defined are:
@@ -98,7 +98,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Some operators are implemented as member functions, and can be found in the
 // <linkto class=Quantum>Quantum</linkto> class.
 // </note>
-// </synopsis> 
+// </synopsis>
 //
 // <motivation>
 // To separate the mathematical operations from Quantum.
@@ -115,12 +115,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <group name="Quantum mathematical operations">
 
-
 // Unary operations
 // <group name="prefix">
 // See <linkto class=Quantum>Quantum</linkto> class
 // </group>
-
 
 // In place arithmetic functions: left hand side changed in place
 // <thrown>
@@ -130,7 +128,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <group name="in-place">
 // See <linkto class=Quantum>Quantum</linkto> class
 // </group>
-
 
 // Arithmetic operators: return Quantum<T>
 // <thrown>
@@ -156,7 +153,6 @@ template <class Qtype>
 Quantum<Qtype> operator/(const Qtype &left, const Quantum<Qtype> &other);
 // </group>
 
-
 // Some useful arithmetic (linear) functions
 // <group name="arithmetic">
 // Return the Quantum raised to specified power; take the (integer) root;
@@ -178,7 +174,6 @@ Quantum<Qtype> ceil(const Quantum<Qtype> &left);
 template <class Qtype>
 Quantum<Qtype> floor(const Quantum<Qtype> &left);
 // </group>
-
 
 // Trigonometric and exponential functions
 // For direct functions input should be in angles, output will be empty units.
@@ -214,35 +209,32 @@ template <class Qtype>
 Quantum<Qtype> exp(const Quantum<Qtype> &left);
 // </group>
 
-
 // min and max
 template <class Qtype>
 Quantum<Qtype> min(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
 Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 
-
 // Functions to implement integer ceil/floor and others
 // <group name="foreign">
 Int ceil(const Int &val);
 Int floor(const Int &val);
-Array<Complex> operator *(const Array<Complex> &in, Double f);
-Array<Complex> operator /(const Array<Complex> &in, Double f);
-Array<DComplex> operator *(const Array<DComplex> &in, Double f);
-Array<DComplex> operator /(const Array<DComplex> &in, Double f);
-Array<Float> operator *(const Array<Float> &in, Double f);
-Array<Float> operator /(const Array<Float> &in, Double f);
-Array<Int> operator *(const Array<Int> &in, Double f);
-Array<Int> operator /(const Array<Int> &in, Double f);
+Array<Complex> operator*(const Array<Complex> &in, Double f);
+Array<Complex> operator/(const Array<Complex> &in, Double f);
+Array<DComplex> operator*(const Array<DComplex> &in, Double f);
+Array<DComplex> operator/(const Array<DComplex> &in, Double f);
+Array<Float> operator*(const Array<Float> &in, Double f);
+Array<Float> operator/(const Array<Float> &in, Double f);
+Array<Int> operator*(const Array<Int> &in, Double f);
+Array<Int> operator/(const Array<Int> &in, Double f);
 // </group>
-//# Inline Implementations
+// # Inline Implementations
 
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Quanta/QMath.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

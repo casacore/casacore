@@ -1,27 +1,27 @@
-//# LogSink.h: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996,2000,2001,2003,2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LogSink.h: Distribute LogMessages to their destination(s)
+// # Copyright (C) 1996,2000,2001,2003,2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_LOGSINK_H
 #define CASA_LOGSINK_H
@@ -33,7 +33,7 @@
 #include <memory>
 #include <mutex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Distribute LogMessages to their destination(s)
@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </etymology>
 //
 // <synopsis>
-// The LogSink class supplies the destination for 
+// The LogSink class supplies the destination for
 // <linkto class="LogMessage">LogMessage</linkto>s. There are two destinations
 // available through the <src>LogSink</src>
 // <ol>
@@ -74,7 +74,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <src>postLocally()</src> member functions.
 //
 // The global sink will normally be set by system library code (it defaults to
-// using <src>cerr</src>. The type of local sink is defined at 
+// using <src>cerr</src>. The type of local sink is defined at
 // construction time. Presently you can choose one of:
 // <ol>
 // <li> a <linkto class="NullLogSink">NullLogSink</linkto> which merely
@@ -85,7 +85,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      the messages to a Casacore <linkto class=Table>Table</linkto>.
 // </ol>
 //
-// Every <src>LogSink</src> has an attached 
+// Every <src>LogSink</src> has an attached
 // <linkto class=LogFilterInterface>LogFilterInterface</linkto>
 // which is used to reject or pass messages.
 // The local and global sinks have their own filters, so they can
@@ -121,7 +121,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // LogSink logger2(logger1);  // logger2 references logger1
 // logger2.post(message);     // ends up in "logtable"
 // </srcblock>
-// You can even have different <src>LogFilterInterface</src>'s 
+// You can even have different <src>LogFilterInterface</src>'s
 // attached to the different <src>LogSink</src>s.
 //
 // <motivation>
@@ -134,41 +134,36 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> A "tee" Sink type might be useful.
 // </todo>
 
-class LogSink : public LogSinkInterface
-{
-public:
-  //#If you add more sink types, modify the <ol> in the synopsis as well.
-  // Create a null local sink that throws all messages away or create
-  // a memory local sink that holds the messages in memory.
-  // If a filter isn't defined, default to <src>NORMAL</src>.
-  // <group>
-  explicit LogSink (LogMessage::Priority filter = LogMessage::NORMAL,
-		    Bool nullSink = True);
-  explicit LogSink (const LogFilterInterface &filter, Bool nullSink = True);
+class LogSink : public LogSinkInterface {
+ public:
+  // #If you add more sink types, modify the <ol> in the synopsis as well.
+  //  Create a null local sink that throws all messages away or create
+  //  a memory local sink that holds the messages in memory.
+  //  If a filter isn't defined, default to <src>NORMAL</src>.
+  //  <group>
+  explicit LogSink(LogMessage::Priority filter = LogMessage::NORMAL, Bool nullSink = True);
+  explicit LogSink(const LogFilterInterface &filter, Bool nullSink = True);
   // </group>
 
   // Log to an ostream. It is the responsiblity of the caller to ensure that
   // <src>os</src> will last as long as the <src>LogSink</src>s that use it.
   // Normally you would use <src>&cerr</src> as the argument.
   // <group>
-  LogSink (LogMessage::Priority filter, ostream *os,
-           Bool useGlobalSink = True);
-  LogSink (const LogFilterInterface &filter, ostream *os,
-           Bool useGlobalSink = True);
+  LogSink(LogMessage::Priority filter, ostream *os, Bool useGlobalSink = True);
+  LogSink(const LogFilterInterface &filter, ostream *os, Bool useGlobalSink = True);
   // </group>
 
   // Log to the given sink.
   // It is primarily intended to log to a
   // <linkto class=TableLogSink>TableLogSink</linkto>.
-  LogSink (const LogFilterInterface &filter,
-	   const std::shared_ptr<LogSinkInterface>&);
+  LogSink(const LogFilterInterface &filter, const std::shared_ptr<LogSinkInterface> &);
 
   // Make a referencing copy of <src>other</src>. That is, if you post a
   // message to the new object, it behaves as if you had posted it to the
   // old one (so long as their filters are the same).
   // <group>
-  LogSink (const LogSink &other);
-  LogSink &operator= (const LogSink &other);
+  LogSink(const LogSink &other);
+  LogSink &operator=(const LogSink &other);
   // </group>
 
   // Temporary to avoid problem that the bool constructor is taken
@@ -176,33 +171,35 @@ public:
   // They are not implemented, so compiler should give warning.
   // The 3rd argument is added to make it different from current
   // version which is still in the system library.
-   LogSink (const LogFilterInterface &filter, const String &fileName, Int n=0);
-   LogSink (const LogFilterInterface &filter, const Char* fileName, Int n=0);
-   LogSink (LogMessage::Priority, const String &fileName, Int n=0);
-   LogSink (LogMessage::Priority, const Char* fileName, Int n=0);
+  LogSink(const LogFilterInterface &filter, const String &fileName, Int n = 0);
+  LogSink(const LogFilterInterface &filter, const Char *fileName, Int n = 0);
+  LogSink(LogMessage::Priority, const String &fileName, Int n = 0);
+  LogSink(LogMessage::Priority, const Char *fileName, Int n = 0);
 
   ~LogSink();
 
   // Send <src>message</src> to both the local and global sink. Return
   // <src>True</src> if it passes either of them.
-  Bool post (const LogMessage &message);
+  Bool post(const LogMessage &message);
 
   // Send <src>message</src> to the global sink only. Returns <src>True</src>
   // if it passes the filter.
-  static Bool postGlobally (const LogMessage &message);
+  static Bool postGlobally(const LogMessage &message);
   // Send <src>message</src> to the local sink only. Returns <src>True</src>
   // if it passes the filter.
-  virtual Bool postLocally (const LogMessage &message);
+  virtual Bool postLocally(const LogMessage &message);
 
   // Post <src>message</src> and then throw an <src>AipsError</src> exception
-  // containing <src>message.toString()</src>. It is always posted as a 
-  // <src>SEVERE</src> priority message, no matter what 
+  // containing <src>message.toString()</src>. It is always posted as a
+  // <src>SEVERE</src> priority message, no matter what
   // <src>message.priority()</src> says.
   // <group>
-  template<typename EXC> void postThenThrow (const LogMessage &message,
-                                             const EXC& exc)
-    { preparePostThenThrow(message, exc); throw exc; }
-  static void postGloballyThenThrow (const LogMessage &message);
+  template <typename EXC>
+  void postThenThrow(const LogMessage &message, const EXC &exc) {
+    preparePostThenThrow(message, exc);
+    throw exc;
+  }
+  static void postGloballyThenThrow(const LogMessage &message);
   // </group>
 
   // Get number of messages in local sink.
@@ -210,34 +207,33 @@ public:
 
   // Get given part of the i-th message from the local sink.
   // <group>
-  virtual Double getTime (uInt i) const;
-  virtual String getPriority (uInt i) const;
-  virtual String getMessage (uInt i) const;
-  virtual String getLocation (uInt i) const;
-  virtual String getObjectID (uInt i) const;
+  virtual Double getTime(uInt i) const;
+  virtual String getPriority(uInt i) const;
+  virtual String getMessage(uInt i) const;
+  virtual String getLocation(uInt i) const;
+  virtual String getObjectID(uInt i) const;
   // </group>
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.
-  virtual void writeLocally (Double time, const String& message,
-			     const String& priority, const String& location,
-			     const String& objectID);
+  virtual void writeLocally(Double time, const String &message, const String &priority,
+                            const String &location, const String &objectID);
 
   // Clear the local sink (i.e. remove all messages from it).
   virtual void clearLocally();
 
-  //# Bring out of LogSinkInterface only for documentation purposes
-  // Get or set the filter of this particular <src>LogSink</src>.
-  // <group>
+  // # Bring out of LogSinkInterface only for documentation purposes
+  //  Get or set the filter of this particular <src>LogSink</src>.
+  //  <group>
   virtual const LogFilterInterface &filter() const;
-  virtual LogSinkInterface &filter (const LogFilterInterface &filter);
+  virtual LogSinkInterface &filter(const LogFilterInterface &filter);
   // </group>
 
   // Change the sink that this <src>LogSink</src> actually uses.
   // <group>
   const LogSinkInterface &localSink() const;
   LogSinkInterface &localSink();
-  LogSink &localSink (LogSinkInterface *&fromNew);
+  LogSink &localSink(LogSinkInterface *&fromNew);
   // </group>
 
   // Get/set the global sink or check if the global sink is null. The global
@@ -246,20 +242,19 @@ public:
   // while using the global sink is not thread-safe. And fromNew is set to 0.
   // <group>
   static LogSinkInterface &globalSink();
-  static void globalSink (LogSinkInterface *&fromNew);
+  static void globalSink(LogSinkInterface *&fromNew);
   static Bool nullGlobalSink();
   // </group>
 
   // Write any pending output (by default also the global sink).
-  virtual void flush (Bool global=True);
+  virtual void flush(Bool global = True);
 
   // Returns the id for this class...
-  static String localId( );
+  static String localId();
   // Returns the id of the LogSink in use...
-  String id( ) const;
+  String id() const;
 
-private:
-
+ private:
   // LsiIntermediate is a helper class to allow LogSinkInterface to implement
   // semantics that allow causing all classes accessing the log sink to be
   // aimed at a different sink object.  This used to be done by using an
@@ -268,38 +263,36 @@ private:
   // created to serve this narrow purpose.
 
   class LsiIntermediate {
+   public:
+    LsiIntermediate() : logSinkInterface_p(0) {}
+    LsiIntermediate(LogSinkInterface *lsi) : logSinkInterface_p(lsi) {}
+    ~LsiIntermediate() { delete logSinkInterface_p; }
 
-  public:
+    LogSinkInterface &operator*() { return *logSinkInterface_p; }
+    LogSinkInterface *operator->() { return logSinkInterface_p; }
+    Bool operator!() const { return !logSinkInterface_p; }
 
+    void replace(LogSinkInterface *newLsi) {
+      delete logSinkInterface_p;
+      logSinkInterface_p = newLsi;
+    }
 
-      LsiIntermediate () : logSinkInterface_p (0) {}
-      LsiIntermediate (LogSinkInterface * lsi) : logSinkInterface_p (lsi) {}
-      ~LsiIntermediate () { delete logSinkInterface_p;}
+   private:
+    // Copy ctor and op= are private and not defined to prevent double-delete.
 
-      LogSinkInterface & operator* () { return * logSinkInterface_p;}
-      LogSinkInterface * operator-> () { return logSinkInterface_p;}
-      Bool operator! () const { return ! logSinkInterface_p;}
+    LsiIntermediate(const LsiIntermediate &);
+    LsiIntermediate &operator=(const LsiIntermediate &);
 
-      void replace (LogSinkInterface * newLsi) { delete logSinkInterface_p; logSinkInterface_p = newLsi;}
-
-  private:
-
-      // Copy ctor and op= are private and not defined to prevent double-delete.
-
-      LsiIntermediate (const LsiIntermediate &);
-      LsiIntermediate & operator= (const LsiIntermediate &);
-
-      LogSinkInterface * logSinkInterface_p;
-
+    LogSinkInterface *logSinkInterface_p;
   };
 
   // Prepare for postThenThrow function.
-  void preparePostThenThrow(const LogMessage &message, const AipsError& x) ;
+  void preparePostThenThrow(const LogMessage &message, const AipsError &x);
 
   // Create the global sink (attached to cerr). Always called using theirCallOnce.
   static void createGlobalSink();
 
-  //# Data members.
+  // # Data members.
   std::shared_ptr<LogSinkInterface> local_sink_p;
   static std::shared_ptr<LsiIntermediate> global_sink_p;
   static std::once_flag theirCallOnceFlag;
@@ -312,8 +305,6 @@ private:
   Bool useGlobalSink_p;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

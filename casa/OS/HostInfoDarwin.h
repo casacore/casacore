@@ -40,8 +40,7 @@
 #ifndef CASA_HOSTINFODARWIN_H
 #define CASA_HOSTINFODARWIN_H
 
-# if defined(HOSTINFO_DO_IMPLEMENT)
-
+#if defined(HOSTINFO_DO_IMPLEMENT)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +48,7 @@
 
 #include <mach/mach.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // HostInfo for Darwin machines.
@@ -64,7 +63,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=HostInfo>HostInfo</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This file provides the Linux specific functions for HostInfo.
 // It is selectively included by HostInfo.cc.
 // </synopsis>
@@ -72,124 +71,120 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <group name="HostInfo">
 
 /* Log base 2 of 1024 is 10 (2^10 == 1024) */
-#define LOG1024		10
+#define LOG1024 10
 
 /* these are for getting the memory statistics */
-static int pageshift;		/* log base 2 of the pagesize */
+static int pageshift; /* log base 2 of the pagesize */
 static int pagesize_;
 
 /* define pagetok in terms of pageshift */
 #define pagetok(size) ((size) << pageshift)
 
 class HostMachineInfo {
-friend class HostInfo;
-  
-    HostMachineInfo( );
-    void update_info( );
+  friend class HostInfo;
 
-    int valid;
-    int cpus;
+  HostMachineInfo();
+  void update_info();
 
-    ptrdiff_t memory_total;
-    ptrdiff_t memory_used;
-    ptrdiff_t memory_free;
+  int valid;
+  int cpus;
 
-    ptrdiff_t swap_total;
-    ptrdiff_t swap_used;
-    ptrdiff_t swap_free;
+  ptrdiff_t memory_total;
+  ptrdiff_t memory_used;
+  ptrdiff_t memory_free;
+
+  ptrdiff_t swap_total;
+  ptrdiff_t swap_used;
+  ptrdiff_t swap_free;
 };
 
 // </group>
 
+HostMachineInfo::HostMachineInfo() : valid(1) {
+  int pagesize;
 
-HostMachineInfo::HostMachineInfo( ) : valid(1) {
-    int pagesize;
+  kern_return_t ret;
+  struct host_basic_info basic_info;
+  unsigned int count = HOST_BASIC_INFO_COUNT;
 
-    kern_return_t ret;
-    struct host_basic_info basic_info;
-    unsigned int count = HOST_BASIC_INFO_COUNT;
+  /* get the page size with portable sysconf and calculate pageshift from it */
+  pagesize_ = pagesize = sysconf(_SC_PAGESIZE);
+  pageshift = 0;
+  while (pagesize > 1) {
+    pageshift++;
+    pagesize >>= 1;
+  }
 
-    /* get the page size with portable sysconf and calculate pageshift from it */
-    pagesize_ = pagesize = sysconf(_SC_PAGESIZE);
-    pageshift = 0;
-    while (pagesize > 1)
-    {
-	pageshift++;
-	pagesize >>= 1;
-    }
-
-    /* we only need the amount of log(2)1024 for our conversion */
-    pageshift -= LOG1024;
+  /* we only need the amount of log(2)1024 for our conversion */
+  pageshift -= LOG1024;
 
 #ifdef AIPS_64B
-       ret = host_info( mach_host_self(), HOST_BASIC_INFO, (host_info64_t) &basic_info, &count );
+  ret = host_info(mach_host_self(), HOST_BASIC_INFO, (host_info64_t)&basic_info, &count);
 #else
-       ret = host_info( mach_host_self(), HOST_BASIC_INFO, (host_info_t) &basic_info, &count );
+  ret = host_info(mach_host_self(), HOST_BASIC_INFO, (host_info_t)&basic_info, &count);
 #endif
-    if ( ret != KERN_SUCCESS ) {
-	valid = 0;
-    } else {
+  if (ret != KERN_SUCCESS) {
+    valid = 0;
+  } else {
 #ifdef AIPS_64B
-	memory_total = basic_info.max_mem / 1024;
+    memory_total = basic_info.max_mem / 1024;
 #else
-	memory_total = basic_info.memory_size / 1024;
+    memory_total = basic_info.memory_size / 1024;
 #endif
-	cpus = basic_info.avail_cpus;
-    }
+    cpus = basic_info.avail_cpus;
+  }
 }
 
-void HostMachineInfo::update_info( ) {
+void HostMachineInfo::update_info() {
+#ifdef AIPS_64B
+  struct vm_statistics64 vmstats;
+#else
+  struct vm_statistics vmstats;
+#endif
+  kern_return_t kr;
+  unsigned int count;
+
+  /* memory information */
+  /* this is possibly bogus - we work out total # pages by */
+  /* adding up the free, active, inactive, wired down, and */
+  /* zero filled. Anyone who knows a better way, TELL ME!  */
+  /* Change: dont use zero filled. */
+  count = sizeof(vmstats) / sizeof(integer_t);
 
 #ifdef AIPS_64B
-    struct vm_statistics64 vmstats;
+  kr = host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info64_t)&vmstats, &count);
 #else
-    struct vm_statistics vmstats;
+  kr = host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmstats, &count);
 #endif
-    kern_return_t kr;
-    unsigned int count;
+  if (kr != KERN_SUCCESS) {
+    valid = 0;
+    return;
+  }
 
-    /* memory information */
-    /* this is possibly bogus - we work out total # pages by */
-    /* adding up the free, active, inactive, wired down, and */
-    /* zero filled. Anyone who knows a better way, TELL ME!  */
-    /* Change: dont use zero filled. */
-    count = sizeof(vmstats)/sizeof(integer_t);
+  //     /* thanks DEC for the table() command. No thanks at all for   */
+  //     /* omitting the man page for it from OSF/1 1.2, and failing   */
+  //     /* to document SWAPINFO in the 1.3 man page. Lets hear it for */
+  //     /* include files. */
+  //     i=0;
+  //     while(table(TBL_SWAPINFO,i,&swbuf,1,sizeof(struct tbl_swapinfo))>0) {
+  // 	swappages += swbuf.size;
+  // 	swapfree  += swbuf.free;
+  // 	i++;
+  //     }
+  //
+  //     swap_used = pagetok(swappages - swapfree);
+  //     swap_free = pagetok(swapfree);
+  //     swap_total = pagetok(swappages);
 
-#ifdef AIPS_64B
-       kr = host_statistics64( mach_host_self(), HOST_VM_INFO64, (host_info64_t) &vmstats, &count );
-#else
-       kr = host_statistics( mach_host_self(), HOST_VM_INFO, (host_info_t) &vmstats, &count );
-#endif
-    if ( kr != KERN_SUCCESS ) {
-      valid = 0;
-      return;
-    }
-
-//     /* thanks DEC for the table() command. No thanks at all for   */
-//     /* omitting the man page for it from OSF/1 1.2, and failing   */
-//     /* to document SWAPINFO in the 1.3 man page. Lets hear it for */
-//     /* include files. */
-//     i=0;
-//     while(table(TBL_SWAPINFO,i,&swbuf,1,sizeof(struct tbl_swapinfo))>0) {
-// 	swappages += swbuf.size;
-// 	swapfree  += swbuf.free;
-// 	i++;
-//     }
-// 
-//     swap_used = pagetok(swappages - swapfree);
-//     swap_free = pagetok(swapfree);
-//     swap_total = pagetok(swappages);
-
-    memory_used = pagetok(vmstats.active_count + vmstats.wire_count);
-    memory_free = memory_total - memory_used;
-    swap_used = pagetok( vmstats.active_count + vmstats.inactive_count + vmstats.wire_count );
-    swap_free = pagetok( vmstats.free_count );
-    swap_total = pagetok( vmstats.active_count + vmstats.inactive_count +
-			  vmstats.wire_count + vmstats.free_count );
+  memory_used = pagetok(vmstats.active_count + vmstats.wire_count);
+  memory_free = memory_total - memory_used;
+  swap_used = pagetok(vmstats.active_count + vmstats.inactive_count + vmstats.wire_count);
+  swap_free = pagetok(vmstats.free_count);
+  swap_total = pagetok(vmstats.active_count + vmstats.inactive_count + vmstats.wire_count +
+                       vmstats.free_count);
 }
 
+}  // namespace casacore
 
-} //# NAMESPACE CASACORE - END
-
-# endif
+#endif
 #endif

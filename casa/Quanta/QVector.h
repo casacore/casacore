@@ -1,38 +1,39 @@
-//# Quantum.h: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Quantum.h: class to manipulate physical, dimensioned quantities
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QVECTOR_H
 #define CASA_QVECTOR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template <class T> class QVector;
+template <class T>
+class QVector;
 
 typedef QVector<Double> QVD;
 
@@ -50,49 +51,46 @@ typedef QVector<Double> QVD;
 // Vector of quantities.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Objects of type Quantum<Vector<Double> > are used often in our code.
 // We need a way to access individual elements easily
 // </synopsis>
 
-template <class T> class QVector : public Quantum<Vector<T> > {
-
+template <class T>
+class QVector : public Quantum<Vector<T>> {
  public:
+  // zero elements
+  QVector();
 
-	// zero elements
-	QVector();
+  QVector(const Vector<T>& v, const Unit& u);
 
-	QVector(const Vector<T>& v, const Unit& u);
+  // convert a Vector of Quanta to a QVector. Useful
+  // when reading a table column of Quanta. All elements in
+  // q will be converted to units of the first element in q.
+  // An exception will be thrown if not all elements in q conform
+  // to the same unit.
+  QVector(const Vector<Quantum<T>>& q);
 
-	// convert a Vector of Quanta to a QVector. Useful
-	// when reading a table column of Quanta. All elements in
-	// q will be converted to units of the first element in q.
-	// An exception will be thrown if not all elements in q conform
-	// to the same unit.
-	QVector(const Vector<Quantum<T> >& q);
+  // access single element
+  Quantum<T> operator[](uInt index) const;
 
-	// access single element
-	Quantum<T> operator[](uInt index) const;
+  size_t size() const;
 
-	size_t size() const;
+  size_t nelements() const;
 
-	size_t nelements() const;
+  void scale(T d);
 
-	void scale(T d);
+  // add operators as needed
+  QVector<T> operator+(const QVector<T>& d) const;
+  QVector<T> operator-(const QVector<T>& d) const;
+  QVector<T> operator/(T d) const;
 
-	// add operators as needed
-	QVector<T> operator+(const QVector<T>& d) const;
-	QVector<T> operator-(const QVector<T>& d) const;
-	QVector<T> operator/(T d) const;
+  Quantum<T> min() const;
 
-
-	Quantum<T> min() const;
-
-	Quantum<T> max() const;
-
+  Quantum<T> max() const;
 };
 
-}
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Quanta/QVector.tcc>

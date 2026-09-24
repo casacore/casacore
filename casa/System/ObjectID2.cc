@@ -1,81 +1,74 @@
-//# ObjectID2.cc: Hash related OjectID functions. Prevent link coupling.
-//# Copyright (C) 1996,1999,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # ObjectID2.cc: Hash related OjectID functions. Prevent link coupling.
+// # Copyright (C) 1996,1999,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/System/ObjectID.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/stdio.h>                  // needed for snprintf
+#include <casacore/casa/stdio.h>  // needed for snprintf
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-uInt hashFunc(const ObjectID &key)
-{
-    // We should check to see if this hash is any good
-    uInt result = 0;
-    result |= key.sequence() & 0xff;
-    result |= (key.pid() & 0xff) << 8;
-    result |= (key.creationTime() & 0xff) << 16;
-    result |= uInt(key.hostName()[0]) << 24;
-    return result;
+uInt hashFunc(const ObjectID& key) {
+  // We should check to see if this hash is any good
+  uInt result = 0;
+  result |= key.sequence() & 0xff;
+  result |= (key.pid() & 0xff) << 8;
+  result |= (key.creationTime() & 0xff) << 16;
+  result |= uInt(key.hostName()[0]) << 24;
+  return result;
 }
 
-
-String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
-			     const String& command)
-{
-    objectIDs.resize (0, True, True);
-    String error;
-    String result;
-    String str = command;
-    // Extract object-id from the command, convert it to an
-    // ObjectID in the block, and put its index into the command.
-    size_t index = str.find ("'ObjectID=[");
-    while (index != std::string::npos) {
-        result += str.substr(0, index);
-	index += 11;
-	size_t pos = str.find ("]'", index);
-	ObjectID oid;
-	// Convert to ObjectID.
-	// If not succesfull, put original back.
-	if (! oid.fromString (error, str.substr(index, pos-index))) {
-	    result += str.substr(index-11, pos-index+13);
-	} else {
-	    uInt n = objectIDs.nelements() + 1;
-	    objectIDs.resize (n);
-	    objectIDs[n-1] = oid;
-	    char buf[16];
-	    snprintf (buf, sizeof(buf), "$OBJ#%i#O", n);
-	    result += buf;
-	    str = str.substr(pos+2);
-	}
-	index = str.find ("'ObjectID=[");
+String ObjectID::extractIDs(Block<ObjectID>& objectIDs, const String& command) {
+  objectIDs.resize(0, True, True);
+  String error;
+  String result;
+  String str = command;
+  // Extract object-id from the command, convert it to an
+  // ObjectID in the block, and put its index into the command.
+  size_t index = str.find("'ObjectID=[");
+  while (index != std::string::npos) {
+    result += str.substr(0, index);
+    index += 11;
+    size_t pos = str.find("]'", index);
+    ObjectID oid;
+    // Convert to ObjectID.
+    // If not succesfull, put original back.
+    if (!oid.fromString(error, str.substr(index, pos - index))) {
+      result += str.substr(index - 11, pos - index + 13);
+    } else {
+      uInt n = objectIDs.nelements() + 1;
+      objectIDs.resize(n);
+      objectIDs[n - 1] = oid;
+      char buf[16];
+      snprintf(buf, sizeof(buf), "$OBJ#%i#O", n);
+      result += buf;
+      str = str.substr(pos + 2);
     }
-    result += str;
-    return result;
+    index = str.find("'ObjectID=[");
+  }
+  result += str;
+  return result;
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

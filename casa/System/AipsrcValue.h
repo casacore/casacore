@@ -1,27 +1,27 @@
-//# AipsrcValue.h: Class to read values from the  Aipsrc general resource files
-//# Copyright (C) 1995,1996,1997,1999,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AipsrcValue.h: Class to read values from the  Aipsrc general resource files
+// # Copyright (C) 1995,1996,1997,1999,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_AIPSRCVALUE_H
 #define CASA_AIPSRCVALUE_H
@@ -33,9 +33,9 @@
 #include <mutex>
 #include <vector>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 class Unit;
 
 // <summary> Class to read values from the Aipsrc general resource files
@@ -132,9 +132,9 @@ class Unit;
 // at all.
 // </example>
 //
-// 
+//
 // <templating>
-//  <li> All types with a <src>>></src> defined. 
+//  <li> All types with a <src>>></src> defined.
 // <note role=warning>
 // Since interpretation of the keyword value string is done with the standard
 // input right-shift operator, specialisations are necessary for non-standard
@@ -154,14 +154,14 @@ class Unit;
 // <todo asof="1997/08/07">
 // </todo>
 
-template <class T> class AipsrcValue : public Aipsrc {
-
-public:
-  //# Member functions
-  // The <src>find()</src> functions will, given a keyword, return the value
-  // of a matched keyword found in the files. If no match found the
-  // function will be False, and the default returned if specified.
-  // <group>
+template <class T>
+class AipsrcValue : public Aipsrc {
+ public:
+  // # Member functions
+  //  The <src>find()</src> functions will, given a keyword, return the value
+  //  of a matched keyword found in the files. If no match found the
+  //  function will be False, and the default returned if specified.
+  //  <group>
   static Bool find(T &value, const String &keyword);
   static Bool find(T &value, const String &keyword, const T &deflt);
   // </group>
@@ -171,20 +171,17 @@ public:
   // will be converted to the result_unit Unit. If no match found, the default
   // value is returned (see example above).
   // <group>
-  static Bool find(T &value, const String &keyword,
-		   const Unit &default_unit, const Unit &result_unit);
-  static Bool find(T &value, const String &keyword,
-		   const Unit &default_unit, const Unit &result_unit,
-		   const T &deflt);
+  static Bool find(T &value, const String &keyword, const Unit &default_unit,
+                   const Unit &result_unit);
+  static Bool find(T &value, const String &keyword, const Unit &default_unit,
+                   const Unit &result_unit, const T &deflt);
   // </group>
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
   // <group>
-  static uInt registerRC(const String &keyword,
-			 const T &deflt);
-  static uInt registerRC(const String &keyword,
-			 const Unit &default_unit, const Unit &result_unit,
-			 const T &deflt);
+  static uInt registerRC(const String &keyword, const T &deflt);
+  static uInt registerRC(const String &keyword, const Unit &default_unit, const Unit &result_unit,
+                         const T &deflt);
   // </group>
 
   // Gets are like find, but using registered integers rather than names. The
@@ -203,31 +200,29 @@ public:
   // Save registered value to <src>$HOME/.aipsrc</src>
   static void save(uInt keyword);
 
-private:
-  //# Data
-  // The global AipsrcValue object
+ private:
+  // # Data
+  //  The global AipsrcValue object
   inline static std::mutex theirMutex;
   // Register list
   // <group>
   inline static std::vector<T> tlst;
   inline static std::vector<String> ntlst;
   // </group>
-
 };
 
-template <> 
-Bool AipsrcValue<String>::find(String &value,
-			       const String &keyword,
-			       const Unit &defun, const Unit &resun);
-
+template <>
+Bool AipsrcValue<String>::find(String &value, const String &keyword, const Unit &defun,
+                               const Unit &resun);
 
 // <summary> Specialization of AipsrcValue for Bool </summary>
 
 // <synopsis>
 // </synopsis>
 
-template <> class AipsrcValue<Bool> : public Aipsrc {
-public:
+template <>
+class AipsrcValue<Bool> : public Aipsrc {
+ public:
   static Bool find(Bool &value, const String &keyword);
   static Bool find(Bool &value, const String &keyword, const Bool &deflt);
   static uInt registerRC(const String &keyword, const Bool &deflt);
@@ -235,23 +230,22 @@ public:
   static void set(uInt keyword, const Bool &deflt);
   static void save(uInt keyword);
 
-private:
+ private:
   inline static std::mutex theirMutex;
   static_assert(sizeof(unsigned char) == sizeof(bool));
   inline static std::vector<unsigned char> tlst;
   inline static std::vector<String> ntlst;
 };
 
+// # Declare extern templates for often used types.
+extern template class AipsrcValue<Bool>;
+extern template class AipsrcValue<Int>;
+extern template class AipsrcValue<Double>;
+extern template class AipsrcValue<String>;
 
-//# Declare extern templates for often used types.
-  extern template class AipsrcValue<Bool>;
-  extern template class AipsrcValue<Int>;
-  extern template class AipsrcValue<Double>;
-  extern template class AipsrcValue<String>;
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/System/AipsrcValue.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

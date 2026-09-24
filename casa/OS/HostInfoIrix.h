@@ -1,30 +1,30 @@
-//# HostInfo_irix.h: SGI Irix specific memory, swap, and CPU code.
+// # HostInfo_irix.h: SGI Irix specific memory, swap, and CPU code.
 
- /*
- **  This is a greatly MODIFIED version of a "top" machine dependent file.
- **  The only resemblance it bears to the original is with respect to the
- **  mechanics of finding various system details. The copyright details
- **  follow.
- **
- **  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
- **
- **  Top users/processes display for Unix
- **  Version 3
- **
- **  This program may be freely redistributed,
- **  but this entire comment MUST remain intact.
- **
- **  Copyright (c) 1984, 1989, William LeFebvre, Rice University
- **  Copyright (c) 1989 - 1994, William LeFebvre, Northwestern University
- **  Copyright (c) 1994, 1995, William LeFebvre, Argonne National Laboratory
- **  Copyright (c) 1996, William LeFebvre, Group sys Consulting
- **  Copyright (c) 2002, Associated Universities Inc.
- */
+/*
+**  This is a greatly MODIFIED version of a "top" machine dependent file.
+**  The only resemblance it bears to the original is with respect to the
+**  mechanics of finding various system details. The copyright details
+**  follow.
+**
+**  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+**
+**  Top users/processes display for Unix
+**  Version 3
+**
+**  This program may be freely redistributed,
+**  but this entire comment MUST remain intact.
+**
+**  Copyright (c) 1984, 1989, William LeFebvre, Rice University
+**  Copyright (c) 1989 - 1994, William LeFebvre, Northwestern University
+**  Copyright (c) 1994, 1995, William LeFebvre, Argonne National Laboratory
+**  Copyright (c) 1996, William LeFebvre, Group sys Consulting
+**  Copyright (c) 2002, Associated Universities Inc.
+*/
 
 #ifndef CASA_HOSTINFOIRIX_H
 #define CASA_HOSTINFOIRIX_H
 
-# if defined(HOSTINFO_DO_IMPLEMENT)
+#if defined(HOSTINFO_DO_IMPLEMENT)
 
 /*
  *          AUTHOR:       Darrell Schiebel  <drs@nrao.edu>
@@ -44,7 +44,7 @@
 #include <sys/sysmp.h>
 #include <sys/sysinfo.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // HostInfo for IRIX machines.
@@ -59,84 +59,81 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=HostInfo>HostInfo</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This file provides the IRIX specific functions for HostInfo.
 // It is selectively included by HostInfo.cc.
 // </synopsis>
 //
 // <group name="HostInfo">
 
-#define pagetok(pages) ((((uint64_t) pages) * pagesize) >> 10)
+#define pagetok(pages) ((((uint64_t)pages) * pagesize) >> 10)
 
 class HostMachineInfo {
-friend class HostInfo;
+  friend class HostInfo;
 
-    HostMachineInfo( );
-    void update_info( );
+  HostMachineInfo();
+  void update_info();
 
-    int valid;
-    int cpus;
+  int valid;
+  int cpus;
 
-    ptrdiff_t swap_total;
-    ptrdiff_t swap_used;
-    ptrdiff_t swap_free;
+  ptrdiff_t swap_total;
+  ptrdiff_t swap_used;
+  ptrdiff_t swap_free;
 
-    ptrdiff_t memory_total;
-    ptrdiff_t memory_used;
-    ptrdiff_t memory_free;
+  ptrdiff_t memory_total;
+  ptrdiff_t memory_used;
+  ptrdiff_t memory_free;
 
-    ptrdiff_t pagesize;
-
+  ptrdiff_t pagesize;
 };
 
 // </group>
 
+HostMachineInfo::HostMachineInfo() : valid(1) {
+  pagesize = getpagesize();
 
-HostMachineInfo::HostMachineInfo( )  : valid(1) {
+  if ((cpus = sysmp(MP_NPROCS)) == -1) {
+    perror("sysmp(MP_NPROCS)");
+    valid = 0;
+    return;
+  }
 
-	pagesize = getpagesize();
+  struct rminfo realmem;
+  if (sysmp(MP_SAGET, MPSA_RMINFO, &realmem, sizeof(realmem)) == -1) {
+    perror("sysmp(MP_SAGET,MPSA_RMINFO, ...)");
+    valid = 0;
+    return;
+  }
 
-	if ((cpus = sysmp(MP_NPROCS)) == -1) {
-		perror("sysmp(MP_NPROCS)");
-		valid = 0;
-		return;
-	}
-
-	struct rminfo	realmem;
-	if (sysmp(MP_SAGET, MPSA_RMINFO, &realmem, sizeof(realmem)) == -1) {
-		perror("sysmp(MP_SAGET,MPSA_RMINFO, ...)");
-		valid = 0;
-		return;
-	}
-
-	memory_total = pagetok(realmem.physmem);
+  memory_total = pagetok(realmem.physmem);
 }
 
-void HostMachineInfo::update_info( ) {
-	int		i;
-	struct rminfo	realmem;
-	struct sysinfo	sysinfo;
-	off_t		fswap;		/* current free swap in blocks */
-	off_t		tswap;		/* total swap in blocks */
+void HostMachineInfo::update_info() {
+  int i;
+  struct rminfo realmem;
+  struct sysinfo sysinfo;
+  off_t fswap; /* current free swap in blocks */
+  off_t tswap; /* total swap in blocks */
 
-	swapctl(SC_GETFREESWAP, &fswap);
-	swapctl(SC_GETSWAPTOT, &tswap);
+  swapctl(SC_GETFREESWAP, &fswap);
+  swapctl(SC_GETSWAPTOT, &tswap);
 
-	if (sysmp(MP_SAGET, MPSA_RMINFO, &realmem, sizeof(realmem)) == -1) {
-		perror("sysmp(MP_SAGET,MPSA_RMINFO, ...)");
-		valid = 0;
-		return;
-	}
+  if (sysmp(MP_SAGET, MPSA_RMINFO, &realmem, sizeof(realmem)) == -1) {
+    perror("sysmp(MP_SAGET,MPSA_RMINFO, ...)");
+    valid = 0;
+    return;
+  }
 
-	memory_free = pagetok(realmem.freemem);
-	memory_used =  memory_total - memory_free;
-	swap_total = tswap / 2;
-	swap_free = fswap / 2;
-	swap_used = swap_total - swap_free;
+  memory_free = pagetok(realmem.freemem);
+  memory_used = memory_total - memory_free;
+  swap_total = tswap / 2;
+  swap_free = fswap / 2;
+  swap_used = swap_total - swap_free;
 }
 
-# endif
+#endif
 
-} //# NAMESPACE CASACORE - END
+}  // # NAMESPACE CASACORE - END
 
 #endif

@@ -1,40 +1,39 @@
-//# Input.h: A simple command-line argument method for applications.
-//# Copyright (C) 1993,1994,1995,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Input.h: A simple command-line argument method for applications.
+// # Copyright (C) 1993,1994,1995,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_INPUT_H
 #define CASA_INPUT_H
-
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Inputs/Param.h>
 #include <vector>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-// <summary> 
+// <summary>
 // Input.h: A simple command-line argument method for applications.
 // </summary>
 
@@ -48,48 +47,48 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 //
 // <etymology>
-// The Input class name is a reflection of it's role as the early command 
+// The Input class name is a reflection of it's role as the early command
 // line user interface for Casacore applications. This class provides "inputs"
 // in the form "key=value" or "-key value."
 // </etymology>
 //
-// <synopsis> 
-// The Input class is a holder of parameters, either automatically assigned 
+// <synopsis>
+// The Input class is a holder of parameters, either automatically assigned
 // values or altered at the execution of the program which utilizes them. The
-// parameters are associations of String "keys" to "values".  The parameters 
-// may be used as internal values during the program's run.  The shell command 
+// parameters are associations of String "keys" to "values".  The parameters
+// may be used as internal values during the program's run.  The shell command
 // <srcblock>
 // shell% myexecutable limits=1000 happy=True
-// </srcblock> 
+// </srcblock>
 // would run "myexecutable" and set the internal parameter "limits" to a value
 // of 1000 and "happy" to True.
 //
 // The Input class is instantiated by a constructor with a single Int argument
-// which, when non-zero, switches on the filling of the keys "debug" and 
-// "help" from environment variables.  These two keys always exist in an 
+// which, when non-zero, switches on the filling of the keys "debug" and
+// "help" from environment variables.  These two keys always exist in an
 // instance of Input.  No argument to the Input constructor defaults to "debug"
-// and "help" being set to zero.  
+// and "help" being set to zero.
 //
-// The default existance of the help parameter allows the user to specify 
+// The default existance of the help parameter allows the user to specify
 // predefined modes for the "help" key.  The argument "help=prompt" turns
 // on prompting for parameter values not specified on the command-line.  In
-// such an instance, the optional String arguments to Input::create become 
-// important.  The argument "help=keys" will print to standard output a list 
+// such an instance, the optional String arguments to Input::create become
+// important.  The argument "help=keys" will print to standard output a list
 // of all the parameters.
-// 
+//
 // The default existance of the debug parameter allows the user to specify
 // levels of debugging, where 0 implies none and higher integers means more.
 // The usage would be as follows:
-// <srcblock> 
+// <srcblock>
 // Input inp;
 // // this will execute the block only for values higher than 5
-// if(inp.debug(5)) 
-//   {  
+// if(inp.debug(5))
+//   {
 //         // do debugging stuff here
 //   }
 // </srcblock>
 //
-// Additional parameters must be created inside the main block (or deeper) 
+// Additional parameters must be created inside the main block (or deeper)
 // of your application.  The member function create() is overloaded to accept
 // from one to six String arguments.  All but the first are optional.  However,
 // should the user decide to call any of the get() functions which return a
@@ -112,12 +111,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The parameters are "filled" from the command line arguments by the member
 // function ReadArguments(int argc, const char* argv[]).  If an argument is not defined
 // within the main block but specified at the command line, an exception is
-// thrown. 
+// thrown.
 // <srcblock>
 // inp.readArguments(argc, argv);
 // </srcblock>
 //
-// Finally, the values of the various parameter's are utilized by calling the 
+// Finally, the values of the various parameter's are utilized by calling the
 // Input::getWhatever(key) member functions.  They return either a String or
 // are converted to the data type chosen by the "whatever" in the name of the
 // function.  The value associated with the passed key is returned.
@@ -131,21 +130,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   }
 // </srcblock>
 //
-// Optional items include: 
+// Optional items include:
 // <ol> <li> specifying a version <src> inp.version("$ID:");</src>
 // will print at run time the version of the program being run.
-// <li> run time checking of ranges 
+// <li> run time checking of ranges
 // <src> inp.makeMaskFromRanges(const String &ranges, uInt length,
 //					 Bool oneRelative=False); </src>
 // </ol>
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // <srcblock>
 // #include <casacore/casa/Inputs/Input.h>
-// int main(int argc, const char* argv[]) 
+// int main(int argc, const char* argv[])
 // {
-//  // instantiate an Input.  The integer argument of 1 to the ctor builds 
+//  // instantiate an Input.  The integer argument of 1 to the ctor builds
 //  // the system parameters "debug" and "help" and sets their values to the
 //  // shell environment variables DEBUG and HELP.
 //  Input inp(1);
@@ -153,7 +152,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  // print the version at run time.
 //  inp.version("$ID:$");
 //  // We will now create some parameters.
-//  // Create a parameter with no default value i.e. it must be set by a 
+//  // Create a parameter with no default value i.e. it must be set by a
 //  // command line argument.
 //  inp.create("test");
 //  // Create a parameter with a default value.
@@ -191,26 +190,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 //
 // <motivation>
-// In the earliest days of the old AIPS++ project, the desire to start coding 
+// In the earliest days of the old AIPS++ project, the desire to start coding
 // right away led to the need for a user interface.  The preexistant C language
 // method of argc/argv was enclosed in an object for easier use.
 // </motivation>
 
-
 class Input {
-public:
-
-  // The default constructor enables the creation of parameters. 
-  // If the optional Int argument is non-zero, the parameters "help" and 
+ public:
+  // The default constructor enables the creation of parameters.
+  // If the optional Int argument is non-zero, the parameters "help" and
   // "debug" are created from their shell environment values.
-  // This puts the program in no-prompt mode unless environment variable HELP 
-  // is defined with value "prompt". The output debug level is set according 
+  // This puts the program in no-prompt mode unless environment variable HELP
+  // is defined with value "prompt". The output debug level is set according
   // to the value of the environment variable DEBUG.
-  Input (Int createEnv=0);
-  
+  Input(Int createEnv = 0);
+
   // Destructor.
   ~Input();
-  
+
   // Create a new parameter, either from scratch or looking it
   // up from an internal list of templates.
   // The function also checks whether parameters can still be created,
@@ -218,15 +215,14 @@ public:
   // The value, help and remaining arguments are all optional.
   // <note> The multiple definitions are to allow default values</note>
   // <group>
-  void create (const String& key); 
-  void create (const String& key, const String& value); 
-  void create (const String& key, const String& value, const String& help); 
-  void create (const String& key, const String& value, const String& help,
-	       const String& type); 
-  void create (const String& key, const String& value, const String& help,
-	       const String& type, const String& range);
-  void create (const String& key, const String& value, const String& help,
-	       const String& type, const String& range, const String& unit);
+  void create(const String& key);
+  void create(const String& key, const String& value);
+  void create(const String& key, const String& value, const String& help);
+  void create(const String& key, const String& value, const String& help, const String& type);
+  void create(const String& key, const String& value, const String& help, const String& type,
+              const String& range);
+  void create(const String& key, const String& value, const String& help, const String& type,
+              const String& range, const String& unit);
   // </group>
 
   // Disable the creation of parameters. Highly recommended, but
@@ -234,52 +230,51 @@ public:
   void close();
 
   // fill the parameter list from argc, argv command line args
-  void readArguments (int argc, char const* const* argv);
+  void readArguments(int argc, char const* const* argv);
 
   // Get the double value of the parameter (or 0.0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Double getDouble (const String& key);
+  Double getDouble(const String& key);
 
-  // Get the Block<double> value of the parameter (or default Block if unknown 
+  // Get the Block<double> value of the parameter (or default Block if unknown
   // key).
   // If the program is in prompt mode, ask the user for the value.
-  Block<Double> getDoubleArray (const String& key);
+  Block<Double> getDoubleArray(const String& key);
 
   // Get the int value of the parameter (or 0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Int getInt (const String& key);
+  Int getInt(const String& key);
 
   // Get the Block<int> value of parameter (or default Block if unknown key)
   // If the program is in prompt mode, ask the user for the value.
-  Block<Int> getIntArray (const String& key);
+  Block<Int> getIntArray(const String& key);
 
   // Get the String value of the parameter (or "" if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  String getString (const String& key);
+  String getString(const String& key);
 
   // Get the boolean value of the parameter (or FALSE if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Bool getBool (const String& key);
+  Bool getBool(const String& key);
 
   // Get the total number of parameters of this program
   Int count() const;
 
   // See if the current debug level is thresholded
-  Bool debug (Int l) const
-    { return (debug_level >= l) ? True : False; }
+  Bool debug(Int l) const { return (debug_level >= l) ? True : False; }
 
   // Set a new value for an existing named parameter
   // Returns FALSE if key is an unknown parameter name.
   // <group>
-  Bool put (const String& key, const String& value);
+  Bool put(const String& key, const String& value);
 
-  // The single argument is of the form `key=value', where key is a valid 
+  // The single argument is of the form `key=value', where key is a valid
   // parameter name.
-  Bool put (const String& keyval);
+  Bool put(const String& keyval);
   // </group>
 
   // Set version string for announcements
-  void version (const String&);
+  void version(const String&);
 
   // Announce program and version.
   void announce();
@@ -287,59 +282,54 @@ public:
   // Turn a string in the form "5,7,9-11,13,2-4" into a Vector<Bool>, where
   // each specified position or range, is set to True and every other position
   // is set to False. While the returned vector always has a zero origin, if
-  // oneRelative is True, all the numbers in the supplied string are 
+  // oneRelative is True, all the numbers in the supplied string are
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
   // of the Vector<Bool> results in an exception being thrown.
   static Vector<Bool> makeMaskFromRanges(const String& ranges, uInt length,
-					 Bool oneRelative=False);
+                                         Bool oneRelative = False);
 
-
-private:
+ private:
   // Get the index of the named parameter (-1 if unknown key).
   // Anywhere from 0.. if a key is found.
-  Int getParam (const String& key) const;
+  Int getParam(const String& key) const;
 
   // Prompt the user for a value for the parameter.
   // If he gives a non-empty answer, set that value.
-  void prompt (Param& parameter) const;
+  void prompt(Param& parameter) const;
 
   // Bind an environment variable to a parameter
-  void envCreate (const Char *env, const String& key, const String& def);
+  void envCreate(const Char* env, const String& key, const String& def);
 
   // The actual creation of a new (system/program) parameter
-  void createPar (Int, const String&, const String&, const String&,
-		  const String&, const String&, const String&);
+  void createPar(Int, const String&, const String&, const String&, const String&, const String&,
+                 const String&);
 
   // output to stdout a listing of all "key=value" pairs.
   void keys();
 
-
   // container of parameters
   std::vector<Param> parList_p;
 
-  // version id         
-  String version_id;    
+  // version id
+  String version_id;
 
-  // parameter creation allowed?   
-  Bool is_closed;    
+  // parameter creation allowed?
+  Bool is_closed;
 
   // ask user for parameter value?
-  Bool do_prompt;               
+  Bool do_prompt;
 
   // threshold value for debug output
-  Int debug_level;              
+  Int debug_level;
 
   // "prompt" or "keys" indicates the various types of help.
-  String help_mode;     
+  String help_mode;
 
   // count of program parameters
-  Int p_count;                 
+  Int p_count;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

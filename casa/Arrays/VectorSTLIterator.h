@@ -1,39 +1,39 @@
-//# VectorSTLIterator.h: Random access iterator for Casacore Vectors
-//# Copyright (C) 2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # VectorSTLIterator.h: Random access iterator for Casacore Vectors
+// # Copyright (C) 2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_VECTORSTLITERATOR_2_H
 #define CASA_VECTORSTLITERATOR_2_H
 
-//# Includes
+// # Includes
 #include "Vector.h"
 
 #include <iterator>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 // <summary> Casacore Vector iterator </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -48,7 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // It is the same as using <src>Vector.begin()</src>
 // <li> No contiguous iterator is provided. Its construction is not necessary,
 // since <src>Vector.data()</src> is a fully functional STL iterator already.
-// <li> This iterator is non-intrusive. Since it needs state (the 'step') 
+// <li> This iterator is non-intrusive. Since it needs state (the 'step')
 // nothing substantial is gained by having it included in the Vector class.
 // The major gain would be to be able to use the standard nomenclature:
 // <src>Vector::iterator()</src> rather than <src>VectorSTLiterator</src>
@@ -64,83 +64,91 @@ template <typename T>
 class VectorSTLIterator {
  public:
   // iterator traits
-  using iterator_category = std::random_access_iterator_tag; 
-  
-  typedef T                             value_type;
-  typedef value_type*                   pointer;
-  typedef const value_type*             const_pointer;
-  typedef VectorSTLIterator<T>          iterator;
-  typedef const VectorSTLIterator<T>    const_iterator;
-  typedef value_type&                   reference;
-  typedef const value_type&             const_reference;
-  typedef std::size_t                   size_type;
-  typedef ptrdiff_t                     difference_type;
-  
-       
+  using iterator_category = std::random_access_iterator_tag;
+
+  typedef T value_type;
+  typedef value_type *pointer;
+  typedef const value_type *const_pointer;
+  typedef VectorSTLIterator<T> iterator;
+  typedef const VectorSTLIterator<T> const_iterator;
+  typedef value_type &reference;
+  typedef const value_type &const_reference;
+  typedef std::size_t size_type;
+  typedef ptrdiff_t difference_type;
+
   // Constructors. The iterator constructor from a <src>Vector</src> is
   // the same as if created from <src>Vector.begin()</src>. Copy
   // constructor and assignment can be the default ones.
   // <group>
   explicit VectorSTLIterator(const Vector<T> &c)
-    : start_p(const_cast<T*>(c.data())), 
-      step_p (std::max(ssize_t(1), c.steps()(0))),
-      iter_p (const_cast<T*>(c.data()))
-  {}
-  VectorSTLIterator() : start_p(0), step_p(1), iter_p(0)
-  {}
+      : start_p(const_cast<T *>(c.data())),
+        step_p(std::max(ssize_t(1), c.steps()(0))),
+        iter_p(const_cast<T *>(c.data())) {}
+  VectorSTLIterator() : start_p(0), step_p(1), iter_p(0) {}
   VectorSTLIterator(const typename Array<T>::IteratorSTL &c)
-    : start_p(c.pos()), 
-      step_p (std::max(ssize_t(1), c.steps()(0))),
-      iter_p (start_p)
-  {}
+      : start_p(c.pos()), step_p(std::max(ssize_t(1), c.steps()(0))), iter_p(start_p) {}
   // </group>
   // Access
   // <group>
-  reference operator[](size_t i) { return *(start_p+i*step_p); };
-  const_reference operator[](size_t i) const {
-    return *(start_p+i*step_p); };
+  reference operator[](size_t i) { return *(start_p + i * step_p); };
+  const_reference operator[](size_t i) const { return *(start_p + i * step_p); };
   reference operator*() { return *iter_p; };
   const_reference operator*() const { return *iter_p; };
-  pointer pos() const {return iter_p; }
+  pointer pos() const { return iter_p; }
   // </group>
   // Manipulation
   // <group>
-  const iterator &operator++() { iter_p+=step_p; return *this; };
+  const iterator &operator++() {
+    iter_p += step_p;
+    return *this;
+  };
   iterator operator++(int) {
-    iterator t = *this; iter_p+=step_p; return t; }; 
-  iterator &operator--() { iter_p-=step_p; return *this; };
+    iterator t = *this;
+    iter_p += step_p;
+    return t;
+  };
+  iterator &operator--() {
+    iter_p -= step_p;
+    return *this;
+  };
   iterator operator--(int) {
-    VectorSTLIterator<T> t = *this;iter_p-=step_p; return t; };
+    VectorSTLIterator<T> t = *this;
+    iter_p -= step_p;
+    return t;
+  };
   iterator &operator+=(difference_type i) {
-    iter_p+=i*step_p; return *this; };
+    iter_p += i * step_p;
+    return *this;
+  };
   iterator &operator-=(difference_type i) {
-    iter_p-=i*step_p; return *this; };
+    iter_p -= i * step_p;
+    return *this;
+  };
   iterator operator+(difference_type i) const {
-    VectorSTLIterator<T> t = *this; return t+=i; };
+    VectorSTLIterator<T> t = *this;
+    return t += i;
+  };
   iterator operator-(difference_type i) const {
-    VectorSTLIterator<T> t = *this; return t-=i; };
+    VectorSTLIterator<T> t = *this;
+    return t -= i;
+  };
   // </group>
   // Size related
   // <group>
   difference_type operator-(const VectorSTLIterator<T> &x) const {
-    return (iter_p-x.iter_p)/step_p; };
+    return (iter_p - x.iter_p) / step_p;
+  };
   // </group>
   // Comparisons
   // <group>
-  bool operator== (const iterator &other) const {
-    return iter_p == other.iter_p; };
-  bool operator!= (const iterator other) const {
-    return iter_p != other.iter_p; };
-  bool operator< (const iterator &other) const {
-    return iter_p <  other.iter_p; };
-  bool operator== (const_pointer const pos) const {
-    return iter_p == pos; };
-  bool operator!= (const_pointer const pos) const {
-    return iter_p != pos; };
-  bool operator< (const_pointer const pos) const {
-    return iter_p <  pos; };
+  bool operator==(const iterator &other) const { return iter_p == other.iter_p; };
+  bool operator!=(const iterator other) const { return iter_p != other.iter_p; };
+  bool operator<(const iterator &other) const { return iter_p < other.iter_p; };
+  bool operator==(const_pointer const pos) const { return iter_p == pos; };
+  bool operator!=(const_pointer const pos) const { return iter_p != pos; };
+  bool operator<(const_pointer const pos) const { return iter_p < pos; };
   // </group>
- protected: 
+ protected:
   // Start (for random indexing)
   pointer const start_p;
   // Distance between elements
@@ -149,7 +157,6 @@ class VectorSTLIterator {
   pointer iter_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
