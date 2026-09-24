@@ -107,7 +107,8 @@ TableExprNode msObservationGramParseCommand(const MeasurementSet* ms,
 }
 
 // TableExprNode msObservationGramParseCommand (const MeasurementSet* ms, const MSObservation&
-// obsSubTable, 					       const String& command, 					       Vector<Int>& selectedIDs, Int maxObsIDs)
+// obsSubTable, 					       const String& command,
+// Vector<Int>& selectedIDs, Int maxObsIDs)
 // {
 //   try
 //     {

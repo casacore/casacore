@@ -1065,7 +1065,7 @@ void AsciiTableExtension::at_assign() {
     n = 0;
     format[i][n++] = '%';
     for (s = tform(i); *s == ' '; ++s) {
-    }                   // skip leading blanks
+    }  // skip leading blanks
     typecode = *s++;    // code indicating kind of field
     fits_width[i] = 1;  // get the fits field width
     if (FITS::isa_digit(*s)) {
@@ -1562,7 +1562,7 @@ void BinaryTableExtension::bt_assign() {
   }
   for (i = 0; i < tfields(); ++i) {
     for (s = tform(i); *s == ' '; ++s) {
-    }        // skip leading blanks
+    }  // skip leading blanks
     ne = 1;  // ne is the number of elements in the field
     if (FITS::isa_digit(*s)) {
       ne = FITS::digit2bin(*s++);

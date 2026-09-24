@@ -493,10 +493,10 @@ class TableExprNodeRep {
   ArgType argtype_p;     // # argument types
   ExprType exprtype_p;   // # Constant or Variable
   Int ndim_p;            // # Fixed dimensionality of node values
-               // # -1 = variable dimensionality
-  IPosition shape_p;    // # Fixed shape of node values
-  Unit unit_p;          // # Unit of the values
-  Record attributes_p;  // # Possible attributes (for UDFs)
+                         // # -1 = variable dimensionality
+  IPosition shape_p;     // # Fixed shape of node values
+  Unit unit_p;           // # Unit of the values
+  Record attributes_p;   // # Possible attributes (for UDFs)
 
   // Get the shape for the given row.
   virtual const IPosition& getShape(const TableExprId& id);

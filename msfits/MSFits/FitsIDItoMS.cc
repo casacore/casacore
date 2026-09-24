@@ -2069,7 +2069,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
           memcpy(&visReal, (static_cast<Float*>(data_addr[iFlux])) + count++, sizeof(Float));
           //          if(count<9){
           //	    cout << "COUNT=" << count <<"ifno="<< ifno <<"chan="<< chan<<"pol="<< pol  << "
-          //corrindex " << corrIndex_p[pol] << endl;
+          // corrindex " << corrIndex_p[pol] << endl;
           //	  }
           // visReal *= tscal(iFlux);
           // visReal += tzero(iFlux);

@@ -80,10 +80,10 @@ class MSConcat : public MSColumns {
                      const String& obsidAndProcAndScanTableName = "");
 
   void concatenate(const MeasurementSet& otherMS,
-                   const uInt handling = 0,  // # 0 (default): complete concat of all tables
-                                             // # 1 : don't concatenate the MAIN table
-                                             // # 2 : don't concatenate the POINTING table
-                                             // # 3 : neither concat MAIN nor POINTING table
+                   const uInt handling = 0,         // # 0 (default): complete concat of all tables
+                                                    // # 1 : don't concatenate the MAIN table
+                                                    // # 2 : don't concatenate the POINTING table
+                                                    // # 3 : neither concat MAIN nor POINTING table
                    const String& destMSName = "");  // # support for virtual concat
 
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol);

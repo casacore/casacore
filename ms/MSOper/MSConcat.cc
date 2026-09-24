@@ -2108,7 +2108,7 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& new
         break;
       }
       //// the following could be commented in if a warning about undefined antenna ids was deemed
-      ///useful
+      /// useful
       // else if(antennaIDs[k] == -1){
       // 	os << LogIO::WARN
       // 	   << "Found undefined antenna ids (value -1) in the WEATHER table; these will not
@@ -2669,7 +2669,8 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed
               //  	      cout << "this " << feedCols.timeQuant()(matchingFeedRow).getValue(s)
               //  << " "
               //  	          <<  feedCols.intervalQuant()(matchingFeedRow).getValue(s) <<
-              //  std::endl; 	      cout << " other " << otherFeedCols.timeQuant()(k).getValue(s) << " "
+              //  std::endl; 	      cout << " other " << otherFeedCols.timeQuant()(k).getValue(s)
+              //  << " "
               //  	          << otherFeedCols.intervalQuant()(k).getValue(s)   << std::endl;
               //  	      cout << " new " << newTimeQ.getValue(s) << " " <<
               //  newIntervalQ.getValue(s) << std::endl;
@@ -2753,8 +2754,8 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed
         // 	os << "Antenna " << antCols.name()(movedAntId)  << " (ID " << movedAntId << ") has
         // changed its position between MSs."
         // 	   << " Moved antenna will be named " << newName << " (ID " << antMap[a] << ")" <<
-        // LogIO::POST; 	antRecord.define(nameAnt, newName); // append an "m" to the name to make it
-        // unique
+        // LogIO::POST; 	antRecord.define(nameAnt, newName); // append an "m" to the name to
+        // make it unique
       }
 
       antRow.putMatchingFields(antMap[a], antRecord);

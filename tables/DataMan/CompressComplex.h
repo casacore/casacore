@@ -298,7 +298,7 @@ class CompressComplex : public BaseMappedArrayEngine<Complex, Int> {
   ScalarColumn<Float>* scaleColumn_p;   // # column with scale value
   ScalarColumn<Float>* offsetColumn_p;  // # column with offset value
   Array<Int> buffer_p;                  // # buffer to avoid Array constructions
-                        // # (makes multi-threading harder)
+                                        // # (makes multi-threading harder)
 
   // Get the scale value for this row.
   Float getScale(rownr_t rownr);

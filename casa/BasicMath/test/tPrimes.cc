@@ -58,8 +58,8 @@ int main() {
   primesNoncacheTests(2147483629, True, 1);      // Next smaller prime
   primesNoncacheTests(0, False, 1);
 
-  largerPrimesTest(4098, 4099, 4099);  // immediately followed
-                                       // by cached prime
+  largerPrimesTest(4098, 4099, 4099);           // immediately followed
+                                                // by cached prime
   largerPrimesTest(1073741828, 0, 1073741831);  // larger than largest
                                                 // cached prime
   largerPrimesTest(0, 3, 2);
