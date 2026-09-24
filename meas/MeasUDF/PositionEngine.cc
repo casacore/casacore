@@ -407,7 +407,7 @@ void PositionEngine::handleValues(TableExprNode& operand, const TableExprId& id,
     throw AipsError(
         "Number of values in a position in a MEAS function "
         "should be a multiple of " +
-        String::toString(nrv));
+        std::to_string(nrv));
   }
   IPosition posShape;
   if (shape[0] == nrv && shape.size() > 1) {

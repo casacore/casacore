@@ -523,7 +523,7 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
       itsDataNode = msObservationGramParseCommand(&ms, ms.observation(), colAsTEN, selStr, obsid);
     } break;
     default:
-      throw AipsError("UDFMScal::setupSelection: unknown type " + String::toString(itsArg));
+      throw AipsError("UDFMScal::setupSelection: unknown type " + std::to_string(itsArg));
   }
 }
 
@@ -539,14 +539,14 @@ void UDFMSCal::setupGetValue(const Table& table, vector<TENShPtr>& operands) {
   // Id column must be given if id (ANTENNA1/2) is not part of function name.
   if (itsIdColName.empty()) nargReq++;
   if (operands.size() != nargReq) {
-    throw AipsError("Function " + itsFuncName + " has " + String::toString(operands.size()) +
-                    " arguments, but should have " + String::toString(nargReq));
+    throw AipsError("Function " + itsFuncName + " has " + std::to_string(operands.size()) +
+                    " arguments, but should have " + std::to_string(nargReq));
   }
   // Get subtable and column name; they must be constant strings.
   for (int i = 0; i < idinx; ++i) {
     if (!operands[i]->isConstant() || operands[i]->valueType() != TableExprNodeRep::VTScalar ||
         operands[i]->dataType() != TableExprNodeRep::NTString) {
-      throw AipsError("First " + String::toString(idinx) + " argument(s) of function " +
+      throw AipsError("First " + std::to_string(idinx) + " argument(s) of function " +
                       itsFuncName + " must be constant strings");
     }
     String str = operands[i]->getString(0);

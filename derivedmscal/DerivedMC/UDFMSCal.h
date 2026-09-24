@@ -250,7 +250,7 @@ class UDFMSCal : public UDFBase {
                // # -1 subtable can be empty
                // #  0 normal subtable
                // #  1 indirect subtable via DATA_DESC_ID
-  String itsFuncName;
+  std::string itsFuncName;
   String itsSubTabName;
   String itsIdColName;
   String itsSubColName;
