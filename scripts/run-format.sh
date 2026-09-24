@@ -20,7 +20,7 @@ CXX_SOURCES=(*.cc *.tcc *.h)
 
 MODULES="$1"
 if [[ "${MODULES}" == "" ]] ; then
-    MODULES="casa coordinates derivedmscal fits images lattices meas measures mirlib ms msfits python python3 scimath tables"
+    MODULES="casa coordinates derivedmscal fits images lattices meas measures mirlib ms msfits python scimath tables"
 fi
 
 REPO_DIR=$(dirname "$0")
