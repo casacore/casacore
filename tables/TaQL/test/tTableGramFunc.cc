@@ -1441,8 +1441,8 @@ int testInvScaArg() {
   nfail += checkExcp("cones", "[1,1], [1,1,1], 1", " must have multiple of 2 values");
   nfail += checkExcp("bool", "regex('a')", "- invalid operand data type");
   nfail += checkExcp("marray", "[1], 1", " of marray function must be bool");
-  nfail += checkExcp("marray", "1, [T,F]", " AlwaysAssert itsShape.isEqual (mask.shape())");
-  nfail += checkExcp("marray", "[1,2], T", " AlwaysAssert itsShape.isEqual (mask.shape())");
+  nfail += checkExcp("marray", "1, [T,F]", " AlwaysAssert itsShape.isEqual(mask.shape())");
+  nfail += checkExcp("marray", "[1,2], T", " AlwaysAssert itsShape.isEqual(mask.shape())");
   nfail += checkExcp("replacemasked", "1, '2'", " invalid operand data type");
   nfail += checkExcp("replaceunmasked", "1, '2'", " invalid operand data type");
   nfail += checkExcp("replacemasked", "1, [3,4]", " array shapes mismatch");
