@@ -25,3 +25,16 @@ jobs:
 
       - name: Test
         run: docker run --rm ${{ matrix.dist }} /bin/bash -c 'cd /code/build && ctest --output-on-failure'
+        
+
+  Format:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build container
+        run: docker build . -t ubuntu2604_format -f docker/ubuntu2604_format.docker
+
+      - name: Check formatting
+        run: docker run --rm ubuntu2604_format /bin/bash -c 'cd /code && scripts/run-format.sh'
