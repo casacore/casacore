@@ -297,7 +297,7 @@ class PlainTable : public BaseTable {
   TableLockData* lockPtr_p;                // # pointer to lock object
   TableSyncData lockSync_p;                // # table synchronization
   Bool bigEndian_p;                        // # True  = big endian canonical
-                     // # False = little endian canonical
+                                           // # False = little endian canonical
   TSMOption tsmOption_p;
   Bool changeTiledDataOnly_;  // # Allow updates to data in existing tiled columns
   // # cache of open (plain) tables

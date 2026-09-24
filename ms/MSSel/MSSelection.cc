@@ -1303,9 +1303,10 @@ Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, const Bool
     freqList_l(i, 1) =
         chanFreq(IPosition(1, validStartChan));  // chanFreq(IPosition(1,chanList_l(i,1))); // The
                                                  // the freq. of start channel in Hz
-    freqList_l(i, 2) = chanFreq(IPosition(1, validEndChan));  // chanFreq(IPosition(1,chanList_l(i,2)));
-                                                              // // The freq. of stop channel in Hz
-    freqList_l(i, 3) = avgChanWidth;  // The channel width in Hz
+    freqList_l(i, 2) =
+        chanFreq(IPosition(1, validEndChan));  // chanFreq(IPosition(1,chanList_l(i,2)));
+                                               // // The freq. of stop channel in Hz
+    freqList_l(i, 3) = avgChanWidth;           // The channel width in Hz
   }
 
   return freqList_l;

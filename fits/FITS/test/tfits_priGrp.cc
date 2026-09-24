@@ -86,7 +86,7 @@ int main() {
     }  // assign the parms
     for (j = 0; j < no_data; ++j) {
       pg.data(j) = (FitsLong)(i * 10 + j + 5);
-    }                // assign the data
+    }  // assign the data
     pg.write(fout);  // write the group
   }
   cout << "PrimaryGroup data written\n";

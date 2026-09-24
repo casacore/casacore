@@ -507,14 +507,15 @@ int main() {
       // 	  AlwaysAssert(result.shape() == model.shape(), AipsError);
       // 	  AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 10*NumericTraits<Float>::epsilon),
       // AipsError); 	  AlwaysAssert(near(result(IPosition(1,1)), 0.6f,
-      // 10*NumericTraits<Float>::epsilon), AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,2)),
-      // 0.0f, 10*NumericTraits<Float>::epsilon), AipsError);
-      // 	  AlwaysAssert(nearAbs(result(IPosition(1,3)), 0.0f,
-      // 10*NumericTraits<Float>::epsilon), AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,4)),
-      // 0.0f, 10*NumericTraits<Float>::epsilon), AipsError);
-      // 	  AlwaysAssert(near(result(IPosition(1,5)), 2.5f, 10*NumericTraits<Float>::epsilon),
-      // AipsError); 	  AlwaysAssert(near(result(IPosition(1,6)), 5.0f,
       // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,3)), 0.0f,
+      // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(nearAbs(result(IPosition(1,4)), 0.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError); 	  AlwaysAssert(near(result(IPosition(1,5)), 2.5f,
+      // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(near(result(IPosition(1,6)), 5.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError);
       // 	}
       //  	{
       //  	  const IPosition resultShape(model.shape()*2);
@@ -523,14 +524,15 @@ int main() {
       // 	  AlwaysAssert(result.shape() == resultShape, AipsError);
       // 	  AlwaysAssert(near(result(IPosition(1,4)), 2.0f, 10*NumericTraits<Float>::epsilon),
       // AipsError); 	  AlwaysAssert(near(result(IPosition(1,5)), 0.6f,
-      // 10*NumericTraits<Float>::epsilon), AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,6)),
-      // 0.0f, 10*NumericTraits<Float>::epsilon), AipsError);
-      // 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f,
-      // 10*NumericTraits<Float>::epsilon), AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,8)),
-      // 0.0f, 10*NumericTraits<Float>::epsilon), AipsError);
-      // 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f, 10*NumericTraits<Float>::epsilon),
-      // AipsError); 	  AlwaysAssert(near(result(IPosition(1,10)), 5.0f,
       // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(nearAbs(result(IPosition(1,6)), 0.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f,
+      // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(nearAbs(result(IPosition(1,8)), 0.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError); 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f,
+      // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(near(result(IPosition(1,10)), 5.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError);
       // 	}
       // 	{
       // 	  const IPosition resultShape(model.shape()*2-1);
@@ -539,14 +541,15 @@ int main() {
       // 	  AlwaysAssert(result.shape() == resultShape, AipsError);
       // 	  AlwaysAssert(near(result(IPosition(1,4)), 2.0f, 10*NumericTraits<Float>::epsilon),
       // AipsError); 	  AlwaysAssert(near(result(IPosition(1,5)), 0.6f,
-      // 10*NumericTraits<Float>::epsilon), AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,6)),
-      // 0.0f, 10*NumericTraits<Float>::epsilon), AipsError);
-      // 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f,
-      // 10*NumericTraits<Float>::epsilon), AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,8)),
-      // 0.0f, 10*NumericTraits<Float>::epsilon), AipsError);
-      // 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f, 10*NumericTraits<Float>::epsilon),
-      // AipsError); 	  AlwaysAssert(near(result(IPosition(1,10)), 5.0f,
       // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(nearAbs(result(IPosition(1,6)), 0.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError); 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f,
+      // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(nearAbs(result(IPosition(1,8)), 0.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError); 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f,
+      // 10*NumericTraits<Float>::epsilon), AipsError);
+      // AlwaysAssert(near(result(IPosition(1,10)), 5.0f, 10*NumericTraits<Float>::epsilon),
+      // AipsError);
       // 	}
       //       }
       //       {

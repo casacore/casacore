@@ -661,7 +661,7 @@ Int MultiTermLatticeCleaner<T>::setupBlobs() {
       // scaleBias_p[scale] = 1 - 0.4 * scaleSizes_p[scale]/scaleSizes_p(nscales_p-1);
       scaleBias_p[scale] = 1.0;
       //////scaleBias_p[scale] =
-      ///pow((Float)scale/fac,prefScale)*exp(-1.0*scale/fac)/(pow(prefScale/fac,prefScale)*exp(-1.0*prefScale/fac));
+      /// pow((Float)scale/fac,prefScale)*exp(-1.0*scale/fac)/(pow(prefScale/fac,prefScale)*exp(-1.0*prefScale/fac));
       // scaleBias_p[scale] = pow((Float)(scale+1)/fac,prefScale)*exp(-1.0*(scale+1)/fac);
       os << "scale " << scale + 1 << " = " << scaleSizes_p(scale)
          << " pixels with bias = " << scaleBias_p[scale] << LogIO::POST;

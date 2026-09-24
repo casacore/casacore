@@ -40,7 +40,7 @@ T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) con
   // Test on x[0]<=0 gives compile error if T is AutoDiffA<Double>.
   /// if (x <= 0) {
   ///		throw AipsError("PowerLogarithmicPolynomial<T>::eval(): x must be greater than
-  ///zero");
+  /// zero");
   ///	}
   T lnx = log(x[0]);
   Int j = nparameters();
