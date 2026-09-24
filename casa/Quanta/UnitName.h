@@ -1,40 +1,39 @@
-//# UnitName.h: defines a tagged unit definition
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # UnitName.h: defines a tagged unit definition
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_UNITNAME_H
 #define CASA_UNITNAME_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // handles physical units
@@ -87,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ol>
 //
 // An assignment (copy semantics) is available.
-// 
+//
 //
 //  <h3> Obtaining information about tagged unit </h3>
 // The following information can be obatined from a UnitName:
@@ -95,7 +94,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> UnitVal getVal() const	will return the unit definition value
 //   <li> String  getName() const	will return the unit name
 // </ol>
-// 
+//
 //
 // </synopsis>
 //
@@ -109,66 +108,59 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 //
-//# // <motivation>
-//# // </motivation>
+// # // <motivation>
+// # // </motivation>
 
 class UnitName {
-//# friends
-// Output the unit tag, description and its definition
-    friend ostream& operator<< (ostream &os, const UnitName &name);
+  // # friends
+  //  Output the unit tag, description and its definition
+  friend ostream &operator<<(ostream &os, const UnitName &name);
 
-public:
-//# Constructors
-// Default constructor
-    UnitName();
+ public:
+  // # Constructors
+  //  Default constructor
+  UnitName();
 
-// Copy constructor
-    UnitName(const UnitName &other);
+  // Copy constructor
+  UnitName(const UnitName &other);
 
-// Construct from different parts
-// <group>
-    UnitName(const String &nameTag, const UnitVal &kind,
-             const String &fullName = String());
-    UnitName(const Unit &unit, const String &fullName = String());
-// </group>
+  // Construct from different parts
+  // <group>
+  UnitName(const String &nameTag, const UnitVal &kind, const String &fullName = String());
+  UnitName(const Unit &unit, const String &fullName = String());
+  // </group>
 
+  // Destructor
+  ~UnitName();
 
-// Destructor
-    ~UnitName();
+  // # Operators
+  //  Assigment (copy semantics)
+  UnitName &operator=(const UnitName &other);
 
-//# Operators
-// Assigment (copy semantics)
-    UnitName &operator=(const UnitName &other);
+  // # General member functions
+  //  Get definition value of the unit
+  const UnitVal &getVal() const { return basicKind; }
 
-//# General member functions
-// Get definition value of the unit
-    const UnitVal &getVal() const
-      { return basicKind; }
+  // Get the name tag of the defined unit
+  const String &getName() const { return basicTag; }
 
-// Get the name tag of the defined unit
-    const String &getName() const
-      { return basicTag; }
+  // Get the full name of the defined unit
+  const String &getFullName() const { return basicName; }
 
-// Get the full name of the defined unit
-    const String &getFullName() const
-      { return basicName; }
+ private:
+  // # Data members
+  //  Value of defined unit
+  UnitVal basicKind;
 
-private:
-//# Data members
-// Value of defined unit
-    UnitVal basicKind;
+  // Name tag of unit
+  String basicTag;
 
-// Name tag of unit
-    String basicTag;
-
-// Full name and description of unit
-    String basicName;
-
+  // Full name and description of unit
+  String basicName;
 };
 
-//# Inline Implementations
+// # Inline Implementations
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

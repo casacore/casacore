@@ -1,36 +1,35 @@
-//# Timer.h:  measure the time it takes to execute parts of a program
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Timer.h:  measure the time it takes to execute parts of a program
+// # Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_TIMER_H
 #define CASA_TIMER_H
 
-
 #include <casacore/casa/aips.h>
 #include <sys/types.h>
 
-//# Forward declarations
+// # Forward declarations
 #include <casacore/casa/iosfwd.h>
 
 #if defined(DOS) || defined(MSDOS)
@@ -39,26 +38,27 @@ extern "C" {
 #include <time.h>
 }
 
-#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD) || defined(__GLIBC__)
-  #if defined(AIPS_CRAY_PGI)
-    #include <sys/time.h>
-    #include <sys/resource.h>
-    #include <unistd.h>
-    extern "C" int getrusage(int, struct rusage*);
-  #else
-    #include <sys/times.h>
-    #include <unistd.h>
-  #endif
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || \
+    defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD) || defined(__GLIBC__)
+#if defined(AIPS_CRAY_PGI)
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
+extern "C" int getrusage(int, struct rusage *);
+#else
+#include <sys/times.h>
+#include <unistd.h>
+#endif
 
 #else
 #include <sys/timeb.h>
 #include <sys/time.h>
-extern "C" int getrusage(int, struct rusage*);
-extern "C" int ftime(struct timeb*);
+extern "C" int getrusage(int, struct rusage *);
+extern "C" int ftime(struct timeb *);
 #include <sys/resource.h>
 #endif
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Class declaration.
 class String;
@@ -77,7 +77,7 @@ class String;
 // interface to provide time resolution at either millisecond or
 // microsecond granularity,  depending  upon  operating  system
 // support and features. Since the time duration  is  stored  in
-// a  32-bit word,  the  maximum  time  period  before rollover 
+// a  32-bit word,  the  maximum  time  period  before rollover
 // occurs is about 71 minutes.
 //
 // Due to operating system dependencies, the  accuracy  of  all
@@ -88,24 +88,24 @@ class String;
 // time  as  appropriate. See the Timer header file for system-
 // specific notes.
 //
-// <note role=tip> This Timer class is based on the TI COOL library 
+// <note role=tip> This Timer class is based on the TI COOL library
 //        Timer class
 // </note>
 // </synopsis>
 
 // <example>
 // Here's how to create a timer, start it (the 'mark' member function)
-// and display a breakdown.  Recall that 
+// and display a breakdown.  Recall that
 // <srcblock>        realtime = user time  + system time
 // </srcblock>
 // <srcblock>
-// 
+//
 //  Timer timer;   // the mark is set at construction time
 //  timer.mark();  // if you want to restart the clock
 //   ...do some calculation...
-//   cout << "user:   " << timer.user () << endl; 
+//   cout << "user:   " << timer.user () << endl;
 //   cout << "system: " << timer.system () << endl;
-//   cout << "real:   " << timer.real () << endl; 
+//   cout << "real:   " << timer.real () << endl;
 //
 // </srcblock>
 //  </example>
@@ -118,16 +118,15 @@ class String;
 //        the timer
 //   <li> add 'start' member function, a synonym for 'mark' but more
 //        comprehensible
-//        
+//
 // </todo>
 
-
 class Timer {
-public:
+ public:
   //
   // Construct a timer and set the mark ("mark()").
   //
-  Timer() {mark();}
+  Timer() { mark(); }
 
   //
   // Set the timer mark -- i.e., start the clock ticking
@@ -164,8 +163,8 @@ public:
   // Show real, user, system time (in seconds) on cout or a user supplied
   // stream preceeded by the string parameter.
   // <group>
-  void show(const String&) const;
-  void show(ostream &os, const String&prefix) const;
+  void show(const String &) const;
+  void show(ostream &os, const String &prefix) const;
   // </group>
 
   //
@@ -183,26 +182,26 @@ public:
   //
   double all_usec() const;
 
-private:
+ private:
 #if defined(DOS) || defined(MSDOS)
-    clock_t usage0;
-    timeb   real0;          //# elapsed real time at last mark
-#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD) || defined(__GLIBC__)
-  #if defined(AIPS_CRAY_PGI)
-    //struct timeval usage0;
-    rusage usage0;          //# rusage structure at last mark
-    struct timeval real0;   //# elapsed real time at last mark
-  #else
-    tms     usage0;         //# tms structure at last mark
-    clock_t real0;          //# elapsed real time at last mark
-  #endif
+  clock_t usage0;
+  timeb real0;  // # elapsed real time at last mark
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || \
+    defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD) || defined(__GLIBC__)
+#if defined(AIPS_CRAY_PGI)
+  // struct timeval usage0;
+  rusage usage0;         // # rusage structure at last mark
+  struct timeval real0;  // # elapsed real time at last mark
 #else
-    rusage  usage0;         //# rusage structure at last mark
-    timeb   real0;          //# elapsed real time at last mark
+  tms usage0;     // # tms structure at last mark
+  clock_t real0;  // # elapsed real time at last mark
+#endif
+#else
+  rusage usage0;  // # rusage structure at last mark
+  timeb real0;    // # elapsed real time at last mark
 #endif
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

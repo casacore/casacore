@@ -1,29 +1,29 @@
-//# tQuantumHolder.cc: This program tests QuantumHolder
-//# Copyright (C) 1998,2000,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tQuantumHolder.cc: This program tests QuantumHolder
+// # Copyright (C) 1998,2000,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions.h>
@@ -50,13 +50,13 @@ int main() {
     String s01("-97.8 Mpc/a");
     String s02("12.5JY");
     Record y00;
-    
+
     cout << "Input quantity:              " << (QBase &)x00 << endl;
     if (QuantumHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
+        cout << "Record output quantity:      " << q00.asQuantum() << endl;
       } else {
-	cout << "From error: " << error << endl;
+        cout << "From error: " << error << endl;
       }
     } else {
       cout << "To error: " << error << endl;
@@ -79,41 +79,31 @@ int main() {
     cout << "Is Int:                      " << q00.isQuantumInt() << endl;
     cout << "Is Complex:                  " << q00.isQuantumComplex() << endl;
     cout << "Is DComplex:                 " << q00.isQuantumDComplex() << endl;
-    cout << "Is Vector Double:            " <<
-      q00.isQuantumVectorDouble() << endl;
-    cout << "Is Vector Float:             " <<
-      q00.isQuantumVectorFloat() << endl;
-    cout << "Is Vector Int:               " <<
-      q00.isQuantumVectorInt() << endl;
-    cout << "Is Vector Complex:           " <<
-      q00.isQuantumVectorComplex() << endl;
-    cout << "Is Vector DComplex:          " <<
-      q00.isQuantumVectorDComplex() << endl;
+    cout << "Is Vector Double:            " << q00.isQuantumVectorDouble() << endl;
+    cout << "Is Vector Float:             " << q00.isQuantumVectorFloat() << endl;
+    cout << "Is Vector Int:               " << q00.isQuantumVectorInt() << endl;
+    cout << "Is Vector Complex:           " << q00.isQuantumVectorComplex() << endl;
+    cout << "Is Vector DComplex:          " << q00.isQuantumVectorDComplex() << endl;
     q01 = q00;
     cout << "As quantity:                 " << q00.asQuantity() << endl;
     cout << "As Double:                   " << q00.asQuantumDouble() << endl;
-    cout << "As Vector Double:            " <<
-      q00.asQuantumVectorDouble() << endl;
+    cout << "As Vector Double:            " << q00.asQuantumVectorDouble() << endl;
     cout << "As Float:                    " << q00.asQuantumFloat() << endl;
-    cout << "As Vector Float:             " <<
-      q00.asQuantumVectorFloat() << endl;
+    cout << "As Vector Float:             " << q00.asQuantumVectorFloat() << endl;
     cout << "As Int:                      " << q00.asQuantumInt() << endl;
-    cout << "As Vector Int:               " <<
-      q00.asQuantumVectorInt() << endl;
+    cout << "As Vector Int:               " << q00.asQuantumVectorInt() << endl;
     q00 = q01;
     cout << "As Complex:                  " << q00.asQuantumComplex() << endl;
-    cout << "As Vector Complex:           " <<
-      q00.asQuantumVectorComplex() << endl;
+    cout << "As Vector Complex:           " << q00.asQuantumVectorComplex() << endl;
     cout << "As DComplex:                 " << q00.asQuantumDComplex() << endl;
-    cout << "As Vector DComplex:          " <<
-      q00.asQuantumVectorDComplex() << endl;
+    cout << "As Vector DComplex:          " << q00.asQuantumVectorDComplex() << endl;
 
     cout << "Input quantity:              " << (QBase &)x01 << endl;
     if (QuantumHolder(x01).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
+        cout << "Record output quantity:      " << q00.asQuantum() << endl;
       } else {
-	cout << "From error: " << error << endl;
+        cout << "From error: " << error << endl;
       }
     } else {
       cout << "To error: " << error << endl;
@@ -121,9 +111,9 @@ int main() {
     cout << "Input quantity:              " << (QBase &)x02 << endl;
     if (QuantumHolder(x02).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00.asQuantity() << endl;
+        cout << "Record output quantity:      " << q00.asQuantity() << endl;
       } else {
-	cout << "From error: " << error << endl;
+        cout << "From error: " << error << endl;
       }
     } else {
       cout << "To error: " << error << endl;
@@ -133,9 +123,9 @@ int main() {
     if (QuantumHolder(x00).toRecord(error, y00)) {
       y00.renameField("units", RecordFieldId("unit"));
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00.asQuantity() << endl;
+        cout << "Record output quantity:      " << q00.asQuantity() << endl;
       } else {
-	cout << "From error: " << error << endl;
+        cout << "From error: " << error << endl;
       }
     } else {
       cout << "To error: " << error << endl;
@@ -156,16 +146,16 @@ int main() {
     if (q00.fromString(error, s02)) {
       cout << "As quantity:                 " << q00.asQuantum() << endl;
     } else {
-      cout << "Expected error for String " << s02 <<
-	" (value still " << q00.asQuantum() << ")" << endl;
+      cout << "Expected error for String " << s02 << " (value still " << q00.asQuantum() << ")"
+           << endl;
       cout << "Error message now: " << error << endl;
     }
     cout << "----------------------------------------------------" << endl;
 
-  } catch (std::exception& x) {
+  } catch (std::exception &x) {
     cout << x.what() << endl;
     return 1;
-  } 
+  }
 
   return 0;
 }

@@ -1,27 +1,27 @@
-//# ArrayOpsDiffShapes.h: Operations for 2 Arrays with possibly different shapes.
-//# Copyright (C) 2009
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify
-//# it under the terms of the GNU General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or
-//# (at your option) any later version.
-//#
-//# This program is distributed in the hope that it will be useful,
-//# but WITHOUT ANY WARRANTY; without even the implied warranty of
-//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//# GNU General Public License for more details.
-//# 
-//# You should have received a copy of the GNU General Public License
-//# along with this program; if not, write to the Free Software
-//# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrayOpsDiffShapes.h: Operations for 2 Arrays with possibly different shapes.
+// # Copyright (C) 2009
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify
+// # it under the terms of the GNU General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or
+// # (at your option) any later version.
+// #
+// # This program is distributed in the hope that it will be useful,
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// # GNU General Public License for more details.
+// #
+// # You should have received a copy of the GNU General Public License
+// # along with this program; if not, write to the Free Software
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_ARRAYOPSDIFFSHAPES_2_H
 #define CASA_ARRAYOPSDIFFSHAPES_2_H
@@ -30,9 +30,9 @@
 #include "ArrayLogical.h"
 #include "IPosition.h"
 
-//# Don't forget a .tcc file is included at the end!
+// # Don't forget a .tcc file is included at the end!
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Operations for 2 Arrays with possibly different shapes.
@@ -55,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // spans a subspace of left.  If left's shape has more dimensions than right's,
 // each entry in right will effectively be replicated as necessary to act on
 // each entry in the corresponding chunk of left.
-// e.g. if left's shape is (256, 256, 1, 4), and right's is (256, 256), 
+// e.g. if left's shape is (256, 256, 1, 4), and right's is (256, 256),
 // left(i, j, 1, l) will be operated on with right(i, j) for i & j from 0 to
 // 255 and l from 0 to 3.  Note that right must be either reformable to left's
 // shape (same # of elements) or its shape must equal left's shape "as far as
@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   Array<Complex> a(10, 6);
 //   Vector<int>    b(10);
 //   Array<Complex> c(10, 6);
-//   
+//
 //   c = binOpExpandR(a, b, std::plus<Complex>());
 // </srcblock>
 // This example sets c(i, j) to a(i, j) + b(i).  It checks that either b's
@@ -81,9 +81,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Returns a LogicalArray with elements (at pos) set to (data(pos) ==
 // truthvalue).  data is effectively collapsed using anyEQ if necessary to
 // fit desiredform.  Throws an exception if that does not work.
-template<typename T>
-LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
-			  const IPosition& desiredform);
+template <typename T>
+LogicalArray reformedMask(const Array<T>& data, const T truthvalue, const IPosition& desiredform);
 
 // Can arrays left and right with respective shapes leftShape and rightShape be
 // used in function(left, right, ...) for the other functions declared here?
@@ -97,17 +96,17 @@ bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightSha
 // replicated along.  e.g. if left's shape is (1, 2, 4) and right's is (1, 2),
 // the result will be left(i, j, k) op right(i, j) for all (i, j, k).
 //
-//# template<typename L, typename R, typename BinaryOperator, typename RES>
-//# Array<RES> binOpExpandR(const Array<L>& left, const Array<R>& right,
-//# 			BinaryOperator op);
+// # template<typename L, typename R, typename BinaryOperator, typename RES>
+// # Array<RES> binOpExpandR(const Array<L>& left, const Array<R>& right,
+// # 			BinaryOperator op);
 
 // Like binOpExpandR(left, right, res, op), but work on left in place.
-template<typename L, typename R, typename BinaryOperator>
+template <typename L, typename R, typename BinaryOperator>
 void binOpExpandInPlace(Array<L>& left, const Array<R>& right, BinaryOperator op);
 
 // </group>
 
-} //#End casa namespace
+}  // namespace casacore
 
 #include "ArrayOpsDiffShapes.tcc"
 

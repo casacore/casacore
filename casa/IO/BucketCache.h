@@ -1,42 +1,41 @@
-//# BucketCache.h: Cache for buckets in a part of a file
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # BucketCache.h: Cache for buckets in a part of a file
+// # Copyright (C) 1994,1995,1996,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_BUCKETCACHE_H
 #define CASA_BUCKETCACHE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/BucketFile.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/OS/CanonicalConversion.h>
 
-//# Forward clarations
+// # Forward clarations
 #include <casacore/casa/iosfwd.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Define the type of the static read and write function.
@@ -84,14 +83,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </example>
 
 // <group name=BucketCache_CallBack>
-typedef char* (*BucketCacheToLocal) (void* ownerObject, const char* canonical);
-typedef void (*BucketCacheFromLocal) (void* ownerObject, char* canonical,
-				      const char* local);
-typedef char* (*BucketCacheAddBuffer) (void* ownerObject);
-typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
+typedef char* (*BucketCacheToLocal)(void* ownerObject, const char* canonical);
+typedef void (*BucketCacheFromLocal)(void* ownerObject, char* canonical, const char* local);
+typedef char* (*BucketCacheAddBuffer)(void* ownerObject);
+typedef void (*BucketCacheDeleteBuffer)(void* ownerObject, char* buffer);
 // </group>
-
-
 
 // <summary>
 // Cache for buckets in a part of a file
@@ -103,7 +99,7 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=BucketFile>BucketFile</linkto>
 // </prerequisite>
 
@@ -111,7 +107,7 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 // BucketCache implements a cache for buckets in (a part of) a file.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // A cache may allow more efficient quasi-random IO.
 // It can, for instance, be used when a limited number of blocks
 // in a file have to be accessed again and again.
@@ -141,7 +137,7 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 // <p>
 // Statistics are kept to know how efficient the cache is working.
 // It is possible to initialize and show the statistics.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // A cache may reduce IO traffix considerably.
@@ -211,205 +207,190 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 //   <li> When ready, use HashMap for the internal maps.
 // </todo>
 
+class BucketCache {
+ public:
+  // Create the cache for (a part of) a file.
+  // The file part used starts at startOffset. Its length is
+  // bucketSize*nrOfBuckets bytes.
+  // When the file is smaller, the remainder is indicated as an extension
+  // similarly to the behaviour of function extend.
+  BucketCache(BucketFile* file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets,
+              uInt cacheSize, void* ownerObject, BucketCacheToLocal readCallBack,
+              BucketCacheFromLocal writeCallBack, BucketCacheAddBuffer addCallBack,
+              BucketCacheDeleteBuffer deleteCallBack);
 
-class BucketCache
-{
-public:
+  ~BucketCache();
 
-    // Create the cache for (a part of) a file.
-    // The file part used starts at startOffset. Its length is
-    // bucketSize*nrOfBuckets bytes.
-    // When the file is smaller, the remainder is indicated as an extension
-    // similarly to the behaviour of function extend.
-    BucketCache (BucketFile* file, Int64 startOffset, uInt bucketSize,
-		 uInt nrOfBuckets, uInt cacheSize,
-		 void* ownerObject,
-		 BucketCacheToLocal readCallBack,
-		 BucketCacheFromLocal writeCallBack,
-		 BucketCacheAddBuffer addCallBack,
-		 BucketCacheDeleteBuffer deleteCallBack);
+  // Flush the cache from the given slot on.
+  // By default the entire cache is flushed.
+  // When the entire cache is flushed, possible remaining uninitialized
+  // buckets will be initialized first.
+  // A True status is returned when buckets had to be written.
+  Bool flush(uInt fromSlot = 0);
 
-    ~BucketCache();
+  // Clear the cache from the given slot on.
+  // By default the entire cache is cleared.
+  // It will remove the buckets in the cleared part.
+  // If wanted and needed, the buckets are flushed to the file
+  // before removing them.
+  // It can be used to enforce rereading buckets from the file.
+  void clear(uInt fromSlot = 0, Bool doFlush = True);
 
-    // Flush the cache from the given slot on.
-    // By default the entire cache is flushed.
-    // When the entire cache is flushed, possible remaining uninitialized
-    // buckets will be initialized first.
-    // A True status is returned when buckets had to be written.
-    Bool flush (uInt fromSlot = 0);
+  // Resize the cache.
+  // When the cache gets smaller, the latter buckets are cached out.
+  // It does not take "least recently used" into account.
+  void resize(uInt cacheSize);
 
-    // Clear the cache from the given slot on.
-    // By default the entire cache is cleared.
-    // It will remove the buckets in the cleared part.
-    // If wanted and needed, the buckets are flushed to the file
-    // before removing them.
-    // It can be used to enforce rereading buckets from the file.
-    void clear (uInt fromSlot = 0, Bool doFlush = True);
+  // Resynchronize the object (after another process updated the file).
+  // It clears the cache (so all data will be reread) and sets
+  // the new sizes.
+  void resync(uInt nrBucket, uInt nrOfFreeBucket, Int firstFreeBucket);
 
-    // Resize the cache.
-    // When the cache gets smaller, the latter buckets are cached out.
-    // It does not take "least recently used" into account.
-    void resize (uInt cacheSize);
+  // Get the current nr of buckets in the file.
+  uInt nBucket() const;
 
-    // Resynchronize the object (after another process updated the file).
-    // It clears the cache (so all data will be reread) and sets
-    // the new sizes.
-    void resync (uInt nrBucket, uInt nrOfFreeBucket, Int firstFreeBucket);
+  // Get the current cache size (in buckets).
+  uInt cacheSize() const;
 
-    // Get the current nr of buckets in the file.
-    uInt nBucket() const;
+  // Set the dirty bit for the current bucket.
+  void setDirty();
 
-    // Get the current cache size (in buckets).
-    uInt cacheSize() const;
+  // Make another bucket current.
+  // When no more cache slots are available, the one least recently
+  // used is flushed.
+  // The data in the bucket is converted using the ToLocal callback
+  // function. When the bucket does not exist yet in the file, it
+  // gets added and initialized using the AddBuffer callback function.
+  // A pointer to the data in converted format is returned.
+  char* getBucket(uInt bucketNr);
 
-    // Set the dirty bit for the current bucket.
-    void setDirty();
+  // Extend the file with the given number of buckets.
+  // The buckets get initialized when they are acquired
+  // (using getBucket) for the first time.
+  void extend(uInt nrBucket);
 
-    // Make another bucket current.
-    // When no more cache slots are available, the one least recently
-    // used is flushed.
-    // The data in the bucket is converted using the ToLocal callback
-    // function. When the bucket does not exist yet in the file, it
-    // gets added and initialized using the AddBuffer callback function.
-    // A pointer to the data in converted format is returned.
-    char* getBucket (uInt bucketNr);
+  // Add a bucket to the file and make it the current one.
+  // When no more cache slots are available, the one least recently
+  // used is flushed.
+  // <br> When no free buckets are available, the file will be
+  // extended with one bucket. It returns the new bucket number.
+  // The buffer must have been allocated on the heap.
+  // It will get part of the cache; its contents are not copied.
+  // Thus the buffer should hereafter NOT be used for other purposes.
+  // It will be deleted later via the DeleteBuffer callback function.
+  // The data is copied into the bucket. A pointer to the data in
+  // local format is returned.
+  uInt addBucket(char* data);
 
-    // Extend the file with the given number of buckets.
-    // The buckets get initialized when they are acquired
-    // (using getBucket) for the first time.
-    void extend (uInt nrBucket);
+  // Remove the current bucket; i.e. add it to the beginning of the
+  // free bucket list.
+  void removeBucket();
 
-    // Add a bucket to the file and make it the current one.
-    // When no more cache slots are available, the one least recently
-    // used is flushed.
-    // <br> When no free buckets are available, the file will be
-    // extended with one bucket. It returns the new bucket number.
-    // The buffer must have been allocated on the heap.
-    // It will get part of the cache; its contents are not copied.
-    // Thus the buffer should hereafter NOT be used for other purposes.
-    // It will be deleted later via the DeleteBuffer callback function.
-    // The data is copied into the bucket. A pointer to the data in
-    // local format is returned.
-    uInt addBucket (char* data);
+  // Get a part from the file outside the cached area.
+  // It is checked if that part is indeed outside the cached file area.
+  void get(char* buf, uInt length, Int64 offset);
 
-    // Remove the current bucket; i.e. add it to the beginning of the
-    // free bucket list.
-    void removeBucket();
+  // Put a part from the file outside the cached area.
+  // It is checked if that part is indeed outside the cached file area.
+  void put(const char* buf, uInt length, Int64 offset);
 
-    // Get a part from the file outside the cached area.
-    // It is checked if that part is indeed outside the cached file area.
-    void get (char* buf, uInt length, Int64 offset);
+  // Get the bucket number of the first free bucket.
+  // -1 = no free buckets.
+  Int firstFreeBucket() const;
 
-    // Put a part from the file outside the cached area.
-    // It is checked if that part is indeed outside the cached file area.
-    void put (const char* buf, uInt length, Int64 offset);
+  // Get the number of free buckets.
+  uInt nFreeBucket() const;
 
-    // Get the bucket number of the first free bucket.
-    // -1 = no free buckets.
-    Int firstFreeBucket() const;
+  // (Re)initialize the cache statistics.
+  void initStatistics();
 
-    // Get the number of free buckets.
-    uInt nFreeBucket() const;
+  // Show the statistics.
+  void showStatistics(ostream& os) const;
 
-    // (Re)initialize the cache statistics.
-    void initStatistics();
+ private:
+  // The file used.
+  BucketFile* its_file;
+  // The owner object.
+  void* its_Owner;
+  // The read callback function.
+  BucketCacheToLocal its_ReadCallBack;
+  // The write callback function.
+  BucketCacheFromLocal its_WriteCallBack;
+  // The add bucket callback function.
+  BucketCacheAddBuffer its_InitCallBack;
+  // The delete callback function.
+  BucketCacheDeleteBuffer its_DeleteCallBack;
+  // The starting offsets of the buckets in the file.
+  Int64 its_StartOffset;
+  // The bucket size.
+  uInt its_BucketSize;
+  // The current nr of buckets in the file.
+  uInt its_CurNrOfBuckets;
+  // The new nr of buckets in the file (after extension).
+  uInt its_NewNrOfBuckets;
+  // The size of the cache (i.e. #buckets fitting in it).
+  uInt its_CacheSize;
+  // The nr of slots used in the cache.
+  uInt its_CacheSizeUsed;
+  // The cache itself.
+  Block<char*> its_Cache;
+  // The cache slot actually used.
+  uInt its_ActualSlot;
+  // The slot numbers of the buckets in the cache (-1 = not in cache).
+  Block<Int> its_SlotNr;
+  // The buckets in the cache.
+  Block<uInt> its_BucketNr;
+  // Determine if a block is dirty (i.e. changed) (1=dirty).
+  Block<uInt> its_Dirty;
+  // Determine when a block is used for the last time.
+  Block<uInt> its_LRU;
+  // The Least Recently Used counter.
+  uInt its_LRUCounter;
+  // The internal buffer.
+  char* its_Buffer;
+  // The number of free buckets.
+  uInt its_NrOfFree;
+  // The first free bucket (-1 = no free buckets).
+  Int its_FirstFree;
+  // The statistics.
+  uInt naccess_p;
+  uInt nread_p;
+  uInt ninit_p;
+  uInt nwrite_p;
 
-    // Show the statistics.
-    void showStatistics (ostream& os) const;
+  // Copy constructor is not possible.
+  BucketCache(const BucketCache&);
 
-private:
-    // The file used.
-    BucketFile* its_file;
-    // The owner object.
-    void*    its_Owner;
-    // The read callback function.
-    BucketCacheToLocal   its_ReadCallBack;
-    // The write callback function.
-    BucketCacheFromLocal its_WriteCallBack;
-    // The add bucket callback function.
-    BucketCacheAddBuffer its_InitCallBack;
-    // The delete callback function.
-    BucketCacheDeleteBuffer its_DeleteCallBack;
-    // The starting offsets of the buckets in the file.
-    Int64    its_StartOffset;
-    // The bucket size.
-    uInt     its_BucketSize;
-    // The current nr of buckets in the file.
-    uInt     its_CurNrOfBuckets;
-    // The new nr of buckets in the file (after extension).
-    uInt     its_NewNrOfBuckets;
-    // The size of the cache (i.e. #buckets fitting in it).
-    uInt     its_CacheSize;
-    // The nr of slots used in the cache.
-    uInt     its_CacheSizeUsed;
-    // The cache itself.
-    Block<char*> its_Cache;
-    // The cache slot actually used.
-    uInt         its_ActualSlot;
-    // The slot numbers of the buckets in the cache (-1 = not in cache).
-    Block<Int>   its_SlotNr;
-    // The buckets in the cache.
-    Block<uInt>  its_BucketNr;
-    // Determine if a block is dirty (i.e. changed) (1=dirty).
-    Block<uInt>  its_Dirty;
-    // Determine when a block is used for the last time.
-    Block<uInt>  its_LRU;
-    // The Least Recently Used counter.
-    uInt         its_LRUCounter;
-    // The internal buffer.
-    char*        its_Buffer;
-    // The number of free buckets.
-    uInt its_NrOfFree;
-    // The first free bucket (-1 = no free buckets).
-    Int  its_FirstFree;
-    // The statistics.
-    uInt naccess_p;
-    uInt nread_p;
-    uInt ninit_p;
-    uInt nwrite_p;
+  // Assignment is not possible.
+  BucketCache& operator=(const BucketCache&);
 
+  // Set the LRU information for the current slot.
+  void setLRU();
 
-    // Copy constructor is not possible.
-    BucketCache (const BucketCache&);
+  // Get a cache slot for the bucket.
+  void getSlot(uInt bucketNr);
 
-    // Assignment is not possible.
-    BucketCache& operator= (const BucketCache&);
+  // Write a bucket.
+  void writeBucket(uInt slotNr);
 
-    // Set the LRU information for the current slot.
-    void setLRU();
+  // Read a bucket.
+  void readBucket(uInt slotNr);
 
-    // Get a cache slot for the bucket.
-    void getSlot (uInt bucketNr);
+  // Initialize the bucket buffer.
+  // The uninitialized buckets before this bucket are also initialized.
+  // It returns a pointer to the buffer.
+  void initializeBuckets(uInt bucketNr);
 
-    // Write a bucket.
-    void writeBucket (uInt slotNr);
-
-    // Read a bucket.
-    void readBucket (uInt slotNr);
-
-    // Initialize the bucket buffer.
-    // The uninitialized buckets before this bucket are also initialized.
-    // It returns a pointer to the buffer.
-    void initializeBuckets (uInt bucketNr);
-
-    // Check if the offset of a non-cached part is correct.
-    void checkOffset (uInt length, Int64 offset) const;
+  // Check if the offset of a non-cached part is correct.
+  void checkOffset(uInt length, Int64 offset) const;
 };
 
+inline uInt BucketCache::cacheSize() const { return its_CacheSize; }
 
+inline Int BucketCache::firstFreeBucket() const { return its_FirstFree; }
 
-inline uInt BucketCache::cacheSize() const
-    { return its_CacheSize; }
+inline uInt BucketCache::nFreeBucket() const { return its_NrOfFree; }
 
-inline Int BucketCache::firstFreeBucket() const
-    { return its_FirstFree; }
-
-inline uInt BucketCache::nFreeBucket() const
-    { return its_NrOfFree; }
-
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,27 +1,27 @@
-//# AppState.h: casacore library configuration without environment variabes
-//# Copyright (C) 2017
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AppState.h: casacore library configuration without environment variabes
+// # Copyright (C) 2017
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_APPSTATE_H
 #define CASA_APPSTATE_H
@@ -54,30 +54,29 @@ namespace casacore {
 // </synopsis>
 
 class AppState {
-public:
+ public:
+  // use the data path to find the filename...
+  virtual std::string resolve(const std::string &filename) const;
 
-    // use the data path to find the filename...
-    virtual std::string resolve(const std::string &filename) const;
+  // get the list of directories in the data path...
+  virtual std::list<std::string> dataPath() const {
+    static std::list<std::string> result;
+    return result;
+  }
 
-    // get the list of directories in the data path...
-    virtual std::list<std::string> dataPath( ) const {
-        static std::list<std::string> result;
-        return result;
-    }
+  // Get AppState specified directory for (IERS) measures data.
+  //
+  // If data is not found in the specified directory and the
+  // specified directiory name is nonempty (size > 0), an
+  // exception will be thrown in findTab.
+  virtual std::string measuresDir() const {
+    static std::string result;
+    return result;
+  }
 
-    // Get AppState specified directory for (IERS) measures data.
-    //
-    // If data is not found in the specified directory and the
-    // specified directiory name is nonempty (size > 0), an
-    // exception will be thrown in findTab.
-    virtual std::string measuresDir( ) const {
-        static std::string result;
-        return result;
-    }
+  virtual bool initialized() const { return false; }
 
-    virtual bool initialized( ) const { return false; }
-
-    virtual ~AppState( ) { }
+  virtual ~AppState() {}
 };
 
 // <summary>
@@ -107,7 +106,7 @@ public:
 // class MyState: public casacore::AppState {
 //     public:
 //         MyState( ) { }
-//  
+//
 //         const std::list<std::string> &dataPath( ) const {
 //             static std::list<std::string> my_path;
 //             return my_path;
@@ -129,26 +128,25 @@ public:
 // }
 // </example>
 class AppStateSource {
-public:
+ public:
+  static void initialize(AppState *init) {
+    static std::mutex mutex_p;
+    std::lock_guard<std::mutex> lock(mutex_p);
+    if (user_state) delete user_state;
+    user_state = init;
+  }
+  static AppState &fetch() {
+    static AppState default_result;
+    return user_state ? *user_state : default_result;
+  }
 
-    static void initialize(AppState *init) {
-        static std::mutex mutex_p;
-        std::lock_guard<std::mutex> lock(mutex_p);
-        if ( user_state ) delete user_state;
-        user_state = init;
-    }
-    static AppState &fetch( ) {
-        static AppState default_result;
-        return user_state ? *user_state : default_result;
-    }
-
-private:
-    static AppState *user_state;
-    AppStateSource( ) { }
-    AppStateSource( AppStateSource const &) { }      // prevent copying
-    void operator=(AppStateSource const &) { }       // prevent assignment
+ private:
+  static AppState *user_state;
+  AppStateSource() {}
+  AppStateSource(AppStateSource const &) {}  // prevent copying
+  void operator=(AppStateSource const &) {}  // prevent assignment
 };
 
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

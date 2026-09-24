@@ -1,33 +1,32 @@
-//# MVDoppler.h: Internal value for MDoppler
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVDoppler.h: Internal value for MDoppler
+// # Copyright (C) 1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MVDOPPLER_H
 #define CASA_MVDOPPLER_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/QC.h>
@@ -35,9 +34,9 @@
 #include <casacore/casa/Quanta/MeasValue.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
 // <summary> Internal value for MDoppler </summary>
 
@@ -56,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <synopsis>
 // An MVDoppler is a simple Double, to be used in the MDoppler measure.
-// Requirements can be found in the 
+// Requirements can be found in the
 // <linkto class=MeasValue>MeasValue</linkto> base class.<br>
 // The only reasonable constructor is (but all MeasValue constructors are
 // present)
@@ -87,11 +86,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MVDoppler : public MeasValue {
-  
-public:
-  
-  //# Constructors
-  // Default constructor: generate a zero value
+ public:
+  // # Constructors
+  //  Default constructor: generate a zero value
   MVDoppler();
   // Copy constructor
   MVDoppler(const MVDoppler &other);
@@ -102,7 +99,7 @@ public:
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVDoppler(const Quantity &other);
-  MVDoppler(const Quantum<Vector<Double> > &other);
+  MVDoppler(const Quantum<Vector<Double>> &other);
   // </group>
   // Constructor from Vector. A zero value will be taken for an empty vector,
   // the canonical value for a quantum vector.
@@ -113,14 +110,14 @@ public:
   MVDoppler(const Vector<Double> &other);
   MVDoppler(const Vector<Quantity> &other);
   // </group>
-  
+
   // Destructor
   ~MVDoppler();
-  
-  //# Operators
-  // Conversion operator
+
+  // # Operators
+  //  Conversion operator
   operator Double() const;
-  
+
   // Addition
   // <group>
   MVDoppler &operator+=(const MVDoppler &other);
@@ -133,14 +130,14 @@ public:
   Bool near(const MVDoppler &other, Double tol = 1e-13) const;
   Bool nearAbs(const MVDoppler &other, Double tol = 1e-13) const;
   // </group>
-  
-  //# General member functions
-  
+
+  // # General member functions
+
   // Tell me your type
   // <group>
   static void assure(const MeasValue &in);
   // </group>
-  
+
   // Print data
   virtual void print(ostream &os) const;
   // Clone
@@ -160,22 +157,21 @@ public:
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual Bool putValue(const Vector<Quantum<Double>> &in);
 
-private:
-  //# Data
-  // Value
+ private:
+  // # Data
+  //  Value
   Double val;
-  
-  //# Member functions
-  // Get correct data type conversion factor from input Quantum
-  Double makeD(Double v, const Unit &dt, Bool rev=False) const;
+
+  // # Member functions
+  //  Get correct data type conversion factor from input Quantum
+  Double makeD(Double v, const Unit &dt, Bool rev = False) const;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

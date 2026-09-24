@@ -1,40 +1,39 @@
-//# LogSinkInterface.h: Accepts LogMessages and posts them to some destination
-//# Copyright (C) 1996,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LogSinkInterface.h: Accepts LogMessages and posts them to some destination
+// # Copyright (C) 1996,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_LOGSINKINTERFACE_H
 #define CASA_LOGSINKINTERFACE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogFilterInterface.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
-//Accepts LogMessages and posts them to some destination
+// Accepts LogMessages and posts them to some destination
 // </summary>
 
 // <use visibility=local>
@@ -54,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </etymology>
 //
 // <synopsis>
-// This abstract base class is not intended for applications programmers. 
+// This abstract base class is not intended for applications programmers.
 // Instead they should look at <linkto class=LogSink>LogSink</linkto>.
 //
 // This class defines a minimal "posting" interface for all objects which accept
@@ -92,10 +91,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Nothing known.
 // </todo>
 
-
-class LogSinkInterface
-{
-public:
+class LogSinkInterface {
+ public:
   // Create with a <src>NORMAL</src> filter.
   LogSinkInterface();
   // Create with the supplied <src>filter</src>.
@@ -120,46 +117,45 @@ public:
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime (uInt i) const;
-  virtual String getPriority (uInt i) const;
-  virtual String getMessage (uInt i) const;
-  virtual String getLocation (uInt i) const;
-  virtual String getObjectID (uInt i) const;
+  virtual Double getTime(uInt i) const;
+  virtual String getPriority(uInt i) const;
+  virtual String getMessage(uInt i) const;
+  virtual String getLocation(uInt i) const;
+  virtual String getObjectID(uInt i) const;
   // </group>
 
   // This function must be over-ridden in derived classes. If the filter
   // passes the message, do what is necessary with the message and return
   // <src>True</src>.
-  virtual Bool postLocally(const LogMessage &message)= 0;
+  virtual Bool postLocally(const LogMessage &message) = 0;
 
   // Write any pending output.
-  virtual void flush (Bool global=True);
+  virtual void flush(Bool global = True);
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.
-  virtual void writeLocally (Double time, const String& message,
-			     const String& priority, const String& location,
-			     const String& objectID);
+  virtual void writeLocally(Double time, const String &message, const String &priority,
+                            const String &location, const String &objectID);
 
   // Clear the local sink (i.e. remove all messages from it).
   // The default implementation does nothing.
   virtual void clearLocally();
 
   // Returns the id for this class...
-  static String localId( );
+  static String localId();
   // Returns the id of the LogSink in use...
-  virtual String id( ) const = 0;
+  virtual String id() const = 0;
   // Write to cerr too
   virtual void cerrToo(bool cerr2);
-  void setTaskName(const String &theTask){taskName=theTask;}
-private:
-  LogFilterInterface* filter_p;
-protected:
+  void setTaskName(const String &theTask) { taskName = theTask; }
+
+ private:
+  LogFilterInterface *filter_p;
+
+ protected:
   String taskName;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,38 +1,38 @@
-//# MVDirection.h: Vector of three direction cosines
-//# Copyright (C) 1996,1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVDirection.h: Vector of three direction cosines
+// # Copyright (C) 1996,1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MVDIRECTION_H
 #define CASA_MVDIRECTION_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward De
+// # Forward De
 
 // <summary> Vector of three direction cosines </summary>
 
@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //		a direction cosine if 3 elements
 //   <li> <src>MVDirection(Vector<Double>)</src> creates an MVDirection with
 //		the same restrictions as previous one
-//   <li> <src>MVDirection(Vector<Quantum<Double> >)</src> creates an 
+//   <li> <src>MVDirection(Vector<Quantum<Double> >)</src> creates an
 //		MVDirection with the same rstrictions as previous one; but
 //		with unit check.
 // </ul>
@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Double 2-vector the angles of the direction cosines; a getAngle() returns
 // a Quantum 2-vector, (uInt) returns the indicated element, and getValue
 // returns the direction cosine vector.<br>
-// Direction cosines can be added and subtracted: the result will be 
+// Direction cosines can be added and subtracted: the result will be
 // adjusted to a length of 1.<br>
 // The multiplication of two direction cosines produces the inner product.<br>
 // shift() methods are available to shift in angular coordinates. E.g.
@@ -103,13 +103,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 class MVDirection : public MVPosition {
+ public:
+  // # Friends
 
-public:
-
-  //# Friends
-  
-  //# Constructors
-  // Default constructor generates a direction to the pole (i.e. (0,0,1))
+  // # Constructors
+  //  Default constructor generates a direction to the pole (i.e. (0,0,1))
   MVDirection();
   // Creates from an MVPosition
   MVDirection(const MVPosition &other);
@@ -134,7 +132,7 @@ public:
   // <thrown>
   //  <li> AipsError if more than 3 values or incorrect units
   // </thrown>
-  MVDirection(const Quantum<Vector<Double> > &angle);
+  MVDirection(const Quantum<Vector<Double>> &angle);
   // </group>
   // Create from Vector. Assumes angles if less than or equal than 2 elements.
   // Assumes direction cosines if 3 elements.
@@ -145,23 +143,23 @@ public:
   MVDirection(const Vector<Double> &other);
   MVDirection(const Vector<Quantity> &other);
   // </group>
-  
-  //# Operators
-  // Addition and subtraction
-  // <group>
+
+  // # Operators
+  //  Addition and subtraction
+  //  <group>
   MVDirection &operator+=(const MVDirection &right);
   MVDirection operator+(const MVDirection &right) const;
   MVDirection &operator-=(const MVDirection &right);
   MVDirection operator-(const MVDirection &right) const;
   // </group>
-  
-  //# General Member Functions
-  
+
+  // # General Member Functions
+
   // Tell me your type
   // <group>
   static void assure(const MeasValue &in);
   // </group>
-  
+
   // Adjust the direction cosines to a length of 1
   virtual void adjust();
   // Adjust the direction cosines to a length of 1 and return the length value
@@ -181,19 +179,15 @@ public:
   // <group>
   Double positionAngle(const MVPosition &other) const;
   Double positionAngle(const MVDirection &other) const;
-  Quantity positionAngle(const MVPosition &other, 
-			 const Unit &unit) const;
-  Quantity positionAngle(const MVDirection &other, 
-			 const Unit &unit) const;
+  Quantity positionAngle(const MVPosition &other, const Unit &unit) const;
+  Quantity positionAngle(const MVDirection &other, const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.
   // <group>
   Double separation(const MVPosition &other) const;
   Double separation(const MVDirection &other) const;
-  Quantity separation(const MVPosition &other, 
-		      const Unit &unit) const;
-  Quantity separation(const MVDirection &other, 
-		      const Unit &unit) const;
+  Quantity separation(const MVPosition &other, const Unit &unit) const;
+  Quantity separation(const MVDirection &other, const Unit &unit) const;
   // </group>
   // Produce the cross product
   MVDirection crossProduct(const MVDirection &other) const;
@@ -201,12 +195,12 @@ public:
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
-  virtual Vector<Quantum<Double> > getXRecordValue() const;
-  virtual Vector<Quantum<Double> > getTMRecordValue() const;
+  virtual Vector<Quantum<Double>> getRecordValue() const;
+  virtual Vector<Quantum<Double>> getXRecordValue() const;
+  virtual Vector<Quantum<Double>> getTMRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual Bool putValue(const Vector<Quantum<Double>> &in);
   // Set the internal value, using the longitude and latitude (in rad) given
   void setAngle(Double angle0, Double angle1);
   // Shift the direction in longitude (radians if Double) and/or latitude.
@@ -214,33 +208,30 @@ public:
   // angular units perpendicular to the direction to the pole at the shifted
   // latitude, along a great circle.
   // <group>
-  void shift(const Quantum<Double> &lng,
-	     const Quantum<Double> &lat, Bool trueAngle=False);
-  void shift(Double lng, Double lat, Bool trueAngle=False);
-  void shiftLongitude(const Quantity &lng, Bool trueAngle=False);
-  void shiftLongitude(Double lng, Bool trueAngle=False);
-  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle=False);
-  void shiftLatitude(Double lat, Bool trueAngle=False);
-  void shift(const MVDirection &shft, Bool trueAngle=False);
+  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, Bool trueAngle = False);
+  void shift(Double lng, Double lat, Bool trueAngle = False);
+  void shiftLongitude(const Quantity &lng, Bool trueAngle = False);
+  void shiftLongitude(Double lng, Bool trueAngle = False);
+  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle = False);
+  void shiftLatitude(Double lat, Bool trueAngle = False);
+  void shift(const MVDirection &shft, Bool trueAngle = False);
   // </group>
   // Shift over an angle off in the direction pa. pa is measured from North,
   // in the direction of increasing longitude.
   // <group>
-  void shiftAngle(const Quantum<Double> &off,
-		  const Quantum<Double> &pa);
+  void shiftAngle(const Quantum<Double> &off, const Quantum<Double> &pa);
   void shiftAngle(Double off, Double pa);
   // </group>
-  
-protected:
-  //# Data
+
+ protected:
+  // # Data
 };
 
-//# Global functions
-// Rotate a position vector
-MVDirection operator*(const RotMatrix &left, const MVDirection&right);
-MVDirection  operator*(const MVDirection &left, const RotMatrix &right);
+// # Global functions
+//  Rotate a position vector
+MVDirection operator*(const RotMatrix &left, const MVDirection &right);
+MVDirection operator*(const MVDirection &left, const RotMatrix &right);
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

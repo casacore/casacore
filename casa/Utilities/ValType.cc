@@ -1,27 +1,27 @@
-//# ValType.cc: Class describing the data types and their undefined values
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ValType.cc: Class describing the data types and their undefined values
+// # Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/OS/CanonicalConversion.h>
@@ -29,471 +29,442 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <limits.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# This is the implementation of the ValType class.
-//# Most functions are inlined in the header file.
+// # This is the implementation of the ValType class.
+// # Most functions are inlined in the header file.
 
+ValType::ValType() {}
 
-ValType::ValType ()
-{}
+const Bool ValType::undefbool = False;
+const Char ValType::undefchar = (Char)-128;
+const uChar ValType::undefuchar = 0;
+const Short ValType::undefshort = -32768;
+const uShort ValType::undefushort = 0;
+const Int ValType::undefint = -2 * Int(32768 * 32768);
+const uInt ValType::undefuint = 0;
+const Int64 ValType::undefint64 = -2 * Int64(32768 * 32768) * Int64(32768 * 32768);
+const float ValType::undeffloat = -FLT_MIN;
+const Complex ValType::undefcomplex(-FLT_MIN, -FLT_MIN);
+const double ValType::undefdouble = -DBL_MIN;
+const DComplex ValType::undefdcomplex(-DBL_MIN, -DBL_MIN);
+const String ValType::undefstring("");
 
-
-const Bool           ValType::undefbool     = False;
-const Char           ValType::undefchar     = (Char)-128;
-const uChar          ValType::undefuchar    = 0;
-const Short          ValType::undefshort    = -32768;
-const uShort         ValType::undefushort   = 0;
-const Int            ValType::undefint      = -2*Int(32768*32768);
-const uInt           ValType::undefuint     = 0;
-const Int64          ValType::undefint64    = -2*Int64(32768*32768)*Int64(32768*32768);
-const float          ValType::undeffloat    = -FLT_MIN;
-const Complex        ValType::undefcomplex   (-FLT_MIN,  -FLT_MIN);
-const double         ValType::undefdouble   = -DBL_MIN;
-const DComplex       ValType::undefdcomplex  (-DBL_MIN, -DBL_MIN);
-const String         ValType::undefstring    ("");
-
-
-//# Get the name of the data type.
-const String& ValType::getTypeStr (DataType dt)
-{
-    switch (dt) {
+// # Get the name of the data type.
+const String& ValType::getTypeStr(DataType dt) {
+  switch (dt) {
     case TpBool:
-	return strbool();
+      return strbool();
     case TpChar:
-	return strchar();
+      return strchar();
     case TpUChar:
-	return struchar();
+      return struchar();
     case TpShort:
-	return strshort();
+      return strshort();
     case TpUShort:
-	return strushort();
+      return strushort();
     case TpInt:
-	return strint();
+      return strint();
     case TpUInt:
-	return struint();
+      return struint();
     case TpInt64:
-	return strint64();
+      return strint64();
     case TpFloat:
-	return strfloat();
+      return strfloat();
     case TpDouble:
-	return strdouble();
+      return strdouble();
     case TpComplex:
-	return strcomplex();
+      return strcomplex();
     case TpDComplex:
-	return strdcomplex();
+      return strdcomplex();
     case TpString:
-	return strstring();
+      return strstring();
     case TpRecord:
-	return strrecord();
+      return strrecord();
     case TpTable:
-	return strtable();
+      return strtable();
     case TpOther:
-	return strother();
-    default:
-	break;
-    }
-    return strunknown();
-}
-
-
-//# Get the size of the data type.
-int ValType::getTypeSize (DataType dt)
-{
-    switch (dt) {
-    case TpBool:
-    case TpArrayBool:
-	return sizeof(Bool);
-    case TpChar:
-    case TpArrayChar:
-	return sizeof(Char);
-    case TpUChar:
-    case TpArrayUChar:
-	return sizeof(uChar);
-    case TpShort:
-    case TpArrayShort:
-	return sizeof(short);
-    case TpUShort:
-    case TpArrayUShort:
-	return sizeof(unsigned short);
-    case TpInt:
-    case TpArrayInt:
-	return sizeof(Int);
-    case TpUInt:
-    case TpArrayUInt:
-	return sizeof(uInt);
-    case TpInt64:
-    case TpArrayInt64:
-	return sizeof(Int64);
-    case TpFloat:
-    case TpArrayFloat:
-	return sizeof(float);
-    case TpDouble:
-    case TpArrayDouble:
-	return sizeof(double);
-    case TpComplex:
-    case TpArrayComplex:
-	return sizeof(Complex);
-    case TpDComplex:
-    case TpArrayDComplex:
-	return sizeof(DComplex);
-    case TpString:
-    case TpArrayString:
-	return sizeof(String);
-    default:
-	break;
-    }
-    return 0;
-}
-
-//# Get the canonical size of the data type.
-int ValType::getCanonicalSize (DataType dt, Bool BECanonical)
-{
-  if (BECanonical) {
-    switch (dt) {
-    case TpChar:
-    case TpArrayChar:
-      return CanonicalConversion::canonicalSize (static_cast<Char*>(0));
-    case TpUChar:
-    case TpArrayUChar:
-      return CanonicalConversion::canonicalSize (static_cast<uChar*>(0));
-    case TpShort:
-    case TpArrayShort:
-      return CanonicalConversion::canonicalSize (static_cast<Short*>(0));
-    case TpUShort:
-    case TpArrayUShort:
-      return CanonicalConversion::canonicalSize (static_cast<uShort*>(0));
-    case TpInt:
-    case TpArrayInt:
-      return CanonicalConversion::canonicalSize (static_cast<Int*>(0));
-    case TpUInt:
-    case TpArrayUInt:
-      return CanonicalConversion::canonicalSize (static_cast<uInt*>(0));
-    case TpInt64:
-    case TpArrayInt64:
-      return CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
-    case TpFloat:
-    case TpArrayFloat:
-      return CanonicalConversion::canonicalSize (static_cast<float*>(0));
-    case TpDouble:
-    case TpArrayDouble:
-      return CanonicalConversion::canonicalSize (static_cast<double*>(0));
-    case TpComplex:
-    case TpArrayComplex:
-      return 2*CanonicalConversion::canonicalSize (static_cast<float*>(0));
-    case TpDComplex:
-    case TpArrayDComplex:
-      return 2*CanonicalConversion::canonicalSize (static_cast<double*>(0));
+      return strother();
     default:
       break;
+  }
+  return strunknown();
+}
+
+// # Get the size of the data type.
+int ValType::getTypeSize(DataType dt) {
+  switch (dt) {
+    case TpBool:
+    case TpArrayBool:
+      return sizeof(Bool);
+    case TpChar:
+    case TpArrayChar:
+      return sizeof(Char);
+    case TpUChar:
+    case TpArrayUChar:
+      return sizeof(uChar);
+    case TpShort:
+    case TpArrayShort:
+      return sizeof(short);
+    case TpUShort:
+    case TpArrayUShort:
+      return sizeof(unsigned short);
+    case TpInt:
+    case TpArrayInt:
+      return sizeof(Int);
+    case TpUInt:
+    case TpArrayUInt:
+      return sizeof(uInt);
+    case TpInt64:
+    case TpArrayInt64:
+      return sizeof(Int64);
+    case TpFloat:
+    case TpArrayFloat:
+      return sizeof(float);
+    case TpDouble:
+    case TpArrayDouble:
+      return sizeof(double);
+    case TpComplex:
+    case TpArrayComplex:
+      return sizeof(Complex);
+    case TpDComplex:
+    case TpArrayDComplex:
+      return sizeof(DComplex);
+    case TpString:
+    case TpArrayString:
+      return sizeof(String);
+    default:
+      break;
+  }
+  return 0;
+}
+
+// # Get the canonical size of the data type.
+int ValType::getCanonicalSize(DataType dt, Bool BECanonical) {
+  if (BECanonical) {
+    switch (dt) {
+      case TpChar:
+      case TpArrayChar:
+        return CanonicalConversion::canonicalSize(static_cast<Char*>(0));
+      case TpUChar:
+      case TpArrayUChar:
+        return CanonicalConversion::canonicalSize(static_cast<uChar*>(0));
+      case TpShort:
+      case TpArrayShort:
+        return CanonicalConversion::canonicalSize(static_cast<Short*>(0));
+      case TpUShort:
+      case TpArrayUShort:
+        return CanonicalConversion::canonicalSize(static_cast<uShort*>(0));
+      case TpInt:
+      case TpArrayInt:
+        return CanonicalConversion::canonicalSize(static_cast<Int*>(0));
+      case TpUInt:
+      case TpArrayUInt:
+        return CanonicalConversion::canonicalSize(static_cast<uInt*>(0));
+      case TpInt64:
+      case TpArrayInt64:
+        return CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+      case TpFloat:
+      case TpArrayFloat:
+        return CanonicalConversion::canonicalSize(static_cast<float*>(0));
+      case TpDouble:
+      case TpArrayDouble:
+        return CanonicalConversion::canonicalSize(static_cast<double*>(0));
+      case TpComplex:
+      case TpArrayComplex:
+        return 2 * CanonicalConversion::canonicalSize(static_cast<float*>(0));
+      case TpDComplex:
+      case TpArrayDComplex:
+        return 2 * CanonicalConversion::canonicalSize(static_cast<double*>(0));
+      default:
+        break;
     }
   } else {
     switch (dt) {
-    case TpChar:
-    case TpArrayChar:
-      return LECanonicalConversion::canonicalSize (static_cast<Char*>(0));
-    case TpUChar:
-    case TpArrayUChar:
-      return LECanonicalConversion::canonicalSize (static_cast<uChar*>(0));
-    case TpShort:
-    case TpArrayShort:
-      return LECanonicalConversion::canonicalSize (static_cast<Short*>(0));
-    case TpUShort:
-    case TpArrayUShort:
-      return LECanonicalConversion::canonicalSize (static_cast<uShort*>(0));
-    case TpInt:
-    case TpArrayInt:
-      return LECanonicalConversion::canonicalSize (static_cast<Int*>(0));
-    case TpUInt:
-    case TpArrayUInt:
-      return LECanonicalConversion::canonicalSize (static_cast<uInt*>(0));
-    case TpInt64:
-    case TpArrayInt64:
-      return LECanonicalConversion::canonicalSize (static_cast<Int64*>(0));
-    case TpFloat:
-    case TpArrayFloat:
-      return LECanonicalConversion::canonicalSize (static_cast<float*>(0));
-    case TpDouble:
-    case TpArrayDouble:
-      return LECanonicalConversion::canonicalSize (static_cast<double*>(0));
-    case TpComplex:
-    case TpArrayComplex:
-      return 2*LECanonicalConversion::canonicalSize (static_cast<float*>(0));
-    case TpDComplex:
-    case TpArrayDComplex:
-      return 2*LECanonicalConversion::canonicalSize (static_cast<double*>(0));
-    default:
-      break;
+      case TpChar:
+      case TpArrayChar:
+        return LECanonicalConversion::canonicalSize(static_cast<Char*>(0));
+      case TpUChar:
+      case TpArrayUChar:
+        return LECanonicalConversion::canonicalSize(static_cast<uChar*>(0));
+      case TpShort:
+      case TpArrayShort:
+        return LECanonicalConversion::canonicalSize(static_cast<Short*>(0));
+      case TpUShort:
+      case TpArrayUShort:
+        return LECanonicalConversion::canonicalSize(static_cast<uShort*>(0));
+      case TpInt:
+      case TpArrayInt:
+        return LECanonicalConversion::canonicalSize(static_cast<Int*>(0));
+      case TpUInt:
+      case TpArrayUInt:
+        return LECanonicalConversion::canonicalSize(static_cast<uInt*>(0));
+      case TpInt64:
+      case TpArrayInt64:
+        return LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+      case TpFloat:
+      case TpArrayFloat:
+        return LECanonicalConversion::canonicalSize(static_cast<float*>(0));
+      case TpDouble:
+      case TpArrayDouble:
+        return LECanonicalConversion::canonicalSize(static_cast<double*>(0));
+      case TpComplex:
+      case TpArrayComplex:
+        return 2 * LECanonicalConversion::canonicalSize(static_cast<float*>(0));
+      case TpDComplex:
+      case TpArrayDComplex:
+        return 2 * LECanonicalConversion::canonicalSize(static_cast<double*>(0));
+      default:
+        break;
     }
   }
   return 0;
 }
 
-
-void ValType::getCanonicalFunc (DataType dt,
-				Conversion::ValueFunction*& readFunc,
-				Conversion::ValueFunction*& writeFunc,
-				uInt& nrElementsPerValue,
-				Bool BECanonical)
-{
+void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc,
+                               Conversion::ValueFunction*& writeFunc, uInt& nrElementsPerValue,
+                               Bool BECanonical) {
   nrElementsPerValue = 1;
   if (BECanonical) {
     switch (dt) {
-    case TpBool:
-    case TpArrayBool:
-      readFunc  = &Conversion::bitToBool;
-      writeFunc = &Conversion::boolToBit;
-      break;
-    case TpChar:
-    case TpArrayChar:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uChar*>(0));
-      break;
-    case TpUChar:
-    case TpArrayUChar:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uChar*>(0));
-      break;
-    case TpShort:
-    case TpArrayShort:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<Short*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<Short*>(0));
-      break;
-    case TpUShort:
-    case TpArrayUShort:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uShort*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uShort*>(0));
-      break;
-    case TpInt:
-    case TpArrayInt:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<Int*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<Int*>(0));
-      break;
-    case TpUInt:
-    case TpArrayUInt:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uInt*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
-      break;
-    case TpInt64:
-    case TpArrayInt64:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<Int64*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<Int64*>(0));
-      break;
-    case TpComplex:
-    case TpArrayComplex:
-      nrElementsPerValue = 2;
-      CASACORE_FALLTHROUGH;
-    case TpFloat:
-    case TpArrayFloat:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<float*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<float*>(0));
-      break;
-    case TpDComplex:
-    case TpArrayDComplex:
-      nrElementsPerValue = 2;
-      CASACORE_FALLTHROUGH;
-    case TpDouble:
-    case TpArrayDouble:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<double*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<double*>(0));
-      break;
-    default:
-      readFunc  = 0;
-      writeFunc = 0;
+      case TpBool:
+      case TpArrayBool:
+        readFunc = &Conversion::bitToBool;
+        writeFunc = &Conversion::boolToBit;
+        break;
+      case TpChar:
+      case TpArrayChar:
+        readFunc = CanonicalConversion::getToLocal(static_cast<uChar*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<uChar*>(0));
+        break;
+      case TpUChar:
+      case TpArrayUChar:
+        readFunc = CanonicalConversion::getToLocal(static_cast<uChar*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<uChar*>(0));
+        break;
+      case TpShort:
+      case TpArrayShort:
+        readFunc = CanonicalConversion::getToLocal(static_cast<Short*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<Short*>(0));
+        break;
+      case TpUShort:
+      case TpArrayUShort:
+        readFunc = CanonicalConversion::getToLocal(static_cast<uShort*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<uShort*>(0));
+        break;
+      case TpInt:
+      case TpArrayInt:
+        readFunc = CanonicalConversion::getToLocal(static_cast<Int*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<Int*>(0));
+        break;
+      case TpUInt:
+      case TpArrayUInt:
+        readFunc = CanonicalConversion::getToLocal(static_cast<uInt*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<uInt*>(0));
+        break;
+      case TpInt64:
+      case TpArrayInt64:
+        readFunc = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+        break;
+      case TpComplex:
+      case TpArrayComplex:
+        nrElementsPerValue = 2;
+        CASACORE_FALLTHROUGH;
+      case TpFloat:
+      case TpArrayFloat:
+        readFunc = CanonicalConversion::getToLocal(static_cast<float*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<float*>(0));
+        break;
+      case TpDComplex:
+      case TpArrayDComplex:
+        nrElementsPerValue = 2;
+        CASACORE_FALLTHROUGH;
+      case TpDouble:
+      case TpArrayDouble:
+        readFunc = CanonicalConversion::getToLocal(static_cast<double*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<double*>(0));
+        break;
+      default:
+        readFunc = 0;
+        writeFunc = 0;
     }
   } else {
     switch (dt) {
-    case TpBool:
-    case TpArrayBool:
-      readFunc  = &Conversion::bitToBool;
-      writeFunc = &Conversion::boolToBit;
-      break;
-    case TpChar:
-    case TpArrayChar:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uChar*>(0));
-      break;
-    case TpUChar:
-    case TpArrayUChar:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uChar*>(0));
-      break;
-    case TpShort:
-    case TpArrayShort:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<Short*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Short*>(0));
-      break;
-    case TpUShort:
-    case TpArrayUShort:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uShort*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uShort*>(0));
-      break;
-    case TpInt:
-    case TpArrayInt:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<Int*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Int*>(0));
-      break;
-    case TpUInt:
-    case TpArrayUInt:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uInt*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uInt*>(0));
-      break;
-    case TpInt64:
-    case TpArrayInt64:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<Int64*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Int64*>(0));
-      break;
-    case TpComplex:
-    case TpArrayComplex:
-      nrElementsPerValue = 2;
-      CASACORE_FALLTHROUGH;
-    case TpFloat:
-    case TpArrayFloat:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<float*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<float*>(0));
-      break;
-    case TpDComplex:
-    case TpArrayDComplex:
-      nrElementsPerValue = 2;
-      CASACORE_FALLTHROUGH;
-    case TpDouble:
-    case TpArrayDouble:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<double*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<double*>(0));
-      break;
-    default:
-      readFunc  = 0;
-      writeFunc = 0;
+      case TpBool:
+      case TpArrayBool:
+        readFunc = &Conversion::bitToBool;
+        writeFunc = &Conversion::boolToBit;
+        break;
+      case TpChar:
+      case TpArrayChar:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<uChar*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<uChar*>(0));
+        break;
+      case TpUChar:
+      case TpArrayUChar:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<uChar*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<uChar*>(0));
+        break;
+      case TpShort:
+      case TpArrayShort:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<Short*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<Short*>(0));
+        break;
+      case TpUShort:
+      case TpArrayUShort:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<uShort*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<uShort*>(0));
+        break;
+      case TpInt:
+      case TpArrayInt:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<Int*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<Int*>(0));
+        break;
+      case TpUInt:
+      case TpArrayUInt:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<uInt*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<uInt*>(0));
+        break;
+      case TpInt64:
+      case TpArrayInt64:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+        break;
+      case TpComplex:
+      case TpArrayComplex:
+        nrElementsPerValue = 2;
+        CASACORE_FALLTHROUGH;
+      case TpFloat:
+      case TpArrayFloat:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<float*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<float*>(0));
+        break;
+      case TpDComplex:
+      case TpArrayDComplex:
+        nrElementsPerValue = 2;
+        CASACORE_FALLTHROUGH;
+      case TpDouble:
+      case TpArrayDouble:
+        readFunc = LECanonicalConversion::getToLocal(static_cast<double*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<double*>(0));
+        break;
+      default:
+        readFunc = 0;
+        writeFunc = 0;
     }
   }
 }
 
-//# Test if a data type can be promoted to another.
-//# Note that the cases fall through.
-Bool ValType::isPromotable (DataType from, DataType to)
-{
-    if (from == TpOther)
-	return False;
-    if (from == to)
-	return True;
-    switch (from) {
+// # Test if a data type can be promoted to another.
+// # Note that the cases fall through.
+Bool ValType::isPromotable(DataType from, DataType to) {
+  if (from == TpOther) return False;
+  if (from == to) return True;
+  switch (from) {
     case TpChar:
-	if (to == TpShort)
-	    return True;
-	CASACORE_FALLTHROUGH;
+      if (to == TpShort) return True;
+      CASACORE_FALLTHROUGH;
     case TpShort:
-	if (to == TpInt)
-	    return True;
-	CASACORE_FALLTHROUGH;
+      if (to == TpInt) return True;
+      CASACORE_FALLTHROUGH;
     case TpInt:
-	if (to == TpInt64)
-	    return True;
-	CASACORE_FALLTHROUGH;
+      if (to == TpInt64) return True;
+      CASACORE_FALLTHROUGH;
     case TpInt64:
     case TpFloat:
     case TpDouble:
-	if (to == TpFloat  ||  to == TpDouble)
-	    return True;
-	CASACORE_FALLTHROUGH;
+      if (to == TpFloat || to == TpDouble) return True;
+      CASACORE_FALLTHROUGH;
     case TpComplex:
     case TpDComplex:
-	if (to == TpComplex  ||  to == TpDComplex)
-	    return True;
-	return False;
+      if (to == TpComplex || to == TpDComplex) return True;
+      return False;
     case TpUChar:
-	if (to == TpUShort)
-	    return True;
-	CASACORE_FALLTHROUGH;
+      if (to == TpUShort) return True;
+      CASACORE_FALLTHROUGH;
     case TpUShort:
-	if (to == TpUInt)
-	    return True;
-	CASACORE_FALLTHROUGH;
+      if (to == TpUInt) return True;
+      CASACORE_FALLTHROUGH;
     case TpUInt:
-        if (to == TpInt64)
-            return True;
-	if (to == TpFloat  ||  to == TpDouble)
-	    return True;
-	if (to == TpComplex  ||  to == TpDComplex)
-	    return True;
-	return False;
+      if (to == TpInt64) return True;
+      if (to == TpFloat || to == TpDouble) return True;
+      if (to == TpComplex || to == TpDComplex) return True;
+      return False;
     default:
-	break;
-    }
-    return False;
+      break;
+  }
+  return False;
 }
 
-
-//# Get the comparison routine.
-ObjCompareFunc* ValType::getCmpFunc (DataType dt)
-{
-    switch (dt) {
+// # Get the comparison routine.
+ObjCompareFunc* ValType::getCmpFunc(DataType dt) {
+  switch (dt) {
     case TpBool:
-	return &ObjCompare<Bool>::compare;
+      return &ObjCompare<Bool>::compare;
     case TpChar:
-	return &ObjCompare<Char>::compare;
+      return &ObjCompare<Char>::compare;
     case TpUChar:
-	return &ObjCompare<uChar>::compare;
+      return &ObjCompare<uChar>::compare;
     case TpShort:
-	return &ObjCompare<Short>::compare;
+      return &ObjCompare<Short>::compare;
     case TpUShort:
-	return &ObjCompare<uShort>::compare;
+      return &ObjCompare<uShort>::compare;
     case TpInt:
-	return &ObjCompare<Int>::compare;
+      return &ObjCompare<Int>::compare;
     case TpUInt:
-	return &ObjCompare<uInt>::compare;
+      return &ObjCompare<uInt>::compare;
     case TpInt64:
-	return &ObjCompare<Int64>::compare;
+      return &ObjCompare<Int64>::compare;
     case TpFloat:
-	return &ObjCompare<float>::compare;
+      return &ObjCompare<float>::compare;
     case TpDouble:
-	return &ObjCompare<double>::compare;
+      return &ObjCompare<double>::compare;
     case TpComplex:
-	return &ObjCompare<Complex>::compare;
+      return &ObjCompare<Complex>::compare;
     case TpDComplex:
-	return &ObjCompare<DComplex>::compare;
+      return &ObjCompare<DComplex>::compare;
     case TpString:
-	return &ObjCompare<String>::compare;
+      return &ObjCompare<String>::compare;
     default:
-	break;
-    }
-    return 0;
+      break;
+  }
+  return 0;
 }
 
-//# Get the comparison object.
-std::shared_ptr<BaseCompare> ValType::getCmpObj (DataType dt)
-{
-    switch (dt) {
+// # Get the comparison object.
+std::shared_ptr<BaseCompare> ValType::getCmpObj(DataType dt) {
+  switch (dt) {
     case TpBool:
-        return std::make_shared<ObjCompare<Bool>>();
+      return std::make_shared<ObjCompare<Bool>>();
     case TpChar:
-        return std::make_shared<ObjCompare<Char>>();
+      return std::make_shared<ObjCompare<Char>>();
     case TpUChar:
-        return std::make_shared<ObjCompare<uChar>>();
+      return std::make_shared<ObjCompare<uChar>>();
     case TpShort:
-        return std::make_shared<ObjCompare<Short>>();
+      return std::make_shared<ObjCompare<Short>>();
     case TpUShort:
-        return std::make_shared<ObjCompare<uShort>>();
+      return std::make_shared<ObjCompare<uShort>>();
     case TpInt:
-        return std::make_shared<ObjCompare<Int>>();
+      return std::make_shared<ObjCompare<Int>>();
     case TpUInt:
-        return std::make_shared<ObjCompare<uInt>>();
+      return std::make_shared<ObjCompare<uInt>>();
     case TpInt64:
-        return std::make_shared<ObjCompare<Int64>>();
+      return std::make_shared<ObjCompare<Int64>>();
     case TpFloat:
-        return std::make_shared<ObjCompare<float>>();
+      return std::make_shared<ObjCompare<float>>();
     case TpDouble:
-        return std::make_shared<ObjCompare<double>>();
+      return std::make_shared<ObjCompare<double>>();
     case TpComplex:
-        return std::make_shared<ObjCompare<Complex>>();
+      return std::make_shared<ObjCompare<Complex>>();
     case TpDComplex:
-        return std::make_shared<ObjCompare<DComplex>>();
+      return std::make_shared<ObjCompare<DComplex>>();
     case TpString:
-        return std::make_shared<ObjCompare<String>>();
+      return std::make_shared<ObjCompare<String>>();
     default:
-	break;
-    }
-    return std::shared_ptr<BaseCompare>();
+      break;
+  }
+  return std::shared_ptr<BaseCompare>();
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

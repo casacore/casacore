@@ -1,27 +1,27 @@
-//# TapeIO.h: Class for IO on a tape device.
-//# Copyright (C) 1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TapeIO.h: Class for IO on a tape device.
+// # Copyright (C) 1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_TAPEIO_H
 #define CASA_TAPEIO_H
@@ -30,7 +30,7 @@
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class Path;
 
@@ -41,12 +41,12 @@ class Path;
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
-// <prerequisite> 
+// <prerequisite>
 //    <li> <linkto class=ByteIO>ByteIO</linkto> class
 //    <li> Tape descriptors
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class is a specialization of class
 // <linkto class=ByteIO>ByteIO</linkto>. It uses a file descriptor
 // to read/write data.
@@ -76,15 +76,13 @@ class Path;
 // </srcblock>
 // </example>
 
-// <motivation> 
+// <motivation>
 // Make it possible to use the Casacore IO functionality on any file.
 // In this way any device can be hooked to the IO framework.
 // </motivation>
 
-
-class TapeIO: public ByteIO
-{
-public: 
+class TapeIO : public ByteIO {
+ public:
   // Default constructor.
   // A stream can be attached using the attach function.
   TapeIO();
@@ -105,7 +103,7 @@ public:
   // The destructor will only close the file if the appropriate constructor, or
   // attach function, was used.
   virtual ~TapeIO();
-    
+
   // Attach to the given file descriptor. The file descriptor will not be
   // closed when this class is destroyed.
   void attach(int fd);
@@ -124,18 +122,18 @@ public:
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
   // current file (and size is non-zero and throwException is False).
-  virtual Int64 read(Int64 size, void* buf, Bool throwException=True);    
+  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
 
   // Rewind the tape device to the beginning.
   virtual void rewind();
-  
+
   // skip the specified number of files (ie tape marks) on the tape. Throws an
   // exception if you try to skip past the last filemark.
-  virtual void skip(uInt howMany=1);
-  
+  virtual void skip(uInt howMany = 1);
+
   // write the specified number of filemarks.
-  virtual void mark(uInt howMany=1);
-  
+  virtual void mark(uInt howMany = 1);
+
   // returns True if the tape device is configured to use a fixed block size
   Bool fixedBlocks() const;
 
@@ -156,16 +154,16 @@ public:
   // Get the length of the tape device.  Not a meaningful function for this
   // class and this function always returns -1.
   virtual Int64 length();
-  
+
   // Is the tape device readable?
   virtual Bool isReadable() const;
-  
+
   // Is the tape device writable?
   virtual Bool isWritable() const;
-  
+
   // Is the tape device seekable?
   virtual Bool isSeekable() const;
-  
+
   // Get the name of the attached device or return a zero length string if it
   // cannot be determined.
   virtual String fileName() const;
@@ -178,7 +176,7 @@ public:
   static void close(int fd);
   // </group>
 
-protected:
+ protected:
   // Detach the FILE. Close it when it is owned.
   void detach();
 
@@ -191,29 +189,26 @@ protected:
   // Reset the position pointer to the given value. It returns the new
   // position. May not work on all Tape devices use the isSeekable(0 member
   // function to see if this function is usuable. Otherwise an Exception
-  // (AipsError) is thrown. 
+  // (AipsError) is thrown.
   virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
-  
-private:
+
+ private:
   // The following functions are made private so that the compiler does not
   // generate default ones. They cannot be used and are not defined.
-  TapeIO (const TapeIO& that);
-  TapeIO& operator= (const TapeIO& that);
+  TapeIO(const TapeIO& that);
+  TapeIO& operator=(const TapeIO& that);
 
   void setBlockSize(uInt sizeInBytes);
   uInt getBlockSize() const;
 
-  int         itsDevice;
-  Bool        itsOwner;
-  Bool        itsReadable;
-  Bool        itsWritable;
-  Bool        itsSeekable;
-  String      itsDeviceName;
+  int itsDevice;
+  Bool itsOwner;
+  Bool itsReadable;
+  Bool itsWritable;
+  Bool itsSeekable;
+  String itsDeviceName;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

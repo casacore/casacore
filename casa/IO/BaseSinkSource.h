@@ -1,27 +1,27 @@
-//# BaseSinkSource.h: Shared base class for ByteSink and ByteSource
-//# Copyright (C) 1996,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # BaseSinkSource.h: Shared base class for ByteSink and ByteSource
+// # Copyright (C) 1996,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_BASESINKSOURCE_H
 #define CASA_BASESINKSOURCE_H
@@ -31,20 +31,20 @@
 #include <casacore/casa/IO/ByteIO.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>Shared base class for ByteSink and ByteSource.</summary>
 
 // <use visibility=export>
 
-// <prerequisite> 
+// <prerequisite>
 //    <li> <linkto class=TypeIO>TypeIO</linkto> class and derived classes
 // </prerequisite>
 
 // <reviewed reviewer="Friso Olnon" date="1996/11/06" tests="tByteSink" demos="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // This class provides the common functionality for the classes
 // <linkto class=ByteSink>ByteSink</linkto> and
 // <linkto class=ByteSource>ByteSource</linkto>.
@@ -71,61 +71,55 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // use any output stream (e.g. file, memory).
 // </synopsis>
 
-// <motivation> 
-// The design of the ByteSink and ByteSource classes resembles the design of 
+// <motivation>
+// The design of the ByteSink and ByteSource classes resembles the design of
 // the iostream classes in the standard library. A shared base class is needed
 // to allow multiple inheritance needed for class ByteSinkSource.
 // </motivation>
 
+class BaseSinkSource {
+ public:
+  // This functions returns the shared pointer to itsTypeIO.
+  const std::shared_ptr<TypeIO>& typeIO() const { return itsTypeIO; }
 
-class BaseSinkSource
-{
-public: 
-    // This functions returns the shared pointer to itsTypeIO.
-    const std::shared_ptr<TypeIO>& typeIO() const
-      { return itsTypeIO; }
+  // This function sets the position on the given offset.
+  // The seek option defines from which position the seek is done.
+  // <group>
+  Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
+  Int64 seek(Int offset, ByteIO::SeekOption = ByteIO::Begin);
+  // </group>
 
-    // This function sets the position on the given offset.
-    // The seek option defines from which position the seek is done.
-    // <group>
-    Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-    Int64 seek (Int offset, ByteIO::SeekOption = ByteIO::Begin);
-    // </group>
+  // Is the SinkSource readable?
+  Bool isReadable() const;
 
-    // Is the SinkSource readable?
-    Bool isReadable() const;
+  // Is the SinkSource writable?
+  Bool isWritable() const;
 
-    // Is the SinkSource writable?
-    Bool isWritable() const;
+  // Is the SinkSource seekable?
+  Bool isSeekable() const;
 
-    // Is the SinkSource seekable?
-    Bool isSeekable() const;
+  // Is the BaseSinkSource unusable?
+  Bool isNull() const;
 
-    // Is the BaseSinkSource unusable? 
-    Bool isNull() const;
+ protected:
+  BaseSinkSource();
 
-protected:
-    BaseSinkSource();
+  // Construct using the given TypeIO.
+  // The constructor does not copy the object, but only keeps a pointer to it.
+  BaseSinkSource(const std::shared_ptr<TypeIO>& typeIO);
 
-    // Construct using the given TypeIO.
-    // The constructor does not copy the object, but only keeps a pointer to it.
-    BaseSinkSource (const std::shared_ptr<TypeIO>& typeIO);
+  // The copy constructor uses reference semantics
+  BaseSinkSource(const BaseSinkSource& BaseSinkSource);
 
-    // The copy constructor uses reference semantics
-    BaseSinkSource (const BaseSinkSource& BaseSinkSource);
+  // The assignment operator uses reference semantics
+  BaseSinkSource& operator=(const BaseSinkSource& BaseSinkSource);
 
-    // The assignment operator uses reference semantics
-    BaseSinkSource& operator= (const BaseSinkSource& BaseSinkSource);
+  virtual ~BaseSinkSource();
 
-    virtual ~BaseSinkSource();
-
-
-    // This variable keeps a pointer to a TypeIO.
-    std::shared_ptr<TypeIO> itsTypeIO;
+  // This variable keeps a pointer to a TypeIO.
+  std::shared_ptr<TypeIO> itsTypeIO;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

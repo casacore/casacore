@@ -1,27 +1,27 @@
-//# Logging.h: Send, record, and filter informational messages
-//# Copyright (C) 1996,1997,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Logging.h: Send, record, and filter informational messages
+// # Copyright (C) 1996,1997,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_LOGGING_H
 #define CASA_LOGGING_H
@@ -34,11 +34,11 @@
 #include <casacore/casa/Logging/LogFilter.h>
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-// <module> 
+// <module>
 //
-// <summary> 
+// <summary>
 // Send, record, and filter informational messages.
 // </summary>
 
@@ -53,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Logging, as in "log book", or "processing log."
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // The classes in the logging module have two essential purposes:
 // <ol>
 // <li> To attach processing logs to datasets to retain a permanent history of
@@ -138,7 +138,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //         the state of <src>os</src> is when it is passed in to this function).
 //    <li> Set the message and the new line number (optional but encouraged) and
 //         post it.
-//    <li> Change the priority to SEVERE and post an error message. 
+//    <li> Change the priority to SEVERE and post an error message.
 // </ol>
 //
 // When a dataset is created from several other datasets, their input
@@ -163,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // histories. However the point is that given a sink, you can safely determing
 // whether or not it is in fact a TableLogSink, and if it is you can call
 // its concatenate function, which takes another TableLogSink.
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // The following example code is checked into the system as
@@ -200,7 +200,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // will have a processing log table with a known name.
 // <dt> 2.
 // <dd> A sample function that changes the state of the class. Here,
-//      it just sets all the elements of the internal array to 
+//      it just sets all the elements of the internal array to
 //      <src>toWhat</src>.
 // <dt> 3.
 // <dd> Return the LogIO that is used by this object. A member function like this
@@ -219,7 +219,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dt> 8.
 // <dd> The location to which log mesages are sent.
 // <dt> 9.
-// <dd> The LogIO object that will be the actual interface to the logging 
+// <dd> The LogIO object that will be the actual interface to the logging
 //      system.
 // </dl>
 //
@@ -244,7 +244,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // <dl compact>
 // <dt> 1.
-// <dd> The private <src>LogSink</src> data member is initialized with one that 
+// <dd> The private <src>LogSink</src> data member is initialized with one that
 //      the caller provides. Note that LogSink uses reference semantics, so
 //      that if another "copy" of the sink is made then all the log messages
 //      will go to the same place. For example:
@@ -258,7 +258,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //          ...
 //          b.post(...);  // as does this
 //      </srcblock>
-//      This can be useful if several classes might be modifying the same data, 
+//      This can be useful if several classes might be modifying the same data,
 //      or if a data is spread over several objects.
 //
 //      Also, os_p is intialized from the sink.
@@ -284,7 +284,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dt> 12.
 // <dd> Create and send a NORMAL priority message.
 // <dt> 15.
-// <dd> Call <src>set()</src> from the constructor to give the data values 
+// <dd> Call <src>set()</src> from the constructor to give the data values
 //      an initial value.
 // </dl>
 //
@@ -309,17 +309,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dd> This and the previous line set up and send a normal priority log message
 //      much as we did previously.
 // <dt> 7.
-// <dd> LogMessages are relatively expensive to produces and consume. Use of 
-//      them in a very tight loop should either be <src>ifdef</src>'d out as 
+// <dd> LogMessages are relatively expensive to produces and consume. Use of
+//      them in a very tight loop should either be <src>ifdef</src>'d out as
 //      in this example, or like:
 //      <srcblock>
 //      if (aips_debug_on) {
 //      ... set up and send log message ...
 //      }
 //      </srcblock>
-//      The advantage of this code is that it's always available - so, for 
+//      The advantage of this code is that it's always available - so, for
 //      example, you can turn it on and off by manipulating the global variable
-//      <src>aips_debug_on</src>. However very tight loops cannot even afford 
+//      <src>aips_debug_on</src>. However very tight loops cannot even afford
 //      this extra <src>if</src>, and should prefer the <src>ifdef</src>.
 //
 //      Normally the <src>DEBUGGING</src> messages are "boring but low-volume",
@@ -345,7 +345,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // {
 //   LogIO global(LogOrigin("sum(const DataClass &object)"));        // 1
 //   float theSum = sum(object.data());                              // 2
-//   global << WHERE << "Sum of object is: " << theSum;              // 3 
+//   global << WHERE << "Sum of object is: " << theSum;              // 3
 //   return theSum;                                                  // 4
 // }
 // </srcblock>
@@ -379,7 +379,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // <dl compact>
 // <dt> 1.
-// <dd> Change the priority of messages to display on the global sink's 
+// <dd> Change the priority of messages to display on the global sink's
 //      filter to
 //      <src>DEBUGGING</src> from the default <src>NORMAL</src>. The default
 //      global sink logs to cerr. The global sink can be replaced with
@@ -393,7 +393,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dd> Create an object with the provided sink. The alternative strategy, which
 //      will be used with classes like
 //      <linkto class="MeasurementSet">MeasurementSet</linkto> is for the object
-//      to make it's own <src>LogSink</src> if it knows where it wants its 
+//      to make it's own <src>LogSink</src> if it knows where it wants its
 //      messages to go.
 // <dt> 7.
 // <dd> Changes the data - log messages go to its local sink.
@@ -407,7 +407,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ol>
 // <li> Attaching informational messages to datasets to describe their processing
 // history.
-// <li> Informational messages to inform the user about the progress and 
+// <li> Informational messages to inform the user about the progress and
 //      parameters of algorithms - for example those used for reference frame
 //      conversions in the Measures module.
 // </ol>
@@ -419,7 +419,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // </module>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

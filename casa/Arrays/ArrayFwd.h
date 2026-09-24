@@ -3,20 +3,26 @@
 
 #include <memory>
 
-namespace casacore { //#Begin casa namespace
+namespace casacore {  // #Begin casa namespace
 
-template<typename T> class Array;
-template<typename T> class Vector;
-template<typename T> class Matrix;
-template<typename T> class Cube;
+template <typename T>
+class Array;
+template <typename T>
+class Vector;
+template <typename T>
+class Matrix;
+template <typename T>
+class Cube;
 typedef bool LogicalArrayElem;
 typedef Array<LogicalArrayElem> LogicalArray;
-template<typename T> class MaskedArray;
+template <typename T>
+class MaskedArray;
 typedef MaskedArray<LogicalArrayElem> MaskedLogicalArray;
 class Slice;
 class Slicer;
-template<typename T> class ArrayIterator;
+template <typename T>
+class ArrayIterator;
 
-}
+}  // namespace casacore
 
 #endif

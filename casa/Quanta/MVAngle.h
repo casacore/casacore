@@ -1,44 +1,43 @@
-//# MVAngle.h: Class to handle angle type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVAngle.h: Class to handle angle type conversions and I/O
+// # Copyright (C) 1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MVANGLE_H
 #define CASA_MVANGLE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class MUString;
 
-//# Constants (SUN compiler does not accept non-simple default arguments)
+// # Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary>
 // Class to handle angle type conversions and I/O
@@ -67,8 +66,8 @@ class MUString;
 // The class has a number of special member operations:
 // <ul>
 //  <li> <src>MVAngle operator()</src> will normalise the angle between
-//	-180 and +180(inclusive) degrees and return the value 
-//  <li> <src>MVAngle operator(Double)</src> will normalise the angle 
+//	-180 and +180(inclusive) degrees and return the value
+//  <li> <src>MVAngle operator(Double)</src> will normalise the angle
 //	using the value specified (and return the value)
 //	in fractions of a circle (this was chosen rather than radians to make
 // 	for easier and more precise programming) as a lower bound. I.e.
@@ -80,7 +79,7 @@ class MUString;
 //	argument value. This is useful for making a range of angles
 //	contiguous.
 //   <li> <src>MVAngle binorm(Double)</src> will normalise the angle in
-//	steps of 180 degrees. 
+//	steps of 180 degrees.
 //	using the value specified (and return the value)
 //	in fractions of 180 degrees (this was chosen rather than radians to make
 // 	for easier and more precise programming) as a lower bound. I.e.
@@ -89,10 +88,10 @@ class MUString;
 //   <li> <src>Double radian()</src> will return value in radians
 //   <li> <src>Double degree()</src> will return value in degrees
 //   <li> <src>Double circle()</src> will return value in fraction of circles
-//   <li> <src>MVAngle coAngle()</src> will return 90-angle (or rather 
+//   <li> <src>MVAngle coAngle()</src> will return 90-angle (or rather
 //		pi/2 - angle), with (0) normalisation.
 //   <li> <src>Quantity get()</src> will return radians
-//   <li> <src>Quantity get(Unit)</src> will return in specified units 
+//   <li> <src>Quantity get(Unit)</src> will return in specified units
 //		(angle or time)
 // </ul>
 // Output formatting is done with the <src><<</src> statement, with the
@@ -115,12 +114,12 @@ class MUString;
 //	  <li> <5 : ddd.mm.
 //	  <li> <7 : ddd.mm.ss
 //	  <li> >6 : with precision-6 t's added
-//	</ul> 
+//	</ul>
 //	comparable for time. <note role=tip> The added periods are to enable input
 //	checking of the format. Look at the 'clean' types to bypass them.
 //	</note>
 //	The output format can be modified with modifiers (specify as
-//	MVAngle::ANGLE | MVAngle::MOD (or + MVAngle::MOD)). 
+//	MVAngle::ANGLE | MVAngle::MOD (or + MVAngle::MOD)).
 //	<note role=caution>
 //	 For overloading/casting problems with some compilers, the
 //	use of modifiers necessitates either the presence of a precision
@@ -166,8 +165,8 @@ class MUString;
 //		in time format in range -12 to +12h
 //	</ul>
 // </ul>
-// The default formatting can be overwritten by a 
-// <src> MVAngle::setFormat(); </src> statement; which returns an 
+// The default formatting can be overwritten by a
+// <src> MVAngle::setFormat(); </src> statement; which returns an
 // MVAngle::Format
 // structure, that can be used in a subsequent one to reset to previous.
 // The format set holds for all MVAngle output on all streams.<br>
@@ -210,7 +209,7 @@ class MUString;
 //	5.259a		5.259 * pi * 2 *365.25 rad (normalised)
 // </srcblock>
 // <note role=caution> In general the input will be read as a Quantity.
-// Reading of Quantities will always try to read special formats (like 
+// Reading of Quantities will always try to read special formats (like
 // MVAngle, MVTime) first. In
 // that case problems could arise converting strings like 5d, 5::, 5hm, 5dm.
 // In 'angle' mode they could have meant to be
@@ -223,7 +222,7 @@ class MUString;
 //   <li> 5dm, 5hm == decimetre, hectometre; use 5d0m 5h0m for
 //		angle
 //   <li> 5d2, 5h2, 5:2 == 5d2m, 5h2m, 5:2:; use float 5 or explicit () for
-//		other interpretation 
+//		other interpretation
 // </ul>
 // </note>
 // </synopsis>
@@ -241,64 +240,63 @@ class MUString;
 // </todo>
 
 class MVAngle {
-
  public:
-
-  //# Enumerations (should mimic those in MVTime)
-  // Format types
+  // # Enumerations (should mimic those in MVTime)
+  //  Format types
   enum formatTypes {
     ANGLE,
     TIME,
-    CLEAN 			= 4,
-    NO_D 			= 8,
-    NO_DM 			= NO_D+16,
-    DIG2			= 1024,
-    FITS			= TIME+2048,
-    LOCAL			= 4096,
-    USE_SPACE                   = 8192,   //# Only for MVTIme compatibility
-    ALPHA                       = 16384,
-    NO_H 			= NO_D,
-    NO_HM 			= NO_DM,
-    ANGLE_CLEAN 		= ANGLE + CLEAN,
-    ANGLE_NO_D 			= ANGLE + NO_D,
-    ANGLE_NO_DM 		= ANGLE + NO_DM,
-    ANGLE_CLEAN_NO_D		= ANGLE + CLEAN + NO_D,
-    ANGLE_CLEAN_NO_DM		= ANGLE + CLEAN + NO_DM,
-    TIME_CLEAN 			= TIME + CLEAN,
-    TIME_NO_H 			= TIME + NO_H,
-    TIME_NO_HM 			= TIME + NO_HM,
-    TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
-    TIME_CLEAN_NO_HM		= TIME + CLEAN + NO_HM ,
-    MOD_MASK			= CLEAN + NO_DM + DIG2 + LOCAL + USE_SPACE + ALPHA};
-  
-  //# Local structure
-  // Format structure
+    CLEAN = 4,
+    NO_D = 8,
+    NO_DM = NO_D + 16,
+    DIG2 = 1024,
+    FITS = TIME + 2048,
+    LOCAL = 4096,
+    USE_SPACE = 8192,  // # Only for MVTIme compatibility
+    ALPHA = 16384,
+    NO_H = NO_D,
+    NO_HM = NO_DM,
+    ANGLE_CLEAN = ANGLE + CLEAN,
+    ANGLE_NO_D = ANGLE + NO_D,
+    ANGLE_NO_DM = ANGLE + NO_DM,
+    ANGLE_CLEAN_NO_D = ANGLE + CLEAN + NO_D,
+    ANGLE_CLEAN_NO_DM = ANGLE + CLEAN + NO_DM,
+    TIME_CLEAN = TIME + CLEAN,
+    TIME_NO_H = TIME + NO_H,
+    TIME_NO_HM = TIME + NO_HM,
+    TIME_CLEAN_NO_H = TIME + CLEAN + NO_H,
+    TIME_CLEAN_NO_HM = TIME + CLEAN + NO_HM,
+    MOD_MASK = CLEAN + NO_DM + DIG2 + LOCAL + USE_SPACE + ALPHA
+  };
+
+  // # Local structure
+  //  Format structure
   class Format {
-  public:
+   public:
     friend class MVAngle;
-    Format(MVAngle::formatTypes intyp = MVAngle::ANGLE,
-	   uInt inprec = 0) :
-      typ(intyp), prec(inprec) {;};
-    Format(uInt inprec) :
-      typ(MVAngle::ANGLE), prec(inprec) {;};
+    Format(MVAngle::formatTypes intyp = MVAngle::ANGLE, uInt inprec = 0)
+        : typ(intyp), prec(inprec) {
+      ;
+    };
+    Format(uInt inprec) : typ(MVAngle::ANGLE), prec(inprec) { ; };
     // Construct from type and precision (present due to overlaoding problems)
-    Format(uInt intyp, uInt inprec) :
-      typ((MVAngle::formatTypes) intyp), prec(inprec) {;};
-  private:
+    Format(uInt intyp, uInt inprec) : typ((MVAngle::formatTypes)intyp), prec(inprec) { ; };
+
+   private:
     MVAngle::formatTypes typ;
     uInt prec;
   };
-  
-  //# Friends
-  // Output an angle
+
+  // # Friends
+  //  Output an angle
   friend ostream &operator<<(ostream &os, const MVAngle &meas);
   // Input an angle
   friend istream &operator>>(istream &is, MVAngle &meas);
   // Set a temporary format
   friend ostream &operator<<(ostream &os, const MVAngle::Format &form);
-  
-  //# Constructors
-  // Default constructor: generate a zero value
+
+  // # Constructors
+  //  Default constructor: generate a zero value
   MVAngle();
   // Copy constructor
   MVAngle(const MVAngle &other);
@@ -311,12 +309,12 @@ class MVAngle {
   //   <li> AipsError if not a time or angle
   // </thrown>
   MVAngle(const Quantity &other);
-  
+
   // Destructor
   ~MVAngle();
-  
-  //# Operators
-  // Conversion operator
+
+  // # Operators
+  //  Conversion operator
   operator Double() const;
   // Normalisation between -180 and +180 degrees (-pi and +pi)
   const MVAngle &operator()();
@@ -324,9 +322,9 @@ class MVAngle {
   const MVAngle &operator()(Double norm);
   // Normalisation between norm-pi and norm+pi
   const MVAngle &operator()(const MVAngle &norm);
-  
-  //# General member functions
-  // Normalisation between pi*norm and pi*norm + pi
+
+  // # General member functions
+  //  Normalisation between pi*norm and pi*norm + pi
   const MVAngle &binorm(Double norm);
   // Check if String unit
   static Bool unitString(UnitVal &uv, String &us, MUString &in);
@@ -336,14 +334,14 @@ class MVAngle {
   // chk=True means that the entire string should be consumed.
   // throwExcp=True means that an exception is thrown in case of an error.
   // <group>
-  static Bool read(Quantity &res, const String &in, Bool chk=True);
-  static Bool read(Quantity &res, MUString &in, Bool chk=True);
+  static Bool read(Quantity &res, const String &in, Bool chk = True);
+  static Bool read(Quantity &res, MUString &in, Bool chk = True);
   static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
   static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
   // </group>
   // Handle a read error. An exception is thrown if indicated so.
   // Otherwise in.pop() is called and False is returned.
-  static Bool handleReadError(MUString& in, Bool throwExcp);
+  static Bool handleReadError(MUString &in, Bool throwExcp);
 
   // Make co-angle (e.g. zenith distance from elevation)
   MVAngle coAngle() const;
@@ -374,11 +372,10 @@ class MVAngle {
   // <note role=warning>
   // It is thread-unsafe to print using the setFormat functions because they
   // change a static class member. The only thred-safe way to print a time is
-  // to use the print function above. 
+  // to use the print function above.
   // </note>
   // <group>
-  static Format setFormat(MVAngle::formatTypes intyp, 
-			  uInt inprec = 0);
+  static Format setFormat(MVAngle::formatTypes intyp, uInt inprec = 0);
   static Format setFormat(uInt intyp, uInt inprec);
   static Format setFormat(uInt inprec = 0);
   static Format setFormat(const Format &form);
@@ -386,13 +383,13 @@ class MVAngle {
   // Get default format
   static Format getFormat();
   // Get code belonging to string. 0 if not known
-  static MVAngle::formatTypes  giveMe(const String &in);
+  static MVAngle::formatTypes giveMe(const String &in);
   // Get time zone offset (in days)
   static Double timeZone();
-  
+
  private:
-  //# Data
-  // Value
+  // # Data
+  //  Value
   Double val;
   // Default format
   static MVAngle::Format defaultFormat;
@@ -401,8 +398,8 @@ class MVAngle {
   static MVAngle::Format interimFormat;
   static Bool interimSet;
   // </group>
-  
-  //# Member functions
+
+  // # Member functions
 };
 
 // Global functions
@@ -415,7 +412,6 @@ istream &operator>>(istream &is, MVAngle &meas);
 ostream &operator<<(ostream &os, const MVAngle::Format &form);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

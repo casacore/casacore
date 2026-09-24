@@ -1,27 +1,27 @@
-//# Quantum.h: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Quantum.h: class to manipulate physical, dimensioned quantities
+// # Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QUANTUM_H
 #define CASA_QUANTUM_H
@@ -30,12 +30,13 @@
 #include <casacore/casa/Quanta/QBase.h>
 #include <casacore/casa/iosstrfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class T> class Quantum;
+// # Forward Declarations
+template <class T>
+class Quantum;
 
-//# Typedefs
+// # Typedefs
 typedef Quantum<Double> Quantity;
 
 // <summary>
@@ -54,10 +55,10 @@ typedef Quantum<Double> Quantity;
 // <etymology>
 // A Quantity is defined as a single Double value with attached units.
 // From this definition the templated Quantum class arose, to have non-Double,
-// non-scalar quantities.  
+// non-scalar quantities.
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Quantities are values with a unit. Their basic specification can be one of
 // two forms:
 // <srcblock>
@@ -76,7 +77,7 @@ typedef Quantum<Double> Quantity;
 // <note role=tip>
 // In the following 'String' can be replaced by 'Unit' everywhere. The
 // only difference being a check for a legitimate unit string being executed
-// if Unit specified (with exception if error) 
+// if Unit specified (with exception if error)
 // </note>
 // <note role=tip>
 // <src>'Quantum<Type>'</src> can, if Type equals Double, be replaced
@@ -94,10 +95,11 @@ typedef Quantum<Double> Quantity;
 //   <li> <src>Quantum<Type>( Type factor, Quantum<any> quant) specified factor,</src>
 //						the unit from the quant
 // </ul>
-// 
+//
 //
 //  <h3> Manipulating quantities </h3>
-// <linkto group="QMath.h#Quantum mathematical operations">Mathematical operators and functions</linkto> and
+// <linkto group="QMath.h#Quantum mathematical operations">Mathematical operators and
+// functions</linkto> and
 //  <linkto group="QLogical.h#Quantum logical operations">logical operations</linkto> (comparisons)
 // are defined on Quantums. They are,
 // of course, only available if the template Type supports them.
@@ -122,7 +124,7 @@ typedef Quantum<Double> Quantity;
 // <li> <src><= >=	ibid</src>
 // <li> pow(Int) raise to an (integer) power
 // </ul>
-// 
+//
 //
 //  <h3> Manipulating the value and/or units of quanta </h3>
 // Quantities can be converted to other units by the following set of member
@@ -216,8 +218,8 @@ typedef Quantum<Double> Quantity;
 // <note role=caution> Since e.g. <em>12d</em> could be interpreted as
 // being both an angle (12 degrees) or a quantity (12 days), the only way
 // is to differentiate them with a decimal point (12.d will be days)</note>
-// 
-// </synopsis> 
+//
+// </synopsis>
 //
 // <example>
 // An experiment has measured the energy of a photon in keV. The following will
@@ -234,7 +236,7 @@ typedef Quantum<Double> Quantity;
 //		<< (QC::c/quant/QC::h)->get("nm")	// c=light velocity
 //		<< " or " << QC::c/quant/QC::h << endl;
 // </srcblock>
-// </example>	
+// </example>
 //
 // <motivation>
 // Major use is foreseen in all calculations with observed data.
@@ -244,15 +246,15 @@ typedef Quantum<Double> Quantity;
 //   <li> prefix +,-
 //   <li> + - * / and += -= *= /=
 //   <li> <src>< <= == != >= ></src>
-//   <li> sin 
-//   <li> cos 
-//   <li> tan  
-//   <li> asin 
+//   <li> sin
+//   <li> cos
+//   <li> tan
+//   <li> asin
 //   <li> acos
-//   <li> atan 
-//   <li> atan2 
-//   <li> abs 
-//   <li> ceil 
+//   <li> atan
+//   <li> atan2
+//   <li> abs
+//   <li> ceil
 //   <li> floor
 //   <li> <note role=caution>
 //	It is assumed that all these functions return either Bool or
@@ -266,13 +268,15 @@ typedef Quantum<Double> Quantity;
 //   <li> Some inlining (did not work first go)
 // </todo>
 
-template <class Qtype> class Quantum : public QBase{
-  //# Friends
-  // Input, only quantity is supported now
-  friend istream& operator>> (istream &is, Quantity &ku);
+template <class Qtype>
+class Quantum : public QBase {
+  // # Friends
+  //  Input, only quantity is supported now
+  friend istream &operator>>(istream &is, Quantity &ku);
+
  public:
-  //# Constructors
-  // Default constructor, generates '0'
+  // # Constructors
+  //  Default constructor, generates '0'
   Quantum();
   // Copy constructor (deep copy)
   Quantum(const Quantum<Qtype> &other);
@@ -287,9 +291,9 @@ template <class Qtype> class Quantum : public QBase{
   // </group>
   // Construct quantum with unit copied from existing quantum
   Quantum(const Qtype &factor, const QBase &other);
-  
-  //# Operators
-  // Assignment (deep copy)
+
+  // # Operators
+  //  Assignment (deep copy)
   Quantum<Qtype> &operator=(const Quantum<Qtype> &other);
 
   // Unary operations
@@ -297,7 +301,7 @@ template <class Qtype> class Quantum : public QBase{
   const Quantum<Qtype> &operator+() const;
   Quantum<Qtype> operator-() const;
   // </group>
-  
+
   // In place arithmetic functions: left hand side changed in place
   // <thrown>
   //   <li> AipsError if non-conforming units (+ and -)
@@ -313,22 +317,22 @@ template <class Qtype> class Quantum : public QBase{
   Quantum<Qtype> &operator/=(const Quantum<Qtype> &other);
   Quantum<Qtype> &operator/=(const Qtype &other);
   // </group>
-  
+
   // Arithmetic operators: return Quantum<T>
   // <thrown>
   //   <li> AipsError if non-conforming units (+ and -)
   // </thrown>
-  // See <linkto group="QMath#Quantum mathematical operations">QMath</linkto> class for unequal argument types
-  // <group>
+  // See <linkto group="QMath#Quantum mathematical operations">QMath</linkto> class for unequal
+  // argument types <group>
   Quantum<Qtype> operator+(const Quantum<Qtype> &other) const;
   Quantum<Qtype> operator-(const Quantum<Qtype> &other) const;
   Quantum<Qtype> operator*(const Quantum<Qtype> &other) const;
   Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
   // </group>
-  
-  //# General member functions
-  // Get value of quantum in current units (i.e. in units specified in quantum)
-  // <group>
+
+  // # General member functions
+  //  Get value of quantum in current units (i.e. in units specified in quantum)
+  //  <group>
   const Qtype &getValue() const;
   Qtype &getValue();
   // </group>
@@ -341,20 +345,20 @@ template <class Qtype> class Quantum : public QBase{
   // with the following exceptions:
   // <br>- angle to/from time conversions are implicitly supported
   // <br>- frequency to/from/ wavelength conversions are implicitly supported
-  //# <br>Note, I added requireConform and made the default value False for
-  //# backward compatibility. However, I think that ultimately requireConform
-  //# should be removed and an exception should be thrown if the units do
-  //# not conform. It's not clear to me why this was not in the original
-  //# implementation; it's much too easy for non-conformation bugs to
-  //# slip by unnoticed. - dmehring 09feb2015
-  //# It should be left in since conversion from time to angle makes sense.
-  //# Maybe the default could be changed to True. - gvandiepen09feb2016
-  Qtype getValue(const Unit &other, Bool requireConform=False) const;
+  // # <br>Note, I added requireConform and made the default value False for
+  // # backward compatibility. However, I think that ultimately requireConform
+  // # should be removed and an exception should be thrown if the units do
+  // # not conform. It's not clear to me why this was not in the original
+  // # implementation; it's much too easy for non-conformation bugs to
+  // # slip by unnoticed. - dmehring 09feb2015
+  // # It should be left in since conversion from time to angle makes sense.
+  // # Maybe the default could be changed to True. - gvandiepen09feb2016
+  Qtype getValue(const Unit &other, Bool requireConform = False) const;
 
   // Get the unit (as Unit) that is attached to the Quantum. (use getUnit() if
   // interested in the String part only, e.g. for output)
   virtual const Unit &getFullUnit() const;
-  
+
   // Re-specify parts of a quantum
   // <group name="set value">
   // Scale ( i.e. multiply) the value of the Quantum without changing units
@@ -371,16 +375,16 @@ template <class Qtype> class Quantum : public QBase{
   static Bool read(Quantity &res, MUString &in);
   // </group>
   // </group>
-  
+
   // Check if of specified type
   Bool check(const UnitVal &uv) const;
-  
+
   // Assert correct kind
   // <thrown>
   //   <li> AipsError if non-conforming unit dimensions
   // </thrown>
   void assure(const UnitVal &uv) const;
-  
+
   // Return a Quantum converted to specified units
   // <group name="get">
   // Convert to canonical units
@@ -394,7 +398,7 @@ template <class Qtype> class Quantum : public QBase{
   // Convert a Quantum to units from specified quantum (ibid example)
   Quantum<Qtype> get(const Quantum<Qtype> &other) const;
   // </group>
-  
+
   // Convert a Quantum to specified units
   // <group>
   // Convert to canonical units
@@ -406,7 +410,7 @@ template <class Qtype> class Quantum : public QBase{
   // </thrown>
   void convert(const Unit &s);
   // Convert a Quantum to units from specified quantum (ibid example)
-  void convert(const Quantum<Qtype> &other) ;
+  void convert(const Quantum<Qtype> &other);
   // </group>
   // Get a copy of Quantum
   virtual QBase *clone() const;
@@ -417,12 +421,11 @@ template <class Qtype> class Quantum : public QBase{
   virtual uInt type() const;
   static uInt myType();
   // </group>
-  
-private:
-  //# Data members
-  // Actual quantum value
-  Qtype qVal;
 
+ private:
+  // # Data members
+  //  Actual quantum value
+  Qtype qVal;
 };
 
 // Global functions
@@ -430,18 +433,17 @@ private:
 // Output/Input
 // <group name=output>
 // only Quantity is supported on input
-istream& operator>> (istream &is, Quantity &ku);
+istream &operator>>(istream &is, Quantity &ku);
 Bool readQuantity(Quantity &res, MUString &in);
 Bool readQuantity(Quantity &res, const String &in);
 // </group>
 
-//# Declare extern templates for often used types.
-  extern template class Quantum<Double>;
+// # Declare extern templates for often used types.
+extern template class Quantum<Double>;
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Quanta/Quantum.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

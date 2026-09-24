@@ -1,41 +1,40 @@
-//# MVEpoch.h: a class for high precision time
-//# Copyright (C) 1996,1997,1998,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVEpoch.h: a class for high precision time
+// # Copyright (C) 1996,1997,1998,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MVEPOCH_H
 #define CASA_MVEPOCH_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/MeasValue.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Unit;
 
 // <summary> A class for high precision time </summary>
@@ -85,48 +84,46 @@ class Unit;
 // </todo>
 
 class MVEpoch : public MeasValue {
+ public:
+  // # Friends
 
-public:
-  
-  //# Friends
-  
-  //# Constructors
-  // Default constructor, generates default 0 epoch
+  // # Constructors
+  //  Default constructor, generates default 0 epoch
   MVEpoch();
   // Copy constructor
   MVEpoch(const MVEpoch &other);
   // Constructor with time in days
   // <group>
-  MVEpoch(Double inday, Double infrac=0);
+  MVEpoch(Double inday, Double infrac = 0);
   MVEpoch(const Vector<Double> &inday);
   // </group>
   // Constructor with Quantities
   // <group>
   MVEpoch(const Quantity &in);
   MVEpoch(const Quantity &in1, const Quantity &in2);
-  MVEpoch(const Quantum<Vector<Double> > &in);
+  MVEpoch(const Quantum<Vector<Double>> &in);
   MVEpoch(const Vector<Quantity> &in);
   // </group>
-  
-  //# Destructor
+
+  // # Destructor
   ~MVEpoch();
-  
-  //# Operators
-  // Copy assignment
+
+  // # Operators
+  //  Copy assignment
   MVEpoch &operator=(const MVEpoch &other);
-  
+
   // Add times
   // <group>
   MVEpoch &operator+=(const MVEpoch &other);
   MVEpoch operator+(const MVEpoch &other) const;
   // </group>
-  
+
   // Difference times
   // <group>
   MVEpoch &operator-=(const MVEpoch &other);
   MVEpoch operator-(const MVEpoch &other) const;
   // </group>
-  
+
   // Comparisons
   // <group>
   Bool operator==(const MVEpoch &other) const;
@@ -134,41 +131,41 @@ public:
   Bool near(const MVEpoch &other, Double tol = 1e-13) const;
   Bool nearAbs(const MVEpoch &other, Double tol = 1e-13) const;
   // </group>
-  
-  //# General Member Functions
-  // Constants
+
+  // # General Member Functions
+  //  Constants
   static const Double secInDay;
   static const Unit unitDay;
-  
+
   // Tell me your type
   // <group>
   static void assure(const MeasValue &in);
   // </group>
-  
+
   // Adjust the time to its constituent parts. The returned result is always 1.0
   // <group>
   virtual void adjust();
   virtual void adjust(Double &res);
   // </group>
-  
+
   // Get value in days
   Double get() const;
-  
+
   // Get value with units
   // <group>
   Quantity getTime() const;
   Quantity getTime(const Unit &unit) const;
   // </group>
-  
+
   // Get value of integer days
   Double getDay() const;
-  
+
   // Get fraction of days
   Double getDayFraction() const;
 
   // Print a value
   virtual void print(ostream &os) const;
-  
+
   // Clone a value
   virtual MeasValue *clone() const;
 
@@ -180,30 +177,29 @@ public:
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
-  
-private:
-  //# Data members
-  // Whole days
-  // Note that if higher precision is needed, the splitting could be in
-  // 0.001 days and fractions thereof
+  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+
+ private:
+  // # Data members
+  //  Whole days
+  //  Note that if higher precision is needed, the splitting could be in
+  //  0.001 days and fractions thereof
   Double wday;
   // Fraction of days
   Double frday;
-  
-  //# Member functions
-  // Make days from quantity
+
+  // # Member functions
+  //  Make days from quantity
   Double makeDay(const Quantity &in) const;
   // Add time from days
   void addTime(Double in);
 };
 
-//# Global functions
+// # Global functions
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,93 +1,75 @@
-//# ByteIO.cc: Abstract base class for IO on a byte stream
-//# Copyright (C) 1996,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ByteIO.cc: Abstract base class for IO on a byte stream
+// # Copyright (C) 1996,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+ByteIO::~ByteIO() {}
 
-ByteIO::~ByteIO()
-{}
-
-
-void ByteIO::reopenRW()
-{
-    if (! isWritable()) {
-	throw (AipsError ("ByteIO: reopenRW is not possible"));
-    }
+void ByteIO::reopenRW() {
+  if (!isWritable()) {
+    throw(AipsError("ByteIO: reopenRW is not possible"));
+  }
 }
 
-void ByteIO::pwrite (Int64 size, Int64 offset, const void* buf)
-{
-    Int64 cur = doSeek(0, ByteIO::Current);
-    doSeek(offset, ByteIO::Begin);
-    try {
-        write(size, buf);
-    }
-    catch (...) {
-        doSeek(cur, ByteIO::Begin);
-        throw;
-    }
+void ByteIO::pwrite(Int64 size, Int64 offset, const void* buf) {
+  Int64 cur = doSeek(0, ByteIO::Current);
+  doSeek(offset, ByteIO::Begin);
+  try {
+    write(size, buf);
+  } catch (...) {
     doSeek(cur, ByteIO::Begin);
+    throw;
+  }
+  doSeek(cur, ByteIO::Begin);
 }
 
-Int64 ByteIO::pread (Int64 size, Int64 offset, void* buf,
-                     Bool throwException)
-{
-    Int64 r = -1;
-    Int64 cur = doSeek(0, ByteIO::Current);
-    doSeek(offset, ByteIO::Begin);
-    try {
-        r = read(size, buf, throwException);
-    }
-    catch (...) {
-        doSeek(cur, ByteIO::Begin);
-        throw;
-    }
+Int64 ByteIO::pread(Int64 size, Int64 offset, void* buf, Bool throwException) {
+  Int64 r = -1;
+  Int64 cur = doSeek(0, ByteIO::Current);
+  doSeek(offset, ByteIO::Begin);
+  try {
+    r = read(size, buf, throwException);
+  } catch (...) {
     doSeek(cur, ByteIO::Begin);
-    return r;
+    throw;
+  }
+  doSeek(cur, ByteIO::Begin);
+  return r;
 }
 
-void ByteIO::flush()
-{}
+void ByteIO::flush() {}
 
-void ByteIO::fsync()
-{}
+void ByteIO::fsync() {}
 
-void ByteIO::resync()
-{}
+void ByteIO::resync() {}
 
-void ByteIO::truncate (Int64)
-{}
+void ByteIO::truncate(Int64) {}
 
-String ByteIO::fileName() const
-{
-  return String();
-}
+String ByteIO::fileName() const { return String(); }
 
-
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

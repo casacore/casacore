@@ -1,39 +1,38 @@
-//# ArrayUtil.h: Utility functions for arrays
-//# Copyright (C) 1995,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrayUtil.h: Utility functions for arrays
+// # Copyright (C) 1995,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_ARRAYUTIL_2_H
 #define CASA_ARRAYUTIL_2_H
 
-
-//# Includes
+// # Includes
 #include "Vector.h"
 
 #include <regex>
 #include <string>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Split a std::string into its elements.
@@ -94,11 +93,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 
 // <group name=stringToVector>
-Vector<std::string> strToVector (const std::string& string, char delim = ',');
-Vector<std::string> strToVector (const std::string& string, const std::regex& delim);
+Vector<std::string> strToVector(const std::string& string, char delim = ',');
+Vector<std::string> strToVector(const std::string& string, const std::regex& delim);
 // </group>
-
-
 
 // <summary>
 // Concatenate two Arrays.
@@ -162,11 +159,9 @@ Vector<std::string> strToVector (const std::string& string, const std::regex& de
 // <example>
 
 // <group name=concatenateArray>
-template<class T>
-Array<T> concatenateArray (const Array<T>& left, const Array<T>& right);
+template <class T>
+Array<T> concatenateArray(const Array<T>& left, const Array<T>& right);
 // </group>
-
-
 
 // <summary> Helper function for partialX functions </summary>
 // <use visibility=export>
@@ -179,12 +174,9 @@ Array<T> concatenateArray (const Array<T>& left, const Array<T>& right);
 // returned in nelemCont.
 // </synopsis>
 // <group name=partialFuncHelper>
-size_t partialFuncHelper (int& nelemCont,
-			IPosition& resultShape, IPosition& incr,
-			const IPosition& sourceShape,
-			const IPosition& collapseAxes);
+size_t partialFuncHelper(int& nelemCont, IPosition& resultShape, IPosition& incr,
+                         const IPosition& sourceShape, const IPosition& collapseAxes);
 // </group>
-
 
 // <summary>
 // Reverse the order of one or more axes of an array.
@@ -212,15 +204,11 @@ size_t partialFuncHelper (int& nelemCont,
 // </example>
 
 // <group name=reverseArray>
-template<class T>
-Array<T> reverseArray (const Array<T>& array,
-                       const IPosition& reversedAxes,
-                       bool alwaysCopy = true);
-template<class T>
-Array<T> reverseArray (const Array<T>& array, size_t axis,
-                       bool alwaysCopy = true);
+template <class T>
+Array<T> reverseArray(const Array<T>& array, const IPosition& reversedAxes, bool alwaysCopy = true);
+template <class T>
+Array<T> reverseArray(const Array<T>& array, size_t axis, bool alwaysCopy = true);
 // </group>
-
 
 // <summary>
 // Reorder the axes of an array.
@@ -263,12 +251,9 @@ Array<T> reverseArray (const Array<T>& array, size_t axis,
 // </motivation>
 
 // <group name=reorderArray>
-template<class T>
-Array<T> reorderArray (const Array<T>& array,
-		       const IPosition& newAxisOrder,
-		       bool alwaysCopy = true);
+template <class T>
+Array<T> reorderArray(const Array<T>& array, const IPosition& newAxisOrder, bool alwaysCopy = true);
 // </group>
-
 
 // <summary>
 // Helper function for function reorderArray.
@@ -290,13 +275,11 @@ Array<T> reorderArray (const Array<T>& array,
 // </motivation>
 
 // <group name=reorderArrayHelper>
-size_t reorderArrayHelper (IPosition& newShape, IPosition& incr,
-			 const IPosition& shape, const IPosition& newAxisOrder);
+size_t reorderArrayHelper(IPosition& newShape, IPosition& incr, const IPosition& shape,
+                          const IPosition& newAxisOrder);
 // </group>
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #include "ArrayUtil.tcc"
 

@@ -1,42 +1,43 @@
-//# Template.h: Canonicalise, format etc. Casacore template definitions
-//# Copyright (C) 2001,2002,2004,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Template.h: Canonicalise, format etc. Casacore template definitions
+// # Copyright (C) 2001,2002,2004,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_TEMPLATE_H
 #define CASA_TEMPLATE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 class Regex;
-template <class T> class Vector;
+template <class T>
+class Vector;
 
 // <summary>
 // Canonicalise, format and other actions on Casacore template definitions
@@ -53,8 +54,8 @@ template <class T> class Vector;
 
 // <synopsis>
 // A set of methods on template repository files and on template definitions to be
-// used in the reident, used, unused and duplicates programs (see 
-// <a href="../../../reference/System?System.html">Sytem manual</a> 
+// used in the reident, used, unused and duplicates programs (see
+// <a href="../../../reference/System?System.html">Sytem manual</a>
 // for details. <br /br>
 // Methods exist to read templates, to canonicalise them for comparison and
 // search functions and to format them for output.
@@ -70,9 +71,8 @@ template <class T> class Vector;
 
 class Template {
  public:
-
-  //# Constructors
-  // Default constructor. Need to read data into it
+  // # Constructors
+  //  Default constructor. Need to read data into it
   Template();
   // Create from the file names given
   explicit Template(const Vector<String> &files);
@@ -85,8 +85,8 @@ class Template {
   // Operators
   const String &operator[](uInt n) { return output_p[n]; }
 
-  //# Member functions
-  // Clear the object for a re-use.
+  // # Member functions
+  //  Clear the object for a re-use.
   void reset();
   // Read the templates file or files into the class. Multiple reading is additive.
   // Errors are reported to cerr, and commented out in the file.
@@ -114,22 +114,22 @@ class Template {
 
   // Canonicalise the template entries in the object. If switch True, do only
   // the templates entry for duplication
-  void canonical(const Bool tmplonly=False);
+  void canonical(const Bool tmplonly = False);
   // Split the entries in number, name id, rest
   void splitName();
   // Sort the data on name and number and fill in missing number. If switch
   // is True, renumber all template entries in sequence.
-  void sortName(const Bool renumber=False);
+  void sortName(const Bool renumber = False);
   // Write the data formatted to the specified file. Notify errors and warnings
   // by writing to <src>cerr</src>. If <src>warn</src> is False, some warnings will be
   // compressed into a general warning.
-  void writeOut(ostream &os, const Bool warn=False);
+  void writeOut(ostream &os, const Bool warn = False);
   // Write the duplicate list; the userFile gets ***; isSys gives the system switch
-  void writeDup(ostream &os, const String &userFile, Bool isSys=False);
+  void writeDup(ostream &os, const String &userFile, Bool isSys = False);
 
  private:
-  //# Data
-  // Each element is a template entry on a single line
+  // # Data
+  //  Each element is a template entry on a single line
   Block<String> output_p;
   // Count the lines
   uInt count_p;
@@ -167,20 +167,20 @@ class Template {
   // List of comparison names
   Block<String> tdname_p;
 
-  //# Constructors
-  // Copy constructor (not implemented)
+  // # Constructors
+  //  Copy constructor (not implemented)
   Template(const Template &other);
-  //# Operators
-  // Assignment (not implemented)
+  // # Operators
+  //  Assignment (not implemented)
   Template &operator=(const Template &other);
-  //# Member functions
-  // Save comment
-  void setComment(const String &txt, const Bool atstart=False);
+  // # Member functions
+  //  Save comment
+  void setComment(const String &txt, const Bool atstart = False);
   // Save a line
   void setOutput(const String &txt);
 
-  //# Static conversion data
-  // Patterns to analyse an input line
+  // # Static conversion data
+  //  Patterns to analyse an input line
   static const Regex spaces;
   static const Regex comment;
   static const Regex ifRE;
@@ -212,7 +212,7 @@ class Template {
   static const uInt Nnmax = 1;
   static const Regex PATnmax[Nnmax];
   static const Regex REPnmax[Nnmax];
- 
+
   // Patterns to split off number and name
   // Patterns to split off number and name
   static const Regex splitnum;
@@ -260,13 +260,11 @@ class Template {
 
   // Name of repository files
   static const String reposName;
-
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/Template.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

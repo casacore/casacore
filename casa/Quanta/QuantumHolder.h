@@ -1,46 +1,47 @@
-//# QuantumHolder.h: A holder for Quantities to enable record conversions
-//# Copyright (C) 1998,1999,2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # QuantumHolder.h: A holder for Quantities to enable record conversions
+// # Copyright (C) 1998,1999,2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_QUANTUMHOLDER_H
 #define CASA_QUANTUMHOLDER_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/BasicSL/Complexfwd.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class QBase;
 class String;
 class RecordInterface;
 class Record;
-template <class Qtype> class Quantum;
+template <class Qtype>
+class Quantum;
 
 // <summary> A holder for Quantums to enable record conversions </summary>
 
@@ -69,16 +70,16 @@ template <class Qtype> class Quantum;
 // <ul>
 //  <li> <src>Quantum<Int>, Quantum<Float>, Quantum<Double> == Quantity</src>
 //  <li> <src>Quantum<Complex>, Quantum<DComplex></src>
-//  <li> <src>Quantum<Vector<Int>>, Quantum<Vector<Float>></src>, 
+//  <li> <src>Quantum<Vector<Int>>, Quantum<Vector<Float>></src>,
 //	 <src>Quantum<Vector<Double>></src>
 //  <li> <src>Quantum<Vector<Complex>>, Quantum<Vector<DComplex>></src>
-//  <li> <src>Quantum<Array<Int>>, Quantum<Array<Float>></src>, 
+//  <li> <src>Quantum<Array<Int>>, Quantum<Array<Float>></src>,
 //	 <src>Quantum<Array<Double>></src>
 //  <li> <src>Quantum<Array<Complex>>, Quantum<Array<DComplex>></src>
 // </ul>
 // Scalars in the same group can be converted to any in the same group (e.g.
-// Int to Double); Vectors of length 1 can be converted to scalars in the 
-// corresponding group; Scalars can always be converted to Vectors in the 
+// Int to Double); Vectors of length 1 can be converted to scalars in the
+// corresponding group; Scalars can always be converted to Vectors in the
 // corresponding group. Real scalar values can be converted to Complex values.
 // Vectors cannot be converted to other type vectors.
 //
@@ -112,31 +113,29 @@ template <class Qtype> class Quantum;
 // </motivation>
 
 class QuantumHolder : public RecordTransformable {
+ public:
+  // # Friends
 
-public:
+  // # Enumerations
 
-//# Friends
-
-//# Enumerations
-
-//# Constructors
-  // Creates an empty holder
+  // # Constructors
+  //  Creates an empty holder
   QuantumHolder();
   // Create from a Quantum (copy semantics)
   QuantumHolder(const QBase &in);
   // Copy a holder (copy semantics)
   QuantumHolder(const QuantumHolder &other);
-//# Destructor
+  // # Destructor
   ~QuantumHolder();
 
-//# Operators
-  // Assignment (copy semantics)
+  // # Operators
+  //  Assignment (copy semantics)
   QuantumHolder &operator=(const QuantumHolder &other);
 
-//# Member Functions
-  // Check if it holds a Quantity. Note that a Vector of length 1 will give
-  // True to scalar questions.
-  // <group>
+  // # Member Functions
+  //  Check if it holds a Quantity. Note that a Vector of length 1 will give
+  //  True to scalar questions.
+  //  <group>
   Bool isEmpty() const;
   Bool isQuantum() const;
   Bool isScalar() const;
@@ -171,7 +170,7 @@ public:
   Int ndim() const;
   // </group>
 
-  // Get a Quantum from the holder (with lifetime as long 
+  // Get a Quantum from the holder (with lifetime as long
   // as holder exists). Conversions done if necessary and as described in
   // introduction.
   // <thrown>
@@ -179,22 +178,22 @@ public:
   // </thrown>
   // <group>
   const QBase &asQuantum() const;
-  const Quantum<Double> &asQuantity() ;
-  const Quantum<Double> &asQuantumDouble() ;
-  const Quantum<Float> &asQuantumFloat() ;
-  const Quantum<Int> &asQuantumInt() ;
-  const Quantum<Complex> &asQuantumComplex() ;
-  const Quantum<DComplex> &asQuantumDComplex() ;
-  const Quantum<Vector<Double>> &asQuantumVectorDouble() ;
-  const Quantum<Vector<Float>> &asQuantumVectorFloat() ;
-  const Quantum<Vector<Int>> &asQuantumVectorInt() ;
-  const Quantum<Vector<Complex>> &asQuantumVectorComplex() ;
-  const Quantum<Vector<DComplex>> &asQuantumVectorDComplex() ;
-  const Quantum<Array<Double>> &asQuantumArrayDouble() ;
-  const Quantum<Array<Float>> &asQuantumArrayFloat() ;
-  const Quantum<Array<Int>> &asQuantumArrayInt() ;
-  const Quantum<Array<Complex>> &asQuantumArrayComplex() ;
-  const Quantum<Array<DComplex>> &asQuantumArrayDComplex() ;
+  const Quantum<Double> &asQuantity();
+  const Quantum<Double> &asQuantumDouble();
+  const Quantum<Float> &asQuantumFloat();
+  const Quantum<Int> &asQuantumInt();
+  const Quantum<Complex> &asQuantumComplex();
+  const Quantum<DComplex> &asQuantumDComplex();
+  const Quantum<Vector<Double>> &asQuantumVectorDouble();
+  const Quantum<Vector<Float>> &asQuantumVectorFloat();
+  const Quantum<Vector<Int>> &asQuantumVectorInt();
+  const Quantum<Vector<Complex>> &asQuantumVectorComplex();
+  const Quantum<Vector<DComplex>> &asQuantumVectorDComplex();
+  const Quantum<Array<Double>> &asQuantumArrayDouble();
+  const Quantum<Array<Float>> &asQuantumArrayFloat();
+  const Quantum<Array<Int>> &asQuantumArrayInt();
+  const Quantum<Array<Complex>> &asQuantumArrayComplex();
+  const Quantum<Array<DComplex>> &asQuantumArrayDComplex();
   // </group>
 
   // Create a Quantum from a record or a string.
@@ -219,18 +218,16 @@ public:
   // this version throws an exception or returns the result Record.
   virtual Record toRecord() const;
 
-
   // Return identification
   virtual const String &ident() const;
 
-private:
-
-//# Data Members
-  // Pointer to a Quantity
+ private:
+  // # Data Members
+  //  Pointer to a Quantity
   std::unique_ptr<QBase> hold_p;
 
-//# General member functions
-  // Convert to a different real scalar quantum
+  // # General member functions
+  //  Convert to a different real scalar quantum
   void toReal(const uInt &tp);
   // Convert to a different complex scalar quantum
   void toComplex(const uInt &tp);
@@ -240,7 +237,6 @@ private:
   void toArray();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

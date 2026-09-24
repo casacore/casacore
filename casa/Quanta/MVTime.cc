@@ -1,29 +1,29 @@
-//# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004,2008
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVTime.cc: Class to handle date/time type conversions and I/O
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004,2008
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/Quanta/MVEpoch.h>
@@ -36,427 +36,374 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // MVTime class
-//# Static members
+// # Static members
 MVTime::Format MVTime::defaultFormat = MVTime::Format();
 MVTime::Format MVTime::interimFormat = MVTime::Format();
 Bool MVTime::interimSet = False;
 
-//# Constructors
-MVTime::MVTime() : 
-val(0){}
+// # Constructors
+MVTime::MVTime() : val(0) {}
 
-MVTime::MVTime(Double d) : 
-val(d){}
+MVTime::MVTime(Double d) : val(d) {}
 
-MVTime::MVTime(const Time &other) : 
-val(other.modifiedJulianDay()){}
+MVTime::MVTime(const Time &other) : val(other.modifiedJulianDay()) {}
 
-MVTime::MVTime(const MVEpoch &other) : 
-val(other.get()){}
+MVTime::MVTime(const MVEpoch &other) : val(other.get()) {}
 
 MVTime::MVTime(Int yy, Int mm, Double dd, Double d) {
-    if (mm < 3) {
-	yy--;
-	mm += 12;
-    }
-    dd += d;
-    Int b = 0;
-    if (yy>1582 || (yy==1582 && (mm>10 || (mm==10 && dd >= 15)))) { 
-	b = ifloor(yy/100.);
-	b = 2 - b + (Int)(b/4);
-    }
-    val = ifloor(365.25*yy) + ifloor(30.6001*(mm+1)) + dd - 679006.0 +b;
+  if (mm < 3) {
+    yy--;
+    mm += 12;
+  }
+  dd += d;
+  Int b = 0;
+  if (yy > 1582 || (yy == 1582 && (mm > 10 || (mm == 10 && dd >= 15)))) {
+    b = ifloor(yy / 100.);
+    b = 2 - b + (Int)(b / 4);
+  }
+  val = ifloor(365.25 * yy) + ifloor(30.6001 * (mm + 1)) + dd - 679006.0 + b;
 }
 
-MVTime::MVTime(const MVTime &other) :
-val(other.val) {}
+MVTime::MVTime(const MVTime &other) : val(other.val) {}
 
 MVTime::MVTime(const Quantity &other) {
-    val = other.getBaseValue();
-    if (other.check(UnitVal::ANGLE)) {
-	val /= C::circle;
-    } else {
-	other.assure(UnitVal::TIME);
-	val /= C::day;
-    }
+  val = other.getBaseValue();
+  if (other.check(UnitVal::ANGLE)) {
+    val /= C::circle;
+  } else {
+    other.assure(UnitVal::TIME);
+    val /= C::day;
+  }
 }
 
 MVTime &MVTime::operator=(const MVTime &other) {
-    if (this != &other) {
-	val = other.val;
-    }
-    return *this;
+  if (this != &other) {
+    val = other.val;
+  }
+  return *this;
 }
 
 // Destructor
 MVTime::~MVTime() {}
 
 // Operators
-MVTime::operator Double() const {
-    return val;
-}
+MVTime::operator Double() const { return val; }
 
 // Member functions
-Double MVTime::day() const {
-    return val;
-}
+Double MVTime::day() const { return val; }
 
-Double MVTime::hour() const {
-    return val*24.;
-}
+Double MVTime::hour() const { return val * 24.; }
 
-Double MVTime::minute() const {
-    return val*24.*60.;
-}
+Double MVTime::minute() const { return val * 24. * 60.; }
 
-Double MVTime::second() const {
-    return val*24.*3600.;
-}
+Double MVTime::second() const { return val * 24. * 3600.; }
 
-Quantity MVTime::get() const {
-    return Quantity(val,"d");
-}
+Quantity MVTime::get() const { return Quantity(val, "d"); }
 
 Quantity MVTime::get(const Unit &inunit) const {
-    if (inunit.getValue() == UnitVal::TIME) {
-	return Quantity(val, "d").get(inunit);
-    }
-    return Quantity(val*C::circle,"rad").get(inunit);
+  if (inunit.getValue() == UnitVal::TIME) {
+    return Quantity(val, "d").get(inunit);
+  }
+  return Quantity(val * C::circle, "rad").get(inunit);
 }
 
-Time MVTime::getTime() const {
-    return Time(val+2400000.5);
-}
+Time MVTime::getTime() const { return Time(val + 2400000.5); }
 
 const String &MVTime::dayName(uInt which) {
-  static const String weekDay[7] = {
-    "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+  static const String weekDay[7] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
   AlwaysAssert(which > 0 && which < 8, AipsError);
-  return weekDay[which-1];
+  return weekDay[which - 1];
 }
 
-const String &MVTime::dayName() const {
-  return (dayName(weekday()));
-}
+const String &MVTime::dayName() const { return (dayName(weekday())); }
 
 const String &MVTime::monthName(uInt which) {
-  static const String mon[12] = {
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-  return mon[which-1];
+  static const String mon[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+  return mon[which - 1];
 }
 
-const String &MVTime::monthName() const {
-  return (monthName(month()));
-}
+const String &MVTime::monthName() const { return (monthName(month())); }
 
-uInt MVTime::weekday() const {
-  return ((ifloor(val+2.)%7 + 7)%7 + 1);
-}
+uInt MVTime::weekday() const { return ((ifloor(val + 2.) % 7 + 7) % 7 + 1); }
 
 uInt MVTime::month() const {
-  Int c,e,a;
-  ymd(c,e,a);
+  Int c, e, a;
+  ymd(c, e, a);
   return e;
 }
 
 uInt MVTime::monthday() const {
-  Int c,e,a;
-  ymd(c,e,a);
+  Int c, e, a;
+  ymd(c, e, a);
   return a;
 }
 
 Int MVTime::year() const {
-  Int c,e,a;
-  ymd(c,e,a);
+  Int c, e, a;
+  ymd(c, e, a);
   return c;
 }
 
 Int MVTime::ymd() const {
-  Int c,e,a;
-  ymd(c,e,a);
+  Int c, e, a;
+  ymd(c, e, a);
   if (c < 0) {
-    return -(abs(c)*10000 + e*100 + a);
+    return -(abs(c) * 10000 + e * 100 + a);
   }
-  return (c*10000 + e*100 + a);
+  return (c * 10000 + e * 100 + a);
 }
 
 uInt MVTime::yearday() const {
-  Int c,e,a;
-  ymd(c,e,a);
-  if (c%4 == 0 && (c%100 != 0 || c%400 == 0)) {
-    c = (e+9)/12;
+  Int c, e, a;
+  ymd(c, e, a);
+  if (c % 4 == 0 && (c % 100 != 0 || c % 400 == 0)) {
+    c = (e + 9) / 12;
   } else {
-    c = 2 * ((e+9)/12);
+    c = 2 * ((e + 9) / 12);
   }
-  return ((275*e)/9 - c + a - 30);
+  return ((275 * e) / 9 - c + a - 30);
 }
 
 uInt MVTime::yearweek() const {
-  Int yd(yearday()-4);
-  uInt yw((yd+7)/7);
+  Int yd(yearday() - 4);
+  uInt yw((yd + 7) / 7);
   yd %= 7;
   // Check for other week
   if (yd >= 0) {
-    if (yd >= (Int)weekday()) return yw+1;
-  } else if (yd+7 >= (Int)weekday()) return yw+1;
+    if (yd >= (Int)weekday()) return yw + 1;
+  } else if (yd + 7 >= (Int)weekday())
+    return yw + 1;
   return yw;
 }
 
 void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
-	Int z = ifloor(val + 2400001.0);
-	dd = z;
-	if (z >= 2299161) {
-	    Long al = ifloor(((Double) z - 1867216.25)/36524.25);
-	    dd = z + 1 + al - (Int)(al/4);
-	}
-	dd += 1524;
-        // tmp introduced to circumvent optimization problem with gcc2.7.2.1
-        // on the DecAlpha
-        Int tmp = ifloor((dd - 122.1)/365.25);
-        yyyy = tmp;
-        Int d = ifloor(365.25 * tmp);
-	mm = tmp = ifloor((dd - d)/30.6001);
-	dd -= d + ifloor(30.6001 * tmp); // day
-	if (mm < 14) {			// month
-	    mm--;
-	} else {
-	    mm -= 13;
-	}
-	yyyy -= 4715;			// year
-	if (mm > 2) yyyy--;
+  Int z = ifloor(val + 2400001.0);
+  dd = z;
+  if (z >= 2299161) {
+    Long al = ifloor(((Double)z - 1867216.25) / 36524.25);
+    dd = z + 1 + al - (Int)(al / 4);
+  }
+  dd += 1524;
+  // tmp introduced to circumvent optimization problem with gcc2.7.2.1
+  // on the DecAlpha
+  Int tmp = ifloor((dd - 122.1) / 365.25);
+  yyyy = tmp;
+  Int d = ifloor(365.25 * tmp);
+  mm = tmp = ifloor((dd - d) / 30.6001);
+  dd -= d + ifloor(30.6001 * tmp);  // day
+  if (mm < 14) {                    // month
+    mm--;
+  } else {
+    mm -= 13;
+  }
+  yyyy -= 4715;  // year
+  if (mm > 2) yyyy--;
 }
 
-
-MVTime::Format MVTime::setFormat(MVTime::formatTypes intyp, 
-			  uInt inprec) {
-    Format tmp = MVTime::defaultFormat;
-    MVTime::defaultFormat.typ = intyp;
-    MVTime::defaultFormat.prec = inprec;
-    MVTime::interimSet = False;
-    return tmp;
+MVTime::Format MVTime::setFormat(MVTime::formatTypes intyp, uInt inprec) {
+  Format tmp = MVTime::defaultFormat;
+  MVTime::defaultFormat.typ = intyp;
+  MVTime::defaultFormat.prec = inprec;
+  MVTime::interimSet = False;
+  return tmp;
 }
 
 MVTime::Format MVTime::setFormat(uInt intyp, uInt inprec) {
-    return setFormat((MVTime::formatTypes) intyp, inprec);
+  return setFormat((MVTime::formatTypes)intyp, inprec);
 }
 
-MVTime::Format MVTime::setFormat(uInt inprec) {
-    return  setFormat(MVTime::TIME, inprec);
-}
+MVTime::Format MVTime::setFormat(uInt inprec) { return setFormat(MVTime::TIME, inprec); }
 
 MVTime::Format MVTime::setFormat(const MVTime::Format &form) {
-    Format tmp = MVTime::defaultFormat;
-    MVTime::defaultFormat = form;
-    MVTime::interimSet = False;
-    return tmp;
+  Format tmp = MVTime::defaultFormat;
+  MVTime::defaultFormat = form;
+  MVTime::interimSet = False;
+  return tmp;
 }
 
-MVTime::Format MVTime::getFormat() {
-    return MVTime::defaultFormat;
-}
+MVTime::Format MVTime::getFormat() { return MVTime::defaultFormat; }
 
 MVTime::formatTypes MVTime::giveMe(const String &in) {
   const Int N_name = 32;
-  static const String tab[N_name] = {
-    "ANGLE",
-    "TIME",
-    "CLEAN",
-    "NO_D",
-    "NO_DM",
-    "YMD",
-    "DMY",
-    "MJD",
-    "DAY",
-    "NO_TIME",
-    "DIG2",
-    "FITS",
-    "LOCAL",
-    "USE_SPACE",
-    "ALPHA",
-    "USE_Z",
-    "ISO",
-    "BOOST",
-    "NO_H",
-    "NO_HM",
-    "ANGLE_CLEAN",
-    "ANGLE_NO_D",
-    "ANGLE_NO_DM",
-    "ANGLE_CLEAN_NO_D",
-    "ANGLE_CLEAN_NO_DM",
-    "TIME_CLEAN",
-    "TIME_NO_H",
-    "TIME_NO_HM",
-    "TIME_CLEAN_NO_H",
-    "TIME_CLEAN_NO_HM",
-    "YMD_ONLY",
-    "MOD_MASK"
-  };
-  static const MVTime::formatTypes nam[N_name] = {
-    MVTime::ANGLE,
-    MVTime::TIME,
-    MVTime::CLEAN,
-    MVTime::NO_D,
-    MVTime::NO_DM,
-    MVTime::YMD,
-    MVTime::DMY,
-    MVTime::MJD,
-    MVTime::DAY,
-    MVTime::NO_TIME,
-    MVTime::DIG2,
-    MVTime::FITS,
-    MVTime::LOCAL,
-    MVTime::USE_SPACE,
-    MVTime::ALPHA,
-    MVTime::USE_Z,
-    MVTime::ISO,
-    MVTime::BOOST,
-    MVTime::NO_H,
-    MVTime::NO_HM,
-    MVTime::ANGLE_CLEAN,
-    MVTime::ANGLE_NO_D,
-    MVTime::ANGLE_NO_DM,
-    MVTime::ANGLE_CLEAN_NO_D,
-    MVTime::ANGLE_CLEAN_NO_DM,
-    MVTime::TIME_CLEAN,
-    MVTime::TIME_NO_H,
-    MVTime::TIME_NO_HM,
-    MVTime::TIME_CLEAN_NO_H,
-    MVTime::TIME_CLEAN_NO_HM,
-    MVTime::YMD_ONLY,
-    MVTime::MOD_MASK
-  };
+  static const String tab[N_name] = {"ANGLE",
+                                     "TIME",
+                                     "CLEAN",
+                                     "NO_D",
+                                     "NO_DM",
+                                     "YMD",
+                                     "DMY",
+                                     "MJD",
+                                     "DAY",
+                                     "NO_TIME",
+                                     "DIG2",
+                                     "FITS",
+                                     "LOCAL",
+                                     "USE_SPACE",
+                                     "ALPHA",
+                                     "USE_Z",
+                                     "ISO",
+                                     "BOOST",
+                                     "NO_H",
+                                     "NO_HM",
+                                     "ANGLE_CLEAN",
+                                     "ANGLE_NO_D",
+                                     "ANGLE_NO_DM",
+                                     "ANGLE_CLEAN_NO_D",
+                                     "ANGLE_CLEAN_NO_DM",
+                                     "TIME_CLEAN",
+                                     "TIME_NO_H",
+                                     "TIME_NO_HM",
+                                     "TIME_CLEAN_NO_H",
+                                     "TIME_CLEAN_NO_HM",
+                                     "YMD_ONLY",
+                                     "MOD_MASK"};
+  static const MVTime::formatTypes nam[N_name] = {MVTime::ANGLE,
+                                                  MVTime::TIME,
+                                                  MVTime::CLEAN,
+                                                  MVTime::NO_D,
+                                                  MVTime::NO_DM,
+                                                  MVTime::YMD,
+                                                  MVTime::DMY,
+                                                  MVTime::MJD,
+                                                  MVTime::DAY,
+                                                  MVTime::NO_TIME,
+                                                  MVTime::DIG2,
+                                                  MVTime::FITS,
+                                                  MVTime::LOCAL,
+                                                  MVTime::USE_SPACE,
+                                                  MVTime::ALPHA,
+                                                  MVTime::USE_Z,
+                                                  MVTime::ISO,
+                                                  MVTime::BOOST,
+                                                  MVTime::NO_H,
+                                                  MVTime::NO_HM,
+                                                  MVTime::ANGLE_CLEAN,
+                                                  MVTime::ANGLE_NO_D,
+                                                  MVTime::ANGLE_NO_DM,
+                                                  MVTime::ANGLE_CLEAN_NO_D,
+                                                  MVTime::ANGLE_CLEAN_NO_DM,
+                                                  MVTime::TIME_CLEAN,
+                                                  MVTime::TIME_NO_H,
+                                                  MVTime::TIME_NO_HM,
+                                                  MVTime::TIME_CLEAN_NO_H,
+                                                  MVTime::TIME_CLEAN_NO_HM,
+                                                  MVTime::YMD_ONLY,
+                                                  MVTime::MOD_MASK};
   Int t = MUString::minimaxNC(in, N_name, tab);
-  return (t<N_name ? nam[t] : (MVTime::formatTypes) 0);
+  return (t < N_name ? nam[t] : (MVTime::formatTypes)0);
 }
 
 String MVTime::string() const {
-    if (MVTime::interimSet) {
-	MVTime::interimSet = False;
-	return string(MVTime::interimFormat);
-    }
-    return string(MVTime::defaultFormat);
-}
-   
-String MVTime::string(uInt inprec) const {
-    return string(MVTime::Format(inprec));
+  if (MVTime::interimSet) {
+    MVTime::interimSet = False;
+    return string(MVTime::interimFormat);
+  }
+  return string(MVTime::defaultFormat);
 }
 
-String MVTime::string(MVTime::formatTypes intyp, 
-		       uInt inprec) const {
-    return string(MVTime::Format(intyp, inprec));
+String MVTime::string(uInt inprec) const { return string(MVTime::Format(inprec)); }
+
+String MVTime::string(MVTime::formatTypes intyp, uInt inprec) const {
+  return string(MVTime::Format(intyp, inprec));
 }
 
 String MVTime::string(uInt intyp, uInt inprec) const {
-    return string(MVTime::Format(intyp, inprec));
+  return string(MVTime::Format(intyp, inprec));
 }
 
 String MVTime::string(const MVTime::Format &form) const {
-    ostringstream oss;
-    print (oss, form);
-    return oss.str();
+  ostringstream oss;
+  print(oss, form);
+  return oss.str();
 }
 
-Double MVTime::timeZone() {
-  return MVAngle::timeZone();
-}  
-void MVTime::print(ostream &oss,
-		    const MVTime::Format &form) const {
-    uInt inprec = form.prec;
-    uInt intyp = form.typ;
-    uInt i1 = intyp & ~MVTime::MOD_MASK;
-    // Next is to try to solve the problem with the Intel's indecision
-    // arithmetic
-    Double loctmp(val);
-    if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
-      loctmp += MVTime::timeZone();
-    }
-    Int locday = ifloor(loctmp);
-    MVTime loc = Double(locday);
-    loctmp = (loctmp - loc.val)*C::circle;
-    MVAngle atmp(loctmp);
-    atmp(0.0);
+Double MVTime::timeZone() { return MVAngle::timeZone(); }
+void MVTime::print(ostream &oss, const MVTime::Format &form) const {
+  uInt inprec = form.prec;
+  uInt intyp = form.typ;
+  uInt i1 = intyp & ~MVTime::MOD_MASK;
+  // Next is to try to solve the problem with the Intel's indecision
+  // arithmetic
+  Double loctmp(val);
+  if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
+    loctmp += MVTime::timeZone();
+  }
+  Int locday = ifloor(loctmp);
+  MVTime loc = Double(locday);
+  loctmp = (loctmp - loc.val) * C::circle;
+  MVAngle atmp(loctmp);
+  atmp(0.0);
 
-    if ((intyp & MVTime::DAY) == MVTime::DAY) {
-      oss << loc.dayName();
-      if (i1 == MVTime::YMD || i1 == MVTime::DMY ||
-	  i1 == MVTime::MJD ||
-	  (intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-        if (intyp & MVTime::USE_SPACE) {
-          oss << ' ';
-        } else {
-          oss << '-';
-        }
+  if ((intyp & MVTime::DAY) == MVTime::DAY) {
+    oss << loc.dayName();
+    if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::MJD ||
+        (intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
+      if (intyp & MVTime::USE_SPACE) {
+        oss << ' ';
+      } else {
+        oss << '-';
       }
     }
-    if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::FITS) {
-      Int c,e,a;
-      loc.ymd(c,e,a);			// y,m,d
-      Char sfill = oss.fill();
-      if (i1 == MVTime::YMD) {
-	oss << setfill('0') << setw(4) << c << "/" << 
-	  setw(2) << e << "/" << 
-	  setw(2) << a;
-      } else if (i1 == MVTime::DMY) {
-	oss << setfill('0') << setw(2) << a << "-" <<
-	  setw(3) << monthName(e) << "-" <<
-	  setw(4) << c;
-      } else {				// FITS
-	oss << setfill('0') << setw(4) << c << "-" << 
-	  setw(2) << e << "-" << 
-	  setw(2) << a;
-      }
-      if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-        if (intyp & MVTime::USE_SPACE) {
-          oss << ' ';
-	} else if (i1 == MVTime::FITS) {
-	  oss << "T";
-	} else {
-	  oss << "/";
-	}
-      }
-      oss.fill(sfill);
-    }
-    if (i1 == MVTime::MJD) {
-      Int c = ifloor(loc);
-      oss << c;
-      if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-	oss << "/";
-      }
+  }
+  if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::FITS) {
+    Int c, e, a;
+    loc.ymd(c, e, a);  // y,m,d
+    Char sfill = oss.fill();
+    if (i1 == MVTime::YMD) {
+      oss << setfill('0') << setw(4) << c << "/" << setw(2) << e << "/" << setw(2) << a;
+    } else if (i1 == MVTime::DMY) {
+      oss << setfill('0') << setw(2) << a << "-" << setw(3) << monthName(e) << "-" << setw(4) << c;
+    } else {  // FITS
+      oss << setfill('0') << setw(4) << c << "-" << setw(2) << e << "-" << setw(2) << a;
     }
     if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-	MVAngle::Format ftmp((MVAngle::formatTypes) intyp, inprec);
-	atmp.print(oss, ftmp);
+      if (intyp & MVTime::USE_SPACE) {
+        oss << ' ';
+      } else if (i1 == MVTime::FITS) {
+        oss << "T";
+      } else {
+        oss << "/";
+      }
     }
-    if ((intyp & MVTime::USE_Z) == MVTime::USE_Z) {
-        oss << 'Z';
+    oss.fill(sfill);
+  }
+  if (i1 == MVTime::MJD) {
+    Int c = ifloor(loc);
+    oss << c;
+    if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
+      oss << "/";
     }
+  }
+  if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
+    MVAngle::Format ftmp((MVAngle::formatTypes)intyp, inprec);
+    atmp.print(oss, ftmp);
+  }
+  if ((intyp & MVTime::USE_Z) == MVTime::USE_Z) {
+    oss << 'Z';
+  }
 }
 
-Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
-  return read (res, in, chk, False);
-}
+Bool MVTime::read(Quantity &res, MUString &in, Bool chk) { return read(res, in, chk, False); }
 Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
-  static const String mon[12] = {
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"};
+  static const String mon[12] = {"January",   "February", "March",    "April",
+                                 "May",       "June",     "July",     "August",
+                                 "September", "October",  "November", "December"};
   res = Quantity(0.0, "d");
   Int tp = 0;
   in.skipBlank();
-  in.push();			// Save position
+  in.push();  // Save position
   Double s = in.getSign();
-  if (in.tSkipStringNC("today") || in.tSkipStringNC("now") ||
-      in.testChar('/')) {
+  if (in.tSkipStringNC("today") || in.tSkipStringNC("now") || in.testChar('/')) {
     if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
       if (MVAngle::read(res, in, chk)) {
-	res = Quantity(res.get("deg").getValue()/360., "d");
-	res += Quantity(Double((Int) Time().modifiedJulianDay()),
-			"d");
+        res = Quantity(res.get("deg").getValue() / 360., "d");
+        res += Quantity(Double((Int)Time().modifiedJulianDay()), "d");
       } else {
-	return MVAngle::handleReadError (in, throwExcp);
+        return MVAngle::handleReadError(in, throwExcp);
       }
     } else {
       res = Quantity(Time().modifiedJulianDay(), "d");
@@ -470,13 +417,13 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
       if (in.testAlpha()) {
         String amon(in.getAlpha());
         if (amon.length() < 3) {
-          return MVAngle::handleReadError (in, throwExcp);
+          return MVAngle::handleReadError(in, throwExcp);
         } else {
           mm = MUString::minimaxNC(amon, 12, mon);
           if (mm < 12) {
             mm++;
           } else {
-            return MVAngle::handleReadError (in, throwExcp);
+            return MVAngle::handleReadError(in, throwExcp);
           }
         }
       } else {
@@ -486,12 +433,12 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
           mm = in.getuInt();
         }
         if (!in.testChar('-')) {
-          return MVAngle::handleReadError (in, throwExcp);
+          return MVAngle::handleReadError(in, throwExcp);
         }
       }
       in.skipChar('-');
       Int dd2 = in.getuInt();
-      if (r > 1000) {		// New FITS format
+      if (r > 1000) {  // New FITS format
         dd = dd2;
       } else {
         if (dd2 < 50) {
@@ -499,9 +446,9 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
         } else if (dd2 < 100) {
           dd2 += 1900;
         }
-        dd = r;			// Swap day/year
+        dd = r;  // Swap day/year
         r = dd2;
-      }    
+      }
     } else if (in.testChar('/')) {
       if (in.freqChar('/') > 1) {
         in.skipChar();
@@ -511,7 +458,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
         } else {
           mm = in.getuInt();
           if (!in.tSkipChar('/')) {
-            return MVAngle::handleReadError (in, throwExcp);
+            return MVAngle::handleReadError(in, throwExcp);
           }
         }
         dd = in.getDouble();
@@ -519,30 +466,30 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
         tp = 1;
       }
     } else {
-      return MVAngle::handleReadError (in, throwExcp);
+      return MVAngle::handleReadError(in, throwExcp);
     }
     if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
       if (MVAngle::read(res, in, chk)) {
-        res = Quantity(res.get("deg").getValue()/360., "d");
+        res = Quantity(res.get("deg").getValue() / 360., "d");
       } else {
-        return MVAngle::handleReadError (in, throwExcp);
+        return MVAngle::handleReadError(in, throwExcp);
       }
-    } else if (in.tSkipChar('T')) {	// new FITS/ISO
+    } else if (in.tSkipChar('T')) {  // new FITS/ISO
       if (MVAngle::read(res, in, False)) {
-        res = Quantity(res.get("deg").getValue()/360., "d");
+        res = Quantity(res.get("deg").getValue() / 360., "d");
         // Allow possible time zone as in ISO-8601
         if (in.testChar('+') || in.testChar('-')) {
           Double s = in.getSign();
           Double r = in.getuInt();
           if (in.tSkipChar(':')) {
-            r += Double(in.getuInt())/60.0;
+            r += Double(in.getuInt()) / 60.0;
           }
-          res -= Quantity(s*r/24.0,"d");	// Time zone
+          res -= Quantity(s * r / 24.0, "d");  // Time zone
         } else {
-          in.tSkipChar('Z');	// accept FITS/ISO UTC
+          in.tSkipChar('Z');  // accept FITS/ISO UTC
         }
       } else {
-        return MVAngle::handleReadError (in, throwExcp);
+        return MVAngle::handleReadError(in, throwExcp);
       }
     }
     if (tp == 0) {
@@ -551,49 +498,48 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
       res += r;
     }
   }
-  res *= s;			// Sign
+  res *= s;  // Sign
   if (chk) {
     in.skipBlank();
     if (!in.eos()) {
-      return MVAngle::handleReadError (in, throwExcp);  // not fully consumed
+      return MVAngle::handleReadError(in, throwExcp);  // not fully consumed
     }
   }
   in.unpush();
   return True;
 }
 
-Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
-  return read (res, in, chk, False);
-}
+Bool MVTime::read(Quantity &res, const String &in, Bool chk) { return read(res, in, chk, False); }
 Bool MVTime::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
-  MUString tmp(in);		// Pointed non-const String
+  MUString tmp(in);  // Pointed non-const String
   if (!MVTime::read(res, tmp, chk, throwExcp)) {
     Double r = tmp.getDouble();
-    UnitVal u; String us;
-    if (!MVAngle::unitString(u,us,tmp)) {
-      return MVAngle::handleReadError (tmp, throwExcp);
+    UnitVal u;
+    String us;
+    if (!MVAngle::unitString(u, us, tmp)) {
+      return MVAngle::handleReadError(tmp, throwExcp);
     }
     if (u == UnitVal::NODIM) {
-      res = Quantity(r,"d");
+      res = Quantity(r, "d");
     } else if (u == UnitVal::TIME) {
-      res = Quantity(r,us);
+      res = Quantity(r, us);
     } else if (u == UnitVal::ANGLE) {
-      res = Quantity(Quantity(r/(2.0*M_PI),us).getBaseValue(), "d");
+      res = Quantity(Quantity(r / (2.0 * M_PI), us).getBaseValue(), "d");
     } else {
-      return MVAngle::handleReadError (tmp, throwExcp);
+      return MVAngle::handleReadError(tmp, throwExcp);
     }
   }
   return True;
 }
 
 ostream &operator<<(ostream &os, const MVTime &meas) {
-    if (MVTime::interimSet) {
-	MVTime::interimSet = False;
-	meas.print(os, MVTime::interimFormat);
-    } else {
-	meas.print(os, MVTime::defaultFormat);
-    }
-    return os;
+  if (MVTime::interimSet) {
+    MVTime::interimSet = False;
+    meas.print(os, MVTime::interimFormat);
+  } else {
+    meas.print(os, MVTime::defaultFormat);
+  }
+  return os;
 }
 
 istream &operator>>(istream &is, MVTime &meas) {
@@ -610,10 +556,9 @@ istream &operator>>(istream &is, MVTime &meas) {
 }
 
 ostream &operator<<(ostream &os, const MVTime::Format &form) {
-    MVTime::interimFormat = form;
-    MVTime::interimSet = True;
-    return os;
+  MVTime::interimFormat = form;
+  MVTime::interimSet = True;
+  return os;
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

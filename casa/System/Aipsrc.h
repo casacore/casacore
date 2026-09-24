@@ -1,27 +1,27 @@
-//# Aipsrc.h: Class to read the casa general resource files
-//# Copyright (C) 1995,1996,1997,1998,1999,2002,2004,2016
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Aipsrc.h: Class to read the casa general resource files
+// # Copyright (C) 1995,1996,1997,1998,1999,2002,2004,2016
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_AIPSRC_H
 #define CASA_AIPSRC_H
@@ -33,14 +33,16 @@
 
 #include <mutex>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
-template <class T> class AipsrcValue;
-template <class T> class AipsrcVector;
+// # Forward declarations
+template <class T>
+class AipsrcValue;
+template <class T>
+class AipsrcVector;
 class Aipsrc;
 
-//# Typedefs
+// # Typedefs
 typedef AipsrcValue<Double> AipsrcDouble;
 typedef AipsrcValue<Int> AipsrcInt;
 typedef AipsrcValue<Bool> AipsrcBool;
@@ -49,7 +51,6 @@ typedef AipsrcVector<Double> AipsrcVDouble;
 typedef AipsrcVector<Int> AipsrcVInt;
 typedef AipsrcVector<Bool> AipsrcVBool;
 typedef AipsrcVector<String> AipsrcVString;
-
 
 // <summary> Class to read the casa general resource files </summary>
 
@@ -68,7 +69,7 @@ typedef AipsrcVector<String> AipsrcVString;
 //
 // <synopsis>
 // The static Aipsrc class can get information from the casa resource files.
-// It has the same functionality as getrc (c program used for Casacore 
+// It has the same functionality as getrc (c program used for Casacore
 // installation scripts).<br>
 // In addition it acts as a central clearing house between system and
 // software by providing functionality to obtain Casacore system parameters
@@ -80,8 +81,8 @@ typedef AipsrcVector<String> AipsrcVString;
 //	keyword:   value
 //	keyword:   value
 // </srcblock>
-// The keyword (starting at first non-blank) 
-// consists in general of keyword fields separated by periods:  
+// The keyword (starting at first non-blank)
+// consists in general of keyword fields separated by periods:
 //<srcblock>
 //	printer.ps.page
 //	measures.precession.d_interval
@@ -91,8 +92,8 @@ typedef AipsrcVector<String> AipsrcVString;
 // search is case sensitive) with an <src>_</src> as word-parts separator. <br>
 // The keyword and value are separated by a <src>:</src>. The value is the string
 // from the first non-whitespace character after the separator to the end of
-// the line. Interpretation of the string is in general the program's 
-// responsibility, but special <src>find()</src> calls (see below) exist to 
+// the line. Interpretation of the string is in general the program's
+// responsibility, but special <src>find()</src> calls (see below) exist to
 // aid.<br>
 // Any part of the keyword string can be replaced by a wildcard <src>*</src>
 // to indicate all values with that structure (e.g.
@@ -112,7 +113,7 @@ typedef AipsrcVector<String> AipsrcVString;
 //   $AIPSHOST/aipsrc
 //   $AIPSSITE/aipsrc
 //   $AIPSARCH/aipsrc
-// </srcblock> 
+// </srcblock>
 // It is not an error for any of the aipsrc files to be absent or empty.
 // However, it is an error if <em>HOME</em> has not been set:
 // an exception will occur. AIPSPATH will in general be
@@ -124,7 +125,7 @@ typedef AipsrcVector<String> AipsrcVString;
 // The basic interaction with the class is with the static keyword match function
 // <srcblock>Bool Aipsrc::find(String &result, const String &keyword)
 // </srcblock>
-// A set of 
+// A set of
 // <srcblock>Bool AipsrcValue::find(Type &result, const String &keyword, ...)
 // </srcblock>
 // are available to interpret the string value found.
@@ -135,7 +136,7 @@ typedef AipsrcVector<String> AipsrcVString;
 // The Bool return indicates if the keyword was found, and, in the case of the
 // interpretative finds, if an 'important' format error was found (e.g.
 // '+12a' will be accepted as a Double, with a result of '12', since the
-// standard double conversion in <src>>></src> will produce this result.) 
+// standard double conversion in <src>>></src> will produce this result.)
 // <note role=caution> The search keyword (unlike the file keyword) has no
 // wildcards. The real name should, of course, be looked for.</note>
 // To aid in other places, the following (static) methods are available
@@ -151,12 +152,12 @@ typedef AipsrcVector<String> AipsrcVString;
 // Other, numeric, system information can be found in
 // <linkto class=AipsrcValue>AipsrcValue</linkto>.<br>
 //
-// Given an AIPSPATH of 
+// Given an AIPSPATH of
 // <srcblock>/epp/aips++ sun4sol_gnu epping norma</srcblock>
 // aipsSite will return
 // <srcblock>/epp/aips++/sun4sol_gnu/epping</srcblock>.
 //
-// The basic find above reacts with the aipsrc files available. If regular 
+// The basic find above reacts with the aipsrc files available. If regular
 // access is necessary (e.g. a lot of routines have to check independently a
 // certain integration time limit), keywords can be <em>registered</em> to
 // enable:
@@ -164,7 +165,7 @@ typedef AipsrcVector<String> AipsrcVString;
 //   <li> fast access with integer code, rather than string
 //   <li> ability to set values from programs if no aipsrc information given
 //		(a dynamic default)
-//   <li> update the <src>$HOME/.aipsrc</src> keyword/value list with save() 
+//   <li> update the <src>$HOME/.aipsrc</src> keyword/value list with save()
 // </ul>
 // <note role=tip> The registered value is never equal to zero, hence a zero
 // value can be used to check if registration is done. Also, registering the
@@ -215,23 +216,22 @@ typedef AipsrcVector<String> AipsrcVString;
 // </todo>
 
 class Aipsrc {
+ public:
+  // # Constructors
 
-public:
-  //# Constructors
+  // # Destructor
 
-  //# Destructor
+  // # Copy assignment
 
-  //# Copy assignment
-
-  //# Member functions
-  // <thrown>
-  // <li> AipsError if HOME environment variable not set
-  // </thrown> 
-  // The <src>find()</src> functions will, given a keyword, return the value
-  // with a matched keyword found in the files. If no match found the
-  // function will be False. The <src>findNoHome()</src> emulates the <src>-i</src>
-  // switch of getrc by bypassing the <src>~/.aipsrc</src> file.
-  // <group>
+  // # Member functions
+  //  <thrown>
+  //  <li> AipsError if HOME environment variable not set
+  //  </thrown>
+  //  The <src>find()</src> functions will, given a keyword, return the value
+  //  with a matched keyword found in the files. If no match found the
+  //  function will be False. The <src>findNoHome()</src> emulates the <src>-i</src>
+  //  switch of getrc by bypassing the <src>~/.aipsrc</src> file.
+  //  <group>
   static Bool find(String &value, const String &keyword);
   static Bool findNoHome(String &value, const String &keyword);
   // </group>
@@ -241,24 +241,20 @@ public:
   // found). Matching is minimax, case insensitive. Always better to use
   // the one with default. return is False if no keyword or no match.
   // <group>
-  static Bool find(uInt &value, const String &keyword,
-		   Int Nname, const String tname[]);
-  static Bool find(uInt &value, const String &keyword,
-		   const Vector<String> &tname);
+  static Bool find(uInt &value, const String &keyword, Int Nname, const String tname[]);
+  static Bool find(uInt &value, const String &keyword, const Vector<String> &tname);
   // </group>
   // This find usually saves you some lines of code, since you can supply the
   // default you want to use when no such keyword is defined.
   // If the return value is False, the keyword was not found and the default
   // was used.
   // <group>
-  static Bool find(String &value, const String &keyword, 
-		   const String &default_value);
-  static Bool findNoHome(String &value, const String &keyword,
-			 const String &default_value);
-  static Bool find(uInt &value, const String &keyword,
-		   Int Nname, const String tname[], const String &default_value);
-  static Bool find(uInt &value, const String &keyword,
-		   const Vector<String> &tname, const String &default_value);
+  static Bool find(String &value, const String &keyword, const String &default_value);
+  static Bool findNoHome(String &value, const String &keyword, const String &default_value);
+  static Bool find(uInt &value, const String &keyword, Int Nname, const String tname[],
+                   const String &default_value);
+  static Bool find(uInt &value, const String &keyword, const Vector<String> &tname,
+                   const String &default_value);
   // </group>
 
   // Sets foundDir to the first /firstPart/lastPart path that it finds
@@ -267,20 +263,18 @@ public:
   //   contents of prepends
   //   + useStd ? (., aipsHome(), aipsRoot()) : ()
   //   + contents of appends
-  static Bool findDir(String& foundDir, const String& lastPart="",
-                      const Vector<String>& prepends=Vector<String>(),
-                      const Vector<String>& appends=Vector<String>(),
-                      Bool useStds=True);
+  static Bool findDir(String &foundDir, const String &lastPart = "",
+                      const Vector<String> &prepends = Vector<String>(),
+                      const Vector<String> &appends = Vector<String>(), Bool useStds = True);
 
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
   // <group>
-  static uInt registerRC(const String &keyword,
-			 const String &default_value);
-  static uInt registerRC(const String &keyword,
-			 Int Nname, const String tname[], const String &default_value);
-  static uInt registerRC(const String &keyword,
-			 const Vector<String> &tname, const String &default_value);
+  static uInt registerRC(const String &keyword, const String &default_value);
+  static uInt registerRC(const String &keyword, Int Nname, const String tname[],
+                         const String &default_value);
+  static uInt registerRC(const String &keyword, const Vector<String> &tname,
+                         const String &default_value);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
@@ -293,10 +287,8 @@ public:
   // Sets allow registered values to be set
   // <group>
   static void set(uInt keyword, const String &default_value);
-  static void set(uInt keyword,
-		  Int Nname, const String tname[], const String &default_value);
-  static void set(uInt keyword,
-		  const Vector<String> &tname, const String &default_value);
+  static void set(uInt keyword, Int Nname, const String tname[], const String &default_value);
+  static void set(uInt keyword, const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Save a registered keyword value to <src>$HOME/.aipsrc</src>
@@ -322,7 +314,7 @@ public:
   // Returns: <src>~/aips++</src>
   static const String &aipsHome();
   // </group>
-  
+
   // The <src>reRead()</src> function will reinitialise the static maps and read
   // the aipsrc files again. It could be useful in some interactive circumstances.
   // Note: Calling <src>reRead()</src> while using the static maps is not (thread-)safe.
@@ -336,7 +328,6 @@ public:
   static void reRead();
   static Double lastRead();
   // </group>
-  
 
   // The following functions return the full lists of available data. They could
   // be useful for debugging purposes.
@@ -344,8 +335,8 @@ public:
   static const Block<String> &values();
   static const Block<String> &patterns();
   // </group>
-  
-  // The following <src>show()</src> function, useful for debugging, outputs 
+
+  // The following <src>show()</src> function, useful for debugging, outputs
   // all keyword/value pairs found
   static void show(ostream &oStream);
   // Prints all info on cout
@@ -354,23 +345,20 @@ public:
   // <group>
   // Read aipsrc type files (without wildcards), and return the unique names
   // and values in the Vector arguments. The return value is number of names.
-  static uInt genRestore(Vector<String> &namlst, Vector<String> &vallst,
-		    const String &fileList);
+  static uInt genRestore(Vector<String> &namlst, Vector<String> &vallst, const String &fileList);
   // Save the names/values in file
-  static void genSave(Vector<String> &namlst, Vector<String> &vallst,
-		      const String &fnam);
+  static void genSave(Vector<String> &namlst, Vector<String> &vallst, const String &fnam);
   // Set (new or overwrite) keyword/value pair
-  static void genSet(Vector<String> &namlst, Vector<String> &vallst,
-		     const String &nam, const String &val);
+  static void genSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam,
+                     const String &val);
   // Remove a keyword from list (False if not in list)
-  static Bool genUnSet(Vector<String> &namlst, Vector<String> &vallst,
-		       const String &nam);
+  static Bool genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam);
   // Get the value of a keyword
   static Bool genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
-		     const String &nam);
+                     const String &nam);
   // </group>
 
-protected:
+ protected:
   // Actual find function
   static Bool find(String &value, const String &keyword, uInt start);
   // Actual find function to use during parse() without recursing into parse()
@@ -379,13 +367,13 @@ protected:
   static uInt registerRC(const String &keyword, std::vector<String> &nlst);
   // Actual saving
   static void save(const String keyword, const String val);
-  
-private:
-  //# Data
-  // Object to ensure safe multi-threaded lazy single initialization
+
+ private:
+  // # Data
+  //  Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirCallOnceFlag;
   // Last time data was (re)read
-  static Double lastParse; 
+  static Double lastParse;
   // List of values belonging to keywords found
   static Block<String> keywordValue;
   // List of patterns deducted from names
@@ -419,30 +407,25 @@ private:
   Aipsrc() = delete;
   ~Aipsrc() = delete;
 
-  //# General member functions
-  // Read in the aipsrc files. Always called using theirCallOnce (except for reRead()).
-  // <group>
+  // # General member functions
+  //  Read in the aipsrc files. Always called using theirCallOnce (except for reRead()).
+  //  <group>
   static void parse();
   static void doParse(String &fileList);
   // </group>
-  
+
   // The following parse function can be used for any list of files. It will
   // return the list of Patterns and values found, and the last keyword number
   // of first file in list.
-  static uInt genParse(Block<String> &keywordPattern, 
-		       Block<String> &keywordValue,
-		       uInt &fileEnd, const String &fileList);
+  static uInt genParse(Block<String> &keywordPattern, Block<String> &keywordValue, uInt &fileEnd,
+                       const String &fileList);
 
   // Locate the right keyword in the static maps
-  static Bool matchKeyword(uInt &where, const String &keyword,
-			   uInt start);
+  static Bool matchKeyword(uInt &where, const String &keyword, uInt start);
   // Fill in root, arch, site, host and home
   static void fillAips();
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-
-

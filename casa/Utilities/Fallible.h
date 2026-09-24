@@ -1,27 +1,27 @@
-//# Fallible.h: Identifies a value as valid or invalid
-//# Copyright (C) 1994,1995,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # Fallible.h: Identifies a value as valid or invalid
+// # Copyright (C) 1994,1995,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_FALLIBLE_H
 #define CASA_FALLIBLE_H
@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> throw exception on access of an invalid object </summary>
 //
@@ -42,8 +42,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <group name=invalid_access>
 [[deprecated("Fallible is replaced by std::optional")]]
 inline void AccessInvalidFallibleObject() {
-  throw(AipsError("Fallible<T>:: invalid object accessed. Sorry I don't know"
-    " from where"));
+  throw(
+      AipsError("Fallible<T>:: invalid object accessed. Sorry I don't know"
+                " from where"));
 }
 // </group>
 
@@ -57,7 +58,7 @@ inline void AccessInvalidFallibleObject() {
 // be valid.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // This class resembles the one in <em>Scientific and Engineering C++</em>
 // by Barton and Nackman. While it was written with that book closed, the
 // class is simple enough that resemblances likely remain.
@@ -69,13 +70,13 @@ inline void AccessInvalidFallibleObject() {
 // A copy of the value is stored in the <src>Fallible<T></src> object, so
 // making copies shouldn't be too expensive. It is anticipated that this
 // class will most often be used with built in, or other small, types.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // Suppose we write some code that turns a day/month/year into a day
 // of the week:
 // <srcblock>
-//    enum DayName {Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, 
+//    enum DayName {Sunday, Monday, Tuesday, Wednesday, Thursday, Friday,
 //                  Saturday};
 //    Fallible<DayName> dayFromDate(uInt day, uInt month, uInt year); // a func.
 // </srcblock>
@@ -117,44 +118,46 @@ inline void AccessInvalidFallibleObject() {
 //   <LI>  copy constructor
 // </templating>
 
-template<class T> class
-[[deprecated("Use std::optional")]]
-Fallible
-{
-public: 
-    // The default constructor creates an invalid object.
-    Fallible() : value_p(T()), isValid_p(False) {}
+template <class T>
+class [[deprecated("Use std::optional")]] Fallible {
+ public:
+  // The default constructor creates an invalid object.
+  Fallible() : value_p(T()), isValid_p(False) {}
 
-    // Create a valid object
-    Fallible(const T &value) : value_p(value), isValid_p(True) {}
+  // Create a valid object
+  Fallible(const T &value) : value_p(value), isValid_p(True) {}
 
-    //# Actually, the default copy ctor and assignment operator would work
-    Fallible(const Fallible<T> &other) : value_p(other.value_p),
-                                         isValid_p(other.isValid_p) {}
-    
-    Fallible<T> &operator=(const Fallible<T> &other) 
-              {value_p = other.value_p; isValid_p = other.isValid_p; 
-	       return *this;}
+  // # Actually, the default copy ctor and assignment operator would work
+  Fallible(const Fallible<T> &other) : value_p(other.value_p), isValid_p(other.isValid_p) {}
 
-    ~Fallible() {}
+  Fallible<T> &operator=(const Fallible<T> &other) {
+    value_p = other.value_p;
+    isValid_p = other.isValid_p;
+    return *this;
+  }
 
-    // Automatically convert a <src>Fallible<T></src> to a <src>T</src>.
-    operator T() const  { if (! isValid_p) AccessInvalidFallibleObject();
-			  return value_p; }
+  ~Fallible() {}
 
-    // Sometimes it's more convenient to not rely on a compiler supplied
-    // conversion, especially when the compiler is confused.
-    T value() const { if (! isValid_p) AccessInvalidFallibleObject();
-		      return value_p; }
+  // Automatically convert a <src>Fallible<T></src> to a <src>T</src>.
+  operator T() const {
+    if (!isValid_p) AccessInvalidFallibleObject();
+    return value_p;
+  }
 
-    Bool isValid() const {return isValid_p;}
-private:
-    T value_p;
-    Bool isValid_p;
+  // Sometimes it's more convenient to not rely on a compiler supplied
+  // conversion, especially when the compiler is confused.
+  T value() const {
+    if (!isValid_p) AccessInvalidFallibleObject();
+    return value_p;
+  }
+
+  Bool isValid() const { return isValid_p; }
+
+ private:
+  T value_p;
+  Bool isValid_p;
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-

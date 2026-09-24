@@ -1,46 +1,45 @@
-//# UnitVal.h: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994-1999,2000,2001,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # UnitVal.h: defines the class describing a unit as a value and a dimension
+// # Copyright (C) 1994-1999,2000,2001,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_UNITVAL_H
 #define CASA_UNITVAL_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/UnitDim.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class MUString;
 class UnitMap;
 class UMaps;
 
-// 
+//
 // <summary>
 // describes any valid unit as a factor and a dimenion of SI units
 // </summary>
@@ -58,10 +57,10 @@ class UMaps;
 // The class name derives from Units and gives a Value for a unit string
 // </etymology>
 //
-// <synopsis> 
+// <synopsis>
 // Physical units are strings consisting of one or more names of known
 // basic units, separated by '.' or ' ' (for multiplication) or '/' (for
-// division). Each name can optionally be preceded by a standard decimal 
+// division). Each name can optionally be preceded by a standard decimal
 // prefix, and/or followed by an (optionally signed) exponent.
 // Example:
 //	km/s/(Mpc.s)2  is identical to km.s-1.Mpc-2.s-2
@@ -86,7 +85,7 @@ class UMaps;
 //   <li> UnitVal(Double f, Int i) (private) creates value f with unit
 //				at position i in dimension vector
 // </ul>
-// 
+//
 //
 //  <h3> Manipulating unit values </h3>
 //
@@ -129,7 +128,7 @@ class UMaps;
 // if ( UnitVal::check( "km/s/Mpc") ) {...}
 // </srcblock>
 //
-// </synopsis> 
+// </synopsis>
 //
 // <example>
 // An observation contains values in Janskys and in Westerbork Units. The
@@ -142,7 +141,7 @@ class UMaps;
 // // The Fits tape gave WU (which are defined):
 // // We check if JY and WU are of the same dimension:
 //   if (UnitVal(1.,"JY") != UnitVal(1.,"WU")) {
-//	cerr << "Wrong dimension for either JY ( " << 
+//	cerr << "Wrong dimension for either JY ( " <<
 //		UnitVal(1.,"JY")->getDim() <<
 //		") or WU ( " <<
 //		UnitVal(1.,"WU")->getDim() << ")" << endl;
@@ -163,57 +162,57 @@ class UMaps;
 // </todo>
 
 class UnitVal {
-  //# Friends
-  // Multiply
+  // # Friends
+  //  Multiply
   friend UnitVal operator*(const UnitVal &in, const UnitVal &other);
   // Divide
   friend UnitVal operator/(const UnitVal &in, const UnitVal &other);
   // Output a unit as a value and a string of SI defining units
-  friend ostream& operator<<(ostream &os, const UnitVal &ku);
+  friend ostream &operator<<(ostream &os, const UnitVal &ku);
   // ensure that statics are initialized
   friend class UnitVal_static_initializer;
 
  public:
-  //# Constructors
-  // Construct an non-dimensioned value of 1
+  // # Constructors
+  //  Construct an non-dimensioned value of 1
   UnitVal();
   // Copy constructor
   UnitVal(const UnitVal &other);
-  
+
   // Construct an non-dimensioned value
   UnitVal(Double factor) { init(factor); }
-  
+
   // Construct a fully dimensioned value
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  UnitVal(Double factor, const String &s, UMaps* = 0);
-  
+  UnitVal(Double factor, const String &s, UMaps * = 0);
+
   // Construct a value with a single unit at position specified
   UnitVal(Double factor, Int pos) { init(factor, pos); }
-  
+
   // Destructor
   ~UnitVal();
-  
-  //# Operators
-  // Assignment (copy semantics)
+
+  // # Operators
+  //  Assignment (copy semantics)
   UnitVal &operator=(const UnitVal &other);
-  
+
   // Manipulate units
   // <group name="manipulate">
   // Multiply different units
   UnitVal &operator*=(const UnitVal &other);
-  
+
   // Divide different units
   UnitVal &operator/=(const UnitVal &other);
-  
+
   // Compare the dimensionality of different units
   Bool operator==(const UnitVal &other) const;
   Bool operator!=(const UnitVal &other) const;
   // </group>
-  
-  //# General member functions
-  
+
+  // # General member functions
+
   // Raise a unit to an integer power
   UnitVal pow(Int p);
 
@@ -226,29 +225,28 @@ class UnitVal {
   UnitVal root(Int p) const;
   UnitVal sqrt() const;
   // </group>
-  
+
   // Get the data parts of the unit value definition
   // <group name="get data">
   // Get the dimensions in the defining SI units
   const UnitDim &getDim() const;
-  
+
   // Get the factor of the unit (as compared to pure SI units)
   Double getFac() const;
   // </group>
-  
-  //# Helper functions
-  // Convert a unit string to a proper unit value and cache the result. The
-  // function will return False if invalid string specified
+
+  // # Helper functions
+  //  Convert a unit string to a proper unit value and cache the result. The
+  //  function will return False if invalid string specified
   static Bool check(const String &s);
-  
+
   // Convert a unit string to a proper unit value, cache the result and compare
   // the dimension with the specified unit value. False if any of the steps fails
   static Bool check(const String &s, UnitVal &loc);
-  
-  
-  //# Data members
-  // Some constants to check type of units
-  // <group name="unit kinds">
+
+  // # Data members
+  //  Some constants to check type of units
+  //  <group name="unit kinds">
   static UnitVal NODIM;
   static UnitVal UNDIM;
   static UnitVal LENGTH;
@@ -268,64 +266,62 @@ class UnitVal {
   void init(Double factor, Int pos);
 
  private:
-  //# Data members
-  // The factor necessary to express the specified unit in the defining SI units
+  // # Data members
+  //  The factor necessary to express the specified unit in the defining SI units
   Double kindFactor;
-  
+
   // The dimensions of the unit in the defining SI units
   UnitDim kindDim;
-  
+
   // Convert (and check) a unit string to an SI value representation
   // <group>
-  static Bool create(const String &s, UnitVal &res, UMaps* = 0);
-  static Bool create(MUString &str, UnitVal &res, UMaps* = 0);
+  static Bool create(const String &s, UnitVal &res, UMaps * = 0);
+  static Bool create(MUString &str, UnitVal &res, UMaps * = 0);
   // </group>
-  
+
   // Determine sign of unit power (i.e. if '.' or '/')
   static Int psign(MUString &str);
-  
+
   // Determine exponent of unit symbol
   static Int power(MUString &str);
-  
+
   // Determine symbol name in unit string
-  static Bool field(MUString &str, UnitVal &res, UMaps*);
-  
+  static Bool field(MUString &str, UnitVal &res, UMaps *);
 };
 
-//# Inline Implementations
+// # Inline Implementations
 
-//# Global functions
-// <summary> Global output function </summary>
-// <group name=output>
-// Output
-ostream& operator<<(ostream &os, const UnitVal &ku);
+// # Global functions
+//  <summary> Global output function </summary>
+//  <group name=output>
+//  Output
+ostream &operator<<(ostream &os, const UnitVal &ku);
 // </group>
 
 // <summary> Static initialisation of UnitVal constants </summary>
 static class UnitVal_static_initializer {
-  public:
-    UnitVal_static_initializer( ) {
-      if ( ! initialized ) {
-	UnitVal::NODIM.init(       1.);
-	UnitVal::UNDIM.init(       1., UnitDim::Dnon);
-	UnitVal::LENGTH.init(      1., UnitDim::Dm);
-	UnitVal::MASS.init(        1., UnitDim::Dkg);
-	UnitVal::TIME.init(        1., UnitDim::Ds);
-	UnitVal::CURRENT.init(     1., UnitDim::DA);
-	UnitVal::TEMPERATURE.init( 1., UnitDim::DK);
-	UnitVal::INTENSITY.init(   1., UnitDim::Dcd);
-	UnitVal::MOLAR.init(       1., UnitDim::Dmol);
-	UnitVal::ANGLE.init(       1., UnitDim::Drad);
-	UnitVal::SOLIDANGLE.init(  1., UnitDim::Dsr);
-	initialized = 1;
-      }
+ public:
+  UnitVal_static_initializer() {
+    if (!initialized) {
+      UnitVal::NODIM.init(1.);
+      UnitVal::UNDIM.init(1., UnitDim::Dnon);
+      UnitVal::LENGTH.init(1., UnitDim::Dm);
+      UnitVal::MASS.init(1., UnitDim::Dkg);
+      UnitVal::TIME.init(1., UnitDim::Ds);
+      UnitVal::CURRENT.init(1., UnitDim::DA);
+      UnitVal::TEMPERATURE.init(1., UnitDim::DK);
+      UnitVal::INTENSITY.init(1., UnitDim::Dcd);
+      UnitVal::MOLAR.init(1., UnitDim::Dmol);
+      UnitVal::ANGLE.init(1., UnitDim::Drad);
+      UnitVal::SOLIDANGLE.init(1., UnitDim::Dsr);
+      initialized = 1;
     }
+  }
+
  private:
-    static int initialized;
+  static int initialized;
 } unitval_static_initializer;
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
-

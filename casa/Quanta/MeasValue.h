@@ -1,41 +1,41 @@
-//# MeasValue.h: Base class for values in a Measure
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MeasValue.h: Base class for values in a Measure
+// # Copyright (C) 1996,1997,1998,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_MEASVALUE_H
 #define CASA_MEASVALUE_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-template <class Qtype> class Quantum;
+// # Forward Declarations
+template <class Qtype>
+class Quantum;
 
 // <summary>
 // Base class for values in a Measure
@@ -75,10 +75,10 @@ template <class Qtype> class Quantum;
 // and <src>Quantum<Vector<type> ></src> can
 // also be used.
 //
-// The value of the <src>MeasValue</src> can be obtained by a variety of 
+// The value of the <src>MeasValue</src> can be obtained by a variety of
 // <src>get</src> functions, returning in general internal or <src>Quantum</src>
 // values. Special formatting (like hh:mm:ss.t, dd.mm.ss.t, yy/mm/dd etc)
-// are catered for in <em>conversion-type</em> classes like 
+// are catered for in <em>conversion-type</em> classes like
 // <linkto class=MVTime>MVTime</linkto>, <linkto class=MVAngle>MVAngle</linkto>
 //
 // Note that the class is a pure virtual class. No instances can be created,
@@ -102,51 +102,50 @@ template <class Qtype> class Quantum;
 // </todo>
 
 class MeasValue {
+ public:
+  // # Enumerations
 
-public:
-  //# Enumerations
-  
-  //# Typedefs
-  
-  //# Friends
-  // Output a MeasValue
+  // # Typedefs
+
+  // # Friends
+  //  Output a MeasValue
   friend ostream &operator<<(ostream &os, const MeasValue &meas);
-  
-  //# Constructor
-  // Each derived class should have at least the following constructors:
-  // <srcblock>
+
+  // # Constructor
+  //  Each derived class should have at least the following constructors:
+  //  <srcblock>
   //	MV()			// some default
   //	MV(Double)		// some default or error if vector expected
   //	MV(Vector<Double>)	// with check for array number of elements
   //	MV(Quantity)
   //	MV(Vector<Quantity>)
   //	MV(Quantum<Vector<Double> >
-  // </srcblock>
-  // Float (or other standard type) versions could be added if appropiate.
-  // Dummy for cxx2html
-  void dummy_constr() const {;};
-  
-  //# Destructor
-  // Destructor
+  //  </srcblock>
+  //  Float (or other standard type) versions could be added if appropiate.
+  //  Dummy for cxx2html
+  void dummy_constr() const { ; };
+
+  // # Destructor
+  //  Destructor
   virtual ~MeasValue();
 
-  //# Operators
-  // The following operators should be present at least.
-  // <srcblock>
-  // MV &operator+=(const MV &meas);
-  // MV &operator-=(const MV &meas);
-  // Bool operator==(const MV &meas) const;
-  // Bool operator!=(const MV &meas) const;
-  // Bool near(const MV &meas, Double tol = 1e-13) const;
-  // Bool nearAbs(const MV &meas, Double tol = 1e-13) const;
-  // </srcblock>
-  // Dummy for cxx2html
-  void dummy_operator() const {;};
-  
-  //# General Member Functions
-  // Print a MeasValue
+  // # Operators
+  //  The following operators should be present at least.
+  //  <srcblock>
+  //  MV &operator+=(const MV &meas);
+  //  MV &operator-=(const MV &meas);
+  //  Bool operator==(const MV &meas) const;
+  //  Bool operator!=(const MV &meas) const;
+  //  Bool near(const MV &meas, Double tol = 1e-13) const;
+  //  Bool nearAbs(const MV &meas, Double tol = 1e-13) const;
+  //  </srcblock>
+  //  Dummy for cxx2html
+  void dummy_operator() const { ; };
+
+  // # General Member Functions
+  //  Print a MeasValue
   virtual void print(ostream &os) const = 0;
-  
+
   // Clone a MeasValue
   virtual MeasValue *clone() const = 0;
 
@@ -157,23 +156,23 @@ public:
 
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
-  // The getTMRecordValue() gets the record values as deemed appropriate for 
+  // The getTMRecordValue() gets the record values as deemed appropriate for
   // the TableMeasures.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const = 0;
-  virtual Vector<Quantum<Double> > getXRecordValue() const;
-  virtual Vector<Quantum<Double> > getTMRecordValue() const;
+  virtual Vector<Quantum<Double>> getRecordValue() const = 0;
+  virtual Vector<Quantum<Double>> getXRecordValue() const;
+  virtual Vector<Quantum<Double>> getTMRecordValue() const;
   // </group>
   // Set the internal value from a Vector of values (obtained in principle
-  // with a getVector()). It will be assumed that the Vector is correctly 
+  // with a getVector()). It will be assumed that the Vector is correctly
   // formatted. If Vector is too long, the remainder will be discarded.
   // If Vector is too short, action will depend on the individual classes,
-  // but in general act the same way as a constructor with a short Vector. 
+  // but in general act the same way as a constructor with a short Vector.
   virtual void putVector(const Vector<Double> &in) = 0;
 
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in) = 0;
+  virtual Bool putValue(const Vector<Quantum<Double>> &in) = 0;
 
   // Some of the Measure values used need the occasional adjustments to proper
   // values. Examples are MVDirection (direction cosines) which have to be
@@ -187,17 +186,16 @@ public:
   // Re-adjust, i.e. undo a previous adjust, with value
   virtual void readjust(Double val);
   // </group>
-private:
+ private:
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output declaration
+// # Global functions
+//  <summary> Global functions </summary>
+//  <group name=Output>
+//  Output declaration
 ostream &operator<<(ostream &os, const MeasValue &meas);
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

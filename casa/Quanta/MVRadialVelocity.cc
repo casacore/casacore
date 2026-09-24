@@ -1,29 +1,29 @@
-//# MVRadialVelocity.cc: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MVRadialVelocity.cc: Internal value for MRadialvelocity
+// # Copyright (C) 1996,1997,1998,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
-//# Includes
+// # Includes
 #include <casacore/casa/Quanta/MVRadialVelocity.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/IO/ArrayIO.h>
@@ -33,27 +33,22 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // MVRadialVelocity class
 
-//# Constructors
-MVRadialVelocity::MVRadialVelocity() : 
-  val(0.0){}
+// # Constructors
+MVRadialVelocity::MVRadialVelocity() : val(0.0) {}
 
-MVRadialVelocity::MVRadialVelocity(Double d) : 
-  val(d){}
+MVRadialVelocity::MVRadialVelocity(Double d) : val(d) {}
 
-MVRadialVelocity::MVRadialVelocity(const MVRadialVelocity &other) :
-  MeasValue(),
-  val(other.val)
-{}
+MVRadialVelocity::MVRadialVelocity(const MVRadialVelocity &other) : MeasValue(), val(other.val) {}
 
 MVRadialVelocity::MVRadialVelocity(const Quantity &other) {
   val = other.getValue() * makeF(other.getFullUnit());
 }
 
-MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double> > &other) {
+MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double>> &other) {
   Vector<Double> tmp;
   tmp = other.getValue();
   uInt i = tmp.nelements();
@@ -62,7 +57,7 @@ MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double> > &other) {
   } else if (i == 1) {
     val = tmp(0) * makeF(other.getFullUnit());
   } else {
-    throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
+    throw(AipsError("Illegal vector length in MVRadialVelocity constructor"));
   }
 }
 
@@ -73,13 +68,13 @@ MVRadialVelocity::MVRadialVelocity(const Vector<Double> &other) {
   } else if (i == 1) {
     val = other(0);
   } else {
-    throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
+    throw(AipsError("Illegal vector length in MVRadialVelocity constructor"));
   }
 }
 
 MVRadialVelocity::MVRadialVelocity(const Vector<Quantity> &other) {
   if (!putValue(other)) {
-    throw (AipsError("Illegal quantity vector in MVRadialVelocity constructor"));
+    throw(AipsError("Illegal quantity vector in MVRadialVelocity constructor"));
   }
 }
 
@@ -94,9 +89,7 @@ MVRadialVelocity &MVRadialVelocity::operator=(const MVRadialVelocity &other) {
 MVRadialVelocity::~MVRadialVelocity() {}
 
 // Operators
-MVRadialVelocity::operator Double() const {
-  return val;
-}
+MVRadialVelocity::operator Double() const { return val; }
 
 MVRadialVelocity &MVRadialVelocity::operator+=(const MVRadialVelocity &other) {
   val += other.val;
@@ -127,30 +120,20 @@ Bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, Double tol) const 
 // Member functions
 
 void MVRadialVelocity::assure(const MeasValue &in) {
-  if (!dynamic_cast<const MVRadialVelocity*>(&in)) {
+  if (!dynamic_cast<const MVRadialVelocity *>(&in)) {
     throw(AipsError("Illegal MeasValue type argument: MVRadialVelocity"));
   }
 }
 
-void MVRadialVelocity::print(ostream &os) const {
-  os << val;
-}
+void MVRadialVelocity::print(ostream &os) const { os << val; }
 
-MeasValue *MVRadialVelocity::clone() const {
-  return (new MVRadialVelocity(*this));
-}
+MeasValue *MVRadialVelocity::clone() const { return (new MVRadialVelocity(*this)); }
 
-Double MVRadialVelocity::getValue() const {
-  return val;
-}
+Double MVRadialVelocity::getValue() const { return val; }
 
-Quantity MVRadialVelocity::get() const {
-  return Quantity(val,"m/s");
-}
+Quantity MVRadialVelocity::get() const { return Quantity(val, "m/s"); }
 
-Quantity MVRadialVelocity::get(const Unit &unit) const {
-  return Quantity(val/makeF(unit), unit);
-}
+Quantity MVRadialVelocity::get(const Unit &unit) const { return Quantity(val / makeF(unit), unit); }
 
 Vector<Double> MVRadialVelocity::getVector() const {
   Vector<Double> x(1);
@@ -166,14 +149,14 @@ void MVRadialVelocity::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double> > MVRadialVelocity::getRecordValue() const {
-  Vector<Quantum<Double> > tmp(1);
+Vector<Quantum<Double>> MVRadialVelocity::getRecordValue() const {
+  Vector<Quantum<Double>> tmp(1);
   tmp(0) = get();
   return tmp;
 }
 
-Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
-  static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
+Bool MVRadialVelocity::putValue(const Vector<Quantum<Double>> &in) {
+  static const UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
   uInt i = in.nelements();
   if (i == 0) {
     val = 0.0;
@@ -190,36 +173,33 @@ Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
   return True;
 }
 
-Vector<Double>
-MVRadialVelocity::shiftFrequency(const Vector<Double> &freq) const {
+Vector<Double> MVRadialVelocity::shiftFrequency(const Vector<Double> &freq) const {
   Vector<Double> tmp(freq.nelements());
-  Double factor = val/C::c;
-  factor = sqrt((1-factor)/(1+factor));
-  for (uInt i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
+  Double factor = val / C::c;
+  factor = sqrt((1 - factor) / (1 + factor));
+  for (uInt i = 0; i < freq.nelements(); ++i) tmp[i] = freq[i] * factor;
   return tmp;
 }
 
-Quantum<Vector<Double> >
-MVRadialVelocity::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
+Quantum<Vector<Double>> MVRadialVelocity::shiftFrequency(
+    const Quantum<Vector<Double>> &freq) const {
   Vector<Double> tmp(freq.getValue().nelements());
   tmp = freq.getValue();
-  Double factor = val/C::c;
-  factor = sqrt((1-factor)/(1+factor));
-  for (uInt i=0; i<tmp.nelements(); ++i) {
-    tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
-			 factor;
+  Double factor = val / C::c;
+  factor = sqrt((1 - factor) / (1 + factor));
+  for (uInt i = 0; i < tmp.nelements(); ++i) {
+    tmp[i] = MVFrequency(Quantity(tmp[i], freq.getFullUnit())).getValue() * factor;
   }
-  for (uInt i=0; i<tmp.nelements(); ++i) {
+  for (uInt i = 0; i < tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
   }
-  return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
+  return Quantum<Vector<Double>>(tmp, freq.getFullUnit());
 }
 
-Double MVRadialVelocity::makeF(const Unit &dt) const{
-  static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  Quantity(1.0,dt).assure(Velocity);
+Double MVRadialVelocity::makeF(const Unit &dt) const {
+  static const UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
+  Quantity(1.0, dt).assure(Velocity);
   return (dt.getValue().getFac());
 }
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

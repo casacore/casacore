@@ -1,30 +1,30 @@
-//# HostInfo_solaris.h: Solaris specific memory, swap, and CPU code.
+// # HostInfo_solaris.h: Solaris specific memory, swap, and CPU code.
 
- /*
- **  This is a greatly MODIFIED version of a "top" machine dependent file.
- **  The only resemblance it bears to the original is with respect to the
- **  mechanics of finding various system details. The copyright details
- **  follow.
- **
- **  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
- **
- **  Top users/processes display for Unix
- **  Version 3
- **
- **  This program may be freely redistributed,
- **  but this entire comment MUST remain intact.
- **
- **  Copyright (c) 1984, 1989, William LeFebvre, Rice University
- **  Copyright (c) 1989 - 1994, William LeFebvre, Northwestern University
- **  Copyright (c) 1994, 1995, William LeFebvre, Argonne National Laboratory
- **  Copyright (c) 1996, William LeFebvre, Group sys Consulting
- **  Copyright (c) 2002, Associated Universities Inc.
- */
+/*
+**  This is a greatly MODIFIED version of a "top" machine dependent file.
+**  The only resemblance it bears to the original is with respect to the
+**  mechanics of finding various system details. The copyright details
+**  follow.
+**
+**  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+**
+**  Top users/processes display for Unix
+**  Version 3
+**
+**  This program may be freely redistributed,
+**  but this entire comment MUST remain intact.
+**
+**  Copyright (c) 1984, 1989, William LeFebvre, Rice University
+**  Copyright (c) 1989 - 1994, William LeFebvre, Northwestern University
+**  Copyright (c) 1994, 1995, William LeFebvre, Argonne National Laboratory
+**  Copyright (c) 1996, William LeFebvre, Group sys Consulting
+**  Copyright (c) 2002, Associated Universities Inc.
+*/
 
 #ifndef CASA_HOSTINFOSOLARIS_H
 #define CASA_HOSTINFOSOLARIS_H
 
-# if defined(HOSTINFO_DO_IMPLEMENT)
+#if defined(HOSTINFO_DO_IMPLEMENT)
 
 /*
  *
@@ -53,7 +53,7 @@
 
 #include <kstat.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // HostInfo for Solaris machines.
@@ -68,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=HostInfo>HostInfo</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This file provides the Solaris specific functions for HostInfo.
 // It is selectively included by HostInfo.cc.
 // </synopsis>
@@ -81,12 +81,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
  * we'll make those unsigned long)
  * Older Solaris doesn't define KSTAT_DATA_UINT32, those are always 32 bit.
  */
-# ifndef KSTAT_DATA_UINT32
-#  define ui32 ul
-# endif
+#ifndef KSTAT_DATA_UINT32
+#define ui32 ul
+#endif
 
 #ifdef SC_AINFO
-#undef USE_ANONINFO				/* Use swapctl() instead */
+#undef USE_ANONINFO /* Use swapctl() instead */
 #endif
 
 #define NO_NPROC
@@ -99,130 +99,118 @@ static void get_swapinfo(int *total, int *fr);
 #endif
 
 class HostMachineInfo {
-friend class HostInfo;
+  friend class HostInfo;
 
-    void kupdate( );
-    HostMachineInfo( );
-    ~HostMachineInfo( );
-    void update_info( );
+  void kupdate();
+  HostMachineInfo();
+  ~HostMachineInfo();
+  void update_info();
 
-    static int pageshift;
-    int (*p_pagetok) (int);
+  static int pageshift;
+  int (*p_pagetok)(int);
 
-    static inline int pagetok_none(int size) { return(size); }
-    static inline int pagetok_left(int size) { return(size << pageshift); }
-    static inline int pagetok_right(int size) { return(size >> pageshift); }
+  static inline int pagetok_none(int size) { return (size); }
+  static inline int pagetok_left(int size) { return (size << pageshift); }
+  static inline int pagetok_right(int size) { return (size >> pageshift); }
 
-    int valid;
-    kstat_ctl_t *kc;
+  int valid;
+  kstat_ctl_t *kc;
 
-    int cpus;
+  int cpus;
 
-    ptrdiff_t memory_total;
-    ptrdiff_t memory_used;
-    ptrdiff_t memory_free;
+  ptrdiff_t memory_total;
+  ptrdiff_t memory_used;
+  ptrdiff_t memory_free;
 
-    ptrdiff_t swap_total;
-    ptrdiff_t swap_used;
-    ptrdiff_t swap_free;
+  ptrdiff_t swap_total;
+  ptrdiff_t swap_used;
+  ptrdiff_t swap_free;
 };
 
 // </group>
 
-
 int HostMachineInfo::pageshift = 0;
 
-HostMachineInfo::~HostMachineInfo( ) { if ( kc ) kstat_close(kc); }
-
-HostMachineInfo::HostMachineInfo( ) : valid(1), kc(NULL)
-{
-    int i;
-
-    /* calculate pageshift value */
-    i = sysconf(_SC_PAGESIZE);
-    pageshift = 0;
-    while ((i >>= 1) > 0) pageshift++;
-
-    /* calculate an amount to shift to K values */
-    /* remember that log base 2 of 1024 is 10 (i.e.: 2^10 = 1024) */
-    pageshift -= 10;
-
-    /* now determine which pageshift function is appropriate for the 
-       result (have to because x << y is undefined for y < 0) */
-    if (pageshift > 0)
-    {
-	/* this is the most likely */
-	p_pagetok = pagetok_left;
-    }
-    else if (pageshift == 0)
-    {
-	p_pagetok = pagetok_none;
-    }
-    else
-    {
-	p_pagetok = pagetok_right;
-	pageshift = -pageshift;
-    }
-
-    long maxmem = sysconf(_SC_PHYS_PAGES);
-    memory_total = pagetok (maxmem);
-
-    /* use kstat to update all processor information */
-    kupdate( );
-
-    kstat_t *ks = kstat_lookup(kc, "unix", 0, "system_misc");
-    if (kstat_read(kc, ks, 0) == -1) {
-	perror("kstat_read");
-	valid = 0;
-    } 
-    kstat_named_t *kn = (kstat_named_t*) kstat_data_lookup(ks, "ncpus");
-    cpus = kn->value.ui32;
+HostMachineInfo::~HostMachineInfo() {
+  if (kc) kstat_close(kc);
 }
 
-void HostMachineInfo::kupdate( )
-{
-    kid_t nkcid;
-    int i;
-    static kid_t kcid = 0;
+HostMachineInfo::HostMachineInfo() : valid(1), kc(NULL) {
+  int i;
 
-    /*
-     * 0. kstat_open
-     */
+  /* calculate pageshift value */
+  i = sysconf(_SC_PAGESIZE);
+  pageshift = 0;
+  while ((i >>= 1) > 0) pageshift++;
 
-    if (!kc)
-    {
-	kc = kstat_open();
-	if (!kc)
-	{
-	    perror("kstat_open ");
-	    valid = 0;
-	}
-	kcid = kc->kc_chain_id;
-    }
+  /* calculate an amount to shift to K values */
+  /* remember that log base 2 of 1024 is 10 (i.e.: 2^10 = 1024) */
+  pageshift -= 10;
 
-    /* keep doing it until no more changes */
-  kcid_changed:
+  /* now determine which pageshift function is appropriate for the
+     result (have to because x << y is undefined for y < 0) */
+  if (pageshift > 0) {
+    /* this is the most likely */
+    p_pagetok = pagetok_left;
+  } else if (pageshift == 0) {
+    p_pagetok = pagetok_none;
+  } else {
+    p_pagetok = pagetok_right;
+    pageshift = -pageshift;
+  }
 
-    /*
-     * 1.  kstat_chain_update
-     */
-    nkcid = kstat_chain_update(kc);
-    if (nkcid)
-    {
-	/* UPDKCID will abort if nkcid is -1, so no need to check */
-	kcid = nkcid;
-    }
-    if (nkcid == -1) {
-        perror("kstat_read ");
-	valid = 0;
-    }
-    if (nkcid != 0)
-	goto kcid_changed;
+  long maxmem = sysconf(_SC_PHYS_PAGES);
+  memory_total = pagetok(maxmem);
+
+  /* use kstat to update all processor information */
+  kupdate();
+
+  kstat_t *ks = kstat_lookup(kc, "unix", 0, "system_misc");
+  if (kstat_read(kc, ks, 0) == -1) {
+    perror("kstat_read");
+    valid = 0;
+  }
+  kstat_named_t *kn = (kstat_named_t *)kstat_data_lookup(ks, "ncpus");
+  cpus = kn->value.ui32;
 }
 
+void HostMachineInfo::kupdate() {
+  kid_t nkcid;
+  int i;
+  static kid_t kcid = 0;
 
-void HostMachineInfo::update_info( )
-{
+  /*
+   * 0. kstat_open
+   */
+
+  if (!kc) {
+    kc = kstat_open();
+    if (!kc) {
+      perror("kstat_open ");
+      valid = 0;
+    }
+    kcid = kc->kc_chain_id;
+  }
+
+  /* keep doing it until no more changes */
+kcid_changed:
+
+  /*
+   * 1.  kstat_chain_update
+   */
+  nkcid = kstat_chain_update(kc);
+  if (nkcid) {
+    /* UPDKCID will abort if nkcid is -1, so no need to check */
+    kcid = nkcid;
+  }
+  if (nkcid == -1) {
+    perror("kstat_read ");
+    valid = 0;
+  }
+  if (nkcid != 0) goto kcid_changed;
+}
+
+void HostMachineInfo::update_info() {
   static long freemem;
   static int swaptotal;
   static int swapfree;
@@ -231,14 +219,13 @@ void HostMachineInfo::update_info( )
 
   ks = kstat_lookup(kc, "unix", 0, "system_pages");
   if (kstat_read(kc, ks, 0) == -1) {
-      perror("kstat_read");
-      valid = 0;
+    perror("kstat_read");
+    valid = 0;
   }
-  kn = (kstat_named_t*) kstat_data_lookup(ks, "freemem");
-  if (kn)
-      freemem = kn->value.ul;
+  kn = (kstat_named_t *)kstat_data_lookup(ks, "freemem");
+  if (kn) freemem = kn->value.ul;
 
-  memory_free = pagetok (freemem);
+  memory_free = pagetok(freemem);
   memory_used = memory_total - memory_free;
 
   get_swapinfo(&swaptotal, &swapfree);
@@ -252,73 +239,66 @@ void get_swapinfo(int *total, int *fr)
 
 {
 #ifdef SC_AINFO
-    struct anoninfo anon;
+  struct anoninfo anon;
 
-    if (swapctl(SC_AINFO, &anon) == -1) {
-	*total = *fr = 0;
-	return;
-    }
-    *total = anon.ani_max;
-    *fr = anon.ani_max - anon.ani_resv;
+  if (swapctl(SC_AINFO, &anon) == -1) {
+    *total = *fr = 0;
+    return;
+  }
+  *total = anon.ani_max;
+  *fr = anon.ani_max - anon.ani_resv;
 #else
-    int cnt, i;
-    int t, f;
-    struct swaptable *swt;
-    struct swapent *ste;
-    static char path[256];
+  int cnt, i;
+  int t, f;
+  struct swaptable *swt;
+  struct swapent *ste;
+  static char path[256];
 
-    /* get total number of swap entries */
-    cnt = swapctl(SC_GETNSWP, 0);
+  /* get total number of swap entries */
+  cnt = swapctl(SC_GETNSWP, 0);
 
-    /* allocate enough space to hold count + n swapents */
-    swt = (struct swaptable *)malloc(sizeof(int) +
-				     cnt * sizeof(struct swapent));
-    if (swt == NULL)
-    {
-	*total = 0;
-	*fr = 0;
-	return;
+  /* allocate enough space to hold count + n swapents */
+  swt = (struct swaptable *)malloc(sizeof(int) + cnt * sizeof(struct swapent));
+  if (swt == NULL) {
+    *total = 0;
+    *fr = 0;
+    return;
+  }
+  swt->swt_n = cnt;
+
+  /* fill in ste_path pointers: we don't care about the paths, so we point
+     them all to the same buffer */
+  ste = &(swt->swt_ent[0]);
+  i = cnt;
+  while (--i >= 0) {
+    ste++->ste_path = path;
+  }
+
+  /* grab all swap info */
+  swapctl(SC_LIST, swt);
+
+  /* walk thru the structs and sum up the fields */
+  t = f = 0;
+  ste = &(swt->swt_ent[0]);
+  i = cnt;
+  while (--i >= 0) {
+    /* dont count slots being deleted */
+    if (!(ste->ste_flags & ST_INDEL) && !(ste->ste_flags & ST_DOINGDEL)) {
+      t += ste->ste_pages;
+      f += ste->ste_free;
     }
-    swt->swt_n = cnt;
+    ste++;
+  }
 
-    /* fill in ste_path pointers: we don't care about the paths, so we point
-       them all to the same buffer */
-    ste = &(swt->swt_ent[0]);
-    i = cnt;
-    while (--i >= 0)
-    {
-	ste++->ste_path = path;
-    }
-
-    /* grab all swap info */
-    swapctl(SC_LIST, swt);
-
-    /* walk thru the structs and sum up the fields */
-    t = f = 0;
-    ste = &(swt->swt_ent[0]);
-    i = cnt;
-    while (--i >= 0)
-    {
-	/* dont count slots being deleted */
-	if (!(ste->ste_flags & ST_INDEL) &&
-	    !(ste->ste_flags & ST_DOINGDEL))
-	{
-	    t += ste->ste_pages;
-	    f += ste->ste_free;
-	}
-	ste++;
-    }
-
-    /* fill in the results */
-    *total = t;
-    *fr = f;
-    free(swt);
+  /* fill in the results */
+  *total = t;
+  *fr = f;
+  free(swt);
 #endif /* SC_AINFO */
 }
 #endif /* USE_ANONINFO */
 
+}  // namespace casacore
 
-} //# NAMESPACE CASACORE - END
-
-# endif
+#endif
 #endif

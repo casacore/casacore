@@ -1,39 +1,38 @@
-//# AipsIOCarray.h: Templated functions to get/put a C-array from/into AipsIO.
-//# Copyright (C) 1993,1994,1995,1996,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AipsIOCarray.h: Templated functions to get/put a C-array from/into AipsIO.
+// # Copyright (C) 1993,1994,1995,1996,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_AIPSIOCARRAY_H
 #define CASA_AIPSIOCARRAY_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/AipsIO.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-// <summary> 
+// <summary>
 // Templated functions to get/put a C-style array from/into AipsIO.
 // </summary>
 
@@ -50,7 +49,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // C-style arrays".
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // This file declares templated functions to get or put a C-style array
 // of any data type from/into AipsIO.
 // These functions are similar to the AipsIO functions put, get and getnew,
@@ -58,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // Specializations (using these AipsIO functions) are made for
 // the standard data types. These are much more efficient.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -95,18 +94,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-
 // <group name=AipsIOCarray>
 
 // Put a C-style array of n elements.
 // First the number of elements is put, thereafter all values.
-template<class T>
-void putAipsIO (AipsIO& aios, uInt n, const T* data);
+template <class T>
+void putAipsIO(AipsIO& aios, uInt n, const T* data);
 
 // Get n elements into an already available C-style array.
 // The data buffer must be large enough to hold n values.
-template<class T>
-void getAipsIO (AipsIO& aios, uInt n, T* data);
+template <class T>
+void getAipsIO(AipsIO& aios, uInt n, T* data);
 
 // Get elements into a C-style array to be allocated on the heap.
 // First the number of elements will be read. The array will be allocated
@@ -117,23 +115,19 @@ void getAipsIO (AipsIO& aios, uInt n, T* data);
 // Unfortunately the CFront compiler (and maybe others as well) fail to
 // overload on <src>T*& data</src> iso. <src>T** data</src>.
 // </note>
-template<class T>
-void getnewAipsIO (AipsIO& aios, uInt& n, T** data);
+template <class T>
+void getnewAipsIO(AipsIO& aios, uInt& n, T** data);
 
 // </group>
 
+// # Specializations for the builtin data types.
+#define AIPSIO_FUNC_SPEC(T)                                                         \
+  inline void putAipsIO(AipsIO& aios, uInt n, const T* data) { aios.put(n, data); } \
+  inline void getAipsIO(AipsIO& aios, uInt n, T* data) { aios.get(n, data); }       \
+  inline void getnewAipsIO(AipsIO& aios, uInt& n, T** data) { aios.getnew(n, *data); }
 
-//# Specializations for the builtin data types.
-#define AIPSIO_FUNC_SPEC(T) \
-inline void putAipsIO (AipsIO& aios, uInt n, const T* data) \
-    { aios.put (n, data); } \
-inline void getAipsIO (AipsIO& aios, uInt n, T* data) \
-    { aios.get (n, data); } \
-inline void getnewAipsIO (AipsIO& aios, uInt& n, T** data) \
-    { aios.getnew (n, *data); }
-
-//# These macros expand to generate the appropriate inline functions
-//# for the built-in data types.
+// # These macros expand to generate the appropriate inline functions
+// # for the built-in data types.
 
 AIPSIO_FUNC_SPEC(Bool)
 AIPSIO_FUNC_SPEC(Char)
@@ -150,11 +144,9 @@ AIPSIO_FUNC_SPEC(Complex)
 AIPSIO_FUNC_SPEC(DComplex)
 AIPSIO_FUNC_SPEC(String)
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/IO/AipsIOCarray.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

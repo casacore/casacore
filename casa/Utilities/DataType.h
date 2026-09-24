@@ -1,27 +1,27 @@
-//# DataType.h: data types (primarily) in the table system
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # DataType.h: data types (primarily) in the table system
+// # Copyright (C) 1993,1994,1995,1996,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_DATATYPE_H
 #define CASA_DATATYPE_H
@@ -32,10 +32,11 @@
 #include <casacore/casa/BasicSL/String.h>
 
 #include <casacore/casa/iosfwd.h>
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class Table;
-template<class T> class Quantum;
+template <class T>
+class Quantum;
 class String;
 class Record;
 
@@ -73,11 +74,11 @@ class Record;
 // 4 bytes, so <src>long</src> is not needed and may only cause
 // confusion.
 // </note>
-// 
+//
 // </synopsis>
 
 // <example>
-// The simplest uses of the DataType enumeration and functions are fairly 
+// The simplest uses of the DataType enumeration and functions are fairly
 // obvious, for example:
 // <srcblock>
 //    Double d;
@@ -136,25 +137,44 @@ class Record;
 //
 // Enumeration of the possible data types for keywords and table columns.
 // <group name=DataType>
-enum DataType {TpBool,    TpChar,     TpUChar,
-	       TpShort,   TpUShort,   TpInt,     TpUInt,
-	       TpFloat,   TpDouble,   
-	       TpComplex, TpDComplex, TpString,
-	       TpTable,
-	       TpArrayBool,    TpArrayChar,     TpArrayUChar,
-	       TpArrayShort,   TpArrayUShort,   TpArrayInt,   TpArrayUInt,
-               TpArrayFloat,   TpArrayDouble,
-	       TpArrayComplex, TpArrayDComplex, TpArrayString,
-	       TpRecord, TpOther,
-//#// TpLDouble,
-//#// TpArrayLDouble,
-	       TpQuantity, TpArrayQuantity,
-               TpInt64, TpArrayInt64,
-	       // Since we start at zero, this is the number of types in the
-	       // enum.
-               TpNumberOfTypes
-              };
-
+enum DataType {
+  TpBool,
+  TpChar,
+  TpUChar,
+  TpShort,
+  TpUShort,
+  TpInt,
+  TpUInt,
+  TpFloat,
+  TpDouble,
+  TpComplex,
+  TpDComplex,
+  TpString,
+  TpTable,
+  TpArrayBool,
+  TpArrayChar,
+  TpArrayUChar,
+  TpArrayShort,
+  TpArrayUShort,
+  TpArrayInt,
+  TpArrayUInt,
+  TpArrayFloat,
+  TpArrayDouble,
+  TpArrayComplex,
+  TpArrayDComplex,
+  TpArrayString,
+  TpRecord,
+  TpOther,
+  // #// TpLDouble,
+  // #// TpArrayLDouble,
+  TpQuantity,
+  TpArrayQuantity,
+  TpInt64,
+  TpArrayInt64,
+  // Since we start at zero, this is the number of types in the
+  // enum.
+  TpNumberOfTypes
+};
 
 // Write a formated representation (e.g., Type=Bool) of the given data type.
 ostream &operator<<(ostream &os, DataType type);
@@ -163,12 +183,17 @@ ostream &operator<<(ostream &os, DataType type);
 // to the template type. TpOther is returned for types that are
 // not specialized, as is void.
 // <group>
-template<typename T>
-inline DataType whatType() { return TpOther; }
+template <typename T>
+inline DataType whatType() {
+  return TpOther;
+}
 
 #define DEFINE_WHATTYPE(SPECIALIZED_TYPE, RETURN_TYPE) \
-  template<> inline DataType whatType<SPECIALIZED_TYPE>() { return RETURN_TYPE; }
-  
+  template <>                                          \
+  inline DataType whatType<SPECIALIZED_TYPE>() {       \
+    return RETURN_TYPE;                                \
+  }
+
 DEFINE_WHATTYPE(void, TpOther)
 DEFINE_WHATTYPE(Bool, TpBool)
 DEFINE_WHATTYPE(Char, TpChar)
@@ -270,10 +295,10 @@ constexpr size_t SizeOfType(DataType dtype) {
 // <group>
 Bool isScalar(DataType type);
 Bool isArray(DataType type);
-Bool isScalarFun(DataType type); //{return isScalar(type);}
+Bool isScalarFun(DataType type);  //{return isScalar(type);}
 // </group>
 
-// It is sometimes useful to discover if a DataType represents a real 
+// It is sometimes useful to discover if a DataType represents a real
 // numeric value (i.e., can it be cast to a Double?) This returns True
 // for both real scalar and array type.
 Bool isReal(DataType type);
@@ -286,7 +311,6 @@ Bool isNumeric(DataType type);
 
 // </group>
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

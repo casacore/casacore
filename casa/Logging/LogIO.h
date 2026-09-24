@@ -1,41 +1,41 @@
-//# LogIO.h: ostream-like interface to creating log messages.
-//# Copyright (C) 1997,1999,2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # LogIO.h: ostream-like interface to creating log messages.
+// # Copyright (C) 1997,1999,2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_LOGIO_H
 #define CASA_LOGIO_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogMessage.h>
 #include <casacore/casa/Logging/LogSink.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/iosstrfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class LogSink;
 class LogOrigin;
 
@@ -61,7 +61,7 @@ class LogOrigin;
 // <synopsis>
 // LogIO is intended to be used in a way similar to the ostream class.
 // However, rather than sending it's output to a file or stdout, it bundles
-// its output up into <linkto class=LogMessage>LogMessage</linkto> objects 
+// its output up into <linkto class=LogMessage>LogMessage</linkto> objects
 // and posts them to a <linkto class=LogSink>LogSink</linkto>.
 //
 // When you use the "<<" operator on a LogIO, you are building up a log message
@@ -92,7 +92,7 @@ class LogOrigin;
 // log sink since every sink's <src>post</src> also calls the global sink's
 // <src>post</src>).
 //
-// 
+//
 // <srcblock>
 //    LogIO   os(LogOrigin("class", "func(args)", WHERE));
 // </srcblock>
@@ -122,7 +122,7 @@ class LogOrigin;
 // If you want to change the level of the message you can also do so with the
 // shift operator:
 // <srcblock>
-//   os << LogIO::DEBUGGING << "Boring message" << 
+//   os << LogIO::DEBUGGING << "Boring message" <<
 //         LogIO::SEVERE << "Error!" << LogIO::POST;
 // </srcblock>
 // Note that changing the priority changes the priority of the entire
@@ -161,96 +161,98 @@ class LogOrigin;
 //        them?
 // </todo>
 
-class LogIO
-{
-public:
-    // Special commands to the LogIO object
-    enum Command {
-	// Post the accumulated message. Equivalent to calling LogIO::post().
-	POST, 
-	// Post the accumulated message then throw an exception.
-	// Always posts the message at SEVERE priority. Equivalent to calling 
-	// LogIO::postThenThrow().
-	EXCEPTION, 
-	// Change the message priority to SEVERE.
-	SEVERE, 
-	// Change the message priority to WARN.
-	WARN, 
-	// Change the message priority to NORMAL.
-	NORMAL, 
-	NORMAL1, 
-	NORMAL2, 
-	NORMAL3, 
-	NORMAL4, 
-	NORMAL5, 
-	// Change the message priority to DEBUGGING.
-	DEBUG1,
-	DEBUG2,
-	DEBUGGING};
+class LogIO {
+ public:
+  // Special commands to the LogIO object
+  enum Command {
+    // Post the accumulated message. Equivalent to calling LogIO::post().
+    POST,
+    // Post the accumulated message then throw an exception.
+    // Always posts the message at SEVERE priority. Equivalent to calling
+    // LogIO::postThenThrow().
+    EXCEPTION,
+    // Change the message priority to SEVERE.
+    SEVERE,
+    // Change the message priority to WARN.
+    WARN,
+    // Change the message priority to NORMAL.
+    NORMAL,
+    NORMAL1,
+    NORMAL2,
+    NORMAL3,
+    NORMAL4,
+    NORMAL5,
+    // Change the message priority to DEBUGGING.
+    DEBUG1,
+    DEBUG2,
+    DEBUGGING
+  };
 
-    // Attach this LogIO object to the global sink with no origin information.
-    LogIO();
-    // Attach this LogIO object to the supplied sink. A referencing copy of
-    // the sink is made inside the LogIO object, so you do not need to worry
-    // about memory management.
-    LogIO(LogSink &sink);
-    // Attach this LogIO object to the supplied origin and global sink.
-    LogIO(const LogOrigin &OR);
-    // Attach this LogIO object to the supplied origin and sink.
-    LogIO(const LogOrigin &OR, LogSink &sink);
-    
-    // Copying uses reference semantics, i.e. the same sink will be shared
-    // by both copies.
-    // <group>
-    LogIO(const LogIO &other);
-    LogIO &operator=(const LogIO &other);
-    // </group>
+  // Attach this LogIO object to the global sink with no origin information.
+  LogIO();
+  // Attach this LogIO object to the supplied sink. A referencing copy of
+  // the sink is made inside the LogIO object, so you do not need to worry
+  // about memory management.
+  LogIO(LogSink &sink);
+  // Attach this LogIO object to the supplied origin and global sink.
+  LogIO(const LogOrigin &OR);
+  // Attach this LogIO object to the supplied origin and sink.
+  LogIO(const LogOrigin &OR, LogSink &sink);
 
-    // The destructor will post any accumulated message that has not already
-    // been posted.
-    ~LogIO();
-    
-    // Post the accumulated message.  If you wish, you can post the messages
-    // only locally to the sink.
-    // After the post the priority is reset to NORMAL.
-    void post();
-    void post(LogMessage &amess);
+  // Copying uses reference semantics, i.e. the same sink will be shared
+  // by both copies.
+  // <group>
+  LogIO(const LogIO &other);
+  LogIO &operator=(const LogIO &other);
+  // </group>
 
-    // Post the accumulated message locally.
-    // After the post the priority is reset to NORMAL.
-    void postLocally();
+  // The destructor will post any accumulated message that has not already
+  // been posted.
+  ~LogIO();
 
-    // Post the accumulated message at SEVERE priority and then throw an
-    // exception.
-    // After the post the priority is reset to NORMAL.
-    template<typename EXC> void postThenThrow (const EXC& exc)
-      { preparePostThenThrow(exc); sink_p.postThenThrow (msg_p, exc); }
+  // Post the accumulated message.  If you wish, you can post the messages
+  // only locally to the sink.
+  // After the post the priority is reset to NORMAL.
+  void post();
+  void post(LogMessage &amess);
 
-    // Change the priority of the message. It does NOT post the accumulated
-    // message at the old priority first.
-    void priority(LogMessage::Priority which);
-    LogMessage::Priority priority();
-    // Change the location in the origin. Almost always this is called with the
-    // macro WHERE as its argument.
-    void sourceLocation(const SourceLocation *where);
-    // Change the origin of the accumulated message.
-    void origin(const LogOrigin &origin);
+  // Post the accumulated message locally.
+  // After the post the priority is reset to NORMAL.
+  void postLocally();
 
-    // Acumulate output in this ostream.
-    ostream& output();
+  // Post the accumulated message at SEVERE priority and then throw an
+  // exception.
+  // After the post the priority is reset to NORMAL.
+  template <typename EXC>
+  void postThenThrow(const EXC &exc) {
+    preparePostThenThrow(exc);
+    sink_p.postThenThrow(msg_p, exc);
+  }
 
-    // Occasionally it is useful to interrogate the local log sink.
-    LogSinkInterface &localSink();
-    const LogSinkInterface &localSink() const;
+  // Change the priority of the message. It does NOT post the accumulated
+  // message at the old priority first.
+  void priority(LogMessage::Priority which);
+  LogMessage::Priority priority();
+  // Change the location in the origin. Almost always this is called with the
+  // macro WHERE as its argument.
+  void sourceLocation(const SourceLocation *where);
+  // Change the origin of the accumulated message.
+  void origin(const LogOrigin &origin);
 
-private:
-    // Prepare message stream for postThenThrow function.
-    void preparePostThenThrow (const AipsError& x);
+  // Acumulate output in this ostream.
+  ostream &output();
 
-    LogSink sink_p;
-    LogMessage msg_p;
-    ostringstream *text_p;
+  // Occasionally it is useful to interrogate the local log sink.
+  LogSinkInterface &localSink();
+  const LogSinkInterface &localSink() const;
 
+ private:
+  // Prepare message stream for postThenThrow function.
+  void preparePostThenThrow(const AipsError &x);
+
+  LogSink sink_p;
+  LogMessage msg_p;
+  ostringstream *text_p;
 };
 
 // <summary>
@@ -260,7 +262,7 @@ private:
 // send commands to the LogIO object, either to:
 // <ol>
 //   <li>post the current message: <src>os << "message" << LogIO::POST;</src>
-//   <li>post the current message and then throw an exception: 
+//   <li>post the current message and then throw an exception:
 //       <src>os << "error" << LogIO::EXCEPTION;</src>
 //   <li> Change the priority of the current message:
 //        <src>os << LogIO::DEBUGGING;</src>
@@ -279,7 +281,7 @@ LogIO &operator<<(LogIO &os, const LogOrigin &OR);
 // <summary>
 // Functions to accumulate text in the output message.
 // </summary>
-// Accumulate text in the output message. The last entry is for things like 
+// Accumulate text in the output message. The last entry is for things like
 // <src>endl</src>.
 // <group name=output>
 LogIO &operator<<(LogIO &os, const String &item);
@@ -297,17 +299,10 @@ LogIO &operator<<(LogIO &os, Bool item);
 LogIO &operator<<(LogIO &os, ostream &(*item)(ostream &));
 // </group>
 
-inline LogSinkInterface &LogIO::localSink()
-{
-    return sink_p.localSink();
-}
+inline LogSinkInterface &LogIO::localSink() { return sink_p.localSink(); }
 
-inline const LogSinkInterface &LogIO::localSink() const
-{
-    return sink_p.localSink();
-}
+inline const LogSinkInterface &LogIO::localSink() const { return sink_p.localSink(); }
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

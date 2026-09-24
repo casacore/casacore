@@ -1,39 +1,38 @@
-//# ArrayPosIter.h: Iterate an IPosition through the shape of an Array
-//# Copyright (C) 1993,1994,1995,1998,1999,2004
-//# Associated Universities, Inc. Washington DC, USA.
-//# 
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//# 
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//# 
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//# 
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrayPosIter.h: Iterate an IPosition through the shape of an Array
+// # Copyright (C) 1993,1994,1995,1998,1999,2004
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_ARRAYPOSITER_2_H
 #define CASA_ARRAYPOSITER_2_H
 
-//# Change the following to a forward declare?
+// # Change the following to a forward declare?
 #include "IPosition.h"
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class ArrayBase;
-
 
 // <summary> Iterate an IPosition through the shape of an Array </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -81,124 +80,111 @@ class ArrayBase;
 // contents of the cursor as an ArrayBase object.
 // </synopsis>
 
-class ArrayPositionIterator
-{
-public:
-    // Define the shape and origin of the volume the cursor will step
-    // through. Also define the dimensionality of the step. byDim==0 implies
-    // we are stepping by scalars (i.e. every element), byDim==1 implies that
-    // we are stepping by vector, ==2 by matrices, and so on.
-    // If uses the first byDim axes as the cursor volume and it steps
-    // through the remaining axes.
-    // <group>
-    ArrayPositionIterator(const IPosition &shape, const IPosition &origin,
-			  size_t byDim);
-    ArrayPositionIterator(const IPosition &shape,
-			  size_t byDim);
-    // </group>
+class ArrayPositionIterator {
+ public:
+  // Define the shape and origin of the volume the cursor will step
+  // through. Also define the dimensionality of the step. byDim==0 implies
+  // we are stepping by scalars (i.e. every element), byDim==1 implies that
+  // we are stepping by vector, ==2 by matrices, and so on.
+  // If uses the first byDim axes as the cursor volume and it steps
+  // through the remaining axes.
+  // <group>
+  ArrayPositionIterator(const IPosition &shape, const IPosition &origin, size_t byDim);
+  ArrayPositionIterator(const IPosition &shape, size_t byDim);
+  // </group>
 
-    // Step through an array using the given axes.
-    // The axes can be given in two ways:
-    // <ol>
-    // <li>axesAreCursor=true means that the axes form the cursor axes.
-    //     The remaining axes will form the iteration axes.
-    //     This is the default.
-    // <li>axesAreCursor=false means the opposite.
-    //     In this case the iteration axes can be given in any order.
-    // </ol>
-    // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
-    // iteration step returns a cursor (containing the data of axis 1).
-    // During the iteration axis 2 will vary most rapidly (as it was
-    // given first).
-    // <br>E.g. for a shape of [3,4,5,6] and cursor axes [2,0], the cursor size
-    // is [3,5] (axes 0 and 2), while the iteration is done over axes 1 and 3
-    // (1 the fastest varying one).
-    ArrayPositionIterator(const IPosition &shape,
-			  const IPosition &axes,
-			  bool axesAreCursor=true);
+  // Step through an array using the given axes.
+  // The axes can be given in two ways:
+  // <ol>
+  // <li>axesAreCursor=true means that the axes form the cursor axes.
+  //     The remaining axes will form the iteration axes.
+  //     This is the default.
+  // <li>axesAreCursor=false means the opposite.
+  //     In this case the iteration axes can be given in any order.
+  // </ol>
+  // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
+  // iteration step returns a cursor (containing the data of axis 1).
+  // During the iteration axis 2 will vary most rapidly (as it was
+  // given first).
+  // <br>E.g. for a shape of [3,4,5,6] and cursor axes [2,0], the cursor size
+  // is [3,5] (axes 0 and 2), while the iteration is done over axes 1 and 3
+  // (1 the fastest varying one).
+  ArrayPositionIterator(const IPosition &shape, const IPosition &axes, bool axesAreCursor = true);
 
-    virtual ~ArrayPositionIterator() {};
+  virtual ~ArrayPositionIterator() {};
 
-    // Reset the cursor to the beginning of the volume.
-    // <group>
-    virtual void reset();
-    void origin()
-      { reset(); }
-    // </group>
+  // Reset the cursor to the beginning of the volume.
+  // <group>
+  virtual void reset();
+  void origin() { reset(); }
+  // </group>
 
-    // Returns true of the cursor is at the origin.
-    bool atStart() const;
+  // Returns true of the cursor is at the origin.
+  bool atStart() const;
 
-    // Returns true if the cursor has moved past the end of its volume.
-    bool pastEnd() const;
+  // Returns true if the cursor has moved past the end of its volume.
+  bool pastEnd() const;
 
-    // Return the position of the cursor.
-    // This include all axes
-    const IPosition &pos() const {return Cursor;}
+  // Return the position of the cursor.
+  // This include all axes
+  const IPosition &pos() const { return Cursor; }
 
-    // Return the end position of the cursor.
-    IPosition endPos() const;
+  // Return the end position of the cursor.
+  IPosition endPos() const;
 
-    // Advance the cursor to its next position.
-    virtual void next();
+  // Advance the cursor to its next position.
+  virtual void next();
 
-    // Set the cursor to the given position.
-    // The position can only contain the iteration axes or it can be the full
-    // position.
-    // <br>In the first case the position must to be given in the order
-    // of the iteration axes as given in the constructor.
-    // In the latter case the position must be given in natural order
-    // (as given by function <src>pos</src> and only the cursor axes are taken
-    // into account.
-    virtual void set (const IPosition& cursorPos);
+  // Set the cursor to the given position.
+  // The position can only contain the iteration axes or it can be the full
+  // position.
+  // <br>In the first case the position must to be given in the order
+  // of the iteration axes as given in the constructor.
+  // In the latter case the position must be given in natural order
+  // (as given by function <src>pos</src> and only the cursor axes are taken
+  // into account.
+  virtual void set(const IPosition &cursorPos);
 
-    // What is the dimensionality of the volume we are iterating through?
-    size_t ndim() const;
+  // What is the dimensionality of the volume we are iterating through?
+  size_t ndim() const;
 
-    // Return the iteration axes.
-    const IPosition &iterAxes() const {return iterationAxes;}
+  // Return the iteration axes.
+  const IPosition &iterAxes() const { return iterationAxes; }
 
-    // Return the cursor axes.
-    const IPosition &cursorAxes() const {return cursAxes;}
+  // Return the cursor axes.
+  const IPosition &cursorAxes() const { return cursAxes; }
 
-    // Get the array in the cursor.
-    // This is only implemented in the derived ArrayIterator class.
-    // By default it throws an exception.
-    virtual ArrayBase& getArray();
+  // Get the array in the cursor.
+  // This is only implemented in the derived ArrayIterator class.
+  // By default it throws an exception.
+  virtual ArrayBase &getArray();
 
-protected:
-    // Advance cursor to its next position and tell which dimension stepped.
-    size_t nextStep();
-    // What is the dimensionality of the "step" the cursor takes, i.e.
-    // 0 for scalars, 1 for vector, ....
-    size_t dimIter() const {return cursAxes.nelements();}
+ protected:
+  // Advance cursor to its next position and tell which dimension stepped.
+  size_t nextStep();
+  // What is the dimensionality of the "step" the cursor takes, i.e.
+  // 0 for scalars, 1 for vector, ....
+  size_t dimIter() const { return cursAxes.nelements(); }
 
-private:
-    // Setup the object for the constructor.
-    // <group>
-    void setup(size_t byDim);
-    void setup(const IPosition &axes, bool axesAreCursor);
-    // </group>
+ private:
+  // Setup the object for the constructor.
+  // <group>
+  void setup(size_t byDim);
+  void setup(const IPosition &axes, bool axesAreCursor);
+  // </group>
 
-    //# We should probably have mf's for getting at Start,Shape and End.
-    IPosition Start, Shape, End, Cursor;
-    bool atOrBeyondEnd;
-    IPosition cursAxes, iterationAxes;
+  // # We should probably have mf's for getting at Start,Shape and End.
+  IPosition Start, Shape, End, Cursor;
+  bool atOrBeyondEnd;
+  IPosition cursAxes, iterationAxes;
 };
 
 // Dimensionality of the array we are iterating through.
-inline size_t ArrayPositionIterator::ndim() const
-{
-    return Start.nelements();
-}
+inline size_t ArrayPositionIterator::ndim() const { return Start.nelements(); }
 
 // We are at the "end" if we cannot advance any more.
-inline bool ArrayPositionIterator::pastEnd() const
-{
-    return atOrBeyondEnd;
-}
+inline bool ArrayPositionIterator::pastEnd() const { return atOrBeyondEnd; }
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

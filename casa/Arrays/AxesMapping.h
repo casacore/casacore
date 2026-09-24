@@ -1,39 +1,38 @@
-//# AxesMapping.h: Info about mapping array axes to another order
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # AxesMapping.h: Info about mapping array axes to another order
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef CASA_AXESMAPPING_2_H
 #define CASA_AXESMAPPING_2_H
 
-//# Includes
+// # Includes
 #include "IPosition.h"
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
- 
-//# Forward Declarations
-class Slicer;
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
+// # Forward Declarations
+class Slicer;
 
 // <summary>
 // Info about mapping array axes to another order.
@@ -75,12 +74,11 @@ class Slicer;
 // It is meant as a helper class for casacore's SubLattice.
 // </motivation>
 
-//# <todo asof="yyyy/mm/dd">
-//# </todo>
+// # <todo asof="yyyy/mm/dd">
+// # </todo>
 
-class AxesMapping
-{
-public:
+class AxesMapping {
+ public:
   // The default constructor creates empty maps.
   AxesMapping();
 
@@ -88,63 +86,57 @@ public:
   // A value of -1 means that the old axes is ignored in the new one.
   // Another value gives the new axis number.
   // <br>It determines if axes are removed and/or reordered.
-  explicit AxesMapping (const IPosition& oldToNew);
+  explicit AxesMapping(const IPosition& oldToNew);
 
   // Are axes removed?
-  bool isRemoved() const
-    { return itsRemoved; }
+  bool isRemoved() const { return itsRemoved; }
 
   // Is the axes order reordered?
-  bool isReordered() const
-    { return itsReordered; }
+  bool isReordered() const { return itsReordered; }
 
   // Get the mapping of old->new.
   // The length of the resulting IPosition is the dimensionality of
   // the original lattice. A value of -1 indicates that the corresponding
   // axis in the original lattice is removed.
   // Another value is the axis number in the new lattice,
-  const IPosition& getToNew() const
-    { return itsToNew; }
+  const IPosition& getToNew() const { return itsToNew; }
 
   // Get the mapping of new->old.
   // The length of the resulting IPosition is the dimensionality of
   // the new lattice. Its values give the axes in the original lattice.
-  const IPosition& getToOld() const
-    { return itsToOld; }
+  const IPosition& getToOld() const { return itsToOld; }
 
   // Map an old position to the new one.
   // In debug-mode it checks if the removed axes have position 0
   // in the input position.
-  IPosition posToNew (const IPosition& pos) const;
+  IPosition posToNew(const IPosition& pos) const;
 
   // Map a new position or shape to the old one.
-  IPosition posToOld (const IPosition& pos) const;
+  IPosition posToOld(const IPosition& pos) const;
 
   // Map an old shape to the new one.
   // In debug-mode it checks if the removed axes have length 1
   // in the input shape.
-  IPosition shapeToNew (const IPosition& shape) const;
+  IPosition shapeToNew(const IPosition& shape) const;
 
   // Map a new position or shape to the old one.
-  IPosition shapeToOld (const IPosition& shape) const;
+  IPosition shapeToOld(const IPosition& shape) const;
 
   // Map an old shape to the new one.
   // In debug-mode it checks if the removed axes have length 1
   // in the input slicer.
-  Slicer slicerToNew (const Slicer& slicer) const;
+  Slicer slicerToNew(const Slicer& slicer) const;
 
   // Map a new position or shape to the old one.
-  Slicer slicerToOld (const Slicer& slicer) const;
+  Slicer slicerToOld(const Slicer& slicer) const;
 
-private:
+ private:
   IPosition itsToNew;
   IPosition itsToOld;
-  bool      itsRemoved;
-  bool      itsReordered;
+  bool itsRemoved;
+  bool itsReordered;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif
