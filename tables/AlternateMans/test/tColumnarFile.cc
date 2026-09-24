@@ -174,19 +174,24 @@ void TestReadOnlyOpen() {
   BOOST_CHECK_EQUAL_COLLECTIONS(kRowData.begin(), kRowData.end(), data.begin(), data.end());
   file.Close();
   
-  // Overwriting an RO file should report an error
-  BOOST_CHECK_THROW(ColumnarFile::CreateNew(kFilename, kHeader, kStride), std::runtime_error);
-  
-  // Updating an RO file should report an error. The error might not be throwed before calling close,
-  // because the write actions might be buffered.
-  const auto Update = [kFilename]()->void {
-    ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
-    std::array<int32_t, 4> data{1, 2, 3, 4};
-    file.Write(3, kColumnOffset, data.data(), data.size());
-    file.Close();
-  };
-  BOOST_CHECK_THROW(Update(), std::runtime_error);
-  
+  // When the user is root, the file permission test doesn't work: root may still open the
+  // file rw. This causes this code inside a Docker container not to throw. So skip the
+  // test when the user is root.
+  if (geteuid() != 0) {
+    // Overwriting an RO file should report an error
+    BOOST_CHECK_THROW(ColumnarFile::CreateNew(kFilename, kHeader, kStride), std::runtime_error);
+
+    // Updating an RO file should report an error. The error might not be throwed before calling close,
+    // because the write actions might be buffered.
+    const auto Update = [kFilename]()->void {
+      ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
+      std::array<int32_t, 4> data{1, 2, 3, 4};
+      file.Write(3, kColumnOffset, data.data(), data.size());
+      file.Close();
+    };
+    BOOST_CHECK_THROW(Update(), std::runtime_error);
+  }
+
   permissions(kFilename,
     perms::add_perms | perms::owner_write|perms::others_write|perms::group_write);
   unlink(kFilename.c_str());

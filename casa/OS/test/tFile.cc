@@ -30,6 +30,8 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/iostream.h>
 
+#include <unistd.h>
+#include <sys/types.h>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -105,11 +107,13 @@ void doIt (Bool doExcp)
 	} 
     }
 
+    const bool is_root_user = (geteuid() == 0);
+
     // Test permission setting.
     isFile.setPermissions(0022);
-    AlwaysAssertExit (!isFile.isReadable());
-    AlwaysAssertExit (!isFile.isWritable());
-    AlwaysAssertExit (!isFile.isExecutable());
+    AlwaysAssertExit (!isFile.isReadable() || is_root_user);
+    AlwaysAssertExit (!isFile.isWritable() || is_root_user);
+    AlwaysAssertExit (!isFile.isExecutable() || is_root_user);
     isFile.setPermissions(0722);
     AlwaysAssertExit (isFile.isReadable());
     AlwaysAssertExit (isFile.isWritable());
@@ -135,7 +139,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (isDir2.canCreate());
     isDir2.setPermissions(0644);
     AlwaysAssertExit (isDir2.canCreate());
-    AlwaysAssertExit (!test3.canCreate());
+    AlwaysAssertExit (!test3.canCreate() || is_root_user);
     isDir2.setPermissions(0744);
 
     cout << isFile.path().originalName() << endl;
@@ -164,8 +168,8 @@ void doIt (Bool doExcp)
     cout << isFile.modifyTime () << endl;
     cout << isFile.statusChangeTime () << endl;
 
-    AlwaysAssertExit (bin.getWriteStatus() == File::NOT_OVERWRITABLE);
-    AlwaysAssertExit (nocreate.getWriteStatus() == File::NOT_CREATABLE);
+    AlwaysAssertExit (bin.getWriteStatus() == File::NOT_OVERWRITABLE || is_root_user);
+    AlwaysAssertExit (nocreate.getWriteStatus() == File::NOT_CREATABLE || is_root_user);
     AlwaysAssertExit (creatable.getWriteStatus() == File::CREATABLE);
     AlwaysAssertExit (creatable2.getWriteStatus() == File::NOT_CREATABLE);
     AlwaysAssertExit (isFile.getWriteStatus() == File::OVERWRITABLE);

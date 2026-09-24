@@ -184,8 +184,13 @@ void checkReopen()
 	fio2.reopenRW();
     } catch (std::exception& x) {
 	flag = True;
-    } 
-    AlwaysAssertExit (flag);
+    }
+    // When the user is root, the file permission test doesn't work: root may still open the
+    // file rw. This causes this code inside a Docker container not to throw. So skip the
+    // test when the user is root.
+    if (geteuid() != 0) {
+      AlwaysAssertExit (flag);
+		}
     checkValues (fio2, 150);
     rfile.setPermissions (0644);
 }

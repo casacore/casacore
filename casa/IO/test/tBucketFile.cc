@@ -135,6 +135,13 @@ void c(const std::shared_ptr<MultiFileBase>& mfile)
     } 
     AlwaysAssertExit (flag);
     
+    // When the user is root, the file permission test doesn't work: root may still open the
+    // file rw. This causes this code inside a Docker container not to throw. So skip the
+    // test when the user is root.
+    if (geteuid() == 0) {
+      return;
+    }
+
     // Make the file readonly to test on such errors.
     RegularFile rfile("tBucketFile_tmp.data");
     rfile.setPermissions (0444);

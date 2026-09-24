@@ -31,6 +31,8 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/iostream.h>
 
+#include <unistd.h>
+#include <sys/types.h>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -129,8 +131,12 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    risFile1.copy (Path("tRegularFile_tmp/moveto/isFile1"));
+      // If user is root, the copy will have worked. Otherwise, an exception
+      // should have been thrown.
+      const bool is_root_user = (geteuid() == 0);
+      AssertAlways(is_root_user);
 	} catch (std::exception& x) {
-	    cout << x.what() << endl;         // exists, non-writable
+	    // exists, non-writable
 	} 
     }
     risCopy.setPermissions (0644);
