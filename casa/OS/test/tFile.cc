@@ -168,8 +168,8 @@ void doIt (Bool doExcp)
     cout << isFile.modifyTime () << endl;
     cout << isFile.statusChangeTime () << endl;
 
-    AlwaysAssertExit (bin.getWriteStatus() == File::NOT_OVERWRITABLE);
-    AlwaysAssertExit (nocreate.getWriteStatus() == File::NOT_CREATABLE);
+    AlwaysAssertExit (bin.getWriteStatus() == File::NOT_OVERWRITABLE || is_root_user);
+    AlwaysAssertExit (nocreate.getWriteStatus() == File::NOT_CREATABLE || is_root_user);
     AlwaysAssertExit (creatable.getWriteStatus() == File::CREATABLE);
     AlwaysAssertExit (creatable2.getWriteStatus() == File::NOT_CREATABLE);
     AlwaysAssertExit (isFile.getWriteStatus() == File::OVERWRITABLE);

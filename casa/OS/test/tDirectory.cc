@@ -219,8 +219,9 @@ void doIt (Bool doExcp)
     if (doExcp) {
 	try {
 	    Directory file1("tDirectory_tmp/something");
+      AlwaysAssertExit(is_root_user);
 	} catch (std::exception& x) {
-	    cout << x.what() << endl;               // not writable
+	    // not writable
 	} 
     }
     tmp.setPermissions (0755);
