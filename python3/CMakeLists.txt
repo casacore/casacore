@@ -7,10 +7,11 @@ message(STATUS "Looking for python3 specific environment...")
 #Boost >= 1.67 Python components require a Python version suffix
             set(BOOST_PYTHON3_LIBRARY_NAME python${Python3_VERSION_MAJOR} ${
                 Python3_VERSION_MINOR} CACHE STRING
-                "The name of the boost python3 library to search for") else() set(BOOST_PYTHON3_LIBRARY_NAME python${
-                Python3_VERSION_MAJOR} CACHE STRING "The name of the boost python3 library to "
-                                                    "search for") endif()
-                find_package(Boost REQUIRED COMPONENTS ${BOOST_PYTHON3_LIBRARY_NAME})
+                "The name of the boost python3 library to search for") else()
+                set(BOOST_PYTHON3_LIBRARY_NAME python${Python3_VERSION_MAJOR} CACHE STRING
+                    "The name of the boost python3 library to "
+                    "search for") endif() find_package(Boost REQUIRED COMPONENTS ${
+                    BOOST_PYTHON3_LIBRARY_NAME})
 
 #copy the variables to their final destination
                     set(PYTHON3_EXECUTABLE ${Python3_EXECUTABLE} CACHE FILEPATH
