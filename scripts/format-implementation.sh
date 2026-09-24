@@ -29,7 +29,7 @@ fi
 if [ -z "$CXX_SOURCES" ]; then CXX_SOURCES=(*.cc *.h *.tcc); fi
 
 # Detect run environment.
-if [ "$RUN_ON_GITHUB" != "" ]; then
+if [ -n "$RUN_ON_GITHUB" ]; then
   DRYRUN=" (dry run on Github)"
 elif [ -n "$CI" ]; then
   DRYRUN=" (dry run on CI)"
