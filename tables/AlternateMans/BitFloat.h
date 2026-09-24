@@ -60,9 +60,7 @@ class BitFloat {
    */
   constexpr explicit BitFloat(float f)
       : mantissa_((std::bit_cast<uint32_t>(f) & 0x007FFFFF) | 0x00800000),
-        exponent_(static_cast<int8_t>(
-                      (std::bit_cast<uint32_t>(f) & 0x7F800000) >> 23) -
-                  127),
+        exponent_(static_cast<int8_t>((std::bit_cast<uint32_t>(f) & 0x7F800000) >> 23) - 127),
         sign_(std::bit_cast<uint32_t>(f) & 0x80000000) {
     if (f == 0.0f) mantissa_ = 0;
   }
@@ -88,10 +86,9 @@ class BitFloat {
    */
   constexpr uint32_t PackMantissa() const {
     if (MantissaOverflow()) {
-      throw std::overflow_error(
-          "An overflow occured! Value = " + std::to_string(ToFloat()) +
-          ", exponent = " + std::to_string(exponent_) + ", mantissa = " +
-          std::to_string(mantissa_) + ", sign = " + std::to_string(sign_));
+      throw std::overflow_error("An overflow occured! Value = " + std::to_string(ToFloat()) +
+                                ", exponent = " + std::to_string(exponent_) + ", mantissa = " +
+                                std::to_string(mantissa_) + ", sign = " + std::to_string(sign_));
     }
     return (mantissa_ & 0x7FFFFFFFu) | (sign_ ? 0x80000000u : 0u);
   }
@@ -100,8 +97,7 @@ class BitFloat {
    * Given a result from @ref PackMantissa(), this function reversed the
    * packing.
    */
-  constexpr static std::pair<uint32_t, bool> UnpackMantissa(
-      uint32_t mantissa_with_sign) {
+  constexpr static std::pair<uint32_t, bool> UnpackMantissa(uint32_t mantissa_with_sign) {
     const uint32_t mantissa = (mantissa_with_sign & 0x7FFFFFFFu);
     const bool sign = (mantissa_with_sign & 0x80000000u) != 0u;
     return {mantissa, sign};
@@ -112,10 +108,8 @@ class BitFloat {
    * and the exponent. In Sisco, these are stored separately, and this method is
    * used to reconstruct the BitFloat.
    */
-  constexpr static BitFloat FromCompressed(uint32_t mantissa_with_sign,
-                                           int8_t exponent) {
-    const std::pair<uint32_t, bool> unpacked =
-        UnpackMantissa(mantissa_with_sign);
+  constexpr static BitFloat FromCompressed(uint32_t mantissa_with_sign, int8_t exponent) {
+    const std::pair<uint32_t, bool> unpacked = UnpackMantissa(mantissa_with_sign);
     return BitFloat(unpacked.first, exponent, unpacked.second);
   }
 
@@ -195,10 +189,9 @@ class BitFloat {
       }
     }
     // The double cast of the exponent is necessary to prevent sign extension.
-    result =
-        (result & 0x007FFFFF) |
-        (static_cast<uint32_t>(static_cast<uint8_t>(exponent + 127)) << 23) |
-        (sign_ ? 0x80000000 : 0x0);
+    result = (result & 0x007FFFFF) |
+             (static_cast<uint32_t>(static_cast<uint8_t>(exponent + 127)) << 23) |
+             (sign_ ? 0x80000000 : 0x0);
     return std::bit_cast<float>(result);
   }
 
@@ -242,8 +235,7 @@ class BitFloat {
    * is returned, but with the 'unnormalized' exponent still set to the
    * requested exponent, meaning that it can be used in operations.
    */
-  friend constexpr std::optional<BitFloat> Match(const BitFloat& input,
-                                                 int8_t value_exponent) {
+  friend constexpr std::optional<BitFloat> Match(const BitFloat& input, int8_t value_exponent) {
     if (input.Exponent() == value_exponent) {
       return input;
     } else if (input.Exponent() > value_exponent) {
@@ -251,15 +243,13 @@ class BitFloat {
       if (shift > 7)
         return {};
       else
-        return BitFloat(input.Mantissa() << shift, value_exponent,
-                        input.Sign());
+        return BitFloat(input.Mantissa() << shift, value_exponent, input.Sign());
     } else {
       const uint8_t shift = value_exponent - input.Exponent();
       if (shift > 24)
         return BitFloat(0, value_exponent, input.Sign());
       else
-        return BitFloat(input.Mantissa() >> shift, value_exponent,
-                        input.Sign());
+        return BitFloat(input.Mantissa() >> shift, value_exponent, input.Sign());
     }
   }
 

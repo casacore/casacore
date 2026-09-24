@@ -1,18 +1,18 @@
 #define BOOST_TEST_MODULE alternate_mans
 #define BOOST_TEST_DYN_LINK
 
-// The support of std::filesystem in gcc13 was not sufficient to use std::filesystem::permissions(), so
-// boost is used.
+// The support of std::filesystem in gcc13 was not sufficient to use std::filesystem::permissions(),
+// so boost is used.
 #include <boost/filesystem/operations.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <casacore/tables/AlternateMans/SimpleColumnarFile.h>
 #include <casacore/tables/AlternateMans/BufferedColumnarFile.h>
 
-using casacore::VarBufferedColumnarFile;
 using casacore::SimpleColumnarFile;
+using casacore::VarBufferedColumnarFile;
 
-template<typename ColumnarFile>
+template <typename ColumnarFile>
 void TestEmptyConstructor() {
   ColumnarFile file_a;
   BOOST_CHECK_EQUAL(file_a.NRows(), 0);
@@ -29,7 +29,7 @@ void TestEmptyConstructor() {
   unlink(filename.c_str());
 }
 
-template<typename ColumnarFile>
+template <typename ColumnarFile>
 void TestCreateAndOpen() {
   constexpr size_t kStrideA = 10;
   const std::string filename = "columnar_file_test.tmp";
@@ -41,7 +41,8 @@ void TestCreateAndOpen() {
     BOOST_CHECK(file.IsOpen());
   }
 
-  BOOST_CHECK_THROW(ColumnarFile::OpenExisting("This-is-not-an-existing-filename.nope", 0), std::runtime_error);
+  BOOST_CHECK_THROW(ColumnarFile::OpenExisting("This-is-not-an-existing-filename.nope", 0),
+                    std::runtime_error);
 
   // See if re-creating works
   constexpr size_t kStrideB = 20;
@@ -77,7 +78,7 @@ void TestCreateAndOpen() {
   unlink(filename.c_str());
 }
 
-template<typename ColumnarFile>
+template <typename ColumnarFile>
 void TestReadAndWrite() {
   // Test a file with two columns: one is 14 complex floats, the other 3.
   std::array<std::complex<float>, 14> data_a;
@@ -87,13 +88,11 @@ void TestReadAndWrite() {
   const std::array<unsigned char, 4> header = {1, 9, 8, 2};
   ColumnarFile file = ColumnarFile::CreateNew(filename, header.size(), kStride);
   file.WriteHeader(header.data());
-  BOOST_CHECK_EQUAL(file.Stride(), 17*8);
+  BOOST_CHECK_EQUAL(file.Stride(), 17 * 8);
 
   // Generate random data
-  for(size_t i=0; i!=data_a.size(); ++i)
-      data_a[i] = std::complex<float>(i+3, i*2);
-  for(size_t i=0; i!=data_b.size(); ++i)
-      data_b[i] = std::complex<float>(i*3+41, i*-2.0);
+  for (size_t i = 0; i != data_a.size(); ++i) data_a[i] = std::complex<float>(i + 3, i * 2);
+  for (size_t i = 0; i != data_b.size(); ++i) data_b[i] = std::complex<float>(i * 3 + 41, i * -2.0);
 
   file.Write(2, 0, data_a.data(), data_a.size());
   file.Write(2, sizeof(data_a), data_b.data(), data_b.size());
@@ -102,47 +101,58 @@ void TestReadAndWrite() {
   std::array<unsigned char, 4> header_buffer;
   std::fill(header_buffer.begin(), header_buffer.end(), 0);
   file.ReadHeader(header_buffer.data());
-  BOOST_CHECK_EQUAL_COLLECTIONS(header_buffer.begin(), header_buffer.end(), header.begin(), header.end());
-  
+  BOOST_CHECK_EQUAL_COLLECTIONS(header_buffer.begin(), header_buffer.end(), header.begin(),
+                                header.end());
+
   std::array<std::complex<float>, data_a.size()> read_buffer;
   file.Read(2, 0, read_buffer.data(), data_a.size());
-  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.end(), data_a.begin(), data_a.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.end(), data_a.begin(),
+                                data_a.end());
   file.Read(2, sizeof(data_a), read_buffer.data(), data_b.size());
-  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.begin() + data_b.size(), data_b.begin(), data_b.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.begin() + data_b.size(),
+                                data_b.begin(), data_b.end());
 
   file.Read(1, 0, read_buffer.data(), data_a.size());
-  BOOST_CHECK(std::all_of(read_buffer.begin(), read_buffer.end(), [](std::complex<float> v) {return v == 0.0f;} ));
+  BOOST_CHECK(std::all_of(read_buffer.begin(), read_buffer.end(),
+                          [](std::complex<float> v) { return v == 0.0f; }));
 
   file.Close();
-  
+
   file = ColumnarFile::OpenExisting(filename, 4);
   std::fill(header_buffer.begin(), header_buffer.end(), 0);
   file.ReadHeader(header_buffer.data());
-  BOOST_CHECK_EQUAL_COLLECTIONS(header_buffer.begin(), header_buffer.end(), header.begin(), header.end());
-  
+  BOOST_CHECK_EQUAL_COLLECTIONS(header_buffer.begin(), header_buffer.end(), header.begin(),
+                                header.end());
+
   file.Read(0, 0, read_buffer.data(), data_a.size());
-  BOOST_CHECK(std::all_of(read_buffer.begin(), read_buffer.end(), [](std::complex<float> v) {return v == 0.0f;} ));
+  BOOST_CHECK(std::all_of(read_buffer.begin(), read_buffer.end(),
+                          [](std::complex<float> v) { return v == 0.0f; }));
   file.Read(2, 0, read_buffer.data(), data_a.size());
-  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.end(), data_a.begin(), data_a.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.end(), data_a.begin(),
+                                data_a.end());
   file.Read(2, sizeof(data_a), read_buffer.data(), data_b.size());
-  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.begin() + data_b.size(), data_b.begin(), data_b.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.begin() + data_b.size(),
+                                data_b.begin(), data_b.end());
 
   std::fill(read_buffer.begin(), read_buffer.end(), 0.0f);
   file.Write(2, sizeof(data_a), read_buffer.data(), data_b.size());
   file.Read(2, 0, read_buffer.data(), data_a.size());
-  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.end(), data_a.begin(), data_a.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(read_buffer.begin(), read_buffer.end(), data_a.begin(),
+                                data_a.end());
   std::fill(read_buffer.begin(), read_buffer.end(), 1.0f);
   file.Read(2, sizeof(data_a), read_buffer.data(), data_b.size());
-  BOOST_CHECK(std::all_of(read_buffer.begin(), read_buffer.begin() + data_b.size(), [](std::complex<float> v) {return v == 0.0f;} ));
-  BOOST_CHECK(std::all_of(read_buffer.begin() + data_b.size(), read_buffer.end(), [](std::complex<float> v) {return v == 1.0f;} ));
+  BOOST_CHECK(std::all_of(read_buffer.begin(), read_buffer.begin() + data_b.size(),
+                          [](std::complex<float> v) { return v == 0.0f; }));
+  BOOST_CHECK(std::all_of(read_buffer.begin() + data_b.size(), read_buffer.end(),
+                          [](std::complex<float> v) { return v == 1.0f; }));
   unlink(filename.c_str());
 }
 
-template<typename ColumnarFile>
+template <typename ColumnarFile>
 void TestReadOnlyOpen() {
   using boost::filesystem::permissions;
   using boost::filesystem::perms;
-  
+
   constexpr size_t kColumnOffset = 6;
   const std::array<int32_t, 4> kRowData{1, 9, 8, 2};
   constexpr size_t kStride = kColumnOffset + kRowData.size() * sizeof(int32_t);
@@ -150,9 +160,9 @@ void TestReadOnlyOpen() {
   const std::string kFilename = "columnar_file_test_ro.tmp";
   // If an earlier test failed, there might still be an RO file with this
   // name on disk; make sure to remove it, otherwise CreateNew() fails.
-  if(boost::filesystem::exists(kFilename)) {
-    permissions(kFilename, 
-      perms::add_perms | perms::owner_write|perms::others_write|perms::group_write);
+  if (boost::filesystem::exists(kFilename)) {
+    permissions(kFilename,
+                perms::add_perms | perms::owner_write | perms::others_write | perms::group_write);
     unlink(kFilename.c_str());
   }
   // Write a simple test file
@@ -162,9 +172,9 @@ void TestReadOnlyOpen() {
     file.Write(3, kColumnOffset, kRowData.data(), kRowData.size());
     file.Close();
   }
-  permissions(kFilename, 
-    perms::remove_perms|perms::owner_write|perms::others_write|perms::group_write);
-  
+  permissions(kFilename,
+              perms::remove_perms | perms::owner_write | perms::others_write | perms::group_write);
+
   // Check if we can read the RO file
   ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
   BOOST_CHECK_EQUAL(file.Stride(), kStride);
@@ -173,7 +183,7 @@ void TestReadOnlyOpen() {
   file.Read(3, kColumnOffset, data.data(), data.size());
   BOOST_CHECK_EQUAL_COLLECTIONS(kRowData.begin(), kRowData.end(), data.begin(), data.end());
   file.Close();
-  
+
   // When the user is root, the file permission test doesn't work: root may still open the
   // file rw. This causes this code inside a Docker container not to throw. So skip the
   // test when the user is root.
@@ -181,9 +191,9 @@ void TestReadOnlyOpen() {
     // Overwriting an RO file should report an error
     BOOST_CHECK_THROW(ColumnarFile::CreateNew(kFilename, kHeader, kStride), std::runtime_error);
 
-    // Updating an RO file should report an error. The error might not be throwed before calling close,
-    // because the write actions might be buffered.
-    const auto Update = [kFilename]()->void {
+    // Updating an RO file should report an error. The error might not be throwed before calling
+    // close, because the write actions might be buffered.
+    const auto Update = [kFilename]() -> void {
       ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
       std::array<int32_t, 4> data{1, 2, 3, 4};
       file.Write(3, kColumnOffset, data.data(), data.size());
@@ -193,30 +203,21 @@ void TestReadOnlyOpen() {
   }
 
   permissions(kFilename,
-    perms::add_perms | perms::owner_write|perms::others_write|perms::group_write);
+              perms::add_perms | perms::owner_write | perms::others_write | perms::group_write);
   unlink(kFilename.c_str());
 }
 
 BOOST_AUTO_TEST_SUITE(simple_columnar_file)
 
-BOOST_AUTO_TEST_CASE(empty_constructor) {
-  TestEmptyConstructor<SimpleColumnarFile>();
-}
+BOOST_AUTO_TEST_CASE(empty_constructor) { TestEmptyConstructor<SimpleColumnarFile>(); }
 
-BOOST_AUTO_TEST_CASE(create_and_open_file) {
-  TestCreateAndOpen<SimpleColumnarFile>();
-}
+BOOST_AUTO_TEST_CASE(create_and_open_file) { TestCreateAndOpen<SimpleColumnarFile>(); }
 
-BOOST_AUTO_TEST_CASE(read_and_write) {
-  TestReadAndWrite<SimpleColumnarFile>();
-}
+BOOST_AUTO_TEST_CASE(read_and_write) { TestReadAndWrite<SimpleColumnarFile>(); }
 
-BOOST_AUTO_TEST_CASE(read_only) {
-  TestReadOnlyOpen<SimpleColumnarFile>();
-}
+BOOST_AUTO_TEST_CASE(read_only) { TestReadOnlyOpen<SimpleColumnarFile>(); }
 
 BOOST_AUTO_TEST_SUITE_END()
-
 
 BOOST_AUTO_TEST_SUITE(buffered_columnar_file)
 
@@ -244,8 +245,9 @@ BOOST_AUTO_TEST_CASE(buffered_file_edge_case) {
   constexpr size_t kColumnSize = sizeof(float) * 2;
   constexpr size_t kStride = kColumnSize * 2;
   const std::string filename = "columnar_file_test.tmp";
-  casacore::VarBufferedColumnarFile file = casacore::VarBufferedColumnarFile<kStride*2>::CreateNew(filename, 0, kStride);
-  const float values[2] = { 3, 4 };
+  casacore::VarBufferedColumnarFile file =
+      casacore::VarBufferedColumnarFile<kStride * 2>::CreateNew(filename, 0, kStride);
+  const float values[2] = {3, 4};
   // Polute the buffer with some values
   file.Write(2, 0, values, 2);
   file.Write(3, 0, values, 2);

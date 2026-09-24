@@ -31,9 +31,7 @@ class SiscoReader {
     std::vector<std::byte> read_buffer;
     std::vector<std::byte> decompress_buffer;
 
-    bool operator<(const Chunk& rhs) const {
-      return chunk_index < rhs.chunk_index;
-    }
+    bool operator<(const Chunk& rhs) const { return chunk_index < rhs.chunk_index; }
   };
 
  private:
@@ -92,9 +90,7 @@ class SiscoReader {
     std::vector<float> real_data;
     std::vector<float> imaginary_data;
     size_t result_index = 0;
-    bool operator<(const Result& rhs) const {
-      return result_index < rhs.result_index;
-    }
+    bool operator<(const Result& rhs) const { return result_index < rhs.result_index; }
   };
   void ReadLoop();
   void DecompressChunk();

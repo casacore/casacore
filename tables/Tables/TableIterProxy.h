@@ -1,42 +1,40 @@
-//# TableIterProxy.h: Proxy for table iterator access
-//# Copyright (C) 1994,1995,1996,1999,2005
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableIterProxy.h: Proxy for table iterator access
+// # Copyright (C) 1994,1995,1996,1999,2005
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEITERPROXY_H
 #define TABLES_TABLEITERPROXY_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableIter.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TableProxy;
-
 
 // <summary>
 // Proxy for table iterator access.
@@ -48,7 +46,7 @@ class TableProxy;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> class TableIterator
 // </prerequisite>
 
@@ -57,7 +55,7 @@ class TableProxy;
 // glish client.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // TableIterProxy gives access to the table iterator functionality.
 // It is primarily meant to be used in classes that wrap access to it
 // from scripting languages (like Glish and Python).
@@ -81,9 +79,8 @@ class TableProxy;
 // </srcblock>
 // </example>
 
-class TableIterProxy
-{
-public:
+class TableIterProxy {
+ public:
   // Default constructor initializes to not open.
   // This constructor is only needed for the Block container.
   TableIterProxy();
@@ -100,29 +97,26 @@ public:
   // It can only be used for numerical columns (not complex).
   // However, if for a string column the interbval is set to non-zero, it
   // means that case-insensitive comparison will be used.
-  TableIterProxy (const TableProxy& tab, const Vector<String>& columns,
-		  const String& order, const String& sortType,
-                  const Vector<Double>& intervals = Vector<Double>());
+  TableIterProxy(const TableProxy& tab, const Vector<String>& columns, const String& order,
+                 const String& sortType, const Vector<Double>& intervals = Vector<Double>());
 
   // Copy constructor (copy semantics).
-  TableIterProxy (const TableIterProxy&);
+  TableIterProxy(const TableIterProxy&);
 
   ~TableIterProxy();
 
   // Assignment (copy semantics).
-  TableIterProxy& operator= (const TableIterProxy&);
+  TableIterProxy& operator=(const TableIterProxy&);
 
   // Is the internal iterator object null?
-  Bool isNull() const
-    { return iter_p.isNull(); }
+  Bool isNull() const { return iter_p.isNull(); }
 
   // Get the TableIterator object.
-  const TableIterator& iterator() const
-    { return iter_p; }
+  const TableIterator& iterator() const { return iter_p; }
 
   // Get the next subtable and return it in the TableProxy argument.
   // When no more subtables are available, it returns False.
-  Bool nextPart (TableProxy& table);
+  Bool nextPart(TableProxy& table);
 
   // Iterate to the next part (for Python use).
   // An IterError exception is thrown at the end of the loop.
@@ -131,22 +125,16 @@ public:
   // Reset the iterator (for Python use).
   void reset();
 
-
-private:
+ private:
   // Make an iterator where iteration intervals may have been given.
-  void makeStepIter (const Table& tab,
-                     const Block<String>& columns,
-                     const Vector<Double>& iterSteps,
-                     TableIterator::Order order,
-                     TableIterator::Option sortType);
+  void makeStepIter(const Table& tab, const Block<String>& columns, const Vector<Double>& iterSteps,
+                    TableIterator::Order order, TableIterator::Option sortType);
 
-  //# Data members
+  // # Data members
   TableIterator iter_p;
-  Bool          firstTime_p;           //# True = first time
+  Bool firstTime_p;  // # True = first time
 };
 
-
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore
 
 #endif

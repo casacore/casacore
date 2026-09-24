@@ -35,14 +35,12 @@ class RowBasedFile {
   /**
    * Create or overwrite a new columnar file on disk
    */
-  RowBasedFile(const std::string& filename, uint64_t header_size,
-               uint64_t stride)
+  RowBasedFile(const std::string& filename, uint64_t header_size, uint64_t stride)
       : stride_(stride), filename_(filename) {
-    file_ = open(filename.c_str(), O_CREAT | O_RDWR | O_TRUNC,
-                 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    file_ =
+        open(filename.c_str(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (file_ < 0)
-      throw std::runtime_error("I/O error: could not create new file '" +
-                               filename + "'");
+      throw std::runtime_error("I/O error: could not create new file '" + filename + "'");
     data_location_ = header_size + kWriterPrivateHeaderSize;
     WritePrivateHeader();
   }
@@ -50,14 +48,11 @@ class RowBasedFile {
   /**
    * Open an existing columnar file
    */
-  RowBasedFile(const std::string& filename, size_t header_size)
-      : filename_(filename) {
+  RowBasedFile(const std::string& filename, size_t header_size) : filename_(filename) {
     file_ = open(filename.c_str(), O_RDWR);
     if (file_ < 0) {
       file_ = open(filename.c_str(), O_RDONLY);
-      if (file_ < 0)
-        throw std::runtime_error("I/O error: could not open file '" + filename +
-                                 "'");
+      if (file_ < 0) throw std::runtime_error("I/O error: could not open file '" + filename + "'");
     }
     uint32_t magic_tag;
     ReadData(reinterpret_cast<unsigned char*>(&magic_tag), sizeof(uint32_t));
@@ -73,22 +68,18 @@ class RowBasedFile {
     const uint32_t major_version = (file_version & 0xFF00) >> 8;
     constexpr uint32_t kWriterMajorVersion = (kFileVersion & 0xFF00) >> 8;
     if (major_version > kWriterMajorVersion) {
-      throw std::runtime_error("The file " + filename +
-                               " requires a reader of at least major version " +
-                               std::to_string(major_version) +
-                               ". This reader is for major version " +
-                               std::to_string(kWriterMajorVersion) + ".");
+      throw std::runtime_error(
+          "The file " + filename + " requires a reader of at least major version " +
+          std::to_string(major_version) + ". This reader is for major version " +
+          std::to_string(kWriterMajorVersion) + ".");
     }
 
     // Combine reading of private header size, stride and user header size in
     // one read call.
-    std::array<unsigned char, sizeof(uint32_t) + 2 * sizeof(uint64_t)>
-        rest_of_private_header;
+    std::array<unsigned char, sizeof(uint32_t) + 2 * sizeof(uint64_t)> rest_of_private_header;
     ReadData(rest_of_private_header.data(), rest_of_private_header.size());
-    private_header_size_ =
-        reinterpret_cast<uint32_t&>(rest_of_private_header.data()[0]);
-    stride_ = reinterpret_cast<uint64_t&>(
-        rest_of_private_header.data()[sizeof(uint32_t)]);
+    private_header_size_ = reinterpret_cast<uint32_t&>(rest_of_private_header.data()[0]);
+    stride_ = reinterpret_cast<uint64_t&>(rest_of_private_header.data()[sizeof(uint32_t)]);
     size_t file_user_header_size = reinterpret_cast<uint64_t&>(
         rest_of_private_header.data()[sizeof(uint32_t) + sizeof(uint64_t)]);
     if (file_user_header_size != header_size) {
@@ -143,31 +134,27 @@ class RowBasedFile {
   void Truncate(uint64_t n_rows) {
     const int result = ftruncate(file_, n_rows_ * stride_ + data_location_);
     if (result < 0) {
-      throw std::runtime_error(
-          "I/O error: could not truncate file '" + filename_ + "' to have " +
-          std::to_string(n_rows) + " rows: " + ErrorString());
+      throw std::runtime_error("I/O error: could not truncate file '" + filename_ + "' to have " +
+                               std::to_string(n_rows) + " rows: " + ErrorString());
     }
   }
 
   void Seek(off_t pos, int seek_direction) {
     const off_t result = lseek(file_, pos, seek_direction);
     if (result < 0)
-      throw std::runtime_error("I/O error: could not seek through file '" +
-                               filename_ + "'");
+      throw std::runtime_error("I/O error: could not seek through file '" + filename_ + "'");
   }
 
   void ReadData(unsigned char* data, uint64_t size) {
     const int result = ::read(file_, data, size);
     if (result < 0)
-      throw std::runtime_error("I/O error: could not read from file '" +
-                               filename_ + "'");
+      throw std::runtime_error("I/O error: could not read from file '" + filename_ + "'");
   }
 
   void WriteData(const unsigned char* data, uint64_t size) {
     const int result = write(file_, data, size);
     if (result < 0)
-      throw std::runtime_error("I/O error: could not write to file '" +
-                               filename_ + "'");
+      throw std::runtime_error("I/O error: could not write to file '" + filename_ + "'");
   }
   bool IsOpen() const { return file_ >= 0; }
   /**
@@ -249,8 +236,7 @@ class RowBasedFile {
     stride_ = 0;
     data_location_ = kWriterPrivateHeaderSize;
     filename_ = "";
-    if (result < 0)
-      throw std::runtime_error("Could not close file " + filename_);
+    if (result < 0) throw std::runtime_error("Could not close file " + filename_);
   }
 
   void WritePrivateHeader() {
@@ -258,8 +244,7 @@ class RowBasedFile {
     std::array<unsigned char, kWriterPrivateHeaderSize> private_header_buffer;
     reinterpret_cast<uint32_t&>(private_header_buffer[0]) = kMagicFileTag;
     reinterpret_cast<uint32_t&>(private_header_buffer[4]) = kFileVersion;
-    reinterpret_cast<uint32_t&>(private_header_buffer[8]) =
-        kWriterPrivateHeaderSize;
+    reinterpret_cast<uint32_t&>(private_header_buffer[8]) = kWriterPrivateHeaderSize;
     reinterpret_cast<uint64_t&>(private_header_buffer[12]) = stride_;
     reinterpret_cast<uint64_t&>(private_header_buffer[20]) = HeaderSize();
 
@@ -311,8 +296,7 @@ class RowBasedFile {
       return "Unknown error";
   }
 
-  static std::string ErrorStringHelper(char* returned_buffer,
-                                       char* /*supplied_buffer*/) {
+  static std::string ErrorStringHelper(char* returned_buffer, char* /*supplied_buffer*/) {
     return std::string(returned_buffer);
   }
 

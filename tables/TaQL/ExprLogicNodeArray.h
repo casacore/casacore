@@ -1,50 +1,47 @@
-//# ExprLogicArrayNode.h: Nodes representing logical array operators in table select expression tree
-//# Copyright (C) 1997,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ExprLogicArrayNode.h: Nodes representing logical array operators in table select expression
+// tree # Copyright (C) 1997,1999,2000 # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_EXPRLOGICNODEARRAY_H
 #define TABLES_EXPRLOGICNODEARRAY_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 
-//# This file defines classes derived from TableExprNode representing
-//# the data type and operator in a table expression.
-//#
-//# Data types Bool, Int64, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
-//# Float to Double, and Complex to DComplex.
-//# Binary operators ==, >=, >, <, <= and != are recognized.
-//# Also &&, ||, and unary ! are recognized.
-
-
+// # This file defines classes derived from TableExprNode representing
+// # the data type and operator in a table expression.
+// #
+// # Data types Bool, Int64, Double, DComplex and String are used.
+// # Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
+// # Float to Double, and Complex to DComplex.
+// # Binary operators ==, >=, >, <, <= and != are recognized.
+// # Also &&, ||, and unary ! are recognized.
 
 // <summary>
 // Bool Array comparison == in table select expression tree
@@ -56,25 +53,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQBool : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQBool (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQBool();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQBool : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQBool(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQBool();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Int Array comparison == in table select expression tree
@@ -86,25 +81,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQInt : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQInt (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQInt();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQInt : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQInt(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQInt();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Double Array comparison == in table select expression tree
@@ -116,25 +109,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQDouble : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQDouble (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQDouble();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQDouble : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQDouble(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQDouble();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // DComplex Array comparison == in table select expression tree
@@ -146,25 +137,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQDComplex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQDComplex (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQDComplex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQDComplex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQDComplex(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQDComplex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // String Array comparison == in table select expression tree
@@ -176,25 +165,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQString : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQString (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQString();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQString : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQString(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQString();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Regex Array comparison == in table select expression tree
@@ -206,25 +193,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQRegex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQRegex (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQRegex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQRegex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQRegex(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQRegex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Date Array comparison == in table select expression tree
@@ -236,26 +221,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayEQDate : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayEQDate (const TableExprNodeRep&);
-    ~TableExprNodeArrayEQDate();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayEQDate : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayEQDate(const TableExprNodeRep&);
+  ~TableExprNodeArrayEQDate();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
-
 
 // <summary>
 // Bool Array comparison != in table select expression tree
@@ -267,25 +249,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNEBool : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNEBool (const TableExprNodeRep&);
-    ~TableExprNodeArrayNEBool();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNEBool : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNEBool(const TableExprNodeRep&);
+  ~TableExprNodeArrayNEBool();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Int Array comparison != in table select expression tree
@@ -297,25 +277,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNEInt : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNEInt (const TableExprNodeRep&);
-    ~TableExprNodeArrayNEInt();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNEInt : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNEInt(const TableExprNodeRep&);
+  ~TableExprNodeArrayNEInt();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Double Array comparison != in table select expression tree
@@ -327,25 +305,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNEDouble : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNEDouble (const TableExprNodeRep&);
-    ~TableExprNodeArrayNEDouble();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNEDouble : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNEDouble(const TableExprNodeRep&);
+  ~TableExprNodeArrayNEDouble();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // DComplex Array comparison != in table select expression tree
@@ -357,25 +333,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNEDComplex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNEDComplex (const TableExprNodeRep&);
-    ~TableExprNodeArrayNEDComplex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNEDComplex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNEDComplex(const TableExprNodeRep&);
+  ~TableExprNodeArrayNEDComplex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // String Array comparison != in table select expression tree
@@ -387,25 +361,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNEString : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNEString (const TableExprNodeRep&);
-    ~TableExprNodeArrayNEString();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNEString : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNEString(const TableExprNodeRep&);
+  ~TableExprNodeArrayNEString();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Regex Array comparison != in table select expression tree
@@ -417,25 +389,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNERegex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNERegex (const TableExprNodeRep&);
-    ~TableExprNodeArrayNERegex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNERegex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNERegex(const TableExprNodeRep&);
+  ~TableExprNodeArrayNERegex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Date Array comparison != in table select expression tree
@@ -447,26 +417,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNEDate : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNEDate (const TableExprNodeRep&);
-    ~TableExprNodeArrayNEDate();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNEDate : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNEDate(const TableExprNodeRep&);
+  ~TableExprNodeArrayNEDate();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
-
 
 // <summary>
 // Int Array comparison > in table select expression tree
@@ -478,25 +445,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGTInt : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGTInt (const TableExprNodeRep&);
-    ~TableExprNodeArrayGTInt();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGTInt : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGTInt(const TableExprNodeRep&);
+  ~TableExprNodeArrayGTInt();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Double Array comparison > in table select expression tree
@@ -508,25 +473,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGTDouble : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGTDouble (const TableExprNodeRep&);
-    ~TableExprNodeArrayGTDouble();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGTDouble : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGTDouble(const TableExprNodeRep&);
+  ~TableExprNodeArrayGTDouble();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // DComplex Array comparison > in table select expression tree
@@ -538,25 +501,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGTDComplex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGTDComplex (const TableExprNodeRep&);
-    ~TableExprNodeArrayGTDComplex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGTDComplex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGTDComplex(const TableExprNodeRep&);
+  ~TableExprNodeArrayGTDComplex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // String Array comparison > in table select expression tree
@@ -568,25 +529,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGTString : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGTString (const TableExprNodeRep&);
-    ~TableExprNodeArrayGTString();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGTString : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGTString(const TableExprNodeRep&);
+  ~TableExprNodeArrayGTString();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Date Array comparison > in table select expression tree
@@ -598,26 +557,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGTDate : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGTDate (const TableExprNodeRep&);
-    ~TableExprNodeArrayGTDate();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGTDate : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGTDate(const TableExprNodeRep&);
+  ~TableExprNodeArrayGTDate();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
-
 
 // <summary>
 // Int Array comparison >= in table select expression tree
@@ -629,25 +585,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGEInt : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGEInt (const TableExprNodeRep&);
-    ~TableExprNodeArrayGEInt();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGEInt : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGEInt(const TableExprNodeRep&);
+  ~TableExprNodeArrayGEInt();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Double Array comparison >= in table select expression tree
@@ -659,25 +613,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGEDouble : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGEDouble (const TableExprNodeRep&);
-    ~TableExprNodeArrayGEDouble();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGEDouble : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGEDouble(const TableExprNodeRep&);
+  ~TableExprNodeArrayGEDouble();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // DComplex Array comparison >= in table select expression tree
@@ -689,25 +641,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGEDComplex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGEDComplex (const TableExprNodeRep&);
-    ~TableExprNodeArrayGEDComplex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGEDComplex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGEDComplex(const TableExprNodeRep&);
+  ~TableExprNodeArrayGEDComplex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // String Array comparison >= in table select expression tree
@@ -719,25 +669,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGEString : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGEString (const TableExprNodeRep&);
-    ~TableExprNodeArrayGEString();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGEString : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGEString(const TableExprNodeRep&);
+  ~TableExprNodeArrayGEString();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // Date Array comparison >= in table select expression tree
@@ -749,26 +697,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayGEDate : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayGEDate (const TableExprNodeRep&);
-    ~TableExprNodeArrayGEDate();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayGEDate : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayGEDate(const TableExprNodeRep&);
+  ~TableExprNodeArrayGEDate();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
-
 
 // <summary>
 // Int Array comparison IN in table select expression tree
@@ -780,28 +725,26 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
 // The right hand side can be optimized if it contains a constant array which
 // can be replaced by an std::unordered_set<Int64> or a Block<Bool>.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayINInt : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayINInt (const TableExprNodeRep&);
-    ~TableExprNodeArrayINInt();
-    virtual void optimize() override;
-    virtual MArray<Bool> getArrayBool (const TableExprId& id) override;
+class TableExprNodeArrayINInt : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayINInt(const TableExprNodeRep&);
+  ~TableExprNodeArrayINInt();
+  virtual void optimize() override;
+  virtual MArray<Bool> getArrayBool(const TableExprId& id) override;
 };
-
 
 // <summary>
 // Double Array comparison IN in table select expression tree
@@ -813,26 +756,24 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayINDouble : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayINDouble (const TableExprNodeRep&);
-    ~TableExprNodeArrayINDouble();
-    virtual void optimize() override;
-    MArray<Bool> getArrayBool (const TableExprId& id) override;
+class TableExprNodeArrayINDouble : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayINDouble(const TableExprNodeRep&);
+  ~TableExprNodeArrayINDouble();
+  virtual void optimize() override;
+  MArray<Bool> getArrayBool(const TableExprId& id) override;
 };
-
 
 // <summary>
 // DComplex Array comparison IN in table select expression tree
@@ -844,25 +785,23 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayINDComplex : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayINDComplex (const TableExprNodeRep&);
-    ~TableExprNodeArrayINDComplex();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayINDComplex : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayINDComplex(const TableExprNodeRep&);
+  ~TableExprNodeArrayINDComplex();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
 
 // <summary>
 // String Array comparison IN in table select expression tree
@@ -874,28 +813,26 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
 // The right hand side can be optimized if it contains a constant array which
 // can be replaced by an std::unordered_set<String>
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayINString : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayINString (const TableExprNodeRep&);
-    ~TableExprNodeArrayINString();
-    virtual void optimize() override;
-    virtual MArray<Bool> getArrayBool (const TableExprId& id) override;
+class TableExprNodeArrayINString : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayINString(const TableExprNodeRep&);
+  ~TableExprNodeArrayINString();
+  virtual void optimize() override;
+  virtual MArray<Bool> getArrayBool(const TableExprId& id) override;
 };
-
 
 // <summary>
 // Date Array comparison IN in table select expression tree
@@ -907,27 +844,24 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayINDate : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayINDate (const TableExprNodeRep&);
-    ~TableExprNodeArrayINDate();
-    virtual void optimize() override;
-    MArray<Bool> getArrayBool (const TableExprId& id) override;
+class TableExprNodeArrayINDate : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayINDate(const TableExprNodeRep&);
+  ~TableExprNodeArrayINDate();
+  virtual void optimize() override;
+  MArray<Bool> getArrayBool(const TableExprId& id) override;
 };
-
-
 
 // <summary>
 // Logical or in table select expression tree
@@ -939,24 +873,21 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents a logical or in a table select expression tree.
 // This is defined for Bool only.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayOR : public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayOR (const TableExprNodeRep&);
-    ~TableExprNodeArrayOR();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayOR : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayOR(const TableExprNodeRep&);
+  ~TableExprNodeArrayOR();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
-
 
 // <summary>
 // Logical and in table select expression tree
@@ -968,24 +899,21 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNode
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents a logical and in a table select expression tree.
 // This is defined for Bool only.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayAND: public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayAND (const TableExprNodeRep&);
-    ~TableExprNodeArrayAND();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayAND : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayAND(const TableExprNodeRep&);
+  ~TableExprNodeArrayAND();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
-
-
 
 // <summary>
 // Logical not in table select expression tree
@@ -997,26 +925,22 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> TableExprNodeArray
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class represents a logical not in a table select expression tree.
 // This is defined for Bool only.
-// </synopsis> 
+// </synopsis>
 
-class TableExprNodeArrayNOT: public TableExprNodeArray
-{
-public:
-    TableExprNodeArrayNOT (const TableExprNodeRep&);
-    ~TableExprNodeArrayNOT();
-    MArray<Bool> getArrayBool (const TableExprId& id);
+class TableExprNodeArrayNOT : public TableExprNodeArray {
+ public:
+  TableExprNodeArrayNOT(const TableExprNodeRep&);
+  ~TableExprNodeArrayNOT();
+  MArray<Bool> getArrayBool(const TableExprId& id);
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

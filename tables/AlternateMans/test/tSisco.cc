@@ -162,35 +162,35 @@ BOOST_AUTO_TEST_CASE(predict_from_four) {
 void Check(const BitFloat& input, const BitFloat& result, size_t number_index) {
   const float input_float = input.ToFloat();
   // this one is useful for debugging...
-  BOOST_CHECK_EQUAL(std::to_string(number_index) + ": " + std::to_string(input_float), std::to_string(number_index) + ": " + std::to_string(result.ToFloat()));
-  BOOST_CHECK_EQUAL(std::bit_cast<uint32_t>(input_float), std::bit_cast<uint32_t>(result.ToFloat()));
+  BOOST_CHECK_EQUAL(std::to_string(number_index) + ": " + std::to_string(input_float),
+                    std::to_string(number_index) + ": " + std::to_string(result.ToFloat()));
+  BOOST_CHECK_EQUAL(std::bit_cast<uint32_t>(input_float),
+                    std::bit_cast<uint32_t>(result.ToFloat()));
 }
 
 BOOST_AUTO_TEST_CASE(compress_1d) {
-  const std::vector<BitFloat> input{
-    BitFloat(0.0f),
-    BitFloat(1.0f),
-    BitFloat(0.5f),
-    BitFloat(0.5f),
-    BitFloat(std::numeric_limits<float>::quiet_NaN()),
-    BitFloat(0.5f),
-    BitFloat(std::numeric_limits<float>::infinity()),
-    BitFloat(0.5f),
-    BitFloat(-std::numeric_limits<float>::quiet_NaN()),
-    BitFloat(0.5f),
-    BitFloat(-std::numeric_limits<float>::infinity()),
-    BitFloat(std::numeric_limits<float>::quiet_NaN()),
-    BitFloat(std::numeric_limits<float>::quiet_NaN()),
-    BitFloat(std::numeric_limits<float>::infinity()),
-    BitFloat(std::numeric_limits<float>::infinity())
-  };
-  for(int level=0; level!=4; ++level) {
+  const std::vector<BitFloat> input{BitFloat(0.0f),
+                                    BitFloat(1.0f),
+                                    BitFloat(0.5f),
+                                    BitFloat(0.5f),
+                                    BitFloat(std::numeric_limits<float>::quiet_NaN()),
+                                    BitFloat(0.5f),
+                                    BitFloat(std::numeric_limits<float>::infinity()),
+                                    BitFloat(0.5f),
+                                    BitFloat(-std::numeric_limits<float>::quiet_NaN()),
+                                    BitFloat(0.5f),
+                                    BitFloat(-std::numeric_limits<float>::infinity()),
+                                    BitFloat(std::numeric_limits<float>::quiet_NaN()),
+                                    BitFloat(std::numeric_limits<float>::quiet_NaN()),
+                                    BitFloat(std::numeric_limits<float>::infinity()),
+                                    BitFloat(std::numeric_limits<float>::infinity())};
+  for (int level = 0; level != 4; ++level) {
     std::vector<std::byte> mantissa_data(input.size() * sizeof(uint32_t));
     std::vector<std::byte> exponent_data(input.size() * sizeof(int8_t));
     Compress1D(level, input, mantissa_data, exponent_data);
     std::vector<BitFloat> result(input.size());
     Decompress1D(level, mantissa_data, exponent_data, result);
-    for(size_t i=0; i!=input.size(); ++i) {
+    for (size_t i = 0; i != input.size(); ++i) {
       Check(input[i], result[i], i);
     }
   }
@@ -229,7 +229,7 @@ BOOST_AUTO_TEST_CASE(linear_predict_from_3) {
   constexpr BitFloat result2 = LinearPredict(y1, y1, y1, y1.Exponent());
   BOOST_CHECK_CLOSE_FRACTION(result2.ToFloat(), 4.0f, 1e-5);
   constexpr BitFloat result3 = LinearPredict(y2, y2, y1, y1.Exponent());
-  BOOST_CHECK_CLOSE_FRACTION(result3.ToFloat(), 4.0f + 2.0f/3.0f, 1e-5);
+  BOOST_CHECK_CLOSE_FRACTION(result3.ToFloat(), 4.0f + 2.0f / 3.0f, 1e-5);
 
   constexpr BitFloat z3(-4.0f);
   constexpr BitFloat z2(-3.0f);
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE(linear_predict_from_3) {
   constexpr BitFloat result5 = LinearPredict(z1, z1, z1, y1.Exponent());
   BOOST_CHECK_CLOSE_FRACTION(result5.ToFloat(), -2.0f, 1e-5);
   constexpr BitFloat result6 = LinearPredict(z1, y2, z1, y1.Exponent());
-  BOOST_CHECK_CLOSE_FRACTION(result6.ToFloat(), -2.0f/3.0f, 1e-5);
+  BOOST_CHECK_CLOSE_FRACTION(result6.ToFloat(), -2.0f / 3.0f, 1e-5);
 }
 
 BOOST_AUTO_TEST_CASE(quadratic_predict_from_4) {
@@ -260,4 +260,4 @@ BOOST_AUTO_TEST_CASE(quadratic_predict_from_4) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-} // namespace casacore
+}  // namespace casacore

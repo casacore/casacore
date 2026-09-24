@@ -118,9 +118,7 @@ class DyscoStMan : public casacore::DataManager {
    * This method should only be called directly after creating DyscoStMan,
    * before adding columns, and reading/writing data.
    */
-  void SetNormalization(Normalization normalization) {
-    _normalization = normalization;
-  }
+  void SetNormalization(Normalization normalization) { _normalization = normalization; }
 
   void SetStaticSeed(bool staticSeed) { _staticSeed = staticSeed; }
 
@@ -155,20 +153,14 @@ class DyscoStMan : public casacore::DataManager {
   /** Polymorphical copy constructor, equal to DyscoStMan(const DyscoStMan&).
    * @returns Empty manager with specs as the source.
    */
-  virtual casacore::DataManager *clone() const final override {
-    return new DyscoStMan(*this);
-  }
+  virtual casacore::DataManager *clone() const final override { return new DyscoStMan(*this); }
 
   /** Type of manager
    * @returns "DyscoStMan". */
-  virtual casacore::String dataManagerType() const final override {
-    return "DyscoStMan";
-  }
+  virtual casacore::String dataManagerType() const final override { return "DyscoStMan"; }
 
   /** Returns the name of this manager as specified during construction. */
-  virtual casacore::String dataManagerName() const final override {
-    return _name;
-  }
+  virtual casacore::String dataManagerName() const final override { return _name; }
 
   /** Get manager specifications. Includes method settings, etc. Can be used
    * to make a second storage manager with
@@ -283,9 +275,7 @@ class DyscoStMan : public casacore::DataManager {
    * @param block A block index
    * @returns First measurement set row index of given block.
    */
-  uint64_t getRowIndex(size_t block) const {
-    return uint64_t(block) * uint64_t(_rowsPerBlock);
-  }
+  uint64_t getRowIndex(size_t block) const { return uint64_t(block) * uint64_t(_rowsPerBlock); }
 
   /**
    * This method returns @c true when the number of rows per block and the
@@ -301,16 +291,15 @@ class DyscoStMan : public casacore::DataManager {
    * @param antennaCount Highest antenna index+1 used in a time block.
    * @param writeToHeader Write the header?
    */
-  void initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount,
-                              bool writeToHeader);
+  void initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount, bool writeToHeader);
 
  private:
   friend class DyscoStManColumn;
 
   const static unsigned short VERSION_MAJOR, VERSION_MINOR;
 
-  void readCompressedData(size_t blockIndex, const DyscoStManColumn *column,
-                          unsigned char *dest, size_t size);
+  void readCompressedData(size_t blockIndex, const DyscoStManColumn *column, unsigned char *dest,
+                          size_t size);
 
   void writeCompressedData(size_t blockIndex, const DyscoStManColumn *column,
                            const unsigned char *data, size_t size);
@@ -323,15 +312,12 @@ class DyscoStMan : public casacore::DataManager {
 
   void setFromSpec(const casacore::Record &spec);
 
-  size_t getFileOffset(size_t blockIndex) const {
-    return _blockSize * blockIndex + _headerSize;
-  }
+  size_t getFileOffset(size_t blockIndex) const { return _blockSize * blockIndex + _headerSize; }
 
   // Flush and optionally fsync the data.
   // The AipsIO stream represents the main table file and can be
   // used by virtual column engines to store SMALL amounts of data.
-  virtual casacore::Bool flush(casacore::AipsIO &,
-                               casacore::Bool doFsync) final override;
+  virtual casacore::Bool flush(casacore::AipsIO &, casacore::Bool doFsync) final override;
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.

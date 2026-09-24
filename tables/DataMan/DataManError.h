@@ -1,40 +1,39 @@
-//# DataManError.h: Data manager error classes
-//# Copyright (C) 1994,1995,1996,1999,2000,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # DataManError.h: Data manager error classes
+// # Copyright (C) 1994,1995,1996,1999,2000,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_DATAMANERROR_H
 #define TABLES_DATAMANERROR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# This header file defines the error classes used in the
-//# data manager classes.
-
+// # This header file defines the error classes used in the
+// # data manager classes.
 
 // <summary>
 // Base error class for table data manager
@@ -43,21 +42,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // This is the generic data manager exception; catching this one means
 // catching all DataMan* exceptions.
 // Note that you have to catch AipsError to catch all possible exceptions.
-// </synopsis> 
+// </synopsis>
 
 class DataManError : public AipsError {
-public:
-    // The default constructor generates the message "Table DataManager error".
-    DataManError ();
-    // Construct with given message.
-    DataManError (const String& message);
-    ~DataManError () noexcept;
+ public:
+  // The default constructor generates the message "Table DataManager error".
+  DataManError();
+  // Construct with given message.
+  DataManError(const String& message);
+  ~DataManError() noexcept;
 };
-
 
 // <summary>
 // Internal table data manager error
@@ -66,18 +64,17 @@ public:
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Internal data manager error (should never be thrown).
 // If this is thrown, something is terribly wrong.
-// </synopsis> 
+// </synopsis>
 
 class DataManInternalError : public DataManError {
-public:
-    // Add given message to string "Internal Table DataManager error: ".
-    DataManInternalError (const String& message);
-    ~DataManInternalError () noexcept;
+ public:
+  // Add given message to string "Internal Table DataManager error: ".
+  DataManInternalError(const String& message);
+  ~DataManInternalError() noexcept;
 };
-
 
 // <summary>
 // Table DataManager error; invalid data manager
@@ -86,19 +83,18 @@ public:
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // A data manager is unknown (i.e. not registered in DataManReg.cc).
 // This means that the data manager object cannot be recreated.
-// </synopsis> 
+// </synopsis>
 
 class DataManUnknownCtor : public DataManError {
-public:
-    // This constructor generates a message that a data manager
-    // with the given name is unknown (i.e. not registered).
-    DataManUnknownCtor (const String& columnName);
-    ~DataManUnknownCtor () noexcept;
+ public:
+  // This constructor generates a message that a data manager
+  // with the given name is unknown (i.e. not registered).
+  DataManUnknownCtor(const String& columnName);
+  ~DataManUnknownCtor() noexcept;
 };
-
 
 // <summary>
 // Table DataManager error; invalid data type
@@ -107,22 +103,20 @@ public:
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid data type used in the data manager.
 // The data manager found an unknown data type when doing a get or put.
 // In principle this error should never occur.
-// </synopsis> 
+// </synopsis>
 
 class DataManInvDT : public DataManError {
-public:
-    // The default constructor generates a generic "invalid data type" message.
-    DataManInvDT ();
-    // Put the name of the offending column in the "invalid data type" message.
-    DataManInvDT (const String& columnName);
-    ~DataManInvDT () noexcept;
+ public:
+  // The default constructor generates a generic "invalid data type" message.
+  DataManInvDT();
+  // Put the name of the offending column in the "invalid data type" message.
+  DataManInvDT(const String& columnName);
+  ~DataManInvDT() noexcept;
 };
-
-
 
 // <summary>
 // Table DataManager error; invalid operation
@@ -131,23 +125,22 @@ public:
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // Invalid operation on a data manager.
 // A request was done that the data manager could not handle.
 // In principle the table system should already test on such operations
 // and it should not bother the data manager with invalid requests.
 // However, the data manager still tests them for safety.
-// </synopsis> 
+// </synopsis>
 
 class DataManInvOper : public DataManError {
-public:
-    // The default constructor generates a generic "invalid operation" message.
-    DataManInvOper ();
-    // Add given message to string "Invalid DataMan operation: ".
-    DataManInvOper (const String& message);
-    ~DataManInvOper () noexcept;
+ public:
+  // The default constructor generates a generic "invalid operation" message.
+  DataManInvOper();
+  // Add given message to string "Invalid DataMan operation: ".
+  DataManInvOper(const String& message);
+  ~DataManInvOper() noexcept;
 };
-
 
 // <summary>
 // Table DataManager error; unknown virtual column
@@ -156,20 +149,18 @@ public:
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // A column is unknown to the virtual column engine.
 // This error is caused by binding a column to a virtual column engine
 // which does not know the column name or data type.
-// </synopsis> 
+// </synopsis>
 
 class DataManUnknownVirtualColumn : public DataManError {
-public:
-    // Issue a message containing the column name.
-    DataManUnknownVirtualColumn (const String& columnName,
-				 const String& engineName);
-    ~DataManUnknownVirtualColumn () noexcept;
+ public:
+  // Issue a message containing the column name.
+  DataManUnknownVirtualColumn(const String& columnName, const String& engineName);
+  ~DataManUnknownVirtualColumn() noexcept;
 };
-
 
 // <summary>
 // Table DataManager error; error in TiledStMan
@@ -178,22 +169,20 @@ public:
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
-// <synopsis> 
+// <synopsis>
 // An error was made when using the TiledStMan.
 // The TiledStMan is quite complex, so it is easy to make mistakes.
 // The <linkto class=TiledStMan>TiledStMan</linkto> and related
 // classes should be studied carefully.
-// </synopsis> 
+// </synopsis>
 
 class TSMError : public DataManError {
-public:
-    // Issue the message prefixed by "TiledStMan: ".
-    TSMError (const String& message);
-    ~TSMError () noexcept;
+ public:
+  // Issue the message prefixed by "TiledStMan: ".
+  TSMError(const String& message);
+  ~TSMError() noexcept;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

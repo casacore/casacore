@@ -1,42 +1,40 @@
-//# ScaColDesc.h: Templated class for description of table scalar columns
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ScaColDesc.h: Templated class for description of table scalar columns
+// # Copyright (C) 1994,1995,1996,1997,1998,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_SCACOLDESC_H
 #define TABLES_SCACOLDESC_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class PlainColumn;
 class ColumnSet;
-
 
 // <summary>
 // Templated class to define columns of scalars in tables
@@ -57,7 +55,7 @@ class ColumnSet;
 //  may also be called a row) will hold a scalar value.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // ScalarColumnDesc is a templated class for defining a
 // table column containing scalar values.
 // Note that class
@@ -153,113 +151,104 @@ class ColumnSet;
 // </templating>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 // </todo>
 
+template <class T>
+class ScalarColumnDesc : public BaseColumnDesc {
+  friend class ColumnDesc;
 
-template<class T>
-class ScalarColumnDesc : public BaseColumnDesc
-{
-friend class ColumnDesc;
+ public:
+  // Construct the column with the given name.
+  // The data manager type defaults to the StandardStMan storage manager.
+  // The data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  explicit ScalarColumnDesc(const String& name, int options = 0);
 
-public:
-    // Construct the column with the given name.
-    // The data manager type defaults to the StandardStMan storage manager.
-    // The data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    explicit ScalarColumnDesc (const String& name, int options = 0);
+  // Construct the column with the given name and comment.
+  // The data manager type defaults to the StandardStMan storage manager.
+  // The data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  ScalarColumnDesc(const String& name, const String& comment, int options = 0);
 
-    // Construct the column with the given name and comment.
-    // The data manager type defaults to the StandardStMan storage manager.
-    // The data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    ScalarColumnDesc (const String& name, const String& comment,
-		      int options = 0);
+  // Construct the column with the given name, comment, and
+  // default data manager type and group.
+  // A blank data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  ScalarColumnDesc(const String& name, const String& comment, const String& dataManName,
+                   const String& dataManGroup, int options = 0);
 
-    // Construct the column with the given name, comment, and
-    // default data manager type and group.
-    // A blank data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    ScalarColumnDesc (const String& name, const String& comment,
-		      const String& dataManName, const String& dataManGroup,
-		      int options = 0);
+  // Construct the column with the given name, comment, default
+  // data manager type and group, and default value.
+  // A blank data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  ScalarColumnDesc(const String& name, const String& comment, const String& dataManName,
+                   const String& dataManGroup, const T& defaultValue, int options = 0);
 
-    // Construct the column with the given name, comment, default
-    // data manager type and group, and default value.
-    // A blank data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    ScalarColumnDesc (const String& name, const String& comment,
-		      const String& dataManName, const String& dataManGroup,
-		      const T& defaultValue, int options = 0);
+  // Copy constructor (copy semantics);
+  ScalarColumnDesc(const ScalarColumnDesc<T>&);
 
-    // Copy constructor (copy semantics);
-    ScalarColumnDesc (const ScalarColumnDesc<T>&);
+  ~ScalarColumnDesc();
 
-    ~ScalarColumnDesc();
+  // Assignment (copy semantics);
+  ScalarColumnDesc<T>& operator=(const ScalarColumnDesc<T>&);
 
-    // Assignment (copy semantics);
-    ScalarColumnDesc<T>& operator= (const ScalarColumnDesc<T>&);
+  // Clone this column description.
+  BaseColumnDesc* clone() const;
 
-    // Clone this column description.
-    BaseColumnDesc* clone() const;
+  // Get the name of this class. It is used by the registration process.
+  // The template argument gets part of the name.
+  String className() const;
 
-    // Get the name of this class. It is used by the registration process.
-    // The template argument gets part of the name.
-    String className() const;
+  // Set the default value.
+  void setDefault(const T& defaultValue) { defaultVal_p = defaultValue; }
 
-    // Set the default value.
-    void setDefault (const T& defaultValue)
-	{ defaultVal_p = defaultValue; }
+  // Get the default value.
+  const T& defaultValue() const { return defaultVal_p; }
 
-    // Get the default value.
-    const T& defaultValue() const
-	{ return defaultVal_p; }
+  // Create a Column object out of this.
+  // This is used by class ColumnSet to construct a table column object.
+  virtual PlainColumn* makeColumn(ColumnSet*) const;
 
-    // Create a Column object out of this.
-    // This is used by class ColumnSet to construct a table column object.
-    virtual PlainColumn* makeColumn (ColumnSet*) const;
+  // Make a ConcatColumn object out of the description.
+  virtual ConcatColumn* makeConcatColumn(ConcatTable*) const;
 
-    // Make a ConcatColumn object out of the description.
-    virtual ConcatColumn* makeConcatColumn (ConcatTable*) const;
+  // Show the column.
+  void show(ostream& os) const;
 
-    // Show the column.
-    void show (ostream& os) const;
+  // Register the construction function of this class.
+  void registerClass() const;
 
-    // Register the construction function of this class.
-    void registerClass() const;
+  // Create the object from AipsIO (this function is registered).
+  static BaseColumnDesc* makeDesc(const String& name);
 
-    // Create the object from AipsIO (this function is registered).
-    static BaseColumnDesc* makeDesc (const String& name);
+ private:
+  T defaultVal_p;  // # default value
 
-private:
-    T  defaultVal_p;                        //# default value
+  // Put the object.
+  virtual void putDesc(AipsIO&) const;
 
-    // Put the object.
-    virtual void putDesc (AipsIO&) const;
-
-    // Get the object.
-    virtual void getDesc (AipsIO&);
+  // Get the object.
+  virtual void getDesc(AipsIO&);
 };
 
+// # Explicitly instantiate these templates in ScaColDesc_tmpl.cc
+extern template class ScalarColumnDesc<Bool>;
+extern template class ScalarColumnDesc<Char>;
+extern template class ScalarColumnDesc<Short>;
+extern template class ScalarColumnDesc<uShort>;
+extern template class ScalarColumnDesc<Int>;
+extern template class ScalarColumnDesc<uInt>;
+extern template class ScalarColumnDesc<Int64>;
+extern template class ScalarColumnDesc<Float>;
+extern template class ScalarColumnDesc<Double>;
+extern template class ScalarColumnDesc<Complex>;
+extern template class ScalarColumnDesc<DComplex>;
+extern template class ScalarColumnDesc<String>;
 
-//# Explicitly instantiate these templates in ScaColDesc_tmpl.cc
-  extern template class ScalarColumnDesc<Bool>;
-  extern template class ScalarColumnDesc<Char>;
-  extern template class ScalarColumnDesc<Short>;
-  extern template class ScalarColumnDesc<uShort>;
-  extern template class ScalarColumnDesc<Int>;
-  extern template class ScalarColumnDesc<uInt>;
-  extern template class ScalarColumnDesc<Int64>;
-  extern template class ScalarColumnDesc<Float>;
-  extern template class ScalarColumnDesc<Double>;
-  extern template class ScalarColumnDesc<Complex>;
-  extern template class ScalarColumnDesc<DComplex>;
-  extern template class ScalarColumnDesc<String>;
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/ScaColDesc.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

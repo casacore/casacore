@@ -1,43 +1,42 @@
-//# ArrColDesc.h: Templated class to describe columns of arrays in tables
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ArrColDesc.h: Templated class to describe columns of arrays in tables
+// # Copyright (C) 1994,1995,1996,1997,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_ARRCOLDESC_H
 #define TABLES_ARRCOLDESC_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class PlainColumn;
 class ColumnSet;
-
 
 // <summary>
 // Abstract base class for description of table array columns
@@ -53,48 +52,44 @@ class ColumnSet;
 //   <li> TableDesc
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // This class contains the common functionality for the templated class
 // ArrayColumnDesc which describes an array column.
 // </synopsis>
 
-class ArrayColumnDescBase : public BaseColumnDesc
-{
-public:
-    // Construct with given parameters.
-    ArrayColumnDescBase (const String& name, const String& comment,
-                         const String& dataManagerType,
-                         const String& dataManagerGroup,
-                         DataType, const String& dataTypeId,
-                         Int options, uInt ndim, const IPosition& shape);
+class ArrayColumnDescBase : public BaseColumnDesc {
+ public:
+  // Construct with given parameters.
+  ArrayColumnDescBase(const String& name, const String& comment, const String& dataManagerType,
+                      const String& dataManagerGroup, DataType, const String& dataTypeId,
+                      Int options, uInt ndim, const IPosition& shape);
 
-    // Copy constructor (copy semantics);
-    ArrayColumnDescBase (const ArrayColumnDescBase&);
+  // Copy constructor (copy semantics);
+  ArrayColumnDescBase(const ArrayColumnDescBase&);
 
-    ~ArrayColumnDescBase();
+  ~ArrayColumnDescBase();
 
-    // Assignment (copy semantics);
-    ArrayColumnDescBase& operator= (const ArrayColumnDescBase&);
+  // Assignment (copy semantics);
+  ArrayColumnDescBase& operator=(const ArrayColumnDescBase&);
 
-    // Get the name of this class. It is used by the registration process.
-    // The template argument gets part of the name.
-    String className() const;
+  // Get the name of this class. It is used by the registration process.
+  // The template argument gets part of the name.
+  String className() const;
 
-    // Create a Column object out of this.
-    // This is used by class ColumnSet to construct a table column object.
-    virtual PlainColumn* makeColumn (ColumnSet*) const;
+  // Create a Column object out of this.
+  // This is used by class ColumnSet to construct a table column object.
+  virtual PlainColumn* makeColumn(ColumnSet*) const;
 
-    // Show the column.
-    void show (ostream& os) const;
+  // Show the column.
+  void show(ostream& os) const;
 
-protected:
-    // Put the object.
-    virtual void putDesc (AipsIO&) const;
+ protected:
+  // Put the object.
+  virtual void putDesc(AipsIO&) const;
 
-    // Get the object.
-    virtual void getDesc (AipsIO&);
+  // Get the object.
+  virtual void getDesc(AipsIO&);
 };
-
 
 // <summary>
 // Templated class for description of table array columns
@@ -115,7 +110,7 @@ protected:
 // may also be called a row) will hold an array.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // ArrayColumnDesc is a templated class for defining a table column
 // containing arrays.
 //
@@ -226,114 +221,107 @@ protected:
 //       This should return the unique "name" of the class.
 // </templating>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
-template<class T>
-class ArrayColumnDesc : public ArrayColumnDescBase
-{
-friend class ColumnDesc;
+template <class T>
+class ArrayColumnDesc : public ArrayColumnDescBase {
+  friend class ColumnDesc;
 
-public:
-    // Construct the column with the given name and dimensionality.
-    // The data manager type defaults to the StandardStman storage manager.
-    // The data manager group defaults to the data manager type.
-    // Ndim <=0 means that the number of dimensions is free and will
-    // be defined when creating the table (rows). Ndim>0 means that
-    // the arrays in this column must have the given dimensionality.
-    // The possible options are defined in ColumnDesc.h.
-    explicit ArrayColumnDesc (const String& name, Int ndim = -1,
-			      int options = 0);
+ public:
+  // Construct the column with the given name and dimensionality.
+  // The data manager type defaults to the StandardStman storage manager.
+  // The data manager group defaults to the data manager type.
+  // Ndim <=0 means that the number of dimensions is free and will
+  // be defined when creating the table (rows). Ndim>0 means that
+  // the arrays in this column must have the given dimensionality.
+  // The possible options are defined in ColumnDesc.h.
+  explicit ArrayColumnDesc(const String& name, Int ndim = -1, int options = 0);
 
-    // Construct the column with the given name, dimensionality, and comment.
-    // The data manager type defaults to the StandardStman storage manager.
-    // The data manager group defaults to the data manager type.
-    // Ndim <=0 means that the number of dimensions is free and will
-    // be defined when creating the table (rows). Ndim>0 means that
-    // the arrays in this column must have the given dimensionality.
-    // The possible options are defined in ColumnDesc.h.
-    ArrayColumnDesc (const String& name, const String& comment,
-		     Int ndim = -1, int options = 0);
+  // Construct the column with the given name, dimensionality, and comment.
+  // The data manager type defaults to the StandardStman storage manager.
+  // The data manager group defaults to the data manager type.
+  // Ndim <=0 means that the number of dimensions is free and will
+  // be defined when creating the table (rows). Ndim>0 means that
+  // the arrays in this column must have the given dimensionality.
+  // The possible options are defined in ColumnDesc.h.
+  ArrayColumnDesc(const String& name, const String& comment, Int ndim = -1, int options = 0);
 
-    // Construct the column with the given name, dimensionality, comment,
-    // and default data manager type and group.
-    // A blank data manager group defaults to the data manager type.
-    // Ndim <=0 means that the number of dimensions is free and will
-    // be defined when creating the table (rows). Ndim>0 means that
-    // the arrays in this column must have the given dimensionality.
-    // The possible options are defined in ColumnDesc.h.
-    ArrayColumnDesc (const String& name, const String& comment,
-		     const String& dataManName, const String& dataManGroup,
-		     Int ndim = -1, int options = 0);
+  // Construct the column with the given name, dimensionality, comment,
+  // and default data manager type and group.
+  // A blank data manager group defaults to the data manager type.
+  // Ndim <=0 means that the number of dimensions is free and will
+  // be defined when creating the table (rows). Ndim>0 means that
+  // the arrays in this column must have the given dimensionality.
+  // The possible options are defined in ColumnDesc.h.
+  ArrayColumnDesc(const String& name, const String& comment, const String& dataManName,
+                  const String& dataManGroup, Int ndim = -1, int options = 0);
 
-    // Construct the column with the given name and shape.
-    // The data manager type defaults to the StandardStman storage manager.
-    // The data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    // This constructor can only be used for FixedShape arrays, because the
-    // shape of other arrays can only be set per row.
-    ArrayColumnDesc (const String& name,
-		     const IPosition& shape, int options = 0);
+  // Construct the column with the given name and shape.
+  // The data manager type defaults to the StandardStman storage manager.
+  // The data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  // This constructor can only be used for FixedShape arrays, because the
+  // shape of other arrays can only be set per row.
+  ArrayColumnDesc(const String& name, const IPosition& shape, int options = 0);
 
-    // Construct the column with the given name, shape, and comment.
-    // The data manager type defaults to the StandardStman storage manager.
-    // The data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    // This constructor can only be used for FixedShape arrays, because the
-    // shape of other arrays can only be set per row.
-    ArrayColumnDesc (const String& name, const String& comment,
-		     const IPosition& shape, int options = 0);
+  // Construct the column with the given name, shape, and comment.
+  // The data manager type defaults to the StandardStman storage manager.
+  // The data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  // This constructor can only be used for FixedShape arrays, because the
+  // shape of other arrays can only be set per row.
+  ArrayColumnDesc(const String& name, const String& comment, const IPosition& shape,
+                  int options = 0);
 
-    // Construct the column with the given name, shape, comment,
-    // and default data manager type and group.
-    // A blank data manager group defaults to the data manager type.
-    // The possible options are defined in ColumnDesc.h.
-    // This constructor can only be used for FixedShape arrays, because the
-    // shape of other arrays can only be set per row.
-    // If both ndim and shape are given as > 0, ndim should match the length
-    // of shape.
-    ArrayColumnDesc (const String& name, const String& comment,
-		     const String& dataManName, const String& dataManGroup,
-		     const IPosition& shape, int options = 0, int ndim=-1);
+  // Construct the column with the given name, shape, comment,
+  // and default data manager type and group.
+  // A blank data manager group defaults to the data manager type.
+  // The possible options are defined in ColumnDesc.h.
+  // This constructor can only be used for FixedShape arrays, because the
+  // shape of other arrays can only be set per row.
+  // If both ndim and shape are given as > 0, ndim should match the length
+  // of shape.
+  ArrayColumnDesc(const String& name, const String& comment, const String& dataManName,
+                  const String& dataManGroup, const IPosition& shape, int options = 0,
+                  int ndim = -1);
 
-    // Copy constructor (copy semantics);
-    ArrayColumnDesc (const ArrayColumnDesc<T>&);
+  // Copy constructor (copy semantics);
+  ArrayColumnDesc(const ArrayColumnDesc<T>&);
 
-    ~ArrayColumnDesc();
+  ~ArrayColumnDesc();
 
-    // Assignment (copy semantics);
-    ArrayColumnDesc<T>& operator= (const ArrayColumnDesc<T>&);
+  // Assignment (copy semantics);
+  ArrayColumnDesc<T>& operator=(const ArrayColumnDesc<T>&);
 
-    // Clone this column description to another.
-    BaseColumnDesc* clone() const;
+  // Clone this column description to another.
+  BaseColumnDesc* clone() const;
 
-    // Register the construction function of this class.
-    void registerClass() const;
+  // Register the construction function of this class.
+  void registerClass() const;
 
-    // Create the object from AipsIO (this function is registered).
-    static BaseColumnDesc* makeDesc(const String& name);
+  // Create the object from AipsIO (this function is registered).
+  static BaseColumnDesc* makeDesc(const String& name);
 };
 
+// # Explicitly instantiate these templates in ArrColDesc_tmpl.cc
+extern template class ArrayColumnDesc<Bool>;
+extern template class ArrayColumnDesc<Char>;
+extern template class ArrayColumnDesc<Short>;
+extern template class ArrayColumnDesc<uShort>;
+extern template class ArrayColumnDesc<Int>;
+extern template class ArrayColumnDesc<uInt>;
+extern template class ArrayColumnDesc<Int64>;
+extern template class ArrayColumnDesc<Float>;
+extern template class ArrayColumnDesc<Double>;
+extern template class ArrayColumnDesc<Complex>;
+extern template class ArrayColumnDesc<DComplex>;
+extern template class ArrayColumnDesc<String>;
 
-//# Explicitly instantiate these templates in ArrColDesc_tmpl.cc
-  extern template class ArrayColumnDesc<Bool>;
-  extern template class ArrayColumnDesc<Char>;
-  extern template class ArrayColumnDesc<Short>;
-  extern template class ArrayColumnDesc<uShort>;
-  extern template class ArrayColumnDesc<Int>;
-  extern template class ArrayColumnDesc<uInt>;
-  extern template class ArrayColumnDesc<Int64>;
-  extern template class ArrayColumnDesc<Float>;
-  extern template class ArrayColumnDesc<Double>;
-  extern template class ArrayColumnDesc<Complex>;
-  extern template class ArrayColumnDesc<DComplex>;
-  extern template class ArrayColumnDesc<String>;
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/ArrColDesc.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -1,39 +1,38 @@
-//# TSMCubeBuff.h: Tiled hypercube in a table
-//# Copyright (C) 2009
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TSMCubeBuff.h: Tiled hypercube in a table
+// # Copyright (C) 2009
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TSMCUBEBUFF_H
 #define TABLES_TSMCUBEBUFF_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TSMCube.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations
+// # Forward declarations
 class BucketBuffered;
 
 // <summary>
@@ -46,7 +45,7 @@ class BucketBuffered;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TiledStMan>TiledStMan</linkto>
 //   <li> <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
 //        for a discussion of the maximum cache size
@@ -81,121 +80,104 @@ class BucketBuffered;
 // The description of class
 // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
 // contains a discussion about the effect of setting the maximum cache size.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // TSMCubeBuff encapsulates all operations on a hypercube.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class TSMCubeBuff : public TSMCube {
+ public:
+  // Construct the hypercube using the given file with the given shape.
+  // The record contains the id and possible coordinate values.
+  // <br>If the cubeshape is empty, the hypercube is still undefined and
+  // can be added later with setShape. That is only used by TiledCellStMan.
+  // <br> The fileOffset argument is meant for class TiledFileAccess.
+  TSMCubeBuff(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
+              const IPosition& tileShape, const Record& values, Int64 fileOffset);
 
-class TSMCubeBuff: public TSMCube
-{
-public:
-    // Construct the hypercube using the given file with the given shape.
-    // The record contains the id and possible coordinate values.
-    // <br>If the cubeshape is empty, the hypercube is still undefined and
-    // can be added later with setShape. That is only used by TiledCellStMan.
-    // <br> The fileOffset argument is meant for class TiledFileAccess.
-    TSMCubeBuff (TiledStMan* stman, TSMFile* file,
-                 const IPosition& cubeShape,
-                 const IPosition& tileShape,
-                 const Record& values, Int64 fileOffset);
+  // Reconstruct the hypercube by reading its data from the AipsIO stream.
+  // It will link itself to the correct TSMFile. The TSMFile objects
+  // must have been reconstructed in advance.
+  TSMCubeBuff(TiledStMan* stman, AipsIO& ios);
 
-    // Reconstruct the hypercube by reading its data from the AipsIO stream.
-    // It will link itself to the correct TSMFile. The TSMFile objects
-    // must have been reconstructed in advance.
-    TSMCubeBuff (TiledStMan* stman, AipsIO& ios);
+  ~TSMCubeBuff() override = default;
 
-    ~TSMCubeBuff() override = default;
+  // Forbid copy constructor.
+  TSMCubeBuff(const TSMCubeBuff&) = delete;
 
-    // Forbid copy constructor.
-    TSMCubeBuff (const TSMCubeBuff&) = delete;
+  // Forbid assignment.
+  TSMCubeBuff& operator=(const TSMCubeBuff&) = delete;
 
-    // Forbid assignment.
-    TSMCubeBuff& operator= (const TSMCubeBuff&) = delete;
+  // Flush the data in the cache.
+  virtual void flushCache() override;
 
-    // Flush the data in the cache.
-    virtual void flushCache() override;
+  // Show the cache statistics.
+  void showCacheStatistics(ostream& os) const override;
 
-    // Show the cache statistics.
-    void showCacheStatistics (ostream& os) const override;
+  // Set the hypercube shape.
+  // This is only possible if the shape was not defined yet.
+  void setShape(const IPosition& cubeShape, const IPosition& tileShape) override;
 
-    // Set the hypercube shape.
-    // This is only possible if the shape was not defined yet.
-    void setShape (const IPosition& cubeShape,
-                   const IPosition& tileShape) override;
+  // Extend the last dimension of the cube with the given number.
+  // The record can contain the coordinates of the elements added.
+  void extend(uInt64 nr, const Record& coordValues, const TSMColumn* lastCoordColumn) override;
 
-    // Extend the last dimension of the cube with the given number.
-    // The record can contain the coordinates of the elements added.
-    void extend (uInt64 nr, const Record& coordValues,
-                 const TSMColumn* lastCoordColumn) override;
+  // Read or write a section in the cube.
+  // It is assumed that the section buffer is long enough.
+  void accessSection(const IPosition& start, const IPosition& end, char* section, uInt colnr,
+                     uInt localPixelSize, uInt externalPixelSize, Bool writeFlag) override;
 
-    // Read or write a section in the cube.
-    // It is assumed that the section buffer is long enough.
-    void accessSection (const IPosition& start, const IPosition& end,
-                        char* section, uInt colnr,
-                        uInt localPixelSize, uInt externalPixelSize,
-                        Bool writeFlag) override;
+  // Read or write a section in a strided way.
+  // It is assumed that the section buffer is long enough.
+  void accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
+                     char* section, uInt colnr, uInt localPixelSize, uInt externalPixelSize,
+                     Bool writeFlag) override;
 
-    // Read or write a section in a strided way.
-    // It is assumed that the section buffer is long enough.
-    void accessStrided (const IPosition& start, const IPosition& end,
-                        const IPosition& stride,
-                        char* section, uInt colnr,
-                        uInt localPixelSize, uInt externalPixelSize,
-                        Bool writeFlag) override;
+  // Set the cache size for the given slice and access path.
+  void setCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
+                    const IPosition& windowLength, const IPosition& axisPath, Bool forceSmaller,
+                    Bool userSet) override;
 
-    // Set the cache size for the given slice and access path.
-    void setCacheSize (const IPosition& sliceShape,
-                       const IPosition& windowStart,
-                       const IPosition& windowLength,
-                       const IPosition& axisPath,
-                       Bool forceSmaller, Bool userSet) override;
+  // Resize the cache object.
+  // If forceSmaller is False, the cache will only be resized when it grows.
+  // If the given size exceeds the maximum size with more
+  // than 10%, the maximum size will be used.
+  // The cacheSize has to be given in buckets.
+  // <br>The flag <src>userSet</src> inidicates if the cache size is set by
+  // the user (by an Accessor object) or automatically (by TSMDataColumn).
+  void setCacheSize(uInt cacheSize, Bool forceSmaller, Bool userSet) override;
 
-    // Resize the cache object.
-    // If forceSmaller is False, the cache will only be resized when it grows.
-    // If the given size exceeds the maximum size with more
-    // than 10%, the maximum size will be used.
-    // The cacheSize has to be given in buckets.
-    // <br>The flag <src>userSet</src> inidicates if the cache size is set by
-    // the user (by an Accessor object) or automatically (by TSMDataColumn).
-    void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet) override;
+ private:
+  // Get the cache object.
+  // This will construct the cache object if not present yet.
+  BucketBuffered* getCache();
 
-private:
-    // Get the cache object.
-    // This will construct the cache object if not present yet.
-    BucketBuffered* getCache();
+  // Construct the cache object (if not constructed yet).
+  void makeCache() override;
 
-    // Construct the cache object (if not constructed yet).
-    void makeCache() override;
+  // Resync the cache object.
+  void resyncCache() override;
 
-    // Resync the cache object.
-    void resyncCache() override;
+  // Delete the cache object.
+  void deleteCache() override;
 
-    // Delete the cache object.
-    void deleteCache() override;
-
-    //# Declare member variables.
-    // The bucket cache.
-    std::unique_ptr<BucketBuffered> cache_p;
+  // # Declare member variables.
+  //  The bucket cache.
+  std::unique_ptr<BucketBuffered> cache_p;
 };
 
-
-
-inline BucketBuffered* TSMCubeBuff::getCache()
-{
-    if (!cache_p) {
-	makeCache();
-    }
-    return cache_p.get();
+inline BucketBuffered* TSMCubeBuff::getCache() {
+  if (!cache_p) {
+    makeCache();
+  }
+  return cache_p.get();
 }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

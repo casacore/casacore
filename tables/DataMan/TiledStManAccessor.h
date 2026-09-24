@@ -1,39 +1,39 @@
-//# TiledStManAccessor.h: Gives access to some TiledStMan functions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledStManAccessor.h: Gives access to some TiledStMan functions
+// # Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TILEDSTMANACCESSOR_H
 #define TABLES_TILEDSTMANACCESSOR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManAccessor.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class TiledStMan;
 class DataManager;
 class Table;
@@ -51,7 +51,7 @@ class Record;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 // <li> <linkto class=TiledStMan>TiledStMan</linkto>
 // </prerequisite>
 
@@ -123,13 +123,13 @@ class Record;
 // The 'get' functions get the information for the given hypercube,
 // while similar functions without the 'get' prefix do the same for the
 // given row.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // In principle a pointer to TiledStMan could be used.
 // However, that would give access to all public functions.
 // Furthermore it could not distinguish between read/write and readonly
-// tables. 
+// tables.
 // </motivation>
 
 // <example>
@@ -147,152 +147,138 @@ class Record;
 // </srcblock>
 // </example>
 
-//# <todo asof="$DATE:$">
-//# </todo>
+// # <todo asof="$DATE:$">
+// # </todo>
 
+class ROTiledStManAccessor : public RODataManAccessor {
+ public:
+  // Default constructor should be used with care.
+  // The resulting object cannot be used for any other operation
+  // until a 'true' ROTiledStManAccessor object is assigned to it.
+  ROTiledStManAccessor();
 
-class ROTiledStManAccessor : public RODataManAccessor
-{
-public:
-    // Default constructor should be used with care.
-    // The resulting object cannot be used for any other operation
-    // until a 'true' ROTiledStManAccessor object is assigned to it.
-    ROTiledStManAccessor ();
+  // Construct the object for a data manager in the table given the name
+  // of the data manager or the column.
+  // An exception is thrown if the data manager type is not any tiled
+  // storage manager.
+  ROTiledStManAccessor(const Table& table, const String& name, Bool byColumn = False);
 
-    // Construct the object for a data manager in the table given the name
-    // of the data manager or the column.
-    // An exception is thrown if the data manager type is not any tiled
-    // storage manager.
-    ROTiledStManAccessor (const Table& table, const String& name,
-                          Bool byColumn=False);
+  virtual ~ROTiledStManAccessor();
 
-    virtual ~ROTiledStManAccessor();
+  // Copy constructor (reference semantics).
+  ROTiledStManAccessor(const ROTiledStManAccessor& that);
 
-    // Copy constructor (reference semantics).
-    ROTiledStManAccessor (const ROTiledStManAccessor& that);
+  // Assignment (reference semantics).
+  ROTiledStManAccessor& operator=(const ROTiledStManAccessor& that);
 
-    // Assignment (reference semantics).
-    ROTiledStManAccessor& operator= (const ROTiledStManAccessor& that);
+  // Set the maximum cache size (in MibiByte) to be used by a hypercube
+  // in the storage manager. Note that each hypercube has its own cache.
+  // 0 means unlimited.
+  // The initial maximum cache size is unlimited.
+  // The maximum cache size given in this way is not persistent.
+  // Only the maximum cache size given to the constructors of the tiled
+  // storage managers, is persistent.
+  void setMaximumCacheSize(uInt nMiB);
 
-    // Set the maximum cache size (in MibiByte) to be used by a hypercube
-    // in the storage manager. Note that each hypercube has its own cache.
-    // 0 means unlimited.
-    // The initial maximum cache size is unlimited.
-    // The maximum cache size given in this way is not persistent.
-    // Only the maximum cache size given to the constructors of the tiled
-    // storage managers, is persistent.
-    void setMaximumCacheSize (uInt nMiB);
+  // Get the maximum cache size (in MiB).
+  uInt maximumCacheSize() const;
 
-    // Get the maximum cache size (in MiB).
-    uInt maximumCacheSize() const;
+  // Get the current cache size (in buckets) for the hypercube in
+  // the given row.
+  uInt cacheSize(rownr_t rownr) const;
 
-    // Get the current cache size (in buckets) for the hypercube in
-    // the given row.
-    uInt cacheSize (rownr_t rownr) const;
+  // Get the hypercube shape of the data in the given row.
+  const IPosition& hypercubeShape(rownr_t rownr) const;
 
-    // Get the hypercube shape of the data in the given row.
-    const IPosition& hypercubeShape (rownr_t rownr) const;
+  // Get the tile shape of the data in the given row.
+  const IPosition& tileShape(rownr_t rownr) const;
 
-    // Get the tile shape of the data in the given row.
-    const IPosition& tileShape (rownr_t rownr) const;
+  // Get the bucket size (in bytes) of the hypercube in the given row.
+  uInt bucketSize(rownr_t rownr) const;
 
-    // Get the bucket size (in bytes) of the hypercube in the given row.
-    uInt bucketSize (rownr_t rownr) const;
+  // Get coordinate and id values of the hypercube in the given row.
+  const Record& valueRecord(rownr_t rownr) const;
 
-    // Get coordinate and id values of the hypercube in the given row.
-    const Record& valueRecord (rownr_t rownr) const;
+  // Return the number of hypercubes.
+  uInt nhypercubes() const;
 
-    // Return the number of hypercubes.
-    uInt nhypercubes() const;
+  // Get the current cache size (in buckets) for the given hypercube.
+  uInt getCacheSize(uInt hypercube) const;
 
-    // Get the current cache size (in buckets) for the given hypercube.
-    uInt getCacheSize (uInt hypercube) const;
+  // Get the shape of the given hypercube.
+  const IPosition& getHypercubeShape(uInt hypercube) const;
 
-    // Get the shape of the given hypercube.
-    const IPosition& getHypercubeShape (uInt hypercube) const;
+  // Get the tile shape of the given hypercube.
+  const IPosition& getTileShape(uInt hypercube) const;
 
-    // Get the tile shape of the given hypercube.
-    const IPosition& getTileShape (uInt hypercube) const;
+  // Get the bucket size (in bytes) of the given hypercube.
+  uInt getBucketSize(uInt hypercube) const;
 
-     // Get the bucket size (in bytes) of the given hypercube.
-    uInt getBucketSize (uInt hypercube) const;
+  // Get coordinate and id values of the given hypercube.
+  const Record& getValueRecord(uInt hypercube) const;
 
-    // Get coordinate and id values of the given hypercube.
-    const Record& getValueRecord (uInt hypercube) const;
+  // Calculate the cache size (in buckets) for accessing the hypercube
+  // containing the given row. It takes the maximum cache size into
+  // account (allowing an overdraft of 10%).
+  // It uses the given axisPath (i.e. traversal order) to determine
+  // the optimum size. A window can be specified to indicate that only
+  // the given subset of the hypercube will be accessed. The window
+  // defaults to the entire hypercube.
+  // <br>
+  // The length of the slice and window arguments and <src>axisPath</src>
+  // must be less or equal to the dimensionality of the hypercube.
+  // The non-specified <src>windowStart</src> parts default to 0.
+  // The non-specified <src>windowLength</src> parts default to
+  // the hypercube shape.
+  // The non-specified <src>sliceShape</src> parts default to 1.
+  // <br>
+  // Axispath = [2,0,1] indicates that the z-axis changes most rapidly,
+  // thereafter x and y. An axis can occur only once in the axisPath.
+  // The non-specified <src>axisPath</src> parts get the natural order.
+  // E.g. in the previous example axisPath=[2] defines the same path.
+  // <group>
+  uInt calcCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& axisPath) const;
+  uInt calcCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& windowStart,
+                     const IPosition& windowLength, const IPosition& axisPath) const;
+  // </group>
 
-    // Calculate the cache size (in buckets) for accessing the hypercube
-    // containing the given row. It takes the maximum cache size into
-    // account (allowing an overdraft of 10%).
-    // It uses the given axisPath (i.e. traversal order) to determine
-    // the optimum size. A window can be specified to indicate that only
-    // the given subset of the hypercube will be accessed. The window
-    // defaults to the entire hypercube.
-    // <br>
-    // The length of the slice and window arguments and <src>axisPath</src>
-    // must be less or equal to the dimensionality of the hypercube.
-    // The non-specified <src>windowStart</src> parts default to 0.
-    // The non-specified <src>windowLength</src> parts default to
-    // the hypercube shape.
-    // The non-specified <src>sliceShape</src> parts default to 1.
-    // <br>
-    // Axispath = [2,0,1] indicates that the z-axis changes most rapidly,
-    // thereafter x and y. An axis can occur only once in the axisPath.
-    // The non-specified <src>axisPath</src> parts get the natural order.
-    // E.g. in the previous example axisPath=[2] defines the same path.
-    // <group>
-    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
-			const IPosition& axisPath) const;
-    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
-			const IPosition& windowStart,
-			const IPosition& windowLength,
-			const IPosition& axisPath) const;
-    // </group>
+  // Set the cache size using the corresponding <src>calcCacheSize</src>
+  // function mentioned above.
+  // <br>When forceSmaller is False, the cache is not resized when the
+  // new size is smaller.
+  // <group>
+  void setCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& axisPath,
+                    Bool forceSmaller = True);
+  void setCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& windowStart,
+                    const IPosition& windowLength, const IPosition& axisPath,
+                    Bool forceSmaller = True);
+  // </group>
 
-    // Set the cache size using the corresponding <src>calcCacheSize</src>
-    // function mentioned above.
-    // <br>When forceSmaller is False, the cache is not resized when the
-    // new size is smaller.
-    // <group>
-    void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
-		       const IPosition& axisPath,
-		       Bool forceSmaller = True);
-    void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
-		       const IPosition& windowStart,
-		       const IPosition& windowLength,
-		       const IPosition& axisPath,
-		       Bool forceSmaller = True);
-    // </group>
+  // Set the cache size for accessing the hypercube containing the given row.
+  // When the give cache size exceeds the maximum cache size with more
+  // than 10%, the maximum cache size is used instead.
+  // <br>When forceSmaller is False, the cache is not resized when the
+  // new size is smaller.
+  void setCacheSize(rownr_t rownr, uInt nbuckets, Bool forceSmaller = True);
 
-    // Set the cache size for accessing the hypercube containing the given row.
-    // When the give cache size exceeds the maximum cache size with more
-    // than 10%, the maximum cache size is used instead.
-    // <br>When forceSmaller is False, the cache is not resized when the
-    // new size is smaller.
-    void setCacheSize (rownr_t rownr, uInt nbuckets, Bool forceSmaller = True);
+  // This version allows setting the tile cache for a particular hypercube.  This
+  // is useful when iterating over the hypercubes in an StMan.
+  void setHypercubeCacheSize(uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
 
-    // This version allows setting the tile cache for a particular hypercube.  This
-    // is useful when iterating over the hypercubes in an StMan.
-    void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
+  // Clear the caches used by the hypercubes in this storage manager.
+  // It will flush the caches as needed and remove all buckets from them
+  // resulting in a possibly large drop in memory used.
+  void clearCaches();
 
-    // Clear the caches used by the hypercubes in this storage manager.
-    // It will flush the caches as needed and remove all buckets from them
-    // resulting in a possibly large drop in memory used.
-    void clearCaches();
+ protected:
+  // Get the data manager.
+  DataManager* getDataManager() const;
 
-
-protected:
-    // Get the data manager.
-    DataManager* getDataManager() const;
-
-
-private:
-    //# Declare the data members.
-    TiledStMan* dataManPtr_p;
+ private:
+  // # Declare the data members.
+  TiledStMan* dataManPtr_p;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

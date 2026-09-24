@@ -1,41 +1,40 @@
-//# ForwardColRow.h: Virtual Column Engine to forward to other rows/columns
-//# Copyright (C) 1995,1996,1997,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ForwardColRow.h: Virtual Column Engine to forward to other rows/columns
+// # Copyright (C) 1995,1996,1997,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_FORWARDCOLROW_H
 #define TABLES_FORWARDCOLROW_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/ForwardCol.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class ForwardColumnIndexedRowEngine;
-
 
 // <summary>
 // Virtual column forwarding to another row/column
@@ -47,7 +46,7 @@ class ForwardColumnIndexedRowEngine;
 // <use visibility=local>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> ForwardColumnIndexedRowEngine
 //   <li> ForwardColumn
 // </prerequisite>
@@ -57,7 +56,7 @@ class ForwardColumnIndexedRowEngine;
 // for an individual row/column on behalf of the virtual column engine
 // ForwardColumnIndexedRowEngine. It forwards them to a row/column in
 // another table. The row forwarding is done using a special column
-// containing row numbers indexing the referenced table. 
+// containing row numbers indexing the referenced table.
 // </etymology>
 
 // <synopsis>
@@ -78,123 +77,114 @@ class ForwardColumnIndexedRowEngine;
 // ForwardColumnIndexedRowEngine</linkto>
 // which creates a ForwardColumnIndexedRow object for each column being
 // forwarded.
-// </synopsis> 
+// </synopsis>
 
+class ForwardColumnIndexedRow : public ForwardColumn {
+ public:
+  // Construct it for the given column.
+  ForwardColumnIndexedRow(ForwardColumnIndexedRowEngine* enginePtr, const String& columnName,
+                          int dataType, const String& dataTypeId, const Table& referencedTable);
 
-class ForwardColumnIndexedRow : public ForwardColumn
-{
-public:
+  // Destructor is mandatory.
+  ~ForwardColumnIndexedRow();
 
-    // Construct it for the given column.
-    ForwardColumnIndexedRow (ForwardColumnIndexedRowEngine* enginePtr,
-			     const String& columnName,
-			     int dataType,
-			     const String& dataTypeId,
-			     const Table& referencedTable);
+  // Copy constructor is not needed and therefore forbidden.
+  ForwardColumnIndexedRow(const ForwardColumnIndexedRow&) = delete;
 
-    // Destructor is mandatory.
-    ~ForwardColumnIndexedRow();
+  // Assignment is not needed and therefore forbidden.
+  ForwardColumnIndexedRow& operator=(const ForwardColumnIndexedRow&) = delete;
 
-    // Copy constructor is not needed and therefore forbidden.
-    ForwardColumnIndexedRow (const ForwardColumnIndexedRow&) = delete;
+  // Initialize the object.
+  // This means binding the column to the column with the same name
+  // in the original table.
+  // It checks if the description of both columns is the same.
+  void prepare(const Table& thisTable);
 
-    // Assignment is not needed and therefore forbidden.
-    ForwardColumnIndexedRow& operator= (const ForwardColumnIndexedRow&) = delete;
+ private:
+  // This data manager cannot handle changing array shapes.
+  Bool canChangeShape() const;
 
-    // Initialize the object.
-    // This means binding the column to the column with the same name
-    // in the original table.
-    // It checks if the description of both columns is the same.
-    void prepare (const Table& thisTable);
+  // Set the shape of an (indirect) array in the given row.
+  // This throws an exception, because putting is not supported.
+  void setShape(rownr_t rownr, const IPosition& shape);
 
-private:
-    // This data manager cannot handle changing array shapes.
-    Bool canChangeShape() const;
+  // Is the value shape defined in the given row?
+  Bool isShapeDefined(rownr_t rownr);
 
-    // Set the shape of an (indirect) array in the given row.
-    // This throws an exception, because putting is not supported.
-    void setShape (rownr_t rownr, const IPosition& shape);
+  // Get the dimensionality of the item in the given row.
+  uInt ndim(rownr_t rownr);
 
-    // Is the value shape defined in the given row?
-    Bool isShapeDefined (rownr_t rownr);
+  // Get the shape of the item in the given row.
+  IPosition shape(rownr_t rownr);
 
-    // Get the dimensionality of the item in the given row.
-    uInt ndim (rownr_t rownr);
+  // Get the scalar value with a standard data type in the given row.
+  // <group>
+  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
+  virtual void getShort(rownr_t rownr, Short* dataPtr);
+  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
+  virtual void getInt(rownr_t rownr, Int* dataPtr);
+  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
+  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
+  virtual void getfloat(rownr_t rownr, float* dataPtr);
+  virtual void getdouble(rownr_t rownr, double* dataPtr);
+  virtual void getComplex(rownr_t rownr, Complex* dataPtr);
+  virtual void getDComplex(rownr_t rownr, DComplex* dataPtr);
+  virtual void getString(rownr_t rownr, String* dataPtr);
+  // </group>
 
-    // Get the shape of the item in the given row.
-    IPosition shape (rownr_t rownr);
+  // Get the scalar value with a non-standard data type in the given row.
+  virtual void getOther(rownr_t rownr, void* dataPtr);
 
-    // Get the scalar value with a standard data type in the given row.
-    // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
-    virtual void getfloat    (rownr_t rownr, float* dataPtr);
-    virtual void getdouble   (rownr_t rownr, double* dataPtr);
-    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
-    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
-    virtual void getString   (rownr_t rownr, String* dataPtr);
-    // </group>
+  // Put the scalar value with a standard data type into the given row.
+  // This throws an exception, because putting is not supported.
+  // <group>
+  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
+  virtual void putShort(rownr_t rownr, const Short* dataPtr);
+  virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
+  virtual void putInt(rownr_t rownr, const Int* dataPtr);
+  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
+  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
+  virtual void putfloat(rownr_t rownr, const float* dataPtr);
+  virtual void putdouble(rownr_t rownr, const double* dataPtr);
+  virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
+  virtual void putDComplex(rownr_t rownr, const DComplex* dataPtr);
+  virtual void putString(rownr_t rownr, const String* dataPtr);
+  // </group>
 
-    // Get the scalar value with a non-standard data type in the given row.
-    virtual void getOther    (rownr_t rownr, void* dataPtr);
+  // Put the scalar value with a non-standard data type into the given row.
+  // This throws an exception, because putting is not supported.
+  virtual void putOther(rownr_t rownr, const void* dataPtr);
 
-    // Put the scalar value with a standard data type into the given row.
-    // This throws an exception, because putting is not supported.
-    // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
-    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
-    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
-    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
-    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
-    virtual void putString   (rownr_t rownr, const String* dataPtr);
-    // </group>
+  // Get the array value in the given row.
+  // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
+  // is needed to be generic.
+  // The array pointed to by dataPtr has to have the correct shape
+  // (which is guaranteed by the ArrayColumn get function).
+  void getArrayV(rownr_t rownr, ArrayBase& dataPtr);
 
-    // Put the scalar value with a non-standard data type into the given row.
-    // This throws an exception, because putting is not supported.
-    virtual void putOther    (rownr_t rownr, const void* dataPtr);
+  // Put the array value into the given row.
+  // This throws an exception, because putting is not supported.
+  void putArrayV(rownr_t rownr, const ArrayBase& dataPtr);
 
-    // Get the array value in the given row.
-    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn get function).
-    void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
+  // Get a section of the array in the given row.
+  // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
+  // is needed to be generic.
+  // The array pointed to by dataPtr has to have the correct shape
+  // (which is guaranteed by the ArrayColumn getSlice function).
+  void getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
-    // Put the array value into the given row.
-    // This throws an exception, because putting is not supported.
-    void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
+  // Put into a section of the array in the given row.
+  // This throws an exception, because putting is not supported.
+  void putSliceV(rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
-    // Get a section of the array in the given row.
-    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
-    // is needed to be generic.
-    // The array pointed to by dataPtr has to have the correct shape
-    // (which is guaranteed by the ArrayColumn getSlice function).
-    void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
+  // Convert the rownr to the rownr in the underlying table.
+  rownr_t convertRownr(rownr_t rownr);
 
-    // Put into a section of the array in the given row.
-    // This throws an exception, because putting is not supported.
-    void putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
-
-    // Convert the rownr to the rownr in the underlying table.
-    rownr_t convertRownr (rownr_t rownr);
-
-    //# Now define the data members.
-    ForwardColumnIndexedRowEngine* enginePtr_p;  //# pointer to parent engine
+  // # Now define the data members.
+  ForwardColumnIndexedRowEngine* enginePtr_p;  // # pointer to parent engine
 };
-
-
-
 
 // <summary>
 // Virtual column engine forwarding to other columns/rows.
@@ -206,7 +196,7 @@ private:
 // <use visibility=export>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> VirtualColumnEngine
 // </prerequisite>
 
@@ -245,7 +235,7 @@ private:
 // <linkto class="ForwardColumnIndexedRow:description">
 // ForwardColumnIndexedRow</linkto>
 // objects, which handle the actual gets.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // In some ways it overlaps the functionality of the storage manager
@@ -276,129 +266,115 @@ private:
 // </srcblock>
 // </example>
 
-class ForwardColumnIndexedRowEngine : public ForwardColumnEngine
-{
-public:
+class ForwardColumnIndexedRowEngine : public ForwardColumnEngine {
+ public:
+  // The default constructor is required for reconstruction of the
+  // engine when a table is read back.
+  ForwardColumnIndexedRowEngine(const String& dataManagerName, const Record& spec);
 
-    // The default constructor is required for reconstruction of the
-    // engine when a table is read back.
-    ForwardColumnIndexedRowEngine (const String& dataManagerName,
-				   const Record& spec);
+  // Create the engine.
+  // The columns using this engine will reference the given table.
+  // The column with the given name contains the row number mapping,
+  // i.e. a row number in a get or put is converted to a row number
+  // in the referenced table using the value in this column.
+  // The data manager gets the given name.
+  ForwardColumnIndexedRowEngine(const Table& referencedTable, const String& rowColumnName,
+                                const String& dataManagerName);
 
-    // Create the engine.
-    // The columns using this engine will reference the given table.
-    // The column with the given name contains the row number mapping,
-    // i.e. a row number in a get or put is converted to a row number
-    // in the referenced table using the value in this column.
-    // The data manager gets the given name.
-    ForwardColumnIndexedRowEngine (const Table& referencedTable,
-				   const String& rowColumnName,
-				   const String& dataManagerName);
+  // Create the engine.
+  // The columns using this engine will reference the given table.
+  // The column with the given name contains the row number mapping,
+  // i.e. a row number in a get or put is converted to a row number
+  // in the referenced table using the value in this column.
+  // The data manager has no name.
+  ForwardColumnIndexedRowEngine(const Table& referencedTable, const String& rowColumnName);
 
-    // Create the engine.
-    // The columns using this engine will reference the given table.
-    // The column with the given name contains the row number mapping,
-    // i.e. a row number in a get or put is converted to a row number
-    // in the referenced table using the value in this column.
-    // The data manager has no name.
-    ForwardColumnIndexedRowEngine (const Table& referencedTable,
-				   const String& rowColumnName);
+  // Destructor is mandatory.
+  ~ForwardColumnIndexedRowEngine();
 
-    // Destructor is mandatory.
-    ~ForwardColumnIndexedRowEngine();
+  // The copy constructor is forbidden.
+  ForwardColumnIndexedRowEngine(const ForwardColumnIndexedRowEngine&) = delete;
 
-    // The copy constructor is forbidden.
-    ForwardColumnIndexedRowEngine (const ForwardColumnIndexedRowEngine&) = delete;
+  // Assignment is forbidden.
+  ForwardColumnIndexedRowEngine& operator=(const ForwardColumnIndexedRowEngine&) = delete;
 
-    // Assignment is forbidden.
-    ForwardColumnIndexedRowEngine& operator=
-	                          (const ForwardColumnIndexedRowEngine&) = delete;
+  // Clone the engine object.
+  DataManager* clone() const;
 
-    // Clone the engine object.
-    DataManager* clone() const;
+  // Return the type name of the engine
+  // (i.e. its class name ForwardColumnIndexedRowEngine).
+  String dataManagerType() const;
 
-    // Return the type name of the engine
-    // (i.e. its class name ForwardColumnIndexedRowEngine).
-    String dataManagerType() const;
+  // Record a record containing data manager specifications.
+  virtual Record dataManagerSpec() const;
 
-    // Record a record containing data manager specifications.
-    virtual Record dataManagerSpec() const;
+  // Return the name of the class.
+  static String className();
 
-    // Return the name of the class.
-    static String className();
+  // Register the class name and the static makeObject "constructor".
+  // This will make the engine known to the table system.
+  static void registerClass();
 
-    // Register the class name and the static makeObject "constructor".
-    // This will make the engine known to the table system.
-    static void registerClass();
+ private:
+  // Create the column object for the scalar column in this engine.
+  DataManagerColumn* makeScalarColumn(const String& columnName, int dataType,
+                                      const String& dataTypeId);
 
-private:
-    // Create the column object for the scalar column in this engine.
-    DataManagerColumn* makeScalarColumn (const String& columnName,
-					 int dataType,
-					 const String& dataTypeId);
+  // Create the column object for the indirect array column in this engine.
+  DataManagerColumn* makeIndArrColumn(const String& columnName, int dataType,
+                                      const String& dataTypeId);
 
-    // Create the column object for the indirect array column in this engine.
-    DataManagerColumn* makeIndArrColumn (const String& columnName,
-					 int dataType,
-					 const String& dataTypeId);
+  // Initialize the object for a new table.
+  // It defines the column keywords containing the name of the
+  // original table, which can be the parent of the referenced table.
+  // It also defines a keyword containing the row column name.
+  void create64(rownr_t initialNrrow);
 
-    // Initialize the object for a new table.
-    // It defines the column keywords containing the name of the
-    // original table, which can be the parent of the referenced table.
-    // It also defines a keyword containing the row column name.
-    void create64 (rownr_t initialNrrow);
+  // Initialize the engine.
+  // It gets the name of the original table(s) from the column keywords,
+  // opens those tables and attaches the ForwardColumnIndexedRow objects
+  // to the columns in those tables.
+  void prepare();
 
-    // Initialize the engine.
-    // It gets the name of the original table(s) from the column keywords,
-    // opens those tables and attaches the ForwardColumnIndexedRow objects
-    // to the columns in those tables.
-    void prepare();
+  // Reopen the engine for read/write access.
+  // This cannot be done, so all columns remain readonly.
+  // The function is needed to override the behaviour of its base class.
+  void reopenRW();
 
-    // Reopen the engine for read/write access.
-    // This cannot be done, so all columns remain readonly.
-    // The function is needed to override the behaviour of its base class.
-    void reopenRW();
+  // Define the column with the row numbers (must have data type uInt).
+  String rowColumnName_p;
+  ScalarColumn<uInt> rowColumn_p;
+  // Define the various engine column objects.
+  Block<ForwardColumnIndexedRow*> refColumns_p;
+  // Cache of last row used to get row number.
+  Int64 lastRow_p;
+  rownr_t rowNumber_p;
 
+ public:
+  // Define the "constructor" to construct this engine when a
+  // table is read back.
+  // This "constructor" has to be registered by the user of the engine.
+  // If the engine is commonly used, its registration can be added
+  // into the registerAllCtor function in DataManReg.cc.
+  // This function gets automatically invoked by the table system.
+  static DataManager* makeObject(const String& dataManagerName, const Record& spec);
 
-    // Define the column with the row numbers (must have data type uInt).
-    String                          rowColumnName_p;
-    ScalarColumn<uInt>              rowColumn_p;
-    // Define the various engine column objects.
-    Block<ForwardColumnIndexedRow*> refColumns_p;
-    // Cache of last row used to get row number.
-    Int64   lastRow_p;
-    rownr_t rowNumber_p;
-
-
-public:
-    // Define the "constructor" to construct this engine when a
-    // table is read back.
-    // This "constructor" has to be registered by the user of the engine.
-    // If the engine is commonly used, its registration can be added
-    // into the registerAllCtor function in DataManReg.cc. 
-    // This function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerName,
-				    const Record& spec);
-
-    // Convert the rownr to the rownr in the underlying table.
-    rownr_t convertRownr (rownr_t rownr);
+  // Convert the rownr to the rownr in the underlying table.
+  rownr_t convertRownr(rownr_t rownr);
 };
 
-
-inline rownr_t ForwardColumnIndexedRowEngine::convertRownr (rownr_t rownr)
-{
-    if (Int64(rownr) != lastRow_p) {
-	rowNumber_p = rowColumn_p(rownr);
-	lastRow_p   = rownr;
-    }
-    return rowNumber_p;
+inline rownr_t ForwardColumnIndexedRowEngine::convertRownr(rownr_t rownr) {
+  if (Int64(rownr) != lastRow_p) {
+    rowNumber_p = rowColumn_p(rownr);
+    lastRow_p = rownr;
+  }
+  return rowNumber_p;
 }
 
-inline rownr_t ForwardColumnIndexedRow::convertRownr (rownr_t rownr)
-    { return enginePtr_p->convertRownr (rownr); }
+inline rownr_t ForwardColumnIndexedRow::convertRownr(rownr_t rownr) {
+  return enginePtr_p->convertRownr(rownr);
+}
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

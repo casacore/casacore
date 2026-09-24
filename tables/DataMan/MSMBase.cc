@@ -1,27 +1,27 @@
-//# MSMBase.cc: Base class for storage manager for tables using memory
-//# Copyright (C) 2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # MSMBase.cc: Base class for storage manager for tables using memory
+// # Copyright (C) 2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/DataMan/MSMBase.h>
 #include <casacore/tables/DataMan/MSMColumn.h>
@@ -30,264 +30,209 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/Utilities/Assert.h>
 
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+MSMBase::MSMBase() : DataManager(), nrrow_p(0), nrrowCreate_p(0), colSet_p(0), hasPut_p(False) {}
 
-MSMBase::MSMBase()
-: DataManager   (),
-  nrrow_p       (0),
-  nrrowCreate_p (0),
-  colSet_p      (0),
-  hasPut_p      (False)
-{}
+MSMBase::MSMBase(const String& storageManagerName)
+    : DataManager(),
+      stmanName_p(storageManagerName),
+      nrrow_p(0),
+      nrrowCreate_p(0),
+      colSet_p(0),
+      hasPut_p(False) {}
 
-MSMBase::MSMBase (const String& storageManagerName)
-: DataManager   (),
-  stmanName_p   (storageManagerName),
-  nrrow_p       (0),
-  nrrowCreate_p (0),
-  colSet_p      (0),
-  hasPut_p      (False)
-{}
+MSMBase::MSMBase(const String& storageManagerName, const Record&)
+    : DataManager(),
+      stmanName_p(storageManagerName),
+      nrrow_p(0),
+      nrrowCreate_p(0),
+      colSet_p(0),
+      hasPut_p(False) {}
 
-MSMBase::MSMBase (const String& storageManagerName, const Record&)
-: DataManager   (),
-  stmanName_p   (storageManagerName),
-  nrrow_p       (0),
-  nrrowCreate_p (0),
-  colSet_p      (0),
-  hasPut_p      (False)
-{}
-
-MSMBase::~MSMBase()
-{
-  for (uInt i=0; i<ncolumn(); i++) {
+MSMBase::~MSMBase() {
+  for (uInt i = 0; i < ncolumn(); i++) {
     delete colSet_p[i];
   }
 }
 
-DataManager* MSMBase::clone() const
-{
-  MSMBase* smp = new MSMBase (stmanName_p);
+DataManager* MSMBase::clone() const {
+  MSMBase* smp = new MSMBase(stmanName_p);
   return smp;
 }
 
-DataManager* MSMBase::makeObject (const String& storageManagerName,
-				  const Record& spec)
-{
-  MSMBase* smp = new MSMBase (storageManagerName, spec);
+DataManager* MSMBase::makeObject(const String& storageManagerName, const Record& spec) {
+  MSMBase* smp = new MSMBase(storageManagerName, spec);
   return smp;
 }
 
-String MSMBase::dataManagerType() const
-{
-  return "MemoryStMan";
-}
+String MSMBase::dataManagerType() const { return "MemoryStMan"; }
 
-String MSMBase::dataManagerName() const
-{
-  return stmanName_p;
-}
+String MSMBase::dataManagerName() const { return stmanName_p; }
 
-//# Does the storage manager allow to add rows? (yes)
-Bool MSMBase::canAddRow() const
-{
-  return True;
-}
+// # Does the storage manager allow to add rows? (yes)
+Bool MSMBase::canAddRow() const { return True; }
 
-//# Does the storage manager allow to delete rows? (yes)
-Bool MSMBase::canRemoveRow() const
-{
-  return True;
-}
+// # Does the storage manager allow to delete rows? (yes)
+Bool MSMBase::canRemoveRow() const { return True; }
 
-//# Does the storage manager allow to add columns? (yes)
-Bool MSMBase::canAddColumn() const
-{
-  return True;
-}
+// # Does the storage manager allow to add columns? (yes)
+Bool MSMBase::canAddColumn() const { return True; }
 
-//# Does the storage manager allow to delete columns? (yes)
-Bool MSMBase::canRemoveColumn() const
-{
-  return True;
-}
+// # Does the storage manager allow to delete columns? (yes)
+Bool MSMBase::canRemoveColumn() const { return True; }
 
-
-DataManagerColumn* MSMBase::makeScalarColumn (const String& columnName,
-					      int dataType, const String&)
-{
-  //# Check if data type is not TpOther.
-  throwDataTypeOther (columnName, dataType);
-  //# Extend colSet_p block if needed.
+DataManagerColumn* MSMBase::makeScalarColumn(const String& columnName, int dataType,
+                                             const String&) {
+  // # Check if data type is not TpOther.
+  throwDataTypeOther(columnName, dataType);
+  // # Extend colSet_p block if needed.
   if (ncolumn() >= colSet_p.nelements()) {
-    colSet_p.resize (colSet_p.nelements() + 32);
+    colSet_p.resize(colSet_p.nelements() + 32);
   }
-  MSMColumn* colp = new MSMColumn (this, dataType, False);
+  MSMColumn* colp = new MSMColumn(this, dataType, False);
   colSet_p[ncolumn()] = colp;
   return colp;
 }
-DataManagerColumn* MSMBase::makeDirArrColumn (const String& columnName,
-					      int dataType, const String&)
-{
-  //# Check if data type is not TpOther.
-  throwDataTypeOther (columnName, dataType);
-  //# Extend colSet_p block if needed.
+DataManagerColumn* MSMBase::makeDirArrColumn(const String& columnName, int dataType,
+                                             const String&) {
+  // # Check if data type is not TpOther.
+  throwDataTypeOther(columnName, dataType);
+  // # Extend colSet_p block if needed.
   if (ncolumn() >= colSet_p.nelements()) {
-    colSet_p.resize (colSet_p.nelements() + 32);
+    colSet_p.resize(colSet_p.nelements() + 32);
   }
-  MSMColumn* colp = new MSMDirColumn (this, dataType);
+  MSMColumn* colp = new MSMDirColumn(this, dataType);
   colSet_p[ncolumn()] = colp;
   return colp;
 }
-DataManagerColumn* MSMBase::makeIndArrColumn (const String& columnName,
-					      int dataType, const String&)
-{
-  //# Check if data type is not TpOther.
-  throwDataTypeOther (columnName, dataType);
-  //# Extend colSet_p block if needed.
+DataManagerColumn* MSMBase::makeIndArrColumn(const String& columnName, int dataType,
+                                             const String&) {
+  // # Check if data type is not TpOther.
+  throwDataTypeOther(columnName, dataType);
+  // # Extend colSet_p block if needed.
   if (ncolumn() >= colSet_p.nelements()) {
-    colSet_p.resize (colSet_p.nelements() + 32);
+    colSet_p.resize(colSet_p.nelements() + 32);
   }
-  MSMColumn* colp = new MSMIndColumn (this, dataType);
+  MSMColumn* colp = new MSMIndColumn(this, dataType);
   colSet_p[ncolumn()] = colp;
   return colp;
 }
 
-Bool MSMBase::canReallocateColumns() const
-{
-  return True;
-}
+Bool MSMBase::canReallocateColumns() const { return True; }
 
-DataManagerColumn* MSMBase::reallocateColumn (DataManagerColumn* column)
-{
+DataManagerColumn* MSMBase::reallocateColumn(DataManagerColumn* column) {
   // Replace an indirect column by a direct one if its shape is fixed.
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uInt i = 0; i < ncolumn(); i++) {
     if (column == colSet_p[i]) {
       MSMColumn* ptr = colSet_p[i];
       if (ptr->isFixedShape()) {
-	MSMIndColumn* col = dynamic_cast<MSMIndColumn*>(ptr);
-	if (col != 0) {
-	  // Turn a fixed shaped indirect array into a direct array.
-	  MSMDirColumn* newcol = new MSMDirColumn (this, col->dataType());
-	  newcol->setShapeColumn (col->columnShape());
-	  delete col;
-	  colSet_p[i] = newcol;
-	  column = newcol;
-	}
+        MSMIndColumn* col = dynamic_cast<MSMIndColumn*>(ptr);
+        if (col != 0) {
+          // Turn a fixed shaped indirect array into a direct array.
+          MSMDirColumn* newcol = new MSMDirColumn(this, col->dataType());
+          newcol->setShapeColumn(col->columnShape());
+          delete col;
+          colSet_p[i] = newcol;
+          column = newcol;
+        }
       }
     }
   }
   return column;
 }
 
-void MSMBase::prepare()
-{
+void MSMBase::prepare() {
   // Create the rows if needed.
   if (nrrowCreate_p > 0) {
-    AlwaysAssert (nrrow_p == 0, AipsError);
-    addRow64 (nrrowCreate_p);
+    AlwaysAssert(nrrow_p == 0, AipsError);
+    addRow64(nrrowCreate_p);
     nrrowCreate_p = 0;
   }
 }
 
-
 // Note that the column has already been added by makeXXColumn.
 // This function is merely for initializing the added column.
-void MSMBase::addColumn (DataManagerColumn* colp)
-{
-  for (uInt i=0; i<ncolumn(); i++) {
+void MSMBase::addColumn(DataManagerColumn* colp) {
+  for (uInt i = 0; i < ncolumn(); i++) {
     if (colp == colSet_p[i]) {
-      colSet_p[i]->doCreate (nrrow_p);
+      colSet_p[i]->doCreate(nrrow_p);
       setHasPut();
       return;
     }
   }
-  throw DataManInternalError ("MSMBase::addColumn, column " +
-                              colp->columnName());
+  throw DataManInternalError("MSMBase::addColumn, column " + colp->columnName());
 }
 
-void MSMBase::removeColumn (DataManagerColumn* colp)
-{
-  for (uInt i=0; i<ncolumn(); i++) {
+void MSMBase::removeColumn(DataManagerColumn* colp) {
+  for (uInt i = 0; i < ncolumn(); i++) {
     if (colSet_p[i] == colp) {
       delete colSet_p[i];
       decrementNcolumn();
-      for (uInt j=i; j<ncolumn(); j++) {
-	colSet_p[j] = colSet_p[j+1];
+      for (uInt j = i; j < ncolumn(); j++) {
+        colSet_p[j] = colSet_p[j + 1];
       }
       setHasPut();
       return;
     }
   }
-  throw DataManInternalError ("MSMBase::removeColumn: "
-                              " column " + colp->columnName() +
-                              " does not exist");
+  throw DataManInternalError(
+      "MSMBase::removeColumn: "
+      " column " +
+      colp->columnName() + " does not exist");
 }
 
-void MSMBase::addRow64 (rownr_t nr)
-{
-  //# Add the number of rows to each column.
-  for (uInt i=0; i<ncolumn(); i++) {
-    colSet_p[i]->addRow (nrrow_p+nr, nrrow_p);
+void MSMBase::addRow64(rownr_t nr) {
+  // # Add the number of rows to each column.
+  for (uInt i = 0; i < ncolumn(); i++) {
+    colSet_p[i]->addRow(nrrow_p + nr, nrrow_p);
   }
   nrrow_p += nr;
   setHasPut();
 }
 
-
-void MSMBase::removeRow64 (rownr_t rownr)
-{
-  for (uInt i=0; i<ncolumn(); i++) {
-    colSet_p[i]->remove (rownr);
+void MSMBase::removeRow64(rownr_t rownr) {
+  for (uInt i = 0; i < ncolumn(); i++) {
+    colSet_p[i]->remove(rownr);
   }
   nrrow_p--;
   setHasPut();
 }
 
+Bool MSMBase::flush(AipsIO&, Bool) { return False; }
 
-Bool MSMBase::flush (AipsIO&, Bool)
-{
-  return False;
-}
-
-void MSMBase::create64 (rownr_t nrrow)
-{
-  //# Do not add the required nr of rows yet.
-  // It is done later in reallocateColumn to avoid that all row data
-  // have to be deleted and allocated again if an IndArrColumn is turned
-  // into a DirArrColumn.
+void MSMBase::create64(rownr_t nrrow) {
+  // # Do not add the required nr of rows yet.
+  //  It is done later in reallocateColumn to avoid that all row data
+  //  have to be deleted and allocated again if an IndArrColumn is turned
+  //  into a DirArrColumn.
   nrrowCreate_p = nrrow;
 }
 
-rownr_t MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
-{
+rownr_t MSMBase::open64(rownr_t tabNrrow, AipsIO&) {
   nrrow_p = tabNrrow;
-  //# Create the required nr of rows and initialize them.
-  for (uInt i=0; i<ncolumn(); i++) {
-    colSet_p[i]->doCreate (tabNrrow);
+  // # Create the required nr of rows and initialize them.
+  for (uInt i = 0; i < ncolumn(); i++) {
+    colSet_p[i]->doCreate(tabNrrow);
   }
   return nrrow_p;
 }
 
-rownr_t MSMBase::resync64 (rownr_t nrrow)
-{
+rownr_t MSMBase::resync64(rownr_t nrrow) {
   // Add or remove rows if it has changed.
   // Note that removing decreases the row number, so the same row number
   // is always used.
   if (nrrow > nrrow_p) {
-    addRow64 (nrrow-nrrow_p);
+    addRow64(nrrow - nrrow_p);
   } else {
-    rownr_t nr=nrrow_p-nrrow;
-    for (rownr_t i=0; i<nr; i++) {
-      removeRow64 (nrrow);
+    rownr_t nr = nrrow_p - nrrow;
+    for (rownr_t i = 0; i < nr; i++) {
+      removeRow64(nrrow);
     }
   }
   return nrrow_p;
 }
 
-void MSMBase::deleteManager()
-{}
+void MSMBase::deleteManager() {}
 
-} //# NAMESPACE CASACORE - END
-
+}  // namespace casacore

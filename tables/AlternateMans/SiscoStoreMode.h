@@ -3,12 +3,8 @@
 
 namespace casacore {
 
-enum class SiscoStoreMode {
-  Original,
-  Diagonal,
-  StokesI
-};
+enum class SiscoStoreMode { Original, Diagonal, StokesI };
 
-} // namespace casacore
+}  // namespace casacore
 
 #endif

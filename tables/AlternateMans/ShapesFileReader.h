@@ -11,8 +11,7 @@ namespace casacore {
 
 class ShapesFileReader {
  public:
-  ShapesFileReader(const std::string& filename)
-      : buffer_position_(buffer_.end()), file_(filename) {
+  ShapesFileReader(const std::string& filename) : buffer_position_(buffer_.end()), file_(filename) {
     if (file_.fail()) throw std::runtime_error("Error opening shapes file");
   }
 
@@ -43,14 +42,11 @@ class ShapesFileReader {
       uint32_t compressed_size;
       file_.read(reinterpret_cast<char*>(&compressed_size), sizeof(uint32_t));
       compressed_buffer_.resize(compressed_size);
-      file_.read(reinterpret_cast<char*>(compressed_buffer_.data()),
-                 compressed_size);
+      file_.read(reinterpret_cast<char*>(compressed_buffer_.data()), compressed_size);
       buffer_.resize(uncompressed_size / sizeof(uint64_t));
-      std::span output(reinterpret_cast<std::byte*>(buffer_.data()),
-                       uncompressed_size);
+      std::span output(reinterpret_cast<std::byte*>(buffer_.data()), uncompressed_size);
       decompressor_.Decompress(compressed_buffer_, output);
-      if (file_.fail())
-        throw std::runtime_error("Error reading from shapes file");
+      if (file_.fail()) throw std::runtime_error("Error reading from shapes file");
     }
     buffer_position_ = buffer_.begin();
   }

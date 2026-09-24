@@ -1,27 +1,27 @@
-//# tTableCopy.cc: Test program for copying tables
-//# Copyright (C) 2006
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tTableCopy.cc: Test program for copying tables
+// # Copyright (C) 2006
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/Tables.h>
 #include <stdexcept>
@@ -30,100 +30,95 @@ using namespace casacore;
 using namespace std;
 
 // Remove the dirname from the table name in an error message.
-String removeDir (const String& msg)
-{
+String removeDir(const String& msg) {
   String s = msg;
-  RegexReplaceAll (s, Regex("/.*/t"), "t");
+  RegexReplaceAll(s, Regex("/.*/t"), "t");
   return s;
 }
 
-void testCloneColumn (const DataManager& tsm, Bool fixed)
-{
+void testCloneColumn(const DataManager& tsm, Bool fixed) {
   cout << "testCloneColumn ..." << endl;
   // First create a table.
   TableDesc td;
   if (fixed) {
-    td.addColumn (ArrayColumnDesc<Complex>("DATA", IPosition(1,10)));
+    td.addColumn(ArrayColumnDesc<Complex>("DATA", IPosition(1, 10)));
   } else {
-    td.addColumn (ArrayColumnDesc<Complex>("DATA", 1));
+    td.addColumn(ArrayColumnDesc<Complex>("DATA", 1));
   }
-  td.addColumn (ScalarColumnDesc<String>("SCALAR", 1));
-  td.addColumn (ArrayColumnDesc<Int>("ARRAY", 0));
+  td.addColumn(ScalarColumnDesc<String>("SCALAR", 1));
+  td.addColumn(ArrayColumnDesc<Int>("ARRAY", 0));
   SetupNewTable newtab("tTableCopy_tmp.data", td, Table::New);
   StandardStMan ssm;
-  newtab.bindAll (ssm);
-  newtab.bindColumn ("DATA", tsm);
+  newtab.bindAll(ssm);
+  newtab.bindColumn("DATA", tsm);
   Table tab(newtab, 4);
   ArrayColumn<Complex> col(tab, "DATA");
-  for (uInt row=0; row<tab.nrow(); ++row) {
-    Vector<Complex> vec(10*row+1);
+  for (uInt row = 0; row < tab.nrow(); ++row) {
+    Vector<Complex> vec(10 * row + 1);
     if (fixed) vec.resize(10);
-    indgen (vec);
-    if (fixed  ||  row != 2) {
+    indgen(vec);
+    if (fixed || row != 2) {
       // Keep a row cell without an array.
-      col.setShape (row, vec.shape(), IPosition(2, 4, 4));
-      col.put (row, vec);
+      col.setShape(row, vec.shape(), IPosition(2, 4, 4));
+      col.put(row, vec);
     }
   }
   // Now clone the column and copy the data.
-  TableCopy::cloneColumn (tab, "DATA", tab, "DATA1");
-  TableCopy::cloneColumn (tab, "DATA", tab, "DATA2", "Data2StMan");
-  TableCopy::cloneColumnTyped<DComplex> (tab, "DATA", tab, "DATA3");
-  TableCopy::cloneColumnTyped<Int> (tab, "SCALAR", tab, "SCALAR3");
-  TableCopy::copyColumnData (tab, "DATA", tab, "DATA1", False);
-  TableCopy::copyColumnData (tab, "DATA", tab, "DATA3");
+  TableCopy::cloneColumn(tab, "DATA", tab, "DATA1");
+  TableCopy::cloneColumn(tab, "DATA", tab, "DATA2", "Data2StMan");
+  TableCopy::cloneColumnTyped<DComplex>(tab, "DATA", tab, "DATA3");
+  TableCopy::cloneColumnTyped<Int>(tab, "SCALAR", tab, "SCALAR3");
+  TableCopy::copyColumnData(tab, "DATA", tab, "DATA1", False);
+  TableCopy::copyColumnData(tab, "DATA", tab, "DATA3");
   cout << tab.dataManagerInfo() << endl;
   // Check if the data are the same.
   ArrayColumn<Complex> col1(tab, "DATA1");
   ArrayColumn<DComplex> col3(tab, "DATA3");
-  for (uInt row=0; row<tab.nrow(); ++row) {
+  for (uInt row = 0; row < tab.nrow(); ++row) {
     if (col.isDefined(row)) {
       Vector<Complex> vec(col(row));
       Vector<DComplex> vecd(vec.shape());
-      convertArray (vecd, vec);
-      AlwaysAssertExit (allEQ (col1(row), vec));
-      AlwaysAssertExit (allEQ (col3(row), vecd));
+      convertArray(vecd, vec);
+      AlwaysAssertExit(allEQ(col1(row), vec));
+      AlwaysAssertExit(allEQ(col3(row), vecd));
     } else {
-      AlwaysAssertExit (! col1.isDefined(row));
+      AlwaysAssertExit(!col1.isDefined(row));
     }
   }
   // Initialize the array.
-  TableCopy::fillColumnData (tab, "DATA2", Complex(-1,-2), tab, "DATA");
+  TableCopy::fillColumnData(tab, "DATA2", Complex(-1, -2), tab, "DATA");
   // Initialize the scalar and other array.
-  TableCopy::fillColumnData (tab, "SCALAR", "str");
-  TableCopy::fillColumnData (tab, "SCALAR3", 2);
-  TableCopy::fillArrayColumn (tab, "ARRAY", Vector<Int>(3,2));
+  TableCopy::fillColumnData(tab, "SCALAR", "str");
+  TableCopy::fillColumnData(tab, "SCALAR3", 2);
+  TableCopy::fillArrayColumn(tab, "ARRAY", Vector<Int>(3, 2));
   // Check if the data are correct.
   ArrayColumn<Complex> col2(tab, "DATA2");
   ScalarColumn<String> cols(tab, "SCALAR");
   ScalarColumn<Int> cols3(tab, "SCALAR3");
   ArrayColumn<Int> cola(tab, "ARRAY");
-  for (uInt row=0; row<tab.nrow(); ++row) {
+  for (uInt row = 0; row < tab.nrow(); ++row) {
     if (col.isDefined(row)) {
-      AlwaysAssertExit (col.shape(row).isEqual (col2.shape(row)));
-      AlwaysAssertExit (allEQ (col2(row), Complex(-1,-2)));
+      AlwaysAssertExit(col.shape(row).isEqual(col2.shape(row)));
+      AlwaysAssertExit(allEQ(col2(row), Complex(-1, -2)));
     } else {
-      AlwaysAssertExit (! col2.isDefined(row));
+      AlwaysAssertExit(!col2.isDefined(row));
     }
-    AlwaysAssertExit (cols(row) == "str");
-    AlwaysAssertExit (cols3(row) == 2);
-    AlwaysAssertExit (allEQ (cola(row), Vector<Int>(3,2)));
+    AlwaysAssertExit(cols(row) == "str");
+    AlwaysAssertExit(cols3(row) == 2);
+    AlwaysAssertExit(allEQ(cola(row), Vector<Int>(3, 2)));
   }
 }
 
-void testCloneColumns()
-{
-  TiledShapeStMan tsm1("DATA_stm", IPosition(2,8,2));
-  testCloneColumn (tsm1, False);
-  TiledCellStMan tsm2("DATA_stm", IPosition(2,8,2));
-  testCloneColumn (tsm2, False);
-  TiledColumnStMan tsm3("DATA_stm", IPosition(2,8,2));
-  testCloneColumn (tsm3, True);
+void testCloneColumns() {
+  TiledShapeStMan tsm1("DATA_stm", IPosition(2, 8, 2));
+  testCloneColumn(tsm1, False);
+  TiledCellStMan tsm2("DATA_stm", IPosition(2, 8, 2));
+  testCloneColumn(tsm2, False);
+  TiledColumnStMan tsm3("DATA_stm", IPosition(2, 8, 2));
+  testCloneColumn(tsm3, True);
 }
 
-
-int main (int argc, const char* argv[])
-{
+int main(int argc, const char* argv[]) {
   Table::TableType ttyp = Table::Plain;
   if (argc > 1) {
     if (String(argv[1]) == String("m")) {
@@ -131,7 +126,7 @@ int main (int argc, const char* argv[])
     }
   }
   Bool noRows = False;
-  if (argc > 2  &&  String(argv[2]) == String("n")) {
+  if (argc > 2 && String(argv[2]) == String("n")) {
     noRows = True;
   }
   try {
@@ -142,26 +137,24 @@ int main (int argc, const char* argv[])
     SetupNewTable aNewTab("tTableCopy_tmp.tbl", td, Table::New);
     Table tabl(aNewTab, ttyp, 0);
     tabl.addRow();
-    
+
     TableDesc std("", "1", TableDesc::Scratch);
     std.comment() = "A SubTable";
-    SetupNewTable newTab(tabl.tableName()+"/SUBTABLE", std, Table::New);
+    SetupNewTable newTab(tabl.tableName() + "/SUBTABLE", std, Table::New);
     Table stabl(newTab, ttyp, 0);
     stabl.addRow();
     tabl.rwKeywordSet().defineTable("SUBTABLE", stabl);
-    
+
     tabl.copy("tTableCopy_tmp.newtbl", Table::New, noRows);
     Table t("tTableCopy_tmp.newtbl");
 
     cout << removeDir(tabl.tableName()) << endl;
-    cout << removeDir(tabl.keywordSet().asTable("SUBTABLE").tableName())
-	 << endl;
+    cout << removeDir(tabl.keywordSet().asTable("SUBTABLE").tableName()) << endl;
     cout << removeDir(t.tableName()) << endl;
     cout << removeDir(t.keywordSet().asTable("SUBTABLE").tableName()) << endl;
-    cout << tabl.nrow() << ' ' << stabl.nrow() << ' '
-	 << t.nrow() << ' ' << t.keywordSet().asTable("SUBTABLE").nrow() << ' '
-	 << tabl.tableType() << ' ' << t.tableType()
-	 << endl;
+    cout << tabl.nrow() << ' ' << stabl.nrow() << ' ' << t.nrow() << ' '
+         << t.keywordSet().asTable("SUBTABLE").nrow() << ' ' << tabl.tableType() << ' '
+         << t.tableType() << endl;
 
     if (argc <= 1) {
       testCloneColumns();

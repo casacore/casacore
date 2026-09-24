@@ -60,13 +60,9 @@ class AntennaPairFile {
     return AntennaPairFile(filename, true);
   }
 
-  void WriteAntenna1(uint64_t row, int32_t antenna1) {
-    WriteAntenna<0>(row, antenna1);
-  }
+  void WriteAntenna1(uint64_t row, int32_t antenna1) { WriteAntenna<0>(row, antenna1); }
 
-  void WriteAntenna2(uint64_t row, int32_t antenna2) {
-    WriteAntenna<1>(row, antenna2);
-  }
+  void WriteAntenna2(uint64_t row, int32_t antenna2) { WriteAntenna<1>(row, antenna2); }
 
   void WritePair(uint64_t row, int32_t antenna1, int32_t antenna2) {
     WriteAntenna<0>(row, antenna1);
@@ -102,8 +98,7 @@ class AntennaPairFile {
    * Create a new file on disk.
    */
   AntennaPairFile(const std::string& filename)
-      : file_(BufferedColumnarFile::CreateNew(filename, kHeaderSize,
-                                              sizeof(int32_t) * 2)) {}
+      : file_(BufferedColumnarFile::CreateNew(filename, kHeaderSize, sizeof(int32_t) * 2)) {}
 
   /**
    * Open an existing file from disk. The last parameter is a dummy
@@ -126,21 +121,19 @@ class AntennaPairFile {
   void WriteAntenna(uint64_t row, int32_t antenna) {
     static_assert(AntennaNumber == 0 || AntennaNumber == 1);
     if (rows_in_pattern_ == 0) {
-      const bool has_unfinished_row =
-          !data_.empty() && HasUnsetAntenna(data_.back());
+      const bool has_unfinished_row = !data_.empty() && HasUnsetAntenna(data_.back());
       if (has_unfinished_row) {
         if (row >= data_.size())
           throw std::runtime_error(
               "Incorrect writing order for AntennaPairFile (in unfinished "
               "pair, row=" +
               std::to_string(row) + ")");
-        const bool is_rewrite = row < data_.size() - 1 ||
-                                data_.back()[AntennaNumber] != kUnsetAntenna;
+        const bool is_rewrite =
+            row < data_.size() - 1 || data_.back()[AntennaNumber] != kUnsetAntenna;
         if (is_rewrite) {
           if (data_[row][AntennaNumber] != antenna)
-            throw std::runtime_error(
-                "Antenna " + std::to_string(AntennaNumber) + " value in row " +
-                std::to_string(row) + " is rewritten with a different value");
+            throw std::runtime_error("Antenna " + std::to_string(AntennaNumber) + " value in row " +
+                                     std::to_string(row) + " is rewritten with a different value");
         } else {
           data_.back()[AntennaNumber] = antenna;
           if (data_.back() == data_.front() && data_.size() > 1) {
@@ -166,17 +159,15 @@ class AntennaPairFile {
         } else {
           // This is a rewrite of an already written value
           if (data_[row][AntennaNumber] != antenna)
-            throw std::runtime_error(
-                "Antenna " + std::to_string(AntennaNumber) + " value in row " +
-                std::to_string(row) + " is rewritten with a different value");
+            throw std::runtime_error("Antenna " + std::to_string(AntennaNumber) + " value in row " +
+                                     std::to_string(row) + " is rewritten with a different value");
         }
       }
     } else {
       const std::array<int32_t, 2>& pair = data_[row % rows_in_pattern_];
       if (pair[AntennaNumber] != antenna)
-        throw std::runtime_error(
-            "Error writing to AntennaPairFile, row " + std::to_string(row) +
-            ": the antenna pairs do not follow a consistent pattern");
+        throw std::runtime_error("Error writing to AntennaPairFile, row " + std::to_string(row) +
+                                 ": the antenna pairs do not follow a consistent pattern");
     }
   }
 
@@ -191,8 +182,7 @@ class AntennaPairFile {
             "of written rows, and writing of antenna pattern not finished");
       antenna = data_[row][AntennaNumber];
       if (antenna == kUnsetAntenna)
-        throw std::runtime_error(
-            "Trying to read antenna value that has not been written yet");
+        throw std::runtime_error("Trying to read antenna value that has not been written yet");
       return antenna;
     } else {
       return data_[row % rows_in_pattern_][AntennaNumber];

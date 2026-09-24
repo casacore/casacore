@@ -1,44 +1,43 @@
-//# TableExprData.h: Abstract base class for data object in a TaQL expression
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
-
+// # TableExprData.h: Abstract base class for data object in a TaQL expression
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEEXPRDATA_H
 #define TABLES_TABLEEXPRDATA_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class IPosition;
-template<class T> class Block;
-
+template <class T>
+class Block;
 
 // <summary>
 // Abstract base class for data object in a TaQL expression.
@@ -154,7 +153,7 @@ template<class T> class Block;
 //   Vector<String> itsFld2;
 //   uInt           itsEntry;
 // };
-//   
+//
 // Vector<uInt> findMatches (const Vector<Int>& fld1,
 //                           const Vector<String>& fld2)
 // {
@@ -192,30 +191,27 @@ template<class T> class Block;
 // This class makes it possible that TaQL can be used in a very versatile way.
 // </motivation>
 
-//# <todo asof="1996/03/12">
-//# </todo>
+// # <todo asof="1996/03/12">
+// # </todo>
 
-
-class TableExprData
-{
-public:
+class TableExprData {
+ public:
   // Construct it from a row number.
-  TableExprData()
-    {;}
-  
+  TableExprData() { ; }
+
   virtual ~TableExprData();
 
   // Get the shape of the given field.
   // Need only be implemented if there are arrays in the data.
   // The default implementation returns an empty IPosition.
-  virtual IPosition shape (const Block<Int>& fieldNrs) const;
+  virtual IPosition shape(const Block<Int>& fieldNrs) const;
 
   // Get the data type of the given field.
   // Note that TpArray types have to be returned for arrays.
   // If the field is unknown, TpOther should be returned.
   // It is used for the isdefined function to check if the field
   // is really defined.
-  virtual DataType dataType (const Block<Int>& fieldNrs) const = 0;
+  virtual DataType dataType(const Block<Int>& fieldNrs) const = 0;
 
   // Get a scalar in the given type.
   // This might involve converting for Double and DComplex.
@@ -223,11 +219,11 @@ public:
   // The default <src>getDouble</src> invokes <src>getInt</src>.
   // The default <src>getDComplex</src> invokes <src>getDouble</src>.
   // <group>
-  virtual Bool     getBool     (const Block<Int>& fieldNrs) const;
-  virtual Int64    getInt      (const Block<Int>& fieldNrs) const;
-  virtual Double   getDouble   (const Block<Int>& fieldNrs) const;
-  virtual DComplex getDComplex (const Block<Int>& fieldNrs) const;
-  virtual String   getString   (const Block<Int>& fieldNrs) const;
+  virtual Bool getBool(const Block<Int>& fieldNrs) const;
+  virtual Int64 getInt(const Block<Int>& fieldNrs) const;
+  virtual Double getDouble(const Block<Int>& fieldNrs) const;
+  virtual DComplex getDComplex(const Block<Int>& fieldNrs) const;
+  virtual String getString(const Block<Int>& fieldNrs) const;
   // </group>
 
   // Get an array in the given type.
@@ -236,15 +232,14 @@ public:
   // The default <src>getArrayDComplex</src> invokes
   // <src>getArrayDouble</src>.
   // <group>
-  virtual Array<Bool>     getArrayBool     (const Block<Int>& fieldNrs) const;
-  virtual Array<Int64>    getArrayInt      (const Block<Int>& fieldNrs) const;
-  virtual Array<Double>   getArrayDouble   (const Block<Int>& fieldNrs) const;
-  virtual Array<DComplex> getArrayDComplex (const Block<Int>& fieldNrs) const;
-  virtual Array<String>   getArrayString   (const Block<Int>& fieldNrs) const;
+  virtual Array<Bool> getArrayBool(const Block<Int>& fieldNrs) const;
+  virtual Array<Int64> getArrayInt(const Block<Int>& fieldNrs) const;
+  virtual Array<Double> getArrayDouble(const Block<Int>& fieldNrs) const;
+  virtual Array<DComplex> getArrayDComplex(const Block<Int>& fieldNrs) const;
+  virtual Array<String> getArrayString(const Block<Int>& fieldNrs) const;
   // </group>
 };
 
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

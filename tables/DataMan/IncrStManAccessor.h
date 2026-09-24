@@ -1,39 +1,39 @@
-//# IncrStManAccessor.h: Gives access to some IncrementalStMan functions
-//# Copyright (C) 1996,1999,2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # IncrStManAccessor.h: Gives access to some IncrementalStMan functions
+// # Copyright (C) 1996,1999,2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_INCRSTMANACCESSOR_H
 #define TABLES_INCRSTMANACCESSOR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManAccessor.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class ISMBase;
 class DataManager;
 class Table;
@@ -49,7 +49,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 // <li> <linkto class=IncrementalStMan>IncrementalStMan</linkto>
 // </prerequisite>
 
@@ -73,7 +73,7 @@ class String;
 // In principle a pointer to IncrementalStMan could be used.
 // However, that would give access to all public functions.
 // Furthermore it could not distinguish between read/write and readonly
-// tables. 
+// tables.
 // </motivation>
 
 // <example>
@@ -91,73 +91,62 @@ class String;
 // </srcblock>
 // </example>
 
-//# <todo asof="$DATE:$">
-//# </todo>
+// # <todo asof="$DATE:$">
+// # </todo>
 
+class ROIncrementalStManAccessor : public RODataManAccessor {
+ public:
+  // Construct the object for a data manager in the table given the name
+  // of the data manager or the column.
+  // An exception is thrown if the data manager type is not the incremental
+  // storage manager.
+  ROIncrementalStManAccessor(const Table& table, const String& name, Bool byColumn = False);
 
-class ROIncrementalStManAccessor : public RODataManAccessor
-{
-public:
+  virtual ~ROIncrementalStManAccessor();
 
-    // Construct the object for a data manager in the table given the name
-    // of the data manager or the column.
-    // An exception is thrown if the data manager type is not the incremental
-    // storage manager.
-    ROIncrementalStManAccessor (const Table& table, const String& name,
-                                Bool byColumn=False);
+  // Copy constructor (reference semantics).
+  ROIncrementalStManAccessor(const ROIncrementalStManAccessor& that);
 
-    virtual ~ROIncrementalStManAccessor();
+  // Assignment (reference semantics).
+  ROIncrementalStManAccessor& operator=(const ROIncrementalStManAccessor& that);
 
-    // Copy constructor (reference semantics).
-    ROIncrementalStManAccessor (const ROIncrementalStManAccessor& that);
+  // Set the cache size (in buckets) to be used by the
+  // storage manager.
+  // The cache size given in this way is not persistent.
+  // Only the cache size given to the constructors of the incremental
+  // storage managers, is persistent.
+  // If <src>canExceedNrBuckets=True</src>, the given cache size can be
+  // larger than the nr of buckets in the file. In this way the cache can
+  // be made large enough for a future file extnsion.
+  // Otherwise, it is limited to the actual number of buckets. This is useful
+  // if one wants the entire file to be cached.
+  void setCacheSize(uInt aSize, Bool canExceedNrBuckets = True);
 
-    // Assignment (reference semantics).
-    ROIncrementalStManAccessor& operator=
-                                 (const ROIncrementalStManAccessor& that);
+  // Get the cache size (in buckets).
+  uInt cacheSize() const;
 
-    // Set the cache size (in buckets) to be used by the
-    // storage manager.
-    // The cache size given in this way is not persistent.
-    // Only the cache size given to the constructors of the incremental
-    // storage managers, is persistent.
-    // If <src>canExceedNrBuckets=True</src>, the given cache size can be
-    // larger than the nr of buckets in the file. In this way the cache can
-    // be made large enough for a future file extnsion.
-    // Otherwise, it is limited to the actual number of buckets. This is useful
-    // if one wants the entire file to be cached.
-    void setCacheSize (uInt aSize, Bool canExceedNrBuckets=True);
+  // Clear the caches used by the hypercubes in this storage manager.
+  // It will flush the caches as needed and remove all buckets from them
+  // resulting in a possibly large drop in memory used.
+  void clearCache();
 
-    // Get the cache size (in buckets).
-    uInt cacheSize() const;
+  // Show the index used by this storage manager.
+  void showIndexStatistics(ostream& os) const;
 
-    // Clear the caches used by the hypercubes in this storage manager.
-    // It will flush the caches as needed and remove all buckets from them
-    // resulting in a possibly large drop in memory used.
-    void clearCache();
+  // Show the layout of the buckets used by this storage manager.
+  void showBucketLayout(ostream& os) const;
 
-    // Show the index used by this storage manager.
-    void showIndexStatistics (ostream& os) const;
+  // Check that there are no repeated rowIds in the buckets comprising this ISM
+  Bool checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
+                         uInt& offendingBucketNrow, uInt& offendingBucketNr, uInt& offendingCol,
+                         uInt& offendingIndex, rownr_t& offendingRow,
+                         rownr_t& offendingPrevRow) const;
 
-    // Show the layout of the buckets used by this storage manager.
-    void showBucketLayout (ostream& os) const;
-
-    // Check that there are no repeated rowIds in the buckets comprising this ISM
-    Bool checkBucketLayout (uInt& offendingCursor,
-                            rownr_t& offendingBucketStartRow,
-                            uInt& offendingBucketNrow,
-                            uInt& offendingBucketNr,
-                            uInt& offendingCol,
-                            uInt& offendingIndex,
-                            rownr_t& offendingRow,
-                            rownr_t& offendingPrevRow) const;
-
-private:
-    //# Declare the data members.
-    ISMBase* dataManPtr_p;
+ private:
+  // # Declare the data members.
+  ISMBase* dataManPtr_p;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,37 +1,36 @@
-//# TableInfo.h: Table type, subtype and further info
-//# Copyright (C) 1996,1997,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TableInfo.h: Table type, subtype and further info
+// # Copyright (C) 1996,1997,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TABLEINFO_H
 #define TABLES_TABLEINFO_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Table type, subtype and further info
@@ -42,22 +41,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tTable.cc">
 // </reviewed>
 
-//# <prerequisite>
-//# Classes you should understand before using this one.
-//# </prerequisite>
+// # <prerequisite>
+// # Classes you should understand before using this one.
+// # </prerequisite>
 
 // <etymology>
 // TableInfo holds information (like type) about a table.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // TableInfo holds information about a table. It contains the following
 // information:
 // <dl>
 //  <dt> Type
 //  <dd> the type of a table (e.g. IMAGE, LOG).
 //  <dt> SubType
-//  <dd> the subtype of a table (e.g. UVDATA, MAP or ANTENNAPATTERN for 
+//  <dd> the subtype of a table (e.g. UVDATA, MAP or ANTENNAPATTERN for
 //       type IMAGE).
 //  <dt> Readme
 //  <dd> An arbitrary number of lines containing ancillary text
@@ -120,126 +119,110 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // External programs need to be able to determine the type of a table.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class TableInfo {
+ public:
+  // enum for various standard Table types.
+  // Underscores in the enumerator indicate different sub-types
+  enum Type {
+    // a PagedImage is a PagedArray with coordinates and Masking (opt.)
+    PAGEDIMAGE,
+    // a PagedArray (.../Lattices/PagedArray.h)
+    PAGEDARRAY,
+    // MeasurementSet main Table
+    MEASUREMENTSET,
+    // MeasurementSet Antenna table
+    ANTENNA,
+    // MeasurementSet Array table
+    ARRAY,
+    // MeasurementSet Feed characteristics table
+    FEED,
+    // MeasurementSet Field table
+    FIELD,
+    // MeasurementSet Observation information table
+    OBSERVATION,
+    // MeasurementSet Oserving Log table
+    OBSLOG,
+    // MeasurementSet Source table
+    SOURCE,
+    // MeasurementSet Spectral Window table
+    SPECTRALWINDOW,
+    // MeasurementSet System Calibration table
+    SYSCAL,
+    // MeasurementSet Weather table
+    WEATHER,
+    // Measurement Equation Calibration table
+    ME_CALIBRATION,
+    // Casacore Log table
+    LOG,
+    // A ComponentList table contains parameterised representations of the
+    // sky brightness.
+    COMPONENTLIST
+  };
 
-class TableInfo
-{
-public:
-    // enum for various standard Table types.
-    // Underscores in the enumerator indicate different sub-types
-    enum Type {
-	// a PagedImage is a PagedArray with coordinates and Masking (opt.)
-	PAGEDIMAGE,
-	// a PagedArray (.../Lattices/PagedArray.h)
-	PAGEDARRAY,
-	// MeasurementSet main Table
-	MEASUREMENTSET,
-	// MeasurementSet Antenna table
-	ANTENNA,
-	// MeasurementSet Array table
-	ARRAY,
-	// MeasurementSet Feed characteristics table
-	FEED,
-	// MeasurementSet Field table
-	FIELD,
-	// MeasurementSet Observation information table
-	OBSERVATION,
-	// MeasurementSet Oserving Log table
-	OBSLOG,
-	// MeasurementSet Source table
-	SOURCE,
-	// MeasurementSet Spectral Window table
-	SPECTRALWINDOW,
-	// MeasurementSet System Calibration table
-	SYSCAL,
-	// MeasurementSet Weather table
-	WEATHER,
-	// Measurement Equation Calibration table
-	ME_CALIBRATION,
-	// Casacore Log table
-	LOG,
-	// A ComponentList table contains parameterised representations of the
-	// sky brightness.
-	COMPONENTLIST
-    };
+  // Create an empty object.
+  TableInfo();
 
-    // Create an empty object.
-    TableInfo();
+  // Create the object reading it from the given file name.
+  // If the file does not exist, type, subtype and readme are
+  // initialized to a blank string.
+  explicit TableInfo(const String& fileName);
 
-    // Create the object reading it from the given file name.
-    // If the file does not exist, type, subtype and readme are
-    // initialized to a blank string.
-    explicit TableInfo (const String& fileName);
+  // Create a TableInfo object of one of the predefined types.
+  // This is a centralised way of setting the Table type only.
+  TableInfo(Type which);
 
-    // Create a TableInfo object of one of the predefined types. 
-    // This is a centralised way of setting the Table type only. 
-    TableInfo (Type which);
+  // Copy constructor (copy semantics).
+  TableInfo(const TableInfo& that);
 
-    // Copy constructor (copy semantics).
-    TableInfo (const TableInfo& that);
+  // Assignment (copy semantics).
+  TableInfo& operator=(const TableInfo& that);
 
-    // Assignment (copy semantics).
-    TableInfo& operator= (const TableInfo& that);
+  ~TableInfo();
 
-    ~TableInfo();
+  // Get the table (sub)type.
+  // <group>
+  const String& type() const;
+  const String& subType() const;
+  // </group>
 
-    // Get the table (sub)type.
-    // <group>
-    const String& type() const;
-    const String& subType() const;
-    // </group>
+  // Get the readme.
+  const String& readme() const;
 
-    // Get the readme.
-    const String& readme() const;
+  // Set the table (sub)type.
+  void setType(const String& type);
+  void setSubType(const String& subType);
 
-    // Set the table (sub)type.
-    void setType (const String& type);
-    void setSubType (const String& subType);
+  // Convert the Type enumerator to a type and subType string
+  // <group>
+  static String type(Type tableType);
+  static String subType(Type tableType);
+  // </group>
 
-    // Convert the Type enumerator to a type and subType string
-    // <group>
-    static String type(Type tableType);
-    static String subType(Type tableType);
-    // </group>
+  // Clear the readme.
+  void readmeClear();
 
-    // Clear the readme.
-    void readmeClear();
+  // Add a line to the readme.
+  // It will itself add a newline character ('\n') to the end of the line.
+  void readmeAddLine(const String& readmeLine);
 
-    // Add a line to the readme.
-    // It will itself add a newline character ('\n') to the end of the line.
-    void readmeAddLine (const String& readmeLine);
+  // Write the TableInfo object.
+  void flush(const String& fileName);
 
-    // Write the TableInfo object.
-    void flush (const String& fileName);
-
-private:
-    String type_p;
-    String subType_p;
-    String readme_p;
-    Bool   writeIt_p;    // True = object has changed, so has to be written
+ private:
+  String type_p;
+  String subType_p;
+  String readme_p;
+  Bool writeIt_p;  // True = object has changed, so has to be written
 };
 
+inline const String& TableInfo::type() const { return type_p; }
+inline const String& TableInfo::subType() const { return subType_p; }
+inline const String& TableInfo::readme() const { return readme_p; }
 
-
-inline const String& TableInfo::type() const
-{
-    return type_p;
-}
-inline const String& TableInfo::subType() const
-{
-    return subType_p;
-}
-inline const String& TableInfo::readme() const
-{
-    return readme_p;
-}
-
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

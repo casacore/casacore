@@ -1,40 +1,39 @@
-//# RetypedArrayEngine.h: Virtual column engine to retype and reshape arrays
-//# Copyright (C) 1995,1996,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # RetypedArrayEngine.h: Virtual column engine to retype and reshape arrays
+// # Copyright (C) 1995,1996,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_RETYPEDARRAYENGINE_H
 #define TABLES_RETYPEDARRAYENGINE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // Virtual column engine to retype and reshape arrays.
@@ -42,15 +41,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>
 
-// <reviewed reviewer="Brian Glendenning" date="1995/12/20" tests="dRetypedArrayEngine.cc" demos=dRetypedArrayEngine.h>
+// <reviewed reviewer="Brian Glendenning" date="1995/12/20" tests="dRetypedArrayEngine.cc"
+// demos=dRetypedArrayEngine.h>
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=BaseMappedArrayEngine>BaseMappedArrayEngine</linkto>
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // RetypedArrayEngine maps a virtual column containing arrays of objects
 // to a stored column containing arrays of data of another type. Usually
 // the dimensionality of the arrays get smaller during this mapping process.
@@ -214,7 +214,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </pre>
 // When they are not registered, the open of the table will fail
 // telling which class could not be found.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This class allows one to store arrays of arbitrary objects in a table.
@@ -413,9 +413,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> assignment operator
 //  <li> <src>static String dataTypeId();</src>
 //  <li> <src>static IPosition shape();</src>
-//  <li> <src>static void* newCopyInfo (const TableRecord& record, const IPosition& virtualElementShape);</src>
-//  <li> <src>static void deleteCopyInfo (void* copyInfo);</src>
-//  <li> <src>static void set (void* copyInfo, void* out,
+//  <li> <src>static void* newCopyInfo (const TableRecord& record, const IPosition&
+//  virtualElementShape);</src> <li> <src>static void deleteCopyInfo (void* copyInfo);</src> <li>
+//  <src>static void set (void* copyInfo, void* out,
 //                             const Array<StoredType>& in,
 //                             const IPosition& shape);</src>
 //  <li> <src>static void get (void* copyInfo, Array<float>& out,
@@ -433,167 +433,155 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> Assignment operator
 // </templating>
 
-//# <todo asof="1995/12/29">
-//# </todo>
+// # <todo asof="1995/12/29">
+// # </todo>
 
+template <class VirtualType, class StoredType>
+class RetypedArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType> {
+  // # Make members of parent class known.
+ public:
+  using BaseMappedArrayEngine<VirtualType, StoredType>::virtualName;
 
-template<class VirtualType, class StoredType> class RetypedArrayEngine : public BaseMappedArrayEngine<VirtualType,StoredType>
-{
-  //# Make members of parent class known.
-public:
-  using BaseMappedArrayEngine<VirtualType,StoredType>::virtualName;
-protected:
-  using BaseMappedArrayEngine<VirtualType,StoredType>::storedName;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::table;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::column;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::setNames;
+ protected:
+  using BaseMappedArrayEngine<VirtualType, StoredType>::storedName;
+  using BaseMappedArrayEngine<VirtualType, StoredType>::table;
+  using BaseMappedArrayEngine<VirtualType, StoredType>::column;
+  using BaseMappedArrayEngine<VirtualType, StoredType>::setNames;
 
-public:
+ public:
+  // Construct an engine to map a virtual column containing arrays with
+  // an arbitrary data type to arrays in a stored column.
+  // StoredColumnName is the name of the column where the converted
+  // data will be put and must have data type StoredType.
+  // The virtual column using this engine must have data type VirtualType.
+  RetypedArrayEngine(const String& virtualColumnName, const String& storedColumnName);
 
-    // Construct an engine to map a virtual column containing arrays with
-    // an arbitrary data type to arrays in a stored column.
-    // StoredColumnName is the name of the column where the converted
-    // data will be put and must have data type StoredType.
-    // The virtual column using this engine must have data type VirtualType.
-    RetypedArrayEngine (const String& virtualColumnName,
-			const String& storedColumnName);
+  // Construct an engine to map a virtual column containing arrays with
+  // an arbitrary data type to arrays in a stored column.
+  // StoredColumnName is the name of the column where the converted
+  // data will be put and must have data type StoredType.
+  // The virtual column using this engine must have data type VirtualType.
+  // The shape and record provided is handed to the newCopyInfo function
+  // in the VirtualType class. It can be used to determine how an element
+  // has to be handled when the stored data is incomplete.
+  RetypedArrayEngine(const String& virtualColumnName, const String& storedColumnName,
+                     const IPosition& virtualElementShape, const TableRecord& extraInformation);
 
-    // Construct an engine to map a virtual column containing arrays with
-    // an arbitrary data type to arrays in a stored column.
-    // StoredColumnName is the name of the column where the converted
-    // data will be put and must have data type StoredType.
-    // The virtual column using this engine must have data type VirtualType.
-    // The shape and record provided is handed to the newCopyInfo function
-    // in the VirtualType class. It can be used to determine how an element
-    // has to be handled when the stored data is incomplete.
-    RetypedArrayEngine (const String& virtualColumnName,
-			const String& storedColumnName,
-			const IPosition& virtualElementShape,
-			const TableRecord& extraInformation);
+  // Construct from a record specification as created by getmanagerSpec().
+  RetypedArrayEngine(const Record& spec);
 
-    // Construct from a record specification as created by getmanagerSpec().
-    RetypedArrayEngine (const Record& spec);
+  // Destructor is mandatory.
+  ~RetypedArrayEngine();
 
-    // Destructor is mandatory.
-    ~RetypedArrayEngine();
+  // Assignment is not needed and therefore forbidden.
+  RetypedArrayEngine<VirtualType, StoredType>& operator=(
+      const RetypedArrayEngine<VirtualType, StoredType>&) = delete;
 
-    // Assignment is not needed and therefore forbidden.
-    RetypedArrayEngine<VirtualType,StoredType>& operator=
-                        (const RetypedArrayEngine<VirtualType,StoredType>&) = delete;
+  // Return the type name of the engine (i.e. its class name).
+  virtual String dataManagerType() const;
 
-    // Return the type name of the engine (i.e. its class name).
-    virtual String dataManagerType() const;
+  // Get the name given to the engine (is the virtual column name).
+  virtual String dataManagerName() const;
 
-    // Get the name given to the engine (is the virtual column name).
-    virtual String dataManagerName() const;
-  
-    // Record a record containing data manager specifications.
-    virtual Record dataManagerSpec() const;
+  // Record a record containing data manager specifications.
+  virtual Record dataManagerSpec() const;
 
-    // Return the name of the class.
-    // This includes the names of the template arguments.
-    static String className();
+  // Return the name of the class.
+  // This includes the names of the template arguments.
+  static String className();
 
-    // Register the class name and the static makeObject "constructor".
-    // This will make the engine known to the table system.
-    // The automatically invoked registration function in DataManReg.cc
-    // contains RetypedArrayEngine<double,Int>.
-    // Any other instantiation of this class must be registered "manually"
-    // (or added to DataManReg.cc).
-    static void registerClass();
+  // Register the class name and the static makeObject "constructor".
+  // This will make the engine known to the table system.
+  // The automatically invoked registration function in DataManReg.cc
+  // contains RetypedArrayEngine<double,Int>.
+  // Any other instantiation of this class must be registered "manually"
+  // (or added to DataManReg.cc).
+  static void registerClass();
 
-private:
-    // Copy constructor is only used by clone().
-    // (so it is made private).
-    RetypedArrayEngine (const RetypedArrayEngine<VirtualType,StoredType>&);
+ private:
+  // Copy constructor is only used by clone().
+  // (so it is made private).
+  RetypedArrayEngine(const RetypedArrayEngine<VirtualType, StoredType>&);
 
-    // Clone the engine object.
-    DataManager* clone() const;
+  // Clone the engine object.
+  DataManager* clone() const;
 
-    // Initialize the object for a new table.
-    // It defines the keywords containing the engine parameters.
-    void create64 (rownr_t initialNrrow);
+  // Initialize the object for a new table.
+  // It defines the keywords containing the engine parameters.
+  void create64(rownr_t initialNrrow);
 
-    // Preparing consists of setting the writable switch and
-    // adding the initial number of rows in case of create.
-    // Furthermore it reads the keywords containing the engine parameters
-    // and allocates a CopyInfo object for the VirtualType.
-    void prepare();
+  // Preparing consists of setting the writable switch and
+  // adding the initial number of rows in case of create.
+  // Furthermore it reads the keywords containing the engine parameters
+  // and allocates a CopyInfo object for the VirtualType.
+  void prepare();
 
-    // Set the shape of the FixedShape arrays in the column.
-    // This function only gets called if the column has FixedShape arrays.
-    // The shape gets saved and used to set the shape of the arrays
-    // in the stored in case the stored has non-FixedShape arrays.
-    void setShapeColumn (const IPosition& shape);
+  // Set the shape of the FixedShape arrays in the column.
+  // This function only gets called if the column has FixedShape arrays.
+  // The shape gets saved and used to set the shape of the arrays
+  // in the stored in case the stored has non-FixedShape arrays.
+  void setShapeColumn(const IPosition& shape);
 
-    // Define the shape of the array in the given row.
-    // When the shape of the (underlying) stored array has already been
-    // defined, it checks whether its latter dimensions match the given
-    // virtual shape. When matching, nothing will be done.
-    // When mismatching or when the stored shape has not been defined
-    // yet, the stored shape will be defined from the virtual shape and
-    // the virtual element shape.
-    // E.g. in case of a StokesVector a virtual shape of (512,512)
-    // results in a stored shape of (4,512,512).
-    void setShape (rownr_t rownr, const IPosition& shape);
+  // Define the shape of the array in the given row.
+  // When the shape of the (underlying) stored array has already been
+  // defined, it checks whether its latter dimensions match the given
+  // virtual shape. When matching, nothing will be done.
+  // When mismatching or when the stored shape has not been defined
+  // yet, the stored shape will be defined from the virtual shape and
+  // the virtual element shape.
+  // E.g. in case of a StokesVector a virtual shape of (512,512)
+  // results in a stored shape of (4,512,512).
+  void setShape(rownr_t rownr, const IPosition& shape);
 
-    // Get the dimensionality of the array in the given row.
-    uInt ndim (rownr_t rownr);
+  // Get the dimensionality of the array in the given row.
+  uInt ndim(rownr_t rownr);
 
-    // Get the shape of the array in the given row.
-    // This is done by stripping the first dimension(s) from the shape
-    // of the underlying stored array.
-    IPosition shape (rownr_t rownr);
+  // Get the shape of the array in the given row.
+  // This is done by stripping the first dimension(s) from the shape
+  // of the underlying stored array.
+  IPosition shape(rownr_t rownr);
 
-    // Check if the shapes of virtual and stored match.
-    // Determine the shape of the virtual elements in the stored.
-    IPosition checkShape (const Array<VirtualType>& source,
-			  const Array<StoredType>& target);
+  // Check if the shapes of virtual and stored match.
+  // Determine the shape of the virtual elements in the stored.
+  IPosition checkShape(const Array<VirtualType>& source, const Array<StoredType>& target);
 
-    // Map the virtual shape to the stored shape.
-    // By default is returns the virtual shape.
-    virtual IPosition getStoredShape (rownr_t rownr,
-                                      const IPosition& virtualShape);
+  // Map the virtual shape to the stored shape.
+  // By default is returns the virtual shape.
+  virtual IPosition getStoredShape(rownr_t rownr, const IPosition& virtualShape);
 
-    // Convert the Slicer for a virtual to a Slicer for the stored.
-    virtual Slicer getStoredSlicer (const Slicer& virtualSlicer) const;
+  // Convert the Slicer for a virtual to a Slicer for the stored.
+  virtual Slicer getStoredSlicer(const Slicer& virtualSlicer) const;
 
-    // Copy the stored array to the virtual array.
-    // It tries to optimize as much as possible.
-    virtual void mapOnGet (Array<VirtualType>& array,
-                           const Array<StoredType>& stored);
+  // Copy the stored array to the virtual array.
+  // It tries to optimize as much as possible.
+  virtual void mapOnGet(Array<VirtualType>& array, const Array<StoredType>& stored);
 
-    // Copy the virtual array to the stored array.
-    // It tries to optimize as much as possible.
-    virtual void mapOnPut (const Array<VirtualType>& array,
-                           Array<StoredType>& stored);
+  // Copy the virtual array to the stored array.
+  // It tries to optimize as much as possible.
+  virtual void mapOnPut(const Array<VirtualType>& array, Array<StoredType>& stored);
 
-    //# Now define the data members.
-    IPosition shape_p;             //# shape of a virtual element in the stored
-    IPosition virtualFixedShape_p; //# The shape in case virtual has FixedShape
-    Bool      isVirtualFixedShape_p;
-    TableRecord  record_p;
-//#    VirtualType::CopyInfo* copyInfo_p; //# object used to set/get arrays
-    void* copyInfo_p;             //# CFront compiler does not accept above
+  // # Now define the data members.
+  IPosition shape_p;              // # shape of a virtual element in the stored
+  IPosition virtualFixedShape_p;  // # The shape in case virtual has FixedShape
+  Bool isVirtualFixedShape_p;
+  TableRecord record_p;
+  // #    VirtualType::CopyInfo* copyInfo_p; //# object used to set/get arrays
+  void* copyInfo_p;  // # CFront compiler does not accept above
 
-
-public:
-    //*display 4
-    // Define the "constructor" to construct this engine when a
-    // table is read back.
-    // This "constructor" has to be registered by the user of the engine.
-    // If the engine is commonly used, its registration can be added
-    // to the registerAllCtor function in DataManReg.cc. 
-    // That function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerType,
-				    const Record& spec);
+ public:
+  //*display 4
+  // Define the "constructor" to construct this engine when a
+  // table is read back.
+  // This "constructor" has to be registered by the user of the engine.
+  // If the engine is commonly used, its registration can be added
+  // to the registerAllCtor function in DataManReg.cc.
+  // That function gets automatically invoked by the table system.
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/RetypedArrayEngine.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

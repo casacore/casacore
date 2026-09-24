@@ -1,37 +1,36 @@
-//# IncrementalStMan.h: The Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # IncrementalStMan.h: The Incremental Storage Manager
+// # Copyright (C) 1996,1997,1999
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_INCREMENTALSTMAN_H
 #define TABLES_INCREMENTALSTMAN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/ISMBase.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // The Incremental Storage Manager
@@ -43,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> The Table Data Managers concept as described in module file
 //        <linkto module="Tables:Data Managers">Tables.h</linkto>
 //   <li> <linkto class=ROIncrementalStManAccessor>
@@ -66,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <p>
 // In general it can be advantageous to use this storage manager when
 // a value changes at most every 4 rows (although it depends on the length
-// of the data values themselves). The following simple example 
+// of the data values themselves). The following simple example
 // shows the approximate savings that can be achieved when storing a column
 // with double values changing every CH rows.
 // <srcblock>
@@ -132,10 +131,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      arrays themselves are stored in a separate file.
 // <li> When a value of an existing row is updated, only that one row is
 //      updated. The next row(s) keep their value, even if it was
-//      shared with the row being updated. 
+//      shared with the row being updated.
 //      <br>For scalars and direct arrays it will be tested if the
 //      new value matches the value in the previous and/or next row.
-//      If so, those rows will be combined to save storage.  
+//      If so, those rows will be combined to save storage.
 // <li> The IncrementalStMan is optimized for sequential access to a table.
 //      <br>- A bucket is accessed only once, because a bucket contains
 //            consecutive rows.
@@ -171,52 +170,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class IncrementalStMan : public ISMBase {
+ public:
+  // Create an incremental storage manager with the given name.
+  // If no name is used, it is set to an empty string.
+  // The name can be used to construct a
+  // <linkto class=ROIncrementalStManAccessor>ROIncrementalStManAccessor
+  // </linkto> object (e.g. to set the cache size).
+  // <br>
+  // The bucket size has to be given in bytes and the cache size in buckets.
+  // Bucket size 0 means that the storage manager will set the bucket
+  // size such that it can contain about 100 rows
+  // (with a minimum size of 32768 bytes). However, if that results
+  // in a very large bucket size (>327680) it'll make it smaller.
+  // Note it uses 32 bytes for the size of variable length strings,
+  // so this heuristic may fail when a column contains large strings.
+  // When <src>checkBucketSize</src> is set and Bucket size > 0
+  // the storage manager throws an exception
+  // when the size is too small to hold the values of at least 2 rows.
+  // For this check it uses 0 for the length of variable length strings.
+  // <group>
+  explicit IncrementalStMan(uInt bucketSize = 0, Bool checkBucketSize = True, uInt cacheSize = 1);
+  explicit IncrementalStMan(const String& dataManagerName, uInt bucketSize = 0,
+                            Bool checkBucketSize = True, uInt cacheSize = 1);
+  // </group>
 
-class IncrementalStMan : public ISMBase
-{
-public:
-    // Create an incremental storage manager with the given name.
-    // If no name is used, it is set to an empty string.
-    // The name can be used to construct a
-    // <linkto class=ROIncrementalStManAccessor>ROIncrementalStManAccessor
-    // </linkto> object (e.g. to set the cache size).
-    // <br>
-    // The bucket size has to be given in bytes and the cache size in buckets.
-    // Bucket size 0 means that the storage manager will set the bucket
-    // size such that it can contain about 100 rows
-    // (with a minimum size of 32768 bytes). However, if that results
-    // in a very large bucket size (>327680) it'll make it smaller.
-    // Note it uses 32 bytes for the size of variable length strings,
-    // so this heuristic may fail when a column contains large strings.
-    // When <src>checkBucketSize</src> is set and Bucket size > 0
-    // the storage manager throws an exception
-    // when the size is too small to hold the values of at least 2 rows.
-    // For this check it uses 0 for the length of variable length strings.
-    // <group>
-    explicit IncrementalStMan (uInt bucketSize = 0,
-			       Bool checkBucketSize = True,
-			       uInt cacheSize = 1);
-    explicit IncrementalStMan (const String& dataManagerName,
-			       uInt bucketSize = 0,
-			       Bool checkBucketSize = True,
-			       uInt cacheSize = 1);
-    // </group>
+  ~IncrementalStMan();
 
-    ~IncrementalStMan();
+  // Copy constructor cannot be used.
+  IncrementalStMan(const IncrementalStMan&) = delete;
 
-    // Copy constructor cannot be used.
-    IncrementalStMan (const IncrementalStMan&) = delete;
-
-    // Assignment cannot be used.
-    IncrementalStMan& operator= (const IncrementalStMan&) = delete;
+  // Assignment cannot be used.
+  IncrementalStMan& operator=(const IncrementalStMan&) = delete;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

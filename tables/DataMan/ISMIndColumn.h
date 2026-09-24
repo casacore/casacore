@@ -1,44 +1,42 @@
-//# ISMIndColumn.h: A column in Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997,1998,1999,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ISMIndColumn.h: A column in Incremental storage manager for indirect arrays
+// # Copyright (C) 1996,1997,1998,1999,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_ISMINDCOLUMN_H
 #define TABLES_ISMINDCOLUMN_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/ISMColumn.h>
 #include <casacore/tables/DataMan/StIndArray.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class StManArrayFile;
 class AipsIO;
-
 
 // <summary>
 // A column of Incremental storage manager for indirect arrays.
@@ -50,7 +48,7 @@ class AipsIO;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=ISMColumn>ISMColumn</linkto>
 //   <li> <linkto class=StIndArray>StIndArray</linkto>
 // </prerequisite>
@@ -60,7 +58,7 @@ class AipsIO;
 // containing INDirect arrays.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // ISMIndColumn is the implementation of an
 // <linkto class=ISMColumn>ISMColumn</linkto> class
 // to handle indirect arrays. The arrays (shape and data) are stored in
@@ -86,150 +84,142 @@ class AipsIO;
 // So when no data is put or shape is set, a row may contain no array at all.
 // In that case the function <src>isShapeDefined</src> returns False for
 // that row.
-// </synopsis> 
+// </synopsis>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //   <li> Maybe TpArrayInt, etc. should be used instead of TpInt.
 // </todo>
 
+class ISMIndColumn : public ISMColumn {
+ public:
+  // Create a column of the given data type.
+  // It keeps the pointer to its parent (but does not own it).
+  ISMIndColumn(ISMBase* parent, int dataType, uInt colnr);
 
-class ISMIndColumn : public ISMColumn
-{
-public:
+  // Frees up the storage.
+  virtual ~ISMIndColumn();
 
-    // Create a column of the given data type.
-    // It keeps the pointer to its parent (but does not own it).
-    ISMIndColumn (ISMBase* parent, int dataType, uInt colnr);
+  // Forbid copy constructor.
+  ISMIndColumn(const ISMIndColumn&) = delete;
 
-    // Frees up the storage.
-    virtual ~ISMIndColumn();
+  // Forbid assignment.
+  ISMIndColumn& operator=(const ISMIndColumn&) = delete;
 
-    // Forbid copy constructor.
-    ISMIndColumn (const ISMIndColumn&) = delete;
+  // Add (newNrrow-oldNrrow) rows to the column.
+  virtual void addRow(rownr_t newNrrow, rownr_t oldNrrow);
 
-    // Forbid assignment.
-    ISMIndColumn& operator= (const ISMIndColumn&) = delete;
+  // Set the (fixed) shape of the arrays in the entire column.
+  virtual void setShapeColumn(const IPosition& shape);
 
-    // Add (newNrrow-oldNrrow) rows to the column.
-    virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
+  // Get the dimensionality of the item in the given row.
+  virtual uInt ndim(rownr_t rownr);
 
-    // Set the (fixed) shape of the arrays in the entire column.
-    virtual void setShapeColumn (const IPosition& shape);
+  // Set the shape of the array in the given row and allocate the array
+  // in the file.
+  virtual void setShape(rownr_t rownr, const IPosition& shape);
 
-    // Get the dimensionality of the item in the given row.
-    virtual uInt ndim (rownr_t rownr);
+  // Is the shape defined (i.e. is there an array) in this row?
+  virtual Bool isShapeDefined(rownr_t rownr);
 
-    // Set the shape of the array in the given row and allocate the array
-    // in the file.
-    virtual void setShape (rownr_t rownr, const IPosition& shape);
+  // Get the shape of the array in the given row.
+  virtual IPosition shape(rownr_t rownr);
 
-    // Is the shape defined (i.e. is there an array) in this row?
-    virtual Bool isShapeDefined (rownr_t rownr);
+  // This storage manager can handle changing array shapes.
+  virtual Bool canChangeShape() const;
 
-    // Get the shape of the array in the given row.
-    virtual IPosition shape (rownr_t rownr);
+  // Get an array value in the given row.
+  // The buffer pointed to by dataPtr has to have the correct length
+  // (which is guaranteed by the ArrayColumn get function).
+  virtual void getArrayV(rownr_t rownr, ArrayBase&);
 
-    // This storage manager can handle changing array shapes.
-    virtual Bool canChangeShape() const;
+  // Put an array value into the given row.
+  // The buffer pointed to by dataPtr has to have the correct length
+  // (which is guaranteed by the ArrayColumn put function).
+  virtual void putArrayV(rownr_t rownr, const ArrayBase&);
 
-    // Get an array value in the given row.
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ArrayColumn get function).
-    virtual void getArrayV (rownr_t rownr, ArrayBase&);
+  // Get a section of the array in the given row.
+  // The array has to have the correct length
+  // (which is guaranteed by the ArrayColumn getSlice function).
+  virtual void getSliceV(rownr_t rownr, const Slicer&, ArrayBase&);
 
-    // Put an array value into the given row.
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ArrayColumn put function).
-    virtual void putArrayV (rownr_t rownr, const ArrayBase&);
+  // Put into a section of the array in the given row.
+  // The array has to have the correct length
+  // (which is guaranteed by the ArrayColumn putSlice function).
+  virtual void putSliceV(rownr_t rownr, const Slicer&, const ArrayBase&);
 
-    // Get a section of the array in the given row.
-    // The array has to have the correct length
-    // (which is guaranteed by the ArrayColumn getSlice function).
-    virtual void getSliceV (rownr_t rownr, const Slicer&, ArrayBase&);
+  // Let the column object create its array file.
+  virtual void doCreate(ISMBucket* bucket);
 
-    // Put into a section of the array in the given row.
-    // The array has to have the correct length
-    // (which is guaranteed by the ArrayColumn putSlice function).
-    virtual void putSliceV (rownr_t rownr, const Slicer&, const ArrayBase&);
+  // Let the column object open an existing file.
+  virtual void getFile(rownr_t nrrow);
 
-    // Let the column object create its array file.
-    virtual void doCreate (ISMBucket* bucket);
+  // Flush and optionally fsync the data.
+  virtual Bool flush(rownr_t nrrow, Bool fsync);
 
-    // Let the column object open an existing file.
-    virtual void getFile (rownr_t nrrow);
+  // Resync the storage manager with the new file contents.
+  virtual void resync(rownr_t nrrow);
 
-    // Flush and optionally fsync the data.
-    virtual Bool flush (rownr_t nrrow, Bool fsync);
+  // Let the column reopen its data files for read/write access.
+  virtual void reopenRW();
 
-    // Resync the storage manager with the new file contents.
-    virtual void resync (rownr_t nrrow);
+  // Handle the duplication of a value; i.e. increment its reference count.
+  virtual void handleCopy(rownr_t rownr, const char* value);
 
-    // Let the column reopen its data files for read/write access.
-    virtual void reopenRW();
+  // Handle the removal of a value; i.e. decrement its reference count.
+  virtual void handleRemove(rownr_t rownr, const char* value);
 
-    // Handle the duplication of a value; i.e. increment its reference count.
-    virtual void handleCopy (rownr_t rownr, const char* value);
+ private:
+  // Initialize part of the object and open/create the file.
+  // It is used by doCreate and getFile.
+  void init(ByteIO::OpenOption fileOption);
 
-    // Handle the removal of a value; i.e. decrement its reference count.
-    virtual void handleRemove (rownr_t rownr, const char* value);
+  // Clear the object (used by destructor and init).
+  void clear();
 
-private:
-    // Initialize part of the object and open/create the file.
-    // It is used by doCreate and getFile.
-    void init (ByteIO::OpenOption fileOption);
+  // Compare the values to check if a value to be put matches the
+  // value in the previous or next row.
+  // It always return False, because comparing large arrays is
+  // too expensive (it could be changed in the future).
+  virtual Bool compareValue(const void* val1, const void* val2) const;
 
-    // Clear the object (used by destructor and init).
-    void clear();
+  // Read the shape at the given row.
+  // This will cache the information in the StIndArray
+  // object for that row.
+  StIndArray* getShape(rownr_t rownr);
 
-    // Compare the values to check if a value to be put matches the
-    // value in the previous or next row.
-    // It always return False, because comparing large arrays is
-    // too expensive (it could be changed in the future). 
-    virtual Bool compareValue (const void* val1, const void* val2) const;
+  // Put the shape for an array being put.
+  // When there are multiple rows in the interval, it will
+  // split the interval.
+  StIndArray* putShape(rownr_t rownr, const IPosition& shape);
 
-    // Read the shape at the given row.
-    // This will cache the information in the StIndArray
-    // object for that row.
-    StIndArray* getShape (rownr_t rownr);
+  // Put the shape for an array of which a slice is being put.
+  // It gets the shape for the given row.
+  // When there are multiple rows in the interval, it will
+  // split the interval and copy the data.
+  StIndArray* putShapeSliced(rownr_t rownr);
 
-    // Put the shape for an array being put.
-    // When there are multiple rows in the interval, it will
-    // split the interval.
-    StIndArray* putShape (rownr_t rownr, const IPosition& shape);
+  // Return a pointer to the array in the given row (for a get).
+  StIndArray* getArrayPtr(rownr_t rownr);
 
-    // Put the shape for an array of which a slice is being put.
-    // It gets the shape for the given row.
-    // When there are multiple rows in the interval, it will
-    // split the interval and copy the data.
-    StIndArray* putShapeSliced (rownr_t rownr);
+  // When needed, create an array in the given row with the given shape.
+  // When the array is created, its data are copied when the flag is set.
+  StIndArray* putArrayPtr(rownr_t rownr, const IPosition& shape, Bool copyData);
 
-    // Return a pointer to the array in the given row (for a get).
-    StIndArray* getArrayPtr (rownr_t rownr);
-
-    // When needed, create an array in the given row with the given shape.
-    // When the array is created, its data are copied when the flag is set.
-    StIndArray* putArrayPtr (rownr_t rownr, const IPosition& shape,
-			     Bool copyData);
-
-
-    // The (unique) sequence number of the column.
-    uInt            seqnr_p;
-    // The shape of all arrays in case it is fixed.
-    IPosition       fixedShape_p;
-    // Switch indicating if the shape is fixed.
-    Bool            shapeIsFixed_p;
-    // The file containing the arrays.
-    StManArrayFile* iosfile_p;
-    // The indirect array object.
-    StIndArray      indArray_p;
-    // The indirect array exists for the row interval last accessed.
-    Bool            foundArray_p;
+  // The (unique) sequence number of the column.
+  uInt seqnr_p;
+  // The shape of all arrays in case it is fixed.
+  IPosition fixedShape_p;
+  // Switch indicating if the shape is fixed.
+  Bool shapeIsFixed_p;
+  // The file containing the arrays.
+  StManArrayFile* iosfile_p;
+  // The indirect array object.
+  StIndArray indArray_p;
+  // The indirect array exists for the row interval last accessed.
+  Bool foundArray_p;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

@@ -1,41 +1,40 @@
-//# VirtArrCol.h: Templated base class for virtual array column
-//# Copyright (C) 1994,1995,1996,1999,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # VirtArrCol.h: Templated base class for virtual array column
+// # Copyright (C) 1994,1995,1996,1999,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_VIRTARRCOL_H
 #define TABLES_VIRTARRCOL_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/tables/DataMan/DataManager.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class Slicer;
-
 
 // <summary>
 // Templated base class for virtual array column
@@ -47,7 +46,7 @@ class Slicer;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> DataManagerColumn
 //   <li> VirtualColumnEngine
 // </prerequisite>
@@ -56,7 +55,7 @@ class Slicer;
 // VirtualArrayColumn handles a virtual column containing an array.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // VirtualArrayColumn is the abstract base class to handle an array column
 // for a virtual column engine (both direct and indirect arrays).
 // It is derived from DataManagerColumn and reimplements some
@@ -109,7 +108,7 @@ class Slicer;
 // and DataManagerColumn.
 // This is possible, because one ScaledComplexData engine can handle only one
 // column.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This class reimplements some virtual functions implemented by
@@ -126,213 +125,197 @@ class Slicer;
 // </templating>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 // </todo>
 
+class VirtualArrayColumnBase : public DataManagerColumn {
+ public:
+  // Create a column.
+  VirtualArrayColumnBase() {}
 
-class VirtualArrayColumnBase : public DataManagerColumn
-{
-public:
-    // Create a column.
-    VirtualArrayColumnBase()
-        {}
+  virtual ~VirtualArrayColumnBase();
 
-    virtual ~VirtualArrayColumnBase();
+  // By default no data can be put in a virtual column.
+  virtual Bool isWritable() const;
 
-    // By default no data can be put in a virtual column.
-    virtual Bool isWritable() const;
+ protected:
+  // Set the shape of all arrays in the column.
+  // It is only called if the column contains direct arrays.
+  // By default it throws a "not possible" exception.
+  virtual void setShapeColumn(const IPosition& shape);
 
-protected:
-    // Set the shape of all arrays in the column.
-    // It is only called if the column contains direct arrays.
-    // By default it throws a "not possible" exception.
-    virtual void setShapeColumn (const IPosition& shape);
+  // Set the shape of an array in the given row.
+  // It is only called if the column contains indirect arrays.
+  // By default it throws a "not possible" exception.
+  virtual void setShape(rownr_t rownr, const IPosition& shape);
 
-    // Set the shape of an array in the given row.
-    // It is only called if the column contains indirect arrays.
-    // By default it throws a "not possible" exception.
-    virtual void setShape (rownr_t rownr, const IPosition& shape);
+  // Is the value shape defined in the given row?
+  // By default it throws a "not possible" exception.
+  virtual Bool isShapeDefined(rownr_t rownr);
 
-    // Is the value shape defined in the given row?
-    // By default it throws a "not possible" exception.
-    virtual Bool isShapeDefined (rownr_t rownr);
+  // Get the shape of the item in the given row.
+  // By default it throws a "not possible" exception.
+  virtual IPosition shape(rownr_t rownr);
 
-    // Get the shape of the item in the given row.
-    // By default it throws a "not possible" exception.
-    virtual IPosition shape (rownr_t rownr);
-
-    // The scalar access functions throw an exception.
-    // <group>
-    virtual void getScalarColumnV (ArrayBase& dataPtr);
-    virtual void putScalarColumnV (const ArrayBase& dataPtr);
-    virtual void getScalarColumnCellsV (const RefRows& rownrs,
-					ArrayBase& dataPtr);
-    virtual void putScalarColumnCellsV (const RefRows& rownrs,
-					const ArrayBase& dataPtr);
-    // </group>
+  // The scalar access functions throw an exception.
+  // <group>
+  virtual void getScalarColumnV(ArrayBase& dataPtr);
+  virtual void putScalarColumnV(const ArrayBase& dataPtr);
+  virtual void getScalarColumnCellsV(const RefRows& rownrs, ArrayBase& dataPtr);
+  virtual void putScalarColumnCellsV(const RefRows& rownrs, const ArrayBase& dataPtr);
+  // </group>
 };
 
+template <class T>
+class VirtualArrayColumn : public VirtualArrayColumnBase {
+ public:
+  // Create a column.
+  VirtualArrayColumn() {}
 
-template<class T>
-class VirtualArrayColumn : public VirtualArrayColumnBase
-{
-public:
-    // Create a column.
-    VirtualArrayColumn()
-        {}
+  virtual ~VirtualArrayColumn();
 
-    virtual ~VirtualArrayColumn();
+  // The object cannot be copied.
+  VirtualArrayColumn(const VirtualArrayColumn<T>&) = delete;
 
-    // The object cannot be copied.
-    VirtualArrayColumn (const VirtualArrayColumn<T>&) = delete;
+  // The object cannot be assigned to.
+  VirtualArrayColumn<T>& operator=(const VirtualArrayColumn<T>&) = delete;
 
-    // The object cannot be assigned to.
-    VirtualArrayColumn<T>& operator= (const VirtualArrayColumn<T>&) = delete;
+  // Return the data type of the column.
+  virtual int dataType() const;
 
-    // Return the data type of the column.
-    virtual int dataType() const;
+  // Return the data type Id of the column.
+  virtual String dataTypeId() const;
 
-    // Return the data type Id of the column.
-    virtual String dataTypeId() const;
+ protected:
+  // Get the array value in the given row.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::get function).
+  virtual void getArray(rownr_t rownr, Array<T>& data) = 0;
 
-protected:
-    // Get the array value in the given row.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::get function).
-    virtual void getArray (rownr_t rownr, Array<T>& data) = 0;
+  // Put the array value into the given row.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::put function).
+  // By default it throws a "not possible" exception.
+  virtual void putArray(rownr_t rownr, const Array<T>& data);
 
-    // Put the array value into the given row.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::put function).
-    // By default it throws a "not possible" exception.
-    virtual void putArray (rownr_t rownr, const Array<T>& data);
+  // Get a section of the array in the given row.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::getSlice function).
+  // The default implementation gets the slice by getting the full
+  // array first.
+  virtual void getSlice(rownr_t rownr, const Slicer& slicer, Array<T>& data);
 
-    // Get a section of the array in the given row.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::getSlice function).
-    // The default implementation gets the slice by getting the full
-    // array first.
-    virtual void getSlice (rownr_t rownr, const Slicer& slicer, Array<T>& data);
+  // Put into a section of the array in the given row.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::putSlice function).
+  // The default implementation gets the slice by accessing the full
+  // array.
+  virtual void putSlice(rownr_t rownr, const Slicer& slicer, const Array<T>& data);
 
-    // Put into a section of the array in the given row.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::putSlice function).
-    // The default implementation gets the slice by accessing the full
-    // array.
-    virtual void putSlice (rownr_t rownr, const Slicer& slicer,
-			   const Array<T>& data);
+  // Get an entire column.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColum::getColumn function).
+  // The default implementation gets the column row by row.
+  virtual void getArrayColumn(Array<T>& data);
 
-    // Get an entire column.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColum::getColumn function).
-    // The default implementation gets the column row by row.
-    virtual void getArrayColumn (Array<T>& data);
+  // Put an entire column.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::putColumn function).
+  // The default implementation puts the column row by row.
+  virtual void putArrayColumn(const Array<T>& data);
 
-    // Put an entire column.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::putColumn function).
-    // The default implementation puts the column row by row.
-    virtual void putArrayColumn (const Array<T>& data);
+  // Get some array values in the column.
+  // The data array has to have the correct length
+  // (which is guaranteed by the ArrayColumn::getColumn function).
+  // By default it throws a "not possible" exception.
+  virtual void getArrayColumnCells(const RefRows& rownrs, Array<T>& data);
 
-    // Get some array values in the column.
-    // The data array has to have the correct length
-    // (which is guaranteed by the ArrayColumn::getColumn function).
-    // By default it throws a "not possible" exception.
-    virtual void getArrayColumnCells (const RefRows& rownrs, Array<T>& data);
+  // Put some array values in the column.
+  // The data array has to have the correct length
+  // (which is guaranteed by the ArrayColumn::putColumn function).
+  // By default it throws a "not possible" exception.
+  virtual void putArrayColumnCells(const RefRows& rownrs, const Array<T>& data);
 
-    // Put some array values in the column.
-    // The data array has to have the correct length
-    // (which is guaranteed by the ArrayColumn::putColumn function).
-    // By default it throws a "not possible" exception.
-    virtual void putArrayColumnCells (const RefRows& rownrs,
-				      const Array<T>& data);
+  // Get a section of all arrays in the column.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::getColumn function).
+  // The default implementation gets the column row by row.
+  virtual void getColumnSlice(const Slicer& slicer, Array<T>& data);
 
-    // Get a section of all arrays in the column.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::getColumn function).
-    // The default implementation gets the column row by row.
-    virtual void getColumnSlice (const Slicer& slicer, Array<T>& data);
+  // Put a section of all arrays in the column.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn putColumn function).
+  // The default implementation puts the column row by row.
+  virtual void putColumnSlice(const Slicer& slicer, const Array<T>& data);
 
-    // Put a section of all arrays in the column.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn putColumn function).
-    // The default implementation puts the column row by row.
-    virtual void putColumnSlice (const Slicer& slicer, const Array<T>& data);
+  // Get a section of some arrays in the column.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::getColumn function).
+  // By default it throws a "not possible" exception.
+  virtual void getColumnSliceCells(const RefRows& rownrs, const Slicer& slicer, Array<T>& data);
 
-    // Get a section of some arrays in the column.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::getColumn function).
-    // By default it throws a "not possible" exception.
-    virtual void getColumnSliceCells (const RefRows& rownrs,
-				      const Slicer& slicer, Array<T>& data);
+  // Put into a section of some arrays in the column.
+  // The data array has to have the correct shape
+  // (which is guaranteed by the ArrayColumn::putColumn function).
+  // By default it throws a "not possible" exception.
+  virtual void putColumnSliceCells(const RefRows& rownrs, const Slicer& slicer,
+                                   const Array<T>& data);
 
-    // Put into a section of some arrays in the column.
-    // The data array has to have the correct shape
-    // (which is guaranteed by the ArrayColumn::putColumn function).
-    // By default it throws a "not possible" exception.
-    virtual void putColumnSliceCells (const RefRows& rownrs,
-				      const Slicer& slicer,
-				      const Array<T>& data);
+ private:
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Get the array value in the given row.
+  void getArrayV(rownr_t rownr, ArrayBase& dataPtr);
 
-private:
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get the array value in the given row.
-    void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Put the array value into the given row.
+  void putArrayV(rownr_t rownr, const ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put the array value into the given row.
-    void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Get some array values in the column.
+  void getArrayColumnCellsV(const RefRows& rownrs, ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get some array values in the column.
-    void getArrayColumnCellsV (const RefRows& rownrs, ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Put some array values in the column.
+  void putArrayColumnCellsV(const RefRows& rownrs, const ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put some array values in the column.
-    void putArrayColumnCellsV (const RefRows& rownrs, const ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Get a section of the array in the given row.
+  void getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get a section of the array in the given row.
-    void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Put into a section of the array in the given row.
+  void putSliceV(rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put into a section of the array in the given row.
-    void putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Get an entire column.
+  void getArrayColumnV(ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get an entire column.
-    void getArrayColumnV (ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Put an entire column.
+  void putArrayColumnV(const ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put an entire column.
-    void putArrayColumnV (const ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Get a section of all arrays in the column.
+  void getColumnSliceV(const Slicer& slicer, ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get a section of all arrays in the column.
-    void getColumnSliceV (const Slicer& slicer, ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Put into section of all arrays in the column.
+  void putColumnSliceV(const Slicer& slicer, const ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put into section of all arrays in the column.
-    void putColumnSliceV (const Slicer& slicer, const ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Get a section of some arrays in the column.
+  virtual void getColumnSliceCellsV(const RefRows& rownrs, const Slicer& slicer,
+                                    ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get a section of some arrays in the column.
-    virtual void getColumnSliceCellsV (const RefRows& rownrs,
-				       const Slicer& slicer, ArrayBase& dataPtr);
-
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put into a section of some arrays in the column.
-    virtual void putColumnSliceCellsV (const RefRows& rownrs,
-				       const Slicer& slicer,
-				       const ArrayBase& dataPtr);
+  // Implement the virtual functions defined in DataManagerColumn.
+  // Put into a section of some arrays in the column.
+  virtual void putColumnSliceCellsV(const RefRows& rownrs, const Slicer& slicer,
+                                    const ArrayBase& dataPtr);
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/VirtArrCol.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif  // # CASACORE_NO_AUTO_TEMPLATES
 #endif

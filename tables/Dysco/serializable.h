@@ -53,8 +53,7 @@ class Serializable {
     stream.write(reinterpret_cast<char *>(&value), sizeof(value));
   }
 
-  static void SerializeToLDoubleC(std::ostream &stream,
-                                  std::complex<long double> value) {
+  static void SerializeToLDoubleC(std::ostream &stream, std::complex<long double> value) {
     stream.write(reinterpret_cast<char *>(&value), sizeof(value));
   }
 
@@ -63,39 +62,24 @@ class Serializable {
     stream.write(str.c_str(), str.size());
   }
 
-  static void SerializeTo32bString(std::ostream &stream,
-                                   const std::string &str) {
+  static void SerializeTo32bString(std::ostream &stream, const std::string &str) {
     SerializeToUInt32(stream, str.size());
     stream.write(str.c_str(), str.size());
   }
 
-  static uint64_t UnserializeUInt64(std::istream &stream) {
-    return Unserialize<uint64_t>(stream);
-  }
+  static uint64_t UnserializeUInt64(std::istream &stream) { return Unserialize<uint64_t>(stream); }
 
-  static uint32_t UnserializeUInt32(std::istream &stream) {
-    return Unserialize<uint32_t>(stream);
-  }
+  static uint32_t UnserializeUInt32(std::istream &stream) { return Unserialize<uint32_t>(stream); }
 
-  static uint16_t UnserializeUInt16(std::istream &stream) {
-    return Unserialize<uint16_t>(stream);
-  }
+  static uint16_t UnserializeUInt16(std::istream &stream) { return Unserialize<uint16_t>(stream); }
 
-  static uint8_t UnserializeUInt8(std::istream &stream) {
-    return Unserialize<uint8_t>(stream);
-  }
+  static uint8_t UnserializeUInt8(std::istream &stream) { return Unserialize<uint8_t>(stream); }
 
-  static bool UnserializeBool8(std::istream &stream) {
-    return (bool)Unserialize<uint8_t>(stream);
-  }
+  static bool UnserializeBool8(std::istream &stream) { return (bool)Unserialize<uint8_t>(stream); }
 
-  static double UnserializeFloat(std::istream &stream) {
-    return Unserialize<float>(stream);
-  }
+  static double UnserializeFloat(std::istream &stream) { return Unserialize<float>(stream); }
 
-  static double UnserializeDouble(std::istream &stream) {
-    return Unserialize<double>(stream);
-  }
+  static double UnserializeDouble(std::istream &stream) { return Unserialize<double>(stream); }
 
   static long double UnserializeLDouble(std::istream &stream) {
     return Unserialize<long double>(stream);

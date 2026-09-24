@@ -17,8 +17,8 @@
 class MorphingArray {
  public:
   MorphingArray() noexcept = default;
-  
-  template<typename T>
+
+  template <typename T>
   MorphingArray(size_t size) : size_(size) {
     Allocate<T>();
   }
@@ -70,18 +70,17 @@ class MorphingArray {
   size_t Size() const { return size_; }
 
  private:
-  template<typename T>
+  template <typename T>
   void Allocate() {
-    if constexpr(alignof(T) > sizeof(void*)) {
+    if constexpr (alignof(T) > sizeof(void*)) {
       posix_memalign(&data_, alignof(T), size_ * sizeof(T));
     } else {
       data_ = malloc(size_ * sizeof(T));
     }
-    if(!data_)
-      throw std::bad_alloc();
+    if (!data_) throw std::bad_alloc();
     std::uninitialized_default_construct_n(reinterpret_cast<T*>(data_), size_);
   }
-   
+
   void* data_ = nullptr;
   size_t size_ = 0;
 };

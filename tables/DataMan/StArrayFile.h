@@ -1,32 +1,32 @@
-//# StArrayFile.h: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # StArrayFile.h: Read/write array in external format for a storage manager
+// # Copyright (C) 1994,1995,1996,1997,1999,2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_STARRAYFILE_H
 #define TABLES_STARRAYFILE_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/RegularFileIO.h>
 #include <casacore/casa/IO/TypeIO.h>
@@ -34,12 +34,11 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <memory>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class MultiFileBase;
 class IPosition;
-
 
 // <summary>
 // Read/write array in external format for a storage manager
@@ -51,7 +50,7 @@ class IPosition;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> ToLocal
 //   <li> FromLocal
 // </prerequisite>
@@ -61,7 +60,7 @@ class IPosition;
 // to store indirect arrays in a file.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // StManArrayFile is for use by the table storage manager, in particular
 // to read/write indirectly stored arrays.
 // Instead of holding the data in memory, they are written directly
@@ -85,7 +84,7 @@ class IPosition;
 // could also be supported by writing/reading an element in the normal
 // way into the AipsIO buffer. It would only require that AipsIO
 // would contain a function to get its buffers and to restart them.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -124,225 +123,192 @@ class IPosition;
 //          space if it fits
 // </todo>
 
+class StManArrayFile {
+ public:
+  // Construct the object and attach it to the give file.
+  // The OpenOption determines how the file is opened
+  // (e.g. ByteIO::New for a new file).
+  // The buffersize is used to allocate a buffer of a proper size
+  // for the underlying filebuf object (see iostream package).
+  // A bufferSize 0 means using the default size (currently 65536).
+  StManArrayFile(const String& name, ByteIO::OpenOption, uInt version = 0, Bool bigEndian = True,
+                 uInt bufferSize = 0,
+                 const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
-class StManArrayFile
-{
-public:
+  // Close the possibly opened file.
+  ~StManArrayFile();
 
-    // Construct the object and attach it to the give file.
-    // The OpenOption determines how the file is opened
-    // (e.g. ByteIO::New for a new file).
-    // The buffersize is used to allocate a buffer of a proper size
-    // for the underlying filebuf object (see iostream package).
-    // A bufferSize 0 means using the default size (currently 65536).
-    StManArrayFile (const String& name, ByteIO::OpenOption,
-		    uInt version=0, Bool bigEndian=True,
-		    uInt bufferSize=0,
-                    const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
+  // Flush and optionally fsync the data.
+  // It returns True when any data was written since the last flush.
+  Bool flush(Bool fsync);
 
-    // Close the possibly opened file.
-    ~StManArrayFile();
+  // Reopen the file for read/write access.
+  void reopenRW();
 
-    // Flush and optionally fsync the data.
-    // It returns True when any data was written since the last flush.
-    Bool flush (Bool fsync);
+  // Resync the file (i.e. clear possible cache information).
+  void resync();
 
-    // Reopen the file for read/write access.
-    void reopenRW();
+  // Return the current file length (merely a debug tool).
+  Int64 length() { return leng_p; }
 
-    // Resync the file (i.e. clear possible cache information).
-    void resync();
+  // Put the array shape and store its file offset into the offset argument.
+  // Reserve file space for the associated array.
+  // The length of the shape part in the file is returned.
+  // The file offset plus the shape length is the starting offset of the
+  // actual array data (which can be used by get and put).
+  // Space is reserved to store the reference count.
+  // <group>
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Bool* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Char* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const uChar* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Short* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const uShort* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Int* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const uInt* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Int64* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const uInt64* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Float* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Double* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const Complex* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const DComplex* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const String* dummy);
+  // </group>
 
-    // Return the current file length (merely a debug tool).
-    Int64 length()
-	{ return leng_p; }
+  // Get the reference count.
+  uInt getRefCount(Int64 offset);
 
-    // Put the array shape and store its file offset into the offset argument.
-    // Reserve file space for the associated array.
-    // The length of the shape part in the file is returned.
-    // The file offset plus the shape length is the starting offset of the
-    // actual array data (which can be used by get and put).
-    // Space is reserved to store the reference count.
-    // <group>
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Bool* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Char* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uChar* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Short* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uShort* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Int* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uInt* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Int64* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uInt64* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Float* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Double* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Complex* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const DComplex* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const String* dummy);
-    // </group>
+  // Put the reference count.
+  // An exception is thrown if a value other than 1 is put for version 0.
+  void putRefCount(uInt refCount, Int64 offset);
 
-    // Get the reference count.
-    uInt getRefCount (Int64 offset);
+  // Put nr elements at the given file offset and array offset.
+  // The file offset of the first array element is the file offset
+  // of the shape plus the length of the shape in the file.
+  // The array offset is counted in number of elements. It can be
+  // used to put only a (contiguous) section of the array.
+  // <group>
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Bool*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Char*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uChar*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Short*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uShort*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int64*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt64*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Float*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Double*);
+  // #//    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const long double*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Complex*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const DComplex*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const String*);
+  // </group>
 
-    // Put the reference count.
-    // An exception is thrown if a value other than 1 is put for version 0.
-    void putRefCount (uInt refCount, Int64 offset);
+  // Get the shape at the given file offset.
+  // It will reshape the IPosition vector when needed.
+  // It returns the length of the shape in the file.
+  uInt getShape(Int64 fileOffset, IPosition& shape);
 
-    // Put nr elements at the given file offset and array offset.
-    // The file offset of the first array element is the file offset
-    // of the shape plus the length of the shape in the file.
-    // The array offset is counted in number of elements. It can be
-    // used to put only a (contiguous) section of the array.
-    // <group>
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Bool*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Char*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uChar*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Short*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uShort*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int64*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt64*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Float*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Double*);
-//#//    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const long double*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Complex*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const DComplex*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const String*);
-    // </group>
+  // Get nr elements at the given file offset and array offset.
+  // The file offset of the first array element is the file offset
+  // of the shape plus the length of the shape in the file.
+  // The array offset is counted in number of elements. It can be
+  // used to get only a (contiguous) section of the array.
+  // <group>
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Bool*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Char*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uChar*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Short*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uShort*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int64*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt64*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Float*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Double*);
+  // #//    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, long double*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Complex*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, DComplex*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, String*);
+  // </group>
 
-    // Get the shape at the given file offset.
-    // It will reshape the IPosition vector when needed.
-    // It returns the length of the shape in the file.
-    uInt getShape (Int64 fileOffset, IPosition& shape);
+  // Copy the array with <src>nr</src> elements from one file offset
+  // to another.
+  // <group>
+  void copyArrayBool(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayChar(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayuChar(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayShort(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayuShort(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayInt(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayuInt(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayInt64(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayuInt64(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayFloat(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayDouble(Int64 to, Int64 from, uInt64 nr);
+  // #//    void copyArrayLDouble  (Int64 to, Int64 from, uInt64 nr);
+  void copyArrayComplex(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayDComplex(Int64 to, Int64 from, uInt64 nr);
+  void copyArrayString(Int64 to, Int64 from, uInt64 nr);
+  // </group>
 
-    // Get nr elements at the given file offset and array offset.
-    // The file offset of the first array element is the file offset
-    // of the shape plus the length of the shape in the file.
-    // The array offset is counted in number of elements. It can be
-    // used to get only a (contiguous) section of the array.
-    // <group>
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Bool*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Char*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uChar*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Short*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uShort*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int64*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt64*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Float*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Double*);
-//#//    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, long double*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Complex*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, DComplex*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, String*);
-    // </group>
+ private:
+  std::shared_ptr<ByteIO> file_p;   // # File object
+  std::shared_ptr<TypeIO> iofil_p;  // # IO object
+  Int64 leng_p;                     // # File length
+  uInt version_p;                   // # Version of StArrayFile file
+  Bool swput_p;                     // # True = put is possible
+  Bool hasPut_p;                    // # True = put since last flush
+  uInt sizeChar_p;
+  uInt sizeuChar_p;
+  uInt sizeShort_p;
+  uInt sizeuShort_p;
+  uInt sizeInt_p;
+  uInt sizeuInt_p;
+  uInt sizeInt64_p;
+  uInt sizeuInt64_p;
+  uInt sizeFloat_p;
+  uInt sizeDouble_p;
 
-    // Copy the array with <src>nr</src> elements from one file offset
-    // to another.
-    // <group>
-    void copyArrayBool     (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayChar     (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuChar    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayShort    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuShort   (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayInt      (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuInt     (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayInt64    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuInt64   (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayFloat    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayDouble   (Int64 to, Int64 from, uInt64 nr);
-//#//    void copyArrayLDouble  (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayComplex  (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayDComplex (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayString   (Int64 to, Int64 from, uInt64 nr);
-    // </group>
+  // Put a single value at the current file offset.
+  // It returns the length of the value in the file.
+  // <group>
+  uInt put(const Int&);
+  uInt put(const uInt&);
+  // </group>
 
-private:
-    std::shared_ptr<ByteIO> file_p;                //# File object
-    std::shared_ptr<TypeIO> iofil_p;               //# IO object
-    Int64   leng_p;                //# File length
-    uInt    version_p;             //# Version of StArrayFile file
-    Bool    swput_p;               //# True = put is possible
-    Bool    hasPut_p;              //# True = put since last flush
-    uInt    sizeChar_p;
-    uInt    sizeuChar_p;
-    uInt    sizeShort_p;
-    uInt    sizeuShort_p;
-    uInt    sizeInt_p;
-    uInt    sizeuInt_p;
-    uInt    sizeInt64_p;
-    uInt    sizeuInt64_p;
-    uInt    sizeFloat_p;
-    uInt    sizeDouble_p;
+  // Put the array shape at the end of the file and reserve
+  // space for nr elements (each lenElem bytes long).
+  // It fills the file offset of the shape.
+  // It returns the length of the shape in the file.
+  uInt putRes(const IPosition& shape, Int64& fileOffset, float lenElem);
 
-    // Put a single value at the current file offset.
-    // It returns the length of the value in the file.
-    // <group>
-    uInt put (const Int&);
-    uInt put (const uInt&);
-    // </group>
+  // Get a single value at the current file offset.
+  // It returns the length of the value in the file.
+  // <group>
+  uInt get(Int&);
+  uInt get(uInt&);
+  // </group>
 
-    // Put the array shape at the end of the file and reserve
-    // space for nr elements (each lenElem bytes long).
-    // It fills the file offset of the shape.
-    // It returns the length of the shape in the file.
-    uInt putRes (const IPosition& shape, Int64& fileOffset, float lenElem);
+  // Copy data with the given length from one file offset to another.
+  void copyData(Int64 to, Int64 from, uInt64 length);
 
-    // Get a single value at the current file offset.
-    // It returns the length of the value in the file.
-    // <group>
-    uInt get (Int&);
-    uInt get (uInt&);
-    // </group>
-
-    // Copy data with the given length from one file offset to another.
-    void copyData (Int64 to, Int64 from, uInt64 length);
-
-    // Position the file on the given offset.
-    void setpos (Int64 offset);
+  // Position the file on the given offset.
+  void setpos(Int64 offset);
 };
-    
 
-inline void StManArrayFile::reopenRW()
-{
-    file_p->reopenRW();
+inline void StManArrayFile::reopenRW() { file_p->reopenRW(); }
+inline uInt StManArrayFile::put(const Int& value) {
+  hasPut_p = True;
+  return iofil_p->write(1, &value);
 }
-inline uInt StManArrayFile::put (const Int& value)
-{
-    hasPut_p = True;
-    return iofil_p->write (1, &value);
+inline uInt StManArrayFile::put(const uInt& value) {
+  hasPut_p = True;
+  return iofil_p->write(1, &value);
 }
-inline uInt StManArrayFile::put (const uInt& value)
-{
-    hasPut_p = True;
-    return iofil_p->write (1, &value);
-}
-inline uInt StManArrayFile::get (Int& value)
-{
-    return iofil_p->read (1, &value);
-}
-inline uInt StManArrayFile::get (uInt& value)
-{
-    return iofil_p->read (1, &value);
-}
+inline uInt StManArrayFile::get(Int& value) { return iofil_p->read(1, &value); }
+inline uInt StManArrayFile::get(uInt& value) { return iofil_p->read(1, &value); }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

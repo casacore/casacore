@@ -33,8 +33,8 @@ class BytePacker {
    * @param symbolBuffer the input buffer
    * @param symbolCount number of symbols in @p symbolBuffer.
    */
-  static void pack(unsigned bitCount, unsigned char *dest,
-                   const unsigned *symbolBuffer, size_t symbolCount);
+  static void pack(unsigned bitCount, unsigned char *dest, const unsigned *symbolBuffer,
+                   size_t symbolCount);
 
   /**
    * Call an unpack..() function for a given bit count. Will forward the unpack
@@ -45,114 +45,95 @@ class BytePacker {
    * @param symbolCount number of symbols that will be unpacked into @p
    * symbolBuffer.
    */
-  static void unpack(unsigned bitCount, unsigned *symbolBuffer,
-                     unsigned char *packedBuffer, size_t symbolCount);
+  static void unpack(unsigned bitCount, unsigned *symbolBuffer, unsigned char *packedBuffer,
+                     size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=2.
    */
-  static void pack2(unsigned char *dest, const unsigned *symbolBuffer,
-                    size_t symbolCount);
+  static void pack2(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack2(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack2(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                      size_t symbolCount);
+  static void unpack2(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=3.
    */
-  static void pack3(unsigned char *dest, const unsigned *symbolBuffer,
-                    size_t symbolCount);
+  static void pack3(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack3(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack3(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                      size_t symbolCount);
+  static void unpack3(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=4.
    */
-  static void pack4(unsigned char *dest, const unsigned *symbolBuffer,
-                    size_t symbolCount);
+  static void pack4(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack4(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack4(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                      size_t symbolCount);
+  static void unpack4(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=6.
    */
-  static void pack6(unsigned char *dest, const unsigned *symbolBuffer,
-                    size_t symbolCount);
+  static void pack6(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
 
   /**
    * Reverse of pack6(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack6(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                      size_t symbolCount);
+  static void unpack6(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=8.
    */
-  static void pack8(unsigned char *dest, const unsigned *symbolBuffer,
-                    size_t symbolCount);
+  static void pack8(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack8(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack8(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                      size_t symbolCount);
+  static void unpack8(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=10.
    */
-  static void pack10(unsigned char *dest, const unsigned *symbolBuffer,
-                     size_t symbolCount);
+  static void pack10(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack10(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack10(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                       size_t symbolCount);
+  static void unpack10(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=12.
    */
-  static void pack12(unsigned char *dest, const unsigned *symbolBuffer,
-                     size_t symbolCount);
+  static void pack12(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack12(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack12(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                       size_t symbolCount);
+  static void unpack12(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
   /**
    * Pack the symbols from symbolBuffer into the destination array using
    * bitCount=16.
    */
-  static void pack16(unsigned char *dest, const unsigned *symbolBuffer,
-                     size_t symbolCount);
+  static void pack16(unsigned char *dest, const unsigned *symbolBuffer, size_t symbolCount);
   /**
    * Reverse of pack16(). Will write symbolCount items into the symbolBuffer.
    */
-  static void unpack16(unsigned *symbolBuffer, unsigned char *packedBuffer,
-                       size_t symbolCount);
+  static void unpack16(unsigned *symbolBuffer, unsigned char *packedBuffer, size_t symbolCount);
 
-  static size_t bufferSize(size_t nSymbols, size_t nBits) {
-    return (nSymbols * nBits + 7) / 8;
-  }
+  static size_t bufferSize(size_t nSymbols, size_t nBits) { return (nSymbols * nBits + 7) / 8; }
 };
 
 inline void BytePacker::pack(unsigned int bitCount, unsigned char *dest,
-                             const unsigned int *symbolBuffer,
-                             size_t symbolCount) {
+                             const unsigned int *symbolBuffer, size_t symbolCount) {
   switch (bitCount) {
     case 2:
       pack2(dest, symbolBuffer, symbolCount);
@@ -183,10 +164,8 @@ inline void BytePacker::pack(unsigned int bitCount, unsigned char *dest,
   }
 }
 
-inline void BytePacker::unpack(unsigned int bitCount,
-                               unsigned int *symbolBuffer,
-                               unsigned char *packedBuffer,
-                               size_t symbolCount) {
+inline void BytePacker::unpack(unsigned int bitCount, unsigned int *symbolBuffer,
+                               unsigned char *packedBuffer, size_t symbolCount) {
   switch (bitCount) {
     case 2:
       unpack2(symbolBuffer, packedBuffer, symbolCount);
@@ -217,8 +196,7 @@ inline void BytePacker::unpack(unsigned int bitCount,
   }
 }
 
-inline void BytePacker::pack2(unsigned char *dest,
-                              const unsigned int *symbolBuffer,
+inline void BytePacker::pack2(unsigned char *dest, const unsigned int *symbolBuffer,
                               size_t symbolCount) {
   const size_t limit = symbolCount / 4;
   for (size_t i = 0; i != limit; i++) {
@@ -250,8 +228,7 @@ inline void BytePacker::pack2(unsigned char *dest,
   }
 }
 
-inline void BytePacker::unpack2(unsigned *symbolBuffer,
-                                unsigned char *packedBuffer,
+inline void BytePacker::unpack2(unsigned *symbolBuffer, unsigned char *packedBuffer,
                                 size_t symbolCount) {
   const size_t limit = symbolCount / 4;
   for (size_t i = 0; i != limit; i++) {
@@ -352,8 +329,7 @@ inline void BytePacker::pack3(unsigned char *dest, const unsigned *symbolBuffer,
   }
 }
 
-inline void BytePacker::unpack3(unsigned *symbolBuffer,
-                                unsigned char *packedBuffer,
+inline void BytePacker::unpack3(unsigned *symbolBuffer, unsigned char *packedBuffer,
                                 size_t symbolCount) {
   const size_t limit = symbolCount / 8;
   for (size_t i = 0; i != limit; i++) {
@@ -405,22 +381,19 @@ inline void BytePacker::unpack3(unsigned *symbolBuffer,
 
           if (pos != symbolCount) {
             ++symbolBuffer;
-            *symbolBuffer =
-                ((*packedBuffer) & 0x70) >> 4;  // 5. Bit 5-7 into 1-3
+            *symbolBuffer = ((*packedBuffer) & 0x70) >> 4;  // 5. Bit 5-7 into 1-3
             ++pos;
 
             if (pos != symbolCount) {
               ++symbolBuffer;
               *symbolBuffer = ((*packedBuffer) & 0x80) >> 7;  // 6. Bit 8 into 1
               ++packedBuffer;
-              *symbolBuffer |= ((*packedBuffer) & 0x03)
-                               << 1;  // 6b. Bit 1-2 into 2-3
+              *symbolBuffer |= ((*packedBuffer) & 0x03) << 1;  // 6b. Bit 1-2 into 2-3
               ++pos;
 
               if (pos != symbolCount) {
                 ++symbolBuffer;
-                *symbolBuffer =
-                    ((*packedBuffer) & 0x1c) >> 2;  // 7. Bit 3-5 into 1-3
+                *symbolBuffer = ((*packedBuffer) & 0x1c) >> 2;  // 7. Bit 3-5 into 1-3
               }
             }
           }
@@ -430,8 +403,7 @@ inline void BytePacker::unpack3(unsigned *symbolBuffer,
   }
 }
 
-inline void BytePacker::pack4(unsigned char *dest,
-                              const unsigned int *symbolBuffer,
+inline void BytePacker::pack4(unsigned char *dest, const unsigned int *symbolBuffer,
                               size_t symbolCount) {
   const size_t limit = symbolCount / 2;
   for (size_t i = 0; i != limit; i++) {
@@ -444,8 +416,7 @@ inline void BytePacker::pack4(unsigned char *dest,
   if (limit * 2 != symbolCount) *dest = (*symbolBuffer);  // bits 1-4 into 1-4
 }
 
-inline void BytePacker::unpack4(unsigned *symbolBuffer,
-                                unsigned char *packedBuffer,
+inline void BytePacker::unpack4(unsigned *symbolBuffer, unsigned char *packedBuffer,
                                 size_t symbolCount) {
   const size_t limit = symbolCount / 2;
   for (size_t i = 0; i != limit; i++) {
@@ -455,8 +426,7 @@ inline void BytePacker::unpack4(unsigned *symbolBuffer,
     ++symbolBuffer;
     ++packedBuffer;
   }
-  if (limit * 2 != symbolCount)
-    *symbolBuffer = *packedBuffer & 0x0F;  // bits 1-4 into 1-4
+  if (limit * 2 != symbolCount) *symbolBuffer = *packedBuffer & 0x0F;  // bits 1-4 into 1-4
 }
 
 inline void BytePacker::pack6(unsigned char *dest, const unsigned *symbolBuffer,
@@ -507,8 +477,7 @@ inline void BytePacker::pack6(unsigned char *dest, const unsigned *symbolBuffer,
   }
 }
 
-inline void BytePacker::unpack6(unsigned *symbolBuffer,
-                                unsigned char *packedBuffer,
+inline void BytePacker::unpack6(unsigned *symbolBuffer, unsigned char *packedBuffer,
                                 size_t symbolCount) {
   const size_t limit = symbolCount / 4;
   for (size_t i = 0; i != limit; i++) {
@@ -558,14 +527,12 @@ inline void BytePacker::pack8(unsigned char *dest, const unsigned *symbolBuffer,
   for (size_t i = 0; i != symbolCount; ++i) dest[i] = symbolBuffer[i];
 }
 
-inline void BytePacker::unpack8(unsigned *symbolBuffer,
-                                unsigned char *packedBuffer,
+inline void BytePacker::unpack8(unsigned *symbolBuffer, unsigned char *packedBuffer,
                                 size_t symbolCount) {
   for (size_t i = 0; i != symbolCount; ++i) symbolBuffer[i] = packedBuffer[i];
 }
 
-inline void BytePacker::pack10(unsigned char *dest,
-                               const unsigned int *symbolBuffer,
+inline void BytePacker::pack10(unsigned char *dest, const unsigned int *symbolBuffer,
                                size_t symbolCount) {
   const size_t limit = symbolCount / 4;
   for (size_t i = 0; i != limit; i++) {
@@ -616,8 +583,7 @@ inline void BytePacker::pack10(unsigned char *dest,
   }
 }
 
-inline void BytePacker::unpack10(unsigned int *symbolBuffer,
-                                 unsigned char *packedBuffer,
+inline void BytePacker::unpack10(unsigned int *symbolBuffer, unsigned char *packedBuffer,
                                  size_t symbolCount) {
   const size_t limit = symbolCount / 4;
   for (size_t i = 0; i != limit; i++) {
@@ -667,8 +633,7 @@ inline void BytePacker::unpack10(unsigned int *symbolBuffer,
   }
 }
 
-inline void BytePacker::pack12(unsigned char *dest,
-                               const unsigned int *symbolBuffer,
+inline void BytePacker::pack12(unsigned char *dest, const unsigned int *symbolBuffer,
                                size_t symbolCount) {
   const size_t limit = symbolCount / 2;
   for (size_t i = 0; i != limit; i++) {
@@ -692,8 +657,7 @@ inline void BytePacker::pack12(unsigned char *dest,
   }
 }
 
-inline void BytePacker::unpack12(unsigned int *symbolBuffer,
-                                 unsigned char *packedBuffer,
+inline void BytePacker::unpack12(unsigned int *symbolBuffer, unsigned char *packedBuffer,
                                  size_t symbolCount) {
   const size_t limit = symbolCount / 2;
   for (size_t i = 0; i != limit; i++) {
@@ -715,15 +679,12 @@ inline void BytePacker::unpack12(unsigned int *symbolBuffer,
   }
 }
 
-inline void BytePacker::pack16(unsigned char *dest,
-                               const unsigned *symbolBuffer,
+inline void BytePacker::pack16(unsigned char *dest, const unsigned *symbolBuffer,
                                size_t symbolCount) {
-  for (size_t i = 0; i != symbolCount; ++i)
-    reinterpret_cast<uint16_t *>(dest)[i] = symbolBuffer[i];
+  for (size_t i = 0; i != symbolCount; ++i) reinterpret_cast<uint16_t *>(dest)[i] = symbolBuffer[i];
 }
 
-inline void BytePacker::unpack16(unsigned *symbolBuffer,
-                                 unsigned char *packedBuffer,
+inline void BytePacker::unpack16(unsigned *symbolBuffer, unsigned char *packedBuffer,
                                  size_t symbolCount) {
   for (size_t i = 0; i != symbolCount; ++i)
     symbolBuffer[i] = reinterpret_cast<uint16_t *>(packedBuffer)[i];

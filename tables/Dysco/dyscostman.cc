@@ -10,11 +10,9 @@ void register_dyscostman() { dyscostman::DyscoStMan::registerClass(); }
 
 namespace dyscostman {
 
-const unsigned short DyscoStMan::VERSION_MAJOR = 1,
-                     DyscoStMan::VERSION_MINOR = 0;
+const unsigned short DyscoStMan::VERSION_MAJOR = 1, DyscoStMan::VERSION_MINOR = 0;
 
-DyscoStMan::DyscoStMan(unsigned dataBitCount, unsigned weightBitCount,
-                       const casacore::String &name)
+DyscoStMan::DyscoStMan(unsigned dataBitCount, unsigned weightBitCount, const casacore::String &name)
     : DataManager(),
       _nRow(0),
       _nBlocksInFile(0),
@@ -31,8 +29,7 @@ DyscoStMan::DyscoStMan(unsigned dataBitCount, unsigned weightBitCount,
       _distributionTruncation(2.5),
       _staticSeed(false) {}
 
-DyscoStMan::DyscoStMan(const casacore::String &name,
-                       const casacore::Record &spec)
+DyscoStMan::DyscoStMan(const casacore::String &name, const casacore::Record &spec)
     : DataManager(),
       _nRow(0),
       _nBlocksInFile(0),
@@ -73,12 +70,10 @@ void DyscoStMan::setFromSpec(const casacore::Record &spec) {
   int i = spec.description().fieldNumber("dataBitCount");
   if (i >= 0) {
     _dataBitCount = spec.asInt("dataBitCount");
-    if (_dataBitCount == 0)
-      throw DyscoStManError("Invalid error for data bit rate");
+    if (_dataBitCount == 0) throw DyscoStManError("Invalid error for data bit rate");
 
     _weightBitCount = spec.asInt("weightBitCount");
-    if (_weightBitCount == 0)
-      throw DyscoStManError("Invalid error for weight bit rate");
+    if (_weightBitCount == 0) throw DyscoStManError("Invalid error for weight bit rate");
 
     std::string str = spec.asString("distribution");
     if (str == "Uniform")
@@ -155,23 +150,16 @@ casacore::Record DyscoStMan::dataManagerSpec() const {
   return spec;
 }
 
-void DyscoStMan::registerClass() {
-  DataManager::registerCtor("DyscoStMan", makeObject);
-}
+void DyscoStMan::registerClass() { DataManager::registerCtor("DyscoStMan", makeObject); }
 
-casacore::Bool DyscoStMan::flush(casacore::AipsIO &,
-                                 casacore::Bool /*doFsync*/) {
-  return false;
-}
+casacore::Bool DyscoStMan::flush(casacore::AipsIO &, casacore::Bool /*doFsync*/) { return false; }
 
 void DyscoStMan::create64(casacore::rownr_t nRow) {
   _nRow = nRow;
-  _fStream.reset(new std::fstream(
-      fileName().c_str(),
-      std::ios_base::in | std::ios_base::out | std::ios_base::trunc));
+  _fStream.reset(new std::fstream(fileName().c_str(),
+                                  std::ios_base::in | std::ios_base::out | std::ios_base::trunc));
   if (_fStream->fail())
-    throw DyscoStManError("I/O error: could not create new file '" +
-                          fileName() + "'");
+    throw DyscoStManError("I/O error: could not create new file '" + fileName() + "'");
   _nBlocksInFile = 0;
 }
 
@@ -206,8 +194,7 @@ void DyscoStMan::writeHeader() {
     cHeader.Serialize(*_fStream);
     col->SerializeExtraHeader(*_fStream);
   }
-  if (_fStream->fail())
-    throw DyscoStManError("I/O error: could not write to file");
+  if (_fStream->fail()) throw DyscoStManError("I/O error: could not write to file");
 }
 
 void DyscoStMan::readHeader() {
@@ -233,8 +220,8 @@ void DyscoStMan::readHeader() {
 
   if (header.versionMajor != 1 || header.versionMinor != 0) {
     std::stringstream s;
-    s << "The compressed file has file format version " << header.versionMajor
-      << "." << header.versionMinor
+    s << "The compressed file has file format version " << header.versionMajor << "."
+      << header.versionMinor
       << ", but this version of Dysco can only open file format version 1.0. "
          "Upgrade Dysco.\n";
     throw DyscoStManError(s.str());
@@ -243,8 +230,7 @@ void DyscoStMan::readHeader() {
   if (columnCount != _columns.size()) {
     std::stringstream s;
     s << "The column count in the DyscoStMan file (" << columnCount
-      << ") does not match with the measurement set (" << _columns.size()
-      << ")";
+      << ") does not match with the measurement set (" << _columns.size() << ")";
     throw DyscoStManError(s.str());
   }
 
@@ -258,11 +244,9 @@ void DyscoStMan::readHeader() {
   }
 }
 
-void DyscoStMan::initializeRowsPerBlock(size_t rowsPerBlock,
-                                        size_t antennaCount,
+void DyscoStMan::initializeRowsPerBlock(size_t rowsPerBlock, size_t antennaCount,
                                         bool writeToHeader) {
-  if (areOffsetsInitialized() &&
-      (rowsPerBlock != _rowsPerBlock || antennaCount != _antennaCount))
+  if (areOffsetsInitialized() && (rowsPerBlock != _rowsPerBlock || antennaCount != _antennaCount))
     throw DyscoStManError(
         "initializeRowsPerBlock() called with two different "
         "values; something is wrong");
@@ -271,8 +255,7 @@ void DyscoStMan::initializeRowsPerBlock(size_t rowsPerBlock,
   _antennaCount = antennaCount;
   _blockSize = 0;
   for (std::unique_ptr<DyscoStManColumn> &col : _columns) {
-    size_t columnBlockSize =
-        col->CalculateBlockSize(rowsPerBlock, antennaCount);
+    size_t columnBlockSize = col->CalculateBlockSize(rowsPerBlock, antennaCount);
     col->SetOffsetInBlock(_blockSize);
     _blockSize += columnBlockSize;
 
@@ -283,8 +266,7 @@ void DyscoStMan::initializeRowsPerBlock(size_t rowsPerBlock,
 
 casacore::rownr_t DyscoStMan::open64(casacore::rownr_t nRow, casacore::AipsIO &) {
   _nRow = nRow;
-  _fStream.reset(new std::fstream(fileName().c_str(),
-                                  std::ios_base::in | std::ios_base::out));
+  _fStream.reset(new std::fstream(fileName().c_str(), std::ios_base::in | std::ios_base::out));
   if (_fStream->fail()) {
     _fStream.reset(new std::fstream(fileName().c_str(), std::ios_base::in));
     if (_fStream->fail())
@@ -295,8 +277,7 @@ casacore::rownr_t DyscoStMan::open64(casacore::rownr_t nRow, casacore::AipsIO &)
   readHeader();
 
   _fStream->seekg(0, std::ios_base::end);
-  if (_fStream->fail())
-    throw DyscoStManError("I/O error: error reading file '" + fileName());
+  if (_fStream->fail()) throw DyscoStManError("I/O error: error reading file '" + fileName());
   std::streampos size = _fStream->tellg();
   if (size > _headerSize)
     _nBlocksInFile = (size_t(size) - _headerSize) / _blockSize;
@@ -305,50 +286,44 @@ casacore::rownr_t DyscoStMan::open64(casacore::rownr_t nRow, casacore::AipsIO &)
   return nRow;
 }
 
-casacore::DataManagerColumn *DyscoStMan::makeScalarColumn(
-    const casacore::String & /*name*/, int dataType,
-    const casacore::String &dataTypeID) {
+casacore::DataManagerColumn *DyscoStMan::makeScalarColumn(const casacore::String & /*name*/,
+                                                          int dataType,
+                                                          const casacore::String &dataTypeID) {
   std::ostringstream s;
-  s << "Can not create scalar columns with DyscoStMan! (requested datatype: '"
-    << dataTypeID << "' (" << dataType << ")";
+  s << "Can not create scalar columns with DyscoStMan! (requested datatype: '" << dataTypeID
+    << "' (" << dataType << ")";
   throw DyscoStManError(s.str());
 }
 
-casacore::DataManagerColumn *DyscoStMan::makeDirArrColumn(
-    const casacore::String &name, int dataType,
-    const casacore::String & /*dataTypeID*/) {
+casacore::DataManagerColumn *DyscoStMan::makeDirArrColumn(const casacore::String &name,
+                                                          int dataType,
+                                                          const casacore::String & /*dataTypeID*/) {
   std::unique_ptr<DyscoStManColumn> col;
 
   if (name == "WEIGHT_SPECTRUM") {
     if (dataType == casacore::TpFloat)
       col.reset(new DyscoWeightColumn(this, dataType));
     else
-      throw DyscoStManError(
-          "Trying to create a Dysco weight column with wrong type");
+      throw DyscoStManError("Trying to create a Dysco weight column with wrong type");
   } else if (dataType == casacore::TpComplex) {
     col.reset(new DyscoDataColumn(this, dataType));
-    if (_staticSeed)
-      static_cast<DyscoDataColumn &>(*col).SetStaticRandomizationSeed();
+    if (_staticSeed) static_cast<DyscoDataColumn &>(*col).SetStaticRandomizationSeed();
   } else
-    throw DyscoStManError(
-        "Trying to create a Dysco data column with wrong type");
+    throw DyscoStManError("Trying to create a Dysco data column with wrong type");
   _columns.push_back(std::move(col));
   return _columns.back().get();
 }
 
-casacore::DataManagerColumn *DyscoStMan::makeIndArrColumn(
-    const casacore::String & /*name*/, int /*dataType*/,
-    const casacore::String & /*dataTypeID*/) {
+casacore::DataManagerColumn *DyscoStMan::makeIndArrColumn(const casacore::String & /*name*/,
+                                                          int /*dataType*/,
+                                                          const casacore::String & /*dataTypeID*/) {
   throw DyscoStManError(
       "makeIndArrColumn() called on DyscoStMan. DyscoStMan can only created "
       "direct columns!\nUse casacore::ColumnDesc::Direct as option in your "
       "column desc constructor");
 }
 
-casacore::rownr_t DyscoStMan::resync64(casacore::rownr_t nRow)
-{
-  return nRow;
-}
+casacore::rownr_t DyscoStMan::resync64(casacore::rownr_t nRow) { return nRow; }
 
 void DyscoStMan::deleteManager() { unlink(fileName().c_str()); }
 
@@ -368,15 +343,13 @@ void DyscoStMan::prepare() {
       DyscoWeightColumn *wghtCol = dynamic_cast<DyscoWeightColumn *>(col.get());
       if (wghtCol) wghtCol->SetBitsPerSymbol(_weightBitCount);
     }
-    col->Prepare(_distribution, _normalization, _studentTNu,
-                 _distributionTruncation);
+    col->Prepare(_distribution, _normalization, _studentTNu, _distributionTruncation);
   }
 
   // In case this is a new measurement set, we do not know the rowsPerBlock yet
   // If this measurement set is opened, we do know it, and we have to call
   // initializeRowsPerBlock() to let the columns know this value.
-  if (areOffsetsInitialized())
-    initializeRowsPerBlock(_rowsPerBlock, _antennaCount, false);
+  if (areOffsetsInitialized()) initializeRowsPerBlock(_rowsPerBlock, _antennaCount, false);
 }
 
 void DyscoStMan::reopenRW() {}
@@ -393,16 +366,14 @@ void DyscoStMan::removeRow64(casacore::rownr_t rowNr) {
 
 void DyscoStMan::addColumn(casacore::DataManagerColumn * /*column*/) {
   if (_nBlocksInFile != 0)
-    throw DyscoStManError(
-        "Can't add columns while data has been committed to table");
+    throw DyscoStManError("Can't add columns while data has been committed to table");
 
   prepare();
   writeHeader();
 }
 
 void DyscoStMan::removeColumn(casacore::DataManagerColumn *column) {
-  for (std::vector<std::unique_ptr<DyscoStManColumn>>::iterator i =
-           _columns.begin();
+  for (std::vector<std::unique_ptr<DyscoStManColumn>>::iterator i = _columns.begin();
        i != _columns.end(); ++i) {
     if (i->get() == column) {
       _columns.erase(i);
@@ -410,12 +381,10 @@ void DyscoStMan::removeColumn(casacore::DataManagerColumn *column) {
       return;
     }
   }
-  throw DyscoStManError(
-      "Trying to remove column that was not part of the storage manager");
+  throw DyscoStManError("Trying to remove column that was not part of the storage manager");
 }
 
-void DyscoStMan::readCompressedData(size_t blockIndex,
-                                    const DyscoStManColumn *column,
+void DyscoStMan::readCompressedData(size_t blockIndex, const DyscoStManColumn *column,
                                     unsigned char *dest, size_t size) {
   std::lock_guard<std::mutex> lock(_mutex);
   size_t fileOffset = getFileOffset(blockIndex);
@@ -427,14 +396,12 @@ void DyscoStMan::readCompressedData(size_t blockIndex,
     // This can be sort of ok ; row exists because other columns have written
     // here, but no data had been written yet for this column
     if (blockIndex + 1 != _nBlocksInFile)
-      throw DyscoStManError("I/O error: error while reading file '" +
-                            fileName() + "'");
+      throw DyscoStManError("I/O error: error while reading file '" + fileName() + "'");
     _fStream->clear();  // reset fail bit
   }
 }
 
-void DyscoStMan::writeCompressedData(size_t blockIndex,
-                                     const DyscoStManColumn *column,
+void DyscoStMan::writeCompressedData(size_t blockIndex, const DyscoStManColumn *column,
                                      const unsigned char *data, size_t size) {
   std::lock_guard<std::mutex> lock(_mutex);
   if (_nBlocksInFile <= blockIndex) {
@@ -444,8 +411,7 @@ void DyscoStMan::writeCompressedData(size_t blockIndex,
   _fStream->seekp(fileOffset + column->OffsetInBlock(), std::ios_base::beg);
   _fStream->write(reinterpret_cast<const char *>(data), size);
   if (_fStream->fail())
-    throw DyscoStManError("I/O error: error while writing file '" + fileName() +
-                          "'");
+    throw DyscoStManError("I/O error: error while writing file '" + fileName() + "'");
 }
 
 }  // namespace dyscostman

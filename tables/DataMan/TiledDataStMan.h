@@ -1,42 +1,41 @@
-//# TiledDataStMan.h: Tiled Data Storage Manager
-//# Copyright (C) 1995,1996,1997,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledDataStMan.h: Tiled Data Storage Manager
+// # Copyright (C) 1995,1996,1997,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TILEDDATASTMAN_H
 #define TABLES_TILEDDATASTMAN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TiledStMan.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <vector>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // Tiled Data Storage Manager.
@@ -48,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TiledStMan>TiledStMan</linkto>
 //   <li> <linkto class=TSMCube>TSMCube</linkto>
 //   <li> <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
@@ -116,7 +115,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       Note that it is possible to store one coordinate column with
 //       TiledDataStMan and another with another storage manager.
 // </ul>
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This tiled storage manager allows one to create and extend hypercubes
@@ -150,7 +149,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Finally it makes access along the various axes about equally efficient.
 // <br>
 // Although in this example only one hypercube is added, multiple hypercubes
-// are possible, because an id column has been defined. 
+// are possible, because an id column has been defined.
 // <note role=caution>
 // The example uses the global Array function indgen to fill the data
 // and coordinate arrays with arbitrary values.
@@ -175,7 +174,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //			  stringToVector ("Data,Weight"),
 //			  stringToVector ("Pol,Freq,Baseline,Time"),
 //			  stringToVector ("Id"));
-//  
+//
 //  // Now create a new table from the description.
 //  SetupNewTable newtab("tTiledDataStMan_tmp.data", td, Table::New);
 //  // Create a TiledDataStMan storage manager for the hypercolumn
@@ -338,122 +337,110 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // although it requires a bit more coding.
 // </example>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class TiledDataStMan : public TiledStMan {
+  friend class TiledDataStManAccessor;
 
-class TiledDataStMan : public TiledStMan
-{
-friend class TiledDataStManAccessor;
+ public:
+  // Create a TiledDataStMan storage manager for the hypercolumn
+  // with the given name.
+  // The hypercolumn name is also the name of the storage manager.
+  // The given maximum cache size (default is unlimited) is persistent,
+  // thus will be reused when the table is read back. Note that the class
+  // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
+  // allows one to overwrite the maximum cache size temporarily.
+  // <br>The constructor taking a Record expects fields in the record with
+  // the name of the arguments in uppercase. If not defined, their
+  // default value is used.
+  // <group>
+  TiledDataStMan(const String& hypercolumnName, uInt64 maximumCacheSize = 0);
+  TiledDataStMan(const String& hypercolumnName, const Record& spec);
+  // </group>
 
-public:
-    // Create a TiledDataStMan storage manager for the hypercolumn
-    // with the given name.
-    // The hypercolumn name is also the name of the storage manager.
-    // The given maximum cache size (default is unlimited) is persistent,
-    // thus will be reused when the table is read back. Note that the class
-    // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
-    // allows one to overwrite the maximum cache size temporarily.
-    // <br>The constructor taking a Record expects fields in the record with
-    // the name of the arguments in uppercase. If not defined, their
-    // default value is used.
-    // <group>
-    TiledDataStMan (const String& hypercolumnName,
-		    uInt64 maximumCacheSize = 0);
-    TiledDataStMan (const String& hypercolumnName,
-		    const Record& spec);
-    // </group>
+  ~TiledDataStMan();
 
-    ~TiledDataStMan();
+  // Forbid copy constructor.
+  TiledDataStMan(const TiledDataStMan&) = delete;
 
-    // Forbid copy constructor.
-    TiledDataStMan (const TiledDataStMan&) = delete;
+  // Forbid assignment.
+  TiledDataStMan& operator=(const TiledDataStMan&) = delete;
 
-    // Forbid assignment.
-    TiledDataStMan& operator= (const TiledDataStMan&) = delete;
+  // Clone this object.
+  // It does not clone TSMColumn objects possibly used.
+  DataManager* clone() const;
 
-    // Clone this object.
-    // It does not clone TSMColumn objects possibly used.
-    DataManager* clone() const;
+  // Get the type name of the data manager (i.e. TiledDataStMan).
+  String dataManagerType() const;
 
-    // Get the type name of the data manager (i.e. TiledDataStMan).
-    String dataManagerType() const;
+  // Make the object from the type name string.
+  // This function gets registered in the DataManager "constructor" map.
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 
-    // Make the object from the type name string.
-    // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType,
-				    const Record& spec);
+ private:
+  // Create a TiledDataStMan.
+  // This constructor is private, because it should only be used
+  // by makeObject.
+  TiledDataStMan();
 
-private:
-    // Create a TiledDataStMan.
-    // This constructor is private, because it should only be used
-    // by makeObject.
-    TiledDataStMan();
+  // Add rows to the storage manager.
+  // This will only increase the number of rows. When a hypercube is
+  // added or extended, it will be checked whether the number of rows
+  // is sufficient.
+  void addRow64(rownr_t nrrow);
 
-    // Add rows to the storage manager.
-    // This will only increase the number of rows. When a hypercube is
-    // added or extended, it will be checked whether the number of rows
-    // is sufficient.
-    void addRow64 (rownr_t nrrow);
+  // Add a hypercube.
+  // The number of rows in the table must be large enough to
+  // accommodate this hypercube.
+  // The possible id values must be given in the record, while
+  // coordinate values are optional. The field names in the record
+  // should match the coordinate and id column names.
+  // The last dimension in the cube shape can be zero, indicating that
+  // the hypercube is extensible.
+  void addHypercube(const IPosition& cubeShape, const IPosition& tileShape, const Record& values);
 
-    // Add a hypercube.
-    // The number of rows in the table must be large enough to
-    // accommodate this hypercube.
-    // The possible id values must be given in the record, while
-    // coordinate values are optional. The field names in the record
-    // should match the coordinate and id column names.
-    // The last dimension in the cube shape can be zero, indicating that
-    // the hypercube is extensible.
-    void addHypercube (const IPosition& cubeShape,
-		       const IPosition& tileShape,
-		       const Record& values);
+  // Extend the hypercube with the given number of elements in
+  // the last dimension.
+  // The record should contain the id values (to get the correct
+  // hypercube) and optionally coordinate values for the elements added.
+  void extendHypercube(uInt64 incrInLastDim, const Record& values);
 
-    // Extend the hypercube with the given number of elements in
-    // the last dimension.
-    // The record should contain the id values (to get the correct
-    // hypercube) and optionally coordinate values for the elements added.
-    void extendHypercube (uInt64 incrInLastDim, const Record& values);
+  // Get the hypercube in which the given row is stored.
+  virtual TSMCube* getHypercube(rownr_t rownr);
 
-    // Get the hypercube in which the given row is stored.
-    virtual TSMCube* getHypercube (rownr_t rownr);
+  // Get the hypercube in which the given row is stored.
+  // It also returns the position of the row in that hypercube.
+  virtual TSMCube* getHypercube(rownr_t rownr, IPosition& position);
 
-    // Get the hypercube in which the given row is stored.
-    // It also returns the position of the row in that hypercube.
-    virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position);
+  // Flush and optionally fsync the data.
+  // It returns a True status if it had to flush (i.e. if data have changed).
+  virtual Bool flush(AipsIO&, Bool fsync);
 
-    // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+  // Let the storage manager create files as needed for a new table.
+  // This allows a column with an indirect array to create its file.
+  virtual void create64(rownr_t nrrow);
 
-    // Let the storage manager create files as needed for a new table.
-    // This allows a column with an indirect array to create its file.
-    virtual void create64 (rownr_t nrrow);
+  // Read the header info.
+  virtual void readHeader(rownr_t nrrow, Bool firstTime);
 
-    // Read the header info.
-    virtual void readHeader (rownr_t nrrow, Bool firstTime);
+  // Update the map of row numbers to cube number plus offset.
+  void updateRowMap(uInt cubeNr, uInt64 incrInLastDim);
 
-    // Update the map of row numbers to cube number plus offset.
-    void updateRowMap (uInt cubeNr, uInt64 incrInLastDim);
+  // Check if the table is large enough to hold this
+  // hypercube extension.
+  void checkNrrow(const IPosition& cubeShape, uInt64 incrInLastDim) const;
 
-    // Check if the table is large enough to hold this
-    // hypercube extension.
-    void checkNrrow (const IPosition& cubeShape,
-		     uInt64 incrInLastDim) const;
-
-
-    //# Declare the data members.
-    // The map of row number to cube and position in cube.
-    std::vector<rownr_t> rowMap_p;
-    std::vector<uInt> cubeMap_p;
-    std::vector<uInt> posMap_p;
-    // The row number since the last hypercube extension.
-    rownr_t nrrowLast_p;
+  // # Declare the data members.
+  //  The map of row number to cube and position in cube.
+  std::vector<rownr_t> rowMap_p;
+  std::vector<uInt> cubeMap_p;
+  std::vector<uInt> posMap_p;
+  // The row number since the last hypercube extension.
+  rownr_t nrrowLast_p;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

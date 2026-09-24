@@ -1,41 +1,40 @@
-//# TiledColumnStMan.h: Tiled Column Storage Manager
-//# Copyright (C) 1995,1996,1997,1999,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # TiledColumnStMan.h: Tiled Column Storage Manager
+// # Copyright (C) 1995,1996,1997,1999,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_TILEDCOLUMNSTMAN_H
 #define TABLES_TILEDCOLUMNSTMAN_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TiledStMan.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
+// # Forward Declarations
 
 // <summary>
 // Tiled Column Storage Manager.
@@ -47,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=TiledStMan>TiledStMan</linkto>
 //   <li> <linkto class=TSMCube>TSMCube</linkto>
 //   <li> <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
@@ -85,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> The tile shape of the hypercube has to be defined by means
 //       of the TiledColumnStMan constructor.
 // </ul>
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This tiled storage manager does not require any special action
@@ -143,103 +142,93 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// # <todo asof="$DATE:$">
+// # A List of bugs, limitations, extensions or planned refinements.
+// # </todo>
 
+class TiledColumnStMan : public TiledStMan {
+ public:
+  // Create a TiledDataStMan storage manager for the hypercolumn
+  // with the given name. The columns used should have the FixedShape
+  // attribute set.
+  // The hypercolumn name is also the name of the storage manager.
+  // The given tile shape will be used.
+  // The given maximum cache size in bytes (default is unlimited) is
+  // persistent, thus will be reused when the table is read back.
+  // Note that the class
+  // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
+  // allows one to overwrite the maximum cache size temporarily.
+  // Its description contains a discussion about the effects of
+  // setting a maximum cache.
+  // <br>The constructor taking a Record expects fields in the record with
+  // the name of the arguments in uppercase. If not defined, their
+  // default value is used.
+  // <group>
+  TiledColumnStMan(const String& hypercolumnName, const IPosition& tileShape,
+                   uInt64 maximumCacheSize = 0);
+  TiledColumnStMan(const String& hypercolumnName, const Record& spec);
+  // </group>
 
-class TiledColumnStMan : public TiledStMan
-{
-public:
-    // Create a TiledDataStMan storage manager for the hypercolumn
-    // with the given name. The columns used should have the FixedShape
-    // attribute set.
-    // The hypercolumn name is also the name of the storage manager.
-    // The given tile shape will be used.
-    // The given maximum cache size in bytes (default is unlimited) is
-    // persistent, thus will be reused when the table is read back.
-    // Note that the class
-    // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
-    // allows one to overwrite the maximum cache size temporarily.
-    // Its description contains a discussion about the effects of
-    // setting a maximum cache.
-    // <br>The constructor taking a Record expects fields in the record with
-    // the name of the arguments in uppercase. If not defined, their
-    // default value is used.
-    // <group>
-    TiledColumnStMan (const String& hypercolumnName,
-		      const IPosition& tileShape,
-		      uInt64 maximumCacheSize = 0);
-    TiledColumnStMan (const String& hypercolumnName,
-		      const Record& spec);
-    // </group>
+  ~TiledColumnStMan();
 
-    ~TiledColumnStMan();
+  // Forbid copy constructor.
+  TiledColumnStMan(const TiledColumnStMan&) = delete;
 
-    // Forbid copy constructor.
-    TiledColumnStMan (const TiledColumnStMan&) = delete;
+  // Forbid assignment.
+  TiledColumnStMan& operator=(const TiledColumnStMan&) = delete;
 
-    // Forbid assignment.
-    TiledColumnStMan& operator= (const TiledColumnStMan&) = delete;
+  // Clone this object.
+  // It does not clone TSMColumn objects possibly used.
+  virtual DataManager* clone() const;
 
-    // Clone this object.
-    // It does not clone TSMColumn objects possibly used.
-    virtual DataManager* clone() const;
+  // TiledColumnStMan can always access a column.
+  virtual Bool canAccessColumn() const;
 
-    // TiledColumnStMan can always access a column.
-    virtual Bool canAccessColumn() const;
+  // Get the type name of the data manager (i.e. TiledColumnStMan).
+  virtual String dataManagerType() const;
 
-    // Get the type name of the data manager (i.e. TiledColumnStMan).
-    virtual String dataManagerType() const;
+  // Make the object from the type name string.
+  // This function gets registered in the DataManager "constructor" map.
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 
-    // Make the object from the type name string.
-    // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType,
-				    const Record& spec);
+ private:
+  // Create a TiledColumnStMan.
+  // This constructor is private, because it should only be used
+  // by makeObject.
+  TiledColumnStMan();
 
-private:
-    // Create a TiledColumnStMan.
-    // This constructor is private, because it should only be used
-    // by makeObject.
-    TiledColumnStMan();
+  // Get the (default) tile shape.
+  virtual IPosition defaultTileShape() const;
 
-    // Get the (default) tile shape.
-    virtual IPosition defaultTileShape() const;
+  // Add rows to the storage manager.
+  // This will extend the hypercube.
+  void addRow64(rownr_t nrrow);
 
-    // Add rows to the storage manager.
-    // This will extend the hypercube.
-    void addRow64 (rownr_t nrrow);
+  // Get the hypercube in which the given row is stored.
+  virtual TSMCube* getHypercube(rownr_t rownr);
 
-    // Get the hypercube in which the given row is stored.
-    virtual TSMCube* getHypercube (rownr_t rownr);
+  // Get the hypercube in which the given row is stored.
+  // It also returns the position of the row in that hypercube.
+  virtual TSMCube* getHypercube(rownr_t rownr, IPosition& position);
 
-    // Get the hypercube in which the given row is stored.
-    // It also returns the position of the row in that hypercube.
-    virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position);
+  // Check if the hypercolumn definition fits this storage manager.
+  virtual void setupCheck(const TableDesc& tableDesc, const Vector<String>& dataNames) const;
 
-    // Check if the hypercolumn definition fits this storage manager.
-    virtual void setupCheck (const TableDesc& tableDesc,
-			     const Vector<String>& dataNames) const;
+  // Flush and optionally fsync the data.
+  // It returns a True status if it had to flush (i.e. if data have changed).
+  virtual Bool flush(AipsIO&, Bool fsync);
 
-    // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+  // Let the storage manager create files as needed for a new table.
+  // This allows a column with an indirect array to create its file.
+  virtual void create64(rownr_t nrrow);
 
-    // Let the storage manager create files as needed for a new table.
-    // This allows a column with an indirect array to create its file.
-    virtual void create64 (rownr_t nrrow);
+  // Read the header info.
+  virtual void readHeader(rownr_t nrrow, Bool firstTime);
 
-    // Read the header info.
-    virtual void readHeader (rownr_t nrrow, Bool firstTime);
-
-
-    //# Declare data members.
-    IPosition tileShape_p;
+  // # Declare data members.
+  IPosition tileShape_p;
 };
 
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

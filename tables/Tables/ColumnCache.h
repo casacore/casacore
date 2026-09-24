@@ -1,40 +1,38 @@
-//# ColumnCache.h: A caching object for a table column
-//# Copyright (C) 1997
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ColumnCache.h: A caching object for a table column
+// # Copyright (C) 1997
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_COLUMNCACHE_H
 #define TABLES_COLUMNCACHE_H
 
-
-//# Includes
+// # Includes
 #include <cassert>
 #include <limits>
 
 #include <casacore/casa/aips.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A caching object for a table column.
@@ -46,7 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> <linkto class=ScalarColumn>ScalarColumn</linkto>
 // </prerequisite>
 
@@ -80,77 +78,60 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      using this one and invalidate them as well.
 // </todo>
 
+class ColumnCache {
+ public:
+  // Constructor.
+  // It sets the increment to 1 and calls invalidate.
+  ColumnCache();
 
-class ColumnCache
-{
-public:
-    // Constructor.
-    // It sets the increment to 1 and calls invalidate.
-    ColumnCache();
+  // Set the increment to the given value.
+  void setIncrement(rownr_t increment);
 
-    // Set the increment to the given value.
-    void setIncrement (rownr_t increment);
+  // Set the start and end row number for which the given data pointer
+  // is valid.
+  void set(rownr_t startRow, rownr_t endRow, const void* dataPtr);
 
-    // Set the start and end row number for which the given data pointer
-    // is valid.
-    void set (rownr_t startRow, rownr_t endRow, const void* dataPtr);
+  // Invalidate the cache.
+  // This clears the data pointer and sets startRow>endRow.
+  void invalidate();
 
-    // Invalidate the cache.
-    // This clears the data pointer and sets startRow>endRow.
-    void invalidate();
+  // Calculate the offset in the cached data for the given row.
+  // -1 is returned if the row is not within the cached rows.
+  Int64 offset(rownr_t rownr) const;
 
-    // Calculate the offset in the cached data for the given row.
-    // -1 is returned if the row is not within the cached rows.
-    Int64 offset (rownr_t rownr) const;
+  // Give a pointer to the data.
+  // The calling function has to do a proper cast after which the
+  // calculated offset can be added to get the proper data.
+  const void* dataPtr() const;
 
-    // Give a pointer to the data.
-    // The calling function has to do a proper cast after which the
-    // calculated offset can be added to get the proper data.
-    const void* dataPtr() const;
+  // Give the start, end (including), and increment row number
+  // of the cached column values.
+  rownr_t start() const { return itsStart; }
+  rownr_t end() const { return itsEnd; }
+  rownr_t incr() const { return itsIncr; }
 
-    // Give the start, end (including), and increment row number
-    // of the cached column values.
-    rownr_t start() const
-      { return itsStart; }
-    rownr_t end() const
-      { return itsEnd; }
-    rownr_t incr() const
-      { return itsIncr; }
-
-private:
-    rownr_t  itsStart;
-    rownr_t  itsEnd;
-    rownr_t  itsIncr;
-    const void* itsData;
+ private:
+  rownr_t itsStart;
+  rownr_t itsEnd;
+  rownr_t itsIncr;
+  const void* itsData;
 };
 
+inline void ColumnCache::setIncrement(rownr_t increment) { itsIncr = increment; }
 
-inline void ColumnCache::setIncrement (rownr_t increment)
-{
-    itsIncr = increment;
+inline void ColumnCache::invalidate() { set(1, 0, 0); }
+
+inline Int64 ColumnCache::offset(rownr_t rownr) const {
+  if (rownr < itsStart || rownr > itsEnd) {
+    return -1;
+  }
+  const rownr_t offset = (rownr - itsStart) * itsIncr;
+  assert(offset <= static_cast<rownr_t>(std::numeric_limits<Int64>::max()));
+  return Int64(offset);
 }
 
-inline void ColumnCache::invalidate()
-{
-    set (1, 0, 0);
-}
+inline const void* ColumnCache::dataPtr() const { return itsData; }
 
-inline Int64 ColumnCache::offset (rownr_t rownr) const
-{
-    if (rownr < itsStart || rownr > itsEnd) {
-        return -1;
-    }
-    const rownr_t offset = (rownr - itsStart) * itsIncr;
-    assert(offset <= static_cast<rownr_t>(std::numeric_limits<Int64>::max()));
-    return Int64(offset);
-}
-
-inline const void* ColumnCache::dataPtr() const
-{
-    return itsData;
-}
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

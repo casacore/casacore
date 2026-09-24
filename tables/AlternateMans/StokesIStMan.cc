@@ -6,35 +6,26 @@ void register_stokesistman() { casacore::StokesIStMan::registerClass(); }
 
 namespace casacore {
 namespace {
-  /**
-   * Create an object with given name and spec.
-   * This methods gets registered in the StokesIStMan "constructor" map.
-   * The caller has to delete the object.
-   */
-  static casacore::DataManager *Make(const casacore::String &name,
-                                           const casacore::Record &spec) {
-    return new StokesIStMan(name, spec);
-  }
+/**
+ * Create an object with given name and spec.
+ * This methods gets registered in the StokesIStMan "constructor" map.
+ * The caller has to delete the object.
+ */
+static casacore::DataManager *Make(const casacore::String &name, const casacore::Record &spec) {
+  return new StokesIStMan(name, spec);
 }
+}  // namespace
 
-StokesIStMan::StokesIStMan(const casacore::String &/*name*/,
-                           const casacore::Record &/*spec*/)
-    : DataManager() {
-}
+StokesIStMan::StokesIStMan(const casacore::String & /*name*/, const casacore::Record & /*spec*/)
+    : DataManager() {}
 
-StokesIStMan::StokesIStMan(const StokesIStMan &source)
-    : DataManager(),
-      name_(source.name_) {}
+StokesIStMan::StokesIStMan(const StokesIStMan &source) : DataManager(), name_(source.name_) {}
 
 StokesIStMan::~StokesIStMan() noexcept = default;
 
-casacore::Record StokesIStMan::dataManagerSpec() const {
-  return casacore::Record();
-}
+casacore::Record StokesIStMan::dataManagerSpec() const { return casacore::Record(); }
 
-void StokesIStMan::registerClass() {
-  DataManager::registerCtor("StokesIStMan", Make);
-}
+void StokesIStMan::registerClass() { DataManager::registerCtor("StokesIStMan", Make); }
 
 void StokesIStMan::create64(casacore::rownr_t nRow) {
   file_ = BufferedColumnarFile::CreateNew(fileName(), kHeaderSize, CalculateAndUpdateStride());
@@ -56,39 +47,36 @@ casacore::rownr_t StokesIStMan::open64(casacore::rownr_t /*n_row*/, casacore::Ai
   return file_.NRows();
 }
 
-casacore::DataManagerColumn *StokesIStMan::makeScalarColumn(
-    const casacore::String & /*name*/, int dataType,
-    const casacore::String &dataTypeID) {
+casacore::DataManagerColumn *StokesIStMan::makeScalarColumn(const casacore::String & /*name*/,
+                                                            int dataType,
+                                                            const casacore::String &dataTypeID) {
   std::ostringstream s;
-  s << "Can not create scalar columns with StokesIStMan! (requested datatype: '"
-    << dataTypeID << "' (" << dataType << ")";
+  s << "Can not create scalar columns with StokesIStMan! (requested datatype: '" << dataTypeID
+    << "' (" << dataType << ")";
   throw std::runtime_error(s.str());
 }
 
 casacore::DataManagerColumn *StokesIStMan::makeDirArrColumn(
-    const casacore::String & /*name*/, int dataType,
-    const casacore::String & /*dataTypeID*/) {
-
-  if (dataType == casacore::TpFloat || dataType == casacore::TpComplex || dataType == casacore::TpBool)
-    return columns_.emplace_back(std::make_unique<StokesIStManColumn>(*this, file_, static_cast<DataType>(dataType))).get();
+    const casacore::String & /*name*/, int dataType, const casacore::String & /*dataTypeID*/) {
+  if (dataType == casacore::TpFloat || dataType == casacore::TpComplex ||
+      dataType == casacore::TpBool)
+    return columns_
+        .emplace_back(
+            std::make_unique<StokesIStManColumn>(*this, file_, static_cast<DataType>(dataType)))
+        .get();
   else
-    throw std::runtime_error(
-        "Trying to create a Stokes I column with wrong type");
+    throw std::runtime_error("Trying to create a Stokes I column with wrong type");
 }
 
 casacore::DataManagerColumn *StokesIStMan::makeIndArrColumn(
-    const casacore::String & /*name*/, int /*dataType*/,
-    const casacore::String & /*dataTypeID*/) {
+    const casacore::String & /*name*/, int /*dataType*/, const casacore::String & /*dataTypeID*/) {
   throw std::runtime_error(
       "makeIndArrColumn() called on StokesIStMan. StokesIStMan can only create "
       "direct columns!\nUse casacore::ColumnDesc::Direct as option in the "
       "column desc constructor");
 }
 
-casacore::rownr_t StokesIStMan::resync64(casacore::rownr_t nRow)
-{
-  return nRow;
-}
+casacore::rownr_t StokesIStMan::resync64(casacore::rownr_t nRow) { return nRow; }
 
 void StokesIStMan::deleteManager() { unlink(fileName().c_str()); }
 
@@ -107,13 +95,11 @@ void StokesIStMan::removeRow64(casacore::rownr_t rowNr) {
 }
 
 void StokesIStMan::addColumn(casacore::DataManagerColumn * /*column*/) {
-    throw std::runtime_error(
-        "Can't add generic columns to StokesIStMan");
+  throw std::runtime_error("Can't add generic columns to StokesIStMan");
 }
 
 void StokesIStMan::removeColumn(casacore::DataManagerColumn *column) {
-  for (std::vector<std::unique_ptr<StokesIStManColumn>>::iterator i =
-           columns_.begin();
+  for (std::vector<std::unique_ptr<StokesIStManColumn>>::iterator i = columns_.begin();
        i != columns_.end(); ++i) {
     if (i->get() == column) {
       columns_.erase(i);
@@ -121,13 +107,12 @@ void StokesIStMan::removeColumn(casacore::DataManagerColumn *column) {
       return;
     }
   }
-  throw std::runtime_error(
-      "Trying to remove column that was not part of the storage manager");
+  throw std::runtime_error("Trying to remove column that was not part of the storage manager");
 }
 
 uint64_t StokesIStMan::CalculateAndUpdateStride() {
   uint64_t offset = 0;
-  for (std::unique_ptr<StokesIStManColumn>& column : columns_) {
+  for (std::unique_ptr<StokesIStManColumn> &column : columns_) {
     column->setOffset(offset);
     offset += column->getStoredSizeInBytes();
   }
@@ -135,4 +120,3 @@ uint64_t StokesIStMan::CalculateAndUpdateStride() {
 }
 
 }  // namespace casacore
-

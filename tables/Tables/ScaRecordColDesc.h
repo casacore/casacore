@@ -1,42 +1,40 @@
-//# ScaRecordColDesc.h: Class for description of table scalar record columns
-//# Copyright (C) 1998,2000
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ScaRecordColDesc.h: Class for description of table scalar record columns
+// # Copyright (C) 1998,2000
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_SCARECORDCOLDESC_H
 #define TABLES_SCARECORDCOLDESC_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseColDesc.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class PlainColumn;
 class ColumnSet;
-
 
 // <summary>
 // Class to define columns of scalar records in tables
@@ -58,7 +56,7 @@ class ColumnSet;
 //  may also be called a row) will hold a scalar record value.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // ScalarRecordColumnDesc is the class for defining a
 // table column containing scalar record values. The only record class
 // supported is <linkto class=TableRecord>TableRecord</linkto>.
@@ -109,68 +107,63 @@ class ColumnSet;
 // </motivation>
 
 // <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
+// # A List of bugs, limitations, extensions or planned refinements.
 //  <li> Introduce a class ArrayRecordColumnDesc to support arrays of records.
 // </todo>
 
+class ScalarRecordColumnDesc : public BaseColumnDesc {
+  friend class ColumnDesc;
 
-class ScalarRecordColumnDesc : public BaseColumnDesc
-{
-friend class ColumnDesc;
+ public:
+  // Construct the column with the given name.
+  // The data manager type defaults to the StandardStMan storage manager.
+  // The data manager group defaults to the data manager type.
+  explicit ScalarRecordColumnDesc(const String& name);
 
-public:
-    // Construct the column with the given name.
-    // The data manager type defaults to the StandardStMan storage manager.
-    // The data manager group defaults to the data manager type.
-    explicit ScalarRecordColumnDesc (const String& name);
+  // Construct the column with the given name and comment.
+  // The data manager type defaults to the StandardStMan storage manager.
+  // The data manager group defaults to the data manager type.
+  ScalarRecordColumnDesc(const String& name, const String& comment);
 
-    // Construct the column with the given name and comment.
-    // The data manager type defaults to the StandardStMan storage manager.
-    // The data manager group defaults to the data manager type.
-    ScalarRecordColumnDesc (const String& name, const String& comment);
+  // Construct the column with the given name, comment, and
+  // default data manager type and group.
+  // A blank data manager group defaults to the data manager type.
+  ScalarRecordColumnDesc(const String& name, const String& comment, const String& dataManName,
+                         const String& dataManGroup);
 
-    // Construct the column with the given name, comment, and
-    // default data manager type and group.
-    // A blank data manager group defaults to the data manager type.
-    ScalarRecordColumnDesc (const String& name, const String& comment,
-			    const String& dataManName,
-			    const String& dataManGroup);
+  // Copy constructor (copy semantics);
+  ScalarRecordColumnDesc(const ScalarRecordColumnDesc&);
 
-    // Copy constructor (copy semantics);
-    ScalarRecordColumnDesc (const ScalarRecordColumnDesc&);
+  ~ScalarRecordColumnDesc();
 
-    ~ScalarRecordColumnDesc();
+  // Assignment (copy semantics);
+  ScalarRecordColumnDesc& operator=(const ScalarRecordColumnDesc&);
 
-    // Assignment (copy semantics);
-    ScalarRecordColumnDesc& operator= (const ScalarRecordColumnDesc&);
+  // Clone this column description.
+  virtual BaseColumnDesc* clone() const;
 
-    // Clone this column description.
-    virtual BaseColumnDesc* clone() const;
+  // Get the name of this class. It is used by the registration process.
+  virtual String className() const;
 
-    // Get the name of this class. It is used by the registration process.
-    virtual String className() const;
+  // Create a Column object out of this.
+  // This is used by class ColumnSet to construct a table column object.
+  virtual PlainColumn* makeColumn(ColumnSet*) const;
 
-    // Create a Column object out of this.
-    // This is used by class ColumnSet to construct a table column object.
-    virtual PlainColumn* makeColumn (ColumnSet*) const;
+  // Show the column.
+  virtual void show(ostream& os) const;
 
-    // Show the column.
-    virtual void show (ostream& os) const;
+  // Create the object from AipsIO (this function is registered
+  // by ColumnDesc.cc).
+  static BaseColumnDesc* makeDesc(const String& name);
 
-    // Create the object from AipsIO (this function is registered
-    // by ColumnDesc.cc).
-    static BaseColumnDesc* makeDesc (const String& name);
+ private:
+  // Put the object.
+  virtual void putDesc(AipsIO&) const;
 
-private:
-    // Put the object.
-    virtual void putDesc (AipsIO&) const;
-
-    // Get the object.
-    virtual void getDesc (AipsIO&);
+  // Get the object.
+  virtual void getDesc(AipsIO&);
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

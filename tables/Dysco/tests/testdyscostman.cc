@@ -30,10 +30,8 @@ struct TestTableFixture {
   explicit TestTableFixture(size_t nAnt) {
     casacore::TableDesc tableDesc;
     IPosition shape(2, 1, 1);
-    casacore::ArrayColumnDesc<casacore::Complex> columnDesc(
-        "DATA", "", "DyscoStMan", "", shape);
-    columnDesc.setOptions(casacore::ColumnDesc::Direct |
-                          casacore::ColumnDesc::FixedShape);
+    casacore::ArrayColumnDesc<casacore::Complex> columnDesc("DATA", "", "DyscoStMan", "", shape);
+    columnDesc.setOptions(casacore::ColumnDesc::Direct | casacore::ColumnDesc::FixedShape);
     casacore::ScalarColumnDesc<int> ant1Desc("ANTENNA1"), ant2Desc("ANTENNA2"),
         fieldDesc("FIELD_ID"), dataDescIdDesc("DATA_DESC_ID");
     casacore::ScalarColumnDesc<double> timeDesc("TIME");
@@ -43,13 +41,11 @@ struct TestTableFixture {
     tableDesc.addColumn(fieldDesc);
     tableDesc.addColumn(dataDescIdDesc);
     tableDesc.addColumn(timeDesc);
-    casacore::SetupNewTable setupNewTable("TestTable", tableDesc,
-                                          casacore::Table::New);
+    casacore::SetupNewTable setupNewTable("TestTable", tableDesc, casacore::Table::New);
 
     register_dyscostman();
     DataManagerCtor dyscoConstructor = DataManager::getCtor("DyscoStMan");
-    std::unique_ptr<DataManager> dysco(
-        dyscoConstructor("DATA_dm", GetDyscoSpec()));
+    std::unique_ptr<DataManager> dysco(dyscoConstructor("DATA_dm", GetDyscoSpec()));
     setupNewTable.bindColumn("DATA", *dysco);
     casacore::Table newTable(setupNewTable);
 
@@ -57,9 +53,8 @@ struct TestTableFixture {
     double time = 10.0;
     const size_t nRow = 2 * nAnt * (nAnt - 1) / 2;
     newTable.addRow(nRow);
-    casacore::ScalarColumn<int> a1Col(newTable, "ANTENNA1"),
-        a2Col(newTable, "ANTENNA2"), fieldCol(newTable, "FIELD_ID"),
-        dataDescIdCol(newTable, "DATA_DESC_ID");
+    casacore::ScalarColumn<int> a1Col(newTable, "ANTENNA1"), a2Col(newTable, "ANTENNA2"),
+        fieldCol(newTable, "FIELD_ID"), dataDescIdCol(newTable, "DATA_DESC_ID");
     casacore::ScalarColumn<double> timeCol(newTable, "TIME");
     for (size_t i = 0; i != nRow; ++i) {
       a1Col.put(i, a1);
@@ -111,8 +106,7 @@ BOOST_AUTO_TEST_CASE(name) {
 
   register_dyscostman();
   DataManagerCtor dyscoConstructor = DataManager::getCtor("DyscoStMan");
-  std::unique_ptr<DataManager> dysco4(
-      dyscoConstructor("Constructed", GetDyscoSpec()));
+  std::unique_ptr<DataManager> dysco4(dyscoConstructor("Constructed", GetDyscoSpec()));
   BOOST_CHECK_EQUAL(dysco4->dataManagerName(), "Constructed");
 
   TestTableFixture fixture(3);
@@ -142,7 +136,7 @@ BOOST_AUTO_TEST_CASE(maketable) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(read_past_end, * boost::unit_test::disabled()) {
+BOOST_AUTO_TEST_CASE(read_past_end, *boost::unit_test::disabled()) {
   /**
    * While reading past the end of a file might seem wrong in any case, it can
    * happen that a user reads a line that was not stored yet in the particular
@@ -167,12 +161,10 @@ BOOST_AUTO_TEST_CASE(readonly) {
 
   boost::filesystem::directory_iterator end_itr;
 
-  for (boost::filesystem::directory_iterator itr("TestTable/"); itr != end_itr;
-       ++itr) {
+  for (boost::filesystem::directory_iterator itr("TestTable/"); itr != end_itr; ++itr) {
     if (boost::filesystem::is_regular_file(itr->path())) {
       boost::filesystem::permissions(
-          itr->path(),
-          boost::filesystem::others_read | boost::filesystem::owner_read);
+          itr->path(), boost::filesystem::others_read | boost::filesystem::owner_read);
     }
   }
   casacore::Table table("TestTable");

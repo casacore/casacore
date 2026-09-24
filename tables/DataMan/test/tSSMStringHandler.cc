@@ -1,28 +1,28 @@
-//# tSSMStringHandler.cc: Test program for the StringHandler part of the
-//#                       StandardStMan storage manager
-//# Copyright (C) 2000,2001,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This program is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU General Public License as published by the Free
-//# Software Foundation; either version 2 of the License, or (at your option)
-//# any later version.
-//#
-//# This program is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//# more details.
-//#
-//# You should have received a copy of the GNU General Public License along
-//# with this program; if not, write to the Free Software Foundation, Inc.,
-//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # tSSMStringHandler.cc: Test program for the StringHandler part of the
+// #                       StandardStMan storage manager
+// # Copyright (C) 2000,2001,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This program is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU General Public License as published by the Free
+// # Software Foundation; either version 2 of the License, or (at your option)
+// # any later version.
+// #
+// # This program is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// # more details.
+// #
+// # You should have received a copy of the GNU General Public License along
+// # with this program; if not, write to the Free Software Foundation, Inc.,
+// # 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
@@ -39,10 +39,9 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/sstream.h>
 
-
 #include <casacore/casa/namespace.h>
 // <summary>
-// Test program for the SSMStringHandler part of the 
+// Test program for the SSMStringHandler part of the
 // StandardStMan storage manager
 // </summary>
 
@@ -51,10 +50,9 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-
 // open and write a few rows
 // aMode == 0  open new
-void init (uInt aBucketSize,uInt aMode);
+void init(uInt aBucketSize, uInt aMode);
 
 // reopen table, and throw away a row
 void deleteRow(const uInt aRow);
@@ -83,96 +81,92 @@ void replaceStrings();
 // show table info
 void info(const Table aTable);
 
-int main (int argc, const char* argv[])
-{
-    uInt aNr = 500;
-    if (argc > 1) {
-	istringstream anIstr(argv[1]);
-	anIstr >> aNr;
+int main(int argc, const char* argv[]) {
+  uInt aNr = 500;
+  if (argc > 1) {
+    istringstream anIstr(argv[1]);
+    anIstr >> aNr;
+  }
+  try {
+    init(aNr, 0);
+    init(aNr, 1);
+    addDirArrayColumn();
+    addIndArrayColumn();
+    replaceStrings();
+    deleteRow(2);
+    deleteRow(40);
+    Vector<rownr_t> aNrRows(35);
+    for (uInt i = 0; i < 35; i++) {
+      aNrRows(i) = i + 3;
     }
-    try {
-	init               (aNr,0);
-	init               (aNr,1);
-	addDirArrayColumn  ();
-	addIndArrayColumn  ();
-	replaceStrings     ();
-	deleteRow          (2);
-	deleteRow          (40);
-        Vector<rownr_t> aNrRows(35);
-	for (uInt i=0; i< 35; i++) {
-	  aNrRows(i) = i+3;
-	}
-	deleteRows         (aNrRows);
-	deleteColumn       ("Col-2");
-	addSmallColumn     ();
-	deleteColumn       ("Col-1");
-	addEmptyColumn     ();
-    } catch (std::exception& x) {
-	cout << "Caught an exception: " << x.what() << endl;
-	return 1;
-    } 
-    return 0;                           // exit with success status
+    deleteRows(aNrRows);
+    deleteColumn("Col-2");
+    addSmallColumn();
+    deleteColumn("Col-1");
+    addEmptyColumn();
+  } catch (std::exception& x) {
+    cout << "Caught an exception: " << x.what() << endl;
+    return 1;
+  }
+  return 0;  // exit with success status
 }
 
-void info( const Table aTable)
-{
-  for (uInt i=0; i< aTable.tableDesc().ncolumn(); i++) {
-    cout << aTable.tableDesc().columnNames()(i) << ": " 
-	 << aTable.tableDesc().columnDesc(i).dataType() << endl;
+void info(const Table aTable) {
+  for (uInt i = 0; i < aTable.tableDesc().ncolumn(); i++) {
+    cout << aTable.tableDesc().columnNames()(i) << ": "
+         << aTable.tableDesc().columnDesc(i).dataType() << endl;
     if (aTable.tableDesc().columnDesc(i).dataType() == TpString) {
-      String aColName=aTable.tableDesc().columnNames()(i);
+      String aColName = aTable.tableDesc().columnNames()(i);
       if (aColName == "Col-1") {
-	ScalarColumn<String> ad(aTable,aColName);
-	cout << ad.getColumn() << endl;
-      } else if (aColName == "Col-2" || aColName == "Col-3" ||
-		 aColName == "Col-4" ||	aColName == "Col-5") {
-	ArrayColumn<String> ab(aTable,aColName);
-	cout << ab.getColumn() << endl;
+        ScalarColumn<String> ad(aTable, aColName);
+        cout << ad.getColumn() << endl;
+      } else if (aColName == "Col-2" || aColName == "Col-3" || aColName == "Col-4" ||
+                 aColName == "Col-5") {
+        ArrayColumn<String> ab(aTable, aColName);
+        cout << ab.getColumn() << endl;
       } else {
-	cout << "Sorry, String not implemented yet for this case." << endl;
+        cout << "Sorry, String not implemented yet for this case." << endl;
       }
     } else {
       cout << "Sorry, datatype not implemented for this test yet." << endl;
     }
-  } 
+  }
 }
 
 // First build a description.
-void init (uInt aBucketSize, uInt aMode)
-{
+void init(uInt aBucketSize, uInt aMode) {
   Table aTable;
   if (aMode == 0) {
-    DataManager::registerCtor ("StandardStMan",
-			       StandardStMan::makeObject);
+    DataManager::registerCtor("StandardStMan", StandardStMan::makeObject);
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of StringHandler";
-    td.addColumn (ScalarColumnDesc<String>("Col-1"));
-    
+    td.addColumn(ScalarColumnDesc<String>("Col-1"));
+
     // Now create a new table from the description.
     SetupNewTable aNewTab("tSSMStringHandler_tmp.data", td, Table::New);
     // Create a storage manager for it.
-    StandardStMan aSm1 ("SSM", aBucketSize);
-    aNewTab.bindAll (aSm1);
-    aTable = Table (aNewTab, 10);
+    StandardStMan aSm1("SSM", aBucketSize);
+    aNewTab.bindAll(aSm1);
+    aTable = Table(aNewTab, 10);
   } else {
     aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
   }
-  
-  ScalarColumn<String> aa(aTable,"Col-1");
-  uInt start=0;
+
+  ScalarColumn<String> aa(aTable, "Col-1");
+  uInt start = 0;
   String aString("String-1");
-    
-  if (aMode ==  1){
-    aString="String-2";
+
+  if (aMode == 1) {
+    aString = "String-2";
     aTable.addRow(40);
-    start=10;
+    start = 10;
   }
-  
+
   // fill new column with data
-  for (uInt i=start; i<aTable.nrow(); i++) {
-    aa.put(i,aString);
-    aString += " "+std::to_string(i);
+  for (uInt i = start; i < aTable.nrow(); i++) {
+    aa.put(i, aString);
+    aString += " " + std::to_string(i);
   }
 
   if (aMode == 0) {
@@ -181,44 +175,42 @@ void init (uInt aBucketSize, uInt aMode)
     cout << "after reopening and adding 40 rows" << endl;
   }
 
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
-  
+
   // Print column data
   info(aTable);
 }
 
-void addDirArrayColumn()
-{
+void addDirArrayColumn() {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
-  ArrayColumn<String>      ab;
+  ArrayColumn<String> ab;
 
   cout << "Trying to add a Direct Array Column of String." << endl;
 
-  aTable.addColumn(ArrayColumnDesc<String>("Col-2", IPosition(1,5),
-					  ColumnDesc::Direct));
-    
+  aTable.addColumn(ArrayColumnDesc<String>("Col-2", IPosition(1, 5), ColumnDesc::Direct));
+
   if (aTable.tableDesc().isColumn("Col-2")) {
-    ab.attach(aTable,"Col-2");
+    ab.attach(aTable, "Col-2");
   }
 
   Vector<String> arrs(5);
-  arrs(0)="Array-1";
-  arrs(1)="Array-2";
-  arrs(2)="Array-3";
-  arrs(3)="Array-4";
-  arrs(4)="Array-5";
+  arrs(0) = "Array-1";
+  arrs(1) = "Array-2";
+  arrs(2) = "Array-3";
+  arrs(3) = "Array-4";
+  arrs(4) = "Array-5";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
-    ab.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
-      arrs(j) += "-"+std::to_string(i);
+  for (uInt i = 0; i < aTable.nrow(); i++) {
+    ab.put(i, arrs);
+    for (uInt j = 0; j < 5; j++) {
+      arrs(j) += "-" + std::to_string(i);
     }
   }
 
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -226,34 +218,33 @@ void addDirArrayColumn()
   info(aTable);
 }
 
-void addIndArrayColumn()
-{
+void addIndArrayColumn() {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
-  ArrayColumn<String>      ac;
+  ArrayColumn<String> ac;
 
   cout << "Trying to add an Indirect Array Column of String." << endl;
 
   aTable.addColumn(ArrayColumnDesc<String>("Col-3"));
-    
+
   if (aTable.tableDesc().isColumn("Col-3")) {
-    ac.attach(aTable,"Col-3");
+    ac.attach(aTable, "Col-3");
   }
 
   Vector<String> arrs(5);
-  arrs(0)="IndArr1";
-  arrs(1)="IndArr2";
-  arrs(2)="IndArr3";
-  arrs(3)="IndArr4";
-  arrs(4)="IndArr5";
+  arrs(0) = "IndArr1";
+  arrs(1) = "IndArr2";
+  arrs(2) = "IndArr3";
+  arrs(3) = "IndArr4";
+  arrs(4) = "IndArr5";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
-    ac.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
-      arrs(j) += "-"+std::to_string(i);
+  for (uInt i = 0; i < aTable.nrow(); i++) {
+    ac.put(i, arrs);
+    for (uInt j = 0; j < 5; j++) {
+      arrs(j) += "-" + std::to_string(i);
     }
   }
 
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -261,37 +252,35 @@ void addIndArrayColumn()
   info(aTable);
 }
 
-void addSmallColumn()
-{
+void addSmallColumn() {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
-  ArrayColumn<String>      ae;
+  ArrayColumn<String> ae;
 
   cout << "Trying to add a small fixed shape Column of String." << endl;
-  
-  aTable.addColumn(ArrayColumnDesc<String>("Col-4", IPosition(1,5),
-		   ColumnDesc::FixedShape));
+
+  aTable.addColumn(ArrayColumnDesc<String>("Col-4", IPosition(1, 5), ColumnDesc::FixedShape));
 
   if (aTable.tableDesc().isColumn("Col-4")) {
-    ae.attach(aTable,"Col-4");
+    ae.attach(aTable, "Col-4");
   }
-  
-  const std::string aS("SFS");
- 
-  Vector<String> arrs(5);
-  arrs(0)="SFS1";
-  arrs(1)="SFS2";
-  arrs(2)="SFS3";
-  arrs(3)="SFS4";
-  arrs(4)="SFS5";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
-    ae.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
-      arrs(j) = aS + std::to_string(j) + "-"+std::to_string(i);
+  const std::string aS("SFS");
+
+  Vector<String> arrs(5);
+  arrs(0) = "SFS1";
+  arrs(1) = "SFS2";
+  arrs(2) = "SFS3";
+  arrs(3) = "SFS4";
+  arrs(4) = "SFS5";
+
+  for (uInt i = 0; i < aTable.nrow(); i++) {
+    ae.put(i, arrs);
+    for (uInt j = 0; j < 5; j++) {
+      arrs(j) = aS + std::to_string(j) + "-" + std::to_string(i);
     }
   }
 
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -299,30 +288,28 @@ void addSmallColumn()
   info(aTable);
 }
 
-void addEmptyColumn()
-{
+void addEmptyColumn() {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
-  ArrayColumn<String>      af;
+  ArrayColumn<String> af;
 
   cout << "Trying to add a Column without filling it." << endl;
-  
+
   aTable.addColumn(ArrayColumnDesc<String>("Col-5"));
 
   if (aTable.tableDesc().isColumn("Col-5")) {
-    af.attach(aTable,"Col-5");
+    af.attach(aTable, "Col-5");
   }
-  
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
-    af.setShape(i,IPosition(2,3,2));
+  for (uInt i = 0; i < aTable.nrow(); i++) {
+    af.setShape(i, IPosition(2, 3, 2));
   }
 
   // test replaceshape function.
-  for (uInt i=0; i<aTable.nrow(); i++) {
-    af.setShape(i,IPosition(2,2,2));
+  for (uInt i = 0; i < aTable.nrow(); i++) {
+    af.setShape(i, IPosition(2, 2, 2));
   }
 
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -330,15 +317,14 @@ void addEmptyColumn()
   info(aTable);
 }
 
-void deleteRow(const uInt aRow)
-{
+void deleteRow(const uInt aRow) {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
 
   aTable.removeRow(aRow);
-  
+
   cout << "after removing row: " << aRow << endl;
 
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -346,16 +332,15 @@ void deleteRow(const uInt aRow)
   info(aTable);
 }
 
-void deleteRows(const Vector<rownr_t>& aNrRows)
-{
+void deleteRows(const Vector<rownr_t>& aNrRows) {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
 
   cout << "Try to remove a few rows at the same time." << endl;
-  
+
   aTable.removeRow(aNrRows);
-  
+
   cout << "after removing several rows at once: " << endl;
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -364,16 +349,15 @@ void deleteRows(const Vector<rownr_t>& aNrRows)
   info(aTable);
 }
 
-void deleteColumn(const String aColumn)
-{
+void deleteColumn(const String aColumn) {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
 
   cout << "Try to remove Column:" << aColumn << endl;
-  
+
   aTable.removeColumn(aColumn);
 
   cout << "After removing Column: " << aColumn << endl;
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -382,87 +366,84 @@ void deleteColumn(const String aColumn)
   info(aTable);
 }
 
-void replaceStrings()
-{
+void replaceStrings() {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
 
-  ScalarColumn<String> aa(aTable,"Col-1");
-  ArrayColumn<String>  ab(aTable,"Col-2");
-  ArrayColumn<String>  ac(aTable,"Col-3");
+  ScalarColumn<String> aa(aTable, "Col-1");
+  ArrayColumn<String> ab(aTable, "Col-2");
+  ArrayColumn<String> ac(aTable, "Col-3");
 
   cout << "Try to change some datain Column 1" << endl;
-  String aString="Much Bigger I Believe";
+  String aString = "Much Bigger I Believe";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uInt i = 0; i < aTable.nrow(); i++) {
     if (i == 25) {
-      aString="Small";
+      aString = "Small";
     }
-    aa.put(i,aString);
-    aString += " "+std::to_string(aTable.nrow()-i);
+    aa.put(i, aString);
+    aString += " " + std::to_string(aTable.nrow() - i);
   }
 
   cout << "Try to change some datain Column 2" << endl;
 
   Vector<String> arrd(5);
-  arrd(0)="A bigger Direct Array";
-  arrd(1)="A bigger Direct Array";
-  arrd(2)="A bigger Direct Array";
-  arrd(3)="A bigger Direct Array";
-  arrd(4)="A bigger Direct Array";
+  arrd(0) = "A bigger Direct Array";
+  arrd(1) = "A bigger Direct Array";
+  arrd(2) = "A bigger Direct Array";
+  arrd(3) = "A bigger Direct Array";
+  arrd(4) = "A bigger Direct Array";
 
-  for (uInt i=0; i<5; i++) {
-    ab.put(i,arrd);
-    for (uInt j=0; j< 5;j++) {
-      arrd(j) += "-"+std::to_string(i);
+  for (uInt i = 0; i < 5; i++) {
+    ab.put(i, arrd);
+    for (uInt j = 0; j < 5; j++) {
+      arrd(j) += "-" + std::to_string(i);
     }
   }
 
-  arrd(0)="Small";
-  arrd(1)="Small";
-  arrd(2)="Small";
-  arrd(3)="Small";
-  arrd(4)="Small";
+  arrd(0) = "Small";
+  arrd(1) = "Small";
+  arrd(2) = "Small";
+  arrd(3) = "Small";
+  arrd(4) = "Small";
 
-  for (uInt i=6; i<15; i++) {
-    ab.put(i,arrd);
-    for (uInt j=0; j< 5;j++) {
-      arrd(j) += "-"+std::to_string(i);
+  for (uInt i = 6; i < 15; i++) {
+    ab.put(i, arrd);
+    for (uInt j = 0; j < 5; j++) {
+      arrd(j) += "-" + std::to_string(i);
     }
   }
 
   cout << "Try to change some datain Column 3" << endl;
 
   Vector<String> arri(5);
-  arri(0)="A bigger Indirect Array";
-  arri(1)="A bigger Indirect Array";
-  arri(2)="A bigger Indirect Array";
-  arri(3)="A bigger Indirect Array";
-  arri(4)="A bigger Indirect Array";
+  arri(0) = "A bigger Indirect Array";
+  arri(1) = "A bigger Indirect Array";
+  arri(2) = "A bigger Indirect Array";
+  arri(3) = "A bigger Indirect Array";
+  arri(4) = "A bigger Indirect Array";
 
-  for (uInt i=0; i<5; i++) {
-    ac.put(i,arri);
-    for (uInt j=0; j< 5;j++) {
-      arri(j) += "-"+std::to_string(i);
+  for (uInt i = 0; i < 5; i++) {
+    ac.put(i, arri);
+    for (uInt j = 0; j < 5; j++) {
+      arri(j) += "-" + std::to_string(i);
     }
   }
 
-  arri(0)="Small";
-  arri(1)="Small";
-  arri(2)="Small";
-  arri(3)="Small";
-  arri(4)="Small";
+  arri(0) = "Small";
+  arri(1) = "Small";
+  arri(2) = "Small";
+  arri(3) = "Small";
+  arri(4) = "Small";
 
-  for (uInt i=6; i<15; i++) {
-    ac.put(i,arri);
-    for (uInt j=0; j< 5;j++) {
-      arri(j) += "-"+std::to_string(i);
+  for (uInt i = 6; i < 15; i++) {
+    ac.put(i, arri);
+    for (uInt j = 0; j < 5; j++) {
+      arri(j) += "-" + std::to_string(i);
     }
   }
-
-
 
   cout << "After Changing the data" << endl;
-  ROStandardStManAccessor anA(aTable,"SSM");
+  ROStandardStManAccessor anA(aTable, "SSM");
   anA.showBaseStatistics(cout);
   anA.showIndexStatistics(cout);
   cout << endl << endl;
@@ -470,4 +451,3 @@ void replaceStrings()
   // Print column data
   info(aTable);
 }
-

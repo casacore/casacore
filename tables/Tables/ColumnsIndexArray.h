@@ -1,45 +1,43 @@
-//# ColumnsIndexArray.h: Index to an array column in a table
-//# Copyright (C) 2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # ColumnsIndexArray.h: Index to an array column in a table
+// # Copyright (C) 2001,2002
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_COLUMNSINDEXARRAY_H
 #define TABLES_COLUMNSINDEXARRAY_H
 
-
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class String;
 class TableColumn;
-
 
 // <summary>
 // Index to an array column in a table.
@@ -65,7 +63,7 @@ class TableColumn;
 // <p>
 // When constructing a <src>ColumnsIndexArray</src> object, one has to define
 // which column forms the key for this index on the given
-// <src>table</src> object. 
+// <src>table</src> object.
 // Not every data type is supported; only uChar, Short, Int, uInt, Int64 and
 // String array columns are supported.
 // The column can contain arrays of any shape and it can also contain
@@ -141,24 +139,22 @@ class TableColumn;
 // Bob Garwood needed such a class.
 // </motivation>
 
-
-class ColumnsIndexArray
-{
-public:
+class ColumnsIndexArray {
+ public:
   // Create an index on the given table for the given column.
   // The column can be a scalar or an array column.
   // If <src>noSort==True</src>, the table is already in order of that
   // column and the sort step will not be done.
   // It only supports String and integer columns.
-  ColumnsIndexArray (const Table&, const String& columnName);
+  ColumnsIndexArray(const Table&, const String& columnName);
 
   // Copy constructor (copy semantics).
-  ColumnsIndexArray (const ColumnsIndexArray& that);
+  ColumnsIndexArray(const ColumnsIndexArray& that);
 
   ~ColumnsIndexArray();
 
   // Assignment (copy semantics).
-  ColumnsIndexArray& operator= (const ColumnsIndexArray& that);
+  ColumnsIndexArray& operator=(const ColumnsIndexArray& that);
 
   // Are all keys in the index unique?
   Bool isUnique() const;
@@ -177,7 +173,7 @@ public:
   // rows in the table changes.
   // <group>
   void setChanged();
-  void setChanged (const String& columnName);
+  void setChanged(const String& columnName);
   // </group>
 
   // Access the key values.
@@ -201,8 +197,8 @@ public:
   // functions. Note that the given Record will be copied to the internal
   // record, thus overwrites it.
   // <group>
-  rownr_t getRowNumber (Bool& found);
-  rownr_t getRowNumber (Bool& found, const Record& key);
+  rownr_t getRowNumber(Bool& found);
+  rownr_t getRowNumber(Bool& found, const Record& key);
   // </group>
 
   // Find the row numbers matching the key. It should be used instead
@@ -217,8 +213,8 @@ public:
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  RowNumbers getRowNumbers (Bool unique=False);
-  RowNumbers getRowNumbers (const Record& key, Bool unique=False);
+  RowNumbers getRowNumbers(Bool unique = False);
+  RowNumbers getRowNumbers(const Record& key, Bool unique = False);
   // </group>
 
   // Find the row numbers matching the key range. The boolean arguments
@@ -234,16 +230,14 @@ public:
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive,
-                            Bool unique=False);
-  RowNumbers getRowNumbers (const Record& lower, const Record& upper,
-                            Bool lowerInclusive, Bool upperInclusive,
-                            Bool unique=False);
+  RowNumbers getRowNumbers(Bool lowerInclusive, Bool upperInclusive, Bool unique = False);
+  RowNumbers getRowNumbers(const Record& lower, const Record& upper, Bool lowerInclusive,
+                           Bool upperInclusive, Bool unique = False);
   // </group>
 
-protected:
+ protected:
   // Copy that object to this.
-  void copy (const ColumnsIndexArray& that);
+  void copy(const ColumnsIndexArray& that);
 
   // Delete all data in the object.
   void deleteObjects();
@@ -251,11 +245,10 @@ protected:
   // Add a column to the record description for the keys.
   // If the switch <src>arrayPossible</src> is True, the column can
   // be an array. Otherwise it has to be a scalar.
-  void addColumnToDesc (RecordDesc& description,
-			const TableColumn& column);
+  void addColumnToDesc(RecordDesc& description, const TableColumn& column);
 
   // Make the various internal <src>RecordFieldPtr</src> objects.
-  void makeObjects (const RecordDesc& description);
+  void makeObjects(const RecordDesc& description);
 
   // Read the data of the columns forming the index, sort them and
   // form the index.
@@ -267,79 +260,59 @@ protected:
   // in <src>itsUniqueIndexArray</src> is returned.
   // If not found, <src>found</src> is set to False and the index
   // of the next higher key is returned.
-  rownr_t bsearch (Bool& found, void* fieldPtr) const;
+  rownr_t bsearch(Bool& found, void* fieldPtr) const;
 
   // Compare the key in <src>fieldPtr</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
-  static Int compare (void* fieldPtr,
-		      void* dataPtr,
-		      Int dataType,
-		      rownr_t index);
+  static Int compare(void* fieldPtr, void* dataPtr, Int dataType, rownr_t index);
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
   // If <src>unique</src> is True, the row numbers will be made unique.
-  void fillRowNumbers (Vector<rownr_t>& rows, rownr_t start, rownr_t end,
-		       Bool unique) const;
+  void fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t end, Bool unique) const;
 
   // Get the data if the column is an array.
   // <group>
-  void getArray (Vector<uChar>& result, const String& name);
-  void getArray (Vector<Short>& result, const String& name);
-  void getArray (Vector<Int>& result, const String& name);
-  void getArray (Vector<uInt>& result, const String& name);
-  void getArray (Vector<Int64>& result, const String& name);
-  void getArray (Vector<String>& result, const String& name);
+  void getArray(Vector<uChar>& result, const String& name);
+  void getArray(Vector<Short>& result, const String& name);
+  void getArray(Vector<Int>& result, const String& name);
+  void getArray(Vector<uInt>& result, const String& name);
+  void getArray(Vector<Int64>& result, const String& name);
+  void getArray(Vector<String>& result, const String& name);
   // </group>
 
   // Fill the rownrs belonging to each array value.
-  void fillRownrs (rownr_t npts, const Block<rownr_t>& nrel);
+  void fillRownrs(rownr_t npts, const Block<rownr_t>& nrel);
 
-private:
-  Table   itsTable;
+ private:
+  Table itsTable;
   rownr_t itsNrrow;
   Record* itsLowerKeyPtr;
   Record* itsUpperKeyPtr;
-  Int     itsDataType;
-  void*   itsDataVector;
-  void*   itsData;              //# pointer to data in itsDataVector
-  //# The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
-  //# They are used for fast access to the records.
-  void*   itsLowerField;
-  void*   itsUpperField;
-  Bool            itsChanged;
-  Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
-  //# Indices in itsDataIndex for each unique key
+  Int itsDataType;
+  void* itsDataVector;
+  void* itsData;  // # pointer to data in itsDataVector
+  // # The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
+  // # They are used for fast access to the records.
+  void* itsLowerField;
+  void* itsUpperField;
+  Bool itsChanged;
+  Vector<rownr_t> itsDataIndex;  // # Row numbers of all keys
+  // # Indices in itsDataIndex for each unique key
   Vector<rownr_t> itsUniqueIndex;
-  Block<rownr_t>  itsRownrs;            //# rownr for each value
-  rownr_t*        itsDataInx;           //# pointer to data in itsDataIndex
-  rownr_t*        itsUniqueInx;         //# pointer to data in itsUniqueIndex
+  Block<rownr_t> itsRownrs;  // # rownr for each value
+  rownr_t* itsDataInx;       // # pointer to data in itsDataIndex
+  rownr_t* itsUniqueInx;     // # pointer to data in itsUniqueIndex
 };
 
+inline Bool ColumnsIndexArray::isUnique() const {
+  return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
+}
+inline const Table& ColumnsIndexArray::table() const { return itsTable; }
+inline Record& ColumnsIndexArray::accessKey() { return *itsLowerKeyPtr; }
+inline Record& ColumnsIndexArray::accessLowerKey() { return *itsLowerKeyPtr; }
+inline Record& ColumnsIndexArray::accessUpperKey() { return *itsUpperKeyPtr; }
 
-inline Bool ColumnsIndexArray::isUnique() const
-{
-    return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
-}
-inline const Table& ColumnsIndexArray::table() const
-{
-    return itsTable;
-}
-inline Record& ColumnsIndexArray::accessKey()
-{
-    return *itsLowerKeyPtr;
-}
-inline Record& ColumnsIndexArray::accessLowerKey()
-{
-    return *itsLowerKeyPtr;
-}
-inline Record& ColumnsIndexArray::accessUpperKey()
-{
-    return *itsUpperKeyPtr;
-}
-
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

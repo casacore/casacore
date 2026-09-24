@@ -21,9 +21,7 @@ class AntennaPairStManColumn final : public StManColumn {
    * @param dtype The column's type as defined by Casacore.
    */
   explicit AntennaPairStManColumn(AntennaPairFile &file, bool is_antenna_2)
-      : StManColumn(DataType::TpInt),
-        file_(file),
-        is_antenna_2_(is_antenna_2) {}
+      : StManColumn(DataType::TpInt), file_(file), is_antenna_2_(is_antenna_2) {}
 
   /**
    * Whether this column is writable

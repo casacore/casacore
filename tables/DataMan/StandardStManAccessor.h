@@ -1,39 +1,39 @@
-//# StandardStManAccessor.h: Gives access to some StandardStMan functions
-//# Copyright (C) 2000,2001
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # StandardStManAccessor.h: Gives access to some StandardStMan functions
+// # Copyright (C) 2000,2001
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_STANDARDSTMANACCESSOR_H
 #define TABLES_STANDARDSTMANACCESSOR_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManAccessor.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
+// # Forward Declarations
 class SSMBase;
 class DataManager;
 class Table;
@@ -49,7 +49,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 // <li> <linkto class=StandardStMan>StandardStMan</linkto>
 // </prerequisite>
 
@@ -76,7 +76,7 @@ class String;
 // In principle a pointer to StandardStMan could be used.
 // However, that would give access to all public functions.
 // Furthermore it could not distinguish between read/write and readonly
-// tables. 
+// tables.
 // </motivation>
 
 // <example>
@@ -94,64 +94,56 @@ class String;
 // </srcblock>
 // </example>
 
-//# <todo asof="$DATE:$">
-//# </todo>
+// # <todo asof="$DATE:$">
+// # </todo>
 
+class ROStandardStManAccessor : public RODataManAccessor {
+ public:
+  // Construct the object for a data manager in the table given the name
+  // of the data manager or the column.
+  // An exception is thrown if the data manager type is not the incremental
+  // storage manager.
+  ROStandardStManAccessor(const Table& table, const String& name, Bool byColumn = False);
 
-class ROStandardStManAccessor : public RODataManAccessor
-{
-public:
+  virtual ~ROStandardStManAccessor();
 
-    // Construct the object for a data manager in the table given the name
-    // of the data manager or the column.
-    // An exception is thrown if the data manager type is not the incremental
-    // storage manager.
-    ROStandardStManAccessor (const Table& table, const String& name,
-                             Bool byColumn=False);
+  // Copy constructor (reference semantics).
+  ROStandardStManAccessor(const ROStandardStManAccessor& that);
 
-    virtual ~ROStandardStManAccessor();
+  // Assignment (reference semantics).
+  ROStandardStManAccessor& operator=(const ROStandardStManAccessor& that);
 
-    // Copy constructor (reference semantics).
-    ROStandardStManAccessor (const ROStandardStManAccessor& that);
+  // Set the cache size (in buckets) to be used by the
+  // storage manager.
+  // The cache size given in this way is not persistent.
+  // Only the cache size given to the constructors of the Standard
+  // storage managers, is persistent.
+  // If <src>canExceedNrBuckets=True</src>, the given cache size can be
+  // larger than the nr of buckets in the file. In this way the cache can
+  // be made large enough for a future file extension.
+  // Otherwise, it is limited to the actual number of buckets. This is useful
+  // if one wants the entire file to be cached.
+  void setCacheSize(uInt aSize, Bool canExceedNrBuckets = True);
 
-    // Assignment (reference semantics).
-    ROStandardStManAccessor& operator=
-                                 (const ROStandardStManAccessor& that);
+  // Get the cache size (in buckets).
+  uInt getCacheSize() const;
 
-    // Set the cache size (in buckets) to be used by the
-    // storage manager.
-    // The cache size given in this way is not persistent.
-    // Only the cache size given to the constructors of the Standard
-    // storage managers, is persistent.
-    // If <src>canExceedNrBuckets=True</src>, the given cache size can be
-    // larger than the nr of buckets in the file. In this way the cache can
-    // be made large enough for a future file extension.
-    // Otherwise, it is limited to the actual number of buckets. This is useful
-    // if one wants the entire file to be cached.
-    void setCacheSize (uInt aSize, Bool canExceedNrBuckets=True);
+  // Clear the cache used by this storage manager.
+  // It will flush the cache as needed and remove all buckets from it
+  // resulting in a drop in memory used.
+  void clearCache();
 
-    // Get the cache size (in buckets).
-    uInt getCacheSize() const;
+  // Show the statistics for the base class.
+  void showBaseStatistics(ostream& anOs) const;
 
-    // Clear the cache used by this storage manager.
-    // It will flush the cache as needed and remove all buckets from it
-    // resulting in a drop in memory used.
-    void clearCache();
+  // Show the statistics for each index used by this storage manager.
+  void showIndexStatistics(ostream& anOs) const;
 
-    // Show the statistics for the base class.
-    void showBaseStatistics (ostream& anOs) const;
-
-    // Show the statistics for each index used by this storage manager.
-    void showIndexStatistics (ostream& anOs) const;
-
-  
-private:
-    //# Declare the data members.
-    SSMBase* itsSSMPtr;
+ private:
+  // # Declare the data members.
+  SSMBase* itsSSMPtr;
 };
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

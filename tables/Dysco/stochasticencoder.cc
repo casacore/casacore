@@ -13,14 +13,14 @@
 namespace dyscostman {
 
 template <typename ValueType>
-inline typename StochasticEncoder<ValueType>::num_t
-StochasticEncoder<ValueType>::cumulative(num_t x) {
+inline typename StochasticEncoder<ValueType>::num_t StochasticEncoder<ValueType>::cumulative(
+    num_t x) {
   return num_t(0.5) + num_t(0.5) * gsl_sf_erf(x / num_t(M_SQRT2l));
 }
 
 template <typename ValueType>
-typename StochasticEncoder<ValueType>::num_t
-StochasticEncoder<ValueType>::invCumulative(num_t c, num_t err) {
+typename StochasticEncoder<ValueType>::num_t StochasticEncoder<ValueType>::invCumulative(
+    num_t c, num_t err) {
   if (c < 0.5)
     return (-invCumulative(1.0 - c, err));
   else if (c == 0.5)
@@ -66,8 +66,7 @@ StochasticEncoder<ValueType>::invCumulative(num_t c, num_t err) {
 }
 
 template <typename ValueType>
-StochasticEncoder<ValueType>::StochasticEncoder(size_t quantCount,
-                                                ValueType stddev,
+StochasticEncoder<ValueType>::StochasticEncoder(size_t quantCount, ValueType stddev,
                                                 bool gaussianMapping)
     : _encDictionary(quantCount - 1), _decDictionary(quantCount - 1) {
   // The minimum squared error is reached when each quantity gets an equal share
@@ -101,8 +100,7 @@ StochasticEncoder<ValueType>::StochasticEncoder(size_t quantCount,
         ++encItem;
       }
 
-      num_t val =
-          -1.0 + 2.0 * ((num_t)i + num_t(0.5)) / (num_t)(quantCount - 1);
+      num_t val = -1.0 + 2.0 * ((num_t)i + num_t(0.5)) / (num_t)(quantCount - 1);
       *decItem = stddev * val;
       // item.symbol = i;
       ++decItem;
@@ -143,8 +141,7 @@ void StochasticEncoder<ValueType>::initializeStudentT(double nu, double rms) {
 }
 
 template <typename ValueType>
-void StochasticEncoder<ValueType>::initializeTruncatedGaussian(
-    double truncationValue, double rms) {
+void StochasticEncoder<ValueType>::initializeTruncatedGaussian(double truncationValue, double rms) {
   size_t quantCount = _encDictionary.size() + 1;
   _decDictionary.reserve(quantCount);
   typename Dictionary::iterator encItem = _encDictionary.begin();

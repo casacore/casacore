@@ -52,15 +52,13 @@ class AntennaPairStMan final : public DataManager {
   DataManagerColumn *makeScalarColumn(const String &name, int dataType,
                                       const String &dataTypeID) final;
 
-  DataManagerColumn *makeDirArrColumn(const String &, int,
-                                      const String &) final {
+  DataManagerColumn *makeDirArrColumn(const String &, int, const String &) final {
     throw std::runtime_error(
         "makeDirArrColumn() called on a AntennaPairStMan. AntennaPairStMan can "
         "only make scalar columns");
   }
 
-  DataManagerColumn *makeIndArrColumn(const String &, int,
-                                      const String &) final {
+  DataManagerColumn *makeIndArrColumn(const String &, int, const String &) final {
     throw std::runtime_error(
         "makeIndArrColumn() called on a AntennaPairStMan. AntennaPairStMan can "
         "only make scalar columns");

@@ -1,40 +1,39 @@
-//# CompressComplex.h: Virtual column engine to scale a table Complex array
-//# Copyright (C) 2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
-//#
-//# This library is free software; you can redistribute it and/or modify it
-//# under the terms of the GNU Library General Public License as published by
-//# the Free Software Foundation; either version 2 of the License, or (at your
-//# option) any later version.
-//#
-//# This library is distributed in the hope that it will be useful, but WITHOUT
-//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-//# License for more details.
-//#
-//# You should have received a copy of the GNU Library General Public License
-//# along with this library; if not, write to the Free Software Foundation,
-//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
-//# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: casa-feedback@nrao.edu.
-//#        Postal address: AIPS++ Project Office
-//#                        National Radio Astronomy Observatory
-//#                        520 Edgemont Road
-//#                        Charlottesville, VA 22903-2475 USA
+// # CompressComplex.h: Virtual column engine to scale a table Complex array
+// # Copyright (C) 2001,2002,2003
+// # Associated Universities, Inc. Washington DC, USA.
+// #
+// # This library is free software; you can redistribute it and/or modify it
+// # under the terms of the GNU Library General Public License as published by
+// # the Free Software Foundation; either version 2 of the License, or (at your
+// # option) any later version.
+// #
+// # This library is distributed in the hope that it will be useful, but WITHOUT
+// # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// # License for more details.
+// #
+// # You should have received a copy of the GNU Library General Public License
+// # along with this library; if not, write to the Free Software Foundation,
+// # Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+// #
+// # Correspondence concerning AIPS++ should be addressed as follows:
+// #        Internet email: casa-feedback@nrao.edu.
+// #        Postal address: AIPS++ Project Office
+// #                        National Radio Astronomy Observatory
+// #                        520 Edgemont Road
+// #                        Charlottesville, VA 22903-2475 USA
 
 #ifndef TABLES_COMPRESSCOMPLEX_H
 #define TABLES_COMPRESSCOMPLEX_H
 
-//# Includes
+// # Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Virtual column engine to scale a table Complex array
@@ -46,12 +45,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> VirtualColumnEngine
 //   <li> VirtualArrayColumn
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // CompressComplex is a virtual column engine which scales an array
 // of one type to another type to save disk storage.
 // This resembles the classic AIPS compress method which scales the
@@ -90,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // This class can also serve as an example of how to implement
 // a virtual column engine.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This class allows to store data in a smaller representation.
@@ -135,19 +134,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-class CompressComplex : public BaseMappedArrayEngine<Complex, Int>
-{
-public:
-
+class CompressComplex : public BaseMappedArrayEngine<Complex, Int> {
+ public:
   // Construct an engine to scale all arrays in a column with
   // the given offset and scale factor.
   // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
   // The virtual column using this engine must have data type Complex.
-  CompressComplex (const String& virtualColumnName,
-		   const String& storedColumnName,
-		   Float scale,
-		   Float offset = 0);
+  CompressComplex(const String& virtualColumnName, const String& storedColumnName, Float scale,
+                  Float offset = 0);
 
   // Construct an engine to scale the arrays in a column.
   // The scale and offset values are taken from a column with
@@ -159,27 +154,25 @@ public:
   // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
   // The virtual column using this engine must have data type Complex.
-  CompressComplex (const String& virtualColumnName,
-		   const String& storedColumnName,
-		   const String& scaleColumnName,
-		   const String& offsetColumnName,
-		   Bool autoScale = True);
+  CompressComplex(const String& virtualColumnName, const String& storedColumnName,
+                  const String& scaleColumnName, const String& offsetColumnName,
+                  Bool autoScale = True);
 
   // Construct from a record specification as created by getmanagerSpec().
-  CompressComplex (const Record& spec);
+  CompressComplex(const Record& spec);
 
   // Destructor is mandatory.
   ~CompressComplex();
 
   // Assignment is not needed and therefore forbidden
-  CompressComplex& operator= (const CompressComplex&) = delete;
+  CompressComplex& operator=(const CompressComplex&) = delete;
 
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
   // Get the name given to the engine (is the virtual column name).
   virtual String dataManagerName() const;
-  
+
   // Record a record containing data manager specifications.
   virtual Record dataManagerSpec() const;
 
@@ -191,21 +184,21 @@ public:
   // This will make the engine known to the table system.
   static void registerClass();
 
-protected:
+ protected:
   // Copy constructor is only used by clone() and derived class.
   // (so it is made protected).
-  CompressComplex (const CompressComplex&);
+  CompressComplex(const CompressComplex&);
 
-private:
+ private:
   // Clone the engine object.
   virtual DataManager* clone() const;
 
-protected:
+ protected:
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
-  virtual void create64 (rownr_t initialNrrow);
+  virtual void create64(rownr_t initialNrrow);
 
-private:
+ private:
   // Preparing consists of setting the writable switch and
   // adding the initial number of rows in case of create.
   // Furthermore it reads the keywords containing the engine parameters.
@@ -218,148 +211,128 @@ private:
   // Add rows to the table.
   // If auto-scaling, it initializes the scale column with 0
   // to indicate that no data has been processed yet.
-  virtual void addRowInit (rownr_t startRow, rownr_t nrrow);
+  virtual void addRowInit(rownr_t startRow, rownr_t nrrow);
 
   // Get an array in the given row.
   // This will scale and offset from the underlying array.
-  virtual void getArray (rownr_t rownr, Array<Complex>& array);
+  virtual void getArray(rownr_t rownr, Array<Complex>& array);
 
   // Put an array in the given row.
   // This will scale and offset to the underlying array.
-  virtual void putArray (rownr_t rownr, const Array<Complex>& array);
+  virtual void putArray(rownr_t rownr, const Array<Complex>& array);
 
   // Get a section of the array in the given row.
   // This will scale and offset from the underlying array.
-  virtual void getSlice (rownr_t rownr, const Slicer& slicer,
-			 Array<Complex>& array);
+  virtual void getSlice(rownr_t rownr, const Slicer& slicer, Array<Complex>& array);
 
   // Put into a section of the array in the given row.
   // This will scale and offset to the underlying array.
-  virtual void putSlice (rownr_t rownr, const Slicer& slicer,
-			 const Array<Complex>& array);
+  virtual void putSlice(rownr_t rownr, const Slicer& slicer, const Array<Complex>& array);
 
   // Get an entire column.
   // This will scale and offset from the underlying array.
-  virtual void getArrayColumn (Array<Complex>& array);
+  virtual void getArrayColumn(Array<Complex>& array);
 
   // Put an entire column.
   // This will scale and offset to the underlying array.
-  virtual void putArrayColumn (const Array<Complex>& array);
+  virtual void putArrayColumn(const Array<Complex>& array);
 
   // Get some array values in the column.
   // This will scale and offset from the underlying array.
-  virtual void getArrayColumnCells (const RefRows& rownrs,
-                                    Array<Complex>& data);
+  virtual void getArrayColumnCells(const RefRows& rownrs, Array<Complex>& data);
 
   // Put some array values in the column.
   // This will scale and offset to the underlying array.
-  virtual void putArrayColumnCells (const RefRows& rownrs,
-                                    const Array<Complex>& data);
+  virtual void putArrayColumnCells(const RefRows& rownrs, const Array<Complex>& data);
 
   // Get a section of all arrays in the column.
   // This will scale and offset from the underlying array.
-  virtual void getColumnSlice (const Slicer& slicer, Array<Complex>& array);
+  virtual void getColumnSlice(const Slicer& slicer, Array<Complex>& array);
 
   // Put a section of all arrays in the column.
   // This will scale and offset to the underlying array.
-  virtual void putColumnSlice (const Slicer& slicer, 
-			       const Array<Complex>& array);
+  virtual void putColumnSlice(const Slicer& slicer, const Array<Complex>& array);
 
   // Get a section of some arrays in the column.
   // This will scale and offset from the underlying array.
-  virtual void getColumnSliceCells (const RefRows& rownrs,
-                                    const Slicer& slicer,
-                                    Array<Complex>& data);
+  virtual void getColumnSliceCells(const RefRows& rownrs, const Slicer& slicer,
+                                   Array<Complex>& data);
 
   // Put into a section of some arrays in the column.
   // This will scale and offset to the underlying array.
-  virtual void putColumnSliceCells (const RefRows& rownrs,
-                                    const Slicer& slicer,
-                                    const Array<Complex>& data);
+  virtual void putColumnSliceCells(const RefRows& rownrs, const Slicer& slicer,
+                                   const Array<Complex>& data);
 
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnGet (Float scale, Float offset,
-			   Array<Complex>& array,
-			   const Array<Int>& target);
+  virtual void scaleOnGet(Float scale, Float offset, Array<Complex>& array,
+                          const Array<Int>& target);
 
   // Scale and/or offset array to target.
   // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnPut (Float scale, Float offset,
-			   const Array<Complex>& array,
-			   Array<Int>& target);
+  virtual void scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
+                          Array<Int>& target);
 
   // Scale and/or offset target to array for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
   // Otherwise it iterates through the array and applies the scale
   // and offset per row.
-  void scaleColumnOnGet (Array<Complex>& array,
-			 const Array<Int>& target);
+  void scaleColumnOnGet(Array<Complex>& array, const Array<Int>& target);
 
   // Scale and/or offset array to target for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
   // Otherwise it iterates through the array and applies the scale
   // and offset per row.
-  void scaleColumnOnPut (const Array<Complex>& array,
-			 Array<Int>& target);
+  void scaleColumnOnPut(const Array<Complex>& array, Array<Int>& target);
 
-protected:
-  //# Now define the data members.
-  String         scaleName_p;          //# name of scale column
-  String         offsetName_p;         //# name of offset column
-  Float          scale_p;              //# fixed scale factor
-  Float          offset_p;             //# fixed offset value
-  Bool           fixed_p;              //# scale/offset is fixed
-  Bool           autoScale_p;          //# determine scale/offset automatically
-  ScalarColumn<Float>* scaleColumn_p;  //# column with scale value
-  ScalarColumn<Float>* offsetColumn_p; //# column with offset value
-  Array<Int>     buffer_p;             //# buffer to avoid Array constructions
-                                       //# (makes multi-threading harder)
+ protected:
+  // # Now define the data members.
+  String scaleName_p;                   // # name of scale column
+  String offsetName_p;                  // # name of offset column
+  Float scale_p;                        // # fixed scale factor
+  Float offset_p;                       // # fixed offset value
+  Bool fixed_p;                         // # scale/offset is fixed
+  Bool autoScale_p;                     // # determine scale/offset automatically
+  ScalarColumn<Float>* scaleColumn_p;   // # column with scale value
+  ScalarColumn<Float>* offsetColumn_p;  // # column with offset value
+  Array<Int> buffer_p;                  // # buffer to avoid Array constructions
+                        // # (makes multi-threading harder)
 
   // Get the scale value for this row.
-  Float getScale (rownr_t rownr);
+  Float getScale(rownr_t rownr);
 
   // Get the offset value for this row.
-  Float getOffset (rownr_t rownr);
+  Float getOffset(rownr_t rownr);
 
   // Find minimum and maximum from the array data.
   // NaN and infinite values are ignored. If no values are finite,
   // minimum and maximum are set to NaN.
-  virtual void findMinMax (Float& minVal, Float& maxVal,
-			   const Array<Complex>& array) const;
+  virtual void findMinMax(Float& minVal, Float& maxVal, const Array<Complex>& array) const;
 
   // Make scale and offset from the minimum and maximum of the array data.
   // If minVal is NaN, scale is set to 0.
-  void makeScaleOffset (Float& scale, Float& offset,
-			Float minVal, Float maxVal) const;
+  void makeScaleOffset(Float& scale, Float& offset, Float minVal, Float maxVal) const;
 
   // Put a part of an array in a row using given scale/offset values.
-  void putPart (rownr_t rownr, const Slicer& slicer,
-		const Array<Complex>& array,
-		Float scale, Float offset);
+  void putPart(rownr_t rownr, const Slicer& slicer, const Array<Complex>& array, Float scale,
+               Float offset);
 
   // Fill the array part into the full array and put it using the
   // given min/max values.
-  void putFullPart (rownr_t rownr, const Slicer& slicer,
-		    Array<Complex>& fullArray,
-		    const Array<Complex>& partArray,
-		    Float minVal, Float maxVal);
+  void putFullPart(rownr_t rownr, const Slicer& slicer, Array<Complex>& fullArray,
+                   const Array<Complex>& partArray, Float minVal, Float maxVal);
 
-public:
+ public:
   // Define the "constructor" to construct this engine when a
   // table is read back.
   // This "constructor" has to be registered by the user of the engine.
   // If the engine is commonly used, its registration can be added
-  // to the registerAllCtor function in DataManager.cc. 
+  // to the registerAllCtor function in DataManager.cc.
   // That function gets automatically invoked by the table system.
-  static DataManager* makeObject (const String& dataManagerType,
-				  const Record& spec);
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 };
-
-
-
 
 // <summary>
 // Virtual column engine to scale a table Complex array for Single Dish data
@@ -371,11 +344,11 @@ public:
 // </reviewed>
 
 // <prerequisite>
-//# Classes you should understand before using this one.
+// # Classes you should understand before using this one.
 //   <li> CompressComplex
 // </prerequisite>
 
-// <synopsis> 
+// <synopsis>
 // CompressComplexSD is similar to CompressComplex, but compresses
 // in a slighty different way optimized for single dish data.
 // Usually the imaginary part of single dish data is 0, so the scaling
@@ -386,7 +359,7 @@ public:
 // <br>If the imaginary part is not 0, the real part is scaled normally.
 // The imaginary part is scaled with 1 bit less. The least significant bit
 // is set to 1 indicating that imag!=0.
-// </synopsis> 
+// </synopsis>
 
 // <motivation>
 // This class is created on top of CompressComplex to cope with SD data
@@ -429,19 +402,15 @@ public:
 // </srcblock>
 // </example>
 
-class CompressComplexSD : public CompressComplex
-{
-public:
-
+class CompressComplexSD : public CompressComplex {
+ public:
   // Construct an engine to scale all arrays in a column with
   // the given offset and scale factor.
   // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
   // The virtual column using this engine must have data type Complex.
-  CompressComplexSD (const String& virtualColumnName,
-		     const String& storedColumnName,
-		     Float scale,
-		     Float offset = 0);
+  CompressComplexSD(const String& virtualColumnName, const String& storedColumnName, Float scale,
+                    Float offset = 0);
 
   // Construct an engine to scale the arrays in a column.
   // The scale and offset values are taken from a column with
@@ -453,20 +422,18 @@ public:
   // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
   // The virtual column using this engine must have data type Complex.
-  CompressComplexSD (const String& virtualColumnName,
-		     const String& storedColumnName,
-		     const String& scaleColumnName,
-		     const String& offsetColumnName,
-		     Bool autoScale = True);
+  CompressComplexSD(const String& virtualColumnName, const String& storedColumnName,
+                    const String& scaleColumnName, const String& offsetColumnName,
+                    Bool autoScale = True);
 
   // Construct from a record specification as created by getmanagerSpec().
-  CompressComplexSD (const Record& spec);
+  CompressComplexSD(const Record& spec);
 
   // Destructor is mandatory.
   ~CompressComplexSD();
 
   // Assignment is not needed and therefore forbidden
-  CompressComplexSD& operator= (const CompressComplexSD&) = delete;
+  CompressComplexSD& operator=(const CompressComplexSD&) = delete;
 
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
@@ -479,63 +446,52 @@ public:
   // This will make the engine known to the table system.
   static void registerClass();
 
-private:
+ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
-  CompressComplexSD (const CompressComplexSD&);
+  CompressComplexSD(const CompressComplexSD&);
 
   // Clone the engine object.
   virtual DataManager* clone() const;
 
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
-  virtual void create64 (rownr_t initialNrrow);
+  virtual void create64(rownr_t initialNrrow);
 
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnGet (Float scale, Float offset,
-			   Array<Complex>& array,
-			   const Array<Int>& target);
+  virtual void scaleOnGet(Float scale, Float offset, Array<Complex>& array,
+                          const Array<Int>& target);
 
   // Scale and/or offset array to target.
   // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnPut (Float scale, Float offset,
-			   const Array<Complex>& array,
-			   Array<Int>& target);
+  virtual void scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
+                          Array<Int>& target);
 
   // Find minimum and maximum from the array data.
   // NaN and infinite values and zero imaginary parts are ignored.
   // If no values are finite, minimum and maximum are set to NaN.
-  virtual void findMinMax (Float& minVal, Float& maxVal,
-			   const Array<Complex>& array) const;
+  virtual void findMinMax(Float& minVal, Float& maxVal, const Array<Complex>& array) const;
 
-public:
+ public:
   // Define the "constructor" to construct this engine when a
   // table is read back.
   // This "constructor" has to be registered by the user of the engine.
   // If the engine is commonly used, its registration can be added
-  // to the registerAllCtor function in DataManager.cc. 
+  // to the registerAllCtor function in DataManager.cc.
   // That function gets automatically invoked by the table system.
-  static DataManager* makeObject (const String& dataManagerType,
-				  const Record& spec);
+  static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 };
 
-
-
-
-inline Float CompressComplex::getScale (rownr_t rownr)
-{
-  return (fixed_p  ?  scale_p : (*scaleColumn_p)(rownr));
+inline Float CompressComplex::getScale(rownr_t rownr) {
+  return (fixed_p ? scale_p : (*scaleColumn_p)(rownr));
 }
-inline Float CompressComplex::getOffset (rownr_t rownr)
-{
-  return (fixed_p  ?  offset_p : (*offsetColumn_p)(rownr));
+inline Float CompressComplex::getOffset(rownr_t rownr) {
+  return (fixed_p ? offset_p : (*offsetColumn_p)(rownr));
 }
 
-
-
-} //# NAMESPACE CASACORE - END
+}  // namespace casacore
 
 #endif

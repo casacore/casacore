@@ -15,8 +15,7 @@ namespace casacore {
 
 class UvwStManColumn final : public StManColumn {
  public:
-  explicit UvwStManColumn(UvwFile &file)
-      : StManColumn(DataType::TpDouble), file_(file) {}
+  explicit UvwStManColumn(UvwFile &file) : StManColumn(DataType::TpDouble), file_(file) {}
 
   Bool isWritable() const final { return true; }
 
