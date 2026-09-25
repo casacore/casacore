@@ -26,7 +26,7 @@
 #ifndef CASACORE_STRING_H_
 #define CASACORE_STRING_H_
 
-// Comment this out to surpress warnings for use of non-std::string functions
+// Comment this out to suppress warnings for use of non-std::string functions
 #define CASACORE_DEPRECATE_STRING
 
 #ifdef CASACORE_DEPRECATE_STRING
@@ -811,8 +811,7 @@ class String : public std::string {
 // Global concatenation operators
 // </summary>
 
-// <summary>
-// Global comparison operators
+// <group name=concatenator>
 inline String operator+(const String &lhs, const String &rhs) {
   String str(lhs);
   str.append(rhs);
