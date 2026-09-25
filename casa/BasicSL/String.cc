@@ -432,7 +432,7 @@ int split(const std::string &str, std::string res[], int maxn, const Regex &sep)
 }
 
 int split(const std::string &str, std::string res[], int maxn, const Char sep) {
-  return split(str, res, maxn, String(sep));
+  return split(str, res, maxn, String(1, sep));
 }
 
 String common_prefix(const std::string &x, const std::string &y, int startpos) {

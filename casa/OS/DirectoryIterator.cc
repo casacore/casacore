@@ -152,7 +152,9 @@ String DirectoryIterator::name() const {
   return itsDirectoryEntry->d_name;
 }
 
-File DirectoryIterator::file() const { return itsDirectory.path().expandedName() + "/" + name(); }
+File DirectoryIterator::file() const {
+  return File(itsDirectory.path().expandedName() + "/" + name());
+}
 
 void DirectoryIterator::reset() {
   // Reset the directory to the beginning of the stream

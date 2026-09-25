@@ -26,8 +26,8 @@
 #ifndef CASACORE_STRING_H_
 #define CASACORE_STRING_H_
 
-// Uncomment this to issue warnings for all use of non-std::string functions
-// #define CASACORE_DEPRECATE_STRING
+// Comment this out to suppress warnings for use of non-std::string functions
+#define CASACORE_DEPRECATE_STRING
 
 #ifdef CASACORE_DEPRECATE_STRING
 // Some of the (deprecated) code calls deprecated functions, so disable this
@@ -383,6 +383,7 @@ class String : public std::string {
   // <note role=warning> Note that there is no automatic Char-to-String
   // conversion available. This stops inadvertent conversions of
   // integer to string. </note>
+  DEPRECATED("Use overload String(1, c)")
   explicit String(char c) : std::string(1, c) {}
   // Construct from a SubString
   String(const SubString &str) : std::string(str.ref_p, str.pos_p, str.len_p) {}
@@ -810,7 +811,6 @@ class String : public std::string {
 // Global concatenation operators
 // </summary>
 
-// The global concatenation operators
 // <group name=concatenator>
 inline String operator+(const String &lhs, const String &rhs) {
   String str(lhs);
@@ -823,7 +823,7 @@ inline String operator+(const char *lhs, const String &rhs) {
   return str;
 }
 inline String operator+(char lhs, const String &rhs) {
-  String str(lhs);
+  String str(1, lhs);
   str.append(rhs);
   return str;
 }
@@ -834,7 +834,7 @@ inline String operator+(const String &lhs, const char *rhs) {
 }
 inline String operator+(const String &lhs, char rhs) {
   String str(lhs);
-  str.append(rhs);
+  str.append(String(1, rhs));
   return str;
 }
 // </group>
@@ -857,18 +857,18 @@ inline bool operator>(const String &x, const char *t) { return x.compare(t) > 0;
 inline bool operator>=(const String &x, const char *t) { return x.compare(t) >= 0; }
 inline bool operator<(const String &x, const char *t) { return x.compare(t) < 0; }
 inline bool operator<=(const String &x, const char *t) { return x.compare(t) <= 0; }
-inline bool operator==(const String &x, const char t) { return x.compare(String(t)) == 0; }
-inline bool operator!=(const String &x, const char t) { return x.compare(String(t)) != 0; }
-inline bool operator>(const String &x, const char t) { return x.compare(String(t)) > 0; }
-inline bool operator>=(const String &x, const char t) { return x.compare(String(t)) >= 0; }
-inline bool operator<(const String &x, const char t) { return x.compare(String(t)) < 0; }
-inline bool operator<=(const String &x, const char t) { return x.compare(String(t)) <= 0; }
+inline bool operator==(const String &x, const char t) { return x.compare(String(1, t)) == 0; }
+inline bool operator!=(const String &x, const char t) { return x.compare(String(1, t)) != 0; }
+inline bool operator>(const String &x, const char t) { return x.compare(String(1, t)) > 0; }
+inline bool operator>=(const String &x, const char t) { return x.compare(String(1, t)) >= 0; }
+inline bool operator<(const String &x, const char t) { return x.compare(String(1, t)) < 0; }
+inline bool operator<=(const String &x, const char t) { return x.compare(String(1, t)) <= 0; }
 // ** Casacore additions of global compares. Returns 0 if equal; lt or gt 0 if
 // strings unequal or of unequal lengths.
 // <group>
 inline int compare(const std::string &x, const std::string &y) { return x.compare(y); }
 inline int compare(const std::string &x, const char *y) { return x.compare(y); }
-inline int compare(const std::string &x, const char y) { return x.compare(String(y)); }
+inline int compare(const std::string &x, const char y) { return x.compare(String(1, y)); }
 // this version ignores case. ** Casacore addition. Result is 0 if equal
 // strings of equal lengths; else lt or gt 0 to indicate differences.
 int fcompare(const String &x, const String &y);

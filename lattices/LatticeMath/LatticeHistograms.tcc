@@ -1076,7 +1076,7 @@ Bool LatticeHistograms<T>::writeDispAxesValues(const String& coords, PGPlotter& 
     box = plotter.qtxt(0.0, 0.0, 0.0, 0.0, "X");
     Float dx = box(3) - box(0);
 
-    const char* tLabel = coords.chars();
+    const char* tLabel = coords.c_str();
     box = plotter.qtxt(0.0, 0.0, 0.0, 0.0, tLabel);
     Float dy = box(5) - box(4);
 

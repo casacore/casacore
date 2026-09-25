@@ -194,7 +194,7 @@ Unit UnitMap::fromFITS(const Unit& un) {
   const UnitName* nam;
   while (!mus.eos()) {
     if (mus.testChar(sepa))
-      y += String(mus.getChar());
+      y += String(1, mus.getChar());
     else {
       z = mus.getAlpha();
       for (uInt i = 0; i < N_FITS; i++) {
@@ -218,7 +218,7 @@ Unit UnitMap::toFITS(const Unit& un) {
   const UnitName* nam;
   while (!mus.eos()) {
     if (mus.testChar(sepa))
-      y += String(mus.getChar());
+      y += String(1, mus.getChar());
     else {
       z = mus.getAlpha();
       for (Int i = N_FITS - 1; i >= 0; i--) {

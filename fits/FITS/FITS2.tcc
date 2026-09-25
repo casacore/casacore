@@ -61,13 +61,13 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, Bool &o
   if (unitName) {
     (*unitName) = fitsdata.bunit();
     // Get rid of trailing blanks
-    (*unitName).rtrim(' ');
+    RTrimInPlace(*unitName, ' ');
   }
   if (axisNames) {
     (*axisNames).resize(fitsdata.dims());
     for (Int i = 0; i < fitsdata.dims(); i++) {
       (*axisNames)(i) = fitsdata.ctype(i);
-      (*axisNames)(i).rtrim(' ');
+      RTrimInPlace((*axisNames)(i), ' ');
     }
   }
   if (refPixel) {
@@ -96,8 +96,9 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, Bool &o
     while (next) {
       kwname = next->name();
       if (kwname == "SIMPLE" || kwname == "BITPIX" || kwname == "END" || kwname == "BSCALE" ||
-          kwname == "BZERO" || kwname == "BUNIT" || kwname.at(0, 5) == "CRVAL" ||
-          kwname.at(0, 5) == "CRPIX" || kwname.at(0, 5) == "CDELT" || kwname.at(0, 5) == "NAXIS") {
+          kwname == "BZERO" || kwname == "BUNIT" || kwname.starts_with("CRVAL") ||
+          kwname.starts_with("CRPIX") || kwname.starts_with("CDELT") ||
+          kwname.starts_with("NAXIS")) {
         next = kwl.next();
         continue;
       }
@@ -126,7 +127,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, Bool &o
       (*objectName) = "";
     }
     // Get rid of trailing blanks
-    (*objectName).rtrim(' ');
+    RTrimInPlace(*objectName, ' ');
   }
 }
 

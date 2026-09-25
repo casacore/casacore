@@ -48,7 +48,7 @@ Bool MeasEngine<M>::handleMeasType(const TENShPtr& operand, Bool doThrow) {
     return False;
   }
   String str = operand->getString(0);
-  str.upcase();
+  ToUpperCaseInPlace(str);
   // Let a derived class strip part of the mesaure type (as needed).
   str = stripMeasType(str);
   typename M::Types refType;
@@ -132,10 +132,10 @@ void MeasEngine<M>::handleMeasArray(const TENShPtr& operand) {
         uInt refCode = measTmp.measDesc().getRefCode();
         nodeRefType = static_cast<typename M::Types>(refCode);
         if (itsRefType != M::N_Types && nodeRefType != itsRefType) {
-          throw AipsError("MEAS " + M::showMe() + " reference type " +
-                          String::toString(itsRefType) + " mismatches type " +
-                          String::toString(nodeRefType) + " of column " +
-                          tabCol->columnDesc().name());
+          throw AipsError("MEAS " + std::string(M::showMe()) + " reference type " +
+                          std::to_string(itsRefType) + " mismatches type " +
+                          std::to_string(nodeRefType) + " of column " +
+                          std::string(tabCol->columnDesc().name()));
         }
         itsRefType = nodeRefType;
       }

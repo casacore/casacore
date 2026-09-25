@@ -421,7 +421,7 @@ void MultiFile::readHeaderVersion1(Int64 headerSize, std::vector<char>& buf) {
     // Read the first header block and the remainder.
     itsIO->pread(itsBlockSize - leadSize, leadSize, &(buf[leadSize]));
     // For version 1 the remaining header info is in the .hdrext file.
-    FileUnbufferedIO iohdr(itsName + "_hdrext", ByteIO::Old);
+    FileUnbufferedIO iohdr(RegularFile(itsName + "_hdrext"), ByteIO::Old);
     iohdr.read(headerSize - itsBlockSize, &(buf[itsBlockSize]));
   }
   // Read all header info from the memory buffer.
