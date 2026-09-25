@@ -161,10 +161,10 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   VirtualScalarColumn<T>& operator=(const VirtualScalarColumn<T>&) = delete;
 
   // Return the data type of the column.
-  virtual int dataType() const;
+  int dataType() const override;
 
   // Return the data type Id of the column.
-  virtual String dataTypeId() const;
+  String dataTypeId() const override;
 
   // Let a derived class get the scalar value in the given row.
   virtual void get(rownr_t rownr, T& data) = 0;
@@ -248,19 +248,19 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
 
   // Get all scalar values in the column.
   // The default implementation loops over the rows.
-  virtual void getScalarColumnV(ArrayBase& dataPtr);
+  void getScalarColumnV(ArrayBase& dataPtr) override;
 
   // Put all scalar values in the column.
   // The default implementation loops over the rows.
-  virtual void putScalarColumnV(const ArrayBase& dataPtr);
+  void putScalarColumnV(const ArrayBase& dataPtr) override;
 
   // Get some scalar values in the column.
   // The default implementation loops over the rows.
-  virtual void getScalarColumnCellsV(const RefRows& rownrs, ArrayBase& dataPtr);
+  void getScalarColumnCellsV(const RefRows& rownrs, ArrayBase& dataPtr) override;
 
   // Put some scalar values in the column.
   // The default implementation loops over the rows.
-  virtual void putScalarColumnCellsV(const RefRows& rownrs, const ArrayBase& dataPtr);
+  void putScalarColumnCellsV(const RefRows& rownrs, const ArrayBase& dataPtr) override;
 };
 
 // <summary>

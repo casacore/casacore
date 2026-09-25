@@ -79,45 +79,45 @@ class LCHDF5Mask : public LCRegionSingle {
   LCHDF5Mask& operator=(const LCHDF5Mask& other);
 
   // Make a copy of the derived object.
-  virtual LCRegion* cloneRegion() const;
+  LCRegion* cloneRegion() const override;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use.
-  virtual LatticeIterInterface<Bool>* makeIter(const LatticeNavigator& navigator,
-                                               Bool useRef) const;
+  LatticeIterInterface<Bool>* makeIter(const LatticeNavigator& navigator,
+                                       Bool useRef) const override;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  uInt advisedMaxPixels() const override;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  IPosition doNiceCursorShape(uInt maxPixels) const override;
 
   // Flush the data (but do not unlock).
-  virtual void flush();
+  void flush() override;
 
   // Get the class name (to store in the record).
   static String className();
 
   // Region type. Returns class name.
-  virtual String type() const;
+  String type() const override;
 
   // Convert the (derived) object to a record.
-  virtual TableRecord toRecord(const String& tableName) const;
+  TableRecord toRecord(const String& tableName) const override;
 
   // Convert correct object from a record.
   static LCHDF5Mask* fromRecord(const TableRecord&, const String& tablename);
 
   // An LCHDF5Mask is writable if the underlying HDF5Lattice is.
-  virtual Bool isWritable() const;
+  Bool isWritable() const override;
 
  protected:
   // Construct another LCHDF5Mask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
-                                const IPosition& newLatticeShape) const;
+  LCRegion* doTranslate(const Vector<Float>& translateVector,
+                        const IPosition& newLatticeShape) const override;
 
  private:
   // Comparison

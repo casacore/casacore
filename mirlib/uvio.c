@@ -346,19 +346,6 @@
 #define CHECK(x,a) if(x) { Sprintf a; bugv_c('f', "%s: %s", \
 					     message, errmsg_c (x)); }
 
-#define uvputvra_c(tno,name,value)   \
-	uvputvr_c(tno,H_BYTE,name,value,strlen(value))
-#define uvputvrj_c(tno,name,value,n) \
-	uvputvr_c(tno,H_INT2,name,(char *)(value),n)
-#define uvputvri_c(tno,name,value,n) \
-	uvputvr_c(tno,H_INT,name,(char *)(value),n)
-#define uvputvrr_c(tno,name,value,n) \
-	uvputvr_c(tno,H_REAL,name,(char *)(value),n)
-#define uvputvrd_c(tno,name,value,n) \
-	uvputvr_c(tno,H_DBLE,name,(char *)(value),n)
-#define uvputvrc_c(tno,name,value,n) \
-	uvputvr_c(tno,H_CMPLX,name,(char *)(value),n)
-
 #define VARLEN(var)  ( (var)->length / external_size[(var)->type] )
 #define VARTYPE(var) ( type_flag[(var)->type] )
 

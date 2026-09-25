@@ -87,16 +87,16 @@ class LCDifference : public LCRegionMulti {
   LCDifference& operator=(const LCDifference& other);
 
   // Make a copy of the derived object.
-  virtual LCRegion* cloneRegion() const;
+  LCRegion* cloneRegion() const override;
 
   // Get the class name (to store in the record).
   static String className();
 
   // Get the region type.  Returns className()
-  virtual String type() const;
+  String type() const override;
 
   // Convert the (derived) object to a record.
-  virtual TableRecord toRecord(const String& tableName) const;
+  TableRecord toRecord(const String& tableName) const override;
 
   // Convert correct object from a record.
   static LCDifference* fromRecord(const TableRecord&, const String& tableName);
@@ -108,11 +108,11 @@ class LCDifference : public LCRegionMulti {
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".
-  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
-                                const IPosition& newLatticeShape) const;
+  LCRegion* doTranslate(const Vector<Float>& translateVector,
+                        const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  virtual void multiGetSlice(Array<Bool>& buffer, const Slicer& section);
+  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
 
  private:
   // Make the bounding box and determine the offsets.
