@@ -871,34 +871,34 @@ void LatticeHistograms<T>::listStatistics(LogIO& os, const Vector<T>& stats, T b
 
   os << "Sum        = ";
   os0 << stats(LatticeStatsBase::SUM);
-  os.output() << setw(oWidth) << String(os0) << "       Mean     = ";
+  os.output() << setw(oWidth) << os0.str() << "       Mean     = ";
   os1 << stats(LatticeStatsBase::MEAN);
-  os.output() << setw(oWidth) << String(os1) << endl;
+  os.output() << setw(oWidth) << os1.str() << endl;
   //
   os << "Variance   = ";
   os2 << stats(LatticeStatsBase::VARIANCE);
-  os.output() << setw(oWidth) << String(os2);
+  os.output() << setw(oWidth) << os2.str();
   //
   if (stats(LatticeStatsBase::VARIANCE) > 0.0) {
     os << "       Sigma    = ";
     os3 << stats(LatticeStatsBase::SIGMA);
-    os.output() << setw(oWidth) << String(os3) << endl;
+    os.output() << setw(oWidth) << os3.str() << endl;
   } else {
     os << endl;
   }
   os << "Rms        = ";
   os4 << stats(LatticeStatsBase::RMS);
-  os.output() << setw(oWidth) << String(os4) << endl;
+  os.output() << setw(oWidth) << os4.str() << endl;
 
   os << endl;
   os << "Bin width  = ";
   os5 << binWidth;
-  os.output() << setw(oWidth) << String(os5) << endl;
+  os.output() << setw(oWidth) << os5.str() << endl;
   os << "Min binned = ";
   os6 << stats(LatticeStatsBase::MIN);
-  os.output() << setw(oWidth) << String(os6) << "       Max binned = ";
+  os.output() << setw(oWidth) << os6.str() << "       Max binned = ";
   os7 << stats(LatticeStatsBase::MAX);
-  os.output() << setw(oWidth) << String(os7) << endl << endl << endl;
+  os.output() << setw(oWidth) << os7.str() << endl << endl << endl;
   os.post();
 }
 

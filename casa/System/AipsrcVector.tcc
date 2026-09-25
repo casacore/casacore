@@ -128,7 +128,7 @@ void AipsrcVector<T>::save(uInt keyword) {
   ostringstream oss;
   const Int n = (tlst[keyword - 1]).nelements();
   for (Int i = 0; i < n; i++) oss << " " << (tlst[keyword - 1])(i);
-  Aipsrc::save(ntlst[keyword - 1], String(oss));
+  Aipsrc::save(ntlst[keyword - 1], oss.str());
 }
 
 }  // namespace casacore

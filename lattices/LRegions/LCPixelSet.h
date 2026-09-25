@@ -77,16 +77,16 @@ class LCPixelSet : public LCRegionFixed {
   LCPixelSet& operator=(const LCPixelSet& other);
 
   // Make a copy of the derived object.
-  virtual LCRegion* cloneRegion() const;
+  LCRegion* cloneRegion() const override;
 
   // Get the class name (to store in the record).
   static String className();
 
   // Get the region type.  Returns className().
-  virtual String type() const;
+  String type() const override;
 
   // Convert the (derived) object to a record.
-  virtual TableRecord toRecord(const String& tableName) const;
+  TableRecord toRecord(const String& tableName) const override;
 
   // Convert correct object from a record.
   static LCPixelSet* fromRecord(const TableRecord&, const String& tablename);
@@ -98,8 +98,8 @@ class LCPixelSet : public LCRegionFixed {
   // Construct another LCPixelSet (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
-                                const IPosition& newLatticeShape) const;
+  LCRegion* doTranslate(const Vector<Float>& translateVector,
+                        const IPosition& newLatticeShape) const override;
 
  private:
   LCBox itsBox;

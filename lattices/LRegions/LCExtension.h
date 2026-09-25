@@ -95,7 +95,7 @@ class LCExtension : public LCRegionMulti {
   LCExtension& operator=(const LCExtension& other);
 
   // Make a copy of the derived object.
-  virtual LCRegion* cloneRegion() const;
+  LCRegion* cloneRegion() const override;
 
   // Get the original region.
   const LCRegion& region() const;
@@ -110,10 +110,10 @@ class LCExtension : public LCRegionMulti {
   static String className();
 
   // Get the region type.  Returns the class name.
-  virtual String type() const;
+  String type() const override;
 
   // Convert the (derived) object to a record.
-  virtual TableRecord toRecord(const String& tableName) const;
+  TableRecord toRecord(const String& tableName) const override;
 
   // Convert correct object from a record.
   static LCExtension* fromRecord(const TableRecord&, const String& tableName);
@@ -125,15 +125,15 @@ class LCExtension : public LCRegionMulti {
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".
-  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
-                                const IPosition& newLatticeShape) const;
+  LCRegion* doTranslate(const Vector<Float>& translateVector,
+                        const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  virtual void multiGetSlice(Array<Bool>& buffer, const Slicer& section);
+  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
 
   // This function is needed here because the niceCursorShape of the
   // contributing region does not make any sense (other dimensionality).
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  IPosition doNiceCursorShape(uInt maxPixels) const override;
 
  private:
   // Fill the object.

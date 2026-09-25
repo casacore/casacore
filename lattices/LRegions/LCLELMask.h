@@ -99,13 +99,13 @@ class LCLELMask : public LCRegionSingle {
   LCLELMask& operator=(const LCLELMask& other);
 
   // Clone a LCLELMask object.
-  virtual LCRegion* cloneRegion() const;
+  LCRegion* cloneRegion() const override;
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
-  virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  Bool lock(FileLocker::LockType, uInt nattempts) override;
+  void unlock() override;
+  Bool hasLock(FileLocker::LockType) const override;
   // </group>
 
   // Resynchronize the PagedArray object with the lattice file.
@@ -113,34 +113,34 @@ class LCLELMask : public LCRegionSingle {
   // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
   // In that cases the table system does not acquire a read-lock, thus
   // does not synchronize itself automatically.
-  virtual void resync();
+  void resync() override;
 
   // Temporarily close the lattice.
   // It will be reopened automatically on the next access.
-  virtual void tempClose();
+  void tempClose() override;
 
   // Explicitly reopen the temporarily closed lattice.
-  virtual void reopen();
+  void reopen() override;
 
   // Returns LCLELMask
   static String className();
 
   // Return region type.  Returns the class name
-  virtual String type() const;
+  String type() const override;
 
   // Convert the LCLELMask object to a record.
   // This cannot be done as a Lattice expression cannot be made persistent
   // (only Image expressions can, thus only WCLELMask is persistent).
   // <br>So this function throws an exception.
-  virtual TableRecord toRecord(const String& tableName) const;
+  TableRecord toRecord(const String& tableName) const override;
 
  protected:
   // Comparison
   Bool equals(const LCRegion& other) const override;
 
   // Translating an LCLELMask is not possible, so it throws an exception.
-  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
-                                const IPosition& newLatticeShape) const;
+  LCRegion* doTranslate(const Vector<Float>& translateVector,
+                        const IPosition& newLatticeShape) const override;
 
  private:
   LCBox itsBox;

@@ -98,7 +98,7 @@ class LCRegionMulti : public LCRegion {
   LCRegionMulti& operator=(const LCRegionMulti& other);
 
   // Does the region have a mask?
-  virtual Bool hasMask() const;
+  Bool hasMask() const override;
 
  protected:
   // Comparison
@@ -132,7 +132,7 @@ class LCRegionMulti : public LCRegion {
   LCRegionMulti(const LCRegion* region, const IPosition& latticeShape);
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<Bool>& buffer, const Slicer& section);
+  Bool doGetSlice(Array<Bool>& buffer, const Slicer& section) override;
 
   // Get the values from the class derived from Multi.
   // It is called when there is a mask. Note that it is not sure
@@ -140,7 +140,7 @@ class LCRegionMulti : public LCRegion {
   virtual void multiGetSlice(Array<Bool>& buffer, const Slicer& section) = 0;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  IPosition doNiceCursorShape(uInt maxPixels) const override;
 
  private:
   // Check if the regions are correct.
