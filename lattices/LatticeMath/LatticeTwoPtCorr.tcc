@@ -85,10 +85,10 @@ IPosition LatticeTwoPtCorr<T>::setUpShape(const IPosition& inShape, const IPosit
 template <class T>
 typename LatticeTwoPtCorr<T>::Method LatticeTwoPtCorr<T>::fromString(const String& methodU) {
   String method = methodU;
-  method.upcase();
+  ToUpperCaseInPlace(method);
   typename LatticeTwoPtCorr<T>::Method m = LatticeTwoPtCorr<T>::UNDEFINED;
   //
-  if (method.contains("STR")) {
+  if (method.find("STR") != std::string::npos) {
     m = LatticeTwoPtCorr<T>::STRUCTUREFUNCTION;
   }
   //

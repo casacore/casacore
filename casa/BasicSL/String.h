@@ -811,8 +811,8 @@ class String : public std::string {
 // Global concatenation operators
 // </summary>
 
-// The global concatenation operators
-// <group name=concatenator>
+// <summary>
+// Global comparison operators
 inline String operator+(const String &lhs, const String &rhs) {
   String str(lhs);
   str.append(rhs);
@@ -824,7 +824,7 @@ inline String operator+(const char *lhs, const String &rhs) {
   return str;
 }
 inline String operator+(char lhs, const String &rhs) {
-  String str(lhs);
+  String str(1, lhs);
   str.append(rhs);
   return str;
 }
@@ -835,7 +835,7 @@ inline String operator+(const String &lhs, const char *rhs) {
 }
 inline String operator+(const String &lhs, char rhs) {
   String str(lhs);
-  str.append(rhs);
+  str.append(String(1, rhs));
   return str;
 }
 // </group>
@@ -858,18 +858,18 @@ inline bool operator>(const String &x, const char *t) { return x.compare(t) > 0;
 inline bool operator>=(const String &x, const char *t) { return x.compare(t) >= 0; }
 inline bool operator<(const String &x, const char *t) { return x.compare(t) < 0; }
 inline bool operator<=(const String &x, const char *t) { return x.compare(t) <= 0; }
-inline bool operator==(const String &x, const char t) { return x.compare(String(t)) == 0; }
-inline bool operator!=(const String &x, const char t) { return x.compare(String(t)) != 0; }
-inline bool operator>(const String &x, const char t) { return x.compare(String(t)) > 0; }
-inline bool operator>=(const String &x, const char t) { return x.compare(String(t)) >= 0; }
-inline bool operator<(const String &x, const char t) { return x.compare(String(t)) < 0; }
-inline bool operator<=(const String &x, const char t) { return x.compare(String(t)) <= 0; }
+inline bool operator==(const String &x, const char t) { return x.compare(String(1, t)) == 0; }
+inline bool operator!=(const String &x, const char t) { return x.compare(String(1, t)) != 0; }
+inline bool operator>(const String &x, const char t) { return x.compare(String(1, t)) > 0; }
+inline bool operator>=(const String &x, const char t) { return x.compare(String(1, t)) >= 0; }
+inline bool operator<(const String &x, const char t) { return x.compare(String(1, t)) < 0; }
+inline bool operator<=(const String &x, const char t) { return x.compare(String(1, t)) <= 0; }
 // ** Casacore additions of global compares. Returns 0 if equal; lt or gt 0 if
 // strings unequal or of unequal lengths.
 // <group>
 inline int compare(const std::string &x, const std::string &y) { return x.compare(y); }
 inline int compare(const std::string &x, const char *y) { return x.compare(y); }
-inline int compare(const std::string &x, const char y) { return x.compare(String(y)); }
+inline int compare(const std::string &x, const char y) { return x.compare(String(1, y)); }
 // this version ignores case. ** Casacore addition. Result is 0 if equal
 // strings of equal lengths; else lt or gt 0 to indicate differences.
 int fcompare(const String &x, const String &y);

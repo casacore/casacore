@@ -911,7 +911,7 @@ class CoordinateSystem : public Coordinate {
   // </group>
 
   void _downcase(Vector<String>& vec) const {
-    for (uInt i = 0; i < vec.size(); ++i) vec[i].downcase();
+    for (uInt i = 0; i < vec.size(); ++i) ToLowerCaseInPlace(vec[i]);
   }
 };
 
