@@ -146,6 +146,7 @@ set lognow = `date +%T`
 echo ${lognow}": Cleaning up eopyyyy.xxx files" | tee -a $logfile
 rm -f eop* >& /dev/null
 
+# The following tests are disabled because tMeas is not available on the system that runs the cronjob
 # Now first check if tables are OK. This is done by running test program
 # tMeasure and tMeasJPL
 # Note: these will use the table location as defined when building the
