@@ -1,6 +1,21 @@
-# Next version
+# 3.8.2 (29 September 2026)
 
-# 3.8.1
+## General
+
+- Methods in `casacore::String` that are not compatible with `std::string` have been deprecated and will be removed in the next casacore release: #1495
+- The Fallible class has been deprecated in favour of std::optional: #1506
+- Macros that depend on the name of the casacore::String class have been rewritten using generic functions: #1501, #1510, #1511, #1512
+- Casacore code is now formatted using clang-format.
+- The CountedPtr class has been removed and replaced by std::shared_ptr.
+- Unit tests can now be run as root inside a Docker container: #1526
+- The default C++ standard is now C++20: #1486
+- Fixed operator!= in `LCLattice` causing problems in C++20 mode: #1525
+- Fixed various compiler warnings: #1507, #1532
+- Fixed handling of the IAU2000 APP frame bias, which caused slightly inaccurate JNAT–APP and J2000–APP conversions: #1464
+- Updated the Measures URL to the latest recommended path.
+- Use `READLINE_INCLUDE_DIRS` to fix build failures on certain systems: #1487
+
+# 3.8.1 (24 June 2026)
 
 ## General
 
