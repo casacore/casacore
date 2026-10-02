@@ -146,11 +146,11 @@ class MVEarthMagnetic : public MVPosition {
 
   // Equality comparisons
   // <group>
-  Bool operator==(const MVEarthMagnetic &other) const;
-  Bool operator!=(const MVEarthMagnetic &other) const;
-  Bool near(const MVEarthMagnetic &other, Double tol = 1e-13) const;
-  Bool near(const MVEarthMagnetic &other, Quantity tol) const;
-  Bool nearAbs(const MVEarthMagnetic &other, Double tol = 1e-13) const;
+  bool operator==(const MVEarthMagnetic &other) const;
+  bool operator!=(const MVEarthMagnetic &other) const;
+  bool near(const MVEarthMagnetic &other, Double tol = 1e-13) const;
+  bool near(const MVEarthMagnetic &other, Quantity tol) const;
+  bool nearAbs(const MVEarthMagnetic &other, Double tol = 1e-13) const;
   // </group>
 
   // Addition and subtraction
@@ -218,7 +218,7 @@ class MVEarthMagnetic : public MVPosition {
   virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 };
 
 // # Global functions

@@ -38,11 +38,11 @@ ConcatColumn::ConcatColumn(const BaseColumnDesc* bcdp, ConcatTable* reftab)
 
 ConcatColumn::~ConcatColumn() {}
 
-Bool ConcatColumn::isWritable() const {
+bool ConcatColumn::isWritable() const {
   return refTabPtr_p->isWritable() && refColPtr_p[0]->isWritable();
 }
 
-Bool ConcatColumn::isStored() const { return refColPtr_p[0]->isStored(); }
+bool ConcatColumn::isStored() const { return refColPtr_p[0]->isStored(); }
 
 TableRecord& ConcatColumn::keywordSet() { return keywordSet_p; }
 
@@ -98,14 +98,14 @@ IPosition ConcatColumn::tileShape(rownr_t rownr) const {
   return refColPtr_p[tableNr]->tileShape(tabRownr);
 }
 
-Bool ConcatColumn::isDefined(rownr_t rownr) const {
+bool ConcatColumn::isDefined(rownr_t rownr) const {
   uInt tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   return refColPtr_p[tableNr]->isDefined(tabRownr);
 }
 
-Bool ConcatColumn::canChangeShape() const { return refColPtr_p[0]->canChangeShape(); }
+bool ConcatColumn::canChangeShape() const { return refColPtr_p[0]->canChangeShape(); }
 
 void ConcatColumn::get(rownr_t rownr, void* dataPtr) const {
   uInt tableNr;

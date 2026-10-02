@@ -44,13 +44,13 @@ void testStdVectorPlus() {
   std::vector<Int> c = a + b;
   AlwaysAssertExit(c.size() == 3 && c[0] == 5 && c[1] == 7 && c[2] == 9);
   std::vector<int> d(2);
-  Bool caught = False;
+  bool caught = false;
   try {
     std::vector<int> e = a + d;
     // exception should be thrown, shouldn't get here.
-    AlwaysAssertExit(False);
+    AlwaysAssertExit(false);
   } catch (const AipsError& exc) {
-    caught = True;
+    caught = true;
   }
   AlwaysAssertExit(caught);
 }

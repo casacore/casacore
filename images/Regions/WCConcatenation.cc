@@ -39,7 +39,7 @@ WCConcatenation::WCConcatenation(const Block<const ImageRegion*>& regions, const
   fill();
 }
 
-WCConcatenation::WCConcatenation(Bool takeOver, const Block<const WCRegion*>& regions,
+WCConcatenation::WCConcatenation(bool takeOver, const Block<const WCRegion*>& regions,
                                  const WCBox& extendBox)
     : WCCompound(takeOver, regions), itsExtendBox(extendBox) {
   fill();
@@ -58,9 +58,9 @@ WCConcatenation& WCConcatenation::operator=(const WCConcatenation& other) {
   return *this;
 }
 
-Bool WCConcatenation::operator==(const WCRegion& other) const {
+bool WCConcatenation::operator==(const WCRegion& other) const {
   if (!WCCompound::operator==(other)) {
-    return False;
+    return false;
   }
   const WCConcatenation& that = (const WCConcatenation&)other;
   return (itsExtendBox == that.itsExtendBox);
@@ -133,7 +133,7 @@ LCRegion* WCConcatenation::doToLCRegion(const CoordinateSystem& cSys, const IPos
   multiToLCRegion(regions, cSys, shape, regPixMap, regOutOrd);
   LCRegion* boxptr = itsExtendBox.toLCRegionAxes(cSys, shape, boxPixMap, boxOutOrd);
   DebugAssert(boxptr->type() == LCBox::className(), AipsError);
-  LCConcatenation* extptr = new LCConcatenation(True, regions, outOrder(ndreg), *(LCBox*)boxptr);
+  LCConcatenation* extptr = new LCConcatenation(true, regions, outOrder(ndreg), *(LCBox*)boxptr);
   delete boxptr;
   return extptr;
 }
@@ -155,7 +155,7 @@ WCConcatenation* WCConcatenation::fromRecord(const TableRecord& rec, const Strin
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
   WCRegion* boxptr = WCRegion::fromRecord(rec.asRecord("box"), tableName);
   DebugAssert(boxptr->type() == WCBox::className(), AipsError);
-  return new WCConcatenation(True, regions, *(const WCBox*)boxptr);
+  return new WCConcatenation(true, regions, *(const WCBox*)boxptr);
 }
 
 }  // namespace casacore

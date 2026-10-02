@@ -135,7 +135,7 @@ class SSMColumn : public StManColumnBase {
 
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBool(rownr_t aRowNr, Bool* aDataPtr);
+  virtual void getBool(rownr_t aRowNr, bool* aDataPtr);
   virtual void getuChar(rownr_t aRowNr, uChar* aDataPtr);
   virtual void getShort(rownr_t aRowNr, Short* aDataPtr);
   virtual void getuShort(rownr_t aRowNr, uShort* aDataPtr);
@@ -152,7 +152,7 @@ class SSMColumn : public StManColumnBase {
   // Put the scalar value in the given row.
   // It updates the cache if the row is contained in the cache.
   // <group>
-  virtual void putBool(rownr_t aRowNr, const Bool* aDataPtr);
+  virtual void putBool(rownr_t aRowNr, const bool* aDataPtr);
   virtual void putuChar(rownr_t aRowNr, const uChar* aDataPtr);
   virtual void putShort(rownr_t aRowNr, const Short* aDataPtr);
   virtual void putuShort(rownr_t aRowNr, const uShort* aDataPtr);
@@ -175,7 +175,7 @@ class SSMColumn : public StManColumnBase {
 
   // Add (NewNrRows-OldNrRows) rows to the Column and initialize
   // the new rows when needed.
-  virtual void addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit);
+  virtual void addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit);
 
   // Remove the given row from the data bucket and possibly string bucket.
   // If needed, it also removes it from the cache.

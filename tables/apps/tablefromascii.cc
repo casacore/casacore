@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     String in(inputs.getString("in"));
     String out(inputs.getString("out"));
     String hdrfile(inputs.getString("headerfile"));
-    Bool autohdr(inputs.getBool("autoheader"));
+    bool autohdr(inputs.getBool("autoheader"));
     String autoshp(inputs.getString("autoshape"));
     String colnm(inputs.getString("columnnames"));
     String dtype(inputs.getString("datatypes"));
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
     // Get the auto-shape (if given).
     Vector<Int> vec;
     std::istringstream is(autoshp);
-    if (!read(is, vec, 0, False)) {
+    if (!read(is, vec, 0, false)) {
       throw AipsError(" '" + autoshp + "' is an invalid autoshape (maybe enclose in [])");
     }
     IPosition shp(vec);

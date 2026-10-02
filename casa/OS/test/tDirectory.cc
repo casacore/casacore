@@ -48,7 +48,7 @@
 // When an argument is given, no exceptions will be thrown.
 // This can be used to check if no memory leaks occur in normal operation.
 
-void doIt(Bool doExcp) {
+void doIt(bool doExcp) {
   // Test the constructors.
   Directory tmp(Path("tDirectory_tmp/"));
   Directory test1("tDirectory_tmp/test1");
@@ -65,8 +65,8 @@ void doIt(Bool doExcp) {
     // Directory::shellExpand
     Vector<String> list(1);
     list(0) = "tDirectory_tmp/*";
-    Vector<String> list2 = Directory::shellExpand(list, False);
-    Vector<String> list3 = Directory::shellExpand(list, True);
+    Vector<String> list2 = Directory::shellExpand(list, false);
+    Vector<String> list3 = Directory::shellExpand(list, true);
 
     genSort(list2);
     genSort(list3);
@@ -108,8 +108,8 @@ void doIt(Bool doExcp) {
     list2.resize(0);
     list3.resize(0);
     list(0) = "tDirectory_tmp/te*";
-    list2 = Directory::shellExpand(list, False);
-    list3 = Directory::shellExpand(list, True);
+    list2 = Directory::shellExpand(list, false);
+    list3 = Directory::shellExpand(list, true);
     genSort(list2);
     genSort(list3);
     //
@@ -145,8 +145,8 @@ void doIt(Bool doExcp) {
     list2.resize(0);
     list3.resize(0);
     list(0) = "tDirectory_tmp/?ink*";
-    list2 = Directory::shellExpand(list, False);
-    list3 = Directory::shellExpand(list, True);
+    list2 = Directory::shellExpand(list, false);
+    list3 = Directory::shellExpand(list, true);
     genSort(list2);
     genSort(list3);
     //
@@ -165,10 +165,10 @@ void doIt(Bool doExcp) {
     Vector<String> found = tmp.find(Regex(Regex::fromString("test1")));
     genSort(found);
     cout << found << endl;
-    Vector<String> found1 = tmp.find(Regex("test[12]"), True);
+    Vector<String> found1 = tmp.find(Regex("test[12]"), true);
     genSort(found1);
     cout << found1 << endl;
-    Vector<String> found2 = tmp.find(Regex(".*"), True);
+    Vector<String> found2 = tmp.find(Regex(".*"), true);
     genSort(found2);
     cout << found2 << endl;
   }
@@ -293,12 +293,12 @@ void doIt(Bool doExcp) {
   AlwaysAssertExit(test6.nEntries() == 6);
   if (doExcp) {
     try {
-      test6.create(False);
+      test6.create(false);
     } catch (std::exception& x) {
       cout << x.what() << endl;  // already existing
     }
   }
-  test6.create(True);
+  test6.create(true);
   AlwaysAssertExit(test6.isEmpty());
 
   Directory test7("tDirectory_tmp/newDir2");
@@ -306,13 +306,13 @@ void doIt(Bool doExcp) {
   rfile.create();
   if (doExcp) {
     try {
-      test7.create(False);
+      test7.create(false);
     } catch (std::exception& x) {
       cout << x.what() << endl;  // already existing
     }
   }
   rfile.remove();
-  test7.create(False);
+  test7.create(false);
   AlwaysAssertExit(test7.isEmpty());
 
   // Remove a directory via a symlink (which will be removed too).

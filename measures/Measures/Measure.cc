@@ -56,7 +56,7 @@ const String *Measure::allTypes(Int &nall, Int &nextra, const uInt *&typ) const 
   return tname;
 }
 
-Bool Measure::isModel() const { return False; }
+bool Measure::isModel() const { return false; }
 
 // # Global functions
 std::ostream &operator<<(std::ostream &os, const Measure &meas) {

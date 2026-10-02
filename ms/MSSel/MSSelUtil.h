@@ -51,9 +51,9 @@ class MSSelUtil {
   // Takes flagging into account.
   // diffAxis==2,3: row or time, diffAxis==1: channel
   // Handles 3d and 4d data arrays.
-  static Array<Float> diffData(const Array<T>& data, const Array<Bool>& flag,
-                               const Array<Bool>& flagRow, Int diffAxis, Int window,
-                               Bool doMedian = False);
+  static Array<Float> diffData(const Array<T>& data, const Array<bool>& flag,
+                               const Array<bool>& flagRow, Int diffAxis, Int window,
+                               bool doMedian = false);
 };
 
 }  // namespace casacore

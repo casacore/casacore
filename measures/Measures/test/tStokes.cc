@@ -101,8 +101,8 @@ int main() {
       cout << allNames[i] << " ";
     }
     cout << endl;
-    AlwaysAssert(Stokes::allNames(False).size() == Stokes::NumberOfTypes - 1, AipsError);
-    AlwaysAssert(Stokes::allNames(True).size() == Stokes::NumberOfTypes, AipsError);
+    AlwaysAssert(Stokes::allNames(false).size() == Stokes::NumberOfTypes - 1, AipsError);
+    AlwaysAssert(Stokes::allNames(true).size() == Stokes::NumberOfTypes, AipsError);
     cout << "ok" << endl;
   } catch (std::exception&) {
     cout << "fail" << endl;

@@ -173,13 +173,13 @@ void SSMIndex::addRow(rownr_t aNrRows) {
 Int SSMIndex::deleteRow(rownr_t aRowNr) {
   // Decrement the rowNrs of all the intervals after the row to be removed
   uInt anIndex = getIndex(aRowNr, String());
-  Bool isEmpty = False;
+  bool isEmpty = false;
 
   for (uInt i = anIndex; i < itsNUsed; i++) {
     if (itsLastRow[i] > 0) {
       itsLastRow[i]--;
     } else {
-      isEmpty = True;
+      isEmpty = true;
     }
   }
 
@@ -208,7 +208,7 @@ Int SSMIndex::deleteRow(rownr_t aRowNr) {
 void SSMIndex::recreate() { itsNUsed = 0; }
 
 uInt SSMIndex::getIndex(rownr_t aRowNumber, const String& colName) const {
-  Bool isFound;
+  bool isFound;
   uInt anIndex = binarySearchBrackets(isFound, itsLastRow, aRowNumber, itsNUsed);
   if (anIndex >= itsNUsed) {
     throw TableError("SSMIndex::getIndex - access to non-existing row " +

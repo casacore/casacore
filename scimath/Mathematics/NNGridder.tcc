@@ -45,29 +45,29 @@ NNGridder<Domain, Range>::NNGridder(const IPosition& shape, const Vector<Domain>
 
 // Grid a value by moving to nearest neighbour
 template <class Domain, class Range>
-Bool NNGridder<Domain, Range>::grid(Array<Range>& gridded, const Vector<Domain>& position,
+bool NNGridder<Domain, Range>::grid(Array<Range>& gridded, const Vector<Domain>& position,
                                     const Range& value) {
   loc = location(loc, position);
   loc -= offsetVec;
   if (onGrid(loc)) {
     gridded(loc) += value;
-    return True;
+    return true;
   } else {
-    return False;
+    return false;
   }
 }
 
 // Degrid a value by taking value of nearest neighbour
 template <class Domain, class Range>
-Bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded, const Vector<Domain>& position,
+bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded, const Vector<Domain>& position,
                                       Range& value) {
   loc = location(loc, position);
   loc -= offsetVec;
   if (onGrid(loc)) {
     value = gridded(loc);
-    return True;
+    return true;
   } else {
-    return False;
+    return false;
   }
 }
 

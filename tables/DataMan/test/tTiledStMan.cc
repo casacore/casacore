@@ -67,7 +67,7 @@ int main(int argc, const char* argv[]) {
 // First build a description.
 void doIt(uInt tileSize) {
   // Convert the command line argument to shape.
-  while (True) {
+  while (true) {
     IPosition shape = getVec(10, "cube shape (end means stop): ");
     if (shape.nelements() == 0) {
       break;
@@ -77,7 +77,7 @@ void doIt(uInt tileSize) {
 }
 
 IPosition getVec(uInt nrdim, const String& prompt) {
-  while (True) {
+  while (true) {
     cout << prompt;
     String str;
     cin >> str;
@@ -88,14 +88,14 @@ IPosition getVec(uInt nrdim, const String& prompt) {
     if (vec.nelements() > nrdim) {
       cout << "value can contain max. " << nrdim << " values" << endl;
     } else {
-      Bool error = False;
+      bool error = false;
       IPosition pos(vec.nelements());
       for (uInt i = 0; i < vec.nelements(); i++) {
         istringstream istr(vec(i));
         istr >> pos(i);
         if (pos(i) < 0) {
           cout << "Value " << pos(i) << " must be >= 0" << endl;
-          error = True;
+          error = true;
           break;
         }
       }

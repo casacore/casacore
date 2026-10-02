@@ -92,7 +92,7 @@ class LogFilterInterface {
   virtual LogFilterInterface* clone() const = 0;
 
   // Return True if <src>message</src> passes this filter.
-  virtual Bool pass(const LogMessage& message) const = 0;
+  virtual bool pass(const LogMessage& message) const = 0;
 
  private:
   // Copy constructor and assignment cannot be used.

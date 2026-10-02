@@ -90,7 +90,7 @@ using namespace casacore;
 %{
 #include <casacore/ms/MSSel/MSSelectionError.h>
   //  extern MSTimeParse *thisMSTParser;
-  Bool MSTimeEdgeInclusiveRange=False;
+  bool MSTimeEdgeInclusiveRange=false;
   Float MSTimeEdgeBuffer=-1.0;
   int MSTimeGramlex (YYSTYPE*);
   inline void MSTGgarbageCollector(const MEpoch* tval){if (tval) delete tval;}
@@ -148,8 +148,8 @@ singletimeexpr: yeartimeexpr
 LBRACKET: LSQBRACKET {$$=-1.0;}
         | FNUMBER LSQBRACKET {$$=$1;}
 
-brangetimeexpr: LBRACKET {MSTimeEdgeInclusiveRange=True;MSTimeEdgeBuffer=$1;}  rangetimeexpr RSQBRACKET {$$=$3;MSTimeEdgeInclusiveRange=False;MSTimeEdgeBuffer=-1.0;}
-              | rangetimeexpr            {MSTimeEdgeInclusiveRange=False;MSTimeEdgeBuffer=-1.0;$$=$1;}
+brangetimeexpr: LBRACKET {MSTimeEdgeInclusiveRange=true;MSTimeEdgeBuffer=$1;}  rangetimeexpr RSQBRACKET {$$=$3;MSTimeEdgeInclusiveRange=false;MSTimeEdgeBuffer=-1.0;}
+              | rangetimeexpr            {MSTimeEdgeInclusiveRange=false;MSTimeEdgeBuffer=-1.0;$$=$1;}
 rangetimeexpr: yeartimeexpr DASH yeartimeexpr 
                  {
 		   MSTimeParse::thisMSTParser->setDefaults($1);

@@ -33,17 +33,17 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-NullTable::NullTable() : BaseTable("Null table object", Table::Old, 0) { delete_p = False; }
+NullTable::NullTable() : BaseTable("Null table object", Table::Old, 0) { delete_p = false; }
 
 NullTable::~NullTable() {}
 
-Bool NullTable::isNull() const { return True; }
+bool NullTable::isNull() const { return true; }
 
 void NullTable::reopenRW() { throw makeError("reopenRW"); }
 
-Bool NullTable::asBigEndian() const { throw makeError("asBigEndian"); }
+bool NullTable::asBigEndian() const { throw makeError("asBigEndian"); }
 
-Bool NullTable::isMultiUsed(Bool) const { throw makeError("isMultiUsed"); }
+bool NullTable::isMultiUsed(bool) const { throw makeError("isMultiUsed"); }
 
 const StorageOption& NullTable::storageOption() const { throw makeError("storageOption"); }
 
@@ -51,22 +51,22 @@ const TableLock& NullTable::lockOptions() const { throw makeError("lockOptions")
 
 void NullTable::mergeLock(const TableLock&) { throw makeError("mergeLoc"); }
 
-Bool NullTable::hasLock(FileLocker::LockType) const { throw makeError("hasLock"); }
+bool NullTable::hasLock(FileLocker::LockType) const { throw makeError("hasLock"); }
 
-Bool NullTable::lock(FileLocker::LockType, uInt) { throw makeError("lock"); }
+bool NullTable::lock(FileLocker::LockType, uInt) { throw makeError("lock"); }
 
 void NullTable::unlock() { throw makeError("unlock"); }
 
-void NullTable::flush(Bool, Bool) { throw makeError("flush"); }
+void NullTable::flush(bool, bool) { throw makeError("flush"); }
 
 void NullTable::resync() { throw makeError("resync"); }
 
 uInt NullTable::getModifyCounter() const { throw makeError("getModifyCounter"); }
 
-Bool NullTable::isWritable() const { throw makeError("isWritable"); }
+bool NullTable::isWritable() const { throw makeError("isWritable"); }
 
-void NullTable::deepCopy(const String&, const Record&, const StorageOption&, int, Bool, int,
-                         Bool) const {
+void NullTable::deepCopy(const String&, const Record&, const StorageOption&, int, bool, int,
+                         bool) const {
   throw makeError("deepCopy");
 }
 
@@ -82,37 +82,37 @@ BaseColumn* NullTable::getColumn(uInt) const { throw makeError("getColumn"); }
 
 BaseColumn* NullTable::getColumn(const String&) const { throw makeError("getColumn"); }
 
-Bool NullTable::canAddRow() const { throw makeError("canAddRow"); }
+bool NullTable::canAddRow() const { throw makeError("canAddRow"); }
 
-void NullTable::addRow(rownr_t, Bool) { throw makeError("addRow"); }
+void NullTable::addRow(rownr_t, bool) { throw makeError("addRow"); }
 
-Bool NullTable::canRemoveRow() const { throw makeError("canRemoveRow"); }
+bool NullTable::canRemoveRow() const { throw makeError("canRemoveRow"); }
 
 void NullTable::removeRow(rownr_t) { throw makeError("removeRow"); }
 
-DataManager* NullTable::findDataManager(const String&, Bool) const {
+DataManager* NullTable::findDataManager(const String&, bool) const {
   throw makeError("findDataManager");
 }
 
-void NullTable::addColumn(const ColumnDesc&, Bool) { throw makeError("addColumn"); }
+void NullTable::addColumn(const ColumnDesc&, bool) { throw makeError("addColumn"); }
 
-void NullTable::addColumn(const ColumnDesc&, const String&, Bool, Bool) {
+void NullTable::addColumn(const ColumnDesc&, const String&, bool, bool) {
   throw makeError("addColumn");
 }
 
-void NullTable::addColumn(const ColumnDesc&, const DataManager&, Bool) {
+void NullTable::addColumn(const ColumnDesc&, const DataManager&, bool) {
   throw makeError("addColumn");
 }
 
-void NullTable::addColumn(const TableDesc&, const DataManager&, Bool) {
+void NullTable::addColumn(const TableDesc&, const DataManager&, bool) {
   throw makeError("addColumn");
 }
 
-Bool NullTable::canRemoveColumn(const Vector<String>&) const { throw makeError("canRemoveColumn"); }
+bool NullTable::canRemoveColumn(const Vector<String>&) const { throw makeError("canRemoveColumn"); }
 
 void NullTable::removeColumn(const Vector<String>&) { throw makeError("removeColumn"); }
 
-Bool NullTable::canRenameColumn(const String&) const { throw makeError("canRenameColumn"); }
+bool NullTable::canRenameColumn(const String&) const { throw makeError("canRenameColumn"); }
 
 void NullTable::renameColumn(const String&, const String&) { throw makeError("renameColumn"); }
 
@@ -124,11 +124,11 @@ Vector<rownr_t> NullTable::rowNumbers() const { throw makeError("rowNumbers"); }
 
 BaseTable* NullTable::root() { throw makeError("root"); }
 
-Bool NullTable::rowOrder() const { throw makeError("rowOrder"); }
+bool NullTable::rowOrder() const { throw makeError("rowOrder"); }
 
 Vector<rownr_t>& NullTable::rowStorage() { throw makeError("rowStorage"); }
 
-Bool NullTable::adjustRownrs(rownr_t, Vector<rownr_t>&, Bool) const {
+bool NullTable::adjustRownrs(rownr_t, Vector<rownr_t>&, bool) const {
   throw makeError("adjustRownrs");
 }
 

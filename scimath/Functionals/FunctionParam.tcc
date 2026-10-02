@@ -36,13 +36,13 @@ FunctionParam<T>::FunctionParam() : npar_p(0), param_p(npar_p), mask_p(npar_p), 
 
 template <class T>
 FunctionParam<T>::FunctionParam(const uInt n)
-    : npar_p(n), param_p(npar_p), mask_p(npar_p, True), maskedPtr_p(0) {
+    : npar_p(n), param_p(npar_p), mask_p(npar_p, true), maskedPtr_p(0) {
   for (uInt i = 0; i < npar_p; ++i) param_p[i] = T(0);
 }
 
 template <class T>
 FunctionParam<T>::FunctionParam(const Vector<T> &in)
-    : npar_p(in.nelements()), param_p(npar_p), mask_p(npar_p, True), maskedPtr_p(0) {
+    : npar_p(in.nelements()), param_p(npar_p), mask_p(npar_p, true), maskedPtr_p(0) {
   for (uInt i = 0; i < npar_p; ++i) param_p[i] = in[i];
 }
 
@@ -73,22 +73,22 @@ FunctionParam<T> &FunctionParam<T>::operator=(const FunctionParam<T> &other) {
 }
 
 template <class T>
-Bool FunctionParam<T>::operator==(const FunctionParam<T> &other) const {
-  if (npar_p != other.npar_p) return False;
+bool FunctionParam<T>::operator==(const FunctionParam<T> &other) const {
+  if (npar_p != other.npar_p) return false;
   for (uInt i = 0; i < npar_p; ++i) {
-    if (param_p[i] != other.param_p[i] || mask_p[i] != other.mask_p[i]) return False;
+    if (param_p[i] != other.param_p[i] || mask_p[i] != other.mask_p[i]) return false;
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool FunctionParam<T>::operator!=(const FunctionParam<T> &other) const {
+bool FunctionParam<T>::operator!=(const FunctionParam<T> &other) const {
   return (!((*this) == other));
 }
 
 // # Member functions
 template <class T>
-Bool &FunctionParam<T>::mask(const uInt n) {
+bool &FunctionParam<T>::mask(const uInt n) {
   clearMaskedPtr();
   return mask_p[n];
 }
@@ -100,7 +100,7 @@ void FunctionParam<T>::setParameters(const Vector<T> &params) {
 }
 
 template <class T>
-void FunctionParam<T>::setParamMasks(const Vector<Bool> &masks) {
+void FunctionParam<T>::setParamMasks(const Vector<bool> &masks) {
   uInt n = ((masks.nelements() < npar_p) ? masks.nelements() : npar_p);
   for (uInt i = 0; i < n; ++i) mask_p[i] = masks[i];
   clearMaskedPtr();
@@ -135,7 +135,7 @@ void FunctionParam<T>::createMaskedPtr() const {
     for (uInt i(0); i < npar_p; ++i) {
       if (mask_p[i]) tmp[n++] = param_p[i];
     }
-    tmp.resize(n, True);
+    tmp.resize(n, true);
     maskedPtr_p = new Vector<T>(tmp);
   }
 }

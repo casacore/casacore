@@ -61,7 +61,7 @@ namespace TableParseUtil {
 // in TaQLNodeHandler.
 Table getTable(Int tabnr, const String& name, const Table& ftab,
                const std::vector<const Table*>& tempTables,
-               const std::vector<TableParseQuery*>& stack, Bool alwaysOpen = True);
+               const std::vector<TableParseQuery*>& stack, bool alwaysOpen = true);
 
 // Open the parent table of a subtable.
 Table openParentTable(const String& fullName, const String& subTableName,
@@ -84,8 +84,8 @@ Table openParentTable(const String& fullName, const String& subTableName,
 // If allowNoKey is True, a single :: is allowed, otherwise the name is invalid.
 // If the name is invalid, exceptions are only thrown if checkError=True.
 // Otherwise the name is treated as a normal name without keyword.
-Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames,
-               const String& name, Bool checkError, Bool isKeyword, Bool allowNoKey);
+bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames,
+               const String& name, bool checkError, bool isKeyword, bool allowNoKey);
 
 // Define a field with the given data type in the Record.
 void setRecFld(RecordInterface& rec, const String& name, const String& dtype,

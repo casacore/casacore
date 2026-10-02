@@ -86,7 +86,7 @@ class SDHistoryHandler {
   SDHistoryHandler();
 
   // attach this to a MS - no columns are explicitly handled here
-  SDHistoryHandler(MeasurementSet &ms, const Vector<Bool> &handledCols, const Record &row);
+  SDHistoryHandler(MeasurementSet &ms, const Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDHistoryHandler(const SDHistoryHandler &other);
@@ -97,7 +97,7 @@ class SDHistoryHandler {
   SDHistoryHandler &operator=(const SDHistoryHandler &other);
 
   // attach to a MS
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS
   void resetRow(const Record &row);
@@ -119,10 +119,10 @@ class SDHistoryHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, const Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, const Vector<bool> &handledCols, const Record &row);
 
   // initialize stuff which depends on the row
-  void initRow(const Vector<Bool> &handledCols, const Record &row);
+  void initRow(const Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

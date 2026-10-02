@@ -50,7 +50,7 @@ QVector<T>::QVector(const Vector<Quantum<T>>& q) : Quantum<Vector<T>>(Vector<T>(
   typename Vector<T>::iterator end = copy.end();
   typename Vector<Quantum<T>>::const_iterator qiter = q.begin();
   while (iter != end) {
-    *iter = qiter->getValue(u, True);
+    *iter = qiter->getValue(u, true);
     ++iter;
     ++qiter;
   }

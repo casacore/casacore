@@ -417,7 +417,7 @@ class ChebyshevParamModeImpl : public ChebyshevParam<T> {
 
   // return True if the implementing function supports a mode.  This
   // implementation always returns True.
-  virtual Bool hasMode() const;
+  virtual bool hasMode() const;
 
   // # Make members of parent classes known.
  protected:

@@ -74,7 +74,7 @@ String TiledCellStMan::dataManagerType() const { return "TiledCellStMan"; }
 
 IPosition TiledCellStMan::defaultTileShape() const { return defaultTileShape_p; }
 
-Bool TiledCellStMan::canChangeShape() const { return True; }
+bool TiledCellStMan::canChangeShape() const { return true; }
 
 void TiledCellStMan::setShape(rownr_t, TSMCube* hypercube, const IPosition& shape,
                               const IPosition& tileShape) {
@@ -110,18 +110,18 @@ void TiledCellStMan::create64(rownr_t nrrow) {
   addRow64(nrrow);
 }
 
-Bool TiledCellStMan::flush(AipsIO&, Bool fsync) {
+bool TiledCellStMan::flush(AipsIO&, bool fsync) {
   // Flush the caches.
   // Exit if nothing has changed.
   if (!flushCaches(fsync)) {
-    return False;
+    return false;
   }
   // Create the header file and write data in it.
   // A zero pointer is returned when nothing has changed, thus nothing
   // has to be written.
   AipsIO* headerFile = headerFileCreate();
   if (headerFile == 0) {
-    return False;
+    return false;
   }
   headerFile->putstart("TiledCellStMan", 1);
   *headerFile << defaultTileShape_p;
@@ -129,10 +129,10 @@ Bool TiledCellStMan::flush(AipsIO&, Bool fsync) {
   headerFilePut(*headerFile, nrrow_p);
   headerFile->putend();
   headerFileClose(headerFile);
-  return True;
+  return true;
 }
 
-void TiledCellStMan::readHeader(rownr_t tabNrrow, Bool firstTime) {
+void TiledCellStMan::readHeader(rownr_t tabNrrow, bool firstTime) {
   // Open the header file and read data from it.
   AipsIO* headerFile = headerFileOpen();
   headerFile->getstart("TiledCellStMan");

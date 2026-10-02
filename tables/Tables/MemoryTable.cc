@@ -36,7 +36,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
+MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, bool initialize)
     : BaseTable(newtab.name(), newtab.option(), 0), colSetPtr_p(0), lockPtr_p(0) {
   // # Check if another Table was already constructed using this
   // # SetupNewTable (which is invalid).
@@ -67,7 +67,7 @@ MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
   // # Initialize the data managers.
   Table tab(this);
   nrrowToAdd_p = nrrow;
-  colSetPtr_p->initDataManagers(nrrow, False, TSMOption(TSMOption::Cache, 0, 0), tab);
+  colSetPtr_p->initDataManagers(nrrow, false, TSMOption(TSMOption::Cache, 0, 0), tab);
   // # Initialize the columns if needed.
   if (initialize && nrrow > 0) {
     colSetPtr_p->initialize(0, nrrow - 1);
@@ -78,45 +78,45 @@ MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
   nrrow_p = nrrow;
   // The table is transient, thus deleted when destructed.
   // It is set, so Table::isMarkedForDelete() returns True.
-  markForDelete(False, "");
+  markForDelete(false, "");
 }
 
 MemoryTable::~MemoryTable() { delete lockPtr_p; }
 
 void MemoryTable::reopenRW() {}
 
-Bool MemoryTable::asBigEndian() const { return HostInfo::bigEndian(); }
+bool MemoryTable::asBigEndian() const { return HostInfo::bigEndian(); }
 
 const StorageOption& MemoryTable::storageOption() const { return colSetPtr_p->storageOption(); }
 
-Bool MemoryTable::isMultiUsed(Bool) const { return False; }
+bool MemoryTable::isMultiUsed(bool) const { return false; }
 
 const TableLock& MemoryTable::lockOptions() const { return *lockPtr_p; }
 
 void MemoryTable::mergeLock(const TableLock&) {}
 
-Bool MemoryTable::hasLock(FileLocker::LockType) const { return True; }
+bool MemoryTable::hasLock(FileLocker::LockType) const { return true; }
 
-Bool MemoryTable::lock(FileLocker::LockType, uInt) { return True; }
+bool MemoryTable::lock(FileLocker::LockType, uInt) { return true; }
 
 void MemoryTable::unlock() {}
 
-void MemoryTable::flush(Bool, Bool) {}
+void MemoryTable::flush(bool, bool) {}
 
 void MemoryTable::resync() {}
 
 uInt MemoryTable::getModifyCounter() const { return 0; }
 
-Bool MemoryTable::isWritable() const { return True; }
+bool MemoryTable::isWritable() const { return true; }
 
 void MemoryTable::copy(const String& newName, int tableOption) const {
   Record dmInfo = colSetPtr_p->dataManagerInfo();
-  deepCopy(newName, dmInfo, StorageOption(), tableOption, True, Table::AipsrcEndian, False);
+  deepCopy(newName, dmInfo, StorageOption(), tableOption, true, Table::AipsrcEndian, false);
 }
 
 void MemoryTable::deepCopy(const String& newName, const Record& dataManagerInfo,
-                           const StorageOption& stopt, int tableOption, Bool, int endianFormat,
-                           Bool noRows) const {
+                           const StorageOption& stopt, int tableOption, bool, int endianFormat,
+                           bool noRows) const {
   trueDeepCopy(newName, dataManagerInfo, stopt, tableOption, endianFormat, noRows);
 }
 
@@ -146,9 +146,9 @@ BaseColumn* MemoryTable::getColumn(const String& columnName) const {
   return colSetPtr_p->getColumn(columnName);
 }
 
-Bool MemoryTable::canAddRow() const { return True; }
+bool MemoryTable::canAddRow() const { return true; }
 
-void MemoryTable::addRow(rownr_t nrrw, Bool initialize) {
+void MemoryTable::addRow(rownr_t nrrw, bool initialize) {
   if (nrrw > 0) {
     nrrowToAdd_p = nrrw;
     colSetPtr_p->addRow(nrrw);
@@ -160,61 +160,61 @@ void MemoryTable::addRow(rownr_t nrrw, Bool initialize) {
   }
 }
 
-Bool MemoryTable::canRemoveRow() const { return True; }
+bool MemoryTable::canRemoveRow() const { return true; }
 
 void MemoryTable::removeRow(rownr_t rownr) {
   colSetPtr_p->removeRow(rownr);
   nrrow_p--;
 }
 
-void MemoryTable::addColumn(const ColumnDesc& columnDesc, Bool) {
+void MemoryTable::addColumn(const ColumnDesc& columnDesc, bool) {
   Table tab(this);
   ColumnDesc cold(columnDesc);
   // Make sure the MemoryStMan is used.
   cold.dataManagerType() = "MemoryStMan";
   cold.dataManagerGroup() = "MSMTAB";
-  colSetPtr_p->addColumn(cold, False, TSMOption(TSMOption::Cache, 0, 0), tab);
+  colSetPtr_p->addColumn(cold, false, TSMOption(TSMOption::Cache, 0, 0), tab);
 }
-void MemoryTable::addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                            Bool) {
+void MemoryTable::addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                            bool) {
   Table tab(this);
   if (byName) {
-    colSetPtr_p->addColumn(columnDesc, dataManager, byName, False,
+    colSetPtr_p->addColumn(columnDesc, dataManager, byName, false,
                            TSMOption(TSMOption::Cache, 0, 0), tab);
   } else {
     // Make sure the MemoryStMan is used if no virtual engine is used.
     DataManager* dmptr = DataManager::getCtor(dataManager)(dataManager, Record());
-    addColumn(columnDesc, *dmptr, False);
+    addColumn(columnDesc, *dmptr, false);
     delete dmptr;
   }
 }
-void MemoryTable::addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager, Bool) {
+void MemoryTable::addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager, bool) {
   Table tab(this);  // a temporary Table object
   // Make sure the MemoryStMan is used if no virtual engine is used.
   if (dataManager.isStorageManager()) {
-    addColumn(columnDesc, False);
+    addColumn(columnDesc, false);
   } else {
-    colSetPtr_p->addColumn(columnDesc, dataManager, False, TSMOption(TSMOption::Cache, 0, 0), tab);
+    colSetPtr_p->addColumn(columnDesc, dataManager, false, TSMOption(TSMOption::Cache, 0, 0), tab);
   }
 }
-void MemoryTable::addColumn(const TableDesc& tableDesc, const DataManager& dataManager, Bool) {
+void MemoryTable::addColumn(const TableDesc& tableDesc, const DataManager& dataManager, bool) {
   Table tab(this);
   // Make sure the MemoryStMan is used if no virtual engine is used.
   if (dataManager.isStorageManager()) {
     MemoryStMan stman(dataManager.dataManagerName());
-    colSetPtr_p->addColumn(tableDesc, stman, False, TSMOption(TSMOption::Cache, 0, 0), tab);
+    colSetPtr_p->addColumn(tableDesc, stman, false, TSMOption(TSMOption::Cache, 0, 0), tab);
   } else {
-    colSetPtr_p->addColumn(tableDesc, dataManager, False, TSMOption(TSMOption::Cache, 0, 0), tab);
+    colSetPtr_p->addColumn(tableDesc, dataManager, false, TSMOption(TSMOption::Cache, 0, 0), tab);
   }
 }
 
-Bool MemoryTable::canRemoveColumn(const Vector<String>&) const { return True; }
+bool MemoryTable::canRemoveColumn(const Vector<String>&) const { return true; }
 
 void MemoryTable::removeColumn(const Vector<String>& columnNames) {
   colSetPtr_p->removeColumn(columnNames);
 }
 
-Bool MemoryTable::canRenameColumn(const String&) const { return True; }
+bool MemoryTable::canRenameColumn(const String&) const { return true; }
 
 void MemoryTable::renameColumn(const String& newName, const String& oldName) {
   colSetPtr_p->renameColumn(newName, oldName);
@@ -224,7 +224,7 @@ void MemoryTable::renameHypercolumn(const String& newName, const String& oldName
   tdescPtr_p->renameHypercolumn(newName, oldName);
 }
 
-DataManager* MemoryTable::findDataManager(const String& name, Bool byColumn) const {
+DataManager* MemoryTable::findDataManager(const String& name, bool byColumn) const {
   return colSetPtr_p->findDataManager(name, byColumn);
 }
 

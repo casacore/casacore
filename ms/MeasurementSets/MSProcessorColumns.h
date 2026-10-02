@@ -76,7 +76,7 @@ class MSProcessorColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<Int>& modeId() { return modeId_p; }
   ScalarColumn<String>& type() { return type_p; }
   ScalarColumn<Int>& typeId() { return typeId_p; }
@@ -90,7 +90,7 @@ class MSProcessorColumns {
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<Int>& modeId() const { return modeId_p; }
   const ScalarColumn<String>& type() const { return type_p; }
   const ScalarColumn<Int>& typeId() const { return typeId_p; }
@@ -123,7 +123,7 @@ class MSProcessorColumns {
   void attachOptionalCols(const MSProcessor& msProcessor);
 
   // # required columns
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<Int> modeId_p;
   ScalarColumn<String> type_p;
   ScalarColumn<Int> typeId_p;

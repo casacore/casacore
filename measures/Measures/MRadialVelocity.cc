@@ -126,9 +126,9 @@ void MRadialVelocity::checkTypes() const { MRadialVelocity::checkMyTypes(); }
 
 void MRadialVelocity::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MRadialVelocity::allMyTypes(nall, nex, typ);
@@ -146,7 +146,7 @@ void MRadialVelocity::checkMyTypes() {
   }
 }
 
-Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
+bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MRadialVelocity::allMyTypes(nall, nex, oname);
@@ -154,37 +154,37 @@ Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MRadialVelocity::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
+bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
   MRadialVelocity::Types tp;
   if (MRadialVelocity::getType(tp, in))
     mr = MRadialVelocity::Ref(tp);
   else {
     mr = MRadialVelocity::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MRadialVelocity::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MRadialVelocity *>(&in)) return False;
+bool MRadialVelocity::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MRadialVelocity *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MRadialVelocity::setRefString(const String &in) {
+bool MRadialVelocity::setRefString(const String &in) {
   MRadialVelocity::Types tp;
   if (MRadialVelocity::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MRadialVelocity::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MRadialVelocity::getDefaultType() const {

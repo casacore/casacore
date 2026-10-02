@@ -119,7 +119,7 @@ class ISMIndex {
   // to 0 if you want to start at the first bucket).
   // <br>The next iterations return the next bucket number and fill
   // the starting row and number of rows.
-  Bool nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
+  bool nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
                     uInt& bucketNr) const;
 
   // Show the index.

@@ -43,7 +43,7 @@ class Adios2StManColumn : public StManColumnBase {
   virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode) = 0;
   virtual void setShapeColumn(const IPosition &aShape) override;
   virtual IPosition shape(rownr_t aRowNr) override;
-  Bool canChangeShape() const override;
+  bool canChangeShape() const override;
   void setShape(rownr_t aRowNr, const IPosition &aShape) override;
 
   int getDataTypeSize();
@@ -52,7 +52,7 @@ class Adios2StManColumn : public StManColumnBase {
 
  protected:
   // scalar get/put
-  virtual void getBool(rownr_t aRowNr, Bool *aDataPtr) override;
+  virtual void getBool(rownr_t aRowNr, bool *aDataPtr) override;
   virtual void getuChar(rownr_t aRowNr, uChar *aDataPtr) override;
   virtual void getShort(rownr_t aRowNr, Short *aDataPtr) override;
   virtual void getuShort(rownr_t aRowNr, uShort *aDataPtr) override;
@@ -65,7 +65,7 @@ class Adios2StManColumn : public StManColumnBase {
   virtual void getDComplex(rownr_t aRowNr, DComplex *aDataPtr) override;
   virtual void getString(rownr_t aRowNr, String *aDataPtr) override;
 
-  virtual void putBool(rownr_t aRowNr, const Bool *aDataPtr) override;
+  virtual void putBool(rownr_t aRowNr, const bool *aDataPtr) override;
   virtual void putuChar(rownr_t aRowNr, const uChar *aDataPtr) override;
   virtual void putShort(rownr_t aRowNr, const Short *aDataPtr) override;
   virtual void putuShort(rownr_t aRowNr, const uShort *aDataPtr) override;
@@ -144,7 +144,7 @@ class Adios2StManColumn : public StManColumnBase {
   String itsColumnName;
   IPosition itsCasaShape;
   std::unordered_map<rownr_t, IPosition> itsCasaShapes;
-  Bool isShapeFixed = false;
+  bool isShapeFixed = false;
 
   std::shared_ptr<adios2::IO> itsAdiosIO;
   std::shared_ptr<adios2::Engine> itsAdiosEngine;
@@ -185,14 +185,14 @@ class Adios2StManColumnT : public Adios2StManColumn {
   }
 
   void toAdios(const ArrayBase *arrayPtr) {
-    Bool deleteIt;
+    bool deleteIt;
     const void *data = arrayPtr->getVStorage(deleteIt);
     toAdios(data, 0);
     arrayPtr->freeVStorage(data, deleteIt);
   }
 
   void fromAdios(ArrayBase *arrayPtr) {
-    Bool deleteIt;
+    bool deleteIt;
     void *data = arrayPtr->getVStorage(deleteIt);
     fromAdios(data, 0);
     arrayPtr->putVStorage(data, deleteIt);

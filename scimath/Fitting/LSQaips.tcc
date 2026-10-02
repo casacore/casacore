@@ -40,8 +40,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Member functions
 
 template <class U>
-Bool LSQaips::getCovariance(Array<U> &covar) {
-  if (!invertRect()) return False;
+bool LSQaips::getCovariance(Array<U> &covar) {
+  if (!invertRect()) return false;
   covar.resize();
   uInt n = nUnknowns() / LSQTraits<U>::size;
   covar.resize(IPosition(2, n, n));
@@ -49,13 +49,13 @@ Bool LSQaips::getCovariance(Array<U> &covar) {
 }
 
 template <class U>
-Bool LSQaips::solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, Bool doSVD) {
+bool LSQaips::solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, bool doSVD) {
   VectorSTLIterator<U> solit(sol);
   return LSQFit::solveLoop(fit, nRank, solit, doSVD);
 }
 
 template <class U>
-Bool LSQaips::solveLoop(uInt &nRank, Vector<U> &sol, Bool doSVD) {
+bool LSQaips::solveLoop(uInt &nRank, Vector<U> &sol, bool doSVD) {
   VectorSTLIterator<U> solit(sol);
   return LSQFit::solveLoop(nRank, solit, doSVD);
 }

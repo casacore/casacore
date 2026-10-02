@@ -110,13 +110,13 @@ class MeasRef : public MRBase {
 
   // # Operators
   //  Check if same MeasRef
-  Bool operator==(const MeasRef<Ms> &other) const;
+  bool operator==(const MeasRef<Ms> &other) const;
   // Check if unequal MeasRef
-  Bool operator!=(const MeasRef<Ms> &other) const;
+  bool operator!=(const MeasRef<Ms> &other) const;
 
   // # General Member Functions
   //  Check if empty reference
-  virtual Bool empty() const;
+  virtual bool empty() const;
   // Check the type of Measure the reference can be used for
   // <group>
   static const String &showMe();

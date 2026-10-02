@@ -44,16 +44,16 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TableMeasRefDesc::TypesFunc* TableMeasRefDesc::theirTypesFunc = TableMeasRefDesc::defaultTypesFunc;
 
 TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode)
-    : itsRefCode(referenceCode), itsRefCodeColInt(False), itsHasRefTab(True), itsOffset(0) {}
+    : itsRefCode(referenceCode), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {}
 
 TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode, const TableMeasOffsetDesc& offset)
     : itsRefCode(referenceCode),
-      itsRefCodeColInt(False),
-      itsHasRefTab(True),
+      itsRefCodeColInt(false),
+      itsHasRefTab(true),
       itsOffset(new TableMeasOffsetDesc(offset)) {}
 
 TableMeasRefDesc::TableMeasRefDesc(const TableDesc& td, const String& column)
-    : itsRefCode(0), itsColumn(column), itsRefCodeColInt(False), itsHasRefTab(True), itsOffset(0) {
+    : itsRefCode(0), itsColumn(column), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {
   checkColumn(td);
 }
 
@@ -61,8 +61,8 @@ TableMeasRefDesc::TableMeasRefDesc(const TableDesc& td, const String& column,
                                    const TableMeasOffsetDesc& offset)
     : itsRefCode(0),
       itsColumn(column),
-      itsRefCodeColInt(False),
-      itsHasRefTab(True),
+      itsRefCodeColInt(false),
+      itsHasRefTab(true),
       itsOffset(new TableMeasOffsetDesc(offset)) {
   checkColumn(td);
 }
@@ -92,7 +92,7 @@ TableMeasRefDesc::~TableMeasRefDesc() { delete itsOffset; }
 
 TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo, const Table& tab,
                                    const MeasureHolder& measHolder, const TableMeasDescBase& mDesc)
-    : itsRefCode(0), itsRefCodeColInt(False), itsHasRefTab(True), itsOffset(0) {
+    : itsRefCode(0), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {
   Int fnr;
   fnr = measInfo.fieldNumber("Ref");
   // Read back. The refcode is fixed or variable.
@@ -106,14 +106,14 @@ TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo, const Table& tab
     // See if the refcodes/types are defined in the table.
     // If so, read back. Otherwise initialize with default.
     if (tab.tableDesc().columnDesc(itsColumn).dataType() == TpInt) {
-      itsRefCodeColInt = True;
+      itsRefCodeColInt = true;
       fnr = measInfo.fieldNumber("TabRefTypes");
       if (fnr >= 0) {
         itsTabRefTypes = measInfo.asArrayString("TabRefTypes");
         itsTabRefCodes = measInfo.toArrayuInt("TabRefCodes");
         fillTabRefMap(measHolder);
       } else {
-        itsHasRefTab = False;
+        itsHasRefTab = false;
         initTabRef(measHolder);
       }
     }
@@ -127,7 +127,7 @@ void TableMeasRefDesc::defaultTypesFunc(Vector<String>& curTypes, Vector<uInt>& 
   const uInt* codes;
   const String* types = measHolder.asMeasure().allTypes(nall, nexact, codes);
   // Remove the duplicates which are at the end of the arrays.
-  Bool found;
+  bool found;
   while (nall > 0) {
     if (linearSearchBrackets(found, codes, codes[nall - 1], nall - 1) < 0) {
       break;
@@ -191,8 +191,8 @@ uInt TableMeasRefDesc::fillMap(Block<Int>& f2t, const Vector<uInt>& codesf,
            << " does not exist in this Casacore version" << LogIO::POST;
         f2t[codesf[i]] = -1;
       } else {
-        codest.resize(nt + 1, True);
-        typest.resize(nt + 1, True);
+        codest.resize(nt + 1, true);
+        typest.resize(nt + 1, true);
         maxnr++;
         codest[nt] = maxnr;
         typest[nt] = typesf[i];
@@ -252,7 +252,7 @@ void TableMeasRefDesc::checkColumn(const TableDesc& td) {
             "type must be Int or String: " +
             itsColumn);
       }
-      itsRefCodeColInt = True;
+      itsRefCodeColInt = true;
     }
   }
 }

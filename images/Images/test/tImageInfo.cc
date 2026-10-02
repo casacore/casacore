@@ -117,7 +117,7 @@ int main() {
     String error;
     AlwaysAssertExit(mii.toRecord(error, rec));
     ImageInfo mii3;
-    Bool ok = mii3.fromRecord(error, rec);
+    bool ok = mii3.fromRecord(error, rec);
     if (!ok) cout << "Error = " << error << endl;
     equal(mii3, mii);
     //
@@ -165,11 +165,11 @@ int main() {
       Quantity majAx(5, "arcsec");
       Quantity minAx(3, "arcsec");
       Quantity pa(60, "deg");
-      Bool ok = True;
+      bool ok = true;
       try {
         // no hyper plane beam shape throws exception
         myinfo.setBeam(1, 1, majAx, minAx, pa);
-        ok = False;
+        ok = false;
       } catch (const std::exception& x) {
         cout << x.what() << endl;
       }
@@ -179,7 +179,7 @@ int main() {
       try {
         // inconsistent plane throws exception
         myinfo.setBeam(2, 1, majAx, minAx, pa);
-        ok = False;
+        ok = false;
       } catch (std::exception& x) {
         cout << "Exception thrown as expected: " << x.what() << endl;
       }
@@ -189,7 +189,7 @@ int main() {
       try {
         // incorrect beam spec throws error
         myinfo.setBeam(0, 0, minAx, majAx, pa);
-        ok = False;
+        ok = false;
       } catch (std::exception& x) {
         cout << "Exception thrown as expected: " << x.what() << endl;
       }

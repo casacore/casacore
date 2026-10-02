@@ -144,7 +144,7 @@ class ISMColumn : public StManColumnBase {
 
   // Flush and optionally fsync the data.
   // This is meant for a derived class.
-  virtual Bool flush(rownr_t nrrow, Bool fsync);
+  virtual bool flush(rownr_t nrrow, bool fsync);
 
   // Resync the storage manager with the new file contents.
   // It resets the last rownr put.
@@ -155,7 +155,7 @@ class ISMColumn : public StManColumnBase {
 
   // Get a scalar value in the given row.
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -171,7 +171,7 @@ class ISMColumn : public StManColumnBase {
 
   // Put a scalar value in the given row.
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr);
   virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
   virtual void putShort(rownr_t rownr, const Short* dataPtr);
   virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
@@ -217,10 +217,10 @@ class ISMColumn : public StManColumnBase {
   // external format. This is used by other classes to read the length
   // of a variable data value.
   // <group>
-  static Conversion::ValueFunction* getReaduInt(Bool asCanonical);
-  static Conversion::ValueFunction* getReadRownr(Bool asCanonical);
-  static Conversion::ValueFunction* getWriteuInt(Bool asCanonical);
-  static Conversion::ValueFunction* getWriteRownr(Bool asCanonical);
+  static Conversion::ValueFunction* getReaduInt(bool asCanonical);
+  static Conversion::ValueFunction* getReadRownr(bool asCanonical);
+  static Conversion::ValueFunction* getWriteuInt(bool asCanonical);
+  static Conversion::ValueFunction* getWriteRownr(bool asCanonical);
   // </group>
 
   // Give a derived class the opportunity to react on the duplication
@@ -240,11 +240,11 @@ class ISMColumn : public StManColumnBase {
 
  protected:
   // Test if the last value is invalid for this row.
-  Bool isLastValueInvalid(rownr_t rownr);
+  bool isLastValueInvalid(rownr_t rownr);
 
   // Get the value for this row.
   // Set the cache if the flag is set.
-  void getValue(rownr_t rownr, void* value, Bool setCache);
+  void getValue(rownr_t rownr, void* value, bool setCache);
 
   // Put the value for this row.
   void putValue(rownr_t rownr, const void* value);
@@ -296,25 +296,25 @@ class ISMColumn : public StManColumnBase {
   // When it is at the first row of the bucket, it replaces the value.
   // Otherwise it is added.
   void putData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow, rownr_t bucketRownr,
-               const char* data, uInt lenData, Bool afterLastRow, Bool canSplit);
+               const char* data, uInt lenData, bool afterLastRow, bool canSplit);
 
   // Replace a value at the given offset in the bucket.
   // If the bucket is too small, it will be split (if allowed).
   void replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
                    rownr_t bucketRownr, uInt& offset, const char* data, uInt lenData,
-                   Bool canSplit = True);
+                   bool canSplit = true);
 
   // Add a value at the given index in the bucket.
   // If the bucket is too small, it will be split (if allowed).
-  Bool addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow, rownr_t bucketRownr,
-               uInt inx, const char* data, uInt lenData, Bool afterLastRow = False,
-               Bool canSplit = True);
+  bool addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow, rownr_t bucketRownr,
+               uInt inx, const char* data, uInt lenData, bool afterLastRow = false,
+               bool canSplit = true);
 
   // Handle the duplicated values after a bucket split.
-  void handleSplit(ISMBucket& bucket, const Block<Bool>& duplicated);
+  void handleSplit(ISMBucket& bucket, const Block<bool>& duplicated);
 
   // Compare the values.
-  virtual Bool compareValue(const void* val1, const void* val2) const;
+  virtual bool compareValue(const void* val1, const void* val2) const;
 
   // Handle a String in copying to/from external format.
   // <group>
@@ -341,7 +341,7 @@ class ISMColumn : public StManColumnBase {
 
   template <typename T>
   void getScaColCells(const RefRows& rownrs, Vector<T>& values) {
-    Bool delV;
+    bool delV;
     T* value = values.getStorage(delV);
     T* valptr = value;
     if (rownrs.isSliced()) {
@@ -369,7 +369,7 @@ class ISMColumn : public StManColumnBase {
       const Vector<rownr_t>& rowvec = rownrs.rowVector();
       rownr_t nr = rowvec.nelements();
       if (nr > 0) {
-        Bool delR;
+        bool delR;
         const rownr_t* rows = rowvec.getStorage(delR);
         if (isLastValueInvalid(rows[0])) {
           getValueGeneric<T>(0, &(value[0]));
@@ -403,7 +403,7 @@ class ISMColumn : public StManColumnBase {
   }
 };
 
-inline Bool ISMColumn::isLastValueInvalid(rownr_t rownr) {
+inline bool ISMColumn::isLastValueInvalid(rownr_t rownr) {
   return rownr < startRow_p || rownr > endRow_p;
 }
 

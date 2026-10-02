@@ -95,7 +95,7 @@ AccumType ClassicalStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt64> kno
                                                      std::shared_ptr<AccumType> knownMin,
                                                      std::shared_ptr<AccumType> knownMax,
                                                      uInt binningThreshholdSizeBytes,
-                                                     Bool persistSortedArray, uInt nBins) {
+                                                     bool persistSortedArray, uInt nBins) {
   if (_getStatsData().median) {
     return *_getStatsData().median;
   }
@@ -140,7 +140,7 @@ AccumType ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(std::shared_ptr<uI
                                                               std::shared_ptr<AccumType> knownMin,
                                                               std::shared_ptr<AccumType> knownMax,
                                                               uInt binningThreshholdSizeBytes,
-                                                              Bool persistSortedArray, uInt nBins) {
+                                                              bool persistSortedArray, uInt nBins) {
   if (_getStatsData().medAbsDevMed) {
     return *_getStatsData().medAbsDevMed;
   }
@@ -156,7 +156,7 @@ CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
     std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
-    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, bool persistSortedArray,
     uInt nBins) {
   uInt64 mynpts;
   AccumType mymin, mymax;
@@ -229,7 +229,7 @@ CASA_STATD
 std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>& fractions, std::shared_ptr<uInt64> knownNpts,
     std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins) {
+    uInt binningThreshholdSizeBytes, bool persistSortedArray, uInt nBins) {
   ThrowIf(_calculateAsAdded,
           "Quantiles cannot be calculated unless all data are available "
           "simultaneously. To ensure that will be the case, call "
@@ -242,7 +242,7 @@ std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
 }
 
 CASA_STATD
-void ClassicalStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void ClassicalStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
   const StatisticsDataset<CASA_STATP>& ds = this->_getDataset();
   ThrowIf(ds.getDataProvider() && c,
           "Logic Error: It is nonsensical to call " + String(__func__) +
@@ -276,7 +276,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_addData() {
   _qComputer->_setSortedArray(std::vector<AccumType>());
   _getStatsData().median = NULL;
-  _mustAccumulate = True;
+  _mustAccumulate = true;
   if (_calculateAsAdded) {
     // just need to call it, don't need the return value here
     _getStatistics();
@@ -296,7 +296,7 @@ void ClassicalStatistics<CASA_STATP>::_clearStats() {
   _statsData = initializeStatsData<AccumType>();
   this->_getDataset().resetIDataset();
   _qComputer->reset();
-  _mustAccumulate = True;
+  _mustAccumulate = true;
 }
 
 CASA_STATD
@@ -385,7 +385,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     tStats[idx8].min.reset(new AccumType(0));
     tStats[idx8].max.reset(new AccumType(0));
   }
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -396,10 +396,10 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     ds.initThreadVars(nBlocks, extra, nthreads, dataIter, maskIter, weightsIter, offset,
                       nThreadsMax);
     if (chunk.weights) {
-      stats.weighted = True;
+      stats.weighted = true;
     }
     if (chunk.mask) {
-      stats.masked = True;
+      stats.masked = true;
     }
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nthreads)
@@ -422,7 +422,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
       uInt idx8 = ClassicalStatisticsData::CACHE_PADDING * tid;
       _updateDataProviderMaxMin(tStats[idx8]);
     }
-    if (ds.increment(True)) {
+    if (ds.increment(true)) {
       break;
     }
   }
@@ -462,7 +462,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
   stats.sumweights = vstats.sumweights;
   stats.variance = vstats.variance;
   stats.weighted = vstats.weighted;
-  _mustAccumulate = False;
+  _mustAccumulate = false;
   return copy(stats);
 }
 
@@ -473,9 +473,9 @@ void ClassicalStatistics<CASA_STATP>::_computeStats(StatsData<AccumType>& stats,
                                                     WeightsIterator weightsIter, uInt64 count,
                                                     const ChunkType& chunk) {
   if (chunk.weights) {
-    stats.weighted = True;
+    stats.weighted = true;
     if (chunk.mask) {
-      stats.masked = True;
+      stats.masked = true;
       if (chunk.ranges) {
         _weightedStats(stats, location, dataIter, weightsIter, count, chunk.dataStride, maskIter,
                        chunk.mask->second, chunk.ranges->first, chunk.ranges->second);
@@ -492,7 +492,7 @@ void ClassicalStatistics<CASA_STATP>::_computeStats(StatsData<AccumType>& stats,
     }
   } else if (chunk.mask) {
     // this data set has no weights, but does have a mask
-    stats.masked = True;
+    stats.masked = true;
     if (chunk.ranges) {
       _unweightedStats(stats, ngood, location, dataIter, count, chunk.dataStride, maskIter,
                        chunk.mask->second, chunk.ranges->first, chunk.ranges->second);
@@ -525,7 +525,7 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterato
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
                                                  uInt64 nr, uInt dataStride,
-                                                 const DataRanges& ranges, Bool isInclude) const {
+                                                 const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -558,7 +558,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
                                                  uInt64 nr, uInt dataStride,
                                                  const MaskIterator& maskBegin, uInt maskStride,
-                                                 const DataRanges& ranges, Bool isInclude) const {
+                                                 const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -592,7 +592,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
                                                  const WeightsIterator& weightsBegin, uInt64 nr,
                                                  uInt dataStride, const DataRanges& ranges,
-                                                 Bool isInclude) const {
+                                                 bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -612,7 +612,7 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterato
                                                  const WeightsIterator& weightsBegin, uInt64 nr,
                                                  uInt dataStride, const MaskIterator& maskBegin,
                                                  uInt maskStride, const DataRanges& ranges,
-                                                 Bool isInclude) const {
+                                                 bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
@@ -684,7 +684,7 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(AccumType& datamin, AccumType& d
       new std::shared_ptr<AccumType>[ClassicalStatisticsData::CACHE_PADDING * nThreadsMax]);
   std::unique_ptr<std::shared_ptr<AccumType>[]> tmax(
       new std::shared_ptr<AccumType>[ClassicalStatisticsData::CACHE_PADDING * nThreadsMax]);
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -707,7 +707,7 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(AccumType& datamin, AccumType& d
       ds.incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                               nthreads);
     }
-    if (ds.increment(False)) {
+    if (ds.increment(false)) {
       break;
     }
   }
@@ -783,7 +783,7 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(AccumType& datamin, AccumT
     uInt idx8 = ClassicalStatisticsData::CACHE_PADDING * tid;
     npts[idx8] = 0;
   }
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -806,7 +806,7 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(AccumType& datamin, AccumT
       ds.incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                               nthreads);
     }
-    if (ds.increment(False)) {
+    if (ds.increment(false)) {
       break;
     }
   }
@@ -880,7 +880,7 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doNpts() {
     uInt idx8 = ClassicalStatisticsData::CACHE_PADDING * tid;
     npts[idx8] = 0;
   }
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -902,7 +902,7 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doNpts() {
       ds.incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                               nthreads);
     }
-    if (ds.increment(False)) {
+    if (ds.increment(false)) {
       break;
     }
   }
@@ -985,7 +985,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                               std::shared_ptr<AccumType>& mymax,
                                               const DataIterator& dataBegin, uInt64 nr,
                                               uInt dataStride, const DataRanges& ranges,
-                                              Bool isInclude) const {
+                                              bool isInclude) const {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -1021,7 +1021,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                               const DataIterator& dataBegin, uInt64 nr,
                                               uInt dataStride, const MaskIterator& maskBegin,
                                               uInt maskStride, const DataRanges& ranges,
-                                              Bool isInclude) const {
+                                              bool isInclude) const {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -1059,7 +1059,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                               const DataIterator& dataBegin,
                                               const WeightsIterator& weightsBegin, uInt64 nr,
                                               uInt dataStride, const DataRanges& ranges,
-                                              Bool isInclude) const {
+                                              bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -1081,7 +1081,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                               const WeightsIterator& weightsBegin, uInt64 nr,
                                               uInt dataStride, const MaskIterator& maskBegin,
                                               uInt maskStride, const DataRanges& ranges,
-                                              Bool isInclude) const {
+                                              bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
@@ -1141,7 +1141,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts, std::shared_ptr<
                                                   std::shared_ptr<AccumType>& mymax,
                                                   const DataIterator& dataBegin, uInt64 nr,
                                                   uInt dataStride, const DataRanges& ranges,
-                                                  Bool isInclude) const {
+                                                  bool isInclude) const {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -1177,7 +1177,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts, std::shared_ptr<
                                                   const DataIterator& dataBegin, uInt64 nr,
                                                   uInt dataStride, const MaskIterator& maskBegin,
                                                   uInt maskStride, const DataRanges& ranges,
-                                                  Bool isInclude) const {
+                                                  bool isInclude) const {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -1215,7 +1215,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts, std::shared_ptr<
                                                   const DataIterator& dataBegin,
                                                   const WeightsIterator& weightsBegin, uInt64 nr,
                                                   uInt dataStride, const DataRanges& ranges,
-                                                  Bool isInclude) const {
+                                                  bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -1237,7 +1237,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts, std::shared_ptr<
                                                   const WeightsIterator& weightsBegin, uInt64 nr,
                                                   uInt dataStride, const MaskIterator& maskBegin,
                                                   uInt maskStride, const DataRanges& ranges,
-                                                  Bool isInclude) const {
+                                                  bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   MaskIterator mask = maskBegin;
@@ -1326,7 +1326,7 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& sta
                                                        LocationType& location,
                                                        const DataIterator& dataBegin, uInt64 nr,
                                                        uInt dataStride, const DataRanges& ranges,
-                                                       Bool isInclude) {
+                                                       bool isInclude) {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -1365,7 +1365,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -1406,7 +1406,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& stats
                                                      const DataIterator& dataBegin,
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
                                                      uInt dataStride, const DataRanges& ranges,
-                                                     Bool isInclude) {
+                                                     bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -1426,7 +1426,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;

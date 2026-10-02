@@ -93,8 +93,8 @@ class MSSpwParse : public MSParse {
              const TableExprNode& columnAsTEN);
   ~MSSpwParse() { columnAsTEN_p = TableExprNode(); };
 
-  const TableExprNode* selectSpwIdsFromIDList(const Vector<Int>& spwIds, const Bool addTen = True,
-                                              const Bool addIDs = True);
+  const TableExprNode* selectSpwIdsFromIDList(const Vector<Int>& spwIds, const bool addTen = true,
+                                              const bool addIDs = true);
   const TableExprNode* selectSpwIdsFromFreqList(const Vector<Float>& spwIds, const Float factor);
   void selectChannelsFromIDList(Vector<Int>& spwIds, Vector<Int>& chanIDList, Int nFSpec);
 

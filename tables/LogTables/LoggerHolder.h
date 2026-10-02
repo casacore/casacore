@@ -117,10 +117,10 @@ class TableLogSink;
 class LoggerHolder {
  public:
   // Create with a NullSink or MemoryLogSink (default).
-  explicit LoggerHolder(Bool nullSink = False);
+  explicit LoggerHolder(bool nullSink = false);
 
   // Create with a TableLogSink.
-  LoggerHolder(const String& logTableName, Bool isWritable);
+  LoggerHolder(const String& logTableName, bool isWritable);
 
   // Copy constructor (reference semantics).
   LoggerHolder(const LoggerHolder&);
@@ -144,7 +144,7 @@ class LoggerHolder {
 
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
-  void tempClose(Bool closeParents = True) const;
+  void tempClose(bool closeParents = true) const;
 
   // Unlock the log table.
   void unlock();
@@ -156,7 +156,7 @@ class LoggerHolder {
   void resync();
 
   // Is the log table temporarily closed?
-  Bool isTempClosed() const;
+  bool isTempClosed() const;
 
   // Get access to the logger.
   // It assumes that it will be used to post a message, so it reopens
@@ -233,10 +233,10 @@ class LoggerHolder {
 class LoggerHolderRep {
  public:
   // Create with a NullSink or MemoryLogSink (default).
-  LoggerHolderRep(Bool nullSink);
+  LoggerHolderRep(bool nullSink);
 
   // Create with a TableLogSink.
-  LoggerHolderRep(const String& logTableName, Bool isWritable);
+  LoggerHolderRep(const String& logTableName, bool isWritable);
 
   // Copy constructor.
   LoggerHolderRep(const LoggerHolderRep&);
@@ -263,7 +263,7 @@ class LoggerHolderRep {
 
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
-  void tempClose(Bool closeParents = True);
+  void tempClose(bool closeParents = true);
 
   // Unlock the log table.
   void unlock();
@@ -275,7 +275,7 @@ class LoggerHolderRep {
   void resync();
 
   // Is the log table temporarily closed?
-  Bool isTempClosed() const { return itsIsClosed; }
+  bool isTempClosed() const { return itsIsClosed; }
 
   // Get access to the logger.
   // It assumes that it will be used to post a message, so it reopens
@@ -324,8 +324,8 @@ class LoggerHolderRep {
   LogIO itsLogger;
   String itsTableName;
   TableLogSink* itsTablePtr;
-  Bool itsIsWritable;
-  Bool itsIsClosed;
+  bool itsIsWritable;
+  bool itsIsClosed;
 };
 
 // <summary>
@@ -415,7 +415,7 @@ class LogHolderIter {
 
   // Increment to next message.
   // Returns False if at the end.
-  Bool next();
+  bool next();
 
   // Get the entry.
   const LogHolderIterEntry& getEntry() const { return itsEntry; }
@@ -424,7 +424,7 @@ class LogHolderIter {
 
  private:
   const LoggerHolder* itsLogger;
-  Bool itsTempClosed;
+  bool itsTempClosed;
   LogHolderIter* itsParentIter;
   uInt itsCounter;
   LogHolderIterEntry itsEntry;
@@ -465,7 +465,7 @@ class LogHolderIter {
 
 class LoggerHolderIterator {
  public:
-  LoggerHolderIterator() : itsIter(0), itsNotAtEnd(False) {}
+  LoggerHolderIterator() : itsIter(0), itsNotAtEnd(false) {}
 
   LoggerHolderIterator(const LoggerHolder*);
 
@@ -482,7 +482,7 @@ class LoggerHolderIterator {
   // </group>
 
   // Is the iterator not at the end yet?
-  Bool operator!=(const LoggerHolderIterator&) { return itsNotAtEnd; }
+  bool operator!=(const LoggerHolderIterator&) { return itsNotAtEnd; }
 
   // Get the entry.
   // <group>
@@ -497,11 +497,11 @@ class LoggerHolderIterator {
   void next() { itsNotAtEnd = itsIter->next(); }
 
   LogHolderIter* itsIter;
-  Bool itsNotAtEnd;
+  bool itsNotAtEnd;
 };
 
 inline void LoggerHolder::reopen() { itsRep->reopen(); }
-inline Bool LoggerHolder::isTempClosed() const { return itsRep->isTempClosed(); }
+inline bool LoggerHolder::isTempClosed() const { return itsRep->isTempClosed(); }
 inline LogIO& LoggerHolder::logio() { return itsRep->logio(); }
 inline LogSink& LoggerHolder::sink() { return itsRep->sink(); }
 inline const LogSink& LoggerHolder::sink() const { return itsRep->sink(); }

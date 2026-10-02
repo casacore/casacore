@@ -249,7 +249,7 @@ FreqList: FListElements
 	     $$ = new Vector<Float>(0);
 	     Int N0=(*($$)).nelements();
              Int N1=N0+4; 
-	     (*($$)).resize(N1,True);  // Resize the existing list
+	     (*($$)).resize(N1,true);  // Resize the existing list
 	      for(Int i=N0;i<N1;i++)
 		(*($$))(i) = (Float)($1[i-N0]);
 	   } 
@@ -258,7 +258,7 @@ FreqList: FListElements
              $$ = $1;
 	     Int N0=(*($$)).nelements();
              Int N1=N0+4;
-	      (*($$)).resize(N1,True);  // Resize the existing list
+	      (*($$)).resize(N1,true);  // Resize the existing list
 	      for(Int i=N0;i<N1;i++)
 		(*($$))(i) = $3[i-N0];
 	   }
@@ -384,7 +384,7 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	$$ = new Vector<Int>(myMSSI.matchFrequencyRange($2[0],$2[0],True));
+	$$ = new Vector<Int>(myMSSI.matchFrequencyRange($2[0],$2[0],true));
 	
 	ostringstream m,tok; m << "No spw ID found ~= ";
 	tok << (Int)$2[0];
@@ -418,7 +418,7 @@ FullSpec: Spw
 	      Vector<Int> chanList = myMSSI.convertToChannelIndex(varifiedSpwList,dummy, nFSpec);
 
 	      MSSpwParse::thisMSSParser->selectChannelsFromIDList(varifiedSpwList, chanList, nFSpec);
-	      $$ = MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList,False);
+	      $$ = MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList,false);
 	      delete $1;
             }
         | Spw COLON FreqList 
@@ -450,7 +450,7 @@ FullSpec: Spw
 	      // rule.
 	      //
 	      //	      $$ = MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList);
-	      MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList,False);
+	      MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList,false);
 	      delete $1;
               delete $3;
 	    }

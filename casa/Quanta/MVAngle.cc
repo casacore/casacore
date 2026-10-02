@@ -39,7 +39,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Static members
 MVAngle::Format MVAngle::defaultFormat = MVAngle::Format();
 MVAngle::Format MVAngle::interimFormat = MVAngle::Format();
-Bool MVAngle::interimSet = False;
+bool MVAngle::interimSet = false;
 
 // # Constructors
 MVAngle::MVAngle() : val(0) {}
@@ -113,7 +113,7 @@ MVAngle::Format MVAngle::setFormat(MVAngle::formatTypes intyp, uInt inprec) {
   Format tmp = MVAngle::defaultFormat;
   MVAngle::defaultFormat.typ = intyp;
   MVAngle::defaultFormat.prec = inprec;
-  MVAngle::interimSet = False;
+  MVAngle::interimSet = false;
   return tmp;
 }
 
@@ -126,7 +126,7 @@ MVAngle::Format MVAngle::setFormat(uInt inprec) { return setFormat(MVAngle::ANGL
 MVAngle::Format MVAngle::setFormat(const MVAngle::Format &form) {
   Format tmp = MVAngle::defaultFormat;
   MVAngle::defaultFormat = form;
-  MVAngle::interimSet = False;
+  MVAngle::interimSet = false;
   return tmp;
 }
 
@@ -143,7 +143,7 @@ MVAngle::formatTypes MVAngle::giveMe(const String &in) {
 
 String MVAngle::string() const {
   if (MVAngle::interimSet) {
-    MVAngle::interimSet = False;
+    MVAngle::interimSet = false;
     return string(MVAngle::interimFormat);
   }
   return string(MVAngle::defaultFormat);
@@ -167,9 +167,9 @@ String MVAngle::string(const MVAngle::Format &form) const {
 
 Double MVAngle::timeZone() { return AppInfo::timeZone(); }
 
-void MVAngle::print(ostream &oss, const MVAngle::Format &form) const { print(oss, form, False); }
+void MVAngle::print(ostream &oss, const MVAngle::Format &form) const { print(oss, form, false); }
 
-void MVAngle::print(ostream &oss, const MVAngle::Format &form, Bool loc) const {
+void MVAngle::print(ostream &oss, const MVAngle::Format &form, bool loc) const {
   uInt inprec = form.prec;
   uInt intyp = form.typ;
   uInt i1 = intyp & ~MVAngle::MOD_MASK;
@@ -283,7 +283,7 @@ void MVAngle::print(ostream &oss, const MVAngle::Format &form, Bool loc) const {
   if ((intyp & MVAngle::FITS) == MVAngle::FITS) {
     if ((intyp & MVAngle::LOCAL) == MVAngle::LOCAL) {
       MVAngle my = MVAngle::timeZone() * C::circle;
-      my.print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4), True);
+      my.print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4), true);
     }
   }
   oss.fill(sfill);
@@ -298,23 +298,23 @@ const MVAngle &MVAngle::binorm(Double norm) {
   return *this;
 }
 
-Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
+bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
   in.skipBlank();
   us = in.get();
   return UnitVal::check(in.get(), uv);
 }
 
-Bool MVAngle::handleReadError(MUString &in, Bool throwExcp) {
+bool MVAngle::handleReadError(MUString &in, bool throwExcp) {
   if (throwExcp) {
     throw AipsError("Invalid date/time '" + std::string(in.get(0)) + "', invalid char about pos " +
                     std::to_string(in.getPtr()));
   }
   in.pop();
-  return False;
+  return false;
 }
 
-Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) { return read(res, in, chk, False); }
-Bool MVAngle::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
+bool MVAngle::read(Quantity &res, MUString &in, bool chk) { return read(res, in, chk, false); }
+bool MVAngle::read(Quantity &res, MUString &in, bool chk, bool throwExcp) {
   LogIO os(LogOrigin("MVAngle", "read()", WHERE));
   res = Quantity(0.0, "rad");
   in.skipBlank();
@@ -400,11 +400,11 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
       break;
   }
   in.unpush();
-  return True;
+  return true;
 }
 
-Bool MVAngle::read(Quantity &res, const String &in, Bool chk) { return read(res, in, chk, False); }
-Bool MVAngle::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
+bool MVAngle::read(Quantity &res, const String &in, bool chk) { return read(res, in, chk, false); }
+bool MVAngle::read(Quantity &res, const String &in, bool chk, bool throwExcp) {
   MUString tmp(in);  // Pointed non-const String
   if (!MVAngle::read(res, tmp, chk, throwExcp)) {
     Double r = tmp.getDouble();
@@ -423,12 +423,12 @@ Bool MVAngle::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
       return handleReadError(tmp, throwExcp);
     }
   }
-  return True;
+  return true;
 }
 
 ostream &operator<<(ostream &os, const MVAngle &meas) {
   if (MVAngle::interimSet) {
-    MVAngle::interimSet = False;
+    MVAngle::interimSet = false;
     meas.print(os, MVAngle::interimFormat);
   } else {
     meas.print(os, MVAngle::defaultFormat);
@@ -451,7 +451,7 @@ istream &operator>>(istream &is, MVAngle &meas) {
 
 ostream &operator<<(ostream &os, const MVAngle::Format &form) {
   MVAngle::interimFormat = form;
-  MVAngle::interimSet = True;
+  MVAngle::interimSet = true;
   return os;
 }
 

@@ -58,7 +58,7 @@ class HelpMsCalUDF : public UDFBase {
 
   // Show the possible functions.
   static void showFuncsDerived(std::ostream&);
-  static void showFuncsStokes(std::ostream&, Bool showStokes);
+  static void showFuncsStokes(std::ostream&, bool showStokes);
   static void showFuncsSelection(std::ostream&);
   static void showFuncsSubtable(std::ostream&);
 };

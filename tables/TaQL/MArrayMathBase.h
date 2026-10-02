@@ -127,7 +127,7 @@ inline bool compareAllMasked(InputIterator1 first1, InputIterator1 last1, InputI
                              MaskIterator mask1, MaskIterator mask2, CompareOperator op) {
   for (; first1 != last1; ++first1, ++first2, ++mask1, ++mask2) {
     if (!*mask1 && !*mask2) {
-      if (!op(*first1, *first2)) return False;
+      if (!op(*first1, *first2)) return false;
     }
   }
   return true;
@@ -138,7 +138,7 @@ inline bool compareAllMasked(InputIterator1 first1, InputIterator1 last1, InputI
                              MaskIterator mask1, CompareOperator op) {
   for (; first1 != last1; ++first1, ++first2, ++mask1) {
     if (!*mask1) {
-      if (!op(*first1, *first2)) return False;
+      if (!op(*first1, *first2)) return false;
     }
   }
   return true;
@@ -151,7 +151,7 @@ inline bool compareAllLeftMasked(InputIterator1 first1, InputIterator1 last1, T 
                                  MaskIterator mask1, CompareOperator op) {
   for (; first1 != last1; ++first1, ++mask1) {
     if (!*mask1) {
-      if (!op(left, *first1)) return False;
+      if (!op(left, *first1)) return false;
     }
   }
   return true;
@@ -164,7 +164,7 @@ inline bool compareAllRightMasked(InputIterator1 first1, InputIterator1 last1, T
                                   MaskIterator mask1, CompareOperator op) {
   for (; first1 != last1; ++first1, ++mask1) {
     if (!*mask1) {
-      if (!op(*first1, right)) return False;
+      if (!op(*first1, right)) return false;
     }
   }
   return true;
@@ -185,7 +185,7 @@ inline bool compareAnyMasked(InputIterator1 first1, InputIterator1 last1, InputI
       if (op(*first1, *first2)) return true;
     }
   }
-  return False;
+  return false;
 }
 template <typename InputIterator1, typename InputIterator2, typename MaskIterator,
           typename CompareOperator>
@@ -196,7 +196,7 @@ inline bool compareAnyMasked(InputIterator1 first1, InputIterator1 last1, InputI
       if (op(*first1, *first2)) return true;
     }
   }
-  return False;
+  return false;
 }
 // For use with a constant left value.
 // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
@@ -209,7 +209,7 @@ inline bool compareAnyLeftMasked(InputIterator1 first1, InputIterator1 last1, T 
       if (op(left, *first1)) return true;
     }
   }
-  return False;
+  return false;
 }
 // For use with a constant right value.
 // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
@@ -222,7 +222,7 @@ inline bool compareAnyRightMasked(InputIterator1 first1, InputIterator1 last1, T
       if (op(*first1, right)) return true;
     }
   }
-  return False;
+  return false;
 }
 // </group>
 

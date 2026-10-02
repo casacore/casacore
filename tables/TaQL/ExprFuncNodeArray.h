@@ -78,7 +78,7 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
 
   // 'get' Functions to get the desired result of a function
   // <group>
-  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
@@ -108,7 +108,7 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // Get the collapse axes for the partial functions.
   // It compares the values with the #dim and removes them if too high.
   // axarg gives the argument nr of the axes.
-  IPosition getAxes(const TableExprId& id, Int ndim, uInt axarg = 1, Bool swapRemove = True);
+  IPosition getAxes(const TableExprId& id, Int ndim, uInt axarg = 1, bool swapRemove = true);
 
   // Remove axes exceeding ndim.
   IPosition removeAxes(const IPosition& axes, Int ndim) const;
@@ -146,9 +146,9 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // # Data members
   TableExprFuncNode node_p;
   Int origin_p;           // # axes origin
-  Bool isCOrder_p;        // # axes order
-  Bool constAxes_p;       // # True = collapse axes are constant
-  Bool constAlt_p;        // # True = expandAlt_p is constant
+  bool isCOrder_p;        // # axes order
+  bool constAxes_p;       // # True = collapse axes are constant
+  bool constAlt_p;        // # True = expandAlt_p is constant
   IPosition ipos_p;       // # the (maybe constant) axes or shape
   IPosition iposN_p;      // # the non-reversed axes or shape
   IPosition expandAlt_p;  // # alternate for expand/resize

@@ -42,8 +42,8 @@ void showVerbose(const String& lockFileName) {
   lfile.getInfo(data.memoryIO());
   rownr_t nrrow;
   uInt nrcolumn;
-  Bool tableChanged;
-  Block<Bool> dataManChanged;
+  bool tableChanged;
+  Block<bool> dataManChanged;
   data.read(nrrow, nrcolumn, tableChanged, dataManChanged);
   // Show the data.
   cout << "Lock file info   (of " << data.memoryIO().length() << " bytes)" << endl;
@@ -62,9 +62,9 @@ int main(int argc, char* argv[]) {
          << "was built with -DAIPS_TABLES_NOLOCKING" << endl;
   }
   int starg = 1;
-  Bool verbose = False;
+  bool verbose = false;
   if (argc > starg && String(argv[starg]) == "-v") {
-    verbose = True;
+    verbose = true;
     starg += 1;
   }
   if (argc <= starg) {
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     }
     String lockFileName(tablename + "/table.lock");
     uInt pid = 0;
-    Bool permLocked = False;
+    bool permLocked = false;
     uInt type = LockFile::showLock(pid, permLocked, lockFileName);
     String perm;
     if (permLocked) {

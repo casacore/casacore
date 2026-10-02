@@ -53,11 +53,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // </synopsis>
 class ArrayInitPolicy {
  public:
-  Bool operator==(ArrayInitPolicy const &other) { return init == other.init; }
-  Bool operator!=(ArrayInitPolicy const &other) { return init != other.init; }
+  bool operator==(ArrayInitPolicy const &other) { return init == other.init; }
+  bool operator!=(ArrayInitPolicy const &other) { return init != other.init; }
 
  private:
-  Bool init;
+  bool init;
   explicit constexpr ArrayInitPolicy(bool v) : init(v) {}
   friend struct ArrayInitPolicies;
 };

@@ -47,15 +47,15 @@ RegularFileIO::RegularFileIO(const RegularFile& regularFile, ByteIO::OpenOption 
 }
 
 RegularFileIO::~RegularFileIO() {
-  detach(True);
+  detach(true);
   if (itsOption == ByteIO::Scratch || itsOption == ByteIO::Delete) {
     itsRegularFile.remove();
   }
 }
 
-int RegularFileIO::openCreate(const RegularFile& file, ByteIO::OpenOption option, Bool useODirect) {
+int RegularFileIO::openCreate(const RegularFile& file, ByteIO::OpenOption option, bool useODirect) {
   const String& name = file.path().expandedName();
-  Bool create = False;
+  bool create = false;
   Int stropt;
   switch (option) {
     case ByteIO::Old:
@@ -68,7 +68,7 @@ int RegularFileIO::openCreate(const RegularFile& file, ByteIO::OpenOption option
       CASACORE_FALLTHROUGH;
     case ByteIO::New:
     case ByteIO::Scratch:
-      create = True;
+      create = true;
       stropt = O_RDWR | O_CREAT | O_TRUNC;
       break;
     case ByteIO::Append:
@@ -87,7 +87,7 @@ int RegularFileIO::openCreate(const RegularFile& file, ByteIO::OpenOption option
     stropt |= O_DIRECT;
   }
 #else
-  useODirect = False;
+  useODirect = false;
 #endif
   // Open the file. Try it twice in case O_DIRECT fails.
   int fd;
@@ -124,7 +124,7 @@ void RegularFileIO::reopenRW() {
                   name + ": " + strerror(errno)));
   }
   uInt bufsize = bufferSize();
-  detach(True);
+  detach(true);
   attach(file, bufsize);
   // It can be reopened, so close and reopen.
   itsOption = ByteIO::Update;

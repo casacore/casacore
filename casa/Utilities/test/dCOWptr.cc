@@ -42,8 +42,8 @@ int main() {
   // assign the elements of the first array
   indgen(arr);
 
-  Bool deleteIt = False;
-  Bool readOnly = True;
+  bool deleteIt = false;
+  bool readOnly = true;
 
   COWPtr<Array<Int>> arrptr(&arr1, deleteIt, readOnly);
 

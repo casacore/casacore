@@ -119,8 +119,8 @@ class SymLink : public File {
   // <br>-target already exists and is no symlink
   // <br>-or target already exists and overwrite==False
   // <group>
-  void create(const Path& target, Bool overwrite = True);
-  void create(const String& target, Bool overwrite = True);
+  void create(const Path& target, bool overwrite = true);
+  void create(const String& target, bool overwrite = true);
   // </group>
 
   // Copy the symlink to the target path using the system command cp.
@@ -130,8 +130,8 @@ class SymLink : public File {
   // <br>- or the target file already exists and overwrite==False
   // <br>- or the target file already exists and is not writable
   // <group>
-  void copy(const Path& target, Bool overwrite = True) const;
-  void copy(const String& target, Bool overwrite = True) const;
+  void copy(const Path& target, bool overwrite = true) const;
+  void copy(const String& target, bool overwrite = true) const;
   // </group>
 
   // Move the symlink to the target path using the system command mv.
@@ -141,8 +141,8 @@ class SymLink : public File {
   // <br>- or the target file already exists and overwrite==False
   // <br>- or the target file already exists and is not writable
   // <group>
-  void move(const Path& target, Bool overwrite = True);
-  void move(const String& target, Bool overwrite = True);
+  void move(const Path& target, bool overwrite = true);
+  void move(const String& target, bool overwrite = true);
   // </group>
 
   // Remove a symbolic link.
@@ -177,13 +177,13 @@ class SymLink : public File {
   String getSymLink() const;
 };
 
-inline void SymLink::create(const String& target, Bool overwrite) {
+inline void SymLink::create(const String& target, bool overwrite) {
   create(Path(target), overwrite);
 }
-inline void SymLink::copy(const String& target, Bool overwrite) const {
+inline void SymLink::copy(const String& target, bool overwrite) const {
   copy(Path(target), overwrite);
 }
-inline void SymLink::move(const String& target, Bool overwrite) { move(Path(target), overwrite); }
+inline void SymLink::move(const String& target, bool overwrite) { move(Path(target), overwrite); }
 
 }  // namespace casacore
 

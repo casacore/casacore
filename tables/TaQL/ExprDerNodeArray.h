@@ -57,13 +57,13 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class TableExprNodeArrayConstBool : public TableExprNodeArray {
  public:
-  TableExprNodeArrayConstBool(const Array<Bool>& value);
-  TableExprNodeArrayConstBool(const MArray<Bool>& value);
+  TableExprNodeArrayConstBool(const Array<bool>& value);
+  TableExprNodeArrayConstBool(const MArray<bool>& value);
   ~TableExprNodeArrayConstBool();
-  MArray<Bool> getArrayBool(const TableExprId& id);
+  MArray<bool> getArrayBool(const TableExprId& id);
 
  private:
-  MArray<Bool> value_p;
+  MArray<bool> value_p;
 };
 
 // <summary>

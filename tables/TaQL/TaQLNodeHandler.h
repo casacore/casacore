@@ -157,14 +157,14 @@ class TaQLNodeHandler : public TaQLNodeVisitor {
 
   // Handle the select command.
   // Optionally the command is not executed (needed for the EXISTS operator).
-  TaQLNodeResult handleSelect(const TaQLSelectNodeRep& node, Bool doExec);
+  TaQLNodeResult handleSelect(const TaQLSelectNodeRep& node, bool doExec);
 
   // Handle a table name or temptable number in the given node
   // and put it in the value result.
   void handleTableName(TaQLNodeHRValue* hrval, const TaQLNode& node);
 
   // Handle a MultiNode containing table info.
-  void handleTables(const TaQLMultiNode&, Bool addToFromList = True);
+  void handleTables(const TaQLMultiNode&, bool addToFromList = true);
 
   // Handle a MultiNoide containing joins.
   void handleJoins(const TaQLMultiNode& node);

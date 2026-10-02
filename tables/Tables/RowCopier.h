@@ -182,9 +182,9 @@ class RowCopier {
   // The things that actually do the copying when requested.
   // <group>
   // Copy different row numbers.
-  Bool copy(rownr_t toRow, rownr_t fromRow);
+  bool copy(rownr_t toRow, rownr_t fromRow);
   // Copy to and from the same row number
-  Bool copy(rownr_t rownr);
+  bool copy(rownr_t rownr);
   // </group>
 
  private:
@@ -193,7 +193,7 @@ class RowCopier {
   std::shared_ptr<ColumnHolder> columns_p;
 };
 
-inline Bool RowCopier::copy(rownr_t rownr) { return copy(rownr, rownr); }
+inline bool RowCopier::copy(rownr_t rownr) { return copy(rownr, rownr); }
 
 }  // namespace casacore
 

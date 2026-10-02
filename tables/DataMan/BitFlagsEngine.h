@@ -160,16 +160,16 @@ class BFEngineMask {
 // </templating>
 
 template <typename StoredType>
-class BitFlagsEngine : public BaseMappedArrayEngine<Bool, StoredType> {
+class BitFlagsEngine : public BaseMappedArrayEngine<bool, StoredType> {
   // # Make members of parent class known.
  public:
-  using BaseMappedArrayEngine<Bool, StoredType>::virtualName;
+  using BaseMappedArrayEngine<bool, StoredType>::virtualName;
 
  protected:
-  using BaseMappedArrayEngine<Bool, StoredType>::storedName;
-  using BaseMappedArrayEngine<Bool, StoredType>::table;
-  using BaseMappedArrayEngine<Bool, StoredType>::column;
-  using BaseMappedArrayEngine<Bool, StoredType>::setNames;
+  using BaseMappedArrayEngine<bool, StoredType>::storedName;
+  using BaseMappedArrayEngine<bool, StoredType>::table;
+  using BaseMappedArrayEngine<bool, StoredType>::column;
+  using BaseMappedArrayEngine<bool, StoredType>::setNames;
 
  public:
   // Construct an engine to map integer arrays in a column to Bool arrays.
@@ -257,65 +257,65 @@ class BitFlagsEngine : public BaseMappedArrayEngine<Bool, StoredType> {
 
   // Get an array in the given row.
   // This will scale and offset from the underlying array.
-  void getArray(rownr_t rownr, Array<Bool>& array);
+  void getArray(rownr_t rownr, Array<bool>& array);
 
   // Put an array in the given row.
   // This will scale and offset to the underlying array.
-  void putArray(rownr_t rownr, const Array<Bool>& array);
+  void putArray(rownr_t rownr, const Array<bool>& array);
 
   // Get a section of the array in the given row.
   // This will scale and offset from the underlying array.
-  void getSlice(rownr_t rownr, const Slicer& slicer, Array<Bool>& array);
+  void getSlice(rownr_t rownr, const Slicer& slicer, Array<bool>& array);
 
   // Put into a section of the array in the given row.
   // This will scale and offset to the underlying array.
-  void putSlice(rownr_t rownr, const Slicer& slicer, const Array<Bool>& array);
+  void putSlice(rownr_t rownr, const Slicer& slicer, const Array<bool>& array);
 
   // Get an entire column.
   // This will scale and offset from the underlying array.
-  void getArrayColumn(Array<Bool>& array);
+  void getArrayColumn(Array<bool>& array);
 
   // Put an entire column.
   // This will scale and offset to the underlying array.
-  void putArrayColumn(const Array<Bool>& array);
+  void putArrayColumn(const Array<bool>& array);
 
   // Get some array values in the column.
   // This will scale and offset from the underlying array.
-  virtual void getArrayColumnCells(const RefRows& rownrs, Array<Bool>& data);
+  virtual void getArrayColumnCells(const RefRows& rownrs, Array<bool>& data);
 
   // Put some array values in the column.
   // This will scale and offset to the underlying array.
-  virtual void putArrayColumnCells(const RefRows& rownrs, const Array<Bool>& data);
+  virtual void putArrayColumnCells(const RefRows& rownrs, const Array<bool>& data);
 
   // Get a section of all arrays in the column.
   // This will scale and offset from the underlying array.
-  void getColumnSlice(const Slicer& slicer, Array<Bool>& array);
+  void getColumnSlice(const Slicer& slicer, Array<bool>& array);
 
   // Put a section of all arrays in the column.
   // This will scale and offset to the underlying array.
-  void putColumnSlice(const Slicer& slicer, const Array<Bool>& array);
+  void putColumnSlice(const Slicer& slicer, const Array<bool>& array);
 
   // Get a section of some arrays in the column.
   // This will scale and offset from the underlying array.
-  virtual void getColumnSliceCells(const RefRows& rownrs, const Slicer& slicer, Array<Bool>& data);
+  virtual void getColumnSliceCells(const RefRows& rownrs, const Slicer& slicer, Array<bool>& data);
 
   // Put into a section of some arrays in the column.
   // This will scale and offset to the underlying array.
   virtual void putColumnSliceCells(const RefRows& rownrs, const Slicer& slicer,
-                                   const Array<Bool>& data);
+                                   const Array<bool>& data);
 
   // Map bit flags array to Bool array.
   // This is meant when reading an array from the stored column.
-  void mapOnGet(Array<Bool>& array, const Array<StoredType>& stored);
+  void mapOnGet(Array<bool>& array, const Array<StoredType>& stored);
 
   // Map Bool array to bit flags array.
   // This is meant when writing an array into the stored column.
-  void mapOnPut(const Array<Bool>& array, Array<StoredType>& stored);
+  void mapOnPut(const Array<bool>& array, Array<StoredType>& stored);
 
   // Functor to and an array and mask and convert to Bool.
   struct FlagsToBool {
     explicit FlagsToBool(StoredType readMask) : itsMask(readMask) {}
-    Bool operator()(StoredType value) const { return (value & itsMask) != 0; }
+    bool operator()(StoredType value) const { return (value & itsMask) != 0; }
 
    private:
     StoredType itsMask;
@@ -325,7 +325,7 @@ class BitFlagsEngine : public BaseMappedArrayEngine<Bool, StoredType> {
   // Flag bits not affected are kept.
   struct BoolToFlags {
     explicit BoolToFlags(StoredType writeMask) : itsMask(writeMask) {}
-    StoredType operator()(Bool flag, StoredType value) const {
+    StoredType operator()(bool flag, StoredType value) const {
       return (flag ? value & itsMask : value);
     }
 
@@ -347,7 +347,7 @@ class BitFlagsEngine : public BaseMappedArrayEngine<Bool, StoredType> {
   BFEngineMask itsBFEWriteMask;
   StoredType itsReadMask;
   StoredType itsWriteMask;
-  Bool itsIsNew;  // # True = new table
+  bool itsIsNew;  // # True = new table
 };
 
 }  // namespace casacore

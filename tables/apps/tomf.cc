@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     vector<String> fname;
     String outName;
     Int64 blockSize = 1048576;
-    Bool useHDF5 = False;
+    bool useHDF5 = false;
     for (int argnr = 1; argnr < argc; ++argnr) {
       if (String(argv[argnr]) == "-b") {
         argnr++;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
           blockSize = atoi(argv[argnr]);
         }
       } else if (String(argv[argnr]) == "-h") {
-        useHDF5 = True;
+        useHDF5 = true;
       } else if (argnr == argc - 1) {
         outName = argv[argnr];
       } else {

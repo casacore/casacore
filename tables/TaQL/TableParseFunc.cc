@@ -48,7 +48,7 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
   TableParsePair tabPair;
   if (tpq && parts.size() == 2) {
     // See if xx is a shorthand. If so, use that table.
-    tabPair = tpq->tableList().findTable(parts[0], False);
+    tabPair = tpq->tableList().findTable(parts[0], false);
     if (!tabPair.table().isNull()) {
       tabInfo = tabPair.getTableInfo();
       name = parts[1];
@@ -142,10 +142,10 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
           }
           // Now handle the axes arguments.
           // They can be given as a set or as individual scalar values.
-          Bool axesIsArray = False;
+          bool axesIsArray = false;
           if (arguments.size() == axarg) {
             // No axes given. Add default one for transpose, etc..
-            axesIsArray = True;
+            axesIsArray = true;
             if (ftype == TableExprFuncNode::transposeFUNC ||
                 ftype == TableExprFuncNode::areverseFUNC ||
                 ftype == TableExprFuncNode::diagonalFUNC) {
@@ -158,7 +158,7 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
             const TENSEBShPtr& arg = arguments[axarg];
             if (arg->start()->valueType() == TableExprNodeRep::VTArray) {
               parms.add(arg);
-              axesIsArray = True;
+              axesIsArray = true;
             }
           }
           if (!axesIsArray) {
@@ -215,7 +215,7 @@ TableExprNode TableParseFunc::makeUDFNode(TableParseQuery* sel, const String& na
   if (sel) {
     if (parts.size() > 2) {
       // At least 3 parts; see if the first part is a table shorthand.
-      TableParsePair tabPair = sel->tableList().findTable(parts[0], False);
+      TableParsePair tabPair = sel->tableList().findTable(parts[0], false);
       if (!tabPair.table().isNull()) {
         udf = TableExprNode::newUDFNode(name.substr(parts[0].size() + 1), arguments,
                                         tabPair.getTableInfo(), style);
@@ -694,7 +694,7 @@ TableExprFuncNode::FunctionType TableParseFunc::findFunc(const String& name, uIn
     ftype = TableExprFuncNode::NRFUNC;
   }
   // Functions to be ignored are incorrect.
-  Bool found;
+  bool found;
   linearSearch(found, ignoreFuncs, Int(ftype), ignoreFuncs.size());
   if (found || (!ignoreFuncs.empty() && ftype >= TableExprFuncNode::FirstAggrFunc)) {
     throw(TableInvExpr("Function '" + funcName + "' can only be used in TaQL"));

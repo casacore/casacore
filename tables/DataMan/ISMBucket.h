@@ -151,7 +151,7 @@ class ISMBucket {
                    uInt& offset) const;
 
   // Is the bucket large enough to add a value?
-  Bool canAddData(uInt leng) const;
+  bool canAddData(uInt leng) const;
 
   // Add the data to the data part.
   // It updates the bucket index at the given index.
@@ -159,7 +159,7 @@ class ISMBucket {
   void addData(uInt colnr, rownr_t rownr, uInt index, const char* data, uInt leng);
 
   // Is the bucket large enough to replace a value?
-  Bool canReplaceData(uInt newLeng, uInt oldLeng) const;
+  bool canReplaceData(uInt newLeng, uInt oldLeng) const;
 
   // Replace a data item.
   // When its length is variable (indicated by fixedLength=0), the old
@@ -199,7 +199,7 @@ class ISMBucket {
   // The starting values in the right bucket may be copies of the
   // values in the left bucket. The duplicated Block contains a switch
   // per column indicating if the value is copied.
-  rownr_t split(ISMBucket*& left, ISMBucket*& right, Block<Bool>& duplicated,
+  rownr_t split(ISMBucket*& left, ISMBucket*& right, Block<bool>& duplicated,
                 rownr_t bucketStartRow, rownr_t bucketNrrow, uInt colnr, rownr_t rownr,
                 uInt lengToAdd);
 
@@ -211,7 +211,7 @@ class ISMBucket {
   // values are moved to the new bucket.
   // <br>This fuction is only called by split, which created the
   // left and right bucket.
-  Bool simpleSplit(ISMBucket* left, ISMBucket* right, Block<Bool>& duplicated, rownr_t& splitRownr,
+  bool simpleSplit(ISMBucket* left, ISMBucket* right, Block<bool>& duplicated, rownr_t& splitRownr,
                    rownr_t rownr);
 
   // Return the index where the bucket should be split to get
@@ -255,7 +255,7 @@ class ISMBucket {
   void show(ostream& os) const;
 
   // Check that there are no repeated rowIds in the bucket
-  Bool check(uInt& offendingCol, uInt& offendingIndex, rownr_t& offendingRow,
+  bool check(uInt& offendingCol, uInt& offendingIndex, rownr_t& offendingRow,
              rownr_t& offendingPrevRow) const;
 
  private:

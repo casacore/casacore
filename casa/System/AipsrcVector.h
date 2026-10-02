@@ -90,8 +90,8 @@ class AipsrcVector : public Aipsrc {
   //  of a matched keyword found in the files. If no match found the
   //  function will be False, and the default returned if specified.
   //  <group>
-  static Bool find(Vector<T> &value, const String &keyword);
-  static Bool find(Vector<T> &value, const String &keyword, const Vector<T> &deflt);
+  static bool find(Vector<T> &value, const String &keyword);
+  static bool find(Vector<T> &value, const String &keyword, const Vector<T> &deflt);
   // </group>
   // These <src>find()</src> functions will, given a keyword, read the values
   // of a matched keyword as a Quantity. If no unit has been given in the
@@ -99,8 +99,8 @@ class AipsrcVector : public Aipsrc {
   // will be converted to the resun Unit. If no match found, the default
   // value is returned (see example above).
   // <group>
-  static Bool find(Vector<T> &value, const String &keyword, const Unit &defun, const Unit &resun);
-  static Bool find(Vector<T> &value, const String &keyword, const Unit &defun, const Unit &resun,
+  static bool find(Vector<T> &value, const String &keyword, const Unit &defun, const Unit &resun);
+  static bool find(Vector<T> &value, const String &keyword, const Unit &defun, const Unit &resun,
                    const Vector<T> &deflt);
   // </group>
   // Functions to register keywords for later use in get() and set(). The
@@ -147,8 +147,8 @@ class AipsrcVector : public Aipsrc {
 template <>
 class AipsrcVector_String<String> : public Aipsrc {
  public:
-  static Bool find(Vector<String> &value, const String &keyword);
-  static Bool find(Vector<String> &value, const String &keyword, const Vector<String> &deflt);
+  static bool find(Vector<String> &value, const String &keyword);
+  static bool find(Vector<String> &value, const String &keyword, const Vector<String> &deflt);
   static uInt registerRC(const String &keyword, const Vector<String> &deflt);
   static const Vector<String> get(uInt keyword);
   static void set(uInt keyword, const Vector<String> &deflt);
@@ -173,18 +173,18 @@ class AipsrcVector_String<String> : public Aipsrc {
 // </synopsis>
 
 template <>
-class AipsrcVector_Bool<Bool> : public Aipsrc {
+class AipsrcVector_Bool<bool> : public Aipsrc {
  public:
-  static Bool find(Vector<Bool> &value, const String &keyword);
-  static Bool find(Vector<Bool> &value, const String &keyword, const Vector<Bool> &deflt);
-  static uInt registerRC(const String &keyword, const Vector<Bool> &deflt);
-  static const Vector<Bool> get(uInt keyword);
-  static void set(uInt keyword, const Vector<Bool> &deflt);
+  static bool find(Vector<bool> &value, const String &keyword);
+  static bool find(Vector<bool> &value, const String &keyword, const Vector<bool> &deflt);
+  static uInt registerRC(const String &keyword, const Vector<bool> &deflt);
+  static const Vector<bool> get(uInt keyword);
+  static void set(uInt keyword, const Vector<bool> &deflt);
   static void save(uInt keyword);
 
  private:
   inline static std::mutex theirMutex;
-  inline static std::vector<Vector<Bool>> tlst;
+  inline static std::vector<Vector<bool>> tlst;
   inline static std::vector<String> ntlst;
 };
 

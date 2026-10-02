@@ -46,10 +46,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 static Block<Double> stderr_min, stderr_max, stderr_last;
 static Block<String> stderr_title;
 static Block<Int> stderr_time;
-static Block<Bool> stderr_startflag;
+static Block<bool> stderr_startflag;
 const char *ProgressMeter::PROGRESSFILE = "/tmp/xidjapdfs";
 static Int stderr_creation_function(Double min, Double max, const String &t, const String &,
-                                    const String &, const String &, Bool) {
+                                    const String &, const String &, bool) {
   Int n = stderr_min.nelements() + 1;
   stderr_min.resize(n);
   stderr_max.resize(n);
@@ -62,7 +62,7 @@ static Int stderr_creation_function(Double min, Double max, const String &t, con
   stderr_last[n - 1] = min;
   stderr_title[n - 1] = t;
   stderr_time[n - 1] = time(0);
-  stderr_startflag[n - 1] = False;
+  stderr_startflag[n - 1] = false;
   // cerr << "\n0%";
   return n;
 }
@@ -117,7 +117,7 @@ static void stderr_update_function(Int id, Double value) {
   if (!stderr_startflag[id] &&
       ::fabs((stderr_last[id] - stderr_min[id]) / stderr_min[id]) < 0.001) {
     cerr << "\n0%";
-    stderr_startflag[id] = True;
+    stderr_startflag[id] = true;
   }
   if (percent > lastpercent) {
     stderr_last[id] = value;
@@ -138,7 +138,7 @@ static void stderr_update_function(Int id, Double value) {
 
 Int (*ProgressMeter::creation_function_p)(Double, Double, const String &, const String &,
                                           const String &, const String &,
-                                          Bool) = stderr_creation_function;
+                                          bool) = stderr_creation_function;
 
 void (*ProgressMeter::update_function_p)(Int, Double) = stderr_update_function;
 
@@ -152,7 +152,7 @@ ProgressMeter::ProgressMeter()
     : id_p(-1), min_p(0.0), max_p(1.0), update_every_p(1), update_count_p(0) {}
 
 ProgressMeter::ProgressMeter(Double min, Double max, const String &title, const String &subtitle,
-                             const String &minlabel, const String &maxlabel, Bool estimateTime,
+                             const String &minlabel, const String &maxlabel, bool estimateTime,
                              Int updateEvery)
     : id_p(-1), min_p(min), max_p(max), update_every_p(updateEvery), update_count_p(0) {
   // Correct silently
@@ -167,26 +167,26 @@ ProgressMeter::ProgressMeter(Double min, Double max, const String &title, const 
 ProgressMeter::ProgressMeter(Double min, Double max, const String &title)
     : id_p(-1), min_p(min), max_p(max), update_every_p(1), update_count_p(0) {
   if (creation_function_p) {
-    id_p = creation_function_p(min, max, title, "", "", "", False);
+    id_p = creation_function_p(min, max, title, "", "", "", false);
   }
 }
 
 ProgressMeter::~ProgressMeter() {
   // Do not update if still 0, otherwise no initialization done in update.
   if (update_count_p > 0) update_count_p++;
-  update(max_p, True);
+  update(max_p, true);
 }
 
-void ProgressMeter::_update(Double value, Bool force) {
+void ProgressMeter::_update(Double value, bool force) {
   update_count_p++;
   if (update_count_p == 1) {
     startTime = time(&startTime);
-    showProgress = False;
-    force = True;
+    showProgress = false;
+    force = true;
   }
   time_t itsTime;
   itsTime = time(&itsTime);
-  if (!showProgress && itsTime >= startTime + time_t(7)) showProgress = True;
+  if (!showProgress && itsTime >= startTime + time_t(7)) showProgress = true;
   if (!showProgress) {
     if ((value >= min_p) && (value <= max_p)) {
       if (update_count_p == 1 || force || ((update_count_p % update_every_p) == 0)) {
@@ -200,17 +200,17 @@ void ProgressMeter::busy() { busy_function_p(id_p); }
 
 void ProgressMeter::done() { done_function_p(id_p); }
 
-void ProgressMeter::update(Double value, Bool force) {
+void ProgressMeter::update(Double value, bool force) {
   update_count_p++;
   // Always force the first one through
   if (update_count_p == 1) {
-    showProgress = False;
+    showProgress = false;
     startTime = time(&startTime);
-    force = True;
+    force = true;
   }
   time_t itsTime;
   itsTime = time(&itsTime);
-  if (!showProgress && itsTime >= startTime + time_t(7)) showProgress = True;
+  if (!showProgress && itsTime >= startTime + time_t(7)) showProgress = true;
   if (showProgress) {
     if ((value >= min_p) && (value <= max_p)) {
       if (update_count_p == 1 || force || ((update_count_p % update_every_p) == 0)) {

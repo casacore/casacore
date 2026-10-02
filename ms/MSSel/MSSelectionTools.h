@@ -38,7 +38,7 @@ Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2);
 Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2);
 
 // Collective selection returning a selected MS.
-Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName = "",
+bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName = "",
                 const String& timeExpr = "", const String& antennaExpr = "",
                 const String& fieldExpr = "", const String& spwExpr = "",
                 const String& uvDistExpr = "", const String& taQLExpr = "",
@@ -47,7 +47,7 @@ Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const Stri
                 const String& obsExpr = "", MSSelection* mss = NULL);
 
 // Added feedExpr
-Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName = "",
+bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName = "",
                  const String& timeExpr = "", const String& antennaExpr = "",
                  const String& fieldExpr = "", const String& spwExpr = "",
                  const String& uvDistExpr = "", const String& taQLExpr = "",
@@ -56,7 +56,7 @@ Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const Str
                  const String& obsExpr = "", const String& feedExpr = "", MSSelection* mss = NULL);
 
 // Collective selection also returning in-row (corr/chan) slices
-Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
+bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
                 Vector<Vector<Slice>>& chanSlices, Vector<Vector<Slice>>& corrSlices,
                 const String& outMSName = "", const String& timeExpr = "",
                 const String& antennaExpr = "", const String& fieldExpr = "",
@@ -67,7 +67,7 @@ Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
                 const Int defaultChanStep = 1, MSSelection* mss = NULL);
 
 // Added feedExpr
-Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
+bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
                  Vector<Vector<Slice>>& chanSlices, Vector<Vector<Slice>>& corrSlices,
                  const String& outMSName = "", const String& timeExpr = "",
                  const String& antennaExpr = "", const String& fieldExpr = "",
@@ -78,13 +78,13 @@ Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
                  const String& feedExpr = "", const Int defaultChanStep = 1,
                  MSSelection* mss = NULL);
 
-Bool getSelectedTable(Table& selectedTab, const Table& baseTab, TableExprNode& fullTEN,
+bool getSelectedTable(Table& selectedTab, const Table& baseTab, TableExprNode& fullTEN,
                       const String& outName);
 
 Record mssSelectedIndices(MSSelection& mss, const MeasurementSet* ms);
 
-String stripWhite(const String& str, Bool onlyends = True);
-int tokenize(const String& str, const String& sep, Vector<String>& tokens, Bool upCase = False);
+String stripWhite(const String& str, bool onlyends = true);
+int tokenize(const String& str, const String& sep, Vector<String>& tokens, bool upCase = false);
 Vector<String>& split(const String& s, char delim, Vector<String>& elems);
 }  // namespace casacore
 

@@ -183,7 +183,7 @@ class ConcatRowsIter {
   ConcatRowsIter(const ConcatRows&, rownr_t start, rownr_t end, rownr_t incr = 1);
 
   // Is the iterator past the end?
-  Bool pastEnd() const { return itsPastEnd; }
+  bool pastEnd() const { return itsPastEnd; }
 
   // Go the next chunk.
   // <group>
@@ -193,7 +193,7 @@ class ConcatRowsIter {
   // </group>
 
   // Get the current chunk.
-  RefRows getChunk() const { return RefRows(itsChunk, True); }
+  RefRows getChunk() const { return RefRows(itsChunk, true); }
 
   // Get the nr of the table the current chunk is in.
   uInt tableNr() const { return itsTabNr; }
@@ -205,7 +205,7 @@ class ConcatRowsIter {
   rownr_t itsEnd;
   rownr_t itsIncr;
   uInt itsTabNr;
-  Bool itsPastEnd;
+  bool itsPastEnd;
 };
 
 }  // namespace casacore

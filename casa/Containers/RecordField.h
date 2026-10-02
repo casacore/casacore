@@ -167,7 +167,7 @@ class RecordFieldPtr {
   //     <li> Explicit call of the detach() member.
   // </ol>
   // # This inherited function is shown for documentation purposes.
-  Bool isAttached() const { return parent_p; }
+  bool isAttached() const { return parent_p; }
 
  private:
   static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
@@ -231,7 +231,7 @@ class RORecordFieldPtr {
   Int fieldNumber() const { return fieldPtr_p.fieldNumber(); }
 
   void detach() { fieldPtr_p.detach(); }
-  Bool isAttached() const { return fieldPtr_p.isAttached(); }
+  bool isAttached() const { return fieldPtr_p.isAttached(); }
 
  private:
   RecordFieldPtr<T> fieldPtr_p;

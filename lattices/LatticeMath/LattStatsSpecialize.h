@@ -63,8 +63,8 @@ class IPosition;
 
 class LattStatsSpecialize {
  public:
-  static Bool hasSomePoints(Double npts);
-  static Bool hasSomePoints(DComplex npts);
+  static bool hasSomePoints(Double npts);
+  static bool hasSomePoints(DComplex npts);
   //
   static void setUseItTrue(Float& useIt);
   static void setUseItTrue(Complex& useIt);
@@ -100,17 +100,17 @@ class LattStatsSpecialize {
   static Complex getNodeScalarValue(const LatticeExprNode& node, Complex);
 
   template <class T>
-  static Bool setIncludeExclude(String& errorMessage, Vector<T>& range, Bool& noInclude,
-                                Bool& noExclude, const Vector<T>& include,
+  static bool setIncludeExclude(String& errorMessage, Vector<T>& range, bool& noInclude,
+                                bool& noExclude, const Vector<T>& include,
                                 const Vector<T>& exclude);
-  static Bool setIncludeExclude(String& errorMessage, Vector<Complex>& range, Bool& noInclude,
-                                Bool& noExclude, const Vector<Complex>& include,
+  static bool setIncludeExclude(String& errorMessage, Vector<Complex>& range, bool& noInclude,
+                                bool& noExclude, const Vector<Complex>& include,
                                 const Vector<Complex>& exclude);
   //
-  static Bool minMax(Float& dataMin, Float& dataMax, const MaskedLattice<Float>* pLattice,
-                     const Vector<Float>& range, Bool noInclude, Bool noExclude);
-  static Bool minMax(Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
-                     const Vector<Complex>& range, Bool noInclude, Bool noExclude);
+  static bool minMax(Float& dataMin, Float& dataMax, const MaskedLattice<Float>* pLattice,
+                     const Vector<Float>& range, bool noInclude, bool noExclude);
+  static bool minMax(Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
+                     const Vector<Complex>& range, bool noInclude, bool noExclude);
 };
 
 }  // namespace casacore

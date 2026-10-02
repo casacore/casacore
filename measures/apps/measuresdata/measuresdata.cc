@@ -137,21 +137,21 @@ Double dget_tversion(const Table *tab);
 void put_version(Table *tab, Double vs);
 void put_vsdate(Table *tab);
 Int int_data(const String &in);
-Bool split_data(vector<String> &out, const String &in, const Regex &pat = RXwhite);
+bool split_data(vector<String> &out, const String &in, const Regex &pat = RXwhite);
 Table *openr_table(const String &tnam);
-Bool close_table(const String &tnam, Table *&tab, Double vsup = 0, Bool timup = True,
-                 Bool timshow = True);
-Bool IERSeop(tableProperties &tprop, inputValues &inVal);
-Bool IERSpred(tableProperties &tprop, inputValues &inVal);
-Bool JPLDE(tableProperties &tprop, inputValues &inVal);
-Bool TAI_UTC(tableProperties &tprop, inputValues &inVal);
-Bool IERSeop97(tableProperties &tprop, inputValues &inVal);
-Bool IERSeop2000(tableProperties &tprop, inputValues &inVal);
-Bool IERSpredict(tableProperties &tprop, inputValues &inVal);
-Bool IERSpredict2000(tableProperties &tprop, inputValues &inVal);
-Bool IGRF(tableProperties &tprop, inputValues &inVal);
-Bool DE200(tableProperties &tprop, inputValues &inVal);
-Bool DE405(tableProperties &tprop, inputValues &inVal);
+bool close_table(const String &tnam, Table *&tab, Double vsup = 0, bool timup = true,
+                 bool timshow = true);
+bool IERSeop(tableProperties &tprop, inputValues &inVal);
+bool IERSpred(tableProperties &tprop, inputValues &inVal);
+bool JPLDE(tableProperties &tprop, inputValues &inVal);
+bool TAI_UTC(tableProperties &tprop, inputValues &inVal);
+bool IERSeop97(tableProperties &tprop, inputValues &inVal);
+bool IERSeop2000(tableProperties &tprop, inputValues &inVal);
+bool IERSpredict(tableProperties &tprop, inputValues &inVal);
+bool IERSpredict2000(tableProperties &tprop, inputValues &inVal);
+bool IGRF(tableProperties &tprop, inputValues &inVal);
+bool DE200(tableProperties &tprop, inputValues &inVal);
+bool DE405(tableProperties &tprop, inputValues &inVal);
 
 //*************************************************************************//
 // Data structures and constants
@@ -164,23 +164,23 @@ struct inputValues {
   String type;            // Table type (e.g. TAI_UTC)
   String dir;             // Table data base directory (e.g. /aips++/data)
   String in;              // Input file name (e.g. ./tai.in)
-  Bool refresh;           // Refresh, even if not necesaary for this file
-  Bool renew;             // Force renew complete table, rather than an update
+  bool refresh;           // Refresh, even if not necesaary for this file
+  bool renew;             // Force renew complete table, rather than an update
   Block<Int> derange;     // Range of DE table years.
   String ofile;           // Name of output link file
   uInt x__n;              // Current pointer in list of processes
-  Bool x__rep;            // Repeating
-  Bool x__fn;             // Should be a filename given
+  bool x__rep;            // Repeating
+  bool x__fn;             // Should be a filename given
   vector<Double> x__val;  // Parameter values
   // Derived data
-  Bool testOnly;         // Test if to be updated/renewed
+  bool testOnly;         // Test if to be updated/renewed
   vector<String> types;  // List of all types to do (e.g. TAI_UTC IERSeop97)
   String intype;         // Given intype (e.g. al)
   String fulltype;       // Given proper input type (e.g. ALL)
   Double lastmjd;        // Current last mjd
-  Bool noup;             // Skip update
-  Bool forcedel;         // Force delete
-  Bool end;              // End of cyle
+  bool noup;             // Skip update
+  bool forcedel;         // Force delete
+  bool end;              // End of cyle
 };
 
 // Default inputs
@@ -189,23 +189,23 @@ const inputValues defVal = {
     "all",              // Table type
     ".",                // Table base directory
     "-",                // Name of input file (or - if unknown)
-    False,              // Force refresh
-    False,              // Force renew
+    false,              // Force refresh
+    false,              // Force renew
     Block<Int>(2),      // DE table range
     "measuresdata.rc",  // Output rc file
     0,                  // Current pointer in list of processes
-    False,              // Repeating
-    False,              // Should be a filename given
+    false,              // Repeating
+    false,              // Should be a filename given
     vector<Double>(),   // Parameter values
     // Derived
-    True,              // Test if to be updated/renewed
+    true,              // Test if to be updated/renewed
     vector<String>(),  // All types to do
     "",                // Given type in input
     "",                // Full input type name
     0.0,               // Current last mjd
-    False,             // Skip update
-    False,             // Force delete
-    True               // End of cycle
+    false,             // Skip update
+    false,             // Force delete
+    true               // End of cycle
 };
 
 // Current inputs
@@ -327,13 +327,13 @@ struct tableProperties {
   String type;       // Table type (e.g. TAI_UTC)
   Double version;    // Double version of table
   Double updper;     // Minimum update period in days
-  Bool renew;        // Always renew, not update this table (normally False)
+  bool renew;        // Always renew, not update this table (normally False)
   Double MJD0;       // Start MJD of table
   Double dMJD;       // Increment MJD in table
   String tnam;       // Table name (e.g. geodetic/TAI_UTC)
   String connectAs;  // Connection protocol (ftp or html)
   String protoc;     // Data protocol (ascii)
-  Bool (*rout)(tableProperties &, inputValues &);  // Routine to call
+  bool (*rout)(tableProperties &, inputValues &);  // Routine to call
   const columnDescr *cdesc;                        // Column descriptions
   TableDesc *td;                                   // Table descriptor
   vector<String> colnames;                         // Column names
@@ -341,7 +341,7 @@ struct tableProperties {
   vector<TableColumn *> columns;                   // Table columns for access
   String title;                                    // Long title
   String contents;                                 // Contents indicator; e.g. leapSecond
-  Bool repeat;                                     // More than one input possible
+  bool repeat;                                     // More than one input possible
   String info;                                     // Information fields space separated
   vector<String> vinfo;                            // Information fields
   const String *formatString;                      // Format string
@@ -379,7 +379,7 @@ const tableProperties allProperties[] = {
     {"TAI_UTC",
      1.0,
      31.0,
-     True,
+     true,
      37300,
      0.0,
      "geodetic/TAI_UTC",
@@ -393,7 +393,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "TAI_UTC difference obtained from USNO",
      "leapSecond",
-     False,
+     false,
      "",
      vector<String>(),
      0,
@@ -405,7 +405,7 @@ const tableProperties allProperties[] = {
     {"IERSeop97",
      2.0,
      34.0,
-     False,
+     false,
      37664,
      1.0,
      "geodetic/IERSeop97",
@@ -419,7 +419,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "IERS EOPC04_20 Earth Orientation Data from IERS",
      "eop97",
-     True,
+     true,
      "",
      vector<String>(),
      0,
@@ -431,7 +431,7 @@ const tableProperties allProperties[] = {
     {"IERSeop2000",
      2.0,
      34.0,
-     False,
+     false,
      37664,
      1.0,
      "geodetic/IERSeop2000",
@@ -445,7 +445,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "IERS EOP2000C04_20 Earth Orientation Data IAU2000",
      "eop2000",
-     True,
+     true,
      "",
      vector<String>(),
      0,
@@ -457,7 +457,7 @@ const tableProperties allProperties[] = {
     {"IERSpredict",
      2.0,
      3.0,
-     False,
+     false,
      0.0,
      1.0,
      "geodetic/IERSpredict",
@@ -471,7 +471,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "IERS Earth Orientation Data predicted from NEOS",
      "predict",
-     False,
+     false,
      "",
      vector<String>(),
      &IERSpredictFormat,
@@ -483,7 +483,7 @@ const tableProperties allProperties[] = {
     {"IERSpredict2000",
      2.0,
      3.0,
-     False,
+     false,
      0.0,
      1.0,
      "geodetic/IERSpredict2000",
@@ -497,7 +497,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "IERS EOP2000C04_05 Earth Orientation Data IAU2000",
      "predict2000",
-     False,
+     false,
      "",
      vector<String>(),
      &IERSpredict2000Format,
@@ -509,7 +509,7 @@ const tableProperties allProperties[] = {
     {"IGRF",
      2.0,
      0.0,
-     True,
+     true,
      13193.75,
      1826.25,
      "geodetic/IGRF",
@@ -523,7 +523,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "IGRF12 reference magnetic field",
      "earthField",
-     False,
+     false,
      "",
      vector<String>(),
      &IGRFFormat,
@@ -535,7 +535,7 @@ const tableProperties allProperties[] = {
     {"DE200",
      2.0,
      0.0,
-     False,
+     false,
      0.0,
      0.0,
      "ephemerides/DE200",
@@ -549,7 +549,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "JPL Planetary ephemeris DE200",
      "DE200",
-     True,
+     true,
      "header.200 ascp****.200",
      vector<String>(),
      0,
@@ -561,7 +561,7 @@ const tableProperties allProperties[] = {
     {"DE405",
      2.0,
      0.0,
-     False,
+     false,
      0.0,
      0.0,
      "ephemerides/DE405",
@@ -575,7 +575,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "JPL Planetary ephemeris DE405",
      "DE405",
-     True,
+     true,
      "header.405 ascp****.405",
      vector<String>(),
      0,
@@ -587,7 +587,7 @@ const tableProperties allProperties[] = {
     {"",
      0.0,
      0.0,
-     False,
+     false,
      0.0,
      0.0,
      "",
@@ -601,7 +601,7 @@ const tableProperties allProperties[] = {
      vector<TableColumn *>(),
      "",
      "",
-     True,
+     true,
      "",
      vector<String>(),
      0,
@@ -822,7 +822,7 @@ String minimaxNC(const String &in, const vector<String> &tname) {
   return String("");
 }
 
-String boolToString(Bool yn) { return (yn ? String("y") : String("n")); }
+String boolToString(bool yn) { return (yn ? String("y") : String("n")); }
 
 String uIntToString(uInt yn) {
   String out;
@@ -874,15 +874,15 @@ String version_string(Double vs, uInt w, uInt p) {
 }
 
 // Split line (at pattern) into vector of strings.
-Bool split_data(vector<String> &out, const String &in, const Regex &pat) {
+bool split_data(vector<String> &out, const String &in, const Regex &pat) {
   out.resize(0);
   const Int maxn = 100;
   String sout[maxn];
   Int N = split(in, sout, maxn, pat);
   for (Int i = 0; i < N; ++i)
     if (!sout[i].empty()) out.push_back(sout[i]);
-  if (out.size() == 0 || N == maxn) return False;
-  return True;
+  if (out.size() == 0 || N == maxn) return false;
+  return true;
 }
 
 // Make Double from string
@@ -917,57 +917,57 @@ Int int_data(const String &in) {
 //*************************************************************************//
 
 // Test if readable table exists
-Bool testr_table(const String &tnam) { return Table::isReadable(tnam); }
+bool testr_table(const String &tnam) { return Table::isReadable(tnam); }
 
 //*************************************************************************//
 // Test if table tnam has to be updated. tprop are the table properties;
 // inVal the switches
-Bool testu_table(const tableProperties &tprop, inputValues &inVal) {
-  inVal.noup = True;       // Assume no update needed
-  inVal.forcedel = False;  // Assume no forced delete
+bool testu_table(const tableProperties &tprop, inputValues &inVal) {
+  inVal.noup = true;       // Assume no update needed
+  inVal.forcedel = false;  // Assume no forced delete
   inVal.lastmjd = 0.0;
   // Find if update needed
   if (inVal.x__fn) {  // Input file expected
     if (File(Path(inVal.in)).isReadable())
-      inVal.noup = False;
+      inVal.noup = false;
     else
       cout << "No expected input file " << inVal.in << endl;
   } else if (!testr_table(tprop.tnam))
-    inVal.noup = False;  // No table yet
+    inVal.noup = false;  // No table yet
   if (testr_table(tprop.tnam)) {
     Table *tab = openr_table(tprop.tnam);
     inVal.lastmjd = last_mjd(tab);
     if (inVal.noup) {
       if (dget_tversion(tab) < tprop.version) {  // A new program version
-        inVal.forcedel = True;
-        inVal.noup = False;
+        inVal.forcedel = true;
+        inVal.noup = false;
       } else if (String(inVal.type, 0, 2) == String("DE")) {
         Int uyr = MVTime(inVal.lastmjd).year();
         if (uyr < inVal.derange[1]) {
           // this only guarantees there will be /some/ data from derange[1]
           // but it looks like the DE ascii files finish in December of
           // the expected year so it should be ok.
-          inVal.noup = False;
+          inVal.noup = false;
         }
       } else if (tab->nrow() && tprop.updper != 0.0 &&
                  today_mjd() - vsdate_mjd(tab) >= tprop.updper) {
-        inVal.noup = False;  // Update period passed
+        inVal.noup = false;  // Update period passed
       } else if (tprop.repeat && today_mjd() - inVal.lastmjd > 2 * tprop.updper) {
-        inVal.noup = False;  // Update since table out-of-date
+        inVal.noup = false;  // Update since table out-of-date
       };
     };
-    close_table(tprop.tnam, tab, 0, False);
+    close_table(tprop.tnam, tab, 0, false);
     delete tab;
     tab = 0;
   };
   // Find if forced refresh asked
-  if (inVal.noup && !inVal.x__rep && inVal.refresh) inVal.noup = False;
+  if (inVal.noup && !inVal.x__rep && inVal.refresh) inVal.noup = false;
   // Find if forced delete necessary
   if (!inVal.forcedel && !inVal.noup && !inVal.x__rep && (inVal.renew || tprop.renew))
-    inVal.forcedel = True;
+    inVal.forcedel = true;
   // Message
   if (inVal.noup) cout << tprop.tnam << " is up-to-date" << endl;
-  return True;
+  return true;
 }
 
 //*************************************************************************//
@@ -1022,7 +1022,7 @@ Table *create_table(const inputValues &inVal, tableProperties &tprop) {
 // Close table tab (with name tnam) and update version (if vsup>0);
 // the version date (if timup True);
 // and show the table time statistics (if timshow True).
-Bool close_table(const String &tnam, Table *&tab, Double vsup, Bool timup, Bool timshow) {
+bool close_table(const String &tnam, Table *&tab, Double vsup, bool timup, bool timshow) {
   Double vs = dget_version(tab);
   uInt n = tab->nrow();
   Int tim(0);
@@ -1041,7 +1041,7 @@ Bool close_table(const String &tnam, Table *&tab, Double vsup, Bool timup, Bool 
     cout << " has " << n << " entries";
   if (timshow) cout << " until " << tim;
   cout << endl;
-  return True;
+  return true;
 }
 
 //*************************************************************************//
@@ -1117,7 +1117,7 @@ void put_tversion(Table *tab, Double vs) {
 
 // Read data from ascii input file. The table (for reference only) is tnam;
 // input file is inpath; out is vector of file lines.
-Bool read_data(vector<String> &out, const String &, const Path &in, Bool del = True) {
+bool read_data(vector<String> &out, const String &, const Path &in, bool del = true) {
   out.resize(0);
   ifstream infile(in.absoluteName().c_str());
   if (!infile) {
@@ -1131,25 +1131,25 @@ Bool read_data(vector<String> &out, const String &, const Path &in, Bool del = T
   if (del) {
     remove(in.absoluteName().c_str());
   };
-  return True;
+  return true;
 }
 
-Bool read_line(vector<String> &out, ifstream &infile) {
+bool read_line(vector<String> &out, ifstream &infile) {
   String line;
   out.resize(0);
   if (getline(infile, line))
     split_data(out, line);
   else
-    return False;
-  return True;
+    return false;
+  return true;
 }
 
 //*************************************************************************//
 // Write the measuresdata rc file.
-Bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
+bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
   Path pout(inVal.ofile);
   ofstream ofile(pout.absoluteName().c_str());
-  if (!ofile) return False;
+  if (!ofile) return false;
   if (inVal.end)
     ofile << "status: end" << endl;
   else {
@@ -1161,7 +1161,7 @@ Bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
     ofile << "arg: " << " in=" << tprop.fileAddress[2] << " refresh=" << boolToString(inVal.refresh)
           << " renew=" << boolToString(inVal.renew) << " type=" << inVal.fulltype
           << " derange=" << blockIntToString(inVal.derange) << " x__n=" << inVal.x__n
-          << " x__fn=" << boolToString(True) << " x__rep=" << boolToString(inVal.x__rep)
+          << " x__fn=" << boolToString(true) << " x__rep=" << boolToString(inVal.x__rep)
           << " x__val=";
     for (uInt i = 0; i < inVal.x__val.size(); ++i) {
       if (i) ofile << ",";
@@ -1171,7 +1171,7 @@ Bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
     ofile << endl;
   };
   ofile.close();
-  return True;
+  return true;
 }
 
 //*************************************************************************//
@@ -1179,16 +1179,16 @@ Bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
 //*************************************************************************//
 
 // Fill geodetic/TAI_UTC table
-Bool TAI_UTC(tableProperties &tprop, inputValues &inVal) {
+bool TAI_UTC(tableProperties &tprop, inputValues &inVal) {
   // Test if to update
-  if (testu_table(tprop, inVal) && inVal.noup) return True;
+  if (testu_table(tprop, inVal) && inVal.noup) return true;
 
   // Check if in present and to be used
-  if (inVal.testOnly || !inVal.x__fn) return True;
+  if (inVal.testOnly || !inVal.x__fn) return true;
 
   // Read the data file
   vector<String> lines;
-  read_data(lines, tprop.tnam, Path(inVal.in), True);
+  read_data(lines, tprop.tnam, Path(inVal.in), true);
 
   // Split data lines into fields
   vector<vector<String>> fields;
@@ -1236,36 +1236,36 @@ Bool TAI_UTC(tableProperties &tprop, inputValues &inVal) {
   close_table(tprop.tnam, tab, 0.0001);
 
   // OK
-  return True;
+  return true;
 }
 
 //*************************************************************************//
 
 // Fill geodetic/IERSeop97 table
-Bool IERSeop97(tableProperties &tprop, inputValues &inVal) { return IERSeop(tprop, inVal); }
+bool IERSeop97(tableProperties &tprop, inputValues &inVal) { return IERSeop(tprop, inVal); }
 
 //*************************************************************************//
 
 // Fill geodetic/IERSeop2000 table
-Bool IERSeop2000(tableProperties &tprop, inputValues &inVal) { return IERSeop(tprop, inVal); }
+bool IERSeop2000(tableProperties &tprop, inputValues &inVal) { return IERSeop(tprop, inVal); }
 
 //*************************************************************************//
 
 // Fill eop table
-Bool IERSeop(tableProperties &tprop, inputValues &inVal) {
+bool IERSeop(tableProperties &tprop, inputValues &inVal) {
   // Test if to update
-  if (testu_table(tprop, inVal) && inVal.noup) return True;
+  if (testu_table(tprop, inVal) && inVal.noup) return true;
   ;
   ;
   // Determine what to read next
   Double ml = max(Double(inVal.lastmjd), tprop.MJD0);
 
   // Check if in present and to be used
-  if (inVal.testOnly || !inVal.x__fn || tprop.fileAddress[2] != inVal.in) return True;
+  if (inVal.testOnly || !inVal.x__fn || tprop.fileAddress[2] != inVal.in) return true;
 
   // Read the data file
   vector<String> lines;
-  read_data(lines, tprop.tnam, Path(inVal.in), True);
+  read_data(lines, tprop.tnam, Path(inVal.in), true);
 
   // Split data lines into fields
   vector<vector<String>> fields;
@@ -1320,32 +1320,32 @@ Bool IERSeop(tableProperties &tprop, inputValues &inVal) {
   close_table(tprop.tnam, tab, 0.0001);
 
   // OK
-  return True;
+  return true;
 }
 
 //*************************************************************************//
 
 // Fill geodetic/IERSpredict table
-Bool IERSpredict(tableProperties &tprop, inputValues &inVal) { return IERSpred(tprop, inVal); }
+bool IERSpredict(tableProperties &tprop, inputValues &inVal) { return IERSpred(tprop, inVal); }
 
 //*************************************************************************//
 
 // Fill geodetic/IERSpredict2000 table
-Bool IERSpredict2000(tableProperties &tprop, inputValues &inVal) { return IERSpred(tprop, inVal); }
+bool IERSpredict2000(tableProperties &tprop, inputValues &inVal) { return IERSpred(tprop, inVal); }
 
 //*************************************************************************//
 
 // Fill predict table
-Bool IERSpred(tableProperties &tprop, inputValues &inVal) {
+bool IERSpred(tableProperties &tprop, inputValues &inVal) {
   // Test if to update
-  if (testu_table(tprop, inVal) && inVal.noup) return True;
+  if (testu_table(tprop, inVal) && inVal.noup) return true;
 
   // Check if in present and to be used
-  if (inVal.testOnly || !inVal.x__fn) return True;
+  if (inVal.testOnly || !inVal.x__fn) return true;
 
   // Read the data file
   vector<String> lines;
-  read_data(lines, tprop.tnam, Path(inVal.in), True);
+  read_data(lines, tprop.tnam, Path(inVal.in), true);
 
   // Split data lines into fields
   vector<vector<String>> fields;
@@ -1377,8 +1377,8 @@ Bool IERSpred(tableProperties &tprop, inputValues &inVal) {
   };
 
   // Create table
-  Bool olddel(inVal.forcedel);                              // Old force delete
-  if (allcol[0][0] > inVal.lastmjd) inVal.forcedel = True;  // Old one too old
+  bool olddel(inVal.forcedel);                              // Old force delete
+  if (allcol[0][0] > inVal.lastmjd) inVal.forcedel = true;  // Old one too old
   Table *tab = create_table(inVal, tprop);
   inVal.forcedel = olddel;  // Restore
   inVal.lastmjd = last_mjd(tab);
@@ -1406,22 +1406,22 @@ Bool IERSpred(tableProperties &tprop, inputValues &inVal) {
   close_table(tprop.tnam, tab, 0.0001);
 
   // OK
-  return True;
+  return true;
 }
 
 //*************************************************************************//
 
 // Fill geodetic/IGRF table
-Bool IGRF(tableProperties &tprop, inputValues &inVal) {
+bool IGRF(tableProperties &tprop, inputValues &inVal) {
   // Test if to update
-  if (testu_table(tprop, inVal) && inVal.noup) return True;
+  if (testu_table(tprop, inVal) && inVal.noup) return true;
 
   // Check if in present and to be used
-  if (inVal.testOnly || !inVal.x__fn) return True;
+  if (inVal.testOnly || !inVal.x__fn) return true;
 
   // Read the data file
   vector<String> lines;
-  read_data(lines, tprop.tnam, Path(inVal.in), True);
+  read_data(lines, tprop.tnam, Path(inVal.in), true);
 
   // Split data lines into fields
   vector<vector<String>> fields;
@@ -1491,18 +1491,18 @@ Bool IGRF(tableProperties &tprop, inputValues &inVal) {
   close_table(tprop.tnam, tab, 0.0001);
 
   // OK
-  return True;
+  return true;
 }
 
 //*************************************************************************//
 
 // Fill JPL planetary tables
 const uInt DE_FN_INC = 20;  // DE ascii files are for 20 year intervals
-Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
+bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   /// cout << "--- JPL tables cannot be created yet ----" << endl;;;
   /// return True;;;
   // Test if to update
-  if (testu_table(tprop, inVal) && inVal.noup) return True;
+  if (testu_table(tprop, inVal) && inVal.noup) return true;
 
   Int uyr = 0;  // value will be set from data file name
   // Check if header present
@@ -1514,7 +1514,7 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
       tprop.fileAddress[2] = tprop.vinfo[1];
       Int de_syear = Int(inVal.derange[0]) / DE_FN_INC * DE_FN_INC;
       tprop.fileAddress[2].replace(4, 4, uIntToString(de_syear));
-      return True;
+      return true;
     } else {
       // "in" is a data file
       Path dpath(inVal.in);
@@ -1528,14 +1528,14 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
     }  // working with data file
   } else {
     tprop.fileAddress[2] = tprop.vinfo[0];
-    return True;  // Get header first
+    return true;  // Get header first
   };
 
   // Dates
   Int stdat = Int(MVTime(uyr, 1, 1).day());
 
   // Check if in present and to be used
-  if (inVal.testOnly || !inVal.x__fn) return True;
+  if (inVal.testOnly || !inVal.x__fn) return true;
 
   // Read header
   if (!(hpath.isValid() && File(hpath).exists() && File(hpath).isReadable())) {
@@ -1550,7 +1550,7 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   vector<Int> ptt;
   Vector<Int> pttA;
   vector<String> hlines;
-  read_data(hlines, tprop.vinfo[0], hpath, False);
+  read_data(hlines, tprop.vinfo[0], hpath, false);
 
   // Split header lines into fields
   vector<vector<String>> hfields;
@@ -1691,18 +1691,18 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   close_table(tprop.tnam, tab, 0.0001);
 
   // OK
-  return True;
+  return true;
 }
 
 //*************************************************************************//
 
 // Fill JPL DE200 table
-Bool DE200(tableProperties &tprop, inputValues &inVal) { return JPLDE(tprop, inVal); }
+bool DE200(tableProperties &tprop, inputValues &inVal) { return JPLDE(tprop, inVal); }
 
 //*************************************************************************//
 
 // Fill JPL DE405 table
-Bool DE405(tableProperties &tprop, inputValues &inVal) { return JPLDE(tprop, inVal); }
+bool DE405(tableProperties &tprop, inputValues &inVal) { return JPLDE(tprop, inVal); }
 
 //*************************************************************************//
 // Main program
@@ -1802,12 +1802,12 @@ int main(int argc, const char **argv) {
 
     // Get and check the ASCII input file
     inVal.in = inputs.getString("in");
-    inVal.testOnly = True;
+    inVal.testOnly = true;
     Path inpath;
     if (inVal.in == "-") {
       cout << "Check and request mode only" << endl;
     } else {
-      inVal.testOnly = False;
+      inVal.testOnly = false;
       inpath = Path(inVal.in);
       cout << "The input data file: " << inpath.absoluteName() << endl;
       if (!inpath.isValid()) {
@@ -1878,7 +1878,7 @@ int main(int argc, const char **argv) {
 
   try {
     if (!inVal.types.empty()) {
-      inVal.end = True;
+      inVal.end = true;
       while (inVal.x__n < inVal.types.size()) {
         inVal.type = inVal.types[inVal.x__n];
         ++inVal.x__n;
@@ -1890,20 +1890,20 @@ int main(int argc, const char **argv) {
         properties[inVal.type].rout(properties[inVal.type], inVal);
         if (!inVal.noup) {  // Finished one
           if (!inVal.x__fn) {
-            inVal.end = False;
+            inVal.end = false;
             --inVal.x__n;
             break;
           };
-          inVal.x__fn = False;
-          inVal.x__rep = True;
+          inVal.x__fn = false;
+          inVal.x__rep = true;
           if (testu_table(properties[inVal.type], inVal) && !inVal.noup) {  // More to do
-            inVal.end = False;
+            inVal.end = false;
             --inVal.x__n;
             break;
           };
         } else
-          inVal.x__fn = False;  // Make sure
-        inVal.x__rep = False;
+          inVal.x__fn = false;  // Make sure
+        inVal.x__rep = false;
       };
     };
     writeLink(properties[inVal.type], inVal);

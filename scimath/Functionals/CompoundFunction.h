@@ -120,11 +120,11 @@ class CompoundFunction : public CompoundParam<T> {
   // be necessary on <em>other</em> first.
   // <group>
   CompoundFunction(const CompoundFunction<T> &other) : CompoundParam<T>(other) {}
-  CompoundFunction(const CompoundFunction<T> &other, Bool) : CompoundParam<T>(other, True) {}
+  CompoundFunction(const CompoundFunction<T> &other, bool) : CompoundParam<T>(other, true) {}
   template <class W>
   CompoundFunction(const CompoundFunction<W> &other) : CompoundParam<T>(other) {}
   template <class W>
-  CompoundFunction(const CompoundFunction<W> &other, Bool) : CompoundParam<T>(other, True) {}
+  CompoundFunction(const CompoundFunction<W> &other, bool) : CompoundParam<T>(other, true) {}
   // </group>
   // Make this object a (deep) copy of other.
   CompoundFunction<T> &operator=(const CompoundFunction<T> &other) {
@@ -161,7 +161,7 @@ class CompoundFunction : public CompoundParam<T> {
     return new CompoundFunction<typename FunctionTraits<T>::DiffType>(*this);
   }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new CompoundFunction<typename FunctionTraits<T>::BaseType>(*this, True);
+    return new CompoundFunction<typename FunctionTraits<T>::BaseType>(*this, true);
   }
   // </group>
 
@@ -254,7 +254,7 @@ class CompoundFunction_PS<AutoDiff<T>> : public CompoundParam<AutoDiff<T>> {
     return new CompoundFunction<typename FunctionTraits<AutoDiff<T>>::DiffType>(*this);
   }
   virtual Function<typename FunctionTraits<AutoDiff<T>>::BaseType> *cloneNonAD() const {
-    return new CompoundFunction<typename FunctionTraits<AutoDiff<T>>::BaseType>(*this, True);
+    return new CompoundFunction<typename FunctionTraits<AutoDiff<T>>::BaseType>(*this, true);
   }
   // </group>
 

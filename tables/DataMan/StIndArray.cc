@@ -79,10 +79,10 @@ void StIndArray::decrementRefCount(StManArrayFile& ios) {
 #endif
 }
 
-Bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& shape) {
+bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& shape) {
   // Return immediately if the shape is defined and is the same.
   if (arrOffset_p != 0 && shape_p.isEqual(shape)) {
-    return False;
+    return false;
   }
   // Set the shape.
   shape_p.resize(shape.nelements());
@@ -90,7 +90,7 @@ Bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& sh
   // Store the shape in the file and allocate storage for the array.
   switch (dataType) {
     case TpBool:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<Bool*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<bool*>(0));
       break;
     case TpUChar:
       arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<uChar*>(0));
@@ -126,7 +126,7 @@ Bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& sh
       arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<String*>(0));
       break;
   }
-  return True;
+  return true;
 }
 
 void StIndArray::copyData(StManArrayFile& ios, int dataType, const StIndArray& other)
@@ -199,11 +199,11 @@ void StIndArray::checkShape(const IPosition& userArrayShape,
 
 void StIndArray::getArrayV(StManArrayFile& ios, ArrayBase& arr, DataType dtype) {
   checkShape(arr.shape(), shape_p);
-  Bool deleteIt;
+  bool deleteIt;
   void* value = arr.getVStorage(deleteIt);
   switch (dtype) {
     case TpBool:
-      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<Bool*>(value));
+      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<bool*>(value));
       break;
     case TpUChar:
       ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<uChar*>(value));
@@ -249,11 +249,11 @@ void StIndArray::getArrayV(StManArrayFile& ios, ArrayBase& arr, DataType dtype) 
 
 void StIndArray::putArrayV(StManArrayFile& ios, const ArrayBase& arr, DataType dtype) {
   checkShape(arr.shape(), shape_p);
-  Bool deleteIt;
+  bool deleteIt;
   const void* value = arr.getVStorage(deleteIt);
   switch (dtype) {
     case TpBool:
-      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const Bool*>(value));
+      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const bool*>(value));
       break;
     case TpUChar:
       ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const uChar*>(value));
@@ -298,7 +298,7 @@ void StIndArray::putArrayV(StManArrayFile& ios, const ArrayBase& arr, DataType d
 }
 
 void StIndArray::getSliceV(StManArrayFile& ios, const Slicer& ns, ArrayBase& arr, DataType dtype) {
-  Bool deleteIt;
+  bool deleteIt;
   void* value = arr.getVStorage(deleteIt);
   switch (dtype) {
     case TpBool:
@@ -348,7 +348,7 @@ void StIndArray::getSliceV(StManArrayFile& ios, const Slicer& ns, ArrayBase& arr
 
 void StIndArray::putSliceV(StManArrayFile& ios, const Slicer& ns, const ArrayBase& arr,
                            DataType dtype) {
-  Bool deleteIt;
+  bool deleteIt;
   const void* value = arr.getVStorage(deleteIt);
   switch (dtype) {
     case TpBool:

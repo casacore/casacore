@@ -99,7 +99,7 @@ class FITSImgParser {
   FITSImgParser &operator=(const FITSImgParser &other);
 
   // Returns the name of the disk file.
-  String fitsname(Bool stripPath = False) const;
+  String fitsname(bool stripPath = false) const;
 
   // Identify the index of an extension.
   Int get_index(const FITSExtInfo &extinfo);
@@ -115,18 +115,18 @@ class FITSImgParser {
 
   // Get a string representation of the extension list.
   String get_extlist_string(const String &delimiter, const String &qualmarker = "",
-                            const String &fitsmarker = "", const Bool &listall = True);
+                            const String &fitsmarker = "", const bool &listall = true);
 
   // Get the flag indicating at least one quality image.
-  Bool has_qualityimg(void) { return qualimglist_p.size() > 0 ? True : False; };
+  bool has_qualityimg(void) { return qualimglist_p.size() > 0 ? true : false; };
 
   // Check whether the extensions named in the extension expression
   // can be loaded as a quality image.
-  Bool is_qualityimg(const String &extexpr);
+  bool is_qualityimg(const String &extexpr);
 
   // Find all necessary access information for the extensions to be loaded
   // as a quality image.
-  Bool get_quality_data(const String &extexpr, Int &data_HDU, Int &error_HDU, String &error_type,
+  bool get_quality_data(const String &extexpr, Int &data_HDU, Int &error_HDU, String &error_type,
                         Int &mask_HDU, String &mask_type, Int &mask_value);
 
  private:
@@ -136,7 +136,7 @@ class FITSImgParser {
   FITSExtInfo *extensions_p;
   Vector<String> qualimglist_p;
 
-  Bool hasmeasurement_p;
+  bool hasmeasurement_p;
 
   static const char *storeKwords_p[];
   static const int nKwords_p;
@@ -148,7 +148,7 @@ class FITSImgParser {
   void process_extension(HeaderDataUnit *h, const uInt &extindex);
 
   // Extract the list of extensions from the extension expression.
-  Bool get_extlist(const String &extexpr, Vector<String> &extlist);
+  bool get_extlist(const String &extexpr, Vector<String> &extlist);
 
   // Get the first extension with HDU type "data" from the
   // list of indices. Returns "-1" if there is none.
@@ -161,14 +161,14 @@ class FITSImgParser {
   String get_maskext(const Int &ext_index);
 
   // Check the keywords with fixed values
-  Bool confirm_fix_keywords(const Int &ext_index);
+  bool confirm_fix_keywords(const Int &ext_index);
 
   // Check whether the extension has a certain HDU type.
-  Bool index_is_HDUtype(const Int &ext_index, const String &hdutype);
+  bool index_is_HDUtype(const Int &ext_index, const String &hdutype);
 
   // Find and store all set of extensions
   // that can be loaded as a quality image.
-  Bool find_qualimgs(void);
+  bool find_qualimgs(void);
 };
 
 // class FitsKeywordList;
@@ -214,10 +214,10 @@ class FITSExtInfo {
  public:
   // Construct the object
   FITSExtInfo(const String &name, const uInt &extindex, const String &extname,
-              const Int &extversion, const Bool &hasdata);
+              const Int &extversion, const bool &hasdata);
 
   // Construct the object
-  FITSExtInfo() { FITSExtInfo("", 0, "", 0, False); };
+  FITSExtInfo() { FITSExtInfo("", 0, "", 0, false); };
 
   // Copy constructor (reference semantics)
   FITSExtInfo(const FITSExtInfo &other);
@@ -229,7 +229,7 @@ class FITSExtInfo {
   FITSExtInfo &operator=(const FITSExtInfo &other);
 
   // Relational operator.
-  Bool operator==(const FITSExtInfo &extinfo);
+  bool operator==(const FITSExtInfo &extinfo);
 
   // All extension information as a string.
   String get_extexpr(void);
@@ -241,7 +241,7 @@ class FITSExtInfo {
   Int get_extversion(void) { return extversion_p; };
 
   // Return whether there is data.
-  Bool has_data(void) { return hasdata_p; };
+  bool has_data(void) { return hasdata_p; };
 
   // Add a list of keywords.
   void add_kwlist(FitsKeywordList &kwlist);
@@ -254,7 +254,7 @@ class FITSExtInfo {
   uInt extindex_p;
   String extname_p;
   Int extversion_p;
-  Bool hasdata_p;
+  bool hasdata_p;
   FitsKeywordList kwlist_p;
 };
 

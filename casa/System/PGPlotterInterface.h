@@ -104,7 +104,7 @@ class PGPlotterInterface {
   // devices where you have to worry about devices detaching (e.g., the Glish
   // pgplotter might be dismissed by the user). The default implementation is
   // to always return True.
-  virtual Bool isAttached() const;
+  virtual bool isAttached() const;
 
   // This is not a standard PGPLOT command. In the Glish/PGPLOT window, it
   // puts a message in the message line. By default it sends it to the logger.
@@ -141,9 +141,9 @@ class PGPlotterInterface {
   // whereas they must be passed into standard PGPLOT).
   // <group>
   virtual void arro(Float x1, Float y1, Float x2, Float y2) = 0;
-  virtual void ask(Bool flag) = 0;
+  virtual void ask(bool flag) = 0;
   virtual void bbuf() = 0;
-  virtual void bin(const Vector<Float> &x, const Vector<Float> &data, Bool center) = 0;
+  virtual void bin(const Vector<Float> &x, const Vector<Float> &data, bool center) = 0;
   virtual void box(const String &xopt, Float xtick, Int nxsub, const String &yopt, Float ytick,
                    Int nysub) = 0;
   virtual void circ(Float xcent, Float ycent, Float radius) = 0;
@@ -152,7 +152,7 @@ class PGPlotterInterface {
   virtual void conl(const Matrix<Float> &a, Float c, const Vector<Float> &tr, const String &label,
                     Int intval, Int minint) = 0;
   virtual void cons(const Matrix<Float> &a, const Vector<Float> &c, const Vector<Float> &tr) = 0;
-  virtual void cont(const Matrix<Float> &a, const Vector<Float> &c, Bool nc,
+  virtual void cont(const Matrix<Float> &a, const Vector<Float> &c, bool nc,
                     const Vector<Float> &tr) = 0;
   virtual void ctab(const Vector<Float> &l, const Vector<Float> &r, const Vector<Float> &g,
                     const Vector<Float> &b, Float contra, Float bright) = 0;
@@ -168,7 +168,7 @@ class PGPlotterInterface {
                     Float t) = 0;
   virtual void gray(const Matrix<Float> &a, Float fg, Float bg, const Vector<Float> &tr) = 0;
   virtual void hi2d(const Matrix<Float> &data, const Vector<Float> &x, Int ioff, Float bias,
-                    Bool center, const Vector<Float> &ylims) = 0;
+                    bool center, const Vector<Float> &ylims) = 0;
   virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, Int nbin,
                     Int pcflag) = 0;
   virtual void iden() = 0;

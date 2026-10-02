@@ -65,86 +65,86 @@ QuantumHolder &QuantumHolder::operator=(const QuantumHolder &other) {
 }
 
 // # Member Functions
-Bool QuantumHolder::isEmpty() const { return (!hold_p); }
+bool QuantumHolder::isEmpty() const { return (!hold_p); }
 
-Bool QuantumHolder::isQuantum() const { return (static_cast<Bool>(hold_p)); }
+bool QuantumHolder::isQuantum() const { return (static_cast<bool>(hold_p)); }
 
-Bool QuantumHolder::isScalar() const { return (hold_p && nelements() == 1); }
+bool QuantumHolder::isScalar() const { return (hold_p && nelements() == 1); }
 
-Bool QuantumHolder::isVector() const { return (hold_p && ndim() == 1); }
+bool QuantumHolder::isVector() const { return (hold_p && ndim() == 1); }
 
-Bool QuantumHolder::isArray() const { return (hold_p && ndim() > 0); }
+bool QuantumHolder::isArray() const { return (hold_p && ndim() > 0); }
 
-Bool QuantumHolder::isReal() const {
+bool QuantumHolder::isReal() const {
   return (hold_p && (isQuantumDouble() || isQuantumFloat() || isQuantumInt() ||
                      isQuantumArrayDouble() || isQuantumArrayFloat() || isQuantumArrayInt()));
 }
 
-Bool QuantumHolder::isComplex() const {
+bool QuantumHolder::isComplex() const {
   return (hold_p && (isQuantumComplex() || isQuantumDComplex() || isQuantumArrayComplex() ||
                      isQuantumArrayDComplex()));
 }
 
-Bool QuantumHolder::isQuantity() const { return (hold_p && isQuantumDouble()); }
+bool QuantumHolder::isQuantity() const { return (hold_p && isQuantumDouble()); }
 
-Bool QuantumHolder::isQuantumDouble() const {
+bool QuantumHolder::isQuantumDouble() const {
   return (hold_p && hold_p->type() == Quantum<Double>::myType());
 }
 
-Bool QuantumHolder::isQuantumFloat() const {
+bool QuantumHolder::isQuantumFloat() const {
   return (hold_p && hold_p->type() == Quantum<Float>::myType());
 }
 
-Bool QuantumHolder::isQuantumInt() const {
+bool QuantumHolder::isQuantumInt() const {
   return (hold_p && hold_p->type() == Quantum<Int>::myType());
 }
 
-Bool QuantumHolder::isQuantumComplex() const {
+bool QuantumHolder::isQuantumComplex() const {
   return (hold_p && hold_p->type() == Quantum<Complex>::myType());
 }
 
-Bool QuantumHolder::isQuantumDComplex() const {
+bool QuantumHolder::isQuantumDComplex() const {
   return (hold_p && hold_p->type() == Quantum<DComplex>::myType());
 }
 
-Bool QuantumHolder::isQuantumArrayDouble() const {
+bool QuantumHolder::isQuantumArrayDouble() const {
   return (hold_p && (hold_p->type() == Quantum<Array<Double>>::myType() ||
                      hold_p->type() == Quantum<Vector<Double>>::myType()));
 }
 
-Bool QuantumHolder::isQuantumArrayFloat() const {
+bool QuantumHolder::isQuantumArrayFloat() const {
   return (hold_p && (hold_p->type() == Quantum<Array<Float>>::myType() ||
                      hold_p->type() == Quantum<Vector<Float>>::myType()));
 }
 
-Bool QuantumHolder::isQuantumArrayInt() const {
+bool QuantumHolder::isQuantumArrayInt() const {
   return (hold_p && (hold_p->type() == Quantum<Array<Int>>::myType() ||
                      hold_p->type() == Quantum<Vector<Int>>::myType()));
 }
 
-Bool QuantumHolder::isQuantumArrayComplex() const {
+bool QuantumHolder::isQuantumArrayComplex() const {
   return (hold_p && (hold_p->type() == Quantum<Array<Complex>>::myType() ||
                      hold_p->type() == Quantum<Vector<Complex>>::myType()));
 }
 
-Bool QuantumHolder::isQuantumArrayDComplex() const {
+bool QuantumHolder::isQuantumArrayDComplex() const {
   return (hold_p && (hold_p->type() == Quantum<Array<DComplex>>::myType() ||
                      hold_p->type() == Quantum<Vector<DComplex>>::myType()));
 }
 
-Bool QuantumHolder::isQuantumVectorDouble() const {
+bool QuantumHolder::isQuantumVectorDouble() const {
   return (isQuantumArrayDouble() && ndim() == 1);
 }
 
-Bool QuantumHolder::isQuantumVectorFloat() const { return (isQuantumArrayFloat() && ndim() == 1); }
+bool QuantumHolder::isQuantumVectorFloat() const { return (isQuantumArrayFloat() && ndim() == 1); }
 
-Bool QuantumHolder::isQuantumVectorInt() const { return (isQuantumArrayInt() && ndim() == 1); }
+bool QuantumHolder::isQuantumVectorInt() const { return (isQuantumArrayInt() && ndim() == 1); }
 
-Bool QuantumHolder::isQuantumVectorComplex() const {
+bool QuantumHolder::isQuantumVectorComplex() const {
   return (isQuantumArrayComplex() && ndim() == 1);
 }
 
-Bool QuantumHolder::isQuantumVectorDComplex() const {
+bool QuantumHolder::isQuantumVectorDComplex() const {
   return (isQuantumArrayDComplex() && ndim() == 1);
 }
 
@@ -439,7 +439,7 @@ const Quantum<Array<DComplex>> &QuantumHolder::asQuantumArrayDComplex() {
   return static_cast<const Quantum<Array<DComplex>> &>(*hold_p);
 }
 
-Bool QuantumHolder::fromRecord(String &error, const RecordInterface &in) {
+bool QuantumHolder::fromRecord(String &error, const RecordInterface &in) {
   String un;
   if (in.isDefined(String("value")) && in.isDefined(String("unit")) &&
       in.type(in.idToNumber(RecordFieldId("unit"))) == TpString) {
@@ -450,82 +450,82 @@ Bool QuantumHolder::fromRecord(String &error, const RecordInterface &in) {
         Double vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Double>(vl, un));
-        return True;
+        return true;
       }
       case TpFloat: {
         Float vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Float>(vl, un));
-        return True;
+        return true;
       }
       case TpInt: {
         Int vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Int>(vl, un));
-        return True;
+        return true;
       }
       case TpComplex: {
         Complex vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Complex>(vl, un));
-        return True;
+        return true;
       }
       case TpDComplex: {
         DComplex vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<DComplex>(vl, un));
-        return True;
+        return true;
       }
       case TpArrayDouble: {
         Array<Double> vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Array<Double>>(vl, un));
-        return True;
+        return true;
       }
       case TpArrayFloat: {
         Array<Float> vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Array<Float>>(vl, un));
-        return True;
+        return true;
       }
       case TpArrayInt: {
         Array<Int> vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Array<Int>>(vl, un));
-        return True;
+        return true;
       }
       case TpArrayComplex: {
         Array<Complex> vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Array<Complex>>(vl, un));
-        return True;
+        return true;
       }
       case TpArrayDComplex: {
         Array<DComplex> vl;
         in.get(RecordFieldId("value"), vl);
         hold_p.reset(new Quantum<Array<DComplex>>(vl, un));
-        return True;
+        return true;
       }
       default:
         break;
     }
   }
   error += String("Illegal Quantum record in QuantumHolder::fromRecord\n");
-  return False;
+  return false;
 }
 
-Bool QuantumHolder::fromString(String &error, const String &in) {
+bool QuantumHolder::fromString(String &error, const String &in) {
   Quantum<Double> res;
   if (!Quantum<Double>::read(res, in)) {
     error += String("in QuantumHolder::fromString with input string \"") + in +
              String("\": Illegal input units or format\n");
-    return False;
+    return false;
   }
   hold_p.reset(new Quantum<Double>(res));
-  return True;
+  return true;
 }
 
-Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
+bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
   if (hold_p) {
     if (out.isDefined("value")) out.removeField(RecordFieldId("value"));
     if (isQuantumDouble()) {
@@ -574,10 +574,10 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
                  ((static_cast<Quantum<Array<DComplex>> *>(hold_p.get()))->getValue()));
     }
     out.define(RecordFieldId("unit"), hold_p->getFullUnit().getName());
-    return True;
+    return true;
   }
   error += String("No Quantum specified in QuantumHolder::toRecord\n");
-  return False;
+  return false;
 }
 
 void QuantumHolder::toRecord(RecordInterface &out) const {

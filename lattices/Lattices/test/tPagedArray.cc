@@ -72,7 +72,7 @@ void testTempClose() {
   shape(2) = 1;
   COWPtr<Array<Int>> ptrM;
   scratch.tempClose();
-  scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), False);
+  scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), false);
   scratch.reopen();
   AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
   Array<Int> expectedResult(shape);
@@ -81,7 +81,7 @@ void testTempClose() {
   ptrM.rwRef() = 0;
   AlwaysAssert(allEQ(*ptrM, 0), AipsError);
   Slicer sl(IPosition(3, 0, 0, 5), shape, IPosition(3, 1));
-  scratch.getSlice(ptrM, sl, False);
+  scratch.getSlice(ptrM, sl, false);
   AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
   scratch.set(0);
   scratch.putAt(7, IPosition(3, 7));
@@ -120,7 +120,7 @@ int main() {
       pa.putAt(99.0, IPosition(2, 11));
       pa.putAt(98.0f, IPosition(2, 11, 10));
       AlwaysAssert(removeDir(pa.tableName()) == "tPagedArray_tmp.table", AipsError);
-      AlwaysAssert(pa.name(True) == "tPagedArray_tmp.table", AipsError);
+      AlwaysAssert(pa.name(true) == "tPagedArray_tmp.table", AipsError);
       AlwaysAssert(pa.isPersistent(), AipsError);
       AlwaysAssert(pa.isPaged(), AipsError);
       AlwaysAssert(pa.isWritable(), AipsError);
@@ -141,7 +141,7 @@ int main() {
         li.woCursor() = i;
       }
       COWPtr<Array<Int>> ptrM;
-      scratch.getSlice(ptrM, IPosition(3, 0), IPosition(3, 9, 9, 1), IPosition(3, 1), True);
+      scratch.getSlice(ptrM, IPosition(3, 0), IPosition(3, 9, 9, 1), IPosition(3, 1), true);
       AlwaysAssert(ptrM->shape().isEqual(IPosition(2, 9)), AipsError);
       Array<Int> expectedResult(IPosition(2, 9));
       indgen(expectedResult);
@@ -150,7 +150,7 @@ int main() {
       AlwaysAssert(allEQ(*ptrM, 0), AipsError);
       Slicer sl(IPosition(3, 0, 0, 5), IPosition(3, 9, 9, 1), IPosition(3, 1));
 
-      scratch.getSlice(ptrM, sl, True);
+      scratch.getSlice(ptrM, sl, true);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
       scratch.resize(IPosition(3, 8));
       AlwaysAssert(scratch.shape().isEqual(IPosition(3, 8)), AipsError);
@@ -221,7 +221,7 @@ int main() {
         iarr = 0;
         pa4.getSlice(iarr, IPosition(2, 0), IPosition(2, 16), IPosition(2, 1));
         AlwaysAssert(allEQ(iarr, expected), AipsError);
-        AlwaysAssert(pa4.ok() == True, AipsError);
+        AlwaysAssert(pa4.ok() == true, AipsError);
       }
       AlwaysAssert(pa3.maximumCacheSize() == 65536, AipsError);
 

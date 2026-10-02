@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 Table TableCopy::makeEmptyTable(const String& newName, const Record& dataManagerInfo,
                                 const Table& tab, Table::TableOption option,
-                                Table::EndianFormat endianFormat, Bool replaceTSM, Bool noRows,
+                                Table::EndianFormat endianFormat, bool replaceTSM, bool noRows,
                                 const StorageOption& stopt) {
   TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo(dataManagerInfo);
@@ -61,13 +61,13 @@ Table TableCopy::makeEmptyTable(const String& newName, const Record& dataManager
   }
   // Replace non-writable storage managers by StandardStMan.
   // This is for instance needed for LofarStMan.
-  dminfo = DataManInfo::adjustStMan(dminfo, "StandardStMan", True);
+  dminfo = DataManInfo::adjustStMan(dminfo, "StandardStMan", true);
   SetupNewTable newtab(newName, tabDesc, option, stopt);
   newtab.bindCreate(dminfo);
-  return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
+  return Table(newtab, (noRows ? 0 : tab.nrow()), false, endianFormat);
 }
 
-Table TableCopy::makeEmptyMemoryTable(const String& newName, const Table& tab, Bool noRows) {
+Table TableCopy::makeEmptyMemoryTable(const String& newName, const Table& tab, bool noRows) {
   TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo = tab.dataManagerInfo();
   SetupNewTable newtab(newName, tabDesc, Table::New);
@@ -76,7 +76,7 @@ Table TableCopy::makeEmptyMemoryTable(const String& newName, const Table& tab, B
 }
 
 void TableCopy::copyRows(Table& out, const Table& in, rownr_t startout, rownr_t startin,
-                         rownr_t nrrow, Bool flush) {
+                         rownr_t nrrow, bool flush) {
   // Check if startin and nrrow are correct for input.
   if (startin + nrrow > in.nrow()) {
     throw TableError("TableCopy: startin+nrrow exceed nr of input rows");
@@ -95,7 +95,7 @@ void TableCopy::copyRows(Table& out, const Table& in, rownr_t startout, rownr_t 
     }
   }
   if (nrcol > 0) {
-    cols.resize(nrcol, True);
+    cols.resize(nrcol, true);
     // Add rows as needed.
     if (startout + nrrow > out.nrow()) {
       out.addRow(startout + nrrow - out.nrow());
@@ -104,7 +104,7 @@ void TableCopy::copyRows(Table& out, const Table& in, rownr_t startout, rownr_t 
     outrow = TableRow(out, cols);
     for (rownr_t i = 0; i < nrrow; i++) {
       inrow.get(startin + i);
-      outrow.put(startout + i, inrow.record(), inrow.getDefined(), False);
+      outrow.put(startout + i, inrow.record(), inrow.getDefined(), false);
     }
     if (flush) {
       out.flush();
@@ -117,7 +117,7 @@ void TableCopy::copyInfo(Table& out, const Table& in) {
   out.flushTableInfo();
 }
 
-void TableCopy::copySubTables(Table& out, const Table& in, Bool noRows, const Block<String>& omit) {
+void TableCopy::copySubTables(Table& out, const Table& in, bool noRows, const Block<String>& omit) {
   copySubTables(out.rwKeywordSet(), in.keywordSet(), out.tableName(), out.tableType(), in, noRows,
                 omit);
   const TableDesc& outDesc = out.tableDesc();
@@ -139,7 +139,7 @@ void TableCopy::copySubTables(Table& out, const Table& in, Bool noRows, const Bl
 
 void TableCopy::copySubTables(TableRecord& outKeys, const TableRecord& inKeys,
                               const String& outName, Table::TableType outType, const Table& in,
-                              Bool noRows, const Block<String>& omit) {
+                              bool noRows, const Block<String>& omit) {
   for (uInt i = 0; i < inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
       Table inTab = inKeys.asTable(i);
@@ -164,7 +164,7 @@ void TableCopy::copySubTables(TableRecord& outKeys, const TableRecord& inKeys,
         if (outType == Table::Memory) {
           outTab = inTab.copyToMemoryTable(newName, noRows);
         } else {
-          inTab.deepCopy(newName, Table::New, False, Table::AipsrcEndian, noRows);
+          inTab.deepCopy(newName, Table::New, false, Table::AipsrcEndian, noRows);
           outTab = Table(newName);
         }
         outKeys.defineTable(inKeys.name(i), outTab);
@@ -213,7 +213,7 @@ void TableCopy::doCloneColumn(const Table& fromTable, const String& fromColumn, 
 }
 
 void TableCopy::copyColumnData(const Table& tabFrom, const String& colFrom, Table& tabTo,
-                               const String& colTo, Bool preserveTileShape) {
+                               const String& colTo, bool preserveTileShape) {
   AlwaysAssert(tabFrom.nrow() == tabTo.nrow(), AipsError);
   TableColumn incol(tabFrom, colFrom);
   TableColumn outcol(tabTo, colTo);

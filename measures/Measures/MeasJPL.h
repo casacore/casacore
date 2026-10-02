@@ -182,12 +182,12 @@ class MeasJPL {
   // # General Member Functions
   //  Get the values from a DE table, interpolated for date(in MJD(TDB)).
   //  The file can be DE200 or DE405, the type as given in enum.
-  static Bool get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
+  static bool get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
                   const MVEpoch &date);
   // Get indicated special constant
-  static Bool getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what);
+  static bool getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what);
   // Get filed constant with name nam
-  static Bool getConst(Double &res, MeasJPL::Files which, const String &nam);
+  static bool getConst(Double &res, MeasJPL::Files which, const String &nam);
 
   // Close the set of JPL tables only. Only call it last at end of program.
   static void closeMeas();
@@ -206,7 +206,7 @@ class MeasJPL {
 
   // # General member functions
   //  Initialise tables
-  static Bool initMeasOnce(MeasJPL::Files which);
+  static bool initMeasOnce(MeasJPL::Files which);
   static void doInitMeas(MeasJPL::Files which);
   // Get a pointer to the data for the given date. It reads the data if needed.
   static const Double *fillMeas(Double &intv, MeasJPL::Files which, const MVEpoch &utf);

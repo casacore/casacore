@@ -214,7 +214,7 @@ String Stokes::name(StokesTypes stokesType) {
   return stokesName;
 }
 
-Vector<String> Stokes::allNames(Bool includeUndefined) {
+Vector<String> Stokes::allNames(bool includeUndefined) {
   uInt size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
   Vector<String> names(size);
   uInt idx = 0;

@@ -32,12 +32,12 @@
 
 using namespace casacore;
 
-void doBool(Bool v) {
+void doBool(bool v) {
   ValueHolder vh(v);
   AlwaysAssertExit(!vh.isNull());
   AlwaysAssertExit(vh.dataType() == TpBool);
   AlwaysAssertExit(vh.asBool() == v);
-  Vector<Bool> vec = vh.asArrayBool();
+  Vector<bool> vec = vh.asArrayBool();
   AlwaysAssertExit(vec.size() == 1 && vec.data()[0] == v);
   cout << vh << endl;
   Record rec;
@@ -47,7 +47,7 @@ void doBool(Bool v) {
   vhc = ValueHolder::fromRecord(rec, "a");
   AlwaysAssertExit(!vhc.isNull());
   AlwaysAssertExit(vhc.dataType() == TpBool);
-  Bool vc;
+  bool vc;
   vhc.getValue(vc);
   AlwaysAssertExit(vc == v);
   cout << vh << ' ' << vhc << endl;
@@ -69,8 +69,8 @@ void doPos(T v, U, DataType dt) {
   AlwaysAssertExit(vh.asDouble() == double(v));
   AlwaysAssertExit(vh.asComplex() == Complex(float(v), 0));
   AlwaysAssertExit(vh.asDComplex() == DComplex(double(v), 0));
-  Vector<Bool> vecbool = vh.asArrayBool();
-  AlwaysAssertExit(vecbool.size() == 1 && vecbool.data()[0] == True);
+  Vector<bool> vecbool = vh.asArrayBool();
+  AlwaysAssertExit(vecbool.size() == 1 && vecbool.data()[0] == true);
   Vector<uChar> vecuChar = vh.asArrayuChar();
   AlwaysAssertExit(vecuChar.size() == 1 && vecuChar.data()[0] == uChar(v));
   Vector<Short> vecShort = vh.asArrayShort();
@@ -121,8 +121,8 @@ void doNeg(T v, U, DataType dt) {
   AlwaysAssertExit(vh.asDouble() == double(v));
   AlwaysAssertExit(vh.asComplex() == Complex(float(v), 0));
   AlwaysAssertExit(vh.asDComplex() == DComplex(double(v), 0));
-  Vector<Bool> vecbool = vh.asArrayBool();
-  AlwaysAssertExit(vecbool.size() == 1 && vecbool.data()[0] == True);
+  Vector<bool> vecbool = vh.asArrayBool();
+  AlwaysAssertExit(vecbool.size() == 1 && vecbool.data()[0] == true);
   Vector<Short> vecShort = vh.asArrayShort();
   AlwaysAssertExit(vecShort.size() == 1 && vecShort.data()[0] == Short(v));
   Vector<Int> vecInt = vh.asArrayInt();
@@ -264,8 +264,8 @@ void doArrayString(const Array<String>& v) {
 
 int main() {
   try {
-    doBool(True);
-    doBool(False);
+    doBool(true);
+    doBool(false);
     doNeg(Short(-4), Short(0), TpShort);
     doNeg(Int(-7), Int(0), TpInt);
     doNeg(Int64(-40), Int64(0), TpInt64);

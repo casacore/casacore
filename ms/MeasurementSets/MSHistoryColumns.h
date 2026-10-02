@@ -127,7 +127,7 @@ class MSHistoryColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

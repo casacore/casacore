@@ -87,7 +87,7 @@ class SDSourceHandler {
   SDSourceHandler();
 
   // attach this to a MS, marking fields in row which are explicitly handled here
-  SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDSourceHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDSourceHandler(const SDSourceHandler &other);
@@ -98,7 +98,7 @@ class SDSourceHandler {
   SDSourceHandler &operator=(const SDSourceHandler &other);
 
   // attach to a MS, the handledCols and row arguments are ignored here
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS; just resets the id pointer
   void resetRow(const Record &);
@@ -128,7 +128,7 @@ class SDSourceHandler {
   RORecordFieldPtr<String> transiti_p, molecule_p, object_p, obsmode_p;
 
   // which optional colums exist
-  Bool hasTransition_p, hasRestFreq_p, hasSysVel_p, hasPosition_p;
+  bool hasTransition_p, hasRestFreq_p, hasSysVel_p, hasPosition_p;
 
   // fields which might come from a pre-existin MS
   RORecordFieldPtr<Int> calibrationGroupField_p, pulsarIdField_p;
@@ -142,10 +142,10 @@ class SDSourceHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // initialize the stuff dependent on the row
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

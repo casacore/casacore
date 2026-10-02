@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 WCExtension::WCExtension(const ImageRegion& region, const WCBox& extendBox)
     : WCCompound(region, ImageRegion(extendBox)) {}
 
-WCExtension::WCExtension(Bool takeOver, const Block<const WCRegion*>& regions)
+WCExtension::WCExtension(bool takeOver, const Block<const WCRegion*>& regions)
     : WCCompound(takeOver, regions) {}
 
 WCExtension::WCExtension(const WCExtension& other) : WCCompound(other) {}
@@ -52,11 +52,11 @@ WCExtension& WCExtension::operator=(const WCExtension& other) {
   return *this;
 }
 
-Bool WCExtension::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
+bool WCExtension::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
 
 WCRegion* WCExtension::cloneRegion() const { return new WCExtension(*this); }
 
-Bool WCExtension::canExtend() const {
+bool WCExtension::canExtend() const {
   // It can extend itself if the box can do so.
   DebugAssert(regions().nelements() == 2, AipsError);
   return regions()[1]->canExtend();
@@ -183,7 +183,7 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
     LCRegion* boxptr = strbox.toLCRegionAxes(cSys, shape, strPixMap, strOutOrd);
     LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
     AlwaysAssert(dboxptr != 0, AipsError);
-    LCStretch* extptr = new LCStretch(True, regptr, stretchRegAxes, *dboxptr);
+    LCStretch* extptr = new LCStretch(true, regptr, stretchRegAxes, *dboxptr);
     delete boxptr;
     regptr = extptr;
   }
@@ -191,7 +191,7 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
     LCRegion* boxptr = extbox.toLCRegionAxes(cSys, shape, extPixMap, extOutOrd);
     LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
     AlwaysAssert(dboxptr != 0, AipsError);
-    LCExtension* extptr = new LCExtension(True, regptr, extendAxes, *dboxptr);
+    LCExtension* extptr = new LCExtension(true, regptr, extendAxes, *dboxptr);
     delete boxptr;
     regptr = extptr;
   }
@@ -212,7 +212,7 @@ TableRecord WCExtension::toRecord(const String& tableName) const {
 WCExtension* WCExtension::fromRecord(const TableRecord& rec, const String& tableName) {
   Block<const WCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
-  return new WCExtension(True, regions);
+  return new WCExtension(true, regions);
 }
 
 }  // namespace casacore

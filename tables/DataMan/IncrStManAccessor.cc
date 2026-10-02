@@ -33,7 +33,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ROIncrementalStManAccessor::ROIncrementalStManAccessor(const Table& table, const String& name,
-                                                       Bool byColumn)
+                                                       bool byColumn)
     : RODataManAccessor(table, name, byColumn), dataManPtr_p(0) {
   dataManPtr_p = dynamic_cast<ISMBase*>(baseDataManager());
   if (dataManPtr_p == 0) {
@@ -54,7 +54,7 @@ ROIncrementalStManAccessor& ROIncrementalStManAccessor::operator=(
   return *this;
 }
 
-void ROIncrementalStManAccessor::setCacheSize(uInt size, Bool canExceedNrBuckets) {
+void ROIncrementalStManAccessor::setCacheSize(uInt size, bool canExceedNrBuckets) {
   dataManPtr_p->setCacheSize(size, canExceedNrBuckets);
 }
 uInt ROIncrementalStManAccessor::cacheSize() const { return dataManPtr_p->cacheSize(); }
@@ -69,13 +69,13 @@ void ROIncrementalStManAccessor::showBucketLayout(ostream& os) const {
   dataManPtr_p->showBucketLayout(os);
 }
 
-Bool ROIncrementalStManAccessor::checkBucketLayout(uInt& offendingCursor,
+bool ROIncrementalStManAccessor::checkBucketLayout(uInt& offendingCursor,
                                                    rownr_t& offendingBucketStartRow,
                                                    uInt& offendingBucketNrow,
                                                    uInt& offendingBucketNr, uInt& offendingCol,
                                                    uInt& offendingIndex, rownr_t& offendingRow,
                                                    rownr_t& offendingPrevRow) const {
-  Bool ok;
+  bool ok;
   ok = dataManPtr_p->checkBucketLayout(offendingCursor, offendingBucketStartRow,
                                        offendingBucketNrow, offendingBucketNr, offendingCol,
                                        offendingIndex, offendingRow, offendingPrevRow);

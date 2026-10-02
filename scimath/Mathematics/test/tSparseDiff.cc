@@ -35,7 +35,7 @@
 
 #include <casacore/casa/namespace.h>
 
-Bool testDer(const SparseDiff<Float> y, const SparseDiff<Float> &x, Float f) {
+bool testDer(const SparseDiff<Float> y, const SparseDiff<Float> &x, Float f) {
   return !(x.nDerivatives() != y.nDerivatives() ||
            !nearAbs(y.derivative(0).second, f * x.derivative(0).second, 1e-5));
 }

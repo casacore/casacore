@@ -117,7 +117,7 @@ Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names) {
     Vector<Int> currentMatch = matchSourceName(names(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedSourceIds);
-      matchedSourceIds.resize(matchedSourceIds.nelements() + currentMatch.nelements(), True);
+      matchedSourceIds.resize(matchedSourceIds.nelements() + currentMatch.nelements(), true);
       matchedSourceIds = concatenateArray(temp, currentMatch);
     }
   }

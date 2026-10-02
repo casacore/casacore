@@ -163,9 +163,9 @@ class EarthMagneticMachine {
   //</group>
   // Calculate a value from direction or height (in m if not Quantity)
   // <group>
-  Bool calculate(const MVDirection &in);
-  Bool calculate(const Quantum<Double> &hgt);
-  Bool calculate(const Double hgt);
+  bool calculate(const MVDirection &in);
+  bool calculate(const Quantum<Double> &hgt);
+  bool calculate(const Double hgt);
   // </group>
   // Return data
   // <group>
@@ -229,8 +229,8 @@ class EarthMagneticMachine {
   MVDirection rin_p;
   // Extension calculated
   // <group>
-  Bool fex_p;
-  Bool pex_p;
+  bool fex_p;
+  bool pex_p;
   // </group>
   // Position sub-point
   MVPosition sub_p;
@@ -247,7 +247,7 @@ class EarthMagneticMachine {
   // Cumulative filled fields
   Int cumf_p;
   // Calc done
-  Bool clx_p;
+  bool clx_p;
 
   // # Private Member Functions
   //  Initialise machinery

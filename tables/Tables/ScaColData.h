@@ -103,7 +103,7 @@ class ScalarColumnData : public PlainColumn {
   virtual void initialize(rownr_t startRownr, rownr_t endRownr);
 
   // Test if the given cell contains a defined value.
-  virtual Bool isDefined(rownr_t rownr) const;
+  virtual bool isDefined(rownr_t rownr) const;
 
   // Get the value from a particular cell.
   virtual void get(rownr_t rownr, void*) const;
@@ -157,7 +157,7 @@ class ScalarColumnData : public PlainColumn {
   // Pointer to column description.
   const ScalarColumnDesc<T>* scaDescPtr_p;
   // Undefined value can exist?
-  Bool undefFlag_p;
+  bool undefFlag_p;
   // Undefined value.
   T undefVal_p;
 

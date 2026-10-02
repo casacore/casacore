@@ -97,7 +97,7 @@ void doCollapse() {
   ArrayLattice<Float> latIn(shape);
   latIn.set(1.0);
   Array<Float> data;
-  Array<Bool> mask;
+  Array<bool> mask;
   IPosition axes(2);
   axes(0) = 1;
   axes(1) = 2;
@@ -108,18 +108,18 @@ void doCollapse() {
     cerr << "  Unmasked" << endl;
     SubLattice<Float> mLatIn(latIn);
     //
-    LatticeMathUtil::collapse(data, axes, mLatIn, True);
+    LatticeMathUtil::collapse(data, axes, mLatIn, true);
     AlwaysAssert(data.ndim() == 1, AipsError);
     AlwaysAssert(data.shape()(0) == shape(0), AipsError);
     AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
     //
-    LatticeMathUtil::collapse(data, mask, axes, mLatIn, True, True, True);
+    LatticeMathUtil::collapse(data, mask, axes, mLatIn, true, true, true);
     AlwaysAssert(data.ndim() == 1, AipsError);
     AlwaysAssert(mask.ndim() == 1, AipsError);
     AlwaysAssert(data.shape()(0) == shape(0), AipsError);
     AlwaysAssert(mask.shape()(0) == shape(0), AipsError);
     AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
   }
 
   // Masked Input
@@ -128,21 +128,21 @@ void doCollapse() {
     cerr << "  Masked" << endl;
     SubLattice<Float> mLatIn(latIn);
     //
-    ArrayLattice<Bool> maskLat(shape);
-    maskLat.set(True);
-    mLatIn.setPixelMask(maskLat, True);
+    ArrayLattice<bool> maskLat(shape);
+    maskLat.set(true);
+    mLatIn.setPixelMask(maskLat, true);
     //
-    LatticeMathUtil::collapse(data, axes, mLatIn, True);
+    LatticeMathUtil::collapse(data, axes, mLatIn, true);
     AlwaysAssert(data.ndim() == 1, AipsError);
     AlwaysAssert(data.shape()(0) == shape(0), AipsError);
     AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
     //
-    LatticeMathUtil::collapse(data, mask, axes, mLatIn, True, True, True);
+    LatticeMathUtil::collapse(data, mask, axes, mLatIn, true, true, true);
     AlwaysAssert(data.ndim() == 1, AipsError);
     AlwaysAssert(mask.ndim() == 1, AipsError);
     AlwaysAssert(data.shape()(0) == shape(0), AipsError);
     AlwaysAssert(mask.shape()(0) == shape(0), AipsError);
     AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
   }
 }

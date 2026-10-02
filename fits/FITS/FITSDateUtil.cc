@@ -97,9 +97,9 @@ void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time, MEp
   }
 }
 
-Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system, const String &date,
+bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system, const String &date,
                             const String &timesys) {
-  Bool ok = True;
+  bool ok = true;
   time = MVTime(1900, 1, 1.0);
   system = MEpoch::UTC;
 
@@ -169,17 +169,17 @@ Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system, const String &d
     } else if (timesys == "GMST") {
       system = MEpoch::GMST;
     } else {
-      ok = False;
+      ok = false;
     }
   }
 
   return ok;
 }
 
-Bool FITSDateUtil::convertDateString(String &out, const String &in) {
+bool FITSDateUtil::convertDateString(String &out, const String &in) {
   MVTime time;
   MEpoch::Types system;
-  Bool ok = FITSDateUtil::fromFITS(time, system, in, "");
+  bool ok = FITSDateUtil::fromFITS(time, system, in, "");
   if (ok) {
     String sys;
     uInt precision = findPrecision(in);

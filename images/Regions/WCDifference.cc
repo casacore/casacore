@@ -35,7 +35,7 @@ WCDifference::WCDifference(const ImageRegion& region1, const ImageRegion& region
 
 WCDifference::WCDifference(const Block<const ImageRegion*>& regions) : WCCompound(regions) {}
 
-WCDifference::WCDifference(Bool takeOver, const Block<const WCRegion*>& regions)
+WCDifference::WCDifference(bool takeOver, const Block<const WCRegion*>& regions)
     : WCCompound(takeOver, regions) {}
 
 WCDifference::WCDifference(const WCDifference& other) : WCCompound(other) {}
@@ -49,7 +49,7 @@ WCDifference& WCDifference::operator=(const WCDifference& other) {
   return *this;
 }
 
-Bool WCDifference::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
+bool WCDifference::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
 
 WCRegion* WCDifference::cloneRegion() const { return new WCDifference(*this); }
 
@@ -58,7 +58,7 @@ LCRegion* WCDifference::doToLCRegion(const CoordinateSystem& cSys, const IPositi
                                      const IPosition& outOrder) const {
   Block<const LCRegion*> regions;
   multiToLCRegion(regions, cSys, shape, pixelAxesMap, outOrder);
-  return new LCDifference(True, regions);
+  return new LCDifference(true, regions);
 }
 
 String WCDifference::className() { return "WCDifference"; }
@@ -75,7 +75,7 @@ TableRecord WCDifference::toRecord(const String& tableName) const {
 WCDifference* WCDifference::fromRecord(const TableRecord& rec, const String& tableName) {
   Block<const WCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
-  return new WCDifference(True, regions);
+  return new WCDifference(true, regions);
 }
 
 }  // namespace casacore

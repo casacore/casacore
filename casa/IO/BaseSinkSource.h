@@ -90,16 +90,16 @@ class BaseSinkSource {
   // </group>
 
   // Is the SinkSource readable?
-  Bool isReadable() const;
+  bool isReadable() const;
 
   // Is the SinkSource writable?
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Is the SinkSource seekable?
-  Bool isSeekable() const;
+  bool isSeekable() const;
 
   // Is the BaseSinkSource unusable?
-  Bool isNull() const;
+  bool isNull() const;
 
  protected:
   BaseSinkSource();

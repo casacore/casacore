@@ -87,11 +87,11 @@ BucketCache::~BucketCache() {
   // Clear the entire cache.
   // It is not flushed (that should have been done before).
   // In that way no needless flushes are done for a temporary table.
-  clear(0, False);
+  clear(0, false);
   delete[] its_Buffer;
 }
 
-void BucketCache::clear(uInt fromSlot, Bool doFlush) {
+void BucketCache::clear(uInt fromSlot, bool doFlush) {
   if (doFlush) {
     flush(fromSlot);
   }
@@ -109,16 +109,16 @@ void BucketCache::clear(uInt fromSlot, Bool doFlush) {
   }
 }
 
-Bool BucketCache::flush(uInt fromSlot) {
+bool BucketCache::flush(uInt fromSlot) {
   // Initialize remaining buckets when everything has to be flushed.
   if (fromSlot == 0 && its_NewNrOfBuckets > 0) {
     initializeBuckets(its_NewNrOfBuckets - 1);
   }
-  Bool hasWritten = False;
+  bool hasWritten = false;
   for (uInt i = fromSlot; i < its_CacheSizeUsed; i++) {
     if (its_Dirty[i]) {
       writeBucket(i);
-      hasWritten = True;
+      hasWritten = true;
     }
   }
   return hasWritten;

@@ -110,9 +110,9 @@ class QBase {
   // Check for conformal matching units (e.g. dam and Mpc)
   // <group name="check">
   // Using specified units
-  Bool isConform(const Unit &s) const;
+  bool isConform(const Unit &s) const;
   // Using units specified in QBase
-  Bool isConform(const QBase &other) const;
+  bool isConform(const QBase &other) const;
   // </group>
 
   // Get a copy of Quantum

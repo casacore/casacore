@@ -115,13 +115,13 @@ class TabVecRep {
   inline rownr_t nelements() const;
 
   // Test if vector shape conforms another table vector.
-  inline Bool conform(const TabVecRep<T>&) const;
+  inline bool conform(const TabVecRep<T>&) const;
 
   // Test if vector shape conforms another vector.
-  inline Bool conform(const Vector<T>&) const;
+  inline bool conform(const Vector<T>&) const;
 
   // Check internal consistency.
-  Bool ok() const;
+  bool ok() const;
 
   // Increments the reference count.
   inline TabVecRep<T>* link();
@@ -178,12 +178,12 @@ inline rownr_t TabVecRep<T>::nelements() const {
 
 // # Check if 2 table vectors are conformant.
 template <class T>
-inline Bool TabVecRep<T>::conform(const TabVecRep<T>& vec) const {
-  return (nelements() == vec.nelements() ? True : False);
+inline bool TabVecRep<T>::conform(const TabVecRep<T>& vec) const {
+  return (nelements() == vec.nelements() ? true : false);
 }
 template <class T>
-inline Bool TabVecRep<T>::conform(const Vector<T>& vec) const {
-  return (nelements() == vec.nelements() ? True : False);
+inline bool TabVecRep<T>::conform(const Vector<T>& vec) const {
+  return (nelements() == vec.nelements() ? true : false);
 }
 
 // # Maintain reference count.

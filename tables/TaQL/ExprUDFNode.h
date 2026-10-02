@@ -79,7 +79,7 @@ class TableExprUDFNode : public TableExprNodeMulti {
   ~TableExprUDFNode() override = default;
 
   // Is the UDF an aggregate function?
-  Bool isAggregate() const override { return itsUDF->isAggregate(); }
+  bool isAggregate() const override { return itsUDF->isAggregate(); }
 
   // Get the table info.
   TableExprInfo getTableInfo() const override;
@@ -100,7 +100,7 @@ class TableExprUDFNode : public TableExprNodeMulti {
 
   // Functions to get the desired result of a function
   // <group>
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   Int64 getInt(const TableExprId& id) override;
   Double getDouble(const TableExprId& id) override;
   DComplex getDComplex(const TableExprId& id) override;

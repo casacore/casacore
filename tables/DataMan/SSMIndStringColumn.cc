@@ -68,11 +68,11 @@ IPosition SSMIndStringColumn::shape(rownr_t aRowNr) {
   return aShape;
 }
 
-Bool SSMIndStringColumn::canChangeShape() const { return itsShape.nelements() == 0; }
+bool SSMIndStringColumn::canChangeShape() const { return itsShape.nelements() == 0; }
 
-Bool SSMIndStringColumn::isShapeDefined(rownr_t aRowNr) {
+bool SSMIndStringColumn::isShapeDefined(rownr_t aRowNr) {
   if (itsShape.nelements() != 0) {
-    return True;
+    return true;
   } else {
     Int buf[3];
     getRowValue(buf, aRowNr);
@@ -94,7 +94,7 @@ void SSMIndStringColumn::getArrayV(rownr_t aRowNr, ArrayBase& aDataPtr) {
                            " of table " + itsSSMPtr->table().tableName());
     }
     itsSSMPtr->getStringHandler()->get(static_cast<Array<String>&>(aDataPtr), buf[0], buf[1],
-                                       buf[2], True);
+                                       buf[2], true);
   }
 }
 
@@ -107,7 +107,7 @@ void SSMIndStringColumn::putArrayV(rownr_t aRowNr, const ArrayBase& aDataPtr) {
     // an overwrite.
     getRowValue(buf, aRowNr);
     itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2],
-                                       static_cast<const Array<String>&>(aDataPtr), True);
+                                       static_cast<const Array<String>&>(aDataPtr), true);
     putValue(aRowNr, buf);
   }
 }

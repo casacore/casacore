@@ -104,7 +104,7 @@ class LELImageCoord : public LELLattCoord {
                                            const IPosition& binning) const;
 
   // The class has true coordinates (thus returns True).
-  virtual Bool hasCoordinates() const;
+  virtual bool hasCoordinates() const;
 
   // Get the coordinates of the spectral axis for the given shape.
   // It returns the pixel axis number of the spectral coordinates.

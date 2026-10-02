@@ -96,7 +96,7 @@ void StreamIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 StreamIO::read(Int64 size, void* buf, Bool throwException) {
+Int64 StreamIO::read(Int64 size, void* buf, bool throwException) {
   Int64 bytesToRead = size;
   Char* bytePtr = static_cast<Char*>(buf);
   while (bytesToRead > 0) {
@@ -126,10 +126,10 @@ Int64 StreamIO::doSeek(Int64, ByteIO::SeekOption) {
 
 Int64 StreamIO::length() { return -1; }
 
-Bool StreamIO::isReadable() const { return True; }
+bool StreamIO::isReadable() const { return true; }
 
-Bool StreamIO::isWritable() const { return True; }
+bool StreamIO::isWritable() const { return true; }
 
-Bool StreamIO::isSeekable() const { return False; }
+bool StreamIO::isSeekable() const { return false; }
 
 }  // namespace casacore

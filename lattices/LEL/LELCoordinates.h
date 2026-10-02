@@ -135,11 +135,11 @@ class LELCoordinates {
   LELCoordinates& operator=(const LELCoordinates& that);
 
   // Is the coordinates a null object?
-  Bool isNull() const { return !coords_p; }
+  bool isNull() const { return !coords_p; }
 
   // Does the class have true coordinates?
   // It returns False if this is a null object.
-  Bool hasCoordinates() const;
+  bool hasCoordinates() const;
 
   // Check how the coordinates of this and that compare.
   // The return value tells how they compare.

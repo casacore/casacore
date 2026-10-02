@@ -101,8 +101,8 @@ MSSelection::MSSelection()
       maxScans_p(1000),
       maxObs_p(1000),
       maxArray_p(1000),
-      isMS_p(True),
-      toTENCalled_p(False) {
+      isMS_p(true),
+      toTENCalled_p(false) {
   clear();               // Clear the internals of the MSSelection object
   clearErrorHandlers();  // Clear the static error handlers
   // Install the default error handlers
@@ -148,8 +148,8 @@ MSSelection::MSSelection(const MeasurementSet& ms, const MSSMode& mode, const St
       maxScans_p(1000),
       maxObs_p(1000),
       maxArray_p(1000),
-      isMS_p(True),
-      toTENCalled_p(False) {
+      isMS_p(true),
+      toTENCalled_p(false) {
   //
   // Do not initialize the private string variables directly. Instead
   // using the setExpr* methods to do that keeps that state of the
@@ -184,7 +184,7 @@ void MSSelection::reset2(MSSelectableTable& msLike, const MSSMode& mode, const S
                          const String& observationExpr, const String& feedExpr) {
   ms_p = msLike.asMS();
   isMS_p = msLike.isMS();
-  toTENCalled_p = False;
+  toTENCalled_p = false;
   //
   // Do not initialize the private string variables
   // directly. Instead using the setExpr* methods to do that so that
@@ -357,8 +357,8 @@ TableExprNode MSSelection::getTEN(const MeasurementSet* ms) {
   // else if (ms_p==NULL) throw(MSSelectionError("MSSelection::getTEN() called without setting the
   // MS")); else toTableExprNode(ms_p);
 
-  if (isMS_p == False) {
-    if (toTENCalled_p == True)
+  if (isMS_p == false) {
+    if (toTENCalled_p == true)
       return fullTEN_p;
     else
       throw(MSSelectionError(
@@ -485,7 +485,7 @@ void MSSelection::initErrorHandler(const MSExprType type) {
     case ANTENNA_EXPR: {
       if (!MSAntennaParse::thisMSAErrorHandler) {
         MSSelectionErrorHandler tt;
-        setErrorHandler(ANTENNA_EXPR, &tt, True);
+        setErrorHandler(ANTENNA_EXPR, &tt, true);
       } else
         MSAntennaParse::thisMSAErrorHandler->reset();
       break;
@@ -493,7 +493,7 @@ void MSSelection::initErrorHandler(const MSExprType type) {
     case FEED_EXPR: {
       if (!MSFeedParse::thisMSFErrorHandler) {
         MSSelectionErrorHandler tt;
-        setErrorHandler(FEED_EXPR, &tt, True);
+        setErrorHandler(FEED_EXPR, &tt, true);
       } else
         MSFeedParse::thisMSFErrorHandler->reset();
       break;
@@ -501,7 +501,7 @@ void MSSelection::initErrorHandler(const MSExprType type) {
     case STATE_EXPR: {
       if (!MSStateParse::thisMSSErrorHandler) {
         MSSelectionErrorHandler tt;
-        setErrorHandler(STATE_EXPR, &tt, True);
+        setErrorHandler(STATE_EXPR, &tt, true);
       } else
         MSStateParse::thisMSSErrorHandler->reset();
       break;
@@ -509,7 +509,7 @@ void MSSelection::initErrorHandler(const MSExprType type) {
     case SPW_EXPR: {
       if (!MSSpwParse::thisMSSpwErrorHandler) {
         MSSSpwErrorHandler tt;
-        setErrorHandler(SPW_EXPR, &tt, True /*overRide*/);
+        setErrorHandler(SPW_EXPR, &tt, true /*overRide*/);
       } else
         MSSpwParse::thisMSSpwErrorHandler->reset();
       break;
@@ -533,11 +533,11 @@ TableExprNode MSSelection::toTableExprNode(MSSelectableTable* msLike) {
   //
   // Interpret all expressions and produce a consolidated TEN.
   //
-  if (fullTEN_p.isNull() == False) return fullTEN_p;
+  if (fullTEN_p.isNull() == false) return fullTEN_p;
 
   const MeasurementSet* ms = getMS(msLike);
   resetMS(*ms);
-  toTENCalled_p = True;
+  toTENCalled_p = true;
   //    ms_p = msLike->asMS();
 
   TableExprNode condition;
@@ -730,7 +730,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms) {
   // The original code using old-styled interface to the various
   // parsers is available as comments in r19937 in the SVN repos.
   //
-  if (fullTEN_p.isNull() == False) return fullTEN_p;
+  if (fullTEN_p.isNull() == false) return fullTEN_p;
 
   MSInterface msLike(*ms);
   return toTableExprNode(&msLike);
@@ -738,7 +738,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms) {
 
 //----------------------------------------------------------------------------
 void MSSelection::setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
-                                  const Bool overRide) {
+                                  const bool overRide) {
   //
   // We make a copy (clone) of the supplied error handler pointer
   // and manage that pointer internally.  This means that the
@@ -814,7 +814,7 @@ void MSSelection::runErrorHandler() {
 }
 
 //----------------------------------------------------------------------------
-Bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, const String& outMSName) {
+bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, const String& outMSName) {
   if (fullTEN_p.isNull()) fullTEN_p = toTableExprNode(ms_p);
   if ((ms_p == NULL) || ms_p->isNull())
     throw(
@@ -826,8 +826,8 @@ Bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, const String& outMSN
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::exprIsNull(const MSExprType type) {
-  Bool exprIsNull = False;
+bool MSSelection::exprIsNull(const MSExprType type) {
+  bool exprIsNull = false;
   if (type == NO_EXPR)
     for (uInt i = 0; i < exprOrder_p.nelements(); i++) {
       exprIsNull = (antennaExpr_p == "") && (feedExpr_p == "") && (fieldExpr_p == "") &&
@@ -885,10 +885,10 @@ Bool MSSelection::exprIsNull(const MSExprType type) {
 // (NULL)
 //
 void MSSelection::clearErrorHandlers() {
-  setErrorHandler(STATE_EXPR, NULL, True);
-  setErrorHandler(SPW_EXPR, NULL, True);
-  setErrorHandler(ANTENNA_EXPR, NULL, True);
-  setErrorHandler(FEED_EXPR, NULL, True);
+  setErrorHandler(STATE_EXPR, NULL, true);
+  setErrorHandler(SPW_EXPR, NULL, true);
+  setErrorHandler(ANTENNA_EXPR, NULL, true);
+  setErrorHandler(FEED_EXPR, NULL, true);
 }
 //----------------------------------------------------------------------------
 void MSSelection::clear(const MSExprType type) {
@@ -956,12 +956,12 @@ void MSSelection::clear(const MSExprType type) {
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setOrder(MSSelection::MSExprType type) {
-  Bool ret = False;
+bool MSSelection::setOrder(MSSelection::MSExprType type) {
+  bool ret = false;
   for (uInt i = 0; i < exprOrder_p.nelements(); i++) {
     if (exprOrder_p[i] == NO_EXPR) {
       exprOrder_p[i] = type;
-      ret = True;
+      ret = true;
       break;
     }
   }
@@ -970,7 +970,7 @@ Bool MSSelection::setOrder(MSSelection::MSExprType type) {
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setAntennaExpr(const String& antennaExpr) {
+bool MSSelection::setAntennaExpr(const String& antennaExpr) {
   // Set the antenna
   // Input:
   //    antennaExpr       const String&  Supplementary antenna expression
@@ -980,15 +980,15 @@ Bool MSSelection::setAntennaExpr(const String& antennaExpr) {
   if (setOrder(ANTENNA_EXPR)) {
     antennaExpr_p = antennaExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setFeedExpr(const String& feedExpr) {
+bool MSSelection::setFeedExpr(const String& feedExpr) {
   // Set the feed
   // Input:
   //    feedExpr       const String&  Supplementary feed expression
@@ -998,15 +998,15 @@ Bool MSSelection::setFeedExpr(const String& feedExpr) {
   if (setOrder(FEED_EXPR)) {
     feedExpr_p = feedExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setFieldExpr(const String& fieldExpr) {
+bool MSSelection::setFieldExpr(const String& fieldExpr) {
   // Set the field
   // Input:
   //    fieldExpr         const String&  Supplementary field expression
@@ -1016,15 +1016,15 @@ Bool MSSelection::setFieldExpr(const String& fieldExpr) {
   if (setOrder(FIELD_EXPR)) {
     fieldExpr_p = fieldExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setSpwExpr(const String& spwExpr) {
+bool MSSelection::setSpwExpr(const String& spwExpr) {
   // Set the SPW
   // Input:
   //    spwExpr           const String&  Supplementary SPW expression
@@ -1034,15 +1034,15 @@ Bool MSSelection::setSpwExpr(const String& spwExpr) {
   if (setOrder(SPW_EXPR)) {
     spwExpr_p = spwExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setArrayExpr(const String& arrayExpr) {
+bool MSSelection::setArrayExpr(const String& arrayExpr) {
   // Set the array
   // Input:
   //    arrayExpr          const String&  Supplementary array expression
@@ -1052,15 +1052,15 @@ Bool MSSelection::setArrayExpr(const String& arrayExpr) {
   if (setOrder(ARRAY_EXPR)) {
     arrayExpr_p = arrayExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setScanExpr(const String& scanExpr) {
+bool MSSelection::setScanExpr(const String& scanExpr) {
   // Set the scan
   // Input:
   //    scanExpr          const String&  Supplementary scan expression
@@ -1070,15 +1070,15 @@ Bool MSSelection::setScanExpr(const String& scanExpr) {
   if (setOrder(SCAN_EXPR)) {
     scanExpr_p = scanExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setObservationExpr(const String& observationExpr) {
+bool MSSelection::setObservationExpr(const String& observationExpr) {
   // Set the scan
   // Input:
   //    scanExpr          const String&  Supplementary scan expression
@@ -1088,15 +1088,15 @@ Bool MSSelection::setObservationExpr(const String& observationExpr) {
   if (setOrder(OBSERVATION_EXPR)) {
     observationExpr_p = observationExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setTimeExpr(const String& timeExpr) {
+bool MSSelection::setTimeExpr(const String& timeExpr) {
   // Set the time
   // Input:
   //    timeExpr          const String&  Supplementary time expression
@@ -1106,15 +1106,15 @@ Bool MSSelection::setTimeExpr(const String& timeExpr) {
   if (setOrder(TIME_EXPR)) {
     timeExpr_p = timeExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setUvDistExpr(const String& uvDistExpr) {
+bool MSSelection::setUvDistExpr(const String& uvDistExpr) {
   // Set the UV distribution
   // Input:
   //    uvdistExpr        const String&  Supplementary uvdist expression
@@ -1124,15 +1124,15 @@ Bool MSSelection::setUvDistExpr(const String& uvDistExpr) {
   if (setOrder(UVDIST_EXPR)) {
     uvDistExpr_p = uvDistExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setStateExpr(const String& stateExpr) {
+bool MSSelection::setStateExpr(const String& stateExpr) {
   // Set the state table Obs_mode selection expression
   // Input:
   //    stateExpr        const String&  Supplementary state obs_mode expression
@@ -1142,15 +1142,15 @@ Bool MSSelection::setStateExpr(const String& stateExpr) {
   if (setOrder(STATE_EXPR)) {
     stateExpr_p = stateExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setTaQLExpr(const String& taqlExpr) {
+bool MSSelection::setTaQLExpr(const String& taqlExpr) {
   // Set the TaQL expression
   // Input:
   //    taqlExpr        const String&  Supplementary taql expression
@@ -1160,14 +1160,14 @@ Bool MSSelection::setTaQLExpr(const String& taqlExpr) {
   if (setOrder(TAQL_EXPR)) {
     taqlExpr_p = taqlExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 //----------------------------------------------------------------------------
 
-Bool MSSelection::setPolnExpr(const String& polnExpr) {
+bool MSSelection::setPolnExpr(const String& polnExpr) {
   // Set the Poln expression
   // Input:
   //    polnExpr        const String&  Supplementary poln expression
@@ -1177,10 +1177,10 @@ Bool MSSelection::setPolnExpr(const String& polnExpr) {
   if (setOrder(POLN_EXPR)) {
     polnExpr_p = polnExpr;
     resetTEN();
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 const String MSSelection::getExpr(const MSExprType type) {
   String exprStr;
@@ -1232,7 +1232,7 @@ const String MSSelection::getExpr(const MSExprType type) {
 // SPWIDs.
 //
 Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int defaultStep,
-                                     const Bool sorted) {
+                                     const bool sorted) {
   if (chanIDs_p.nelements() <= 0) getTEN(ms);
   uInt nrows = chanIDs_p.nrow(), ncols = chanIDs_p.ncolumn();
   Matrix<Int> chanIDList;
@@ -1244,7 +1244,7 @@ Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int default
       // Make a list of indices which will sort the chanID_p Matrix on
       // SPW ID (the first column of each row).
       //
-      Bool deleteit;
+      bool deleteit;
       Sort sort(spwIDList.getStorage(deleteit), sizeof(Int));
       sort.sortKey((uInt)0, TpInt);
       sort.sort(sortedNdx, nrows);
@@ -1273,7 +1273,7 @@ Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int default
 // associated channel selection indices in ascending order of
 // SPWIDs.
 //
-Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, const Bool sorted) {
+Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, const bool sorted) {
   LogIO log_l(LogOrigin("MSSelection", "getChanFreqList"));
 
   if (chanIDs_p.nelements() == 0) getTEN(ms);
@@ -1331,7 +1331,7 @@ void MSSelection::getChanSlices(Vector<Vector<Slice>>& chanslices, const Measure
 
     // Add a slice element and fill it
     Int islice = currspwsl.nelements();
-    currspwsl.resize(islice + 1, True);
+    currspwsl.resize(islice + 1, true);
     currspwsl(islice) =
         Slice(chanmat(i, 1), (chanmat(i, 2) - chanmat(i, 1) + chanmat(i, 3)) / chanmat(i, 3),
               // chanmat(i,2)-chanmat(i,1)+1,
@@ -1445,7 +1445,7 @@ void MSSelection::fromSelectionItem(const Record& selectionItem) {
   clearErrorHandlers();
 }
 
-Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName) {
+bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName) {
   // Check if a record field is defined and not unset
   // Input:
   //    inpRec          const Record&     Input Record
@@ -1454,10 +1454,10 @@ Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName) {
   //    definedAndSet   Bool              True if field defined and
   //                                      not unset
   //
-  Bool retval = False;
+  bool retval = false;
   // Check if record field is defined
   if (inpRec.isDefined(fieldName)) {
-    retval = True;
+    retval = true;
     // Now check if unset
     //    if (inpRec.dataType(fieldName) == TpRecord) {
     //      retval = !Unset::isUnset(inpRec.subRecord(fieldName));

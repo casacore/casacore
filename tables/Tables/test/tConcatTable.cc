@@ -95,7 +95,7 @@ void doAddColumn(const Table& tab) {
 void doIt(const Table& tab) {
   cout << ">>> -------------------" << endl;
   cout << "partNamesF " << tab.getPartNames() << endl;
-  cout << "partNamesT " << tab.getPartNames(True) << endl;
+  cout << "partNamesT " << tab.getPartNames(true) << endl;
   cout << "<<<" << endl;
   ScalarColumn<Int> ab2(tab, "ab");
   ScalarColumn<Int> ac(tab, "ac");
@@ -243,9 +243,9 @@ void doIt(const Table& tab) {
   cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
   // Get a subset via a mask.
-  Block<Bool> mask(4, True);
-  mask[0] = False;
-  mask[3] = False;
+  Block<bool> mask(4, true);
+  mask[0] = false;
+  mask[3] = false;
   Table seltab3 = seltab2(mask);
   if (seltab3.nrow() != 2) {
     cout << "seltab3 does not contain 2 rows" << endl;

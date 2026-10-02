@@ -30,15 +30,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-RefRows::RefRows(const Vector<rownr_t>& rowNumbers, Bool isSliced, Bool collapse) {
+RefRows::RefRows(const Vector<rownr_t>& rowNumbers, bool isSliced, bool collapse) {
   init(rowNumbers, isSliced, collapse);
 }
 
-RefRows::RefRows(const Vector<uInt>& rowNumbers, Bool isSliced, Bool collapse) {
+RefRows::RefRows(const Vector<uInt>& rowNumbers, bool isSliced, bool collapse) {
   init(RowNumbers(rowNumbers), isSliced, collapse);
 }
 
-void RefRows::init(const Vector<rownr_t>& rowNumbers, Bool isSliced, Bool collapse) {
+void RefRows::init(const Vector<rownr_t>& rowNumbers, bool isSliced, bool collapse) {
   itsRows = rowNumbers;
   itsNrows = rowNumbers.nelements();
   itsSliced = isSliced;
@@ -103,15 +103,15 @@ void RefRows::init(const Vector<rownr_t>& rowNumbers, Bool isSliced, Bool collap
         rows(nr++) = end;
         rows(nr++) = incr;
       }
-      rows.resize(nr, True);
+      rows.resize(nr, true);
       itsRows.reference(rows);
-      itsSliced = True;
+      itsSliced = true;
     }
   }
 }
 
 RefRows::RefRows(rownr_t start, rownr_t end, rownr_t incr)
-    : itsRows(3), itsNrows(1 + (end - start) / incr), itsSliced(True) {
+    : itsRows(3), itsNrows(1 + (end - start) / incr), itsSliced(true) {
   AlwaysAssert(start <= end, AipsError);
   itsRows(0) = start;
   itsRows(1) = end;
@@ -134,7 +134,7 @@ RefRows& RefRows::operator=(const RefRows& other) {
 
 RefRows::~RefRows() {}
 
-Bool RefRows::operator==(const RefRows& other) const {
+bool RefRows::operator==(const RefRows& other) const {
   return (itsSliced == other.itsSliced && itsRows.nelements() == other.itsRows.nelements() &&
           allEQ(itsRows, other.itsRows));
 }
@@ -204,9 +204,9 @@ RefRowsSliceIter::RefRowsSliceIter(const RefRows& rows)
 
 void RefRowsSliceIter::reset() {
   itsPos = 0;
-  itsPastEnd = True;
+  itsPastEnd = true;
   if (itsPos < itsRows.nelements()) {
-    itsPastEnd = False;
+    itsPastEnd = false;
     next();
   }
 }
@@ -216,7 +216,7 @@ void RefRowsSliceIter::next() {
     throw(AipsError("RefRowsSliceIter::next - past end"));
   }
   if (itsPos >= itsRows.nelements()) {
-    itsPastEnd = True;
+    itsPastEnd = true;
   } else {
     itsStart = itsRows(itsPos++);
     if (itsSliced) {

@@ -114,18 +114,18 @@ class Template {
 
   // Canonicalise the template entries in the object. If switch True, do only
   // the templates entry for duplication
-  void canonical(const Bool tmplonly = False);
+  void canonical(const bool tmplonly = false);
   // Split the entries in number, name id, rest
   void splitName();
   // Sort the data on name and number and fill in missing number. If switch
   // is True, renumber all template entries in sequence.
-  void sortName(const Bool renumber = False);
+  void sortName(const bool renumber = false);
   // Write the data formatted to the specified file. Notify errors and warnings
   // by writing to <src>cerr</src>. If <src>warn</src> is False, some warnings will be
   // compressed into a general warning.
-  void writeOut(ostream &os, const Bool warn = False);
+  void writeOut(ostream &os, const bool warn = false);
   // Write the duplicate list; the userFile gets ***; isSys gives the system switch
-  void writeDup(ostream &os, const String &userFile, Bool isSys = False);
+  void writeDup(ostream &os, const String &userFile, bool isSys = false);
 
  private:
   // # Data
@@ -142,7 +142,7 @@ class Template {
   // And count the comment lines
   uInt ccount_p;
   // Indicate data split
-  Bool isSplit_p;
+  bool isSplit_p;
   // Count the duplicates
   uInt dcount_p;
   // Data split of number string (or empty/spaces)
@@ -175,7 +175,7 @@ class Template {
   Template &operator=(const Template &other);
   // # Member functions
   //  Save comment
-  void setComment(const String &txt, const Bool atstart = False);
+  void setComment(const String &txt, const bool atstart = false);
   // Save a line
   void setOutput(const String &txt);
 

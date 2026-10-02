@@ -60,7 +60,7 @@ int main(int argc, const char* argv[]) {
 // Ask and execute command till empty string is given.
 void docomm() {
   char comm[1025];
-  while (True) {
+  while (true) {
     cout << "Table command (q=quit): ";
     cin.getline(comm, 1024);
     String str(comm);

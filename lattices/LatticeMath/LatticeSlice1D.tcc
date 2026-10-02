@@ -89,7 +89,7 @@ LatticeSlice1D<T>& LatticeSlice1D<T>::operator=(const LatticeSlice1D<T>& other) 
 }
 
 template <class T>
-void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<Bool>& mask, const PixelCurve1D& curve,
+void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D& curve,
                                  uInt axis0, uInt axis1, const IPosition& coord) {
   AlwaysAssert(itsLatticePtr, AipsError);
   AlwaysAssert(axis0 < itsLatticePtr->ndim(), AipsError);
@@ -109,7 +109,7 @@ void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<Bool>& mask, const Pixe
 }
 
 template <class T>
-void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<Bool>& mask, const IPosition& blc,
+void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const IPosition& blc,
                                  const IPosition& trc, uInt nPts) {
   AlwaysAssert(itsLatticePtr, AipsError);
 
@@ -231,14 +231,14 @@ void LatticeSlice1D<T>::findPlane(const IPosition& blc, const IPosition& trc) {
 }
 
 template <class T>
-void LatticeSlice1D<T>::doGetSlice(Vector<T>& data, Vector<Bool>& mask, const PixelCurve1D&,
+void LatticeSlice1D<T>::doGetSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D&,
                                    const IPosition& blc, const IPosition& trc) {
   // Get plane holding slice - we know the returned Arrays will be
   // 2D (checked) so can assign to Matrix safely
 
   const IPosition shape = trc - blc + 1;
-  const Matrix<T>& dataIn = itsLatticePtr->getSlice(blc, shape, True);
-  const Matrix<Bool>& maskIn = itsLatticePtr->getMaskSlice(blc, shape, True);
+  const Matrix<T>& dataIn = itsLatticePtr->getSlice(blc, shape, true);
+  const Matrix<bool>& maskIn = itsLatticePtr->getMaskSlice(blc, shape, true);
 
   // Interpolate
 

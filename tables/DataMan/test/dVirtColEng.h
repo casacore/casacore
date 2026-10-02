@@ -101,7 +101,7 @@ class DummyVirtualScalar : public VirtualScalarColumn<double> {
  private:
   // The column may be writable, so we must override the default
   // implementation in the base class VirtualScalarColumn.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Get a value.
   //+grp
@@ -193,14 +193,14 @@ class DummyVirtualArray : public VirtualArrayColumn<double> {
  private:
   // The column is writable, so we must override the default
   // implementation in the base class VirtualColumn.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Define the shape of the array.
   // This will define the shape of the underlying Int array.
   void setShape(rownr_t rownr, const IPosition& shape);
 
   // Test if the (underlying) array is defined.
-  Bool isShapeDefined(rownr_t rownr);
+  bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the (underlying) array.
   uInt ndim(rownr_t rownr);
@@ -312,7 +312,7 @@ class DummyVirtualEngine : public VirtualColumnEngine {
 
   // Flush the engine.
   // It will write a few things into the AipsIO object.
-  Bool flush(AipsIO& ios, Bool fsync);
+  bool flush(AipsIO& ios, bool fsync);
 
   // Initialize the object for a new table.
   // Intially the table has the given number of rows.

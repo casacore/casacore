@@ -46,14 +46,14 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
   cout << compl0.hasMask() << ' ' << endl;
   cout << compl0.boundingBox().start() << compl0.boundingBox().end()
        << compl0.boundingBox().length() << compl0.latticeShape() << endl;
-  Array<Bool> mask;
+  Array<bool> mask;
   compl0.getSlice(mask, IPosition(ndim, 0), compl0.boundingBox().length(), IPosition(ndim, 1));
   cout << mask << endl;
 
   LCComplement compl1(box);
   AlwaysAssertExit(compl1.hasMask());
   AlwaysAssertExit(!compl1.isWritable());
-  Array<Bool> mask1;
+  Array<bool> mask1;
   compl1.getSlice(mask1, IPosition(ndim, 0), compl1.boundingBox().length(), IPosition(ndim, 1));
   cout << mask1 << endl;
 
@@ -65,7 +65,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     AlwaysAssertExit(compl0.boundingBox().end() == complcop->boundingBox().end());
     AlwaysAssertExit(compl0.boundingBox().stride() == complcop->boundingBox().stride());
     AlwaysAssertExit(compl0.boundingBox().length() == complcop->boundingBox().length());
-    Array<Bool> arr;
+    Array<bool> arr;
     complcop->getSlice(arr, IPosition(ndim, 0), compl0.boundingBox().length(), IPosition(ndim, 1));
     AlwaysAssertExit(allEQ(arr, mask));
     delete complcop;
@@ -78,7 +78,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     AlwaysAssertExit(compl0.boundingBox().end() == complcop->boundingBox().end());
     AlwaysAssertExit(compl0.boundingBox().stride() == complcop->boundingBox().stride());
     AlwaysAssertExit(compl0.boundingBox().length() == complcop->boundingBox().length());
-    Array<Bool> arr;
+    Array<bool> arr;
     complcop->getSlice(arr, IPosition(ndim, 0), compl0.boundingBox().length(), IPosition(ndim, 1));
     AlwaysAssertExit(allEQ(arr, mask));
     delete complcop;

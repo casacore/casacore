@@ -69,11 +69,11 @@ void TiledDataStMan::create64(rownr_t nrrow) {
   addRow64(nrrow);
 }
 
-Bool TiledDataStMan::flush(AipsIO&, Bool fsync) {
+bool TiledDataStMan::flush(AipsIO&, bool fsync) {
   // Flush the caches.
   // Exit if nothing has changed.
   if (!flushCaches(fsync)) {
-    return False;
+    return false;
   }
   // Create the header file and write data in it.
   AipsIO* headerFile = headerFileCreate();
@@ -85,10 +85,10 @@ Bool TiledDataStMan::flush(AipsIO&, Bool fsync) {
   *headerFile << rowMap_p << cubeMap_p << posMap_p;
   headerFile->putend();
   headerFileClose(headerFile);
-  return True;
+  return true;
 }
 
-void TiledDataStMan::readHeader(rownr_t tabNrrow, Bool firstTime) {
+void TiledDataStMan::readHeader(rownr_t tabNrrow, bool firstTime) {
   // Open the header file and read data from it.
   AipsIO* headerFile = headerFileOpen();
   uInt version = headerFile->getstart("TiledDataStMan");
@@ -188,7 +188,7 @@ TSMCube* TiledDataStMan::getHypercube(rownr_t rownr, IPosition& position) {
     throw(TSMError("getHypercube: rownr is too high"));
   }
   // Find the closest row number in the map (equal or less).
-  Bool found;
+  bool found;
   uInt index = binarySearchBrackets(found, rowMap_p, rownr, rowMap_p.size());
   if (!found) {
     index--;

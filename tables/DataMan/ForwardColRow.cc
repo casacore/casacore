@@ -124,7 +124,7 @@ ForwardColumnIndexedRow::ForwardColumnIndexedRow(ForwardColumnIndexedRowEngine* 
 
 ForwardColumnIndexedRow::~ForwardColumnIndexedRow() {}
 
-void ForwardColumnIndexedRow::prepare(const Table& thisTable) { basePrepare(thisTable, False); }
+void ForwardColumnIndexedRow::prepare(const Table& thisTable) { basePrepare(thisTable, false); }
 
 void ForwardColumnIndexedRow::setShape(rownr_t, const IPosition&) {
   throw(DataManInvOper("setShape not supported by data manager ForwardColumnIndexedRow"));
@@ -136,12 +136,12 @@ IPosition ForwardColumnIndexedRow::shape(rownr_t rownr) {
   return colPtr()->shape(convertRownr(rownr));
 }
 
-Bool ForwardColumnIndexedRow::isShapeDefined(rownr_t rownr) {
+bool ForwardColumnIndexedRow::isShapeDefined(rownr_t rownr) {
   return colPtr()->isDefined(convertRownr(rownr));
 }
 
-Bool ForwardColumnIndexedRow::canChangeShape() const {
-  return False;  // put is not supported
+bool ForwardColumnIndexedRow::canChangeShape() const {
+  return false;  // put is not supported
 }
 
 void ForwardColumnIndexedRow::getArrayV(rownr_t rownr, ArrayBase& dataPtr) {
@@ -160,10 +160,10 @@ void ForwardColumnIndexedRow::putSliceV(rownr_t, const Slicer&, const ArrayBase&
   throw(DataManInvOper("putSlice not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getBool(rownr_t rownr, Bool* dataPtr) {
+void ForwardColumnIndexedRow::getBool(rownr_t rownr, bool* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putBool(rownr_t, const Bool*) {
+void ForwardColumnIndexedRow::putBool(rownr_t, const bool*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 

@@ -47,7 +47,7 @@ namespace casacore {
 // quantile-like statistics. See class documentation for StatisticsAlgorithm for
 // details regarding QuantileComputer classes.
 
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
  public:
@@ -80,7 +80,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
                       std::shared_ptr<AccumType> knownMin = nullptr,
                       std::shared_ptr<AccumType> knownMax = nullptr,
                       uInt binningThreshholdSizeBytes = 4096 * 4096,
-                      Bool persistSortedArray = False, uInt nBins = 10000);
+                      bool persistSortedArray = false, uInt nBins = 10000);
 
   // <group>
   // In the following group of methods, if the size of the composite dataset
@@ -117,14 +117,14 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
                                   std::shared_ptr<AccumType> knownMin = nullptr,
                                   std::shared_ptr<AccumType> knownMax = nullptr,
                                   uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                  Bool persistSortedArray = False, uInt nBins = 10000);
+                                  bool persistSortedArray = false, uInt nBins = 10000);
 
   // get the median of the absolute deviation about the median of the data.
   AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
                                std::shared_ptr<AccumType> knownMin = nullptr,
                                std::shared_ptr<AccumType> knownMax = nullptr,
                                uInt binningThreshholdSizeBytes = 4096 * 4096,
-                               Bool persistSortedArray = False, uInt nBins = 10000);
+                               bool persistSortedArray = false, uInt nBins = 10000);
 
   // Get the specified quantiles. <src>fractions</src> must be between 0 and
   // 1, noninclusive.
@@ -133,7 +133,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
                                            std::shared_ptr<AccumType> knownMin = nullptr,
                                            std::shared_ptr<AccumType> knownMax = nullptr,
                                            uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                           Bool persistSortedArray = False, uInt nBins = 10000);
+                                           bool persistSortedArray = false, uInt nBins = 10000);
   // </group>
 
   // scan the dataset(s) that have been added, and find the min and max.
@@ -155,7 +155,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   // This class does not allow statistics to be calculated as datasets are
   // added, so an exception will be thrown if <src>c</src> is True.
-  void setCalculateAsAdded(Bool c);
+  void setCalculateAsAdded(bool c);
 
   // Override base class method by requiring mean to be computed in addition
   // to what is added in stats if the requested center value is CMEAN.
@@ -178,7 +178,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // no weights, no mask
   void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
                         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                        const DataRanges& ranges, Bool isInclude);
+                        const DataRanges& ranges, bool isInclude);
 
   void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
                         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
@@ -187,7 +187,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
                         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
                         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                        Bool isInclude);
+                        bool isInclude);
   // </group>
 
   void _updateDataProviderMaxMin(const StatsData<AccumType>& threadStats);
@@ -200,7 +200,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                       const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-                      uInt dataStride, const DataRanges& ranges, Bool isInclude);
+                      uInt dataStride, const DataRanges& ranges, bool isInclude);
 
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                       const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
@@ -209,18 +209,18 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                       const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
                       uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-                      const DataRanges& ranges, Bool isInclude);
+                      const DataRanges& ranges, bool isInclude);
   // </group>
 
  private:
   FitToHalfStatisticsData::CENTER _centerType;
-  Bool _useLower;
+  bool _useLower;
   AccumType _centerValue;
   StatsData<AccumType> _statsData;
-  Bool _doMedAbsDevMed{False}, _rangeIsSet{False};
+  bool _doMedAbsDevMed{false}, _rangeIsSet{false};
   // these are the max and min for the real portion of the dataset
   std::shared_ptr<AccumType> _realMax{}, _realMin{};
-  Bool _isNullSet{False};
+  bool _isNullSet{false};
   // This is used for convenience and performance. It should always
   // be the same as the _range value used in the base
   // ConstrainedRangeStatistics object

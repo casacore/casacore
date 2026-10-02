@@ -98,7 +98,7 @@ class ImageAttrHandler {
 
   // Test if the given attribute group is present.
   // The default implementation returns False.
-  virtual Bool hasGroup(const String& name);
+  virtual bool hasGroup(const String& name);
 
   // Get all attribute group names.
   // The default implementation returns an empty vector.

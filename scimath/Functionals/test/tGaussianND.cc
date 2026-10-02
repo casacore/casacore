@@ -36,9 +36,9 @@
 #include <casacore/casa/namespace.h>
 int main() {
   try {
-    Bool anyFailures = False;
+    bool anyFailures = false;
     {
-      Bool failed = False;
+      bool failed = false;
       GaussianND<Float> default2D;
       Vector<Float> z(2);
       z = 0;
@@ -50,7 +50,7 @@ int main() {
           z(1) = y;
           if (!near(Double(default2D(z)), exp(-(z(0) * z(0) + z(1) * z(1)) / 2) / (2. * M_PI),
                     1E-5)) {
-            failed = True;
+            failed = true;
             cout << "Expected value for f(" << z << ") is "
                  << exp(-(z(0) * z(0) + z(1) * z(1)) / 2) / (2.0 * M_PI) << " calculated value is "
                  << default2D(z) << endl;
@@ -66,16 +66,16 @@ int main() {
 
       if (!failed) {
         if (!near(sum * inc * inc, Float(1.0))) {
-          failed = True;
+          failed = true;
           cout << "Failed (value was " << sum * inc * inc << ")";
         } else
           cout << "Passed";
         cout << " the total flux test" << endl;
       }
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
     }
     {
-      Bool failed = False;
+      bool failed = false;
       Vector<Float> w(1);
       GaussianND<Float> g(1), g2;
       GaussianND<Float> g1(g);
@@ -91,18 +91,18 @@ int main() {
       for (Float x = -2; x < 2; x += .1) {
         z(0) = x;
         if (!near(Double(g(z)), exp(-(z(0) * z(0)) / 2) / sqrt(2.0 * M_PI), 1E-5)) {
-          failed = True;
+          failed = true;
           cout << "Expected value for g(" << z << ") is "
                << exp(-(z(0) * z(0) / 2)) / sqrt(2.0 * M_PI) << " calculated value is " << g(z)
                << endl;
         }
         if (!near(Double(g1(z)), 2.0 * exp(-(z(0) * z(0)) / 2 / 2), 1E-5)) {
-          failed = True;
+          failed = true;
           cout << "Expected value for g1(" << z << ") is " << 2.0 * exp(-(z(0) * z(0) / 2 / 2))
                << " calculated value is " << g1(z) << endl;
         }
         if (!near(Double(g2(z)), 3.0 * exp(-(z(0) * z(0)) / 2 / 3), 1E-5)) {
-          failed = True;
+          failed = true;
           cout << "Expected value for g2(" << z << ") is " << 3.0 * exp(-(z(0) * z(0) / 2 / 3))
                << " calculated value is " << g2(z) << endl;
         }
@@ -112,17 +112,17 @@ int main() {
       else
         cout << "Failed";
       cout << " the default 1-D and copy semantics test" << endl;
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
     }
     {
-      Bool failed = False;
+      bool failed = false;
       GaussianND<Float> gauss3D(3, 2.0);
       gauss3D.setHeight(1.0);
       if (near(gauss3D.height(), 1.0f))
         cout << "Passed";
       else {
         cout << "Failed";
-        failed = True;
+        failed = true;
       }
       cout << " the set/get height test" << endl;
 
@@ -138,7 +138,7 @@ int main() {
             z(2) = p;
             if (!near(Double(gauss3D(z)), exp(-(z(0) * z(0) + z(1) * z(1) + z(2) * z(2)) / 2),
                       1E-5)) {
-              failed = True;
+              failed = true;
               cout << "Expected value for f(" << z << ") is "
                    << exp(-(z(0) * z(0) + z(1) * z(1) + z(2) * z(2)) / 2) << " calculated value is "
                    << gauss3D(z) << endl;
@@ -155,17 +155,17 @@ int main() {
 
       if (!failed) {
         if (!near(sum * inc * inc * inc, pow(Float(2.0 * M_PI), Float(1.5)), 1E-5)) {
-          failed = True;
+          failed = true;
           cout << "Failed (value was " << sum * inc * inc * inc << " not "
                << pow(Float(2.0 * M_PI), Float(1.5)) << ")";
         } else
           cout << "Passed";
         cout << " the total flux test" << endl;
       }
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
     }
     {
-      Bool failed = False;
+      bool failed = false;
       Vector<Double> mean(2);
       mean(0) = .5;
       mean(1) = -1;
@@ -176,7 +176,7 @@ int main() {
         cout << "Passed";
       else {
         cout << "Failed";
-        failed = True;
+        failed = true;
       }
       cout << " the set/get mean test" << endl;
 
@@ -190,7 +190,7 @@ int main() {
           z(1) = y;
           if (!near(gauss2D(z), exp(-(square(z(0) - mean(0)) + square(z(1) - mean(1))) / 2),
                     1E-5)) {
-            failed = True;
+            failed = true;
             cout << "Expected value for f(" << z << ") is "
                  << exp(-(square(z(0) - mean(0)) + square(z(1) - mean(1))) / 2)
                  << " calculated value is " << gauss2D(z) << endl;
@@ -206,16 +206,16 @@ int main() {
 
       if (!failed) {
         if (!near(sum * inc * inc, 2.0 * M_PI, 1E-5)) {
-          failed = True;
+          failed = true;
           cout << "Failed (value was " << sum * inc * inc << " not " << 2.0 * M_PI << ")";
         } else
           cout << "Passed";
         cout << " the total flux test" << endl;
       }
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
     }
     {
-      Bool failed = False;
+      bool failed = false;
       Vector<Double> mean(3);
       mean(0) = .6;
       mean(1) = -.1;
@@ -233,7 +233,7 @@ int main() {
         cout << "Passed";
       else {
         cout << "Failed";
-        failed = True;
+        failed = true;
       }
       cout << " the set/get variance test" << endl;
 
@@ -251,7 +251,7 @@ int main() {
                                                  square(z(1) - mean(1)) / variance(1) +
                                                  square(z(2) - mean(2)) / variance(2)) /
                                                2))) {
-              failed = True;
+              failed = true;
               cout << "Expected value for f(" << z << ") is "
                    << height * exp(-(square(z(0) - mean(0)) / variance(0) +
                                      square(z(1) - mean(1)) / variance(1) +
@@ -273,7 +273,7 @@ int main() {
         if (!near(sum * inc * inc * inc,
                   height * sqrt(variance(0) * variance(1) * variance(2)) * pow(2.0 * M_PI, 1.5),
                   1E-4)) {
-          failed = True;
+          failed = true;
           cout << "Failed (value was " << sum * inc * inc * inc << " not "
                << height * sqrt(variance(0) * variance(1) * variance(2)) * pow(2.0 * M_PI, 1.5)
                << ")";
@@ -281,10 +281,10 @@ int main() {
           cout << "Passed";
         cout << " the total flux test" << endl;
       }
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
     }
     {
-      Bool failed = False;
+      bool failed = false;
       Vector<Float> mean(3);
       mean(0) = .6;
       mean(1) = -.1;
@@ -316,7 +316,7 @@ int main() {
         cout << "Passed";
       else {
         cout << "Failed";
-        failed = True;
+        failed = true;
       }
       cout << " the set/get covariance test" << endl;
       if (!failed) {
@@ -348,7 +348,7 @@ int main() {
                                 (1 - square(corr(1, 0)) - square(corr(2, 0)) - square(corr(2, 1)) +
                                  2 * corr(1, 0) * corr(2, 0) * corr(2, 1)));
               if (!nearAbs(gauss3D(z), ev, 3.1E-4)) {
-                failed = True;
+                failed = true;
                 cout << "Expected value for f(" << z << ") is " << ev << " calculated value is "
                      << gauss3D(z) << endl;
               }
@@ -364,7 +364,7 @@ int main() {
 
         if (!failed) {
           if (!nearAbs(sum * inc * inc * inc, gauss3D.flux(), 1E-2)) {
-            failed = True;
+            failed = true;
             cout << "Failed (value was " << sum * inc * inc * inc << " not " << gauss3D.flux()
                  << ")";
           } else
@@ -374,7 +374,7 @@ int main() {
       }
 
       if (!failed) {
-        if (gauss3D.nparameters() != 10) failed = True;
+        if (gauss3D.nparameters() != 10) failed = true;
         if (!failed) {
           Vector<Float> parms(10);
           parms(0) = 10;
@@ -401,24 +401,24 @@ int main() {
           Matrix<Float> invertCov(3, 3);
           invertCov = invertSymPosDef(cov);
           gauss3D.parameters().setParameters(parms);
-          if (!near(gauss3D.height(), parms(0))) failed = True;
+          if (!near(gauss3D.height(), parms(0))) failed = true;
           Vector<Float> mean(3);
           mean(0) = parms(1);
           mean(1) = parms(2);
           mean(2) = parms(3);
-          if (!(allNear(gauss3D.mean(), mean, 1E-6))) failed = True;
+          if (!(allNear(gauss3D.mean(), mean, 1E-6))) failed = true;
           Vector<Float> var(3);
           var(0) = invertCov(0, 0);
           var(1) = invertCov(1, 1);
           var(2) = invertCov(2, 2);
-          if (!(allNear(gauss3D.variance(), var, 1E-6))) failed = True;
+          if (!(allNear(gauss3D.variance(), var, 1E-6))) failed = true;
 
-          if (!(allNear(gauss3D.covariance(), invertCov, 1E-6))) failed = True;
+          if (!(allNear(gauss3D.covariance(), invertCov, 1E-6))) failed = true;
 
           for (uInt i = 0; i < 10; i++) gauss3D[i] = Float(2) * gauss3D[i];
           parms *= Float(2);
           if (!(allNear(gauss3D.parameters().getParameters(), parms, 1E-6))) {
-            failed = True;
+            failed = true;
           }
           if (failed)
             cout << "Failed";
@@ -428,7 +428,7 @@ int main() {
         }
       }
 
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
     }
     if (anyFailures) {
       cout << "FAIL" << endl;

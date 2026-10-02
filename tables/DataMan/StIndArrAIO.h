@@ -116,7 +116,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
   virtual void setShape(rownr_t rownr, const IPosition& shape);
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
@@ -128,7 +128,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
 
   // This storage manager can handle changing array shapes
   // for non-FixedShape columns.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Get an array value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
@@ -171,7 +171,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
   virtual void reopenRW();
 
   // Check if the class invariants still hold.
-  Bool ok() const;
+  bool ok() const;
 
  private:
   // The storage manager.
@@ -181,7 +181,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
   // Switch indicating if the shape is fixed.
-  Bool shapeIsFixed_p;
+  bool shapeIsFixed_p;
   // The version of the object retrieved from a file.
   // Versions < 2 use a StManArrayFile of their own.
   // Newer versions share the one in StManAipsIO.

@@ -115,11 +115,11 @@ MSDerivedValues& MSDerivedValues::setMeasurementSet(const MeasurementSet& ms) {
   MFrequency::Types freqType = MFrequency::castType(refreq0.getRef().getType());
   setFrequencyReference(freqType);
 
-  hasMS_p = True;
+  hasMS_p = true;
   return *this;
 }
 
-Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const Int whichline) {
+bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const Int whichline) {
   if (hasMS_p) {
     MSDopplerUtil msdoppler(ms_p);
     Vector<Double> restFreqVec;
@@ -127,7 +127,7 @@ Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const
       msdoppler.dopplerInfo(restFreqVec, spwid, fieldid);
     } catch (...) {
       setRestFrequency(Quantity(0.0, "Hz"));
-      return False;
+      return false;
     }
 
     if ((restFreqVec.nelements() > 0) && (uInt(whichline) <= restFreqVec.nelements())) {
@@ -135,13 +135,13 @@ Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const
 
       setRestFrequency(Quantity(restFreqVec[whichline], "Hz"));
 
-      return True;
+      return true;
     } else {
       setRestFrequency(Quantity(0.0, "Hz"));
     }
   }
 
-  return False;
+  return false;
 }
 MSDerivedValues& MSDerivedValues::setRestFrequency(const Quantity& restfrq) {
   restFreq_p = restfrq;
@@ -341,7 +341,7 @@ void MSDerivedValues::init() {
   frqref_p = MFrequency::Ref(MFrequency::LSRK);
   velref_p = MDoppler::Ref(MDoppler::RADIO);
   restFreq_p = Quantity(0.0, "Hz");
-  hasMS_p = False;
+  hasMS_p = false;
 }
 
 }  // namespace casacore

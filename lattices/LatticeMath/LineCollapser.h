@@ -106,7 +106,7 @@ class LineCollapser {
   // <br>The function is there to make optimization possible when no masks
   // are involved. On the other side, it allows the casual user to ignore
   // optimization.
-  virtual Bool canHandleNullMask() const;
+  virtual bool canHandleNullMask() const;
 
   // Collapse the given line and return one value from that operation.
   // The position in the Lattice at the start of the line is input
@@ -115,7 +115,7 @@ class LineCollapser {
   // it is possible that <src>mask</src> is an empty vector indicating
   // that the input has no mask, thus all values are valid.
   // If not empty, the mask has the same length as the line.
-  virtual void process(U& result, Bool& resultMask, const Vector<T>& line, const Vector<Bool>& mask,
+  virtual void process(U& result, bool& resultMask, const Vector<T>& line, const Vector<bool>& mask,
                        const IPosition& pos) = 0;
 
   // Collapse the given line and return a line of values from that operation.
@@ -125,8 +125,8 @@ class LineCollapser {
   // it is possible that <src>mask</src> is an empty vector indicating
   // that the input has no mask, thus all values are valid.
   // If not empty, the mask has the same length as the line.
-  virtual void multiProcess(Vector<U>& result, Vector<Bool>& resultMask, const Vector<T>& line,
-                            const Vector<Bool>& mask, const IPosition& pos) = 0;
+  virtual void multiProcess(Vector<U>& result, Vector<bool>& resultMask, const Vector<T>& line,
+                            const Vector<bool>& mask, const IPosition& pos) = 0;
 };
 
 }  // namespace casacore

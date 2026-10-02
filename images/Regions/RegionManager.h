@@ -61,14 +61,14 @@ class RegionManager {
   String absreltype(const Int absrelval = 0);
 
   // Some little but useful tidbits.
-  static Bool isPixelRegion(const ImageRegion& reg);
-  static Bool isWorldRegion(const ImageRegion& reg);
+  static bool isPixelRegion(const ImageRegion& reg);
+  static bool isWorldRegion(const ImageRegion& reg);
   void setcoordsys(const CoordinateSystem& csys);
   const CoordinateSystem& getcoordsys() const;
 
   // LCSlicer box
   Record* box(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
-              const String& absrel, const Bool frac, const String& comment = "");
+              const String& absrel, const bool frac, const String& comment = "");
   // LCBox box
   static Record* box(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Int>& shape,
                      const String& comment = "");
@@ -171,15 +171,15 @@ class RegionManager {
   // Reading of a file containing an ImageRegion in the AipsIO format dump
   static Record* readImageFile(String filename, String regionname);
   // Writing a file of the AipsIO dump of the record representation of the region
-  static Bool writeImageFile(const String& file, const String& regionname,
+  static bool writeImageFile(const String& file, const String& regionname,
                              const Record& regionRecord);
 
   // save region into a table (image, blank table or any other such)
   String imageRegionToTable(const String& tabName, const ImageRegion& imreg, const String& regName,
-                            Bool asmask = False);
+                            bool asmask = false);
 
   String recordToTable(const String& tabName, const RecordInterface& rec,
-                       const String& regName = "", Bool asmask = False);
+                       const String& regName = "", bool asmask = false);
   // recover region from table
   Record* tableToRecord(const String& tabName, const String& regname);
 
@@ -187,7 +187,7 @@ class RegionManager {
   Vector<String> namesInTable(const String& tabName);
 
   // Remove a region from table...refuse is regionname is ""
-  Bool removeRegionInTable(const String& tabName, const String& regName);
+  bool removeRegionInTable(const String& tabName, const String& regName);
 
  protected:
   inline LogIO* _getLog() const { return itsLog; }
@@ -196,7 +196,7 @@ class RegionManager {
   LogIO* itsLog;
   std::unique_ptr<CoordinateSystem> itsCSys;
   // Function to return the internal Table object to the RegionHandler.
-  static Table& getTable(void* ptr, Bool writable);
+  static Table& getTable(void* ptr, bool writable);
   // Convert a string to Quantity
   void toQuantity(Quantity& out, const String& in);
   Table tab_p;

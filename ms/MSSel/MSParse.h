@@ -111,7 +111,7 @@ class MSParse {
   MSParse(const MSSelectableTable* ms, const String& shorthand);
 
   // Test if shorthand matches.
-  Bool test(const String& shortHand) const;
+  bool test(const String& shortHand) const;
 
   // Get the shorthand.
   String& shorthand();

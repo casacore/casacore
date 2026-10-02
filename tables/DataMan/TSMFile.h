@@ -83,7 +83,7 @@ class TSMFile {
           const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
   // Create a TSMFile object for the given existing file.
-  TSMFile(const String& fileName, Bool writable, const TSMOption&,
+  TSMFile(const String& fileName, bool writable, const TSMOption&,
           const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
   // Read the object back.

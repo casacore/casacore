@@ -37,8 +37,8 @@ LatticeStatsDataProvider<T>::LatticeStatsDataProvider()
       _iter(),
       _currentSlice(),
       _currentPtr(0),
-      _delData(False),
-      _atEnd(False),
+      _delData(false),
+      _atEnd(false),
       _nMaxThreads(0) {}
 
 template <class T>
@@ -48,8 +48,8 @@ LatticeStatsDataProvider<T>::LatticeStatsDataProvider(const Lattice<T>& lattice,
       _iter(),
       _currentSlice(),
       _currentPtr(0),
-      _delData(False),
-      _atEnd(False) {
+      _delData(false),
+      _atEnd(false) {
   setLattice(lattice, iteratorLimitBytes);
 }
 
@@ -60,7 +60,7 @@ template <class T>
 void LatticeStatsDataProvider<T>::operator++() {
   _freeStorage();
   if (!_iter) {
-    _atEnd = True;
+    _atEnd = true;
   } else {
     ++(*_iter);
   }
@@ -87,7 +87,7 @@ uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
 }
 
 template <class T>
-Bool LatticeStatsDataProvider<T>::atEnd() const {
+bool LatticeStatsDataProvider<T>::atEnd() const {
   if (!_iter) {
     return _atEnd;
   }
@@ -118,7 +118,7 @@ const T* LatticeStatsDataProvider<T>::getData() {
 }
 
 template <class T>
-const Bool* LatticeStatsDataProvider<T>::getMask() {
+const bool* LatticeStatsDataProvider<T>::getMask() {
   return NULL;
 }
 
@@ -132,8 +132,8 @@ uInt LatticeStatsDataProvider<T>::getNMaxThreads() const {
 }
 
 template <class T>
-Bool LatticeStatsDataProvider<T>::hasMask() const {
-  return False;
+bool LatticeStatsDataProvider<T>::hasMask() const {
+  return false;
 }
 
 template <class T>
@@ -153,7 +153,7 @@ void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice, uInt ite
   } else {
     _iter = NULL;
     _currentSlice.assign(lattice.get());
-    _atEnd = False;
+    _atEnd = false;
   }
 #ifdef _OPENMP
   _nMaxThreads = min(omp_get_max_threads(),
@@ -182,7 +182,7 @@ void LatticeStatsDataProvider<T>::updateMinPos(const std::pair<Int64, Int64>& mi
 template <class T>
 void LatticeStatsDataProvider<T>::_freeStorage() {
   _currentSlice.freeStorage(_currentPtr, _delData);
-  _delData = False;
+  _delData = false;
 }
 }  // namespace casacore
 

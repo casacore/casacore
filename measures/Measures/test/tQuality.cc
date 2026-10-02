@@ -86,11 +86,11 @@ int main() {
 
     // check the functioning of in/excluding the
     // undefined type
-    AlwaysAssert(Quality::allNames(False).size() == Quality::NumberOfTypes - 1, AipsError);
-    AlwaysAssert(Quality::allNames(True).size() == Quality::NumberOfTypes, AipsError);
+    AlwaysAssert(Quality::allNames(false).size() == Quality::NumberOfTypes - 1, AipsError);
+    AlwaysAssert(Quality::allNames(true).size() == Quality::NumberOfTypes, AipsError);
 
     // just some eye-candy: present all names
-    Vector<String> allNames = Quality::allNames(True);
+    Vector<String> allNames = Quality::allNames(true);
     cout << "All names: ";
     for (uInt i = 0; i < allNames.size(); i++) {
       cout << allNames[i] << " ";

@@ -34,7 +34,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-PGPlotterNull::PGPlotterNull(const String &) : beenWarned(True) {
+PGPlotterNull::PGPlotterNull(const String &) : beenWarned(true) {
   // If this fails, we need a bit more development to copy Float*'s to
   // float*'s.
   AlwaysAssertExit(sizeof(Float) == sizeof(float));
@@ -56,7 +56,7 @@ Record PGPlotterNull::curs(Float, Float) {
 
 void PGPlotterNull::arro(Float, Float, Float, Float) { noplotter(); }
 
-void PGPlotterNull::ask(Bool) { noplotter(); }
+void PGPlotterNull::ask(bool) { noplotter(); }
 
 void PGPlotterNull::bbuf() { noplotter(); }
 
@@ -167,7 +167,7 @@ void PGPlotterNull::conl(const Matrix<Float> &, Float, const Vector<Float> &, co
   noplotter();
 }
 
-void PGPlotterNull::cont(const Matrix<Float> &, const Vector<Float> &, Bool,
+void PGPlotterNull::cont(const Matrix<Float> &, const Vector<Float> &, bool,
                          const Vector<Float> &) {
   noplotter();
 }
@@ -205,7 +205,7 @@ void PGPlotterNull::scir(Int, Int) { noplotter(); }
 
 void PGPlotterNull::sitf(Int) { noplotter(); }
 
-void PGPlotterNull::bin(const Vector<Float> &, const Vector<Float> &, Bool) { noplotter(); }
+void PGPlotterNull::bin(const Vector<Float> &, const Vector<Float> &, bool) { noplotter(); }
 
 void PGPlotterNull::conb(const Matrix<Float> &, const Vector<Float> &, const Vector<Float> &,
                          Float) {
@@ -221,7 +221,7 @@ void PGPlotterNull::errx(const Vector<Float> &, const Vector<Float> &, const Vec
   noplotter();
 }
 
-void PGPlotterNull::hi2d(const Matrix<Float> &, const Vector<Float> &, Int, Float, Bool,
+void PGPlotterNull::hi2d(const Matrix<Float> &, const Vector<Float> &, Int, Float, bool,
                          const Vector<Float> &) {
   noplotter();
 }
@@ -373,7 +373,7 @@ void PGPlotterNull::wedg(const String &, Float, Float, Float, Float, const Strin
 void PGPlotterNull::noplotter() {
   if (!beenWarned) {
     std::cerr << "Warning no plotter attached.  Attach a plotter to get plots" << std::endl;
-    beenWarned = True;
+    beenWarned = true;
   }
 }
 

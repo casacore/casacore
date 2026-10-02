@@ -54,11 +54,11 @@ bool AipsIOReaderWriter::read(Record& region) {
     region.define("comment", comment);
     delete leImgReg;
   } catch (...) {
-    setError(String("An error has occurred while reading file ") + *pFilename_p, True);
-    return False;
+    setError(String("An error has occurred while reading file ") + *pFilename_p, true);
+    return false;
   }
 
-  return True;
+  return true;
 }
 
 // currently only supports a single region contained within
@@ -88,27 +88,27 @@ bool AipsIOReaderWriter::read(ImageRegion*& region) {
     region = ImageRegion::fromRecord(leTblRec, pFilename_p->c_str());
     // delete leTblRec;
   } catch (...) {
-    setError(String("An error has occurred while reading file ") + *pFilename_p, True);
-    return False;
+    setError(String("An error has occurred while reading file ") + *pFilename_p, true);
+    return false;
   }
 
-  return True;
+  return true;
 }
 
-Bool AipsIOReaderWriter::write(const Record& region) const {
+bool AipsIOReaderWriter::write(const Record& region) const {
   // open the file
   try {
     AipsIO os(pFilename_p->c_str(), ByteIO::NewNoReplace);
     os << region;
   } catch (...) {
-    setError(String("An error has occurred while writing file ") + *pFilename_p, True);
-    return False;
+    setError(String("An error has occurred while writing file ") + *pFilename_p, true);
+    return false;
   }
 
-  return True;
+  return true;
 }
 
-Bool AipsIOReaderWriter::write(const ImageRegion& region) const {
+bool AipsIOReaderWriter::write(const ImageRegion& region) const {
   // Convert the ImageRegion to a record and call tour
   // other write method that uses records.
   try {
@@ -116,16 +116,16 @@ Bool AipsIOReaderWriter::write(const ImageRegion& region) const {
     leRecord->assign(region.toRecord(*pRegionName_p));
     write(*leRecord);
   } catch (...) {
-    setError(String("An error has occurred while writing file ") + *pFilename_p, True);
-    return False;
+    setError(String("An error has occurred while writing file ") + *pFilename_p, true);
+    return false;
   }
 
-  return True;
+  return true;
 }
 
 void AipsIOReaderWriter::setOptions(const Record*) {
   setError(String("AipsIO region files do not contain any display options, no options to set."),
-           False);
+           false);
 
   return;
 }

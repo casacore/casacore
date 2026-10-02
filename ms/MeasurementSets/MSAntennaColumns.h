@@ -85,7 +85,7 @@ class MSAntennaColumns {
   // <group>
   ScalarColumn<Double>& dishDiameter() { return dishDiameter_p; }
   ScalarQuantColumn<Double>& dishDiameterQuant() { return dishDiameterQuant_p; }
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<String>& mount() { return mount_p; }
   ScalarColumn<String>& name() { return name_p; }
   ArrayColumn<Double>& offset() { return offset_p; }
@@ -102,7 +102,7 @@ class MSAntennaColumns {
   // <group>
   const ScalarColumn<Double>& dishDiameter() const { return dishDiameter_p; }
   const ScalarQuantColumn<Double>& dishDiameterQuant() const { return dishDiameterQuant_p; }
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<String>& mount() const { return mount_p; }
   const ScalarColumn<String>& name() const { return name_p; }
   const ArrayColumn<Double>& offset() const { return offset_p; }
@@ -188,13 +188,13 @@ class MSAntennaColumns {
 
   // # Functions which check the supplied values against the relevant column and
   // # the specified row.
-  Bool matchName(rownr_t row, const String& antName) const;
-  Bool matchStation(rownr_t row, const String& stationName) const;
-  Bool matchPosition(rownr_t row, const Vector<Double>& antPosInM, const Double tolInM) const;
+  bool matchName(rownr_t row, const String& antName) const;
+  bool matchStation(rownr_t row, const String& stationName) const;
+  bool matchPosition(rownr_t row, const Vector<Double>& antPosInM, const Double tolInM) const;
 
   // # required columns
   ScalarColumn<Double> dishDiameter_p;
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<String> mount_p;
   ScalarColumn<String> name_p;
   ArrayColumn<Double> offset_p;

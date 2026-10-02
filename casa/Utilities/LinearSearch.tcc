@@ -32,16 +32,16 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class Container, class ElType>
-Int linearSearch(Bool& found, const Container& container, const ElType& value, uInt n, uInt lower) {
+Int linearSearch(bool& found, const Container& container, const ElType& value, uInt n, uInt lower) {
   n += lower;
   while (lower < n) {
     if (container(lower) == value) {
-      found = True;
+      found = true;
       return lower;
     }
     lower++;
   }
-  found = False;
+  found = false;
   return -1;
 }
 
@@ -58,17 +58,17 @@ Int linearSearch1(const Container& container, const ElType& value, uInt lower) {
 }
 
 template <class Container, class ElType>
-Int linearSearchBrackets(Bool& found, const Container& container, const ElType& value, uInt n,
+Int linearSearchBrackets(bool& found, const Container& container, const ElType& value, uInt n,
                          uInt lower) {
   n += lower;
   while (lower < n) {
     if (container[lower] == value) {
-      found = True;
+      found = true;
       return lower;
     }
     lower++;
   }
-  found = False;
+  found = false;
   return -1;
 }
 

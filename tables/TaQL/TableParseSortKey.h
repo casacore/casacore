@@ -67,7 +67,7 @@ class TableParseSortKey {
   Sort::Order order() const { return order_p; }
 
   // Is the order given?
-  Bool orderGiven() const { return given_p; }
+  bool orderGiven() const { return given_p; }
 
   // Add the values of the sort key to the Sort object by reading the
   // values of the expression into an array.
@@ -82,7 +82,7 @@ class TableParseSortKey {
 
   TableExprNode node_p;
   Sort::Order order_p;
-  Bool given_p;
+  bool given_p;
 };
 
 }  // namespace casacore

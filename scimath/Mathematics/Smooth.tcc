@@ -40,8 +40,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-void Smooth<T>::hanning(Vector<T>& out, Vector<Bool>& outmask, Vector<T>& in, Vector<Bool>& mask,
-                        Bool TrueIsGood, Bool relaxed) {
+void Smooth<T>::hanning(Vector<T>& out, Vector<bool>& outmask, Vector<T>& in, Vector<bool>& mask,
+                        bool TrueIsGood, bool relaxed) {
   DebugAssert(out.shape().isEqual(in.shape()), AipsError);
   DebugAssert(outmask.shape().isEqual(mask.shape()), AipsError);
 
@@ -78,14 +78,14 @@ void Smooth<T>::hanning(Vector<T>& out, Vector<Bool>& outmask, Vector<T>& in, Ve
   vals[2] = 0.25;
   weights[7] = vals;  // TTT
 
-  Vector<Bool> weighted(8);
+  Vector<bool> weighted(8);
   if (relaxed) {
-    weighted = False;
-    weighted[7] = True;
+    weighted = false;
+    weighted[7] = true;
 
   } else {
-    weighted = True;
-    weighted[0] = False;
+    weighted = true;
+    weighted[0] = false;
   }
 
   // make special case for first and last
@@ -103,27 +103,27 @@ void Smooth<T>::hanning(Vector<T>& out, Vector<Bool>& outmask, Vector<T>& in, Ve
     w = &(weights[m]);
     if (weighted[m]) {
       out[0] = (*w)[1] * in[0] + (*w)[2] * in[1];
-      outmask[0] = True == TrueIsGood;
+      outmask[0] = true == TrueIsGood;
     } else {
       if (mask[0] == TrueIsGood) {
         out[0] = (*w)[1] * in[0] + (*w)[2] * in[1];
       } else {
         out[0] = in[0];
       }
-      outmask[0] = False == TrueIsGood;
+      outmask[0] = false == TrueIsGood;
     }
     m = (mask[nelm1] == TrueIsGood) + 2 * (mask[nelm1 - 1] == TrueIsGood);
     w = &(weights[m]);
     if (weighted[m]) {
       out[nelm1] = (*w)[1] * in[nelm1] + (*w)[0] * in[nelm1 - 1];
-      outmask[nelm1] = True == TrueIsGood;
+      outmask[nelm1] = true == TrueIsGood;
     } else {
       if (mask[nelm1] == TrueIsGood) {
         out[nelm1] = (*w)[1] * in[nelm1] + (*w)[0] * in[nelm1 - 1];
       } else {
         out[nelm1] = in[nelm1];
       }
-      outmask[nelm1] = False == TrueIsGood;
+      outmask[nelm1] = false == TrueIsGood;
     }
   }
 
@@ -134,30 +134,30 @@ void Smooth<T>::hanning(Vector<T>& out, Vector<Bool>& outmask, Vector<T>& in, Ve
     w = &(weights[m]);
     if (weighted[m]) {
       out[i] = (*w)[0] * in[i - 1] + (*w)[1] * in[i] + (*w)[2] * in[i + 1];
-      outmask[i] = True == TrueIsGood;
+      outmask[i] = true == TrueIsGood;
     } else {
       if (mask[i] == TrueIsGood) {
         out[i] = (*w)[0] * in[i - 1] + (*w)[1] * in[i] + (*w)[2] * in[i + 1];
       } else {
         out[i] = in[i];
       }
-      outmask[i] = False == TrueIsGood;
+      outmask[i] = false == TrueIsGood;
     }
   }
 }
 
 template <class T>
-void Smooth<T>::hanning(Array<T>& out, Array<Bool>& outmask, Array<T>& in, Array<Bool>& mask,
-                        Bool TrueIsGood, Bool relaxed) {
+void Smooth<T>::hanning(Array<T>& out, Array<bool>& outmask, Array<T>& in, Array<bool>& mask,
+                        bool TrueIsGood, bool relaxed) {
   Matrix<T> min(in);
   Matrix<T> mout(out);
-  Matrix<Bool> mmask(mask);
-  Matrix<Bool> moutmask(outmask);
+  Matrix<bool> mmask(mask);
+  Matrix<bool> moutmask(outmask);
   for (uInt i = 0; i < in.shape()[0]; i++) {
     Vector<T> vout(mout.row(i));
-    Vector<Bool> voutMask(moutmask.row(i));
+    Vector<bool> voutMask(moutmask.row(i));
     Vector<T> vin(min.row(i));
-    Vector<Bool> vinMask(mmask.row(i));
+    Vector<bool> vinMask(mmask.row(i));
     Smooth<T>::hanning(vout, voutMask, vin, vinMask, TrueIsGood, relaxed);
   }
 }

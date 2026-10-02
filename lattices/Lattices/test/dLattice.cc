@@ -81,7 +81,7 @@ void FFT2DReal2Complex(Lattice<Complex>& result, const Lattice<Float>& input) {
   IPosition start(4, 0);
   for (uInt c = 0; c < nchan; c++) {
     for (uInt p = 0; p < npol; p++) {
-      input.getSlice(inputArrPtr, Slicer(start, inputSliceShape), True);
+      input.getSlice(inputArrPtr, Slicer(start, inputSliceShape), true);
       FFT2D.fft(resultArray, *inputArrPtr);
       result.putSlice(resultArray, start);
       start(2) += 1;

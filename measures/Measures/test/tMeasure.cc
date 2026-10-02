@@ -460,7 +460,7 @@ int main() {
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MDirection conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVDirection mvd0(0.5, 0.5, 0.5);
       Double tp;
@@ -481,7 +481,7 @@ int main() {
                           tp)) {
             cout << MDirection::showType(i) << " to " << MDirection::showType(j) << ": "
                  << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-            isok = False;
+            isok = false;
           };
         };
       };
@@ -495,7 +495,7 @@ int main() {
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MPosition conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVPosition mvd0(-100, 100, -100);
       Double tp;
@@ -515,7 +515,7 @@ int main() {
                           tp)) {
             cout << MPosition::showType(i) << " to " << MPosition::showType(j) << ": "
                  << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-            isok = False;
+            isok = false;
           };
         };
       };
@@ -529,7 +529,7 @@ int main() {
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MEpoch conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVEpoch mvd0(50930);
       Double tp;
@@ -544,7 +544,7 @@ int main() {
           if (!nearAbs(mb0.getValue().get() - backw(forw(mb0)).getValue().get(), tvec(0), tp)) {
             cout << MEpoch::showType(i) << " to " << MEpoch::showType(j) << ": "
                  << mb0.getValue().get() - backw(forw(mb0)).getValue().get() << endl;
-            isok = False;
+            isok = false;
           };
         };
       };
@@ -560,7 +560,7 @@ int main() {
       cout << "Testing all MFrequency conversions forward/backward" << endl;
       cout << "  including the \"impossible\" conversion to/from "
            << MFrequency::showType(MFrequency::Undefined) << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVFrequency mvd0(1e9);
       Double tp;
@@ -575,7 +575,7 @@ int main() {
           if (!near(mb0.getValue().getValue(), backw(forw(mb0)).getValue().getValue(), tp)) {
             cout << MFrequency::showType(i) << " to " << MFrequency::showType(j) << ": "
                  << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-            isok = False;
+            isok = false;
           };
         };
         // try also the "impossible" conversion to/from Undefined
@@ -589,7 +589,7 @@ int main() {
           forw.setOut(rundef);
           cout << MFrequency::showType(i) << " to " << MFrequency::showType(MFrequency::Undefined)
                << " should not be possible." << endl;
-          isok = False;
+          isok = false;
         } catch (const std::exception& x) {
           // expected error
           cout << x.what() << endl;
@@ -616,7 +616,7 @@ int main() {
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MDoppler conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVDoppler mvd0(0.01);
       Double tp;
@@ -636,7 +636,7 @@ int main() {
                        tp)) {
             cout << MDoppler::showType(i) << " to " << MDoppler::showType(j) << ": "
                  << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-            isok = False;
+            isok = false;
           };
         };
       };
@@ -650,7 +650,7 @@ int main() {
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MRadialVelocity conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVRadialVelocity mvd0(100);
       Double tp;
@@ -666,7 +666,7 @@ int main() {
                        tp)) {
             cout << MRadialVelocity::showType(i) << " to " << MRadialVelocity::showType(j) << ": "
                  << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-            isok = False;
+            isok = false;
           };
         };
       };

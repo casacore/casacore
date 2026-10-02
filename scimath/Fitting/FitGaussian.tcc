@@ -162,7 +162,7 @@ void FitGaussian<T>::setRetryFactors(const Matrix<T>& retryfactors) {
 }
 
 template <class T>
-Bool& FitGaussian<T>::mask(uInt gaussian, uInt parameter) {
+bool& FitGaussian<T>::mask(uInt gaussian, uInt parameter) {
   if ((gaussian >= itsNGaussians) || (parameter >= itsDimension * 3))
     throw(
         AipsError("FitGaussian<T>::mask(uInt gaussian, uInt parameter)"
@@ -171,7 +171,7 @@ Bool& FitGaussian<T>::mask(uInt gaussian, uInt parameter) {
 }
 
 template <class T>
-const Bool& FitGaussian<T>::mask(uInt gaussian, uInt parameter) const {
+const bool& FitGaussian<T>::mask(uInt gaussian, uInt parameter) const {
   if ((gaussian >= itsNGaussians) || (parameter >= itsDimension * 3))
     throw(
         AipsError("FitGaussian<T>::mask(uInt gaussian, uInt parameter"
@@ -521,7 +521,7 @@ void FitGaussian<T>::correctParameters(Matrix<T>& parameters) {
 }
 
 template <class T>
-Bool FitGaussian<T>::converged() {
+bool FitGaussian<T>::converged() {
   // Did the fitter converge to an acceptible value?
   return itsSuccess;
 }

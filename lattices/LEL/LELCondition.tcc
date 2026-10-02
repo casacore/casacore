@@ -37,7 +37,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELCondition<T>::LELCondition(const std::shared_ptr<LELInterface<T>>& expr,
-                              const std::shared_ptr<LELInterface<Bool>>& cond) {
+                              const std::shared_ptr<LELInterface<bool>>& cond) {
 #if defined(AIPS_TRACE)
   cout << "LELCondition:: constructor" << endl;
 #endif
@@ -50,7 +50,7 @@ LELCondition<T>::LELCondition(const std::shared_ptr<LELInterface<T>>& expr,
   // Form the attributes (which also checks if both operands conform).
   LELAttribute attr(expr->getAttribute(), cond->getAttribute());
   // The result is always masked, since the condition forms a mask.
-  setAttr(LELAttribute(True, attr.shape(), attr.tileShape(), attr.coordinates()));
+  setAttr(LELAttribute(true, attr.shape(), attr.tileShape(), attr.coordinates()));
   // Fill these variables here, so an exception in setAttr does
   // not leave them undestructed.
   pExpr_p = expr;
@@ -70,7 +70,7 @@ void LELCondition<T>::eval(LELArray<T>& result, const Slicer& section) const {
   cout << "LELCondition::eval" << endl;
 #endif
 
-  LELArrayRef<Bool> condval(result.shape());
+  LELArrayRef<bool> condval(result.shape());
   pExpr_p->eval(result, section);
   pCond_p->evalRef(condval, section);
   result.combineMask(condval);
@@ -88,18 +88,18 @@ LELScalar<T> LELCondition<T>::getScalar() const {
 }
 
 template <class T>
-Bool LELCondition<T>::prepareScalarExpr() {
+bool LELCondition<T>::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELCondition::prepare" << endl;
 #endif
 
   if (LELInterface<T>::replaceScalarExpr(pExpr_p)) {
-    return True;
+    return true;
   }
-  if (LELInterface<Bool>::replaceScalarExpr(pCond_p)) {
-    return True;
+  if (LELInterface<bool>::replaceScalarExpr(pCond_p)) {
+    return true;
   }
-  return False;
+  return false;
 }
 
 template <class T>
@@ -108,9 +108,9 @@ String LELCondition<T>::className() const {
 }
 
 template <class T>
-Bool LELCondition<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELCondition<T>::lock(FileLocker::LockType type, uInt nattempts) {
   if (!pExpr_p->lock(type, nattempts)) {
-    return False;
+    return false;
   }
   return pCond_p->lock(type, nattempts);
 }
@@ -120,7 +120,7 @@ void LELCondition<T>::unlock() {
   pCond_p->unlock();
 }
 template <class T>
-Bool LELCondition<T>::hasLock(FileLocker::LockType type) const {
+bool LELCondition<T>::hasLock(FileLocker::LockType type) const {
   return pExpr_p->hasLock(type) && pCond_p->hasLock(type);
 }
 template <class T>

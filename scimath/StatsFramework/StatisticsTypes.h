@@ -51,7 +51,7 @@ using LocationType = std::pair<Int64, Int64>;
 
 template <class AccumType>
 struct StatsData {
-  Bool masked;
+  bool masked;
   std::shared_ptr<AccumType> max;
   LocationType maxpos;
   AccumType mean;
@@ -67,7 +67,7 @@ struct StatsData {
   AccumType sumsq;
   AccumType sumweights;
   AccumType variance;
-  Bool weighted;
+  bool weighted;
 };
 
 template <class AccumType>

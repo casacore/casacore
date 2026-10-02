@@ -32,7 +32,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSMBase::MSMBase() : DataManager(), nrrow_p(0), nrrowCreate_p(0), colSet_p(0), hasPut_p(False) {}
+MSMBase::MSMBase() : DataManager(), nrrow_p(0), nrrowCreate_p(0), colSet_p(0), hasPut_p(false) {}
 
 MSMBase::MSMBase(const String& storageManagerName)
     : DataManager(),
@@ -40,7 +40,7 @@ MSMBase::MSMBase(const String& storageManagerName)
       nrrow_p(0),
       nrrowCreate_p(0),
       colSet_p(0),
-      hasPut_p(False) {}
+      hasPut_p(false) {}
 
 MSMBase::MSMBase(const String& storageManagerName, const Record&)
     : DataManager(),
@@ -48,7 +48,7 @@ MSMBase::MSMBase(const String& storageManagerName, const Record&)
       nrrow_p(0),
       nrrowCreate_p(0),
       colSet_p(0),
-      hasPut_p(False) {}
+      hasPut_p(false) {}
 
 MSMBase::~MSMBase() {
   for (uInt i = 0; i < ncolumn(); i++) {
@@ -71,16 +71,16 @@ String MSMBase::dataManagerType() const { return "MemoryStMan"; }
 String MSMBase::dataManagerName() const { return stmanName_p; }
 
 // # Does the storage manager allow to add rows? (yes)
-Bool MSMBase::canAddRow() const { return True; }
+bool MSMBase::canAddRow() const { return true; }
 
 // # Does the storage manager allow to delete rows? (yes)
-Bool MSMBase::canRemoveRow() const { return True; }
+bool MSMBase::canRemoveRow() const { return true; }
 
 // # Does the storage manager allow to add columns? (yes)
-Bool MSMBase::canAddColumn() const { return True; }
+bool MSMBase::canAddColumn() const { return true; }
 
 // # Does the storage manager allow to delete columns? (yes)
-Bool MSMBase::canRemoveColumn() const { return True; }
+bool MSMBase::canRemoveColumn() const { return true; }
 
 DataManagerColumn* MSMBase::makeScalarColumn(const String& columnName, int dataType,
                                              const String&) {
@@ -90,7 +90,7 @@ DataManagerColumn* MSMBase::makeScalarColumn(const String& columnName, int dataT
   if (ncolumn() >= colSet_p.nelements()) {
     colSet_p.resize(colSet_p.nelements() + 32);
   }
-  MSMColumn* colp = new MSMColumn(this, dataType, False);
+  MSMColumn* colp = new MSMColumn(this, dataType, false);
   colSet_p[ncolumn()] = colp;
   return colp;
 }
@@ -119,7 +119,7 @@ DataManagerColumn* MSMBase::makeIndArrColumn(const String& columnName, int dataT
   return colp;
 }
 
-Bool MSMBase::canReallocateColumns() const { return True; }
+bool MSMBase::canReallocateColumns() const { return true; }
 
 DataManagerColumn* MSMBase::reallocateColumn(DataManagerColumn* column) {
   // Replace an indirect column by a direct one if its shape is fixed.
@@ -199,7 +199,7 @@ void MSMBase::removeRow64(rownr_t rownr) {
   setHasPut();
 }
 
-Bool MSMBase::flush(AipsIO&, Bool) { return False; }
+bool MSMBase::flush(AipsIO&, bool) { return false; }
 
 void MSMBase::create64(rownr_t nrrow) {
   // # Do not add the required nr of rows yet.

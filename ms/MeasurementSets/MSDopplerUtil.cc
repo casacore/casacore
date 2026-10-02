@@ -51,7 +51,7 @@ MSDopplerUtil::~MSDopplerUtil() {
 
 //----------------------------------------------------------------------------
 
-Bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fieldId) {
+bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fieldId) {
   // Retrieve a list of all rest frequencies used in Doppler
   // tracking of the specified spectral window id.
   // Output:
@@ -61,7 +61,7 @@ Bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
   // Initialization
   restFrequency.resize();
   Int nRestFreq = 0;
-  Bool found = False;
+  bool found = false;
 
   // Accessor for the MS columns and sub-tables
   MSColumns msc(ms_p);
@@ -96,17 +96,17 @@ Bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
             Vector<Double> restFrq = msc.source().restFrequency()(irow);
             if (restFrq.nelements() > 0) {
               // Does this already exist in the output rest frequency array ?
-              Bool exists = False;
+              bool exists = false;
               for (uInt k = 0; k < restFrequency.nelements(); k++) {
                 if (restFrq(transId) == restFrequency(k)) {
-                  exists = True;
+                  exists = true;
                 }
               }
               if (!exists) {
-                restFrequency.resize(restFrequency.nelements() + 1, True);
+                restFrequency.resize(restFrequency.nelements() + 1, true);
                 restFrequency(nRestFreq) = restFrq(transId);
                 nRestFreq++;
-                found = True;
+                found = true;
               }
             }
           }  // for (Int irow=0..)
@@ -126,17 +126,17 @@ Bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
             Vector<Double> restFrq = msc.source().restFrequency()(rows(irow));
             // Does this already exist in the output rest frequency array ?
             for (uInt transId = 0; transId < restFrq.nelements(); transId++) {
-              Bool exists = False;
+              bool exists = false;
               for (uInt k = 0; k < restFrequency.nelements(); k++) {
                 if (restFrq(transId) == restFrequency(k)) {
-                  exists = True;
+                  exists = true;
                 }
               }
               if (!exists) {
-                restFrequency.resize(restFrequency.nelements() + 1, True);
+                restFrequency.resize(restFrequency.nelements() + 1, true);
                 restFrequency(nRestFreq) = restFrq(transId);
                 nRestFreq++;
-                found = True;
+                found = true;
               }
             }
           }

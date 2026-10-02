@@ -175,19 +175,19 @@ class ImageInterface : public MaskedLattice<T> {
   // False if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   // <group>
-  virtual Bool setUnits(const Unit& newUnits);
+  virtual bool setUnits(const Unit& newUnits);
   virtual const Unit& units() const { return unit_p; }
   // </group>
 
   // Return the name of the current ImageInterface object. This will generally
   // be a file name for images that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
-  virtual String name(Bool stripPath = False) const = 0;
+  virtual String name(bool stripPath = false) const = 0;
 
   // Functions to set or replace the coordinate information in the Image
   // Returns False on failure, e.g. if the number of axes do not match.
   // <group>
-  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
+  virtual bool setCoordinateInfo(const CoordinateSystem& coords);
   const CoordinateSystem& coordinates() const { return coords_p; }
   // </group>
 
@@ -216,7 +216,7 @@ class ImageInterface : public MaskedLattice<T> {
   // It can fail if, e.g., the underlying table is not writable.
   // <group>
   const TableRecord& miscInfo() const { return miscInfo_p; }
-  virtual Bool setMiscInfo(const RecordInterface& newInfo);
+  virtual bool setMiscInfo(const RecordInterface& newInfo);
   // </group>
 
   // The ImageInfo object contains some miscellaneous information about the image
@@ -229,29 +229,29 @@ class ImageInterface : public MaskedLattice<T> {
   const ImageInfo& imageInfo() const { return imageInfo_p; }
   // Get non-const access to the ImageInfo.
   ImageInfo& rwImageInfo() { return imageInfo_p; }
-  virtual Bool setImageInfo(const ImageInfo& info);
+  virtual bool setImageInfo(const ImageInfo& info);
   // </group>
 
   // Get access to the attribute handler.
   // By default an empty handler is returned where no groups can be added to.
   // <group>
-  virtual ImageAttrHandler& attrHandler(Bool createHandler = False);
+  virtual ImageAttrHandler& attrHandler(bool createHandler = false);
   ImageAttrHandler& roAttrHandler() const {
-    return const_cast<ImageInterface<T>*>(this)->attrHandler(False);
+    return const_cast<ImageInterface<T>*>(this)->attrHandler(false);
   }
   // </group>
 
   // Can the image handle region definition?
-  Bool canDefineRegion() const { return regHandPtr_p->canDefineRegion(); }
+  bool canDefineRegion() const { return regHandPtr_p->canDefineRegion(); }
 
   // Make a mask which is suitable for the type of image.
   // Optionally the mask can be initialized with the given value
   // (by default it will not).
   // <br>Optionally the mask can be defined as an image region/mask
   // and turned in the default mask for the image. By default it will.
-  virtual ImageRegion makeMask(const String& name, Bool defineAsRegion = True,
-                               Bool setAsDefaultMask = True, Bool initialize = False,
-                               Bool value = True);
+  virtual ImageRegion makeMask(const String& name, bool defineAsRegion = true,
+                               bool setAsDefaultMask = true, bool initialize = false,
+                               bool value = true);
 
   // Define a region/mask belonging to the image.
   // The group type determines if it stored as a region or mask.
@@ -259,10 +259,10 @@ class ImageInterface : public MaskedLattice<T> {
   // already exists.
   // <br>An exception is thrown if canDefineRegion is False.
   virtual void defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
-                            Bool overwrite = False);
+                            bool overwrite = false);
 
   // Does the image have a region with the given name?
-  virtual Bool hasRegion(const String& regionName,
+  virtual bool hasRegion(const String& regionName,
                          RegionHandler::GroupType = RegionHandler::Any) const;
 
   // Get a region/mask belonging to the image from the given group
@@ -272,7 +272,7 @@ class ImageInterface : public MaskedLattice<T> {
   // The caller has to delete the <src>ImageRegion</src> object created.
   virtual ImageRegion* getImageRegionPtr(const String& name,
                                          RegionHandler::GroupType = RegionHandler::Any,
-                                         Bool throwIfUnknown = True) const;
+                                         bool throwIfUnknown = true) const;
 
   // Rename a region.
   // If a region with the new name already exists, it is deleted or
@@ -280,13 +280,13 @@ class ImageInterface : public MaskedLattice<T> {
   // The region name is looked up in the given group(s).
   // <br>An exception is thrown if the old region name does not exist.
   virtual void renameRegion(const String& newName, const String& oldName,
-                            RegionHandler::GroupType = RegionHandler::Any, Bool overwrite = False);
+                            RegionHandler::GroupType = RegionHandler::Any, bool overwrite = false);
 
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any,
-                            Bool throwIfUnknown = True);
+                            bool throwIfUnknown = true);
 
   // Get the names of all regions/masks.
   virtual Vector<String> regionNames(RegionHandler::GroupType = RegionHandler::Any) const;
@@ -321,18 +321,18 @@ class ImageInterface : public MaskedLattice<T> {
   String makeUniqueRegionName(const String& rootName, uInt startNumber = 1) const;
 
   // Check class invariants.
-  virtual Bool ok() const = 0;
+  virtual bool ok() const = 0;
 
   // Save and restore an ImageInterface object to or from a state Record
-  Bool toRecord(String& error, RecordInterface& outRec);
-  Bool fromRecord(String& error, const RecordInterface& inRec);
+  bool toRecord(String& error, RecordInterface& outRec);
+  bool fromRecord(String& error, const RecordInterface& inRec);
 
  protected:
   // Assignment (copy semantics) is only useful for derived classes.
   ImageInterface& operator=(const ImageInterface& other);
 
   // Restore the image info from the record.
-  Bool restoreImageInfo(const RecordInterface& rec);
+  bool restoreImageInfo(const RecordInterface& rec);
 
   // Set the image logger variable.
   void setLogMember(const LoggerHolder& logger) { log_p = logger; }

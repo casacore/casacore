@@ -51,6 +51,6 @@ LogFilterTaql::~LogFilterTaql() { delete expr_p; }
 
 LogFilterTaql* LogFilterTaql::clone() const { return new LogFilterTaql(*this); }
 
-Bool LogFilterTaql::pass(const LogMessage& message) const { return expr_p->matches(message); }
+bool LogFilterTaql::pass(const LogMessage& message) const { return expr_p->matches(message); }
 
 }  // namespace casacore

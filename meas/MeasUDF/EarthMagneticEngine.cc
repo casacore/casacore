@@ -34,10 +34,10 @@ namespace casacore {
 EarthMagneticEngine::EarthMagneticEngine()
     : itsValueType(0),
       itsToValueType(0),
-      itsAsLOS(False),
-      itsAsLong(False),
-      itsUseModel(False),
-      itsConvertModel(False),
+      itsAsLOS(false),
+      itsAsLong(false),
+      itsUseModel(false),
+      itsConvertModel(false),
       itsEpochEngine(0),
       itsPositionEngine(0),
       itsDirectionEngine(0) {
@@ -51,7 +51,7 @@ void EarthMagneticEngine::handleEarthMagnetic(vector<TENShPtr>& args, uInt& argn
   itsRefType = MEarthMagnetic::ITRF;
   itsValueType = 0;
   uInt nargnr = argnr + 1;
-  Bool asScalar = False;
+  bool asScalar = false;
   if (!args[argnr]->isReal()) {
     throw AipsError(
         "Non-real EarthMagnetic values given in a MEAS "
@@ -63,12 +63,12 @@ void EarthMagneticEngine::handleEarthMagnetic(vector<TENShPtr>& args, uInt& argn
       args[argnr]->valueType() == TableExprNodeRep::VTScalar && args[nargnr]->isReal() &&
       args[nargnr]->valueType() == TableExprNodeRep::VTScalar && args[nargnr + 1]->isReal() &&
       args[nargnr + 1]->valueType() == TableExprNodeRep::VTScalar) {
-    asScalar = True;
+    asScalar = true;
     nargnr += 2;
   }
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-    handleMeasType(args[nargnr], False);
+    handleMeasType(args[nargnr], false);
     if (itsRefType == MEarthMagnetic::IGRF) {
       throw AipsError(
           "The 'from' EarthMagnetic reference type given in "
@@ -195,7 +195,7 @@ void EarthMagneticEngine::handleValues(TableExprNode& operand, const TableExprId
   if (itsValueType == -3) {
     qh = Quantity(0, "nT");
   }
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MEarthMagnetic* emVec = earthMagnetics.data();
   for (uInt i = 0; i < earthMagnetics.size(); ++i) {
@@ -210,7 +210,7 @@ void EarthMagneticEngine::handleValues(TableExprNode& operand, const TableExprId
 void EarthMagneticEngine::setEpochEngine(EpochEngine& engine) {
   AlwaysAssert(itsEpochEngine == 0, AipsError);
   itsEpochEngine = &engine;
-  extendBase(engine, False);
+  extendBase(engine, false);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MEpoch());
 }
@@ -218,7 +218,7 @@ void EarthMagneticEngine::setEpochEngine(EpochEngine& engine) {
 void EarthMagneticEngine::setPositionEngine(PositionEngine& engine) {
   AlwaysAssert(itsPositionEngine == 0, AipsError);
   itsPositionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MPosition());
 }
@@ -226,20 +226,20 @@ void EarthMagneticEngine::setPositionEngine(PositionEngine& engine) {
 void EarthMagneticEngine::setDirectionEngine(DirectionEngine& engine) {
   AlwaysAssert(itsDirectionEngine == 0, AipsError);
   itsDirectionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MDirection());
 }
 
-void EarthMagneticEngine::set(MEarthMagnetic::Types toRefType, Int toValueType, Bool asLOS,
-                              Bool asLong, Bool useModel) {
+void EarthMagneticEngine::set(MEarthMagnetic::Types toRefType, Int toValueType, bool asLOS,
+                              bool asLong, bool useModel) {
   itsToValueType = toValueType;
   itsAsLOS = asLOS;
   itsAsLong = asLong;
   itsUseModel = useModel;
   if (itsUseModel && !itsAsLOS && !itsAsLong && toRefType != MEarthMagnetic::ITRF) {
     // A model result needs to be converted from ITRF to another frame.
-    itsConvertModel = True;
+    itsConvertModel = true;
   }
   // Determine the output unit, shape, and ndim.
   itsOutUnit = "nT";

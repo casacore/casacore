@@ -75,7 +75,7 @@ int main() {
     };
 
     Double ra, dec;
-    while (True) {
+    while (true) {
       cout << "Specify RA in degrees:  ";
       cout.flush();
       if (cin.peek() == '\n') {
@@ -89,7 +89,7 @@ int main() {
       coord = MVDirection(Quantity(ra, "deg"), Quantity(dec, "deg"));
 
       Double mytim;
-      while (True) {
+      while (true) {
         cout << "Specify time in MJD: ";
         cout.flush();
         if (cin.peek() == '\n') {

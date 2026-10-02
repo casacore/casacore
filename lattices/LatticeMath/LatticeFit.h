@@ -98,14 +98,14 @@ class LatticeFit {
   // subtraction, returnResiduals would normally be True.
   static uInt fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedParameters,
                           LinearFit<Float>& fitter, const Lattice<Float>& inImage, uInt whichAxis,
-                          const Vector<Bool>& fitMask, Bool returnResiduals);
+                          const Vector<bool>& fitMask, bool returnResiduals);
 
   // Fit baseline to MaskedLattice.  Fit and residuals can be optionally
   // written (leave pointers at zero to not write out these lattices)
   // You can optionally specify a weights lattice (1.0 if not given).
   static uInt fitProfiles(MaskedLattice<Float>* pOutFit, MaskedLattice<Float>* pOutResid,
                           MaskedLattice<Float>& in, Lattice<Float>* pSigma,
-                          LinearFit<Float>& fitter, uInt axis, Bool showProgress = False);
+                          LinearFit<Float>& fitter, uInt axis, bool showProgress = false);
 };
 
 }  // namespace casacore

@@ -51,10 +51,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-BucketFile::BucketFile(const String& fileName, uInt bufSizeFile, Bool mappedFile,
+BucketFile::BucketFile(const String& fileName, uInt bufSizeFile, bool mappedFile,
                        const std::shared_ptr<MultiFileBase>& mfile)
     : name_p(Path(fileName).expandedName()),
-      isWritable_p(True),
+      isWritable_p(true),
       isMapped_p(mappedFile),
       bufSize_p(bufSizeFile),
       fd_p(-1),
@@ -65,7 +65,7 @@ BucketFile::BucketFile(const String& fileName, uInt bufSizeFile, Bool mappedFile
   // Create the file.
   if (mfile_p) {
     file_p.reset(new MFFileIO(mfile_p, name_p, ByteIO::New));
-    isMapped_p = False;
+    isMapped_p = false;
     bufSize_p = 0;
   } else {
     fd_p = FiledesIO::create(name_p.c_str());
@@ -74,7 +74,7 @@ BucketFile::BucketFile(const String& fileName, uInt bufSizeFile, Bool mappedFile
   createMapBuf();
 }
 
-BucketFile::BucketFile(const String& fileName, Bool isWritable, uInt bufSizeFile, Bool mappedFile,
+BucketFile::BucketFile(const String& fileName, bool isWritable, uInt bufSizeFile, bool mappedFile,
                        const std::shared_ptr<MultiFileBase>& mfile)
     : name_p(Path(fileName).expandedName()),
       isWritable_p(isWritable),
@@ -86,7 +86,7 @@ BucketFile::BucketFile(const String& fileName, Bool isWritable, uInt bufSizeFile
       bufferedFile_p(0),
       mfile_p(mfile) {
   if (mfile_p) {
-    isMapped_p = False;
+    isMapped_p = false;
     bufSize_p = 0;
   }
 }
@@ -144,12 +144,12 @@ void BucketFile::remove() {
   close();
   if (mfile_p) {
     // Remove the file from the MultiFileBase. Note it might not exist yet.
-    Int id = mfile_p->fileId(name_p, False);
+    Int id = mfile_p->fileId(name_p, false);
     if (id >= 0) {
       mfile_p->deleteFile(id);
     }
   } else {
-    DOos::remove(name_p, False, False);
+    DOos::remove(name_p, false, false);
   }
   file_p.reset();
 }
@@ -161,7 +161,7 @@ void BucketFile::setRW() {
   if (isWritable_p) {
     return;
   }
-  isWritable_p = True;
+  isWritable_p = true;
   // Try to reopen the file as read/write.
   // Throw an exception if it fails.
   if (file_p) {

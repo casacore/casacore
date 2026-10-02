@@ -108,9 +108,9 @@ int main(int argc, const char* argv[]) {
     Vector<Double> trueMinor(nModels);
     Vector<Double> truePA(nModels);
     //
-    Vector<Bool> saveMask;
+    Vector<bool> saveMask;
     Vector<Double> startParameters;
-    Vector<Bool> parameterMask;
+    Vector<bool> parameterMask;
     for (Int i = 0; i < nModels; i++) {
       // Add model to data array
 
@@ -125,11 +125,11 @@ int main(int argc, const char* argv[]) {
       // Set Parameters mask
 
       Vector<Double> parameters(gauss2d.nparameters());
-      parameterMask = Vector<Bool>(gauss2d.nparameters(), True);
+      parameterMask = Vector<bool>(gauss2d.nparameters(), true);
       for (uInt j = 0; j < parameters.nelements(); j++) {
         parameters(j) = gauss2d[j];
         if (mask[j] == 0) {
-          parameterMask(j) = False;
+          parameterMask(j) = false;
         }
       }
       if (i == 0) saveMask = parameterMask;
@@ -377,7 +377,7 @@ void addNoise(Array<Float>& pixels, Array<Float>& sigma, Double noise) {
   MLCG generator;
   Normal noiseGen(&generator, 0.0, noise);
   //
-  Bool deleteIt;
+  bool deleteIt;
   Float* pData = pixels.getStorage(deleteIt);
   for (Int k = 0; k < pixels.shape().product(); k++) {
     pData[k] += noiseGen();

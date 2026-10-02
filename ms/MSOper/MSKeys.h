@@ -45,7 +45,7 @@ struct SubScanKey {
 };
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const SubScanKey& lhs, const SubScanKey& rhs);
+bool operator<(const SubScanKey& lhs, const SubScanKey& rhs);
 
 std::string toString(const SubScanKey& subScanKey);
 
@@ -72,9 +72,9 @@ inline ScanKey scanKey(const SubScanKey& subScanKey) {
 std::string toString(const ScanKey& scanKey);
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const ScanKey& lhs, const ScanKey& rhs);
+bool operator<(const ScanKey& lhs, const ScanKey& rhs);
 
-Bool operator==(const ScanKey& lhs, const ScanKey& rhs);
+bool operator==(const ScanKey& lhs, const ScanKey& rhs);
 
 // extract all the unique scan numbers from the specified scans
 std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys);
@@ -90,13 +90,13 @@ struct ArrayKey {
 };
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
+bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
 
-inline Bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
+inline bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
   return lhs.arrayID == rhs.arrayID && lhs.obsID == rhs.obsID;
 }
 
-inline Bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) { return !(lhs == rhs); }
+inline bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) { return !(lhs == rhs); }
 
 // construct scan keys given a set of scan numbers and an ArrayKey
 std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
@@ -109,7 +109,7 @@ struct SourceKey {
 };
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const SourceKey& lhs, const SourceKey& rhs);
+bool operator<(const SourceKey& lhs, const SourceKey& rhs);
 
 // get a set of unique ArrayKeys from a set of ScanKeys
 std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys);

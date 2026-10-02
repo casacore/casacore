@@ -107,10 +107,10 @@ class SSMIndStringColumn : public SSMDirColumn {
   virtual IPosition shape(rownr_t aRowNr);
 
   // This storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined(rownr_t aRowNr);
+  virtual bool isShapeDefined(rownr_t aRowNr);
 
   // Get the dimensionality of the item in the given row.
   virtual uInt ndim(rownr_t aRowNr);

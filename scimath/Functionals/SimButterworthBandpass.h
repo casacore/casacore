@@ -233,7 +233,7 @@ class SimButterworthBandpass : public Function1D<T> {
 
   // return True if the implementing function supports a mode.  This
   // implementation always returns True.
-  virtual Bool hasMode() const;
+  virtual bool hasMode() const;
 
   // clone this function
   virtual Function<T> *clone() const { return new SimButterworthBandpass<T>(*this); }

@@ -139,16 +139,16 @@ uInt CompositeNumber::nearestEven(const uInt testValue) {
   }
 }
 
-Bool CompositeNumber::isComposite(const uInt testValue) {
+bool CompositeNumber::isComposite(const uInt testValue) {
   if (testValue > itsMaxComplete) {
     generate(testValue);
   }
   for (uInt i = 0; i < itsNumbers.nelements(); i++) {
     if (itsNumbers[i] == testValue) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 }  // namespace casacore

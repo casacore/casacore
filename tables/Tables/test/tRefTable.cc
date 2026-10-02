@@ -85,13 +85,13 @@ void makeRef() {
   Table reftab(tab.project(Block<String>(1, "ab")));
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 4);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 1);
-  reftab.addColumn(ScalarColumnDesc<Int>("ac"), False);
+  reftab.addColumn(ScalarColumnDesc<Int>("ac"), false);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 4);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 2);
-  reftab.addColumn(ScalarColumnDesc<Int>("ad"), True);
+  reftab.addColumn(ScalarColumnDesc<Int>("ad"), true);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 4);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 3);
-  reftab.addColumn(ScalarColumnDesc<Int>("ax"), True);
+  reftab.addColumn(ScalarColumnDesc<Int>("ax"), true);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 5);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 4);
   reftab.rename("tRefTable_tmp.dataref", Table::New);

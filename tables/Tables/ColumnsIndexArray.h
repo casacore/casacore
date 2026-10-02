@@ -157,7 +157,7 @@ class ColumnsIndexArray {
   ColumnsIndexArray& operator=(const ColumnsIndexArray& that);
 
   // Are all keys in the index unique?
-  Bool isUnique() const;
+  bool isUnique() const;
 
   // Return the names of the columns forming the index.
   const String& columnName() const;
@@ -197,8 +197,8 @@ class ColumnsIndexArray {
   // functions. Note that the given Record will be copied to the internal
   // record, thus overwrites it.
   // <group>
-  rownr_t getRowNumber(Bool& found);
-  rownr_t getRowNumber(Bool& found, const Record& key);
+  rownr_t getRowNumber(bool& found);
+  rownr_t getRowNumber(bool& found, const Record& key);
   // </group>
 
   // Find the row numbers matching the key. It should be used instead
@@ -213,8 +213,8 @@ class ColumnsIndexArray {
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  RowNumbers getRowNumbers(Bool unique = False);
-  RowNumbers getRowNumbers(const Record& key, Bool unique = False);
+  RowNumbers getRowNumbers(bool unique = false);
+  RowNumbers getRowNumbers(const Record& key, bool unique = false);
   // </group>
 
   // Find the row numbers matching the key range. The boolean arguments
@@ -230,9 +230,9 @@ class ColumnsIndexArray {
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  RowNumbers getRowNumbers(Bool lowerInclusive, Bool upperInclusive, Bool unique = False);
-  RowNumbers getRowNumbers(const Record& lower, const Record& upper, Bool lowerInclusive,
-                           Bool upperInclusive, Bool unique = False);
+  RowNumbers getRowNumbers(bool lowerInclusive, bool upperInclusive, bool unique = false);
+  RowNumbers getRowNumbers(const Record& lower, const Record& upper, bool lowerInclusive,
+                           bool upperInclusive, bool unique = false);
   // </group>
 
  protected:
@@ -260,7 +260,7 @@ class ColumnsIndexArray {
   // in <src>itsUniqueIndexArray</src> is returned.
   // If not found, <src>found</src> is set to False and the index
   // of the next higher key is returned.
-  rownr_t bsearch(Bool& found, void* fieldPtr) const;
+  rownr_t bsearch(bool& found, void* fieldPtr) const;
 
   // Compare the key in <src>fieldPtr</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
@@ -269,7 +269,7 @@ class ColumnsIndexArray {
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
   // If <src>unique</src> is True, the row numbers will be made unique.
-  void fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t end, Bool unique) const;
+  void fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t end, bool unique) const;
 
   // Get the data if the column is an array.
   // <group>
@@ -296,7 +296,7 @@ class ColumnsIndexArray {
   // # They are used for fast access to the records.
   void* itsLowerField;
   void* itsUpperField;
-  Bool itsChanged;
+  bool itsChanged;
   Vector<rownr_t> itsDataIndex;  // # Row numbers of all keys
   // # Indices in itsDataIndex for each unique key
   Vector<rownr_t> itsUniqueIndex;
@@ -305,7 +305,7 @@ class ColumnsIndexArray {
   rownr_t* itsUniqueInx;     // # pointer to data in itsUniqueIndex
 };
 
-inline Bool ColumnsIndexArray::isUnique() const {
+inline bool ColumnsIndexArray::isUnique() const {
   return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
 }
 inline const Table& ColumnsIndexArray::table() const { return itsTable; }

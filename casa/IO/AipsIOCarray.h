@@ -129,7 +129,7 @@ void getnewAipsIO(AipsIO& aios, uInt& n, T** data);
 // # These macros expand to generate the appropriate inline functions
 // # for the built-in data types.
 
-AIPSIO_FUNC_SPEC(Bool)
+AIPSIO_FUNC_SPEC(bool)
 AIPSIO_FUNC_SPEC(Char)
 AIPSIO_FUNC_SPEC(uChar)
 AIPSIO_FUNC_SPEC(short)

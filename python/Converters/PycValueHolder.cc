@@ -62,7 +62,7 @@ boost::python::object casa_value_to_python::makeobject(ValueHolder const& vh) {
     case TpString:
       return boost::python::object((std::string const&)(vh.asString()));
     case TpArrayBool:
-      return casa_array_to_python<Bool>::makeobject(vh.asArrayBool());
+      return casa_array_to_python<bool>::makeobject(vh.asArrayBool());
     case TpArrayUChar:
       return casa_array_to_python<uChar>::makeobject(vh.asArrayuChar());
     case TpArrayShort:
@@ -123,7 +123,7 @@ ValueHolder casa_value_from_python::makeValueHolder(PyObject* obj_ptr) {
   using namespace boost::python;
   // An empty numarray is Py_None, so return an empty 0-dim Array.
   if (obj_ptr == Py_None) {
-    return ValueHolder(0, True);
+    return ValueHolder(0, true);
   }
   // First do array scalar check, otherwise PyInt_Check or so might
   // match depending on the machine type (32 or 64 bit).
@@ -172,7 +172,7 @@ ValueHolder casa_value_from_python::toVector(PyObject* obj_ptr) {
   switch (dt) {
     case TpBool:
       return ValueHolder(
-          from_python_sequence<Vector<Bool>, casa_variable_capacity_policy>::make_container(
+          from_python_sequence<Vector<bool>, casa_variable_capacity_policy>::make_container(
               obj_ptr));
     case TpInt:
       return ValueHolder(
@@ -200,7 +200,7 @@ ValueHolder casa_value_from_python::toVector(PyObject* obj_ptr) {
               obj_ptr));
     case TpOther:
       // empty sequence is set as empty 1-dim array
-      return ValueHolder(1, True);
+      return ValueHolder(1, true);
     default:
       break;
   }

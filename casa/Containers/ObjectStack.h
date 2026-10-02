@@ -113,7 +113,7 @@ class ObjectStack {
   void clear();
 
   // Test if stack empty
-  Bool empty() { return stack_p.empty(); };
+  bool empty() { return stack_p.empty(); };
 
   // return the stack extend (for debugging use and checking mainly)
   uInt nelements() const { return stack_p.size(); };

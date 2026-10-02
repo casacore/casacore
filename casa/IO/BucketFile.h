@@ -109,7 +109,7 @@ class BucketFile {
   // created for the file. If a MultiFileBase is used, memory-mapped IO
   // cannot be used and mappedFile is ignored.
   explicit BucketFile(
-      const String& fileName, uInt bufSizeFile = 0, Bool mappedFile = False,
+      const String& fileName, uInt bufSizeFile = 0, bool mappedFile = false,
       const std::shared_ptr<MultiFileBase>& mfile = std::shared_ptr<MultiFileBase>());
 
   // Create a BucketFile object for an existing file.
@@ -118,7 +118,7 @@ class BucketFile {
   // It can be indicated if a MMapfdIO and/or FilebufIO object must be
   // created for the file. If a MultiFileBase is used, memory-mapped IO
   // cannot be used and mappedFile is ignored.
-  BucketFile(const String& fileName, Bool writable, uInt bufSizeFile = 0, Bool mappedFile = False,
+  BucketFile(const String& fileName, bool writable, uInt bufSizeFile = 0, bool mappedFile = false,
              const std::shared_ptr<MultiFileBase>& mfile = std::shared_ptr<MultiFileBase>());
 
   // The destructor closes the file (if open).
@@ -160,7 +160,7 @@ class BucketFile {
   virtual const String& name() const;
 
   // Has the file logically been indicated as writable?
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Read bytes from the file.
   virtual uInt read(void* buffer, uInt length);
@@ -180,17 +180,17 @@ class BucketFile {
 
   // Is the file cached, mapped, or buffered?
   // <group>
-  Bool isCached() const;
-  Bool isMapped() const;
-  Bool isBuffered() const;
+  bool isCached() const;
+  bool isMapped() const;
+  bool isBuffered() const;
   // </group>
 
  private:
   // The file name.
   String name_p;
   // The (logical) writability of the file.
-  Bool isWritable_p;
-  Bool isMapped_p;
+  bool isWritable_p;
+  bool isMapped_p;
   uInt bufSize_p;
   int fd_p;  //  fd (if used) of unbuffered file
   // The unbuffered file.
@@ -211,13 +211,13 @@ class BucketFile {
 
 inline const String& BucketFile::name() const { return name_p; }
 
-inline Bool BucketFile::isWritable() const { return isWritable_p; }
+inline bool BucketFile::isWritable() const { return isWritable_p; }
 
 inline void BucketFile::seek(Int offset) { seek(Int64(offset)); }
 
-inline Bool BucketFile::isCached() const { return !isMapped_p && bufSize_p == 0; }
-inline Bool BucketFile::isMapped() const { return isMapped_p; }
-inline Bool BucketFile::isBuffered() const { return bufSize_p > 0; }
+inline bool BucketFile::isCached() const { return !isMapped_p && bufSize_p == 0; }
+inline bool BucketFile::isMapped() const { return isMapped_p; }
+inline bool BucketFile::isBuffered() const { return bufSize_p > 0; }
 
 }  // namespace casacore
 

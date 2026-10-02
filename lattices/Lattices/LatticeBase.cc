@@ -33,27 +33,27 @@ LatticeBase::~LatticeBase() {}
 
 String LatticeBase::imageType() const { return "Lattice"; }
 
-Bool LatticeBase::isPersistent() const { return False; }
+bool LatticeBase::isPersistent() const { return false; }
 
-Bool LatticeBase::isPaged() const { return False; }
+bool LatticeBase::isPaged() const { return false; }
 
-Bool LatticeBase::canReferenceArray() const { return False; }
+bool LatticeBase::canReferenceArray() const { return false; }
 
-Bool LatticeBase::isWritable() const { return True; }
+bool LatticeBase::isWritable() const { return true; }
 
 void LatticeBase::save(const String&) const {
   throw AipsError(imageType() + "::save is not implemented");
 }
 
-Bool LatticeBase::lock(FileLocker::LockType, uInt) { return True; }
+bool LatticeBase::lock(FileLocker::LockType, uInt) { return true; }
 void LatticeBase::unlock() {}
-Bool LatticeBase::hasLock(FileLocker::LockType) const { return True; }
+bool LatticeBase::hasLock(FileLocker::LockType) const { return true; }
 void LatticeBase::resync() {}
 void LatticeBase::flush() {}
 void LatticeBase::tempClose() {}
 void LatticeBase::reopen() {}
 
-String LatticeBase::name(Bool) const { return ""; }
+String LatticeBase::name(bool) const { return ""; }
 
 uInt LatticeBase::ndim() const { return shape().nelements(); }
 
@@ -75,7 +75,7 @@ IPosition LatticeBase::doNiceCursorShape(uInt maxPixels) const {
   return cursorShape;
 }
 
-Bool LatticeBase::ok() const { return True; }
+bool LatticeBase::ok() const { return true; }
 
 uInt LatticeBase::maximumCacheSize() const { return 0; }
 

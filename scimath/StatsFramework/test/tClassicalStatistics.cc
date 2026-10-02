@@ -50,7 +50,7 @@ int main() {
     Double k[] = {1.5, 1, 2, 3, 2.5};
     {
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -78,7 +78,7 @@ int main() {
     }
     {
       // just another way of specifying the data
-      ClassicalStatistics<Double, Double*, Bool*> cs1;
+      ClassicalStatistics<Double, Double*, bool*> cs1;
       cs1.setData(k, 5);
       StatsData<Double> sd = cs1.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
@@ -106,7 +106,7 @@ int main() {
     {
       // two datasets
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
@@ -173,9 +173,9 @@ int main() {
       t1[1] = 8;
       t1[2] = 10;
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
-      cs.setCalculateAsAdded(False);
+      cs.setCalculateAsAdded(false);
       cs.setData(t0.begin(), t0.size());
       std::fill(t0.begin(), t0.begin() + t0.size(), 0);
       cs.addData(t1.begin(), t1.size());
@@ -206,15 +206,15 @@ int main() {
       t1[1] = 8;
       t1[2] = 10;
 
-      Bool exceptionRaised = False;
+      bool exceptionRaised = false;
       try {
-        cs.setCalculateAsAdded(True);
+        cs.setCalculateAsAdded(true);
       } catch (std::exception& x) {
-        exceptionRaised = True;
+        exceptionRaised = true;
       }
       AlwaysAssert(exceptionRaised, AipsError);
       cs.reset();
-      cs.setCalculateAsAdded(True);
+      cs.setCalculateAsAdded(true);
       cs.setData(t0.begin(), t0.size());
       std::fill(t0.begin(), t0.begin() + t0.size(), 0);
       cs.addData(t1.begin(), t1.size());
@@ -240,7 +240,7 @@ int main() {
     {
       // two datasets, stride = 2,1
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size(), 2);
       cs.addData(v1.begin(), v1.size());
@@ -265,16 +265,16 @@ int main() {
     {
       // data ranges
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
       std::vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 5;
       r0[0].second = -5;
-      Bool expectedFail = False;
+      bool expectedFail = false;
       try {
         cs.setData(v0.begin(), 3, r0);
       } catch (const std::exception& x) {
-        expectedFail = True;
+        expectedFail = true;
       }
       AlwaysAssert(expectedFail, AipsError);
       r0[0].first = 2.4;
@@ -285,7 +285,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       cs.setData(v0.begin(), v0.size(), r0);
-      cs.addData(v1.begin(), v1.size(), r1, False);
+      cs.addData(v1.begin(), v1.size(), r1, false);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (79.25 - 13.5 * 13.5 / 3.0) / 2.0;
       AlwaysAssert(!sd.masked, AipsError);
@@ -306,17 +306,17 @@ int main() {
     }
     {
       // mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -339,9 +339,9 @@ int main() {
 
       // test cloning gives same results
       std::shared_ptr<ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                                          std::vector<Bool>::const_iterator>>
+                                          std::vector<bool>::const_iterator>>
           cs1(dynamic_cast<ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                                               std::vector<Bool>::const_iterator>*>(cs.clone()));
+                                               std::vector<bool>::const_iterator>*>(cs.clone()));
       StatsData<Double> sd1 = cs1->getStatistics();
       AlwaysAssert(sd1.masked, AipsError);
       AlwaysAssert(!sd1.weighted, AipsError);
@@ -361,25 +361,25 @@ int main() {
     }
     {
       // mask and ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (79.25 - 13.5 * 13.5 / 3.0) / 2.0;
       AlwaysAssert(sd.masked, AipsError);
@@ -400,7 +400,7 @@ int main() {
     }
     {
       // weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -434,7 +434,7 @@ int main() {
     }
     {
       // integer weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -470,7 +470,7 @@ int main() {
     }
     {
       // weights and ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -487,8 +487,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(!sd.masked, AipsError);
@@ -510,7 +510,7 @@ int main() {
     }
     {
       // integer weights; ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -529,8 +529,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(!sd.masked, AipsError);
@@ -552,7 +552,7 @@ int main() {
     }
     {
       // weights, ranges, and masks
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -563,24 +563,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(sd.masked, AipsError);
@@ -608,7 +608,7 @@ int main() {
     }
     {
       // integer weights; ranges, and masks
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -621,24 +621,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(sd.masked, AipsError);
@@ -666,7 +666,7 @@ int main() {
     }
     {
       // weights, masks
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -677,16 +677,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -710,7 +710,7 @@ int main() {
     }
     {
       // weights, masks, no max/min (CAS-11859 fix)
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -721,16 +721,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       std::set<StatisticsData::STATS> targets;
       // excludes max/min, so exercises another code branch
       targets.insert(StatisticsData::VARIANCE);
@@ -752,7 +752,7 @@ int main() {
     }
     {
       // integer weights; masks
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -765,16 +765,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -798,7 +798,7 @@ int main() {
     }
     {
       // getMinMax(), two datasets
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
       Double mymin, mymax;
@@ -808,7 +808,7 @@ int main() {
     }
     {
       // getMinMax(), two datasets, stride = 2,1
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), 3, 2);
       cs.addData(v1.begin(), v1.size());
       Double mymin, mymax;
@@ -818,7 +818,7 @@ int main() {
     }
     {
       // getMinMax(), data ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 2.4;
       r0[0].second = 6;
@@ -828,7 +828,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       cs.setData(v0.begin(), v0.size(), r0);
-      cs.addData(v1.begin(), v1.size(), r1, False);
+      cs.addData(v1.begin(), v1.size(), r1, false);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -836,17 +836,17 @@ int main() {
     }
     {
       // getMinMax(), mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), m1.begin(), v1.size());
       Double mymin, mymax;
@@ -856,25 +856,25 @@ int main() {
     }
     {
       // getMinMax(), mask and ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -882,7 +882,7 @@ int main() {
     }
     {
       // getMinMax, weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 1;
       w0[1] = 0;
@@ -902,7 +902,7 @@ int main() {
     }
     {
       // getMinMax, integer weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -924,7 +924,7 @@ int main() {
     }
     {
       // getMinMax(), weights and ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -941,8 +941,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -950,7 +950,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights, and ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -969,8 +969,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -978,7 +978,7 @@ int main() {
     }
     {
       // getMinMax(), weights, ranges, and masks
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -989,24 +989,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1014,7 +1014,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights, ranges, and masks
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1027,24 +1027,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1053,27 +1053,27 @@ int main() {
 
     {
       // general quantile exceptions
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
-      Bool thrown = False;
+      bool thrown = false;
       try {
         cs.getQuantile(0);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         cs.getQuantile(1);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
     }
     {
       // getQuantile(), no weights, no mask, no ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
       Double q = cs.getQuantile(0.1);
@@ -1098,7 +1098,7 @@ int main() {
     {
       // getQuantile(): two datasets, stride = 2,1
       // 1.5, 2, 2.5 5, 8, 10
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size(), 2);
       cs.addData(v1.begin(), v1.size());
       Double q = cs.getQuantile(0.1);
@@ -1122,7 +1122,7 @@ int main() {
     }
     {
       // getQuantile(), ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<std::pair<Double, Double>> r0(1), r1(2);
       r0[0].first = 2.4;
       r0[0].second = 6;
@@ -1131,7 +1131,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       cs.setData(v0.begin(), v0.size(), r0);
-      cs.addData(v1.begin(), v1.size(), r1, False);
+      cs.addData(v1.begin(), v1.size(), r1, false);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1154,17 +1154,17 @@ int main() {
     }
     {
       // getQuantile(): mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), m1.begin(), v1.size());
       // 2.5, 3, 8
@@ -1189,25 +1189,25 @@ int main() {
     }
     {
       // getQuantile(): mask and ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1230,7 +1230,7 @@ int main() {
     }
     {
       // getQuantile(): weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -1265,7 +1265,7 @@ int main() {
     }
     {
       // getQuantile(): integer weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1302,7 +1302,7 @@ int main() {
     }
     {
       // getQuantile(): ranges and weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -1319,8 +1319,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1343,7 +1343,7 @@ int main() {
     }
     {
       // getQuantile(): ranges and integer weights
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1362,8 +1362,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1386,7 +1386,7 @@ int main() {
     }
     {
       // getQuantile(): weights and mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -1397,16 +1397,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       // 2.5, 3, 8
@@ -1431,7 +1431,7 @@ int main() {
     }
     {
       // getQuantile(): integer weights and mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1444,16 +1444,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       // 2.5, 3, 8
@@ -1478,7 +1478,7 @@ int main() {
     }
     {
       // getQuantile(): weights, mask, ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -1489,24 +1489,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1549,7 +1549,7 @@ int main() {
     }
     {
       // getQuantile(): integer weights, mask, ranges
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1562,24 +1562,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1622,20 +1622,20 @@ int main() {
     }
     {
       // leave in for compile check
-      ClassicalStatistics<Complex, vector<Complex>::const_iterator, vector<Bool>::const_iterator>
+      ClassicalStatistics<Complex, vector<Complex>::const_iterator, vector<bool>::const_iterator>
           cs;
     }
     {
       // getMedian()
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.addData(v0.begin(), v0.size());
       Double median = cs.getMedian();
       AlwaysAssert(median == 2, AipsError);
       median = cs.getStatistic(StatisticsData::MEDIAN);
       AlwaysAssert(median == 2, AipsError);
       cs.reset();
-      vector<Bool> m0(v0.size(), True);
-      m0[0] = False;
+      vector<bool> m0(v0.size(), true);
+      m0[0] = false;
       cs.addData(v0.begin(), m0.begin(), v0.size());
       median = cs.getMedian();
       AlwaysAssert(median == 2, AipsError);
@@ -1652,7 +1652,7 @@ int main() {
       quantiles.insert(0.7);
       quantiles.insert(0.8);
       quantiles.insert(0.9);
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
       std::map<Double, Double> quantileToValue;
@@ -1683,9 +1683,9 @@ int main() {
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 9;
       r0[0].second = 11;
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
-      cs.addData(v1.begin(), v1.size(), r0, False);
+      cs.addData(v1.begin(), v1.size(), r0, false);
       std::map<Double, Double> quantileToValue;
       Double median = cs.getMedianAndQuantiles(quantileToValue, quantiles);
       AlwaysAssert(median == 2.5, AipsError);
@@ -1701,7 +1701,7 @@ int main() {
     }
     {
       // getMedianAndQuantiles (even sized data set)
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
       Double medabsdevmed = cs.getMedianAbsDevMed();
@@ -1712,9 +1712,9 @@ int main() {
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 9;
       r0[0].second = 11;
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(v0.begin(), v0.size());
-      cs.addData(v1.begin(), v1.size(), r0, False);
+      cs.addData(v1.begin(), v1.size(), r0, false);
       Double medabsdevmed = cs.getMedianAbsDevMed();
       AlwaysAssert(medabsdevmed == 1.0, AipsError);
     }
@@ -1728,11 +1728,11 @@ int main() {
       ++iter;
       ++count;
     }
-    vector<Bool> bigMask(npts, True);
-    bigMask[0] = False;
+    vector<bool> bigMask(npts, true);
+    bigMask[0] = false;
     {
       // getMedian() with binning, no ranges, weights, or mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
       Double median = cs.getMedian(NULL, NULL, NULL, 100);
@@ -1740,7 +1740,7 @@ int main() {
     }
     {
       // getMedian() with mask, but no weights or ranges, using binning
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(bigData.begin(), bigMask.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
       Double median = cs.getMedian(NULL, NULL, NULL, 100);
@@ -1748,7 +1748,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed() with binning, no ranges, weights, or mask
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
       Double medabsdevmed = cs.getMedianAbsDevMed(NULL, NULL, NULL, 100);
@@ -1756,7 +1756,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed() with mask, but no weights or ranges, using binning
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       cs.setData(bigData.begin(), bigMask.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
       Double medabsdevmed = cs.getMedianAbsDevMed(NULL, NULL, NULL, 100);
@@ -1765,7 +1765,7 @@ int main() {
     {
       // large array with all the same values, getMedianAndQuartile()
       vector<Float> big(100000, 30);
-      ClassicalStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Float>::const_iterator, vector<bool>::const_iterator> cs;
       cs.addData(big.begin(), big.size());
       std::set<Double> quantiles;
       quantiles.insert(0.25);
@@ -1780,7 +1780,7 @@ int main() {
     }
     {
       // two large array with two unique values, getMedianAndQuartile()
-      ClassicalStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Float>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Float> big(100000, 30);
       cs.addData(big.begin(), big.size());
       vector<Float> big2(50000, -10);
@@ -1798,7 +1798,7 @@ int main() {
     }
     {
       // medium sized randomized array, that can be sorted in memory in one go
-      ClassicalStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Float>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Float> big(100000);
       uInt count = 0;
       vector<Float>::iterator iter = big.begin();
@@ -1822,7 +1822,7 @@ int main() {
     {
       // large array, getMinMax()
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
       std::vector<Double> big(1e7);
       uInt count = 0;
@@ -1841,7 +1841,7 @@ int main() {
       std::mt19937 g(rd());
       std::shuffle(big.begin(), big.end(), g);
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs1;
       cs1.addData(big.begin(), big.size());
       cs1.getMinMax(mymin, mymax);
@@ -1854,7 +1854,7 @@ int main() {
       uInt size[] = {5000, 80000, 6500, 100000, 19256, 7482};
       std::vector<std::vector<Double>> data(n);
       ClassicalStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           cs;
       uInt64 expec = 0;
       for (uInt i = 0; i < n; ++i) {
@@ -1866,10 +1866,10 @@ int main() {
       }
       AlwaysAssert(cs.getNPts() == expec, AipsError);
       cs.reset();
-      std::vector<Bool> mask3(size[3]);
-      std::fill(mask3.begin(), mask3.begin() + size[3], False);
-      mask3[1000] = True;
-      mask3[1500] = True;
+      std::vector<bool> mask3(size[3]);
+      std::fill(mask3.begin(), mask3.begin() + size[3], false);
+      mask3[1000] = true;
+      mask3[1500] = true;
       expec -= (size[3] - 2);
       for (uInt i = 0; i < n; ++i) {
         uInt s = size[i];
@@ -1882,7 +1882,7 @@ int main() {
       AlwaysAssert(cs.getNPts() == expec, AipsError);
     }
     {
-      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+      ClassicalStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> cs;
       vector<Double> v{4, 7, 12, 18};
       vector<Double> w{0.5, 02, 1, 0.9};
       cs.setData(v.cbegin(), w.cbegin(), v.size());

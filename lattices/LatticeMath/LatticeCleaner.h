@@ -120,10 +120,10 @@ class LatticeCleaner {
   void update(const Lattice<T>& dirty);
 
   // Set a number of scale sizes. The units of the scale are pixels.
-  Bool setscales(const Int nscales, const Float scaleInc = 1.0);
+  bool setscales(const Int nscales, const Float scaleInc = 1.0);
 
   // Set a specific set of scales
-  Bool setscales(const Vector<Float>& scales);
+  bool setscales(const Vector<Float>& scales);
 
   // Set up control parameters
   // cleanType - type of the cleaning algorithm to use (HOGBOM, MULTISCALE)
@@ -137,12 +137,12 @@ class LatticeCleaner {
   // choose - unused at the moment, specify False. Original meaning is
   // to allow interactive decision on whether to continue iterations.
   // This method always returns True.
-  Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
-                  const Quantity& aThreshold, const Quantity& fThreshold, const Bool choose = True);
+  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+                  const Quantity& aThreshold, const Quantity& fThreshold, const bool choose = true);
 
   // This version of the method disables stopping on fractional threshold
-  Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
-                  const Quantity& threshold, const Bool choose = True);
+  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+                  const Quantity& threshold, const bool choose = true);
 
   // return how many iterations we did do
   Int iteration() const { return itsIteration; }
@@ -175,7 +175,7 @@ class LatticeCleaner {
   // (This is useful when multiscale clean is being used
   // inside a major cycle for MF or WF algorithms)
   // if True, the full image deconvolution will be attempted
-  void ignoreCenterBox(Bool huh) { itsIgnoreCenterBox = huh; }
+  void ignoreCenterBox(bool huh) { itsIgnoreCenterBox = huh; }
 
   // Consider the case of a point source:
   // the flux on all scales is the same, and the first scale will be chosen.
@@ -191,7 +191,7 @@ class LatticeCleaner {
   // to come across an ocsilatory pattern going between positive and
   // negative in the large scale.  If this is set, we stop at the first
   // negative in the largest scale.
-  void stopAtLargeScaleNegative() { itsStopAtLargeScaleNegative = True; }
+  void stopAtLargeScaleNegative() { itsStopAtLargeScaleNegative = true; }
 
   // Some algorithms require that the cycles be terminated when the image
   // is dominated by point sources; if we get nStopPointMode of the
@@ -200,7 +200,7 @@ class LatticeCleaner {
 
   // After completion of cycle, querry this to find out if we stopped because
   // of stopPointMode
-  Bool queryStopPointMode() const { return itsDidStopPointMode; }
+  bool queryStopPointMode() const { return itsDidStopPointMode; }
 
   // speedup() will speed the clean iteration by raising the
   // threshold.  This may be required if the threshold is
@@ -228,7 +228,7 @@ class LatticeCleaner {
 
  protected:
   // Make sure that the peak of the Psf is within the image
-  Bool validatePsf(const Lattice<T>& psf);
+  bool validatePsf(const Lattice<T>& psf);
 
   // Make an lattice of the specified scale
   void makeScale(Lattice<T>& scale, const Float& scaleSize);
@@ -237,10 +237,10 @@ class LatticeCleaner {
   Float spheroidal(Float nu);
 
   // Find the Peak of the Lattice
-  static Bool findMaxAbsLattice(const Lattice<T>& lattice, T& maxAbs, IPosition& posMax);
+  static bool findMaxAbsLattice(const Lattice<T>& lattice, T& maxAbs, IPosition& posMax);
 
   // Find the Peak of the lattice, applying a mask
-  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask, T& maxAbs,
+  bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask, T& maxAbs,
                              IPosition& posMax);
 
   // Helper function to reduce the box sizes until the have the same
@@ -273,7 +273,7 @@ class LatticeCleaner {
   Block<TempLattice<T>*> itsDirtyConvScales;
   Block<TempLattice<T>*> itsScaleMasks;
 
-  Bool itsScalesValid;
+  bool itsScalesValid;
 
   Int itsIteration;     // what iteration did we get to?
   Int itsStartingIter;  // what iteration did we get to?
@@ -289,10 +289,10 @@ class LatticeCleaner {
   Double itsMemoryMB;
 
   // Let the user choose whether to stop
-  Bool itsChoose;
+  bool itsChoose;
 
   // Threshold speedup factors:
-  Bool itsDoSpeedup;  // if false, threshold does not change with iteration
+  bool itsDoSpeedup;  // if false, threshold does not change with iteration
   Float itsNDouble;
 
   // # Stop now?
@@ -301,16 +301,16 @@ class LatticeCleaner {
   // Calculate index into PsfConvScales
   Int index(const Int scale, const Int otherscale);
 
-  Bool destroyScales();
-  Bool destroyMasks();
+  bool destroyScales();
+  bool destroyMasks();
 
-  Bool makeScaleMasks();
-  Bool itsIgnoreCenterBox;
+  bool makeScaleMasks();
+  bool itsIgnoreCenterBox;
   Float itsSmallScaleBias;
-  Bool itsStopAtLargeScaleNegative;
+  bool itsStopAtLargeScaleNegative;
   Int itsStopPointMode;
-  Bool itsDidStopPointMode;
-  Bool itsJustStarting;
+  bool itsDidStopPointMode;
+  bool itsJustStarting;
 
   // threshold for masks. If negative, mask values are used as weights and no pixels are
   // discarded (although effectively they would be discarded if the mask value is 0.)

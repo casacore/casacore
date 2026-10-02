@@ -89,7 +89,7 @@ class SDFITSHandler {
 
   // attach this to a MS - any unhandled fields in row are handled here.
   // This handler must be attached last.
-  SDFITSHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDFITSHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDFITSHandler(const SDFITSHandler &other);
@@ -101,7 +101,7 @@ class SDFITSHandler {
 
   // attach to a MS - any unhandled fields in row are handled here.
   // This handler must be attached last.
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // fill - a new row is always added
   void fill(const Record &row, const MEpoch &time, const Double &interval);
@@ -126,13 +126,13 @@ class SDFITSHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // intialize the row related stuff
-  void initRow(Vector<Bool> &handledCols, const Vector<String> &colNames, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Vector<String> &colNames, const Record &row);
 
   // get the required table desc given the unhandled columns and the row
-  TableDesc requiredTableDesc(Vector<Bool> &handledCols, Vector<String> &colNames,
+  TableDesc requiredTableDesc(Vector<bool> &handledCols, Vector<String> &colNames,
                               const Record &row);
 };
 

@@ -89,28 +89,28 @@ class TaQLStyle {
   // Get the various style values.
   // <group>
   uInt origin() const { return itsOrigin; }
-  Bool isEndExcl() const { return itsEndExcl; }
-  Bool isCOrder() const { return itsCOrder; }
+  bool isEndExcl() const { return itsEndExcl; }
+  bool isCOrder() const { return itsCOrder; }
   // </group>
 
   // Set if timing needs to be done.
-  void setTiming(Bool doTiming) { itsDoTiming = doTiming; }
+  void setTiming(bool doTiming) { itsDoTiming = doTiming; }
 
   // Should timing be done?
-  Bool doTiming() const { return itsDoTiming; }
+  bool doTiming() const { return itsDoTiming; }
 
   // Set if tracing needs to be done.
-  void setTracing(Bool doTracing) { itsDoTracing = doTracing; }
+  void setTracing(bool doTracing) { itsDoTracing = doTracing; }
 
   // Should tracing be done?
-  Bool doTracing() const { return itsDoTracing; }
+  bool doTracing() const { return itsDoTracing; }
 
  private:
   uInt itsOrigin;
-  Bool itsEndExcl;
-  Bool itsCOrder;
-  Bool itsDoTiming;
-  Bool itsDoTracing;
+  bool itsEndExcl;
+  bool itsCOrder;
+  bool itsDoTiming;
+  bool itsDoTracing;
   std::map<String, String> itsUDFLibNameMap;
 };
 

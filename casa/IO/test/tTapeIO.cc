@@ -46,20 +46,20 @@ int main(int argc, const char* argv[]) {
     inputs.create("interactive", "True", "Don't run this test automatically", "Bool");
     inputs.readArguments(argc, argv);
 
-    if (inputs.getBool("interactive") == False) {
+    if (inputs.getBool("interactive") == false) {
       cout << "UNTESTED" << endl;
       return 3;
     }
     const Path device(inputs.getString("device"));
     const uInt recordSize = inputs.getInt("record");
     uInt totalBytes = inputs.getInt("bytes");
-    const Bool checkContents = inputs.getBool("check");
+    const bool checkContents = inputs.getBool("check");
     ;
     const uInt nRecords = totalBytes / recordSize;
     totalBytes = nRecords * recordSize;  // To account for roundoff.
     uChar* writeBuffer = new uChar[recordSize];
     {  // Do the write test
-      TapeIO tape(device, True);
+      TapeIO tape(device, true);
       AlwaysAssert(tape.isWritable(), AipsError);
       tape.rewind();
       ACG g;
@@ -82,10 +82,10 @@ int main(int argc, const char* argv[]) {
       tape.rewind();
       AlwaysAssert(tape.isReadable(), AipsError);
       uChar* readBuffer = new uChar[recordSize];
-      Int bytesRead = tape.read(recordSize, readBuffer, False);
+      Int bytesRead = tape.read(recordSize, readBuffer, false);
       AlwaysAssert(bytesRead == Int(recordSize), AipsError);
       tape.skip(1);
-      bytesRead = tape.read(recordSize, readBuffer, False);
+      bytesRead = tape.read(recordSize, readBuffer, false);
       AlwaysAssert(bytesRead == 0, AipsError);
       delete[] readBuffer;
     }

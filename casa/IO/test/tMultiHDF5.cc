@@ -57,7 +57,7 @@ void readFile() {
   showMultiFile(mfile);
   for (uInt i = 0; i < mfile.info().size(); ++i) {
     String nm = "file" + std::to_string(i);
-    cout << nm << ' ' << mfile.fileId(nm, False) << endl;
+    cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
 }
 
@@ -98,7 +98,7 @@ void writeFiles1() {
   mfile.closeFile(id2);
 }
 
-void checkFiles1(Bool do1 = True) {
+void checkFiles1(bool do1 = true) {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
   Int id0 = mfile.openFile("file0");
   Int id2 = mfile.openFile("file2");
@@ -171,7 +171,7 @@ void writeFiles2() {
 }
 
 void checkFiles2() {
-  checkFiles1(False);
+  checkFiles1(false);
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
   Int id2 = mfile.openFile("file2");
   Vector<Int64> buf1(2), buf(2);

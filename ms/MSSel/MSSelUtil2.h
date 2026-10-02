@@ -43,7 +43,7 @@ class MSSelUtil2 {
 
   // average data (with flags & weights applied) over it's last axis (time or
   // row), return in data (overwritten), dataFlag gives new flags.
-  static void timeAverage(Array<Bool>& dataFlag, Array<T>& data, const Array<Bool>& flag,
+  static void timeAverage(Array<bool>& dataFlag, Array<T>& data, const Array<bool>& flag,
                           const Array<Float>& weight);
 };
 }  // namespace casacore

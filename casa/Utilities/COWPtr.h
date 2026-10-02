@@ -185,13 +185,13 @@ class COWPtr {
   // Helper class to make deletion of object optional.
   class Deleter {
    public:
-    Deleter(Bool deleteIt) : deleteIt_p(deleteIt) {}
+    Deleter(bool deleteIt) : deleteIt_p(deleteIt) {}
     void operator()(T *data) const {
       if (deleteIt_p) delete data;
     }
 
    private:
-    Bool deleteIt_p;
+    bool deleteIt_p;
   };
 
  public:
@@ -211,7 +211,7 @@ class COWPtr {
   // done if the constructor is given an argument of "readOnly = True".
   // <note> The only copying done (if ever) is upon a call to
   // COWPtr<T>::rwRef().</note>
-  explicit COWPtr(T *obj, Bool deleteIt = True, Bool readOnly = False);
+  explicit COWPtr(T *obj, bool deleteIt = true, bool readOnly = false);
 
   // copy ctor with reference semantics
   inline COWPtr(const COWPtr<T> &other);
@@ -238,7 +238,7 @@ class COWPtr {
   // <note> The only copying done (if ever) is upon a call to
   // COWPtr<T>::rwRef().
   // </note>
-  void set(T *obj, Bool deleteIt = True, Bool readOnly = False);
+  void set(T *obj, bool deleteIt = true, bool readOnly = false);
 
   // return a const reference to the object.
   inline const T &ref() const;
@@ -250,29 +250,29 @@ class COWPtr {
   inline T &rwRef();
 
   // returns False if this contains a non-null ptr, otherwise, return True.
-  inline Bool isNull() const;
+  inline bool isNull() const;
 
   // returns True if the object is const, otherwise, return False.
-  inline Bool isReadOnly() const;
+  inline bool isReadOnly() const;
 
   // returns True if the object is the only instance, otherwise, return False.
-  inline Bool isUnique() const;
+  inline bool isUnique() const;
 
   // Return True if copied, otherwise, False.  This function will make this
   // instance's object a copy if it is constructed with
   // "readOnly = True."  Additionally, all instances of COWPtr with more
   // than one reference to the allocated memory stored within will be
   // copied.
-  Bool makeUnique();
+  bool makeUnique();
 
  protected:
   std::shared_ptr<T> obj_p;
-  Bool const_p;
+  bool const_p;
 };
 
 // # Make our own default pointer - deleteIt==True by default, const_p==False
 template <class T>
-inline COWPtr<T>::COWPtr() : obj_p(nullptr, Deleter(True)), const_p(False) {
+inline COWPtr<T>::COWPtr() : obj_p(nullptr, Deleter(true)), const_p(false) {
   // does nothing
 }
 
@@ -314,18 +314,18 @@ inline T &COWPtr<T>::rwRef() {
 }
 
 template <class T>
-inline Bool COWPtr<T>::isNull() const {
+inline bool COWPtr<T>::isNull() const {
   return !obj_p;
 }
 
 template <class T>
-inline Bool COWPtr<T>::isReadOnly() const {
+inline bool COWPtr<T>::isReadOnly() const {
   return const_p;
 }
 
 template <class T>
-inline Bool COWPtr<T>::isUnique() const {
-  return (const_p || obj_p.use_count() > 1) ? False : True;
+inline bool COWPtr<T>::isUnique() const {
+  return (const_p || obj_p.use_count() > 1) ? false : true;
 }
 
 }  // namespace casacore

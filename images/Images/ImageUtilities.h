@@ -98,7 +98,7 @@ class ImageUtilities {
   // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
   template <typename T, typename U>
   static void copyMiscellaneous(ImageInterface<T>& out, const ImageInterface<U>& in,
-                                Bool copyImageInfo = True);
+                                bool copyImageInfo = true);
 
   // Copy a mask from one image to another
   template <typename T, typename U>
@@ -114,8 +114,8 @@ class ImageUtilities {
   template <typename T>
   static void addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface<T>>& outImage,
                                 const ImageInterface<T>& inImage, const String& outFile,
-                                Bool direction, Bool spectral, const String& stokes, Bool linear,
-                                Bool tabular, Bool overwrite, Bool silent = False);
+                                bool direction, bool spectral, const String& stokes, bool linear,
+                                bool tabular, bool overwrite, bool silent = false);
 
   // Function to bin up (average data) one axis of an N-D MaskedArray. The interface
   // is pretty specific to a particular application. It's here because
@@ -141,10 +141,10 @@ class ImageUtilities {
   // element is returned as "?"    Returns <src>False</src> if the lengths of
   // <<src>blc</src> and <src>trc</src> are not equal to the number of pixel axes
   // in the coordinate system.
-  static Bool pixToWorld(Vector<String>& sWorld, const CoordinateSystem& cSys, const Int& pixelAxis,
+  static bool pixToWorld(Vector<String>& sWorld, const CoordinateSystem& cSys, const Int& pixelAxis,
                          const Vector<Int>& cursorAxes, const IPosition& blc, const IPosition& trc,
                          const Vector<Double>& pixels, const Int& prec,
-                         const Bool usePrecForMixed = False);
+                         const bool usePrecForMixed = false);
 
   // Convert long axis names "Right Ascension", "Declination", "Frequency" and
   // "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.  Unknown strings
@@ -156,10 +156,10 @@ class ImageUtilities {
   // mapShape are compatible; the caller is responsible for this check.
   static void writeImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
                          const String& imageName, const Array<Float>& pixels, LogIO& log,
-                         const Array<Bool>& pixelMask = Array<Bool>());
+                         const Array<bool>& pixelMask = Array<bool>());
 
   static GaussianBeam makeFakeBeam(LogIO& logIO, const CoordinateSystem& csys,
-                                   Bool suppressWarnings = False);
+                                   bool suppressWarnings = false);
 
   static void getUnitAndDoppler(String& xUnit, String& doppler, const uInt axis,
                                 const CoordinateSystem& csys);

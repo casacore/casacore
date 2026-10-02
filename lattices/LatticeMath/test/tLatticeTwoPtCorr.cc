@@ -55,7 +55,7 @@ int main() {
     latIn.put(tArr);
     //
     AxesSpecifier spec;
-    SubLattice<Float> mLatIn(latIn, False, spec);
+    SubLattice<Float> mLatIn(latIn, false, spec);
 
     // Make Structure Functions.  No validation of output values
     // just make sure it runs.
@@ -69,11 +69,11 @@ int main() {
       cerr << "Shape in, out = " << shape << shapeOut << endl;
       TiledShape tShapeOut(shapeOut);
       TempLattice<Float> latOut(tShapeOut);
-      SubLattice<Float> mLatOut(latOut, True, spec);
+      SubLattice<Float> mLatOut(latOut, true, spec);
       //
       LatticeTwoPtCorr<Float> twoPt;
       twoPt.autoCorrelation(mLatOut, mLatIn, axes, LatticeTwoPtCorr<Float>::STRUCTUREFUNCTION,
-                            False);
+                            false);
     }
 
     // x-z plane
@@ -85,11 +85,11 @@ int main() {
       cerr << "Shape in, out = " << shape << shapeOut << endl;
       TiledShape tShapeOut(shapeOut);
       TempLattice<Float> latOut(tShapeOut);
-      SubLattice<Float> mLatOut(latOut, True, spec);
+      SubLattice<Float> mLatOut(latOut, true, spec);
       //
       LatticeTwoPtCorr<Float> twoPt;
       twoPt.autoCorrelation(mLatOut, mLatIn, axes, LatticeTwoPtCorr<Float>::STRUCTUREFUNCTION,
-                            False);
+                            false);
     }
 
     // y-z plane
@@ -101,11 +101,11 @@ int main() {
       cerr << "Shape in, out = " << shape << shapeOut << endl;
       TiledShape tShapeOut(shapeOut);
       TempLattice<Float> latOut(tShapeOut);
-      SubLattice<Float> mLatOut(latOut, True, spec);
+      SubLattice<Float> mLatOut(latOut, true, spec);
       //
       LatticeTwoPtCorr<Float> twoPt;
       twoPt.autoCorrelation(mLatOut, mLatIn, axes, LatticeTwoPtCorr<Float>::STRUCTUREFUNCTION,
-                            False);
+                            false);
     }
 
     // Copy Constructor

@@ -37,7 +37,7 @@ namespace casacore {
 
 template <class AccumType>
 StatsData<AccumType> initializeStatsData() {
-  StatsData<AccumType> init = {False,
+  StatsData<AccumType> init = {false,
                                nullptr,
                                std::pair<Int64, Int64>(-1, -1),
                                0,
@@ -53,7 +53,7 @@ StatsData<AccumType> initializeStatsData() {
                                0,
                                0,
                                0,
-                               False};
+                               false};
   return init;
 }
 

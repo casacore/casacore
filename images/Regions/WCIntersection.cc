@@ -43,7 +43,7 @@ WCIntersection::WCIntersection(const ImageRegion* region1, const ImageRegion* re
 
 WCIntersection::WCIntersection(const Block<const ImageRegion*>& regions) : WCCompound(regions) {}
 
-WCIntersection::WCIntersection(Bool takeOver, const Block<const WCRegion*>& regions)
+WCIntersection::WCIntersection(bool takeOver, const Block<const WCRegion*>& regions)
     : WCCompound(takeOver, regions) {}
 
 WCIntersection::WCIntersection(const WCIntersection& other) : WCCompound(other) {}
@@ -57,7 +57,7 @@ WCIntersection& WCIntersection::operator=(const WCIntersection& other) {
   return *this;
 }
 
-Bool WCIntersection::operator==(const WCRegion& other) const {
+bool WCIntersection::operator==(const WCRegion& other) const {
   return WCCompound::operator==(other);
 }
 
@@ -68,7 +68,7 @@ LCRegion* WCIntersection::doToLCRegion(const CoordinateSystem& cSys, const IPosi
                                        const IPosition& outOrder) const {
   Block<const LCRegion*> regions;
   multiToLCRegion(regions, cSys, shape, pixelAxesMap, outOrder);
-  return new LCIntersection(True, regions);
+  return new LCIntersection(true, regions);
 }
 
 String WCIntersection::className() { return "WCIntersection"; }
@@ -85,7 +85,7 @@ TableRecord WCIntersection::toRecord(const String& tableName) const {
 WCIntersection* WCIntersection::fromRecord(const TableRecord& rec, const String& tableName) {
   Block<const WCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
-  return new WCIntersection(True, regions);
+  return new WCIntersection(true, regions);
 }
 
 }  // namespace casacore

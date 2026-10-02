@@ -110,7 +110,7 @@ class WCConcatenation : public WCCompound {
   // The extend range has to be given as a 1-dimensional box.
   // <group>
   WCConcatenation(const Block<const ImageRegion*>& regions, const WCBox& extendRange);
-  WCConcatenation(Bool takeOver, const Block<const WCRegion*>& regions, const WCBox& extendRange);
+  WCConcatenation(bool takeOver, const Block<const WCRegion*>& regions, const WCBox& extendRange);
   // </group>
 
   // Copy constructor (copy semantics).
@@ -122,7 +122,7 @@ class WCConcatenation : public WCCompound {
   WCConcatenation& operator=(const WCConcatenation& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Make a copy of the derived object.
   virtual WCRegion* cloneRegion() const;

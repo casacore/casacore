@@ -33,12 +33,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 EclecticFunctionFactory<T>::EclecticFunctionFactory()
-    : FunctionFactory<T>(), lookup(OrderedPair<FunctionFactory<T> *, Bool>(0, False)) {}
+    : FunctionFactory<T>(), lookup(OrderedPair<FunctionFactory<T> *, bool>(0, false)) {}
 
 template <class T>
 EclecticFunctionFactory<T>::~EclecticFunctionFactory() {
-  MapIter<String, OrderedPair<FunctionFactory<T> *, Bool>> iter(lookup);
-  OrderedPair<FunctionFactory<T> *, Bool> val;
+  MapIter<String, OrderedPair<FunctionFactory<T> *, bool>> iter(lookup);
+  OrderedPair<FunctionFactory<T> *, bool> val;
 
   for (; !iter.atEnd(); ++iter) {
     val = iter.getVal();
@@ -67,8 +67,8 @@ Function<T> *EclecticFunctionFactory<T>::create(const Record &gr) const
 
 template <class T>
 void EclecticFunctionFactory<T>::addFactory(const String &type, FunctionFactory<T> *factory,
-                                            Bool own) {
-  lookup.define(type, OrderedPair<FunctionFactory<T> *, Bool>(factory, own));
+                                            bool own) {
+  lookup.define(type, OrderedPair<FunctionFactory<T> *, bool>(factory, own));
 }
 
 }  // namespace casacore

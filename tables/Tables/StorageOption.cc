@@ -59,7 +59,7 @@ void StorageOption::fillOption() {
   }
   // Default O_DIRECT support is False.
   if (itsUseAipsrcODirect) {
-    AipsrcValue<Bool>::find(itsUseODirect, "table.storage.odirect", False);
+    AipsrcValue<bool>::find(itsUseODirect, "table.storage.odirect", false);
   }
   // Default is to use separate files.
   if (itsOption == StorageOption::Default) {
@@ -67,9 +67,9 @@ void StorageOption::fillOption() {
   }
 }
 
-void StorageOption::setUseODirect(Bool useODirect) {
+void StorageOption::setUseODirect(bool useODirect) {
   itsUseODirect = useODirect;
-  itsUseAipsrcODirect = False;
+  itsUseAipsrcODirect = false;
 }
 
 }  // namespace casacore

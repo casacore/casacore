@@ -120,13 +120,13 @@ class VirtualColumnEngine : public DataManager {
 
  private:
   // The data manager is not a storage manager?
-  virtual Bool isStorageManager() const;
+  virtual bool isStorageManager() const;
 
   // Does the data manager allow to add rows? (default no)
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Does the data manager allow to delete rows? (default no)
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Add rows to all columns.
   // The default implementation does nothing.
@@ -158,7 +158,7 @@ class VirtualColumnEngine : public DataManager {
   // prepare.
   // It returns a True status if it had to flush (i.e. if data have changed).
   // <br>The default implementation does nothing and returns False.
-  virtual Bool flush(AipsIO&, Bool fsync);
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Resync the storage manager with the new file contents.
   // This is done by clearing the cache.

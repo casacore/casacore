@@ -251,32 +251,32 @@ class GenericL2Fit : public LSQaips {
   // to be fitted. The <src>x</src> should have the correct dimension.
   // <group>
   template <class U>
-  Bool setConstraint(
+  bool setConstraint(
       const uInt n, const Function<U, U> &function,
       const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0)) {
     if (n >= constrFun_p.nelements() || !ptr_derive_p ||
         ptr_derive_p->nparameters() != function.nparameters() || function.ndim() != x.nelements())
-      return False;
+      return false;
     delete constrFun_p[n];
     constrFun_p[n] = 0;
     constrFun_p[n] = function.cloneAD();
     return setConstraintEx(n, x, y);
   }
-  Bool setConstraint(
+  bool setConstraint(
       const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
-  Bool setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y =
+  bool setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y =
                                        typename FunctionTraits<T>::BaseType(0));
-  Bool addConstraint(
+  bool addConstraint(
       const Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType>
           &function,
       const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
-  Bool addConstraint(
+  bool addConstraint(
       const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
-  Bool addConstraint(
+  bool addConstraint(
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
   // </group>
   // Set the collinearity factor as the square of the sine of the
@@ -287,11 +287,11 @@ class GenericL2Fit : public LSQaips {
   // Set sigma values to be interpreted as weight (i.e. 1/sigma/sigma).
   // A value of zero or -1 will be skipped. The switch will stay in effect
   // until set False again explicitly. Default is False.
-  void asWeight(const Bool aswgt) { asweight_p = aswgt; }
+  void asWeight(const bool aswgt) { asweight_p = aswgt; }
 
   // Set the use of SVD or not (default). When set the default collinearity
   // is set as well.
-  void asSVD(const Bool svd);
+  void asSVD(const bool svd);
 
   // Return a pointer to the function being fitted.  Should
   // never delete this pointer.
@@ -344,38 +344,38 @@ class GenericL2Fit : public LSQaips {
       const Vector<typename FunctionTraits<T>::BaseType> &x,
       const Vector<typename FunctionTraits<T>::BaseType> &y,
       const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-      const Vector<Bool> *const mask = 0);
+      const Vector<bool> *const mask = 0);
   Vector<typename FunctionTraits<T>::BaseType> fit(
       const Matrix<typename FunctionTraits<T>::BaseType> &x,
       const Vector<typename FunctionTraits<T>::BaseType> &y,
       const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-      const Vector<Bool> *const mask = 0);
+      const Vector<bool> *const mask = 0);
   Vector<typename FunctionTraits<T>::BaseType> fit(
       const Vector<typename FunctionTraits<T>::BaseType> &x,
-      const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<Bool> *const mask = 0);
+      const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<bool> *const mask = 0);
   Vector<typename FunctionTraits<T>::BaseType> fit(
       const Matrix<typename FunctionTraits<T>::BaseType> &x,
-      const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<Bool> *const mask = 0);
-  Vector<typename FunctionTraits<T>::BaseType> fit(const Vector<Bool> *const mask = 0);
-  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+      const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<bool> *const mask = 0);
+  Vector<typename FunctionTraits<T>::BaseType> fit(const Vector<bool> *const mask = 0);
+  bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
            const Vector<typename FunctionTraits<T>::BaseType> &x,
            const Vector<typename FunctionTraits<T>::BaseType> &y,
            const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-           const Vector<Bool> *const mask = 0);
-  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+           const Vector<bool> *const mask = 0);
+  bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
            const Matrix<typename FunctionTraits<T>::BaseType> &x,
            const Vector<typename FunctionTraits<T>::BaseType> &y,
            const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-           const Vector<Bool> *const mask = 0);
-  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+           const Vector<bool> *const mask = 0);
+  bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
            const Vector<typename FunctionTraits<T>::BaseType> &x,
            const Vector<typename FunctionTraits<T>::BaseType> &y,
-           const typename FunctionTraits<T>::BaseType &sigma, const Vector<Bool> *const mask = 0);
-  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+           const typename FunctionTraits<T>::BaseType &sigma, const Vector<bool> *const mask = 0);
+  bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
            const Matrix<typename FunctionTraits<T>::BaseType> &x,
            const Vector<typename FunctionTraits<T>::BaseType> &y,
-           const typename FunctionTraits<T>::BaseType &sigma, const Vector<Bool> *const mask = 0);
-  Bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol, const Vector<Bool> *const mask = 0);
+           const typename FunctionTraits<T>::BaseType &sigma, const Vector<bool> *const mask = 0);
+  bool fit(Vector<typename FunctionTraits<T>::BaseType> &sol, const Vector<bool> *const mask = 0);
   // </group>
 
   // Obtain the chi squared. It has already been calculated during the
@@ -390,7 +390,7 @@ class GenericL2Fit : public LSQaips {
   // </thrown>
   // <group>
   const Vector<typename FunctionTraits<T>::BaseType> &errors() const;
-  Bool errors(Vector<typename FunctionTraits<T>::BaseType> &err) const;
+  bool errors(Vector<typename FunctionTraits<T>::BaseType> &err) const;
   // </group>
 
   // Get covariance matrix
@@ -407,17 +407,17 @@ class GenericL2Fit : public LSQaips {
   void buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
                          const Vector<typename FunctionTraits<T>::BaseType> &y,
                          const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-                         const Vector<Bool> *const mask = 0);
+                         const Vector<bool> *const mask = 0);
   void buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
                          const Vector<typename FunctionTraits<T>::BaseType> &y,
                          const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-                         const Vector<Bool> *const mask = 0);
+                         const Vector<bool> *const mask = 0);
   void buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
                          const Vector<typename FunctionTraits<T>::BaseType> &y,
-                         const Vector<Bool> *const mask = 0);
+                         const Vector<bool> *const mask = 0);
   void buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
                          const Vector<typename FunctionTraits<T>::BaseType> &y,
-                         const Vector<Bool> *const mask = 0);
+                         const Vector<bool> *const mask = 0);
   // </group>
   // Return the residual after a fit in y. x can
   // be a vector (if 1D function) or a matrix (ND functional), as in the
@@ -431,11 +431,11 @@ class GenericL2Fit : public LSQaips {
   // <li> Aipserror if illegal array sizes
   // </thrown>
   // <group>
-  Bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
+  bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
                 const Array<typename FunctionTraits<T>::BaseType> &x,
-                const Vector<typename FunctionTraits<T>::BaseType> &sol, const Bool model = False);
-  Bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
-                const Array<typename FunctionTraits<T>::BaseType> &x, const Bool model = False);
+                const Vector<typename FunctionTraits<T>::BaseType> &sol, const bool model = false);
+  bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
+                const Array<typename FunctionTraits<T>::BaseType> &x, const bool model = false);
   // </group>
   // Get the rank of the solution (or zero of no fit() done yet). A
   // valid solution will have the same rank as the number of unknowns (or
@@ -448,7 +448,7 @@ class GenericL2Fit : public LSQaips {
   //  Adjustable
   uInt aCount_ai;
   // SVD indicator
-  Bool svd_p;
+  bool svd_p;
   // Function to use in evaluating condition equation
   Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType>
       *ptr_derive_p;
@@ -470,14 +470,14 @@ class GenericL2Fit : public LSQaips {
   // Number of dimensions of input data
   uInt ndim_p;
   // No normal equations yet.
-  Bool needInit_p;
+  bool needInit_p;
   // Have solution
-  Bool solved_p;
+  bool solved_p;
   // Have errors
-  Bool errors_p;
-  mutable Bool ferrors_p;
+  bool errors_p;
+  mutable bool ferrors_p;
   // Interpret as weights rather than as sigma the given values.
-  Bool asweight_p;
+  bool asweight_p;
   // The rank of the solution
   uInt nr_p;
   // Condition equation parameters (for number of adjustable parameters)
@@ -505,25 +505,25 @@ class GenericL2Fit : public LSQaips {
   mutable Vector<Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base>> consvd_p;
   // # Member functions
   //  Generalised fitter
-  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+  virtual bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
                      const Array<typename FunctionTraits<T>::BaseType> &x,
                      const Vector<typename FunctionTraits<T>::BaseType> &y,
                      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-                     const Vector<Bool> *const mask = 0) = 0;
+                     const Vector<bool> *const mask = 0) = 0;
   // Build the normal matrix
   void buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
                    const Vector<typename FunctionTraits<T>::BaseType> &y,
                    const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-                   const Vector<Bool> *const mask = 0);
+                   const Vector<bool> *const mask = 0);
   // Build the constraint equations
   void buildConstraint();
   // Get the SVD constraints
   void fillSVDConstraints();
   // Calculate residuals
-  Bool buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
+  bool buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
                      const Array<typename FunctionTraits<T>::BaseType> &x,
                      const Vector<typename FunctionTraits<T>::BaseType> *const sol,
-                     const Bool model = False);
+                     const bool model = false);
   // Function to get evaluated functional value
   typename FunctionTraits<T>::BaseType getVal_p(
       const Array<typename FunctionTraits<T>::BaseType> &x, uInt j, uInt i) const;
@@ -546,7 +546,7 @@ class GenericL2Fit : public LSQaips {
   //  Set function properties
   void setFunctionEx();
   // Set Constraint properties
-  Bool setConstraintEx(const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
+  bool setConstraintEx(const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
                        const typename FunctionTraits<T>::BaseType y);
 };
 

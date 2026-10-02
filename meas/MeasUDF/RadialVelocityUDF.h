@@ -104,7 +104,7 @@ class RadialVelocityUDF : public UDFBase {
 
  private:
   // Try if the value is given as Doppler. True is returned if so.
-  Bool tryDoppler(uInt& argnr);
+  bool tryDoppler(uInt& argnr);
 
   // # Data members.
   RadialVelocityEngine itsEngine;

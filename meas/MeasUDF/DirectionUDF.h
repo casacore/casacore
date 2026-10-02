@@ -103,7 +103,7 @@ class DirectionUDF : public UDFBase {
 
   // Create for the given function type.
   // The Bools tell if rise/set times have to be calculated.
-  explicit DirectionUDF(FuncType, Bool riseSet = False);
+  explicit DirectionUDF(FuncType, bool riseSet = false);
 
   // Function to create an object.
   static UDFBase* makeDIR(const String&);
@@ -134,7 +134,7 @@ class DirectionUDF : public UDFBase {
   PositionEngine itsPositionEngine;
   FuncType itsType;
   MDirection::Types itsRefType;
-  Bool itsRiseSet;  // # True = calculate rise/set time
+  bool itsRiseSet;  // # True = calculate rise/set time
 };
 
 }  // namespace casacore

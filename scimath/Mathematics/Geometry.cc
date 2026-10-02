@@ -36,7 +36,7 @@ std::pair<Double, Double> Geometry::rotate2D(Double x, Double y, const Quantity&
   return std::make_pair(x * c - y * s, x * s + y * c);
 }
 
-Bool Geometry::doLineSegmentsIntersect(Double a0x, Double a0y, Double a1x, Double a1y, Double b0x,
+bool Geometry::doLineSegmentsIntersect(Double a0x, Double a0y, Double a1x, Double a1y, Double b0x,
                                        Double b0y, Double b1x, Double b1y) {
   Vector<Double> line0point0(2);
   line0point0[0] = a0x;
@@ -61,10 +61,10 @@ Bool Geometry::doLineSegmentsIntersect(Double a0x, Double a0y, Double a1x, Doubl
   if (rCrossS == 0) {
     if (crossProduct2D(diffQP, r) == 0) {
       // lines are coincident
-      return True;
+      return true;
     } else {
       // lines are parallel
-      return False;
+      return false;
     }
   }
   Double t = crossProduct2D(diffQP, s) / rCrossS;

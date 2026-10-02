@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSPointing::MSPointing() : hasBeenDestroyed_p(True) {}
+MSPointing::MSPointing() : hasBeenDestroyed_p(true) {}
 
 MSPointing::MSPointing(const String &tableName, TableOption option)
-    : MSTable<MSPointingEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSPointingEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSPointing::MSPointing(const String &tableName, TableOption option)
 }
 
 MSPointing::MSPointing(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSPointingEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSPointingEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSPointing::MSPointing(const String &tableName, const String &tableDescName, Tab
                   "table is not a valid MSPointing"));
 }
 
-MSPointing::MSPointing(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSPointingEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSPointing::MSPointing(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSPointingEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSPointing::MSPointing(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSPointing::MSPointing(const Table &table)
-    : MSTable<MSPointingEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSPointingEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSPointing::MSPointing(const Table &table)
 }
 
 MSPointing::MSPointing(const MSPointing &other)
-    : MSTable<MSPointingEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSPointingEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSPointing::~MSPointing() {
     LogIO os;
     os << LogIO::WARN << "~MSPointing() - Table written is not a valid MSPointing" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSPointing &MSPointing::operator=(const MSPointing &other) {

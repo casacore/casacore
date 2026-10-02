@@ -81,7 +81,7 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds) {
     Vector<Int> currentMatch = matchSpwId(spwIds(spwid));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedDataDescIds);
-      matchedDataDescIds.resize(matchedDataDescIds.nelements() + currentMatch.nelements(), True);
+      matchedDataDescIds.resize(matchedDataDescIds.nelements() + currentMatch.nelements(), true);
       matchedDataDescIds = concatenateArray(temp, currentMatch);
     }
   }
@@ -119,7 +119,7 @@ Vector<Int> MSDataDescIndex::matchPolId(const Vector<Int>& polIds) {
     Vector<Int> currentMatch = matchPolId(polIds(polid));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedDataDescIds);
-      matchedDataDescIds.resize(matchedDataDescIds.nelements() + currentMatch.nelements(), True);
+      matchedDataDescIds.resize(matchedDataDescIds.nelements() + currentMatch.nelements(), true);
       matchedDataDescIds = concatenateArray(temp, currentMatch);
     }
   }

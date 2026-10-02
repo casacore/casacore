@@ -70,7 +70,7 @@ int main() {
       const Double mjd = startMJD + i * oneHour;
       const MVTime now(mjd);
       Double dUT;
-      Bool rval = MeasIERS::get(dUT, MeasIERS::PREDICTED, MeasIERS::dUT1, mjd);
+      bool rval = MeasIERS::get(dUT, MeasIERS::PREDICTED, MeasIERS::dUT1, mjd);
       if (!rval) {
         cout << "MeasIERS::get returned False for PREDICTED, dUT1, mjd " << mjd << endl;
         return 2;

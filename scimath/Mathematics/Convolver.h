@@ -237,13 +237,13 @@ class Convolver {
   // Create the cached Transfer function assuming that circular convolution
   // will be done
   // <group>
-  Convolver(const Array<FType>& psf, Bool cachePsf = False);
+  Convolver(const Array<FType>& psf, bool cachePsf = false);
   // </group>
   // Create the cached Transfer function assuming that linear convolution
   // with an array of size imageSize will be done.
   // <group>
-  Convolver(const Array<FType>& psf, const IPosition& imageSize, Bool fullSize = False,
-            Bool cachePsf = False);
+  Convolver(const Array<FType>& psf, const IPosition& imageSize, bool fullSize = false,
+            bool cachePsf = false);
   // </group>
 
   // The copy constructor and the assignment operator make copies (and not
@@ -264,7 +264,7 @@ class Convolver {
   // want the full convolution, rather than the central portion (the same
   // size as the model) returned.
   // <group>
-  void linearConv(Array<FType>& result, const Array<FType>& model, Bool fullSize = False);
+  void linearConv(Array<FType>& result, const Array<FType>& model, bool fullSize = false);
   // </group>
 
   // Perform circular convolution of the model with the previously
@@ -276,17 +276,17 @@ class Convolver {
   // Set the transfer function for future convolutions to psf.
   // Assume circular convolution will be done
   // <group>
-  void setPsf(const Array<FType>& psf, Bool cachePsf = False);
+  void setPsf(const Array<FType>& psf, bool cachePsf = false);
   // </group>
   // Set the transfer function for future convolutions to psf.
   // Assume linear convolution with a model of size imageSize
   // <group>
-  void setPsf(const Array<FType>& psf, IPosition imageShape, Bool fullSize = False,
-              Bool cachePsf = False);
+  void setPsf(const Array<FType>& psf, IPosition imageShape, bool fullSize = false,
+              bool cachePsf = false);
   // </group>
   // Get the psf currently used by this convolver
   // <group>
-  const Array<FType> getPsf(Bool cachePsf = True);
+  const Array<FType> getPsf(bool cachePsf = true);
   // </group>
 
   // Set to use convolution with lesser flips
@@ -302,16 +302,16 @@ class Convolver {
   FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theFFT;
   FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theIFFT;
 
-  void makeXfr(const Array<FType>& psf, const IPosition& imageSize, Bool linear, Bool fullSize);
+  void makeXfr(const Array<FType>& psf, const IPosition& imageSize, bool linear, bool fullSize);
   void makePsf(Array<FType>& psf);
   IPosition defaultShape(const Array<FType>& psf);
   IPosition extractShape(IPosition& psfSize, const IPosition& imageSize);
-  void doConvolution(Array<FType>& result, const Array<FType>& model, Bool fullSize);
-  void resizeXfr(const IPosition& imageShape, Bool linear, Bool fullSize);
+  void doConvolution(Array<FType>& result, const Array<FType>& model, bool fullSize);
+  void resizeXfr(const IPosition& imageShape, bool linear, bool fullSize);
   // #   void padArray(Array<FType>& paddedArr, const Array<FType>& origArr,
   // # 		const IPosition & blc);
-  Bool valid;
-  Bool doFast_p;
+  bool valid;
+  bool doFast_p;
   void validate();
 };
 

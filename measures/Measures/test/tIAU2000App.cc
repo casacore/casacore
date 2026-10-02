@@ -50,14 +50,14 @@ void matVec(const Double m[3][3], const Double x[3], Double y[3]) {
 void enableIAU2000A() {
   (void)MeasTable::useIAU2000();
   (void)MeasTable::useIAU2000A();
-  AipsrcValue<Bool>::set(AipsrcValue<Bool>::registerRC("measures.iau2000.b_use", False), True);
-  AipsrcValue<Bool>::set(AipsrcValue<Bool>::registerRC("measures.iau2000.b_use2000a", False), True);
+  AipsrcValue<bool>::set(AipsrcValue<bool>::registerRC("measures.iau2000.b_use", false), true);
+  AipsrcValue<bool>::set(AipsrcValue<bool>::registerRC("measures.iau2000.b_use2000a", false), true);
 }
 
 void disableIAU2000A() {
-  AipsrcValue<Bool>::set(AipsrcValue<Bool>::registerRC("measures.iau2000.b_use", False), False);
-  AipsrcValue<Bool>::set(AipsrcValue<Bool>::registerRC("measures.iau2000.b_use2000a", False),
-                         False);
+  AipsrcValue<bool>::set(AipsrcValue<bool>::registerRC("measures.iau2000.b_use", false), false);
+  AipsrcValue<bool>::set(AipsrcValue<bool>::registerRC("measures.iau2000.b_use2000a", false),
+                         false);
 }
 
 void checkEpoch(const char* label, const Double mjdUtc) {

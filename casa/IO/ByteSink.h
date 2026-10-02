@@ -111,7 +111,7 @@ class ByteSink : virtual public BaseSinkSource {
   // These functions write one value of the given type.
   // If this function does not succeed, an exception will be thrown.
   // <group>
-  ByteSink& operator<<(Bool value);
+  ByteSink& operator<<(bool value);
   ByteSink& operator<<(Char value);
   ByteSink& operator<<(uChar value);
   ByteSink& operator<<(Short value);
@@ -131,7 +131,7 @@ class ByteSink : virtual public BaseSinkSource {
   // These functions write multiple values of the given type.
   // If this function does not succeed, an exception will be thrown.
   // <group>
-  void write(size_t nvalues, const Bool* value);
+  void write(size_t nvalues, const bool* value);
   void write(size_t nvalues, const Char* value);
   void write(size_t nvalues, const uChar* value);
   void write(size_t nvalues, const Short* value);

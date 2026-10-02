@@ -150,11 +150,11 @@ void RecordGramerror(const char*) {
   throw(TableInvExpr("Parse error at or near '" + String(RecordGramtext) + "'"));
 }
 
-Bool RecordGram::expr2Bool(const String& expr, const Record& vars) {
+bool RecordGram::expr2Bool(const String& expr, const Record& vars) {
   // Convert expression to tree.
   TableExprNode node(RecordGram::parse(vars, expr));
   // Evaluate.
-  Bool result;
+  bool result;
   node.get(vars, result);
   return result;
 }
@@ -204,12 +204,12 @@ MVTime RecordGram::expr2Date(const String& expr, const Record& vars) {
   return result;
 }
 
-Array<Bool> RecordGram::expr2ArrayBool(const String& expr, const Record& vars) {
+Array<bool> RecordGram::expr2ArrayBool(const String& expr, const Record& vars) {
   String ex = expr;
   // Convert expression to tree.
   TableExprNode node(RecordGram::parse(vars, expr));
   // Evaluate.
-  Array<Bool> result;
+  Array<bool> result;
   if (node.isScalar()) {
     result.resize(IPosition(1, 1));
     node.get(vars, result.data()[0]);
@@ -315,7 +315,7 @@ TableExprNode RecordGram::doParse(const String& expression) {
   theirTokens.clear();
   std::string message;
   String command = expression + '\n';
-  Bool error = False;
+  bool error = false;
   TableExprNode result;
   try {
     // Parse and execute the command.
@@ -327,7 +327,7 @@ TableExprNode RecordGram::doParse(const String& expression) {
     result = *theirNodePtr;
   } catch (const std::exception& x) {
     message = x.what();
-    error = True;
+    error = true;
   }
   // Delete possibly non-deleted tokens (usually in case of exception).
   deleteTokenStorage();
@@ -406,17 +406,17 @@ TableExprNode RecordGram::handleFunc(const String& name, const TableExprNodeSet&
 }
 
 TableExprNode RecordGram::handleRegex(const TableExprNode& left, const String& regex) {
-  Bool caseInsensitive = False;
-  Bool negate = False;
+  bool caseInsensitive = false;
+  bool negate = false;
   Int sz = regex.size();
   if (sz > 0 && regex[sz - 1] == 'i') {
-    caseInsensitive = True;
+    caseInsensitive = true;
     --sz;
   }
   AlwaysAssert(sz >= 4 && regex[sz - 1] != ' ', AipsError);
   Int inx = 0;
   if (regex[0] == '!') {
-    negate = True;
+    negate = true;
     ++inx;
   }
   AlwaysAssert(regex[inx] == '~', AipsError);
@@ -434,7 +434,7 @@ TableExprNode RecordGram::handleRegex(const TableExprNode& left, const String& r
   if (caseInsensitive) {
     str = Regex::makeCaseInsensitive(str);
   }
-  TableExprNode rnode((Regex(str, True)));
+  TableExprNode rnode((Regex(str, true)));
   if (negate) {
     lnode = (lnode != rnode);
   } else {

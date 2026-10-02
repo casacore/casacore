@@ -42,9 +42,9 @@ class NNGridder : public Gridder<Domain, Range> {
 
   virtual ~NNGridder() {}
 
-  virtual Bool grid(Array<Range>& gridded, const Vector<Domain>& position, const Range& value);
+  virtual bool grid(Array<Range>& gridded, const Vector<Domain>& position, const Range& value);
 
-  virtual Bool degrid(const Array<Range>& gridded, const Vector<Domain>& position, Range& value);
+  virtual bool degrid(const Array<Range>& gridded, const Vector<Domain>& position, Range& value);
 
  protected:
   virtual Range correctionFactor1D(Int loc, Int len);

@@ -92,7 +92,7 @@ class MSSourceColumns {
   ~MSSourceColumns();
 
   // Is this object defined? (MSSource table is optional)
-  Bool isNull() const { return isNull_p; }
+  bool isNull() const { return isNull_p; }
 
   // Access to required columns
   // <group>
@@ -179,7 +179,7 @@ class MSSourceColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
   // set the direction type for the DIRECTION column. This can only be done
   // when the table has no rows. Trying to do so at other times will throw an
@@ -219,7 +219,7 @@ class MSSourceColumns {
   void attachOptionalCols(const MSSource& msSource);
 
   // # Is the object not attached to a Table.
-  Bool isNull_p;
+  bool isNull_p;
 
   // # required columns
   ScalarColumn<Int> calibrationGroup_p;

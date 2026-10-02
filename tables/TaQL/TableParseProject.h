@@ -82,7 +82,7 @@ class TableParseProject {
   const Block<TableExprNode>& getColumnExpr() const { return columnExpr_p; }
 
   // Are expressions used in the column projection?
-  Bool hasExpressions() const { return nrSelExprUsed_p > 0; }
+  bool hasExpressions() const { return nrSelExprUsed_p > 0; }
 
   // Return the number of projected columns used in other clauses such as HAVING
   // which need to be precalculated.
@@ -109,11 +109,11 @@ class TableParseProject {
   // Finish the additions to the block of column names
   // by removing the deleted empty names and creating Expr objects as needed.
   // An exception is thrown if there is a resultset and if columns are selected.
-  Table handleColumnFinish(Bool distinct, Bool hasResultSet, TableParseQuery&);
+  Table handleColumnFinish(bool distinct, bool hasResultSet, TableParseQuery&);
 
   // Keep the column specification in a create table command.
   void handleColSpec(const String& columnName, const String& likeColName, const String& dataType,
-                     const Record& spec, Bool isCOrder);
+                     const Record& spec, bool isCOrder);
 
   // Add columns to the table of ALTER TABLE.
   // The column descriptions have already been added to tableDesc_p.
@@ -128,14 +128,14 @@ class TableParseProject {
   // Find the keyword or column name and create a TableExprNode from it.
   // If <src>tryProj=True</src> it is first tried if the column is a coluymn
   // in the projected table (i.e., result from the SELECT part).
-  TableExprNode handleKeyCol(const String& name, Bool tryProj, TableParseQuery&);
+  TableExprNode handleKeyCol(const String& name, bool tryProj, TableParseQuery&);
 
   // Make the table projection using the selected columns.
   // The columns in the resulting table are renamed if a new name was given.
   Table project(const Table& tab);
 
   // Create TableParseUpdate objects for the selected column expressions.
-  void makeUpdate(Bool useSel, TableParseQuery& tpq);
+  void makeUpdate(bool useSel, TableParseQuery& tpq);
 
   // Fill projectExprSelColumn_p telling the columns to be projected
   // at the first stage.
@@ -195,7 +195,7 @@ class TableParseProject {
   uInt nrSelExprUsed_p;
   // # The projected columns used in the HAVING and ORDERBY clauses.
   Block<uInt> projectExprSubset_p;
-  Block<Bool> projectExprSelColumn_p;
+  Block<bool> projectExprSelColumn_p;
   // # The first table used when creating a column object.
   // # All other tables used for them should have the same size.
   Table firstColTable_p;

@@ -123,7 +123,7 @@ class RetypedArrayEx2 {
     void get(Array<DComplex>& out, const void* in, const IPosition& sourceElementShape);
 
    private:
-    Vector<Bool>* mask_p;
+    Vector<bool>* mask_p;
     uInt nrTrue_p;
   };
 

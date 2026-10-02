@@ -230,12 +230,12 @@ int main() {
       //
       Int prec;
       Coordinate::formatType fType = Coordinate::SCIENTIFIC;
-      lc.getPrecision(prec, fType, True, 6, 4, 2);
+      lc.getPrecision(prec, fType, true, 6, 4, 2);
       if (prec != 6) {
         throw(AipsError("Failed getPrecision test 1"));
       }
       fType = Coordinate::FIXED;
-      lc.getPrecision(prec, fType, True, 6, 4, 2);
+      lc.getPrecision(prec, fType, true, 6, 4, 2);
       if (prec != 4) {
         throw(AipsError("Failed getPrecision test 2"));
       }
@@ -243,21 +243,21 @@ int main() {
       String unit;
       Double val = 20.12345;
       Quantum<Double> valq(val, Unit(units(1)));
-      String str = lc.format(unit, Coordinate::FIXED, val, 1, True, True, 4);
-      String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1, True, True, 4);
+      String str = lc.format(unit, Coordinate::FIXED, val, 1, true, true, 4);
+      String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1, true, true, 4);
       if (str != "20.1234" || str2 != "20.1234") {
         throw(AipsError("Failed format test 1"));
       }
       //
-      str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1, True, True, 4);
-      str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 1, True, True, 4);
+      str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1, true, true, 4);
+      str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 1, true, true, 4);
       if (str != "2.0123e+01" || str2 != "2.0123e+01") {
         throw(AipsError("Failed format test 2"));
       }
       //
       unit = "MHz";
       val = 20.0;
-      str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+      str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
       if (str != "20000.0000") {
         throw(AipsError("Failed format test 3"));
       }
@@ -278,7 +278,7 @@ int main() {
         //
         unit = "MHz";
         val = 1.0;
-        str = lc.format(unit, Coordinate::FIXED, val, 0, False, True, 4);
+        str = lc.format(unit, Coordinate::FIXED, val, 0, false, true, 4);
         if (str != "11000.0000") {
           throw(AipsError("Failed format test 4"));
         }
@@ -352,7 +352,7 @@ int main() {
       units(2) = "s";
       LinearCoordinate lc(names, units, crval, cdelt, xform, crpix);
       //
-      Vector<Bool> axes(names.nelements(), True);
+      Vector<bool> axes(names.nelements(), true);
       Vector<Int> shape(names.nelements());
       for (uInt i = 0; i < shape.nelements(); i++) {
         shape(i) = 10 * (i + 2);
@@ -388,8 +388,8 @@ int main() {
       // Not all axes
 
       {
-        axes.set(True);
-        axes(1) = False;
+        axes.set(true);
+        axes(1) = false;
         Coordinate* pC = lc.makeFourierCoordinate(axes, shape);
         //
         const Vector<String>& units2 = pC->worldAxisUnits();
@@ -429,8 +429,8 @@ int main() {
         xform(0, 1) = 1.0;
         LinearCoordinate lc2(names, units, crval, cdelt, xform, crpix);
         //
-        axes.set(True);
-        axes(1) = False;
+        axes.set(true);
+        axes(1) = false;
         Coordinate* pC = lc2.makeFourierCoordinate(axes, shape);
         if (pC) {
           delete pC;

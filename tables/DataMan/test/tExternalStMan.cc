@@ -77,19 +77,19 @@ class LofarStMan : public DataManager {
   virtual Record dataManagerSpec() const override;
 
   // The storage manager is not a regular one.
-  virtual Bool isRegular() const override;
+  virtual bool isRegular() const override;
 
   // The storage manager cannot add rows.
-  virtual Bool canAddRow() const override;
+  virtual bool canAddRow() const override;
 
   // The storage manager cannot delete rows.
-  virtual Bool canRemoveRow() const override;
+  virtual bool canRemoveRow() const override;
 
   // The storage manager can add columns, which does not really do something.
-  virtual Bool canAddColumn() const override;
+  virtual bool canAddColumn() const override;
 
   // Columns can be removed, but it does not do anything at all.
-  virtual Bool canRemoveColumn() const override;
+  virtual bool canRemoveColumn() const override;
 
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
@@ -112,7 +112,7 @@ class LofarStMan : public DataManager {
 
   // Flush and optionally fsync the data.
   // It does nothing, and returns False.
-  virtual Bool flush(AipsIO&, Bool doFsync) override;
+  virtual bool flush(AipsIO&, bool doFsync) override;
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
@@ -186,7 +186,7 @@ class LofarColumn : public StManColumn {
   explicit LofarColumn(LofarStMan* parent, int dtype) : StManColumn(dtype), itsParent(parent) {}
   virtual ~LofarColumn();
   // Most columns are not writable (only DATA is writable).
-  virtual Bool isWritable() const override;
+  virtual bool isWritable() const override;
   // Set column shape of fixed shape columns; it does nothing.
   virtual void setShapeColumn(const IPosition& shape) override;
   // Prepare the column. By default it does nothing.
@@ -250,10 +250,10 @@ class FalseColumn : public LofarColumn {
  public:
   explicit FalseColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
   virtual ~FalseColumn();
-  virtual void getBoolV(uInt rowNr, Bool* dataPtr) override;
+  virtual void getBoolV(uInt rowNr, bool* dataPtr) override;
 
  private:
-  Bool itsValue;
+  bool itsValue;
 };
 
 // <summary>UVW column in the LOFAR Storage Manager.</summary>
@@ -273,7 +273,7 @@ class DataColumn : public LofarColumn {
  public:
   explicit DataColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
   virtual ~DataColumn();
-  virtual Bool isWritable() const override;
+  virtual bool isWritable() const override;
   using LofarColumn::shape;
   virtual IPosition shape(uInt rownr) override;
   virtual void getArrayComplexV(uInt rowNr, Array<Complex>* dataPtr) override;
@@ -288,7 +288,7 @@ class FlagColumn : public LofarColumn {
   virtual ~FlagColumn();
   using LofarColumn::shape;
   virtual IPosition shape(uInt rownr) override;
-  virtual void getArrayBoolV(uInt rowNr, Array<Bool>* dataPtr) override;
+  virtual void getArrayBoolV(uInt rowNr, Array<bool>* dataPtr) override;
 };
 
 // <summary>WEIGHT column in the LOFAR Storage Manager.</summary>
@@ -331,13 +331,13 @@ class FlagCatColumn : public LofarColumn {
   explicit FlagCatColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
   virtual ~FlagCatColumn();
   using LofarColumn::isShapeDefined;
-  virtual Bool isShapeDefined(uInt rownr) override;
+  virtual bool isShapeDefined(uInt rownr) override;
   using LofarColumn::shape;
   virtual IPosition shape(uInt rownr) override;
 };
 
 LofarColumn::~LofarColumn() {}
-Bool LofarColumn::isWritable() const { return False; }
+bool LofarColumn::isWritable() const { return false; }
 void LofarColumn::setShapeColumn(const IPosition&) {}
 void LofarColumn::prepareCol() {}
 
@@ -372,8 +372,8 @@ void ZeroColumn::getIntV(uInt, Int* dataPtr) {
 }
 
 FalseColumn::~FalseColumn() {}
-void FalseColumn::getBoolV(uInt, Bool* dataPtr) {
-  itsValue = False;
+void FalseColumn::getBoolV(uInt, bool* dataPtr) {
+  itsValue = false;
   columnCache().setIncrement(0);
   if (itsParent->getNRow() > 0) {
     columnCache().set(0, itsParent->getNRow() - 1, &itsValue);
@@ -390,7 +390,7 @@ void UvwColumn::getArraydoubleV(uInt rownr, Array<Double>* dataPtr) {
 }
 
 DataColumn::~DataColumn() {}
-Bool DataColumn::isWritable() const { return True; }
+bool DataColumn::isWritable() const { return true; }
 IPosition DataColumn::shape(uInt) { return IPosition(2, npol, nchan); }
 void DataColumn::getArrayComplexV(uInt rownr, Array<Complex>* dataPtr) {
   indgen(*dataPtr, Complex(rownr, rownr + 0.5));
@@ -402,9 +402,9 @@ void DataColumn::putArrayComplexV(uInt rownr, const Array<Complex>* dataPtr) {
 
 FlagColumn::~FlagColumn() {}
 IPosition FlagColumn::shape(uInt) { return IPosition(2, npol, nchan); }
-void FlagColumn::getArrayBoolV(uInt rownr, Array<Bool>* dataPtr) {
-  *dataPtr = False;
-  (*dataPtr)(IPosition(2, rownr % npol, rownr % nchan)) = True;
+void FlagColumn::getArrayBoolV(uInt rownr, Array<bool>* dataPtr) {
+  *dataPtr = false;
+  (*dataPtr)(IPosition(2, rownr % npol, rownr % nchan)) = true;
 }
 
 WeightColumn::~WeightColumn() {}
@@ -420,7 +420,7 @@ IPosition WSpectrumColumn::shape(uInt) { return IPosition(2, npol, nchan); }
 void WSpectrumColumn::getArrayfloatV(uInt rownr, Array<Float>* dataPtr) { *dataPtr = float(rownr); }
 
 FlagCatColumn::~FlagCatColumn() {}
-Bool FlagCatColumn::isShapeDefined(uInt) { return False; }
+bool FlagCatColumn::isShapeDefined(uInt) { return false; }
 IPosition FlagCatColumn::shape(uInt) {
   throw DataManError("LofarStMan: no data in column FLAG_CATEGORY");
 }
@@ -501,18 +501,18 @@ DataManager* LofarStMan::makeObject(const String& group, const Record& spec) {
 
 void LofarStMan::registerClass() { DataManager::registerCtor("LofarStMan", makeObject); }
 
-Bool LofarStMan::isRegular() const { return False; }
-Bool LofarStMan::canAddRow() const { return False; }
-Bool LofarStMan::canRemoveRow() const { return False; }
-Bool LofarStMan::canAddColumn() const { return True; }
-Bool LofarStMan::canRemoveColumn() const { return True; }
+bool LofarStMan::isRegular() const { return false; }
+bool LofarStMan::canAddRow() const { return false; }
+bool LofarStMan::canRemoveRow() const { return false; }
+bool LofarStMan::canAddColumn() const { return true; }
+bool LofarStMan::canRemoveColumn() const { return true; }
 
 void LofarStMan::addRow(uInt) { throw DataManError("LofarStMan cannot add rows"); }
 void LofarStMan::removeRow(uInt) { throw DataManError("LofarStMan cannot remove rows"); }
 void LofarStMan::addColumn(DataManagerColumn*) {}
 void LofarStMan::removeColumn(DataManagerColumn*) {}
 
-Bool LofarStMan::flush(AipsIO&, Bool) { return False; }
+bool LofarStMan::flush(AipsIO&, bool) { return false; }
 
 void LofarStMan::create(uInt) {}
 
@@ -569,14 +569,14 @@ void createTable() {
   td.addColumn(ScalarColumnDesc<Double>("INTERVAL"));
   td.addColumn(ScalarColumnDesc<Double>("EXPOSURE"));
   td.addColumn(ScalarColumnDesc<Double>("TIME_CENTROID"));
-  td.addColumn(ScalarColumnDesc<Bool>("FLAG_ROW"));
+  td.addColumn(ScalarColumnDesc<bool>("FLAG_ROW"));
   td.addColumn(ArrayColumnDesc<Double>("UVW", IPosition(1, 3), ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<Complex>("DATA"));
   td.addColumn(ArrayColumnDesc<Float>("SIGMA"));
   td.addColumn(ArrayColumnDesc<Float>("WEIGHT"));
   td.addColumn(ArrayColumnDesc<Float>("WEIGHT_SPECTRUM"));
-  td.addColumn(ArrayColumnDesc<Bool>("FLAG"));
-  td.addColumn(ArrayColumnDesc<Bool>("FLAG_CATEGORY"));
+  td.addColumn(ArrayColumnDesc<bool>("FLAG"));
+  td.addColumn(ArrayColumnDesc<bool>("FLAG_CATEGORY"));
   // Now create a new table from the description.
   SetupNewTable newtab("tLofarStMan_tmp.data", td, Table::New);
   // Create the storage manager and bind all columns to it.
@@ -603,8 +603,8 @@ void readTable() {
   ArrayColumn<Float> wspecCol(tab, "WEIGHT_SPECTRUM");
   ArrayColumn<Float> sigmaCol(tab, "SIGMA");
   ArrayColumn<Double> uvwCol(tab, "UVW");
-  ArrayColumn<Bool> flagCol(tab, "FLAG");
-  ArrayColumn<Bool> flagcatCol(tab, "FLAG_CATEGORY");
+  ArrayColumn<bool> flagCol(tab, "FLAG");
+  ArrayColumn<bool> flagcatCol(tab, "FLAG_CATEGORY");
   ScalarColumn<Double> timeCol(tab, "TIME");
   ScalarColumn<Double> centCol(tab, "TIME_CENTROID");
   ScalarColumn<Double> intvCol(tab, "INTERVAL");
@@ -620,7 +620,7 @@ void readTable() {
   ScalarColumn<Int> obsidCol(tab, "OBSERVATION_ID");
   ScalarColumn<Int> stidCol(tab, "STATE_ID");
   ScalarColumn<Int> scnrCol(tab, "SCAN_NUMBER");
-  ScalarColumn<Bool> flagrowCol(tab, "FLAG_ROW");
+  ScalarColumn<bool> flagrowCol(tab, "FLAG_ROW");
   // Create and initialize expected data and weight.
   Array<Complex> dataExp(IPosition(2, npol, nchan));
   indgen(dataExp, Complex(0, 0.5));
@@ -645,8 +645,8 @@ void readTable() {
         AlwaysAssertExit(allEQ(sigmaCol(row), Float(1)));
         Array<Float> weights = wspecCol(row);
         AlwaysAssertExit(weights.shape() == IPosition(2, npol, nchan));
-        Array<Bool> flagExp(weights.shape(), False);
-        flagExp(IPosition(2, row % npol, row % nchan)) = True;
+        Array<bool> flagExp(weights.shape(), false);
+        flagExp(IPosition(2, row % npol, row % nchan)) = true;
         AlwaysAssertExit(allEQ(flagCol(row), flagExp));
         // Check ANTENNA1 and ANTENNA2
         AlwaysAssertExit(ant1Col(row) == Int(j));
@@ -683,7 +683,7 @@ void readTable() {
   AlwaysAssertExit(allEQ(obsidCol.getColumn(), 0));
   AlwaysAssertExit(allEQ(stidCol.getColumn(), 0));
   AlwaysAssertExit(allEQ(scnrCol.getColumn(), 0));
-  AlwaysAssertExit(allEQ(flagrowCol.getColumn(), False));
+  AlwaysAssertExit(allEQ(flagrowCol.getColumn(), false));
   // Check the UVW coordinates.
   Array<double> uvwExp(IPosition(1, 3));
   indgen(uvwExp, 0., 0.03);

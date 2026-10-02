@@ -108,7 +108,7 @@ class ArrayColumnData : public PlainColumn {
   ArrayColumnData& operator=(const ArrayColumnData&) = delete;
 
   // Ask the data manager if the shape of an existing array can be changed.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Initialize the rows from startRownr till endRownr (inclusive)
   // with the default value defined in the column description (if defined).
@@ -144,7 +144,7 @@ class ArrayColumnData : public PlainColumn {
   // </group>
 
   // Test if the given cell contains an array.
-  Bool isDefined(rownr_t rownr) const;
+  bool isDefined(rownr_t rownr) const;
 
   // Get the array from a particular cell.
   // The length of the array given by ArrayBase must match
@@ -227,11 +227,11 @@ class ArrayColumnData : public PlainColumn {
 
  private:
   // Is the shape for all arrays in the columns defined.
-  Bool shapeColDef_p;
+  bool shapeColDef_p;
   // Shape for all arrays in the column.
   IPosition shapeCol_p;
   // Does the length of a string has to be checked?
-  Bool checkValueLength_p;
+  bool checkValueLength_p;
 
   // Check if the shape of an array can be set and if it is set
   // correctly (i.e. if matching possible #dim in column description).

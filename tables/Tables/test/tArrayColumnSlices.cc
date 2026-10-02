@@ -44,7 +44,7 @@ void createTab() {
   td.addColumn(ArrayColumnDesc<float>("arr1", IPosition(2, 20, 30), ColumnDesc::FixedShape));
   // Now create a new table from the description.
   SetupNewTable newtab("tArrayColumnSlices_tmp.data", td, Table::New);
-  Table tab(newtab, 10, False, Table::LocalEndian);
+  Table tab(newtab, 10, false, Table::LocalEndian);
   ArrayColumn<float> arr1(tab, "arr1");
   Array<float> arrf(IPosition(2, 20, 30));
   indgen(arrf);

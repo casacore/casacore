@@ -36,7 +36,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt, Bool constant) {
+static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt, bool constant) {
   COWPtr<Array<float>> COW(ptr, deleteIt, constant);
 
   // only const T functions may be used through the pointer.
@@ -65,7 +65,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
   AlwaysAssert(allEQ(COW.rwRef(), 22.0f), AipsError);
 
   // returns False if this contains a non-null ptr. Otherwise, True.
-  AlwaysAssert(COW.isNull() == False, AipsError);
+  AlwaysAssert(COW.isNull() == false, AipsError);
 
   // make this a copy if more than one exist.
   if (COW.isReadOnly()) {
@@ -85,7 +85,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
   COWPtr<Array<float>> deflt;
 
   // returns False if this contains a non-null ptr. Otherwise, True.
-  AlwaysAssert(deflt.isNull() == True, AipsError);
+  AlwaysAssert(deflt.isNull() == true, AipsError);
 
   // assignment operator with reference semantics
   Array<Float> *fooAgain = new Array<Float>(array);
@@ -152,7 +152,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
   AlwaysAssert(allEQ(copy.rwRef(), 22.0f), AipsError);
 
   // returns False if this contains a non-null ptr. Otherwise, True.
-  AlwaysAssert(copy.isNull() == False, AipsError);
+  AlwaysAssert(copy.isNull() == false, AipsError);
 
   // make this a copy if more than one exist.
   if (copy.isReadOnly()) {
@@ -173,7 +173,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
     delete fooAgain;
   }
 
-  return True;
+  return true;
 }
 
 int main() {
@@ -188,24 +188,24 @@ int main() {
     // Case 0: a const which controls the ptr.
     Array<Float> *ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, True, True), AipsError);
+    AlwaysAssert(testFunc(ptr, array, true, true), AipsError);
 
     // Case 1: a non-const which controls the ptr.
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, True, False), AipsError);
+    AlwaysAssert(testFunc(ptr, array, true, false), AipsError);
 
     // Case 2: a const which doesn't control the pointer
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, False, True), AipsError);
+    AlwaysAssert(testFunc(ptr, array, false, true), AipsError);
     AlwaysAssert(ptr, AipsError);
     delete ptr;
 
     // Case 3: a non-const which doesn't control the pointer
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, False, False), AipsError);
+    AlwaysAssert(testFunc(ptr, array, false, false), AipsError);
     AlwaysAssert(ptr, AipsError);
     delete ptr;
 

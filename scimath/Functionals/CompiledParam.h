@@ -134,7 +134,7 @@ class CompiledParam : public Function<T> {
 
   // Set a function. The return will be False (and an error message will be
   // set) if a compilation error occurs
-  Bool setFunction(const String &newFunction);
+  bool setFunction(const String &newFunction);
 
   // Return the error message of the compilation
   const String &errorMessage() const { return msg_p; }

@@ -175,7 +175,7 @@ class LatticeIndexer {
   // sub-Lattice is reached. The cursorPosition is relative to the origin of
   // the sub-Lattice. To get its location relative to the main Lattice use
   // the absolutePosition() function.
-  Bool tiledCursorMove(Bool incr, IPosition& cursorPos, const IPosition& cursorShape,
+  bool tiledCursorMove(bool incr, IPosition& cursorPos, const IPosition& cursorShape,
                        const IPosition& cursorHeading) const;
 
   // Function which returns a value of True if the IPosition argument
@@ -185,7 +185,7 @@ class LatticeIndexer {
   // <note role=warning> Due to zero-origins, an index argument equal to the
   // shape of this sub-Lattice lies outside and returns False.
   // </note>
-  Bool isInside(const IPosition& index) const;
+  bool isInside(const IPosition& index) const;
 
   // Function which subsections a LatticeIndexer.  The argument IPositions
   // specify "bottom left" and "upper right" corners and axis increments
@@ -218,7 +218,7 @@ class LatticeIndexer {
 
   // Is this LatticeIndexer consistent, i.e. are the class invariants valid?
   // Returns True if every thing is fine otherwise returns False
-  Bool ok() const;
+  bool ok() const;
 
  private:
   IPosition itsFullShape;  // # Size of the main-Lattice.

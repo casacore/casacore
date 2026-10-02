@@ -63,24 +63,24 @@ String SDFITSTable::coreKeywordName(CoreKeyword kw) {
 }
 
 SDFITSTable::SDFITSTable(const String& fileName, uInt whichHDU)
-    : FITSTable(fileName, whichHDU), isSDFITS_p(False) {
+    : FITSTable(fileName, whichHDU), isSDFITS_p(false) {
   // check for valid (core) SDFITS keywords, move keywords to columns
   sdfits_shuffle();
 }
 
 SDFITSTable::~SDFITSTable() { ; }
 
-Bool SDFITSTable::reopen(const String& fileName) {
-  Bool result = FITSTable::reopen(fileName);
+bool SDFITSTable::reopen(const String& fileName) {
+  bool result = FITSTable::reopen(fileName);
   if (result) sdfits_shuffle();
   return result;
 }
 
-Bool SDFITSTable::isSDFitsColumn(const String& name) {
-  Bool result;
+bool SDFITSTable::isSDFitsColumn(const String& name) {
+  bool result;
   // if name is not reserved, return True
   if (!FITS::ResWord.isreserved(name.c_str(), name.length())) {
-    result = True;
+    result = true;
   } else if (name != FITS::ResWord.aname(FITS::COMMENT) &&
              name != FITS::ResWord.aname(FITS::DATAMAX) &&
              name != FITS::ResWord.aname(FITS::DATAMIN) &&
@@ -99,9 +99,9 @@ Bool SDFITSTable::isSDFitsColumn(const String& name) {
     // should remain as keywords and not virtual columns.
     // When they appear as true column, then they obviously
     // should remain true columns.
-    result = True;
+    result = true;
   } else {
-    result = False;
+    result = false;
   }
   return result;
 }
@@ -126,10 +126,10 @@ void SDFITSTable::sdfits_shuffle() {
     AlwaysAssert(virtualColumns(virtCols(Slice(0, virtCount))), AipsError);
     // check to see that all core keywords are in currentRow()
     // stopping when the first core keyword is NOT found
-    isSDFITS_p = True;
+    isSDFITS_p = true;
     for (i = 0; i < NUM_CORE_KEYWORDS && isSDFITS(); i++) {
       if (!currentRow().isDefined(coreKeywordName(CoreKeyword(i)))) {
-        isSDFITS_p = False;
+        isSDFITS_p = false;
       }
     }
   }

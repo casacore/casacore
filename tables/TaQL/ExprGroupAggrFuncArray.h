@@ -360,7 +360,7 @@ class TableExprGroupFractileArrayDouble : public TableExprGroupFuncDouble {
  public:
   explicit TableExprGroupFractileArrayDouble(TableExprNodeRep* node, Double fractile);
   virtual ~TableExprGroupFractileArrayDouble();
-  virtual Bool isLazy() const;
+  virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
   virtual Double getDouble(const vector<TableExprId>& ids);
 

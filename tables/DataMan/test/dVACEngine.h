@@ -116,7 +116,7 @@ class VACExampleVACEngine : public VACEngine<VACExample> {
   virtual void prepare();
 
   virtual void setShape(rownr_t rownr, const IPosition& shape);
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
   virtual IPosition shape(rownr_t rownr);
 
   // Get the data from a row.

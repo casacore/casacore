@@ -92,10 +92,10 @@ class MSTimeParse : public MSParse {
 
   // Associate the ms and the shorthand.
   MSTimeParse(const MeasurementSet* ms, const TableExprNode& otherTens,
-              const Bool honourRowFlags = True);
+              const bool honourRowFlags = true);
   MSTimeParse(const MeasurementSet* ms, const TableExprNode& colAsTEN,
               MSSelectableMainColumn& msMainColInterface, const TableExprNode& otherTEN,
-              const Bool honourRowFlags = True);
+              const bool honourRowFlags = true);
   ~MSTimeParse() { columnAsTEN_p = TableExprNode(); }
 
   //   ~MSTimeParse()
@@ -118,7 +118,7 @@ class MSTimeParse : public MSParse {
                                       Int millisec = -1);
   */
 
-  static void setDefaults(TimeFields& tf, Bool dataOrigin = True);
+  static void setDefaults(TimeFields& tf, bool dataOrigin = true);
   void getDefaults();
   static void copyDefaults(TimeFields& target, TimeFields& source);
   static const MEpoch* yearTimeConvert(Int year = -1, Int month = -1, Int day = -1, Int hour = -1,
@@ -148,7 +148,7 @@ class MSTimeParse : public MSParse {
   // private:
 
   static TableExprNode* otherTens_p;
-  static Bool defaultTimeComputed;
+  static bool defaultTimeComputed;
   MVTime firstRowTime;
   static MeasurementSet* ms_p;
   static Double toTAIInSec(const MEpoch& time);
@@ -158,7 +158,7 @@ class MSTimeParse : public MSParse {
       defaultFractionalSec;
   Double defaultExposure;
   const String colName;
-  Bool honourRowFlags_p;
+  bool honourRowFlags_p;
   static Matrix<Double> timeList;
   void accumulateTimeList(const Double t0, const Double t1, const Double dT = -1);
   static MSTimeParse* thisMSTParser;

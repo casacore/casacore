@@ -112,7 +112,7 @@ class LELUnaryConst : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
@@ -192,16 +192,16 @@ class LELUnary : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -263,38 +263,38 @@ class LELUnary : public LELInterface<T> {
 // <todo asof="1998/01/20">
 // </todo>
 
-class LELUnaryBool : public LELInterface<Bool> {
+class LELUnaryBool : public LELInterface<bool> {
  public:
   // Constructor takes operation and expression
   // to be operated upon
-  LELUnaryBool(const LELUnaryEnums::Operation op, const std::shared_ptr<LELInterface<Bool>>& pExpr);
+  LELUnaryBool(const LELUnaryEnums::Operation op, const std::shared_ptr<LELInterface<bool>>& pExpr);
 
   // Destructor does nothing
   ~LELUnaryBool();
 
   // Recursively evaluate the expression.
-  virtual void eval(LELArray<Bool>& result, const Slicer& section) const;
+  virtual void eval(LELArray<bool>& result, const Slicer& section) const;
 
   // Recursively evaluate the scalar expression.
-  virtual LELScalar<Bool> getScalar() const;
+  virtual LELScalar<bool> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
  private:
   LELUnaryEnums::Operation op_p;
-  std::shared_ptr<LELInterface<Bool>> pExpr_p;
+  std::shared_ptr<LELInterface<bool>> pExpr_p;
 };
 
 }  // namespace casacore

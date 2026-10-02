@@ -77,7 +77,7 @@ int main(int argc, const char* argv[]) {
       out = "regridded_" + in;
       cout << "No output name give using '" << out << "'." << endl;
     }
-    const Bool outisfits = downcase(out).ends_with(".fits");
+    const bool outisfits = downcase(out).ends_with(".fits");
 
     const Int decimate = inputs.getInt("decimate");
     const String dirref = inputs.getString("dirref");
@@ -104,7 +104,7 @@ int main(int argc, const char* argv[]) {
     ImageRegrid<Float> itsIr;
     ImageInterface<Float>* itsTmp;
     Interpolate2D::Method itsMethod = Interpolate2D::stringToMethod(interpolation);
-    itsIr.disableReferenceConversions(False);
+    itsIr.disableReferenceConversions(false);
     itsIr.showDebugInfo(0);
     Int itsDecimate = decimate;
     String itsProj = proj;
@@ -163,11 +163,11 @@ int main(int argc, const char* argv[]) {
     IPosition outAxes(2, pAx(0), pAx(1));
     itsTmp = new TempImage<Float>(shapeOut, csys);
     cout << "Regridding image..." << endl;
-    itsIr.regrid(*itsTmp, itsMethod, outAxes, *itsImage, False, itsDecimate, False);
+    itsIr.regrid(*itsTmp, itsMethod, outAxes, *itsImage, false, itsDecimate, false);
     cout << "Writing " << out << "..." << endl;
     if (outisfits) {
       String errMsg;
-      Bool res = ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out);
+      bool res = ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out);
       if (!res) {
         cerr << errMsg << endl;
       }

@@ -222,7 +222,7 @@ class MeasConvert : public MConvertBase {
   // Get method
   virtual uInt getMethod(uInt which) const;
   // Is the conversion engine empty?
-  Bool isNOP() { return crout.empty(); }
+  bool isNOP() { return crout.empty(); }
   // Print conversion engine
   virtual void print(ostream &os) const;
 

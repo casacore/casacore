@@ -426,20 +426,20 @@ class PagedArray : public Lattice<T> {
   virtual Lattice<T>* clone() const;
 
   // A PagedArray is always persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // A PagedArray is always paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Is the PagedArray writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the shape of the PagedArray.
   virtual IPosition shape() const;
 
   // Return the current Table name. By default this includes the full path.
   // The path preceeding the file name can be stripped off on request.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Functions to resize the PagedArray. The old contents are lost. Usage of
   // this function is NOT currently recommended (see the <linkto
@@ -523,15 +523,15 @@ class PagedArray : public Lattice<T> {
   // A function which checks for internal consistency. Returns False if
   // something nasty has happened to the PagedArray. In that case
   // it also throws an exception.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use.
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -542,9 +542,9 @@ class PagedArray : public Lattice<T> {
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the PagedArray object with the lattice file.
@@ -585,10 +585,10 @@ class PagedArray : public Lattice<T> {
   mutable Table itsTable;
   String itsColumnName;
   uInt itsRowNumber;
-  mutable Bool itsIsClosed;
-  mutable Bool itsMarkDelete;
+  mutable bool itsIsClosed;
+  mutable bool itsMarkDelete;
   String itsTableName;
-  Bool itsWritable;
+  bool itsWritable;
   TableLock itsLockOpt;
   mutable ArrayColumn<T> itsArray;
   mutable ROTiledStManAccessor itsAccessor;
@@ -601,7 +601,7 @@ inline ArrayColumn<T>& PagedArray<T>::getRWArray() {
   }
   if (!itsWritable) {
     itsTable.reopenRW();
-    itsWritable = True;
+    itsWritable = true;
   }
   return itsArray;
 }

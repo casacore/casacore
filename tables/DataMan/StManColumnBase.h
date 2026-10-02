@@ -78,7 +78,7 @@ class StManColumnBase : public DataManagerColumn {
 
   // Test if the given data type is supported by storage managers.
   // It is used by the function Table::isNativeDataType.
-  static Bool isNativeDataType(int dtype);
+  static bool isNativeDataType(int dtype);
 
   // Return the data type of the column.
   // <group>

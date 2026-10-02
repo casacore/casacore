@@ -188,7 +188,7 @@ class TableIterator {
 
   // Test if the object is null, i.e. does not reference a table yet.
   // This is the case if the default constructor is used.
-  Bool isNull() const { return !tabIterPtr_p; }
+  bool isNull() const { return !tabIterPtr_p; }
 
   // Throw an exception if the object is null, i.e.
   // if function isNull() is True.
@@ -198,7 +198,7 @@ class TableIterator {
   void reset();
 
   // Test if at the end.
-  Bool pastEnd() const;
+  bool pastEnd() const;
 
   // Go to the next group.
   // <group>
@@ -221,7 +221,7 @@ class TableIterator {
 };
 
 // # Iterator is at the end if the subtable is empty.
-inline Bool TableIterator::pastEnd() const { return (subTable_p.nrow() == 0 ? True : False); }
+inline bool TableIterator::pastEnd() const { return (subTable_p.nrow() == 0 ? true : false); }
 
 inline Table TableIterator::table() const { return subTable_p; }
 

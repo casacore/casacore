@@ -87,7 +87,7 @@ void a() {
     for (Int j = 0; j < arraySize; j++) {
       for (Int i = 0; i < arraySize; i++) {
         myPos = IPosition(2, i, j);
-        Array<Complex>& myTile = itc.tile(tilePos, myPos, False);
+        Array<Complex>& myTile = itc.tile(tilePos, myPos, false);
         cout << "Filling tile at " << myPos << " -> " << tilePos << endl;
         myTile(myPos - tilePos) += 1.0;
       }
@@ -106,7 +106,7 @@ void a() {
         myPos = IPosition(2, i, j);
         //	  cout<<"New tile on trial "<<trial<<" at "<<myPos<<endl;
       }
-      Array<Complex>& myTile = itc.tile(tilePos, myPos, False);
+      Array<Complex>& myTile = itc.tile(tilePos, myPos, false);
       myTile(myPos - tilePos) += 1.0;
     }
   }
@@ -177,7 +177,7 @@ void b() {
       cout << "New tile on trial " << trial << " at " << myPos << endl;
     }
     IPosition tilePos(4, 0);
-    Array<Float>& myTile = itc.tile(tilePos, myPos, False);
+    Array<Float>& myTile = itc.tile(tilePos, myPos, false);
     IPosition offPos = myPos - tilePos;
     myTile(offPos) += 1.0;
   }

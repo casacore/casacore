@@ -198,21 +198,21 @@ int main() {
     {
       cout << "IAU2000A/B comparisons ..." << endl;
       SEPAR();
-      uInt iau2000_reg = AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"), False);
+      uInt iau2000_reg = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
       uInt iau2000a_reg =
-          AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"), False);
+          AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
       cout << "Registrations old: " << iau2000_reg << ", " << iau2000a_reg << endl;
       MDirection md(Quantity(30., "deg"), Quantity(50., "deg"), MDirection::J2000);
       MEpoch ep(Quantity(50083., "d"));
       MeasFrame frame(ep);
       MDirection::Convert mcv(md, MDirection::Ref(MDirection::APP, frame));
-      AipsrcBool::set(iau2000_reg, False);
-      AipsrcBool::set(iau2000a_reg, False);
+      AipsrcBool::set(iau2000_reg, false);
+      AipsrcBool::set(iau2000a_reg, false);
       cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " << "J2000A "
            << AipsrcBool::get(iau2000a_reg) << endl;
       cout << mcv() << endl;
       MDirection mdcv = mcv();
-      AipsrcBool::set(iau2000_reg, True);
+      AipsrcBool::set(iau2000_reg, true);
       MDirection::Convert mcv1(md, MDirection::Ref(MDirection::APP, frame));
       cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " << "J2000A "
            << AipsrcBool::get(iau2000a_reg) << endl;
@@ -220,7 +220,7 @@ int main() {
       cout << "Difference: "
            << (mcv1().getValue().getValue() - mdcv.getValue().getValue()) * 200000. << endl;
 
-      AipsrcBool::set(iau2000a_reg, True);
+      AipsrcBool::set(iau2000a_reg, true);
       MDirection::Convert mcv2(md, MDirection::Ref(MDirection::APP, frame));
       cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " << "J2000A "
            << AipsrcBool::get(iau2000a_reg) << endl;
@@ -261,8 +261,8 @@ int main() {
     {
       cout << "Test Aipsrc value cross talk ..." << endl;
       SEPAR();
-      uInt iau2000_r = AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"), False);
-      uInt iau2000a_r = AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"), False);
+      uInt iau2000_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
+      uInt iau2000a_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
       cout << "Registrations now: " << iau2000_r << ", " << iau2000a_r << endl;
       cout << "New J2000 " << AipsrcBool::get(iau2000_r) << ", " << "J2000A "
            << AipsrcBool::get(iau2000a_r) << endl;

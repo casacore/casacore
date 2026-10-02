@@ -33,6 +33,8 @@
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/casa/Arrays/Array.h>
 
+#include <type_traits>
+
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Forward Declarations
@@ -173,7 +175,7 @@ class RecordInterface {
   // The function should return False if name or data type is invalid.
   // In that case it can fill the message string, which will be added
   // to the message in the thrown exception.
-  typedef Bool CheckFieldFunction(const String& fieldName, DataType dataType,
+  typedef bool CheckFieldFunction(const String& fieldName, DataType dataType,
                                   const void* extraArgument, String& message);
 
   // The default constructor creates an empty record with a variable
@@ -210,7 +212,7 @@ class RecordInterface {
 
   // Is the Record structure fixed (i.e. impossible to restructure or
   // to add or remove fields)?
-  Bool isFixed() const;
+  bool isFixed() const;
 
   // How many fields does this structure have?
   // <group>
@@ -231,7 +233,7 @@ class RecordInterface {
 
   // Test if a field name exists.
   // # Is here for backward compatibility with KeywordSet.
-  Bool isDefined(const String& fieldName) const;
+  bool isDefined(const String& fieldName) const;
 
   // Get the data type of this field (as defined in DataType.h).
   // <group>
@@ -267,7 +269,7 @@ class RecordInterface {
   // not contain any field), otherwise they are fixed.
   // <br>Restructuring is not possible and an exception is thrown
   // if the Record has a fixed structure.
-  virtual void restructure(const RecordDesc& newDescription, Bool recursive = True) = 0;
+  virtual void restructure(const RecordDesc& newDescription, bool recursive = true) = 0;
 
   // Remove a field from the record.
   // <note role=caution>
@@ -295,7 +297,7 @@ class RecordInterface {
   // The field is checked by a possible field checking function
   // before it gets added.
   // <group>
-  void define(const RecordFieldId&, Bool value);
+  void define(const RecordFieldId&, bool value);
   void define(const RecordFieldId&, uChar value);
   void define(const RecordFieldId&, Short value);
   void define(const RecordFieldId&, Int value);
@@ -307,17 +309,17 @@ class RecordInterface {
   void define(const RecordFieldId&, const DComplex& value);
   void define(const RecordFieldId&, const Char* value);
   void define(const RecordFieldId&, const String& value);
-  void define(const RecordFieldId&, const Array<Bool>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<uChar>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<Short>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<Int>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<uInt>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<Int64>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<Float>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<Double>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<Complex>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<DComplex>& value, Bool FixedShape = False);
-  void define(const RecordFieldId&, const Array<String>& value, Bool FixedShape = False);
+  void define(const RecordFieldId&, const Array<bool>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<uChar>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<Short>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<Int>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<uInt>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<Int64>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<Float>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<Double>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<Complex>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<DComplex>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<String>& value, bool FixedShape = false);
   virtual void defineRecord(const RecordFieldId&, const RecordInterface& value,
                             RecordType = Variable) = 0;
   // </group>
@@ -328,7 +330,7 @@ class RecordInterface {
   // is thrown.
   // If the value argument is an array, it will be reshaped if needed.
   // <group>
-  void get(const RecordFieldId&, Bool& value) const;
+  void get(const RecordFieldId&, bool& value) const;
   void get(const RecordFieldId&, uChar& value) const;
   void get(const RecordFieldId&, Short& value) const;
   void get(const RecordFieldId&, Int& value) const;
@@ -339,7 +341,7 @@ class RecordInterface {
   void get(const RecordFieldId&, Complex& value) const;
   void get(const RecordFieldId&, DComplex& value) const;
   void get(const RecordFieldId&, String& value) const;
-  void get(const RecordFieldId&, Array<Bool>& value) const;
+  void get(const RecordFieldId&, Array<bool>& value) const;
   void get(const RecordFieldId&, Array<uChar>& value) const;
   void get(const RecordFieldId&, Array<Short>& value) const;
   void get(const RecordFieldId&, Array<Int>& value) const;
@@ -358,7 +360,7 @@ class RecordInterface {
   // <br>The array functions throw an exception if the data type mismatches.
   // The toArrayX function can be used for array type promotion.
   // <group>
-  Bool asBool(const RecordFieldId&) const;
+  bool asBool(const RecordFieldId&) const;
   uChar asuChar(const RecordFieldId&) const;
   Short asShort(const RecordFieldId&) const;
   Int asInt(const RecordFieldId&) const;
@@ -369,7 +371,7 @@ class RecordInterface {
   Complex asComplex(const RecordFieldId&) const;
   DComplex asDComplex(const RecordFieldId&) const;
   const String& asString(const RecordFieldId&) const;
-  const Array<Bool>& asArrayBool(const RecordFieldId&) const;
+  const Array<bool>& asArrayBool(const RecordFieldId&) const;
   const Array<uChar>& asArrayuChar(const RecordFieldId&) const;
   const Array<Short>& asArrayShort(const RecordFieldId&) const;
   const Array<Int>& asArrayInt(const RecordFieldId&) const;
@@ -382,6 +384,34 @@ class RecordInterface {
   const Array<String>& asArrayString(const RecordFieldId&) const;
   virtual const RecordInterface& asRecord(const RecordFieldId&) const = 0;
   virtual RecordInterface& asrwRecord(const RecordFieldId&) = 0;
+  template <typename T>
+  const Array<T>& asArrayGeneric(const RecordFieldId& id) const {
+    if constexpr (std::is_same_v<T, bool>) {
+      return asArrayBool(id);
+    } else if constexpr (std::is_same_v<T, uChar>) {
+      return asArrayuChar(id);
+    } else if constexpr (std::is_same_v<T, Short>) {
+      return asArrayShort(id);
+    } else if constexpr (std::is_same_v<T, Int>) {
+      return asArrayInt(id);
+    } else if constexpr (std::is_same_v<T, uInt>) {
+      return asArrayuInt(id);
+    } else if constexpr (std::is_same_v<T, Int64>) {
+      return asArrayInt64(id);
+    } else if constexpr (std::is_same_v<T, Float>) {
+      return asArrayFloat(id);
+    } else if constexpr (std::is_same_v<T, Double>) {
+      return asArrayDouble(id);
+    } else if constexpr (std::is_same_v<T, Complex>) {
+      return asArrayComplex(id);
+    } else if constexpr (std::is_same_v<T, DComplex>) {
+      return asArrayDComplex(id);
+    } else if constexpr (std::is_same_v<T, String>) {
+      return asArrayString(id);
+    } else {
+      static_assert(!std::is_same_v<T, T>, "Unsupported array type");
+    }
+  }
   // </group>
 
   // Get an array while promoting the data as needed.
@@ -389,7 +419,7 @@ class RecordInterface {
   // A scalar value is also converted to an array.
   // These functions are slower than <src>asX</src>, but more general.
   // <group>
-  Array<Bool> toArrayBool(const RecordFieldId&) const;
+  Array<bool> toArrayBool(const RecordFieldId&) const;
   Array<uChar> toArrayuChar(const RecordFieldId&) const;
   Array<Short> toArrayShort(const RecordFieldId&) const;
   Array<Int> toArrayInt(const RecordFieldId&) const;
@@ -400,7 +430,36 @@ class RecordInterface {
   Array<Complex> toArrayComplex(const RecordFieldId&) const;
   Array<DComplex> toArrayDComplex(const RecordFieldId&) const;
   Array<String> toArrayString(const RecordFieldId&) const;
-  void toArray(const RecordFieldId& id, Array<Bool>& array) const {
+  template <typename T>
+  Array<T> toArrayGeneric(const RecordFieldId& id) const {
+    if constexpr (std::is_same_v<T, bool>) {
+      return toArrayBool(id);
+    } else if constexpr (std::is_same_v<T, uChar>) {
+      return toArrayuChar(id);
+    } else if constexpr (std::is_same_v<T, Short>) {
+      return toArrayShort(id);
+    } else if constexpr (std::is_same_v<T, Int>) {
+      return toArrayInt(id);
+    } else if constexpr (std::is_same_v<T, uInt>) {
+      return toArrayuInt(id);
+    } else if constexpr (std::is_same_v<T, Int64>) {
+      return toArrayInt64(id);
+    } else if constexpr (std::is_same_v<T, Float>) {
+      return toArrayFloat(id);
+    } else if constexpr (std::is_same_v<T, Double>) {
+      return toArrayDouble(id);
+    } else if constexpr (std::is_same_v<T, Complex>) {
+      return toArrayComplex(id);
+    } else if constexpr (std::is_same_v<T, DComplex>) {
+      return toArrayDComplex(id);
+    } else if constexpr (std::is_same_v<T, String>) {
+      return toArrayString(id);
+    } else {
+      static_assert(!std::is_same_v<T, T>, "Unsupported array type");
+    }
+  }
+
+  void toArray(const RecordFieldId& id, Array<bool>& array) const {
     array.reference(toArrayBool(id));
   }
   void toArray(const RecordFieldId& id, Array<uChar>& array) const {
@@ -479,7 +538,7 @@ class RecordInterface {
   // Let the derived class add an array field with the given type, shape,
   // and value.
   virtual void addDataField(const String& name, DataType type, const IPosition& shape,
-                            Bool fixedShape, const void* value) = 0;
+                            bool fixedShape, const void* value) = 0;
 
   // Check if the Record has a non-fixed structure.
   // If it is fixed, it throws an exception.
@@ -510,7 +569,7 @@ class RecordInterface {
   // Add an array field with the given type, shape and value.
   // An exception is thrown if the record structure is fixed
   // or if the name is invalid.
-  void defineField(const RecordFieldId&, DataType type, const IPosition& shape, Bool fixedShape,
+  void defineField(const RecordFieldId&, DataType type, const IPosition& shape, bool fixedShape,
                    const void* value);
 
  private:
@@ -525,8 +584,8 @@ class RecordInterface {
   RecordType type_p;
 };
 
-inline Bool RecordInterface::isFixed() const { return (type_p == Fixed); }
-inline Bool RecordInterface::isDefined(const String& fieldName) const {
+inline bool RecordInterface::isFixed() const { return (type_p == Fixed); }
+inline bool RecordInterface::isDefined(const String& fieldName) const {
   return (fieldNumber(fieldName) >= 0);
 }
 inline RecordInterface::RecordType& RecordInterface::recordType() { return type_p; }

@@ -149,13 +149,13 @@ class NewMSSimulator {
 
   void setAutoCorrelationWt(const Float autocorrwt) { autoCorrelationWt_p = autocorrwt; }
 
-  void settimes(const Quantity& qIntegrationTime, const Bool useHourAngles, const MEpoch& mRefTime);
+  void settimes(const Quantity& qIntegrationTime, const bool useHourAngles, const MEpoch& mRefTime);
 
   void observe(const String& sourceName, const String& spWindowName, const Quantity& qStartTime,
-               const Quantity& qStopTime, const Bool add_observation = True,
+               const Quantity& qStopTime, const bool add_observation = true,
                // # from int ASDM2MSFiller::addUniqueState(
                // # defaults for ALMA as known on 20100831
-               const Bool state_sig = True, const Bool state_ref = True,
+               const bool state_sig = true, const bool state_ref = true,
                const double& state_cal = 0., const double& state_load = 0.,
                const unsigned int state_sub_scan = 1,
                const String& state_obs_mode = "OBSERVE_TARGET.ON_SOURCE",
@@ -164,10 +164,10 @@ class NewMSSimulator {
 
   void observe(const Vector<String>& sourceNames, const String& spWindowName,
                const Vector<Quantity>& qStartTimes, const Vector<Quantity>& qStopTimes,
-               const Vector<MDirection>& directions, const Bool add_observation = True,
+               const Vector<MDirection>& directions, const bool add_observation = true,
                // # from int ASDM2MSFiller::addUniqueState(
                // # defaults for ALMA as known on 20100831
-               const Bool state_sig = True, const Bool state_ref = True,
+               const bool state_sig = true, const bool state_ref = true,
                const double& state_cal = 0., const double& state_load = 0.,
                const unsigned int state_sub_scan = 1,
                const String& state_obs_mode = "OBSERVE_TARGET.ON_SOURCE",
@@ -186,13 +186,13 @@ class NewMSSimulator {
   Float autoCorrelationWt_p;
   String telescope_p;
   Quantity qIntegrationTime_p;
-  Bool useHourAngle_p;
-  Bool hourAngleDefined_p;
+  bool useHourAngle_p;
+  bool hourAngleDefined_p;
   MEpoch mRefTime_p;
   Double t_offset_p;
   Double dataWritten_p;
   Int hyperCubeID_p;
-  Bool hasHyperCubes_p;
+  bool hasHyperCubes_p;
   Int lastSpWID_p;
   Int lastNchan_p;
 
@@ -228,7 +228,7 @@ class NewMSSimulator {
 
   void defaults();
 
-  Bool calcAntUVW(MEpoch& epoch, MDirection& refdir, Matrix<Double>& uvwAnt);
+  bool calcAntUVW(MEpoch& epoch, MDirection& refdir, Matrix<Double>& uvwAnt);
 };
 
 }  // namespace casacore

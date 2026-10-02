@@ -295,7 +295,7 @@ LogIO &operator<<(LogIO &os, Int64 item);
 LogIO &operator<<(LogIO &os, uInt64 item);
 LogIO &operator<<(LogIO &os, uLong item);
 LogIO &operator<<(LogIO &os, Long item);
-LogIO &operator<<(LogIO &os, Bool item);
+LogIO &operator<<(LogIO &os, bool item);
 LogIO &operator<<(LogIO &os, ostream &(*item)(ostream &));
 // </group>
 

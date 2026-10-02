@@ -189,9 +189,9 @@ void testIt(MSMetaData& md) {
     AlwaysAssert(md.getSpwsForIntent(*intent) == exp, AipsError);
   }
   cout << "*** test nSpw()" << std::endl;
-  uInt nSpw = md.nSpw(True);
+  uInt nSpw = md.nSpw(true);
   AlwaysAssert(nSpw == 40, AipsError);
-  AlwaysAssert(md.nSpw(False) == 40, AipsError);
+  AlwaysAssert(md.nSpw(false) == 40, AipsError);
   cout << "*** test getIntentsForSpw()" << std::endl;
   for (uInt spw = 0; spw < nSpw; ++spw) {
     std::set<String> exp;
@@ -261,7 +261,7 @@ void testIt(MSMetaData& md) {
       AlwaysAssert(near(phasCen.getAngle().getValue()[0], -2.72554329, 5e-7), AipsError);
     }
     cout << "*** test getFieldIDsForSpw()" << std::endl;
-    for (uInt i = 0; i < md.nSpw(True); ++i) {
+    for (uInt i = 0; i < md.nSpw(true); ++i) {
       std::set<Int> exp;
       std::set<String> expNames;
       if (i == 0) {
@@ -336,7 +336,7 @@ void testIt(MSMetaData& md) {
       ScanKey scanKey;
       scanKey.obsID = 0;
       scanKey.arrayID = 0;
-      for (uInt i = 0; i < md.nSpw(True); ++i) {
+      for (uInt i = 0; i < md.nSpw(true); ++i) {
         std::set<Int> exp;
         if (i == 0) {
           Int myints[] = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
@@ -902,8 +902,8 @@ void testIt(MSMetaData& md) {
     }
     {
       cout << "*** test getUniqueBaselines() and nBaselines()" << std::endl;
-      AlwaysAssert(md.nBaselines(False) == 21, AipsError);
-      AlwaysAssert(md.nBaselines(True) == 25, AipsError);
+      AlwaysAssert(md.nBaselines(false) == 21, AipsError);
+      AlwaysAssert(md.nBaselines(true) == 25, AipsError);
     }
     {
       cout << "*** test getEffectiveTotalExposureTime()" << std::endl;
@@ -1006,7 +1006,7 @@ void testIt(MSMetaData& md) {
     {
       cout << "*** test getScanToFirstExposureTimeMap()" << std::endl;
       std::map<ScanKey, MSMetaData::FirstExposureTimeMap> mymap =
-          md.getScanToFirstExposureTimeMap(False);
+          md.getScanToFirstExposureTimeMap(false);
       ScanKey scan;
       scan.arrayID = 0;
       scan.obsID = 0;
@@ -1160,7 +1160,7 @@ void testIt(MSMetaData& md) {
             1.83310000e+11, 1.83320000e+11, 1.83330000e+11, 1.83340000e+11, 1.83350000e+11,
             1.83360000e+11, 1.83370000e+11, 1.83380000e+11, 1.83390000e+11, 1.83400000e+11,
             1.83410000e+11, 1.83420000e+11, 1.83430000e+11, 1.83440000e+11, 1.83450000e+11};
-        uInt n = md.nSpw(True);
+        uInt n = md.nSpw(true);
         vector<MFrequency> rf = md.getRefFreqs();
         for (uInt i = 0; i < n; ++i) {
           AlwaysAssert(rf[i].getRefString() == "TOPO", AipsError);
@@ -1512,7 +1512,7 @@ void testIt(MSMetaData& md) {
           expec = std::set<Double>(z, z + 50);
         } else {
           cout << "found channel " << i << " which shouldn't be in this set" << std::endl;
-          AlwaysAssert(False, AipsError);
+          AlwaysAssert(false, AipsError);
         }
         AlwaysAssert(times[i].size() == expec.size(), AipsError);
         std::set<Double>::const_iterator iter = times[i].begin();
@@ -1592,7 +1592,7 @@ void testIt(MSMetaData& md) {
     }
     {
       cout << "*** test getChanEffectiveBWs()" << std::endl;
-      vector<QVector<Double>> ebw = md.getChanEffectiveBWs(False);
+      vector<QVector<Double>> ebw = md.getChanEffectiveBWs(false);
       vector<QVector<Double>>::const_iterator iter = ebw.begin();
       vector<QVector<Double>>::const_iterator end = ebw.end();
       Double expec = 0;
@@ -1617,13 +1617,13 @@ void testIt(MSMetaData& md) {
         }
         ++iter;
       }
-      vector<QVector<Double>> ebwv = md.getChanEffectiveBWs(True);
+      vector<QVector<Double>> ebwv = md.getChanEffectiveBWs(true);
       AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
       AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
     }
     {
       cout << "*** test getChanResolutions()" << std::endl;
-      vector<QVector<Double>> ebw = md.getChanResolutions(False);
+      vector<QVector<Double>> ebw = md.getChanResolutions(false);
       vector<QVector<Double>>::const_iterator iter = ebw.begin();
       vector<QVector<Double>>::const_iterator end = ebw.end();
       Double expec = 0;
@@ -1648,7 +1648,7 @@ void testIt(MSMetaData& md) {
         }
         ++iter;
       }
-      vector<QVector<Double>> ebwv = md.getChanResolutions(True);
+      vector<QVector<Double>> ebwv = md.getChanResolutions(true);
       AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
       AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
     }
@@ -1689,11 +1689,11 @@ void testIt(MSMetaData& md) {
       sskey.fieldID = 0;
       sskey.obsID = 0;
       sskey.scan = 0;
-      Bool thrown = False;
+      bool thrown = false;
       try {
         md.getSubScanProperties(sskey);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       sskey.scan = 1;

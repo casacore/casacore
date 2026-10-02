@@ -112,7 +112,7 @@ class RecordTransformable {
   // then the error String is unchanged and the function returns
   // True. Otherwise the function returns False and appends an error message to
   // the supplied String giving the reason why the conversion failed.
-  virtual Bool toRecord(String &error, RecordInterface &outRecord) const = 0;
+  virtual bool toRecord(String &error, RecordInterface &outRecord) const = 0;
 
   // Initialise the class from a Record representation. The input record should
   // contain the fields that are required by the class. Other fields will be
@@ -120,7 +120,7 @@ class RecordTransformable {
   // and the function returns True. Otherwise the function returns False and
   // appends an error message to the supplied String giving the reason why the
   // conversion failed.
-  virtual Bool fromRecord(String &error, const RecordInterface &inRecord) = 0;
+  virtual bool fromRecord(String &error, const RecordInterface &inRecord) = 0;
 
   // Initialise the class from a String representation. A string cannot
   // contain enough information for many objects. Hence the default
@@ -128,7 +128,7 @@ class RecordTransformable {
   // could not be initialised and an error message is appended to the supplied
   // string. If the class can be initialised from a string then this function
   // should be overridden.
-  virtual Bool fromString(String &error, const String &inString);
+  virtual bool fromString(String &error, const String &inString);
 
   // Specify the identification of the record (e.g. 'meas', 'quant'). The
   // default implementation returns a empty string.

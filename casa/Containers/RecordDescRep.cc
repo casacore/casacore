@@ -84,7 +84,7 @@ void RecordDescRep::addFieldName(const String& fieldName, DataType type) {
   names_p[n] = fieldName;
   name_map_p.insert(std::make_pair(fieldName, n));
   sub_records_p[n] = 0;
-  is_array_p[n] = False;
+  is_array_p[n] = false;
   shapes_p[n].resize(1);
   shapes_p[n] = IPosition(1, 1);
 }
@@ -129,7 +129,7 @@ void RecordDescRep::addFieldAny(DataType type) {
     case TpArrayDComplex:
     case TpArrayString:
       shapes_p[n] = IPosition(1, -1);
-      is_array_p[n] = True;
+      is_array_p[n] = true;
       break;
     default:
       removeField(n);
@@ -148,7 +148,7 @@ void RecordDescRep::addFieldArray(DataType type, const IPosition& shape) {
   uInt n = n_p - 1;
   shapes_p[n].resize(shape.nelements());
   shapes_p[n] = shape;
-  is_array_p[n] = True;
+  is_array_p[n] = true;
 
   switch (type) {
     case TpBool:
@@ -354,102 +354,102 @@ RecordDesc& RecordDescRep::subRecord(Int whichField) {
   return *sub_records_p[whichField];
 }
 
-Bool RecordDescRep::conform(const RecordDescRep& other) const {
+bool RecordDescRep::conform(const RecordDescRep& other) const {
   if (this == &other) {
-    return True;
+    return true;
   }
   uInt n = nfields();
   if (n != other.nfields()) {
-    return False;
+    return false;
   }
 
   for (uInt i = 0; i < n; i++) {
     if (type(i) != other.type(i)) {
-      return False;
+      return false;
     }
     if (!shapes_p[i].isEqual(other.shapes_p[i])) {
-      return False;
+      return false;
     }
     if (tableDescNames_p[i] != tableDescNames_p[i]) {
-      return False;
+      return false;
     }
     if (sub_records_p[i]) {
       if (!other.sub_records_p[i]) {
-        return False;
+        return false;
       }
     }
   }
-  return True;
+  return true;
 }
 
-Bool RecordDescRep::operator==(const RecordDescRep& other) const {
+bool RecordDescRep::operator==(const RecordDescRep& other) const {
   if (this == &other) {
-    return True;
+    return true;
   }
   if (!conform(other)) {
-    return False;
+    return false;
   }
   // Now check recursively if the sub-records conform.
   uInt n = nfields();
   for (uInt i = 0; i < n; i++) {
     if (sub_records_p[i]) {
       if (subRecord(i) != other.subRecord(i)) {
-        return False;
+        return false;
       }
     }
   }
-  return True;
+  return true;
 }
 
-Bool RecordDescRep::operator!=(const RecordDescRep& other) const { return (!((*this) == other)); }
+bool RecordDescRep::operator!=(const RecordDescRep& other) const { return (!((*this) == other)); }
 
-Bool RecordDescRep::isEqual(const RecordDescRep& other, Bool& equalDataTypes) const {
-  equalDataTypes = False;
+bool RecordDescRep::isEqual(const RecordDescRep& other, bool& equalDataTypes) const {
+  equalDataTypes = false;
   if (nfields() != other.nfields()) {
-    return False;
+    return false;
   }
   return allExist(other, equalDataTypes);
 }
 
-Bool RecordDescRep::isSubset(const RecordDescRep& other, Bool& equalDataTypes) const {
-  equalDataTypes = False;
+bool RecordDescRep::isSubset(const RecordDescRep& other, bool& equalDataTypes) const {
+  equalDataTypes = false;
   if (nfields() > other.nfields()) {
-    return False;
+    return false;
   }
   return allExist(other, equalDataTypes);
 }
 
-Bool RecordDescRep::isStrictSubset(const RecordDescRep& other, Bool& equalDataTypes) const {
-  equalDataTypes = False;
+bool RecordDescRep::isStrictSubset(const RecordDescRep& other, bool& equalDataTypes) const {
+  equalDataTypes = false;
   if (nfields() >= other.nfields()) {
-    return False;
+    return false;
   }
   return allExist(other, equalDataTypes);
 }
 
-Bool RecordDescRep::allExist(const RecordDescRep& other, Bool& equalDataTypes) const {
-  equalDataTypes = True;
+bool RecordDescRep::allExist(const RecordDescRep& other, bool& equalDataTypes) const {
+  equalDataTypes = true;
   uInt n = nfields();
   for (uInt i = 0; i < n; i++) {
     Int whichField = other.fieldNumber(names_p[i]);
     if (whichField < 0) {
-      return False;  // name does not exist in other
+      return false;  // name does not exist in other
     }
     if (type(i) != other.type(i)) {
-      equalDataTypes = False;  // unequal data type
+      equalDataTypes = false;  // unequal data type
     }
   }
-  return True;  // keyword names are equal
+  return true;  // keyword names are equal
 }
 
-Bool RecordDescRep::isDisjoint(const RecordDescRep& other) const {
+bool RecordDescRep::isDisjoint(const RecordDescRep& other) const {
   uInt n = nfields();
   for (uInt i = 0; i < n; i++) {
     if (other.fieldNumber(names_p[i]) >= 0) {
-      return False;  // name exists in other
+      return false;  // name exists in other
     }
   }
-  return True;
+  return true;
 }
 
 void RecordDescRep::copy_other(const RecordDescRep& other) {
@@ -497,7 +497,7 @@ void RecordDescRep::increment_length() {
     for (uInt i = n_p; i < types_p.nelements(); i++) {
       types_p[i] = 0;
       sub_records_p[i] = 0;
-      is_array_p[i] = False;
+      is_array_p[i] = false;
       shapes_p[i].resize(scalarShape.nelements());
       shapes_p[i] = scalarShape;
       // names_p, etc. is already set since the default ctor is called

@@ -43,7 +43,7 @@ TableExprAggrNode::TableExprAggrNode(FunctionType ftype, NodeDataType dtype, Val
   exprtype_p = Variable;
 }
 
-Bool TableExprAggrNode::isAggregate() const { return True; }
+bool TableExprAggrNode::isAggregate() const { return true; }
 
 TableExprFuncNode::NodeDataType TableExprAggrNode::checkOperands(Block<Int>& dtypeOper,
                                                                  ValueType& resVT,
@@ -178,7 +178,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNode::makeGroupAggrFunc() {
   return itsFunc;
 }
 
-Bool TableExprAggrNode::isLazyAggregate() const { return itsFunc->isLazy(); }
+bool TableExprAggrNode::isLazyAggregate() const { return itsFunc->isLazy(); }
 
 TableExprGroupFuncBase* TableExprAggrNode::doMakeGroupAggrFunc() {
   if (funcType() == countallFUNC) {
@@ -390,7 +390,7 @@ TableExprGroupFuncBase* TableExprAggrNode::doMakeGroupAggrFunc() {
                      std::to_string(operands()[0]->dataType()));
 }
 
-Bool TableExprAggrNode::getBool(const TableExprId& id) {
+bool TableExprAggrNode::getBool(const TableExprId& id) {
   const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
   if (itsFunc->isLazy()) {
     return itsFunc->getBool(aid.result().ids(id.rownr()));

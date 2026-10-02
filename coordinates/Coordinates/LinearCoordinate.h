@@ -136,7 +136,7 @@ class LinearCoordinate : public Coordinate {
   // Specify whether the absolute pixel coordinates in the wcs structure
   // are 0- or 1-relative.  The coordinate is always constructed with 0-relative
   // pixel coordinates
-  LinearCoordinate(const wcsprm &wcs, Bool oneRel = True);
+  LinearCoordinate(const wcsprm &wcs, bool oneRel = true);
 
   // Copy constructor (copy semantics).
   LinearCoordinate(const LinearCoordinate &other);
@@ -167,8 +167,8 @@ class LinearCoordinate : public Coordinate {
   // to toWorld() has no effect as this type of coordinate does not support a
   // conversion layer frame.
   // <group>
-  virtual Bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, Bool = True) const;
-  virtual Bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
+  virtual bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool = true) const;
+  virtual bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
   // </group>
 
   // Return the requested attribute
@@ -184,21 +184,21 @@ class LinearCoordinate : public Coordinate {
   // Set the value of the requested attributed. Note that these just
   // change the internal values, they do not cause any recomputation.
   // <group>
-  virtual Bool setWorldAxisNames(const Vector<String> &names);
-  virtual Bool setReferencePixel(const Vector<Double> &refPix);
-  virtual Bool setLinearTransform(const Matrix<Double> &pc);
-  virtual Bool setIncrement(const Vector<Double> &inc);
-  virtual Bool setReferenceValue(const Vector<Double> &refval);
+  virtual bool setWorldAxisNames(const Vector<String> &names);
+  virtual bool setReferencePixel(const Vector<Double> &refPix);
+  virtual bool setLinearTransform(const Matrix<Double> &pc);
+  virtual bool setIncrement(const Vector<Double> &inc);
+  virtual bool setReferenceValue(const Vector<Double> &refval);
   // </group>
 
   // Set the world axis units. Adjust the increment and
   // reference value by the ratio of the old and new units.
   // The units must be compatible with the current units.
-  virtual Bool setWorldAxisUnits(const Vector<String> &units);
+  virtual bool setWorldAxisUnits(const Vector<String> &units);
 
   // Overwrite the world axis units with no compatibility
   // checks or adjustment.
-  Bool overwriteWorldAxisUnits(const Vector<String> &units);
+  bool overwriteWorldAxisUnits(const Vector<String> &units);
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't
@@ -206,8 +206,8 @@ class LinearCoordinate : public Coordinate {
   // axes in the Coordinate.  If the comparison returns False, method
   // errorMessage contains a message about why.
   // <group>
-  virtual Bool near(const Coordinate &other, Double tol = 1e-6) const;
-  virtual Bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
+  virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
                     Double tol = 1e-6) const;
   // </group>
 
@@ -217,12 +217,12 @@ class LinearCoordinate : public Coordinate {
   // associated with all the axes of the Coordinate.   Currently the
   // output reference pixel is always shape/2.  If the pointer returned is 0,
   // it failed with a message in <src>errorMessage</src>
-  virtual Coordinate *makeFourierCoordinate(const Vector<Bool> &axes,
+  virtual Coordinate *makeFourierCoordinate(const Vector<bool> &axes,
                                             const Vector<Int> &shape) const;
 
   // Save the LinearCoordinate into the supplied record using the supplied field name.
   // The field must not already exist, otherwise <src>False</src> is returned.
-  virtual Bool save(RecordInterface &container, const String &fieldName) const;
+  virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Restore the LinearCoordinate from a record.
   // A null pointer means that the restoration did not succeed - probably

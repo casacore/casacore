@@ -37,7 +37,7 @@ const Int nrOfTests = 1;
 
 int main() {
   {
-    Bool testBool = True;
+    bool testBool = true;
     Short testShort = -30;
     uShort testuShort = 10;
     Int testInt = -20;
@@ -90,7 +90,7 @@ int main() {
     sink.write(nrOfTests, &testString);
   }
   {
-    Bool testBool;
+    bool testBool;
     Short testShort;
     uShort testuShort;
     Int testInt;

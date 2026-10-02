@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 ISMIndColumn::ISMIndColumn(ISMBase* smptr, int dataType, uInt colnr)
     : ISMColumn(smptr, dataType, colnr),
       seqnr_p(smptr->uniqueNr()),
-      shapeIsFixed_p(False),
+      shapeIsFixed_p(false),
       iosfile_p(0),
       indArray_p(0) {}
 
@@ -76,7 +76,7 @@ void ISMIndColumn::getFile(rownr_t nrrow) {
   init(stmanPtr_p->fileOption());
   lastRowPut_p = nrrow;
 }
-Bool ISMIndColumn::flush(rownr_t, Bool fsync) { return iosfile_p->flush(fsync); }
+bool ISMIndColumn::flush(rownr_t, bool fsync) { return iosfile_p->flush(fsync); }
 void ISMIndColumn::resync(rownr_t nrrow) {
   ISMColumn::resync(nrrow);
   if (stmanPtr_p->version() < 3) {
@@ -97,7 +97,7 @@ void ISMIndColumn::addRow(rownr_t, rownr_t oldNrrow) {
 
 void ISMIndColumn::setShapeColumn(const IPosition& shape) {
   fixedShape_p = shape;
-  shapeIsFixed_p = True;
+  shapeIsFixed_p = true;
 }
 
 void ISMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
@@ -114,13 +114,13 @@ void ISMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
 // # Read shape if not read yet.
 StIndArray* ISMIndColumn::getArrayPtr(rownr_t rownr) {
   if (isLastValueInvalid(rownr)) {
-    getValue(rownr, lastValue_p, False);
+    getValue(rownr, lastValue_p, false);
     Int64 offset = *(Int64*)lastValue_p;
     if (offset != 0) {
       indArray_p = StIndArray(offset);
-      foundArray_p = True;
+      foundArray_p = true;
     } else {
-      foundArray_p = False;
+      foundArray_p = false;
     }
   }
   if (foundArray_p) {
@@ -145,7 +145,7 @@ StIndArray* ISMIndColumn::getShape(rownr_t rownr) {
 StIndArray* ISMIndColumn::putShape(rownr_t rownr, const IPosition& shape) {
   // # Insert an entry for this row and set its shape.
   // # Nothing will be done if it is already defined.
-  return putArrayPtr(rownr, shape, False);
+  return putArrayPtr(rownr, shape, false);
   //    StIndArray* ptr = putArrayPtr (rownr, shape, False);
   //    ptr->setShape (*iosfile_p, dataType(), shape);
   //    return ptr;
@@ -159,20 +159,20 @@ StIndArray* ISMIndColumn::putShapeSliced(rownr_t rownr) {
   // # row 10-20, while the put is only for row 15. In that case row 15
   // # has to be inserted.
   StIndArray* ptr = getShape(rownr);
-  return putArrayPtr(rownr, ptr->shape(), True);
+  return putArrayPtr(rownr, ptr->shape(), true);
 }
 
-Bool ISMIndColumn::isShapeDefined(rownr_t rownr) {
-  return (getArrayPtr(rownr) == 0 ? False : True);
+bool ISMIndColumn::isShapeDefined(rownr_t rownr) {
+  return (getArrayPtr(rownr) == 0 ? false : true);
 }
 
 uInt ISMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
 
 IPosition ISMIndColumn::shape(rownr_t rownr) { return getShape(rownr)->shape(); }
 
-Bool ISMIndColumn::canChangeShape() const { return (shapeIsFixed_p ? False : True); }
+bool ISMIndColumn::canChangeShape() const { return (shapeIsFixed_p ? false : true); }
 
-StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, Bool copyData) {
+StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, bool copyData) {
   // Start with getting the array pointer. This gives the range
   // for which this array is valid.
   StIndArray* ptr = getArrayPtr(rownr);
@@ -225,12 +225,12 @@ void ISMIndColumn::putSliceV(rownr_t rownr, const Slicer& ns, const ArrayBase& a
   putShapeSliced(rownr)->putSliceV(*iosfile_p, ns, arr, dtype());
 }
 
-Bool ISMIndColumn::compareValue(const void*, const void*) const { return False; }
+bool ISMIndColumn::compareValue(const void*, const void*) const { return false; }
 
 void ISMIndColumn::init(ByteIO::OpenOption fileOption) {
   clear();
   DebugAssert(nrelem_p == 1, AipsError);
-  Bool asBigEndian = stmanPtr_p->asBigEndian();
+  bool asBigEndian = stmanPtr_p->asBigEndian();
   if (asBigEndian) {
     readFunc_p = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
     writeFunc_p = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));

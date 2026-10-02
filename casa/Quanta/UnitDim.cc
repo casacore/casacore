@@ -98,22 +98,22 @@ UnitDim UnitDim::pow(Int p) {
   return loc;
 }
 
-Bool UnitDim::operator==(const UnitDim &other) const {
+bool UnitDim::operator==(const UnitDim &other) const {
   for (Int i = 0; i < UNITDIM_DLNUMBER; i++) {
     if (unitLong[i] != other.unitLong[i]) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-Bool UnitDim::operator!=(const UnitDim &other) const {
+bool UnitDim::operator!=(const UnitDim &other) const {
   for (Int i = 0; i < UNITDIM_DLNUMBER; i++) {
     if (unitLong[i] != other.unitLong[i]) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 const String &UnitDim::dimName(uInt which) {

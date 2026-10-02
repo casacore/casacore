@@ -40,7 +40,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-HDF5LattIter<T>::HDF5LattIter(const HDF5Lattice<T>& data, const LatticeNavigator& nav, Bool useRef)
+HDF5LattIter<T>::HDF5LattIter(const HDF5Lattice<T>& data, const LatticeNavigator& nav, bool useRef)
     : LatticeIterInterface<T>(data, nav, useRef), itsData(data) {
   setupTileCache();
 }

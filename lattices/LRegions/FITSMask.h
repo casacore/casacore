@@ -89,7 +89,7 @@ class TiledFileAccess;
 // #   <li> start discussion of this possible extension
 // # </todo>
 
-class FITSMask : public Lattice<Bool> {
+class FITSMask : public Lattice<bool> {
  public:
   // Constructor (for 32 bit floating point). The pointer is not cloned,
   // just copied.
@@ -99,18 +99,18 @@ class FITSMask : public Lattice<Bool> {
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
   FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, uChar magic,
-           Bool hasBlanks);
+           bool hasBlanks);
 
   // Constructor (for 16 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
   FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, Short magic,
-           Bool hasBlanks);
+           bool hasBlanks);
 
   // Constructor (for 32 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, Int magic, Bool hasBlanks);
+  FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, Int magic, bool hasBlanks);
 
   // Copy constructor (reference semantics).  The TiledFileAccess pointer
   // is just copied.
@@ -124,33 +124,33 @@ class FITSMask : public Lattice<Bool> {
   FITSMask& operator=(const FITSMask& other);
 
   // Make a copy of the object (reference semantics).
-  virtual Lattice<Bool>* clone() const;
+  virtual Lattice<bool>* clone() const;
 
   // Is the FITSMask writable? Returns False. Although it is not hard
   // to implement writing of the mask, data values would be lost
   // because of magic blanking.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Return the shape of the Lattice including all degenerate
   // axes (ie. axes with a length of one)
   IPosition shape() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<bool>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.  Throws an exception.
-  virtual void doPutSlice(const Array<Bool>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<bool>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
 
   // Set the switch for also filtering 0.0 (besides NaNs).
-  virtual void setFilterZero(Bool filterZero);
+  virtual void setFilterZero(bool filterZero);
 
  private:
   // Mask out ONLY NaN's
-  void filterNaN(Bool* pMask, const float* pData, uInt nelems);
+  void filterNaN(bool* pMask, const float* pData, uInt nelems);
 
   // Mask out NaN's and values 0.0
-  void filterZeroNaN(Bool* pMask, const Float* pData, uInt nelems);
+  void filterZeroNaN(bool* pMask, const Float* pData, uInt nelems);
 
   //
   TiledFileAccess* itsTiledFilePtr;
@@ -159,8 +159,8 @@ class FITSMask : public Lattice<Bool> {
   Short itsUCharMagic;
   Short itsShortMagic;
   Int itsLongMagic;
-  Bool itsHasIntBlanks;
-  Bool itsFilterZero;
+  bool itsHasIntBlanks;
+  bool itsFilterZero;
 };
 
 }  // namespace casacore

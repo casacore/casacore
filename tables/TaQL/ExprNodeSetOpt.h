@@ -65,16 +65,16 @@ class TableExprNodeSetOptBase : public TableExprNodeRep {
   // Does the set contain the given value?
   // They call the <src>find</src> function.
   // <group>
-  Bool contains(const TableExprId& id, Int64 value) override;
-  Bool contains(const TableExprId& id, Double value) override;
-  Bool contains(const TableExprId& id, String value) override;
+  bool contains(const TableExprId& id, Int64 value) override;
+  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, String value) override;
   // </group>
   // Tell for each array value if the set contains that value.
   // It calls the scalar <src>contains</src> function for each value.
   // <group>
-  MArray<Bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Double>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<String>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
   // </group>
   // Tell which key matches a value. -1 = no match.
   // The default implementations throw a 'not implemented' exception.
@@ -166,14 +166,14 @@ class TableExprNodeSetOptContSetBase : public TableExprNodeSetOptBase {
   // Transform a set into an optimized one by ordering the intervals
   // and optionally combining adjacent intervals.
   // If not possible, an empty TENShPtr is returned.
-  static TENShPtr transform(const TableExprNodeSet& set, Bool combine = True);
+  static TENShPtr transform(const TableExprNodeSet& set, bool combine = true);
   // Create the appropriate optimized OptContSet object.
   // Note that leftC and rightC do not need to have the same length as start/end.
   // If it is known that all intervals have the same leftC/rightC,
   // a single value suffices.
   static TENShPtr createOptSet(const TableExprNodeSet& set, const std::vector<T>& start,
-                               const std::vector<T>& end, const std::vector<Bool>& leftC,
-                               const std::vector<Bool>& rightC);
+                               const std::vector<T>& end, const std::vector<bool>& leftC,
+                               const std::vector<bool>& rightC);
 
  protected:
   std::vector<T> itsStarts;
@@ -208,16 +208,16 @@ template <typename T>
 class TableExprNodeSetOptContSetMixOC : public TableExprNodeSetOptContSetBase<T> {
  public:
   TableExprNodeSetOptContSetMixOC(const TableExprNodeSet& orig, const std::vector<T>& starts,
-                                  const std::vector<T>& ends, const std::vector<Bool>& leftC,
-                                  const std::vector<Bool>& rightC);
+                                  const std::vector<T>& ends, const std::vector<bool>& leftC,
+                                  const std::vector<bool>& rightC);
   // Show the node.
   void show(ostream& os, uInt indent) const override;
   // Tell which interval contains a value. -1 = no match.
   Int64 find(T value) const override;
 
  protected:
-  std::vector<Bool> itsLeftC;
-  std::vector<Bool> itsRightC;
+  std::vector<bool> itsLeftC;
+  std::vector<bool> itsRightC;
 
  private:
   // Explicitly hide base function to prevent warning

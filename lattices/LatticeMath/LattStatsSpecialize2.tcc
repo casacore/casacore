@@ -35,8 +35,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-Bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<T>& range, Bool& noInclude,
-                                            Bool& noExclude, const Vector<T>& include,
+bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<T>& range, bool& noInclude,
+                                            bool& noExclude, const Vector<T>& include,
                                             const Vector<T>& exclude) {
   //
   // Take the user's data inclusion and exclusion data ranges and
@@ -55,7 +55,7 @@ Bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<T>& ran
   //             many values for includeB or excludeB, or tries to give
   //             values for both
   ThrowIf(!isReal(whatType<T>()), "Logic error, this method is for real data types only");
-  noInclude = True;
+  noInclude = true;
   range.resize(0);
   if (include.empty()) {
     // do nothing
@@ -63,38 +63,38 @@ Bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<T>& ran
     range.resize(2);
     range(0) = -abs(include(0));
     range(1) = abs(include(0));
-    noInclude = False;
+    noInclude = false;
   } else if (include.size() == 2) {
     range.resize(2);
     range(0) = min(include(0), include(1));
     range(1) = max(include(0), include(1));
-    noInclude = False;
+    noInclude = false;
   } else {
     errorMessage = String("Too many elements for argument include");
-    return False;
+    return false;
   }
-  noExclude = True;
+  noExclude = true;
   if (exclude.empty()) {
     // do nothing
   } else if (exclude.size() == 1) {
     range.resize(2);
     range(0) = -abs(exclude(0));
     range(1) = abs(exclude(0));
-    noExclude = False;
+    noExclude = false;
   } else if (exclude.size() == 2) {
     range.resize(2);
     range(0) = min(exclude(0), exclude(1));
     range(1) = max(exclude(0), exclude(1));
-    noExclude = False;
+    noExclude = false;
   } else {
     errorMessage = String("Too many elements for argument exclude");
-    return False;
+    return false;
   }
   if (!noInclude && !noExclude) {
     errorMessage = String("You can only give one of arguments include or exclude");
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

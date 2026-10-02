@@ -103,7 +103,7 @@ class ROStandardStManAccessor : public RODataManAccessor {
   // of the data manager or the column.
   // An exception is thrown if the data manager type is not the incremental
   // storage manager.
-  ROStandardStManAccessor(const Table& table, const String& name, Bool byColumn = False);
+  ROStandardStManAccessor(const Table& table, const String& name, bool byColumn = false);
 
   virtual ~ROStandardStManAccessor();
 
@@ -123,7 +123,7 @@ class ROStandardStManAccessor : public RODataManAccessor {
   // be made large enough for a future file extension.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize(uInt aSize, Bool canExceedNrBuckets = True);
+  void setCacheSize(uInt aSize, bool canExceedNrBuckets = true);
 
   // Get the cache size (in buckets).
   uInt getCacheSize() const;

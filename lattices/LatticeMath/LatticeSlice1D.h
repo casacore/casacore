@@ -111,13 +111,13 @@ class LatticeSlice1D {
   // Get 1-D slice.  PixelCurve1D supplies the locus of the slice in
   // the plane specified by axis0 and axis1.  The pixel coordinate for
   // the rest of the lattice is specified in <src>coord</src>.
-  void getSlice(Vector<T>& data, Vector<Bool>& mask, const PixelCurve1D& curve, uInt axis0,
+  void getSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D& curve, uInt axis0,
                 uInt axis1, const IPosition& coord);
 
   // Get 1-D slice between blc & trc. These start and end points must be
   // in a cardinal plane of the lattice.  If nPts is 0 it is set automatically to
   // the length of the slice.
-  void getSlice(Vector<T>& data, Vector<Bool>& mask, const IPosition& blc, const IPosition& trc,
+  void getSlice(Vector<T>& data, Vector<bool>& mask, const IPosition& blc, const IPosition& trc,
                 uInt nPts = 0);
 
   // Get the (x,y) pixel coordinates from the last slice and the distance along
@@ -137,7 +137,7 @@ class LatticeSlice1D {
   // Find the slice plane.
   void findPlane(const IPosition& blc, const IPosition& trc);
   // Get the interpolated slice
-  void doGetSlice(Vector<T>& data, Vector<Bool>& mask, const PixelCurve1D& curve,
+  void doGetSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D& curve,
                   const IPosition& blc, const IPosition& trc);
   // Make Interpolator
   void makeInterpolator(Method method);

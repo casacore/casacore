@@ -97,13 +97,13 @@ void doit1() {
   TiledShape shape2(shape);
   TempLattice<Float> inLat(shape2);
   inLat.set(1.0);
-  SubLattice<Float> inML(inLat, True);
+  SubLattice<Float> inML(inLat, true);
   //
   LatticeSlice1D<Float> slicer(inML, LatticeSlice1D<Float>::LINEAR);
   AlwaysAssert(slicer.interpolationMethod() == LatticeSlice1D<Float>::LINEAR, AipsError);
   //
   Vector<Float> data, x, y, distance;
-  Vector<Bool> mask;
+  Vector<bool> mask;
   IPosition blc(nDim), trc(nDim);
   uInt axis0, axis1;
   //
@@ -117,7 +117,7 @@ void doit1() {
     slicer.getSlice(data, mask, blc, trc, nPts);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);
@@ -135,7 +135,7 @@ void doit1() {
     slicer.getSlice(data, mask, blc, trc, nPts);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);
@@ -152,7 +152,7 @@ void doit1() {
     slicer.getSlice(data, mask, blc, trc, nPts);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);
@@ -179,14 +179,14 @@ void doit2() {
   TiledShape shape2(shape);
   TempLattice<Float> inLat(shape2);
   inLat.set(1.0);
-  SubLattice<Float> inML(inLat, True);
+  SubLattice<Float> inML(inLat, true);
   //
   LatticeSlice1D<Float> slicer(inML, LatticeSlice1D<Float>::CUBIC);
   AlwaysAssert(slicer.interpolationMethod() == LatticeSlice1D<Float>::CUBIC, AipsError);
   //
   Vector<Float> data, x, y, distance;
   Vector<Float> data2, x2, y2, distance2;
-  Vector<Bool> mask, mask2;
+  Vector<bool> mask, mask2;
   IPosition blc(nDim), trc(nDim);
   uInt axis0, axis1;
   //
@@ -200,7 +200,7 @@ void doit2() {
     slicer.getSlice(data, mask, blc, trc, nPts);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);
@@ -219,7 +219,7 @@ void doit2() {
     slicer2.getSlice(data2, mask2, blc, trc, nPts);
     AlwaysAssert(data2.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data2, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask2, True), AipsError);
+    AlwaysAssert(allEQ(mask2, true), AipsError);
     AlwaysAssert(allNear(data, data2, Double(1.0e-6)), AipsError);
     //
     slicer2.getPosition(axis0, axis1, x2, y2, distance2);
@@ -250,7 +250,7 @@ void doit2() {
     slicer2.getSlice(data2, mask2, blc, trc, nPts);
     AlwaysAssert(data2.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data2, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask2, True), AipsError);
+    AlwaysAssert(allEQ(mask2, true), AipsError);
     AlwaysAssert(allNear(data, data2, Double(1.0e-6)), AipsError);
     //
     slicer2.getPosition(axis0, axis1, x2, y2, distance2);
@@ -270,7 +270,7 @@ void doit3() {
   TiledShape shape2(shape);
   TempLattice<Float> inLat(shape2);
   inLat.set(1.0);
-  SubLattice<Float> inML(inLat, True);
+  SubLattice<Float> inML(inLat, true);
   //
   LatticeSlice1D<Float> slicer(inML, LatticeSlice1D<Float>::LINEAR);
   AlwaysAssert(slicer.interpolationMethod() == LatticeSlice1D<Float>::LINEAR, AipsError);
@@ -278,7 +278,7 @@ void doit3() {
   Vector<Double> xIn(3), yIn(3);
   uInt nPts = 100;
   Vector<Float> data, x, y, distance;
-  Vector<Bool> mask;
+  Vector<bool> mask;
   IPosition coord(nDim, 0);
   uInt axis0, axis1;
   //
@@ -294,7 +294,7 @@ void doit3() {
     slicer.getSlice(data, mask, curve, 0, 1, coord);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);
@@ -314,7 +314,7 @@ void doit3() {
     slicer.getSlice(data, mask, curve, 0, 2, coord);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);
@@ -334,7 +334,7 @@ void doit3() {
     slicer.getSlice(data, mask, curve, 1, 2, coord);
     AlwaysAssert(data.nelements() == nPts, AipsError);
     AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
-    AlwaysAssert(allEQ(mask, True), AipsError);
+    AlwaysAssert(allEQ(mask, true), AipsError);
     //
     slicer.getPosition(axis0, axis1, x, y, distance);
     AlwaysAssert(x.nelements() == nPts, AipsError);

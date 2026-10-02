@@ -93,7 +93,7 @@ class WCIntersection : public WCCompound {
   // Construct from multiple regions given as a Block.
   // When <src>takeOver</src> is True, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
-  WCIntersection(Bool takeOver, const Block<const WCRegion*>& regions);
+  WCIntersection(bool takeOver, const Block<const WCRegion*>& regions);
 
   // Copy constructor (copy semantics).
   WCIntersection(const WCIntersection& other);
@@ -104,7 +104,7 @@ class WCIntersection : public WCCompound {
   WCIntersection& operator=(const WCIntersection& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Make a copy of the derived object.
   virtual WCRegion* cloneRegion() const;

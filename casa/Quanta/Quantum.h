@@ -353,7 +353,7 @@ class Quantum : public QBase {
   // # slip by unnoticed. - dmehring 09feb2015
   // # It should be left in since conversion from time to angle makes sense.
   // # Maybe the default could be changed to True. - gvandiepen09feb2016
-  Qtype getValue(const Unit &other, Bool requireConform = False) const;
+  Qtype getValue(const Unit &other, bool requireConform = false) const;
 
   // Get the unit (as Unit) that is attached to the Quantum. (use getUnit() if
   // interested in the String part only, e.g. for output)
@@ -371,13 +371,13 @@ class Quantum : public QBase {
   // it could easily be changed. In addition recognition of date/time/angle
   // still has to be added </note>
   // <group>
-  static Bool read(Quantity &res, const String &in);
-  static Bool read(Quantity &res, MUString &in);
+  static bool read(Quantity &res, const String &in);
+  static bool read(Quantity &res, MUString &in);
   // </group>
   // </group>
 
   // Check if of specified type
-  Bool check(const UnitVal &uv) const;
+  bool check(const UnitVal &uv) const;
 
   // Assert correct kind
   // <thrown>
@@ -434,8 +434,8 @@ class Quantum : public QBase {
 // <group name=output>
 // only Quantity is supported on input
 istream &operator>>(istream &is, Quantity &ku);
-Bool readQuantity(Quantity &res, MUString &in);
-Bool readQuantity(Quantity &res, const String &in);
+bool readQuantity(Quantity &res, MUString &in);
+bool readQuantity(Quantity &res, const String &in);
 // </group>
 
 // # Declare extern templates for often used types.

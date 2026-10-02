@@ -147,15 +147,15 @@ int main(int argc, const char* argv[]) {
     const String statsToPlot = inputs.getString("stats");
     const Block<Double> includeB = inputs.getDoubleArray("include");
     const Block<Double> excludeB = inputs.getDoubleArray("exclude");
-    const Bool doList = inputs.getBool("list");
+    const bool doList = inputs.getBool("list");
     const Block<Int> nxyB(inputs.getIntArray("nxy"));
     String device = inputs.getString("plotter");
-    const Bool forceDisk = inputs.getBool("disk");
+    const bool forceDisk = inputs.getBool("disk");
 
     // Create defaults array
 
-    Vector<Bool> validInputs(NDEFAULTS);
-    validInputs = False;
+    Vector<bool> validInputs(NDEFAULTS);
+    validInputs = false;
     LogOrigin lor("dImageStatistics", "main()", WHERE);
     LogIO os(lor);
 
@@ -173,7 +173,7 @@ int main(int argc, const char* argv[]) {
       cursorAxes.resize(0);
     } else {
       for (uInt i = 0; i < cursorAxes.nelements(); i++) cursorAxes(i)--;
-      validInputs(AXES) = True;
+      validInputs(AXES) = true;
     }
 
     // Convert region things to IPositions (0 relative)
@@ -186,21 +186,21 @@ int main(int argc, const char* argv[]) {
     } else {
       blc.resize(blcB.nelements());
       for (uInt i = 0; i < blcB.nelements(); i++) blc(i) = blcB[i] - 1;
-      validInputs(REGION) = True;
+      validInputs(REGION) = true;
     }
     if (trcB.nelements() == 1 && trcB[0] == -10) {
       trc.resize(0);
     } else {
       trc.resize(trcB.nelements());
       for (uInt i = 0; i < trcB.nelements(); i++) trc(i) = trcB[i] - 1;
-      validInputs(REGION) = True;
+      validInputs(REGION) = true;
     }
     if (incB.nelements() == 1 && incB[0] == -10) {
       inc.resize(0);
     } else {
       inc.resize(incB.nelements());
       for (uInt i = 0; i < incB.nelements(); i++) inc(i) = incB[i];
-      validInputs(REGION) = True;
+      validInputs(REGION) = true;
     }
 
     // Convert inclusion and exclusion ranges to vectors.
@@ -213,7 +213,7 @@ int main(int argc, const char* argv[]) {
     if (include.nelements() == 1 && include(0) == 0) {
       include.resize(0);
     } else {
-      validInputs(RANGE) = True;
+      validInputs(RANGE) = true;
     }
     Vector<Float> exclude(excludeB.nelements());
     for (i = 0; i < exclude.nelements(); i++) {
@@ -222,7 +222,7 @@ int main(int argc, const char* argv[]) {
     if (exclude.nelements() == 1 && exclude(0) == 0) {
       exclude.resize(0);
     } else {
-      validInputs(RANGE) = True;
+      validInputs(RANGE) = true;
     }
 
     // Plotting things
@@ -233,7 +233,7 @@ int main(int argc, const char* argv[]) {
     if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
     if (device != "none" &&
         (statisticTypes.nelements() != 0 || !device.empty() || nxy.nelements() != 0))
-      validInputs(PLOTTING) = True;
+      validInputs(PLOTTING) = true;
 
     // Do the work
 
@@ -242,7 +242,7 @@ int main(int argc, const char* argv[]) {
     if (imageType == TpFloat) {
       // Construct image
 
-      PagedImage<Float> inImage(in, True);
+      PagedImage<Float> inImage(in, true);
       SubImage<Float>* pSubImage2 = 0;
 
       if (validInputs(REGION)) {
@@ -270,7 +270,7 @@ int main(int argc, const char* argv[]) {
 
       // Construct statistics object
 
-      ImageStatistics<Float> stats(*pSubImage2, os, True, forceDisk);
+      ImageStatistics<Float> stats(*pSubImage2, os, true, forceDisk);
 
       // Clean up SUbImage pointers
 
@@ -285,7 +285,7 @@ int main(int argc, const char* argv[]) {
         }
       }
       if (validInputs(RANGE)) {
-        if (!stats.setInExCludeRange(include, exclude, True)) {
+        if (!stats.setInExCludeRange(include, exclude, true)) {
           os << stats.errorMessage() << LogIO::POST;
           return 1;
         }
@@ -318,17 +318,17 @@ int main(int argc, const char* argv[]) {
         os << "Statistic " << LatticeStatsBase::toStatisticName(i) << LogIO::POST;
         Array<Double> a;
         LatticeStatsBase::StatisticsTypes t = static_cast<LatticeStatsBase::StatisticsTypes>(i);
-        stats.getStatistic(a, t, True);
+        stats.getStatistic(a, t, true);
       }
       //
       os << "Recovering statistics slice from origin" << endl;
       IPosition pos(stats.displayAxes().nelements(), 0);
       IPosition pos2(nDim, 0);
       Vector<Double> dataV;
-      if (!stats.getStats(dataV, pos, False)) {
+      if (!stats.getStats(dataV, pos, false)) {
         os << stats.errorMessage() << LogIO::POST;
       }
-      if (!stats.getStats(dataV, pos2, True)) {
+      if (!stats.getStats(dataV, pos2, true)) {
         os << stats.errorMessage() << LogIO::POST;
       }
 
@@ -359,7 +359,7 @@ int main(int argc, const char* argv[]) {
     } else if (imageType == TpComplex) {
       // COnstruct image
 
-      PagedImage<Complex> inImage(in, True);
+      PagedImage<Complex> inImage(in, true);
       SubImage<Complex>* pSubImage2 = 0;
 
       if (validInputs(REGION)) {
@@ -387,7 +387,7 @@ int main(int argc, const char* argv[]) {
 
       // Construct statistics object
 
-      ImageStatistics<Complex> stats(*pSubImage2, os, True, forceDisk);
+      ImageStatistics<Complex> stats(*pSubImage2, os, true, forceDisk);
 
       // Clean up SUbImage pointers
 

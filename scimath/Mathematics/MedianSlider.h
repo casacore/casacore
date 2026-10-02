@@ -73,13 +73,13 @@ class MedianSlider {
   // push out older values. Returns the new median value.
   // If flag is set to true, adds a "flagged" datum, one which takes
   // up space in the window but is skipped during median computations.
-  Float add(Float d, Bool flag = False);
+  Float add(Float d, bool flag = false);
   // Adds a flagged datum
-  Float add() { return add(0, True); }
+  Float add() { return add(0, true); }
   // Adds N flagged datums
   Float next(uInt n = 1);
   // Adds several datums at once (with corresponding flags)
-  Float add(const Vector<Float> &d, const Vector<Bool> &flag);
+  Float add(const Vector<Float> &d, const Vector<bool> &flag);
   // Adds several non-flagged datums at once
   Float add(const Vector<Float> &d);
 
@@ -94,37 +94,37 @@ class MedianSlider {
   Float median();
 
   // Returns a previous value (from n steps ago) from the sliding window
-  Float prevVal(uInt n, Bool &flag);
+  Float prevVal(uInt n, bool &flag);
 
   // Returns value from midpoint (center) of window, possibly with flag
-  Float midpoint(Bool &flag);
+  Float midpoint(bool &flag);
   Float midpoint() {
-    Bool dum;
+    bool dum;
     return midpoint(dum);
   }
 
   // Returns the difference between the current median and the value
   // at window center. Optionally, also returns flag of median center
-  Float diff(Bool &flag) { return midpoint(flag) - median(); }
+  Float diff(bool &flag) { return midpoint(flag) - median(); }
   Float diff() {
-    Bool dum;
+    bool dum;
     return diff(dum);
   }
 
   // returns total memory usage (in bytes) for a given halfwin size
   static size_t objsize(int halfwin) {
-    return sizeof(MedianSlider) + (sizeof(Float) + sizeof(uInt) + sizeof(Bool)) * (halfwin * 2 + 1);
+    return sizeof(MedianSlider) + (sizeof(Float) + sizeof(uInt) + sizeof(bool)) * (halfwin * 2 + 1);
   }
 
   // For testing purposes only: verifies current value of median.
   // Throws an exception if it fails.
-  Bool assure();
+  bool assure();
 
  private:
   uInt halfwin, fullwin;
   Float *buf;
   uInt *index;
-  Bool *valid;
+  bool *valid;
   uInt ibuf, nind;
 };
 
@@ -137,7 +137,7 @@ inline Float MedianSlider::median() {
   //      : buf[ index[nind/2-1] ];
 }
 
-inline Float MedianSlider::midpoint(Bool &flag) { return prevVal(halfwin + 1, flag); }
+inline Float MedianSlider::midpoint(bool &flag) { return prevVal(halfwin + 1, flag); }
 
 }  // namespace casacore
 

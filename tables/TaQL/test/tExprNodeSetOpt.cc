@@ -196,18 +196,18 @@ void doDoubleTransform() {
   // but not 4th with 5th (because end4 and st5 are open).
   {
     TableExprNodeSet set;
-    set.add(TableExprNodeSetElem(False, st1, end1, False));
-    set.add(TableExprNodeSetElem(True, st3, end3, True));
-    set.add(TableExprNodeSetElem(False, st2, end2, True));
-    set.add(TableExprNodeSetElem(True, st1 + 1, end2 + 1, False));
-    set.add(TableExprNodeSetElem(False, st4, end4, False));
-    set.add(TableExprNodeSetElem(False, st5, end5, True));
+    set.add(TableExprNodeSetElem(false, st1, end1, false));
+    set.add(TableExprNodeSetElem(true, st3, end3, true));
+    set.add(TableExprNodeSetElem(false, st2, end2, true));
+    set.add(TableExprNodeSetElem(true, st1 + 1, end2 + 1, false));
+    set.add(TableExprNodeSetElem(false, st4, end4, false));
+    set.add(TableExprNodeSetElem(false, st5, end5, true));
     // Vectors of test values and expected index.
     Vector<double> vec({0, 1, 2, 6, 19, 21, 23, 25, 26, 31, 33, 33.5, 34, 34.1});
     Vector<Int64> exp({-1, -1, 0, 0, 0, -1, -1, 1, 1, 1, -1, 2, 2, -1});
     {
       // No combine, thus 6 intervals with different leftC/rightC.
-      TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set, False);
+      TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set, false);
       TableExprNodeSetOptContSetMixOC<Double>* p =
           dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
       AlwaysAssertExit(p);
@@ -260,7 +260,7 @@ void doDateTransform() {
   TableExprNode width(4);                     // 4 days
   {
     TableExprNodeSet set;
-    set.add(TableExprNodeSetElem(False, st, end, False));
+    set.add(TableExprNodeSetElem(false, st, end, false));
     TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set);
     TableExprNodeSetOptContSetBase<Double>* p =
         dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());

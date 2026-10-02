@@ -43,7 +43,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &description, uInt nrows,
-                                 const Record &extraKeywords, Bool freeOutput)
+                                 const Record &extraKeywords, bool freeOutput)
     : delete_writer_p(freeOutput),
       writer_p(0),
       nrows_written_p(0),
@@ -87,7 +87,7 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &descr
   FitsKeywordList kw;
 
   // SIMPLE
-  kw.mk(FITS::SIMPLE, True, "Standard FITS format");
+  kw.mk(FITS::SIMPLE, true, "Standard FITS format");
 
   // BITPIX
   kw.mk(FITS::BITPIX, -32, "Floating point values");
@@ -105,13 +105,13 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &descr
   }
 
   // EXTEND
-  kw.mk(FITS::EXTEND, True, "Tables may follow");
+  kw.mk(FITS::EXTEND, true, "Tables may follow");
 
   // BLOCKED
-  kw.mk(FITS::BLOCKED, True, "File may be blocked");
+  kw.mk(FITS::BLOCKED, true, "File may be blocked");
 
   // GROUPS
-  kw.mk(FITS::GROUPS, True, "Random Group UV data");
+  kw.mk(FITS::GROUPS, true, "Random Group UV data");
 
   // PCOUNT (-1 because the array takes one slot)
   kw.mk(FITS::PCOUNT, Int(nfields - 1), "Number of random parameters");
@@ -186,7 +186,7 @@ void FITSGroupWriter::write() {
     if (row_p.type(i) == TpArrayFloat) {
       // The data array
       row_p.get(i, tmp);
-      Bool deleteIt;
+      bool deleteIt;
       Float *ptr = tmp.getStorage(deleteIt);
 
       // It looks to me like store is doing the wrong thing for primary groups

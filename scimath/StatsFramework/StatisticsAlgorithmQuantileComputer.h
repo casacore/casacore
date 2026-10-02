@@ -37,7 +37,7 @@ namespace casacore {
 // QuantileComputer class; they are used internally by other StatsFramework
 // classes. See the documentation of StatisticsAlgorithm for more details.
 
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class StatisticsAlgorithmQuantileComputer {
  public:

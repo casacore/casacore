@@ -131,27 +131,27 @@ ostream &operator<<(ostream &os, DataType type) {
   return os;
 }
 
-Bool isScalar(DataType type) {
+bool isScalar(DataType type) {
   return ((type <= TpString) || (type == TpQuantity) || (type == TpInt64));
 }
 
-Bool isScalarFun(DataType type) { return isScalar(type); }
+bool isScalarFun(DataType type) { return isScalar(type); }
 
-Bool isArray(DataType type) {
+bool isArray(DataType type) {
   return ((type >= TpArrayBool && type <= TpArrayString) || (type == TpArrayQuantity) ||
           (type == TpArrayInt64));
 }
 
-Bool isReal(DataType type) {
+bool isReal(DataType type) {
   return (type >= TpChar && type <= TpDouble) || (type >= TpArrayChar && type <= TpArrayDouble);
 }
 
-Bool isComplex(DataType type) {
+bool isComplex(DataType type) {
   return type == TpComplex || type == TpDComplex || type == TpArrayComplex ||
          type == TpArrayDComplex;
 }
 
-Bool isNumeric(DataType type) { return isReal(type) || isComplex(type); }
+bool isNumeric(DataType type) { return isReal(type) || isComplex(type); }
 
 DataType asScalar(DataType type) {
   AlwaysAssert(type != TpOther && type != TpRecord && type != TpTable, AipsError);

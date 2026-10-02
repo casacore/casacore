@@ -60,51 +60,51 @@ File& File::operator=(const File& that) {
   return *this;
 }
 
-Bool File::isRegular(Bool followSymLink) const {
+bool File::isRegular(bool followSymLink) const {
   // The struct is filled in by mylstat, and S_ISREG checks buf
   // if the file is a regularfile.
   Path testPath = itsPath;
   if (isSymLink()) {
     if (!followSymLink) {
-      return False;
+      return false;
     }
     testPath = SymLink(itsPath).followSymLink();
   }
   struct fileSTAT buf;
   if (mylstat(testPath.expandedName().c_str(), &buf) < 0) {
-    return False;
+    return false;
   }
   return (S_ISREG(buf.st_mode));
 }
 
-Bool File::isDirectory(Bool followSymLink) const {
+bool File::isDirectory(bool followSymLink) const {
   // The struct is filled in by mylstat, and S_ISDIR checks buf
   // if the file is a directory.
   Path testPath = itsPath;
   if (isSymLink()) {
     if (!followSymLink) {
-      return False;
+      return false;
     }
     testPath = SymLink(itsPath).followSymLink();
   }
   struct fileSTAT buf;
   if (mylstat(testPath.expandedName().c_str(), &buf) < 0) {
-    return False;
+    return false;
   }
   return (S_ISDIR(buf.st_mode));
 }
 
-Bool File::isSymLink() const {
+bool File::isSymLink() const {
   // The struct is filled in by mylstat, and S_ISLNK checks buf
   // if the file is a symbolic link.
   struct fileSTAT buf;
   if (mylstat(itsPath.expandedName().c_str(), &buf) < 0) {
-    return False;
+    return false;
   }
   return (S_ISLNK(buf.st_mode));
 }
 
-Bool File::isPipe() const {
+bool File::isPipe() const {
   // The struct is filled in by mylstat, and S_ISFIFO checks buf
   // if the file is a pipe.
   struct fileSTAT buf;
@@ -112,7 +112,7 @@ Bool File::isPipe() const {
   return (S_ISFIFO(buf.st_mode));
 }
 
-Bool File::isCharacterSpecial() const {
+bool File::isCharacterSpecial() const {
   // The struct is filled in by mylstat, and S_ISCHR checks buf
   // if the file is a characterspecialfile.
   struct fileSTAT buf;
@@ -120,7 +120,7 @@ Bool File::isCharacterSpecial() const {
   return (S_ISCHR(buf.st_mode));
 }
 
-Bool File::isBlockSpecial() const {
+bool File::isBlockSpecial() const {
   // The struct is filled in by mylstat, and S_ISBLK checks buf
   // if the file is a blokspecialfile.
   struct fileSTAT buf;
@@ -128,7 +128,7 @@ Bool File::isBlockSpecial() const {
   return (S_ISBLK(buf.st_mode));
 }
 
-Bool File::isSocket() const {
+bool File::isSocket() const {
   // The struct is filled in by mylstat, and S_ISSOCK checks buf
   // if the file is a socket.
   struct fileSTAT buf;
@@ -136,7 +136,7 @@ Bool File::isSocket() const {
   return (S_ISSOCK(buf.st_mode));
 }
 
-Bool File::exists() const {
+bool File::exists() const {
   // The function access always substitutes symlinks.
   // Therefore use lstat instead.
   struct fileSTAT buf;
@@ -151,29 +151,29 @@ Bool File::exists() const {
   return status == 0;
 }
 
-Bool File::isReadable() const {
+bool File::isReadable() const {
   // The function access checks if the file is readable.
   return (access((itsPath.expandedName()).c_str(), R_OK) == 0);
 }
 
-Bool File::isWritable() const {
+bool File::isWritable() const {
   // The function access checks if the file is writable.
   return (access((itsPath.expandedName()).c_str(), W_OK) == 0);
 }
 
-Bool File::isExecutable() const {
+bool File::isExecutable() const {
   // The function access checks if the file is executable.
   return (access((itsPath.expandedName()).c_str(), X_OK) == 0);
 }
 
-Bool File::canCreate() const {
+bool File::canCreate() const {
   // Checks if the dirname of a file is a writable and executable
   // directory.
   File dir(itsPath.dirName());
   if (dir.isDirectory() && dir.isWritable() && dir.isExecutable()) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 long File::userID() const {
@@ -329,7 +329,7 @@ void File::getstat(const File& file, void* buf) const {
   }
 }
 
-void File::checkTarget(Path& targetName, Bool overwrite, Bool forDirectory) const {
+void File::checkTarget(Path& targetName, bool overwrite, bool forDirectory) const {
   // Determine the target directory and file.
   // When the target is a directory, the basename is copied from the source.
   // Otherwise the target directory is the dirname of the target.

@@ -85,13 +85,13 @@ class MSAntennaIndex {
   virtual ~MSAntennaIndex() {}
 
   // Look up ANTENNA_ID's for a given a regular expression or pattern
-  Vector<Int> matchAntennaRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchAntennaRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up ANTENNA_ID's for a given antenna name, or set of antenna names
   Vector<Int> matchAntennaName(const String& name);
   Vector<Int> matchAntennaName(const Vector<String>& names);
 
   // Look up ANTENNA_ID's for a given antenna station
-  Vector<Int> matchStationRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchStationRegexOrPattern(const String& pattern, const bool regex = false);
   Vector<Int> matchStationName(const String& station);
   Vector<Int> matchStationName(const Vector<String>& station);
 

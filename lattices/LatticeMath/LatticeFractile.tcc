@@ -102,16 +102,16 @@ void LatticeFractile<T>::unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv, Bl
   }
   stv = boundaries[0];
   endv = boundaries[nbins];
-  Bool firstTime = True;
+  bool firstTime = true;
   // Iterate through the lattice.
   RO_LatticeIterator<T> iter(lattice);
   while (!iter.atEnd()) {
-    Bool delData;
+    bool delData;
     const Array<T>& array = iter.cursor();
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     if (firstTime) {
-      firstTime = False;
+      firstTime = false;
       minv = dataPtr[0];
       maxv = dataPtr[0];
     }
@@ -160,22 +160,22 @@ uInt LatticeFractile<T>::maskedHistogram(T& stv, T& endv, T& minv, T& maxv, Bloc
   }
   stv = boundaries[0];
   endv = boundaries[nbins];
-  Bool firstTime = True;
+  bool firstTime = true;
   // Iterate through the lattice.
-  COWPtr<Array<Bool>> mask;
+  COWPtr<Array<bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (!iter.atEnd()) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask(mask);
-    const Bool* maskPtr = mask->getStorage(delMask);
+    const bool* maskPtr = mask->getStorage(delMask);
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {
       if (maskPtr[i]) {
         ntodo++;
         if (firstTime) {
-          firstTime = False;
+          firstTime = false;
           minv = dataPtr[i];
           maxv = dataPtr[i];
         } else {
@@ -244,7 +244,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractile(const Lattice<T>& lattice, Float 
   // Iterate until the bin containing the fractile does not
   // contain too many values anymore.
   RO_LatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the fractile and update the various values.
     // On return fractileInx,stv,endv form the basis of the new histogram.
     ntodo = findBin(fractileInx, stv, endv, minv, maxv, hist, boundaries);
@@ -270,7 +270,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractile(const Lattice<T>& lattice, Float 
     iter.reset();
     while (!iter.atEnd() && ndone < ntodo) {
       const Array<T>& array = iter.cursor();
-      Bool delData;
+      bool delData;
       const T* dataPtr = array.getStorage(delData);
       uInt n = array.nelements();
       for (uInt i = 0; i < n; i++) {
@@ -312,7 +312,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractile(const Lattice<T>& lattice, Float 
   iter.reset();
   while (!iter.atEnd() && ndone < ntodo) {
     const Array<T>& array = iter.cursor();
-    Bool delData;
+    bool delData;
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -370,9 +370,9 @@ Vector<T> LatticeFractile<T>::maskedFractile(const MaskedLattice<T>& lattice, Fl
   uInt fractileInx = uInt(fraction * (ntodo - 1));
   // Iterate until the bin containing the fractile does not
   // contain too many values anymore.
-  COWPtr<Array<Bool>> mask;
+  COWPtr<Array<bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the fractile and update the various values.
     // On return fractileInx,stv,endv form the basis of the new histogram.
     ntodo = findBin(fractileInx, stv, endv, minv, maxv, hist, boundaries);
@@ -397,10 +397,10 @@ Vector<T> LatticeFractile<T>::maskedFractile(const MaskedLattice<T>& lattice, Fl
     uInt ndone = 0;
     iter.reset();
     while (!iter.atEnd() && ndone < ntodo) {
-      Bool delData, delMask;
+      bool delData, delMask;
       const Array<T>& array = iter.cursor();
       iter.getMask(mask);
-      const Bool* maskPtr = mask->getStorage(delMask);
+      const bool* maskPtr = mask->getStorage(delMask);
       const T* dataPtr = array.getStorage(delData);
       uInt n = array.nelements();
       for (uInt i = 0; i < n; i++) {
@@ -442,10 +442,10 @@ Vector<T> LatticeFractile<T>::maskedFractile(const MaskedLattice<T>& lattice, Fl
   uInt ndone = 0;
   iter.reset();
   while (!iter.atEnd() && ndone < ntodo) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask(mask);
-    const Bool* maskPtr = mask->getStorage(delMask);
+    const bool* maskPtr = mask->getStorage(delMask);
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -479,13 +479,13 @@ Vector<T> LatticeFractile<T>::smallMaskedFractile(const MaskedLattice<T>& lattic
   Block<T> buffer(size);
   uInt npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
-  COWPtr<Array<Bool>> mask;
+  COWPtr<Array<bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (!iter.atEnd()) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask(mask);
-    const Bool* maskPtr = mask->getStorage(delMask);
+    const bool* maskPtr = mask->getStorage(delMask);
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -529,7 +529,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles(const Lattice<T>& lattice, Float
   Vector<T> result(2);
   if (ntodo1 <= smallSize) {
     // We can hold all data in memory.
-    Bool delData;
+    bool delData;
     Array<T> array = lattice.get();
     T* dataPtr = array.getStorage(delData);
     result(0) = GenSort<T>::kthLargest(dataPtr, ntodo1, leftInx);
@@ -557,12 +557,12 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles(const Lattice<T>& lattice, Float
   T maxv2 = maxv1;
   Block<uInt> hist2(hist1);
   Block<T> boundaries2(boundaries1);
-  Bool finished1 = False;
-  Bool finished2 = False;
+  bool finished1 = false;
+  bool finished2 = false;
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
   RO_LatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the requested values, determine
     // new boundaries, max/min and offset in bin.
     // Do that for left and right fractile.
@@ -572,7 +572,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles(const Lattice<T>& lattice, Float
       // If only a 'few' more points to do, stop making histograms.
       // Otherwise histogram the fractile bin with a much smaller bin size.
       if (ntodo1 <= smallSize) {
-        finished1 = True;
+        finished1 = true;
         if (ntodo1 == 0) {
           result(0) = endv1;
         }
@@ -583,7 +583,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles(const Lattice<T>& lattice, Float
     if (!finished2) {
       ntodo2 = findBin(rightInx, stv2, endv2, minv2, maxv2, hist2, boundaries2);
       if (ntodo2 <= smallSize) {
-        finished2 = True;
+        finished2 = true;
         if (ntodo2 == 0) {
           result(1) = endv2;
         }
@@ -612,7 +612,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles(const Lattice<T>& lattice, Float
     iter.reset();
     while (!iter.atEnd() && ndone < ntodo) {
       const Array<T>& array = iter.cursor();
-      Bool delData;
+      bool delData;
       const T* dataPtr = array.getStorage(delData);
       uInt n = array.nelements();
       for (uInt i = 0; i < n; i++) {
@@ -678,7 +678,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles(const Lattice<T>& lattice, Float
   iter.reset();
   while (!iter.atEnd() && (ndone1 < ntodo1 || ndone2 < ntodo2)) {
     const Array<T>& array = iter.cursor();
-    Bool delData;
+    bool delData;
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -745,13 +745,13 @@ Vector<T> LatticeFractile<T>::maskedFractiles(const MaskedLattice<T>& lattice, F
   T maxv2 = maxv1;
   Block<uInt> hist2(hist1);
   Block<T> boundaries2(boundaries1);
-  Bool finished1 = False;
-  Bool finished2 = False;
+  bool finished1 = false;
+  bool finished2 = false;
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
-  COWPtr<Array<Bool>> mask;
+  COWPtr<Array<bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the requested values, determine
     // new boundaries, max/min and offset in bin.
     // Do that for left and right fractile.
@@ -761,7 +761,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles(const MaskedLattice<T>& lattice, F
       // If only a 'few' more points to do, stop making histograms.
       // Otherwise histogram the fractile bin with a much smaller bin size.
       if (ntodo1 <= smallSize) {
-        finished1 = True;
+        finished1 = true;
         if (ntodo1 == 0) {
           result(0) = endv1;
         }
@@ -772,7 +772,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles(const MaskedLattice<T>& lattice, F
     if (!finished2) {
       ntodo2 = findBin(rightInx, stv2, endv2, minv2, maxv2, hist2, boundaries2);
       if (ntodo2 <= smallSize) {
-        finished2 = True;
+        finished2 = true;
         if (ntodo2 == 0) {
           result(1) = endv2;
         }
@@ -800,10 +800,10 @@ Vector<T> LatticeFractile<T>::maskedFractiles(const MaskedLattice<T>& lattice, F
     uInt ndone = 0;
     iter.reset();
     while (!iter.atEnd() && ndone < ntodo) {
-      Bool delData, delMask;
+      bool delData, delMask;
       const Array<T>& array = iter.cursor();
       iter.getMask(mask);
-      const Bool* maskPtr = mask->getStorage(delMask);
+      const bool* maskPtr = mask->getStorage(delMask);
       const T* dataPtr = array.getStorage(delData);
       uInt n = array.nelements();
       for (uInt i = 0; i < n; i++) {
@@ -871,10 +871,10 @@ Vector<T> LatticeFractile<T>::maskedFractiles(const MaskedLattice<T>& lattice, F
   uInt ndone2 = 0;
   iter.reset();
   while (!iter.atEnd() && (ndone1 < ntodo1 || ndone2 < ntodo2)) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask(mask);
-    const Bool* maskPtr = mask->getStorage(delMask);
+    const bool* maskPtr = mask->getStorage(delMask);
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -916,13 +916,13 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles(const MaskedLattice<T>& latti
   Block<T> buffer(size);
   uInt npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
-  COWPtr<Array<Bool>> mask;
+  COWPtr<Array<bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (!iter.atEnd()) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask(mask);
-    const Bool* maskPtr = mask->getStorage(delMask);
+    const bool* maskPtr = mask->getStorage(delMask);
     const T* dataPtr = array.getStorage(delData);
     uInt n = array.nelements();
     for (uInt i = 0; i < n; i++) {

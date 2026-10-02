@@ -124,7 +124,7 @@ class VirtualScalarColumnBase : public DataManagerColumn {
   virtual ~VirtualScalarColumnBase();
 
   // By default no data can be put in a virtual column.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
  protected:
   // The array access functions throw an exception.
@@ -177,7 +177,7 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   // Implement the virtual functions defined in DataManagerColumn.
   // Get the scalar value in the given row.
   // <group>
-  void getBool(rownr_t rownr, Bool* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getBool(rownr_t rownr, bool* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getuChar(rownr_t rownr, uChar* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getShort(rownr_t rownr, Short* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getuShort(rownr_t rownr, uShort* dataPtr) override {
@@ -206,7 +206,7 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   // Implement the virtual functions defined in DataManagerColumn.
   // Put the scalar value into the given row.
   // <group>
-  void putBool(rownr_t rownr, const Bool* dataPtr) override {
+  void putBool(rownr_t rownr, const bool* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
   void putuChar(rownr_t rownr, const uChar* dataPtr) override {

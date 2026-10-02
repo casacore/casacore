@@ -185,24 +185,24 @@ uInt TabularCoordinate::nPixelAxes() const { return 1; }
 
 uInt TabularCoordinate::nWorldAxes() const { return 1; }
 
-Bool TabularCoordinate::toWorld(Double &world, Double pixel) const {
+bool TabularCoordinate::toWorld(Double &world, Double pixel) const {
   if (channel_corrector_p) {
     pixel = (*channel_corrector_p)(pixel);
   }
   world = crval_p + cdelt_p * matrix_p * (pixel - crpix_p);
-  return True;
+  return true;
 }
 
-Bool TabularCoordinate::toPixel(Double &pixel, Double world) const {
+bool TabularCoordinate::toPixel(Double &pixel, Double world) const {
   pixel = (world - crval_p) / (cdelt_p * matrix_p) + crpix_p;
   if (channel_corrector_rev_p) {
     pixel = (*channel_corrector_rev_p)(pixel);
   }
-  return True;
+  return true;
 }
 
-Bool TabularCoordinate::toWorld(Vector<Double> &world, const Vector<Double> &pixel, Bool) const {
-  Bool rval = True;
+bool TabularCoordinate::toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool) const {
+  bool rval = true;
   world.resize(pixel.nelements());
   for (uInt i = 0; i < pixel.nelements(); i++) {
     rval = toWorld(world(i), pixel(i));
@@ -213,15 +213,15 @@ Bool TabularCoordinate::toWorld(Vector<Double> &world, const Vector<Double> &pix
   return rval;
 }
 
-Bool TabularCoordinate::toPixel(Vector<Double> &pixel, const Vector<Double> &world) const {
+bool TabularCoordinate::toPixel(Vector<Double> &pixel, const Vector<Double> &world) const {
   DebugAssert(world.nelements() == 1, AipsError);
   //
   pixel.resize(1);
   return toPixel(pixel(0), world(0));
 }
 
-Bool TabularCoordinate::toWorldMany(Matrix<Double> &world, const Matrix<Double> &pixel,
-                                    Vector<Bool> &failures) const {
+bool TabularCoordinate::toWorldMany(Matrix<Double> &world, const Matrix<Double> &pixel,
+                                    Vector<bool> &failures) const {
   const uInt nTransforms = pixel.ncolumn();
   Double alpha = cdelt_p * matrix_p;
   Double beta = crval_p - alpha * crpix_p;
@@ -241,12 +241,12 @@ Bool TabularCoordinate::toWorldMany(Matrix<Double> &world, const Matrix<Double> 
   }
   //
   failures.resize(nTransforms);
-  failures = False;
-  return True;
+  failures = false;
+  return true;
 }
 
-Bool TabularCoordinate::toPixelMany(Matrix<Double> &pixel, const Matrix<Double> &world,
-                                    Vector<Bool> &failures) const {
+bool TabularCoordinate::toPixelMany(Matrix<Double> &pixel, const Matrix<Double> &world,
+                                    Vector<bool> &failures) const {
   const uInt nTransforms = world.ncolumn();
   Double alpha = cdelt_p * matrix_p;
   Double beta = crpix_p - crval_p / alpha;
@@ -267,8 +267,8 @@ Bool TabularCoordinate::toPixelMany(Matrix<Double> &pixel, const Matrix<Double> 
   }
   //
   failures.resize(nTransforms);
-  failures = False;
-  return True;
+  failures = false;
+  return true;
 }
 
 Vector<String> TabularCoordinate::worldAxisNames() const {
@@ -307,8 +307,8 @@ Matrix<Double> TabularCoordinate::linearTransform() const {
   return tmp;
 }
 
-Bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names) {
-  Bool ok = (names.nelements() == 1);
+bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names) {
+  bool ok = (names.nelements() == 1);
   if (!ok) {
     set_error("names vector must be of length 1");
   } else {
@@ -317,8 +317,8 @@ Bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names) {
   return ok;
 }
 
-Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units) {
-  Bool ok = (units.nelements() == 1);
+bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units) {
+  bool ok = (units.nelements() == 1);
   if (!ok) {
     set_error("units vector must be of length 1");
   } else {
@@ -335,8 +335,8 @@ Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units) {
   return ok;
 }
 
-Bool TabularCoordinate::overwriteWorldAxisUnits(const Vector<String> &units) {
-  Bool ok = (units.nelements() == 1);
+bool TabularCoordinate::overwriteWorldAxisUnits(const Vector<String> &units) {
+  bool ok = (units.nelements() == 1);
   if (ok) {
     unit_p = units(0);
   } else {
@@ -345,8 +345,8 @@ Bool TabularCoordinate::overwriteWorldAxisUnits(const Vector<String> &units) {
   return ok;
 }
 
-Bool TabularCoordinate::setReferencePixel(const Vector<Double> &refPix) {
-  Bool ok = (refPix.nelements() == 1);
+bool TabularCoordinate::setReferencePixel(const Vector<Double> &refPix) {
+  bool ok = (refPix.nelements() == 1);
   if (!ok) {
     set_error("reference pixel vector must be of length 1");
   } else {
@@ -355,8 +355,8 @@ Bool TabularCoordinate::setReferencePixel(const Vector<Double> &refPix) {
   return ok;
 }
 
-Bool TabularCoordinate::setLinearTransform(const Matrix<Double> &xform) {
-  Bool ok = (xform.nelements() == 1);
+bool TabularCoordinate::setLinearTransform(const Matrix<Double> &xform) {
+  bool ok = (xform.nelements() == 1);
   if (!ok) {
     set_error("linear transform matrix must be of length 1");
   } else {
@@ -365,8 +365,8 @@ Bool TabularCoordinate::setLinearTransform(const Matrix<Double> &xform) {
   return ok;
 }
 
-Bool TabularCoordinate::setIncrement(const Vector<Double> &inc) {
-  Bool ok = (inc.nelements() == 1);
+bool TabularCoordinate::setIncrement(const Vector<Double> &inc) {
+  bool ok = (inc.nelements() == 1);
   if (!ok) {
     set_error("increment vector must be of length 1");
   } else {
@@ -375,8 +375,8 @@ Bool TabularCoordinate::setIncrement(const Vector<Double> &inc) {
   return ok;
 }
 
-Bool TabularCoordinate::setReferenceValue(const Vector<Double> &refval) {
-  Bool ok = (refval.nelements() == 1);
+bool TabularCoordinate::setReferenceValue(const Vector<Double> &refval) {
+  bool ok = (refval.nelements() == 1);
   if (!ok) {
     set_error("reference values vector must be of lenth 1");
   } else {
@@ -402,20 +402,20 @@ Vector<Double> TabularCoordinate::worldValues() const {
   return tmp;
 }
 
-Bool TabularCoordinate::near(const Coordinate &other, Double tol) const
+bool TabularCoordinate::near(const Coordinate &other, Double tol) const
 
 {
   Vector<Int> excludeAxes;
   return near(other, excludeAxes, tol);
 }
 
-Bool TabularCoordinate::near(const Coordinate &other, const Vector<Int> &excludeAxes,
+bool TabularCoordinate::near(const Coordinate &other, const Vector<Int> &excludeAxes,
                              Double tol) const
 
 {
   if (other.type() != this->type()) {
     set_error(String("Comparison is not with another TabularCoordinate"));
-    return False;
+    return false;
   }
 
   // The TabularCoordinate has only one axis (pixel and world).
@@ -424,18 +424,18 @@ Bool TabularCoordinate::near(const Coordinate &other, const Vector<Int> &exclude
 
   AlwaysAssert(nPixelAxes() == 1, AipsError);
   AlwaysAssert(nWorldAxes() == 1, AipsError);
-  Bool found;
-  if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0) return True;
+  bool found;
+  if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0) return true;
 
   // Check units and name
 
   if (unit_p != other.worldAxisUnits()(0)) {
     set_error("The TabularCoordinates have differing axis units");
-    return False;
+    return false;
   }
   if (name_p != other.worldAxisNames()(0)) {
     set_error("The TabularCoordinates have differing world axis names");
-    return False;
+    return false;
   }
 
   // Private data crval_p, cdelt_p, crpix_p, matrix_p are formed
@@ -446,21 +446,21 @@ Bool TabularCoordinate::near(const Coordinate &other, const Vector<Int> &exclude
   const TabularCoordinate &tCoord = dynamic_cast<const TabularCoordinate &>(other);
   if (!casacore::near(crval_p, tCoord.crval_p, tol)) {
     set_error("The TabularCoordinates have differing average reference values");
-    return False;
+    return false;
   }
   if (!casacore::near(crpix_p, tCoord.crpix_p, tol)) {
     set_error("The TabularCoordinates have differing average reference pixels");
-    return False;
+    return false;
   }
   if (!casacore::near(cdelt_p, tCoord.cdelt_p, tol)) {
     set_error("The TabularCoordinates have differing average increments");
-    return False;
+    return false;
   }
   if (!casacore::near(matrix_p, tCoord.matrix_p, tol)) {
     // It's really just one component of the matrix
 
     set_error("The TabularCoordinates have differing linear transformation matrices");
-    return False;
+    return false;
   }
 
   // Check the table
@@ -469,13 +469,13 @@ Bool TabularCoordinate::near(const Coordinate &other, const Vector<Int> &exclude
   Vector<Double> data2 = tCoord.pixelValues();
   if (data1.nelements() != data2.nelements()) {
     set_error("The TabularCoordinates have differing numbers of entries in the pixel value table");
-    return False;
+    return false;
   }
   uInt i;
   for (i = 0; i < data1.nelements(); i++) {
     if (!casacore::near(data1(i), data2(i), tol)) {
       set_error("The TabularCoordinates have differing pixel value tables");
-      return False;
+      return false;
     }
   }
 
@@ -483,20 +483,20 @@ Bool TabularCoordinate::near(const Coordinate &other, const Vector<Int> &exclude
   data2 = tCoord.worldValues();
   if (data1.nelements() != data2.nelements()) {
     set_error("The TabularCoordinates have differing numbers of entries in the world value table");
-    return False;
+    return false;
   }
   for (i = 0; i < data1.nelements(); i++) {
     if (!casacore::near(data1(i), data2(i), tol)) {
       set_error("The TabularCoordinates have differing world value tables");
-      return False;
+      return false;
     }
   }
 
-  return True;
+  return true;
 }
 
-Bool TabularCoordinate::save(RecordInterface &container, const String &fieldName) const {
-  Bool ok = (!container.isDefined(fieldName));
+bool TabularCoordinate::save(RecordInterface &container, const String &fieldName) const {
+  bool ok = (!container.isDefined(fieldName));
   if (ok) {
     Record subrec;
     subrec.define("crval", referenceValue());
@@ -577,7 +577,7 @@ TabularCoordinate *TabularCoordinate::restore(const RecordInterface &container,
 
 Coordinate *TabularCoordinate::clone() const { return new TabularCoordinate(*this); }
 
-Coordinate *TabularCoordinate::makeFourierCoordinate(const Vector<Bool> &axes,
+Coordinate *TabularCoordinate::makeFourierCoordinate(const Vector<bool> &axes,
                                                      const Vector<Int> &shape) const
 //
 // axes says which axes in the coordinate are to be transformed
@@ -671,8 +671,8 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pix
     Vector<Double> averagePixel(1, pixelValues(0));
 
     ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
-    channel_corrector_p = new Interpolate1D<Double, Double>(in, avg, True, True);
-    channel_corrector_rev_p = new Interpolate1D<Double, Double>(avg, in, True, True);
+    channel_corrector_p = new Interpolate1D<Double, Double>(in, avg, true, true);
+    channel_corrector_rev_p = new Interpolate1D<Double, Double>(avg, in, true, true);
     AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0, AipsError);
 
     channel_corrector_p->setMethod(Interpolate1D<Double, Double>::nearestNeighbour);
@@ -719,8 +719,8 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pix
     }
 
     ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
-    channel_corrector_p = new Interpolate1D<Double, Double>(in, avg, True, True);
-    channel_corrector_rev_p = new Interpolate1D<Double, Double>(avg, in, True, True);
+    channel_corrector_p = new Interpolate1D<Double, Double>(in, avg, true, true);
+    channel_corrector_rev_p = new Interpolate1D<Double, Double>(avg, in, true, true);
     AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0, AipsError);
 
     channel_corrector_p->setMethod(Interpolate1D<Double, Double>::linear);

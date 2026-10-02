@@ -77,12 +77,12 @@ StatisticsAlgorithm<CASA_STATP>* ChauvenetCriterionStatistics<CASA_STATP>::clone
 CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::reset() {
   ConstrainedRangeStatistics<CASA_STATP>::reset();
-  _rangeIsSet = False;
+  _rangeIsSet = false;
   _niter = 0;
 }
 
 CASA_STATD
-void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
   ThrowIf(c,
           "ChauvenetCriterionStatistics does not support calculating "
           "statistics incrementally as data sets are added");
@@ -112,7 +112,7 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
     ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
     // _rangeIsSet is set here to prevent infinite
     // recursion on next loop iteration
-    _rangeIsSet = True;
+    _rangeIsSet = true;
     prevNpts = (uInt64)sd.npts;
     ++_niter;
   }

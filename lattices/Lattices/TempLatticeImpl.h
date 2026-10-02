@@ -82,13 +82,13 @@ class TempLatticeImpl {
   ~TempLatticeImpl();
 
   // Is the TempLattice paged to disk?
-  Bool isPaged() const { return (!itsTableName.empty()); }
+  bool isPaged() const { return (!itsTableName.empty()); }
 
   // Can the lattice data be referenced as an array section?
-  Bool canReferenceArray() const { return (itsTableName.empty()); }
+  bool canReferenceArray() const { return (itsTableName.empty()); }
 
   // Is the TempLattice writable? It should be.
-  Bool isWritable() const { return True; }
+  bool isWritable() const { return true; }
 
   // Flush the data.
   void flush() {
@@ -197,7 +197,7 @@ class TempLatticeImpl {
   // </group>
 
   // Check class internals - used for debugging. Should always return True
-  Bool ok() const {
+  bool ok() const {
     doReopen();
     return itsLatticePtr->ok();
   }
@@ -205,13 +205,13 @@ class TempLatticeImpl {
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use.
-  LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const {
+  LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const {
     doReopen();
     return itsLatticePtr->makeIter(navigator, useRef);
   }
 
   // Do the actual getting of an array of values.
-  Bool doGetSlice(Array<T>& buffer, const Slicer& section) {
+  bool doGetSlice(Array<T>& buffer, const Slicer& section) {
     doReopen();
     return itsLatticePtr->doGetSlice(buffer, section);
   }
@@ -246,7 +246,7 @@ class TempLatticeImpl {
   mutable Table itsTable;
   mutable std::shared_ptr<Lattice<T>> itsLatticePtr;
   String itsTableName;
-  mutable Bool itsIsClosed;
+  mutable bool itsIsClosed;
 };
 
 }  // namespace casacore

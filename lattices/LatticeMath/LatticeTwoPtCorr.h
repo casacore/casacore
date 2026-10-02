@@ -101,7 +101,7 @@ class LatticeTwoPtCorr {
   // True (good).
   // <group>
   void autoCorrelation(MaskedLattice<T>& out, const MaskedLattice<T>& in, const IPosition& axes,
-                       Method method, Bool showProgress = True) const;
+                       Method method, bool showProgress = true) const;
   // </group>
 
   // Helper function to provide output lattice shape give the input shape
@@ -120,7 +120,7 @@ class LatticeTwoPtCorr {
 
   // Do the iteration work
   void autoCorrelation(MaskedLattice<T>& out, const MaskedLattice<T>& in, const IPosition& axes,
-                       FuncPtr, Bool showProgress) const;
+                       FuncPtr, bool showProgress) const;
 
   // Check Output lattice shape
   void check(LogIO& os, const MaskedLattice<T>& latOut, const MaskedLattice<T>& latIn,

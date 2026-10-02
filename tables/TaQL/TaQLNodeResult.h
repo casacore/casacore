@@ -107,7 +107,7 @@ class TaQLNodeResult {
   TaQLNodeResult(TaQLNodeResultRep* rep) : itsRep(rep) {}
 
   // Does the envelope hold a letter?
-  Bool isValid() const { return itsRep.get(); }
+  bool isValid() const { return itsRep.get(); }
 
   // Get the actual underlying object.
   const TaQLNodeResultRep& getRep() const { return *(itsRep.get()); }

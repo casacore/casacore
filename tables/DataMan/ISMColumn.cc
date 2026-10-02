@@ -58,7 +58,7 @@ ISMColumn::~ISMColumn() { clear(); }
 void ISMColumn::clear() {
   switch (dataType()) {
     case TpBool:
-      delete[] (Bool*)lastValue_p;
+      delete[] (bool*)lastValue_p;
       break;
     case TpUChar:
       delete[] (uChar*)lastValue_p;
@@ -160,59 +160,59 @@ void ISMColumn::remove(rownr_t bucketRownr, ISMBucket* bucket, rownr_t bucketNrr
   }
 }
 
-void ISMColumn::getBool(rownr_t rownr, Bool* value) {
-  getValue(rownr, lastValue_p, True);
-  *value = *(Bool*)lastValue_p;
+void ISMColumn::getBool(rownr_t rownr, bool* value) {
+  getValue(rownr, lastValue_p, true);
+  *value = *(bool*)lastValue_p;
 }
 void ISMColumn::getuChar(rownr_t rownr, uChar* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(uChar*)lastValue_p;
 }
 void ISMColumn::getShort(rownr_t rownr, Short* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(Short*)lastValue_p;
 }
 void ISMColumn::getuShort(rownr_t rownr, uShort* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(uShort*)lastValue_p;
 }
 void ISMColumn::getInt(rownr_t rownr, Int* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(Int*)lastValue_p;
 }
 void ISMColumn::getuInt(rownr_t rownr, uInt* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(uInt*)lastValue_p;
 }
 void ISMColumn::getInt64(rownr_t rownr, Int64* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(Int64*)lastValue_p;
 }
 void ISMColumn::getfloat(rownr_t rownr, float* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(float*)lastValue_p;
 }
 void ISMColumn::getdouble(rownr_t rownr, double* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(double*)lastValue_p;
 }
 void ISMColumn::getComplex(rownr_t rownr, Complex* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(Complex*)lastValue_p;
 }
 void ISMColumn::getDComplex(rownr_t rownr, DComplex* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(DComplex*)lastValue_p;
 }
 void ISMColumn::getString(rownr_t rownr, String* value) {
-  getValue(rownr, lastValue_p, True);
+  getValue(rownr, lastValue_p, true);
   *value = *(String*)lastValue_p;
 }
 
 void ISMColumn::getScalarColumnV(ArrayBase& dataPtr) {
   switch (dtype()) {
     case TpBool:
-      getScaCol(static_cast<Vector<Bool>&>(dataPtr));
+      getScaCol(static_cast<Vector<bool>&>(dataPtr));
       break;
     case TpUChar:
       getScaCol(static_cast<Vector<uChar>&>(dataPtr));
@@ -255,7 +255,7 @@ void ISMColumn::getScalarColumnV(ArrayBase& dataPtr) {
 void ISMColumn::getScalarColumnCellsV(const RefRows& rows, ArrayBase& dataPtr) {
   switch (dtype()) {
     case TpBool:
-      getScaColCells(rows, static_cast<Vector<Bool>&>(dataPtr));
+      getScaColCells(rows, static_cast<Vector<bool>&>(dataPtr));
       break;
     case TpUChar:
       getScaColCells(rows, static_cast<Vector<uChar>&>(dataPtr));
@@ -295,7 +295,7 @@ void ISMColumn::getScalarColumnCellsV(const RefRows& rows, ArrayBase& dataPtr) {
   }
 }
 
-void ISMColumn::getValue(rownr_t rownr, void* value, Bool setCache) {
+void ISMColumn::getValue(rownr_t rownr, void* value, bool setCache) {
   if (rownr < startRow_p || rownr > endRow_p) {
     // Get the bucket with its row number boundaries.
     rownr_t bucketStartRow;
@@ -317,7 +317,7 @@ void ISMColumn::getValue(rownr_t rownr, void* value, Bool setCache) {
   }
 }
 
-void ISMColumn::putBool(rownr_t rownr, const Bool* value) { putValue(rownr, value); }
+void ISMColumn::putBool(rownr_t rownr, const bool* value) { putValue(rownr, value); }
 void ISMColumn::putuChar(rownr_t rownr, const uChar* value) { putValue(rownr, value); }
 void ISMColumn::putShort(rownr_t rownr, const Short* value) { putValue(rownr, value); }
 void ISMColumn::putuShort(rownr_t rownr, const uShort* value) { putValue(rownr, value); }
@@ -333,7 +333,7 @@ void ISMColumn::putString(rownr_t rownr, const String* value) { putValue(rownr, 
 void ISMColumn::putScalarColumnV(const ArrayBase& dataPtr) {
   switch (dtype()) {
     case TpBool:
-      putScaCol(static_cast<const Vector<Bool>&>(dataPtr));
+      putScaCol(static_cast<const Vector<bool>&>(dataPtr));
       break;
     case TpUChar:
       putScaCol(static_cast<const Vector<uChar>&>(dataPtr));
@@ -374,11 +374,11 @@ void ISMColumn::putScalarColumnV(const ArrayBase& dataPtr) {
 }
 
 void ISMColumn::getArrayV(rownr_t rownr, ArrayBase& value) {
-  getValue(rownr, lastValue_p, False);
+  getValue(rownr, lastValue_p, false);
   if (dtype() == TpString) {
     value.assignBase(Array<String>(shape_p, (String*)lastValue_p, SHARE));
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     void* vptr = value.getVStorage(deleteIt);
     memcpy(vptr, lastValue_p, nrelem_p * typeSize_p);
     value.putVStorage(vptr, deleteIt);
@@ -386,7 +386,7 @@ void ISMColumn::getArrayV(rownr_t rownr, ArrayBase& value) {
 }
 
 void ISMColumn::putArrayV(rownr_t rownr, const ArrayBase& value) {
-  Bool deleteIt;
+  bool deleteIt;
   const void* data = value.getVStorage(deleteIt);
   putValue(rownr, data);
   value.freeVStorage(data, deleteIt);
@@ -418,13 +418,13 @@ void ISMColumn::putValue(rownr_t rownr, const void* value) {
   Block<uInt>& offIndex = bucket->offIndex(colnr_p);
   uInt& nused = bucket->indexUsed(colnr_p);
   // Determine if the new row is after the last row ever put for this column.
-  Bool afterLastRowPut = False;
+  bool afterLastRowPut = false;
   if (rownr >= lastRowPut_p) {
 #ifdef AIPS_TRACE
     cout << " after last row " << lastRowPut_p << endl;
 #endif
 
-    afterLastRowPut = True;
+    afterLastRowPut = true;
     lastRowPut_p = rownr + 1;
   }
   // Invalidate the last value read.
@@ -451,15 +451,15 @@ void ISMColumn::putValue(rownr_t rownr, const void* value) {
   // Take care if row is first (or last) row in bucket.
   // The index of the next value is inx+1 if the row is the starting
   // row of the interval.
-  Bool equalPrev = False;
-  Bool equalNext = False;
+  bool equalPrev = false;
+  bool equalNext = false;
   uInt nextInx = inx;
   if (bucketRownr == stint) {
     nextInx++;
     if (bucketRownr > 0) {
       readFunc_p(lastValue_p, bucket->get(offIndex[inx - 1]), nrcopy_p);
       if (compareValue(value, lastValue_p)) {
-        equalPrev = True;
+        equalPrev = true;
       }
     }
   }
@@ -467,7 +467,7 @@ void ISMColumn::putValue(rownr_t rownr, const void* value) {
     if (bucketRownr < bucketNrrow - 1) {
       readFunc_p(lastValue_p, bucket->get(offIndex[nextInx]), nrcopy_p);
       if (compareValue(value, lastValue_p)) {
-        equalNext = True;
+        equalNext = true;
       }
     }
   }
@@ -489,7 +489,7 @@ void ISMColumn::putValue(rownr_t rownr, const void* value) {
 
         bucket->shiftLeft(inx, 1, rowIndex, offIndex, nused, fixedLength_p);
       } else {
-        addData(bucket, bucketStartRow, bucketNrrow, bucketRownr, inx, buffer, lenData, True);
+        addData(bucket, bucketStartRow, bucketNrrow, bucketRownr, inx, buffer, lenData, true);
       }
     }
     putFromRow(rownr, buffer, lenData);
@@ -508,7 +508,7 @@ void ISMColumn::putValue(rownr_t rownr, const void* value) {
   // Determine if the value is the only one in the interval.
   // If the row to change is the first of the interval, increment
   // the interval start.
-  Bool single = (stint == endint);
+  bool single = (stint == endint);
   // #    if (!single  &&  bucketRownr == stint) {
   // #	rowIndex[inx]++;
   // #    }
@@ -619,8 +619,8 @@ void ISMColumn::putFromRow(rownr_t rownr, const char* data, uInt lenData) {
 }
 
 void ISMColumn::putData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
-                        rownr_t bucketRownr, const char* data, uInt lenData, Bool afterLastRow,
-                        Bool canSplit) {
+                        rownr_t bucketRownr, const char* data, uInt lenData, bool afterLastRow,
+                        bool canSplit) {
   // Determine the index.
   uInt inx, dum3;
   rownr_t start, end;
@@ -637,7 +637,7 @@ void ISMColumn::putData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucke
 
 void ISMColumn::replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
                             rownr_t bucketRownr, uInt& offset, const char* data, uInt lenData,
-                            Bool canSplit) {
+                            bool canSplit) {
   // Replacing a value means removing the old value.
   // So give the opportunity to handle a removal before the
   // actual replace is done.
@@ -652,7 +652,7 @@ void ISMColumn::replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t b
   AlwaysAssert(canSplit, AipsError);
   ISMBucket* left;
   ISMBucket* right;
-  Block<Bool> duplicated;
+  Block<bool> duplicated;
   rownr_t splitRownr = bucket->split(left, right, duplicated, bucketStartRow, bucketNrrow, colnr_p,
                                      bucketRownr, lenData - oldLeng);
 
@@ -676,19 +676,19 @@ void ISMColumn::replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t b
   stmanPtr_p->addBucket(splitRownr + bucketStartRow, right);
 }
 
-Bool ISMColumn::addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
+bool ISMColumn::addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
                         rownr_t bucketRownr, uInt inx, const char* data, uInt lenData,
-                        Bool afterLastRow, Bool canSplit) {
+                        bool afterLastRow, bool canSplit) {
   // If the value fits in the bucket, it can simply be added.
   if (bucket->canAddData(lenData)) {
     bucket->addData(colnr_p, bucketRownr, inx, data, lenData);
-    return False;
+    return false;
   }
   // The bucket is too small, so split it in the middle (if allowed).
   AlwaysAssert(canSplit, AipsError);
   ISMBucket* left;
   ISMBucket* right;
-  Block<Bool> duplicated;
+  Block<bool> duplicated;
   rownr_t splitRownr = bucket->split(left, right, duplicated, bucketStartRow, bucketNrrow, colnr_p,
                                      bucketRownr, lenData);
 
@@ -710,10 +710,10 @@ Bool ISMColumn::addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucke
     nrrow = bucketNrrow - splitRownr;
   }
   // The next put cannot split anymore.
-  putData(bucket, startRow, nrrow, bucketRownr, data, lenData, afterLastRow, False);
+  putData(bucket, startRow, nrrow, bucketRownr, data, lenData, afterLastRow, false);
   // Add the right bucket to the index.
   stmanPtr_p->addBucket(splitRownr + bucketStartRow, right);
-  return True;
+  return true;
 }
 
 #ifdef AIPS_TRACE
@@ -732,7 +732,7 @@ void ISMColumn::handleRemove(rownr_t, const char*) {
 #endif
 }
 
-void ISMColumn::handleSplit(ISMBucket& bucket, const Block<Bool>& duplicated) {
+void ISMColumn::handleSplit(ISMBucket& bucket, const Block<bool>& duplicated) {
   // Loop through all columns.
   // If the split duplicated a value, handle the copied value.
   uInt nrcol = stmanPtr_p->ncolumn();
@@ -744,24 +744,24 @@ void ISMColumn::handleSplit(ISMBucket& bucket, const Block<Bool>& duplicated) {
   }
 }
 
-Bool ISMColumn::compareValue(const void* val1, const void* val2) const {
+bool ISMColumn::compareValue(const void* val1, const void* val2) const {
   const char* v1 = (const char*)val1;
   const char* v2 = (const char*)val2;
   for (uInt i = 0; i < nrelem_p; i++) {
     if (compareFunc_p(v1, v2) != 0) {
-      return False;
+      return false;
     }
     v1 += typeSize_p;
     v2 += typeSize_p;
   }
-  return True;
+  return true;
 }
 
 void ISMColumn::init() {
   clear();
   DataType dt = (DataType)dataType();
   typeSize_p = ValType::getTypeSize(dt);
-  Bool asBigEndian = stmanPtr_p->asBigEndian();
+  bool asBigEndian = stmanPtr_p->asBigEndian();
   nrcopy_p = nrelem_p;
   if (dt == TpString) {
     fixedLength_p = 0;
@@ -778,10 +778,10 @@ void ISMColumn::init() {
     case TpBool: {
       readFunc_p = &Conversion::bitToBool;
       writeFunc_p = &Conversion::boolToBit;
-      compareFunc_p = ObjCompare<Bool>::compare;
-      lastValue_p = new Bool[nrelem_p];
-      Bool undef = False;
-      objset((Bool*)lastValue_p, undef, nrelem_p);
+      compareFunc_p = ObjCompare<bool>::compare;
+      lastValue_p = new bool[nrelem_p];
+      bool undef = false;
+      objset((bool*)lastValue_p, undef, nrelem_p);
     } break;
     case TpUChar: {
       compareFunc_p = ObjCompare<uChar>::compare;
@@ -873,7 +873,7 @@ void ISMColumn::getFile(rownr_t nrrow) {
   init();
   lastRowPut_p = nrrow;
 }
-Bool ISMColumn::flush(rownr_t, Bool) { return False; }
+bool ISMColumn::flush(rownr_t, bool) { return false; }
 void ISMColumn::resync(rownr_t nrrow) {
   // Invalidate the last value read.
   columnCache().invalidate();
@@ -883,25 +883,25 @@ void ISMColumn::resync(rownr_t nrrow) {
 }
 void ISMColumn::reopenRW() {}
 
-Conversion::ValueFunction* ISMColumn::getReaduInt(Bool asBigEndian) {
+Conversion::ValueFunction* ISMColumn::getReaduInt(bool asBigEndian) {
   if (asBigEndian) {
     return CanonicalConversion::getToLocal(static_cast<uInt*>(0));
   }
   return LECanonicalConversion::getToLocal(static_cast<uInt*>(0));
 }
-Conversion::ValueFunction* ISMColumn::getReadRownr(Bool asBigEndian) {
+Conversion::ValueFunction* ISMColumn::getReadRownr(bool asBigEndian) {
   if (asBigEndian) {
     return CanonicalConversion::getToLocal(static_cast<rownr_t*>(0));
   }
   return LECanonicalConversion::getToLocal(static_cast<rownr_t*>(0));
 }
-Conversion::ValueFunction* ISMColumn::getWriteuInt(Bool asBigEndian) {
+Conversion::ValueFunction* ISMColumn::getWriteuInt(bool asBigEndian) {
   if (asBigEndian) {
     return CanonicalConversion::getFromLocal(static_cast<uInt*>(0));
   }
   return LECanonicalConversion::getFromLocal(static_cast<uInt*>(0));
 }
-Conversion::ValueFunction* ISMColumn::getWriteRownr(Bool asBigEndian) {
+Conversion::ValueFunction* ISMColumn::getWriteRownr(bool asBigEndian) {
   if (asBigEndian) {
     return CanonicalConversion::getFromLocal(static_cast<rownr_t*>(0));
   }

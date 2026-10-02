@@ -50,7 +50,7 @@ void writeTable(const TSMOption& tsmOpt, const IPosition& arrayShape, const IPos
   cout << "WriteTable ..." << endl;
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ArrayColumnDesc<Bool>("Flag", arrayShape.size(), ColumnDesc::FixedShape));
+  td.addColumn(ArrayColumnDesc<bool>("Flag", arrayShape.size(), ColumnDesc::FixedShape));
   // Now create a new table from the description.
   SetupNewTable newtab("tTiledBool_tmp.data", td, Table::New);
   // Create a storage manager for it.
@@ -58,11 +58,11 @@ void writeTable(const TSMOption& tsmOpt, const IPosition& arrayShape, const IPos
   TiledShapeStMan sm1("TSMExample", tileShape);
   newtab.setShapeColumn("Flag", arrayShape);
   newtab.bindAll(sm1);
-  Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+  Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
 
-  ArrayColumn<Bool> flag(table, "Flag");
-  Matrix<Bool> farray(arrayShape);
-  Matrix<Bool> fresult(arrayShape);
+  ArrayColumn<bool> flag(table, "Flag");
+  Matrix<bool> farray(arrayShape);
+  Matrix<bool> fresult(arrayShape);
   for (uInt i = 0; i < 101; i++) {
     for (uInt j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
@@ -82,10 +82,10 @@ void writeTable(const TSMOption& tsmOpt, const IPosition& arrayShape, const IPos
 }
 
 void readTable(const TSMOption& tsmOpt) {
-  Array<Bool> farray, fresult;
+  Array<bool> farray, fresult;
   Table table("tTiledBool_tmp.data", Table::Old, tsmOpt);
   cout << "Checking " << table.nrow() << " rows" << endl;
-  ArrayColumn<Bool> flag(table, "Flag");
+  ArrayColumn<bool> flag(table, "Flag");
   for (uInt i = 0; i < table.nrow(); i++) {
     flag.get(i, fresult);
     farray.resize(fresult.shape());

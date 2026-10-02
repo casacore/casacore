@@ -70,12 +70,12 @@ class Table;
 
 class TableExprNodeConstBool : public TableExprNodeBinary {
  public:
-  TableExprNodeConstBool(const Bool& value);
+  TableExprNodeConstBool(const bool& value);
   ~TableExprNodeConstBool() override = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 
  private:
-  Bool value_p;
+  bool value_p;
 };
 
 // <summary>
@@ -298,10 +298,10 @@ class TableExprNodeColumn : public TableExprNodeBinary {
   void applySelection(const Vector<rownr_t>& rownrs) override;
 
   // Get the data type of this scalar column.
-  Bool getColumnDataType(DataType&) const override;
+  bool getColumnDataType(DataType&) const override;
 
   // Get the data for the given id.
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   Int64 getInt(const TableExprId& id) override;
   Double getDouble(const TableExprId& id) override;
   DComplex getDComplex(const TableExprId& id) override;
@@ -309,7 +309,7 @@ class TableExprNodeColumn : public TableExprNodeBinary {
   const TableColumn& getColumn() const;
 
   // Get the data for the given rows.
-  Array<Bool> getColumnBool(const Vector<rownr_t>& rownrs) override;
+  Array<bool> getColumnBool(const Vector<rownr_t>& rownrs) override;
   Array<uChar> getColumnuChar(const Vector<rownr_t>& rownrs) override;
   Array<Short> getColumnShort(const Vector<rownr_t>& rownrs) override;
   Array<uShort> getColumnuShort(const Vector<rownr_t>& rownrs) override;
@@ -328,7 +328,7 @@ class TableExprNodeColumn : public TableExprNodeBinary {
  protected:
   TableExprInfo tableInfo_p;
   TableColumn tabCol_p;
-  Bool applySelection_p;
+  bool applySelection_p;
 };
 
 // <summary>

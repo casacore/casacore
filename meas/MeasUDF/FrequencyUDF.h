@@ -110,7 +110,7 @@ class FrequencyUDF : public UDFBase {
  private:
   // Handle a radial velocity or optionally doppler for REST conversion.
   // It returns True if Doppler is used.
-  Bool handleRadVelDoppler(uInt& argnr, Bool mustRadVel);
+  bool handleRadVelDoppler(uInt& argnr, bool mustRadVel);
 
   // # Data members.
   FrequencyEngine itsEngine;

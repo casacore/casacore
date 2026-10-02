@@ -104,7 +104,7 @@ class RegularFileIO : public FilebufIO {
   // I/O behaviour. It requires the size and the alignment of the data to be
   // read/written to be a multiple of the the disk's logical block size.
   // It returns the file descriptor.
-  static int openCreate(const RegularFile& file, ByteIO::OpenOption, Bool useODirect = False);
+  static int openCreate(const RegularFile& file, ByteIO::OpenOption, bool useODirect = false);
 
  private:
   OpenOption itsOption;

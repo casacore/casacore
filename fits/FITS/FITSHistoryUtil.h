@@ -155,12 +155,12 @@ class FITSHistoryUtil {
   // an AIPS++ START LOGTABLE history sequence.
   // <group>
   static void fromHISTORY(LoggerHolder& logSink, const Vector<String>& history, uInt nstrings,
-                          Bool aipsppFormat);
+                          bool aipsppFormat);
 
   // toHistory signals that it is done by setting nstrings to 0.
   // The returned value is firstLine + n_lines_read, i.e. use
   // it as firstLine in your next call.
-  static uInt toHISTORY(std::vector<String>& history, Bool& aipsppFormat, uInt& nstrings,
+  static uInt toHISTORY(std::vector<String>& history, bool& aipsppFormat, uInt& nstrings,
                         uInt firstLine, const LoggerHolder& logSink);
   // </group>
 };

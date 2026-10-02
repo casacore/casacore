@@ -56,17 +56,17 @@ LatticeCleanProgress::~LatticeCleanProgress() {
 }
 
 // Call back function
-Bool LatticeCleanProgress::info(const Bool lastcall, const Int iteration,
+bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
                                 const Int numberIterations, const Vector<Float>& maxima,
                                 const Block<IPosition>& posMaximum, const Float strengthOptimum,
                                 const Int optimumScale, const IPosition&, const Float&,
-                                const Vector<Float>& totalFluxScale, const Bool resetBase) {
+                                const Vector<Float>& totalFluxScale, const bool resetBase) {
   uInt nScales = maxima.nelements();
 
   // "And this little piggy built his house out of straw..."
   //  When you remove the myDebug and cout statements, this core dumps.
   //  A veggie burger to the wolf who fixes this -- Mark H.
-  Bool myDebug = False;
+  bool myDebug = false;
   if (myDebug) cout << "A" << endl;
 
   // initialize some things here!
@@ -117,26 +117,26 @@ Bool LatticeCleanProgress::info(const Bool lastcall, const Int iteration,
 
   if (itsPgplotter) {
     // Check for reploting conditions
-    Bool rePlot = False;
+    bool rePlot = false;
     if (myTotalFlux > currentFluxScale) {
-      rePlot = True;
+      rePlot = true;
       currentFluxScale *= fluxScaleJump;
     }
     if (min(abs(maxima)) < currentMinResidual) {
-      rePlot = True;
+      rePlot = true;
       currentMinResidual /= residScaleJump;
     }
     if (numberIterations > (Int)currentTotalIterations) {
       currentTotalIterations = numberIterations;
-      rePlot = True;
+      rePlot = true;
     }
     if (myMinFlux < currentMinFluxScale) {
       currentMinFluxScale = -abs(fluxScaleJump * myMinFlux);
-      rePlot = True;
+      rePlot = true;
     }
 
     if (rePlot) {
-      basicSetUp(True);
+      basicSetUp(true);
     } else {
       plotOne(iteration + 1, maxima, myTotalFluxScale);
     }
@@ -170,10 +170,10 @@ Bool LatticeCleanProgress::info(const Bool lastcall, const Int iteration,
     }
   }
   os << "Total flux = " << myTotalFlux << " Jy" << LogIO::POST;
-  return False;
+  return false;
 }
 
-void LatticeCleanProgress::basicSetUp(Bool doPlot) {
+void LatticeCleanProgress::basicSetUp(bool doPlot) {
   // Set these global plotter scale variables
 
   logMinRes = log10(abs(currentMinResidual));

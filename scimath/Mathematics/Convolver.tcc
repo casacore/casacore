@@ -34,19 +34,19 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class FType>
-Convolver<FType>::Convolver(const Array<FType>& psf, Bool) {
+Convolver<FType>::Convolver(const Array<FType>& psf, bool) {
   //  if (cachePsf) thePsf = psf;
   thePsf = psf;
-  valid = False;
-  doFast_p = False;
+  valid = false;
+  doFast_p = false;
 }
 
 template <class FType>
-Convolver<FType>::Convolver(const Array<FType>& psf, const IPosition&, Bool, Bool) {
+Convolver<FType>::Convolver(const Array<FType>& psf, const IPosition&, bool, bool) {
   //  if (cachePsf) thePsf = psf;
   thePsf = psf;
-  valid = False;
-  doFast_p = False;
+  valid = false;
+  doFast_p = false;
 }
 
 template <class FType>
@@ -58,15 +58,15 @@ Convolver<FType>::Convolver(const Convolver<FType>& other) {
   theFFT = other.theFFT;
   theIFFT = other.theIFFT;
   valid = other.valid;
-  doFast_p = False;
+  doFast_p = false;
 }
 
 template <class FType>
 Convolver<FType>& Convolver<FType>::operator=(const Convolver<FType>& other) {
   if (this != &other) {
-    thePsfSize.resize(other.thePsfSize.nelements(), False);
+    thePsfSize.resize(other.thePsfSize.nelements(), false);
     thePsfSize = other.thePsfSize;
-    theFFTSize.resize(other.theFFTSize.nelements(), False);
+    theFFTSize.resize(other.theFFTSize.nelements(), false);
     theFFTSize = other.theFFTSize;
     theXfr.resize(other.theXfr.shape());
     theXfr = other.theXfr;
@@ -75,7 +75,7 @@ Convolver<FType>& Convolver<FType>::operator=(const Convolver<FType>& other) {
     theFFT = other.theFFT;
     theIFFT = other.theIFFT;
     valid = other.valid;
-    doFast_p = False;
+    doFast_p = false;
   }
   return *this;
 }
@@ -86,8 +86,8 @@ Convolver<FType>::~Convolver() {}
 template <class FType>
 void Convolver<FType>::validate() {
   if (!valid) {
-    valid = True;
-    makeXfr(thePsf, defaultShape(thePsf), False, False);
+    valid = true;
+    makeXfr(thePsf, defaultShape(thePsf), false, false);
   }
 }
 
@@ -106,8 +106,8 @@ IPosition Convolver<FType>::extractShape(IPosition& psfSize, const IPosition& im
 }
 
 template <class FType>
-void Convolver<FType>::makeXfr(const Array<FType>& psf, const IPosition& imageSize, Bool linear,
-                               Bool fullSize) {
+void Convolver<FType>::makeXfr(const Array<FType>& psf, const IPosition& imageSize, bool linear,
+                               bool fullSize) {
   const Array<FType> psfND1 = psf.nonDegenerate();
   Array<FType> psfND = psfND1.copy();
   thePsfSize = psfND.shape();
@@ -139,9 +139,9 @@ void Convolver<FType>::makeXfr(const Array<FType>& psf, const IPosition& imageSi
     // And do the fft
     if (doFast_p) {
       // theFFT.flip(paddedPsf, True, False);
-      theFFT.fft0(theXfr, paddedPsf, False);
+      theFFT.fft0(theXfr, paddedPsf, false);
     } else {
-      theFFT.fft(theXfr, paddedPsf, False);
+      theFFT.fft(theXfr, paddedPsf, false);
     }
   } else {
     if (doFast_p) {
@@ -160,10 +160,10 @@ void Convolver<FType>::makePsf(Array<FType>& psf) {
     Array<FType> paddedPsf(theFFTSize);
     //    theIFFT.flip(paddedPsf, True, False);
     if (doFast_p) {
-      theIFFT.fft0(paddedPsf, theXfr, True);
-      theIFFT.flip(paddedPsf, False, False);
+      theIFFT.fft0(paddedPsf, theXfr, true);
+      theIFFT.flip(paddedPsf, false, false);
     } else {
-      theIFFT.fft(paddedPsf, theXfr, True);
+      theIFFT.fft(paddedPsf, theXfr, true);
     }
     IPosition trc, blc;
     blc = (theFFTSize - thePsfSize) / 2;
@@ -174,21 +174,21 @@ void Convolver<FType>::makePsf(Array<FType>& psf) {
 }
 
 template <class FType>
-void Convolver<FType>::linearConv(Array<FType>& result, const Array<FType>& model, Bool fullSize) {
+void Convolver<FType>::linearConv(Array<FType>& result, const Array<FType>& model, bool fullSize) {
   validate();
   // Check the dimensions of the model are compatible with the current psf
   IPosition imageSize = extractShape(thePsfSize, model.shape());
   if (fullSize) {
     if (imageSize + thePsfSize > theFFTSize) {
-      resizeXfr(imageSize, True, True);
+      resizeXfr(imageSize, true, true);
     }
   } else {
-    Bool doResize = False;
+    bool doResize = false;
     for (uInt i = 0; i < thePsfSize.nelements(); i++) {
       if (theFFTSize < std::max(thePsfSize(i), imageSize(i) + 2 * Int((thePsfSize(i) + 3) / 4)))
-        doResize = True;
+        doResize = true;
     }
-    if (doResize) resizeXfr(imageSize, True, False);
+    if (doResize) resizeXfr(imageSize, true, false);
   }
   // Calculate to output array size
   IPosition resultSize = model.shape();
@@ -199,7 +199,7 @@ void Convolver<FType>::linearConv(Array<FType>& result, const Array<FType>& mode
   ReadOnlyArrayIterator<FType> from(model, thePsfSize.nelements());
   ArrayIterator<FType> to(result, thePsfSize.nelements());
 
-  for (from.origin(), to.origin(); (from.pastEnd() || to.pastEnd()) == False;
+  for (from.origin(), to.origin(); (from.pastEnd() || to.pastEnd()) == false;
        from.next(), to.next()) {
     doConvolution(to.array(), from.array(), fullSize);
   }
@@ -207,7 +207,7 @@ void Convolver<FType>::linearConv(Array<FType>& result, const Array<FType>& mode
 
 template <class FType>
 void Convolver<FType>::doConvolution(Array<FType>& result, const Array<FType>& model,
-                                     Bool fullSize) {
+                                     bool fullSize) {
   validate();
   IPosition modelSize = model.shape();
   Array<typename NumericTraits<FType>::ConjugateType> fftModel;
@@ -242,7 +242,7 @@ void Convolver<FType>::doConvolution(Array<FType>& result, const Array<FType>& m
   Array<FType> convolvedData(theFFTSize);
   if (doFast_p) {
     theIFFT.fft0(convolvedData, fftModel);
-    theIFFT.flip(convolvedData, False, False);
+    theIFFT.flip(convolvedData, false, false);
   } else {
     theIFFT.fft(convolvedData, fftModel);
   }
@@ -259,23 +259,23 @@ void Convolver<FType>::doConvolution(Array<FType>& result, const Array<FType>& m
 }
 
 template <class FType>
-void Convolver<FType>::setPsf(const Array<FType>& psf, Bool) {
+void Convolver<FType>::setPsf(const Array<FType>& psf, bool) {
   thePsf.resize(psf.shape());
   thePsf = psf;
-  valid = False;
-  doFast_p = False;
+  valid = false;
+  doFast_p = false;
 }
 
 template <class FType>
-void Convolver<FType>::setPsf(const Array<FType>& psf, IPosition, Bool, Bool) {
+void Convolver<FType>::setPsf(const Array<FType>& psf, IPosition, bool, bool) {
   thePsf.resize(psf.shape());
   thePsf = psf;
-  valid = False;
-  doFast_p = False;
+  valid = false;
+  doFast_p = false;
 }
 
 template <class FType>
-void Convolver<FType>::resizeXfr(const IPosition& imageSize, Bool linear, Bool fullSize) {
+void Convolver<FType>::resizeXfr(const IPosition& imageSize, bool linear, bool fullSize) {
   Array<FType> psf;
   makePsf(psf);
   makeXfr(psf, imageSize, linear, fullSize);
@@ -287,7 +287,7 @@ void Convolver<FType>::circularConv(Array<FType>& result, const Array<FType>& mo
   validate();
   IPosition imageSize = extractShape(thePsfSize, model.shape());
   if (casacore::max(imageSize.asVector(), thePsfSize.asVector()) != theFFTSize) {
-    resizeXfr(model.shape(), False, False);
+    resizeXfr(model.shape(), false, false);
   }
   // create space in the output array to hold the data
   result.resize(model.shape());
@@ -295,23 +295,23 @@ void Convolver<FType>::circularConv(Array<FType>& result, const Array<FType>& mo
   ReadOnlyArrayIterator<FType> from(model, thePsfSize.nelements());
   ArrayIterator<FType> to(result, thePsfSize.nelements());
 
-  for (from.origin(), to.origin(); (from.pastEnd() || to.pastEnd()) == False;
+  for (from.origin(), to.origin(); (from.pastEnd() || to.pastEnd()) == false;
        from.next(), to.next()) {
-    doConvolution(to.array(), from.array(), False);
+    doConvolution(to.array(), from.array(), false);
   }
 }
 
 template <class FType>
-const Array<FType> Convolver<FType>::getPsf(Bool cachePsf) {
+const Array<FType> Convolver<FType>::getPsf(bool cachePsf) {
   validate();
   Array<FType> psf;
   makePsf(psf);
-  if ((cachePsf == True) && (thePsf.nelements() == 0)) thePsf.reference(psf);
+  if ((cachePsf == true) && (thePsf.nelements() == 0)) thePsf.reference(psf);
   return psf;
 }
 template <class FType>
 void Convolver<FType>::setFastConvolve() {
-  doFast_p = True;
+  doFast_p = true;
 }
 
 }  // namespace casacore

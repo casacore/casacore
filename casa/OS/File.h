@@ -131,41 +131,41 @@ class File {
 
   // Check if the file is a regular file. If the boolean followSymLink is
   // False a symbolic link will not be followed.
-  Bool isRegular(Bool followSymLink = True) const;
+  bool isRegular(bool followSymLink = true) const;
 
   // Check if the file is a directory. If the boolean followSymLink is
   // False a symbolic link will not be followed.
-  Bool isDirectory(Bool followSymLink = True) const;
+  bool isDirectory(bool followSymLink = true) const;
 
   // Check if the file is a symbolic link.
-  Bool isSymLink() const;
+  bool isSymLink() const;
 
   // Check if the file is a pipe.
-  Bool isPipe() const;
+  bool isPipe() const;
 
   // Check if the file is a character special file.
-  Bool isCharacterSpecial() const;
+  bool isCharacterSpecial() const;
 
   // Check if the file is a block special file.
-  Bool isBlockSpecial() const;
+  bool isBlockSpecial() const;
 
   // Check if the file is a socket.
-  Bool isSocket() const;
+  bool isSocket() const;
 
   // Check if the file exists.
-  Bool exists() const;
+  bool exists() const;
 
   // Check if the file is readable.
-  Bool isReadable() const;
+  bool isReadable() const;
 
   // Check if the file is writable.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Check if the file is executable.
-  Bool isExecutable() const;
+  bool isExecutable() const;
 
   // Check if a file can be created.
-  Bool canCreate() const;
+  bool canCreate() const;
 
   // Return the userID of the file.
   long userID() const;
@@ -269,7 +269,7 @@ class File {
   // the target will get the basename of the symlink and not the
   // the basename of the file pointed to. This is not done when
   // forDirectory==True (which is used by class Directory).
-  void checkTarget(Path& targetName, Bool overwrite, Bool forDirectory = False) const;
+  void checkTarget(Path& targetName, bool overwrite, bool forDirectory = false) const;
 
  private:
   // Define a function for lstat.

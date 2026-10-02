@@ -51,7 +51,7 @@ LECanonicalIO& LECanonicalIO::operator=(const LECanonicalIO& that) {
 
 LECanonicalIO::~LECanonicalIO() { delete[] itsBuffer; }
 
-size_t LECanonicalIO::write(size_t nvalues, const Bool* value) {
+size_t LECanonicalIO::write(size_t nvalues, const bool* value) {
   return TypeIO::write(nvalues, value);
 }
 
@@ -237,7 +237,7 @@ size_t LECanonicalIO::write(size_t nvalues, const String* value) {
   return TypeIO::write(nvalues, value);
 }
 
-size_t LECanonicalIO::read(size_t nvalues, Bool* value) { return TypeIO::read(nvalues, value); }
+size_t LECanonicalIO::read(size_t nvalues, bool* value) { return TypeIO::read(nvalues, value); }
 
 size_t LECanonicalIO::read(size_t nvalues, Char* value) {
   if (CONVERT_LECAN_CHAR) {

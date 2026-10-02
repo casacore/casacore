@@ -35,8 +35,8 @@ TableColumn::TableColumn()
     : baseTabPtr_p(0),
       baseColPtr_p(0),
       colCachePtr_p(0),
-      canChangeShape_p(False),
-      isColWritable_p(False) {}
+      canChangeShape_p(false),
+      isColWritable_p(false) {}
 
 TableColumn::TableColumn(const Table& tab, const String& columnName) : baseColPtr_p(0) {
   // # Get base table and base column.
@@ -104,9 +104,9 @@ const ColumnDesc& TableColumn::columnDesc() const { return baseColPtr_p->columnD
 
 Table TableColumn::table() const { return Table(baseTabPtr_p); }
 
-Bool TableColumn::asBool(rownr_t rownr) const {
+bool TableColumn::asBool(rownr_t rownr) const {
   TABLECOLUMNCHECKROW(rownr);
-  Bool value;
+  bool value;
   baseColPtr_p->getScalar(rownr, value);
   return value;
 }
@@ -178,7 +178,7 @@ String TableColumn::asString(rownr_t rownr) const {
 }
 
 void TableColumn::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
-                      Bool preserveTileShape) {
+                      bool preserveTileShape) {
   TABLECOLUMNCHECKROW(thisRownr);
   checkWritable();
   if (columnDesc().isScalar()) {
@@ -248,7 +248,7 @@ void TableColumn::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRo
       ValueHolder vh;
       switch (that.columnDesc().dataType()) {
         case TpBool: {
-          Array<Bool> array(shape);
+          Array<bool> array(shape);
           baseColPtr(that)->getArray(thatRownr, array);
           vh = ValueHolder(array);
         } break;
@@ -312,7 +312,7 @@ void TableColumn::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRo
       }
       switch (columnDesc().dataType()) {
         case TpBool: {
-          Array<Bool> arr(vh.asArrayBool());
+          Array<bool> arr(vh.asArrayBool());
           baseColPtr_p->putArray(thisRownr, arr);
         } break;
         case TpUChar: {
@@ -384,18 +384,18 @@ void TableColumn::throwNotWritable() const {
                    " is not writable");
 }
 
-Bool TableColumn::hasContent(rownr_t rownr) const {
-  Bool retval = !isNull() && isDefined(rownr);
+bool TableColumn::hasContent(rownr_t rownr) const {
+  bool retval = !isNull() && isDefined(rownr);
   if (retval && columnDesc().isArray()) {
     // The first cell seems to have something, but check for
     // degenerate Arrays.
     IPosition shp(shape(rownr));
     if (shp.empty()) {
-      retval = False;
+      retval = false;
     } else {
       for (uInt i = 0; i < shp.size(); ++i) {
         if (shp[i] == 0) {
-          retval = False;
+          retval = false;
           break;
         }
       }

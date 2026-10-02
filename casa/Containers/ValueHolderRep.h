@@ -61,7 +61,7 @@ class ValueHolderRep {
  public:
   // Create the object for the given value.
   // <group>
-  explicit ValueHolderRep(Bool value);
+  explicit ValueHolderRep(bool value);
   explicit ValueHolderRep(uChar value);
   explicit ValueHolderRep(Short value);
   explicit ValueHolderRep(uShort value);
@@ -74,7 +74,7 @@ class ValueHolderRep {
   explicit ValueHolderRep(const DComplex& value);
   explicit ValueHolderRep(const Char* value);
   explicit ValueHolderRep(const String& value);
-  explicit ValueHolderRep(const Array<Bool>& value);
+  explicit ValueHolderRep(const Array<bool>& value);
   explicit ValueHolderRep(const Array<uChar>& value);
   explicit ValueHolderRep(const Array<Short>& value);
   explicit ValueHolderRep(const Array<uShort>& value);
@@ -90,7 +90,7 @@ class ValueHolderRep {
   // </group>
 
   // Create an empty N-dim array.
-  ValueHolderRep(uInt ndim, Bool dummy);
+  ValueHolderRep(uInt ndim, bool dummy);
 
   // Destructor.
   ~ValueHolderRep();
@@ -109,7 +109,7 @@ class ValueHolderRep {
   // Get the value.
   // If possible, it converts the data as needed.
   // <group>
-  Bool asBool() const;
+  bool asBool() const;
   uChar asuChar() const;
   Short asShort() const;
   uShort asuShort() const;
@@ -121,7 +121,7 @@ class ValueHolderRep {
   Complex asComplex() const;
   DComplex asDComplex() const;
   const String& asString() const;
-  const Array<Bool> asArrayBool() const;
+  const Array<bool> asArrayBool() const;
   const Array<uChar> asArrayuChar() const;
   const Array<Short> asArrayShort() const;
   const Array<uShort> asArrayuShort() const;
@@ -159,7 +159,7 @@ class ValueHolderRep {
   uInt itsNdim;
   DataType itsType;
   union {
-    Bool itsBool;
+    bool itsBool;
     Int64 itsInt64;
     Float itsFloat;
     Double itsDouble;

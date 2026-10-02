@@ -116,7 +116,7 @@ void testReadNested(const std::shared_ptr<MultiFileBase>& parent) {
   AlwaysAssertExit(allEQ(buf, bufcheck));
   std::shared_ptr<MultiFileBase> mfile2(parent->makeNested(parent, "mfile2", ByteIO::Old, 0));
   MFFileIO mff21(mfile2, "mff21");
-  Int64 nread = mff21.read(8 * 300, buf.data(), False);  // only 250 were written
+  Int64 nread = mff21.read(8 * 300, buf.data(), false);  // only 250 were written
   AlwaysAssertExit(nread == 8 * 250);
   AlwaysAssertExit(allEQ(buf, bufcheck));  // last 50 elements not overwritten
 }
@@ -130,7 +130,7 @@ void testTruncate(const std::shared_ptr<MultiFileBase>& parent) {
   Vector<Int64> bufcheck(120);
   Vector<Int64> buf(300);
   indgen(bufcheck);
-  Int64 nread = mff11.read(8 * 300, buf.data(), False);  // only 120 are left
+  Int64 nread = mff11.read(8 * 300, buf.data(), false);  // only 120 are left
   AlwaysAssertExit(nread == 8 * 120);
   AlwaysAssertExit(allEQ(buf(Slice(0, 120)), bufcheck));
   mfile1->flush();

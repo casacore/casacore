@@ -38,7 +38,7 @@ LCUnion::LCUnion(const LCRegion& region1, const LCRegion& region2)
   defineBox();
 }
 
-LCUnion::LCUnion(Bool takeOver, const LCRegion* region1, const LCRegion* region2,
+LCUnion::LCUnion(bool takeOver, const LCRegion* region1, const LCRegion* region2,
                  const LCRegion* region3, const LCRegion* region4, const LCRegion* region5,
                  const LCRegion* region6, const LCRegion* region7, const LCRegion* region8,
                  const LCRegion* region9, const LCRegion* region10)
@@ -47,7 +47,7 @@ LCUnion::LCUnion(Bool takeOver, const LCRegion* region1, const LCRegion* region2
   defineBox();
 }
 
-LCUnion::LCUnion(Bool takeOver, const Block<const LCRegion*>& regions)
+LCUnion::LCUnion(bool takeOver, const Block<const LCRegion*>& regions)
     : LCRegionMulti(takeOver, regions) {
   defineBox();
 }
@@ -63,7 +63,7 @@ LCUnion& LCUnion::operator=(const LCUnion& other) {
   return *this;
 }
 
-Bool LCUnion::equals(const LCRegion& other) const { return LCRegionMulti::equals(other); }
+bool LCUnion::equals(const LCRegion& other) const { return LCRegionMulti::equals(other); }
 
 LCRegion* LCUnion::cloneRegion() const { return new LCUnion(*this); }
 
@@ -71,7 +71,7 @@ LCRegion* LCUnion::doTranslate(const Vector<Float>& translateVector,
                                const IPosition& newLatticeShape) const {
   Block<const LCRegion*> regions;
   multiTranslate(regions, translateVector, newLatticeShape);
-  return new LCUnion(True, regions);
+  return new LCUnion(true, regions);
 }
 
 String LCUnion::className() { return "LCUnion"; }
@@ -88,7 +88,7 @@ TableRecord LCUnion::toRecord(const String& tableName) const {
 LCUnion* LCUnion::fromRecord(const TableRecord& rec, const String& tableName) {
   Block<const LCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
-  return new LCUnion(True, regions);
+  return new LCUnion(true, regions);
 }
 
 void LCUnion::defineBox() {
@@ -115,10 +115,10 @@ void LCUnion::defineBox() {
   setBoundingBox(Slicer(blc, trc, Slicer::endIsLast));
 }
 
-void LCUnion::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
+void LCUnion::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
   uInt nrdim = buffer.ndim();
-  buffer = False;
+  buffer = false;
   IPosition stbuf(nrdim);
   IPosition endbuf(nrdim);
   IPosition streg(nrdim);
@@ -127,21 +127,21 @@ void LCUnion::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
   uInt nr = regions().nelements();
   for (uInt i = 0; i < nr; i++) {
     if (findAreas(stbuf, endbuf, streg, endreg, section, i)) {
-      Array<Bool> tmpbuf;
+      Array<bool> tmpbuf;
       LCRegion* reg = (LCRegion*)(regions()[i]);
       reg->doGetSlice(tmpbuf, Slicer(streg, endreg, inc, Slicer::endIsLast));
-      Array<Bool> bufreg = buffer(stbuf, endbuf);
+      Array<bool> bufreg = buffer(stbuf, endbuf);
       DebugAssert(bufreg.shape() == tmpbuf.shape(), AipsError);
       // Make pixel in buffer True when tmpbuf has a True pixel.
-      Bool deleteBuf, deleteTmp;
-      Bool* buf = bufreg.getStorage(deleteBuf);
-      Bool* bufptr = buf;
-      Bool* bufend = buf + bufreg.nelements();
-      const Bool* tmp = tmpbuf.getStorage(deleteTmp);
-      const Bool* tmpptr = tmp;
+      bool deleteBuf, deleteTmp;
+      bool* buf = bufreg.getStorage(deleteBuf);
+      bool* bufptr = buf;
+      bool* bufend = buf + bufreg.nelements();
+      const bool* tmp = tmpbuf.getStorage(deleteTmp);
+      const bool* tmpptr = tmp;
       while (bufptr < bufend) {
         if (*tmpptr++) {
-          *bufptr = True;
+          *bufptr = true;
         }
         bufptr++;
       }

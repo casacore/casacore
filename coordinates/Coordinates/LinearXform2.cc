@@ -33,7 +33,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LinearXform* LinearXform::fourierInvert(String& errMsg, const Vector<Bool>& axes,
+LinearXform* LinearXform::fourierInvert(String& errMsg, const Vector<bool>& axes,
                                         const Vector<Double>& crpix,
                                         const Vector<Double>& scale) const {
   if (axes.nelements() != nWorldAxes()) {
@@ -60,7 +60,7 @@ LinearXform* LinearXform::fourierInvert(String& errMsg, const Vector<Bool>& axes
     }
     pc0.diagonal() = d;
   } else {
-    if (!allEQ(axes, True)) {
+    if (!allEQ(axes, true)) {
       errMsg =
           "Cannot invert non-diagonal PC matrix (probably a rotated CoordinateSystem) when some "
           "axes not being transformed";

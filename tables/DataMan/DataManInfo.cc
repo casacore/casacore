@@ -92,11 +92,11 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
   for (uInt i = 0; i < hcNames.nelements(); i++) {
     Vector<String> dataNames, coordNames, idNames;
     tdesc.hypercolumnDesc(hcNames[i], dataNames, coordNames, idNames);
-    Bool same = True;
+    bool same = true;
     for (uInt j = 0; j < dataNames.nelements(); j++) {
       const ColumnDesc& cdesc = tdesc[dataNames[j]];
       if (cdesc.dataManagerGroup() != hcNames[i]) {
-        same = False;
+        same = false;
         break;
       }
     }
@@ -104,7 +104,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
       for (uInt j = 0; j < coordNames.nelements(); j++) {
         const ColumnDesc& cdesc = tdesc[dataNames[j]];
         if (cdesc.dataManagerGroup() != hcNames[i]) {
-          same = False;
+          same = false;
           break;
         }
       }
@@ -113,7 +113,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
       for (uInt j = 0; j < idNames.nelements(); j++) {
         const ColumnDesc& cdesc = tdesc[dataNames[j]];
         if (cdesc.dataManagerGroup() != hcNames[i]) {
-          same = False;
+          same = false;
           break;
         }
       }
@@ -147,17 +147,17 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
           if (nrid > 0) {
             // The hypercolumn definition contains ID columns, so it
             // has to be changed later in the TableDesc.
-            hcChange.resize(nrhc + 1, True);
+            hcChange.resize(nrhc + 1, true);
             hcChange(nrhc++) = hcNames(i);
             // Keep the dminfo columns which are not an ID column.
             Vector<String> colNames = rec.asArrayString("COLUMNS");
             Vector<String> colsout(colNames.nelements());
             uInt nrout = 0;
             for (uInt k = 0; k < colNames.nelements(); k++) {
-              Bool found = False;
+              bool found = false;
               for (uInt k1 = 0; k1 < idNames.nelements(); k1++) {
                 if (colNames(k) == idNames(k1)) {
-                  found = True;
+                  found = true;
                   break;
                 }
               }
@@ -165,7 +165,7 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
                 colsout(nrout++) = colNames(k);
               }
             }
-            colsout.resize(nrout, True);
+            colsout.resize(nrout, true);
             rwrec.define("COLUMNS", colsout);
           }
         }
@@ -178,7 +178,7 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
   }
 }
 
-Record DataManInfo::adjustStMan(const Record& dminfo, const String& dmType, Bool replaceMSM) {
+Record DataManInfo::adjustStMan(const Record& dminfo, const String& dmType, bool replaceMSM) {
   Record newdm;
   for (uInt j = 0; j < dminfo.nfields(); j++) {
     Record rec = dminfo.subRecord(j);
@@ -389,16 +389,16 @@ void DataManInfo::makeUniqueNames(Record& dminfo) {
 String DataManInfo::uniqueName(const Record& dminfo, const String& name, Int excludeField) {
   String newName = name;
   uInt suffix = 0;
-  Bool unique = False;
+  bool unique = false;
   while (!unique) {
-    unique = True;
+    unique = true;
     for (uInt i = 0; i < dminfo.nfields(); ++i) {
       if (Int(i) != excludeField) {
         const Record& dm = dminfo.subRecord(i);
         if (dm.isDefined("NAME") && dm.asString("NAME") == newName) {
           // Not unique, so add increased suffix and try again.
           newName = std::string(name) + '_' + std::to_string(++suffix);
-          unique = False;
+          unique = false;
           break;
         }
       }
@@ -460,7 +460,7 @@ Vector<String> DataManInfo::removeDminfoColumns(Record& dminfo, const Vector<Str
     // Only use the dm if there are columns left.
     if (ndmcol > 0) {
       if (ndmcol != dmcols.size()) {
-        dmcols.resize(ndmcol, True);
+        dmcols.resize(ndmcol, true);
         rec.define("COLUMNS", dmcols);
       }
       newdm.defineRecord(newdm_index, rec);
@@ -468,7 +468,7 @@ Vector<String> DataManInfo::removeDminfoColumns(Record& dminfo, const Vector<Str
     }
   }
   dminfo = newdm;
-  remCols.resize(ncols, True);
+  remCols.resize(ncols, true);
   return remCols;
 }
 
@@ -496,7 +496,7 @@ void DataManInfo::showDataManStats(const Table& tab, std::ostream& os) {
   // each of them to construct the Accessor object.
   for (uInt i = 0; i < dmInfo.nfields(); ++i) {
     String col = dmInfo.subRecord(i).asArrayString("COLUMNS").data()[0];
-    RODataManAccessor acc(tab, col, True);
+    RODataManAccessor acc(tab, col, true);
     os << "  Statistics for column " << col << " e.a.: ";
     Int64 pos = os.tellp();
     acc.showCacheStatistics(os);

@@ -60,15 +60,15 @@ int main(int argc, const char* argv[]) {
     String outputFilename = inputs.getString("output");
     String storageManagerType = inputs.getString("storage");
     Int whichHDU = inputs.getInt("which_hdu");
-    Bool sdfits = inputs.getBool("sdfits");
+    bool sdfits = inputs.getBool("sdfits");
 
     ToLowerCaseInPlace(storageManagerType);
 
-    Bool useIncrSM;
+    bool useIncrSM;
     if (storageManagerType == "incremental") {
-      useIncrSM = True;
+      useIncrSM = true;
     } else if (storageManagerType == "standard") {
-      useIncrSM = False;
+      useIncrSM = false;
     } else {
       cerr << storageManagerType << " is not a valid storage manager" << endl;
       return 1;

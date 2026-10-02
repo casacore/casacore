@@ -54,7 +54,7 @@ WCRegion& WCRegion::operator=(const WCRegion& other) {
 
 WCRegion::~WCRegion() {}
 
-Bool WCRegion::operator==(const WCRegion& other) const {
+bool WCRegion::operator==(const WCRegion& other) const {
   // Type check.
   return (type() == other.type());
 }
@@ -82,28 +82,28 @@ Int WCRegion::axisNr(const Record& desc, const Record& axesDesc) const {
   return -1;
 }
 
-Bool WCRegion::isAxisDescEqual(const Record& desc1, const Record& desc2) const {
+bool WCRegion::isAxisDescEqual(const Record& desc1, const Record& desc2) const {
   uInt nf = desc1.nfields();
   if (desc2.nfields() != nf) {
-    return False;
+    return false;
   }
   for (uInt j = 0; j < nf; j++) {
     Int fld = desc1.fieldNumber(desc2.name(j));
     if (fld < 0) {
-      return False;  // field does not exist
+      return false;  // field does not exist
     }
     if (desc2.dataType(j) != desc1.dataType(fld)) {
-      return False;
+      return false;
     }
     switch (desc2.dataType(j)) {
       case TpInt:
         if (desc2.asInt(j) != desc1.asInt(fld)) {
-          return False;
+          return false;
         }
         break;
       case TpString:
         if (desc2.asString(j) != desc1.asString(fld)) {
-          return False;
+          return false;
         }
         break;
       default:
@@ -112,7 +112,7 @@ Bool WCRegion::isAxisDescEqual(const Record& desc1, const Record& desc2) const {
                       "cannot handle data type"));
     }
   }
-  return True;
+  return true;
 }
 
 void WCRegion::addAxisDesc(const Record& desc) {
@@ -129,12 +129,12 @@ Record WCRegion::makeAxisDesc(const CoordinateSystem& cSys, uInt axis) const {
   axisrec.define("axis", axisInCoord);
   switch (type) {
     case Coordinate::DIRECTION: {
-      Int type = cSys.directionCoordinate(coord).directionType(True);
+      Int type = cSys.directionCoordinate(coord).directionType(true);
       axisrec.define("dirtype", type);
       break;
     }
     case Coordinate::SPECTRAL: {
-      Int type = cSys.spectralCoordinate(coord).frequencySystem(True);
+      Int type = cSys.spectralCoordinate(coord).frequencySystem(true);
       axisrec.define("freqtype", type);
       break;
     }
@@ -153,7 +153,7 @@ Record WCRegion::makeAxesDesc(const CoordinateSystem& cSys) const {
   return desc;
 }
 
-Bool WCRegion::canExtend() const { return False; }
+bool WCRegion::canExtend() const { return false; }
 
 LCRegion* WCRegion::toLCRegion(const CoordinateSystem& cSys, const IPosition& shape) const {
   uInt i, n;
@@ -289,13 +289,13 @@ void WCRegion::makeWorldAbsolute(Vector<Double>& world, const Vector<Int>& absRe
 }
 
 void WCRegion::unitInit() {
-  static Bool doneUnitInit = False;
+  static bool doneUnitInit = false;
   if (!doneUnitInit) {
     UnitMap::putUser("pix", UnitVal(1.0), "pixel units");
     UnitMap::putUser("frac", UnitVal(1.0), "fractional units");
     UnitMap::putUser("def", UnitVal(1.0), "default value");
     UnitMap::putUser("default", UnitVal(1.0), "default value");
-    doneUnitInit = True;
+    doneUnitInit = true;
   }
 }
 
@@ -331,13 +331,13 @@ void WCRegion::checkAxes(const IPosition& pixelAxes, const CoordinateSystem& cSy
 
 void WCRegion::convertPixel(Double& pixel, const Double& value, const String& unit,
                             const Int absRel, const Double refPix, const Int shape) {
-  Bool isWorld = True;
+  bool isWorld = true;
   if (unit == "pix") {
     pixel = value;
-    isWorld = False;
+    isWorld = false;
   } else if (unit == "frac") {
     pixel = value * shape;
-    isWorld = False;
+    isWorld = false;
   }
   //
   if (isWorld) return;

@@ -38,7 +38,7 @@ LCMask::LCMask(const IPosition& lattShape)
       itsBox(IPosition(lattShape.nelements(), 0), lattShape - 1, lattShape),
       itsMask(0) {
   setBoundingBox(itsBox.boundingBox());
-  itsMask = new TempLattice<Bool>(lattShape);
+  itsMask = new TempLattice<bool>(lattShape);
   setMaskPtr(*itsMask);
 }
 
@@ -51,11 +51,11 @@ LCMask::LCMask(const IPosition& maskShape, const LCBox& box)
                   "shape of mask and box differ"));
   }
   setBoundingBox(itsBox.boundingBox());
-  itsMask = new TempLattice<Bool>(maskShape);
+  itsMask = new TempLattice<bool>(maskShape);
   setMaskPtr(*itsMask);
 }
 
-LCMask::LCMask(Lattice<Bool>& mask)
+LCMask::LCMask(Lattice<bool>& mask)
     : LCRegionSingle(mask.shape()),
       itsBox(IPosition(mask.shape().nelements(), 0), mask.shape() - 1, mask.shape()),
       itsMask(0) {
@@ -64,7 +64,7 @@ LCMask::LCMask(Lattice<Bool>& mask)
   setMaskPtr(*itsMask);
 }
 
-LCMask::LCMask(Lattice<Bool>& mask, const LCBox& box)
+LCMask::LCMask(Lattice<bool>& mask, const LCBox& box)
     : LCRegionSingle(box.latticeShape()), itsBox(box) {
   // Check if box shape and mask shape are equal.
   if (itsBox.shape() != mask.shape()) {
@@ -96,11 +96,11 @@ LCMask& LCMask::operator=(const LCMask& that) {
   return *this;
 }
 
-Bool LCMask::equals(const LCRegion& other) const {
+bool LCMask::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionSingle::equals(other)) {
-    return False;
+    return false;
   }
   const LCMask& that = (const LCMask&)other;
   // Check the box and mask.
@@ -132,11 +132,11 @@ void LCMask::clearCache() { itsMask->clearCache(); }
 
 void LCMask::showCacheStatistics(std::ostream& os) const { itsMask->showCacheStatistics(os); }
 
-LatticeIterInterface<Bool>* LCMask::makeIter(const LatticeNavigator& navigator, Bool useRef) const {
+LatticeIterInterface<bool>* LCMask::makeIter(const LatticeNavigator& navigator, bool useRef) const {
   return itsMask->makeIter(navigator, useRef);
 }
 
-Bool LCMask::lock(FileLocker::LockType type, uInt nattempts) {
+bool LCMask::lock(FileLocker::LockType type, uInt nattempts) {
   // Lock the PagedArray containing the mask.
   return itsMask->lock(type, nattempts);
 }
@@ -144,7 +144,7 @@ void LCMask::unlock() {
   // Unlock the PagedArray containing the mask.
   itsMask->unlock();
 }
-Bool LCMask::hasLock(FileLocker::LockType type) const { return itsMask->hasLock(type); }
+bool LCMask::hasLock(FileLocker::LockType type) const { return itsMask->hasLock(type); }
 void LCMask::resync() { itsMask->resync(); }
 
 void LCMask::flush() { itsMask->flush(); }
@@ -169,6 +169,6 @@ TableRecord LCMask::toRecord(const String&) const {
   ;
 }
 
-Bool LCMask::isWritable() const { return itsMask->isWritable(); }
+bool LCMask::isWritable() const { return itsMask->isWritable(); }
 
 }  // namespace casacore

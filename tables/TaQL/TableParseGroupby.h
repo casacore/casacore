@@ -61,7 +61,7 @@ class TableParseGroupby {
   // Keep the groupby expressions.
   // It checks if they are all scalar expressions and do not contain
   // aggregate functions..
-  void handleGroupby(const std::vector<TableExprNode>&, Bool rollup);
+  void handleGroupby(const std::vector<TableExprNode>&, bool rollup);
 
   // Keep the having expression.
   // It checks if the node results in a bool scalar value.
@@ -71,13 +71,13 @@ class TableParseGroupby {
   // The column nodes can only contain aggregate functions if SELECT is used.
   // Finally it checks that HAVING is only used if a column node contains
   // an aggregate function (it makes no sense otherwise).
-  void findGroupAggr(const Block<TableExprNode>& columnNodes, Bool isSelect);
+  void findGroupAggr(const Block<TableExprNode>& columnNodes, bool isSelect);
 
   // Is GROUPBY and/or aggregation used?
-  Bool isUsed() const { return itsGroupAggrUsed != 0; }
+  bool isUsed() const { return itsGroupAggrUsed != 0; }
 
   // Is only aggregation used?
-  Bool isOnlyAggr() const { return itsGroupAggrUsed != 0 && (itsGroupAggrUsed & GROUPBY) == 0; }
+  bool isOnlyAggr() const { return itsGroupAggrUsed != 0 && (itsGroupAggrUsed & GROUPBY) == 0; }
 
   // Get the number of aggregation ndes.
   uInt size() const { return itsAggrNodes.size(); }
@@ -95,7 +95,7 @@ class TableParseGroupby {
 
   // Execute the HAVING clause (if present).
   // Return False in no HAVING.
-  Bool execHaving(Vector<rownr_t>& rownrs, const std::shared_ptr<TableExprGroupResult>& groups);
+  bool execHaving(Vector<rownr_t>& rownrs, const std::shared_ptr<TableExprGroupResult>& groups);
 
  private:
   // Do the grouping and aggregation and return the results.
@@ -159,7 +159,7 @@ class TableParseGroupby {
   // # Data members.
   //  The possible GROUPBY expressions.
   std::vector<TableExprNode> itsGroupbyNodes;
-  Bool itsGroupbyRollup;  // # use ROLLUP in GROUPBY?
+  bool itsGroupbyRollup;  // # use ROLLUP in GROUPBY?
   // The possible HAVING expression.
   TableExprNode itsHavingNode;
   // Pointers to the aggregate function nodes.

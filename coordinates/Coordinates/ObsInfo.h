@@ -116,7 +116,7 @@ class ObsInfo : public RecordTransformable {
   // <group>
   String telescope() const;
   ObsInfo &setTelescope(const String &telescope);
-  Bool isTelescopePositionSet() const { return isTelPositionSet_p; }
+  bool isTelescopePositionSet() const { return isTelPositionSet_p; }
   const MPosition &telescopePosition() const { return telPosition_p; }
   String telescopePositionString() const;
   ObsInfo &setTelescopePosition(const MPosition &);
@@ -152,7 +152,7 @@ class ObsInfo : public RecordTransformable {
   // function is available to tell you whether the pointing center has
   // been set (with setPointingCenter) to some value other than its
   // initial (return False)
-  Bool isPointingCenterInitial() const { return isPointingCenterInitial_p; };
+  bool isPointingCenterInitial() const { return isPointingCenterInitial_p; };
 
   // Functions to interconvert between an ObsInfo and a record. These
   // functions are inherited from class
@@ -163,8 +163,8 @@ class ObsInfo : public RecordTransformable {
   // The field names are "observer", "telescope", "obsdate", and
   // "pointingcenter"
   // <group>
-  virtual Bool toRecord(String &error, RecordInterface &outRecord) const;
-  virtual Bool fromRecord(String &error, const RecordInterface &inRecord);
+  virtual bool toRecord(String &error, RecordInterface &outRecord) const;
+  virtual bool fromRecord(String &error, const RecordInterface &inRecord);
   // </group>
 
   // Functions to interconvert between an ObsInfo and FITS keywords
@@ -181,8 +181,8 @@ class ObsInfo : public RecordTransformable {
   // be returned of length 0 if the return value is True, else
   // it will be length 4.
   // <group>
-  Bool toFITS(String &error, RecordInterface &outRecord) const;
-  Bool fromFITS(Vector<String> &error, const RecordInterface &inRecord);
+  bool toFITS(String &error, RecordInterface &outRecord) const;
+  bool fromFITS(Vector<String> &error, const RecordInterface &inRecord);
 
   // In some circumstances it might be useful to know what the defaults for
   // the various values are so you can check if they have been set.
@@ -203,9 +203,9 @@ class ObsInfo : public RecordTransformable {
   String observer_p;
   MEpoch obsdate_p;
   MPosition telPosition_p;
-  Bool isTelPositionSet_p;
+  bool isTelPositionSet_p;
   MVDirection pointingCenter_p;
-  Bool isPointingCenterInitial_p;  // True when ObsInfo contructed.
+  bool isPointingCenterInitial_p;  // True when ObsInfo contructed.
                                    // False after setPointingCenter called
 
   // Common copy ctor/assignment operator code.

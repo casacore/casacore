@@ -34,7 +34,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 #ifdef HAVE_HDF5
 
 HDF5File::HDF5File(const String& name, ByteIO::OpenOption option)
-    : itsOption(option), itsDelete(False) {
+    : itsOption(option), itsDelete(false) {
   // Disable automatic printing of errors.
   H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
   // Use absolute expanded path name.
@@ -50,7 +50,7 @@ HDF5File::~HDF5File() {
   }
 }
 
-Bool HDF5File::isHDF5(const String& name) {
+bool HDF5File::isHDF5(const String& name) {
   // Disable automatic printing of errors.
   H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
   return H5Fis_hdf5(name.c_str());
@@ -110,7 +110,7 @@ void HDF5File::doOpen() {
       setHid(H5Fopen(getName().c_str(), H5F_ACC_RDONLY, access_plist));
       break;
     case ByteIO::Delete:
-      itsDelete = True;
+      itsDelete = true;
       // fall through
     case ByteIO::Update:
     case ByteIO::Append:
@@ -118,7 +118,7 @@ void HDF5File::doOpen() {
       itsOption = ByteIO::Update;
       break;
     case ByteIO::Scratch:
-      itsDelete = True;
+      itsDelete = true;
       // fall through
     case ByteIO::New:
       setHid(H5Fcreate(getName().c_str(), H5F_ACC_TRUNC, create_plist, access_plist));
@@ -137,14 +137,14 @@ void HDF5File::doOpen() {
 #else
 
 HDF5File::HDF5File(const String& name, ByteIO::OpenOption option)
-    : itsOption(option), itsDelete(False) {
+    : itsOption(option), itsDelete(false) {
   setName(name);
   doOpen();
 }
 
 HDF5File::~HDF5File() {}
 
-Bool HDF5File::isHDF5(const String&) { return False; }
+bool HDF5File::isHDF5(const String&) { return false; }
 
 void HDF5File::reopenRW() {}
 

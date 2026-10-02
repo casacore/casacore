@@ -40,13 +40,13 @@ void doIt(const LCRegion& region, const IPosition& axes, const IPosition& blc, c
     LCExtension prism(region, axes, LCBox(blc, trc, latticeShape));
     AlwaysAssertExit(prism.hasMask() == region.hasMask());
     AlwaysAssertExit(!prism.isWritable());
-    Array<Bool> regmask;
+    Array<bool> regmask;
     uInt ndimr = region.boundingBox().ndim();
     uInt ndim = ndimr + latticeShape.nelements();
     ((LCRegion&)region)
         .getSlice(regmask, IPosition(ndimr, 0), region.boundingBox().length(), IPosition(ndimr, 1));
     cout << regmask << endl;
-    Array<Bool> mask;
+    Array<bool> mask;
     prism.getSlice(mask, IPosition(ndim, 0), prism.boundingBox().length(), IPosition(ndim, 1));
     cout << mask << endl;
     cout << prism.hasMask() << ' ' << endl;
@@ -61,7 +61,7 @@ void doIt(const LCRegion& region, const IPosition& axes, const IPosition& blc, c
       AlwaysAssertExit(prism.boundingBox().end() == prismcop->boundingBox().end());
       AlwaysAssertExit(prism.boundingBox().stride() == prismcop->boundingBox().stride());
       AlwaysAssertExit(prism.boundingBox().length() == prismcop->boundingBox().length());
-      Array<Bool> arr;
+      Array<bool> arr;
       prismcop->getSlice(arr, IPosition(ndim, 0), prism.boundingBox().length(), IPosition(ndim, 1));
       AlwaysAssertExit(allEQ(arr, mask));
       delete prismcop;
@@ -74,7 +74,7 @@ void doIt(const LCRegion& region, const IPosition& axes, const IPosition& blc, c
       AlwaysAssertExit(prism.boundingBox().end() == prismcop->boundingBox().end());
       AlwaysAssertExit(prism.boundingBox().stride() == prismcop->boundingBox().stride());
       AlwaysAssertExit(prism.boundingBox().length() == prismcop->boundingBox().length());
-      Array<Bool> arr;
+      Array<bool> arr;
       prismcop->getSlice(arr, IPosition(ndim, 0), prism.boundingBox().length(), IPosition(ndim, 1));
       AlwaysAssertExit(allEQ(arr, mask));
       delete prismcop;

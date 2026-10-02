@@ -114,12 +114,12 @@ class FunctionOrder : public RecordTransformable {
   // Create a FunctionOrder from a record
   // Error messages are postfixed to error.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
+  virtual bool fromRecord(String &error, const RecordInterface &in);
+  virtual bool fromString(String &error, const String &in);
   // </group>
   // Create a record from a FunctionOrder.
   // Error messages are postfixed to error.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  virtual bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   virtual const String &ident() const;
 

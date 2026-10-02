@@ -34,7 +34,7 @@ ImageAttrHandler::~ImageAttrHandler() { flush(); }
 
 void ImageAttrHandler::flush() {}
 
-Bool ImageAttrHandler::hasGroup(const String&) { return False; }
+bool ImageAttrHandler::hasGroup(const String&) { return false; }
 
 Vector<String> ImageAttrHandler::groupNames() const { return Vector<String>(); }
 

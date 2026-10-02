@@ -223,13 +223,13 @@ class WCPolygon : public WCRegion {
   WCPolygon& operator=(const WCPolygon& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Clone a WCPolygon object.
   virtual WCRegion* cloneRegion() const;
 
   // WCPolygon cannot extend a region.
-  virtual Bool canExtend() const;
+  virtual bool canExtend() const;
 
   // Convert to an LCRegion using the given coordinate system.
   virtual LCRegion* doToLCRegion(const CoordinateSystem& cSys, const IPosition& latticeShape,
@@ -256,7 +256,7 @@ class WCPolygon : public WCRegion {
   IPosition itsPixelAxes;
   CoordinateSystem itsCSys;
   RegionType::AbsRelType itsAbsRel;
-  Bool itsNull;
+  bool itsNull;
 };
 
 }  // namespace casacore

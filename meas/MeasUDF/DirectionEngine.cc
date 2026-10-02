@@ -34,14 +34,14 @@ DirectionEngine::DirectionEngine() : itsEpochEngine(0), itsPositionEngine(0) {}
 
 DirectionEngine::~DirectionEngine() {}
 
-void DirectionEngine::handleDirection(const vector<TENShPtr>& args, uInt& argnr, Bool riseSet,
-                                      Bool asDirCos) {
+void DirectionEngine::handleDirection(const vector<TENShPtr>& args, uInt& argnr, bool riseSet,
+                                      bool asDirCos) {
   // Initialize to unknown reference type.
   itsRefType = MDirection::N_Types;
   // Normally directions must be given in an array, but a single one
   // can be 2 or 3 scalars.
   uInt nargnr = argnr + 1;
-  Bool asScalar = False;
+  bool asScalar = false;
   TENShPtr scalar3;
   // A string means that object names (e.g. MOON) are given.
   if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
@@ -53,7 +53,7 @@ void DirectionEngine::handleDirection(const vector<TENShPtr>& args, uInt& argnr,
     if (args.size() > nargnr && args[argnr]->isReal() &&
         args[argnr]->valueType() == TableExprNodeRep::VTScalar && args[nargnr]->isReal() &&
         args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
-      asScalar = True;
+      asScalar = true;
       nargnr++;
       // See if given as 3 scalars xyz (direction cosines).
       if (args.size() > nargnr && args[nargnr]->isReal() &&
@@ -64,7 +64,7 @@ void DirectionEngine::handleDirection(const vector<TENShPtr>& args, uInt& argnr,
     }
     // See if a reference type is given.
     if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      if (handleMeasType(args[nargnr], False)) {
+      if (handleMeasType(args[nargnr], false)) {
         nargnr++;
       }
     }
@@ -234,7 +234,7 @@ void DirectionEngine::handleValues(TableExprNode& operand, const TableExprId& id
   directions.resize(dirShape);
   Quantity q1(0, unit);
   Quantity q2(0, unit);
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MDirection* dirVec = directions.data();
   for (uInt i = 0; i < directions.size(); ++i) {
@@ -253,7 +253,7 @@ void DirectionEngine::handleValues(TableExprNode& operand, const TableExprId& id
 void DirectionEngine::setEpochEngine(EpochEngine& engine) {
   AlwaysAssert(itsEpochEngine == 0, AipsError);
   itsEpochEngine = &engine;
-  extendBase(engine, False);
+  extendBase(engine, false);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MEpoch());
 }
@@ -261,7 +261,7 @@ void DirectionEngine::setEpochEngine(EpochEngine& engine) {
 void DirectionEngine::setPositionEngine(PositionEngine& engine) {
   AlwaysAssert(itsPositionEngine == 0, AipsError);
   itsPositionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MPosition());
 }
@@ -283,7 +283,7 @@ Array<MDirection> DirectionEngine::getDirections(const TableExprId& id) {
   return directions;
 }
 
-Array<Double> DirectionEngine::getArrayDouble(const TableExprId& id, Bool riseSet, Bool asDirCos) {
+Array<Double> DirectionEngine::getArrayDouble(const TableExprId& id, bool riseSet, bool asDirCos) {
   DebugAssert(id.byRow(), AipsError);
   Array<MDirection> res(getDirections(id));
   // Get epochs and positions if given.

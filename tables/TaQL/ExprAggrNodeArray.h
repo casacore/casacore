@@ -64,7 +64,7 @@ class TableExprAggrNodeArray : public TableExprFuncNodeArray {
                          const Block<Int>& dtypeOper, const TaQLStyle& style);
 
   // This node does aggregation.
-  virtual Bool isAggregate() const;
+  virtual bool isAggregate() const;
 
   // Get the operand node.
   TENShPtr operand() { return (operands().empty() ? TENShPtr() : operands()[0]); }
@@ -73,11 +73,11 @@ class TableExprAggrNodeArray : public TableExprFuncNodeArray {
   virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
   // Is the array aggregate function lazy?
-  virtual Bool isLazyAggregate() const;
+  virtual bool isLazyAggregate() const;
 
   // Functions to get the result of an aggregate function.
   // <group>
-  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);

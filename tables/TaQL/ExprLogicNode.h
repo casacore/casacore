@@ -67,7 +67,7 @@ class TableExprNodeEQBool : public TableExprNodeBinary {
  public:
   TableExprNodeEQBool(const TableExprNodeRep&);
   ~TableExprNodeEQBool() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -95,7 +95,7 @@ class TableExprNodeEQInt : public TableExprNodeBinary {
  public:
   TableExprNodeEQInt(const TableExprNodeRep&);
   ~TableExprNodeEQInt() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -123,7 +123,7 @@ class TableExprNodeEQDouble : public TableExprNodeBinary {
  public:
   TableExprNodeEQDouble(const TableExprNodeRep&);
   ~TableExprNodeEQDouble() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   void ranges(Block<TableExprRange>&) override;
 };
 
@@ -152,7 +152,7 @@ class TableExprNodeEQDComplex : public TableExprNodeBinary {
  public:
   TableExprNodeEQDComplex(const TableExprNodeRep&);
   ~TableExprNodeEQDComplex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -180,7 +180,7 @@ class TableExprNodeEQString : public TableExprNodeBinary {
  public:
   TableExprNodeEQString(const TableExprNodeRep&);
   ~TableExprNodeEQString() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -208,7 +208,7 @@ class TableExprNodeEQRegex : public TableExprNodeBinary {
  public:
   TableExprNodeEQRegex(const TableExprNodeRep&);
   ~TableExprNodeEQRegex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -236,7 +236,7 @@ class TableExprNodeEQDate : public TableExprNodeBinary {
  public:
   TableExprNodeEQDate(const TableExprNodeRep&);
   ~TableExprNodeEQDate() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -264,7 +264,7 @@ class TableExprNodeNEBool : public TableExprNodeBinary {
  public:
   TableExprNodeNEBool(const TableExprNodeRep&);
   ~TableExprNodeNEBool() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -292,7 +292,7 @@ class TableExprNodeNEInt : public TableExprNodeBinary {
  public:
   TableExprNodeNEInt(const TableExprNodeRep&);
   ~TableExprNodeNEInt() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -320,7 +320,7 @@ class TableExprNodeNEDouble : public TableExprNodeBinary {
  public:
   TableExprNodeNEDouble(const TableExprNodeRep&);
   ~TableExprNodeNEDouble() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -348,7 +348,7 @@ class TableExprNodeNEDComplex : public TableExprNodeBinary {
  public:
   TableExprNodeNEDComplex(const TableExprNodeRep&);
   ~TableExprNodeNEDComplex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -376,7 +376,7 @@ class TableExprNodeNEString : public TableExprNodeBinary {
  public:
   TableExprNodeNEString(const TableExprNodeRep&);
   ~TableExprNodeNEString() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -404,7 +404,7 @@ class TableExprNodeNERegex : public TableExprNodeBinary {
  public:
   TableExprNodeNERegex(const TableExprNodeRep&);
   ~TableExprNodeNERegex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -432,7 +432,7 @@ class TableExprNodeNEDate : public TableExprNodeBinary {
  public:
   TableExprNodeNEDate(const TableExprNodeRep&);
   ~TableExprNodeNEDate() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -460,7 +460,7 @@ class TableExprNodeGTInt : public TableExprNodeBinary {
  public:
   TableExprNodeGTInt(const TableExprNodeRep&);
   ~TableExprNodeGTInt() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -488,7 +488,7 @@ class TableExprNodeGTDouble : public TableExprNodeBinary {
  public:
   TableExprNodeGTDouble(const TableExprNodeRep&);
   ~TableExprNodeGTDouble() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   void ranges(Block<TableExprRange>&) override;
 };
 
@@ -517,7 +517,7 @@ class TableExprNodeGTDComplex : public TableExprNodeBinary {
  public:
   TableExprNodeGTDComplex(const TableExprNodeRep&);
   ~TableExprNodeGTDComplex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -545,7 +545,7 @@ class TableExprNodeGTString : public TableExprNodeBinary {
  public:
   TableExprNodeGTString(const TableExprNodeRep&);
   ~TableExprNodeGTString() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -573,7 +573,7 @@ class TableExprNodeGTDate : public TableExprNodeBinary {
  public:
   TableExprNodeGTDate(const TableExprNodeRep&);
   ~TableExprNodeGTDate() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -601,7 +601,7 @@ class TableExprNodeGEInt : public TableExprNodeBinary {
  public:
   TableExprNodeGEInt(const TableExprNodeRep&);
   ~TableExprNodeGEInt() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -629,7 +629,7 @@ class TableExprNodeGEDouble : public TableExprNodeBinary {
  public:
   TableExprNodeGEDouble(const TableExprNodeRep&);
   ~TableExprNodeGEDouble() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   void ranges(Block<TableExprRange>&) override;
 };
 
@@ -658,7 +658,7 @@ class TableExprNodeGEDComplex : public TableExprNodeBinary {
  public:
   TableExprNodeGEDComplex(const TableExprNodeRep&);
   ~TableExprNodeGEDComplex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -686,7 +686,7 @@ class TableExprNodeGEString : public TableExprNodeBinary {
  public:
   TableExprNodeGEString(const TableExprNodeRep&);
   ~TableExprNodeGEString() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -714,7 +714,7 @@ class TableExprNodeGEDate : public TableExprNodeBinary {
  public:
   TableExprNodeGEDate(const TableExprNodeRep&);
   ~TableExprNodeGEDate() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -743,11 +743,11 @@ class TableExprNodeGEDate : public TableExprNodeBinary {
 class TableExprNodeINInt : public TableExprNodeBinary {
  public:
   // <src>doTracing</src> is not used.
-  TableExprNodeINInt(const TableExprNodeRep&, Bool doTracing = False);
+  TableExprNodeINInt(const TableExprNodeRep&, bool doTracing = false);
   ~TableExprNodeINInt() = default;
   void optimize() override;
   static void doOptimize(TENShPtr& rnode);
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 
  private:
 };
@@ -781,7 +781,7 @@ class TableExprNodeINDouble : public TableExprNodeBinary {
   ~TableExprNodeINDouble() = default;
   void optimize() override;
   static void doOptimize(TENShPtr& rnode);
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -809,7 +809,7 @@ class TableExprNodeINDComplex : public TableExprNodeBinary {
  public:
   TableExprNodeINDComplex(const TableExprNodeRep&);
   ~TableExprNodeINDComplex() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -841,7 +841,7 @@ class TableExprNodeINString : public TableExprNodeBinary {
   ~TableExprNodeINString() = default;
   void optimize() override;
   static void doOptimize(TENShPtr& rnode);
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -871,7 +871,7 @@ class TableExprNodeINDate : public TableExprNodeBinary {
   ~TableExprNodeINDate() = default;
   void optimize() override;
   static void doOptimize(TENShPtr& rnode);
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 // <summary>
@@ -897,7 +897,7 @@ class TableExprNodeOR : public TableExprNodeBinary {
  public:
   TableExprNodeOR(const TableExprNodeRep&);
   ~TableExprNodeOR() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   void ranges(Block<TableExprRange>&) override;
 };
 
@@ -924,7 +924,7 @@ class TableExprNodeAND : public TableExprNodeBinary {
  public:
   TableExprNodeAND(const TableExprNodeRep&);
   ~TableExprNodeAND() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   void ranges(Block<TableExprRange>&) override;
 };
 
@@ -951,7 +951,7 @@ class TableExprNodeNOT : public TableExprNodeBinary {
  public:
   TableExprNodeNOT(const TableExprNodeRep&);
   ~TableExprNodeNOT() = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
 };
 
 }  // namespace casacore

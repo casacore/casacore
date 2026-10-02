@@ -40,14 +40,14 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool AppInfo::need_init_p = True;
+bool AppInfo::need_init_p = true;
 uInt AppInfo::tz_r = 0;
 
 Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
-  static Bool init = False;
+  static bool init = false;
   static uInt workdir = 0;
   if (!init) {
-    init = True;
+    init = true;
     // Default is an empty vector
     Vector<String> empty;
     workdir = AipsrcVector<String>::registerRC("user.directories.work", empty);
@@ -68,8 +68,8 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
     }
   }
   // OK, elmiinate candidates (if any).
-  Vector<Bool> good(workdirs.nelements());
-  good = True;
+  Vector<bool> good(workdirs.nelements());
+  good = true;
   for (uInt i = 0; i < workdirs.nelements(); i++) {
     File dir(workdirs(i));
     if (!dir.exists() || !dir.isWritable() || !dir.isDirectory()) {
@@ -78,11 +78,11 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
       os << LogIO::WARN << "Work directory candidate '" << dir.path().originalName()
          << "' does not exist or is not" << " writable.\n"
          << "Check aipsrc variable user.directories.work." << LogIO::POST;
-      good(i) = False;
+      good(i) = false;
     } else {
       Directory asdir = dir;
       if (asdir.freeSpace() / (1024 * 1024) < uLong(minimumFreeSpaceInMB)) {
-        good(i) = False;
+        good(i) = false;
       }
     }
   }
@@ -112,7 +112,7 @@ String AppInfo::workFileName(uInt minimumFreeSpaceInMB, const String &filenamePr
 }
 
 void AppInfo::init() {
-  need_init_p = False;
+  need_init_p = false;
 
   // timezone
   Double tz;

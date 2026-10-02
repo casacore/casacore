@@ -50,16 +50,16 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Do a reverse lookup since the FITS classes need it.
-static Bool findReservedName(FITS::ReservedName &name, const String &basename) {
+static bool findReservedName(FITS::ReservedName &name, const String &basename) {
   const uInt n = FITS::ResWord.no();
 
   for (uInt i = 0; i < n; i++) {
     if (basename == FITS::ResWord[i].aname()) {
       name = FITS::ResWord[i].name();
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 static void splitKW1D(String &name, Int &num, String &fullName) {
@@ -77,7 +77,7 @@ static void splitKW1D(String &name, Int &num, String &fullName) {
   num = atol(snum.c_str());
 }
 
-static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName) {
+static bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName) {
   name = "";
 
   if (fullName.find('_') != std::string::npos) {  // assume new matrix syntax  ii_jj or i_j
@@ -89,7 +89,7 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName) {
     // found first non-digit
     String::size_type where2 = fullName.find('_');
     if (where2 == String::npos || where2 == fullName.length() - 1) {
-      return False;
+      return false;
     }
     String snum1 = fullName.substr(where, where2 - where);
     Int nc = 2;  // don't use the last digit if there are three
@@ -113,7 +113,7 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName) {
     Int numlen = fullName.length() - where;
     if (numlen != 6) {
       // 2D arrays must be xxxyyy and so there must be 6 digits
-      return False;
+      return false;
     }
     String snum1 = fullName.substr(where, 3);
     String snum2 = fullName.substr(where + 3, 3);
@@ -121,13 +121,13 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName) {
     ncol = atol(snum2.c_str());
   }
 
-  return True;
+  return true;
 }
 
-FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage) {
+FitsKeywordList FITSKeywordUtil::makeKeywordList(bool primHead, bool binImage) {
   FitsKeywordList retval;
   if (primHead)
-    retval.mk(FITS::SIMPLE, True, "Standard FITS");
+    retval.mk(FITS::SIMPLE, true, "Standard FITS");
   else if (binImage)
     retval.mk(FITS::XTENSION, "IMAGE   ", "IMAGE extension");
   else
@@ -135,10 +135,10 @@ FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage) {
   return retval;
 }
 
-Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &in) {
+bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &in) {
   LogIO os(LogOrigin("FITSKeywordUtil", "addKeywords", WHERE));
 
-  Bool ok = True;
+  bool ok = true;
 
   const uInt n = in.nfields();
   const std::regex commentName("^COMMENT");
@@ -164,7 +164,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
       String comment = in.comment(i);
       switch (type) {
         case TpBool: {
-          Bool val;
+          bool val;
           in.get(i, val);
           out.mk(name.c_str(), val, comment.c_str());
         } break;
@@ -208,7 +208,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
             if (val.length() > 68) {
               os << LogIO::SEVERE << "Value of keyword " << name.c_str()
                  << " will be truncated at 68 characters." << LogIO::POST;
-              ok = False;
+              ok = false;
               val = val.substr(0, 68);
             }
             out.mk(name.c_str(), val.c_str(), comment.c_str());
@@ -218,7 +218,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
           os << LogIO::SEVERE << "Illegal FITS type " << Int(in.type(i)) << " for field '" << name
              << "': ignoring this field." << LogIO::POST;
           // Note that we carry on anyway
-          ok = False;
+          ok = false;
       }
     } else if (isArray(type)) {
       // Find out how many like-shaped array columns there are in a row
@@ -240,7 +240,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
            << " dimensional array found. "
               " Flattening to 1 dimension"
            << LogIO::POST;
-        ok = False;
+        ok = false;
         ndim = 1;
       }
       uInt end = i + 1;
@@ -273,27 +273,27 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
           if (in.name(j).length() > 2) {
             os << LogIO::SEVERE << "Name is too long for array field " << in.name(j)
                << " - name will be truncated to first 2 characters." << LogIO::POST;
-            ok = False;
+            ok = false;
           }
           // at most, 99 elements per dimension
           if (in.shape(i)(0) > 99 || in.shape(i)(1) > 99) {
             os << LogIO::SEVERE << "Too many rows or columns for array field " << in.name(j)
                << " - the first 99 rows and the first 99 columns will be used." << LogIO::POST;
-            ok = False;
+            ok = false;
           }
         } else {
           // at most 999 elements
           if (length > 999) {
             os << LogIO::SEVERE << "Too many elements for field " << in.name(j)
                << " - the first 999 elements will be used." << LogIO::POST;
-            ok = False;
+            ok = false;
           }
           String slen = std::to_string(length);
           if (in.name(j).length() + slen.length() > 8) {
             os << LogIO::SEVERE << "Name is too long for array field " << in.name(j)
                << " - name will be truncated to first " << (8 - uInt(slen.length()))
                << " characters." << LogIO::POST;
-            ok = False;
+            ok = false;
           }
         }
       }
@@ -326,10 +326,10 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
           if (name.length() > (8 - num.length())) name = name.substr(0, 8 - num.length());
           switch (type) {
             case TpArrayBool: {
-              Array<Bool> val;
+              Array<bool> val;
               in.get(j, val);
-              Bool deleteIt;
-              Bool *storage = val.getStorage(deleteIt);
+              bool deleteIt;
+              bool *storage = val.getStorage(deleteIt);
               if (ndim == 2) {
                 out.mk(name.c_str(), storage[k]);
               } else {
@@ -345,7 +345,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
             case TpArrayInt: {
               Array<Int> val;
               in.get(j, val);
-              Bool deleteIt;
+              bool deleteIt;
               Int *storage = val.getStorage(deleteIt);
               if (ndim == 2) {
                 out.mk(name.c_str(), storage[k]);
@@ -362,7 +362,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
             case TpArrayFloat: {
               Array<Float> val;
               in.get(j, val);
-              Bool deleteIt;
+              bool deleteIt;
               Float *storage = val.getStorage(deleteIt);
               if (ndim == 2) {
                 out.mk(name.c_str(), storage[k]);
@@ -379,7 +379,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
             case TpArrayDouble: {
               Array<Double> val;
               in.get(j, val);
-              Bool deleteIt;
+              bool deleteIt;
               Double *storage = val.getStorage(deleteIt);
               if (ndim == 2) {
                 out.mk(name.c_str(), storage[k]);
@@ -396,13 +396,13 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
             case TpArrayString: {
               Array<String> val;
               in.get(j, val);
-              Bool deleteIt;
+              bool deleteIt;
               String *storage = val.getStorage(deleteIt);
               String thisVal = storage[k];
               if (thisVal.length() > 68) {
                 os << LogIO::SEVERE << "Value of keyword " << name.c_str()
                    << " will be truncated at 68 characters." << LogIO::POST;
-                ok = False;
+                ok = false;
                 thisVal = thisVal.substr(0, 68);
               }
               if (ndim == 2) {
@@ -421,7 +421,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
               os << LogIO::SEVERE << "Illegal FITS type " << Int(type) << " for field '" << name
                  << "': ignoring this field." << LogIO::POST;
               // Note that we carry on anyway
-              ok = False;
+              ok = false;
           }
         }
       }
@@ -429,7 +429,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
       os << LogIO::SEVERE << "Illegal FITS type " << Int(in.type(i)) << " for field '" << in.name(i)
          << ". 'Must be scalar or array." << LogIO::POST;
       // Note that we carry on anyway
-      ok = False;
+      ok = false;
     }
     i++;
   }
@@ -437,9 +437,9 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
   return ok;
 }
 
-Bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in,
-                                  const Vector<String> &ignore, Bool ignoreHistory) {
-  Bool ok = True;
+bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in,
+                                  const Vector<String> &ignore, bool ignoreHistory) {
+  bool ok = true;
 
   LogIO os(LogOrigin("FITSKeywordUtil", "getKeywords", WHERE));
 
@@ -480,7 +480,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in
   // this may be a bug in fits that it isn't in.curr()
   const FitsKeyword *key = in.next();
   //
-  Bool foundCROTA = False;
+  bool foundCROTA = false;
   String baseCROTA;
 
   Int naxis = -1;
@@ -500,7 +500,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in
     }
     //
     if (std::regex_search(name, crota)) {
-      foundCROTA = True;
+      foundCROTA = true;
       baseCROTA = name;
     }
     //
@@ -595,10 +595,10 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in
                << ". Continuing." << LogIO::POST;
             break;
           }
-          Matrix<Bool> mat;
+          Matrix<bool> mat;
           if (!out.isDefined(base)) {
             mat.resize(nrow, ncol);
-            mat = False;
+            mat = false;
           } else {
             out.get(base, mat);
           }
@@ -741,12 +741,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in
             break;
           }
           if (!out.isDefined(base)) {
-            Vector<Bool> vec(max1D[base] - min1D[base] + 1);
-            vec = False;
+            Vector<bool> vec(max1D[base] - min1D[base] + 1);
+            vec = false;
             vec(offset) = key->asBool();
             out.define(base, vec);
           } else {
-            Vector<Bool> vec;
+            Vector<bool> vec;
             out.get(base, vec);
             nelm = vec.size();
             if (offset < nelm) {
@@ -1008,8 +1008,8 @@ void FITSKeywordUtil::removeKeywords(RecordInterface &out, const Vector<String> 
   }
 }
 
-Bool FITSKeywordUtil::fromTDIM(IPosition &shape, const String &tdim) {
-  Bool ok = True;
+bool FITSKeywordUtil::fromTDIM(IPosition &shape, const String &tdim) {
+  bool ok = true;
   // verify that it has the right form
   // whitespace ( anything ) whitespace
   if (RegexMatches(tdim, Regex("[:space:]*[(].*[)][:space:]*"))) {
@@ -1020,7 +1020,7 @@ Bool FITSKeywordUtil::fromTDIM(IPosition &shape, const String &tdim) {
     Int nelem = std::count(fields.begin(), fields.end(), ',') + 1;
     String *carrst = new String[nelem];
     if (split(fields, carrst, nelem, ',') != nelem) {
-      ok = False;
+      ok = false;
     } else {
       shape.resize(nelem);
       for (Int i = 0; i < nelem; i++) {
@@ -1029,13 +1029,13 @@ Bool FITSKeywordUtil::fromTDIM(IPosition &shape, const String &tdim) {
     }
     delete[] carrst;
   } else {
-    ok = False;
+    ok = false;
   }
   return ok;
 }
 
-Bool FITSKeywordUtil::toTDIM(String &tdim, const IPosition &shape) {
-  Bool ok = True;
+bool FITSKeywordUtil::toTDIM(String &tdim, const IPosition &shape) {
+  bool ok = true;
 
   ostringstream ostr;
   ostr << "(";
@@ -1046,17 +1046,17 @@ Bool FITSKeywordUtil::toTDIM(String &tdim, const IPosition &shape) {
   ostr << ")";
   tdim = ostr.str();
   if (tdim.length() > 71) {
-    ok = False;
+    ok = false;
   }
   return ok;
 }
 
 static void addText(RecordInterface &header, const String &comment, const char *leader) {
   static MLCG random;
-  static Bool init = False;
+  static bool init = false;
   if (!init) {
     Time now;
-    init = True;
+    init = true;
     random.seed1(long(now.modifiedJulianDay() * 86400.0));
   }
 

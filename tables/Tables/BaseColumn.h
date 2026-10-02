@@ -99,10 +99,10 @@ class BaseColumn {
   virtual ~BaseColumn();
 
   // Test if the column is writable.
-  virtual Bool isWritable() const = 0;
+  virtual bool isWritable() const = 0;
 
   // Test if the column is stored (otherwise it is virtual).
-  virtual Bool isStored() const = 0;
+  virtual bool isStored() const = 0;
 
   // Get access to the column keyword set.
   // <group>
@@ -117,7 +117,7 @@ class BaseColumn {
   virtual rownr_t nrow() const = 0;
 
   // Test if the given cell contains a defined value.
-  virtual Bool isDefined(rownr_t rownr) const = 0;
+  virtual bool isDefined(rownr_t rownr) const = 0;
 
   // Set the shape of the array in the given row.
   virtual void setShape(rownr_t rownr, const IPosition& shape);
@@ -142,7 +142,7 @@ class BaseColumn {
 
   // Ask the data manager if the shape of an existing array can be changed.
   // Default is no.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Initialize the rows from startRow till endRow (inclusive)
   // with the default value defined in the column description.
@@ -223,7 +223,7 @@ class BaseColumn {
   // Note that an unsigned integer cannot be converted to a signed integer
   // with the same length. So only Int64 can handle all integer values.
   // <group>
-  void getScalar(rownr_t rownr, Bool& value) const;
+  void getScalar(rownr_t rownr, bool& value) const;
   void getScalar(rownr_t rownr, uChar& value) const;
   void getScalar(rownr_t rownr, Short& value) const;
   void getScalar(rownr_t rownr, uShort& value) const;
@@ -245,7 +245,7 @@ class BaseColumn {
   // Put the value into the row and convert it from the given type.
   // This can only be used for scalar columns with a standard data type.
   // <group>
-  void putScalar(rownr_t rownr, const Bool& value);
+  void putScalar(rownr_t rownr, const bool& value);
   void putScalar(rownr_t rownr, const uChar& value);
   void putScalar(rownr_t rownr, const Short& value);
   void putScalar(rownr_t rownr, const uShort& value);

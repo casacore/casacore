@@ -37,7 +37,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 Regex::Regex() {}
 
-Regex::Regex(const String& str, Bool fast, Bool toECMAScript) : itsStr(str) {
+Regex::Regex(const String& str, bool fast, bool toECMAScript) : itsStr(str) {
   // Make the possible exception thrown by regex a bit more clear.
   try {
     std::regex::flag_type flags = std::regex::ECMAScript;
@@ -83,7 +83,7 @@ String::size_type Regex::match(const Char* s, String::size_type len, String::siz
   return res;
 }
 
-Bool Regex::fullMatch(const Char* s, String::size_type len) const {
+bool Regex::fullMatch(const Char* s, String::size_type len) const {
   return std::regex_match(s, s + len, *this);
 }
 
@@ -130,16 +130,16 @@ ostream& operator<<(ostream& ios, const Regex& exp) { return ios << exp.itsStr; 
 
 String Regex::toEcma(const String& rx) {
   Int inbrcount = -1;
-  Bool inBracket = False;
-  Bool charClass = False;
-  Bool escaped = False;
+  bool inBracket = false;
+  bool charClass = false;
+  bool escaped = false;
   uInt pattLeng = rx.length();
   String result;
   result.reserve(rx.size());
   for (uInt i = 0; i < pattLeng; i++) {
     Char c = rx[i];
     if (escaped) {
-      escaped = False;
+      escaped = false;
       if (c >= '1' && c <= '9') {
         // This is a backreference.
         // Put brackets around the next character if numeric as well.
@@ -153,13 +153,13 @@ String Regex::toEcma(const String& rx) {
         }
       }
     } else if (c == '\\') {
-      escaped = True;
+      escaped = true;
       inbrcount = 1;  // in case escaped inside bracket expression
     } else if (!inBracket) {
       if (c == '[') {
         // Opening bracket puts us in a bracket expression.
-        inBracket = True;
-        charClass = False;
+        inBracket = true;
+        charClass = false;
         inbrcount = -1;  // to know if ] is normal or end of br.expr.
       } else if (c == ']') {
         // Outside a bracket expression ] has to be escaped as well.
@@ -171,7 +171,7 @@ String Regex::toEcma(const String& rx) {
         // But a closing bracket immediately after the start of a bracket
         // expression is a literal ] and not the end of the expression.
         // It has to be escaped in Ecma.
-        inBracket = False;
+        inBracket = false;
       } else {
         result.push_back('\\');
         inbrcount = 0;
@@ -190,7 +190,7 @@ String Regex::toEcma(const String& rx) {
         if (i + 1 < pattLeng && rx[i + 1] == ':') {
           result.push_back(c);
           c = rx[++i];
-          charClass = True;
+          charClass = true;
         } else {
           result.push_back('\\');
         }
@@ -198,7 +198,7 @@ String Regex::toEcma(const String& rx) {
         // End of Posix character class.
         result.push_back(c);
         c = rx[++i];
-        charClass = False;
+        charClass = false;
       }
     }
     inbrcount++;
@@ -212,8 +212,8 @@ String Regex::fromPattern(const String& pattern) {
   enum CState { stream, bracketopen, escapechar };
   uInt bracecount = 0;
   Int inbrcount = -1;
-  Bool skipChar = False;
-  Bool charClass = False;
+  bool skipChar = false;
+  bool charClass = false;
   vector<Int> emptySubStr;
   uInt pattLeng = pattern.length();
   String result;
@@ -250,7 +250,7 @@ String Regex::fromPattern(const String& pattern) {
               c = '|';
               if (pattern[i - 1] == '{' || pattern[i - 1] == ',') {
                 emptySubStr[bracecount - 1] += 1;
-                skipChar = True;
+                skipChar = true;
               }
             }
             break;
@@ -273,7 +273,7 @@ String Regex::fromPattern(const String& pattern) {
           case '[':
             // Opening bracket puts us in a special state.
             state = bracketopen;
-            charClass = False;
+            charClass = false;
             inbrcount = -1;
             break;
           case '*':
@@ -313,12 +313,12 @@ String Regex::fromPattern(const String& pattern) {
           if (c == '[' && i + 1 < pattLeng && pattern[i + 1] == ':') {
             result.push_back(c);
             c = pattern[++i];
-            charClass = True;
+            charClass = true;
           } else if (charClass && c == ':' && i + 1 < pattLeng && pattern[i + 1] == ']') {
             // End of Posix character class.
             result.push_back(c);
             c = pattern[++i];
-            charClass = False;
+            charClass = false;
           }
         }
         inbrcount++;
@@ -337,7 +337,7 @@ String Regex::fromPattern(const String& pattern) {
     if (!skipChar && state != escapechar) {
       result.push_back(c);
     }
-    skipChar = False;
+    skipChar = false;
   }
   // Store a trailing backslash.
   if (state == escapechar) {
@@ -422,28 +422,28 @@ String Regex::makeCaseInsensitive(const String& str) {
   uInt strLeng = str.length();
   String result;
   result.reserve(4 * strLeng);
-  Bool inBracket = False;
-  Bool openBracket = False;
-  Bool escaped = False;
-  Bool charClass = False;
+  bool inBracket = false;
+  bool openBracket = false;
+  bool escaped = false;
+  bool charClass = false;
   for (uInt i = 0; i < strLeng; i++) {
     Char c = str[i];
     if (escaped) {
       result.push_back(c);
-      escaped = False;
+      escaped = false;
     } else if (c == '\\' && !inBracket) {
       // Note that a \ inside a set is part of the set and not an escape.
       result.push_back(c);
-      escaped = True;
+      escaped = true;
     } else if (c == '[' && !inBracket) {
       result.push_back(c);
-      inBracket = True;
-      openBracket = True;
-      charClass = False;
+      inBracket = true;
+      openBracket = true;
+      charClass = false;
     } else if (c == ']' && !openBracket) {
       // Note that a ] right after a [ is part of the set and not a closing ].
       result.push_back(c);
-      inBracket = False;
+      inBracket = false;
     } else if (c == '^' || c == '!') {
       // Note that a ^ or ! can be right after the [ and keeps the openBracket.
       result.push_back(c);
@@ -453,14 +453,14 @@ String Regex::makeCaseInsensitive(const String& str) {
         if (c == '[' && i + 1 < strLeng && str[i + 1] == ':') {
           result.push_back(c);
           c = str[++i];
-          charClass = True;
+          charClass = true;
         } else if (charClass && c == ':' && i + 1 < strLeng && str[i + 1] == ']') {
           result.push_back(c);
           c = str[++i];
-          charClass = False;
+          charClass = false;
         }
       }
-      openBracket = False;
+      openBracket = false;
       // An alphabetic character needs both cases.
       int c1 = c;
       int c2 = -1;

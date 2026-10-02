@@ -116,7 +116,7 @@ class TSMDataColumn : public TSMColumn {
 
   // Changing array shapes for non-FixedShape columns when the
   // parent tiled storage manager can handle it.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Set the shape of the data array in the given row.
   // It will check if it matches already defined data and coordinates shapes.
@@ -131,7 +131,7 @@ class TSMDataColumn : public TSMColumn {
   void setShapeTiled(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
 
   // Is the value shape defined in the given row?
-  Bool isShapeDefined(rownr_t rownr);
+  bool isShapeDefined(rownr_t rownr);
 
   // Get the shape of the item in the given row.
   IPosition shape(rownr_t rownr);
@@ -143,34 +143,38 @@ class TSMDataColumn : public TSMColumn {
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn get function).
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
-  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
-  virtual void getShort(rownr_t rownr, Short* dataPtr);
-  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
-  virtual void getInt(rownr_t rownr, Int* dataPtr);
-  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
-  virtual void getfloat(rownr_t rownr, float* dataPtr);
-  virtual void getdouble(rownr_t rownr, double* dataPtr);
-  virtual void getComplex(rownr_t rownr, Complex* dataPtr);
-  virtual void getDComplex(rownr_t rownr, DComplex* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getuChar(rownr_t rownr, uChar* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getShort(rownr_t rownr, Short* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getuShort(rownr_t rownr, uShort* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getInt(rownr_t rownr, Int* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getuInt(rownr_t rownr, uInt* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getInt64(rownr_t rownr, Int64* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getfloat(rownr_t rownr, float* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getdouble(rownr_t rownr, double* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getComplex(rownr_t rownr, Complex* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getDComplex(rownr_t rownr, DComplex* dataPtr) { accessCell(rownr, dataPtr, false); }
   // </group>
 
   // Put a scalar value into the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn put function).
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
-  virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
-  virtual void putShort(rownr_t rownr, const Short* dataPtr);
-  virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
-  virtual void putInt(rownr_t rownr, const Int* dataPtr);
-  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
-  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
-  virtual void putfloat(rownr_t rownr, const float* dataPtr);
-  virtual void putdouble(rownr_t rownr, const double* dataPtr);
-  virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
-  virtual void putDComplex(rownr_t rownr, const DComplex* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putuChar(rownr_t rownr, const uChar* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putShort(rownr_t rownr, const Short* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putuShort(rownr_t rownr, const uShort* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putInt(rownr_t rownr, const Int* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putuInt(rownr_t rownr, const uInt* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putInt64(rownr_t rownr, const Int64* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putfloat(rownr_t rownr, const float* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putdouble(rownr_t rownr, const double* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putComplex(rownr_t rownr, const Complex* dataPtr) {
+    accessCell(rownr, dataPtr, true);
+  }
+  virtual void putDComplex(rownr_t rownr, const DComplex* dataPtr) {
+    accessCell(rownr, dataPtr, true);
+  }
   // </group>
 
   // Get the array value in the given row.
@@ -243,7 +247,7 @@ class TSMDataColumn : public TSMColumn {
 
   // Get the function to convert from external to local format
   // (or vice-versa if <src>writeFlag=True</src>).
-  Conversion::ValueFunction* getConvertFunction(Bool writeFlag) const {
+  Conversion::ValueFunction* getConvertFunction(bool writeFlag) const {
     return writeFlag ? writeFunc_p : readFunc_p;
   }
 
@@ -251,7 +255,7 @@ class TSMDataColumn : public TSMColumn {
   size_t getNrConvert() const { return convPixelSize_p; }
 
   // Does a conversion (byte swap) needs to be done?
-  Bool isConversionNeeded() const { return mustConvert_p; }
+  bool isConversionNeeded() const { return mustConvert_p; }
 
  private:
   // The (canonical) size of a pixel in a tile.
@@ -262,7 +266,7 @@ class TSMDataColumn : public TSMColumn {
   // This is the pixel size when a memcpy can be used, otherwise it is 1.
   uInt convPixelSize_p;
   // Is a conversion necessary?
-  Bool mustConvert_p;
+  bool mustConvert_p;
   // The column sequence number.
   uInt colnr_p;
   // The conversion function needed when reading.
@@ -273,35 +277,35 @@ class TSMDataColumn : public TSMColumn {
   // Read or write a data cell in the cube.
   // A cell can contain a scalar or an array (depending on the
   // column definition).
-  void accessCell(rownr_t rownr, const void* dataPtr, Bool writeFlag);
+  void accessCell(rownr_t rownr, const void* dataPtr, bool writeFlag);
 
   // Read or write a slice of a data cell in the cube.
-  void accessCellSlice(rownr_t rownr, const Slicer& ns, const void* dataPtr, Bool writeFlag);
+  void accessCellSlice(rownr_t rownr, const Slicer& ns, const void* dataPtr, bool writeFlag);
 
   // Read or write an entire column.
   // This can only be done if one hypercube is used.
-  void accessColumn(const void* dataPtr, Bool writeFlag);
+  void accessColumn(const void* dataPtr, bool writeFlag);
 
   // Read or write a slice from the entire column.
   // This can only be done if one hypercube is used.
-  void accessColumnSlice(const Slicer& ns, const void* dataPtr, Bool writeFlag);
+  void accessColumnSlice(const Slicer& ns, const void* dataPtr, bool writeFlag);
 
   // Read or write some cells in a column.
   // It tries to optimize by looking for regular row strides.
   void accessColumnCells(const RefRows& rownrs, const IPosition& shape, const void* dataPtr,
-                         Bool writeFlag);
+                         bool writeFlag);
 
   // Read or write some cells in a column.
   // It tries to optimize by looking for regular row strides.
   void accessColumnSliceCells(const RefRows& rownrs, const Slicer& ns, const IPosition& shape,
-                              const void* dataPtr, Bool writeFlag);
+                              const void* dataPtr, bool writeFlag);
 
   // Read or write the full cells given by start,end,incr.
-  void accessFullCells(TSMCube* hypercube, char* dataPtr, Bool writeFlag, const IPosition& start,
+  void accessFullCells(TSMCube* hypercube, char* dataPtr, bool writeFlag, const IPosition& start,
                        const IPosition& end, const IPosition& incr);
 
   // Read or write the sliced cells given by start,end,incr.
-  void accessSlicedCells(TSMCube* hypercube, char* dataPtr, Bool writeFlag, const IPosition& start,
+  void accessSlicedCells(TSMCube* hypercube, char* dataPtr, bool writeFlag, const IPosition& start,
                          const IPosition& end, const IPosition& incr);
 };
 

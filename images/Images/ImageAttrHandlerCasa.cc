@@ -34,7 +34,7 @@ using namespace std;
 
 namespace casacore {
 
-ImageAttrHandlerCasa::ImageAttrHandlerCasa() : itsCanAdd(False) {}
+ImageAttrHandlerCasa::ImageAttrHandlerCasa() : itsCanAdd(false) {}
 
 ImageAttrHandlerCasa::~ImageAttrHandlerCasa() {}
 
@@ -45,7 +45,7 @@ void ImageAttrHandlerCasa::flush() {
   }
 }
 
-ImageAttrHandlerCasa& ImageAttrHandlerCasa::attachTable(const Table& image, Bool createHandler) {
+ImageAttrHandlerCasa& ImageAttrHandlerCasa::attachTable(const Table& image, bool createHandler) {
   itsImageTable = image;
   itsGroupMap.clear();
   // If ATTRGROUPS is defined, get all subtables (groups) in it.
@@ -58,17 +58,17 @@ ImageAttrHandlerCasa& ImageAttrHandlerCasa::attachTable(const Table& image, Bool
         itsGroupMap[rec.name(i)] = ImageAttrGroupCasa();
       }
     }
-    itsCanAdd = True;
+    itsCanAdd = true;
   } else if (createHandler) {
     // Does not exist yet, so create and write it.
     itsImageTable.reopenRW();
     itsImageTable.rwKeywordSet().defineRecord("ATTRGROUPS", TableRecord());
-    itsCanAdd = True;
+    itsCanAdd = true;
   }
   return *this;
 }
 
-Bool ImageAttrHandlerCasa::hasGroup(const String& groupName) {
+bool ImageAttrHandlerCasa::hasGroup(const String& groupName) {
   return (itsGroupMap.find(groupName) != itsGroupMap.end());
 }
 

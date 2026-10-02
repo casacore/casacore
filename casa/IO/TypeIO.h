@@ -93,7 +93,7 @@ class TypeIO {
   // DComplex as 2 doubles and String as a length (uInt) and chars.
   // If it does not succeed an exception will be thrown.
   // <group>
-  virtual size_t write(size_t nvalues, const Bool* value);
+  virtual size_t write(size_t nvalues, const bool* value);
   virtual size_t write(size_t nvalues, const Char* value) = 0;
   virtual size_t write(size_t nvalues, const uChar* value) = 0;
   virtual size_t write(size_t nvalues, const Short* value) = 0;
@@ -114,7 +114,7 @@ class TypeIO {
   // DComplex as 2 doubles and String as a length (uInt) and chars.
   // If it does not succeed an exception will be thrown.
   // <group>
-  virtual size_t read(size_t nvalues, Bool* value);
+  virtual size_t read(size_t nvalues, bool* value);
   virtual size_t read(size_t nvalues, Char* value) = 0;
   virtual size_t read(size_t nvalues, uChar* value) = 0;
   virtual size_t read(size_t nvalues, Short* value) = 0;
@@ -139,13 +139,13 @@ class TypeIO {
   // </group>
 
   // Is the TypeIO stream readable?
-  Bool isReadable() const;
+  bool isReadable() const;
 
   // Is the TypeIO stream writable?
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Is the TypeIO stream seekable?
-  Bool isSeekable() const;
+  bool isSeekable() const;
 
  protected:
   // This variable keeps a pointer to a ByteIO.

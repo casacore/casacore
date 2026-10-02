@@ -52,8 +52,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <typename T>
 void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface<T>>& outImage,
                                        const ImageInterface<T>& inImage, const String& outFile,
-                                       Bool direction, Bool spectral, const String& stokes,
-                                       Bool linear, Bool tabular, Bool overwrite, Bool silent) {
+                                       bool direction, bool spectral, const String& stokes,
+                                       bool linear, bool tabular, bool overwrite, bool silent) {
   // Verify output file
   if (!overwrite && !outFile.empty()) {
     NewFile validfile;
@@ -70,7 +70,7 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
 
   if (nExtra > 0) {
     uInt n = shape.nelements();
-    shape.resize(n + nExtra, True);
+    shape.resize(n + nExtra, true);
     for (uInt i = 0; i < nExtra; i++) {
       shape(n + i) = 1;
     }
@@ -91,7 +91,7 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
   const uInt nMasks = maskNames.nelements();
   if (nMasks > 0) {
     for (uInt i = 0; i < nMasks; i++) {
-      pOutImage->makeMask(maskNames(i), True, False, True);
+      pOutImage->makeMask(maskNames(i), true, false, true);
     }
   }
   pOutImage->setDefaultMask(inImage.getDefaultMask());
@@ -99,7 +99,7 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
   // Generate SubImage to copy the data into
 
   AxesSpecifier axesSpecifier(keepAxes);
-  SubImage<T> subImage(*pOutImage, True, axesSpecifier);
+  SubImage<T> subImage(*pOutImage, true, axesSpecifier);
 
   // Copy masks (directly, can't do via SubImage)
   if (nMasks > 0) {
@@ -113,7 +113,7 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
 
 template <typename T, typename U>
 void ImageUtilities::copyMiscellaneous(ImageInterface<T>& out, const ImageInterface<U>& in,
-                                       Bool copyImageInfo) {
+                                       bool copyImageInfo) {
   out.setMiscInfo(in.miscInfo());
   if (copyImageInfo) {
     out.setImageInfo(in.imageInfo());
@@ -125,7 +125,7 @@ void ImageUtilities::copyMiscellaneous(ImageInterface<T>& out, const ImageInterf
     LogIO log(LogOrigin("ImageUtilities", __func__, WHERE));
     log << LogIO::WARN << "Error copying image history: " << x.getMesg() << LogIO::POST;
   }
-  copyAttributes(out.attrHandler(True), in.roAttrHandler());
+  copyAttributes(out.attrHandler(true), in.roAttrHandler());
 }
 
 template <typename T>
@@ -166,7 +166,7 @@ void ImageUtilities::bin(MaskedArray<T>& out, Coordinate& coordOut, const Masked
   // Set data
 
   im.put(in.getArray());
-  TempLattice<Bool> pixelMask(shapeIn);
+  TempLattice<bool> pixelMask(shapeIn);
   pixelMask.put(in.getMask());
   im.attachMask(pixelMask);
 
@@ -216,11 +216,11 @@ void ImageUtilities::copyMask(ImageInterface<T>& out, const ImageInterface<U>& i
 
   ImageRegion iROut = out.getRegion(maskOut, RegionHandler::Masks);
   LCRegion& regionOut = iROut.asMask();
-  SubLattice<Bool> subRegionOut(regionOut, True, outSpec);
+  SubLattice<bool> subRegionOut(regionOut, true, outSpec);
 
   // Copy
 
-  LatticeIterator<Bool> maskIter(subRegionOut);
+  LatticeIterator<bool> maskIter(subRegionOut);
   for (maskIter.reset(); !maskIter.atEnd(); maskIter++) {
     subRegionOut.putSlice(regionIn.getSlice(maskIter.position(), maskIter.cursorShape()),
                           maskIter.position());

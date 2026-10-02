@@ -50,7 +50,7 @@ void getBlock(AipsIO& ios, Block<T>& blk) {
   ios.getstart("Block");
   uInt nr;
   ios >> nr;
-  blk.resize(nr, True);
+  blk.resize(nr, true);
   getAipsIO(ios, (uInt)nr, blk.storage());
   ios.getend();
 }

@@ -48,7 +48,7 @@ void MSStateColumns::attach(const MSState& msState) {
 
 Int64 MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
                                  const Quantum<Double>& stateLoadQ, const String& stateObsMode,
-                                 const Bool& stateRef, const Bool& stateSig,
+                                 const bool& stateRef, const bool& stateSig,
                                  const Int& stateSubScan, const Quantum<Double>& tolerance,
                                  Int64 tryRow) {
   rownr_t r = nrow();

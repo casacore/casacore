@@ -104,11 +104,11 @@ class FitsIO {
   // is it a valid fits file (SIMPLE==T). If not, the only
   // safest operation is to skip the data portion of the
   // current HeaderDataUnit
-  Bool isafits() const { return m_valid_fits; }
+  bool isafits() const { return m_valid_fits; }
   // see if there may be FITS extensions present (EXTENT==T)
-  Bool isextend() const { return m_extend; }
+  bool isextend() const { return m_extend; }
   // test if end of file has been reached
-  Bool eof() const { return Bool(m_rec_type == FITS::EndOfFile); }
+  bool eof() const { return bool(m_rec_type == FITS::EndOfFile); }
   // the FITS record type
   FITS::FitsRecType rectype() const { return m_rec_type; }
   // Header Data Unit type (e.g.
@@ -135,10 +135,10 @@ class FitsIO {
 
   fitsfile *m_fptr;
   const int m_recsize;
-  Bool m_valid_fits;             // True if SIMPLE == T
-  Bool m_extend;                 // True if EXTEND == T
-  Bool m_isaprimary;             // True if there is a primary HDU
-  Bool m_header_done;            // True if header has been processed
+  bool m_valid_fits;             // True if SIMPLE == T
+  bool m_extend;                 // True if EXTEND == T
+  bool m_isaprimary;             // True if there is a primary HDU
+  bool m_header_done;            // True if header has been processed
   FITS::FitsRecType m_rec_type;  // always set
   FITS::HDUType m_hdu_type;      // always set
 
@@ -194,7 +194,7 @@ class FitsInput : public FitsIO {
   // get hdu header image cards as strings. By default the strings will be of
   // variable length. You can optionally ask for them to be length 80 (padded
   // with spaces).
-  Vector<String> kwlist_str(Bool length80 = False);
+  Vector<String> kwlist_str(bool length80 = false);
 
   //  number of physical blocks read/written
   int blockno() const { return m_fin.blockno(); }
@@ -212,7 +212,7 @@ class FitsInput : public FitsIO {
                          FITSErrorHandler errhandler = FITSError::defaultHandler);
 
   // flag used for read control in errors
-  Bool m_got_rec;
+  bool m_got_rec;
   // total number of hdu in this fits file
   int m_thdunum;
 
@@ -261,11 +261,11 @@ class FitsOutput : public FitsIO {
   int hdu_complete() { return (m_rec_type == FITS::HDURecord && m_data_size == 0); }
   BlockOutput &getfout() { return m_fout; }
   void setfptr(fitsfile *ffp);
-  Bool required_keys_only() { return m_required_keys_only; }
+  bool required_keys_only() { return m_required_keys_only; }
 
  private:
   BlockOutput &m_fout;
-  Bool m_required_keys_only;
+  bool m_required_keys_only;
   BlockOutput &make_output(const char *, const FITS::FitsDevice &, int,
                            FITSErrorHandler errhandler = FITSError::defaultHandler);
 

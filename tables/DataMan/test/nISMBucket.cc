@@ -73,7 +73,7 @@ int main(int argc, const char* argv[]) {
   cerr << "by giving #columns, value length, and #rows with same value" << endl;
   cerr << "one or more times. For simplicity the lowest #rows has to" << endl;
   cerr << "divide the other ones" << endl;
-  while (True) {
+  while (true) {
     cerr << "#columns (0=end): ";
     cin >> n;
     if (n == 0) {

@@ -114,25 +114,25 @@ class Time {
   double operator-(const Time& begin);
   Time operator+(const double plus);
 
-  Bool operator==(const Time& other) const;
-  Bool operator!=(const Time& other) const;
-  Bool operator>(const Time& other) const;
-  Bool operator<(const Time& other) const;
+  bool operator==(const Time& other) const;
+  bool operator!=(const Time& other) const;
+  bool operator>(const Time& other) const;
+  bool operator<(const Time& other) const;
 
   // if iso is True, then use ISO 8601 format
   // otherwise, produce the string of the form
   // Tue Mar 22 16:40:24 1994
   // with GMT time
-  String toString(const Bool iso = False) const;
+  String toString(const bool iso = false) const;
 
   // returns a String in ISO 8601 format YYYY-MM-DDTHH:MM:SS in GMT
   // note: for dates beyond year 9999, use more digits for year
-  const String ISODate() const { return toString(True); }
+  const String ISODate() const { return toString(true); }
 
   // write the current time, GMT, in format
   //        Tue Mar 22 16:40:24 1994
   friend ostream& operator<<(ostream& out, const Time& other) {
-    out << other.toString(False);
+    out << other.toString(false);
     return out;
   }
 
@@ -170,9 +170,9 @@ class Time {
 
   static uInt howManyDaysInMonth(uInt month, uInt year);
 
-  static Bool isLeapYear();
+  static bool isLeapYear();
 
-  static Bool isLeapYear(uInt year);
+  static bool isLeapYear(uInt year);
 
   // Returns the difference, in seconds, between UTC and local time.
   // Negative values are west of GMT, positive are east.

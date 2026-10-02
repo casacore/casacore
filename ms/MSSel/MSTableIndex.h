@@ -121,10 +121,10 @@ class MSTableIndex {
 
   // get the row number which falls in the interval and has the time nearest to the
   // center of the interval (time()).  This also has the same problem as the previous function.
-  virtual Int64 getNearestRow(Bool &found);
+  virtual Int64 getNearestRow(bool &found);
 
   // is this attached to a null table
-  virtual Bool isNull() { return tab_p.isNull(); }
+  virtual bool isNull() { return tab_p.isNull(); }
 
   // return the subtable being indexed
   virtual Table &table() { return tab_p; }
@@ -136,7 +136,7 @@ class MSTableIndex {
   ScalarColumn<Double> timeColumn_p, intervalColumn_p;
   Vector<Double> timeVec_p, intervalVec_p;
   const Double *timeVals_p, *intervalVals_p;
-  Bool deleteItTime_p, deleteItInterval_p;
+  bool deleteItTime_p, deleteItInterval_p;
 
   // Internal keys - set by user
   Record *key_p;
@@ -153,20 +153,20 @@ class MSTableIndex {
 
   // last nearest
   Int64 lastNearest_p;
-  Bool nearestFound_p, nearestReady_p;
+  bool nearestFound_p, nearestReady_p;
 
   // last known sub-table size
   rownr_t nrows_p;
 
-  Bool hasChanged_p;
+  bool hasChanged_p;
 
   ColumnsIndex *index_p;
   Block<RecordFieldPtr<Int>> indexKeys_p;
-  Bool hasTime_p, hasInterval_p;
+  bool hasTime_p, hasInterval_p;
 
   void clear();
   void makeKeys();
-  Bool keysChanged();
+  bool keysChanged();
   void getInternals();
   void nearestTime();
 };

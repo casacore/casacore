@@ -32,12 +32,12 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableIterProxy::TableIterProxy() : firstTime_p(True) {}
+TableIterProxy::TableIterProxy() : firstTime_p(true) {}
 
 TableIterProxy::TableIterProxy(const TableProxy& tab, const Vector<String>& columns,
                                const String& order, const String& sortType,
                                const Vector<Double>& iterSteps)
-    : firstTime_p(True) {
+    : firstTime_p(true) {
   Block<String> names(columns.nelements());
   for (uInt i = 0; i < names.nelements(); i++) {
     names[i] = columns(i);
@@ -172,24 +172,24 @@ TableIterProxy& TableIterProxy::operator=(const TableIterProxy& that) {
   return *this;
 }
 
-Bool TableIterProxy::nextPart(TableProxy& table) {
+bool TableIterProxy::nextPart(TableProxy& table) {
   // The first iteration is already done by the TableIterator constructor.
   if (firstTime_p) {
-    firstTime_p = False;
+    firstTime_p = false;
   } else {
     iter_p.next();
   }
   // Exit when no more subtables.
   if (iter_p.pastEnd()) {
-    return False;
+    return false;
   }
   table = TableProxy(iter_p.table());
-  return True;
+  return true;
 }
 
 TableProxy TableIterProxy::next() {
   TableProxy tp;
-  Bool ok = nextPart(tp);
+  bool ok = nextPart(tp);
   if (ok) {
     return tp;
   }
@@ -198,7 +198,7 @@ TableProxy TableIterProxy::next() {
 
 void TableIterProxy::reset() {
   iter_p.reset();
-  firstTime_p = True;
+  firstTime_p = true;
 }
 
 }  // namespace casacore

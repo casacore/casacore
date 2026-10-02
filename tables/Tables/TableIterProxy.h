@@ -109,14 +109,14 @@ class TableIterProxy {
   TableIterProxy& operator=(const TableIterProxy&);
 
   // Is the internal iterator object null?
-  Bool isNull() const { return iter_p.isNull(); }
+  bool isNull() const { return iter_p.isNull(); }
 
   // Get the TableIterator object.
   const TableIterator& iterator() const { return iter_p; }
 
   // Get the next subtable and return it in the TableProxy argument.
   // When no more subtables are available, it returns False.
-  Bool nextPart(TableProxy& table);
+  bool nextPart(TableProxy& table);
 
   // Iterate to the next part (for Python use).
   // An IterError exception is thrown at the end of the loop.
@@ -132,7 +132,7 @@ class TableIterProxy {
 
   // # Data members
   TableIterator iter_p;
-  Bool firstTime_p;  // # True = first time
+  bool firstTime_p;  // # True = first time
 };
 
 }  // namespace casacore

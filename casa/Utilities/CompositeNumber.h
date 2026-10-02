@@ -80,7 +80,7 @@ class CompositeNumber {
   uInt nearestEven(const uInt value);
 
   // returns True is value is composite
-  Bool isComposite(const uInt value);
+  bool isComposite(const uInt value);
 
  private:
   Block<uInt> itsNumbers;

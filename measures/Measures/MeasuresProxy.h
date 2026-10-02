@@ -47,7 +47,7 @@ class MeasuresProxy {
   MeasuresProxy();
   virtual ~MeasuresProxy();
   Record measure(const Record& rec, const String& str, const Record& form);
-  Bool doframe(const Record& rec);
+  bool doframe(const Record& rec);
   String dirshow(const Record& rec);
   Record doptorv(const Record& rec, const String& str);
   Record doptofreq(const Record& rec, const String& str, const Quantity& form);
@@ -67,13 +67,13 @@ class MeasuresProxy {
 
  private:
   String vec2str(const Vector<String>& lst);
-  Bool doFrame(const MeasureHolder& in);
-  Bool doFrame(const String& in);
-  Bool makeMeasure(String& error, MeasureHolder& out, const MeasureHolder& in, const String& outref,
+  bool doFrame(const MeasureHolder& in);
+  bool doFrame(const String& in);
+  bool makeMeasure(String& error, MeasureHolder& out, const MeasureHolder& in, const String& outref,
                    const Record& off);
-  Bool toUvw(String& error, MeasureHolder& out, Vector<Double>& xyz, Vector<Double>& dot,
+  bool toUvw(String& error, MeasureHolder& out, Vector<Double>& xyz, Vector<Double>& dot,
              const MeasureHolder& in);
-  Bool expandIt(String& error, MeasureHolder& out, Vector<Double>& xyz, const MeasureHolder& in);
+  bool expandIt(String& error, MeasureHolder& out, Vector<Double>& xyz, const MeasureHolder& in);
   MeasureHolder rec2mh(const Record& rec);
   Record mh2rec(const MeasureHolder& mh);
 

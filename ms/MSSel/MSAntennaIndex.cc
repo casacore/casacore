@@ -75,7 +75,7 @@ Vector<Int> MSAntennaIndex::matchId(const Vector<Int>& sourceId) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern, const bool regex) {
   // Match a regular expression or pattern to a set of antenna id's
   // Input:
   //    pattern            const String&            Pattern/regular expression
@@ -84,10 +84,10 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern, co
   //    matchAntennaName   Vector<Int>              Matching antenna id's
   //
   Int pos = 0;
-  Bool negate = False;
+  bool negate = false;
   String patt = pattern;
   if (patt[0] == '^') {
-    negate = True;
+    negate = true;
     patt = patt.substr(1);
   }
   Regex reg;
@@ -98,7 +98,7 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern, co
   }
   //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
   IPosition sh(msAntennaCols_p.name().getColumn().shape());
-  LogicalArray maskArray(sh, False);
+  LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     // Int ret=(msAntennaCols_p.name().getColumn()(i).find(reg,pos));
@@ -163,7 +163,7 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const Vector<String>& names) {
     Vector<Int> currentMatch = matchAntennaName(names(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedAntennaIds);
-      matchedAntennaIds.resize(matchedAntennaIds.nelements() + currentMatch.nelements(), True);
+      matchedAntennaIds.resize(matchedAntennaIds.nelements() + currentMatch.nelements(), true);
       matchedAntennaIds = concatenateArray(temp, currentMatch);
     }
   }
@@ -172,7 +172,7 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const Vector<String>& names) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern, const bool regex) {
   // Match a regular expression or pattern to a set of antenna id's
   // Input:
   //    pattern            const String&            Pattern/regular expression
@@ -181,10 +181,10 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern, co
   //    matchStationName   Vector<Int>              Matching station id's
   //
   Int pos = 0;
-  Bool negate = False;
+  bool negate = false;
   String patt = pattern;
   if (patt[0] == '^') {
-    negate = True;
+    negate = true;
     patt = patt.substr(1);
   }
   Regex reg;
@@ -195,7 +195,7 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern, co
   }
   //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
   IPosition sh(msAntennaCols_p.station().getColumn().shape());
-  LogicalArray maskArray(sh, False);
+  LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     // Int ret=(msAntennaCols_p.name().getColumn()(i).find(reg,pos));
@@ -262,7 +262,7 @@ Vector<Int> MSAntennaIndex::matchStationName(const Vector<String>& names) {
     Vector<Int> currentMatch = matchStationName(names(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedStationIds);
-      matchedStationIds.resize(matchedStationIds.nelements() + currentMatch.nelements(), True);
+      matchedStationIds.resize(matchedStationIds.nelements() + currentMatch.nelements(), true);
       matchedStationIds = concatenateArray(temp, currentMatch);
     }
   }

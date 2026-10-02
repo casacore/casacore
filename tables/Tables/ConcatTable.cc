@@ -42,14 +42,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ConcatTable::ConcatTable(AipsIO& ios, const String& name, rownr_t nrrow, int option,
                          const TableLock& lockOptions, const TSMOption& tsmOption)
-    : BaseTable(name, option, nrrow), changed_p(False) {
+    : BaseTable(name, option, nrrow), changed_p(false) {
   // # Read the file in.
   //  Set initially to no write in destructor.
   //  At the end it is reset. In this way nothing is written if
   //  an exception is thrown during initialization.
-  noWrite_p = True;
+  noWrite_p = true;
   getConcat(ios, option, lockOptions, tsmOption);
-  noWrite_p = False;
+  noWrite_p = false;
 }
 
 ConcatTable::ConcatTable(const Block<Table>& tables, const Block<String>& subTables,
@@ -58,9 +58,9 @@ ConcatTable::ConcatTable(const Block<Table>& tables, const Block<String>& subTab
       subTableNames_p(subTables),
       subDirName_p(subDirName),
       tables_p(tables),
-      changed_p(True) {
+      changed_p(true) {
   /// cout<<"cctab1="<<sizeof(*this)<<' '<<this<<' '<<&rows_p<<' '<<&(rows())<<endl;
-  noWrite_p = True;
+  noWrite_p = true;
   if (tables.nelements() == 0) {
     throw TableError("ConcatTable: at least one table has to be given");
   }
@@ -71,7 +71,7 @@ ConcatTable::ConcatTable(const Block<Table>& tables, const Block<String>& subTab
   nrrow_p = rows_p.nrow();
   initialize();
   addInfo();
-  noWrite_p = False;
+  noWrite_p = false;
 }
 
 ConcatTable::ConcatTable(const Block<String>& tableNames, const Block<String>& subTables,
@@ -80,23 +80,23 @@ ConcatTable::ConcatTable(const Block<String>& tableNames, const Block<String>& s
     : BaseTable("", Table::Scratch, 0),
       subTableNames_p(subTables),
       subDirName_p(subDirName),
-      changed_p(True) {
+      changed_p(true) {
   /// cout<<"cctab1="<<sizeof(*this)<<' '<<this<<' '<<&rows_p<<' '<<&(rows())<<endl;
-  noWrite_p = True;
+  noWrite_p = true;
   if (tableNames.nelements() == 0) {
     throw TableError("ConcatTable: at least one table has to be given");
   }
   openTables(tableNames, option, lockOptions, tsmOption);
   initialize();
   addInfo();
-  noWrite_p = False;
+  noWrite_p = false;
 }
 
 ConcatTable::~ConcatTable() {
   // # When needed, write the table files if not marked for delete
   if (!isMarkedForDelete()) {
     if (openedForWrite() && !shouldNotWrite()) {
-      writeConcatTable(True);
+      writeConcatTable(true);
     }
   }
   // # Delete all ConcatColumn objects.
@@ -120,7 +120,7 @@ void ConcatTable::addInfo() {
   }
 }
 
-void ConcatTable::getPartNames(Block<String>& names, Bool recursive) const {
+void ConcatTable::getPartNames(Block<String>& names, bool recursive) const {
   if (recursive) {
     for (uInt i = 0; i < tables_p.nelements(); ++i) {
       tables_p[i].baseTablePtr()->getPartNames(names, recursive);
@@ -141,11 +141,11 @@ void ConcatTable::reopenRW() {
   option_p = Table::Update;
 }
 
-Bool ConcatTable::asBigEndian() const { return tables_p[0].baseTablePtr()->asBigEndian(); }
+bool ConcatTable::asBigEndian() const { return tables_p[0].baseTablePtr()->asBigEndian(); }
 
 const StorageOption& ConcatTable::storageOption() const { return tables_p[0].storageOption(); }
 
-Bool ConcatTable::isMultiUsed(Bool) const { return False; }
+bool ConcatTable::isMultiUsed(bool) const { return false; }
 
 const TableLock& ConcatTable::lockOptions() const { return tables_p[0].lockOptions(); }
 void ConcatTable::mergeLock(const TableLock& lockOptions) {
@@ -153,21 +153,21 @@ void ConcatTable::mergeLock(const TableLock& lockOptions) {
     tables_p[i].baseTablePtr()->mergeLock(lockOptions);
   }
 }
-Bool ConcatTable::hasLock(FileLocker::LockType type) const {
+bool ConcatTable::hasLock(FileLocker::LockType type) const {
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     if (!tables_p[i].hasLock(type)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
-Bool ConcatTable::lock(FileLocker::LockType type, uInt nattempts) {
+bool ConcatTable::lock(FileLocker::LockType type, uInt nattempts) {
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     if (!tables_p[i].lock(type, nattempts)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void ConcatTable::unlock() {
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
@@ -175,7 +175,7 @@ void ConcatTable::unlock() {
   }
 }
 
-void ConcatTable::flush(Bool fsync, Bool recursive) {
+void ConcatTable::flush(bool fsync, bool recursive) {
   // Flush the underlying table.
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].flush(fsync, recursive);
@@ -198,12 +198,12 @@ uInt ConcatTable::getModifyCounter() const {
 }
 
 // # Write a concatenate table into a file.
-void ConcatTable::writeConcatTable(Bool) {
+void ConcatTable::writeConcatTable(bool) {
   // # Write name and type of root and write object data.
   // # Do this only when something has changed.
   if (changed_p) {
     AipsIO ios;
-    writeStart(ios, True);
+    writeStart(ios, true);
     // writeStart has made the table directory.
     // Create the subDir directory if given.
     String sdName;
@@ -227,7 +227,7 @@ void ConcatTable::writeConcatTable(Bool) {
     ios << subTableNames_p;
     ios.putend();
     writeEnd(ios);
-    changed_p = False;
+    changed_p = false;
   }
   // # Write the TableInfo.
   flushTableInfo();
@@ -277,7 +277,7 @@ void ConcatTable::initialize() {
   // Check if all tables have the same description.
   std::vector<std::shared_ptr<TableDesc>> actualDesc(tables_p.nelements());
   ;
-  Bool equalDataTypes;
+  bool equalDataTypes;
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     actualDesc[i] = std::make_shared<TableDesc>(tables_p[i].actualTableDesc());
     if (actualDesc[i]->columnDescSet().isEqual(actualDesc[0]->columnDescSet(), equalDataTypes)) {
@@ -292,11 +292,11 @@ void ConcatTable::initialize() {
   for (uInt i = 0; i < actualDesc[0]->ncolumn(); ++i) {
     ColumnDesc& colDesc = actualDesc[0]->rwColumnDesc(i);
     if (colDesc.isArray() && (colDesc.options() & ColumnDesc::FixedShape) != 0) {
-      Bool sameShape = true;
+      bool sameShape = true;
       for (uInt j = 1; j < tables_p.nelements(); ++j) {
         const ColumnDesc& cd = actualDesc[j]->columnDesc(i);
         if ((cd.options() & ColumnDesc::FixedShape) == 0 || !colDesc.shape().isEqual(cd.shape())) {
-          sameShape = False;
+          sameShape = false;
           break;
         }
       }
@@ -365,13 +365,13 @@ Block<BaseColumn*> ConcatTable::getRefColumns(const String& columnName) {
 }
 
 // # Test if the table is writable.
-Bool ConcatTable::isWritable() const {
+bool ConcatTable::isWritable() const {
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     if (!tables_p[i].isWritable()) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 void ConcatTable::copy(const String& newName, int tableOption) const {
@@ -384,8 +384,8 @@ void ConcatTable::copy(const String& newName, int tableOption) const {
 }
 
 void ConcatTable::deepCopy(const String& newName, const Record& dataManagerInfo,
-                           const StorageOption& stopt, int tableOption, Bool, int endianFormat,
-                           Bool noRows) const {
+                           const StorageOption& stopt, int tableOption, bool, int endianFormat,
+                           bool noRows) const {
   trueDeepCopy(newName, dataManagerInfo, stopt, tableOption, endianFormat, noRows);
 }
 
@@ -413,7 +413,7 @@ BaseColumn* ConcatTable::getColumn(uInt columnIndex) const {
 void ConcatTable::addConcatCol(const ColumnDesc& columnDesc) {
   ColumnDesc& cd = tdescPtr_p->addColumn(columnDesc);
   colMap_p.insert(std::make_pair(cd.name(), cd.makeConcatColumn(this)));
-  changed_p = True;
+  changed_p = true;
 }
 
 void ConcatTable::addConcatCol(const TableDesc& tdesc) {
@@ -422,7 +422,7 @@ void ConcatTable::addConcatCol(const TableDesc& tdesc) {
   }
 }
 
-void ConcatTable::checkAddColumn(const String& name, Bool addToParent) {
+void ConcatTable::checkAddColumn(const String& name, bool addToParent) {
   if (!isWritable()) {
     throw TableInvOper("Table::addColumn; table is not writable");
   }
@@ -436,7 +436,7 @@ void ConcatTable::checkAddColumn(const String& name, Bool addToParent) {
   }
 }
 
-void ConcatTable::addColumn(const ColumnDesc& columnDesc, Bool addToParent) {
+void ConcatTable::addColumn(const ColumnDesc& columnDesc, bool addToParent) {
   checkAddColumn(columnDesc.name(), addToParent);
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(columnDesc, addToParent);
@@ -444,8 +444,8 @@ void ConcatTable::addColumn(const ColumnDesc& columnDesc, Bool addToParent) {
   addConcatCol(columnDesc);
 }
 
-void ConcatTable::addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                            Bool addToParent) {
+void ConcatTable::addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                            bool addToParent) {
   checkAddColumn(columnDesc.name(), addToParent);
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(columnDesc, dataManager, byName, addToParent);
@@ -454,7 +454,7 @@ void ConcatTable::addColumn(const ColumnDesc& columnDesc, const String& dataMana
 }
 
 void ConcatTable::addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
-                            Bool addToParent) {
+                            bool addToParent) {
   checkAddColumn(columnDesc.name(), addToParent);
   for (uInt i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(columnDesc, dataManager, addToParent);
@@ -463,7 +463,7 @@ void ConcatTable::addColumn(const ColumnDesc& columnDesc, const DataManager& dat
 }
 
 void ConcatTable::addColumn(const TableDesc& tableDesc, const DataManager& dataManager,
-                            Bool addToParent) {
+                            bool addToParent) {
   // First check if all columns exist and can be added or not.
   // Collect all columns to be added to the parent.
   for (uInt i = 0; i < tableDesc.ncolumn(); ++i) {
@@ -477,9 +477,9 @@ void ConcatTable::addColumn(const TableDesc& tableDesc, const DataManager& dataM
 }
 
 // # Rows and columns cannot be removed and renamed.
-Bool ConcatTable::canRemoveRow() const { return False; }
-Bool ConcatTable::canRemoveColumn(const Vector<String>&) const { return False; }
-Bool ConcatTable::canRenameColumn(const String&) const { return False; }
+bool ConcatTable::canRemoveRow() const { return false; }
+bool ConcatTable::canRemoveColumn(const Vector<String>&) const { return false; }
+bool ConcatTable::canRenameColumn(const String&) const { return false; }
 
 void ConcatTable::removeRow(rownr_t) { throw TableInvOper("ConcatTable cannot remove rows"); }
 
@@ -495,7 +495,7 @@ void ConcatTable::renameHypercolumn(const String&, const String&) {
   throw TableInvOper("ConcatTable cannot rename hypercolumns");
 }
 
-DataManager* ConcatTable::findDataManager(const String& name, Bool byColumn) const {
+DataManager* ConcatTable::findDataManager(const String& name, bool byColumn) const {
   return tables_p[0].findDataManager(name, byColumn);
 }
 

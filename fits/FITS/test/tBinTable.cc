@@ -53,15 +53,15 @@ int main(int argc, const char* argv[]) {
     String inputFilename = inputs.getString("inputFile");
     String baseName = inputs.getString("baseName");
     String storageManagerType = inputs.getString("storageManager");
-    Bool sdfits = inputs.getBool("sdfits");
+    bool sdfits = inputs.getBool("sdfits");
 
     ToLowerCaseInPlace(storageManagerType);
 
-    Bool useMiriadSM;
+    bool useMiriadSM;
     if (storageManagerType == "miriad") {
-      useMiriadSM = True;
+      useMiriadSM = true;
     } else if (storageManagerType == "aipsio") {
-      useMiriadSM = False;
+      useMiriadSM = false;
     } else {
       cout << storageManagerType << " is not a valid storage manager" << endl;
       return 1;

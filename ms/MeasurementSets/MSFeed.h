@@ -87,7 +87,7 @@ class MSFeed : public MSFeedEnums, public MSTable<MSFeedEnums> {
   // <group name=tableLikeConstructors>
   MSFeed(const String &tableName, TableOption = Table::Old);
   MSFeed(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSFeed(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSFeed(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSFeed(const Table &table);
   MSFeed(const MSFeed &other);
   // </group>
@@ -119,7 +119,7 @@ class MSFeed : public MSFeedEnums, public MSTable<MSFeedEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

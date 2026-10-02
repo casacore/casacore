@@ -58,7 +58,7 @@ class LELScalar {
   LELScalar();
 
   // Constructor takes value and optional mask.
-  LELScalar(const T& value, Bool mask = True) : itsValue(value), itsMask(mask) {}
+  LELScalar(const T& value, bool mask = true) : itsValue(value), itsMask(mask) {}
 
   // Get value.
   // <group>
@@ -67,11 +67,11 @@ class LELScalar {
   // </group>
 
   // Get mask.
-  Bool mask() const { return itsMask; }
+  bool mask() const { return itsMask; }
 
  private:
   T itsValue;
-  Bool itsMask;
+  bool itsMask;
 };
 
 }  // namespace casacore

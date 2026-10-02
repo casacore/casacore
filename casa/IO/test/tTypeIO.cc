@@ -48,7 +48,7 @@ void doIt(TypeIO* io) {
   AlwaysAssertExit(io->isWritable());
   AlwaysAssertExit(io->isSeekable());
 
-  Bool testBool = True;
+  bool testBool = true;
   Short testShort = -30;
   uShort testuShort = 10;
   Int testInt = -20;
@@ -80,7 +80,7 @@ void doIt(TypeIO* io) {
 
   io->seek(position);
 
-  Bool tBool;
+  bool tBool;
   Short tShort;
   uShort tuShort;
   Int tInt;

@@ -192,16 +192,16 @@ class DataConversion {
   // Determine if the data for a data type can be simply copied, thus
   // if no conversion is needed.
   // <group>
-  virtual Bool canCopy(const char*) const = 0;
-  virtual Bool canCopy(const unsigned char*) const = 0;
-  virtual Bool canCopy(const short*) const = 0;
-  virtual Bool canCopy(const unsigned short*) const = 0;
-  virtual Bool canCopy(const int*) const = 0;
-  virtual Bool canCopy(const unsigned int*) const = 0;
-  virtual Bool canCopy(const Int64*) const = 0;
-  virtual Bool canCopy(const uInt64*) const = 0;
-  virtual Bool canCopy(const float*) const = 0;
-  virtual Bool canCopy(const double*) const = 0;
+  virtual bool canCopy(const char*) const = 0;
+  virtual bool canCopy(const unsigned char*) const = 0;
+  virtual bool canCopy(const short*) const = 0;
+  virtual bool canCopy(const unsigned short*) const = 0;
+  virtual bool canCopy(const int*) const = 0;
+  virtual bool canCopy(const unsigned int*) const = 0;
+  virtual bool canCopy(const Int64*) const = 0;
+  virtual bool canCopy(const uInt64*) const = 0;
+  virtual bool canCopy(const float*) const = 0;
+  virtual bool canCopy(const double*) const = 0;
   // </group>
 
   // Get the external size of the data type.

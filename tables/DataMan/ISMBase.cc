@@ -44,7 +44,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ISMBase::ISMBase(uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
+ISMBase::ISMBase(uInt bucketSize, bool checkBucketSize, uInt cacheSize)
     : DataManager(),
       ///  dataManName_p     ("ISM0"),
       version_p(3),
@@ -60,10 +60,10 @@ ISMBase::ISMBase(uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
       firstFree_p(-1),
       bucketSize_p(bucketSize),
       checkBucketSize_p(checkBucketSize),
-      dataChanged_p(False),
+      dataChanged_p(false),
       tempBuffer_p(0) {}
 
-ISMBase::ISMBase(const String& dataManagerName, uInt bucketSize, Bool checkBucketSize,
+ISMBase::ISMBase(const String& dataManagerName, uInt bucketSize, bool checkBucketSize,
                  uInt cacheSize)
     : DataManager(),
       dataManName_p(dataManagerName),
@@ -80,7 +80,7 @@ ISMBase::ISMBase(const String& dataManagerName, uInt bucketSize, Bool checkBucke
       firstFree_p(-1),
       bucketSize_p(bucketSize),
       checkBucketSize_p(checkBucketSize),
-      dataChanged_p(False),
+      dataChanged_p(false),
       tempBuffer_p(0) {}
 
 ISMBase::ISMBase(const String& dataManagerName, const Record& spec)
@@ -98,8 +98,8 @@ ISMBase::ISMBase(const String& dataManagerName, const Record& spec)
       nFreeBucket_p(0),
       firstFree_p(-1),
       bucketSize_p(32768),
-      checkBucketSize_p(False),
-      dataChanged_p(False),
+      checkBucketSize_p(false),
+      dataChanged_p(false),
       tempBuffer_p(0) {
   if (spec.isDefined("BUCKETSIZE")) {
     bucketSize_p = spec.asInt("BUCKETSIZE");
@@ -128,7 +128,7 @@ ISMBase::ISMBase(const ISMBase& that)
       firstFree_p(-1),
       bucketSize_p(that.bucketSize_p),
       checkBucketSize_p(that.checkBucketSize_p),
-      dataChanged_p(False),
+      dataChanged_p(false),
       tempBuffer_p(0) {}
 
 ISMBase::~ISMBase() {
@@ -164,7 +164,7 @@ Record ISMBase::getProperties() const {
 
 void ISMBase::setProperties(const Record& rec) {
   if (rec.isDefined("MaxCacheSize")) {
-    setCacheSize(rec.asInt("MaxCacheSize"), False);
+    setCacheSize(rec.asInt("MaxCacheSize"), false);
   }
 }
 
@@ -228,7 +228,7 @@ DataManager* ISMBase::makeObject(const String& group, const Record& spec) {
   return new ISMBase(group, spec);
 }
 
-void ISMBase::setCacheSize(uInt cacheSize, Bool canExceedNrBuckets) {
+void ISMBase::setCacheSize(uInt cacheSize, bool canExceedNrBuckets) {
   cacheSize_p = cacheSize;
   // Limit the cache size if needed.
   if (!canExceedNrBuckets && cacheSize_p > getCache().nBucket()) {
@@ -293,7 +293,7 @@ void ISMBase::readIndex() {
   if (version == 3) {
     version_p = 3;
   }
-  Bool bigEndian = True;
+  bool bigEndian = true;
   if (version >= 5) {
     os >> bigEndian;
   }
@@ -369,7 +369,7 @@ ISMBucket* ISMBase::nextBucket(uInt& cursor, rownr_t& bucketStartRow, rownr_t& b
 
 void ISMBase::setBucketDirty() {
   cache_p->setDirty();
-  dataChanged_p = True;
+  dataChanged_p = true;
 }
 
 void ISMBase::addBucket(rownr_t rownr, ISMBucket* bucket) {
@@ -380,13 +380,13 @@ void ISMBase::addBucket(rownr_t rownr, ISMBucket* bucket) {
 }
 
 // # The storage manager can add rows.
-Bool ISMBase::canAddRow() const { return True; }
+bool ISMBase::canAddRow() const { return true; }
 // # The storage manager can delete rows.
-Bool ISMBase::canRemoveRow() const { return True; }
+bool ISMBase::canRemoveRow() const { return true; }
 // # The storage manager cannot add columns (not yet).
-Bool ISMBase::canAddColumn() const { return False; }
+bool ISMBase::canAddColumn() const { return false; }
 // # The storage manager cannot delete columns (not yet).
-Bool ISMBase::canRemoveColumn() const { return False; }
+bool ISMBase::canRemoveColumn() const { return false; }
 
 void ISMBase::addRow64(rownr_t nrrow) {
   getIndex().addRow(nrrow);
@@ -395,7 +395,7 @@ void ISMBase::addRow64(rownr_t nrrow) {
     colSet_p[i]->addRow(nrrow_p + nrrow, nrrow_p);
   }
   nrrow_p += nrrow;
-  dataChanged_p = True;
+  dataChanged_p = true;
 }
 
 void ISMBase::removeRow64(rownr_t rownr) {
@@ -423,7 +423,7 @@ void ISMBase::removeRow64(rownr_t rownr) {
       getCache().removeBucket();
     }
   }
-  dataChanged_p = True;
+  dataChanged_p = true;
 }
 
 // Note that the column has already been added by makeXXColumn.
@@ -434,7 +434,7 @@ void ISMBase::addColumn(DataManagerColumn* colp) {
   for (uInt i = 0; i < ncolumn(); i++) {
     if (colp == colSet_p[i]) {
       colSet_p[i]->doCreate((ISMBucket*)(getCache().getBucket(0)));
-      dataChanged_p = True;
+      dataChanged_p = true;
       return;
     }
   }
@@ -451,7 +451,7 @@ void ISMBase::removeColumn(DataManagerColumn* colp) {
       for (; i < ncolumn(); i++) {
         colSet_p[i - 1] = colSet_p[i];
       }
-      dataChanged_p = True;
+      dataChanged_p = true;
       return;
     }
   }
@@ -470,7 +470,7 @@ void ISMBase::recreate() {
   nbucketInit_p = 1;
   nFreeBucket_p = 0;
   firstFree_p = -1;
-  file_p = new BucketFile(fileName(), 0, False, multiFile());
+  file_p = new BucketFile(fileName(), 0, false, multiFile());
   index_p = new ISMIndex();
   makeCache();
   // # Let the column objects create something if needed.
@@ -480,16 +480,16 @@ void ISMBase::recreate() {
   setBucketDirty();
 }
 
-Bool ISMBase::hasMultiFileSupport() const { return True; }
+bool ISMBase::hasMultiFileSupport() const { return true; }
 
-Bool ISMBase::flush(AipsIO& ios, Bool fsync) {
+bool ISMBase::flush(AipsIO& ios, bool fsync) {
   // # Let the column objects flush themselves (if needed).
   // # Check if anything has changed.
-  Bool changed = False;
+  bool changed = false;
   uInt nrcol = ncolumn();
   for (uInt i = 0; i < nrcol; i++) {
     if (colSet_p[i]->flush(nrrow_p, fsync)) {
-      changed = True;
+      changed = true;
     }
   }
   if (cache_p != 0) {
@@ -500,8 +500,8 @@ Bool ISMBase::flush(AipsIO& ios, Bool fsync) {
     if (fsync) {
       file_p->fsync();
     }
-    changed = True;
-    dataChanged_p = False;
+    changed = true;
+    dataChanged_p = false;
   }
   ios.putstart("ISM", version_p);
   ios << dataManName_p;
@@ -537,12 +537,12 @@ void ISMBase::create64(rownr_t nrrow) {
 rownr_t ISMBase::open64(rownr_t tabNrrow, AipsIO& ios) {
   nrrow_p = tabNrrow;
   // Do not check the bucketsize for an existing table.
-  checkBucketSize_p = False;
+  checkBucketSize_p = false;
   version_p = ios.getstart("ISM");
   ios >> dataManName_p;
   ios.getend();
   init();
-  file_p = new BucketFile(fileName(), table().isWritable(), 0, False, multiFile());
+  file_p = new BucketFile(fileName(), table().isWritable(), 0, false, multiFile());
   // # Westerbork MSs have a problem, because TMS used for a while
   // # the erroneous version of ISMBase.cc.
   // # So if we have an old ISM version, do a makeIndex to get
@@ -578,7 +578,7 @@ void ISMBase::deleteManager() {
   iosfile_p = 0;
   // Clear cache without flushing.
   if (cache_p != 0) {
-    cache_p->clear(0, False);
+    cache_p->clear(0, false);
   }
   if (file_p != 0) {
     file_p->remove();
@@ -657,11 +657,11 @@ void ISMBase::init() {
   }
 }
 
-Bool ISMBase::checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
+bool ISMBase::checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
                                 uInt& offendingBucketNrow, uInt& offendingBucketNr,
                                 uInt& offendingCol, uInt& offendingIndex, rownr_t& offendingRow,
                                 rownr_t& offendingPrevRow) {
-  Bool ok = False;
+  bool ok = false;
   uInt cursor = 0;
   rownr_t bucketStartRow = 0;
   rownr_t bucketNrow = 0;
@@ -674,10 +674,10 @@ Bool ISMBase::checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketS
       offendingBucketStartRow = bucketStartRow;
       offendingBucketNrow = bucketNrow;
       offendingBucketNr = bucketNr;
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

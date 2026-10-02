@@ -80,7 +80,7 @@ class MSFlagCmdColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Bool>& applied() { return applied_p; }
+  ScalarColumn<bool>& applied() { return applied_p; }
   ScalarColumn<String>& command() { return command_p; }
   ScalarColumn<Double>& interval() { return interval_p; }
   ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p; }
@@ -95,7 +95,7 @@ class MSFlagCmdColumns {
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Bool>& applied() const { return applied_p; }
+  const ScalarColumn<bool>& applied() const { return applied_p; }
   const ScalarColumn<String>& command() const { return command_p; }
   const ScalarColumn<Double>& interval() const { return interval_p; }
   const ScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p; }
@@ -120,7 +120,7 @@ class MSFlagCmdColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -137,7 +137,7 @@ class MSFlagCmdColumns {
   MSFlagCmdColumns& operator=(const MSFlagCmdColumns&);
 
   // # required columns
-  ScalarColumn<Bool> applied_p;
+  ScalarColumn<bool> applied_p;
   ScalarColumn<String> command_p;
   ScalarColumn<Double> interval_p;
   ScalarColumn<Int> level_p;

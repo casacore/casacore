@@ -66,7 +66,7 @@ class Geometry {
   // has end points a0 and a1, and line segment b has endpoints b0 and b1.
   // Algorithm from
   // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-  static Bool doLineSegmentsIntersect(Double a0x, Double a0y, Double a1x, Double a1y, Double b0x,
+  static bool doLineSegmentsIntersect(Double a0x, Double a0y, Double a1x, Double a1y, Double b0x,
                                       Double b0y, Double b1x, Double b1y);
 };
 }  // namespace casacore

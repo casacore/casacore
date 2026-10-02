@@ -178,7 +178,7 @@ class MSColumns : public MSMainColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
   // set the DIRECTION reference type for FIELD, POINTING and SOURCE tables
   // (except for antenna frame directions).

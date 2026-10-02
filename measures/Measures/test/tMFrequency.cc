@@ -30,11 +30,11 @@
 int main() {
   try {
     AlwaysAssert(MFrequency::typeFromString("LSRK") == MFrequency::LSRK, AipsError);
-    Bool except = False;
+    bool except = false;
     try {
       MFrequency::typeFromString("J2000");
     } catch (const std::exception& x) {
-      except = True;
+      except = true;
     }
     AlwaysAssert(except, AipsError);
     cout << "ok" << endl;

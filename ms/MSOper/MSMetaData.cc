@@ -50,7 +50,7 @@ namespace casacore {
 
 MSMetaData::MSMetaData(const MeasurementSet* const& ms, const Float maxCacheSizeMB)
     : _ms(ms),
-      _showProgress(False),
+      _showProgress(false),
       _cacheMB(0),
       _maxCacheMB(maxCacheSizeMB),
       _nACRows(0),
@@ -115,8 +115,8 @@ MSMetaData::MSMetaData(const MeasurementSet* const& ms, const Float maxCacheSize
       _unflaggedSubScanNXCRows(),
       _taqlTableName(File(ms->tableName()).exists() ? ms->tableName() : "$1"),
       _taqlTempTable(File(ms->tableName()).exists() ? 0 : 1, ms),
-      _spwInfoStored(False),
-      _forceSubScanPropsToCache(False),
+      _spwInfoStored(false),
+      _forceSubScanPropsToCache(false),
       _sourceTimes() {}
 
 MSMetaData::~MSMetaData() {}
@@ -200,7 +200,7 @@ vector<std::pair<Quantity, Quantity>> MSMetaData::getProperMotions() const {
   vector<std::pair<Quantity, Quantity>> myvec(nrow);
   Vector<Quantity> av(2);
   for (rownr_t i = 0; i < nrow; ++i) {
-    col.get(i, av, False);
+    col.get(i, av, false);
     myvec[i].first = av[0];
     myvec[i].second = av[1];
   }
@@ -847,13 +847,13 @@ std::shared_ptr<const std::map<SubScanKey, std::set<String>>> MSMetaData::getSub
   return subScanToIntentsMap;
 }
 
-Bool MSMetaData::_cacheUpdated(const Float incrementInBytes) const {
+bool MSMetaData::_cacheUpdated(const Float incrementInBytes) const {
   Float newSize = _cacheMB + incrementInBytes / 1e6;
   if (newSize <= _maxCacheMB) {
     _cacheMB = newSize;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 std::set<uInt> MSMetaData::getSpwsForIntent(const String& intent) {
@@ -873,7 +873,7 @@ std::set<uInt> MSMetaData::getSpwsForIntent(const String& intent) {
 std::vector<std::set<uInt>> MSMetaData::getSpwToDataDescriptionIDMap() const {
   // TODO perhaps cache the result, but atm doesn't seem worth doing
   std::map<std::pair<uInt, uInt>, uInt> spwPolToDDID = getSpwIDPolIDToDataDescIDMap();
-  std::vector<std::set<uInt>> mymap(nSpw(True));
+  std::vector<std::set<uInt>> mymap(nSpw(true));
   std::map<std::pair<uInt, uInt>, uInt>::const_iterator iter = spwPolToDDID.begin();
   std::map<std::pair<uInt, uInt>, uInt>::const_iterator end = spwPolToDDID.end();
   while (iter != end) {
@@ -883,7 +883,7 @@ std::vector<std::set<uInt>> MSMetaData::getSpwToDataDescriptionIDMap() const {
   return mymap;
 }
 
-uInt MSMetaData::nSpw(Bool includewvr) const {
+uInt MSMetaData::nSpw(bool includewvr) const {
   if (_nSpw > 0) {
     return includewvr ? _nSpw : _nSpw - getWVRSpw().size();
   }
@@ -900,7 +900,7 @@ uInt MSMetaData::nPol() {
 }
 
 std::set<String> MSMetaData::getIntentsForSpw(const uInt spw) {
-  if (spw >= nSpw(True)) {
+  if (spw >= nSpw(true)) {
     throw AipsError(_ORIGIN + "spectral window out of range");
   }
   return _getSpwToIntentsMap()[spw];
@@ -998,7 +998,7 @@ void MSMetaData::_getFieldsAndSpwMaps(std::map<Int, std::set<uInt>>& fieldToSpwM
     return;
   }
   fieldToSpwMap.clear();
-  spwToFieldMap.resize(nSpw(True));
+  spwToFieldMap.resize(nSpw(true));
   std::shared_ptr<const std::map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const std::map<SubScanKey, SubScanProperties>> subScanProps;
   _getScanAndSubScanProperties(scanProps, subScanProps, _showProgress);
@@ -1082,7 +1082,7 @@ vector<String> MSMetaData::getFieldCodes() const {
 }
 
 std::set<Int> MSMetaData::getFieldIDsForSpw(const uInt spw) {
-  uInt myNSpw = nSpw(True);
+  uInt myNSpw = nSpw(true);
   if (spw >= myNSpw) {
     throw AipsError(_ORIGIN + "spectral window out of range");
   }
@@ -1114,7 +1114,7 @@ MSMetaData::_generateScanPropsIfWanted() const {
     // need it later, so just generate it now
     std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
     std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
-    _getScanAndSubScanProperties(scanProps, subScanProps, False);
+    _getScanAndSubScanProperties(scanProps, subScanProps, false);
     return scanProps;
   }
   // we don't have it, and we aren't going to want it later
@@ -1132,7 +1132,7 @@ MSMetaData::_generateSubScanPropsIfWanted() const {
     // need it later, so just generate it now
     std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
     std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
-    _getScanAndSubScanProperties(scanProps, subScanProps, False);
+    _getScanAndSubScanProperties(scanProps, subScanProps, false);
     return subScanProps;
   }
   // we don't have it, and we aren't going to want it later
@@ -1168,8 +1168,8 @@ std::set<ScanKey> MSMetaData::getScanKeys() const {
 
 std::set<ScanKey> MSMetaData::getScanKeys(const ArrayKey& arrayKey) const {
   std::set<ScanKey> allScanKeys = getScanKeys();
-  Bool doAllObsIDs = arrayKey.obsID < 0;
-  Bool doAllArrayIDs = arrayKey.arrayID < 0;
+  bool doAllObsIDs = arrayKey.obsID < 0;
+  bool doAllArrayIDs = arrayKey.arrayID < 0;
   if (doAllObsIDs && doAllArrayIDs) {
     return allScanKeys;
   }
@@ -1266,7 +1266,7 @@ void MSMetaData::_getScansAndSpwMaps(std::map<ScanKey, std::set<uInt>>& scanToSp
   }
   scanToSpwMap.clear();
   spwToScanMap.clear();
-  spwToScanMap.resize(nSpw(True));
+  spwToScanMap.resize(nSpw(true));
   std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps =
       _generateSubScanPropsIfWanted();
   if (subScanProps) {
@@ -1341,7 +1341,7 @@ std::set<uInt> MSMetaData::getSpwsForSubScan(const SubScanKey& subScan) const {
 }
 
 std::set<Int> MSMetaData::getScansForSpw(const uInt spw, Int obsID, Int arrayID) const {
-  uInt myNSpw = nSpw(True);
+  uInt myNSpw = nSpw(true);
   ThrowIf(spw >= myNSpw, "spectral window out of range");
   ArrayKey arrayKey;
   arrayKey.obsID = obsID;
@@ -1463,7 +1463,7 @@ vector<std::set<uInt>> MSMetaData::getAntennaIDs(const vector<String>& antennaNa
 }
 
 map<ScanKey, MSMetaData::FirstExposureTimeMap> MSMetaData::getScanToFirstExposureTimeMap(
-    Bool showProgress) const {
+    bool showProgress) const {
   std::shared_ptr<const std::map<ScanKey, MSMetaData::ScanProperties>> scanProps =
       _getScanProperties(showProgress);
   std::map<ScanKey, MSMetaData::ScanProperties>::const_iterator iter = scanProps->begin();
@@ -1665,7 +1665,7 @@ QVD MSMetaData::_freqWidthToVelWidth(const QVD& v, const Quantity& refFreq) {
   return dv;
 }
 
-vector<QVD> MSMetaData::getChanEffectiveBWs(Bool asVelWidths) const {
+vector<QVD> MSMetaData::getChanEffectiveBWs(bool asVelWidths) const {
   std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
   vector<MSMetaData::SpwProperties> props = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
   vector<MSMetaData::SpwProperties>::const_iterator end = props.end();
@@ -1693,7 +1693,7 @@ vector<QVD> MSMetaData::getChanFreqs() const {
   return out;
 }
 
-vector<QVD> MSMetaData::getChanResolutions(Bool asVelWidths) const {
+vector<QVD> MSMetaData::getChanResolutions(bool asVelWidths) const {
   std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
   vector<MSMetaData::SpwProperties> props = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
   vector<MSMetaData::SpwProperties>::const_iterator end = props.end();
@@ -1828,7 +1828,7 @@ std::map<uInt, std::set<uInt>> MSMetaData::getBBCNosToSpwMap(SQLDSwitch sqldSwit
     _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
   }
   uInt i = 0;
-  Bool found = True;
+  bool found = true;
   for (vector<uInt>::const_iterator iter = mymap.begin(); iter != end; ++iter, ++i) {
     if (out.find(*iter) == out.end()) {
       out[*iter] = std::set<uInt>();
@@ -2002,9 +2002,9 @@ std::shared_ptr<Quantum<Vector<Double>>> MSMetaData::_getExposureTimes() const {
   return col.getColumn();
 }
 
-std::shared_ptr<ArrayColumn<Bool>> MSMetaData::_getFlags() const {
+std::shared_ptr<ArrayColumn<bool>> MSMetaData::_getFlags() const {
   String flagColName = MeasurementSet::columnName(MSMainEnums::FLAG);
-  return std::shared_ptr<ArrayColumn<Bool>>(new ArrayColumn<Bool>(*_ms, flagColName));
+  return std::shared_ptr<ArrayColumn<bool>>(new ArrayColumn<bool>(*_ms, flagColName));
 }
 
 std::set<Double> MSMetaData::getTimesForScans(std::set<ScanKey> scans) const {
@@ -2039,7 +2039,7 @@ std::map<uInt, std::set<Double>> MSMetaData::getSpwToTimesForScan(const ScanKey&
   _checkScan(scan);
   std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
-  _getScanAndSubScanProperties(scanProps, subScanProps, False);
+  _getScanAndSubScanProperties(scanProps, subScanProps, false);
   return scanProps->find(scan)->second.times;
 }
 
@@ -2047,7 +2047,7 @@ std::pair<Double, Double> MSMetaData::getTimeRangeForScan(const ScanKey& scanKey
   _checkScan(scanKey);
   std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
-  _getScanAndSubScanProperties(scanProps, subScanProps, False);
+  _getScanAndSubScanProperties(scanProps, subScanProps, false);
   return scanProps->find(scanKey)->second.timeRange;
 }
 
@@ -2055,7 +2055,7 @@ std::shared_ptr<const map<ScanKey, pair<Double, Double>>> MSMetaData::getScanToT
     const {
   std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
-  _getScanAndSubScanProperties(scanProps, subScanProps, False);
+  _getScanAndSubScanProperties(scanProps, subScanProps, false);
   std::shared_ptr<map<ScanKey, pair<Double, Double>>> ret(new map<ScanKey, pair<Double, Double>>());
   map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
   map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
@@ -2065,7 +2065,7 @@ std::shared_ptr<const map<ScanKey, pair<Double, Double>>> MSMetaData::getScanToT
   return ret;
 }
 
-pair<Double, Double> MSMetaData::getTimeRange(Bool showProgress) const {
+pair<Double, Double> MSMetaData::getTimeRange(bool showProgress) const {
   // can't just use TIME column because that does not take into account
   // the interval
   std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
@@ -2087,7 +2087,7 @@ map<uInt, Double> MSMetaData::getAverageIntervalsForScan(const ScanKey& scan) co
   _checkScan(scan);
   std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
-  _getScanAndSubScanProperties(scanProps, subScanProps, False);
+  _getScanAndSubScanProperties(scanProps, subScanProps, false);
   map<uInt, Quantity> meanIntervals = scanProps->find(scan)->second.meanInterval;
   map<uInt, Double> ret;
   map<uInt, Quantity>::const_iterator iter = meanIntervals.begin();
@@ -2261,10 +2261,10 @@ std::set<Int> MSMetaData::getStatesForScan(Int obsID, Int arrayID, Int scan) con
   return states;
 }
 
-std::vector<std::set<Double>> MSMetaData::getTimesForSpws(Bool showProgress) const {
+std::vector<std::set<Double>> MSMetaData::getTimesForSpws(bool showProgress) const {
   std::shared_ptr<const std::map<ScanKey, ScanProperties>> scanProps =
       this->_getScanProperties(showProgress);
-  std::vector<std::set<Double>> myvec(nSpw(True));
+  std::vector<std::set<Double>> myvec(nSpw(true));
   std::map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
   std::map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
   for (; iter != end; ++iter) {
@@ -2409,7 +2409,7 @@ std::set<Double> MSMetaData::getTimesForIntent(const String& intent) const {
   }
 }
 
-Bool MSMetaData::hasBBCNo() const {
+bool MSMetaData::hasBBCNo() const {
   return _ms->spectralWindow().isColumn(MSSpectralWindowEnums::BBC_NO);
 }
 
@@ -2648,7 +2648,7 @@ map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const 
     if (restfreq.isDefined(i)) {
       // resize=True because the array lengths may differ
       // from cell to cell, CAS-10409
-      restfreq.get(i, rf, True);
+      restfreq.get(i, rf, true);
       props.restfreq = std::make_shared<std::vector<MFrequency>>(rf.tovector());
     } else {
       props.restfreq.reset();
@@ -2726,7 +2726,7 @@ uInt MSMetaData::nUniqueSourceIDsFromSourceTable() const {
   return myset.size();
 }
 
-Bool MSMetaData::_hasIntent(const String& intent) const {
+bool MSMetaData::_hasIntent(const String& intent) const {
   std::set<String> uniqueIntents = getIntents();
   return uniqueIntents.find(intent) != uniqueIntents.end();
 }
@@ -3066,8 +3066,8 @@ vector<QVD> MSMetaData::getAntennaOffsets() const {
   return antennaOffsets;
 }
 
-uInt MSMetaData::nBaselines(Bool includeAutoCorrelation) {
-  Matrix<Bool> baselines = getUniqueBaselines().copy();
+uInt MSMetaData::nBaselines(bool includeAutoCorrelation) {
+  Matrix<bool> baselines = getUniqueBaselines().copy();
   uInt ac = 0;
   uInt nrows = baselines.nrow();
   for (uInt i = 0; i < nrows; ++i) {
@@ -3075,12 +3075,12 @@ uInt MSMetaData::nBaselines(Bool includeAutoCorrelation) {
       // count autocorrelations separately from cross correlations
       ++ac;
     }
-    baselines(i, i) = False;
+    baselines(i, i) = false;
   }
   return ntrue(baselines) / 2 + ac;
 }
 
-Matrix<Bool> MSMetaData::getUniqueBaselines() {
+Matrix<bool> MSMetaData::getUniqueBaselines() {
   if (!_uniqueBaselines.empty()) {
     return _uniqueBaselines;
   }
@@ -3091,14 +3091,14 @@ Matrix<Bool> MSMetaData::getUniqueBaselines() {
   Vector<Int>::const_iterator a2Iter = ant2->begin();
   Vector<Int>::const_iterator end = ant1->end();
   uInt nAnts = nAntennas();
-  Matrix<Bool> baselines(nAnts, nAnts, False);
+  Matrix<bool> baselines(nAnts, nAnts, false);
   while (a1Iter != end) {
-    baselines(*a1Iter, *a2Iter) = True;
-    baselines(*a2Iter, *a1Iter) = True;
+    baselines(*a1Iter, *a2Iter) = true;
+    baselines(*a2Iter, *a1Iter) = true;
     ++a1Iter;
     ++a2Iter;
   }
-  if (_cacheUpdated(sizeof(Bool) * baselines.size())) {
+  if (_cacheUpdated(sizeof(bool) * baselines.size())) {
     _uniqueBaselines = baselines;
   }
   return baselines;
@@ -3141,13 +3141,13 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
     uInt ddID = ddIDs[i];
     uInt spw = dataDescToSpwIdMap[ddID];
     QVD channelWidths = spwInfo[spw].chanwidths;
-    Matrix<Bool> flagsMatrix(ArrayColumn<Bool>(result, "FLAG").get(i));
+    Matrix<bool> flagsMatrix(ArrayColumn<bool>(result, "FLAG").get(i));
     uInt nCorrelations = flagsMatrix.nrow();
     Double denom = (timeToBWMap.find(times[i])->second) * maxNBaselines * nCorrelations;
     for (uInt corr = 0; corr < nCorrelations; ++corr) {
-      Vector<Bool> goodData = !flagsMatrix.row(corr);
+      Vector<bool> goodData = !flagsMatrix.row(corr);
       if (anyTrue(goodData)) {
-        MaskedArray<Double> flaggedChannelWidths(channelWidths.getValue("Hz"), goodData, True);
+        MaskedArray<Double> flaggedChannelWidths(channelWidths.getValue("Hz"), goodData, true);
         Double effectiveBW = sum(flaggedChannelWidths);
         totalExposure += exposures[i] * effectiveBW / denom;
       }
@@ -3165,7 +3165,7 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
 }
 
 MSMetaData::SubScanProperties MSMetaData::getSubScanProperties(const SubScanKey& subScan,
-                                                               Bool showProgress) const {
+                                                               bool showProgress) const {
   _checkSubScan(subScan);
   return getSubScanProperties(showProgress)->find(subScan)->second;
 }
@@ -3191,7 +3191,7 @@ void MSMetaData::_getScalarQuantDoubleColumn(Quantum<Vector<Double>>& v, TablePr
 void MSMetaData::_computeScanAndSubScanProperties(
     std::shared_ptr<std::map<ScanKey, MSMetaData::ScanProperties>>& scanProps,
     std::shared_ptr<std::map<SubScanKey, MSMetaData::SubScanProperties>>& subScanProps,
-    Bool showProgress) const {
+    bool showProgress) const {
   std::shared_ptr<ProgressMeter> pm;
   if (showProgress || _showProgress) {
     LogIO log;
@@ -3508,7 +3508,7 @@ MSMetaData::_getChunkSubScanProperties(
     subScanKey.arrayID = *arIter;
     subScanKey.scan = *scanIter;
     subScanKey.fieldID = *fIter;
-    Bool autocorr = *a1Iter == *a2Iter;
+    bool autocorr = *a1Iter == *a2Iter;
     if (mysubscans.find(subScanKey) == mysubscans.end()) {
       // first time this subscan has been encountered in this chunk
       SubScanProperties props;
@@ -3587,7 +3587,7 @@ MSMetaData::_getChunkSubScanProperties(
 }
 
 std::shared_ptr<const std::map<SubScanKey, MSMetaData::SubScanProperties>>
-MSMetaData::getSubScanProperties(Bool showProgress) const {
+MSMetaData::getSubScanProperties(bool showProgress) const {
   std::shared_ptr<const std::map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const std::map<SubScanKey, SubScanProperties>> subScanProps;
   _getScanAndSubScanProperties(scanProps, subScanProps, showProgress);
@@ -3595,7 +3595,7 @@ MSMetaData::getSubScanProperties(Bool showProgress) const {
 }
 
 std::shared_ptr<const std::map<ScanKey, MSMetaData::ScanProperties>> MSMetaData::_getScanProperties(
-    Bool showProgress) const {
+    bool showProgress) const {
   std::shared_ptr<const std::map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const std::map<SubScanKey, SubScanProperties>> subScanProps;
   _getScanAndSubScanProperties(scanProps, subScanProps, showProgress);
@@ -3605,7 +3605,7 @@ std::shared_ptr<const std::map<ScanKey, MSMetaData::ScanProperties>> MSMetaData:
 void MSMetaData::_getScanAndSubScanProperties(
     std::shared_ptr<const std::map<ScanKey, MSMetaData::ScanProperties>>& scanProps,
     std::shared_ptr<const std::map<SubScanKey, MSMetaData::SubScanProperties>>& subScanProps,
-    Bool showProgress) const {
+    bool showProgress) const {
   // responsible for setting _scanProperties and _subScanProperties
   // a sub scan is defined by a unique combination of scan number and field ID
   if (_scanProperties && _subScanProperties) {
@@ -3773,12 +3773,12 @@ void MSMetaData::_getUnflaggedRowStats(Double& nACRows, Double& nXCRows,
   vector<uInt> dataDescIDToSpwMap = getDataDescIDToSpwMap();
   std::set<uInt> a, b, c, d, e;
   vector<SpwProperties> spwInfo = _getSpwInfo(a, b, c, d, e);
-  std::shared_ptr<ArrayColumn<Bool>> flags = _getFlags();
+  std::shared_ptr<ArrayColumn<bool>> flags = _getFlags();
   while (a1Iter != aEnd) {
     uInt spw = dataDescIDToSpwMap[*dIter];
     SpwProperties spwProp = spwInfo[spw];
     Vector<Double> channelWidths(Vector<Double>(spwProp.chanwidths.getValue("Hz")));
-    const Matrix<Bool>& flagsMatrix(flags->get(i));
+    const Matrix<bool>& flagsMatrix(flags->get(i));
     // count += flagsMatrix.size();
     Double x = 0;
     if (!anyTrue(flagsMatrix)) {
@@ -3798,7 +3798,7 @@ void MSMetaData::_getUnflaggedRowStats(Double& nACRows, Double& nXCRows,
         // invert the meaning here, so that a True value
         // in corrRow means the datum is good (unflagged)
         // it will make the masked sum below more obvious
-        Vector<Bool> corrRow = !flagsMatrix.row(corr);
+        Vector<bool> corrRow = !flagsMatrix.row(corr);
         if (allTrue(corrRow)) {
           // all channels for this correlation are unflagged
           bwSum += spwProp.bandwidth;
@@ -3808,7 +3808,7 @@ void MSMetaData::_getUnflaggedRowStats(Double& nACRows, Double& nXCRows,
           // but allow fall through to iterator increments
         } else {
           // some channels are flagged for this correlation, some aren't
-          MaskedArray<Double> unFlaggedChannelWidths(channelWidths, corrRow, True);
+          MaskedArray<Double> unFlaggedChannelWidths(channelWidths, corrRow, true);
           bwSum += sum(unFlaggedChannelWidths);
         }
       }
@@ -4047,7 +4047,7 @@ std::map<std::pair<uInt, uInt>, uInt> MSMetaData::getSpwIDPolIDToDataDescIDMap()
 
 std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(Int& antenna1, Int& antenna2,
                                                                    Double& time, rownr_t row,
-                                                                   Bool interpolate,
+                                                                   bool interpolate,
                                                                    Int initialguess
 
 ) const {
@@ -4224,7 +4224,7 @@ vector<MSMetaData::SpwProperties> MSMetaData::_getSpwInfo(std::set<uInt>& avgSpw
     _wvrSpw = wvrSpw;
     _sqldSpw = sqldSpw;
     _spwInfo = spwInfo;
-    _spwInfoStored = True;
+    _spwInfoStored = true;
   }
   return spwInfo;
 }
@@ -4253,7 +4253,7 @@ void MSMetaData::_checkSubScan(const SubScanKey& key) const {
   ThrowIf(allKeys.find(key) == allKeys.end(), "Unknown subscan " + toString(key));
 }
 
-Bool MSMetaData::_hasFieldID(const Int fieldID) const {
+bool MSMetaData::_hasFieldID(const Int fieldID) const {
   ThrowIf(fieldID >= (Int)nFields(), "Requested field ID " + std::to_string(fieldID) +
                                          " is greater than or equal to the number of records (" +
                                          std::to_string(nFields()) + ") in this MS's FIELD table");
@@ -4327,7 +4327,7 @@ std::set<uInt> MSMetaData::getUniqueSpwIDs() const {
   return uSpws;
 }
 
-Bool MSMetaData::_hasStateID(const Int stateID) const {
+bool MSMetaData::_hasStateID(const Int stateID) const {
   // This method is responsible for setting _uniqueStateIDs
   ThrowIf(stateID >= (Int)nStates(), "Requested state ID " + std::to_string(stateID) +
                                          " is greater than or equal to the number of records (" +

@@ -181,7 +181,7 @@ class HistAcc {
 
   StatAcc<T> itsStatAcc;  // # private Statistics Accumulator
 
-  Bool itsAutoDefineMode;  // # If true: automatic mode
+  bool itsAutoDefineMode;  // # If true: automatic mode
   Block<T> itsBuffer;      // # temporary storage of input T-values
   uInt itsBufferContents;  // # nr of T-values in buffer
 

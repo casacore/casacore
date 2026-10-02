@@ -47,7 +47,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // a global boolean variable (so it can be turned on and off in a debugger)
 // which is initialized to True.
 
-extern Bool aips_debug_on;
+extern bool aips_debug_on;
 
 }  // namespace casacore
 

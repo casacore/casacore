@@ -87,7 +87,7 @@ class MSAntenna : public MSAntennaEnums, public MSTable<MSAntennaEnums> {
   // <group name=tableLikeConstructors>
   MSAntenna(const String &tableName, TableOption = Table::Old);
   MSAntenna(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSAntenna(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSAntenna(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSAntenna(const Table &table);
   MSAntenna(const MSAntenna &other);
   // </group>
@@ -119,7 +119,7 @@ class MSAntenna : public MSAntennaEnums, public MSTable<MSAntennaEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

@@ -102,7 +102,7 @@ class DopplerEngine : public MeasEngine<MDoppler> {
 
   // Handle a possible rest frequency.
   // False is returned if it appears to be no rest frequency.
-  Bool handleRestFreq(const TENShPtr&);
+  bool handleRestFreq(const TENShPtr&);
 
   // Get the values.
   Array<Double> getArrayDouble(const TableExprId& id);
@@ -116,7 +116,7 @@ class DopplerEngine : public MeasEngine<MDoppler> {
   // (with proper type). If not. False is returned.
   // The 'allow' arguments tell if the doppler can be specified by means of
   // a radial velocity or freq/restfreq.
-  void handleDoppler(std::vector<TENShPtr>& args, uInt& argnr, Bool allowRadVel, Bool allowFreq);
+  void handleDoppler(std::vector<TENShPtr>& args, uInt& argnr, bool allowRadVel, bool allowFreq);
 
   // Set the MeasConvert object.
   void setConverter(MDoppler::Types toType);

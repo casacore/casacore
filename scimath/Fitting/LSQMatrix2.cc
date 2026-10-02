@@ -39,23 +39,23 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 const String LSQMatrix::tmatsiz = String("tmatsiz");
 const String LSQMatrix::tmatdat = String("tmatdat");
 
-Bool LSQMatrix::fromRecord(String &error, const RecordInterface &in) {
+bool LSQMatrix::fromRecord(String &error, const RecordInterface &in) {
   set(0);
   Int vlen;
   if (in.isDefined(tmatsiz) && in.type(in.idToNumber(RecordFieldId(tmatsiz))) == TpInt) {
     in.get(RecordFieldId(tmatsiz), vlen);
   } else {
     error += String("No triangular matrix length present");
-    return False;
+    return false;
   }
   set(vlen);
   return getCArray(error, in, tmatdat, len_p, trian_p);
 }
 
-Bool LSQMatrix::toRecord(String &error, RecordInterface &out) const {
+bool LSQMatrix::toRecord(String &error, RecordInterface &out) const {
   out.define(RecordFieldId(tmatsiz), static_cast<Int>(n_p));
   if (n_p) return putCArray(error, out, tmatdat, len_p, trian_p);
-  return True;
+  return true;
 }
 
 const String &LSQMatrix::ident() const {
@@ -63,7 +63,7 @@ const String &LSQMatrix::ident() const {
   return myid;
 }
 
-Bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
+bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
                           const Double *const in) {
   if (len) {
     if (in) {
@@ -72,13 +72,13 @@ Bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fna
       out.define(RecordFieldId(fname), vt);
     } else {
       error += String("No data for non-empty ") + fname + "vector";
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-Bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
+bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
                           Double *&out) {
   if (in.isDefined(fname) && in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayDouble) {
     Vector<Double> vt;
@@ -87,14 +87,14 @@ Bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String
     if (!out) out = new Double[vlen];
     if (len && vlen != len) {
       error += String("Inconsistency between lengths in " + fname + "field in record");
-      return False;
+      return false;
     }
     std::copy(vt.data(), vt.data() + len, out);
   }
-  return True;
+  return true;
 }
 
-Bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
+bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
                           const uInt *const in) {
   if (len) {
     if (in) {
@@ -103,13 +103,13 @@ Bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fna
       out.define(RecordFieldId(fname), vt);
     } else {
       error += String("No data for non-empty ") + fname + "vector";
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-Bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
+bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
                           uInt *&out) {
   if (in.isDefined(fname) && in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayInt) {
     Vector<Int> vt;
@@ -118,11 +118,11 @@ Bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String
     if (!out) out = new uInt[vlen];
     if (len && vlen != len) {
       error += String("Inconsistency between lengths in " + fname + "field in record");
-      return False;
+      return false;
     }
     std::copy(vt.data(), vt.data() + len, out);
   }
-  return True;
+  return true;
 }
 
 void LSQMatrix::toAipsIO(AipsIO &out) const {
@@ -140,15 +140,15 @@ void LSQMatrix::fromAipsIO(AipsIO &in) {
 
 void LSQMatrix::putCArray(AipsIO &out, uInt len, const Double *const in) {
   if (in) {
-    out << True;
+    out << true;
     out.put(len, in);
   } else {
-    out << False;
+    out << false;
   }
 }
 
 void LSQMatrix::getCArray(AipsIO &in, uInt len, Double *&out) {
-  Bool flag;
+  bool flag;
   in >> flag;
   if (flag) {
     uInt vlen;
@@ -163,15 +163,15 @@ void LSQMatrix::getCArray(AipsIO &in, uInt len, Double *&out) {
 
 void LSQMatrix::putCArray(AipsIO &out, uInt len, const uInt *const in) {
   if (in) {
-    out << True;
+    out << true;
     out.put(len, in);
   } else {
-    out << False;
+    out << false;
   }
 }
 
 void LSQMatrix::getCArray(AipsIO &in, uInt len, uInt *&out) {
-  Bool flag;
+  bool flag;
   in >> flag;
   if (flag) {
     uInt vlen;

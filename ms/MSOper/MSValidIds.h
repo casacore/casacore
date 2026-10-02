@@ -121,14 +121,14 @@ class MSValidIds {
   MeasurementSet ms_p;
   MSColumns *romsCols_p;
 
-  Bool hasDoppler_p, hasSource_p;
+  bool hasDoppler_p, hasSource_p;
 
   void clear();
   Int checkResult(Int testResult, const Table &mstable) const {
     return (testResult < 0 || rownr_t(testResult) >= mstable.nrow()) ? -1 : testResult;
   }
 
-  Bool checkRow(rownr_t rownr) const { return rownr < ms_p.nrow(); }
+  bool checkRow(rownr_t rownr) const { return rownr < ms_p.nrow(); }
 };
 
 }  // namespace casacore

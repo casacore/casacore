@@ -146,7 +146,7 @@ class ConcatTable : public BaseTable {
   ConcatTable& operator=(const ConcatTable&) = delete;
 
   // Get the names of the tables this table consists of.
-  virtual void getPartNames(Block<String>& names, Bool recursive) const;
+  virtual void getPartNames(Block<String>& names, bool recursive) const;
 
   // Return the layout of a table (i.e. description and #rows).
   // This function has the advantage that only the minimal amount of
@@ -163,7 +163,7 @@ class ConcatTable : public BaseTable {
 
   // Is the table stored in big or little endian format?
   // It returns the endianness of the first underlying table.
-  virtual Bool asBigEndian() const;
+  virtual bool asBigEndian() const;
 
   // Get the storage option used for the table.
   // It returns the storage option of the first underlying table.
@@ -171,7 +171,7 @@ class ConcatTable : public BaseTable {
 
   // Is the table in use (i.e. open) in another process?
   // It always returns False.
-  virtual Bool isMultiUsed(Bool checkSubTable) const;
+  virtual bool isMultiUsed(bool checkSubTable) const;
 
   // Get the locking info.
   // All underlying tables have the same lock option.
@@ -182,10 +182,10 @@ class ConcatTable : public BaseTable {
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
 
   // Try to lock the table for read or write access.
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
 
   // Unlock the table. This will also synchronize the table data,
   // thus force the data to be written to disk.
@@ -198,7 +198,7 @@ class ConcatTable : public BaseTable {
   // files written by intermediate flushes.
   // Note that if necessary the destructor will do an implicit flush,
   // unless it is executed due to an exception.
-  virtual void flush(Bool fsync, Bool recursive);
+  virtual void flush(bool fsync, bool recursive);
 
   // Resync the Table object with the table files.
   virtual void resync();
@@ -207,7 +207,7 @@ class ConcatTable : public BaseTable {
   virtual uInt getModifyCounter() const;
 
   // Test if all underlying tables are opened as writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Read a concat table from a file.
   // The underlying tables will be opened (if not stored in the cache).
@@ -220,7 +220,7 @@ class ConcatTable : public BaseTable {
   // Copy the table and all its subtables.
   // It copies the contents of each row to get a real copy.
   virtual void deepCopy(const String& newName, const Record& dataManagerInfo, const StorageOption&,
-                        int tableOption, Bool, int endianFormat, Bool noRows) const;
+                        int tableOption, bool, int endianFormat, bool noRows) const;
 
   // It returns the type of the parent table.
   virtual int tableType() const;
@@ -246,31 +246,31 @@ class ConcatTable : public BaseTable {
   virtual BaseColumn* getColumn(const String& columnName) const;
 
   // Test if it is possible to remove a row from this table (no).
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Remove the given row.
   virtual void removeRow(rownr_t rownr);
 
   // Test if columns can be removed (no).
-  virtual Bool canRemoveColumn(const Vector<String>& columnNames) const;
+  virtual bool canRemoveColumn(const Vector<String>& columnNames) const;
 
   // Add one or more columns to the table.
   // The column is added to the parent tables if told so and if not existing.
   // <group>
-  virtual void addColumn(const ColumnDesc& columnDesc, Bool addToParent);
-  virtual void addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                         Bool addToParent);
+  virtual void addColumn(const ColumnDesc& columnDesc, bool addToParent);
+  virtual void addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                         bool addToParent);
   virtual void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
-                         Bool addToParent);
+                         bool addToParent);
   virtual void addColumn(const TableDesc& tableDesc, const DataManager& dataManager,
-                         Bool addToParent);
+                         bool addToParent);
   // </group>
 
   // Remove a column.
   virtual void removeColumn(const Vector<String>& columnNames);
 
   // Test if a column can be renamed (no).
-  virtual Bool canRenameColumn(const String& columnName) const;
+  virtual bool canRenameColumn(const String& columnName) const;
 
   // Rename a column.
   virtual void renameColumn(const String& newName, const String& oldName);
@@ -279,7 +279,7 @@ class ConcatTable : public BaseTable {
   virtual void renameHypercolumn(const String& newName, const String& oldName);
 
   // Find the data manager with the given name or for the given column.
-  virtual DataManager* findDataManager(const String& name, Bool byColumn) const;
+  virtual DataManager* findDataManager(const String& name, bool byColumn) const;
 
   // Get the rows object.
   const ConcatRows& rows() const { return rows_p; }
@@ -320,10 +320,10 @@ class ConcatTable : public BaseTable {
   void handleSubTables();
 
   // Write a reference table.
-  void writeConcatTable(Bool fsync);
+  void writeConcatTable(bool fsync);
 
   // Check if the column can be added, thus does not exist yet.
-  void checkAddColumn(const String& name, Bool addToParent);
+  void checkAddColumn(const String& name, bool addToParent);
 
   // Add a column, with internal bookeeping (columns map).
   void addConcatCol(const ColumnDesc& cd);
@@ -336,7 +336,7 @@ class ConcatTable : public BaseTable {
   Block<Table> tables_p;                     // # Tables forming the concat
   std::map<String, ConcatColumn*> colMap_p;  // # map name to column
   TableRecord keywordSet_p;
-  Bool changed_p;  // # True = changed since last write
+  bool changed_p;  // # True = changed since last write
   ConcatRows rows_p;
 };
 

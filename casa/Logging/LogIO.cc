@@ -242,7 +242,7 @@ LogIO &operator<<(LogIO &os, Long item) {
   return os;
 }
 
-LogIO &operator<<(LogIO &os, Bool item) {
+LogIO &operator<<(LogIO &os, bool item) {
   os.output() << (item ? 1 : 0);
   return os;
 }

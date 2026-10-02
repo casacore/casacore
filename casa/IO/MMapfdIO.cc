@@ -35,7 +35,7 @@
 
 namespace casacore {
 
-MMapfdIO::MMapfdIO() : itsFileSize(0), itsPosition(0), itsPtr(0), itsIsWritable(False) {}
+MMapfdIO::MMapfdIO() : itsFileSize(0), itsPosition(0), itsPtr(0), itsIsWritable(false) {}
 
 MMapfdIO::MMapfdIO(int fd, const String& fileName) : itsPtr(0) { map(fd, fileName); }
 
@@ -110,7 +110,7 @@ void MMapfdIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 MMapfdIO::read(Int64 size, void* buf, Bool throwException) {
+Int64 MMapfdIO::read(Int64 size, void* buf, bool throwException) {
   Int64 szrd = size;
   if (itsPosition >= itsFileSize) {
     szrd = 0;

@@ -126,24 +126,24 @@ Lattice<T>* HDF5Lattice<T>::clone() const {
 }
 
 template <typename T>
-Bool HDF5Lattice<T>::isPersistent() const {
-  return True;
+bool HDF5Lattice<T>::isPersistent() const {
+  return true;
 }
 
 template <typename T>
-Bool HDF5Lattice<T>::isPaged() const {
-  return True;
+bool HDF5Lattice<T>::isPaged() const {
+  return true;
 }
 
 template <typename T>
-Bool HDF5Lattice<T>::isWritable() const {
+bool HDF5Lattice<T>::isWritable() const {
   // HDF5Lattice is writable if underlying file is already open for write
   // or if the underlying file is in principle writable.
   return itsFile->isWritable();
 }
 
 template <typename T>
-String HDF5Lattice<T>::name(Bool stripPath) const {
+String HDF5Lattice<T>::name(bool stripPath) const {
   Path path(itsFile->getName());
   if (!stripPath) {
     return path.absoluteName();
@@ -158,20 +158,20 @@ IPosition HDF5Lattice<T>::shape() const {
 }
 
 template <typename T>
-Bool HDF5Lattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool HDF5Lattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   buffer.resize(section.length());
-  Bool deleteIt;
+  bool deleteIt;
   T* data = buffer.getStorage(deleteIt);
   itsDataSet->get(section, data);
   buffer.putStorage(data, deleteIt);
-  return False;
+  return false;
 }
 
 template <typename T>
 void HDF5Lattice<T>::doPutSlice(const Array<T>& sourceArray, const IPosition& where,
                                 const IPosition& stride) {
   checkWritable();
-  Bool deleteIt;
+  bool deleteIt;
   const T* data = sourceArray.getStorage(deleteIt);
   const uInt arrDim = sourceArray.ndim();
   const uInt latDim = ndim();
@@ -215,7 +215,7 @@ template <class T>
 void HDF5Lattice<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
                                           const IPosition& windowLength,
                                           const IPosition& axisPath) {
-  itsDataSet->setCacheSize(TSMCube::calcCacheSize(itsDataSet->shape(), tileShape(), False,
+  itsDataSet->setCacheSize(TSMCube::calcCacheSize(itsDataSet->shape(), tileShape(), false,
                                                   sliceShape, windowStart, windowLength, axisPath,
                                                   0, 1));
 }
@@ -233,8 +233,8 @@ void HDF5Lattice<T>::putAt(const T& value, const IPosition& where) {
 }
 
 template <typename T>
-Bool HDF5Lattice<T>::ok() const {
-  return True;
+bool HDF5Lattice<T>::ok() const {
+  return true;
 }
 
 template <typename T>
@@ -245,7 +245,7 @@ void HDF5Lattice<T>::checkWritable() const {
 }
 
 template <typename T>
-LatticeIterInterface<T>* HDF5Lattice<T>::makeIter(const LatticeNavigator& nav, Bool useRef) const {
+LatticeIterInterface<T>* HDF5Lattice<T>::makeIter(const LatticeNavigator& nav, bool useRef) const {
   return new HDF5LattIter<T>(*this, nav, useRef);
 }
 

@@ -85,10 +85,10 @@ int main() {
     // f(x,y,z) = 45.5
     AlwaysAssertExit((constant(x) - Double(45.5)) < 1.e-6);
 
-    constant.mask(0) = False;
+    constant.mask(0) = false;
     AlwaysAssertExit(!constant.mask(0));
     AlwaysAssertExit(constant.parameters().nMaskedParameters() == 0);
-    constant.mask(0) = True;
+    constant.mask(0) = true;
     AlwaysAssertExit(constant.parameters().nMaskedParameters() == 1);
 
     AlwaysAssertExit(constant.parameters().getMaskedParameters()[0] == 45.5);

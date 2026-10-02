@@ -184,7 +184,7 @@ void FunctionalProxy::setparametersc(const Vector<DComplex>& val) {
   rec2fhdc(rec);
 }
 
-void FunctionalProxy::setmasks(const Vector<Bool>& val) {
+void FunctionalProxy::setmasks(const Vector<bool>& val) {
   uInt n;
   if (type_ == 0)
     n = (fhd_.asFunction()).nparameters();
@@ -205,7 +205,7 @@ void FunctionalProxy::setmasks(const Vector<Bool>& val) {
   }
 }
 
-void FunctionalProxy::setmask(Int idx, Bool val) {
+void FunctionalProxy::setmask(Int idx, bool val) {
   Int n;
   if (type_ == 0) {
     n = (fhd_.asFunction()).nparameters();
@@ -216,13 +216,13 @@ void FunctionalProxy::setmask(Int idx, Bool val) {
 
   if (type_ == 0) {
     Record rec = fhd2rec();
-    Vector<Bool> v = rec.toArrayBool("masks");
+    Vector<bool> v = rec.toArrayBool("masks");
     v[idx] = val;
     rec.define("masks", v);
     rec2fhd(rec);
   } else {
     Record rec = fhdc2rec();
-    Vector<Bool> v = rec.toArrayBool("masks");
+    Vector<bool> v = rec.toArrayBool("masks");
     v[idx] = val;
     rec.define("masks", v);
     rec2fhdc(rec);
@@ -248,7 +248,7 @@ void FunctionalProxy::setparc(Int idx, DComplex val) {
   rec2fhdc(rec);
 }
 
-Vector<Bool> FunctionalProxy::masks() const {
+Vector<bool> FunctionalProxy::masks() const {
   if (type_ == 0)
     return (fhd_.asFunction()).parameters().getParamMasks();
   else

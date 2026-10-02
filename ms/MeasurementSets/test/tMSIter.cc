@@ -132,7 +132,7 @@ void iterMS(double binwidth) {
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False);
+  MSIter msIter(ms, sort, binwidth, false);
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()
          << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
@@ -147,7 +147,7 @@ void iterMSMemory(double binwidth) {
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False, False);  // Use stored table in memory
+  MSIter msIter(ms, sort, binwidth, false, false);  // Use stored table in memory
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()
          << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
@@ -161,7 +161,7 @@ void iter2MS(double binwidth) {
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False);
+  MSIter msIter(ms, sort, binwidth, false);
   unsigned i = 0;
   for (msIter.origin(); msIter.more(); ++msIter) {
     cout << "nrow=" << msIter.table().nrow()
@@ -190,8 +190,8 @@ void iter2MSMemory(double binwidth) {
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False, False);  // Use stored table in memory
-  MSIter msIter1(ms, sort, binwidth, False, False);
+  MSIter msIter(ms, sort, binwidth, false, false);  // Use stored table in memory
+  MSIter msIter1(ms, sort, binwidth, false, false);
   MSIter* it = &msIter;
   unsigned i = 0;
   for (it->origin(); it->more(); ++(*it)) {
@@ -405,7 +405,7 @@ void iterMSCachedDDFeedInfo() {
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::DATA_DESC_ID;
-      msIter.reset(new MSIter(ms, sort, 0, False, False));  // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false));  // Use stored table in memory
     }
 
     // Set the expected DD metadata in the first iteration
@@ -508,7 +508,7 @@ void iterMSCachedDDFeedInfo() {
       Block<int> sort(2);
       sort[0] = MS::DATA_DESC_ID;
       sort[1] = MS::ANTENNA1;
-      msIter.reset(new MSIter(ms, sort, 0, False, False));  // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false));  // Use stored table in memory
     }
 
     // Set the expected DD metadata in the first iteration
@@ -626,7 +626,7 @@ void iterMSCachedDDFeedInfo() {
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::TIME;
-      msIter.reset(new MSIter(ms, sort, 1., False, False));  // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 1., false, false));  // Use stored table in memory
     }
 
     // Set the expected DD metadata in the first iteration
@@ -745,7 +745,7 @@ void iterMSCachedFieldInfo() {
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::FIELD_ID;
-      msIter.reset(new MSIter(ms, sort, 0, False, False));  // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false));  // Use stored table in memory
     }
 
     // Set the expected Field metadata in the first iteration
@@ -792,7 +792,7 @@ void iterMSCachedFieldInfo() {
       Block<int> sort(2);
       sort[0] = MS::FIELD_ID;
       sort[1] = MS::ANTENNA1;
-      msIter.reset(new MSIter(ms, sort, 0, False, False));  // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false));  // Use stored table in memory
     }
 
     // Set the expected Field metadata in the first iteration
@@ -846,7 +846,7 @@ void iterMSCachedFieldInfo() {
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::TIME;
-      msIter.reset(new MSIter(ms, sort, 1., False, False));  // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 1., false, false));  // Use stored table in memory
     }
 
     // Set the expected Field metadata in the first iteration

@@ -37,7 +37,7 @@ ArrayColumnDescBase::ArrayColumnDescBase(const String& name, const String& comme
                                          const String& dataTypeId, Int options, uInt ndim,
                                          const IPosition& shape)
     : BaseColumnDesc(name, comment, dataManagerType, dataManagerGroup, dt, dataTypeId, options,
-                     ndim, shape, False, True, False) {
+                     ndim, shape, false, true, false) {
   if (nrdim_p <= 0) {
     nrdim_p = -1;
   }
@@ -64,7 +64,7 @@ void ArrayColumnDescBase::putDesc(AipsIO& ios) const {
   // Formerly a switch was written to determine if a default existed.
   // This switch was always false.
   // Keep writing this switch (which is not used anymore).
-  ios << False;
+  ios << false;
 }
 
 void ArrayColumnDescBase::getDesc(AipsIO& ios) {
@@ -73,7 +73,7 @@ void ArrayColumnDescBase::getDesc(AipsIO& ios) {
   // Formerly a switch was written to determine if a default existed.
   // This switch was always false.
   // So read it in and do not do anything with it.
-  Bool sw;
+  bool sw;
   ios >> sw;
 }
 

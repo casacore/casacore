@@ -50,7 +50,7 @@ int main() {
     ByteSinkSource sinkSource2(sinkSource.typeIO());
   }
   {
-    Bool testBool = True;
+    bool testBool = true;
     Short testShort = -30;
     uShort testuShort = 10;
     Int testInt = -20;

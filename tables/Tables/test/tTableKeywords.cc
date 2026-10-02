@@ -65,7 +65,7 @@ void createTables() {
   subtab3.rwKeywordSet().defineTable("SubTab4", subtab4);
 }
 
-void readTables(const String& name, Bool swap) {
+void readTables(const String& name, bool swap) {
   // Reconstruct the main table.
   // Get the sub table from the keyword .
   Table tab(name, Table::Update);
@@ -93,11 +93,11 @@ void renameTables(const String& newName, const String& oldName) {
   tab.rename(newName, Table::New);
   tab.flush();
   // Try to open the table with the old name (should fail).
-  Bool excp = False;
+  bool excp = false;
   try {
     Table tab1(oldName);
   } catch (std::exception& x) {
-    excp = True;
+    excp = true;
   }
   AlwaysAssertExit(excp);
   // Try to open the table with new name (should succeed).
@@ -134,19 +134,19 @@ void readFromOtherDir() {
 int main() {
   try {
     createTables();
-    readTables("tTableKeywords_tmp/maindata", False);
+    readTables("tTableKeywords_tmp/maindata", false);
     renameTables("tTableKeywords_tmp/main2data", "tTableKeywords_tmp/maindata");
-    readTables("tTableKeywords_tmp/main2data", False);
+    readTables("tTableKeywords_tmp/main2data", false);
     copyTables("tTableKeywords_tmp/main3data", "tTableKeywords_tmp/main2data");
-    readTables("tTableKeywords_tmp/main3data", False);
-    readTables("tTableKeywords_tmp/main2data", False);
+    readTables("tTableKeywords_tmp/main3data", false);
+    readTables("tTableKeywords_tmp/main2data", false);
     // Go to the subdirectory to test if renaming and
     // reading back from there succeeds.
     AlwaysAssertExit(chdir("tTableKeywords_tmp") == 0);
-    readTables("main2data", False);
+    readTables("main2data", false);
     renameTables("main4data", "main2data");
-    readTables("main3data", True);
-    readTables("main4data", False);
+    readTables("main3data", true);
+    readTables("main4data", false);
     readFromOtherDir();
   } catch (std::exception& x) {
     cout << "Caught an exception : " << x.what() << endl;

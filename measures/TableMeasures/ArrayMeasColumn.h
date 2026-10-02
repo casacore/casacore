@@ -195,7 +195,7 @@ class ArrayMeasColumn : public TableMeasColumn {
   // Get the Measure array in the specified row.  For get() the supplied
   // array's shape should match the shape in the row unless resize is True.
   // <group name=get>
-  void get(rownr_t rownr, Array<M>& meas, Bool resize = False) const;
+  void get(rownr_t rownr, Array<M>& meas, bool resize = false) const;
   Array<M> operator()(rownr_t rownr) const;
   // </group>
 
@@ -227,9 +227,9 @@ class ArrayMeasColumn : public TableMeasColumn {
   // a False <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode(uInt refCode, Bool tableMustBeEmpty = True);
-  void setDescOffset(const Measure& offset, Bool tableMustBeEmpty = True);
-  void setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty = True);
+  void setDescRefCode(uInt refCode, bool tableMustBeEmpty = true);
+  void setDescOffset(const Measure& offset, bool tableMustBeEmpty = true);
+  void setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty = true);
   // </group>
 
   // Add a Measure array to the specified row.

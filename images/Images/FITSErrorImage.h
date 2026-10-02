@@ -109,7 +109,7 @@ class FITSErrorImage : public FITSImage {
 
   // Do the actual get of the data.
   // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.
   virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,

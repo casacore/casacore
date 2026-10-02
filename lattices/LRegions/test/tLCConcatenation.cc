@@ -46,24 +46,24 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
   ptrs[1] = &box;
   ptrs[2] = &cir1;
   // Extend along the last axis
-  LCConcatenation inters(False, ptrs, ndim - 1);
+  LCConcatenation inters(false, ptrs, ndim - 1);
 
   AlwaysAssertExit(inters.hasMask());
   AlwaysAssertExit(!inters.isWritable());
   cout << inters.hasMask() << ' ' << endl;
   cout << inters.boundingBox().start() << inters.boundingBox().end()
        << inters.boundingBox().length() << inters.latticeShape() << endl;
-  Array<Bool> mask;
+  Array<bool> mask;
   inters.getSlice(mask, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
   cout << mask << endl;
-  Array<Bool> mask1;
-  ptrs.resize(1, True, True);
+  Array<bool> mask1;
+  ptrs.resize(1, true, true);
   ptrs[0] = &box;
-  LCConcatenation inters1(False, ptrs, start.nelements());
+  LCConcatenation inters1(false, ptrs, start.nelements());
   AlwaysAssertExit(inters1.hasMask());
   AlwaysAssertExit(!inters1.isWritable());
   inters1.getSlice(mask1, IPosition(ndim, 0), inters1.boundingBox().length(), IPosition(ndim, 1));
-  AlwaysAssertExit(allEQ(mask1, True));
+  AlwaysAssertExit(allEQ(mask1, true));
 
   // Test slicing in various ways.
   // This is also a test for LCRegionMulti::findAreas.
@@ -99,7 +99,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     AlwaysAssertExit(inters.boundingBox().end() == interscop->boundingBox().end());
     AlwaysAssertExit(inters.boundingBox().stride() == interscop->boundingBox().stride());
     AlwaysAssertExit(inters.boundingBox().length() == interscop->boundingBox().length());
-    Array<Bool> arr;
+    Array<bool> arr;
     interscop->getSlice(arr, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
     AlwaysAssertExit(allEQ(arr, mask));
     delete interscop;
@@ -112,7 +112,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     AlwaysAssertExit(inters.boundingBox().end() == interscop->boundingBox().end());
     AlwaysAssertExit(inters.boundingBox().stride() == interscop->boundingBox().stride());
     AlwaysAssertExit(inters.boundingBox().length() == interscop->boundingBox().length());
-    Array<Bool> arr;
+    Array<bool> arr;
     interscop->getSlice(arr, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
     AlwaysAssertExit(allEQ(arr, mask));
     delete interscop;
@@ -122,8 +122,8 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     Block<const LCRegion*> ptrs(2);
     ptrs[0] = &box;
     ptrs[1] = &cir;
-    LCConcatenation union1(False, ptrs, start.nelements());
-    LCConcatenation union2(False, ptrs, start.nelements());
+    LCConcatenation union1(false, ptrs, start.nelements());
+    LCConcatenation union2(false, ptrs, start.nelements());
     AlwaysAssertExit(union1 == union2);
   }
   {
@@ -131,10 +131,10 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     Block<const LCRegion*> ptrs(2);
     ptrs[0] = &box;
     ptrs[1] = &cir;
-    LCConcatenation union1(False, ptrs, start.nelements());
+    LCConcatenation union1(false, ptrs, start.nelements());
     ptrs[0] = &cir;
     ptrs[1] = &box;
-    LCConcatenation union2(False, ptrs, start.nelements());
+    LCConcatenation union2(false, ptrs, start.nelements());
     AlwaysAssertExit(union1 == union2);
   }
 }

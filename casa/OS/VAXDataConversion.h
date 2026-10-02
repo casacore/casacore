@@ -131,16 +131,16 @@ class VAXDataConversion : public DataConversion {
   // Determine if the data for a data type can be simply copied, thus
   // if no conversion is needed.
   // <group>
-  Bool canCopy(const char*) const override;
-  Bool canCopy(const unsigned char*) const override;
-  Bool canCopy(const short*) const override;
-  Bool canCopy(const unsigned short*) const override;
-  Bool canCopy(const int*) const override;
-  Bool canCopy(const unsigned int*) const override;
-  Bool canCopy(const Int64*) const override;
-  Bool canCopy(const uInt64*) const override;
-  Bool canCopy(const float*) const override;
-  Bool canCopy(const double*) const override;
+  bool canCopy(const char*) const override;
+  bool canCopy(const unsigned char*) const override;
+  bool canCopy(const short*) const override;
+  bool canCopy(const unsigned short*) const override;
+  bool canCopy(const int*) const override;
+  bool canCopy(const unsigned int*) const override;
+  bool canCopy(const Int64*) const override;
+  bool canCopy(const uInt64*) const override;
+  bool canCopy(const float*) const override;
+  bool canCopy(const double*) const override;
   // </group>
 
   // Get the external size of the data type.

@@ -86,24 +86,24 @@ class PlainTable : public BaseTable {
   // It creates storage manager(s) for unbound columns and initializes
   // all storage managers. The given number of rows is stored in
   // the table and initialized if the flag is set.
-  PlainTable(SetupNewTable&, rownr_t nrrow, Bool initialize, const TableLock& lockOptions,
+  PlainTable(SetupNewTable&, rownr_t nrrow, bool initialize, const TableLock& lockOptions,
              int endianFormat, const TSMOption& tsmOption);
 
 #ifdef HAVE_MPI
   // MPI version of the constructor
-  PlainTable(MPI_Comm mpiComm, SetupNewTable&, rownr_t nrrow, Bool initialize,
+  PlainTable(MPI_Comm mpiComm, SetupNewTable&, rownr_t nrrow, bool initialize,
              const TableLock& lockOptions, int endianFormat, const TSMOption& tsmOption);
 #endif
 
   // Common part of the constructor shared by MPI and non-MPI
-  void PlainTableCommon(SetupNewTable&, rownr_t nrrow, Bool initialize,
+  void PlainTableCommon(SetupNewTable&, rownr_t nrrow, bool initialize,
                         const TableLock& lockOptions, int endianFormat, const TSMOption& tsmOption);
 
   // Construct the object for an existing table.
   // It opens the table file, reads the table control information
   // and creates and initializes the required storage managers.
   PlainTable(AipsIO&, uInt version, const String& name, const String& type, rownr_t nrrow,
-             int option, const TableLock& lockOptions, const TSMOption& tsmOption, Bool addToCache,
+             int option, const TableLock& lockOptions, const TSMOption& tsmOption, bool addToCache,
              uInt locknr);
 
   // The destructor flushes (i.e. writes) the table if it is opened
@@ -135,7 +135,7 @@ class PlainTable : public BaseTable {
   virtual void changeTiledDataOnly();
 
   // Is the table stored in big or little endian format?
-  virtual Bool asBigEndian() const;
+  virtual bool asBigEndian() const;
 
   // Get the storage option used for the table.
   virtual const StorageOption& storageOption() const;
@@ -143,7 +143,7 @@ class PlainTable : public BaseTable {
   // Is the table in use (i.e. open) in another process?
   // If <src>checkSubTables</src> is set, it is also checked if
   // a subtable is used in another process.
-  virtual Bool isMultiUsed(Bool checkSubTables) const;
+  virtual bool isMultiUsed(bool checkSubTables) const;
 
   // Get the locking info.
   virtual const TableLock& lockOptions() const;
@@ -153,10 +153,10 @@ class PlainTable : public BaseTable {
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
 
   // Try to lock the table for read or write access.
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
 
   // Unlock the table. This will also synchronize the table data,
   // thus force the data to be written to disk.
@@ -165,7 +165,7 @@ class PlainTable : public BaseTable {
   // Do a release of an AutoLock when the inspection interval has expired.
   // <src>always=True</src> means that the inspection is always done,
   // thus not every 25th call or so.
-  void autoReleaseLock(Bool always = False);
+  void autoReleaseLock(bool always = false);
 
   // Flush the table, i.e. write it to disk.
   // Nothing will be done if the table is not writable.
@@ -174,7 +174,7 @@ class PlainTable : public BaseTable {
   // files written by intermediate flushes.
   // Note that if necessary the destructor will do an implicit flush,
   // unless it is executed due to an exception.
-  virtual void flush(Bool fsync, Bool recursive);
+  virtual void flush(bool fsync, bool recursive);
 
   // Resync the Table object with the table file.
   virtual void resync();
@@ -190,7 +190,7 @@ class PlainTable : public BaseTable {
   static ByteIO::OpenOption toAipsIOFoption(int tableOption);
 
   // Test if the table is opened as writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Get the actual table description.
   virtual TableDesc actualTableDesc() const;
@@ -213,14 +213,14 @@ class PlainTable : public BaseTable {
   virtual BaseColumn* getColumn(const String& columnName) const;
 
   // Test if it is possible to add a row to this table.
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Add one or more rows and possibly initialize them.
   // This will fail for tables not supporting addition of rows.
-  virtual void addRow(rownr_t nrrow, Bool initialize);
+  virtual void addRow(rownr_t nrrow, bool initialize);
 
   // Test if it is possible to remove a row from this table.
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Remove the given row.
   // This will fail for tables not supporting removal of rows.
@@ -230,21 +230,21 @@ class PlainTable : public BaseTable {
   // The last Bool argument is not used in PlainTable, but can be used in
   // other classes derived from BaseTable.
   // <group>
-  virtual void addColumn(const ColumnDesc& columnDesc, Bool);
-  virtual void addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                         Bool);
-  virtual void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager, Bool);
-  virtual void addColumn(const TableDesc& tableDesc, const DataManager& dataManager, Bool);
+  virtual void addColumn(const ColumnDesc& columnDesc, bool);
+  virtual void addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                         bool);
+  virtual void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager, bool);
+  virtual void addColumn(const TableDesc& tableDesc, const DataManager& dataManager, bool);
   // </group>
 
   // Test if columns can be removed.
-  virtual Bool canRemoveColumn(const Vector<String>& columnNames) const;
+  virtual bool canRemoveColumn(const Vector<String>& columnNames) const;
 
   // Remove columns.
   virtual void removeColumn(const Vector<String>& columnNames);
 
   // Test if a column can be renamed (yes).
-  virtual Bool canRenameColumn(const String& columnName) const;
+  virtual bool canRenameColumn(const String& columnName) const;
 
   // Rename a column.
   virtual void renameColumn(const String& newName, const String& oldName);
@@ -253,7 +253,7 @@ class PlainTable : public BaseTable {
   virtual void renameHypercolumn(const String& newName, const String& oldName);
 
   // Find the data manager with the given name or for the given column.
-  virtual DataManager* findDataManager(const String& name, Bool byColumn) const;
+  virtual DataManager* findDataManager(const String& name, bool byColumn) const;
 
   // Get access to the TableCache.
   static TableCache& tableCache() { return theirTableCache; }
@@ -269,15 +269,15 @@ class PlainTable : public BaseTable {
   // This flushes the table data, writes the synchronization data
   // into the MemoryIO object, and returns a pointer to it.
   // <group>
-  static MemoryIO* releaseCallBack(void* plainTableObject, Bool always);
-  MemoryIO* doReleaseCallBack(Bool always);
+  static MemoryIO* releaseCallBack(void* plainTableObject, bool always);
+  MemoryIO* doReleaseCallBack(bool always);
   // </group>
 
   // When needed, write the table control information in an AipsIO file.
   // Tell the storage managers to flush and close their files.
   // It returns a switch to tell if the table control information has
   // been written.
-  Bool putFile(Bool always);
+  bool putFile(bool always);
 
   // Synchronize the table after having acquired a lock which says
   // that main table data has changed.
@@ -292,14 +292,14 @@ class PlainTable : public BaseTable {
   void checkWritable(const char* func) const;
 
   std::shared_ptr<ColumnSet> colSetPtr_p;  // # pointer to set of columns
-  Bool tableChanged_p;                     // # Has the main data changed?
-  Bool addToCache_p;                       // # Is table added to cache?
+  bool tableChanged_p;                     // # Has the main data changed?
+  bool addToCache_p;                       // # Is table added to cache?
   TableLockData* lockPtr_p;                // # pointer to lock object
   TableSyncData lockSync_p;                // # table synchronization
-  Bool bigEndian_p;                        // # True  = big endian canonical
+  bool bigEndian_p;                        // # True  = big endian canonical
                                            // # False = little endian canonical
   TSMOption tsmOption_p;
-  Bool changeTiledDataOnly_;  // # Allow updates to data in existing tiled columns
+  bool changeTiledDataOnly_;  // # Allow updates to data in existing tiled columns
   // # cache of open (plain) tables
   static TableCache theirTableCache;
 };

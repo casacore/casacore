@@ -97,12 +97,12 @@ class FITSDateUtil {
   // attempts to decode the time. It sets the date to Jan 1/1900 if it can't
   // decode the time, and UTC if it can't decode timesys. If timesys is the
   // empty string then UTC is assumed.
-  static Bool fromFITS(MVTime &time, MEpoch::Types &system, const String &date,
+  static bool fromFITS(MVTime &time, MEpoch::Types &system, const String &date,
                        const String &timesys);
 
   // Convert a FITS Date string to the current format. If the "in" format is
   // already correct it is just copied through.
-  static Bool convertDateString(String &out, const String &in);
+  static bool convertDateString(String &out, const String &in);
 
   // Determine the precision in a FITS date string.
   // Old style dates or no time returns 0, New style + time returns 6 + the number

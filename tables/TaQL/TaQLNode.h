@@ -108,7 +108,7 @@ class TaQLNode {
   static TaQLNode parse(const String& command);
 
   // Does the envelope contain a letter?
-  Bool isValid() const { return Bool(itsRep); }
+  bool isValid() const { return bool(itsRep); }
 
   // Return the type of letter.
   char nodeType() const { return itsRep->nodeType(); }
@@ -194,8 +194,8 @@ class TaQLRegexNode : public TaQLNode {
  public:
   explicit TaQLRegexNode(TaQLRegexNodeRep* rep);
   const String& getString() const;
-  Bool caseInsensitive() const;
-  Bool negate() const;
+  bool caseInsensitive() const;
+  bool negate() const;
 
  private:
   TaQLRegexNodeRep* itsNRep;
@@ -215,7 +215,7 @@ class TaQLRegexNode : public TaQLNode {
 class TaQLMultiNode : public TaQLNode {
  public:
   TaQLMultiNode();
-  explicit TaQLMultiNode(Bool isSetOrArray);
+  explicit TaQLMultiNode(bool isSetOrArray);
   TaQLMultiNode(TaQLMultiNodeRep* rep);
   void add(const TaQLNode& node);
   void add(TaQLNodeRep* noderep);

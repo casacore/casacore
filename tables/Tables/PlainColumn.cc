@@ -52,16 +52,16 @@ PlainColumn::~PlainColumn() {}
 rownr_t PlainColumn::nrow() const { return colSetPtr_p->nrow(); }
 
 TableRecord& PlainColumn::rwKeywordSet() {
-  Bool hasLocked = colSetPtr_p->userLock(FileLocker::Write, True);
-  checkWriteLock(True);
+  bool hasLocked = colSetPtr_p->userLock(FileLocker::Write, true);
+  checkWriteLock(true);
   TableRecord& rec = const_cast<BaseColumnDesc*>(colDescPtr_p)->rwKeywordSet();
   colSetPtr_p->setTableChanged();
   colSetPtr_p->userUnlock(hasLocked);
   return rec;
 }
 TableRecord& PlainColumn::keywordSet() {
-  Bool hasLocked = colSetPtr_p->userLock(FileLocker::Read, True);
-  checkReadLock(True);
+  bool hasLocked = colSetPtr_p->userLock(FileLocker::Read, true);
+  checkReadLock(true);
   TableRecord& rec = const_cast<BaseColumnDesc*>(colDescPtr_p)->rwKeywordSet();
   colSetPtr_p->userUnlock(hasLocked);
   return rec;
@@ -72,12 +72,12 @@ void PlainColumn::setShapeColumn(const IPosition&) {
   throw(TableInvOper("setShapeColumn not allowed for column " + colDescPtr_p->name()));
 }
 
-Bool PlainColumn::isBound() const { return (dataManPtr_p == 0 ? False : True); }
+bool PlainColumn::isBound() const { return (dataManPtr_p == 0 ? false : true); }
 void PlainColumn::bind(DataManager* dataManPtr) { dataManPtr_p = dataManPtr; }
 
-Bool PlainColumn::isWritable() const { return dataColPtr_p->isWritable(); }
+bool PlainColumn::isWritable() const { return dataColPtr_p->isWritable(); }
 
-Bool PlainColumn::isStored() const { return dataManPtr_p->isStorageManager(); }
+bool PlainColumn::isStored() const { return dataManPtr_p->isStorageManager(); }
 
 ColumnCache& PlainColumn::columnCache() { return dataColPtr_p->columnCache(); }
 

@@ -54,17 +54,17 @@ void TempLattice<T>::reopen() {
 }
 
 template <class T>
-Bool TempLattice<T>::isPaged() const {
+bool TempLattice<T>::isPaged() const {
   return itsImpl->isPaged();
 }
 
 template <class T>
-Bool TempLattice<T>::canReferenceArray() const {
+bool TempLattice<T>::canReferenceArray() const {
   return itsImpl->canReferenceArray();
 }
 
 template <class T>
-Bool TempLattice<T>::isWritable() const {
+bool TempLattice<T>::isWritable() const {
   return itsImpl->isWritable();
 }
 
@@ -74,7 +74,7 @@ IPosition TempLattice<T>::shape() const {
 }
 
 template <class T>
-Bool TempLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool TempLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   return itsImpl->doGetSlice(buffer, section);
 }
 
@@ -157,12 +157,12 @@ void TempLattice<T>::putAt(const T& value, const IPosition& where) {
 }
 
 template <class T>
-Bool TempLattice<T>::ok() const {
+bool TempLattice<T>::ok() const {
   return itsImpl->ok();
 }
 
 template <class T>
-LatticeIterInterface<T>* TempLattice<T>::makeIter(const LatticeNavigator& nav, Bool useRef) const {
+LatticeIterInterface<T>* TempLattice<T>::makeIter(const LatticeNavigator& nav, bool useRef) const {
   return itsImpl->makeIter(nav, useRef);
 }
 

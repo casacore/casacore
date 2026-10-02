@@ -36,14 +36,14 @@ template <class T>
 SPolynomialParam<T>::SPolynomialParam() : Function<T>(4) {
   param_p[0] = 1;
   param_p[2] = 1;
-  for (uInt i = 0; i < 3; ++i) mask(i) = False;
+  for (uInt i = 0; i < 3; ++i) mask(i) = false;
 }
 
 template <class T>
 SPolynomialParam<T>::SPolynomialParam(uInt order) : Function<T>(order + 4) {
   param_p[0] = 1;
   param_p[2] = 1;
-  for (uInt i = 0; i < 3; ++i) mask(i) = False;
+  for (uInt i = 0; i < 3; ++i) mask(i) = false;
 }
 
 template <class T>

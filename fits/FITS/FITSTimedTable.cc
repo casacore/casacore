@@ -31,9 +31,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 FITSTimedTable::FITSTimedTable()
-    : atStart_p(True),
-      hasChanged_p(False),
-      changePending_p(False),
+    : atStart_p(true),
+      hasChanged_p(false),
+      changePending_p(false),
       table_p(0),
       row_now_p(0),
       row_next_p(0),
@@ -51,13 +51,13 @@ FITSTimedTable::FITSTimedTable()
 
   time_now_p.attachToRecord(*row_now_p, 0);
   time_next_p.attachToRecord(*row_next_p, 0);
-  ok_p = True;
+  ok_p = true;
 }
 
 FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTime)
-    : atStart_p(True),
-      hasChanged_p(False),
-      changePending_p(False),
+    : atStart_p(true),
+      hasChanged_p(false),
+      changePending_p(false),
       table_p(originalTable),
       row_now_p(0),
       row_next_p(0),
@@ -81,7 +81,7 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTim
     *time_next = 0.0;
     time_now_p.attachToRecord(*row_now_p, 0);
     time_next_p.attachToRecord(*row_next_p, 0);
-    ok_p = True;
+    ok_p = true;
     timeColumn_p = 0;
   } else {
     initNowRecord(rowDesc_p);
@@ -89,7 +89,7 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTim
 
     table_p->next();
     if (table_p->hasChanged()) {
-      changePending_p = True;
+      changePending_p = true;
       table_p->resetChangedFlag();
     }
     initNextRecord(table_p->description());
@@ -104,8 +104,8 @@ FITSTimedTable::~FITSTimedTable() {
   row_next_p = 0;
 }
 
-Bool FITSTimedTable::isValid() const {
-  if (!table_p) return True;
+bool FITSTimedTable::isValid() const {
+  if (!table_p) return true;
   return table_p->isValid();
 }
 
@@ -131,15 +131,15 @@ const Record &FITSTimedTable::nulls() const {
 
 const RecordDesc &FITSTimedTable::description() const { return rowDesc_p; }
 
-Bool FITSTimedTable::pastEnd() const {
+bool FITSTimedTable::pastEnd() const {
   // the constant version can not try and resync with underlying table
   return (!table_p || table_p->pastEnd());
 }
 
-Bool FITSTimedTable::pastEnd() {
+bool FITSTimedTable::pastEnd() {
   // if how_past_end_p indicates we've been past the end
   // but table_p->pastEnd() is False, resyncronize with table
-  if (!table_p) return True;
+  if (!table_p) return true;
   if (how_past_end_p && !table_p->pastEnd()) {
     how_past_end_p = 0;
     *row_now_p = table_p->currentRow();
@@ -149,8 +149,8 @@ Bool FITSTimedTable::pastEnd() {
       initNowRecord(rowDesc_p);
       initNextRecord(rowDesc_p);
       *row_now_p = table_p->currentRow();
-      hasChanged_p = True;
-      changePending_p = False;
+      hasChanged_p = true;
+      changePending_p = false;
       table_p->resetChangedFlag();
     }
     *row_next_p = table_p->currentRow();
@@ -165,15 +165,15 @@ void FITSTimedTable::next() {
   if (changePending_p) {
     rowDesc_p = table_p->description();
     initNowRecord(rowDesc_p);
-    changePending_p = False;
-    hasChanged_p = True;
+    changePending_p = false;
+    hasChanged_p = true;
   }
   *row_now_p = table_p->currentRow();
   //    String curName = name();
   table_p->next();
   if (table_p->hasChanged()) {
     initNextRecord(table_p->description());
-    changePending_p = True;
+    changePending_p = true;
     table_p->resetChangedFlag();
   }
   *row_next_p = table_p->currentRow();
@@ -185,7 +185,7 @@ void FITSTimedTable::next() {
     table_p->next();
     if (table_p->hasChanged()) {
       initNextRecord(table_p->description());
-      changePending_p = True;
+      changePending_p = true;
       table_p->resetChangedFlag();
     }
     *row_next_p = table_p->currentRow();
@@ -207,8 +207,8 @@ void FITSTimedTable::next() {
     how_past_end_p++;
   }
 
-  atStart_p = False;
-  ok_p = True;
+  atStart_p = false;
+  ok_p = true;
 }
 
 const Record &FITSTimedTable::currentRow() const { return *row_now_p; }
@@ -232,7 +232,7 @@ void FITSTimedTable::setTime(Double time) {
 
   if (time < currentTime()) {
     if (atStart_p) {
-      ok_p = False;
+      ok_p = false;
       return;
     } else {
       // just write out error message to cerr for now
@@ -248,8 +248,8 @@ void FITSTimedTable::setTime(Double time) {
     }
   }
 
-  ok_p = True;
-  atStart_p = False;
+  ok_p = true;
+  atStart_p = false;
 
   // step through file until end is reached or
   // time is >= currentTime and < nextTime

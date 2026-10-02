@@ -101,17 +101,17 @@ class SDFITSTable : public FITSTable {
   ~SDFITSTable();
 
   // Attach this SDFITSTable to a new file name, same HDU# as at open time
-  virtual Bool reopen(const String &fileName);
+  virtual bool reopen(const String &fileName);
 
   // is this a valid SDFITS file
-  virtual Bool isSDFITS() const { return isSDFITS_p; }
+  virtual bool isSDFITS() const { return isSDFITS_p; }
 
   // translate to/from core keyword names to enumeration
   static CoreKeyword coreKeyword(const String &name);
   static String coreKeywordName(CoreKeyword kw);
 
  private:
-  Bool isSDFITS_p;
+  bool isSDFITS_p;
 
   // block of core keyword names
   static Block<String> kwNames;
@@ -121,7 +121,7 @@ class SDFITSTable : public FITSTable {
   // check to see if the named keyword should
   // be turned into a column, all non-reserved keywords will
   // always be turned into a column.
-  static Bool isSDFitsColumn(const String &name);
+  static bool isSDFitsColumn(const String &name);
 
   // the array of keyword names
   // the regular FITSTable::reopen does nearly everything fine,

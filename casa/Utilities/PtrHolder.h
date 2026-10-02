@@ -96,7 +96,7 @@ class PtrHolder {
   // set to False. The pointer must also only be put into
   // <em>one</em> holder to avoid double deletion.
   [[deprecated("Use std::unique_ptr")]]
-  PtrHolder(T *pointer, Bool isCArray = False);
+  PtrHolder(T *pointer, bool isCArray = false);
 
   ~PtrHolder();
 
@@ -104,11 +104,11 @@ class PtrHolder {
   // True (the default), then delete the existing pointer first. If
   // <src>isCarray</src> is True, then the new pointer is assumed to
   // have been allocated with <src>new[]</src>.
-  void set(T *pointer, Bool isCarray = False, Bool deleteCurrentPtr = True);
+  void set(T *pointer, bool isCarray = false, bool deleteCurrentPtr = true);
 
   // Set the current pointer to null; if <src>deletePtr</src> is True
   // (the default), then the current pointer is deleted first.
-  void clear(Bool deleteCurrentPtr = True);
+  void clear(bool deleteCurrentPtr = true);
 
   // Release the pointer for use.
   // <group>
@@ -127,7 +127,7 @@ class PtrHolder {
   T *operator->() const { return ptr_p; }
 
   // See if the pointer points to a C-array.
-  Bool isCArray() const { return isCarray_p; }
+  bool isCArray() const { return isCarray_p; }
 
  private:
   // # Undefined and inaccessible
@@ -143,7 +143,7 @@ class PtrHolder {
 
   T *ptr_p;
   // # If space were critical, we could make isCarray_p a char
-  Bool isCarray_p;
+  bool isCarray_p;
 };
 
 // <summary>

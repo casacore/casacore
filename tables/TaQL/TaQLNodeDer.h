@@ -59,15 +59,15 @@ class TaQLConstNodeRep : public TaQLNodeRep {
  public:
   // Do not change the values of this enum, as objects might be persistent.
   enum Type { CTBool = 0, CTInt = 1, CTReal = 2, CTComplex = 3, CTString = 4, CTTime = 5 };
-  explicit TaQLConstNodeRep(Bool value);
+  explicit TaQLConstNodeRep(bool value);
   explicit TaQLConstNodeRep(Int64 value);
   explicit TaQLConstNodeRep(Double value);
   explicit TaQLConstNodeRep(Double value, const String& unit);
   explicit TaQLConstNodeRep(DComplex value);
-  explicit TaQLConstNodeRep(const String& value, Bool isTableName = False);
+  explicit TaQLConstNodeRep(const String& value, bool isTableName = false);
   explicit TaQLConstNodeRep(const MVTime& value);
   explicit TaQLConstNodeRep(Int64 value, const String& subTableName);
-  void setIsTableName() { itsIsTableName = True; }
+  void setIsTableName() { itsIsTableName = true; }
   const String& getString() const;
   const String& getUnit() const { return itsUnit; }
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
@@ -76,8 +76,8 @@ class TaQLConstNodeRep : public TaQLNodeRep {
   static TaQLNode restore(AipsIO& aio);
 
   Type itsType;
-  Bool itsIsTableName;
-  Bool itsBValue;
+  bool itsIsTableName;
+  bool itsBValue;
   Int64 itsIValue;
   Double itsRValue;
   DComplex itsCValue;
@@ -106,7 +106,7 @@ class TaQLConstNodeRep : public TaQLNodeRep {
 class TaQLRegexNodeRep : public TaQLNodeRep {
  public:
   explicit TaQLRegexNodeRep(const String& value);
-  TaQLRegexNodeRep(const String& value, Bool caseInsensitive, Bool negate, Bool ignoreBlanks,
+  TaQLRegexNodeRep(const String& value, bool caseInsensitive, bool negate, bool ignoreBlanks,
                    Int maxDistance);
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
   virtual void show(std::ostream& os) const override;
@@ -114,10 +114,10 @@ class TaQLRegexNodeRep : public TaQLNodeRep {
   static TaQLNode restore(AipsIO& aio);
 
   String itsValue;
-  Bool itsCaseInsensitive;
-  Bool itsNegate;  // # True means !~
+  bool itsCaseInsensitive;
+  bool itsNegate;  // # True means !~
   // # The following members are only used for distance.
-  Bool itsIgnoreBlanks;
+  bool itsIgnoreBlanks;
   Int itsMaxDistance;
 };
 
@@ -225,9 +225,9 @@ class TaQLBinaryNodeRep : public TaQLNodeRep {
 
 class TaQLMultiNodeRep : public TaQLNodeRep {
  public:
-  explicit TaQLMultiNodeRep(Bool isSetOrArray = False);
-  TaQLMultiNodeRep(const String& prefix, const String& postfix, Bool isSetOrArray = False);
-  void setIsSetOrArray() { itsIsSetOrArray = True; }
+  explicit TaQLMultiNodeRep(bool isSetOrArray = false);
+  TaQLMultiNodeRep(const String& prefix, const String& postfix, bool isSetOrArray = false);
+  void setIsSetOrArray() { itsIsSetOrArray = true; }
   void setPPFix(const String& prefix, const String& postfix) {
     itsPrefix = prefix;
     itsPostfix = postfix;
@@ -245,7 +245,7 @@ class TaQLMultiNodeRep : public TaQLNodeRep {
   static TaQLMultiNode restore(AipsIO& aio);
 
   std::vector<TaQLNode> itsNodes;
-  Bool itsIsSetOrArray;
+  bool itsIsSetOrArray;
   String itsPrefix;
   String itsPostfix;
   String itsSep;
@@ -297,10 +297,10 @@ class TaQLFuncNodeRep : public TaQLNodeRep {
 
 class TaQLRangeNodeRep : public TaQLNodeRep {
  public:
-  TaQLRangeNodeRep(Bool leftClosed, const TaQLNode& start, const TaQLNode& end, Bool rightClosed,
-                   Bool asMidWidth = False);
-  TaQLRangeNodeRep(Bool leftClosed, const TaQLNode& start);
-  TaQLRangeNodeRep(const TaQLNode& end, Bool rightClosed);
+  TaQLRangeNodeRep(bool leftClosed, const TaQLNode& start, const TaQLNode& end, bool rightClosed,
+                   bool asMidWidth = false);
+  TaQLRangeNodeRep(bool leftClosed, const TaQLNode& start);
+  TaQLRangeNodeRep(const TaQLNode& end, bool rightClosed);
   TaQLRangeNodeRep(const TaQLNode& mid, const TaQLNode& width);
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
   virtual void show(std::ostream& os) const override;
@@ -309,9 +309,9 @@ class TaQLRangeNodeRep : public TaQLNodeRep {
 
   TaQLNode itsStart;
   TaQLNode itsEnd;
-  Bool itsLeftClosed;
-  Bool itsRightClosed;
-  Bool itsAsMidWidth;
+  bool itsLeftClosed;
+  bool itsRightClosed;
+  bool itsAsMidWidth;
 };
 
 // <summary>
@@ -474,13 +474,13 @@ class TaQLColNodeRep : public TaQLNodeRep {
 
 class TaQLColumnsNodeRep : public TaQLNodeRep {
  public:
-  TaQLColumnsNodeRep(Bool distinct, const TaQLMultiNode& nodes);
+  TaQLColumnsNodeRep(bool distinct, const TaQLMultiNode& nodes);
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
   virtual void show(std::ostream& os) const override;
   virtual void save(AipsIO& aio) const override;
   static TaQLNode restore(AipsIO& aio);
 
-  Bool itsDistinct;
+  bool itsDistinct;
   TaQLMultiNode itsNodes;
 };
 
@@ -561,13 +561,13 @@ class TaQLSortNodeRep : public TaQLNodeRep {
  public:
   // Do not change the values of this enum, as objects might be persistent.
   enum Type { Ascending = 0, Descending = 1 };
-  TaQLSortNodeRep(Bool unique, Type type, const TaQLMultiNode& keys);
+  TaQLSortNodeRep(bool unique, Type type, const TaQLMultiNode& keys);
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
   virtual void show(std::ostream& os) const override;
   virtual void save(AipsIO& aio) const override;
   static TaQLNode restore(AipsIO& aio);
 
-  Bool itsUnique;
+  bool itsUnique;
   Type itsType;
   TaQLMultiNode itsKeys;
 };
@@ -684,12 +684,12 @@ class TaQLUpdExprNodeRep : public TaQLNodeRep {
 class TaQLQueryNodeRep : public TaQLNodeRep {
  public:
   TaQLQueryNodeRep(int nodeType);
-  void setBrackets() { itsBrackets = True; }
-  void setNoExecute() { itsNoExecute = True; }
-  void setFromExecute() { itsFromExecute = True; }
-  Bool getBrackets() const { return itsBrackets; }
-  Bool getNoExecute() const { return itsNoExecute; }
-  Bool getFromExecute() const { return itsFromExecute; }
+  void setBrackets() { itsBrackets = true; }
+  void setNoExecute() { itsNoExecute = true; }
+  void setFromExecute() { itsFromExecute = true; }
+  bool getBrackets() const { return itsBrackets; }
+  bool getNoExecute() const { return itsNoExecute; }
+  bool getFromExecute() const { return itsFromExecute; }
   virtual void show(std::ostream& os) const override;
 
  protected:
@@ -698,9 +698,9 @@ class TaQLQueryNodeRep : public TaQLNodeRep {
 
  private:
   virtual void showDerived(std::ostream& os) const = 0;
-  Bool itsBrackets;
-  Bool itsNoExecute;    // # no execute in EXISTS operator
-  Bool itsFromExecute;  // # special execute in FROM
+  bool itsBrackets;
+  bool itsNoExecute;    // # no execute in EXISTS operator
+  bool itsFromExecute;  // # special execute in FROM
 };
 
 // <summary>

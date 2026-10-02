@@ -108,7 +108,7 @@ void TableRecord::assign(const RecordInterface& that) {
   // is variable and empty.
   // Operator= does not always preserve the type of subrecords,
   // so we do a hack by setting the type explicitly.
-  Bool var = (nfields() == 0 && !isFixed());
+  bool var = (nfields() == 0 && !isFixed());
   *this = TableRecord(that);
   if (var) {
     setRecordType(Variable);
@@ -137,7 +137,7 @@ void TableRecord::setComment(const RecordFieldId& id, const String& comment) {
 
 RecordDesc TableRecord::getDescription() const { return ref().description(); }
 
-void TableRecord::restructure(const RecordDesc& newDescription, Bool recursive) {
+void TableRecord::restructure(const RecordDesc& newDescription, bool recursive) {
   // Restructure is not possible for fixed records.
   throwIfFixed();
   rwRef().restructure(newDescription, recursive);
@@ -171,7 +171,7 @@ void TableRecord::renameField(const String& newName, const RecordFieldId& id) {
 }
 
 void TableRecord::addDataField(const String& name, DataType type, const IPosition& shape,
-                               Bool fixedShape, const void* value) {
+                               bool fixedShape, const void* value) {
   rwRef().addDataField(name, type, shape, fixedShape, value);
 }
 

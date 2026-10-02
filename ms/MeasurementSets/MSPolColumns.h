@@ -81,7 +81,7 @@ class MSPolarizationColumns {
   // <group>
   ArrayColumn<Int>& corrProduct() { return corrProduct_p; }
   ArrayColumn<Int>& corrType() { return corrType_p; }
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<Int>& numCorr() { return numCorr_p; }
   // </group>
 
@@ -89,7 +89,7 @@ class MSPolarizationColumns {
   // <group>
   const ArrayColumn<Int>& corrProduct() const { return corrProduct_p; }
   const ArrayColumn<Int>& corrType() const { return corrType_p; }
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<Int>& numCorr() const { return numCorr_p; }
   // </group>
 
@@ -121,13 +121,13 @@ class MSPolarizationColumns {
 
   // # Functions which check the supplied values against the relevant column and
   // # the specified row.
-  Bool matchCorrType(rownr_t row, const Vector<Int>& polType) const;
-  Bool matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const;
+  bool matchCorrType(rownr_t row, const Vector<Int>& polType) const;
+  bool matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const;
 
   // # required columns
   ArrayColumn<Int> corrProduct_p;
   ArrayColumn<Int> corrType_p;
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<Int> numCorr_p;
 };
 

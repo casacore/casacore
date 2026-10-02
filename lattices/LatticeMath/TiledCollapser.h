@@ -108,7 +108,7 @@ class TiledCollapser {
   // <br>The function is there to make optimization possible when no masks
   // are involved. On the other side, it allows the casual user to ignore
   // optimization.
-  virtual Bool canHandleNullMask() const;
+  virtual bool canHandleNullMask() const;
 
   // Create and initialize the accumulator.
   // The accumulator can be a cube with shape [n1,n2,n3],
@@ -136,14 +136,14 @@ class TiledCollapser {
   // The position of other values can be calculated from index and shape
   // using function <src>toPositionInArray</src> in class
   // <linkto class=IPosition>IPosition</linkto>.
-  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const Bool* inMask,
+  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const bool* inMask,
                        uInt inDataIncr, uInt inMaskIncr, uInt nrval, const IPosition& startPos,
                        const IPosition& shape) = 0;
 
   // End the accumulator. It should return the accumulator as an
   // Array of datatype U (e.g. double the precision of type T)
   // with the given shape. The accumulator should thereafter be deleted when needed.
-  virtual void endAccumulator(Array<U>& result, Array<Bool>& resultMask,
+  virtual void endAccumulator(Array<U>& result, Array<bool>& resultMask,
                               const IPosition& shape) = 0;
 };
 

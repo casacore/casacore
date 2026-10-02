@@ -52,7 +52,7 @@ void MSObservationColumns::attach(const MSObservation& msObservation) {
   timeRangeQuant_p.attach(msObservation, MSObservation::columnName(MSObservation::TIME_RANGE));
 }
 
-void MSObservationColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSObservationColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeRangeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   releaseDateMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

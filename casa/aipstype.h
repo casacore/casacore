@@ -37,9 +37,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Define the standard types used by Casacore
 
+[[deprecated("Use bool")]]
 typedef bool Bool;
-const Bool True = true;
-const Bool False = false;
+[[deprecated("Use true")]]
+const bool True = true;
+[[deprecated("Use false")]]
+const bool False = false;
 
 typedef char Char;
 typedef unsigned char uChar;

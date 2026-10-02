@@ -63,7 +63,7 @@ void register_convert_arrayscalars();
 template <typename T>
 T getScalar(const ValueHolder&);
 template <>
-inline Bool getScalar(const ValueHolder& vh) {
+inline bool getScalar(const ValueHolder& vh) {
   return vh.asBool();
 }
 template <>

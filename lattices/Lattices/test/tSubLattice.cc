@@ -72,7 +72,7 @@ void testRest() {
   AlwaysAssertExit(pa.isPaged());
   AlwaysAssertExit(pa.isPersistent());
   AlwaysAssertExit(pa.isWritable());
-  AlwaysAssertExit(pa.name(True) == "tSubLattice_tmp.pa");
+  AlwaysAssertExit(pa.name(true) == "tSubLattice_tmp.pa");
   LCPagedMask mask(IPosition(1, 10), "tSubLattice_tmp.pa/mask");
   Slicer slicer(IPosition(1, 1), IPosition(1, 3));
   Slicer slfull(IPosition(1, 0), IPosition(1, 10));
@@ -85,37 +85,37 @@ void testRest() {
     AlwaysAssertExit(sl.isPersistent());
     AlwaysAssertExit(!sl.isWritable());
     // A copy of the SubLattice.
-    SubLattice<Int> sl1(sl, True);
+    SubLattice<Int> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(sl1.isPersistent());
     AlwaysAssertExit(!sl1.isWritable());
-    AlwaysAssertExit(sl1.name(True) == "tSubLattice_tmp.pa");
+    AlwaysAssertExit(sl1.name(true) == "tSubLattice_tmp.pa");
   }
   {
     // A SubLattice as a Lattice copy (RW).
-    SubLattice<Int> sl(pa, True);
+    SubLattice<Int> sl(pa, true);
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubLattice.
-    SubLattice<Int> sl1(sl, True);
+    SubLattice<Int> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubLattice.
-    SubLattice<Int> sl2(sl, False);
+    SubLattice<Int> sl2(sl, false);
     AlwaysAssertExit(!sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
     AlwaysAssertExit(sl2.isPersistent());
     AlwaysAssertExit(!sl2.isWritable());
-    AlwaysAssertExit(sl2.name(True) == "tSubLattice_tmp.pa");
+    AlwaysAssertExit(sl2.name(true) == "tSubLattice_tmp.pa");
   }
   {
     // A RO SubLattice as a masked Lattice.
@@ -126,31 +126,31 @@ void testRest() {
     AlwaysAssertExit(!sl.isPersistent());
     AlwaysAssertExit(!sl.isWritable());
     // A copy of the SubLattice.
-    SubLattice<Int> sl1(sl, True);
+    SubLattice<Int> sl1(sl, true);
     AlwaysAssertExit(sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(!sl1.isWritable());
-    AlwaysAssertExit(sl1.name(True) == "tSubLattice_tmp.pa");
+    AlwaysAssertExit(sl1.name(true) == "tSubLattice_tmp.pa");
   }
   {
     // A RW SubLattice as a masked Lattice.
-    SubLattice<Int> sl(pa, mask, True);
+    SubLattice<Int> sl(pa, mask, true);
     AlwaysAssertExit(sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(!sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubLattice.
-    SubLattice<Int> sl1(sl, True);
+    SubLattice<Int> sl1(sl, true);
     AlwaysAssertExit(sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubLattice.
-    SubLattice<Int> sl2(sl, False);
+    SubLattice<Int> sl2(sl, false);
     AlwaysAssertExit(sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
@@ -159,21 +159,21 @@ void testRest() {
   }
   {
     // A small region of a lattice.
-    SubLattice<Int> sl(pa, slicer, True);
+    SubLattice<Int> sl(pa, slicer, true);
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(!sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubLattice.
-    SubLattice<Int> sl1(sl, True);
+    SubLattice<Int> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubLattice.
-    SubLattice<Int> sl2(sl, False);
+    SubLattice<Int> sl2(sl, false);
     AlwaysAssertExit(!sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
@@ -182,21 +182,21 @@ void testRest() {
   }
   {
     // A full region of a lattice.
-    SubLattice<Int> sl(pa, slfull, True);
+    SubLattice<Int> sl(pa, slfull, true);
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubLattice.
-    SubLattice<Int> sl1(sl, True);
+    SubLattice<Int> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubLattice.
-    SubLattice<Int> sl2(sl, False);
+    SubLattice<Int> sl2(sl, false);
     AlwaysAssertExit(!sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
@@ -211,17 +211,17 @@ void testAxes() {
   Array<Int> arr(pa.shape());
   indgen(arr);
   pa.put(arr);
-  Array<Bool> m(pa.shape());
-  m = True;
-  m(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = False;
+  Array<bool> m(pa.shape());
+  m = true;
+  m(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = false;
   mask.put(m);
   {
     // Create a sublattice with the mask and assign a pixelmask to it.
     SubLattice<Int> ml(pa, mask);
-    Array<Bool> pm(pa.shape());
-    pm = True;
-    pm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 3, 2, 1)) = False;
-    ml.setPixelMask(ArrayLattice<Bool>(pm), False);
+    Array<bool> pm(pa.shape());
+    pm = true;
+    pm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 3, 2, 1)) = false;
+    ml.setPixelMask(ArrayLattice<bool>(pm), false);
     AlwaysAssertExit(ml.hasPixelMask());
     // Test if the mask read is correct.
     AlwaysAssertExit(allEQ(ml.getMask(), m && pm));
@@ -231,9 +231,9 @@ void testAxes() {
     AlwaysAssertExit(allEQ(ml2.pixelMask().get(), pm));
     AlwaysAssertExit(allEQ(ml2.getMask(), m && pm));
     // Assign another pixelmask.
-    pm = True;
-    pm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 5, 1, 2)) = False;
-    ml2.setPixelMask(ArrayLattice<Bool>(pm), False);
+    pm = true;
+    pm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 5, 1, 2)) = false;
+    ml2.setPixelMask(ArrayLattice<bool>(pm), false);
     AlwaysAssertExit(allEQ(ml2.getMask(), m && pm));
     AlwaysAssertExit(allEQ(ml2.pixelMask().get(), pm));
     // Now make a sublattice from a MaskedLattice.
@@ -241,32 +241,32 @@ void testAxes() {
     AlwaysAssertExit(allEQ(ml2.getMask(), m && pm));
     AlwaysAssertExit(allEQ(ml2.pixelMask().get(), pm));
     // Assign another pixelmask.
-    Array<Bool> pm2(pa.shape());
-    pm2 = False;
-    pm2(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 7, 1, 1)) = True;
+    Array<bool> pm2(pa.shape());
+    pm2 = false;
+    pm2(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 7, 1, 1)) = true;
     // The first one should fail.
-    Bool exc = False;
+    bool exc = false;
     try {
-      ml2.setPixelMask(ArrayLattice<Bool>(pm2), False);
+      ml2.setPixelMask(ArrayLattice<bool>(pm2), false);
     } catch (std::exception& x) {
-      exc = True;
+      exc = true;
     }
     AlwaysAssertExit(exc);
-    ml2.setPixelMask(ArrayLattice<Bool>(pm2), True);
+    ml2.setPixelMask(ArrayLattice<bool>(pm2), true);
     AlwaysAssertExit(allEQ(ml2.pixelMask().get(), pm && pm2));
     AlwaysAssertExit(allEQ(ml2.getMask(), m && pm && pm2));
   }
   Array<Int> arrs1 = arr(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9));
   Array<Int> arrsub = arrs1.reform(IPosition(2, 6, 8));
-  Array<Bool> ms1 = m(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9));
-  Array<Bool> msub = ms1.reform(IPosition(2, 6, 8));
+  Array<bool> ms1 = m(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9));
+  Array<bool> msub = ms1.reform(IPosition(2, 6, 8));
   // Make sublattice with a removed axis 1.
-  SubLattice<Int> ml(pa, mask, True);
-  Array<Bool> pixmask(IPosition(3, 6, 1, 8));
-  pixmask = True;
+  SubLattice<Int> ml(pa, mask, true);
+  Array<bool> pixmask(IPosition(3, 6, 1, 8));
+  pixmask = true;
   pixmask(IPosition(3, 0, 0, 0)) = !msub(IPosition(2, 0, 0));
   LCPixelSet pixset(pixmask, LCBox(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9), m.shape()));
-  SubLattice<Int> sl(ml, pixset, True, AxesSpecifier(False));
+  SubLattice<Int> sl(ml, pixset, true, AxesSpecifier(false));
 
   IPosition ncs(pa.niceCursorShape());
   // Test if shape and niceCursorShape remove the axis.
@@ -297,20 +297,20 @@ void testAxes() {
   AlwaysAssertExit(allEQ(ml.getMask(), m));
   msub(IPosition(2, 0, 0)) = !msub(IPosition(2, 0, 0));
   AlwaysAssertExit(allEQ(sl.getMask(), msub));
-  Array<Bool> msubsub = msub(IPosition(2, 1, 2), IPosition(2, 5, 7), IPosition(2, 3, 2));
+  Array<bool> msubsub = msub(IPosition(2, 1, 2), IPosition(2, 5, 7), IPosition(2, 3, 2));
   AlwaysAssertExit(allEQ(sl.getMaskSlice(Slicer(IPosition(2, 1, 2), IPosition(2, 5, 7),
                                                 IPosition(2, 3, 2), Slicer::endIsLast)),
                          msubsub));
   // Assign a pixelmask to this sublattice.
-  Array<Bool> slm = sl.getMask();
-  Array<Bool> pm(sl.shape());
-  pm = True;
-  pm(IPosition(2, 0, 0), IPosition(2, 1, 2), IPosition(2, 2, 4)) = False;
-  sl.setPixelMask(ArrayLattice<Bool>(pm), False);
+  Array<bool> slm = sl.getMask();
+  Array<bool> pm(sl.shape());
+  pm = true;
+  pm(IPosition(2, 0, 0), IPosition(2, 1, 2), IPosition(2, 2, 4)) = false;
+  sl.setPixelMask(ArrayLattice<bool>(pm), false);
   AlwaysAssertExit(allEQ(sl.getMask(), slm && pm));
 }
 
-void testAdd(Lattice<Int>& lat1, Lattice<Int>& lat2, Bool useRef) {
+void testAdd(Lattice<Int>& lat1, Lattice<Int>& lat2, bool useRef) {
   {
     PagedArray<Int>* pa1 = dynamic_cast<PagedArray<Int>*>(&lat1);
     if (pa1) pa1->clearCache();
@@ -346,7 +346,7 @@ int main(int argc, const char* argv[]) {
       ArrayLattice<Int> lattice(arr);
       Slicer slicer(IPosition(4, 4, 2, 1, 3), IPosition(4, 14, 10, 3, 23), IPosition(4, 2, 3, 1, 4),
                     Slicer::endIsLast);
-      SubLattice<Int> sublat(lattice, slicer, True);
+      SubLattice<Int> sublat(lattice, slicer, true);
       AlwaysAssertExit(!sublat.isPaged());
       AlwaysAssertExit(!sublat.isPersistent());
       AlwaysAssertExit(!sublat.isMasked());
@@ -384,31 +384,31 @@ int main(int argc, const char* argv[]) {
       cout << "Shape " << shape << endl;
 
       {
-        SubLattice<Int> slatArr1(latArr1, True);
+        SubLattice<Int> slatArr1(latArr1, true);
         SubLattice<Int> slatArr2(latArr2);
         cout << "subarray+=subarray useRef=False" << endl;
-        testAdd(slatArr1, slatArr2, False);
+        testAdd(slatArr1, slatArr2, false);
         AlwaysAssert(allEQ(latArr1.get(), 2 * arr), AipsError);
         cout << "subarray+=subarray useRef=True" << endl;
-        testAdd(slatArr1, slatArr2, True);
+        testAdd(slatArr1, slatArr2, true);
         AlwaysAssert(allEQ(latArr1.get(), 3 * arr), AipsError);
         cout << "array+=subarray useRef=False" << endl;
-        testAdd(latArr1, slatArr2, False);
+        testAdd(latArr1, slatArr2, false);
         AlwaysAssert(allEQ(latArr1.get(), 4 * arr), AipsError);
         cout << "array+=subarray useRef=True" << endl;
-        testAdd(latArr1, slatArr2, True);
+        testAdd(latArr1, slatArr2, true);
         AlwaysAssert(allEQ(latArr1.get(), 5 * arr), AipsError);
         cout << "subarray+=array useRef=False" << endl;
-        testAdd(slatArr1, latArr2, False);
+        testAdd(slatArr1, latArr2, false);
         AlwaysAssert(allEQ(latArr1.get(), 6 * arr), AipsError);
         cout << "subarray+=array useRef=True" << endl;
-        testAdd(slatArr1, latArr2, True);
+        testAdd(slatArr1, latArr2, true);
         AlwaysAssert(allEQ(latArr1.get(), 7 * arr), AipsError);
         cout << "array+=array useRef=False" << endl;
-        testAdd(latArr1, latArr2, False);
+        testAdd(latArr1, latArr2, false);
         AlwaysAssert(allEQ(latArr1.get(), 8 * arr), AipsError);
         cout << "array+=array useRef=True" << endl;
-        testAdd(latArr1, latArr2, True);
+        testAdd(latArr1, latArr2, true);
         AlwaysAssert(allEQ(latArr1.get(), 9 * arr), AipsError);
       }
     }
@@ -422,7 +422,7 @@ int main(int argc, const char* argv[]) {
                    AipsError);
       Slicer slice2(IPosition(3, 1, 1, 1), IPosition(3, 16, 17, 18), IPosition(3, 16, 1, 2),
                     Slicer::endIsLast);
-      SubLattice<Int> sub2(parent, slice2, AxesSpecifier(False));
+      SubLattice<Int> sub2(parent, slice2, AxesSpecifier(false));
       AlwaysAssert(sub2.positionInParent(IPosition(2, 4, 5)) == IPosition(3, 1, 5, 11), AipsError);
     }
   } catch (const std::exception& x) {

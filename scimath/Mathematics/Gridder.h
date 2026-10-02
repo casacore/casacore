@@ -48,9 +48,9 @@ class Gridder {
 
   virtual ~Gridder();
 
-  virtual Bool grid(Array<Range>&, const Vector<Domain>& position, const Range& value) = 0;
+  virtual bool grid(Array<Range>&, const Vector<Domain>& position, const Range& value) = 0;
 
-  virtual Bool degrid(const Array<Range>&, const Vector<Domain>& position, Range& value) = 0;
+  virtual bool degrid(const Array<Range>&, const Vector<Domain>& position, Range& value) = 0;
 
   virtual Range correct(const IPosition& loc);
 
@@ -61,11 +61,11 @@ class Gridder {
 
   Vector<Domain>& position(Vector<Domain>& gpos, const Vector<Domain>& pos);
 
-  virtual Bool onGrid(const Vector<Int>& loc);
+  virtual bool onGrid(const Vector<Int>& loc);
 
-  virtual Bool onGrid(const Vector<Int>& loc, const Vector<Int>& delta);
+  virtual bool onGrid(const Vector<Int>& loc, const Vector<Int>& delta);
 
-  virtual Bool onGrid(const Vector<Domain>& pos);
+  virtual bool onGrid(const Vector<Domain>& pos);
 
   void setOffset(const Vector<Int>& off);
 

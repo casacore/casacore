@@ -39,40 +39,40 @@ using namespace std;
 
 #define AssertException(cmd)     \
   {                              \
-    Bool tryFail = False;        \
+    bool tryFail = false;        \
     try {                        \
       cmd;                       \
     } catch (const JsonError&) { \
-      tryFail = True;            \
+      tryFail = true;            \
     }                            \
     AlwaysAssertExit(tryFail);   \
   }
 
 void doScalar() {
   AlwaysAssertExit(JsonValue().isNull());
-  AlwaysAssertExit(!JsonValue(True).isNull());
+  AlwaysAssertExit(!JsonValue(true).isNull());
   AlwaysAssertExit(!JsonValue(1).isNull());
   AlwaysAssertExit(!JsonValue(1.).isNull());
   AlwaysAssertExit(!JsonValue(DComplex()).isNull());
   AlwaysAssertExit(!JsonValue(String()).isNull());
-  AlwaysAssertExit(JsonValue(True).dataType() == TpBool);
+  AlwaysAssertExit(JsonValue(true).dataType() == TpBool);
   AlwaysAssertExit(JsonValue(1).dataType() == TpInt64);
   AlwaysAssertExit(JsonValue(1.).dataType() == TpDouble);
   AlwaysAssertExit(JsonValue(Complex()).dataType() == TpDComplex);
   AlwaysAssertExit(JsonValue("").dataType() == TpString);
-  AlwaysAssertExit(JsonValue(True).arrayDataType() == TpBool);
+  AlwaysAssertExit(JsonValue(true).arrayDataType() == TpBool);
   AlwaysAssertExit(JsonValue(1).arrayDataType() == TpInt64);
   AlwaysAssertExit(JsonValue(1.).arrayDataType() == TpDouble);
   AlwaysAssertExit(JsonValue(Complex()).arrayDataType() == TpDComplex);
   AlwaysAssertExit(JsonValue("").arrayDataType() == TpString);
 
-  AlwaysAssertExit(JsonValue(True).size() == 1);
+  AlwaysAssertExit(JsonValue(true).size() == 1);
   AlwaysAssertExit(JsonValue(1).size() == 1);
   AlwaysAssertExit(JsonValue(1.).size() == 1);
   AlwaysAssertExit(JsonValue(Complex()).size() == 1);
   AlwaysAssertExit(JsonValue("").size() == 1);
 
-  AlwaysAssertExit(JsonValue(True).shape() == IPosition(1, 1));
+  AlwaysAssertExit(JsonValue(true).shape() == IPosition(1, 1));
   AlwaysAssertExit(JsonValue(1).shape() == IPosition(1, 1));
   AlwaysAssertExit(JsonValue(1.).shape() == IPosition(1, 1));
   AlwaysAssertExit(JsonValue(Complex()).shape() == IPosition(1, 1));
@@ -83,13 +83,13 @@ void doScalar() {
   AlwaysAssertExit(isNaN(JsonValue().getDouble()));
   AlwaysAssertExit(isNaN(JsonValue().getDComplex()));
   AssertException(JsonValue().getString());
-  AlwaysAssertExit(JsonValue(True).getBool() == True);
-  AssertException(JsonValue(True).getInt());
-  AssertException(JsonValue(True).getDouble());
-  AssertException(JsonValue(True).getDComplex());
-  AssertException(JsonValue(True).getString());
-  AlwaysAssertExit(JsonValue(1).getBool() == True);
-  AlwaysAssertExit(JsonValue(0).getBool() == False);
+  AlwaysAssertExit(JsonValue(true).getBool() == true);
+  AssertException(JsonValue(true).getInt());
+  AssertException(JsonValue(true).getDouble());
+  AssertException(JsonValue(true).getDComplex());
+  AssertException(JsonValue(true).getString());
+  AlwaysAssertExit(JsonValue(1).getBool() == true);
+  AlwaysAssertExit(JsonValue(0).getBool() == false);
   AlwaysAssertExit(JsonValue(1).getInt() == 1);
   AlwaysAssertExit(JsonValue(1).getDouble() == 1.);
   AlwaysAssertExit(JsonValue(1).getDComplex() == DComplex(1, 0));
@@ -230,7 +230,7 @@ void doValueHolder() {
   AlwaysAssertExit(JsonValue(Complex()).getValueHolder().asDComplex() == DComplex());
   AlwaysAssertExit(JsonValue("a").getValueHolder().asString() == "a");
   AlwaysAssertExit(JsonValue(vector<JsonValue>()).getValueHolder().dataType() == TpOther);
-  AlwaysAssertExit(JsonValue(vector<JsonValue>(1, JsonValue(True))).getValueHolder().dataType() ==
+  AlwaysAssertExit(JsonValue(vector<JsonValue>(1, JsonValue(true))).getValueHolder().dataType() ==
                    TpArrayBool);
   AlwaysAssertExit(JsonValue(vector<JsonValue>(1, JsonValue(1))).getValueHolder().dataType() ==
                    TpArrayInt64);
@@ -242,10 +242,10 @@ void doValueHolder() {
   AlwaysAssertExit(JsonValue(vector<JsonValue>(1, JsonValue("a"))).getValueHolder().dataType() ==
                    TpArrayString);
   AlwaysAssertExit(
-      JsonValue(vector<JsonValue>(1, JsonValue(True))).getValueHolder().asArrayBool().size() == 1);
+      JsonValue(vector<JsonValue>(1, JsonValue(true))).getValueHolder().asArrayBool().size() == 1);
   AlwaysAssertExit(
-      JsonValue(vector<JsonValue>(1, JsonValue(True))).getValueHolder().asArrayBool().data()[0] ==
-      True);
+      JsonValue(vector<JsonValue>(1, JsonValue(true))).getValueHolder().asArrayBool().data()[0] ==
+      true);
   AlwaysAssertExit(
       JsonValue(vector<JsonValue>(1, JsonValue(-2))).getValueHolder().asArrayInt().data()[0] == -2);
   AlwaysAssertExit(

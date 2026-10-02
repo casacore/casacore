@@ -94,8 +94,8 @@ class StManColumn : public StManColumnBase {
 
   // Is the value shape defined in the given row?
   // By default it returns True.
-  virtual Bool isShapeDefined(rownr_t rownr);
-  virtual Bool isShapeDefined(uInt rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(uInt rownr);
 
   // Get the dimensionality of the item in the given row.
   // By default it returns shape(rownr).nelements().
@@ -114,7 +114,7 @@ class StManColumn : public StManColumnBase {
 
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -129,7 +129,7 @@ class StManColumn : public StManColumnBase {
 
   // Put the scalar value in the given row.
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr);
   virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
   virtual void putShort(rownr_t rownr, const Short* dataPtr);
   virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
@@ -280,7 +280,7 @@ class StManColumn : public StManColumnBase {
  protected:
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBoolV(uInt rownr, Bool* dataPtr);
+  virtual void getBoolV(uInt rownr, bool* dataPtr);
   virtual void getuCharV(uInt rownr, uChar* dataPtr);
   virtual void getShortV(uInt rownr, Short* dataPtr);
   virtual void getuShortV(uInt rownr, uShort* dataPtr);
@@ -295,7 +295,7 @@ class StManColumn : public StManColumnBase {
 
   // Put the scalar value in the given row.
   // <group>
-  virtual void putBoolV(uInt rownr, const Bool* dataPtr);
+  virtual void putBoolV(uInt rownr, const bool* dataPtr);
   virtual void putuCharV(uInt rownr, const uChar* dataPtr);
   virtual void putShortV(uInt rownr, const Short* dataPtr);
   virtual void putuShortV(uInt rownr, const uShort* dataPtr);
@@ -313,7 +313,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ScalarColumn getColumn function).
   // The default implementations calls DataManagerColumn::getScalarColumnBase.
   // <group>
-  virtual void getScalarColumnBoolV(Vector<Bool>* dataPtr);
+  virtual void getScalarColumnBoolV(Vector<bool>* dataPtr);
   virtual void getScalarColumnuCharV(Vector<uChar>* dataPtr);
   virtual void getScalarColumnShortV(Vector<Short>* dataPtr);
   virtual void getScalarColumnuShortV(Vector<uShort>* dataPtr);
@@ -332,7 +332,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ScalarColumn putColumn function).
   // The default implementations calls DataManagerColumn::putScalarColumnBase.
   // <group>
-  virtual void putScalarColumnBoolV(const Vector<Bool>* dataPtr);
+  virtual void putScalarColumnBoolV(const Vector<bool>* dataPtr);
   virtual void putScalarColumnuCharV(const Vector<uChar>* dataPtr);
   virtual void putScalarColumnShortV(const Vector<Short>* dataPtr);
   virtual void putScalarColumnuShortV(const Vector<uShort>* dataPtr);
@@ -351,7 +351,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ScalarColumn getColumnCells function).
   // The default implementations call DataManagerColumn::getScalarColumnCellsBase.
   // <group>
-  virtual void getScalarColumnCellsBoolV(const RefRows& rownrs, Vector<Bool>* dataPtr);
+  virtual void getScalarColumnCellsBoolV(const RefRows& rownrs, Vector<bool>* dataPtr);
   virtual void getScalarColumnCellsuCharV(const RefRows& rownrs, Vector<uChar>* dataPtr);
   virtual void getScalarColumnCellsShortV(const RefRows& rownrs, Vector<Short>* dataPtr);
   virtual void getScalarColumnCellsuShortV(const RefRows& rownrs, Vector<uShort>* dataPtr);
@@ -370,7 +370,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ScalarColumn putColumnCells function).
   // The default implementations call DataManagerColumn::putScalarColumnCellsBase.
   // <group>
-  virtual void putScalarColumnCellsBoolV(const RefRows& rownrs, const Vector<Bool>* dataPtr);
+  virtual void putScalarColumnCellsBoolV(const RefRows& rownrs, const Vector<bool>* dataPtr);
   virtual void putScalarColumnCellsuCharV(const RefRows& rownrs, const Vector<uChar>* dataPtr);
   virtual void putScalarColumnCellsShortV(const RefRows& rownrs, const Vector<Short>* dataPtr);
   virtual void putScalarColumnCellsuShortV(const RefRows& rownrs, const Vector<uShort>* dataPtr);
@@ -390,7 +390,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn get function).
   // The default implementations throw an exception.
   // <group>
-  virtual void getArrayBoolV(uInt rownr, Array<Bool>* dataPtr);
+  virtual void getArrayBoolV(uInt rownr, Array<bool>* dataPtr);
   virtual void getArrayuCharV(uInt rownr, Array<uChar>* dataPtr);
   virtual void getArrayShortV(uInt rownr, Array<Short>* dataPtr);
   virtual void getArrayuShortV(uInt rownr, Array<uShort>* dataPtr);
@@ -409,7 +409,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn put function).
   // The default implementations throw an exception.
   // <group>
-  virtual void putArrayBoolV(uInt rownr, const Array<Bool>* dataPtr);
+  virtual void putArrayBoolV(uInt rownr, const Array<bool>* dataPtr);
   virtual void putArrayuCharV(uInt rownr, const Array<uChar>* dataPtr);
   virtual void putArrayShortV(uInt rownr, const Array<Short>* dataPtr);
   virtual void putArrayuShortV(uInt rownr, const Array<uShort>* dataPtr);
@@ -428,7 +428,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn getColumn function).
   // The default implementations call DataManagerColumn::getArrayColumnBase.
   // <group>
-  virtual void getArrayColumnBoolV(Array<Bool>* dataPtr);
+  virtual void getArrayColumnBoolV(Array<bool>* dataPtr);
   virtual void getArrayColumnuCharV(Array<uChar>* dataPtr);
   virtual void getArrayColumnShortV(Array<Short>* dataPtr);
   virtual void getArrayColumnuShortV(Array<uShort>* dataPtr);
@@ -447,7 +447,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn putColumn function).
   // The default implementations call DataManagerColumn::putArrayColumnBase.
   // <group>
-  virtual void putArrayColumnBoolV(const Array<Bool>* dataPtr);
+  virtual void putArrayColumnBoolV(const Array<bool>* dataPtr);
   virtual void putArrayColumnuCharV(const Array<uChar>* dataPtr);
   virtual void putArrayColumnShortV(const Array<Short>* dataPtr);
   virtual void putArrayColumnuShortV(const Array<uShort>* dataPtr);
@@ -466,7 +466,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn getColumnCells function).
   // The default implementations call DataManagerColumn::getArrayColumnCellsBase.
   // <group>
-  virtual void getArrayColumnCellsBoolV(const RefRows& rownrs, Array<Bool>* dataPtr);
+  virtual void getArrayColumnCellsBoolV(const RefRows& rownrs, Array<bool>* dataPtr);
   virtual void getArrayColumnCellsuCharV(const RefRows& rownrs, Array<uChar>* dataPtr);
   virtual void getArrayColumnCellsShortV(const RefRows& rownrs, Array<Short>* dataPtr);
   virtual void getArrayColumnCellsuShortV(const RefRows& rownrs, Array<uShort>* dataPtr);
@@ -485,7 +485,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn putColumnCells function).
   // The default implementations call DataManagerColumn::putArrayColumnCellsBase.
   // <group>
-  virtual void putArrayColumnCellsBoolV(const RefRows& rownrs, const Array<Bool>* dataPtr);
+  virtual void putArrayColumnCellsBoolV(const RefRows& rownrs, const Array<bool>* dataPtr);
   virtual void putArrayColumnCellsuCharV(const RefRows& rownrs, const Array<uChar>* dataPtr);
   virtual void putArrayColumnCellsShortV(const RefRows& rownrs, const Array<Short>* dataPtr);
   virtual void putArrayColumnCellsuShortV(const RefRows& rownrs, const Array<uShort>* dataPtr);
@@ -504,7 +504,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn getSlice function).
   // The default implementations call DataManagerColumn::getSliceBase.
   // <group>
-  virtual void getSliceBoolV(uInt rownr, const Slicer& ns, Array<Bool>* dataPtr);
+  virtual void getSliceBoolV(uInt rownr, const Slicer& ns, Array<bool>* dataPtr);
   virtual void getSliceuCharV(uInt rownr, const Slicer& ns, Array<uChar>* dataPtr);
   virtual void getSliceShortV(uInt rownr, const Slicer& ns, Array<Short>* dataPtr);
   virtual void getSliceuShortV(uInt rownr, const Slicer& ns, Array<uShort>* dataPtr);
@@ -523,7 +523,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn putSlice function).
   // The default implementations call DataManagerColumn::putSliceBase.
   // <group>
-  virtual void putSliceBoolV(uInt rownr, const Slicer& ns, const Array<Bool>* dataPtr);
+  virtual void putSliceBoolV(uInt rownr, const Slicer& ns, const Array<bool>* dataPtr);
   virtual void putSliceuCharV(uInt rownr, const Slicer& ns, const Array<uChar>* dataPtr);
   virtual void putSliceShortV(uInt rownr, const Slicer& ns, const Array<Short>* dataPtr);
   virtual void putSliceuShortV(uInt rownr, const Slicer& ns, const Array<uShort>* dataPtr);
@@ -542,7 +542,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn getColumn function).
   // The default implementations call DataManagerColumn::getColumnSliceBase.
   // <group>
-  virtual void getColumnSliceBoolV(const Slicer& ns, Array<Bool>* dataPtr);
+  virtual void getColumnSliceBoolV(const Slicer& ns, Array<bool>* dataPtr);
   virtual void getColumnSliceuCharV(const Slicer& ns, Array<uChar>* dataPtr);
   virtual void getColumnSliceShortV(const Slicer& ns, Array<Short>* dataPtr);
   virtual void getColumnSliceuShortV(const Slicer& ns, Array<uShort>* dataPtr);
@@ -561,7 +561,7 @@ class StManColumn : public StManColumnBase {
   // (which is guaranteed by the ArrayColumn putColumn function).
   // The default implementations call DataManagerColumn::putColumnSliceBase.
   // <group>
-  virtual void putColumnSliceBoolV(const Slicer& ns, const Array<Bool>* dataPtr);
+  virtual void putColumnSliceBoolV(const Slicer& ns, const Array<bool>* dataPtr);
   virtual void putColumnSliceuCharV(const Slicer& ns, const Array<uChar>* dataPtr);
   virtual void putColumnSliceShortV(const Slicer& ns, const Array<Short>* dataPtr);
   virtual void putColumnSliceuShortV(const Slicer& ns, const Array<uShort>* dataPtr);
@@ -581,7 +581,7 @@ class StManColumn : public StManColumnBase {
   // The default implementations call DataManagerColumn::getColumnSliceCellsBase.
   // <group>
   virtual void getColumnSliceCellsBoolV(const RefRows& rownrs, const Slicer& ns,
-                                        Array<Bool>* dataPtr);
+                                        Array<bool>* dataPtr);
   virtual void getColumnSliceCellsuCharV(const RefRows& rownrs, const Slicer& ns,
                                          Array<uChar>* dataPtr);
   virtual void getColumnSliceCellsShortV(const RefRows& rownrs, const Slicer& ns,
@@ -612,7 +612,7 @@ class StManColumn : public StManColumnBase {
   // The default implementations call DataManagerColumn::putColumnSliceCellsBase.
   // <group>
   virtual void putColumnSliceCellsBoolV(const RefRows& rownrs, const Slicer& ns,
-                                        const Array<Bool>* dataPtr);
+                                        const Array<bool>* dataPtr);
   virtual void putColumnSliceCellsuCharV(const RefRows& rownrs, const Slicer& ns,
                                          const Array<uChar>* dataPtr);
   virtual void putColumnSliceCellsShortV(const RefRows& rownrs, const Slicer& ns,

@@ -48,8 +48,8 @@ ScaledArrayEngine<S, T>::ScaledArrayEngine(const String& virtualColumnName,
     : BaseMappedArrayEngine<S, T>(virtualColumnName, storedColumnName),
       scale_p(scale),
       offset_p(offset),
-      fixedScale_p(True),
-      fixedOffset_p(True),
+      fixedScale_p(true),
+      fixedOffset_p(true),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
 
@@ -61,8 +61,8 @@ ScaledArrayEngine<S, T>::ScaledArrayEngine(const String& virtualColumnName,
       scaleName_p(scaleColumnName),
       scale_p(0.0),
       offset_p(offset),
-      fixedScale_p(False),
-      fixedOffset_p(True),
+      fixedScale_p(false),
+      fixedOffset_p(true),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
 
@@ -76,8 +76,8 @@ ScaledArrayEngine<S, T>::ScaledArrayEngine(const String& virtualColumnName,
       offsetName_p(offsetColumnName),
       scale_p(0.0),
       offset_p(0.0),
-      fixedScale_p(False),
-      fixedOffset_p(False),
+      fixedScale_p(false),
+      fixedOffset_p(false),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
 
@@ -86,8 +86,8 @@ ScaledArrayEngine<S, T>::ScaledArrayEngine(const Record& spec)
     : BaseMappedArrayEngine<S, T>(),
       scale_p(1.0),
       offset_p(0.0),
-      fixedScale_p(True),
-      fixedOffset_p(True),
+      fixedScale_p(true),
+      fixedOffset_p(true),
       scaleColumn_p(0),
       offsetColumn_p(0) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
@@ -96,13 +96,13 @@ ScaledArrayEngine<S, T>::ScaledArrayEngine(const Record& spec)
       spec.get("SCALE", scale_p);
     } else {
       spec.get("SCALENAME", scaleName_p);
-      fixedScale_p = False;
+      fixedScale_p = false;
     }
     if (spec.isDefined("OFFSET")) {
       spec.get("OFFSET", offset_p);
     } else {
       spec.get("OFFSETNAME", offsetName_p);
-      fixedOffset_p = False;
+      fixedOffset_p = false;
     }
   }
 }
@@ -229,7 +229,7 @@ S ScaledArrayEngine<S, T>::getOffset(rownr_t rownr) {
 template <class S, class T>
 void ScaledArrayEngine<S, T>::scaleOnGet(S scale, S offset, Array<S>& array,
                                          const Array<T>& target) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   S* out = array.getStorage(deleteOut);
   S* op = out;
   const T* in = target.getStorage(deleteIn);
@@ -264,7 +264,7 @@ void ScaledArrayEngine<S, T>::scaleOnGet(S scale, S offset, Array<S>& array,
 template <class S, class T>
 void ScaledArrayEngine<S, T>::scaleOnPut(S scale, S offset, const Array<S>& array,
                                          Array<T>& target) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   const S* in = array.getStorage(deleteIn);
   const S* ip = in;
   T* out = target.getStorage(deleteOut);

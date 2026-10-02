@@ -120,7 +120,7 @@ class ForwardColumn : public DataManagerColumn {
 
  protected:
   // Do the preparation of the base class column object.
-  void basePrepare(const Table& thisTable, Bool writable);
+  void basePrepare(const Table& thisTable, bool writable);
 
   BaseColumn* colPtr() const { return colPtr_p; }
 
@@ -135,7 +135,7 @@ class ForwardColumn : public DataManagerColumn {
                                      Table::TableOption option);
 
   // This data manager may be able to handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Get the data type of the column as defined in DataType.h.
   int dataType() const;
@@ -146,7 +146,7 @@ class ForwardColumn : public DataManagerColumn {
   String dataTypeId() const;
 
   // Test if data can be put into this column.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Set the shape of an direct array.
   // This only checks if the shape matches the referenced column.
@@ -156,7 +156,7 @@ class ForwardColumn : public DataManagerColumn {
   void setShape(rownr_t rownr, const IPosition& shape);
 
   // Is the value shape defined in the given row?
-  Bool isShapeDefined(rownr_t rownr);
+  bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   uInt ndim(rownr_t rownr);
@@ -166,7 +166,7 @@ class ForwardColumn : public DataManagerColumn {
 
   // Get the scalar value with a standard data type in the given row.
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -185,7 +185,7 @@ class ForwardColumn : public DataManagerColumn {
 
   // Put the scalar value with a standard data type into the given row.
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr);
   virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
   virtual void putShort(rownr_t rownr, const Short* dataPtr);
   virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
@@ -324,7 +324,7 @@ class ForwardColumn : public DataManagerColumn {
   TableColumn refCol_p;              // # Column in referenced table
   // #                                    This is only filled in when
   // #                                    a new table is created.
-  Bool writable_p;       // # True = column is writable
+  bool writable_p;       // # True = column is writable
   Table origTable_p;     // # The original table for this column
   BaseColumn* colPtr_p;  // # pointer to column in original table
 };
@@ -447,10 +447,10 @@ class ForwardColumnEngine : public VirtualColumnEngine {
 
  private:
   // This data manager allows to add rows.
-  Bool canAddRow() const;
+  bool canAddRow() const;
 
   // This data manager allows to delete rows.
-  Bool canRemoveRow() const;
+  bool canRemoveRow() const;
 
   // Add rows to all columns.
   // This is not doing anything (but needed to override the default).
@@ -461,10 +461,10 @@ class ForwardColumnEngine : public VirtualColumnEngine {
   void removeRow64(rownr_t rownr);
 
   // This data manager allows to add columns.
-  Bool canAddColumn() const;
+  bool canAddColumn() const;
 
   // This data manager allows to delete columns.
-  Bool canRemoveColumn() const;
+  bool canRemoveColumn() const;
 
   // Add a column.
   void addColumn(DataManagerColumn*);

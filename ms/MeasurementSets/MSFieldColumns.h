@@ -100,7 +100,7 @@ class MSFieldColumns {
   ScalarColumn<String>& code() { return code_p; }
   ArrayColumn<Double>& delayDir() { return delayDir_p; }
   ArrayMeasColumn<MDirection>& delayDirMeasCol() { return delayDirMeas_p; }
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<String>& name() { return name_p; }
   ScalarColumn<Int>& numPoly() { return numPoly_p; }
   ArrayColumn<Double>& phaseDir() { return phaseDir_p; }
@@ -118,7 +118,7 @@ class MSFieldColumns {
   const ScalarColumn<String>& code() const { return code_p; }
   const ArrayColumn<Double>& delayDir() const { return delayDir_p; }
   const ArrayMeasColumn<MDirection>& delayDirMeasCol() const { return delayDirMeas_p; }
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<String>& name() const { return name_p; }
   const ScalarColumn<Int>& numPoly() const { return numPoly_p; }
   const ArrayColumn<Double>& phaseDir() const { return phaseDir_p; }
@@ -154,7 +154,7 @@ class MSFieldColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
   // set the direction reference type for the REFERENCE_DIR, DELAY_DIR &
   // PHASE_DIR columns. This can only be done when the table has no
@@ -193,7 +193,7 @@ class MSFieldColumns {
   MDirection ephemerisDirMeas(rownr_t row, Double time = 0) const;
   MRadialVelocity radVelMeas(rownr_t row, Double time = 0) const;
   Quantity rho(rownr_t row, Double time = 0) const;
-  Bool needInterTime(rownr_t row) const;
+  bool needInterTime(rownr_t row) const;
   String ephemPath(rownr_t row) const;
 
   // </group>
@@ -242,11 +242,11 @@ class MSFieldColumns {
   // # argument is a temporary that is passed in to prevent it from being
   // # created inside these small functions.
   //  <group>
-  Bool matchReferenceDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
+  bool matchReferenceDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
                          MVDirection& mvdir, Double time = 0) const;
-  Bool matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
+  bool matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
                      MVDirection& mvdir, Double time = 0) const;
-  Bool matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
+  bool matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
                      MVDirection& mvdir, Double time = 0) const;
   // </group>
 
@@ -276,7 +276,7 @@ class MSFieldColumns {
   ArrayColumn<Double> phaseDir_p;
   ArrayColumn<Double> referenceDir_p;
   ScalarColumn<Int> sourceId_p;
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   // # optional columns
   ScalarColumn<Int> ephemerisId_p;
 

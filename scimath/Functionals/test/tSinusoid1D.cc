@@ -114,11 +114,11 @@ int main() {
   AlwaysAssertExit(parms(0) == 2.0 && parms(1) == 3.0 && parms(2) == 4.0);
   AlwaysAssertExit(allEQ(parms, s2.parameters().getParameters()) &&
                    allEQ(parms, s3.parameters().getParameters()));
-  s1.mask(Sinusoid1D<Double>::PERIOD) = False;
+  s1.mask(Sinusoid1D<Double>::PERIOD) = false;
   AlwaysAssertExit(s1.parameters().nMaskedParameters() == 2);
   Vector<Double> parms2 = s1.parameters().getMaskedParameters();
   AlwaysAssertExit(parms2(0) == 2.0 && parms2(1) == 4.0);
-  s1.mask(Sinusoid1D<Double>::PERIOD) = True;
+  s1.mask(Sinusoid1D<Double>::PERIOD) = true;
   s1[0] = 1.0;
   s1[1] = 2.0;
   s1[2] = 3.0;

@@ -39,22 +39,22 @@
 
 QualityCoordinate makeCoordinate(Vector<Int>& whichQuality, Vector<String>& qualityStrings);
 
-void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, Bool verbose = True);
+void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose = true);
 
-void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, Bool verbose = True);
+void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose = true);
 
 void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
-           const Vector<String>& qualityStrings, Bool verbose);
+           const Vector<String>& qualityStrings, bool verbose);
 
-void doit4(QualityCoordinate& lc, Bool verbose);
-void doit5(Bool verbose);
-void doit6(QualityCoordinate& lc, Bool verbose);
+void doit4(QualityCoordinate& lc, bool verbose);
+void doit5(bool verbose);
+void doit6(QualityCoordinate& lc, bool verbose);
 
 int main() {
   try {
     Vector<Int> whichQuality;
     Vector<String> qualityStrings;
-    Bool verbose = False;
+    bool verbose = false;
 
     // Constructors
     {
@@ -118,7 +118,7 @@ QualityCoordinate makeCoordinate(Vector<Int>& whichQuality, Vector<String>& qual
   return QualityCoordinate(whichQuality);
 }
 
-void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, Bool verbose) {
+void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose) {
   // Test copy constructor
   {
     QualityCoordinate lc2(lc);
@@ -253,7 +253,7 @@ void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, Bool verbose) 
   delete plc2;
 }
 
-void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, Bool verbose) {
+void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose) {
   Vector<Double> crval(1);
   crval(0) = Double(whichQuality(0));
   if (!allEQ(crval, lc.referenceValue())) {
@@ -342,7 +342,7 @@ void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, Bool verbose)
 }
 
 void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
-           const Vector<String>& qualityStrings, Bool verbose) {
+           const Vector<String>& qualityStrings, bool verbose) {
   //
   // Test conversion
   //
@@ -416,7 +416,7 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
     if (verbose) cout << "Passed toWorld conversion!" << endl;
 
     //
-    String str = lc.format(unit, Coordinate::FIXED, world(0), 0, True, True, 4);
+    String str = lc.format(unit, Coordinate::FIXED, world(0), 0, true, true, 4);
     if (str != qualityStrings(i)) {
       throw(AipsError(String("formatting failed")));
     }
@@ -424,15 +424,15 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
   }
 }
 
-void doit4(QualityCoordinate& lc, Bool verbose) {
-  Vector<Bool> axes(lc.nWorldAxes(), True);
+void doit4(QualityCoordinate& lc, bool verbose) {
+  Vector<bool> axes(lc.nWorldAxes(), true);
   Vector<Int> shape(lc.nPixelAxes(), 10);
-  Bool failed = False;
+  bool failed = false;
   Coordinate* pC = 0;
   try {
     pC = lc.makeFourierCoordinate(axes, shape);
   } catch (std::exception& x) {
-    failed = True;
+    failed = true;
   }
   if (!failed) {
     throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
@@ -442,7 +442,7 @@ void doit4(QualityCoordinate& lc, Bool verbose) {
   delete pC;
 }
 
-void doit5(Bool verbose) {
+void doit5(bool verbose) {
   // Test setQuality
   {
     Vector<Int> quality(1);
@@ -472,7 +472,7 @@ void doit5(Bool verbose) {
   }
 }
 
-void doit6(QualityCoordinate& lc, Bool verbose) {
+void doit6(QualityCoordinate& lc, bool verbose) {
   {
     Vector<Double> absPix(1);
     absPix(0) = 0.0;
@@ -493,7 +493,7 @@ void doit6(QualityCoordinate& lc, Bool verbose) {
   }
   {
     Coordinate* lc2 = lc.clone();
-    Vector<Bool> b1(1), b2(1);
+    Vector<bool> b1(1), b2(1);
     if (!lc.doNearPixel(*lc2, b1, b2))
       throw(AipsError("Failed to find doNear values!"));
     else if (verbose)

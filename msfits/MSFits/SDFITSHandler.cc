@@ -52,7 +52,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDFITSHandler::SDFITSHandler() : tab_p(0), copier_p(0) { ; }
 
-SDFITSHandler::SDFITSHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+SDFITSHandler::SDFITSHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
     : tab_p(0), copier_p(0) {
   initAll(ms, handledCols, row);
 }
@@ -71,7 +71,7 @@ SDFITSHandler &SDFITSHandler::operator=(const SDFITSHandler &other) {
   return *this;
 }
 
-void SDFITSHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDFITSHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
 }
@@ -100,10 +100,10 @@ void SDFITSHandler::clearRow() {
   copier_p = 0;
 }
 
-void SDFITSHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDFITSHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   // static_cast is a workaround for an SGI compiler bug! wky 2000/11/02
   // don't bother unless there are some unhandled columns
-  if (anyEQ(static_cast<Vector<Bool>>(handledCols), False)) {
+  if (anyEQ(static_cast<Vector<bool>>(handledCols), false)) {
     Vector<String> colNames;
     TableDesc td = requiredTableDesc(handledCols, colNames, row);
     // is there already an SDFITS table, or is one needed
@@ -135,7 +135,7 @@ void SDFITSHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const
   }
 }
 
-void SDFITSHandler::initRow(Vector<Bool> &handledCols, const Vector<String> &colNames,
+void SDFITSHandler::initRow(Vector<bool> &handledCols, const Vector<String> &colNames,
                             const Record &row) {
   // need to get the mapping between row fields and tab columns
   // there are always the same number of elements in handledCols
@@ -145,14 +145,14 @@ void SDFITSHandler::initRow(Vector<Bool> &handledCols, const Vector<String> &col
     Int field = row.fieldNumber(colNames(i));
     if (field >= 0) {
       fieldMap(field) = i;
-      handledCols(field) = True;
+      handledCols(field) = true;
     }
   }
   copier_p = new CopyRecordToTable(*tab_p, row, fieldMap);
   AlwaysAssert(copier_p, AipsError);
 }
 
-TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<String> &colNames,
+TableDesc SDFITSHandler::requiredTableDesc(Vector<bool> &handledCols, Vector<String> &colNames,
                                            const Record &row) {
   // build a TableDesc using row and any un-handled columns
   TableDesc td;
@@ -171,12 +171,12 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<Str
       }
       // ignore any TIME and INTERVAL here
       if (colName == "TIME" || colName == "INTERVAL") {
-        handledCols(i) = True;
+        handledCols(i) = true;
       } else {
         colNames(colCount++) = row.name(i);
         switch (row.type(i)) {
           case TpBool:
-            td.addColumn(ScalarColumnDesc<Bool>(colName));
+            td.addColumn(ScalarColumnDesc<bool>(colName));
             break;
           case TpUChar:
             td.addColumn(ScalarColumnDesc<uChar>(colName));
@@ -203,7 +203,7 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<Str
             td.addColumn(ScalarColumnDesc<String>(colName));
             break;
           case TpArrayBool:
-            td.addColumn(ArrayColumnDesc<Bool>(colName));
+            td.addColumn(ArrayColumnDesc<bool>(colName));
             break;
           case TpArrayUChar:
             td.addColumn(ArrayColumnDesc<uChar>(colName));
@@ -238,7 +238,7 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<Str
       }
     }
   }
-  colNames.resize(colCount, True);
+  colNames.resize(colCount, true);
   // add the TIME and INTERVAL columns
   // TIME is an MEpoch column
   td.addColumn(ScalarColumnDesc<Double>("TIME"));

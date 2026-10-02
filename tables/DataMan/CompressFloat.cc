@@ -43,20 +43,20 @@ CompressFloat::CompressFloat(const String& virtualColumnName, const String& stor
     : BaseMappedArrayEngine<Float, Short>(virtualColumnName, storedColumnName),
       scale_p(scale),
       offset_p(offset),
-      fixed_p(True),
-      autoScale_p(False),
+      fixed_p(true),
+      autoScale_p(false),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
 
 CompressFloat::CompressFloat(const String& virtualColumnName, const String& storedColumnName,
                              const String& scaleColumnName, const String& offsetColumnName,
-                             Bool autoScale)
+                             bool autoScale)
     : BaseMappedArrayEngine<Float, Short>(virtualColumnName, storedColumnName),
       scaleName_p(scaleColumnName),
       offsetName_p(offsetColumnName),
       scale_p(0.0),
       offset_p(0.0),
-      fixed_p(False),
+      fixed_p(false),
       autoScale_p(autoScale),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
@@ -65,8 +65,8 @@ CompressFloat::CompressFloat(const Record& spec)
     : BaseMappedArrayEngine<Float, Short>(),
       scale_p(1.0),
       offset_p(0.0),
-      fixed_p(True),
-      autoScale_p(False),
+      fixed_p(true),
+      autoScale_p(false),
       scaleColumn_p(0),
       offsetColumn_p(0) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
@@ -77,7 +77,7 @@ CompressFloat::CompressFloat(const Record& spec)
     } else {
       spec.get("SCALENAME", scaleName_p);
       spec.get("OFFSETNAME", offsetName_p);
-      fixed_p = False;
+      fixed_p = false;
     }
     if (spec.isDefined("AUTOSCALE")) {
       spec.get("AUTOSCALE", autoScale_p);
@@ -177,16 +177,16 @@ void CompressFloat::addRowInit(rownr_t startRow, rownr_t nrrow) {
 void CompressFloat::findMinMax(Float& minVal, Float& maxVal, const Array<Float>& array) const {
   setNaN(minVal);
   setNaN(maxVal);
-  Bool deleteIt;
+  bool deleteIt;
   const Float* data = array.getStorage(deleteIt);
   const Int64 nr = array.nelements();
-  Bool firstTime = True;
+  bool firstTime = true;
   for (Int64 i = 0; i < nr; i++) {
     if (isFinite(data[i])) {
       if (firstTime) {
         minVal = data[i];
         maxVal = data[i];
-        firstTime = False;
+        firstTime = false;
       } else {
         if (data[i] < minVal) {
           minVal = data[i];
@@ -217,7 +217,7 @@ void CompressFloat::makeScaleOffset(Float& scale, Float& offset, Float minVal, F
 // Scale/offset an array for get.
 void CompressFloat::scaleOnGet(Float scale, Float offset, Array<Float>& array,
                                const Array<Short>& target) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   Float* out = array.getStorage(deleteOut);
   const Short* in = target.getStorage(deleteIn);
   const Int64 nr = array.nelements();
@@ -235,7 +235,7 @@ void CompressFloat::scaleOnGet(Float scale, Float offset, Array<Float>& array,
 // Scale/offset an array for put.
 void CompressFloat::scaleOnPut(Float scale, Float offset, const Array<Float>& array,
                                Array<Short>& target) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   const Float* in = array.getStorage(deleteIn);
   Short* out = target.getStorage(deleteOut);
   const Int64 nr = array.nelements();

@@ -32,7 +32,7 @@
 #include <casacore/casa/namespace.h>
 // Test the non-cache functions.
 
-void primesNoncacheTests(uInt number, Bool shouldBePrime, uInt numberOfFactors) {
+void primesNoncacheTests(uInt number, bool shouldBePrime, uInt numberOfFactors) {
   AlwaysAssertExit(Primes::isPrime(number) == shouldBePrime);
 
   Block<uInt> factors = Primes::factor(number);
@@ -50,13 +50,13 @@ void largerPrimesTest(uInt number, uInt next, uInt closest) {
 int main() {
   // First test the non-cache functions with some large numbers (for 32 bits)
 
-  primesNoncacheTests(1610612736, False, 30);  // 3 x 2^29
-  primesNoncacheTests(5 * 7 * 11 * 13 * 17 * 19 * 23 * 29, False, 8);
-  primesNoncacheTests(46337 * 46337, False, 2);  // Largest prime square
-  primesNoncacheTests(46307 * 46309, False, 2);  // Largest prime pair
-  primesNoncacheTests(2147483647, True, 1);      // 2^31 - 1
-  primesNoncacheTests(2147483629, True, 1);      // Next smaller prime
-  primesNoncacheTests(0, False, 1);
+  primesNoncacheTests(1610612736, false, 30);  // 3 x 2^29
+  primesNoncacheTests(5 * 7 * 11 * 13 * 17 * 19 * 23 * 29, false, 8);
+  primesNoncacheTests(46337 * 46337, false, 2);  // Largest prime square
+  primesNoncacheTests(46307 * 46309, false, 2);  // Largest prime pair
+  primesNoncacheTests(2147483647, true, 1);      // 2^31 - 1
+  primesNoncacheTests(2147483629, true, 1);      // Next smaller prime
+  primesNoncacheTests(0, false, 1);
 
   largerPrimesTest(4098, 4099, 4099);           // immediately followed
                                                 // by cached prime

@@ -63,7 +63,7 @@ MCEpoch::~MCEpoch() { clearConvert(); }
 
 void MCEpoch::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
   Int iin = inref.getType();
-  Bool iraze = (iin & MEpoch::RAZE);
+  bool iraze = (iin & MEpoch::RAZE);
   iin &= ~MEpoch::EXTRA;
   Int iout = outref.getType();
   iout &= ~MEpoch::EXTRA;
@@ -88,7 +88,7 @@ void MCEpoch::clearConvert() {
 
 // # Conversion routines
 void MCEpoch::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
     case GAST_UT1:

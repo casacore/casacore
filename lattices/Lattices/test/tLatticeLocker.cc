@@ -43,7 +43,7 @@ void b() {
   arr = 0;
   Int val;
   Int opt;
-  while (True) {
+  while (true) {
     cout << "0=quit, 1=rdlock, 2=wrlock, 3=get, 4=put, 5=unlock, 6=hasrl, "
             "7=haswl: ";
     cin >> opt;

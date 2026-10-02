@@ -102,8 +102,8 @@ T SimButterworthBandpass<T>::eval(const typename FunctionTraits<T>::ArgType *x) 
 }
 
 template <class T>
-Bool SimButterworthBandpass<T>::hasMode() const {
-  return True;
+bool SimButterworthBandpass<T>::hasMode() const {
+  return true;
 }
 
 template <class T>

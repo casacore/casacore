@@ -105,15 +105,15 @@ void DynBuffer::nextstart() {
   }
 }
 
-Bool DynBuffer::next(uInt& len, Char*& ptr) {
+bool DynBuffer::next(uInt& len, Char*& ptr) {
   if (nextbuf_p > curbuf_p) {
     len = 0;
-    return False;  // no more buffers
+    return false;  // no more buffers
   } else {
     len = uselen_p[nextbuf_p];
     ptr = bufptr_p[nextbuf_p];
     nextbuf_p++;
-    return True;
+    return true;
   }
 }
 

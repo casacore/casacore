@@ -147,7 +147,7 @@ void TableQuantumDesc::checkUnitsColumn(const TableDesc& td) const {
   }
 }
 
-Bool TableQuantumDesc::hasQuanta(const TableColumn& column) {
+bool TableQuantumDesc::hasQuanta(const TableColumn& column) {
   return (column.keywordSet().isDefined("QuantumUnits") ||
           column.keywordSet().isDefined("VariableUnits"));
 }

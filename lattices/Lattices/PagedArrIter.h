@@ -97,7 +97,7 @@ class PagedArrIter : public LatticeIterInterface<T> {
 
  protected:
   // Construct the Iterator with the supplied data, and iteration strategy
-  PagedArrIter(const PagedArray<T>& data, const LatticeNavigator& method, Bool useRef);
+  PagedArrIter(const PagedArray<T>& data, const LatticeNavigator& method, bool useRef);
 
   // The copy constructor uses reference sematics for the PagedArray and
   // copy semantics for the cursor and Navigator. This way the newly

@@ -112,7 +112,7 @@ class FITSQualityImage : public ImageInterface<Float> {
   // the misc-info of the data sub-image and the error sub-image
   // are produced. This ensures that, if written to FITS, the
   // data and error extensions have the all necessary keywords.
-  Bool static qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
+  bool static qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
                            TableRecord& errorExtMiscInfo, const TableRecord& miscInfo);
 
   // Get the FITS data
@@ -131,15 +131,15 @@ class FITSQualityImage : public ImageInterface<Float> {
   // Has the object really a mask?  The FITSQualityImage always
   // has a pixel mask and never has a region mask so this
   // always returns True
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // FITSQualityImage always has a pixel mask so returns True
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  FITSQualityImage always has a pixel mask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get the region used.  There is no region.
@@ -148,7 +148,7 @@ class FITSQualityImage : public ImageInterface<Float> {
 
   // Do the actual get of the data.
   // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The FITSQualityImage is not writable, so this throws an exception.
   virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
@@ -156,21 +156,21 @@ class FITSQualityImage : public ImageInterface<Float> {
 
   // Do the actual get of the mask data.   The return value is always
   // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // # LatticeBase virtual functions
 
   // The lattice is paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // The FITSImage is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Return the shape of the FITSImage.
   virtual IPosition shape() const;
@@ -185,7 +185,7 @@ class FITSQualityImage : public ImageInterface<Float> {
   virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -233,15 +233,15 @@ class FITSQualityImage : public ImageInterface<Float> {
   String fullname_p;
   FITSImage* fitsdata_p;
   FITSErrorImage* fitserror_p;
-  Lattice<Bool>* pPixelMask_p;
+  Lattice<bool>* pPixelMask_p;
   TiledShape shape_p;
   uInt whichDataHDU_p;
   uInt whichErrorHDU_p;
   uInt whichMaskHDU_p;
   FITSErrorImage::ErrorType errType_p;
-  Bool isClosed_p;
-  Bool isDataClosed_p;
-  Bool isErrorClosed_p;
+  bool isClosed_p;
+  bool isDataClosed_p;
+  bool isErrorClosed_p;
 
   // Reopen the image if needed.
   void reopenIfNeeded() const;
@@ -256,7 +256,7 @@ class FITSQualityImage : public ImageInterface<Float> {
   void setup();
 
   // Make sure the input is compatible.
-  Bool checkInput();
+  bool checkInput();
 };
 
 }  // namespace casacore

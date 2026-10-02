@@ -235,7 +235,7 @@ class AipsIO {
 
   // Put a single value.
   // <group>
-  AipsIO& operator<<(const Bool& value);
+  AipsIO& operator<<(const bool& value);
   AipsIO& operator<<(const Char& value);
   AipsIO& operator<<(const uChar& value);
   AipsIO& operator<<(const short& value);
@@ -255,20 +255,20 @@ class AipsIO {
   // Put an array of values with the given number of values.
   // If the flag putNr is set, the number of values is put first.
   // <group>
-  AipsIO& put(uInt nrval, const Bool* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const Char* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const uChar* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const short* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const unsigned short* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const int* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const unsigned int* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const Int64* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const uInt64* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const float* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const double* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const Complex* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const DComplex* values, Bool putNR = True);
-  AipsIO& put(uInt nrval, const String* values, Bool putNR = True);
+  AipsIO& put(uInt nrval, const bool* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const Char* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const uChar* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const short* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const unsigned short* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const int* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const unsigned int* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const Int64* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const uInt64* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const float* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const double* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const Complex* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const DComplex* values, bool putNR = true);
+  AipsIO& put(uInt nrval, const String* values, bool putNR = true);
   // </group>
 
   // Put a vector as an array of values
@@ -283,7 +283,7 @@ class AipsIO {
   }
   // # Possibly specialize for standard types to make it faster.
   // # Specialize for a bool vector.
-  AipsIO& put(const vector<Bool>& vec);
+  AipsIO& put(const vector<bool>& vec);
 
   // End putting an object. It returns the object length (including
   // possible nested objects).
@@ -312,7 +312,7 @@ class AipsIO {
 
   // Get a single value.
   // <group>
-  AipsIO& operator>>(Bool& value);
+  AipsIO& operator>>(bool& value);
   AipsIO& operator>>(Char& value);
   AipsIO& operator>>(uChar& value);
   AipsIO& operator>>(short& value);
@@ -331,7 +331,7 @@ class AipsIO {
   // Read in nrval values into the user-supplied values buffer.
   // The buffer must be long enough.
   // <group>
-  AipsIO& get(uInt nrval, Bool* values);
+  AipsIO& get(uInt nrval, bool* values);
   AipsIO& get(uInt nrval, Char* values);
   AipsIO& get(uInt nrval, uChar* values);
   AipsIO& get(uInt nrval, short* values);
@@ -360,7 +360,7 @@ class AipsIO {
     return *this;
   }
   // # Specialize for a bool vector.
-  AipsIO& get(vector<Bool>& vec);
+  AipsIO& get(vector<bool>& vec);
 
   // Read in values as written by the function put.
   // It will read the number of values (into nrval), allocate a
@@ -369,7 +369,7 @@ class AipsIO {
   // <warn=caution> Although the buffer is allocated by this function,
   // the user has to delete it (using <src>delete [] values;</src>).
   // <group>
-  AipsIO& getnew(uInt& nrval, Bool*& values);
+  AipsIO& getnew(uInt& nrval, bool*& values);
   AipsIO& getnew(uInt& nrval, Char*& values);
   AipsIO& getnew(uInt& nrval, uChar*& values);
   AipsIO& getnew(uInt& nrval, short*& values);
@@ -439,7 +439,7 @@ class AipsIO {
   // Offset of length at each level
   Block<Int64> objptr_p;
   // True = the object type has already been read
-  Bool hasCachedType_p;
+  bool hasCachedType_p;
   // The cached object type.
   String objectType_p;
   // The file object.
@@ -447,7 +447,7 @@ class AipsIO {
   // The actual IO object.
   std::shared_ptr<TypeIO> io_p;
   // Is the file is seekable?
-  Bool seekable_p;
+  bool seekable_p;
   // magic value to check sync.
   static const uInt magicval_p;
 };

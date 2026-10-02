@@ -65,7 +65,7 @@ class TableProxy;
 class TableIndexProxy {
  public:
   // Construct for the given columns in the table.
-  TableIndexProxy(const TableProxy& table, const Vector<String>& columnNames, Bool noSort);
+  TableIndexProxy(const TableProxy& table, const Vector<String>& columnNames, bool noSort);
 
   // Copy constructor.
   TableIndexProxy(const TableIndexProxy&);
@@ -76,7 +76,7 @@ class TableIndexProxy {
   TableIndexProxy& operator=(const TableIndexProxy&) = delete;
 
   // Are all keys in the index unique?
-  Bool isUnique() const;
+  bool isUnique() const;
 
   // Return the names of the columns forming the index.
   Vector<String> columnNames() const;
@@ -97,8 +97,8 @@ class TableIndexProxy {
 
   // Find the row numbers matching the key range. The boolean arguments
   // tell if the lower and upper key are part of the range.
-  Vector<Int64> getRowNumbersRange(const Record& lower, const Record& upper, Bool lowerInclusive,
-                                   Bool upperInclusive);
+  Vector<Int64> getRowNumbersRange(const Record& lower, const Record& upper, bool lowerInclusive,
+                                   bool upperInclusive);
 
  private:
   ColumnsIndex* scaIndex_p;

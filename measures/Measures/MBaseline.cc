@@ -131,9 +131,9 @@ void MBaseline::checkTypes() const { MBaseline::checkMyTypes(); }
 
 void MBaseline::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MBaseline::allMyTypes(nall, nex, typ);
@@ -165,7 +165,7 @@ MDirection::Types MBaseline::toDirType(const MBaseline::Types in) {
   return static_cast<MDirection::Types>(static_cast<uInt>(in));
 }
 
-Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
+bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MBaseline::allMyTypes(nall, nex, oname);
@@ -173,37 +173,37 @@ Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MBaseline::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
+bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
   MBaseline::Types tp;
   if (MBaseline::getType(tp, in))
     mr = MBaseline::Ref(tp);
   else {
     mr = MBaseline::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MBaseline::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MBaseline *>(&in)) return False;
+bool MBaseline::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MBaseline *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MBaseline::setRefString(const String &in) {
+bool MBaseline::setRefString(const String &in) {
   MBaseline::Types tp;
   if (MBaseline::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MBaseline::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MBaseline::getDefaultType() const { return MBaseline::showType(MBaseline::DEFAULT); }

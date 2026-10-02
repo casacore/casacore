@@ -119,8 +119,8 @@ class TableExprNodeSet : public TableExprNodeRep {
   // <br>A constant mid-width interval is added as a normal interval.
   // In this way constant intervals can never be mid-width which makes
   // optimization easier.
-  void add(const TENSEBShPtr&, Bool adaptType = False);
-  void add(const TableExprNodeSetElem& elem, Bool adaptType = False) {
+  void add(const TENSEBShPtr&, bool adaptType = false);
+  void add(const TableExprNodeSetElem& elem, bool adaptType = false) {
     add(elem.getElem(), adaptType);
   }
 
@@ -138,15 +138,15 @@ class TableExprNodeSet : public TableExprNodeRep {
 
   // Contains the set only single elements?
   // Single means that only single values are given (thus no end nor incr).
-  Bool isSingle() const;
+  bool isSingle() const;
 
   // Contains the set only discrete elements?
   // Discrete means that no continuous ranges are given, but discrete
   // ranges (using :) are possible.
-  Bool isDiscrete() const;
+  bool isDiscrete() const;
 
   // Is the set fully bounded (discrete and no undefined end values)?
-  Bool isBounded() const;
+  bool isBounded() const;
 
   // Get the number of elements.
   size_t size() const;
@@ -157,7 +157,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   const TENSEBShPtr& operator[](size_t index) const;
 
   // Contains the set array values?
-  Bool hasArrays() const;
+  bool hasArrays() const;
 
   // Try to convert the set to an array.
   // If not possible, a copy of the set is returned.
@@ -168,7 +168,7 @@ class TableExprNodeSet : public TableExprNodeRep {
 
   // Get an array value for this bounded set in the given row.
   // <group>
-  MArray<Bool> getArrayBool(const TableExprId& id) override;
+  MArray<bool> getArrayBool(const TableExprId& id) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
@@ -178,23 +178,23 @@ class TableExprNodeSet : public TableExprNodeRep {
 
   // Does a value occur in the set?
   // <group>
-  Bool contains(const TableExprId& id, Bool value) override;
-  Bool contains(const TableExprId& id, Int64 value) override;
-  Bool contains(const TableExprId& id, Double value) override;
-  Bool contains(const TableExprId& id, DComplex value) override;
-  Bool contains(const TableExprId& id, String value) override;
-  Bool contains(const TableExprId& id, MVTime value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Bool>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Double>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<String>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
+  bool contains(const TableExprId& id, bool value) override;
+  bool contains(const TableExprId& id, Int64 value) override;
+  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, DComplex value) override;
+  bool contains(const TableExprId& id, String value) override;
+  bool contains(const TableExprId& id, MVTime value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<bool>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
   // </group>
 
   // Useful to make overloading clearer (mainly for test programs).
-  Bool contains(const TableExprId& id, int value) { return contains(id, Int64(value)); }
-  Bool contains(const TableExprId& id, const char* value) { return contains(id, String(value)); }
+  bool contains(const TableExprId& id, int value) { return contains(id, Int64(value)); }
+  bool contains(const TableExprId& id, const char* value) { return contains(id, String(value)); }
 
   // Let a set node convert itself to the given unit.
   void adaptSetUnits(const Unit&) override;
@@ -208,7 +208,7 @@ class TableExprNodeSet : public TableExprNodeRep {
 
   // Get the array in a templated way.
   // <group>
-  void getArray(MArray<Bool>& marr, const TENShPtr& node, const TableExprId& id) const {
+  void getArray(MArray<bool>& marr, const TENShPtr& node, const TableExprId& id) const {
     marr.reference(node->getArrayBool(id));
   }
   void getArray(MArray<Int64>& marr, const TENShPtr& node, const TableExprId& id) const {
@@ -230,15 +230,15 @@ class TableExprNodeSet : public TableExprNodeRep {
 
   // # Data members
   std::vector<TENSEBShPtr> itsElems;
-  Bool itsSingle;
-  Bool itsDiscrete;
-  Bool itsBounded;     // # Set is discrete and all starts/ends are defined
-  Bool itsCheckTypes;  // # True = checking data types is not needed
+  bool itsSingle;
+  bool itsDiscrete;
+  bool itsBounded;     // # Set is discrete and all starts/ends are defined
+  bool itsCheckTypes;  // # True = checking data types is not needed
 };
 
-inline Bool TableExprNodeSet::isSingle() const { return itsSingle; }
-inline Bool TableExprNodeSet::isDiscrete() const { return itsDiscrete; }
-inline Bool TableExprNodeSet::isBounded() const { return itsBounded; }
+inline bool TableExprNodeSet::isSingle() const { return itsSingle; }
+inline bool TableExprNodeSet::isDiscrete() const { return itsDiscrete; }
+inline bool TableExprNodeSet::isBounded() const { return itsBounded; }
 inline size_t TableExprNodeSet::size() const { return itsElems.size(); }
 inline const TENSEBShPtr& TableExprNodeSet::operator[](size_t index) const {
   return itsElems[index];
@@ -260,15 +260,15 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
       return marr;
     }
     Array<T> result(marr.array());
-    Array<Bool> mask(marr.mask());
+    Array<bool> mask(marr.mask());
     IPosition shp = result.shape();
     uInt naxes = shp.size();
     shp.append(IPosition(1, n));
     IPosition maskShp(shp);
     maskShp[maskShp.size() - 1] = 1;
-    result.resize(shp, True);
+    result.resize(shp, true);
     if (!mask.empty()) {
-      mask.resize(shp, True);
+      mask.resize(shp, true);
     }
     // Iterate through the remaining arrays.
     ArrayIterator<T> iter(result, shp.size() - 1);
@@ -295,12 +295,12 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
         if (mask.empty()) {
           // The first time a mask was found, so create the resulting mask.
           mask.resize(shp);
-          mask = False;
+          mask = false;
         }
         mask(s, e) = marr.mask().reform(maskShp);
       } else if (!mask.empty()) {
         // This array has no mask, so set to False in resulting mask.
-        mask(s, e) = False;
+        mask(s, e) = false;
       }
     }
     return MArray<T>(result, mask);
@@ -312,7 +312,7 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
     for (Int64 i = 0; i < n; i++) {
       itsElems[i]->fillVector(result, cnt, id);
     }
-    result.resize(cnt, True);
+    result.resize(cnt, true);
     return MArray<T>(result);
   }
 }

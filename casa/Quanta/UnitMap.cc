@@ -39,31 +39,31 @@ UnitMap::UnitMap() {}
 
 UnitMap::~UnitMap() {}
 
-Bool UnitMap::getCache(const String& s, UnitVal& val) {
+bool UnitMap::getCache(const String& s, UnitVal& val) {
   map<String, UnitVal>& mapCache = getMapCache();
   map<String, UnitVal>::iterator pos = mapCache.find(s);
   if (pos == mapCache.end()) {
     val = UnitVal();
-    return False;
+    return false;
   }
   val = pos->second;
-  return True;
+  return true;
 }
 
-Bool UnitMap::getPref(const String& s, UnitName& name, UMaps* maps) {
+bool UnitMap::getPref(const String& s, UnitName& name, UMaps* maps) {
   // maps can be passed in to avoid recursive getUnit calls during static initialization.
   UMaps& mapsref = (maps ? *maps : getMaps());
   map<String, UnitName>& mapPref = mapsref.mapPref;
   map<String, UnitName>::iterator pos = mapPref.find(s);
   if (pos == mapPref.end()) {
     name = UnitName();
-    return False;
+    return false;
   }
   name = pos->second;
-  return True;
+  return true;
 }
 
-Bool UnitMap::getUnit(const String& s, UnitName& name, UMaps* maps) {
+bool UnitMap::getUnit(const String& s, UnitName& name, UMaps* maps) {
   // maps can be passed in to avoid recursive getUnit calls during static initialization.
   UMaps& mapsref = (maps ? *maps : getMaps());
   map<String, UnitName>& mapUser = mapsref.mapUser;
@@ -74,10 +74,10 @@ Bool UnitMap::getUnit(const String& s, UnitName& name, UMaps* maps) {
       (pos = mapSI.find(s)) != mapSI.end()) {
   } else {
     name = UnitName();
-    return False;
+    return false;
   }
   name = pos->second;
-  return True;
+  return true;
 }
 
 void UnitMap::putCache(const String& s, const UnitVal& val) {
@@ -127,7 +127,7 @@ const String& UnitMap::getStringFITS(uInt which) {
   return FITSstring[which];
 }
 
-Bool UnitMap::getNameFITS(const UnitName*& name, uInt which) {
+bool UnitMap::getNameFITS(const UnitName*& name, uInt which) {
   static const UnitName FITSunit[N_FITS] = {
       UnitName("BEAM", UnitVal(1.0, getStringFITS(0)), "dimensionless beam"),
       UnitName("DAYS", UnitVal(1.0, getStringFITS(1)), "day"),
@@ -149,10 +149,10 @@ Bool UnitMap::getNameFITS(const UnitName*& name, uInt which) {
       UnitName("YEARS", UnitVal(1.0, getStringFITS(17)), "year"),
       UnitName("YEAR", UnitVal(1.0, getStringFITS(18)), "year")};
   if (which >= N_FITS) {
-    return False;
+    return false;
   }
   name = &FITSunit[which];
-  return True;
+  return true;
 }
 
 void UnitMap::addFITS() {
@@ -168,7 +168,7 @@ void UnitMap::addFITS() {
       UnitMap::putUser(*Fname);
       cnt++;
     }
-    maps.doneFITS = True;
+    maps.doneFITS = true;
   }
 }
 
@@ -182,7 +182,7 @@ void UnitMap::clearFITS() {
       UnitMap::removeUser(*Fname);
       cnt++;
     }
-    maps.doneFITS = False;
+    maps.doneFITS = false;
   }
 }
 
@@ -345,7 +345,7 @@ void UMaps::init() {
   UnitMap::initUMCust2(*this);
   UnitMap::initUMCust3(*this);
   // FITS not done yet.
-  doneFITS = False;
+  doneFITS = false;
 }
 
 }  // namespace casacore

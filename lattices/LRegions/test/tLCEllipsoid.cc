@@ -38,7 +38,7 @@ void show(const LCEllipsoid& ellipse) {
   IPosition shape = mask.shape();
   IPosition index = shape - 1;
   uInt j = 0;
-  while (True) {
+  while (true) {
     for (Int i = 0; i < shape(0); i++) {
       index[0] = i;
       cout << mask(index) << " ";
@@ -138,11 +138,11 @@ int main() {
       Float minor = 10;
       Vector<Float> radii(2, major);
       radii[1] = minor;
-      Bool thrown = False;
+      bool thrown = false;
       try {
         LCEllipsoid e0(center, radii, latticeShape);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       // 2-D with non-zero theta, test exception is thrown from _define2D()
@@ -153,11 +153,11 @@ int main() {
       minor = 10;
       // 5 degrees
       Float theta = M_PI / 36;
-      thrown = False;
+      thrown = false;
       try {
         LCEllipsoid ellipse(xcenter, ycenter, major, minor, theta, latticeShape);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
     }

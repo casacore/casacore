@@ -41,7 +41,7 @@ void PositionEngine::handlePosition(Int toValueType, const std::vector<TENShPtr>
   itsInUnit = "";
   itsValueType = 0;
   uInt nargnr = argnr + 1;
-  Bool asScalar = False;
+  bool asScalar = false;
   if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
     // Position is given by observatory name.
     handleObservatory(args[argnr]);
@@ -55,7 +55,7 @@ void PositionEngine::handlePosition(Int toValueType, const std::vector<TENShPtr>
     TENShPtr node3;
     if (args.size() > argnr && args[argnr]->isReal() &&
         args[argnr]->valueType() == TableExprNodeRep::VTScalar) {
-      asScalar = True;
+      asScalar = true;
       if (args.size() > nargnr && args[nargnr]->isReal() &&
           args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
         node2 = args[nargnr];
@@ -70,7 +70,7 @@ void PositionEngine::handlePosition(Int toValueType, const std::vector<TENShPtr>
     uInt nval = nargnr - argnr;
     // See if there is a reference type.
     if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      handleMeasType(args[nargnr], True);
+      handleMeasType(args[nargnr], true);
       nargnr++;
     }
     // Process as scalars or as array.
@@ -423,7 +423,7 @@ void PositionEngine::handleValues(TableExprNode& operand, const TableExprId& id,
   if (itsValueType != 1 && itsValueType != 3) {
     q3 = Quantity(0, "m");
   }
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MPosition* posVec = positions.data();
   for (uInt i = 0; i < positions.size(); ++i) {

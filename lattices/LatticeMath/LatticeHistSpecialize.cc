@@ -45,7 +45,7 @@ uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins
   return min(nBins - 1, uInt((datum - dmin) / width));
 }
 
-void LatticeHistSpecialize::process(const Complex* pInData, const Bool* pInMask,
+void LatticeHistSpecialize::process(const Complex* pInData, const bool* pInMask,
                                     Block<Complex>* pHist, const Vector<Complex>& clip,
                                     Complex binWidth, uInt offset, uInt nrval, uInt nBins,
                                     uInt dataIncr, uInt maskIncr) {
@@ -102,8 +102,8 @@ void LatticeHistSpecialize::process(const Complex* pInData, const Bool* pInMask,
 
 void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& gX,
                                       Vector<Float>& gY, Float dMean, Float dSigma, Float dSum,
-                                      Float xMin, Float xMax, Float binWidth, Bool doCumu,
-                                      Bool doLog)
+                                      Float xMin, Float xMax, Float binWidth, bool doCumu,
+                                      bool doLog)
 //
 // Make overlay Gaussian with the given parameters
 //
@@ -187,10 +187,10 @@ Complex LatticeHistSpecialize::mul(Complex v1, Complex v2) {
   return Complex(real(v1) * real(v2), imag(v1) * imag(v2));
 }
 
-void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, Bool doLog,
+void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, bool doLog,
                                  Float linearSum, Float yMax, Float binWidth,
                                  const Vector<Float>& values, const Vector<Float>& counts,
-                                 const Vector<Float>& stats, uInt label, uInt ci, Bool page)
+                                 const Vector<Float>& stats, uInt label, uInt ci, bool page)
 //
 // The histogram is already in its desired form - linear, log, cumu
 // yMax is in that form too.
@@ -253,19 +253,19 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
   plotter.ebuf();
 }
 
-void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, Bool doLog,
+void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, bool doLog,
                                  Complex linearSum, Complex yMax, Complex binWidth,
                                  const Vector<Complex>& values, const Vector<Complex>& counts,
-                                 const Vector<Complex>& stats, uInt, uInt, Bool)
+                                 const Vector<Complex>& stats, uInt, uInt, bool)
 //
 // The histogram is already in its desired form - linear, log, cumu
 // yMax is in that form too.
 //
 {
   plot(plotter, doGauss, doCumu, doLog, real(linearSum), real(yMax), real(binWidth), real(values),
-       real(counts), real(stats), 1, 1, True);
+       real(counts), real(stats), 1, 1, true);
   plot(plotter, doGauss, doCumu, doLog, imag(linearSum), imag(yMax), imag(binWidth), imag(values),
-       imag(counts), imag(stats), 2, 7, False);
+       imag(counts), imag(stats), 2, 7, false);
 }
 
 void LatticeHistSpecialize::plotHist(const Vector<Float>& x, const Vector<Float>& y,

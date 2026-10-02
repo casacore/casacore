@@ -62,7 +62,7 @@ class LELArray : public LELArrayBase {
   LELArray(const Array<T>& value) : itsValue(value) {}
 
   // Constructor takes value and mask.
-  LELArray(const Array<T>& value, const Array<Bool>& mask) : LELArrayBase(mask), itsValue(value) {}
+  LELArray(const Array<T>& value, const Array<bool>& mask) : LELArrayBase(mask), itsValue(value) {}
 
   // Constructor takes shape.
   // Its mask is set to all True.

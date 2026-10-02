@@ -97,7 +97,7 @@ class FuncExpression {
 
   // # Member functions
   //  Create an executable program
-  Bool create(const String &prog);
+  bool create(const String &prog);
   // Get the current error message
   const String &errorMessage() { return error_p; }
   // Get the executable program
@@ -111,7 +111,7 @@ class FuncExpression {
   // Get reference to compiled constants
   const vector<Double> &getConst() { return const_p; }
   // Execute the program
-  Bool exec(Double &res) const;
+  bool exec(Double &res) const;
   // Print the stack information (mainly for debugging)
   void print(ostream &os) const;
 
@@ -138,17 +138,17 @@ class FuncExpression {
 
   // # Member functions
   //  Compile a statement (in prg, which will be adjusted)
-  Bool compStmt(MUString &prg);
+  bool compStmt(MUString &prg);
   // Compile an expression (in prg, which will be adjusted)
-  Bool compExpr(MUString &prg);
+  bool compExpr(MUString &prg);
   // Compile a term (in prg, which will be adjusted)
-  Bool compTerm(MUString &prg);
+  bool compTerm(MUString &prg);
   // Save an operation on compilation RP stack.
-  Bool setOp(FuncExprData::ExprOperator &oper);
+  bool setOp(FuncExprData::ExprOperator &oper);
   // Save a value on constant stack.
-  Bool setVal(const Double &val);
+  bool setVal(const Double &val);
   // Save an executable code
-  Bool setCode(const FuncExprData::ExprOperator &oper);
+  bool setCode(const FuncExprData::ExprOperator &oper);
   // Initialise the state
   void initState();
 };

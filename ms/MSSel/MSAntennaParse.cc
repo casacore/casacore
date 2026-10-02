@@ -81,7 +81,7 @@ MSAntennaParse::MSAntennaParse(const MeasurementSet* myms)
 // correlations if baselineType==CrossOnly
 //
 const TableExprNode* MSAntennaParse::setTEN(TableExprNode& condition, BaselineListType baselineType,
-                                            Bool negate) {
+                                            bool negate) {
   if (baselineType == CrossOnly) {
     //	TableExprNode noAutoCorr = (ms()->col(colName1) != ms()->col(colName2));
     TableExprNode noAutoCorr = (column1AsTEN_p != column2AsTEN_p);
@@ -100,7 +100,7 @@ const TableExprNode* MSAntennaParse::setTEN(TableExprNode& condition, BaselineLi
 }
 
 const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds,
-                                                      BaselineListType baselineType, Bool negate) {
+                                                      BaselineListType baselineType, bool negate) {
   TableExprNode condition;
   if ((baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly)) {
     Int n = antennaIds.nelements();
@@ -140,7 +140,7 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
 }
 
 void MSAntennaParse::makeAntennaList(Vector<Int>& antList, const Vector<Int>& thisList,
-                                     Bool negate) {
+                                     bool negate) {
   Vector<Int> a2;
   if (negate)
     a2 = -thisList;
@@ -154,7 +154,7 @@ void MSAntennaParse::makeAntennaList(Vector<Int>& antList, const Vector<Int>& th
 
 const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds1,
                                                       const Vector<Int>& antennaIds2,
-                                                      BaselineListType baselineType, Bool negate) {
+                                                      BaselineListType baselineType, bool negate) {
   TableExprNode condition;
 
   condition =
@@ -175,7 +175,7 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
 
 const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna,
                                                          BaselineListType baselineType,
-                                                         Bool negate) {
+                                                         bool negate) {
   //    MSAntennaIndex msAI(ms()->antenna());
   MSAntennaIndex msAI(subTable());
 
@@ -190,7 +190,7 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& a
 const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna1,
                                                          const Vector<String>& antenna2,
                                                          BaselineListType baselineType,
-                                                         Bool negate) {
+                                                         bool negate) {
   //    MSAntennaIndex msAI(ms()->antenna());
   MSAntennaIndex msAI(subTable());
 
@@ -208,7 +208,7 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& a
 const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna1,
                                                          const String& antenna2,
                                                          BaselineListType baselineType,
-                                                         Bool negate) {
+                                                         bool negate) {
   // TableExprNode condition =
   //   (ms()->col(colName1) >= antenna1 && ms()->col(colName2) <= antenna2) ||
   //   (ms()->col(colName2) >= antenna1 && ms()->col(colName1) <= antenna2);
@@ -218,17 +218,17 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna1,
   return setTEN(condition, baselineType, negate);
 }
 
-const TableExprNode* MSAntennaParse::selectLength(const std::vector<double>& lengths, Bool negate) {
+const TableExprNode* MSAntennaParse::selectLength(const std::vector<double>& lengths, bool negate) {
   TableExprNode selAnt1, selAnt2;
   Matrix<double> blength = getBaselineLengths();
-  Matrix<Bool> match(blength.shape());
-  match = False;
+  Matrix<bool> match(blength.shape());
+  match = false;
   for (Int j = 0; j < blength.shape()[1]; ++j) {
     for (Int i = 0; i < blength.shape()[0]; ++i) {
       double bl = blength(i, j);
       for (uInt k = 0; k < lengths.size(); k += 2) {
         if (bl >= lengths[k] && bl <= lengths[k + 1]) {
-          match(i, j) = True;
+          match(i, j) = true;
         }
       }
     }
@@ -237,15 +237,15 @@ const TableExprNode* MSAntennaParse::selectLength(const std::vector<double>& len
 }
 
 const TableExprNode* MSAntennaParse::selectBLRegex(const std::vector<String>& blRegex,
-                                                   Bool negate) {
+                                                   bool negate) {
   TableExprNode selAnt1, selAnt2;
   Vector<String> names = ScalarColumn<String>(msSubTable_p, "NAME").getColumn();
-  Matrix<Bool> match(names.size(), names.size());
-  match = False;
+  Matrix<bool> match(names.size(), names.size());
+  match = false;
   for (std::vector<String>::const_iterator iter = blRegex.begin(); iter != blRegex.end(); ++iter) {
     // Create the Regex object. Take care of a possibly negated one.
     String str(*iter);
-    Bool neg = (str[0] == '^');
+    bool neg = (str[0] == '^');
     if (neg) {
       str = str.substr(1);
     }
@@ -255,7 +255,7 @@ const TableExprNode* MSAntennaParse::selectBLRegex(const std::vector<String>& bl
       for (uInt i = 0; i < names.size(); ++i) {
         String bl = names[i] + '&' + names[j];
         if (RegexMatches(bl, re) != neg) {
-          match(i, j) = True;
+          match(i, j) = true;
         }
       }
     }
@@ -263,7 +263,7 @@ const TableExprNode* MSAntennaParse::selectBLRegex(const std::vector<String>& bl
   return makeBLNode(match, negate);
 }
 
-const TableExprNode* MSAntennaParse::makeBLNode(const Matrix<Bool>& match, Bool negate) {
+const TableExprNode* MSAntennaParse::makeBLNode(const Matrix<bool>& match, bool negate) {
   vector<Int> ant1, ant2;
   for (Int i = 0; i < match.shape()[0]; ++i) {
     for (Int j = 0; j < match.shape()[1]; ++j) {
@@ -274,14 +274,14 @@ const TableExprNode* MSAntennaParse::makeBLNode(const Matrix<Bool>& match, Bool 
           IPosition newSize = baselineList.shape();
           int nb = newSize[0];
           newSize[0] = nb + 1;
-          baselineList.resize(newSize, True);
+          baselineList.resize(newSize, true);
           baselineList(nb, 0) = i;
           baselineList(nb, 1) = j;
         }
       }
     }
   }
-  TableExprNode condition(False);
+  TableExprNode condition(false);
   if (ant1.size() > 0) {
     Array<Int> arrAnt1(IPosition(1, ant1.size()), &(ant1[0]), SHARE);
     Array<Int> arrAnt2(IPosition(1, ant1.size()), &(ant2[0]), SHARE);
@@ -327,21 +327,21 @@ double MSAntennaParse::getUnitFactor(const char* unit) {
   return q.getValue(unit);
 }
 
-Bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2,
+bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2,
                                  BaselineListType baselineType) {
-  Bool doAutoCorr;
+  bool doAutoCorr;
   doAutoCorr = (baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly);
-  if ((ant1 == ant2) && (!doAutoCorr)) return False;
-  if ((baselineType == AutoCorrOnly) && (ant1 != ant2)) return False;
+  if ((ant1 == ant2) && (!doAutoCorr)) return false;
+  if ((baselineType == AutoCorrOnly) && (ant1 != ant2)) return false;
 
   Int n = baselist.shape()(0);
   for (Int i = 0; i < n; i++) {
     if (((baselist(i, 0) == ant1) && (baselist(i, 1) == ant2)) ||
         ((baselist(i, 1) == ant1) && (baselist(i, 0) == ant2))) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 //
@@ -351,7 +351,7 @@ Bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, co
 //
 void MSAntennaParse::makeBaselineList(const Vector<Int>& a1, const Vector<Int>& a2,
                                       Matrix<Int>& baselist, BaselineListType baselineType,
-                                      Bool /*negate*/) {
+                                      bool /*negate*/) {
   Int n1, n2, nb0;
   n1 = a1.nelements();
   n2 = a2.nelements();
@@ -366,7 +366,7 @@ void MSAntennaParse::makeBaselineList(const Vector<Int>& a1, const Vector<Int>& 
       if (addBaseline(baselist, ant1, ant2, baselineType)) {
         nb0++;
         newSize[0] = nb0;
-        baselist.resize(newSize, True);
+        baselist.resize(newSize, true);
         baselist(nb0 - 1, 0) = ant1;
         baselist(nb0 - 1, 1) = ant2;
       }

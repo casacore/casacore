@@ -75,7 +75,7 @@ MSSpwParse::MSSpwParse(const MSSpectralWindow& spwSubTable, const MSDataDescript
 //------------------------------------------------------------------
 //
 const TableExprNode* MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwIds,
-                                                        const Bool addTen, const Bool addIDs) {
+                                                        const bool addTen, const bool addIDs) {
   // MSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
   // MSDataDescColumns msDataDescSubTable(ms()->dataDescription());
   MSSpWindowColumns msSpwSubTable(spwSubTable_p);
@@ -83,7 +83,7 @@ const TableExprNode* MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwId
 
   Vector<Int> mapDDID2SpwID, notFoundIDs;
   Int nDDIDRows;
-  Bool Found;
+  bool Found;
   TableExprNode condition;
   const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID), FLAG_COL = MS::columnName(MS::FLAG);
 
@@ -93,7 +93,7 @@ const TableExprNode* MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwId
   for (Int i = 0; i < nDDIDRows; i++) mapDDID2SpwID(i) = msDataDescSubTable.spectralWindowId()(i);
 
   for (uInt n = 0; n < SpwIds.nelements(); n++) {
-    Found = False;
+    Found = false;
     for (Int i = 0; i < nDDIDRows; i++) {
       //	    cerr << "DDID->SPWID: " << i << " " <<  mapDDID2SpwID(i) << std::endl;
       if ((SpwIds(n) == mapDDID2SpwID(i)) && (!msDataDescSubTable.flagRow()(i)) &&
@@ -107,12 +107,12 @@ const TableExprNode* MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwId
         // 	condition = ((ms()->col(DATA_DESC_ID)==i));
         // else
         // 	condition = condition || ((ms()->col(DATA_DESC_ID)==i));
-        Found = True;
+        Found = true;
         if (addIDs) {
-          idList.resize(idList.nelements() + 1, True);
+          idList.resize(idList.nelements() + 1, true);
           idList(idList.nelements() - 1) = mapDDID2SpwID(i);
 
-          ddidList.resize(ddidList.nelements() + 1, True);
+          ddidList.resize(ddidList.nelements() + 1, true);
           ddidList(ddidList.nelements() - 1) = i;
         }
         //	      break;
@@ -123,7 +123,7 @@ const TableExprNode* MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwId
       // Darn!  We don't use standard stuff (STL!)
       //
       // notFoundIDs.push_back(SpwIds(n));
-      notFoundIDs.resize(notFoundIDs.nelements() + 1, True);
+      notFoundIDs.resize(notFoundIDs.nelements() + 1, true);
       notFoundIDs(notFoundIDs.nelements() - 1) = SpwIds(n);
     }
   }
@@ -146,7 +146,7 @@ const TableExprNode* MSSpwParse::selectSpwIdsFromFreqList(const Vector<Float>& f
   Vector<Float> mapFreq2SpwID;
   Vector<Int> mapDDID2SpwID;
   Int nSpwRows, nDDIDRows;
-  Bool Found;
+  bool Found;
   TableExprNode condition;
   const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID);
 
@@ -159,14 +159,14 @@ const TableExprNode* MSSpwParse::selectSpwIdsFromFreqList(const Vector<Float>& f
   for (Int i = 0; i < nSpwRows; i++) mapFreq2SpwID(i) = msSpwSubTable.refFrequency()(i);
 
   for (uInt n = 0; n < freq.nelements(); n++) {
-    Found = False;
+    Found = false;
     //
     // Given a freq. value, find the equivalent SpwID
     //
     Int spw;
     for (spw = 0; spw < nSpwRows; spw++)
       if ((freq(n) == mapFreq2SpwID(spw) * factor) && (!msSpwSubTable.flagRow()(spw))) {
-        Found = True;
+        Found = true;
         break;
       }
     //
@@ -204,7 +204,7 @@ void MSSpwParse::selectChannelsFromIDList(Vector<Int>& spwIds, Vector<Int>& chan
   for (Int i = 0; i < nSpw; i++) {
     if ((chanIDList[k] != -1) && (chanIDList[k + 1] != -1)) {
       for (Int j = 0; j < nFSpec; j++) {
-        chanList.resize(chanList.shape()(0) + 1, 4, True);
+        chanList.resize(chanList.shape()(0) + 1, 4, true);
         chanList(loc, 0) = spwIds(i);
         chanList(loc, 1) = chanIDList(k++);
         chanList(loc, 2) = chanIDList(k++);
@@ -231,7 +231,7 @@ void MSSpwParse::selectChannelsFromDefaultList(Vector<Int>& spwIds, Vector<Int>&
 
   Int n = chanList.shape()(0), nSpw = spwIds.nelements();
   Int m = nSpw, loc = n, j = 0;
-  chanList.resize(n + m, 4, True);
+  chanList.resize(n + m, 4, true);
   for (Int i = 0; i < nSpw; i++) {
     chanList(loc, 0) = spwIds(i);
     chanList(loc, 1) = chanIDList(j++);
@@ -260,7 +260,7 @@ const TableExprNode* MSSpwParse::endOfCeremony(const TableExprNode& ten) {
   Vector<Int> uniqueIDList(vec);
 
   const TableExprNode* tten =
-      MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(uniqueIDList, True, False);
+      MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(uniqueIDList, true, false);
 
   if (tten->isNull()) {
     std::ostringstream Mesg;

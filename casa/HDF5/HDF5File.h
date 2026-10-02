@@ -76,7 +76,7 @@ class HDF5File : public HDF5Object {
   ~HDF5File();
 
   // Test if the file with the given name is an HDF5 file.
-  static Bool isHDF5(const String& name);
+  static bool isHDF5(const String& name);
 
   // Reopen the underlying file for read/write access.
   // Nothing will be done if the stream is writable already.
@@ -85,13 +85,13 @@ class HDF5File : public HDF5Object {
   void reopenRW();
 
   // Is the file writable?
-  Bool isWritable() const { return itsOption == ByteIO::Update; }
+  bool isWritable() const { return itsOption == ByteIO::Update; }
 
   // Is the file opened for delete?
-  Bool isOpenedForDelete() const { return itsDelete; }
+  bool isOpenedForDelete() const { return itsDelete; }
 
   // Is the file temporarily closed?
-  Bool isClosed() const { return getHid() < 0; }
+  bool isClosed() const { return getHid() < 0; }
 
   // Close the file (temporarily).
   // Note it will not delete the file; that is only done by the destructor.
@@ -117,7 +117,7 @@ class HDF5File : public HDF5Object {
   // # Data members
   ByteIO::OpenOption itsOption;
   String itsName;
-  Bool itsDelete;
+  bool itsDelete;
 
  private:
   // Copy constructor cannot be used.

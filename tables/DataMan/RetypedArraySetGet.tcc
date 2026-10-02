@@ -37,7 +37,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // It will check if the shapes and sizes match.
 template <class SourceType, class TargetType>
 void retypedArrayEngineSet(Array<SourceType>& out, const Array<TargetType>& in) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   SourceType* dataOut = out.getStorage(deleteOut);
   const TargetType* dataIn = in.getStorage(deleteIn);
   objcopy((TargetType*)dataOut, dataIn, in.nelements());
@@ -49,7 +49,7 @@ void retypedArrayEngineSet(Array<SourceType>& out, const Array<TargetType>& in) 
 // It will check if the shapes and sizes match.
 template <class SourceType, class TargetType>
 void retypedArrayEngineGet(Array<TargetType>& out, const Array<SourceType>& in) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   TargetType* dataOut = out.getStorage(deleteOut);
   const SourceType* dataIn = in.getStorage(deleteIn);
   objcopy(dataOut, (const TargetType*)dataIn, out.nelements());
@@ -63,7 +63,7 @@ void retypedArrayEngineGet(Array<TargetType>& out, const Array<SourceType>& in) 
 template <class SourceType, class TargetType>
 void retypedArrayEngineSet(Array<SourceType>& out, const Array<TargetType>& in,
                            const IPosition& shape, const void* extraArgument) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   SourceType* dataOut = out.getStorage(deleteOut);
   const TargetType* dataIn = in.getStorage(deleteIn);
   // Set element by element.
@@ -86,7 +86,7 @@ void retypedArrayEngineSet(Array<SourceType>& out, const Array<TargetType>& in,
 template <class SourceType, class TargetType>
 void retypedArrayEngineGet(Array<TargetType>& out, const Array<SourceType>& in,
                            const IPosition& shape, const void* extraArgument) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   TargetType* dataOut = out.getStorage(deleteOut);
   const SourceType* dataIn = in.getStorage(deleteIn);
   // Set element by element.

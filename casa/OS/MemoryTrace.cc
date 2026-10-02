@@ -37,7 +37,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Initialize statics.
-Bool MemoryTrace::theirDoTrace = False;
+bool MemoryTrace::theirDoTrace = false;
 std::ofstream MemoryTrace::theirFile;
 Timer MemoryTrace::theirTimer;
 void* (*MemoryTrace::theirOldMallocHook)(size_t, const void*) = 0;
@@ -67,7 +67,7 @@ void MemoryTrace::start() {
     __malloc_hook = &mallocHook;
     __free_hook = &freeHook;
 #endif
-    theirDoTrace = True;
+    theirDoTrace = true;
   }
 }
 
@@ -77,7 +77,7 @@ void MemoryTrace::stop() {
     __malloc_hook = theirOldMallocHook;
     __free_hook = theirOldFreeHook;
 #endif
-    theirDoTrace = False;
+    theirDoTrace = false;
   }
 }
 

@@ -172,7 +172,7 @@ class MeasValue {
   virtual void putVector(const Vector<Double> &in) = 0;
 
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in) = 0;
+  virtual bool putValue(const Vector<Quantum<Double>> &in) = 0;
 
   // Some of the Measure values used need the occasional adjustments to proper
   // values. Examples are MVDirection (direction cosines) which have to be

@@ -206,7 +206,7 @@ class Regex : public std::regex {
   // syntax to the new ECMAScript syntax.
   // If fast=True, matching efficiency is preferred over efficiency constructing
   // the regex object.
-  explicit Regex(const String& exp, Bool fast = False, Bool toECMAScript = True);
+  explicit Regex(const String& exp, bool fast = false, bool toECMAScript = true);
 
   // Construct a new regex (using the default Regex constructor arguments).
   void operator=(const String& str);
@@ -257,7 +257,7 @@ class Regex : public std::regex {
   String::size_type match(const Char* s, String::size_type len, String::size_type pos = 0) const;
 
   // Test if the regular expression matches the entire string.
-  Bool fullMatch(const Char* s, String::size_type len) const;
+  bool fullMatch(const Char* s, String::size_type len) const;
 
   // Test if the regular expression occurs anywhere in string <src>s</src>.
   // The return value gives the position of the first substring

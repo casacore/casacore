@@ -36,9 +36,9 @@ const uInt MINSIZE = 31;
 Block<uInt> Primes::cacheTable;
 std::mutex Primes::theirMutex;
 
-Bool Primes::isPrime(uInt number) {
-  if (number < 2) return False;
-  return (smallestPrimeFactor(number) == number ? True : False);
+bool Primes::isPrime(uInt number) {
+  if (number < 2) return false;
+  return (smallestPrimeFactor(number) == number ? true : false);
 }
 
 uInt Primes::aLargerPrimeThan(uInt number) {
@@ -134,7 +134,7 @@ void Primes::initializeCache() {
   // This function resets the cache to a block of 30, which
   // contains the next prime greater than each power of two.
 
-  cacheTable.resize(30, True, False);
+  cacheTable.resize(30, true, false);
   cacheTable[0] = 3;
   cacheTable[1] = 5;
   cacheTable[2] = 11;

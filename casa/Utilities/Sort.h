@@ -317,9 +317,9 @@ class Sort {
   // <br> By default it'll try if the faster GenSortIndirect can be used
   // if a sort on a single key is used.
   uInt sort(Vector<uInt>& indexVector, uInt nrrec, int options = DefaultSort,
-            Bool tryGenSort = True) const;
+            bool tryGenSort = true) const;
   uInt64 sort(Vector<uInt64>& indexVector, uInt64 nrrec, int options = DefaultSort,
-              Bool tryGenSort = True) const;
+              bool tryGenSort = true) const;
 
   // Get all unique records in a sorted array. The array order is
   // given in the indexVector (as possibly returned by the sort function).
@@ -351,7 +351,7 @@ class Sort {
  private:
   template <typename T>
   T doSort(Vector<T>& indexVector, T nrrec, int options = DefaultSort,
-           Bool tryGenSort = True) const;
+           bool tryGenSort = true) const;
 
   template <typename T>
   T doUnique(Vector<T>& uniqueVector, T nrrec) const;

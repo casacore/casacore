@@ -39,13 +39,13 @@ int main() {
     // LogSink to use in testing here - use a memory log sink
     LogMessage message(LogOrigin("testFITSHistoryUtil()", WHERE));
     message.message("this is a test").line(__LINE__);
-    LoggerHolder logger(False);
+    LoggerHolder logger(false);
     logger.sink().post(message);
     message.message("This is another LogMessage stored in the sink to be transfered to FITS");
     logger.sink().post(message);
 
     std::vector<String> history;
-    Bool aipsppFormat = True;
+    bool aipsppFormat = true;
     uInt nstrings, nread;
     nstrings = nread = 0;
     nread = FITSHistoryUtil::toHISTORY(history, aipsppFormat, nstrings, uInt(0), logger);
@@ -82,9 +82,9 @@ int main() {
     ConstFitsKeywordList ckwl(kwl);
     ckwl.first();
     while ((n = FITSHistoryUtil::getHistoryGroup(stringsOut, groupType, ckwl)) != 0) {
-      LoggerHolder logOut(False);
+      LoggerHolder logOut(false);
       if (groupType == "LOGTABLE") {
-        FITSHistoryUtil::fromHISTORY(logOut, stringsOut, n, True);
+        FITSHistoryUtil::fromHISTORY(logOut, stringsOut, n, true);
         Int iterCount = 0;
         LoggerHolder::const_iterator origIter = logger.begin();
         for (LoggerHolder::const_iterator iter = logOut.begin(); iter != logOut.end(); iter++) {

@@ -68,7 +68,7 @@ PGPlotter PGPlotter::create(const String &device, uInt mincolors, uInt maxcolors
 }
 
 PGPlotter::CreateFunction *PGPlotter::setCreateFunction(PGPlotter::CreateFunction *func,
-                                                        Bool override) {
+                                                        bool override) {
   CreateFunction *tmp = creator_p;
   if (override || tmp == 0) {
     creator_p = func;
@@ -82,7 +82,7 @@ void PGPlotter::detach() {
   worker_p = empty;
 }
 
-Bool PGPlotter::isAttached() const { return (static_cast<Bool>(worker_p)); }
+bool PGPlotter::isAttached() const { return (static_cast<bool>(worker_p)); }
 
 void PGPlotter::message(const String &text) {
   ok();
@@ -102,7 +102,7 @@ void PGPlotter::arro(Float x1, Float y1, Float x2, Float y2) {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::ask(Bool flag) {
+void PGPlotter::ask(bool flag) {
   ok();
   worker_p->ask(flag);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -375,7 +375,7 @@ void PGPlotter::conl(const Matrix<Float> &a, Float c, const Vector<Float> &tr, c
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::cont(const Matrix<Float> &a, const Vector<Float> &c, Bool nc,
+void PGPlotter::cont(const Matrix<Float> &a, const Vector<Float> &c, bool nc,
                      const Vector<Float> &tr) {
   ok();
   worker_p->cont(a, c, nc, tr);
@@ -432,7 +432,7 @@ void PGPlotter::sitf(Int itf) {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::bin(const Vector<Float> &x, const Vector<Float> &data, Bool center) {
+void PGPlotter::bin(const Vector<Float> &x, const Vector<Float> &data, bool center) {
   ok();
   worker_p->bin(x, data, center);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -459,7 +459,7 @@ void PGPlotter::errx(const Vector<Float> &x1, const Vector<Float> &x2, const Vec
 }
 
 void PGPlotter::hi2d(const Matrix<Float> &data, const Vector<Float> &x, Int ioff, Float bias,
-                     Bool center, const Vector<Float> &ylims) {
+                     bool center, const Vector<Float> &ylims) {
   ok();
   worker_p->hi2d(data, x, ioff, bias, center, ylims);
   if (!worker_p->isAttached()) worker_p = 0;

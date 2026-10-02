@@ -82,10 +82,10 @@ void doCopy() {
   IPosition pos(2, 0);
   ArrayLattice<Float> latIn(shape);
   latIn.set(1.0);
-  SubLattice<Float> mLatIn(latIn, True);
-  ArrayLattice<Bool> maskIn(shape);
-  maskIn.set(True);
-  mLatIn.setPixelMask(maskIn, True);
+  SubLattice<Float> mLatIn(latIn, true);
+  ArrayLattice<bool> maskIn(shape);
+  maskIn.set(true);
+  mLatIn.setPixelMask(maskIn, true);
 
   // Unmasked output
 
@@ -93,38 +93,38 @@ void doCopy() {
     cerr << "  Unmasked output" << endl;
     //
     ArrayLattice<Float> latOut(shape);
-    SubLattice<Float> mLatOut(latOut, True);
+    SubLattice<Float> mLatOut(latOut, true);
     //
-    LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, False);
+    LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, false);
     AlwaysAssert(allNear(mLatOut.get(), Float(1.0), 1.0e-6), AipsError);
-    AlwaysAssert(allEQ(mLatOut.getMask(), True), AipsError);
+    AlwaysAssert(allEQ(mLatOut.getMask(), true), AipsError);
   }
   //
   {
     cerr << "  Masked output" << endl;
     //
     ArrayLattice<Float> latOut(shape);
-    SubLattice<Float> mLatOut(latOut, True);
-    ArrayLattice<Bool> latMaskOut(shape);
-    latMaskOut.set(False);
-    mLatOut.setPixelMask(latMaskOut, True);
+    SubLattice<Float> mLatOut(latOut, true);
+    ArrayLattice<bool> latMaskOut(shape);
+    latMaskOut.set(false);
+    mLatOut.setPixelMask(latMaskOut, true);
     //
-    LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, False);
+    LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, false);
     AlwaysAssert(allNear(mLatOut.get(), Float(1.0), 1.0e-6), AipsError);
-    AlwaysAssert(allEQ(mLatOut.getMask(), True), AipsError);
+    AlwaysAssert(allEQ(mLatOut.getMask(), true), AipsError);
 
     // Now set one mask value to False so the output pixel should be zero
 
-    Lattice<Bool>& pixelMaskIn = mLatIn.pixelMask();
-    pixelMaskIn.set(True);
-    pixelMaskIn.putAt(False, pos);
-    LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, True);
+    Lattice<bool>& pixelMaskIn = mLatIn.pixelMask();
+    pixelMaskIn.set(true);
+    pixelMaskIn.putAt(false, pos);
+    LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, true);
     //
     {
       Array<Float> dataOut = mLatOut.get();
-      Array<Bool> maskOut = mLatOut.getMask();
+      Array<bool> maskOut = mLatOut.getMask();
       AlwaysAssert(near(dataOut(pos), Float(0.0), 1.0e-6), AipsError);
-      AlwaysAssert(maskOut(pos) == False, AipsError);
+      AlwaysAssert(maskOut(pos) == false, AipsError);
     }
   }
 }
@@ -176,10 +176,10 @@ void doBin() {
   cerr << "Bin" << endl;
   IPosition shape(2, 16, 20);
   Array<Float> data(shape);
-  Array<Bool> mask(shape);
+  Array<bool> mask(shape);
   Float val = 1.0;
   data.set(val);
-  mask.set(True);
+  mask.set(true);
   MaskedArray<Float> mArrIn(data, mask);
   //
   MaskedArray<Float> mArrOut;
@@ -197,5 +197,5 @@ void doBin() {
   //
   Double tol = 1.0e-6;
   AlwaysAssert(allNear(mArrOut.getArray(), val, tol), AipsError);
-  AlwaysAssert(allEQ(mArrOut.getMask(), True), AipsError);
+  AlwaysAssert(allEQ(mArrOut.getMask(), true), AipsError);
 }

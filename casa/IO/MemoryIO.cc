@@ -38,9 +38,9 @@ MemoryIO::MemoryIO(uInt64 initialSize, uInt64 expandSize)
       itsExpandSize(expandSize),
       itsUsed(0),
       itsPosition(0),
-      itsReadable(True),
-      itsWritable(True),
-      itsCanDelete(True) {
+      itsReadable(true),
+      itsWritable(true),
+      itsCanDelete(true) {
   if (itsAlloc > 0) {
     itsBuffer = new uChar[itsAlloc];
     AlwaysAssert(itsBuffer != 0, AipsError);
@@ -53,19 +53,19 @@ MemoryIO::MemoryIO(const void* buffer, uInt64 size)
       itsExpandSize(0),
       itsUsed(size),
       itsPosition(0),
-      itsReadable(True),
-      itsWritable(False),
-      itsCanDelete(False) {}
+      itsReadable(true),
+      itsWritable(false),
+      itsCanDelete(false) {}
 
 MemoryIO::MemoryIO(void* buffer, uInt64 size, ByteIO::OpenOption option, uInt64 expandSize,
-                   Bool canDelete)
+                   bool canDelete)
     : itsBuffer((uChar*)buffer),
       itsAlloc(size),
       itsExpandSize(expandSize),
       itsUsed(size),
       itsPosition(0),
-      itsReadable(True),
-      itsWritable(True),
+      itsReadable(true),
+      itsWritable(true),
       itsCanDelete(canDelete) {
   // Make sure there is a buffer.
   if (itsAlloc > 0) {
@@ -74,7 +74,7 @@ MemoryIO::MemoryIO(void* buffer, uInt64 size, ByteIO::OpenOption option, uInt64 
   // Adapt position, etc. from the option.
   switch (option) {
     case ByteIO::Old:
-      itsWritable = False;
+      itsWritable = false;
       break;
     case ByteIO::Append:
       itsPosition = itsUsed;
@@ -111,7 +111,7 @@ void MemoryIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 MemoryIO::read(Int64 size, void* buf, Bool throwException) {
+Int64 MemoryIO::read(Int64 size, void* buf, bool throwException) {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw(AipsError("MemoryIO::read - buffer is not readable"));
@@ -187,15 +187,15 @@ Int64 MemoryIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
   return newPos;
 }
 
-Bool MemoryIO::expand(uInt64 minSize) {
+bool MemoryIO::expand(uInt64 minSize) {
   Int64 minsz = minSize;
   // Check if expansion is really needed.
   if (minsz <= itsAlloc) {
-    return True;
+    return true;
   }
   // Return with error status when expansion is not possible.
   if (itsExpandSize == 0) {
-    return False;
+    return false;
   }
   // Expand with at least the expansion size.
   if (minsz < itsAlloc + itsExpandSize) {
@@ -213,15 +213,15 @@ Bool MemoryIO::expand(uInt64 minSize) {
   }
   itsBuffer = newBuffer;
   itsAlloc = minsz;
-  itsCanDelete = True;
-  return True;
+  itsCanDelete = true;
+  return true;
 }
 
 Int64 MemoryIO::length() { return itsUsed; }
 
-Bool MemoryIO::isReadable() const { return itsReadable; }
-Bool MemoryIO::isWritable() const { return itsWritable; }
-Bool MemoryIO::isSeekable() const { return True; }
+bool MemoryIO::isReadable() const { return itsReadable; }
+bool MemoryIO::isWritable() const { return itsWritable; }
+bool MemoryIO::isSeekable() const { return true; }
 
 void MemoryIO::setUsed(uInt64 bytesUsed) {
   if (!itsWritable) {

@@ -70,17 +70,17 @@ int main(int argc, const char* argv[]) {
     inputs.create("force", "False", "Force regridding ?");
     inputs.readArguments(argc, argv);
     const String in = inputs.getString("in");
-    const Bool save = inputs.getBool("save");
+    const bool save = inputs.getBool("save");
     const String method = inputs.getString("method");
     const Block<Int> axesU(inputs.getIntArray("axes"));
     const Block<Int> shapeU(inputs.getIntArray("shape"));
-    const Bool replicate = inputs.getBool("replicate");
+    const bool replicate = inputs.getBool("replicate");
     const Int decimate = inputs.getInt("decimate");
-    const Bool onDisk = inputs.getBool("disk");
-    const Bool dbl = inputs.getBool("double");
+    const bool onDisk = inputs.getBool("disk");
+    const bool dbl = inputs.getBool("double");
     const Int dbg = inputs.getInt("dbg");
-    const Bool force = inputs.getBool("force");
-    const Bool reuse = inputs.getBool("reuse");
+    const bool force = inputs.getBool("force");
+    const bool reuse = inputs.getBool("reuse");
     //
     Int maxMBInMemory = -1;
     if (onDisk) maxMBInMemory = 0;
@@ -99,13 +99,13 @@ int main(int argc, const char* argv[]) {
       }
       //
       TiledShape shape2(shapeIn);
-      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, False);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, false);
       //
       pIm = new TempImage<Float>(shape2, cSys, maxMBInMemory);
       pIm->set(1.0);
       //
-      TempLattice<Bool> inMask(shape2, maxMBInMemory);
-      inMask.set(True);
+      TempLattice<bool> inMask(shape2, maxMBInMemory);
+      inMask.set(true);
       TempImage<Float>* pTemp = dynamic_cast<TempImage<Float>*>(pIm);
       pTemp->attachMask(inMask);
     } else {
@@ -158,11 +158,11 @@ int main(int argc, const char* argv[]) {
         pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
       }
       String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
-      pImOut->makeMask(maskName, True, True, True, True);
+      pImOut->makeMask(maskName, true, true, true, true);
       //
       Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
       regridder.showDebugInfo(dbg);
-      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, false, force);
       delete pImOut;
     }
     //
@@ -174,19 +174,19 @@ int main(int argc, const char* argv[]) {
         pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
       }
       String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
-      pImOut->makeMask(maskName, True, True, True, True);
+      pImOut->makeMask(maskName, true, true, true, true);
       //
       Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
       Cube<Double> grid;
-      Matrix<Bool> gridMask;
+      Matrix<bool> gridMask;
       regridder.get2DCoordinateGrid(grid, gridMask);
       regridder.set2DCoordinateGrid(grid, gridMask);
-      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, false, force);
       //
       grid.resize();
       gridMask.resize();
       regridder.set2DCoordinateGrid(grid, gridMask);
-      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, False, force);
+      regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate, false, force);
       //
       delete pImOut;
     }

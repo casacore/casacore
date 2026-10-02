@@ -153,7 +153,7 @@ class TableKeyword {
   // Is the table in use in another process?
   // If <src>checkSubTables</src> is set, it is also checked if
   // a subtable is used in another process.
-  Bool isMultiUsed(Bool checkSubTables) const;
+  bool isMultiUsed(bool checkSubTables) const;
 
   // Get the name of the table.
   const String& tableName() const;
@@ -180,7 +180,7 @@ class TableKeyword {
   void close() const;
 
   // Flush and optionally fsync the table.
-  void flush(Bool fsync) const;
+  void flush(bool fsync) const;
 
   // Rename the table if its path contains the old parent table name.
   void renameTable(const String& newParentName, const String& oldParentName);
@@ -189,13 +189,13 @@ class TableKeyword {
   // It conforms when this description name is blank or matches the
   // table description name of the other.
   // <group>
-  Bool conform(const TableKeyword& that) const;
-  Bool conform(const Table& that) const;
+  bool conform(const TableKeyword& that) const;
+  bool conform(const Table& that) const;
   // </group>
 
   // Has the table a fixed description name?
   // It has when its description name is not empty.
-  Bool isFixed() const;
+  bool isFixed() const;
 
  private:
   Table* table_p;
@@ -205,7 +205,7 @@ class TableKeyword {
 
 inline const String& TableKeyword::tableName() const { return attr_p.name(); }
 
-inline Bool TableKeyword::isFixed() const { return (!tableDescName_p.empty()); }
+inline bool TableKeyword::isFixed() const { return (!tableDescName_p.empty()); }
 
 }  // namespace casacore
 

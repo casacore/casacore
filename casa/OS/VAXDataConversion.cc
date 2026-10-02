@@ -194,77 +194,77 @@ size_t VAXDataConversion::fromLocal(void* to, const double* from, size_t nr) con
   return nr * SIZE_VAX_DOUBLE;
 }
 
-Bool VAXDataConversion::canCopy(const char*) const {
+bool VAXDataConversion::canCopy(const char*) const {
   if (sizeof(char) == SIZE_VAX_CHAR) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const unsigned char*) const {
+bool VAXDataConversion::canCopy(const unsigned char*) const {
   if (sizeof(unsigned char) == SIZE_VAX_UCHAR) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const short*) const {
+bool VAXDataConversion::canCopy(const short*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(short) == SIZE_VAX_SHORT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const unsigned short*) const {
+bool VAXDataConversion::canCopy(const unsigned short*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(unsigned short) == SIZE_VAX_USHORT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const int*) const {
+bool VAXDataConversion::canCopy(const int*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(int) == SIZE_VAX_INT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const unsigned int*) const {
+bool VAXDataConversion::canCopy(const unsigned int*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(unsigned int) == SIZE_VAX_UINT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const Int64*) const {
+bool VAXDataConversion::canCopy(const Int64*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(Int64) == SIZE_VAX_INT64) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const uInt64*) const {
+bool VAXDataConversion::canCopy(const uInt64*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(uInt64) == SIZE_VAX_UINT64) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool VAXDataConversion::canCopy(const float*) const { return False; }
+bool VAXDataConversion::canCopy(const float*) const { return false; }
 
-Bool VAXDataConversion::canCopy(const double*) const { return False; }
+bool VAXDataConversion::canCopy(const double*) const { return false; }
 
 unsigned int VAXDataConversion::externalSize(const char*) const { return SIZE_VAX_CHAR; }
 unsigned int VAXDataConversion::externalSize(const unsigned char*) const { return SIZE_VAX_UCHAR; }

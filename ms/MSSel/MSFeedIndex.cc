@@ -119,7 +119,7 @@ Vector<Int> MSFeedIndex::matchFeedPolznAndAngle(const Int& antennaId,
   // Do the receptor polarization match per row
   uInt nReceptors = std::min(polznType.nelements(), receptorAngle.nelements());
   uInt nrows = msFeedCols_p->nrow();
-  Vector<Bool> receptorMatch(nrows, False);
+  Vector<bool> receptorMatch(nrows, false);
   for (uInt row = 0; row < nrows; row++) {
     Vector<Quantity> rowAngle;
     msFeedCols_p->receptorAngleQuant().get(row, rowAngle);

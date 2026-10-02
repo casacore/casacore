@@ -207,8 +207,8 @@ class UnitVal {
   UnitVal &operator/=(const UnitVal &other);
 
   // Compare the dimensionality of different units
-  Bool operator==(const UnitVal &other) const;
-  Bool operator!=(const UnitVal &other) const;
+  bool operator==(const UnitVal &other) const;
+  bool operator!=(const UnitVal &other) const;
   // </group>
 
   // # General member functions
@@ -238,11 +238,11 @@ class UnitVal {
   // # Helper functions
   //  Convert a unit string to a proper unit value and cache the result. The
   //  function will return False if invalid string specified
-  static Bool check(const String &s);
+  static bool check(const String &s);
 
   // Convert a unit string to a proper unit value, cache the result and compare
   // the dimension with the specified unit value. False if any of the steps fails
-  static Bool check(const String &s, UnitVal &loc);
+  static bool check(const String &s, UnitVal &loc);
 
   // # Data members
   //  Some constants to check type of units
@@ -275,8 +275,8 @@ class UnitVal {
 
   // Convert (and check) a unit string to an SI value representation
   // <group>
-  static Bool create(const String &s, UnitVal &res, UMaps * = 0);
-  static Bool create(MUString &str, UnitVal &res, UMaps * = 0);
+  static bool create(const String &s, UnitVal &res, UMaps * = 0);
+  static bool create(MUString &str, UnitVal &res, UMaps * = 0);
   // </group>
 
   // Determine sign of unit power (i.e. if '.' or '/')
@@ -286,7 +286,7 @@ class UnitVal {
   static Int power(MUString &str);
 
   // Determine symbol name in unit string
-  static Bool field(MUString &str, UnitVal &res, UMaps *);
+  static bool field(MUString &str, UnitVal &res, UMaps *);
 };
 
 // # Inline Implementations

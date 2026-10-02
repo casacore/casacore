@@ -202,9 +202,9 @@ class Coordinate {
   // (such as can be present in spectral and direction coordinates), it
   // is used. Else, the native frame is used for the conversion.
   // <group>
-  virtual Bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
-                       Bool useConversionFrame = True) const = 0;
-  virtual Bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const = 0;
+  virtual bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
+                       bool useConversionFrame = true) const = 0;
+  virtual bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const = 0;
   // </group>
 
   // Mixed absolute pixel/world coordinate conversion.
@@ -238,9 +238,9 @@ class Coordinate {
   // Returns True if the conversion succeeds, otherwise it returns False and
   // <src>errorMessage()</src> contains an error message. The output vectors
   // are resized.
-  virtual Bool toMix(Vector<Double>& worldOut, Vector<Double>& pixelOut,
+  virtual bool toMix(Vector<Double>& worldOut, Vector<Double>& pixelOut,
                      const Vector<Double>& worldIn, const Vector<Double>& pixelIn,
-                     const Vector<Bool>& worldAxes, const Vector<Bool>& pixelAxes,
+                     const Vector<bool>& worldAxes, const Vector<bool>& pixelAxes,
                      const Vector<Double>& worldMin, const Vector<Double>& worldMax) const;
 
   // Set the world min and max ranges, for use in function <src>toMix</src>, for
@@ -251,7 +251,7 @@ class Coordinate {
   // The ranges remain zero length vectors until you explicitly
   // initialize them.
   // <group>
-  virtual Bool setWorldMixRanges(const IPosition& shape);
+  virtual bool setWorldMixRanges(const IPosition& shape);
   virtual void setDefaultWorldMixRanges();
   Vector<Double> worldMixMin() const { return worldMin_p; };
   Vector<Double> worldMixMax() const { return worldMax_p; };
@@ -267,10 +267,10 @@ class Coordinate {
   // <src>toWorld</src> and <src>toPixel</src>, but for maximum efficiency these should be
   // overridden.
   // <group>
-  virtual Bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
-                           Vector<Bool>& failures) const;
-  virtual Bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
-                           Vector<Bool>& failures) const;
+  virtual bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
+                           Vector<bool>& failures) const;
+  virtual bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
+                           Vector<bool>& failures) const;
   // </group>
 
   // Make absolute coordinates relative and vice-versa (with
@@ -315,11 +315,11 @@ class Coordinate {
   // Set the requested attribute.  Note that these just
   // change the internal values, they do not cause any recomputation.
   // <group>
-  virtual Bool setWorldAxisNames(const Vector<String>& names) = 0;
-  virtual Bool setReferencePixel(const Vector<Double>& refPix) = 0;
-  virtual Bool setLinearTransform(const Matrix<Double>& xform) = 0;
-  virtual Bool setIncrement(const Vector<Double>& inc) = 0;
-  virtual Bool setReferenceValue(const Vector<Double>& refval) = 0;
+  virtual bool setWorldAxisNames(const Vector<String>& names) = 0;
+  virtual bool setReferencePixel(const Vector<Double>& refPix) = 0;
+  virtual bool setLinearTransform(const Matrix<Double>& xform) = 0;
+  virtual bool setIncrement(const Vector<Double>& inc) = 0;
+  virtual bool setReferenceValue(const Vector<Double>& refval) = 0;
   // </group>
 
   // Change the units. Adjust the increment and
@@ -329,14 +329,14 @@ class Coordinate {
   //
   // A default implementation is available which does everything except set
   // the units vector, which must be done in the derived class.
-  virtual Bool setWorldAxisUnits(const Vector<String>& units) = 0;
+  virtual bool setWorldAxisUnits(const Vector<String>& units) = 0;
 
   // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
   // must be deleted by the caller. Axes specifies which axes of the Coordinate
   // you wish to transform.   Shape specifies the shape of the image
   // associated with all the axes of the Coordinate. Currently the
   // output reference pixel is always shape/2.
-  virtual Coordinate* makeFourierCoordinate(const Vector<Bool>& axes,
+  virtual Coordinate* makeFourierCoordinate(const Vector<bool>& axes,
                                             const Vector<Int>& shape) const;
 
   // If the last conversion to world or pixel coordinates resulted in an
@@ -349,8 +349,8 @@ class Coordinate {
   // Don't compare on specified axes in Coordinate. If the comparison
   // returns False, <src>errorMessage()</src> contains a message.
   // <group>
-  virtual Bool near(const Coordinate& other, Double tol = 1.0e-6) const = 0;
-  virtual Bool near(const Coordinate& other, const Vector<Int>& excludeAxes,
+  virtual bool near(const Coordinate& other, Double tol = 1.0e-6) const = 0;
+  virtual bool near(const Coordinate& other, const Vector<Int>& excludeAxes,
                     Double tol = 1.0e-6) const = 0;
   // </group>
 
@@ -411,21 +411,21 @@ class Coordinate {
   // the default precision is used.
   //
   //<group>
-  virtual void getPrecision(Int& precision, Coordinate::formatType& format, Bool showAsAbsolute,
+  virtual void getPrecision(Int& precision, Coordinate::formatType& format, bool showAsAbsolute,
                             Int defPrecScientific, Int defPrecFixed, Int defPrecTime) const;
   virtual String format(String& units, Coordinate::formatType format, Double worldValue, uInt axis,
-                        Bool isAbsolute = True, Bool showAsAbsolute = True, Int precision = -1,
-                        Bool usePrecForMixed = False) const;
+                        bool isAbsolute = true, bool showAsAbsolute = true, Int precision = -1,
+                        bool usePrecForMixed = false) const;
 
   String formatQuantity(String& units, Coordinate::formatType format,
-                        const Quantum<Double>& worldValue, uInt axis, Bool isAbsolute = True,
-                        Bool showAsAbsolute = True, Int precision = -1);
+                        const Quantum<Double>& worldValue, uInt axis, bool isAbsolute = true,
+                        bool showAsAbsolute = true, Int precision = -1);
   //</group>
 
   // Used for persistence. Derived classes will have similar static
   // restore methods. It will typically only return False if fieldName
   // has already been defined.
-  virtual Bool save(RecordInterface& container, const String& fieldName) const = 0;
+  virtual bool save(RecordInterface& container, const String& fieldName) const = 0;
 
   // Make a copy of ourself. This pointer has been allocated with
   // <src>new</src> and must be deleted by the caller.
@@ -434,8 +434,8 @@ class Coordinate {
   // Comparison only made for specified axes in this and other Coordinate
   // The default implementation should be ok for all Coordinate types
   // except Stokes and Quality...
-  virtual Bool doNearPixel(const Coordinate& other, const Vector<Bool>& thisAxes,
-                           const Vector<Bool>& otherAxes, Double tol = 1.0e-6) const;
+  virtual bool doNearPixel(const Coordinate& other, const Vector<bool>& thisAxes,
+                           const Vector<bool>& otherAxes, Double tol = 1.0e-6) const;
 
   // return the result of rotating the coordinate clockwise through the specified angle.
   // Rotation occurs about the reference pixel.
@@ -471,7 +471,7 @@ class Coordinate {
   void set_error(const String& errorMsg) const;
 
   //
-  Bool find_scale_factor(String& error, Vector<Double>& factor, const Vector<String>& units,
+  bool find_scale_factor(String& error, Vector<Double>& factor, const Vector<String>& units,
                          const Vector<String>& oldUnits);
 
   // Tries to find a canonical unit for input unit (e.g.  GHz -> Hz), and
@@ -484,11 +484,11 @@ class Coordinate {
   // explicitly by the to{world,Pixel} functions in the appropriate wcs-based derived
   // classes.
   // <group>
-  Bool toWorldWCS(Vector<Double>& world, const Vector<Double>& pixel, wcsprm& wcs) const;
-  Bool toPixelWCS(Vector<Double>& pixel, const Vector<Double>& world, wcsprm& wcs) const;
-  Bool toWorldManyWCS(Matrix<Double>& world, const Matrix<Double>& pixel, Vector<Bool>& failures,
+  bool toWorldWCS(Vector<Double>& world, const Vector<Double>& pixel, wcsprm& wcs) const;
+  bool toPixelWCS(Vector<Double>& pixel, const Vector<Double>& world, wcsprm& wcs) const;
+  bool toWorldManyWCS(Matrix<Double>& world, const Matrix<Double>& pixel, Vector<bool>& failures,
                       wcsprm& wcs) const;
-  Bool toPixelManyWCS(Matrix<Double>& pixel, const Matrix<Double>& world, Vector<Bool>& failures,
+  bool toPixelManyWCS(Matrix<Double>& pixel, const Matrix<Double>& world, Vector<bool>& failures,
                       wcsprm& wcs) const;
 
   // Functions for handling conversion between the current units and
@@ -528,10 +528,10 @@ class Coordinate {
   mutable String error_p;
 
   // Check format type
-  void checkFormat(Coordinate::formatType& format, const Bool absolute) const;
+  void checkFormat(Coordinate::formatType& format, const bool absolute) const;
 
-  void makeWorldAbsRelMany(Matrix<Double>& value, Bool toAbs) const;
-  void makePixelAbsRelMany(Matrix<Double>& value, Bool toAbs) const;
+  void makeWorldAbsRelMany(Matrix<Double>& value, bool toAbs) const;
+  void makePixelAbsRelMany(Matrix<Double>& value, bool toAbs) const;
 };
 
 // ###### Inlines

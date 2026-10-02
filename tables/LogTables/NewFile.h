@@ -71,7 +71,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class NewFile {
  public:
   // Currently the deleteIfExists argument has no affect
-  NewFile(Bool deleteIfExists = True);
+  NewFile(bool deleteIfExists = true);
 
   // Copy constructor (copy semantics)
   NewFile(const NewFile &other);
@@ -85,10 +85,10 @@ class NewFile {
   // Indicates whether the specified string is a valid new file,
   // invoking the choice GUI.  If it returns False, an error
   // message is returned.
-  Bool valueOK(const String &value, String &error) const;
+  bool valueOK(const String &value, String &error) const;
 
  private:
-  Bool delete_p;
+  bool delete_p;
 };
 
 }  // namespace casacore

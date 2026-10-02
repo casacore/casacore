@@ -93,7 +93,7 @@ class DataManInfo {
   // It is possible to specify the new data manager type to use.
   // This is needed for special storage managers like LofarStMan.
   // If replaceMSM is set, MemoryStMan is also replaced.
-  static Record adjustStMan(const Record& dminfo, const String& dmType, Bool replaceMSM = True);
+  static Record adjustStMan(const Record& dminfo, const String& dmType, bool replaceMSM = true);
 
   // Ensure all data manager names in <src>dminfo</src> are unique by
   // adding a unique suffix as needed (using function <src>uniqueName</src>).

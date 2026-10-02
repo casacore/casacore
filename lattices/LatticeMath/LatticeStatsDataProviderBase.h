@@ -41,7 +41,7 @@ class LatticeProgress;
 
 template <class T>
 class LatticeStatsDataProviderBase
-    : public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const Bool*> {
+    : public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const bool*> {
  public:
   virtual ~LatticeStatsDataProviderBase();
 
@@ -65,14 +65,14 @@ class LatticeStatsDataProviderBase
   const T* getWeights();
 
   // Does the current data set have associated range(s)?
-  Bool hasRanges() const;
+  bool hasRanges() const;
 
   // returns False; lattices do not have associated weights.
-  Bool hasWeights() const;
+  bool hasWeights() const;
 
   // If the associated data set has ranges, are these include (return True) or
   // exclude (return False) ranges?
-  Bool isInclude() const;
+  bool isInclude() const;
 
   // get the positions of the min and max
   void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
@@ -84,7 +84,7 @@ class LatticeStatsDataProviderBase
   // set the data ranges
   void setRanges(const std::vector<std::pair<typename NumericTraits<T>::PrecisionType,
                                              typename NumericTraits<T>::PrecisionType>>& ranges,
-                 Bool isInclude);
+                 bool isInclude);
 
  protected:
   LatticeStatsDataProviderBase();
@@ -96,7 +96,7 @@ class LatticeStatsDataProviderBase
   void _updateProgress();
 
  private:
-  Bool _hasRanges, _isInclude;
+  bool _hasRanges, _isInclude;
   std::vector<
       std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType>>
       _ranges;

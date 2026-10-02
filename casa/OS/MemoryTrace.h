@@ -83,10 +83,10 @@ class MemoryTrace {
   static void close();
 
   // Is tracing on?
-  static Bool isOn() { return theirDoTrace; }
+  static bool isOn() { return theirDoTrace; }
 
   // Is the tracing file opened?
-  static Bool isOpen() { return theirFile.is_open(); }
+  static bool isOpen() { return theirFile.is_open(); }
 
   // Write a block line in the output file.
   static void writeBlock(const char* msg, const std::string& name);
@@ -105,7 +105,7 @@ class MemoryTrace {
   static std::string makeString(const char*);
 
  private:
-  static Bool theirDoTrace;
+  static bool theirDoTrace;
   static std::ofstream theirFile;
   static Timer theirTimer;
   // # Variables to save original hooks.

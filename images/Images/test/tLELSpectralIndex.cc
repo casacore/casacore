@@ -40,8 +40,8 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Bool doIt() {
-  Bool ok = True;
+bool doIt() {
+  bool ok = true;
   IPosition shp1(2, 10, 10);
   IPosition shp1a(3, 10, 10, 1);
   IPosition shp2(3, 10, 10, 15);
@@ -98,7 +98,7 @@ Bool doIt() {
     if (!allNear(result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
-      ok = False;
+      ok = false;
     }
   }
   {
@@ -121,7 +121,7 @@ Bool doIt() {
     if (!allNear(result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
-      ok = False;
+      ok = false;
     }
   }
   {
@@ -139,7 +139,7 @@ Bool doIt() {
     if (!allNear(result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
-      ok = False;
+      ok = false;
     }
   }
   {
@@ -159,19 +159,19 @@ Bool doIt() {
     if (!allNear(result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
-      ok = False;
+      ok = false;
     }
   }
   return ok;
 }
 
 int main() {
-  Bool ok = True;
+  bool ok = true;
   try {
     ok = doIt();
   } catch (std::exception& x) {
     cerr << "Caught exception: " << x.what() << endl;
-    ok = False;
+    ok = false;
   }
   if (!ok) {
     cout << "FAIL" << endl;

@@ -104,7 +104,7 @@ class TSMIdColumn : public TSMColumn {
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the ScalarColumn get function).
   // <group>
-  void getBool(rownr_t rownr, Bool* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getBool(rownr_t rownr, bool* dataPtr) override { GetGeneric(rownr, dataPtr); }
   void getInt(rownr_t rownr, Int* dataPtr) override { GetGeneric(rownr, dataPtr); }
   void getuInt(rownr_t rownr, uInt* dataPtr) override { GetGeneric(rownr, dataPtr); }
   void getInt64(rownr_t rownr, Int64* dataPtr) override { GetGeneric(rownr, dataPtr); }
@@ -122,7 +122,7 @@ class TSMIdColumn : public TSMColumn {
   // been inserted by the TiledStMan::addHypercube function.
   // The put function is only there to be fully orthogonal.
   // <group>
-  void putBool(rownr_t rownr, const Bool* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putBool(rownr_t rownr, const bool* dataPtr) override { PutGeneric(rownr, dataPtr); }
   void putInt(rownr_t rownr, const Int* dataPtr) override { PutGeneric(rownr, dataPtr); }
   void putuInt(rownr_t rownr, const uInt* dataPtr) override { PutGeneric(rownr, dataPtr); }
   void putInt64(rownr_t rownr, const Int64* dataPtr) override { PutGeneric(rownr, dataPtr); }

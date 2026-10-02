@@ -33,7 +33,7 @@ namespace casacore {
 
 template <class T>
 LatticeStatsDataProviderBase<T>::LatticeStatsDataProviderBase()
-    : _hasRanges(False), _isInclude(True), _ranges(), _progressMeter(NULL), _minPos(), _maxPos() {}
+    : _hasRanges(false), _isInclude(true), _ranges(), _progressMeter(NULL), _minPos(), _maxPos() {}
 
 template <class T>
 LatticeStatsDataProviderBase<T>::~LatticeStatsDataProviderBase() {}
@@ -64,17 +64,17 @@ const T* LatticeStatsDataProviderBase<T>::getWeights() {
 }
 
 template <class T>
-Bool LatticeStatsDataProviderBase<T>::hasRanges() const {
+bool LatticeStatsDataProviderBase<T>::hasRanges() const {
   return _hasRanges;
 }
 
 template <class T>
-Bool LatticeStatsDataProviderBase<T>::hasWeights() const {
-  return False;
+bool LatticeStatsDataProviderBase<T>::hasWeights() const {
+  return false;
 }
 
 template <class T>
-Bool LatticeStatsDataProviderBase<T>::isInclude() const {
+bool LatticeStatsDataProviderBase<T>::isInclude() const {
   return _isInclude;
 }
 
@@ -99,7 +99,7 @@ template <class T>
 void LatticeStatsDataProviderBase<T>::setRanges(
     const std::vector<std::pair<typename NumericTraits<T>::PrecisionType,
                                 typename NumericTraits<T>::PrecisionType>>& ranges,
-    Bool isInclude) {
+    bool isInclude) {
   _hasRanges = !ranges.empty();
   _ranges = ranges;
   _isInclude = isInclude;

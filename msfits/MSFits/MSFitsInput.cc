@@ -218,16 +218,16 @@ void MSPrimaryTableHolder::detach() {
 }
 
 //------------------------------------------------------------
-MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile, const Bool useNewStyle)
+MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile, const bool useNewStyle)
     : _infile(0),
       _msc(0),
       _uniqueAnts(),
       _nAntRow(0),
       _restfreq(0),
-      _addSourceTable(False),
+      _addSourceTable(false),
       _log(LogOrigin("MSFitsInput", "MSFitsInput")),
       _newNameStyle(useNewStyle),
-      _msCreated(False) {
+      _msCreated(false) {
   // First, lets verify that fitsfile exists and that it appears to be a
   // FITS file.
   File f(fitsFile);
@@ -243,7 +243,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile, const Boo
   // We should probably look for SIMPLE = here
 
   String errmsg;
-  NewFile fileOK(True);
+  NewFile fileOK(true);
   if (!fileOK.valueOK(msFile, errmsg)) {
     _log << LogOrigin("MSFitsInput", "MSFitsInput") << "Error in output file: " << errmsg
          << LogIO::EXCEPTION;
@@ -288,10 +288,10 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile, const Boo
 void MSFitsInput::readRandomGroupUVFits(Int obsType) {
   _log << LogOrigin("MSFitsInput", __func__) << LogIO::POST;
   Int nField = 0, nSpW = 0;
-  _useAltrval = False;
+  _useAltrval = false;
   getPrimaryGroupAxisInfo();
 
-  Bool useTSM = True;
+  bool useTSM = true;
 
   setupMeasurementSet(_msFile, useTSM, obsType);
 
@@ -339,7 +339,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
     }
   }
   // now handle the BinaryTable extensions for the subtables
-  Bool haveAn = False, haveField = False, haveSpW = False, haveSysPower = False;
+  bool haveAn = false, haveField = false, haveSpW = false, haveSysPower = false;
   while (_infile->rectype() != FITS::EndOfFile && !_infile->err()) {
     if (_infile->hdutype() != FITS::BinaryTableHDU) {
       _log << LogOrigin("MSFitsInput", __func__) << LogIO::NORMAL << "Skipping unhandled extension"
@@ -356,13 +356,13 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
            << " rowsize=" << binTab.rowsize() << " pcount=" << binTab.pcount()
            << " gcount=" << binTab.gcount() << LogIO::POST;
       if (StringContains(type, "AN") && !haveAn) {
-        haveAn = True;
+        haveAn = true;
         fillAntennaTable(binTab);
       } else if (StringContains(type, "FQ") && !haveSpW) {
-        haveSpW = True;
+        haveSpW = true;
         fillSpectralWindowTable(binTab, nSpW);
       } else if (StringContains(type, "SU") && !haveField) {
-        haveField = True;
+        haveField = true;
         fillFieldTable(binTab, nField);
         setFreqFrameVar(binTab);
         // in case spectral window was already filled
@@ -370,7 +370,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
           updateSpectralWindowTable();
         }
       } else if (StringContains(type, "SY") && !haveSysPower) {
-        haveSysPower = True;
+        haveSysPower = true;
         _fillSysPowerTable(binTab);
       } else {
         _log << LogOrigin("MSFitsInput", __func__) << LogIO::NORMAL
@@ -405,9 +405,9 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
   _log << LogOrigin("MSFitsInput", __func__) << "_msFile=" << _msFile << "obsType=" << obsType
        << LogIO::POST;
 
-  _useAltrval = False;
+  _useAltrval = false;
 
-  Bool useTSM = False;
+  bool useTSM = false;
 
   _epochRef = getDirectionFrame(2000.0);
   setupMeasurementSet(_msFile, useTSM, obsType);
@@ -426,7 +426,7 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
   _obsTime(0) = timeVal.second();
   _obsTime(1) = timeVal.second();
   fillHistoryTable(kwlist);
-  Bool moreToDo = true;
+  bool moreToDo = true;
   while (moreToDo && _infile->rectype() != FITS::EndOfFile && !_infile->err()) {
     if (  //_infile->rectype() != FITS::HDURecord ||
         _infile->hdutype() != FITS::BinaryTableHDU) {
@@ -519,10 +519,10 @@ void MSFitsInput::readFitsFile(Int obsType) {
       _log << LogIO::NORMAL << "Exception while processing UVFITS file. Deleting incomplete MS '"
            << name << "'" << LogIO::POST;
       _ms.closeSubTables();
-      _ms.relinquishAutoLocks(True);
+      _ms.relinquishAutoLocks(true);
       // detach to close
       _ms = MeasurementSet();
-      TableUtil::deleteTable(name, True);
+      TableUtil::deleteTable(name, true);
     }
     ThrowCc(ex.what());
   }
@@ -533,7 +533,7 @@ MSFitsInput::~MSFitsInput() {
   delete _msc;
 }
 
-Bool MSFitsInput::_checkInput(FitsInput& infile) {
+bool MSFitsInput::_checkInput(FitsInput& infile) {
   // Check that we have a valid UV fits file
   if (infile.rectype() != FITS::HDURecord) {
     _log << LogOrigin("MSFitsInput", __func__) << "file does not start with standard hdu record."
@@ -555,7 +555,7 @@ Bool MSFitsInput::_checkInput(FitsInput& infile) {
          << "Error, this class handles only FLOAT, SHORT, LONG and BYTE data "
          << "(BITPIX=-32,16,32,8) at present" << LogIO::EXCEPTION;
   }
-  return True;
+  return true;
 }
 
 void MSFitsInput::getPrimaryGroupAxisInfo() {
@@ -683,11 +683,11 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
   for (uInt i = 0; i < numCorr; i++) {
     const Stokes::StokesTypes cType = Stokes::type(_corrType(i));
     std::optional<Int> receptor = Stokes::receptor1(cType);
-    Bool warn = False;
+    bool warn = false;
     if (receptor.has_value()) {
       _corrProduct(0, i) = *receptor;
     } else if (!warn) {
-      warn = True;
+      warn = true;
       _log << LogIO::WARN
            << "Cannot deduce receptor 1 for correlations of type: " << Stokes::name(cType)
            << LogIO::POST;
@@ -696,7 +696,7 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
     if (receptor.has_value()) {
       _corrProduct(1, i) = *receptor;
     } else if (!warn) {
-      warn = True;
+      warn = true;
       _log << LogIO::WARN
            << "Cannot deduce receptor 2 for correlations of type: " << Stokes::name(cType)
            << LogIO::POST;
@@ -727,7 +727,7 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
   _restfreq = 0.0;
   Record header;
   Vector<String> ignore;
-  Bool ok = FITSKeywordUtil::getKeywords(header, _priGroup.kwlist(), ignore);
+  bool ok = FITSKeywordUtil::getKeywords(header, _priGroup.kwlist(), ignore);
   if (ok) {
     Int spectralAxis;
     Double referenceChannel, referenceFrequency, deltaFrequency;
@@ -758,7 +758,7 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
   }
 }
 
-void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM, Int obsType) {
+void MSFitsInput::setupMeasurementSet(const String& MSFileName, bool useTSM, Int obsType) {
   // Make the MS table
   TableDesc td = MS::requiredTableDesc();
 
@@ -784,7 +784,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM, Int
   SetupNewTable newtab(MSFileName, td, Table::New);
   // Set the default Storage Manager to be the Incr one
   IncrementalStMan incrStMan("ISMData");
-  newtab.bindAll(incrStMan, True);
+  newtab.bindAll(incrStMan, true);
 
   // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan
   // as they may change sufficiently frequently to make the
@@ -837,7 +837,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM, Int
   // avoid lock overheads by locking the table permanently
   TableLock lock(TableLock::AutoLocking);
   MeasurementSet ms(newtab, lock);
-  _msCreated = True;
+  _msCreated = true;
 
   // Set up the subtables for the UVFITS MS
   // we make new tables with 0 rows
@@ -906,7 +906,7 @@ void MSFitsInput::fillObsTables() {
   msObsCol.timeRange().put(0, times);
   msObsCol.releaseDate().put(0, times(0));  // just use TIME_RANGE for now
   Double time = timeVal.second();
-  msObsCol.flagRow().put(0, False);
+  msObsCol.flagRow().put(0, false);
 
   // Store all keywords from the first HISTORY keyword onwards in History table
   String history = (kwp = _priGroup.kw(FITS::HISTORY)) ? kwp->comm() : "";
@@ -1006,9 +1006,9 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
   cat(1) = "ORIGINAL";
   cat(2) = "USER";
   msc.flagCategory().rwKeywordSet().define("CATEGORY", cat);
-  Cube<Bool> flagCat(nCorr, nChan, nCat, False);
+  Cube<bool> flagCat(nCorr, nChan, nCat, false);
   //  Matrix<Bool> flag = flagCat.xyPlane(0); // references flagCat's storage
-  Cube<Bool> flag(nCorr, nChan, totRows);
+  Cube<bool> flag(nCorr, nChan, totRows);
   // find out the indices for U, V and W, there are several naming schemes
   Int iU, iV, iW;
   iU = getIndexContains(pType, "UU");
@@ -1052,7 +1052,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
   Double interval, exposure;
   interval = 0.0;
   exposure = 0.0;
-  Bool discernIntExp(True);
+  bool discernIntExp(true);
   Double discernedInt(DBL_MAX);
 
   // ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",//               "",
@@ -1077,7 +1077,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
   // initialize nArray_p first...
   _nArray = -1;
 
-  Bool lastRowFlag = False;
+  bool lastRowFlag = false;
   Vector<Int> ant1(totRows);
   Vector<Int> ant2(totRows);
   Vector<Double> interv(totRows);
@@ -1132,9 +1132,9 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     }
     // Ensure arrayId-specific params are of correct length:
     if (scanNumber.shape() < _nArray) {
-      scanNumber.resize(_nArray, True);
-      lastFieldId.resize(_nArray, True);
-      lastFreqId.resize(_nArray, True);
+      scanNumber.resize(_nArray, true);
+      lastFieldId.resize(_nArray, true);
+      lastFreqId.resize(_nArray, true);
       scanNumber(_nArray - 1) = 0;
       lastFieldId(_nArray - 1) = -1;
       lastFreqId(_nArray - 1) = -1;
@@ -1150,13 +1150,13 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
 
     // If integration time is a RP, use it:
     if (iInttim > -1) {
-      discernIntExp = False;
+      discernIntExp = false;
       exposure = _priGroup.parm(iInttim);
       interval = exposure;
     } else {
       // keep track of minimum which is the only one
       // (if time step is larger than UVFITS precision (and zero))
-      discernIntExp = True;
+      discernIntExp = true;
       Double tempint;
       tempint = time - lastFillTime;
       if (tempint > 0.01) {
@@ -1167,7 +1167,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     // Work out which axis increments fastests, pol or channel
     // The COMPLEX axis is assumed to be first, and the IF axis is assumed
     // to be after STOKES and FREQ.
-    Bool polFastest = (getIndex(_coordType, "STOKES") < getIndex(_coordType, "FREQ"));
+    bool polFastest = (getIndex(_coordType, "STOKES") < getIndex(_coordType, "FREQ"));
     const Int nx = (polFastest ? nChan : nCorr);
     const Int ny = (polFastest ? nCorr : nChan);
 
@@ -1180,8 +1180,8 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
       if (row == 0) {
         msc.feed1().put(row, 0);
         msc.feed2().put(row, 0);
-        msc.flagRow().put(row, False);
-        lastRowFlag = False;
+        msc.flagRow().put(row, false);
+        lastRowFlag = false;
         msc.processorId().put(row, -1);
         msc.observationId().put(row, 0);
         msc.stateId().put(row, -1);
@@ -1205,11 +1205,11 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
           const Int chan = (polFastest ? ix : iy);
           if (wt <= 0.0) {
             weightSpec(pol, chan, row) = abs(wt);
-            flag(pol, chan, row) = True;
+            flag(pol, chan, row) = true;
             weight(pol, row) += abs(wt);
           } else {
             weightSpec(pol, chan, row) = wt;
-            flag(pol, chan, row) = False;
+            flag(pol, chan, row) = false;
             // weight column is sum of weight_spectrum (each pol):
             weight(pol, row) += wt;
           }
@@ -1231,7 +1231,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
         expos(row) = exposure;
       }
 
-      Bool rowFlag = allEQ(flag.xyPlane(row), True);
+      bool rowFlag = allEQ(flag.xyPlane(row), true);
       if (rowFlag != lastRowFlag) {
         msc.flagRow().put(row, rowFlag);
         lastRowFlag = rowFlag;
@@ -1330,8 +1330,8 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
   cat(1) = "ORIGINAL";
   cat(2) = "USER";
   msc.flagCategory().rwKeywordSet().define("CATEGORY", cat);
-  Cube<Bool> flagCat(nCorr, nChan, nCat, False);
-  Matrix<Bool> flag = flagCat.xyPlane(0);  // references flagCat's storage
+  Cube<bool> flagCat(nCorr, nChan, nCat, false);
+  Matrix<bool> flag = flagCat.xyPlane(0);  // references flagCat's storage
 
   // find out the indices for U, V and W, there are several naming schemes
   Int iU, iV, iW;
@@ -1375,10 +1375,10 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
   Double interval, exposure;
   interval = 0.0;
   exposure = 0.0;
-  Bool discernIntExp(True);
+  bool discernIntExp(true);
   Double discernedInt(DBL_MAX);
 
-  ProgressMeter meter(0.0, nGroups * 1.0, "UVFITS Filler", "Groups copied", "", "", True,
+  ProgressMeter meter(0.0, nGroups * 1.0, "UVFITS Filler", "Groups copied", "", "", true,
                       nGroups / 100);
 
   Vector<Double> uvw(3);
@@ -1400,7 +1400,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
   // initialize nArray_p first...
   _nArray = -1;
 
-  Bool lastRowFlag = False;
+  bool lastRowFlag = false;
 
   // Loop over groups
   for (Int group = 0; group < nGroups; group++) {
@@ -1450,9 +1450,9 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     Int ant2 = ants.second;
     // Ensure arrayId-specific params are of correct length:
     if (scanNumber.shape() < _nArray) {
-      scanNumber.resize(_nArray, True);
-      lastFieldId.resize(_nArray, True);
-      lastFreqId.resize(_nArray, True);
+      scanNumber.resize(_nArray, true);
+      lastFieldId.resize(_nArray, true);
+      lastFreqId.resize(_nArray, true);
       scanNumber(_nArray - 1) = 0;
       lastFieldId(_nArray - 1) = -1;
       lastFreqId(_nArray - 1) = -1;
@@ -1468,13 +1468,13 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
 
     // If integration time is a RP, use it:
     if (iInttim > -1) {
-      discernIntExp = False;
+      discernIntExp = false;
       exposure = _priGroup.parm(iInttim);
       interval = exposure;
     } else {
       // keep track of minimum which is the only one
       // (if time step is larger than UVFITS precision (and zero))
-      discernIntExp = True;
+      discernIntExp = true;
       Double tempint;
       tempint = time - lastFillTime;
       if (tempint > 0.01) {
@@ -1485,7 +1485,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     // Work out which axis increments fastests, pol or channel
     // The COMPLEX axis is assumed to be first, and the IF axis is assumed
     // to be after STOKES and FREQ.
-    Bool polFastest = (getIndex(_coordType, "STOKES") < getIndex(_coordType, "FREQ"));
+    bool polFastest = (getIndex(_coordType, "STOKES") < getIndex(_coordType, "FREQ"));
     const Int nx = (polFastest ? nChan : nCorr);
     const Int ny = (polFastest ? nCorr : nChan);
 
@@ -1499,8 +1499,8 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
       if (row == 0) {
         msc.feed1().put(row, 0);
         msc.feed2().put(row, 0);
-        msc.flagRow().put(row, False);
-        lastRowFlag = False;
+        msc.flagRow().put(row, false);
+        lastRowFlag = false;
         msc.processorId().put(row, -1);
         msc.observationId().put(row, 0);
         msc.stateId().put(row, -1);
@@ -1523,11 +1523,11 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
           const Int chan = (polFastest ? ix : iy);
           if (wt <= 0.0) {
             weightSpec(pol, chan) = abs(wt);
-            flag(pol, chan) = True;
+            flag(pol, chan) = true;
             weight(pol) += abs(wt);
           } else {
             weightSpec(pol, chan) = wt;
-            flag(pol, chan) = False;
+            flag(pol, chan) = false;
             // weight column is sum of weight_spectrum (each pol):
             weight(pol) += wt;
           }
@@ -1558,7 +1558,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
 
       msc.flag().put(row, flag);
       msc.flagCategory().put(row, flagCat);
-      Bool rowFlag = allEQ(flag, True);
+      bool rowFlag = allEQ(flag, true);
       if (rowFlag != lastRowFlag) {
         msc.flagRow().put(row, rowFlag);
         lastRowFlag = rowFlag;
@@ -1815,7 +1815,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
          << xyzHand + " keyword not found in AN table. Will assume "
          << "antenna coordinate system is right handed." << LogIO::POST;
   }
-  Bool leftHanded = handed == "LEFT";
+  bool leftHanded = handed == "LEFT";
   if (leftHanded) {
     _log << LogOrigin("MSFitsInput", __func__) << LogIO::NORMAL
          << "Antenna positions in the uvfits "
@@ -1858,7 +1858,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
   _timsys = timsys;
   // Fill in some likely values
   Float diameter = 25;
-  Bool doSMA = (_array == "SMA");
+  bool doSMA = (_array == "SMA");
   if (_array == "ATCA") {
     diameter = 22;
   } else if (doSMA) {
@@ -1884,12 +1884,12 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
 
   // If it has a column called DIAMETER ...make use of it if
   //  any of the values are valid
-  Bool positiveDiamsFound = False;
+  bool positiveDiamsFound = false;
   if (anTab.tableDesc().isColumn("DIAMETER")) {
     Vector<Float> tmpDiams = ScalarColumn<Float>(anTab, "DIAMETER").getColumn();
     if (anyGT(tmpDiams, 0.0f)) {
       antDiams = tmpDiams;
-      positiveDiamsFound = True;
+      positiveDiamsFound = true;
     }
   }
   if (!positiveDiamsFound) {
@@ -1915,7 +1915,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
   }
   // Prepare handling of UVFITS Antenna position coord conventions:
   // VLA requires rotation of local coords in some cases
-  Bool rotate = False;
+  bool rotate = false;
   Matrix<Double> posRot = Rot3D(0, 0.0);
   String arrnam = "Unknown";
   if (btKeywords.isDefined("ARRNAM")) {
@@ -1954,7 +1954,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
       // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
       Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
       posRot = Rot3D(2, vlaLong);  // Applied to each ant position below
-      rotate = True;
+      rotate = true;
       _log << LogIO::NORMAL << "Performing transformation of antenna "
            << "positions from coordinate frame used by MODCOMPs to ITRF" << LogIO::POST;
     } else {
@@ -1970,7 +1970,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     // This loop initially flags all rows.
     // The good rows will be unflagged in the next loop.
     // Bad rows (representing gaps in the antenna IDs) will remain flagged.
-    ant.flagRow().put(i, True);
+    ant.flagRow().put(i, true);
   }
   for (Int i = 0; i < nAnt; ++i) {
     Int row = id(i) - 1;
@@ -2012,7 +2012,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     if (doSMA) {
       mount = "ALT-AZ";
     }
-    ant.flagRow().put(row, False);
+    ant.flagRow().put(row, false);
     ant.mount().put(row, mount);
     if (_array == "CARMA" && _newNameStyle) {
       ostringstream oss;
@@ -2065,14 +2065,14 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW) {
   Int nCorr = _nPixel(getIndex(_coordType, "STOKES"));
   // assume spectral line, make source table to allow restfreq to be entered
   // if (nChan>33) addSourceTable_p=True;
-  if (nChan > 0) _addSourceTable = True;
+  if (nChan > 0) _addSourceTable = true;
 
   // fill out the polarization info (only single entry allowed in fits input)
   _ms.polarization().addRow();
   msPol.numCorr().put(0, nCorr);
   msPol.corrType().put(0, _corrType);
   msPol.corrProduct().put(0, _corrProduct);
-  msPol.flagRow().put(0, False);
+  msPol.flagRow().put(0, false);
 
   //  Table fqTab=bt.fullTable("",Table::Scratch);
   Table fqTab = bt.fullTable();
@@ -2114,7 +2114,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW) {
 
     msDD.spectralWindowId().put(spw, spw);
     msDD.polarizationId().put(spw, 0);
-    msDD.flagRow().put(spw, False);
+    msDD.flagRow().put(spw, false);
     Int ifc = 0;
     Int freqGroup = 0;
     if (_nIF > 0) {
@@ -2158,7 +2158,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW) {
     }
     msSpW.freqGroup().put(spw, freqGroup);
     msSpW.freqGroupName().put(spw, "none");
-    msSpW.flagRow().put(spw, False);
+    msSpW.flagRow().put(spw, false);
     // set the reference frames for frequency
     msSpW.measFreqRef().put(spw, _freqsys);
   }
@@ -2173,14 +2173,14 @@ void MSFitsInput::fillSpectralWindowTable() {
   Int nCorr = _nPixel(getIndex(_coordType, "STOKES"));
   // assume spectral line, make source table to allow restfreq to be entered
   // if (nChan>33) addSourceTable_p=True;
-  if (nChan > 0) _addSourceTable = True;
+  if (nChan > 0) _addSourceTable = true;
 
   // fill out the polarization info (only single entry allowed in fits input)
   _ms.polarization().addRow();
   msPol.numCorr().put(0, nCorr);
   msPol.corrType().put(0, _corrType);
   msPol.corrProduct().put(0, _corrProduct);
-  msPol.flagRow().put(0, False);
+  msPol.flagRow().put(0, false);
 
   Int spw = 0;
   _ms.spectralWindow().addRow();
@@ -2188,7 +2188,7 @@ void MSFitsInput::fillSpectralWindowTable() {
 
   msDD.spectralWindowId().put(spw, spw);
   msDD.polarizationId().put(spw, 0);
-  msDD.flagRow().put(spw, False);
+  msDD.flagRow().put(spw, false);
 
   msSpW.name().put(spw, "none");
   msSpW.ifConvChain().put(spw, 0);
@@ -2220,7 +2220,7 @@ void MSFitsInput::fillSpectralWindowTable() {
   }
   msSpW.freqGroup().put(spw, 0);
   msSpW.freqGroupName().put(spw, "none");
-  msSpW.flagRow().put(spw, False);
+  msSpW.flagRow().put(spw, false);
   // set the reference frames for frequency
   msSpW.measFreqRef().put(spw, _freqsys);
 }
@@ -2249,10 +2249,10 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
   ScalarColumn<Int> id(suTab, "ID. NO.");
   ScalarColumn<String> name(suTab, "SOURCE");
   ScalarColumn<Int> qual(suTab, "QUAL");
-  Bool multiqual = False;
+  bool multiqual = false;
   Int minqual, maxqual;
   minMax(minqual, maxqual, qual.getColumn());
-  if (minqual != maxqual) multiqual = True;
+  if (minqual != maxqual) multiqual = true;
   ScalarColumn<String> code(suTab, "CALCODE");
   // ScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
   ScalarColumn<Double> ra(suTab, "RAEPO");       // degrees
@@ -2270,7 +2270,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
   // RESTFREQ and LSRVEL are 2D columns according to the AIPS Memo 117
   // restFreq_p.resize(noif, suTab.nrow());
   _sysVel.resize(noif, suTab.nrow());
-  Bool throwImmediately = False;
+  bool throwImmediately = false;
   try {
     ArrayColumn<Double> restfreq(suTab, "RESTFREQ");  // Hz
     ArrayColumn<Double> sysvel(suTab, "LSRVEL");      // m/s
@@ -2328,7 +2328,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
       msField.phaseDirMeasCol().put(outRow, nullDir);
       msField.delayDirMeasCol().put(outRow, nullDir);
       msField.referenceDirMeasCol().put(outRow, nullDir);
-      msField.flagRow().put(outRow, True);
+      msField.flagRow().put(outRow, true);
     }
     msField.sourceId().put(fld, -1);  // source table not filled in
     msField.code().put(fld, code(inRow));
@@ -2390,7 +2390,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     msField.delayDirMeasCol().put(fld, radecMeas);
     msField.phaseDirMeasCol().put(fld, radecMeas);
     msField.referenceDirMeasCol().put(fld, radecMeas);
-    msField.flagRow().put(fld, False);
+    msField.flagRow().put(fld, false);
   }
 }
 
@@ -2501,7 +2501,7 @@ void MSFitsInput::fillExtraTables() {
 
   std::map<pair<Int, Int>, Int> sourceFieldIndex;  // for the case we need to write the source table
 
-  ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied", "", "", True, nrow / 100);
+  ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied", "", "", true, nrow / 100);
 
   for (Int i = 0; i < nrow; i++) {
     if (fieldId(i) != lastFieldId || (_addSourceTable && ddId(i) != lastDDId)) {
@@ -2620,8 +2620,8 @@ void MSFitsInput::fillExtraTables() {
 void MSFitsInput::fixEpochReferences() {
   if (_timsys == "IAT") _timsys = "TAI";
   if (_timsys == "UTC" || _timsys == "TAI") {
-    if (_timsys == "UTC") _msc->setEpochRef(MEpoch::UTC, False);
-    if (_timsys == "TAI") _msc->setEpochRef(MEpoch::TAI, False);
+    if (_timsys == "UTC") _msc->setEpochRef(MEpoch::UTC, false);
+    if (_timsys == "TAI") _msc->setEpochRef(MEpoch::TAI, false);
   } else {
     if (_timsys != "")
       _log << LogOrigin("MSFitsInput", "fixEpochReferences") << LogIO::SEVERE
@@ -2802,11 +2802,11 @@ void MSFitsInput::sortPolarizations() {
   for (uInt i = 0; i < numCorr; i++) {
     const Stokes::StokesTypes cType = Stokes::type(_corrType(i));
     std::optional<Int> receptor = Stokes::receptor1(cType);
-    Bool warn = False;
+    bool warn = false;
     if (receptor) {
       _corrProduct(0, i) = *receptor;
     } else if (!warn) {
-      warn = True;
+      warn = true;
       _log << LogIO::WARN
            << "Cannot deduce receptor 1 for correlations of type: " << Stokes::name(cType)
            << LogIO::POST;
@@ -2815,7 +2815,7 @@ void MSFitsInput::sortPolarizations() {
     if (receptor) {
       _corrProduct(1, i) = *receptor;
     } else if (!warn) {
-      warn = True;
+      warn = true;
       _log << LogIO::WARN
            << "Cannot deduce receptor 2 for correlations of type: " << Stokes::name(cType)
            << LogIO::POST;
@@ -2831,7 +2831,7 @@ void MSFitsInput::fillPolarizationTable() {
   msPol.numCorr().put(0, nCorr);
   msPol.corrType().put(0, _corrType);
   msPol.corrProduct().put(0, _corrProduct);
-  msPol.flagRow().put(0, False);
+  msPol.flagRow().put(0, false);
 }
 
 void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
@@ -2873,7 +2873,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
   Int nSpW = nIF;
   Int iFreq = getIndex(_coordType, "FREQ");
   Int nChan = _nPixel(iFreq);
-  if (nChan > 0) _addSourceTable = True;
+  if (nChan > 0) _addSourceTable = true;
 
   for (Int spw = 0; spw < nSpW; spw++) {
     _ms.spectralWindow().addRow();
@@ -2881,7 +2881,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
 
     msDD.spectralWindowId().put(spw, spw);
     msDD.polarizationId().put(spw, 0);
-    msDD.flagRow().put(spw, False);
+    msDD.flagRow().put(spw, false);
     Int ifc = 0;
     Int freqGroup = 0;
     if (_nIF > 0) {
@@ -2928,7 +2928,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt) {
     }
     msSpW.freqGroup().put(spw, freqGroup);
     msSpW.freqGroupName().put(spw, "none");
-    msSpW.flagRow().put(spw, False);
+    msSpW.flagRow().put(spw, false);
     // set the reference frames for frequency
     // msSpW.measFreqRef().put(spw, freqsys_p);
   }
@@ -2991,8 +2991,8 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
   cat(1) = "ORIGINAL";
   cat(2) = "USER";
   msc.flagCategory().rwKeywordSet().define("CATEGORY", cat);
-  Cube<Bool> flagCat(nCorr, nChan, nCat, False);
-  Matrix<Bool> flag = flagCat.xyPlane(0);  // references flagCat's storage
+  Cube<bool> flagCat(nCorr, nChan, nCat, false);
+  Matrix<bool> flag = flagCat.xyPlane(0);  // references flagCat's storage
 
   Int iU, iV, iW;
   iU = getIndexContains(TType, "UU");
@@ -3018,10 +3018,10 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
   Double interval, exposure;
   interval = 0.0;
   exposure = 0.0;
-  Bool discernIntExp(True);
+  bool discernIntExp(true);
   Double discernedInt(DBL_MAX);
 
-  ProgressMeter meter(0.0, nrows * 1.0, "UVFITS Filler", "rows copied", "", "", True, nrows / 100);
+  ProgressMeter meter(0.0, nrows * 1.0, "UVFITS Filler", "rows copied", "", "", true, nrows / 100);
 
   Vector<Double> uvw(3);
 
@@ -3040,7 +3040,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
   lastFreqId = -1;
   _nArray = -1;
 
-  Bool lastRowFlag = False;
+  bool lastRowFlag = false;
   for (Int group = 0; group < nrows; group++) {
     const Table tb = (group < 1) ? bt.thisRow() : bt.nextRow();
     try {
@@ -3110,9 +3110,9 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
 
       // Ensure arrayId-specific params are of correct length:
       if (scanNumber.shape() < _nArray) {
-        scanNumber.resize(_nArray, True);
-        lastFieldId.resize(_nArray, True);
-        lastFreqId.resize(_nArray, True);
+        scanNumber.resize(_nArray, true);
+        lastFieldId.resize(_nArray, true);
+        lastFreqId.resize(_nArray, true);
         scanNumber(_nArray - 1) = 0;
         lastFieldId(_nArray - 1) = -1;
         lastFreqId(_nArray - 1) = -1;
@@ -3128,7 +3128,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
 
       // keep track of minimum which is the only one
       // (if time step is larger than UVFITS precision (and zero))
-      discernIntExp = True;
+      discernIntExp = true;
       Double tempint;
       tempint = time - lastFillTime;
       if (tempint > 0.01) {
@@ -3136,7 +3136,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
       }
 
       // Work out which axis increments fastests, pol or channel
-      Bool polFastest = (getIndex(_coordType, "STOKES") < getIndex(_coordType, "FREQ"));
+      bool polFastest = (getIndex(_coordType, "STOKES") < getIndex(_coordType, "FREQ"));
       const Int nx = (polFastest ? nChan : nCorr);
       const Int ny = (polFastest ? nCorr : nChan);
 
@@ -3150,8 +3150,8 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
         if (row == 0) {
           msc.feed1().put(row, 0);
           msc.feed2().put(row, 0);
-          msc.flagRow().put(row, False);
-          lastRowFlag = False;
+          msc.flagRow().put(row, false);
+          lastRowFlag = false;
           msc.processorId().put(row, -1);
           msc.observationId().put(row, 0);
           msc.stateId().put(row, -1);
@@ -3175,11 +3175,11 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             const Int chan = (polFastest ? ix : iy);
             if (wt <= 0.0) {
               weightSpec(pol, chan) = abs(wt);
-              flag(pol, chan) = True;
+              flag(pol, chan) = true;
               weight(pol) += abs(wt);
             } else {
               weightSpec(pol, chan) = wt;
-              flag(pol, chan) = False;
+              flag(pol, chan) = false;
               weight(pol) += wt;
             }
             vis(pol, chan) = Complex(visReal, visImag);
@@ -3209,7 +3209,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
 
         msc.flag().put(row, flag);
         msc.flagCategory().put(row, flagCat);
-        Bool rowFlag = allEQ(flag, True);
+        bool rowFlag = allEQ(flag, true);
         if (rowFlag != lastRowFlag) {
           msc.flagRow().put(row, rowFlag);
           lastRowFlag = rowFlag;
@@ -3333,7 +3333,7 @@ void MSFitsInput::fillObservationTable(ConstFitsKeywordList& kwl) {
 
   msObsCol.timeRange().put(0, times);
   msObsCol.releaseDate().put(0, timeRel.second());
-  msObsCol.flagRow().put(0, False);
+  msObsCol.flagRow().put(0, false);
 }
 
 void MSFitsInput::fillPointingTable() {
@@ -3353,7 +3353,7 @@ void MSFitsInput::fillPointingTable() {
   Vector<Int> ddId;
   if (_addSourceTable) ddId = _msc->dataDescId().getColumn();
 
-  ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied", "", "", True, nrow / 100);
+  ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied", "", "", true, nrow / 100);
 
   for (Int i = 0; i < nrow; i++) {
     if (fieldId(i) != lastFieldId) {
@@ -3386,7 +3386,7 @@ void MSFitsInput::fillPointingTable() {
           _msc->pointing().numPoly().put(np + j, numPoly);
           _msc->pointing().direction().put(np + j, pointingDir);
           _msc->pointing().target().put(np + j, pointingDir);
-          _msc->pointing().tracking().put(np + j, True);
+          _msc->pointing().tracking().put(np + j, true);
         }
       }
     }
@@ -3421,7 +3421,7 @@ void MSFitsInput::fillSourceTable() {
 
     // Record fieldRec;
     // mss.listField(_log, fieldRec, True);
-    ProgressMeter meter(0.0, mainRec.nfields() * 1.0, "UVFITS Filler", "rows copied", "", "", True,
+    ProgressMeter meter(0.0, mainRec.nfields() * 1.0, "UVFITS Filler", "rows copied", "", "", true,
                         mainRec.nfields() * 300 / 100);
 
     for (uInt i = 0; i < mainRec.nfields() - 5; i++) {
@@ -3488,7 +3488,7 @@ void MSFitsInput::fillSourceTable() {
     Vector<Int> fieldId = _msc->fieldId().getColumn();
     Vector<Int> ddId = _msc->dataDescId().getColumn();
 
-    ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied", "", "", True, nrow / 100);
+    ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied", "", "", true, nrow / 100);
 
     for (Int i = 0; i < nrow; i++) {
       if (fieldId(i) != lastFieldId || (ddId(i) != lastDDId)) {
@@ -3562,10 +3562,10 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
   ScalarColumn<Int> id(suTab, "ID. NO.");
   ScalarColumn<String> name(suTab, "SOURCE");
   ScalarColumn<Int> qual(suTab, "QUAL");
-  Bool multiqual = False;
+  bool multiqual = false;
   Int minqual, maxqual;
   minMax(minqual, maxqual, qual.getColumn());
-  if (minqual != maxqual) multiqual = True;
+  if (minqual != maxqual) multiqual = true;
   ScalarColumn<String> code(suTab, "CALCODE");
   // ScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
   ScalarColumn<Double> ra(suTab, "RAEPO");       // degrees
@@ -3628,7 +3628,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
       msField.phaseDirMeasCol().put(outRow, nullDir);
       msField.delayDirMeasCol().put(outRow, nullDir);
       msField.referenceDirMeasCol().put(outRow, nullDir);
-      msField.flagRow().put(outRow, True);
+      msField.flagRow().put(outRow, true);
     }
     msField.sourceId().put(fld, fld);
     msField.code().put(fld, code(inRow));
@@ -3687,7 +3687,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     msField.delayDirMeasCol().put(fld, radecMeas);
     msField.phaseDirMeasCol().put(fld, radecMeas);
     msField.referenceDirMeasCol().put(fld, radecMeas);
-    msField.flagRow().put(fld, False);
+    msField.flagRow().put(fld, false);
   }
 }
 
@@ -3714,7 +3714,7 @@ void MSFitsInput::fillFieldTable(double ra, double dec, String source) {
   msField.delayDirMeasCol().put(0, radecMeas);
   msField.phaseDirMeasCol().put(0, radecMeas);
   msField.referenceDirMeasCol().put(0, radecMeas);
-  msField.flagRow().put(0, False);
+  msField.flagRow().put(0, false);
 }
 
 }  // namespace casacore

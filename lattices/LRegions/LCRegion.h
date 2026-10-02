@@ -81,7 +81,7 @@ class RecordInterface;
 // # <li>
 // # </todo>
 
-class LCRegion : public Lattice<Bool> {
+class LCRegion : public Lattice<bool> {
  public:
   LCRegion();
 
@@ -94,11 +94,11 @@ class LCRegion : public Lattice<Bool> {
   virtual ~LCRegion();
 
   // Equality
-  friend Bool operator==(const LCRegion& lhs, const LCRegion& rhs) { return lhs.equals(rhs); }
+  friend bool operator==(const LCRegion& lhs, const LCRegion& rhs) { return lhs.equals(rhs); }
 
   // Make a copy of the derived object.
   // <group>
-  virtual Lattice<Bool>* clone() const;
+  virtual Lattice<bool>* clone() const;
   virtual LCRegion* cloneRegion() const = 0;
   // </group>
 
@@ -108,7 +108,7 @@ class LCRegion : public Lattice<Bool> {
 
   // Handle renaming the region by renaming possible tables.
   // The default implementation does nothing.
-  virtual void handleRename(const String& newName, Bool overwrite);
+  virtual void handleRename(const String& newName, bool overwrite);
 
   // Region type.  Returns className() of derived class.
   virtual String type() const = 0;
@@ -120,7 +120,7 @@ class LCRegion : public Lattice<Bool> {
   // </group>
 
   // Does the region have a mask?
-  virtual Bool hasMask() const = 0;
+  virtual bool hasMask() const = 0;
 
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
@@ -162,28 +162,28 @@ class LCRegion : public Lattice<Bool> {
   virtual IPosition shape() const;
 
   // Usually the lattice (i.e. the region mask) is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Regions can usually not be put; i.e. no putSlice, etc. can be
   // done on their masks.
   // Hence LCRegion throws by default an exception for the
   // following functions.
   // <group>
-  virtual void doPutSlice(const Array<Bool>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<bool>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
-  virtual void set(const Bool& value);
-  virtual void apply(Bool (*function)(Bool));
-  virtual void apply(Bool (*function)(const Bool&));
-  virtual void apply(const Functional<Bool, Bool>& function);
-  virtual void putAt(const Bool& value, const IPosition& where);
-  virtual void copyData(const Lattice<Bool>& from);
+  virtual void set(const bool& value);
+  virtual void apply(bool (*function)(bool));
+  virtual void apply(bool (*function)(const bool&));
+  virtual void apply(const Functional<bool, bool>& function);
+  virtual void putAt(const bool& value, const IPosition& where);
+  virtual void copyData(const Lattice<bool>& from);
   // </group>
 
  protected:
   // Assignment (copy semantics) is only useful for derived classes.
   LCRegion& operator=(const LCRegion& other);
 
-  virtual Bool equals(const LCRegion& other) const = 0;
+  virtual bool equals(const LCRegion& other) const = 0;
 
   // Sometimes it is inconvenient for a derived class to set the bounding
   // box in the constructor. So it can be set explicitly.

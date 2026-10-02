@@ -182,7 +182,7 @@ void HelpMsCalUDF::showFuncsDerived(ostream& os) {
      << endl;
 }
 
-void HelpMsCalUDF::showFuncsStokes(ostream& os, Bool showStokes) {
+void HelpMsCalUDF::showFuncsStokes(ostream& os, bool showStokes) {
   os << "Stokes conversion functions:" << endl;
   os << "  complexarray MSCAL.STOKES(complexarray, string)  "
         " convert the data"
@@ -294,7 +294,7 @@ void HelpMsCalUDF::setup(const Table&, const TaQLStyle&) {
   // Set datatype, shape, unit, etc.
   setDataType(TableExprNodeRep::NTString);
   setNDim(0);  // scalar
-  setConstant(True);
+  setConstant(true);
 }
 
 String HelpMsCalUDF::getString(const TableExprId& id) {
@@ -307,7 +307,7 @@ String HelpMsCalUDF::getString(const TableExprId& id) {
   if (type.empty()) {
     showFuncsDerived(os);
     os << endl;
-    showFuncsStokes(os, False);
+    showFuncsStokes(os, false);
     os << endl;
     showFuncsSelection(os);
     os << endl;
@@ -316,7 +316,7 @@ String HelpMsCalUDF::getString(const TableExprId& id) {
   } else if (type == "derived") {
     showFuncsDerived(os);
   } else if (type == "stokes") {
-    showFuncsStokes(os, True);
+    showFuncsStokes(os, true);
   } else if (type == "selection") {
     showFuncsSelection(os);
   } else if (type == "subtable" || type == "subtables") {

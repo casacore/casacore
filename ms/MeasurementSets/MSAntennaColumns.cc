@@ -158,7 +158,7 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName, const Stri
                     "row " +
                     std::to_string(tr) + " you suggest is too big"));
     }
-    Bool stationMatches = stationName.empty() || matchStation(tr, stationName);
+    bool stationMatches = stationName.empty() || matchStation(tr, stationName);
     if (!flagRow()(tr) && stationMatches && matchName(tr, antName) &&
         matchPosition(tr, antPosInM, tolInM)) {
       return tr;
@@ -167,7 +167,7 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName, const Stri
   }
   while (r > 0) {
     r--;
-    Bool stationMatches = stationName.empty() || matchStation(r, stationName);
+    bool stationMatches = stationName.empty() || matchStation(r, stationName);
     if (!flagRow()(r) && stationMatches && matchName(r, antName) &&
         matchPosition(r, antPosInM, tolInM)) {
       return r;
@@ -176,17 +176,17 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName, const Stri
   return -1;
 }
 
-Bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
+bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
   return antName == name()(row);
 }
 
-Bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
+bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
   DebugAssert(row < nrow(), AipsError);
   return stationName == station()(row);
 }
 
-Bool MSAntennaColumns::matchPosition(rownr_t row, const Vector<Double>& antPosInM,
+bool MSAntennaColumns::matchPosition(rownr_t row, const Vector<Double>& antPosInM,
                                      const Double tolInM) const {
   DebugAssert(row < nrow(), AipsError);
   DebugAssert(antPosInM.nelements() == 3, AipsError);

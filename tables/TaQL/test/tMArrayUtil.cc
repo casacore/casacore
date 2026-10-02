@@ -37,9 +37,9 @@ void testReorder() {
   // Create and fill an array and mask.
   Array<Int> arr(IPosition(4, 2, 3, 4, 5));
   indgen(arr);
-  Array<Bool> mask(arr.shape());
-  mask = True;
-  mask(arr % 7 == 0) = False;
+  Array<bool> mask(arr.shape());
+  mask = true;
+  mask(arr % 7 == 0) = false;
   // Create an unmasked array from it, reorder it, and check the result.
   MArray<Int> marr1(arr);
   MArray<Int> res1 = reorderArray(marr1, IPosition(2, 1, 3));
@@ -64,7 +64,7 @@ void testReorder() {
         for (int i1 = 0; i1 < 2; ++i1) {
           Int v = res2.array()(IPosition(4, i4, i2, i1, i3));
           AlwaysAssertExit(v == arr(IPosition(4, i1, i2, i3, i4)));
-          Bool m = res2.mask()(IPosition(4, i4, i2, i1, i3));
+          bool m = res2.mask()(IPosition(4, i4, i2, i1, i3));
           AlwaysAssertExit(m == mask(IPosition(4, i1, i2, i3, i4)));
         }
       }
@@ -72,12 +72,12 @@ void testReorder() {
   }
   // Now reorder without actually changing the order.
   // Check that no copy is made if told so.
-  MArray<Int> res3 = reorderArray(marr2, IPosition(4, 0, 1, 2, 3), False);
+  MArray<Int> res3 = reorderArray(marr2, IPosition(4, 0, 1, 2, 3), false);
   AlwaysAssertExit(res3.hasMask());
   AlwaysAssertExit(arr.data() == res3.array().data());
   AlwaysAssertExit(mask.data() == res3.mask().data());
   // The same but, now with a copy.
-  MArray<Int> res4 = reorderArray(marr2, IPosition(4, 0, 1, 2, 3), True);
+  MArray<Int> res4 = reorderArray(marr2, IPosition(4, 0, 1, 2, 3), true);
   AlwaysAssertExit(res4.hasMask());
   AlwaysAssertExit(arr.data() != res4.array().data());
   AlwaysAssertExit(mask.data() != res4.mask().data());
@@ -92,9 +92,9 @@ void testReverse() {
   // Create and fill an array and mask.
   Array<Int> arr(IPosition(4, 2, 3, 4, 5));
   indgen(arr);
-  Array<Bool> mask(arr.shape());
-  mask = True;
-  mask(arr % 7 == 0) = False;
+  Array<bool> mask(arr.shape());
+  mask = true;
+  mask(arr % 7 == 0) = false;
   // Create an unmasked array from it, reverse it, and check the result.
   MArray<Int> marr1(arr);
   MArray<Int> res1 = reverseArray(marr1, IPosition(2, 1, 3));
@@ -119,7 +119,7 @@ void testReverse() {
         for (int i1 = 0; i1 < 2; ++i1) {
           Int v = res2.array()(IPosition(4, i1, 2 - i2, i3, 4 - i4));
           AlwaysAssertExit(v == arr(IPosition(4, i1, i2, i3, i4)));
-          Bool m = res2.mask()(IPosition(4, i1, 2 - i2, i3, 4 - i4));
+          bool m = res2.mask()(IPosition(4, i1, 2 - i2, i3, 4 - i4));
           AlwaysAssertExit(m == mask(IPosition(4, i1, i2, i3, i4)));
         }
       }
@@ -127,12 +127,12 @@ void testReverse() {
   }
   // Now reverse without actually changing the order.
   // Check that no copy is made if told so.
-  MArray<Int> res3 = reverseArray(marr2, IPosition(), False);
+  MArray<Int> res3 = reverseArray(marr2, IPosition(), false);
   AlwaysAssertExit(res3.hasMask());
   AlwaysAssertExit(arr.data() == res3.array().data());
   AlwaysAssertExit(mask.data() == res3.mask().data());
   // The same but, now with a copy.
-  MArray<Int> res4 = reverseArray(marr2, IPosition(), True);
+  MArray<Int> res4 = reverseArray(marr2, IPosition(), true);
   AlwaysAssertExit(res4.hasMask());
   AlwaysAssertExit(arr.data() != res4.array().data());
   AlwaysAssertExit(mask.data() != res4.mask().data());

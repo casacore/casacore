@@ -65,12 +65,12 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MeasurementSet::MeasurementSet() : doNotLockSubtables_p(False), hasBeenDestroyed_p(True) {}
+MeasurementSet::MeasurementSet() : doNotLockSubtables_p(false), hasBeenDestroyed_p(true) {}
 
 MeasurementSet::MeasurementSet(const String& tableName, TableOption option)
     : MSTable<MSMainEnums>(tableName, option),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   checkVersion();
   mainLock_p = TableLock(TableLock::AutoNoReadLocking);
@@ -91,7 +91,7 @@ void MeasurementSet::addCat() {
           AipsError("Missing CATEGORY keyword in FLAG_CATEGORY column -"
                     "please open MS table R/W to have it added"));
     } else {
-      ArrayColumn<Bool> fc(*this, columnName(FLAG_CATEGORY));
+      ArrayColumn<bool> fc(*this, columnName(FLAG_CATEGORY));
       fc.rwKeywordSet().define("CATEGORY", Vector<String>(0));
     }
   }
@@ -101,7 +101,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const TableLock& lockOpt
                                bool doNotLockSubtables, TableOption option)
     : MSTable<MSMainEnums>(tableName, lockOptions, option),
       doNotLockSubtables_p(doNotLockSubtables),
-      hasBeenDestroyed_p(False) {
+      hasBeenDestroyed_p(false) {
   mainLock_p = lockOptions;
   // verify that the now opened table is valid
   checkVersion();
@@ -116,8 +116,8 @@ MeasurementSet::MeasurementSet(const String& tableName, const TableLock& lockOpt
 MeasurementSet::MeasurementSet(const String& tableName, const TableLock& lockOptions,
                                TableOption option)
     : MSTable<MSMainEnums>(tableName, lockOptions, option),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   mainLock_p = lockOptions;
   // verify that the now opened table is valid
   checkVersion();
@@ -132,8 +132,8 @@ MeasurementSet::MeasurementSet(const String& tableName, const TableLock& lockOpt
 MeasurementSet::MeasurementSet(const String& tableName, const String& tableDescName,
                                TableOption option)
     : MSTable<MSMainEnums>(tableName, tableDescName, option),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   mainLock_p = TableLock(TableLock::AutoNoReadLocking);
   // verify that the now opened table is valid
   checkVersion();
@@ -148,8 +148,8 @@ MeasurementSet::MeasurementSet(const String& tableName, const String& tableDescN
 MeasurementSet::MeasurementSet(const String& tableName, const String& tableDescName,
                                const TableLock& lockOptions, TableOption option)
     : MSTable<MSMainEnums>(tableName, tableDescName, lockOptions, option),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   mainLock_p = lockOptions;
   checkVersion();
@@ -161,10 +161,10 @@ MeasurementSet::MeasurementSet(const String& tableName, const String& tableDescN
   initRefs();
 }
 
-MeasurementSet::MeasurementSet(SetupNewTable& newTab, rownr_t nrrow, Bool initialize)
+MeasurementSet::MeasurementSet(SetupNewTable& newTab, rownr_t nrrow, bool initialize)
     : MSTable<MSMainEnums>(newTab, nrrow, initialize),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   mainLock_p = TableLock(TableLock::AutoNoReadLocking);
   // verify that the now opened table is valid
   addCat();
@@ -175,10 +175,10 @@ MeasurementSet::MeasurementSet(SetupNewTable& newTab, rownr_t nrrow, Bool initia
 }
 
 MeasurementSet::MeasurementSet(SetupNewTable& newTab, const TableLock& lockOptions, rownr_t nrrow,
-                               Bool initialize)
+                               bool initialize)
     : MSTable<MSMainEnums>(newTab, lockOptions, nrrow, initialize),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   mainLock_p = lockOptions;
   // verify that the now opened table is valid
   addCat();
@@ -189,7 +189,7 @@ MeasurementSet::MeasurementSet(SetupNewTable& newTab, const TableLock& lockOptio
 }
 
 MeasurementSet::MeasurementSet(const Table& table, const MeasurementSet* otherMs)
-    : MSTable<MSMainEnums>(table), doNotLockSubtables_p(False), hasBeenDestroyed_p(False) {
+    : MSTable<MSMainEnums>(table), doNotLockSubtables_p(false), hasBeenDestroyed_p(false) {
   mainLock_p = TableLock(TableLock::AutoNoReadLocking);
 
   checkVersion();  // verify that the now opened table is valid
@@ -210,10 +210,10 @@ MeasurementSet::MeasurementSet(const Table& table, const MeasurementSet* otherMs
 }
 
 #ifdef HAVE_MPI
-MeasurementSet::MeasurementSet(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow, Bool initialize)
+MeasurementSet::MeasurementSet(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow, bool initialize)
     : MSTable<MSMainEnums>(comm, newTab, nrrow, initialize),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   mainLock_p = TableLock(TableLock::AutoNoReadLocking);
   // verify that the now opened table is valid
   addCat();
@@ -224,10 +224,10 @@ MeasurementSet::MeasurementSet(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrr
 }
 
 MeasurementSet::MeasurementSet(MPI_Comm comm, SetupNewTable& newTab, const TableLock& lockOptions,
-                               rownr_t nrrow, Bool initialize)
+                               rownr_t nrrow, bool initialize)
     : MSTable<MSMainEnums>(comm, newTab, lockOptions, nrrow, initialize),
-      doNotLockSubtables_p(False),
-      hasBeenDestroyed_p(False) {
+      doNotLockSubtables_p(false),
+      hasBeenDestroyed_p(false) {
   mainLock_p = lockOptions;
   // verify that the now opened table is valid
   addCat();
@@ -268,7 +268,7 @@ MeasurementSet::~MeasurementSet() {
       os << LogIO::WARN << "~MS() - Table written is not a valid MS" << LogIO::POST;
     }
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MeasurementSet& MeasurementSet::operator=(const MeasurementSet& other) {
@@ -527,7 +527,7 @@ MeasurementSet MeasurementSet::referenceCopy(const String& newTableName,
   return MeasurementSet(MSTable<MSMainEnums>::referenceCopy(newTableName, writableColumns));
 }
 
-Bool MeasurementSet::isEligibleForMemoryResidency(const String& subtableName) const {
+bool MeasurementSet::isEligibleForMemoryResidency(const String& subtableName) const {
   // Convert the name to an Id
 
   MrsEligibility::SubtableId subtableId = keywordType(subtableName);
@@ -535,7 +535,7 @@ Bool MeasurementSet::isEligibleForMemoryResidency(const String& subtableName) co
   ThrowIf(subtableId == MSMainEnums::UNDEFINED_KEYWORD,
           "No ID defined for subtable '" + subtableName + "'");
 
-  Bool isEligible = mrsEligibility_p.isEligible(subtableId);
+  bool isEligible = mrsEligibility_p.isEligible(subtableId);
 
   return isEligible;
 }
@@ -567,10 +567,10 @@ void MeasurementSet::setMemoryResidentSubtables(const MrsEligibility& mrsEligibi
 
   // See if the memory resident subtable feature is enabled
 
-  AipsrcValue<Bool>::find(memoryResidentSubtables_p, getMrsAipsRcBase() + ".enable", False);
+  AipsrcValue<bool>::find(memoryResidentSubtables_p, getMrsAipsRcBase() + ".enable", false);
   AipsrcValue<Int>::find(mrsDebugLevel_p, getMrsAipsRcBase() + ".debug.level", 0);
 
-  Bool mrsEnabled = memoryResidentSubtables_p;
+  bool mrsEnabled = memoryResidentSubtables_p;
 
   MrsDebugLog(1, tableName() + " ---> MR Subtables " +
                      (memoryResidentSubtables_p ? "enabled " : "disabled "));
@@ -723,7 +723,7 @@ void MeasurementSet::clearSubtables() {
 }
 
 template <typename Subtable>
-void MeasurementSet::openSubtable(Subtable& subtable, const String& subtableName, Bool useLock) {
+void MeasurementSet::openSubtable(Subtable& subtable, const String& subtableName, bool useLock) {
   if (subtable.isNull() && this->keywordSet().isDefined(subtableName)) {
     // Only open a subtable if it does not already exist in this object and if
     // the subtable is defined in the on-disk MeasurementSet
@@ -741,7 +741,7 @@ void MeasurementSet::openSubtable(Subtable& subtable, const String& subtableName
   }
 }
 
-void MeasurementSet::initRefs(Bool clear) {
+void MeasurementSet::initRefs(bool clear) {
   if (isNull() || clear) {
     clearSubtables();
   }
@@ -758,7 +758,7 @@ void MeasurementSet::initRefs(Bool clear) {
           " holding measurements from a Telescope");
     }
 
-    Bool useLock = (this->tableOption() != Table::Scratch);
+    bool useLock = (this->tableOption() != Table::Scratch);
 
     openSubtable(antenna_p, "ANTENNA", useLock);
     openSubtable(dataDesc_p, "DATA_DESCRIPTION", useLock);
@@ -824,7 +824,7 @@ void MeasurementSet::createDefaultSubtables_impl(Table::TableOption option, T co
   // Pointing table can be large, set some sensible defaults for storageMgrs
   IncrementalStMan ismPointing("ISMPointing");
   StandardStMan ssmPointing("SSMPointing", 32768);
-  pointingSetup.bindAll(ismPointing, True);
+  pointingSetup.bindAll(ismPointing, true);
   pointingSetup.bindColumn(MSPointing::columnName(MSPointing::ANTENNA_ID), ssmPointing);
   rwKeywordSet().defineTable(MS::keywordName(MS::POINTING), create_table(pointingSetup, comm));
   SetupNewTable polarizationSetup(polarizationTableName(), MSPolarization::requiredTableDesc(),
@@ -842,11 +842,11 @@ void MeasurementSet::createDefaultSubtables_impl(Table::TableOption option, T co
   initRefs();
 }
 
-Bool MeasurementSet::makeComplexData() {
+bool MeasurementSet::makeComplexData() {
   // for now we use an extremely simplistic implementation (should find out
   // storage managers and tiles and keep things the same)
-  if (tableDesc().isColumn(MS::columnName(MS::DATA))) return False;
-  if (!tableDesc().isColumn(MS::columnName(MS::FLOAT_DATA))) return False;
+  if (tableDesc().isColumn(MS::columnName(MS::DATA))) return false;
+  if (!tableDesc().isColumn(MS::columnName(MS::FLOAT_DATA))) return false;
 
   // we have FLOAT_DATA but not DATA
   // add DATA
@@ -861,11 +861,11 @@ Bool MeasurementSet::makeComplexData() {
     convertArray(dataArr, floatArr);
     data.put(i, dataArr);
   }
-  return True;
+  return true;
 }
 
-Bool MeasurementSet::validateMeasureRefs() {
-  Bool ok = True;
+bool MeasurementSet::validateMeasureRefs() {
+  bool ok = true;
   // check main table
   {
     Int nCol = tableDesc().ncolumn();
@@ -875,7 +875,7 @@ Bool MeasurementSet::validateMeasureRefs() {
         Int refFld = tableDesc()[i].keywordSet().asRecord(fld).fieldNumber("Ref");
         if (refFld < 0 || tableDesc()[i].keywordSet().asRecord(fld).asString(refFld) == "") {
           cerr << "Missing Measure reference for column " << tableDesc()[i].name() << std::endl;
-          ok = False;
+          ok = false;
         }
       }
     }
@@ -893,7 +893,7 @@ Bool MeasurementSet::validateMeasureRefs() {
           if (refFld < 0 || tab.tableDesc()[i].keywordSet().asRecord(fld).asString(refFld) == "") {
             cerr << "Missing Measure reference for column " << tab.tableDesc()[i].name()
                  << " in subtable " << tab.tableName() << std::endl;
-            ok = False;
+            ok = false;
           }
         }
       }
@@ -902,7 +902,7 @@ Bool MeasurementSet::validateMeasureRefs() {
   return ok;
 }
 
-void MeasurementSet::flush(Bool sync) {
+void MeasurementSet::flush(bool sync) {
   MSTable<MSMainEnums>::flush(sync);
   antenna_p.flush(sync);
   dataDesc_p.flush(sync);
@@ -1023,14 +1023,14 @@ MrsEligibility MrsEligibility::defaultEligible() {
   return defaultSubtables;
 }
 
-Bool MrsEligibility::isSubtable(SubtableId subtableId) {
-  Bool result = allSubtables_p.eligible_p.find(subtableId) != allSubtables_p.eligible_p.end();
+bool MrsEligibility::isSubtable(SubtableId subtableId) {
+  bool result = allSubtables_p.eligible_p.find(subtableId) != allSubtables_p.eligible_p.end();
 
   return result;
 }
 
-Bool MrsEligibility::isEligible(SubtableId subtableId) const {
-  Bool result = eligible_p.find(subtableId) != eligible_p.end();
+bool MrsEligibility::isEligible(SubtableId subtableId) const {
+  bool result = eligible_p.find(subtableId) != eligible_p.end();
 
   return result;
 }

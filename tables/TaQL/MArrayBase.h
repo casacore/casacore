@@ -81,26 +81,26 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class MArrayBase {
  protected:
   // The default constructor creates an empty mask.
-  explicit MArrayBase(Bool isNull) : itsSize(0), itsNValid(0), itsNull(isNull) {}
+  explicit MArrayBase(bool isNull) : itsSize(0), itsNValid(0), itsNull(isNull) {}
 
   // Construct from a given array shape and mask.
-  MArrayBase(const ArrayBase& arr, const Array<Bool>& mask, Bool isNull);
+  MArrayBase(const ArrayBase& arr, const Array<bool>& mask, bool isNull);
 
   // Construct from a given array shape and mask from another MArray.
   MArrayBase(const ArrayBase& arr, const MArrayBase& marray);
 
   // Reference the mask and set the shape.
-  void setBase(const ArrayBase& arr, const Array<Bool>& mask);
+  void setBase(const ArrayBase& arr, const Array<bool>& mask);
 
   // Reference another MArray.
   void referenceBase(const MArrayBase& other);
 
   // Set the array shape and resize the mask.
-  void resizeBase(const ArrayBase& arr, Bool useMask);
+  void resizeBase(const ArrayBase& arr, bool useMask);
 
  public:
   // Is the array null?
-  Bool isNull() const { return itsNull; }
+  bool isNull() const { return itsNull; }
 
   // Remove the mask.
   void removeMask() {
@@ -109,14 +109,14 @@ class MArrayBase {
   }
 
   // Is there a mask?
-  Bool hasMask() const { return !itsMask.empty(); }
+  bool hasMask() const { return !itsMask.empty(); }
 
   // Set the mask. It checks if it matches the array shape.
-  void setMask(const Array<Bool>& mask);
+  void setMask(const Array<bool>& mask);
 
   // Get the mask. The returned array is empty if there is no mask.
-  const Array<Bool>& mask() const { return itsMask; }
-  Array<Bool>& wmask() { return itsMask; }
+  const Array<bool>& mask() const { return itsMask; }
+  Array<bool>& wmask() { return itsMask; }
 
   // Return the number of valid array values, thus unflagged elements.
   Int64 nvalid() const {
@@ -125,7 +125,7 @@ class MArrayBase {
   }
 
   // Is the array empty?
-  Bool empty() const { return itsSize == 0; }
+  bool empty() const { return itsSize == 0; }
 
   // Get the dimensionality.
   uInt ndim() const { return itsShape.size(); }
@@ -141,7 +141,7 @@ class MArrayBase {
 
   // Combine this and the other mask.
   // One or both MArray-s can be unmasked.
-  Array<Bool> combineMask(const MArrayBase& other) const;
+  Array<bool> combineMask(const MArrayBase& other) const;
 
  private:
   // Initialize and check.
@@ -151,11 +151,11 @@ class MArrayBase {
   void fillNValid() const;
 
   // # Data members.
-  Array<Bool> itsMask;
+  Array<bool> itsMask;
   IPosition itsShape;
   size_t itsSize;
   mutable Int64 itsNValid;
-  Bool itsNull;  // True = array is null, thus undefined in a column
+  bool itsNull;  // True = array is null, thus undefined in a column
 };
 
 }  // namespace casacore

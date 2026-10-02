@@ -68,13 +68,13 @@ class StokesIStMan final : public casacore::DataManager {
 
   casacore::Record dataManagerSpec() const final;
 
-  casacore::Bool canAddRow() const final { return true; }
+  bool canAddRow() const final { return true; }
 
-  casacore::Bool canRemoveRow() const final { return true; }
+  bool canRemoveRow() const final { return true; }
 
-  casacore::Bool canAddColumn() const final { return true; }
+  bool canAddColumn() const final { return true; }
 
-  casacore::Bool canRemoveColumn() const final { return true; }
+  bool canRemoveColumn() const final { return true; }
 
   /**
    * This function makes the StokesIStMan known to Casacore.
@@ -87,9 +87,7 @@ class StokesIStMan final : public casacore::DataManager {
 
   uint64_t CalculateAndUpdateStride();
 
-  casacore::Bool flush(casacore::AipsIO &, [[maybe_unused]] casacore::Bool doFsync) final {
-    return false;
-  }
+  bool flush(casacore::AipsIO &, [[maybe_unused]] bool doFsync) final { return false; }
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.

@@ -158,7 +158,7 @@ Int64 MSPointingColumns::pointingIndex(Int antenna, Double ptime, Int64 guessRow
   return -1;
 }
 
-void MSPointingColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSPointingColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   timeOriginMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

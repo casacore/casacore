@@ -98,7 +98,7 @@ class ImageProxy {
   // If the coordinates record is empty, default coordinates are used.
   // A mask is created if the mask name or mask value is not empty.
   ImageProxy(const ValueHolder& values, const ValueHolder& mask, const Record& coordinates,
-             const String& imageName = String(), Bool overwrite = True, Bool asHDF5 = False,
+             const String& imageName = String(), bool overwrite = true, bool asHDF5 = false,
              const String& maskName = String(), const IPosition& tileShape = IPosition());
 
   // Construct from a shape.
@@ -107,7 +107,7 @@ class ImageProxy {
   // If the coordinates record is empty, default coordinates are used.
   // A mask is created if the mask name is not empty.
   ImageProxy(const IPosition& shape, const ValueHolder& value, const Record& coordinates,
-             const String& imageName = String(), Bool overwrite = True, Bool asHDF5 = False,
+             const String& imageName = String(), bool overwrite = true, bool asHDF5 = false,
              const String& maskName = String(), const IPosition& tileShape = IPosition(),
              Int dummy = 0);
 
@@ -142,10 +142,10 @@ class ImageProxy {
   LatticeExprNode makeNode() const;
 
   // Is the image persistent or temporary.
-  Bool isPersistent() const;
+  bool isPersistent() const;
 
   // Get the name of the image.
-  String name(Bool stripPath = False) const;
+  String name(bool stripPath = false) const;
 
   // Get the shape of the image.
   IPosition shape() const;
@@ -179,12 +179,12 @@ class ImageProxy {
   void putMask(const ValueHolder& value, const IPosition& blc, const IPosition& inc);
 
   // Does the image have a read or write lock?
-  Bool hasLock(Bool writeLock = False);
+  bool hasLock(bool writeLock = false);
 
   // Try to acquire a read or write lock.
   // nattempts=0 means wait until acquired. Otherwise every second an
   // attempt is done.
-  void lock(Bool writeLock = False, Int nattempts = 0);
+  void lock(bool writeLock = false, Int nattempts = 0);
 
   // Release the lock acquired by lock().
   void unlock();
@@ -222,10 +222,10 @@ class ImageProxy {
   // Form a new (virtual) image being a subset of the image.
   // It uses preserveAxesOrder=False.
   ImageProxy subImage(const IPosition& blc, const IPosition& trc, const IPosition& inc,
-                      Bool dropDegenerate = True);
+                      bool dropDegenerate = true);
   // Same with a new function name for backward compatibility with old pyrap.
   ImageProxy subImage2(const IPosition& blc, const IPosition& trc, const IPosition& inc,
-                       Bool dropDegenerate, Bool preserveAxesOrder);
+                       bool dropDegenerate, bool preserveAxesOrder);
 
   // Get the brightness unit.
   String unit() const;
@@ -238,12 +238,12 @@ class ImageProxy {
   // Convert a pixel coordinate to world coordinate.
   // if <src>reverseAxes=True</src> the input and output vector will be
   // reversed (as needed for pyrap).
-  Vector<Double> toWorld(const Vector<Double>& pixel, Bool reverseAxes);
+  Vector<Double> toWorld(const Vector<Double>& pixel, bool reverseAxes);
 
   // Convert a world coordinate to pixel coordinate.
   // if <src>reverseAxes=True</src> the input and output vector will be
   // reversed (as needed for pyrap).
-  Vector<Double> toPixel(const Vector<Double>& world, Bool reverseAxes);
+  Vector<Double> toPixel(const Vector<Double>& world, bool reverseAxes);
 
   // Get the image info.
   Record imageInfo() const;
@@ -259,13 +259,13 @@ class ImageProxy {
   // Write the image in FITS format.
   // See class ImageFITSConverter for a description of the arguments.
   // Currently only a float image can be written to FITS.
-  void toFits(const String& fitsfile, Bool overwrite = True, Bool velocity = True,
-              Bool optical = True, Int bitpix = -32, Double minpix = 1, Double maxpix = -1) const;
+  void toFits(const String& fitsfile, bool overwrite = true, bool velocity = true,
+              bool optical = true, Int bitpix = -32, Double minpix = 1, Double maxpix = -1) const;
 
   // Write the image to an image file with the given name.
   // An exception is thrown if the name is the name of an already open image.
-  void saveAs(const String& fileName, Bool overwrite = True, Bool hdf5 = False,
-              Bool copyMask = True, const String& newMaskName = String(),
+  void saveAs(const String& fileName, bool overwrite = true, bool hdf5 = false,
+              bool copyMask = true, const String& newMaskName = String(),
               const IPosition& newTileShape = IPosition()) const;
 
   // Return the statistics for the given axes.
@@ -277,7 +277,7 @@ class ImageProxy {
   // Robust statistics (Median, MedAbsDevMed, and Quartile) can be returned
   // too.
   Record statistics(const Vector<Int>& axes, const String& mask, const ValueHolder& minMaxValues,
-                    Bool exclude = False, Bool robust = False) const;
+                    bool exclude = false, bool robust = false) const;
 
   // Regrid the image on the given axes to the given coordinate system.
   // The output is stored in the given file; it no file name is given a
@@ -285,10 +285,10 @@ class ImageProxy {
   // If the output shape is empty, the old shape is used.
   // <src>replicate=True</src> means replication rather than regridding.
   ImageProxy regrid(const Vector<Int>& axes = Vector<Int>(), const String& outfile = String(),
-                    Bool overwriteOutFile = True, const IPosition& outShape = IPosition(),
+                    bool overwriteOutFile = true, const IPosition& outShape = IPosition(),
                     const Record& coordSys = Record(), const String& method = "linear",
-                    Int decimate = 10, Bool replicate = False, Bool doRefChange = True,
-                    Bool forceRegrid = False);
+                    Int decimate = 10, bool replicate = false, bool doRefChange = true,
+                    bool forceRegrid = false);
 
   // Check and adjust blc, trc, or inc using the shape.
   // <group>
@@ -339,8 +339,8 @@ class ImageProxy {
 
   // Make an image from an array or shape.
   template <typename T>
-  void makeImage(const Array<T>& array, const Array<Bool>& mask, const IPosition& shape,
-                 const Record& coordinates, const String& fileName, Bool asHDF5,
+  void makeImage(const Array<T>& array, const Array<bool>& mask, const IPosition& shape,
+                 const Record& coordinates, const String& fileName, bool asHDF5,
                  const String& maskName, const IPosition& tileShape);
 
   // Form a concatenated image.
@@ -371,7 +371,7 @@ class ImageProxy {
   // A new tile shape can be given.
   // If the image is masked, the mask can be copied as well.
   template <typename T>
-  void saveImage(const String& fileName, Bool hdf5, Bool copyMask, const String& newMaskName,
+  void saveImage(const String& fileName, bool hdf5, bool copyMask, const String& newMaskName,
                  const IPosition& newTileShape, const ImageInterface<T>& image) const;
 
   // Form a tiled shape from the current shape and a possible new tile shape.
@@ -381,14 +381,14 @@ class ImageProxy {
   // Calculate the statistics.
   template <typename T>
   Record makeStatistics(const ImageInterface<T>& image, const Vector<Int>& axes, const String& mask,
-                        const ValueHolder& minMaxValues, Bool exclude, Bool robust) const;
+                        const ValueHolder& minMaxValues, bool exclude, bool robust) const;
 
   // Do the actual regridding.
   template <typename T>
   ImageProxy doRegrid(const ImageInterface<T>& image, const Vector<Int>& axes,
                       const String& outfile, const IPosition& shape, const Record& coordSys,
-                      const String& method, Int decimate, Bool replicate, Bool doRefChange,
-                      Bool force);
+                      const String& method, Int decimate, bool replicate, bool doRefChange,
+                      bool force);
 
   // Make a coordinate system from the Record.
   // The cylindrical fix is applied if needed.

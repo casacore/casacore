@@ -39,7 +39,7 @@ JsonValue::JsonValue()
     : itsDataType(TpNumberOfTypes),  // use a non-existing type
       itsValuePtr(0) {}
 
-JsonValue::JsonValue(Bool value) : itsDataType(TpBool), itsValuePtr(new Bool(value)) {}
+JsonValue::JsonValue(bool value) : itsDataType(TpBool), itsValuePtr(new bool(value)) {}
 
 JsonValue::JsonValue(int value) : itsDataType(TpInt64), itsValuePtr(new Int64(value)) {}
 
@@ -76,7 +76,7 @@ void JsonValue::clear() {
   if (itsValuePtr) {
     switch (itsDataType) {
       case TpBool:
-        delete (Bool*)itsValuePtr;
+        delete (bool*)itsValuePtr;
         break;
       case TpInt64:
         delete (Int64*)itsValuePtr;
@@ -108,7 +108,7 @@ void JsonValue::copyValue(const JsonValue& that) {
   if (that.itsValuePtr) {
     switch (itsDataType) {
       case TpBool:
-        itsValuePtr = new Bool(that.getBool());
+        itsValuePtr = new bool(that.getBool());
         break;
       case TpInt64:
         itsValuePtr = new Int64(that.getInt());
@@ -196,17 +196,17 @@ IPosition JsonValue::shape() const {
 IPosition JsonValue::vectorShape(const vector<JsonValue>& vec) const {
   IPosition shp(1, 0);
   IPosition nshp;
-  Bool first = True;
-  Bool nested = False;
+  bool first = true;
+  bool nested = false;
   for (vector<JsonValue>::const_iterator iter = vec.begin(); iter != vec.end(); ++iter) {
     if (iter->dataType() == TpRecord) {
       throw JsonError("JsonValue::shape - vector contains a ValueMap");
     }
     shp[0]++;
     if (first) {
-      first = False;
+      first = false;
       if (iter->isVector()) {
-        nested = True;
+        nested = true;
         nshp = iter->shape();
       }
     } else {
@@ -227,7 +227,7 @@ ValueHolder JsonValue::getValueHolder() const {
   }
   switch (itsDataType) {
     case TpBool:
-      return ValueHolder(*(Bool*)itsValuePtr);
+      return ValueHolder(*(bool*)itsValuePtr);
     case TpInt64:
       return ValueHolder(*(Int64*)itsValuePtr);
     case TpDouble:
@@ -246,7 +246,7 @@ ValueHolder JsonValue::getValueHolder() const {
   vector<JsonValue> vec = getVector();
   switch (vectorDataType(vec)) {
     case TpBool:
-      return ValueHolder(Vector<Bool>(getVecBool()));
+      return ValueHolder(Vector<bool>(getVecBool()));
     case TpInt64:
       return ValueHolder(Vector<Int64>(getVecInt()));
     case TpDouble:
@@ -256,16 +256,16 @@ ValueHolder JsonValue::getValueHolder() const {
     case TpString:
       return ValueHolder(Vector<String>(getVecString()));
     case TpOther:
-      return ValueHolder(1, True);  // untyped array with 1 axis
+      return ValueHolder(1, true);  // untyped array with 1 axis
     default:
       throw JsonError("JsonValue::getValueHolder - vector of mixed data types");
   }
 }
 
-Bool JsonValue::getBool() const {
+bool JsonValue::getBool() const {
   switch (itsDataType) {
     case TpBool:
-      return *(Bool*)itsValuePtr;
+      return *(bool*)itsValuePtr;
     case TpInt64:
       return (*(Int64*)itsValuePtr != 0);
     default:
@@ -321,16 +321,16 @@ const String& JsonValue::getString() const {
   }
 }
 
-vector<Bool> JsonValue::getVecBool() const {
+vector<bool> JsonValue::getVecBool() const {
   if (itsDataType == TpOther) {
     const vector<JsonValue>& kvvec = *(const vector<JsonValue>*)itsValuePtr;
-    vector<Bool> vec(kvvec.size());
+    vector<bool> vec(kvvec.size());
     for (size_t i = 0; i < vec.size(); i++) {
       vec[i] = kvvec[i].getBool();
     }
     return vec;
   }
-  vector<Bool> vec(1);
+  vector<bool> vec(1);
   vec[0] = getBool();
   return vec;
 }
@@ -409,9 +409,9 @@ const JsonKVMap& JsonValue::getValueMap() const {
 
 void JsonValue::get(JsonKVMap& value) const { value = getValueMap(); }
 
-Array<Bool> JsonValue::getArrayBool() const {
-  Array<Bool> arr(shape());
-  Bool* data = arr.data();
+Array<bool> JsonValue::getArrayBool() const {
+  Array<bool> arr(shape());
+  bool* data = arr.data();
   fillArray(data, data + arr.size(), getVector());
   return arr;
 }
@@ -451,7 +451,7 @@ ostream& operator<<(ostream& os, const JsonValue& param) {
   } else {
     switch (param.itsDataType) {
       case TpBool:
-        js.put(*(Bool*)(param.itsValuePtr));
+        js.put(*(bool*)(param.itsValuePtr));
         break;
       case TpInt64:
         js.put(*(Int64*)(param.itsValuePtr));

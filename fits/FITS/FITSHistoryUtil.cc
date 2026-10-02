@@ -55,7 +55,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType
   // if curr() is used, the first kw would be parsed twice
   const FitsKeyword *key = in.next();
   uInt nFound = 0;
-  Bool foundStart = False;
+  bool foundStart = false;
 
   String tmp;
   while (key) {
@@ -76,7 +76,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType
           break;
         } else {
           // OK, found a valid start of group.
-          foundStart = True;
+          foundStart = true;
           RegexReplaceAll(tmp, groupstart, "");
           ReplaceAllInPlace(tmp, " ", "");
           groupType = tmp;
@@ -108,7 +108,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType
           nFound++;
           if (nFound >= strings.nelements()) {
             // Exponentially resize for efficiency
-            strings.resize(2 * nFound + 1, True);
+            strings.resize(2 * nFound + 1, true);
           }
           strings(nFound - 1) = tmp;
         } else {
@@ -156,11 +156,11 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out, const vector<String>
         // doesn't work if there are more than 71 of them!
         const int end = lines(j).length() - 1;
         int start = 0, pos = 0;
-        Bool done = False;
+        bool done = false;
         while (!done) {
           pos = start + maxlen - 1;
           if (pos >= end) {
-            done = True;
+            done = true;
             pos = end;
           }
           while (lines(j)[pos] == ' ' && pos > start) {
@@ -182,7 +182,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out, const vector<String>
 }
 
 void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &history,
-                                  uInt nstrings, Bool aipsppFormat) {
+                                  uInt nstrings, bool aipsppFormat) {
   LogIO os;
   os << LogOrigin("FITSHistoryUtil", "fromHistory", WHERE);
   LogSink &sink = logger.sink();
@@ -264,13 +264,13 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &hi
   }
 }
 
-uInt FITSHistoryUtil::toHISTORY(vector<String> &history, Bool &aipsppFormat, uInt &nstrings,
+uInt FITSHistoryUtil::toHISTORY(vector<String> &history, bool &aipsppFormat, uInt &nstrings,
                                 uInt firstLine, const LoggerHolder &logger) {
   String priority, message, location, id;
   Double timeInSec;
   history.resize(0);
   nstrings = 0;
-  Bool thisLineFormat;
+  bool thisLineFormat;
   String tmp1, tmp2;
   //
   uInt line = 0;

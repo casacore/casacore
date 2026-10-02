@@ -78,7 +78,7 @@
 %{
 #include <casacore/ms/MSSel/MSSelectionTools.h>
   int MSStateGramlex (YYSTYPE*);
-  void checkStateError(Vector<Int>& list, ostringstream& msg, Bool force=False, char* = NULL)
+  void checkStateError(Vector<Int>& list, ostringstream& msg, bool force=false, char* = NULL)
   {
     if ((list.nelements() == 0) || force)
       {
@@ -114,7 +114,7 @@ indexcombexpr  : indexlist
 		     {
 		       m << "Possible out of range index in the list " << *($1)
 			 << " [TIP: Double-quoted strings forces name matching]";
-		       checkStateError(selectedIDs, m , True);
+		       checkStateError(selectedIDs, m , true);
 		     }
                    $$ = MSStateParse().selectStateIds(selectedIDs);
 		   m << "Partial or no match for State ID list " << (*($1));
@@ -182,7 +182,7 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1,True));
+	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1,true));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -274,7 +274,7 @@ indexlist : stateidlist
               $$ = $1;
 	      Int N0=(*($1)).nelements(), 
 		N1 = (*($3)).nelements();
-	      (*($$)).resize(N0+N1,True);  // Resize the existing list
+	      (*($$)).resize(N0+N1,true);  // Resize the existing list
 	      for(Int i=N0;i<N0+N1;i++)
 		(*($$))(i) = (*($3))(i-N0);
 	      delete $3;

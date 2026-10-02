@@ -45,12 +45,12 @@ TabPath::TabPath(const String& dir) : tabDir_p(10) {
 
 TabPath::~TabPath() { ; }
 
-Bool TabPath::found(const String& name, String& dir) const {
+bool TabPath::found(const String& name, String& dir) const {
   uInt dirnr;
-  Bool sw = False;
+  bool sw = false;
   for (dirnr = 0; dirnr < nrDir_p; dirnr++) {
     if (access((tabDir_p[dirnr] + name).c_str(), R_OK) == 0) {
-      sw = True;  // found
+      sw = true;  // found
       break;
     }
   }

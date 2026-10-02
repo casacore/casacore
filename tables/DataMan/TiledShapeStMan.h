@@ -213,7 +213,7 @@ class TiledShapeStMan : public TiledStMan {
 
   // TiledShapeStMan can access a column if there are 2 hypercubes
   // and the first one is empty.
-  virtual Bool canAccessColumn() const;
+  virtual bool canAccessColumn() const;
 
   // Test if only one hypercube is used by this storage manager.
   // If not, throw an exception. Otherwise return the hypercube.
@@ -274,14 +274,14 @@ class TiledShapeStMan : public TiledStMan {
 
   // Flush and optionally fsync the data.
   // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool fsync);
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
   virtual void create64(rownr_t nrrow);
 
   // Read the header info.
-  virtual void readHeader(rownr_t nrrow, Bool firstTime);
+  virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // Update the map of row numbers to cube number plus offset.
   void updateRowMap(uInt cubeNr, uInt pos, rownr_t rownr);

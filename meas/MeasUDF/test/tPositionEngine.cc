@@ -290,7 +290,7 @@ void testName() {
 }
 
 int checkErr(const String& command) {
-  Bool fail = False;
+  bool fail = false;
   try {
     TableExprNode node(tableCommand(command).node());
     if (node.isScalar()) {
@@ -300,7 +300,7 @@ int checkErr(const String& command) {
     }
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    fail = True;
+    fail = true;
   }
   if (!fail) {
     cout << "Command '" + command + "' should have failed" << endl;

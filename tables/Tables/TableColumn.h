@@ -148,7 +148,7 @@ class TableColumn {
   // </group>
 
   // Test if the object is null, i.e. does not reference a column.
-  Bool isNull() const { return (baseColPtr_p == 0 ? True : False); }
+  bool isNull() const { return (baseColPtr_p == 0 ? true : false); }
 
   // Throw an exception if the object is null, i.e.
   // if function isNull() is True.
@@ -156,11 +156,11 @@ class TableColumn {
 
   // Test if the column can be written to, thus if the column and
   // the underlying table can be written to.
-  Bool isWritable() const { return baseTabPtr_p->isWritable() && isColWritable_p; }
+  bool isWritable() const { return baseTabPtr_p->isWritable() && isColWritable_p; }
 
   // Test if the column is writable at all (virtual columns might not be).
   // Note that keywords can always be written, even for virtual columns.
-  Bool isWritableAtAll() const { return isColWritable_p; }
+  bool isWritableAtAll() const { return isColWritable_p; }
 
   // Check if the column is writable and throw an exception if not.
   void checkWritable() const {
@@ -187,7 +187,7 @@ class TableColumn {
   // Can the shape of an already existing non-FixedShape array be changed?
   // This depends on the storage manager. Most storage managers
   // can handle it, but TiledDataStMan and TiledColumnStMan can not.
-  Bool canChangeShape() const { return canChangeShape_p; }
+  bool canChangeShape() const { return canChangeShape_p; }
 
   // Get the global #dimensions of an array (ie. for all cells in column).
   // This is always set for fixed shape arrays.
@@ -200,14 +200,14 @@ class TableColumn {
   IPosition shapeColumn() const { return baseColPtr_p->shapeColumn(); }
 
   // Test if the given cell contains a defined value.
-  Bool isDefined(rownr_t rownr) const {
+  bool isDefined(rownr_t rownr) const {
     TABLECOLUMNCHECKROW(rownr);
     return baseColPtr_p->isDefined(rownr);
   }
 
   // Does the column has content in the given row (default is the first row)?
   // It has if it is defined and does not contain an empty array.
-  Bool hasContent(rownr_t rownr = 0) const;
+  bool hasContent(rownr_t rownr = 0) const;
 
   // Get the #dimensions of an array in a particular cell.
   uInt ndim(rownr_t rownr) const {
@@ -231,7 +231,7 @@ class TableColumn {
   // Data type promotion is possible.
   // These functions only work for the standard data types.
   // <group>
-  void getScalar(rownr_t rownr, Bool& value) const {
+  void getScalar(rownr_t rownr, bool& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
@@ -284,7 +284,7 @@ class TableColumn {
   // Get the value from the row and convert it to the required type.
   // This can only be used for scalar columns with a standard data type.
   // <group>
-  Bool asBool(rownr_t rownr) const;
+  bool asBool(rownr_t rownr) const;
   uChar asuChar(rownr_t rownr) const;
   Short asShort(rownr_t rownr) const;
   uShort asuShort(rownr_t rownr) const;
@@ -303,7 +303,7 @@ class TableColumn {
   // Data type promotion is possible for the standard data types.
   // The functions are primarily meant for ScalarColumn<T>.
   // <group>
-  void getScalarValue(rownr_t rownr, Bool* value, const String&) const {
+  void getScalarValue(rownr_t rownr, bool* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
@@ -364,13 +364,13 @@ class TableColumn {
   // the data cannot be converted.
   // <group>
   // Use the same row numbers for both cells.
-  void put(rownr_t rownr, const TableColumn& that, Bool preserveTileShape = False) {
+  void put(rownr_t rownr, const TableColumn& that, bool preserveTileShape = false) {
     put(rownr, that, rownr, preserveTileShape);
   }
   // Use possibly different row numbers for that (i.e. input) and
   // and this (i.e. output) cell.
   virtual void put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
-                   Bool preserveTileShape = False);
+                   bool preserveTileShape = false);
   // </group>
 
   // Copy the values of that column to this column.
@@ -386,7 +386,7 @@ class TableColumn {
   // Data type promotion is possible.
   // These functions only work for the standard data types.
   // <group>
-  void putScalar(rownr_t rownr, const Bool& value) {
+  void putScalar(rownr_t rownr, const bool& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
@@ -448,8 +448,8 @@ class TableColumn {
   BaseTable* baseTabPtr_p;
   BaseColumn* baseColPtr_p;  // # pointer to real column object
   const ColumnCache* colCachePtr_p;
-  Bool canChangeShape_p;
-  Bool isColWritable_p;  // # is the column writable at all?
+  bool canChangeShape_p;
+  bool isColWritable_p;  // # is the column writable at all?
 
   // Get the baseColPtr_p of this TableColumn object.
   BaseColumn* baseColPtr() const { return baseColPtr_p; }

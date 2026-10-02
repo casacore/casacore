@@ -226,7 +226,7 @@ class BucketCache {
   // When the entire cache is flushed, possible remaining uninitialized
   // buckets will be initialized first.
   // A True status is returned when buckets had to be written.
-  Bool flush(uInt fromSlot = 0);
+  bool flush(uInt fromSlot = 0);
 
   // Clear the cache from the given slot on.
   // By default the entire cache is cleared.
@@ -234,7 +234,7 @@ class BucketCache {
   // If wanted and needed, the buckets are flushed to the file
   // before removing them.
   // It can be used to enforce rereading buckets from the file.
-  void clear(uInt fromSlot = 0, Bool doFlush = True);
+  void clear(uInt fromSlot = 0, bool doFlush = true);
 
   // Resize the cache.
   // When the cache gets smaller, the latter buckets are cached out.

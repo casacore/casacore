@@ -139,21 +139,21 @@ MVEarthMagnetic::MVEarthMagnetic(const Vector<Quantity> &other) : MVPosition() {
 }
 
 // # Operators
-Bool MVEarthMagnetic::operator==(const MVEarthMagnetic &other) const {
+bool MVEarthMagnetic::operator==(const MVEarthMagnetic &other) const {
   return (allEQ(xyz, other.xyz));
 }
 
-Bool MVEarthMagnetic::operator!=(const MVEarthMagnetic &other) const { return (!(*this == other)); }
+bool MVEarthMagnetic::operator!=(const MVEarthMagnetic &other) const { return (!(*this == other)); }
 
-Bool MVEarthMagnetic::near(const MVEarthMagnetic &other, Double tol) const {
+bool MVEarthMagnetic::near(const MVEarthMagnetic &other, Double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
-Bool MVEarthMagnetic::near(const MVEarthMagnetic &other, Quantity tol) const {
+bool MVEarthMagnetic::near(const MVEarthMagnetic &other, Quantity tol) const {
   return (separation(other, "rad") <= tol);
 }
 
-Bool MVEarthMagnetic::nearAbs(const MVEarthMagnetic &other, Double tol) const {
+bool MVEarthMagnetic::nearAbs(const MVEarthMagnetic &other, Double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
@@ -322,11 +322,11 @@ Vector<Quantum<Double>> MVEarthMagnetic::getRecordValue() const {
   return tmp;
 }
 
-Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
+bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
   uInt i;
   i = in.nelements();
-  if (i != 3) return False;
+  if (i != 3) return false;
   if (in(0).check(testUnit)) {
     if (in(1).check(testUnit) && in(2).check(testUnit)) {
       for (uInt j = 0; j < i; j++) {
@@ -344,7 +344,7 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
       xyz(2) = tsin(1);
       readjust(in(0).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   } else if (in(2).check(testUnit)) {
     if (in(0).check(UnitVal::ANGLE) && in(1).check(UnitVal::ANGLE)) {
@@ -360,12 +360,12 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
       xyz(2) = tsin(1);
       readjust(in(2).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 MVEarthMagnetic operator*(const RotMatrix &left, const MVEarthMagnetic &right) {

@@ -213,13 +213,13 @@ class SpectralCoordinate : public Coordinate {
   // The wavelengths must increase or decrease monotonically (otherwise
   // the toPixel lookup would not be possible).
   SpectralCoordinate(MFrequency::Types freqType, const Vector<Double>& wavelengths,
-                     const String& waveUnit, Double restFrequency = 0.0, Bool inAir = False);
+                     const String& waveUnit, Double restFrequency = 0.0, bool inAir = false);
 
   // Construct from wcs structure.  Must hold only a spectral wcs structure
   // Specify whether the absolute pixel coordinates in the wcs structure
   // are 0- or 1-relative.  The coordinate is always constructed with 0-relative
   // pixel coordinates
-  SpectralCoordinate(MFrequency::Types freqType, const ::wcsprm& wcs, Bool oneRel = True);
+  SpectralCoordinate(MFrequency::Types freqType, const ::wcsprm& wcs, bool oneRel = true);
 
   // Copy constructor (copy semantics).
   SpectralCoordinate(const SpectralCoordinate& other);
@@ -260,7 +260,7 @@ class SpectralCoordinate : public Coordinate {
   // returns False (and the conversion parameters are all left as they were),
   //  else it returns True.
   // <group>
-  Bool setReferenceConversion(MFrequency::Types type, const MEpoch& epoch,
+  bool setReferenceConversion(MFrequency::Types type, const MEpoch& epoch,
                               const MPosition& position, const MDirection& direction);
   void getReferenceConversion(MFrequency::Types& type, MEpoch& epoch, MPosition& position,
                               MDirection& direction) const {
@@ -279,11 +279,11 @@ class SpectralCoordinate : public Coordinate {
   // if <src>useConversionFrame</src>, if the coordinate has a conversion
   // layer frame, it is used. Else, the native frame is used for the conversion.
   // <group>
-  virtual Bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
-                       Bool useConversionFrame = True) const;
-  virtual Bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const;
-  Bool toWorld(Double& world, const Double& pixel) const;
-  Bool toPixel(Double& pixel, const Double& world) const;
+  virtual bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
+                       bool useConversionFrame = true) const;
+  virtual bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const;
+  bool toWorld(Double& world, const Double& pixel) const;
+  bool toPixel(Double& pixel, const Double& world) const;
   // </group>
 
   // Convert a pixel (channel number) into an MFrequency or MVFrequency and vice
@@ -291,10 +291,10 @@ class SpectralCoordinate : public Coordinate {
   // this for calculating velocities or converting frequencies from one frame
   // to another.
   // <group>
-  Bool toWorld(MFrequency& world, Double pixel) const;
-  Bool toPixel(Double& pixel, const MFrequency& world) const;
-  Bool toWorld(MVFrequency& world, Double pixel) const;
-  Bool toPixel(Double& pixel, const MVFrequency& world) const;
+  bool toWorld(MFrequency& world, Double pixel) const;
+  bool toPixel(Double& pixel, const MFrequency& world) const;
+  bool toWorld(MVFrequency& world, Double pixel) const;
+  bool toPixel(Double& pixel, const MVFrequency& world) const;
   // </group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
@@ -304,10 +304,10 @@ class SpectralCoordinate : public Coordinate {
   // is the length of the number of conversions and
   // holds an error status for each conversion.
   // <group>
-  virtual Bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
-                           Vector<Bool>& failures) const;
-  virtual Bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
-                           Vector<Bool>& failures) const;
+  virtual bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
+                           Vector<bool>& failures) const;
+  virtual bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
+                           Vector<bool>& failures) const;
   // </group>
 
   // Set the state that is used for conversions from pixel and frequency to velocity
@@ -319,16 +319,16 @@ class SpectralCoordinate : public Coordinate {
   // state set here.  If the function returns False it means the unit was
   // not valid.  There will be an error message in function <src>errorMessage</src>
   // <group>
-  Bool setVelocity(const String& velUnit = String("km/s"),
+  bool setVelocity(const String& velUnit = String("km/s"),
                    MDoppler::Types velType = MDoppler::RADIO);
 
   MDoppler::Types velocityDoppler() const { return velType_p; };
   String velocityUnit() const { return velUnit_p; };
   //
-  Bool setWavelengthUnit(const String& waveUnit = String("mm"));
+  bool setWavelengthUnit(const String& waveUnit = String("mm"));
   String wavelengthUnit() const { return waveUnit_p; };
   //
-  Bool setNativeType(const SpectralCoordinate::SpecType spcType);
+  bool setNativeType(const SpectralCoordinate::SpecType spcType);
   SpectralCoordinate::SpecType nativeType() const { return nativeType_p; }
 
   // </group>
@@ -344,18 +344,18 @@ class SpectralCoordinate : public Coordinate {
   // the use <src>toWorld</src>) but not in the <src>frequencyToVelocity</src>
   // or <src>frequencyToWavelength</src> functions.
   // <group>
-  Bool pixelToVelocity(Quantum<Double>& velocity, Double pixel) const;
-  Bool pixelToVelocity(Double& velocity, Double pixel) const;
-  Bool pixelToVelocity(Vector<Double>& velocity, const Vector<Double>& pixel) const;
+  bool pixelToVelocity(Quantum<Double>& velocity, Double pixel) const;
+  bool pixelToVelocity(Double& velocity, Double pixel) const;
+  bool pixelToVelocity(Vector<Double>& velocity, const Vector<Double>& pixel) const;
   //
-  Bool frequencyToVelocity(Quantum<Double>& velocity, Double frequency) const;
-  Bool frequencyToVelocity(Quantum<Double>& velocity, const MFrequency& frequency) const;
-  Bool frequencyToVelocity(Quantum<Double>& velocity, const MVFrequency& frequency) const;
-  Bool frequencyToVelocity(Double& velocity, Double frequency) const;
-  Bool frequencyToVelocity(Vector<Double>& velocity, const Vector<Double>& frequency) const;
+  bool frequencyToVelocity(Quantum<Double>& velocity, Double frequency) const;
+  bool frequencyToVelocity(Quantum<Double>& velocity, const MFrequency& frequency) const;
+  bool frequencyToVelocity(Quantum<Double>& velocity, const MVFrequency& frequency) const;
+  bool frequencyToVelocity(Double& velocity, Double frequency) const;
+  bool frequencyToVelocity(Vector<Double>& velocity, const Vector<Double>& frequency) const;
   //
-  Bool frequencyToWavelength(Vector<Double>& wavelength, const Vector<Double>& frequency) const;
-  Bool frequencyToAirWavelength(Vector<Double>& wavelength, const Vector<Double>& frequency) const;
+  bool frequencyToWavelength(Vector<Double>& wavelength, const Vector<Double>& frequency) const;
+  bool frequencyToAirWavelength(Vector<Double>& wavelength, const Vector<Double>& frequency) const;
   // The refractive index of air (argument can be wavelength or airwavelength)
   // according to Greisen et al., 2006, A&A, 464, 746.
   // If airwavelength is used there is an error of the order of 1E-9.
@@ -375,14 +375,14 @@ class SpectralCoordinate : public Coordinate {
   // is active in the <src>pixelToVelocity</src> functions (because internally
   // the use <src>toPixel</src>) but not in the <src>frequencyToVelocity</src> functions.
   // <group>
-  Bool velocityToPixel(Double& pixel, Double velocity) const;
-  Bool velocityToPixel(Vector<Double>& pixel, const Vector<Double>& velocity) const;
+  bool velocityToPixel(Double& pixel, Double velocity) const;
+  bool velocityToPixel(Vector<Double>& pixel, const Vector<Double>& velocity) const;
   //
-  Bool velocityToFrequency(Double& frequency, Double velocity) const;
-  Bool velocityToFrequency(Vector<Double>& frequency, const Vector<Double>& velocity) const;
+  bool velocityToFrequency(Double& frequency, Double velocity) const;
+  bool velocityToFrequency(Vector<Double>& frequency, const Vector<Double>& velocity) const;
   //
-  Bool wavelengthToFrequency(Vector<Double>& frequency, const Vector<Double>& wavelength) const;
-  Bool airWavelengthToFrequency(Vector<Double>& frequency, const Vector<Double>& wavelength) const;
+  bool wavelengthToFrequency(Vector<Double>& frequency, const Vector<Double>& wavelength) const;
+  bool airWavelengthToFrequency(Vector<Double>& frequency, const Vector<Double>& wavelength) const;
   // </group>
 
   // The SpectralCoordinate can maintain a list of rest frequencies
@@ -415,9 +415,9 @@ class SpectralCoordinate : public Coordinate {
   // <group>
   Double restFrequency() const;
   const Vector<Double>& restFrequencies() const;
-  Bool setRestFrequency(Double newFrequency, Bool append = False);
+  bool setRestFrequency(Double newFrequency, bool append = false);
   void setRestFrequencies(const Vector<Double>& newFrequencies, uInt which = 0,
-                          Bool append = False);
+                          bool append = false);
   void selectRestFrequency(uInt which);
   void selectRestFrequency(Double frequency);
   String formatRestFrequencies() const;
@@ -429,12 +429,12 @@ class SpectralCoordinate : public Coordinate {
   // conversion frequency system to the new type and delete any
   // conversion machines.
   // <group>
-  MFrequency::Types frequencySystem(Bool showConversion = False) const;
-  void setFrequencySystem(MFrequency::Types type, Bool verbose = True);
+  MFrequency::Types frequencySystem(bool showConversion = false) const;
+  void setFrequencySystem(MFrequency::Types type, bool verbose = true);
 
   // Transform the SpectralCoordinate to a different native reference frame
   // keeping the conversion layer as is
-  Bool transformFrequencySystem(MFrequency::Types type, const MEpoch& epoch,
+  bool transformFrequencySystem(MFrequency::Types type, const MEpoch& epoch,
                                 const MPosition& position, const MDirection& direction);
   // </group>
 
@@ -450,11 +450,11 @@ class SpectralCoordinate : public Coordinate {
   // Set the value of the requested attribute. Note that these just
   // change the internal values, they do not cause any recomputation.
   // <group>
-  virtual Bool setWorldAxisNames(const Vector<String>& names);
-  virtual Bool setReferencePixel(const Vector<Double>& refPix);
-  virtual Bool setLinearTransform(const Matrix<Double>& xform);
-  virtual Bool setIncrement(const Vector<Double>& inc);
-  virtual Bool setReferenceValue(const Vector<Double>& refval);
+  virtual bool setWorldAxisNames(const Vector<String>& names);
+  virtual bool setReferencePixel(const Vector<Double>& refPix);
+  virtual bool setLinearTransform(const Matrix<Double>& xform);
+  virtual bool setIncrement(const Vector<Double>& inc);
+  virtual bool setReferenceValue(const Vector<Double>& refval);
   // </group>
 
   // Get the table, i.e. the pixel and world values. The length of these
@@ -469,7 +469,7 @@ class SpectralCoordinate : public Coordinate {
   // reference value by the ratio of the old and new units.
   // The unit must be compatible with  frequency.
   //<group>
-  virtual Bool setWorldAxisUnits(const Vector<String>& units);
+  virtual bool setWorldAxisUnits(const Vector<String>& units);
   virtual Vector<String> worldAxisUnits() const;
   //</group>
 
@@ -478,8 +478,8 @@ class SpectralCoordinate : public Coordinate {
   // axes in the Coordinate.  If the comparison returns False,
   // <src>errorMessage()</src> contains a message about why.
   // <group>
-  virtual Bool near(const Coordinate& other, Double tol = 1e-6) const;
-  virtual Bool near(const Coordinate& other, const Vector<Int>& excludeAxes,
+  virtual bool near(const Coordinate& other, Double tol = 1e-6) const;
+  virtual bool near(const Coordinate& other, const Vector<Int>& excludeAxes,
                     Double tol = 1e-6) const;
   // </group>
 
@@ -490,7 +490,7 @@ class SpectralCoordinate : public Coordinate {
   // output reference pixel is always shape/2.  Cannot transform tabular
   // coordinates.  If the pointer returned is 0, it failed with a message
   // in <src>errorMessage</src>
-  virtual Coordinate* makeFourierCoordinate(const Vector<Bool>& axes,
+  virtual Coordinate* makeFourierCoordinate(const Vector<bool>& axes,
                                             const Vector<Int>& shape) const;
 
   // Format a SpectralCoordinate coordinate world value nicely through the
@@ -510,8 +510,8 @@ class SpectralCoordinate : public Coordinate {
   // If <src>unit</src> is empty, the unit given by <src>setFormatUnit</src>
   // is used.  If this is turn empty, then native units are used.
   virtual String format(String& unit, Coordinate::formatType format, Double worldValue,
-                        uInt worldAxis, Bool isAbsolute = True, Bool showAsAbsolute = True,
-                        Int precision = -1, Bool usePrecForFixed = False) const;
+                        uInt worldAxis, bool isAbsolute = true, bool showAsAbsolute = true,
+                        Int precision = -1, bool usePrecForFixed = false) const;
 
   // Set the default formatter unit (which is initialized to empty).  Must
   // be consistent with Hz or km/s.
@@ -520,7 +520,7 @@ class SpectralCoordinate : public Coordinate {
   // unit is empty.
   // <group>
   String formatUnit() const { return formatUnit_p; }
-  Bool setFormatUnit(const String& unit);
+  bool setFormatUnit(const String& unit);
   // </group>
 
   // Convert to FITS header record.  When writing the FITS record,
@@ -534,9 +534,9 @@ class SpectralCoordinate : public Coordinate {
   // wavelength axis, if <src>airWaveDef=True</src> air wavelength will be used, the
   // default is vacuum wavelength.
   //<group>
-  void toFITS(RecordInterface& header, uInt whichAxis, LogIO& logger, Bool oneRelative = True,
-              Bool preferVelocity = True, Bool opticalVelDef = True, Bool preferWavelength = False,
-              Bool airWaveDef = False) const;
+  void toFITS(RecordInterface& header, uInt whichAxis, LogIO& logger, bool oneRelative = true,
+              bool preferVelocity = true, bool opticalVelDef = true, bool preferWavelength = false,
+              bool airWaveDef = false) const;
 
   // Old interface.  Handled by wcs in new interface in FITSCoordinateUtil.cc
   //    static Bool fromFITSOld(SpectralCoordinate &out, String &error,
@@ -547,15 +547,15 @@ class SpectralCoordinate : public Coordinate {
 
   // Save the SpectralCoordinate into the supplied record using the supplied field name.
   // The field must not exist, otherwise <src>False</src> is returned.
-  virtual Bool save(RecordInterface& container, const String& fieldName) const;
+  virtual bool save(RecordInterface& container, const String& fieldName) const;
 
   // Recover the SpectralCoordinate from a record.
   // A null pointer means that the restoration did not succeed.
   static SpectralCoordinate* restore(const RecordInterface& container, const String& fieldName);
 
   // Convert from String to spectral type and vice versa.
-  static Bool specTypetoString(String& stypeString, const SpecType& specType);
-  static Bool stringtoSpecType(SpecType& specType, const String& stypeString);
+  static bool specTypetoString(String& stypeString, const SpecType& specType);
+  static bool stringtoSpecType(SpecType& specType, const String& stypeString);
 
   // Make a copy of the SpectralCoordinate using new. The caller is responsible for calling
   // delete.
@@ -564,7 +564,7 @@ class SpectralCoordinate : public Coordinate {
   ostream& print(ostream& os) const;
 
   // is this a tabular coordinate?
-  Bool isTabular() const;
+  bool isTabular() const;
 
  private:
   std::unique_ptr<TabularCoordinate> _tabular;  // Tabular coordinate OR
@@ -597,7 +597,7 @@ class SpectralCoordinate : public Coordinate {
   MEpoch epoch_p;                             // They are only private so we can save their state
 
   // Format checker
-  void checkFormat(Coordinate::formatType& format, const Bool) const;
+  void checkFormat(Coordinate::formatType& format, const bool) const;
 
   // Copy private data
   void copy(const SpectralCoordinate& other);
@@ -652,11 +652,11 @@ class SpectralCoordinate : public Coordinate {
   // Update Velocity Machine
   void updateVelocityMachine(const String& velUnit, MDoppler::Types velType);
   // Restore wcs stuff from Record
-  static Bool wcsRestore(Double& crval, Double& crpix, Double& cdelt, Double& pc, String& ctype,
+  static bool wcsRestore(Double& crval, Double& crpix, Double& cdelt, Double& pc, String& ctype,
                          const RecordInterface& rec);
 
   // Save wcs stuff into Record
-  Bool wcsSave(RecordInterface& rec, const wcsprm& wcs, const String& fieldName) const;
+  bool wcsSave(RecordInterface& rec, const wcsprm& wcs, const String& fieldName) const;
 
   void _setTabulatedFrequencies(const Vector<Double>& freqs);
 };

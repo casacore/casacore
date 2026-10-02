@@ -119,8 +119,8 @@ DataManager* DerivedMSCal::makeObject(const String&, const Record& spec) {
 
 void DerivedMSCal::registerClass() { DataManager::registerCtor("DerivedMSCal", makeObject); }
 
-Bool DerivedMSCal::canAddColumn() const { return True; }
-Bool DerivedMSCal::canRemoveColumn() const { return True; }
+bool DerivedMSCal::canAddColumn() const { return true; }
+bool DerivedMSCal::canRemoveColumn() const { return true; }
 
 void DerivedMSCal::addColumn(DataManagerColumn*) {}
 void DerivedMSCal::removeColumn(DataManagerColumn*) {}

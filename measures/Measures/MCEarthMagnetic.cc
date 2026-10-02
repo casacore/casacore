@@ -100,8 +100,8 @@ void MCEarthMagnetic::getConvert(MConvertBase &mc, const MRBase &inref, const MR
   Int iin = inref.getType();
   Int iout = outref.getType();
   if (iin != iout) {
-    Bool iplan = (iin & MEarthMagnetic::EXTRA);
-    Bool oplan = (iout & MEarthMagnetic::EXTRA);
+    bool iplan = (iin & MEarthMagnetic::EXTRA);
+    bool oplan = (iout & MEarthMagnetic::EXTRA);
     if (iplan) {
       mc.addMethod(MCEarthMagnetic::R_MODEL0);
       mc.addMethod((iin & ~MEarthMagnetic::EXTRA) + MCEarthMagnetic::R_IGRF);
@@ -129,7 +129,7 @@ void MCEarthMagnetic::clearConvert() {
 
 // # Conversion routines
 void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
   if (!MVPOS1) MVPOS1 = new MVPosition();
 
   switch (which) {

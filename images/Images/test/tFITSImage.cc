@@ -43,8 +43,8 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Bool allNear(const Array<Float>& data, const Array<Bool>& dataMask, const Array<Float>& fits,
-             const Array<Bool>& fitsMask, Float tol = 1.0e-5, Float abstol = -1.);
+bool allNear(const Array<Float>& data, const Array<bool>& dataMask, const Array<Float>& fits,
+             const Array<bool>& fitsMask, Float tol = 1.0e-5, Float abstol = -1.);
 
 int main(int argc, const char* argv[]) {
   try {
@@ -61,7 +61,7 @@ int main(int argc, const char* argv[]) {
     inputs.readArguments(argc, argv);
     String in = inputs.getString("in");
     const uInt hdunum = (uInt)inputs.getInt("hdunum");
-    const Bool print = inputs.getBool("print");
+    const bool print = inputs.getBool("print");
     const Int size = inputs.getInt("size");
     //
     if (in.empty()) {
@@ -89,12 +89,12 @@ int main(int argc, const char* argv[]) {
     AlwaysAssert(rec.asString("field2") == "doggies", AipsError);
     AlwaysAssert(fitsImage.hasPixelMask() == fitsImage.isMasked(), AipsError);
     if (fitsImage.hasPixelMask()) {
-      Lattice<Bool>& pMask = fitsImage.pixelMask();
+      Lattice<bool>& pMask = fitsImage.pixelMask();
       AlwaysAssert(pMask.shape() == fitsImage.shape(), AipsError);
     }
     AlwaysAssert(fitsImage.getRegionPtr() == 0, AipsError);
-    AlwaysAssert(fitsImage.isWritable() == False, AipsError);
-    AlwaysAssert(fitsImage.name(False) == p.absoluteName(), AipsError);
+    AlwaysAssert(fitsImage.isWritable() == false, AipsError);
+    AlwaysAssert(fitsImage.name(false) == p.absoluteName(), AipsError);
     AlwaysAssert(fitsImage.ok(), AipsError);
     //
     fitsImage.tempClose();
@@ -119,8 +119,8 @@ int main(int argc, const char* argv[]) {
     //
     Array<Float> fitsArray = fitsImage.get();
     Array<Float> dataArray = pTempImage->get();
-    Array<Bool> fitsMask = fitsImage.getMask();
-    Array<Bool> dataMask = pTempImage->getMask();
+    Array<bool> fitsMask = fitsImage.getMask();
+    Array<bool> dataMask = pTempImage->getMask();
     CoordinateSystem fitsCS = fitsImage.coordinates();
     CoordinateSystem dataCS = pTempImage->coordinates();
     delete pTempImage;
@@ -132,7 +132,7 @@ int main(int argc, const char* argv[]) {
 
     ImageInterface<Float>* pFitsImage = fitsImage.cloneII();
     Array<Float> fitsArray2 = pFitsImage->get();
-    Array<Bool> fitsMask2 = pFitsImage->getMask();
+    Array<bool> fitsMask2 = pFitsImage->getMask();
     CoordinateSystem fitsCS2 = pFitsImage->coordinates();
     delete pFitsImage;
     //
@@ -146,7 +146,7 @@ int main(int argc, const char* argv[]) {
     cerr << "ok " << endl;
 
     String file = "imagetestimage2.fits";
-    ImageFITSConverter::ImageToFITS(error, fitsImage, file, 64, True, True, 16, 1.0, -1.0, True);
+    ImageFITSConverter::ImageToFITS(error, fitsImage, file, 64, true, true, 16, 1.0, -1.0, true);
     ImageInterface<Float>* pLoadImage;
     ImageFITSConverter::FITSToImage(pLoadImage, error, imageName, file);
     AlwaysAssert(
@@ -161,25 +161,25 @@ int main(int argc, const char* argv[]) {
   return 0;
 }
 
-Bool allNear(const Array<Float>& data, const Array<Bool>& dataMask, const Array<Float>& fits,
-             const Array<Bool>& fitsMask, Float tol, Float abstol) {
-  Bool deletePtrData, deletePtrDataMask, deletePtrFITS, deletePtrFITSMask;
+bool allNear(const Array<Float>& data, const Array<bool>& dataMask, const Array<Float>& fits,
+             const Array<bool>& fitsMask, Float tol, Float abstol) {
+  bool deletePtrData, deletePtrDataMask, deletePtrFITS, deletePtrFITSMask;
   const Float* pData = data.getStorage(deletePtrData);
   const Float* pFITS = fits.getStorage(deletePtrFITS);
-  const Bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
-  const Bool* pFITSMask = fitsMask.getStorage(deletePtrFITSMask);
+  const bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
+  const bool* pFITSMask = fitsMask.getStorage(deletePtrFITSMask);
   //
   for (uInt i = 0; i < data.nelements(); i++) {
     if (pDataMask[i] != pFITSMask[i]) {
       cerr << "masks differ" << endl;
-      return False;
+      return false;
     }
     if (pDataMask[i]) {
       if ((abstol < 0 && !near(pData[i], pFITS[i], tol)) ||
           (abstol >= 0 && !nearAbs(pData[i], pFITS[i], abstol))) {
         cerr << "data differ, tol = " << tol << endl;
         cerr << pData[i] << ", " << pFITS[i] << endl;
-        return False;
+        return false;
       }
     }
   }
@@ -188,5 +188,5 @@ Bool allNear(const Array<Float>& data, const Array<Bool>& dataMask, const Array<
   dataMask.freeStorage(pDataMask, deletePtrDataMask);
   fits.freeStorage(pFITS, deletePtrFITS);
   fitsMask.freeStorage(pFITSMask, deletePtrFITSMask);
-  return True;
+  return true;
 }

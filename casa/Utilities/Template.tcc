@@ -340,7 +340,7 @@ Template::Template()
       comout_p(100),
       comptr_p(100),
       ccount_p(0),
-      isSplit_p(False),
+      isSplit_p(false),
       dcount_p(0),
       nstring_p(0),
       allstring_p(0),
@@ -362,7 +362,7 @@ Template::Template(const Vector<String> &files)
       comout_p(100),
       comptr_p(100),
       ccount_p(0),
-      isSplit_p(False),
+      isSplit_p(false),
       dcount_p(0),
       nstring_p(0),
       allstring_p(0),
@@ -385,7 +385,7 @@ Template::Template(const String &filename)
       comout_p(100),
       comptr_p(100),
       ccount_p(0),
-      isSplit_p(False),
+      isSplit_p(false),
       dcount_p(0),
       nstring_p(0),
       allstring_p(0),
@@ -409,7 +409,7 @@ void Template::reset() {
   count_p = 0;
   tcount_p = 0;
   ccount_p = 0;
-  isSplit_p = False;
+  isSplit_p = false;
   dcount_p = 0;
   tdcount_p = 0;
   tdflist_p.resize(0);
@@ -438,10 +438,10 @@ void Template::read(const String &filename) {
   String extracted;  // a single input line
   String combine;    // a full combined line
   uInt c1 = 0;       // the input line count
-  Bool ok(True);
+  bool ok(true);
   while (ok && (((extracted = ""), (ok = getline(file, extracted))) || !combine.empty())) {
     c1++;  // Count input lines
-    Bool err = False;
+    bool err = false;
     // Skip empty lines
     if ((extracted.empty() || extracted.contains(spaces)) && ok) continue;
     // Check if correct first line
@@ -452,7 +452,7 @@ void Template::read(const String &filename) {
       else if (extracted.contains(fileRE))
         combine = extracted;
       else
-        err = True;
+        err = true;
       if (!err) continue;
     }
     // Handle regular extension lines
@@ -501,7 +501,7 @@ void Template::read(const String &filename) {
       if (!combine.empty()) setOutput(combine);
       combine = extracted;
     } else
-      err = True;
+      err = true;
     if (err) {
       cerr << "Warning: illegal entry commented out near line " << c1 << " in " << filename
            << ":\n\t" << extracted(0, ((extracted.length() <= 60) ? extracted.length() : 60))
@@ -517,7 +517,7 @@ void Template::read(const String &filename) {
   }
 }
 
-void Template::canonical(const Bool tmplonly) {
+void Template::canonical(const bool tmplonly) {
   // Reformat all entries using the replacement patterns
   String combine;
   String lpat;  // A run-time pattern
@@ -600,10 +600,10 @@ void Template::splitName() {
     namstring_p[i] = allstring_p[i].through(splitnam);
     nval_p[i] = atoi(nstring_p[i].chars());
   }
-  isSplit_p = True;
+  isSplit_p = true;
 }
 
-void Template::sortName(const Bool renumber) {
+void Template::sortName(const bool renumber) {
   // Split first if necessary
   splitName();
   // Indexes and specify sort
@@ -686,7 +686,7 @@ void Template::sortName(const Bool renumber) {
   }
 }
 
-void Template::writeOut(ostream &os, const Bool warn) {
+void Template::writeOut(ostream &os, const bool warn) {
   // Constants
   static const String sp = " ";
   const Int Nsplit = 2000;  // # of fields in one entry must fit in here
@@ -694,7 +694,7 @@ void Template::writeOut(ostream &os, const Bool warn) {
   // Local data
   String spf[Nsplit];  // Fields in full line
   Int c1 = 0;          // Output line count
-  Bool cwarn = False;  // Do not give a compressed warning
+  bool cwarn = false;  // Do not give a compressed warning
   // Write initial comments
   for (uInt j = 0; j < ccount_p; j++) {  // initial comments
     if (comptr_p[j] < 0) {
@@ -708,7 +708,7 @@ void Template::writeOut(ostream &os, const Bool warn) {
     uInt k = 0;
     uInt p = 0;
     Int c = 0;  // Level of indentation for #if
-    Bool pr = True;
+    bool pr = true;
     String w;  // Line indentation
     String v;  // Line start pattern
     for (uInt j = 0; j <= nsp; j++) {
@@ -752,7 +752,7 @@ void Template::writeOut(ostream &os, const Bool warn) {
                           "remove at line "
                        << c1 << endl;
                 } else
-                  cwarn = True;
+                  cwarn = true;
               }
             }
           }
@@ -771,9 +771,9 @@ void Template::writeOut(ostream &os, const Bool warn) {
         if (spf[j].contains(sifRE) || spf[j] == "#else") c++;
         if (spf[j] == "/=/") {
           spf[j] = "=";
-          pr = True;
+          pr = true;
         } else
-          pr = False;
+          pr = false;
         continue;
       }
       k++;
@@ -812,7 +812,7 @@ void Template::writeOut(ostream &os, const Bool warn) {
   }
 }
 
-void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
+void Template::writeDup(ostream &os, const String &userFile, bool isSys) {
   // Sort the name list
   Vector<uInt> inx;
   Sort sort;
@@ -832,15 +832,15 @@ void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
     // Found duplicates
     if (n > 1) {
       // Check if -s switch given
-      Bool doit = True;
+      bool doit = true;
       if (isSys) {
-        doit = False;
+        doit = false;
         // Check if _ReposFiller mentioned
         for (uInt j = i; j < i + n; j++) {
-          if (tdflist_p[tdfile_p[inx(j)]].contains(reposName)) doit = True;
+          if (tdflist_p[tdfile_p[inx(j)]].contains(reposName)) doit = true;
           // Check for same file duplicates
           for (uInt k = j + 1; k < i + n; k++) {
-            if (tdflist_p[tdfile_p[inx(j)]] == tdflist_p[tdfile_p[inx(k)]]) doit = True;
+            if (tdflist_p[tdfile_p[inx(j)]] == tdflist_p[tdfile_p[inx(k)]]) doit = true;
           }
           if (doit) break;
         }
@@ -863,7 +863,7 @@ void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
   }
 }
 
-void Template::setComment(const String &txt, const Bool atstart) {
+void Template::setComment(const String &txt, const bool atstart) {
   // Resize
   if (ccount_p >= comout_p.nelements()) {
     comout_p.resize(ccount_p + 100);

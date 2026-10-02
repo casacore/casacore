@@ -185,19 +185,19 @@ MVPosition::MVPosition(const Vector<Quantity> &other) : xyz(3) {
 MVPosition::~MVPosition() {}
 
 // # Operators
-Bool MVPosition::operator==(const MVPosition &other) const { return (allEQ(xyz, other.xyz)); }
+bool MVPosition::operator==(const MVPosition &other) const { return (allEQ(xyz, other.xyz)); }
 
-Bool MVPosition::operator!=(const MVPosition &other) const { return (!(*this == other)); }
+bool MVPosition::operator!=(const MVPosition &other) const { return (!(*this == other)); }
 
-Bool MVPosition::near(const MVPosition &other, Double tol) const {
+bool MVPosition::near(const MVPosition &other, Double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
-Bool MVPosition::near(const MVPosition &other, Quantity tol) const {
+bool MVPosition::near(const MVPosition &other, Quantity tol) const {
   return (separation(other, "rad") <= tol);
 }
 
-Bool MVPosition::nearAbs(const MVPosition &other, Double tol) const {
+bool MVPosition::nearAbs(const MVPosition &other, Double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
@@ -413,10 +413,10 @@ Vector<Quantum<Double>> MVPosition::getXRecordValue() const {
   return tmp;
 }
 
-Bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
+bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
   uInt i;
   i = in.nelements();
-  if (i != 3) return False;
+  if (i != 3) return false;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) && in(2).check(UnitVal::LENGTH)) {
       uInt j;
@@ -441,7 +441,7 @@ Bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
         t += 0.001;
       readjust(t);
     } else {
-      return False;
+      return false;
     }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) && in(1).check(UnitVal::ANGLE)) {
@@ -462,12 +462,12 @@ Bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
         t += 0.001;
       readjust(t);
     } else {
-      return False;
+      return false;
     }
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 MVPosition operator*(const RotMatrix &left, const MVPosition &right) {

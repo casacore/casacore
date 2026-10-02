@@ -39,10 +39,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSState::MSState() : hasBeenDestroyed_p(True) {}
+MSState::MSState() : hasBeenDestroyed_p(true) {}
 
 MSState::MSState(const String &tableName, TableOption option)
-    : MSTable<MSStateEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSStateEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -51,7 +51,7 @@ MSState::MSState(const String &tableName, TableOption option)
 }
 
 MSState::MSState(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSStateEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSStateEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -59,8 +59,8 @@ MSState::MSState(const String &tableName, const String &tableDescName, TableOpti
                   "table is not a valid MSState"));
 }
 
-MSState::MSState(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSStateEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSState::MSState(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSStateEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSState::MSState(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
                   "table is not a valid MSState"));
 }
 
-MSState::MSState(const Table &table) : MSTable<MSStateEnums>(table), hasBeenDestroyed_p(False) {
+MSState::MSState(const Table &table) : MSTable<MSStateEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -76,7 +76,7 @@ MSState::MSState(const Table &table) : MSTable<MSStateEnums>(table), hasBeenDest
                   "table is not a valid MSState"));
 }
 
-MSState::MSState(const MSState &other) : MSTable<MSStateEnums>(other), hasBeenDestroyed_p(False) {
+MSState::MSState(const MSState &other) : MSTable<MSStateEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -93,7 +93,7 @@ MSState::~MSState() {
     LogIO os;
     os << LogIO::WARN << "~MSState() - Table written is not a valid MSState" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSState &MSState::operator=(const MSState &other) {

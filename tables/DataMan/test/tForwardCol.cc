@@ -173,7 +173,7 @@ void c(const TableDesc& tdin) {
   for (i = 0; i < 10; i++) {
     ab1.put(i, i + 10);
   }
-  forwTab.addColumn(ScalarColumnDesc<Int>("ac"), "ForwardEngine1", True);
+  forwTab.addColumn(ScalarColumnDesc<Int>("ac"), "ForwardEngine1", true);
   ScalarColumn<Int> ac(forwTab, "ac");
   for (i = 0; i < 10; i++) {
     ac.put(i, i + 11);

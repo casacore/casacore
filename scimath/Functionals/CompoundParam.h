@@ -105,7 +105,7 @@ class CompoundParam : public Function<T> {
   // Make this object a (deep) copy of other.
   // <group>
   CompoundParam(const CompoundParam<T> &other);
-  CompoundParam(const CompoundParam<T> &other, Bool)
+  CompoundParam(const CompoundParam<T> &other, bool)
       : Function<T>(other),
         ndim_p(other.ndim_p),
         functionPtr_p(other.functionPtr_p.nelements()),
@@ -139,7 +139,7 @@ class CompoundParam : public Function<T> {
     }
   }
   template <class W>
-  CompoundParam(const CompoundParam<W> &other, Bool)
+  CompoundParam(const CompoundParam<W> &other, bool)
       : Function<T>(other),
         ndim_p(other.ndim()),
         functionPtr_p(other.nFunctions()),

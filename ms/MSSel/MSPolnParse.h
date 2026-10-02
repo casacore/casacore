@@ -114,7 +114,7 @@ class MSPolnParse : public MSParse {
                             Vector<Int>& polIndices);
   Vector<Int> matchPolIDsToPolTableRow(const Vector<Int>& polIds,
                                        std::map<Int, Vector<Int>>& polIndexMap,
-                                       Vector<Int>& polIndices, Bool addToMap = False);
+                                       Vector<Int>& polIndices, bool addToMap = false);
   Vector<Int> getPolnIDs(const String& polSpec, Vector<Int>& polIndices);
   Vector<Int> getPolnIndices(const Int& polnID, const Vector<Int>& polnIDList);
   //

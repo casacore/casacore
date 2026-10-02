@@ -130,10 +130,10 @@ class HyperPlaneParam : public Function<T> {
   //  HyperPlanes are equal if they are of the same order and have the same
   //  parameters
   //  <group>
-  Bool operator==(const HyperPlaneParam<T> &other) const {
+  bool operator==(const HyperPlaneParam<T> &other) const {
     return (this->param_p == other.param_p);
   }
-  Bool operator!=(const HyperPlaneParam<T> &other) const {
+  bool operator!=(const HyperPlaneParam<T> &other) const {
     return (this->param_p != other.param_p);
   }
   // </group>

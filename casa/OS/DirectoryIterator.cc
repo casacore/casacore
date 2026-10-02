@@ -35,7 +35,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 DirectoryIterator::DirectoryIterator()
     : itsDirectoryDescriptor(0),
       itsDirectoryEntry(0),
-      itsEnd(False),
+      itsEnd(false),
       itsDirectory(),
       itsExpression(".*") {
   init();
@@ -44,7 +44,7 @@ DirectoryIterator::DirectoryIterator()
 DirectoryIterator::DirectoryIterator(const Directory& dir)
     : itsDirectoryDescriptor(0),
       itsDirectoryEntry(0),
-      itsEnd(False),
+      itsEnd(false),
       itsDirectory(dir),
       itsExpression(".*") {
   init();
@@ -53,7 +53,7 @@ DirectoryIterator::DirectoryIterator(const Directory& dir)
 DirectoryIterator::DirectoryIterator(const Directory& dir, const Regex& regExpression)
     : itsDirectoryDescriptor(0),
       itsDirectoryEntry(0),
-      itsEnd(False),
+      itsEnd(false),
       itsDirectory(dir),
       itsExpression(regExpression) {
   init();
@@ -62,7 +62,7 @@ DirectoryIterator::DirectoryIterator(const Directory& dir, const Regex& regExpre
 DirectoryIterator::DirectoryIterator(const DirectoryIterator& that)
     : itsDirectoryDescriptor(0),
       itsDirectoryEntry(0),
-      itsEnd(False),
+      itsEnd(false),
       itsDirectory(that.itsDirectory),
       itsExpression(that.itsExpression) {
   init();
@@ -87,7 +87,7 @@ DirectoryIterator& DirectoryIterator::operator=(const DirectoryIterator& that) {
     closedir(itsDirectoryDescriptor);
     itsDirectoryDescriptor = 0;
     itsDirectoryEntry = 0;
-    itsEnd = False;
+    itsEnd = false;
     itsDirectory = that.itsDirectory;
     itsExpression = that.itsExpression;
     init();
@@ -136,7 +136,7 @@ void DirectoryIterator::operator++() {
     itsDirectoryEntry = readdir(itsDirectoryDescriptor);
 #endif
     if (itsDirectoryEntry == 0) {
-      itsEnd = True;
+      itsEnd = true;
       break;
     }
     name = itsDirectoryEntry->d_name;
@@ -164,10 +164,10 @@ void DirectoryIterator::reset() {
 #else
   rewinddir(itsDirectoryDescriptor);
 #endif
-  itsEnd = False;
+  itsEnd = false;
   operator++();
 }
 
-Bool DirectoryIterator::pastEnd() const { return (itsEnd == True); }
+bool DirectoryIterator::pastEnd() const { return (itsEnd == true); }
 
 }  // namespace casacore

@@ -39,7 +39,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ColumnsIndex::ColumnsIndex(const Table& table, const String& columnName, Compare* compareFunction,
-                           Bool noSort)
+                           bool noSort)
     : itsLowerKeyPtr(0), itsUpperKeyPtr(0) {
   Vector<String> columnNames(1);
   columnNames(0) = columnName;
@@ -47,7 +47,7 @@ ColumnsIndex::ColumnsIndex(const Table& table, const String& columnName, Compare
 }
 
 ColumnsIndex::ColumnsIndex(const Table& table, const Vector<String>& columnNames,
-                           Compare* compareFunction, Bool noSort) {
+                           Compare* compareFunction, bool noSort) {
   create(table, columnNames, compareFunction, noSort);
 }
 
@@ -88,9 +88,9 @@ void ColumnsIndex::deleteObjects() {
   for (uInt i = 0; i < nrfield; i++) {
     switch (itsDataTypes[i]) {
       case TpBool:
-        delete (RecordFieldPtr<Bool>*)(itsLowerFields[i]);
-        delete (RecordFieldPtr<Bool>*)(itsUpperFields[i]);
-        delete (Vector<Bool>*)(itsDataVectors[i]);
+        delete (RecordFieldPtr<bool>*)(itsLowerFields[i]);
+        delete (RecordFieldPtr<bool>*)(itsUpperFields[i]);
+        delete (Vector<bool>*)(itsDataVectors[i]);
         break;
       case TpUChar:
         delete (RecordFieldPtr<uChar>*)(itsLowerFields[i]);
@@ -166,7 +166,7 @@ void ColumnsIndex::addColumnToDesc(RecordDesc& description, const TableColumn& c
 }
 
 void ColumnsIndex::create(const Table& table, const Vector<String>& columnNames,
-                          Compare* compareFunction, Bool noSort) {
+                          Compare* compareFunction, bool noSort) {
   itsTable = table;
   itsNrrow = itsTable.nrow();
   itsCompare = (compareFunction == 0 ? compare : compareFunction);
@@ -188,18 +188,18 @@ void ColumnsIndex::makeObjects(const RecordDesc& description) {
   itsUpperKeyPtr = new Record(description);
   // Initialize the column and field block.
   uInt nrfield = description.nfields();
-  itsDataTypes.resize(nrfield, False, False);
-  itsDataVectors.resize(nrfield, False, False);
+  itsDataTypes.resize(nrfield, false, false);
+  itsDataVectors.resize(nrfield, false, false);
   itsDataVectors.set(static_cast<void*>(0));
-  itsData.resize(nrfield, False, False);
+  itsData.resize(nrfield, false, false);
   itsData.set(static_cast<void*>(0));
-  itsLowerFields.resize(nrfield, False, False);
+  itsLowerFields.resize(nrfield, false, false);
   itsLowerFields.set(static_cast<void*>(0));
-  itsUpperFields.resize(nrfield, False, False);
+  itsUpperFields.resize(nrfield, false, false);
   itsUpperFields.set(static_cast<void*>(0));
-  itsColumnChanged.resize(nrfield, False, False);
-  itsColumnChanged.set(True);
-  itsChanged = True;
+  itsColumnChanged.resize(nrfield, false, false);
+  itsColumnChanged.set(true);
+  itsChanged = true;
   // Create the correct column object for each field.
   // Also create a RecordFieldPtr object for each Key.
   // This makes a fast data copy possible.
@@ -207,9 +207,9 @@ void ColumnsIndex::makeObjects(const RecordDesc& description) {
     itsDataTypes[i] = description.type(i);
     switch (description.type(i)) {
       case TpBool: {
-        itsLowerFields[i] = new RecordFieldPtr<Bool>(*itsLowerKeyPtr, i);
-        itsUpperFields[i] = new RecordFieldPtr<Bool>(*itsUpperKeyPtr, i);
-        itsDataVectors[i] = new Vector<Bool>;
+        itsLowerFields[i] = new RecordFieldPtr<bool>(*itsLowerKeyPtr, i);
+        itsUpperFields[i] = new RecordFieldPtr<bool>(*itsUpperKeyPtr, i);
+        itsDataVectors[i] = new Vector<bool>;
         break;
       }
       case TpUChar: {
@@ -283,24 +283,24 @@ void ColumnsIndex::readData() {
   TableLocker locker(itsTable, FileLocker::Read);
   rownr_t nrrow = itsTable.nrow();
   if (nrrow != itsNrrow) {
-    itsColumnChanged.set(True);
-    itsChanged = True;
+    itsColumnChanged.set(true);
+    itsChanged = true;
     itsNrrow = nrrow;
   }
   if (!itsChanged) {
     return;
   }
   Sort sort;
-  Bool deleteIt;
+  bool deleteIt;
   const RecordDesc& desc = itsLowerKeyPtr->description();
   uInt nrfield = itsDataTypes.nelements();
   for (uInt i = 0; i < nrfield; i++) {
     const String& name = desc.name(i);
     switch (itsDataTypes[i]) {
       case TpBool: {
-        Vector<Bool>* vecptr = (Vector<Bool>*)itsDataVectors[i];
+        Vector<bool>* vecptr = (Vector<bool>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Bool>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<bool>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -309,7 +309,7 @@ void ColumnsIndex::readData() {
       case TpUChar: {
         Vector<uChar>* vecptr = (Vector<uChar>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<uChar>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<uChar>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -318,7 +318,7 @@ void ColumnsIndex::readData() {
       case TpShort: {
         Vector<Short>* vecptr = (Vector<Short>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Short>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<Short>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -327,7 +327,7 @@ void ColumnsIndex::readData() {
       case TpInt: {
         Vector<Int>* vecptr = (Vector<Int>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Int>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<Int>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -336,7 +336,7 @@ void ColumnsIndex::readData() {
       case TpUInt: {
         Vector<uInt>* vecptr = (Vector<uInt>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<uInt>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<uInt>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -345,7 +345,7 @@ void ColumnsIndex::readData() {
       case TpInt64: {
         Vector<Int64>* vecptr = (Vector<Int64>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Int64>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<Int64>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -354,7 +354,7 @@ void ColumnsIndex::readData() {
       case TpFloat: {
         Vector<Float>* vecptr = (Vector<Float>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Float>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<Float>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -363,7 +363,7 @@ void ColumnsIndex::readData() {
       case TpDouble: {
         Vector<Double>* vecptr = (Vector<Double>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Double>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<Double>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -372,7 +372,7 @@ void ColumnsIndex::readData() {
       case TpComplex: {
         Vector<Complex>* vecptr = (Vector<Complex>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Complex>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<Complex>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -381,7 +381,7 @@ void ColumnsIndex::readData() {
       case TpDComplex: {
         Vector<DComplex>* vecptr = (Vector<DComplex>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<DComplex>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<DComplex>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -390,7 +390,7 @@ void ColumnsIndex::readData() {
       case TpString: {
         Vector<String>* vecptr = (Vector<String>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<String>(itsTable, name).getColumn(*vecptr, True);
+          ScalarColumn<String>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -399,7 +399,7 @@ void ColumnsIndex::readData() {
       default:
         throw(TableError("ColumnsIndex: unknown data type"));
     }
-    itsColumnChanged[i] = False;
+    itsColumnChanged[i] = false;
   }
   // Sort the data if needed.
   // Otherwise fill the index vector with 0..n.
@@ -414,11 +414,11 @@ void ColumnsIndex::readData() {
   sort.unique(itsUniqueIndex, itsDataIndex);
   itsDataInx = itsDataIndex.getStorage(deleteIt);
   itsUniqueInx = itsUniqueIndex.getStorage(deleteIt);
-  itsChanged = False;
+  itsChanged = false;
 }
 
-rownr_t ColumnsIndex::bsearch(Bool& found, const Block<void*>& fieldPtrs) const {
-  found = False;
+rownr_t ColumnsIndex::bsearch(bool& found, const Block<void*>& fieldPtrs) const {
+  found = false;
   Int64 lower = 0;
   Int64 upper = itsUniqueIndex.nelements();
   upper--;
@@ -432,7 +432,7 @@ rownr_t ColumnsIndex::bsearch(Bool& found, const Block<void*>& fieldPtrs) const 
       middle++;
       lower = middle;  // go to right
     } else {
-      found = True;
+      found = true;
       break;
     }
   }
@@ -445,8 +445,8 @@ Int ColumnsIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& dat
   for (uInt i = 0; i < nfield; i++) {
     switch (dataTypes[i]) {
       case TpBool: {
-        const Bool left = *(*(RecordFieldPtr<Bool>*)(fieldPtrs[i]));
-        const Bool right = ((const Bool*)(dataPtrs[i]))[index];
+        const bool left = *(*(RecordFieldPtr<bool>*)(fieldPtrs[i]));
+        const bool right = ((const bool*)(dataPtrs[i]))[index];
         if (left < right) {
           return -1;
         } else if (left > right) {
@@ -561,12 +561,12 @@ Int ColumnsIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& dat
   return 0;
 }
 
-rownr_t ColumnsIndex::getRowNumber(Bool& found, const Record& key) {
+rownr_t ColumnsIndex::getRowNumber(bool& found, const Record& key) {
   copyKey(itsLowerFields, key);
   return getRowNumber(found);
 }
 
-rownr_t ColumnsIndex::getRowNumber(Bool& found) {
+rownr_t ColumnsIndex::getRowNumber(bool& found) {
   if (!isUnique()) {
     throw(
         TableError("ColumnsIndex::getRowNumber only possible "
@@ -589,7 +589,7 @@ RowNumbers ColumnsIndex::getRowNumbers(const Record& key) {
 RowNumbers ColumnsIndex::getRowNumbers() {
   // Read the data (if needed).
   readData();
-  Bool found;
+  bool found;
   rownr_t inx = bsearch(found, itsLowerFields);
   RowNumbers rows;
   if (found) {
@@ -599,16 +599,16 @@ RowNumbers ColumnsIndex::getRowNumbers() {
 }
 
 RowNumbers ColumnsIndex::getRowNumbers(const Record& lowerKey, const Record& upperKey,
-                                       Bool lowerInclusive, Bool upperInclusive) {
+                                       bool lowerInclusive, bool upperInclusive) {
   copyKey(itsLowerFields, lowerKey);
   copyKey(itsUpperFields, upperKey);
   return getRowNumbers(lowerInclusive, upperInclusive);
 }
 
-RowNumbers ColumnsIndex::getRowNumbers(Bool lowerInclusive, Bool upperInclusive) {
+RowNumbers ColumnsIndex::getRowNumbers(bool lowerInclusive, bool upperInclusive) {
   // Read the data (if needed).
   readData();
-  Bool found;
+  bool found;
   // Try to find the lower key. If not found, bsearch is giving the
   // index of the next higher key.
   // So increment the start index if found and is not to be included.
@@ -639,15 +639,15 @@ void ColumnsIndex::fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t 
   }
   rownr_t nr = end - start;
   rows.resize(nr);
-  Bool deleteIt;
+  bool deleteIt;
   rownr_t* rowStorage = rows.getStorage(deleteIt);
   objcopy(rowStorage, itsDataInx + start, nr);
   rows.putStorage(rowStorage, deleteIt);
 }
 
 void ColumnsIndex::setChanged() {
-  itsColumnChanged.set(True);
-  itsChanged = True;
+  itsColumnChanged.set(true);
+  itsChanged = true;
 }
 
 void ColumnsIndex::setChanged(const String& columnName) {
@@ -655,8 +655,8 @@ void ColumnsIndex::setChanged(const String& columnName) {
   uInt nrfield = itsColumnChanged.nelements();
   for (uInt i = 0; i < nrfield; i++) {
     if (desc.name(i) == columnName) {
-      itsColumnChanged[i] = True;
-      itsChanged = True;
+      itsColumnChanged[i] = true;
+      itsChanged = true;
       break;
     }
   }
@@ -665,7 +665,7 @@ void ColumnsIndex::setChanged(const String& columnName) {
 void ColumnsIndex::copyKeyField(void* fieldPtr, int dtype, const Record& key) {
   switch (dtype) {
     case TpBool:
-      copyKeyField(*(RecordFieldPtr<Bool>*)(fieldPtr), key);
+      copyKeyField(*(RecordFieldPtr<bool>*)(fieldPtr), key);
       break;
     case TpUChar:
       copyKeyField(*(RecordFieldPtr<uChar>*)(fieldPtr), key);

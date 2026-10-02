@@ -159,7 +159,7 @@ class ROTableRow {
   //  In that case it is better to use the constructor which
   //  includes selected columns only.
   // </note>
-  explicit ROTableRow(const Table& table, Bool storedColumnsOnly = True);
+  explicit ROTableRow(const Table& table, bool storedColumnsOnly = true);
 
   // Create a ROTableRow object for the given Table.
   // Its TableRecord will contain all columns given in the Vector.
@@ -167,7 +167,7 @@ class ROTableRow {
   // <br>
   // When exclude=True, all columns except the given columns are taken.
   // In that case an unknown name does not result in an exception.
-  ROTableRow(const Table& table, const Vector<String>& columnNames, Bool exclude = False);
+  ROTableRow(const Table& table, const Vector<String>& columnNames, bool exclude = false);
 
   // Copy constructor (copy semantics).
   ROTableRow(const ROTableRow&);
@@ -178,7 +178,7 @@ class ROTableRow {
   ROTableRow& operator=(const ROTableRow&);
 
   // Test if a Table is attached to this object.
-  Bool isAttached() const;
+  bool isAttached() const;
 
   // Get the Table used for this object.
   const Table& table() const;
@@ -200,13 +200,13 @@ class ROTableRow {
   // will be read unless the alwaysRead flag is set to True.
   // <br>The TableRecord& returned is the same one as returned by the
   // record() function. So one can ignore the return value of get().
-  const TableRecord& get(rownr_t rownr, Bool alwaysRead = False) const;
+  const TableRecord& get(rownr_t rownr, bool alwaysRead = false) const;
 
   // Get the block telling for each column if its value in the row
   // was indefined in the table.
   // Note that array values might be undefined in the table, but in
   // the record they will be represented as empty arrays.
-  const Block<Bool>& getDefined() const;
+  const Block<bool>& getDefined() const;
 
  protected:
   // Copy that object to this object.
@@ -218,12 +218,12 @@ class ROTableRow {
   // for all columns in the table.
   // The writable flag determines if writable or readonly
   // TableColumn objects will be created.
-  void create(const Table& table, Bool storedColumnsOnly, Bool writable);
+  void create(const Table& table, bool storedColumnsOnly, bool writable);
 
   // Create the record, column, and field objects for the given columns.
   // The writable flag determines if writable or readonly
   // TableColumn objects will be created.
-  void create(const Table& table, const Vector<String>& columnNames, Bool exclude, Bool writable);
+  void create(const Table& table, const Vector<String>& columnNames, bool exclude, bool writable);
 
   // Put the values found in the internal TableRecord at the given row.
   // This is a helper function for class TableRow.
@@ -251,26 +251,26 @@ class ROTableRow {
   // # These are used for fast access to the record.
   Block<void*> itsFields;
   // # Block to tell if the corresponding column value is defined.
-  mutable Block<Bool> itsDefined;
+  mutable Block<bool> itsDefined;
   // # A cache for itsRecord.nfields()
   uInt itsNrused;
   // # The last rownr read (-1 is nothing read yet).
   mutable Int64 itsLastRow;
   // # A switch to indicate that the last row has to be reread.
   // # This is the case when it has been put after being read.
-  mutable Bool itsReread;
+  mutable bool itsReread;
 
  private:
   // Initialize the object.
   void init();
 
   // Make a RecordDesc from the table with some excluded column names.
-  void makeDescExclude(RecordDesc& description, const Vector<String>& columnNames, Bool writable);
+  void makeDescExclude(RecordDesc& description, const Vector<String>& columnNames, bool writable);
 
   // Add a column to the record.
   // When skipOther is True, columns with a non-standard data type
   // will be silently skipped.
-  void addColumnToDesc(RecordDesc& description, const TableColumn& column, Bool skipOther);
+  void addColumnToDesc(RecordDesc& description, const TableColumn& column, bool skipOther);
 
   // Make the required objects. These are the TableRecord and for
   // each column a TableColumn and RecordFieldPtr.
@@ -278,6 +278,9 @@ class ROTableRow {
 
   // Delete all objects.
   void deleteObjects();
+
+  template <typename Type>
+  void PutFieldArray(rownr_t rownr, const TableRecord& record, Int whichColumn, Int whichField);
 };
 
 // <summary>
@@ -401,7 +404,7 @@ class TableRow : public ROTableRow {
   //  In that case it is better to use the next constructor which
   //  works selectively.
   // </note>
-  explicit TableRow(const Table& table, Bool storedColumnsOnly = True);
+  explicit TableRow(const Table& table, bool storedColumnsOnly = true);
 
   // Create a TableRow object for the given Table.
   // Its TableRecord will contain all columns given in the Vector.
@@ -411,7 +414,7 @@ class TableRow : public ROTableRow {
   // When exclude=True, all columns except the given columns are taken.
   // In that case an unknown name does not result in an exception
   // and non-writable columns are simply skipped.
-  TableRow(const Table& table, const Vector<String>& columnNames, Bool exclude = False);
+  TableRow(const Table& table, const Vector<String>& columnNames, bool exclude = false);
 
   // Copy constructor (copy semantics).
   TableRow(const TableRow&);
@@ -458,9 +461,9 @@ class TableRow : public ROTableRow {
   // If not, nothing will be written.
   // It is meant for array values which might be undefined in a table.
   // <group>
-  void put(rownr_t rownr, const TableRecord& record, Bool checkConformance = True);
-  void put(rownr_t rownr, const TableRecord& record, const Block<Bool>& valuesDefined,
-           Bool checkConformance = True);
+  void put(rownr_t rownr, const TableRecord& record, bool checkConformance = true);
+  void put(rownr_t rownr, const TableRecord& record, const Block<bool>& valuesDefined,
+           bool checkConformance = true);
   // </group>
 
   // Put the values found in the TableRecord. Only fields with a matching
@@ -474,14 +477,14 @@ class TableRow : public ROTableRow {
 
  private:
   // Check if the names of the given record match this row.
-  Bool namesConform(const TableRecord& that) const;
+  bool namesConform(const TableRecord& that) const;
 };
 
-inline Bool ROTableRow::isAttached() const { return (itsRecord != 0); }
+inline bool ROTableRow::isAttached() const { return (itsRecord != 0); }
 inline const Table& ROTableRow::table() const { return itsTable; }
 inline Int64 ROTableRow::rowNumber() const { return itsLastRow; }
 inline const TableRecord& ROTableRow::record() const { return *itsRecord; }
-inline const Block<Bool>& ROTableRow::getDefined() const { return itsDefined; }
+inline const Block<bool>& ROTableRow::getDefined() const { return itsDefined; }
 inline TableRecord& TableRow::record() { return *itsRecord; }
 inline void TableRow::put(rownr_t rownr) { putRecord(rownr); }
 

@@ -35,10 +35,10 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableParseUpdate::TableParseUpdate(const String& columnName, const String& columnNameMask,
-                                   const TableExprNode& node, Bool checkAggr)
+                                   const TableExprNode& node, bool checkAggr)
     : columnName_p(columnName),
       columnNameMask_p(columnNameMask),
-      maskFirst_p(False),
+      maskFirst_p(false),
       indexPtr_p(0),
       node_p(node) {
   if (checkAggr) {
@@ -51,7 +51,7 @@ TableParseUpdate::TableParseUpdate(const String& columnName, const String& colum
                                    const TaQLStyle& style)
     : columnName_p(columnName),
       columnNameMask_p(columnNameMask),
-      maskFirst_p(False),
+      maskFirst_p(false),
       indexPtr_p(0),
       node_p(node) {
   TableParseGroupby::checkAggrFuncs(node);
@@ -62,7 +62,7 @@ TableParseUpdate::TableParseUpdate(const String& columnName, const String& colum
           "No mask column name can be given if the update "
           "data column is masked");
     }
-    maskFirst_p = True;
+    maskFirst_p = true;
   }
 }
 
@@ -72,7 +72,7 @@ TableParseUpdate::TableParseUpdate(const String& columnName, const String& colum
                                    const TaQLStyle& style)
     : columnName_p(columnName),
       columnNameMask_p(columnNameMask),
-      maskFirst_p(False),
+      maskFirst_p(false),
       indexPtr_p(0),
       node_p(node) {
   // The grammar does not allow a column mask name, but you can never tell.
@@ -165,7 +165,7 @@ void TableParseUpdate::updateSlice(rownr_t row, const TableExprId& rowid, const 
 template <typename TCOL, typename TNODE>
 void TableParseUpdate::copyMaskedValue(rownr_t row, ArrayColumn<TCOL>& acol,
                                        const Slicer* slicerPtr, const TNODE* val, size_t incr,
-                                       const Array<Bool>& mask) {
+                                       const Array<bool>& mask) {
   // Get the array from the table.
   Array<TCOL> res(mask.shape());
   if (slicerPtr) {
@@ -175,7 +175,7 @@ void TableParseUpdate::copyMaskedValue(rownr_t row, ArrayColumn<TCOL>& acol,
   }
   // Copy values where masked.
   typename Array<TCOL>::iterator ito = res.begin();
-  Array<Bool>::const_iterator imask = mask.begin();
+  Array<bool>::const_iterator imask = mask.begin();
   size_t n = res.size();
   for (size_t i = 0; i < n; ++i) {
     if (*imask) {
@@ -194,10 +194,10 @@ void TableParseUpdate::copyMaskedValue(rownr_t row, ArrayColumn<TCOL>& acol,
 }
 
 template <typename TCOL, typename TNODE>
-void TableParseUpdate::updateValue(rownr_t row, const TableExprId& rowid, Bool isScalarCol,
-                                   const TableExprNode& node, const Array<Bool>& mask,
+void TableParseUpdate::updateValue(rownr_t row, const TableExprId& rowid, bool isScalarCol,
+                                   const TableExprNode& node, const Array<bool>& mask,
                                    TableColumn& col, const Slicer* slicerPtr,
-                                   ArrayColumn<Bool>& maskCol) {
+                                   ArrayColumn<bool>& maskCol) {
   if (isScalarCol) {
     updateScalar<TCOL, TNODE>(row, rowid, node, col);
   } else {
@@ -214,12 +214,12 @@ void TableParseUpdate::updateValue(rownr_t row, const TableExprId& rowid, Bool i
       if (slicerPtr) {
         updateSlice<TCOL, TNODE>(row, rowid, node, aval.array(), *slicerPtr, acol);
         if (!maskCol.isNull()) {
-          updateSlice<Bool, Bool>(row, rowid, node, aval.mask(), *slicerPtr, maskCol);
+          updateSlice<bool, bool>(row, rowid, node, aval.mask(), *slicerPtr, maskCol);
         }
       } else {
         updateArray<TCOL, TNODE>(row, rowid, node, aval.array(), acol);
         if (!maskCol.isNull()) {
-          updateArray<Bool, Bool>(row, rowid, node, aval.mask(), maskCol);
+          updateArray<bool, bool>(row, rowid, node, aval.mask(), maskCol);
         }
       }
     } else {
@@ -228,12 +228,12 @@ void TableParseUpdate::updateValue(rownr_t row, const TableExprId& rowid, Bool i
       if (acol.isDefined(row)) {
         IPosition shapeCol = acol.shape(row);
         // Check shapes, get possible slice from mask.
-        Array<Bool> smask(makeMaskSlice(mask, shapeCol, slicerPtr));
+        Array<bool> smask(makeMaskSlice(mask, shapeCol, slicerPtr));
         // Get the expression data (scalar or array).
         TNODE sval;
         const TNODE* ptr = &sval;
         size_t incr = 0;
-        Bool deleteIt = False;
+        bool deleteIt = false;
         if (node.isScalar()) {
           node.get(rowid, sval);
         } else {
@@ -250,7 +250,7 @@ void TableParseUpdate::updateValue(rownr_t row, const TableExprId& rowid, Bool i
         if (!node.isScalar()) {
           aval.array().freeStorage(ptr, deleteIt);
           if (!maskCol.isNull()) {
-            const Bool* bptr = aval.mask().getStorage(deleteIt);
+            const bool* bptr = aval.mask().getStorage(deleteIt);
             copyMaskedValue(row, maskCol, slicerPtr, bptr, 1, smask);
             aval.mask().freeStorage(bptr, deleteIt);
           }
@@ -260,7 +260,7 @@ void TableParseUpdate::updateValue(rownr_t row, const TableExprId& rowid, Bool i
   }
 }
 
-Array<Bool> TableParseUpdate::makeMaskSlice(const Array<Bool>& mask, const IPosition& shapeCol,
+Array<bool> TableParseUpdate::makeMaskSlice(const Array<bool>& mask, const IPosition& shapeCol,
                                             const Slicer* slicerPtr) {
   if (!slicerPtr || maskFirst_p) {
     if (!mask.shape().isEqual(shapeCol)) {
@@ -287,7 +287,7 @@ Array<Bool> TableParseUpdate::makeMaskSlice(const Array<Bool>& mask, const IPosi
   return mask;
 }
 
-void TableParseUpdate::checkMaskColumn(Bool hasMask, const ArrayColumn<Bool>& maskCol,
+void TableParseUpdate::checkMaskColumn(bool hasMask, const ArrayColumn<bool>& maskCol,
                                        const TableColumn& col) {
   // If a mask column is given, the expression must have a mask.
   // But if the expression has a mask, a mask column is not needed.
@@ -303,7 +303,7 @@ void TableParseUpdate::checkMaskColumn(Bool hasMask, const ArrayColumn<Bool>& ma
   }
 }
 
-void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<Bool>& maskCol, rownr_t row,
+void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<bool>& maskCol, rownr_t row,
                                     const TableExprId& rowid) {
   // Get possible subscripts.
   const Slicer* slicerPtr = 0;
@@ -311,7 +311,7 @@ void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<Bool>& maskCol
     slicerPtr = &(indexPtr_p->getSlicer(rowid));
   }
   // Evaluate a possible mask.
-  MArray<Bool> mask;
+  MArray<bool> mask;
   if (!mask_p.isNull()) {
     mask_p.get(rowid, mask);
   }
@@ -320,12 +320,12 @@ void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<Bool>& maskCol
   // The node data type should be convertible to the column data type.
   // The updateValue function does the actual work.
   // We simply switch on the types.
-  Bool isScalarCol = col.columnDesc().isScalar();
+  bool isScalarCol = col.columnDesc().isScalar();
   switch (node_p.getNodeRep()->dataType()) {
     case TableExprNodeRep::NTBool:
       switch (col.columnDesc().dataType()) {
         case TpBool:
-          updateValue<Bool, Bool>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
+          updateValue<bool, bool>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
                                   maskCol);
           break;
         default:
@@ -472,14 +472,14 @@ void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<Bool>& maskCol
 void TableParseUpdate::check(const Table& origTable, const Table& updTable) const {
   // Check if the correct table is used in the update and index expression.
   // A constant expression can be given.
-  if (!node_p.checkTableSize(origTable, True)) {
+  if (!node_p.checkTableSize(origTable, true)) {
     throw TableInvExpr(
         "Table(s) with incorrect size used in the "
         "UPDATE expr of column " +
         columnName_p + " (mismatches first table)");
   }
   if (indexPtr_p != 0) {
-    if (!indexNode_p.checkTableSize(updTable, True)) {
+    if (!indexNode_p.checkTableSize(updTable, true)) {
       throw TableInvExpr(
           "Table(s) with incorrect size used in the "
           "index expr in UPDATE of column " +
@@ -499,7 +499,7 @@ void TableParseUpdate::check(const Table& origTable, const Table& updTable) cons
                        updTable.tableName());
   }
   const ColumnDesc& coldesc = tabdesc[columnName_p];
-  Bool isScalar = coldesc.isScalar();
+  bool isScalar = coldesc.isScalar();
   if (!columnNameMask_p.empty()) {
     if (!tabdesc.isColumn(columnNameMask_p)) {
       throw TableInvExpr("Update column " + columnNameMask_p + " does not exist in table " +
@@ -527,7 +527,7 @@ void TableParseUpdate::check(const Table& origTable, const Table& updTable) cons
           columnName_p);
     }
     if (indexPtr_p->isSingle()) {
-      isScalar = True;
+      isScalar = true;
     }
   }
   // Check if the value type matches.

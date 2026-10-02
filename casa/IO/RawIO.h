@@ -85,7 +85,7 @@ class RawIO : public TypeIO {
   // Write the values to the ByteIO object.
   // Bool, complex and String values are handled by the base class.
   // <group>
-  virtual size_t write(size_t nvalues, const Bool* value);
+  virtual size_t write(size_t nvalues, const bool* value);
   virtual size_t write(size_t nvalues, const Char* data);
   virtual size_t write(size_t nvalues, const uChar* data);
   virtual size_t write(size_t nvalues, const Short* data);
@@ -104,7 +104,7 @@ class RawIO : public TypeIO {
   // Read the values from the ByteIO object.
   // Bool, complex and String values are handled by the base class.
   // <group>
-  virtual size_t read(size_t nvalues, Bool* value);
+  virtual size_t read(size_t nvalues, bool* value);
   virtual size_t read(size_t nvalues, Char* data);
   virtual size_t read(size_t nvalues, uChar* data);
   virtual size_t read(size_t nvalues, Short* data);

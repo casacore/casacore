@@ -168,17 +168,17 @@ class InterpolateArray1D {
   // will always be marked as flagged.
   // TODO: implement flags for cubic and spline (presently input flags
   // are copied to output).
-  static void interpolate(Array<Range>& yout, Array<Bool>& youtFlags, const Vector<Domain>& xout,
+  static void interpolate(Array<Range>& yout, Array<bool>& youtFlags, const Vector<Domain>& xout,
                           const Vector<Domain>& xin, const Array<Range>& yin,
-                          const Array<Bool>& yinFlags, Int method, Bool goodIsTrue = False,
-                          Bool extrapolate = False);
+                          const Array<bool>& yinFlags, Int method, bool goodIsTrue = false,
+                          bool extrapolate = false);
 
   // deprecated version of previous function using Blocks - no longer needed
   // now that Vector has a fast index operator [].
-  static void interpolate(Array<Range>& yout, Array<Bool>& youtFlags, const Block<Domain>& xout,
+  static void interpolate(Array<Range>& yout, Array<bool>& youtFlags, const Block<Domain>& xout,
                           const Block<Domain>& xin, const Array<Range>& yin,
-                          const Array<Bool>& yinFlags, Int method, Bool goodIsTrue = False,
-                          Bool extrapolate = False);
+                          const Array<bool>& yinFlags, Int method, bool goodIsTrue = false,
+                          bool extrapolate = false);
 
   // Interpolate in the middle axis in 3D array (yin) whose x coordinates along the
   // this dimension are given by xin.
@@ -200,10 +200,10 @@ class InterpolateArray1D {
   // will always be marked as flagged.
   // Currently only linear interpolation method is implemented.
   // TODO: add support for nearest neiborhood, cubic, and cubic spline.
-  static void interpolatey(Cube<Range>& yout, Cube<Bool>& youtFlags, const Vector<Domain>& xout,
+  static void interpolatey(Cube<Range>& yout, Cube<bool>& youtFlags, const Vector<Domain>& xout,
                            const Vector<Domain>& xin, const Cube<Range>& yin,
-                           const Cube<Bool>& yinFlags, Int method, Bool goodIsTrue = False,
-                           Bool extrapolate = False);
+                           const Cube<bool>& yinFlags, Int method, bool goodIsTrue = false,
+                           bool extrapolate = false);
 
  private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
@@ -212,10 +212,10 @@ class InterpolateArray1D {
 
   // Interpolate the y-vectors of length ny from x values xin to xout.
   // Take flagging into account
-  static void interpolatePtr(Block<Range*>& yout, Block<Bool*>& youtFlags, Int ny,
+  static void interpolatePtr(Block<Range*>& yout, Block<bool*>& youtFlags, Int ny,
                              const Vector<Domain>& xout, const Vector<Domain>& xin,
-                             const Block<const Range*>& yin, const Block<const Bool*>& yinFlags,
-                             Int method, Bool goodIsTrue, Bool extrapolate);
+                             const Block<const Range*>& yin, const Block<const bool*>& yinFlags,
+                             Int method, bool goodIsTrue, bool extrapolate);
 
   // Interpolate along yaxis
   static void interpolateyPtr(Block<Range*>& yout, Int na, Int nb, Int nc,
@@ -223,10 +223,10 @@ class InterpolateArray1D {
                               const Block<const Range*>& yin, Int method);
 
   // Take flagging into account
-  static void interpolateyPtr(Block<Range*>& yout, Block<Bool*>& youtFlags, Int na, Int nb, Int nc,
+  static void interpolateyPtr(Block<Range*>& yout, Block<bool*>& youtFlags, Int na, Int nb, Int nc,
                               const Vector<Domain>& xout, const Vector<Domain>& xin,
-                              const Block<const Range*>& yin, const Block<const Bool*>& yinFlags,
-                              Int method, Bool goodIsTrue, Bool extrapolate);
+                              const Block<const Range*>& yin, const Block<const bool*>& yinFlags,
+                              Int method, bool goodIsTrue, bool extrapolate);
 
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.

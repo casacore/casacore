@@ -201,12 +201,12 @@ class UDFMSCal : public UDFBase {
   virtual void setup(const Table&, const TaQLStyle&);
 
   // Get the value.
-  virtual Bool getBool(const TableExprId& id);
+  virtual bool getBool(const TableExprId& id);
   virtual Int64 getInt(const TableExprId& id);
   virtual Double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
-  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);

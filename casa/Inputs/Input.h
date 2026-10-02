@@ -255,22 +255,22 @@ class Input {
 
   // Get the boolean value of the parameter (or FALSE if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Bool getBool(const String& key);
+  bool getBool(const String& key);
 
   // Get the total number of parameters of this program
   Int count() const;
 
   // See if the current debug level is thresholded
-  Bool debug(Int l) const { return (debug_level >= l) ? True : False; }
+  bool debug(Int l) const { return (debug_level >= l) ? true : false; }
 
   // Set a new value for an existing named parameter
   // Returns FALSE if key is an unknown parameter name.
   // <group>
-  Bool put(const String& key, const String& value);
+  bool put(const String& key, const String& value);
 
   // The single argument is of the form `key=value', where key is a valid
   // parameter name.
-  Bool put(const String& keyval);
+  bool put(const String& keyval);
   // </group>
 
   // Set version string for announcements
@@ -286,8 +286,8 @@ class Input {
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
   // of the Vector<Bool> results in an exception being thrown.
-  static Vector<Bool> makeMaskFromRanges(const String& ranges, uInt length,
-                                         Bool oneRelative = False);
+  static Vector<bool> makeMaskFromRanges(const String& ranges, uInt length,
+                                         bool oneRelative = false);
 
  private:
   // Get the index of the named parameter (-1 if unknown key).
@@ -315,10 +315,10 @@ class Input {
   String version_id;
 
   // parameter creation allowed?
-  Bool is_closed;
+  bool is_closed;
 
   // ask user for parameter value?
-  Bool do_prompt;
+  bool do_prompt;
 
   // threshold value for debug output
   Int debug_level;

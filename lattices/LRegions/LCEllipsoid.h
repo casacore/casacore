@@ -148,7 +148,7 @@ class LCEllipsoid : public LCRegionFixed {
 
  private:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Fill the itsCenter vector from an IPosition.
   void fillCenter(const IPosition& center);
@@ -173,7 +173,7 @@ class LCEllipsoid : public LCRegionFixed {
   // for 2-D case only
   Float _theta;
   // is center inside the lattice?
-  Bool _centerIsInside;
+  bool _centerIsInside;
 };
 
 inline const Vector<Float>& LCEllipsoid::center() const { return itsCenter; }

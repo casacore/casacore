@@ -64,7 +64,7 @@ class GetColumnSlices : public BaseSlicesFunctor {
  public:
   GetColumnSlices(const ArrayColumnBase& col) : itsCol(col) {}
   virtual void apply(const Slicer& slicer, ArrayBase& arr) {
-    itsCol.acbGetColumn(slicer, arr, False);
+    itsCol.acbGetColumn(slicer, arr, false);
   }
 
  private:

@@ -103,10 +103,10 @@ class MatrixSolver {
   void setX(const Vector<FType>& X);
 
   // Solve for the X vector.
-  virtual Bool solve();
+  virtual bool solve();
 
   // Is the current solution good enough?
-  Bool accurateSolution();
+  bool accurateSolution();
 
   // Return residual vector B-AX
   const Vector<FType>& getResidual();
@@ -133,10 +133,10 @@ class MatrixSolver {
   FType Gain();
 
   // Set status of solution
-  void setSolved(Bool s);
+  void setSolved(bool s);
 
   // Return status of solution
-  Bool Solved();
+  bool Solved();
 
   // Return norm of solution i.e. ||B-AX||
   FType getNorm();
@@ -171,7 +171,7 @@ class MatrixSolver {
   uInt MaxIterations;
 
   // Has a solution been found?
-  Bool solved;
+  bool solved;
 
   // Gain
   FType gain;
@@ -189,9 +189,9 @@ inline void MatrixSolver::setGain(FType g) { gain = g; }
 
 inline FType MatrixSolver::Gain() { return gain; }
 
-inline void MatrixSolver::setSolved(Bool s) { solved = s; }
+inline void MatrixSolver::setSolved(bool s) { solved = s; }
 
-inline Bool MatrixSolver::Solved() { return solved; }
+inline bool MatrixSolver::Solved() { return solved; }
 
 inline FType MatrixSolver::getNorm() { return RNorm; }
 

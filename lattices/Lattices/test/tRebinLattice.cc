@@ -191,7 +191,7 @@ void doit1(const IPosition& shapeIn, const IPosition& factors) {
   TiledShape shape2(shapeIn);
   TempLattice<Float> inLat(shape2);
   inLat.set(1.0);
-  SubLattice<Float> inML(inLat, True);
+  SubLattice<Float> inML(inLat, true);
 
   // Unmasked input
 
@@ -202,20 +202,20 @@ void doit1(const IPosition& shapeIn, const IPosition& factors) {
     //
     const Array<Float>& data = reBinLat.get();
     Float val(1.0);
-    Bool ok = ::allNear(data, val, 1.0e-6);
+    bool ok = ::allNear(data, val, 1.0e-6);
     AlwaysAssert(ok, AipsError);
     //
-    const Array<Bool>& mask = reBinLat.getMask();
-    ok = ::allEQ(mask, True);
+    const Array<bool>& mask = reBinLat.getMask();
+    ok = ::allEQ(mask, true);
     AlwaysAssert(ok, AipsError);
   }
 
   // Masked input
 
   {
-    TempLattice<Bool> inMask(shape2);
-    inMask.set(True);
-    inML.setPixelMask(inMask, True);
+    TempLattice<bool> inMask(shape2);
+    inMask.set(true);
+    inML.setPixelMask(inMask, true);
 
     // Make rebinner
 
@@ -223,11 +223,11 @@ void doit1(const IPosition& shapeIn, const IPosition& factors) {
     //
     const Array<Float>& data = reBinLat.get();
     Float val(1.0);
-    Bool ok = ::allNear(data, val, 1.0e-6);
+    bool ok = ::allNear(data, val, 1.0e-6);
     AlwaysAssert(ok, AipsError);
     //
-    const Array<Bool>& mask = reBinLat.getMask();
-    ok = ::allEQ(mask, True);
+    const Array<bool>& mask = reBinLat.getMask();
+    ok = ::allEQ(mask, true);
     AlwaysAssert(ok, AipsError);
   }
 }
@@ -255,11 +255,11 @@ void doit2() {
   TiledShape shape2(shapeIn);
   TempLattice<Float> inLat(shape2);
   inLat.put(dataIn);
-  TempLattice<Bool> inMask(shape2);
-  inMask.set(True);
+  TempLattice<bool> inMask(shape2);
+  inMask.set(true);
   //
-  SubLattice<Float> inML(inLat, True);
-  inML.setPixelMask(inMask, True);
+  SubLattice<Float> inML(inLat, true);
+  inML.setPixelMask(inMask, true);
   //
   cerr << endl << endl;
   cerr << "factors = " << factors << endl;
@@ -270,11 +270,11 @@ void doit2() {
   RebinLattice<Float> reBinLat(inML, factors);
   //
   const Array<Float>& dataOut2 = reBinLat.get();
-  Bool ok = ::allNear(dataOut, dataOut2, 1.0e-6);
+  bool ok = ::allNear(dataOut, dataOut2, 1.0e-6);
   AlwaysAssert(ok, AipsError);
   //
-  const Array<Bool>& maskOut2 = reBinLat.getMask();
-  ok = ::allEQ(maskOut2, True);
+  const Array<bool>& maskOut2 = reBinLat.getMask();
+  ok = ::allEQ(maskOut2, true);
   AlwaysAssert(ok, AipsError);
   /*
      cerr << "Data = " << endl;
@@ -306,11 +306,11 @@ void doit3() {
   TiledShape shape2(shapeIn);
   TempLattice<Float> inLat(shape2);
   inLat.put(dataIn);
-  TempLattice<Bool> inMask(shape2);
-  inMask.set(True);
+  TempLattice<bool> inMask(shape2);
+  inMask.set(true);
   //
-  SubLattice<Float> inML(inLat, True);
-  inML.setPixelMask(inMask, True);
+  SubLattice<Float> inML(inLat, true);
+  inML.setPixelMask(inMask, true);
 
   // Make rebinner
 

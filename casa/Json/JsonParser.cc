@@ -84,7 +84,7 @@ JsonKVMap JsonParser::parseFile(const String& fileName) {
 
 JsonKVMap JsonParser::parse(const String& command) {
   // Return an empty map if the command is empty.
-  Bool empty = true;
+  bool empty = true;
   for (size_t i = 0; i < command.size(); i++) {
     if (command[i] != ' ') {
       empty = false;
@@ -145,7 +145,7 @@ String JsonParser::removeEscapes(const String& in) {
             break;
           case 'u': {
             // unicode repr of control character
-            Bool ok = False;
+            bool ok = false;
             if (i < leng + 4) {
               String hex("0X" + in.substr(i + 1, 4));
               char* endPtr;
@@ -153,7 +153,7 @@ String JsonParser::removeEscapes(const String& in) {
               if (endPtr == hex.c_str() + hex.size() && val < 128) {
                 out += char(val);
                 i += 4;
-                ok = True;
+                ok = true;
               }
             }
             if (!ok) {

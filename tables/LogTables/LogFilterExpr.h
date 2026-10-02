@@ -60,7 +60,7 @@ class LogFilterExpr : public TableExprData {
   LogFilterExpr& operator=(const LogFilterExpr&);
 
   // Does this message match the expression?
-  Bool matches(const LogMessage& message);
+  bool matches(const LogMessage& message);
 
   // Get the data.
   // <group>

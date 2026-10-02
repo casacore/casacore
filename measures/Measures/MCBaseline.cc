@@ -88,7 +88,7 @@ void MCBaseline::clearConvert() {}
 
 // # Conversion routines
 void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
     case J2000_JMEAN:
@@ -195,43 +195,43 @@ void MCBaseline::doConvert(MVBaseline &in, MRBase &inref, MRBase &outref, const 
 
       case J2000_B1950:
         in.adjust(g2);
-        measMath.applyJ2000toB1950(in, False);
+        measMath.applyJ2000toB1950(in, false);
         in.readjust(g2);
         break;
 
       case J2000_B1950_VLA:
         in.adjust(g2);
-        measMath.applyJ2000toB1950_VLA(in, False);
+        measMath.applyJ2000toB1950_VLA(in, false);
         in.readjust(g2);
         break;
 
       case B1950_J2000:
         in.adjust(g2);
-        measMath.deapplyJ2000toB1950(in, False);
+        measMath.deapplyJ2000toB1950(in, false);
         in.readjust(g2);
         break;
 
       case B1950_VLA_J2000:
         in.adjust(g2);
-        measMath.deapplyJ2000toB1950_VLA(in, False);
+        measMath.deapplyJ2000toB1950_VLA(in, false);
         in.readjust(g2);
         break;
 
       case B1950_B1950_VLA:
         in.adjust(g2);
-        measMath.deapplyJ2000toB1950(in, False);
+        measMath.deapplyJ2000toB1950(in, false);
         in.readjust(g2);
         in.adjust(g2);
-        measMath.applyJ2000toB1950_VLA(in, False);
+        measMath.applyJ2000toB1950_VLA(in, false);
         in.readjust(g2);
         break;
 
       case B1950_VLA_B1950:
         in.adjust(g2);
-        measMath.deapplyJ2000toB1950_VLA(in, False);
+        measMath.deapplyJ2000toB1950_VLA(in, false);
         in.readjust(g2);
         in.adjust(g2);
-        measMath.applyJ2000toB1950(in, False);
+        measMath.applyJ2000toB1950(in, false);
         in.readjust(g2);
         break;
 
@@ -269,13 +269,13 @@ void MCBaseline::doConvert(MVBaseline &in, MRBase &inref, MRBase &outref, const 
 
       case J2000_JNAT:
         in.adjust(g2);
-        measMath.applySolarPos(in, False);
+        measMath.applySolarPos(in, false);
         in.readjust(g2);
         break;
 
       case JNAT_APP:
         in.adjust(g2);
-        measMath.applyAberration(in, False);
+        measMath.applyAberration(in, false);
         in.readjust(g2);
         measMath.applyPrecNutat(in);
         break;
@@ -283,33 +283,33 @@ void MCBaseline::doConvert(MVBaseline &in, MRBase &inref, MRBase &outref, const 
       case APP_JNAT:
         measMath.deapplyPrecNutat(in);
         in.adjust(g2);
-        measMath.deapplyAberration(in, False);
+        measMath.deapplyAberration(in, false);
         in.readjust(g2);
         break;
 
       case JNAT_J2000:
         in.adjust(g2);
-        measMath.deapplySolarPos(in, False);
+        measMath.deapplySolarPos(in, false);
         in.readjust(g2);
         break;
 
       case B1950_APP:
         in.adjust(g2);
-        measMath.applyPrecNutatB1950(in, False);
-        measMath.applyAberrationB1950(in, False);
+        measMath.applyPrecNutatB1950(in, false);
+        measMath.applyAberrationB1950(in, false);
         in.readjust(g2);
         break;
 
       case APP_B1950:
         in.adjust(g2);
-        measMath.deapplyAberrationB1950(in, False);
-        measMath.deapplyPrecNutatB1950(in, False);
+        measMath.deapplyAberrationB1950(in, false);
+        measMath.deapplyPrecNutatB1950(in, false);
         in.readjust(g2);
         break;
 
       case TOPO_HADEC:
         in.adjust(g2);
-        measMath.applyTOPOtoHADEC(in, False);
+        measMath.applyTOPOtoHADEC(in, false);
         in.readjust(g2);
         break;
 
@@ -331,19 +331,19 @@ void MCBaseline::doConvert(MVBaseline &in, MRBase &inref, MRBase &outref, const 
 
       case HADEC_TOPO:
         in.adjust(g2);
-        measMath.deapplyTOPOtoHADEC(in, False);
+        measMath.deapplyTOPOtoHADEC(in, false);
         in.readjust(g2);
         break;
 
       case APP_TOPO:
         in.adjust(g2);
-        measMath.applyAPPtoTOPO(in, lengthP, False);
+        measMath.applyAPPtoTOPO(in, lengthP, false);
         in.readjust(g2);
         break;
 
       case TOPO_APP:
         in.adjust(g2);
-        measMath.deapplyAPPtoTOPO(in, lengthP, False);
+        measMath.deapplyAPPtoTOPO(in, lengthP, false);
         in.readjust(g2);
         break;
 

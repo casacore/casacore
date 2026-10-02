@@ -324,22 +324,22 @@ void testLogSink() {
                    LogMessage::NORMAL);
 
   // void postThenThrow(const LogMessage &message);
-  Bool caught = False;
+  bool caught = false;
   try {
     sink5.postThenThrow(message, AipsError());
   } catch (std::exception& x) {
-    caught = True;
+    caught = true;
     AlwaysAssertExit(String(x.what()).find("test") != std::string::npos);
     AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 7);
   }
   AlwaysAssertExit(caught);
 
   // static void postGloballyThenThrow(const LogMessage &message);
-  caught = False;
+  caught = false;
   try {
     sink5.postGloballyThenThrow(message);
   } catch (std::exception& x) {
-    caught = True;
+    caught = true;
     AlwaysAssertExit(String(x.what()).find("test") != std::string::npos);
     AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 8);
   }
@@ -414,12 +414,12 @@ void testLogIO() {
     ostringstream ostr;
     LogSink sls(LogMessage::NORMAL, &ostr);
     LogIO os(sls);
-    Bool caught = False;
+    bool caught = false;
     try {
       //     void postThenThrow();
       os << "This SHOULD post" << LogIO::EXCEPTION;
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssert(caught, AipsError);
     String s(ostr.str());
@@ -430,13 +430,13 @@ void testLogIO() {
     ostringstream ostr;
     LogSink sls(LogMessage::NORMAL, &ostr);
     LogIO os(sls);
-    Bool caught = False;
+    bool caught = false;
     try {
       //     void postThenThrow();
       os << "This SHOULD post";
       os.postThenThrow(DuplError("duplicate"));
     } catch (DuplError& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssert(caught, AipsError);
     String s(ostr.str());
@@ -472,7 +472,7 @@ void testLogAny(LogSink& sink) {
 
 void testLogMemory() {
   LogFilter tmp;
-  LogSink sink(tmp, False);
+  LogSink sink(tmp, false);
   testLogAny(sink);
 }
 

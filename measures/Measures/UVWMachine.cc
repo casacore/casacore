@@ -30,8 +30,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Constructors
-UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in, Bool EW, Bool project)
-    : ew_p(EW), proj_p(project), zp_p(True), nop_p(False), in_p(in) {
+UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in, bool EW, bool project)
+    : ew_p(EW), proj_p(project), zp_p(true), nop_p(false), in_p(in) {
   outref_p = out;
   out_p = MDirection(outref_p);
   planetinit();
@@ -41,8 +41,8 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in, Bool EW
   init();
 }
 
-UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, Bool EW, Bool project)
-    : ew_p(EW), proj_p(project), zp_p(False), nop_p(False), in_p(in), out_p(out) {
+UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, bool EW, bool project)
+    : ew_p(EW), proj_p(project), zp_p(false), nop_p(false), in_p(in), out_p(out) {
   outref_p = out.getRef();
   planetinit();
   conv_p = MDirection::Convert(in_p, outref_p);
@@ -51,8 +51,8 @@ UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, Bool EW, Boo
 }
 
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in, const MeasFrame &frame,
-                       Bool EW, Bool project)
-    : ew_p(EW), proj_p(project), zp_p(True), nop_p(False), in_p(in) {
+                       bool EW, bool project)
+    : ew_p(EW), proj_p(project), zp_p(true), nop_p(false), in_p(in) {
   outref_p = out;
   out_p = MDirection(outref_p);
   outref_p.set(frame);
@@ -63,9 +63,9 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in, const M
   init();
 }
 
-UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, const MeasFrame &frame, Bool EW,
-                       Bool project)
-    : ew_p(EW), proj_p(project), zp_p(False), nop_p(False), in_p(in), out_p(out) {
+UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, const MeasFrame &frame, bool EW,
+                       bool project)
+    : ew_p(EW), proj_p(project), zp_p(false), nop_p(false), in_p(in), out_p(out) {
   outref_p = out.getRef();
   outref_p.set(frame);
   planetinit();

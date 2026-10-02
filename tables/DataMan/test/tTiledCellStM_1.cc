@@ -65,7 +65,7 @@ void openPablo(const char* argv[]);
 void closePablo();
 #endif  // PABLO_IO
 void makeCube(const char* argv[]);
-void getCube(Bool trav, Bool ask);
+void getCube(bool trav, bool ask);
 void traverse(const IPosition& cubeShape, const IPosition& tileShape);
 IPosition getVec(uInt nrdim, const String& prompt);
 
@@ -229,7 +229,7 @@ void makeCube(const char* argv[]) {
   accessor.showCacheStatistics(cout);
 }
 
-void getCube(Bool trav, Bool ask) {
+void getCube(bool trav, bool ask) {
   IPosition cubeShape;
   IPosition tileShape;
   double sizeMb = sizeof(Float);
@@ -298,7 +298,7 @@ void getCube(Bool trav, Bool ask) {
     IPosition nrsteps(start);
     IPosition stepnr(start);
     IPosition length(tileShape);
-    while (True) {
+    while (true) {
       Array<Float> arr = data.getSlice(0, Slicer(start, length));
       nr++;
       for (i = 0; i < nrdim; i++) {
@@ -339,7 +339,7 @@ void getCube(Bool trav, Bool ask) {
   cout << "Give slice shapes, etc.. End by giving end" << endl;
   Table table("tTiledCellStM_1_tmp.data");
   ROTiledStManAccessor accessor(table, "TSMExample");
-  while (True) {
+  while (true) {
     IPosition slice = getVec(nrdim, "slice shape (end means stop): ");
     if (slice.nelements() == 0) {
       break;
@@ -352,7 +352,7 @@ void getCube(Bool trav, Bool ask) {
 }
 
 IPosition getVec(uInt nrdim, const String& prompt) {
-  while (True) {
+  while (true) {
     cout << prompt;
     String str;
     cin >> str;
@@ -363,14 +363,14 @@ IPosition getVec(uInt nrdim, const String& prompt) {
     if (vec.nelements() > nrdim) {
       cout << "value can contain max. " << nrdim << " values" << endl;
     } else {
-      Bool error = False;
+      bool error = false;
       IPosition pos(vec.nelements());
       for (uInt i = 0; i < vec.nelements(); i++) {
         istringstream istr(vec(i).c_str());
         istr >> pos(i);
         if (pos(i) < 0) {
           cout << "Value " << pos(i) << " must be >= 0" << endl;
-          error = True;
+          error = true;
           break;
         }
       }

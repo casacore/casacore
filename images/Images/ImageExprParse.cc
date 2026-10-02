@@ -57,7 +57,7 @@ static String theDirName;
 // # They will be deleted when the expression is parsed.
 // # In that way they are also deleted in case of exceptions.
 static Block<void*> theNodes;
-static Block<Bool> theNodesType;
+static Block<bool> theNodesType;
 static uInt theNrNodes;
 
 // # Hold the last table used to lookup unqualified region names.
@@ -71,7 +71,7 @@ static std::shared_ptr<HDF5File> theLastHDF5;
   const Block<const ImageRegion*>* savTempRegions = theTempRegions; \
   String savDirName = theDirName;                                   \
   Block<void*> savNodes = theNodes;                                 \
-  Block<Bool> savNodesType = theNodesType;                          \
+  Block<bool> savNodesType = theNodesType;                          \
   uInt savNrNodes = theNrNodes;                                     \
   Table savLastTable = theLastTable;                                \
   std::shared_ptr<HDF5File> savLastHDF5 = theLastHDF5;
@@ -94,14 +94,14 @@ void imageExprParse_clear() {
 }
 
 // Is there no last table or HDF5 file?
-Bool imageExprParse_hasNoLast() { return (theLastTable.isNull() && !theLastHDF5); }
+bool imageExprParse_hasNoLast() { return (theLastTable.isNull() && !theLastHDF5); }
 
 // # Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
 vector<String> ImageExprParse::theirNames;
 Int ImageExprParse::theirLevel = 0;
 
-ImageExprParse::ImageExprParse(Bool value) : itsType(TpBool), itsBval(value) {}
+ImageExprParse::ImageExprParse(bool value) : itsType(TpBool), itsBval(value) {}
 
 ImageExprParse::ImageExprParse(Int value) : itsType(TpInt), itsIval(value) {}
 
@@ -121,7 +121,7 @@ ImageExprParse::ImageExprParse(const String& value) : itsType(TpString), itsSval
   ThrowIf(itsSval.empty(), "Illegal empty expression");
 }
 
-Table& ImageExprParse::getRegionTable(void*, Bool) { return theLastTable; }
+Table& ImageExprParse::getRegionTable(void*, bool) { return theLastTable; }
 
 const std::shared_ptr<HDF5File>& ImageExprParse::getRegionHDF5(void*) { return theLastHDF5; }
 
@@ -131,7 +131,7 @@ void ImageExprParse::addNode(LatticeExprNode* node) {
     theNodesType.resize(theNrNodes + 32);
   }
   theNodes[theNrNodes] = node;
-  theNodesType[theNrNodes] = True;
+  theNodesType[theNrNodes] = true;
   theNrNodes++;
 }
 void ImageExprParse::addNode(ImageExprParse* node) {
@@ -140,7 +140,7 @@ void ImageExprParse::addNode(ImageExprParse* node) {
     theNodesType.resize(theNrNodes + 32);
   }
   theNodes[theNrNodes] = node;
-  theNodesType[theNrNodes] = False;
+  theNodesType[theNrNodes] = false;
   theNrNodes++;
 }
 void ImageExprParse::deleteNodes() {
@@ -178,7 +178,7 @@ LatticeExprNode ImageExprParse::command(const String& str,
   imageExprParse_clear();
   std::string message;
   String command = str + '\n';
-  Bool error = False;
+  bool error = false;
   theirLevel++;
   try {
     // Parse and execute the command.
@@ -187,7 +187,7 @@ LatticeExprNode ImageExprParse::command(const String& str,
     }
   } catch (std::exception& x) {
     message = x.what();
-    error = True;
+    error = true;
   }
   // # Save the resulting expression and clear the common node object.
   // # Only the top level image names are kept.
@@ -411,11 +411,11 @@ LatticeExprNode ImageExprParse::makeValueList(const Block<LatticeExprNode>& valu
   }
   switch (dtype) {
     case TpBool: {
-      Vector<Bool> vals(values.nelements());
+      Vector<bool> vals(values.nelements());
       for (uInt i = 0; i < vals.nelements(); i++) {
         vals[i] = values[i].getBool();
       }
-      return LatticeExprNode(ArrayLattice<Bool>(vals));
+      return LatticeExprNode(ArrayLattice<bool>(vals));
     }
     case TpFloat: {
       Vector<Float> vals(values.nelements());
@@ -506,7 +506,7 @@ Slice* ImageExprParse::makeSlice(const ImageExprParse& start, const ImageExprPar
   if (start.itsIval > end.itsIval) {
     throw AipsError("ImageExprParse: in s:e:i s must be <= e");
   }
-  return new Slice(start.itsIval, end.itsIval, incr.itsIval, False);
+  return new Slice(start.itsIval, end.itsIval, incr.itsIval, false);
 }
 
 LatticeExprNode ImageExprParse::makeIndexinNode(const LatticeExprNode& axis,
@@ -520,15 +520,15 @@ LatticeExprNode ImageExprParse::makeIndexinNode(const LatticeExprNode& axis,
   }
   // Create a vector of that length and initialize to False.
   // Set the vector to True for all ranges.
-  Vector<Bool> flags(maxEnd + 1, False);
+  Vector<bool> flags(maxEnd + 1, false);
   for (uInt i = 0; i < slices.size(); i++) {
     const Slice& slice = slices[i];
     for (size_t j = slice.start(); j <= slice.end(); j += slice.inc()) {
-      flags[j] = True;
+      flags[j] = true;
     }
   }
   // Create the node.
-  return indexin(axis, ArrayLattice<Bool>(flags));
+  return indexin(axis, ArrayLattice<bool>(flags));
 }
 
 LatticeExprNode ImageExprParse::makeLRNode() const {
@@ -619,11 +619,11 @@ LatticeExprNode ImageExprParse::makeLRNode() const {
   int index = (names.size() == 1 ? 0 : 2);
   if (!theLastTable.isNull()) {
     RegionHandlerTable regHand(getRegionTable, 0);
-    regPtr = regHand.getRegion(names[index], RegionHandler::Any, False);
+    regPtr = regHand.getRegion(names[index], RegionHandler::Any, false);
   }
   if (theLastHDF5) {
     RegionHandlerHDF5 regHand(getRegionHDF5, 0);
-    regPtr = regHand.getRegion(names[index], RegionHandler::Any, False);
+    regPtr = regHand.getRegion(names[index], RegionHandler::Any, false);
   }
   if (regPtr == 0) {
     if (index == 0) {
@@ -655,7 +655,7 @@ String ImageExprParse::addDir(const String& fileName) {
   return theDirName + '/' + fileName;
 }
 
-Bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) const {
+bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) const {
   // Try to open the image in a standard way.
   LatticeBase* pLatt = ImageOpener::openImage(name);
   if (pLatt) {
@@ -703,16 +703,16 @@ Bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) c
       theLastTable = Table();
     }
     delete pLatt;
-    return True;
+    return true;
   }
   // Try if it is a PagedArray.
   if (!Table::isReadable(name)) {
-    return False;
+    return false;
   }
   Table table(name);
   String type = table.tableInfo().type();
   if (type != TableInfo::type(TableInfo::PAGEDARRAY)) {
-    return False;
+    return false;
   }
   if (table.nrow() != 1) {
     throw(
@@ -728,7 +728,7 @@ Bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) c
   }
   switch (dtype) {
     case TpBool:
-      node = LatticeExprNode(PagedArray<Bool>(table, colName, 0));
+      node = LatticeExprNode(PagedArray<bool>(table, colName, 0));
       break;
     case TpFloat:
       node = LatticeExprNode(PagedArray<Float>(table, colName, 0));
@@ -749,18 +749,18 @@ Bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) c
   }
   // This is now the last table used (for finding unqualified regions).
   theLastTable = table;
-  return True;
+  return true;
 }
 
 LatticeExprNode ImageExprParse::makeImageNode(const String& name, const String& mask) const {
   // Look if we need a mask for the image.
   // By default we do need one.
-  MaskSpecifier spec(True);
+  MaskSpecifier spec(true);
   if (!mask.empty()) {
     String maskName = mask;
     ToUpperCaseInPlace(maskName);
     if (maskName == "NOMASK") {
-      spec = MaskSpecifier(False);
+      spec = MaskSpecifier(false);
     } else {
       spec = MaskSpecifier(mask);
     }

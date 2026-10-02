@@ -42,16 +42,16 @@ Interpolate1D<Domain, Range>::Interpolate1D() {}
 
 template <class Domain, class Range>
 Interpolate1D<Domain, Range>::Interpolate1D(const SampledFunctional<Domain> &x,
-                                            const SampledFunctional<Range> &y, const Bool sorted,
-                                            const Bool uniq) {
+                                            const SampledFunctional<Range> &y, const bool sorted,
+                                            const bool uniq) {
   setData(x, y, sorted, uniq);
 }
 
 // Do all the real construction work here
 template <class Domain, class Range>
 void Interpolate1D<Domain, Range>::setData(const SampledFunctional<Domain> &x,
-                                           const SampledFunctional<Range> &y, const Bool sorted,
-                                           const Bool uniq) {
+                                           const SampledFunctional<Range> &y, const bool sorted,
+                                           const bool uniq) {
   nElements = x.nelements();
 
   // Set the default interpolation method
@@ -74,7 +74,7 @@ void Interpolate1D<Domain, Range>::setData(const SampledFunctional<Domain> &x,
   // Sort the x and y data if required.
   xValues.resize(nElements);
   yValues.resize(nElements);
-  if (sorted == False) {
+  if (sorted == false) {
     Vector<uInt> index;
     // I will copy the data to a block prior to sorting as the
     // genSort function cannot handle a SampledFunctional
@@ -100,7 +100,7 @@ void Interpolate1D<Domain, Range>::setData(const SampledFunctional<Domain> &x,
   //    specified x value is within one data point of a repeated x value.
   // 3/ cubic interpolation cannot be used when when the specified x value is
   //    within two data points of a repeated x value.
-  if (uniq == False)
+  if (uniq == false)
     for (uInt i = 0; i < nElements - 1; i++) {
       if (nearAbs(xValues[i], xValues[i + 1])) {
         throw(
@@ -261,7 +261,7 @@ Vector<Range> Interpolate1D<Domain, Range>::getY() const {
 
 template <class Domain, class Range>
 Range Interpolate1D<Domain, Range>::eval(typename Function1D<Domain, Range>::FunctionArg x) const {
-  Bool found;
+  bool found;
   uInt where = binarySearchBrackets(found, xValues, x[0], nElements);
   Domain x1, x2;
   Range y1, y2;

@@ -91,7 +91,7 @@ class EpochEngine : public MeasEngine<MEpoch> {
   virtual ~EpochEngine();
 
   // Tell if the fraction has to be used for sidereal times.
-  Bool sidFrac() const { return itsSidFrac; }
+  bool sidFrac() const { return itsSidFrac; }
 
   // Get the values.
   Array<Double> getArrayDouble(const TableExprId& id);
@@ -104,7 +104,7 @@ class EpochEngine : public MeasEngine<MEpoch> {
   void handleEpoch(std::vector<TENShPtr>& args, uInt& argnr);
 
   // Set the MeasConvert object.
-  void setConverter(MEpoch::Types toType, Bool sidFrac);
+  void setConverter(MEpoch::Types toType, bool sidFrac);
 
   // Set the possible position engine.
   // It can be done only once.
@@ -116,7 +116,7 @@ class EpochEngine : public MeasEngine<MEpoch> {
   virtual void handleValues(TableExprNode& operand, const TableExprId& id, Array<MEpoch>& epochs);
 
   // # Data members.
-  Bool itsSidFrac;     // # T = fraction for sidereal
+  bool itsSidFrac;     // # T = fraction for sidereal
   MeasFrame itsFrame;  // # frame used by converter
   MEpoch::Convert itsConverter;
   PositionEngine* itsPositionEngine;

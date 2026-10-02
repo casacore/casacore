@@ -78,7 +78,7 @@ class FITSTabular {
   virtual ~FITSTabular();
   // isValid() returns False if this object isn't a valid Tabular data
   // structure.
-  virtual Bool isValid() const = 0;
+  virtual bool isValid() const = 0;
   // Returns keywords which are associated with the underlying FITS files.
   virtual const TableRecord &keywords() const = 0;
   // Returns the description of the underlying FITS table.
@@ -104,19 +104,19 @@ class FITSTabular {
   virtual const Record &nulls() const = 0;
 
   // Returns True if we have advanced past the end of data.
-  virtual Bool pastEnd() const = 0;
+  virtual bool pastEnd() const = 0;
 
   // Advance the row if possible (guaranteed harmless if pastEnd() is True.
   virtual void next() = 0;
 
   // Reopen the table, default behavior is to do nothing, return False
-  virtual Bool reopen(const String &) { return False; }
+  virtual bool reopen(const String &) { return false; }
 
   // return the name
   virtual const String &name() const = 0;
 
   // Has the description changed since construction, default is False
-  virtual Bool hasChanged() const { return False; }
+  virtual bool hasChanged() const { return false; }
   // reset the changed flag, default do nothing
   virtual void resetChangedFlag() { ; }
 
@@ -129,7 +129,7 @@ class FITSTabular {
   // If allKeywords is not True, some keywords will be excluded
   // from the list.  Currently the list of excluded keywords
   // includes TTYPEnnn, TFORMnnn, and TUNITnnn
-  static TableRecord keywordsFromHDU(HeaderDataUnit &hdu, Bool allKeywords = False);
+  static TableRecord keywordsFromHDU(HeaderDataUnit &hdu, bool allKeywords = false);
 
   // Helper function for retrieving a description from a native-FITS hdu.
   static RecordDesc descriptionFromHDU(BinaryTableExtension &hdu);
@@ -196,23 +196,23 @@ class FITSTable : public FITSTabular {
   // this creates an invalid (isValid() return False) FITSTable
   // Its primary purpose is so that FITSTables can be created before
   // the file name is known.  reopen() is then used to open the file.
-  FITSTable(uInt whichHDU = 1, Bool allKeywords = False);
+  FITSTable(uInt whichHDU = 1, bool allKeywords = false);
 
   // 0-relative HDU. It can never be zero by the FITS rules.
   // allKeywords is passed to FITSTabular::keywordsFromHDU
   // See the documentation for that function for a list of
   // excluded keywords when allKeywords is False.
-  FITSTable(const String &fileName, uInt whichHDU = 1, Bool allKeywords = False);
+  FITSTable(const String &fileName, uInt whichHDU = 1, bool allKeywords = false);
   ~FITSTable() { clear_self(); }
 
   // Has the end of file been reached yet
-  virtual Bool eof() const { return io_p->eof(); }
+  virtual bool eof() const { return io_p->eof(); }
 
   // Attach this FITSTable to a new file name, same HDU# as at open time
-  virtual Bool reopen(const String &fileName);
+  virtual bool reopen(const String &fileName);
   virtual const String &name() const { return name_p; }
 
-  virtual Bool isValid() const { return isValid_p; }
+  virtual bool isValid() const { return isValid_p; }
 
   virtual const TableRecord &keywords() const { return keywords_p; }
   virtual const RecordDesc &description() const { return description_p; }
@@ -220,7 +220,7 @@ class FITSTable : public FITSTabular {
   virtual const Record &displayFormats() const { return disps_p; }
   virtual const Record &nulls() const { return nulls_p; }
 
-  virtual Bool pastEnd() const;
+  virtual bool pastEnd() const;
   virtual void next();
   virtual const Record &currentRow() const;
 
@@ -255,7 +255,7 @@ class FITSTable : public FITSTabular {
   // keyword did not appear in keywords_p (however, all named
   // keywords that DO appear in keywords_p will have been correctly
   // moved).
-  Bool virtualColumns(const Vector<String> &keyNames);
+  bool virtualColumns(const Vector<String> &keyNames);
 
  private:
   // Undefined and inaccessible. An alternative would be to use reference
@@ -266,7 +266,7 @@ class FITSTable : public FITSTabular {
   void fill_row();
   void clear_self();
 
-  Bool isValid_p;
+  bool isValid_p;
 
   String name_p;
 
@@ -283,12 +283,12 @@ class FITSTable : public FITSTabular {
   Record disps_p;
   Record nulls_p;
   Record subStrShapes_p;
-  Bool allKeys_p;
+  bool allKeys_p;
   // One per field in row_p, of the right type. i.e. casting required.
   uInt nfields_p;
   Block<void *> row_fields_p;
   Block<Int> field_types_p;
-  Block<Bool> promoted_p;
+  Block<bool> promoted_p;
   Block<Int> tdims_p;
   // these are used by VADESC columns
   Block<Int> vatypes_p;
@@ -367,7 +367,7 @@ class FITSTableWriter {
   // existing code.
   FITSTableWriter(FitsOutput *file, const RecordDesc &description, const Record &maxLengths,
                   uInt nrows, const Record &extraKeywords, const Record &units,
-                  Bool freeOutput = True, const Record &variableShapes = Record());
+                  bool freeOutput = true, const Record &variableShapes = Record());
 
   ~FITSTableWriter();
 
@@ -390,7 +390,7 @@ class FITSTableWriter {
   FITSTableWriter(const FITSTableWriter &);
   FITSTableWriter &operator=(const FITSTableWriter &);
 
-  Bool delete_writer_p;
+  bool delete_writer_p;
   FitsOutput *writer_p;
   uInt nrows_written_p;
   BinaryTableExtension *bintable_p;
@@ -440,7 +440,7 @@ class FITSGroupWriter {
   // you are going to write any extensions to the same fits file.  You can get the
   // FitsOutput used here from write()
   FITSGroupWriter(const String &fileName, const RecordDesc &description, uInt nrows,
-                  const Record &extraKeywords, Bool freeOutput = True);
+                  const Record &extraKeywords, bool freeOutput = true);
 
   ~FITSGroupWriter();
 
@@ -459,7 +459,7 @@ class FITSGroupWriter {
   FITSGroupWriter(const FITSGroupWriter &);
   FITSGroupWriter &operator=(const FITSGroupWriter &);
 
-  Bool delete_writer_p;
+  bool delete_writer_p;
   FitsOutput *writer_p;
   uInt nrows_written_p, nrows_total_p;
   PrimaryGroup<Float> *group_p;

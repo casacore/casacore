@@ -34,8 +34,8 @@ template <class T, class U>
 TiledCollapser<T, U>::~TiledCollapser() {}
 
 template <class T, class U>
-Bool TiledCollapser<T, U>::canHandleNullMask() const {
-  return False;
+bool TiledCollapser<T, U>::canHandleNullMask() const {
+  return false;
 }
 
 }  // namespace casacore

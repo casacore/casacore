@@ -27,7 +27,7 @@ class AntennaPairStManColumn final : public StManColumn {
    * Whether this column is writable
    * @returns @c true
    */
-  Bool isWritable() const final { return true; }
+  bool isWritable() const final { return true; }
 
   void getInt(rownr_t row, Int *dataPtr) final {
     if (is_antenna_2_)

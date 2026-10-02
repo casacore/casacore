@@ -261,7 +261,7 @@ class Record : public RecordInterface {
   // be given to this top record.
   // <br>Restructuring is not possible and an exception is thrown
   // if the Record has a fixed structure.
-  void restructure(const RecordDesc& newDescription, Bool recursive = True) override;
+  void restructure(const RecordDesc& newDescription, bool recursive = true) override;
 
   // Returns True if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
@@ -273,7 +273,7 @@ class Record : public RecordInterface {
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>
-  Bool conform(const Record& other) const;
+  bool conform(const Record& other) const;
 
   // How many fields does this structure have? A convenient synonym for
   // <src>description().nfields()</src>.
@@ -393,7 +393,7 @@ class Record : public RecordInterface {
   RecordRep& rwRef();
 
   // Add a field to the record.
-  void addDataField(const String& name, DataType type, const IPosition& shape, Bool fixedShape,
+  void addDataField(const String& name, DataType type, const IPosition& shape, bool fixedShape,
                     const void* value) override;
 
   // Define a value in the given field.
@@ -420,7 +420,7 @@ class Record : public RecordInterface {
 inline const RecordRep& Record::ref() const { return rep_p.ref(); }
 inline const RecordDesc& Record::description() const { return ref().description(); }
 
-inline Bool Record::conform(const Record& other) const { return ref().conform(other.ref()); }
+inline bool Record::conform(const Record& other) const { return ref().conform(other.ref()); }
 
 inline AipsIO& operator<<(AipsIO& os, const Record& rec) {
   rec.putRecord(os);

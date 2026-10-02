@@ -163,7 +163,7 @@ class MCBase {
 
  private:
   // Routine to find the shortest route between two points
-  static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall, Bool *visit,
+  static bool findState(uInt &len, uInt *state, uInt *mcnt, bool &okall, bool *visit,
                         const uInt *tcnt, const uInt *tree, const uInt &in, const uInt &out,
                         const uInt ntyp, const uInt nrout, const uInt list[][3]);
   // </group>

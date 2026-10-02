@@ -124,21 +124,21 @@ class EclecticFunctionFactory : public FunctionFactory<T> {
 
   // add a factory for creating a specific type of function, associating
   // it with a given "functype" name.
-  void addFactory(const String& type, FunctionFactory<T>* factory, Bool own = True);
+  void addFactory(const String& type, FunctionFactory<T>* factory, bool own = true);
 
   // return the number of factories that have been loaded thus far.
   Int ndefined() { return lookup.ndefined(); }
 
   // return True if a factory with a given "functype" name has been
   // loaded.
-  Bool isDefined(const String& type) { return lookup.isDefined(type); }
+  bool isDefined(const String& type) { return lookup.isDefined(type); }
 
   // a shallow assignment operator
   EclecticFunctionFactory& operator=(const EclecticFunctionFactory& factory);
 
  protected:
  private:
-  OrderedMap<String, OrderedPair<FunctionFactory<T>*, Bool>> lookup;
+  OrderedMap<String, OrderedPair<FunctionFactory<T>*, bool>> lookup;
 };
 
 }  // namespace casacore

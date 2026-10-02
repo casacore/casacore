@@ -34,8 +34,8 @@ template <class T, class U>
 LineCollapser<T, U>::~LineCollapser() {}
 
 template <class T, class U>
-Bool LineCollapser<T, U>::canHandleNullMask() const {
-  return False;
+bool LineCollapser<T, U>::canHandleNullMask() const {
+  return false;
 }
 
 }  // namespace casacore

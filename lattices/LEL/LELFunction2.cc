@@ -80,7 +80,7 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
       // Expect 1 Float argument
       Block<Int> argType(1);
       argType[0] = TpFloat;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     case LELFunctionEnums::ATAN2:
@@ -92,7 +92,7 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
       Block<Int> argType(2);
       argType[0] = TpFloat;
       argType[1] = TpFloat;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     case LELFunctionEnums::FRACTILE1D: {
@@ -199,7 +199,7 @@ void LELFunctionFloat::eval(LELArray<Float>& result, const Slicer& section) cons
       }
       case LELFunctionEnums::SIGN: {
         arg_p[0].eval(result, section);
-        Bool deleteIt;
+        bool deleteIt;
         Float* data = result.value().getStorage(deleteIt);
         uInt nr = result.value().nelements();
         for (uInt i = 0; i < nr; i++) {
@@ -432,46 +432,46 @@ LELScalar<Float> LELFunctionFloat::getScalar() const {
   return LELScalar<Float>();
 }
 
-Bool LELFunctionFloat::prepareScalarExpr() {
+bool LELFunctionFloat::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionFloat::prepare" << endl;
 #endif
 
   uInt i;
   for (i = 0; i < arg_p.nelements(); i++) {
-    Bool invalid = arg_p[i].replaceScalarExpr();
+    bool invalid = arg_p[i].replaceScalarExpr();
     if (invalid) {
       if (i > 0 ||
           (function_p != LELFunctionEnums::NDIM && function_p != LELFunctionEnums::LENGTH)) {
-        return True;
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 String LELFunctionFloat::className() const { return String("LELFunctionFloat"); }
 
-Bool LELFunctionFloat::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionFloat::lock(FileLocker::LockType type, uInt nattempts) {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].lock(type, nattempts)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionFloat::unlock() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     arg_p[i].unlock();
   }
 }
-Bool LELFunctionFloat::hasLock(FileLocker::LockType type) const {
+bool LELFunctionFloat::hasLock(FileLocker::LockType type) const {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].hasLock(type)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionFloat::resync() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
@@ -509,7 +509,7 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
     case LELFunctionEnums::NFALSE: {
       Block<Int> argType(1);
       argType[0] = TpBool;
-      LatticeExprNode::checkArg(exp, argType, True);  // expect 1 Bool array
+      LatticeExprNode::checkArg(exp, argType, true);  // expect 1 Bool array
       setAttr(LELAttribute());                        // result is scalar
       break;
     }
@@ -522,7 +522,7 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
       Block<Int> argType(2);
       argType[0] = TpDouble;
       argType[1] = TpDouble;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     case LELFunctionEnums::FRACTILE1D: {
@@ -758,13 +758,13 @@ LELScalar<Double> LELFunctionDouble::getScalar() const {
   switch (function_p) {
     case LELFunctionEnums::NTRUE: {
       uInt ntrue = 0;
-      Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0]);
+      bool deleteIt, deleteMask;
+      LatticeExpr<bool> latExpr(arg_p[0]);
       if (!arg_p[0].isMasked()) {
-        RO_LatticeIterator<Bool> iter(latExpr);
+        RO_LatticeIterator<bool> iter(latExpr);
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
-          const Bool* data = array.getStorage(deleteIt);
+          const Array<bool>& array = iter.cursor();
+          const bool* data = array.getStorage(deleteIt);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (data[i]) {
@@ -775,13 +775,13 @@ LELScalar<Double> LELFunctionDouble::getScalar() const {
           iter++;
         }
       } else {
-        RO_MaskedLatticeIterator<Bool> iter(latExpr);
-        Array<Bool> mask;
+        RO_MaskedLatticeIterator<bool> iter(latExpr);
+        Array<bool> mask;
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
+          const Array<bool>& array = iter.cursor();
           iter.getMask(mask);
-          const Bool* data = array.getStorage(deleteIt);
-          const Bool* maskdata = mask.getStorage(deleteMask);
+          const bool* data = array.getStorage(deleteIt);
+          const bool* maskdata = mask.getStorage(deleteMask);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (data[i] && maskdata[i]) {
@@ -797,13 +797,13 @@ LELScalar<Double> LELFunctionDouble::getScalar() const {
     }
     case LELFunctionEnums::NFALSE: {
       uInt nfalse = 0;
-      Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0]);
+      bool deleteIt, deleteMask;
+      LatticeExpr<bool> latExpr(arg_p[0]);
       if (!arg_p[0].isMasked()) {
-        RO_LatticeIterator<Bool> iter(latExpr);
+        RO_LatticeIterator<bool> iter(latExpr);
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
-          const Bool* data = array.getStorage(deleteIt);
+          const Array<bool>& array = iter.cursor();
+          const bool* data = array.getStorage(deleteIt);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (!data[i]) {
@@ -814,13 +814,13 @@ LELScalar<Double> LELFunctionDouble::getScalar() const {
           iter++;
         }
       } else {
-        RO_MaskedLatticeIterator<Bool> iter(latExpr);
-        Array<Bool> mask;
+        RO_MaskedLatticeIterator<bool> iter(latExpr);
+        Array<bool> mask;
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
+          const Array<bool>& array = iter.cursor();
           iter.getMask(mask);
-          const Bool* data = array.getStorage(deleteIt);
-          const Bool* maskdata = mask.getStorage(deleteMask);
+          const bool* data = array.getStorage(deleteIt);
+          const bool* maskdata = mask.getStorage(deleteMask);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (!data[i] && maskdata[i]) {
@@ -906,7 +906,7 @@ uInt LELFunctionDouble::nMaskedElements(const LatticeExprNode& expr) const {
     case TpFloat: {
       LatticeExpr<Float> latExpr(expr);
       RO_MaskedLatticeIterator<Float> iter(latExpr);
-      Array<Bool> mask;
+      Array<bool> mask;
       while (!iter.atEnd()) {
         iter.getMask(mask);
         nelem += nMaskedOn(mask);
@@ -917,7 +917,7 @@ uInt LELFunctionDouble::nMaskedElements(const LatticeExprNode& expr) const {
     case TpDouble: {
       LatticeExpr<Double> latExpr(expr);
       RO_MaskedLatticeIterator<Double> iter(latExpr);
-      Array<Bool> mask;
+      Array<bool> mask;
       while (!iter.atEnd()) {
         iter.getMask(mask);
         nelem += nMaskedOn(mask);
@@ -928,7 +928,7 @@ uInt LELFunctionDouble::nMaskedElements(const LatticeExprNode& expr) const {
     case TpComplex: {
       LatticeExpr<Complex> latExpr(expr);
       RO_MaskedLatticeIterator<Complex> iter(latExpr);
-      Array<Bool> mask;
+      Array<bool> mask;
       while (!iter.atEnd()) {
         iter.getMask(mask);
         nelem += nMaskedOn(mask);
@@ -939,7 +939,7 @@ uInt LELFunctionDouble::nMaskedElements(const LatticeExprNode& expr) const {
     case TpDComplex: {
       LatticeExpr<DComplex> latExpr(expr);
       RO_MaskedLatticeIterator<DComplex> iter(latExpr);
-      Array<Bool> mask;
+      Array<bool> mask;
       while (!iter.atEnd()) {
         iter.getMask(mask);
         nelem += nMaskedOn(mask);
@@ -948,9 +948,9 @@ uInt LELFunctionDouble::nMaskedElements(const LatticeExprNode& expr) const {
       break;
     }
     case TpBool: {
-      LatticeExpr<Bool> latExpr(expr);
-      RO_MaskedLatticeIterator<Bool> iter(latExpr);
-      Array<Bool> mask;
+      LatticeExpr<bool> latExpr(expr);
+      RO_MaskedLatticeIterator<bool> iter(latExpr);
+      Array<bool> mask;
       while (!iter.atEnd()) {
         iter.getMask(mask);
         nelem += nMaskedOn(mask);
@@ -964,10 +964,10 @@ uInt LELFunctionDouble::nMaskedElements(const LatticeExprNode& expr) const {
   return nelem;
 }
 
-uInt LELFunctionDouble::nMaskedOn(const Array<Bool>& mask) const {
+uInt LELFunctionDouble::nMaskedOn(const Array<bool>& mask) const {
   uInt nelem = 0;
-  Bool deleteMask;
-  const Bool* maskdata = mask.getStorage(deleteMask);
+  bool deleteMask;
+  const bool* maskdata = mask.getStorage(deleteMask);
   uInt n = mask.nelements();
   for (uInt i = 0; i < n; i++) {
     if (maskdata[i]) {
@@ -978,46 +978,46 @@ uInt LELFunctionDouble::nMaskedOn(const Array<Bool>& mask) const {
   return nelem;
 }
 
-Bool LELFunctionDouble::prepareScalarExpr() {
+bool LELFunctionDouble::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionDouble::prepare" << endl;
 #endif
 
   uInt i;
   for (i = 0; i < arg_p.nelements(); i++) {
-    Bool invalid = arg_p[i].replaceScalarExpr();
+    bool invalid = arg_p[i].replaceScalarExpr();
     if (invalid) {
       if (function_p != LELFunctionEnums::NTRUE && function_p != LELFunctionEnums::NFALSE &&
           function_p != LELFunctionEnums::NELEM) {
-        return True;
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 String LELFunctionDouble::className() const { return String("LELFunctionDouble"); }
 
-Bool LELFunctionDouble::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionDouble::lock(FileLocker::LockType type, uInt nattempts) {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].lock(type, nattempts)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionDouble::unlock() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     arg_p[i].unlock();
   }
 }
-Bool LELFunctionDouble::hasLock(FileLocker::LockType type) const {
+bool LELFunctionDouble::hasLock(FileLocker::LockType type) const {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].hasLock(type)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionDouble::resync() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
@@ -1047,7 +1047,7 @@ LELFunctionComplex::LELFunctionComplex(const LELFunctionEnums::Function function
       Block<Int> argType(2);
       argType[0] = TpFloat;
       argType[1] = TpFloat;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     case LELFunctionEnums::POW: {
@@ -1056,7 +1056,7 @@ LELFunctionComplex::LELFunctionComplex(const LELFunctionEnums::Function function
       Block<Int> argType(2);
       argType[0] = TpComplex;
       argType[1] = TpComplex;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     default:
@@ -1105,7 +1105,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result, const Slicer& section) 
           LELArrayRef<Float> arrayTemp(result.shape());
           arg_p[0].eval(scalarTemp);
           arg_p[1].evalRef(arrayTemp, section);
-          Bool delr, delc;
+          bool delr, delc;
           const Float* rptr = arrayTemp.value().getStorage(delr);
           Complex* cptr = result.value().getStorage(delc);
           uInt n = arrayTemp.value().nelements();
@@ -1140,7 +1140,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result, const Slicer& section) 
           LELArrayRef<Float> arrayTemp(result.shape());
           arg_p[1].eval(scalarTemp);
           arg_p[0].evalRef(arrayTemp, section);
-          Bool delr, delc;
+          bool delr, delc;
           const Float* rptr = arrayTemp.value().getStorage(delr);
           Complex* cptr = result.value().getStorage(delc);
           uInt n = arrayTemp.value().nelements();
@@ -1185,7 +1185,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result, const Slicer& section) 
           LELArrayRef<Float> arrayRight(result.shape());
           arg_p[0].evalRef(arrayLeft, section);
           arg_p[1].evalRef(arrayRight, section);
-          Bool dell, delr, delc;
+          bool dell, delr, delc;
           const Float* lptr = arrayLeft.value().getStorage(dell);
           const Float* rptr = arrayRight.value().getStorage(delr);
           Complex* cptr = result.value().getStorage(delc);
@@ -1235,7 +1235,7 @@ LELScalar<Complex> LELFunctionComplex::getScalar() const {
   return LELScalar<Complex>();  // Make compiler happy
 }
 
-Bool LELFunctionComplex::prepareScalarExpr() {
+bool LELFunctionComplex::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionComplex::prepare" << endl;
 #endif
@@ -1243,34 +1243,34 @@ Bool LELFunctionComplex::prepareScalarExpr() {
   uInt i;
   for (i = 0; i < arg_p.nelements(); i++) {
     if (arg_p[i].replaceScalarExpr()) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 String LELFunctionComplex::className() const { return String("LELFunctionComplex"); }
 
-Bool LELFunctionComplex::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionComplex::lock(FileLocker::LockType type, uInt nattempts) {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].lock(type, nattempts)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionComplex::unlock() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     arg_p[i].unlock();
   }
 }
-Bool LELFunctionComplex::hasLock(FileLocker::LockType type) const {
+bool LELFunctionComplex::hasLock(FileLocker::LockType type) const {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].hasLock(type)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionComplex::resync() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
@@ -1300,7 +1300,7 @@ LELFunctionDComplex::LELFunctionDComplex(const LELFunctionEnums::Function functi
       Block<Int> argType(2);
       argType[0] = TpDouble;
       argType[1] = TpDouble;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     case LELFunctionEnums::POW: {
@@ -1308,7 +1308,7 @@ LELFunctionDComplex::LELFunctionDComplex(const LELFunctionEnums::Function functi
       Block<Int> argType(2);
       argType[0] = TpDComplex;
       argType[1] = TpDComplex;
-      setAttr(LatticeExprNode::checkArg(exp, argType, False));
+      setAttr(LatticeExprNode::checkArg(exp, argType, false));
       break;
     }
     default:
@@ -1357,7 +1357,7 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result, const Slicer& section
           LELArrayRef<Double> arrayTemp(result.shape());
           arg_p[0].eval(scalarTemp);
           arg_p[1].evalRef(arrayTemp, section);
-          Bool delr, delc;
+          bool delr, delc;
           const Double* rptr = arrayTemp.value().getStorage(delr);
           DComplex* cptr = result.value().getStorage(delc);
           uInt n = arrayTemp.value().nelements();
@@ -1392,7 +1392,7 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result, const Slicer& section
           LELArrayRef<Double> arrayTemp(result.shape());
           arg_p[1].eval(scalarTemp);
           arg_p[0].evalRef(arrayTemp, section);
-          Bool delr, delc;
+          bool delr, delc;
           const Double* rptr = arrayTemp.value().getStorage(delr);
           DComplex* cptr = result.value().getStorage(delc);
           uInt n = arrayTemp.value().nelements();
@@ -1437,7 +1437,7 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result, const Slicer& section
           LELArrayRef<Double> arrayRight(result.shape());
           arg_p[0].evalRef(arrayLeft, section);
           arg_p[1].evalRef(arrayRight, section);
-          Bool dell, delr, delc;
+          bool dell, delr, delc;
           const Double* lptr = arrayLeft.value().getStorage(dell);
           const Double* rptr = arrayRight.value().getStorage(delr);
           DComplex* cptr = result.value().getStorage(delc);
@@ -1487,7 +1487,7 @@ LELScalar<DComplex> LELFunctionDComplex::getScalar() const {
   return LELScalar<DComplex>();  // Make compiler happy
 }
 
-Bool LELFunctionDComplex::prepareScalarExpr() {
+bool LELFunctionDComplex::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionDComplex::prepare" << endl;
 #endif
@@ -1495,34 +1495,34 @@ Bool LELFunctionDComplex::prepareScalarExpr() {
   uInt i;
   for (i = 0; i < arg_p.nelements(); i++) {
     if (arg_p[i].replaceScalarExpr()) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 String LELFunctionDComplex::className() const { return String("LELFunctionDComplex"); }
 
-Bool LELFunctionDComplex::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionDComplex::lock(FileLocker::LockType type, uInt nattempts) {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].lock(type, nattempts)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionDComplex::unlock() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     arg_p[i].unlock();
   }
 }
-Bool LELFunctionDComplex::hasLock(FileLocker::LockType type) const {
+bool LELFunctionDComplex::hasLock(FileLocker::LockType type) const {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].hasLock(type)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionDComplex::resync() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
@@ -1553,7 +1553,7 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
     case LELFunctionEnums::ANY: {
       Block<Int> argType(1);
       argType[0] = TpBool;
-      LatticeExprNode::checkArg(exp, argType, True);  // expect 1 Bool array
+      LatticeExprNode::checkArg(exp, argType, true);  // expect 1 Bool array
       setAttr(LELAttribute());                        // result is scalar
       break;
     }
@@ -1573,7 +1573,7 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
                       "should be a bool vector"));
       }
       // The output shape is unknown.
-      setAttr(LELAttribute(False, IPosition(), IPosition(), LELCoordinates()));
+      setAttr(LELAttribute(false, IPosition(), IPosition(), LELCoordinates()));
       break;
     }
     case LELFunctionEnums::MASK:
@@ -1588,7 +1588,7 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
       if (argAttr.isScalar()) {
         setAttr(LELAttribute());
       } else {
-        setAttr(LELAttribute(False, argAttr.shape(), argAttr.tileShape(), argAttr.coordinates()));
+        setAttr(LELAttribute(false, argAttr.shape(), argAttr.tileShape(), argAttr.coordinates()));
       }
       break;
     }
@@ -1611,15 +1611,15 @@ LELFunctionBool::~LELFunctionBool() {
 #endif
 }
 
-void LELFunctionBool::eval(LELArray<Bool>& result, const Slicer& section) const {
+void LELFunctionBool::eval(LELArray<bool>& result, const Slicer& section) const {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionBool:: eval" << endl;
 #endif
 
   switch (function_p) {
     case LELFunctionEnums::ISNAN: {
-      Bool deleteIn, deleteOut;
-      Bool* out = result.value().getStorage(deleteOut);
+      bool deleteIn, deleteOut;
+      bool* out = result.value().getStorage(deleteOut);
       uInt nr = result.value().nelements();
       if (arg_p[0].dataType() == TpFloat) {
         LELArrayRef<Float> tmp(result.shape());
@@ -1679,7 +1679,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result, const Slicer& section) const 
                       "(note axis is 0-relative!)"));
       }
       uInt stinx = section.start()[axis];
-      Array<Bool> tmp(section.length());
+      Array<bool> tmp(section.length());
       const IPosition& shp = tmp.shape();
       uInt nrinx = stinx + shp[axis];
       uInt nr1 = 1;
@@ -1690,23 +1690,23 @@ void LELFunctionBool::eval(LELArray<Bool>& result, const Slicer& section) const 
       for (uInt i = axis + 1; i < shp.nelements(); i++) {
         nr2 *= shp[i];
       }
-      Array<Bool> pixelArr = arg_p[1].getArrayBool();
-      Bool deletePix;
-      const Bool* pixels = pixelArr.getStorage(deletePix);
+      Array<bool> pixelArr = arg_p[1].getArrayBool();
+      bool deletePix;
+      const bool* pixels = pixelArr.getStorage(deletePix);
       uInt nrpix = pixelArr.nelements();
-      Bool deleteIt;
-      Bool* tmpp = tmp.getStorage(deleteIt);
+      bool deleteIt;
+      bool* tmpp = tmp.getStorage(deleteIt);
       uInt inx = 0;
       if (nr1 == 1) {
         for (uInt i1 = 0; i1 < nr2; i1++) {
           for (uInt i2 = stinx; i2 < nrinx; i2++) {
-            tmpp[inx++] = (i2 < nrpix ? pixels[i2] : False);
+            tmpp[inx++] = (i2 < nrpix ? pixels[i2] : false);
           }
         }
       } else {
         for (uInt i1 = 0; i1 < nr2; i1++) {
           for (uInt i2 = stinx; i2 < nrinx; i2++) {
-            Bool flag = (i2 < nrpix ? pixels[i2] : False);
+            bool flag = (i2 < nrpix ? pixels[i2] : false);
             for (uInt i3 = 0; i3 < nr1; i3++) {
               tmpp[inx++] = flag;
             }
@@ -1721,7 +1721,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result, const Slicer& section) const 
     case LELFunctionEnums::MASK: {
       result.removeMask();
       if (!arg_p[0].isMasked()) {
-        result.value() = True;
+        result.value() = true;
       } else {
         switch (arg_p[0].dataType()) {
           case TpFloat: {
@@ -1749,7 +1749,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result, const Slicer& section) const 
             break;
           }
           case TpBool: {
-            LELArrayRef<Bool> tmp(result.shape());
+            LELArrayRef<bool> tmp(result.shape());
             arg_p[0].evalRef(tmp, section);
             result.value() = tmp.mask();
             break;
@@ -1770,7 +1770,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result, const Slicer& section) const 
   }
 }
 
-LELScalar<Bool> LELFunctionBool::getScalar() const {
+LELScalar<bool> LELFunctionBool::getScalar() const {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionBool:: getScalar" << endl;
 #endif
@@ -1790,37 +1790,37 @@ LELScalar<Bool> LELFunctionBool::getScalar() const {
       break;
     }
     case LELFunctionEnums::ALL: {
-      Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0]);
+      bool deleteIt, deleteMask;
+      LatticeExpr<bool> latExpr(arg_p[0]);
       if (!arg_p[0].isMasked()) {
-        RO_LatticeIterator<Bool> iter(latExpr);
+        RO_LatticeIterator<bool> iter(latExpr);
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
-          const Bool* data = array.getStorage(deleteIt);
+          const Array<bool>& array = iter.cursor();
+          const bool* data = array.getStorage(deleteIt);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (!data[i]) {
               array.freeStorage(data, deleteIt);
-              return False;
+              return false;
             }
           }
           array.freeStorage(data, deleteIt);
           iter++;
         }
       } else {
-        RO_MaskedLatticeIterator<Bool> iter(latExpr);
-        Array<Bool> mask;
+        RO_MaskedLatticeIterator<bool> iter(latExpr);
+        Array<bool> mask;
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
+          const Array<bool>& array = iter.cursor();
           iter.getMask(mask);
-          const Bool* data = array.getStorage(deleteIt);
-          const Bool* maskdata = mask.getStorage(deleteMask);
+          const bool* data = array.getStorage(deleteIt);
+          const bool* maskdata = mask.getStorage(deleteMask);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (!data[i] && maskdata[i]) {
               array.freeStorage(data, deleteIt);
               mask.freeStorage(maskdata, deleteMask);
-              return False;
+              return false;
             }
           }
           array.freeStorage(data, deleteIt);
@@ -1828,40 +1828,40 @@ LELScalar<Bool> LELFunctionBool::getScalar() const {
           iter++;
         }
       }
-      return True;
+      return true;
     }
     case LELFunctionEnums::ANY: {
-      Bool deleteIt, deleteMask;
-      LatticeExpr<Bool> latExpr(arg_p[0]);
+      bool deleteIt, deleteMask;
+      LatticeExpr<bool> latExpr(arg_p[0]);
       if (!arg_p[0].isMasked()) {
-        RO_LatticeIterator<Bool> iter(latExpr);
+        RO_LatticeIterator<bool> iter(latExpr);
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
-          const Bool* data = array.getStorage(deleteIt);
+          const Array<bool>& array = iter.cursor();
+          const bool* data = array.getStorage(deleteIt);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (data[i]) {
               array.freeStorage(data, deleteIt);
-              return True;
+              return true;
             }
           }
           array.freeStorage(data, deleteIt);
           iter++;
         }
       } else {
-        RO_MaskedLatticeIterator<Bool> iter(latExpr);
-        Array<Bool> mask;
+        RO_MaskedLatticeIterator<bool> iter(latExpr);
+        Array<bool> mask;
         while (!iter.atEnd()) {
-          const Array<Bool>& array = iter.cursor();
+          const Array<bool>& array = iter.cursor();
           iter.getMask(mask);
-          const Bool* data = array.getStorage(deleteIt);
-          const Bool* maskdata = mask.getStorage(deleteMask);
+          const bool* data = array.getStorage(deleteIt);
+          const bool* maskdata = mask.getStorage(deleteMask);
           uInt n = array.nelements();
           for (uInt i = 0; i < n; i++) {
             if (data[i] && maskdata[i]) {
               array.freeStorage(data, deleteIt);
               mask.freeStorage(maskdata, deleteMask);
-              return True;
+              return true;
             }
           }
           array.freeStorage(data, deleteIt);
@@ -1869,7 +1869,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const {
           iter++;
         }
       }
-      return False;
+      return false;
     }
     case LELFunctionEnums::MASK:
       return (!arg_p[0].isInvalidScalar());
@@ -1878,49 +1878,49 @@ LELScalar<Bool> LELFunctionBool::getScalar() const {
     default:
       throw(AipsError("LELFunctionBool::getScalar - unknown function"));
   }
-  return LELScalar<Bool>();  // Make compiler happy
+  return LELScalar<bool>();  // Make compiler happy
 }
 
-Bool LELFunctionBool::prepareScalarExpr() {
+bool LELFunctionBool::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELFunctionBool::prepare" << endl;
 #endif
 
   uInt i;
   for (i = 0; i < arg_p.nelements(); i++) {
-    Bool invalid = arg_p[i].replaceScalarExpr();
+    bool invalid = arg_p[i].replaceScalarExpr();
     if (invalid) {
       if (function_p != LELFunctionEnums::ALL && function_p != LELFunctionEnums::ANY &&
           function_p != LELFunctionEnums::MASK) {
-        return True;
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 String LELFunctionBool::className() const { return String("LELFunctionBool"); }
 
-Bool LELFunctionBool::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionBool::lock(FileLocker::LockType type, uInt nattempts) {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].lock(type, nattempts)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionBool::unlock() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     arg_p[i].unlock();
   }
 }
-Bool LELFunctionBool::hasLock(FileLocker::LockType type) const {
+bool LELFunctionBool::hasLock(FileLocker::LockType type) const {
   for (uInt i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].hasLock(type)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 void LELFunctionBool::resync() {
   for (uInt i = 0; i < arg_p.nelements(); i++) {

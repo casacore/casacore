@@ -87,7 +87,7 @@ resize(const IPosition & fftSize,
   if (transformType != itsTransformType  ||
       itsSize.nelements() != ndim  ||  fftSize != itsSize) {
     itsTransformType = transformType;
-    itsSize.resize (ndim, False);  // to make assignment work!
+    itsSize.resize (ndim, false);  // to make assignment work!
     itsSize = fftSize;
 
     size_t nelem = itsSize.product();
@@ -118,55 +118,55 @@ resize(const IPosition & fftSize,
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<S> & cResult, Array<T> & rData, const Bool constInput)
+fft(Array<S> & cResult, Array<T> & rData, const bool constInput)
 {
   if (constInput) {
     Array<T> rCopy = rData.copy();
-    flip(rCopy,True,False);
-    fft0(cResult, rCopy, False);
+    flip(rCopy,true,false);
+    fft0(cResult, rCopy, false);
   } else {
-    flip(rData,True,False);
-    fft0(cResult, rData, False);
+    flip(rData,true,false);
+    fft0(cResult, rData, false);
   }
-  flip(cResult,False,True);
+  flip(cResult,false,true);
 }
 
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<S> & cResult, const Array<T> & rData)
 {
- fft(cResult, (Array<T> &) rData, True);
+ fft(cResult, (Array<T> &) rData, true);
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<T> & rResult, Array<S> & cData, const Bool constInput)
+fft(Array<T> & rResult, Array<S> & cData, const bool constInput)
 {
   if (constInput) {
     Array<S> cCopy = cData.copy();
-    flip(cCopy, True, True);
-    fft0(rResult, cCopy, False);
+    flip(cCopy, true, true);
+    fft0(rResult, cCopy, false);
   } else {
-    flip(cData, True, True);
-    fft0(rResult, cData, False);
+    flip(cData, true, true);
+    fft0(rResult, cData, false);
   }
-  flip(rResult, False, False);
+  flip(rResult, false, false);
 }
 
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<T> & rResult, const Array<S> & cData)
 {
-  fft(rResult, (Array<S> &) cData, True);
+  fft(rResult, (Array<S> &) cData, true);
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<S> & cValues, const Bool toFrequency)
+fft(Array<S> & cValues, const bool toFrequency)
 {
-  flip(cValues, True, False);
+  flip(cValues, true, false);
   fft0(cValues, toFrequency);
-  flip(cValues, False, False);
+  flip(cValues, false, false);
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency)
+fft(Array<S> & cResult, const Array<S> & cData, const bool toFrequency)
 {
   if (cResult.nelements() != 0) {
     AlwaysAssert(cResult.conform(cData), AipsError);
@@ -178,7 +178,7 @@ fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency)
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft0(Array<S> & cResult, Array<T> & rData, const Bool)
+fft0(Array<S> & cResult, Array<T> & rData, const bool)
 {
   const IPosition shape = rData.shape();
   // Ensure the output Array is the required size
@@ -199,7 +199,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool)
     resize(shape, FFTEnums::REALTOCOMPLEX);
   }
   // get a pointer to the array holding the result
-  Bool resultIsAcopy, dataIsAcopy;
+  bool resultIsAcopy, dataIsAcopy;
   S * resultPtr = cResult.getStorage(resultIsAcopy);
   const T* dataPtr = rData.getStorage(dataIsAcopy);
 
@@ -215,11 +215,11 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool)
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cResult, const Array<T> & rData)
 {
-  fft0(cResult, (Array<T> &) rData, True);
+  fft0(cResult, (Array<T> &) rData, true);
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput)
+fft0(Array<T> & rResult, Array<S> & cData, const bool constInput)
 {
   Array<S> cCopy;
   if (constInput) {
@@ -239,7 +239,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput)
   if (!rShape.isEqual(itsSize) || itsTransformType != FFTEnums::COMPLEXTOREAL) {
     resize(rShape, FFTEnums::COMPLEXTOREAL);
   }
-  Bool dataIsAcopy, resultIsAcopy;
+  bool dataIsAcopy, resultIsAcopy;
   S * dataPtr = cCopy.getStorage(dataIsAcopy);
   T *resultPtr = rResult.getStorage(resultIsAcopy);
 
@@ -257,12 +257,12 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput)
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<T> & rResult, const Array<S> & cData)
 {
-  fft0(rResult, (Array<S> &) cData, True);
+  fft0(rResult, (Array<S> &) cData, true);
 }
 
 
 template<class T, class S> void FFTServer<T,S>::
-fft0(Array<S> & cValues, const Bool toFrequency)
+fft0(Array<S> & cValues, const bool toFrequency)
 {
   // Early exit if the Array is all zero;
   if (allNearAbs(cValues, S(0), NumericTraits<S>::minimum)) {
@@ -279,7 +279,7 @@ fft0(Array<S> & cValues, const Bool toFrequency)
       resize(shape, FFTEnums::INVCOMPLEX);
     }
   }
-  Bool valuesIsAcopy;
+  bool valuesIsAcopy;
   S * complexPtr = cValues.getStorage(valuesIsAcopy);
 
   objcopy(&(itsWorkC2C[0]), complexPtr, itsWorkC2C.size());
@@ -297,7 +297,7 @@ fft0(Array<S> & cValues, const Bool toFrequency)
 
 
 template<class T, class S> void FFTServer<T,S>::
-fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency)
+fft0(Array<S> & cResult, const Array<S> & cData, const bool toFrequency)
 {
   if (cResult.nelements() != 0) {
     AlwaysAssert(cResult.conform(cData), AipsError);
@@ -346,13 +346,13 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
   }
   // See if the FFTServer size can be used to guess the output Array size;
   if (itsSize.nelements() == cDim) {
-    Bool match = True;
+    bool match = true;
     for (uInt i = 1; i < cDim; ++i) {
       if (itsSize(i) != cShape(i)) {
-	match = False;
+	match = false;
       }
     }
-    if (match == True && 
+    if (match == true && 
 	((itsSize(0) == 2*cShape(0) - 2) || (itsSize(0) == 2*cShape(0) - 1))) {
       return itsSize;
     }
@@ -363,7 +363,7 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
 }
 
 template<class T, class S> void FFTServer<T,S>::
-flip(Array<S> & cData, const Bool toZero, const Bool isHermitian)
+flip(Array<S> & cData, const bool toZero, const bool isHermitian)
 {
   const IPosition shape = cData.shape();
   const uInt ndim = shape.nelements();
@@ -377,9 +377,9 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian)
     for (uInt i = 0; i < ndim; ++i) {
       buffLen = max(buffLen, shape(i));
     }
-    itsBuffer.resize(buffLen, False, False);
+    itsBuffer.resize(buffLen, false, false);
   }
-  Bool dataIsAcopy;
+  bool dataIsAcopy;
   S * dataPtr = cData.getStorage(dataIsAcopy);
   S * buffPtr = itsBuffer.storage();
   S * rowPtr = 0;
@@ -427,7 +427,7 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian)
 }
 
 template<class T, class S> void FFTServer<T,S>::
-flip(Array<T> & rData, const Bool toZero, const Bool isHermitian)
+flip(Array<T> & rData, const bool toZero, const bool isHermitian)
 {
   const IPosition shape = rData.shape();
   const uInt ndim = shape.nelements();
@@ -441,9 +441,9 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian)
     for (uInt i = 0; i < ndim; ++i) {
       buffLen = max(buffLen, (shape(i)+1)/2);
     }
-    itsBuffer.resize(buffLen, False, False);
+    itsBuffer.resize(buffLen, false, false);
   }
-  Bool dataIsAcopy;
+  bool dataIsAcopy;
   T * dataPtr = rData.getStorage(dataIsAcopy);
   T * buffPtr = (T *) itsBuffer.storage();
   T * rowPtr = 0;
@@ -492,7 +492,7 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian)
 
 template<class T, class S> void FFTServer<T,S>::
 fftshift(Array<S> & cValues, const uInt& whichAxis,
-	 const Double& relshift, const Bool toFrequency)
+	 const Double& relshift, const bool toFrequency)
 {
   const IPosition arrayShape = cValues.shape();
   const uInt vsize = arrayShape[whichAxis];
@@ -506,7 +506,7 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
 
   const Complex exponent =  2.*M_PI*Complex(0.,1.)*relshift;
       
-  ArrayIterator<S> ait(cValues, IPosition(1,whichAxis), True); // axes are the cursor  
+  ArrayIterator<S> ait(cValues, IPosition(1,whichAxis), true); // axes are the cursor  
   while(!ait.pastEnd()){
     Array<S> cv = ait.array(); // reference
     fft0(cv, toFrequency);
@@ -519,12 +519,12 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fftshift(Array<S> & outValues, Array<Bool> & outFlags,
-	 const Array<S> & cValues, const Array<Bool> & inFlags,
+fftshift(Array<S> & outValues, Array<bool> & outFlags,
+	 const Array<S> & cValues, const Array<bool> & inFlags,
 	 const uInt& whichAxis, 
 	 const Double& relshift, 
-	 const Bool goodIsTrue,
-	 const Bool toFrequency){
+	 const bool goodIsTrue,
+	 const bool toFrequency){
 
   const IPosition arrayShape = cValues.shape();
   const Int vsize = arrayShape[whichAxis];
@@ -550,13 +550,13 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
 
   Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
   Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
-  Bool flagNeighbour = (numToFlag2<numToFlag);
+  bool flagNeighbour = (numToFlag2<numToFlag);
       
-  ArrayIterator<S> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
-  ArrayIterator<Bool> fait(outFlags, IPosition(1,whichAxis), True); // axes are the cursor  
+  ArrayIterator<S> ait(outValues, IPosition(1,whichAxis), true); // axes are the cursor  
+  ArrayIterator<bool> fait(outFlags, IPosition(1,whichAxis), true); // axes are the cursor  
   while(!ait.pastEnd()){
     Array<S> cv = ait.array(); // reference
-    Array<Bool> flags = fait.array(); // reference
+    Array<bool> flags = fait.array(); // reference
 
     // set flagged channels to average of neighbours to avoid ringing from sharp features
     if(flags(IPosition(1,0))!=goodIsTrue){ // first channel is flagged 
@@ -620,11 +620,11 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fftshift(Array<T> & outValues, Array<Bool> & outFlags,
-	 const Array<T> & rValues, const Array<Bool> & inFlags,
+fftshift(Array<T> & outValues, Array<bool> & outFlags,
+	 const Array<T> & rValues, const Array<bool> & inFlags,
 	 const uInt& whichAxis, 
 	 const Double& relshift, 
-	 const Bool goodIsTrue){
+	 const bool goodIsTrue){
 
   const IPosition arrayShape = rValues.shape();
   const Int vsize = arrayShape[whichAxis];
@@ -650,13 +650,13 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
 
   Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
   Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
-  Bool flagNeighbour = (numToFlag2<numToFlag);
+  bool flagNeighbour = (numToFlag2<numToFlag);
       
-  ArrayIterator<T> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
-  ArrayIterator<Bool> fait(outFlags, IPosition(1,whichAxis), True); // axes are the cursor  
+  ArrayIterator<T> ait(outValues, IPosition(1,whichAxis), true); // axes are the cursor  
+  ArrayIterator<bool> fait(outFlags, IPosition(1,whichAxis), true); // axes are the cursor  
   while(!ait.pastEnd()){
     Array<T> rv = ait.array(); // reference
-    Array<Bool> flags = fait.array(); // reference
+    Array<bool> flags = fait.array(); // reference
 
     // set flagged channels to average of neighbours to avoid ringing from sharp features
     if(flags(IPosition(1,0))!=goodIsTrue){ // first channel is flagged 

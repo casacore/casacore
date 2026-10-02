@@ -47,11 +47,11 @@ LCRegionFixed& LCRegionFixed::operator=(const LCRegionFixed& other) {
   return *this;
 }
 
-void LCRegionFixed::setMask(const Array<Bool>& mask) {
+void LCRegionFixed::setMask(const Array<bool>& mask) {
   itsMask = mask;
   setMaskPtr(itsMask);
 }
 
-const ArrayLattice<Bool>& LCRegionFixed::getMask() const { return itsMask; }
+const ArrayLattice<bool>& LCRegionFixed::getMask() const { return itsMask; }
 
 }  // namespace casacore

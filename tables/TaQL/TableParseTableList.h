@@ -61,7 +61,7 @@ class TableParsePair {
                  Int joinIndex = -1);
 
   // Test if shorthand matches. If also matches if the given shorthand is empty.
-  Bool test(const String& str) const { return (str.empty() || shorthand_p == str); }
+  bool test(const String& str) const { return (str.empty() || shorthand_p == str); }
 
   // Get the given table number (of $i tables in TempTables)
   Int tabnr() const { return tabnr_p; }
@@ -114,7 +114,7 @@ class TableParsePair {
 class TableParseTableList {
  public:
   // Is the FROM table list empty?
-  Bool empty() const { return itsFromTables.empty(); }
+  bool empty() const { return itsFromTables.empty(); }
 
   // Get the FROM tables.
   const std::vector<TableParsePair>& fromTables() const { return itsFromTables; }
@@ -136,7 +136,7 @@ class TableParseTableList {
   // <br>- As the shorthand name of another table which will be looked up in
   //       the stack of query objects.
   Table addTable(Int tabnr, const String& name, const Table& ttab, const String& shorthand,
-                 Bool addToFromList, const std::vector<const Table*>& tempTables,
+                 bool addToFromList, const std::vector<const Table*>& tempTables,
                  const std::vector<TableParseQuery*>& stack, Int joinsIndex = -1);
 
   // Replace the first Table object in the FROM list with the given one.
@@ -146,11 +146,11 @@ class TableParseTableList {
   // Optionally the WITH tables are searched as well.
   // If no shorthand is given, the first FROM table is returned (if there).
   // If not found, a TableParsePair with a null Table object is returned.
-  static TableParsePair findTable(const String& shorthand, Bool doWith,
+  static TableParsePair findTable(const String& shorthand, bool doWith,
                                   const std::vector<TableParseQuery*>& stack);
 
   // Try to find the Table for the given shorthand in the table list.
-  TableParsePair findTable(const String& shorthand, Bool doWith) const;
+  TableParsePair findTable(const String& shorthand, bool doWith) const;
 
   // Find the keyword given in the <src>name</src> parameter which is
   // split into its shorthand, column and/or keyword parts.
@@ -159,7 +159,7 @@ class TableParseTableList {
   // It is a helper function for handleSetKey, etc.
   // If update=True, rwKeywordSet() is used to ensure the table is updated.
   // An exception is thrown in case a name is not found.
-  TableRecord& findKeyword(const String& name, String& keyName, Bool update = True);
+  TableRecord& findKeyword(const String& name, String& keyName, bool update = true);
 
  private:
   // # Data members

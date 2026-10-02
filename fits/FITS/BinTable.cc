@@ -49,21 +49,21 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool isSDFitsColumn(FITS::ReservedName name) {
+bool isSDFitsColumn(FITS::ReservedName name) {
   if (name == FITS::AUTHOR || name == FITS::CDELT || name == FITS::CROTA || name == FITS::CRPIX ||
       name == FITS::CRVAL || name == FITS::CTYPE || name == FITS::DATE || name == FITS::DATE_OBS ||
       name == FITS::EPOCH || name == FITS::EQUINOX || name == FITS::INSTRUME ||
       name == FITS::OBJECT || name == FITS::OBSERVER || name == FITS::ORIGIN ||
       name == FITS::TELESCOP)
-    return True;
+    return true;
   else
-    return False;
+    return false;
 }
 
 //   The constructor
 
-BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, Bool useIncrSM,
-                         Bool sdfits)
+BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, bool useIncrSM,
+                         bool sdfits)
     : BinaryTableExtension(fitsin, errhandler),
       currRowTab(0),
       nelem(0),
@@ -263,7 +263,7 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, Bool us
     //               NOTE: VADESC are always assumed to be array columns
     //               but that fact is ignored by isArray - but thats ok,
     //               it is not used in that case.
-    Bool isArray = (nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR &&
+    bool isArray = (nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR &&
                     field(i).fieldtype() != FITS::STRING);
     //		switch on the type of column
     switch (field(i).fieldtype()) {
@@ -272,9 +272,9 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, Bool us
       case FITS::LOGICAL:
         if (isArray) {
           td.addColumn(
-              ArrayColumnDesc<Bool>(colname, "", IPosition(1, nelem[i]), ColumnDesc::Direct));
+              ArrayColumnDesc<bool>(colname, "", IPosition(1, nelem[i]), ColumnDesc::Direct));
         } else {
-          td.addColumn(ScalarColumnDesc<Bool>(colname, ""));
+          td.addColumn(ScalarColumnDesc<bool>(colname, ""));
         }
         break;
         //		BYTE stored as uChar
@@ -347,7 +347,7 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, Bool us
         switch (vatypes_p[i]) {
           case FITS::BIT:
           case FITS::LOGICAL:
-            td.addColumn(ArrayColumnDesc<Bool>(colname, ""));
+            td.addColumn(ArrayColumnDesc<bool>(colname, ""));
             break;
           case FITS::BYTE:
             td.addColumn(ArrayColumnDesc<uChar>(colname, ""));
@@ -388,7 +388,7 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, Bool us
     //		set the comment string if appropriate
     if (kwl(FITS::TTYPE, i)) td.rwColumnDesc(colname).comment() = kwl(FITS::TTYPE, i)->comm();
     //		for 0 element fields, set ZEROELEM keyword, Bool=True
-    if (nelem[i] == 0) td.rwColumnDesc(colname).rwKeywordSet().define("ZEROELEM", True);
+    if (nelem[i] == 0) td.rwColumnDesc(colname).rwKeywordSet().define("ZEROELEM", true);
     //		attach associated information
     //		Units
     td.rwColumnDesc(colname).rwKeywordSet().define("TUNIT", tunit(i));
@@ -422,7 +422,7 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, Bool us
     for (field = 0; field < kwSet.nfields(); field++) {
       switch (kwSet.type(field)) {
         case TpBool:
-          td.addColumn(ScalarColumnDesc<Bool>(kwSet.name(field), kwSet.comment(field)));
+          td.addColumn(ScalarColumnDesc<bool>(kwSet.name(field), kwSet.comment(field)));
           break;
         case TpUChar:
           td.addColumn(ScalarColumnDesc<uChar>(kwSet.name(field), kwSet.comment(field)));
@@ -489,12 +489,12 @@ void BinaryTable::fillRow() {
     switch (field(j).fieldtype()) {
       case FITS::LOGICAL: {
         FitsField<FitsLogical> thisfield = *(FitsField<FitsLogical> *)&field(j);
-        Vector<Bool> vec(nelem[j]);
+        Vector<bool> vec(nelem[j]);
         for (Int k = 0; k < nelem[j]; k++) {
           vec(k) = thisfield(k);
         }
         if (nelem[j] > 1) {
-          ArrayColumn<Bool> arrcol(tabcol);
+          ArrayColumn<bool> arrcol(tabcol);
           arrcol.put(0, vec);
         } else if (nelem[j] == 1) {
           tabcol.putScalar(0, vec(0));
@@ -502,12 +502,12 @@ void BinaryTable::fillRow() {
       } break;
       case FITS::BIT: {
         FitsField<FitsBit> thisfield = *(FitsField<FitsBit> *)&field(j);
-        Vector<Bool> vec(nelem[j]);
+        Vector<bool> vec(nelem[j]);
         for (uInt k = 0; k < field(j).nelements(); k++) {
           vec(k) = (int(thisfield(k)));
         }
         if (nelem[j] > 1) {
-          ArrayColumn<Bool> arrcol(tabcol);
+          ArrayColumn<bool> arrcol(tabcol);
           arrcol.put(0, vec);
         } else if (nelem[j] == 1) {
           tabcol.putScalar(0, vec(0));
@@ -680,11 +680,11 @@ void BinaryTable::fillRow() {
           case FITS::LOGICAL: {
             FitsLogical *vptr = (FitsLogical *)(vaptr_p[j]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
-            Vector<Bool> vec(thisva.num());
+            Vector<bool> vec(thisva.num());
             for (Int k = 0; k < thisva.num(); k++) {
               vec(k) = vptr[k];
             }
-            ArrayColumn<Bool> arrcol(tabcol);
+            ArrayColumn<bool> arrcol(tabcol);
             arrcol.put(0, vec);
           } break;
           case FITS::BIT: {
@@ -692,13 +692,13 @@ void BinaryTable::fillRow() {
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             // assumes 8 bits per uChar
             Int whichByte = -1;
-            Vector<Bool> vec(thisva.num());
+            Vector<bool> vec(thisva.num());
             uChar mask = 0200;
             for (Int k = 0; k < thisva.num(); k++) {
               if (k % 8 == 0) whichByte++;
               vec(k) = (vptr[whichByte] & (mask >> k % 8));
             }
-            ArrayColumn<Bool> arrcol(tabcol);
+            ArrayColumn<bool> arrcol(tabcol);
             arrcol.put(0, vec);
           } break;
           case FITS::BYTE: {
@@ -924,7 +924,7 @@ BinaryTable::~BinaryTable() {
 }
 
 Table BinaryTable::fullTable(const String &tabname, const Table::TableOption taboptn,
-                             Bool useIncrSM) {
+                             bool useIncrSM) {
   SetupNewTable newtab(tabname, getDescriptor(), taboptn);
   if (useIncrSM) {
     IncrementalStMan stman("ISM");

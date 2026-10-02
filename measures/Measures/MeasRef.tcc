@@ -91,18 +91,18 @@ MeasRef<Ms>::~MeasRef() = default;
 
 // # Operators
 template <class Ms>
-Bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
+bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
   return (rep_p == other.rep_p);
 }
 
 template <class Ms>
-Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
+bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
   return (rep_p != other.rep_p);
 }
 
 // # Member functions
 template <class Ms>
-Bool MeasRef<Ms>::empty() const {
+bool MeasRef<Ms>::empty() const {
   return !rep_p;
 }
 

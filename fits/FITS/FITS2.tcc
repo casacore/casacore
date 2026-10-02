@@ -38,19 +38,19 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class StorageType>
-void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, Bool &ok,
+void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, bool &ok,
                 String &ErrorMessage, String *unitName, Vector<String> *axisNames,
                 Vector<Float> *refPixel, Vector<Float> *refLocation, Vector<Float> *delta,
                 std::map<String, Double> *keywords, String *objectName) {
   IPosition shape;
-  Bool deleteIt;
+  bool deleteIt;
 
   shape.resize(fitsdata.dims());
   for (uInt i = 0; i < shape.nelements(); i++) shape(i) = fitsdata.dim(i);
   data.resize(shape);
   if (fitsdata.read() != Int(data.nelements())) {
     ErrorMessage = "Could not real all data";
-    ok = False;
+    ok = false;
     return;
   }
   Float *storage = data.getStorage(deleteIt);

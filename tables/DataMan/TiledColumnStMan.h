@@ -182,7 +182,7 @@ class TiledColumnStMan : public TiledStMan {
   virtual DataManager* clone() const;
 
   // TiledColumnStMan can always access a column.
-  virtual Bool canAccessColumn() const;
+  virtual bool canAccessColumn() const;
 
   // Get the type name of the data manager (i.e. TiledColumnStMan).
   virtual String dataManagerType() const;
@@ -216,14 +216,14 @@ class TiledColumnStMan : public TiledStMan {
 
   // Flush and optionally fsync the data.
   // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool fsync);
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
   virtual void create64(rownr_t nrrow);
 
   // Read the header info.
-  virtual void readHeader(rownr_t nrrow, Bool firstTime);
+  virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // # Declare data members.
   IPosition tileShape_p;

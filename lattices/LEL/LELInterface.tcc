@@ -62,9 +62,9 @@ LELArray<T> LELInterface<T>::getArray() const {
 }
 
 template <class T>
-Bool LELInterface<T>::replaceScalarExpr(std::shared_ptr<LELInterface<T>>& expr) {
+bool LELInterface<T>::replaceScalarExpr(std::shared_ptr<LELInterface<T>>& expr) {
   // Recursively prepare (optimize) a scalar subexpression
-  Bool isInvalidScalar = expr->prepareScalarExpr();
+  bool isInvalidScalar = expr->prepareScalarExpr();
   // If the value is a valid scalar expression, replace it by its result
   // (which can be an invalid scalar in itself).
   if (!isInvalidScalar && expr->isScalar()) {
@@ -72,7 +72,7 @@ Bool LELInterface<T>::replaceScalarExpr(std::shared_ptr<LELInterface<T>>& expr) 
     if (tmp.mask()) {
       expr = std::make_shared<LELUnaryConst<T>>(tmp.value());
     } else {
-      isInvalidScalar = True;
+      isInvalidScalar = true;
     }
   }
   // If the value is an invalid scalar expression, replace by scalar
@@ -84,14 +84,14 @@ Bool LELInterface<T>::replaceScalarExpr(std::shared_ptr<LELInterface<T>>& expr) 
 }
 
 template <class T>
-Bool LELInterface<T>::lock(FileLocker::LockType, uInt) {
-  return True;
+bool LELInterface<T>::lock(FileLocker::LockType, uInt) {
+  return true;
 }
 template <class T>
 void LELInterface<T>::unlock() {}
 template <class T>
-Bool LELInterface<T>::hasLock(FileLocker::LockType) const {
-  return True;
+bool LELInterface<T>::hasLock(FileLocker::LockType) const {
+  return true;
 }
 template <class T>
 void LELInterface<T>::resync() {}

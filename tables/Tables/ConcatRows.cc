@@ -44,7 +44,7 @@ void ConcatRows::findRownr(rownr_t rownr) const {
     throw TableError("ConcatTable: rownr " + std::to_string(rownr) +
                      " past nr of rows (=" + std::to_string(itsRows[itsNTable]) + ')');
   }
-  Bool found;
+  bool found;
   Int inx = binarySearchBrackets(found, itsRows, rownr, itsNTable);
   if (!found) {
     inx--;
@@ -72,9 +72,9 @@ ConcatRowsIter::ConcatRowsIter(const ConcatRows& rows, rownr_t start, rownr_t en
       itsIncr(incr),
       itsTabNr(0) {
   if (itsStart >= itsEnd) {
-    itsPastEnd = True;
+    itsPastEnd = true;
   } else {
-    itsPastEnd = False;
+    itsPastEnd = false;
     rows.mapRownr(itsTabNr, itsChunk[0], start);
     itsChunk[1] = std::min(rows[itsTabNr], itsEnd) - 1 - rows[itsTabNr - 1];
     itsChunk[2] = itsIncr;
@@ -84,7 +84,7 @@ ConcatRowsIter::ConcatRowsIter(const ConcatRows& rows, rownr_t start, rownr_t en
 void ConcatRowsIter::next() {
   if (!itsPastEnd) {
     if (itsTabNr + 1 >= itsRows->ntable() || (*itsRows)[itsTabNr] >= itsEnd) {
-      itsPastEnd = True;
+      itsPastEnd = true;
     } else {
       itsChunk[0] = 0;
       if (itsIncr != 1) {

@@ -153,7 +153,7 @@ class MultiFile : public MultiFileBase {
   // <br>If useCRC=True, 32-bit CRC values are calculated and stored for
   // each data block. Note that useCRC is only used for new files.
   explicit MultiFile(const String& name, ByteIO::OpenOption, Int blockSize = 0,
-                     Bool useODirect = False, Bool useCRC = False);
+                     bool useODirect = false, bool useCRC = false);
 
   // Open or create a MultiFile with the given name which is nested in the
   // given parent. Thus data are read/written in the parent file.
@@ -233,7 +233,7 @@ class MultiFile : public MultiFileBase {
   void writeHeader() override;
   // Read the header info. If always==False, the info is only read if the
   // header counter has changed.
-  void readHeader(Bool always = True) override;
+  void readHeader(bool always = true) override;
   // Extend the virtual file to fit lastblk.
   void extend(MultiFileInfo& info, Int64 lastblk) override;
 
@@ -246,7 +246,7 @@ class MultiFile : public MultiFileBase {
   uInt calcCRC(const void* buffer, Int64 size) const;
   // Extend the virtual file to fit lastblk.
   // Optionally the free blocks are not used.
-  virtual void extendVF(MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks);
+  virtual void extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks);
   // Write a data block.
   void writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) override;
   // Read a data block.
@@ -261,7 +261,7 @@ class MultiFile : public MultiFileBase {
   MultiFileInfo itsHdrCont[2];
   uInt itsNrContUsed[2];  // nr of cont.blocks actually used
   uInt itsHdrContInx;     // Continuation set last used (0 or 1)
-  Bool itsUseCRC;
+  bool itsUseCRC;
   std::vector<uInt> itsCRC;       // CRC value per block (empty if useCRC=False)
   std::unique_ptr<ByteIO> itsIO;  // A regular file or nested MFFileIO
 };

@@ -409,7 +409,7 @@ class LSQFit {
   //  parallel, the equations are degenerate).
   //  If <src>doSVD</src> is given as False, False is returned if rank not
   //  maximal, else an <src>SVD</src> solution is done.
-  Bool invert(uInt &nRank, Bool doSVD = False);
+  bool invert(uInt &nRank, bool doSVD = false);
   // Copy date from beg to end; converting if necessary to complex data
   // <group>
   template <class U>
@@ -456,17 +456,17 @@ class LSQFit {
   // The <src>sol</src> is used for both input (parameter guess) and output.
   // <group>
   template <class U>
-  Bool solveLoop(uInt &nRank, U *sol, Bool doSVD = False);
+  bool solveLoop(uInt &nRank, U *sol, bool doSVD = false);
   template <class U>
-  Bool solveLoop(uInt &nRank, std::complex<U> *sol, Bool doSVD = False);
+  bool solveLoop(uInt &nRank, std::complex<U> *sol, bool doSVD = false);
   template <class U>
-  Bool solveLoop(uInt &nRank, U &sol, Bool doSVD = False);
+  bool solveLoop(uInt &nRank, U &sol, bool doSVD = false);
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, U *sol, Bool doSVD = False);
+  bool solveLoop(Double &fit, uInt &nRank, U *sol, bool doSVD = false);
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, Bool doSVD = False);
+  bool solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, bool doSVD = false);
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, U &sol, Bool doSVD = False);
+  bool solveLoop(Double &fit, uInt &nRank, U &sol, bool doSVD = false);
   // </group>
   // Make normal equations using the <src>cEq</src> condition equation (cArray)
   // (with <src>nUnknowns</src> elements) and a weight <src>weight</src>,
@@ -507,88 +507,88 @@ class LSQFit {
   // on Solaris. Linux was ok.
   // <group>
   template <class U, class V>
-  void makeNorm(const V &cEq, const U &weight, const U &obs, Bool doNorm = True,
-                Bool doKnown = True);
+  void makeNorm(const V &cEq, const U &weight, const U &obs, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V>
-  void makeNorm(const V &cEq, const U &weight, const U &obs, LSQFit::Real, Bool doNorm = True,
-                Bool doKnown = True);
+  void makeNorm(const V &cEq, const U &weight, const U &obs, LSQFit::Real, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V>
-  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, Bool doNorm = True,
-                Bool doKnown = True);
+  void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V>
   void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Complex,
-                Bool doNorm = True, Bool doKnown = True);
+                bool doNorm = true, bool doKnown = true);
   template <class U, class V>
   void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Separable,
-                Bool doNorm = True, Bool doKnown = True);
+                bool doNorm = true, bool doKnown = true);
   template <class U, class V>
   void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::AsReal,
-                Bool doNorm = True, Bool doKnown = True);
+                bool doNorm = true, bool doKnown = true);
   template <class U, class V>
   void makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Conjugate,
-                Bool doNorm = True, Bool doKnown = True);
+                bool doNorm = true, bool doKnown = true);
   //
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                Bool doNorm = True, Bool doKnown = True);
+                bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
-                const U &obs, const U &obs2, Bool doNorm = True, Bool doKnown = True);
+                const U &obs, const U &obs2, bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                LSQFit::Real, Bool doNorm = True, Bool doKnown = True);
+                LSQFit::Real, bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                const std::complex<U> &obs, Bool doNorm = True, Bool doKnown = True);
+                const std::complex<U> &obs, bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::Complex, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::Complex, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::Separable, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::Separable, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::AsReal, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::AsReal, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::Conjugate, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::Conjugate, bool doNorm = true,
+                bool doKnown = true);
   //
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight, const U &obs,
-                Bool doNorm = True, Bool doKnown = True);
+                bool doNorm = true, bool doKnown = true);
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight, const U &obs,
-                LSQFit::Real, Bool doNorm = True, Bool doKnown = True);
+                LSQFit::Real, bool doNorm = true, bool doKnown = true);
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                const std::complex<U> &obs, Bool doNorm = True, Bool doKnown = True);
+                const std::complex<U> &obs, bool doNorm = true, bool doKnown = true);
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::Complex, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::Complex, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::Separable, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::Separable, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::AsReal, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::AsReal, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V>
   void makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                const std::complex<U> &obs, LSQFit::Conjugate, Bool doNorm = True,
-                Bool doKnown = True);
+                const std::complex<U> &obs, LSQFit::Conjugate, bool doNorm = true,
+                bool doKnown = true);
   //
   template <class U, class V, class W>
   void makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                      Bool doNorm = True, Bool doKnown = True);
+                      bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
   void makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
-                      const U &obs, const U &obs2, Bool doNorm = True, Bool doKnown = True);
+                      const U &obs, const U &obs2, bool doNorm = true, bool doKnown = true);
   // </group>
   // Get the <src>n-th</src> (from 0 to the rank deficiency, or missing rank,
   // see e.g. <src>getDeficiency()</src>)
@@ -599,11 +599,11 @@ class LSQFit {
   // rank as returned from the <src>invert()</src> method.
   // <group>
   template <class U>
-  Bool getConstraint(uInt n, U *cEq) const;
+  bool getConstraint(uInt n, U *cEq) const;
   template <class U>
-  Bool getConstraint(uInt n, std::complex<U> *cEq) const;
+  bool getConstraint(uInt n, std::complex<U> *cEq) const;
   template <class U>
-  Bool getConstraint(uInt n, U &cEq) const;
+  bool getConstraint(uInt n, U &cEq) const;
   // </group>
   // Add a new constraint equation (updating nConstraints); or set a
   // numbered constraint equation (0..nConstraints-1). False if illegal
@@ -615,22 +615,22 @@ class LSQFit {
   // <a href="../notes/224.html">Note 224</a>).
   // <group>
   template <class U, class V>
-  Bool setConstraint(uInt n, const V &cEq, const U &obs);
+  bool setConstraint(uInt n, const V &cEq, const U &obs);
   template <class U, class V>
-  Bool setConstraint(uInt n, const V &cEq, const std::complex<U> &obs);
+  bool setConstraint(uInt n, const V &cEq, const std::complex<U> &obs);
   template <class U, class V, class W>
-  Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs);
+  bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs);
   template <class U, class V, class W>
-  Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq,
+  bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq,
                      const std::complex<U> &obs);
   template <class U, class V>
-  Bool addConstraint(const V &cEq, const U &obs);
+  bool addConstraint(const V &cEq, const U &obs);
   template <class U, class V>
-  Bool addConstraint(const V &cEq, const std::complex<U> &obs);
+  bool addConstraint(const V &cEq, const std::complex<U> &obs);
   template <class U, class V, class W>
-  Bool addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs);
+  bool addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs);
   template <class U, class V, class W>
-  Bool addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const std::complex<U> &obs);
+  bool addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const std::complex<U> &obs);
   // </group>
   // Merge other <src>LSQFit</src> object (i.e. the normal equation and
   // related information) into <src>this</src>. Both objects must have the
@@ -646,15 +646,15 @@ class LSQFit {
   // them in pairs (and repeat).
   // </note>
   // <group>
-  Bool merge(const LSQFit &other);
-  Bool merge(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
+  bool merge(const LSQFit &other);
+  bool merge(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
     return mergeIt(other, nIndex, nEqIndex);
   }
-  Bool merge(const LSQFit &other, uInt nIndex, const std::vector<uInt> &nEqIndex) {
+  bool merge(const LSQFit &other, uInt nIndex, const std::vector<uInt> &nEqIndex) {
     return mergeIt(other, nIndex, &nEqIndex[0]);
   }
   template <class W>
-  Bool merge(const LSQFit &other, uInt nIndex, const W &nEqIndex) {
+  bool merge(const LSQFit &other, uInt nIndex, const W &nEqIndex) {
     std::vector<uInt> ix(nIndex);
     for (uInt i = 0; i < nIndex; ++i) ix[i] = nEqIndex[i];
     return mergeIt(other, nIndex, &ix[0]);
@@ -689,7 +689,7 @@ class LSQFit {
   // Get number of iterations done
   uInt nIterations() const { return (maxiter_p > 0 ? maxiter_p - niter_p : 0); };
   // Set the expected form of the normal equations
-  void setBalanced(Bool balanced = False) { balanced_p = balanced; };
+  void setBalanced(bool balanced = false) { balanced_p = balanced; };
   // Ask the state of the non-linear solutions
   // <group>
   LSQFit::ReadyCode isReady() const { return ready_p; };
@@ -698,18 +698,18 @@ class LSQFit {
   // Get the covariance matrix (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>
-  Bool getCovariance(U *covar);
+  bool getCovariance(U *covar);
   template <class U>
-  Bool getCovariance(std::complex<U> *covar);
+  bool getCovariance(std::complex<U> *covar);
   // </group>
   // Get main diagonal of covariance function (of size <src>nUnknowns</src>)
   // <group>
   template <class U>
-  Bool getErrors(U *errors);
+  bool getErrors(U *errors);
   template <class U>
-  Bool getErrors(std::complex<U> *errors);
+  bool getErrors(std::complex<U> *errors);
   template <class U>
-  Bool getErrors(U &errors);
+  bool getErrors(U &errors);
   // </group>
   // Get the number of unknowns
   uInt nUnknowns() const { return nun_p; };
@@ -754,13 +754,13 @@ class LSQFit {
   // returned if an invalid record is given. A valid record will return True.
   // Error messages are postfixed to error.
   // <group>
-  Bool fromRecord(String &error, const RecordInterface &in);
+  bool fromRecord(String &error, const RecordInterface &in);
   // </group>
   // Create a record from an LSQFit object.
   // The return will be False and an error
   // message generated only if the object does not contain a valid object.
   // Error messages are postfixed to error.
-  Bool toRecord(String &error, RecordInterface &out) const;
+  bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   const String &ident() const;
   //
@@ -834,7 +834,7 @@ class LSQFit {
   Double epsder_p;
   // Indicator for a well balanced normal equation. A balanced equation is
   // one with similar values in the main diagonal.
-  Bool balanced_p;
+  bool balanced_p;
   // Maximum number of iterations for non-linear solution. If a non-zero
   // maximum number of iterations is set, the value is tested in non-linear
   // loops
@@ -902,24 +902,24 @@ class LSQFit {
   // Solve normal equations
   void solveIt();
   // One non-linear LM loop
-  Bool solveItLoop(Double &fit, uInt &nRank, Bool doSVD = False);
+  bool solveItLoop(Double &fit, uInt &nRank, bool doSVD = false);
   // Solve missing rank part
   void solveMR(uInt nin);
   // Invert rectangular matrix (i.e. when constraints present)
-  Bool invertRect();
+  bool invertRect();
   // Get the norm of the current solution vector
   Double normSolution(const Double *sol) const;
   // Get the infinite norm of the known vector
   Double normInfKnown(const Double *known) const;
   // Merge sparse normal equations
-  Bool mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex);
+  bool mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex);
   // Save current status (or part)
-  void save(Bool all = True);
+  void save(bool all = true);
   // Restore current status
-  void restore(Bool all = True);
+  void restore(bool all = true);
   // Copy data. If all False, only the relevant data for non-linear
   // solution are copied (normal equations, knows and errors).
-  void copy(const LSQFit &other, Bool all = True);
+  void copy(const LSQFit &other, bool all = true);
   // Extend the constraint equation area to the specify number of
   // equations.
   void extendConstraints(uInt n);

@@ -88,7 +88,7 @@ FunctionOrder<T> &FunctionOrder<T>::operator=(const FunctionOrder<T> &other) {
 // # Member functions
 template <class T>
 Int &FunctionOrder<T>::getInt(const uInt n) {
-  if (n >= int_p.nelements()) int_p.resize(n + 1, True);
+  if (n >= int_p.nelements()) int_p.resize(n + 1, true);
   return int_p[n];
 }
 
@@ -99,7 +99,7 @@ const Int &FunctionOrder<T>::getInt(const uInt n) const {
 
 template <class T>
 T &FunctionOrder<T>::getPar(const uInt n) {
-  if (n >= double_p.nelements()) double_p.resize(n + 1, True);
+  if (n >= double_p.nelements()) double_p.resize(n + 1, true);
   return double_p[n];
 }
 
@@ -120,7 +120,7 @@ const String &FunctionOrder<T>::getString() const {
 
 template <class T>
 T &FunctionOrder<T>::getScale(const uInt n) {
-  if (n >= scale_p.nelements()) scale_p.resize(n + 1, True);
+  if (n >= scale_p.nelements()) scale_p.resize(n + 1, true);
   return scale_p[n];
 }
 
@@ -131,7 +131,7 @@ const T &FunctionOrder<T>::getScale(const uInt n) const {
 
 template <class T>
 T &FunctionOrder<T>::getCenter(const uInt n) {
-  if (n >= center_p.nelements()) center_p.resize(n + 1, True);
+  if (n >= center_p.nelements()) center_p.resize(n + 1, true);
   return center_p[n];
 }
 
@@ -142,7 +142,7 @@ const T &FunctionOrder<T>::getCenter(const uInt n) const {
 
 template <class T>
 T &FunctionOrder<T>::getWidth(const uInt n) {
-  if (n >= width_p.nelements()) width_p.resize(n + 1, True);
+  if (n >= width_p.nelements()) width_p.resize(n + 1, true);
   return width_p[n];
 }
 
@@ -158,7 +158,7 @@ const Function<T> &FunctionOrder<T>::getFunction(const uInt n) const {
 
 template <class T>
 void FunctionOrder<T>::setFunction(const uInt n, Function<T> &other) {
-  if (n >= function_p.nelements()) function_p.resize(n + 1, True);
+  if (n >= function_p.nelements()) function_p.resize(n + 1, true);
   delete function_p[n];
   function_p[n] = other.clone();
 }
@@ -207,24 +207,24 @@ ostream &FunctionOrder<T>::print(ostream &os) const {
 }
 
 template <class T>
-Bool FunctionOrder<T>::fromRecord(String &, const RecordInterface &in) {
+bool FunctionOrder<T>::fromRecord(String &, const RecordInterface &in) {
   if (in.isDefined(String("ord"))) in.get(RecordFieldId("ord"), int_p);
   if (in.isDefined(String("par"))) in.get(RecordFieldId("par"), double_p);
   if (in.isDefined(String("str"))) in.get(RecordFieldId("str"), string_p);
   if (in.isDefined(String("sca"))) in.get(RecordFieldId("sca"), scale_p);
   if (in.isDefined(String("cen"))) in.get(RecordFieldId("cen"), center_p);
   if (in.isDefined(String("wid"))) in.get(RecordFieldId("wid"), width_p);
-  return True;
+  return true;
 }
 
 template <class T>
-Bool FunctionOrder<T>::fromString(String &, const String &in) {
+bool FunctionOrder<T>::fromString(String &, const String &in) {
   string_p = in;
-  return True;
+  return true;
 }
 
 template <class T>
-Bool FunctionOrder<T>::toRecord(String &, RecordInterface &out) const {
+bool FunctionOrder<T>::toRecord(String &, RecordInterface &out) const {
   out.define(RecordFieldId("ord"), int_p);
   out.define(RecordFieldId("par"), double_p);
   out.define(RecordFieldId("str"), string_p);
@@ -232,7 +232,7 @@ Bool FunctionOrder<T>::toRecord(String &, RecordInterface &out) const {
   out.define(RecordFieldId("cen"), center_p);
   out.define(RecordFieldId("wid"), width_p);
   /// Add the functionals!!
-  return True;
+  return true;
 }
 
 template <class T>

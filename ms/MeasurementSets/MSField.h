@@ -87,7 +87,7 @@ class MSField : public MSFieldEnums, public MSTable<MSFieldEnums> {
   // <group name=tableLikeConstructors>
   MSField(const String &tableName, TableOption = Table::Old);
   MSField(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSField(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSField(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSField(const Table &table);
   MSField(const MSField &other);
   // </group>
@@ -118,12 +118,12 @@ class MSField : public MSFieldEnums, public MSTable<MSFieldEnums> {
   // If any tables of the same id exist already, they are removed beforehand.
   // The optional EPHEMERIS_ID column is added if it doesn't exist, yet.
   // Return False in case of errors.
-  Bool addEphemeris(const uInt id, const String &inputEphemTableName, const String &comment);
+  bool addEphemeris(const uInt id, const String &inputEphemTableName, const String &comment);
 
   // Remove (delete) any ephemeris tables with given id (without changes to
   // the EPHEMERIS_ID column).
   // Return False in case of errors (but True if the id didn't exist).
-  Bool removeEphemeris(const uInt id);
+  bool removeEphemeris(const uInt id);
 
   // Initialize the statics appropriately. This does not need to be
   // called by users, it is called by the implementation class
@@ -132,7 +132,7 @@ class MSField : public MSFieldEnums, public MSTable<MSFieldEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

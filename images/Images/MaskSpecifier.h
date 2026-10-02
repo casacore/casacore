@@ -66,25 +66,25 @@ class MaskSpecifier {
  public:
   // Default constructor.
   // It tells if the default mask should or no mask be used.
-  MaskSpecifier(Bool useDefaultMask = True) : itsFlag(useDefaultMask) {}
+  MaskSpecifier(bool useDefaultMask = true) : itsFlag(useDefaultMask) {}
 
   // Construct from a string.
   // It tells to use an alternative mask. An empty name means no mask.
   // # Note the const Char* constructor is needed, otherwise "name"
   // # is converted to a Bool by the compiler.
   // <group>
-  MaskSpecifier(const Char* maskName) : itsFlag(False), itsName(maskName) {}
-  MaskSpecifier(const String& maskName) : itsFlag(False), itsName(maskName) {}
+  MaskSpecifier(const Char* maskName) : itsFlag(false), itsName(maskName) {}
+  MaskSpecifier(const String& maskName) : itsFlag(false), itsName(maskName) {}
   // </group>
 
   // Give the flag or name.
   // <group>
-  Bool useDefault() const { return itsFlag; }
+  bool useDefault() const { return itsFlag; }
   const String& name() const { return itsName; }
   // </group>
 
  private:
-  Bool itsFlag;
+  bool itsFlag;
   String itsName;
 };
 

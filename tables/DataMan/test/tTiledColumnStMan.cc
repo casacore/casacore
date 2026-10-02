@@ -56,18 +56,18 @@
 // compares the results with the reference output file.
 
 void writeFixed(const TSMOption&);
-void readTable(const TSMOption&, Bool readKeys);
+void readTable(const TSMOption&, bool readKeys);
 void writeNoHyper(const TSMOption&);
 void extendOnly(const TSMOption&);
 
 int main() {
   try {
     writeFixed(TSMOption::Cache);
-    readTable(TSMOption::MMap, True);
+    readTable(TSMOption::MMap, true);
     writeNoHyper(TSMOption::MMap);
-    readTable(TSMOption::Buffer, False);
+    readTable(TSMOption::Buffer, false);
     writeFixed(TSMOption::Buffer);
-    readTable(TSMOption::Cache, False);
+    readTable(TSMOption::Cache, false);
     extendOnly(TSMOption::Cache);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
@@ -95,7 +95,7 @@ void writeFixed(const TSMOption& tsmOpt) {
   newtab.setShapeColumn("Freq", IPosition(1, 20));
   newtab.setShapeColumn("Data", IPosition(2, 16, 20));
   newtab.bindAll(sm1);
-  Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+  Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
 
   Vector<float> freqValues(20);
   Vector<float> polValues(16);
@@ -156,7 +156,7 @@ void writeFixed(const TSMOption& tsmOpt) {
   AlwaysAssertExit(accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
 
-void readTable(const TSMOption& tsmOpt, Bool readKeys) {
+void readTable(const TSMOption& tsmOpt, bool readKeys) {
   Table table("tTiledColumnStMan_tmp.data", Table::Old, tsmOpt);
   ROTiledStManAccessor accessor(table, "TSMExample");
   ArrayColumn<float> freq(table, "Freq");
@@ -353,7 +353,7 @@ void writeNoHyper(const TSMOption& tsmOpt) {
   newtab.setShapeColumn("Data", IPosition(2, 16, 20));
   newtab.bindColumn("Data", sm1);
   newtab.bindColumn("Weight", sm1);
-  Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+  Table table(newtab, 0, false, Table::BigEndian, tsmOpt);
 
   Vector<float> freqValues(20);
   Vector<float> polValues(16);
@@ -425,7 +425,7 @@ void extendOnly(const TSMOption& tsmOpt) {
   // Create a storage manager for it.
   TiledColumnStMan sm1("TSMExample", IPosition(3, 5, 6, 1));
   newtab.bindColumn("Weight", sm1);
-  Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
+  Table table(newtab, 0, false, Table::LocalEndian, tsmOpt);
 
   ArrayColumn<float> weight(table, "Weight");
   uInt i;

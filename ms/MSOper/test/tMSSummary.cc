@@ -42,9 +42,9 @@ void testSumm() {
   MeasurementSet ms("tMSSummary_tmp.MS", Table::Old);
   MSSummary mss(ms);
   std::ostringstream ostr;
-  LogSink logsink(LogMessage::NORMAL, &ostr, False);
+  LogSink logsink(LogMessage::NORMAL, &ostr, false);
   LogIO os(logsink);
-  mss.list(os, True);
+  mss.list(os, true);
   // Remove the extra fields (time, severity) from the output string.
   String str(ostr.str());
   RegexReplaceAll(str, Regex(".*\tINFO\t[+]?\t"), "");

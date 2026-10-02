@@ -132,7 +132,7 @@ class Primes {
  public:
   // This function takes number and returns "True" if number is prime, "False"
   // if it is not.
-  static Bool isPrime(uInt number);
+  static bool isPrime(uInt number);
 
   // This function returns the closest integer larger than number from the
   // table of primes.  If there is no entry in the table of primes which is

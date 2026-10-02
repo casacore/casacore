@@ -250,12 +250,12 @@ void doit(TabularCoordinate& lc, const String& axisName, const String& axisUnit)
   //
   Int prec;
   Coordinate::formatType fType = Coordinate::SCIENTIFIC;
-  lc.getPrecision(prec, fType, True, 6, 4, 2);
+  lc.getPrecision(prec, fType, true, 6, 4, 2);
   if (prec != 6) {
     throw(AipsError("Failed getPrecision test 1"));
   }
   fType = Coordinate::FIXED;
-  lc.getPrecision(prec, fType, True, 6, 4, 2);
+  lc.getPrecision(prec, fType, true, 6, 4, 2);
   if (prec != 4) {
     throw(AipsError("Failed getPrecision test 2"));
   }
@@ -263,13 +263,13 @@ void doit(TabularCoordinate& lc, const String& axisName, const String& axisUnit)
   String unit;
   Double val = 20.12345;
   Quantum<Double> valq(val, Unit(units(0)));
-  String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
-  String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0, True, True, 4);
+  String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
+  String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0, true, true, 4);
   if (str != "20.1234" || str2 != "20.1234") {
     throw(AipsError("Failed format test 1"));
   }
-  str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, True, True, 4);
-  str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, True, True, 4);
+  str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, true, true, 4);
+  str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, true, true, 4);
   if (str != "2.0123e+01" || str2 != "2.0123e+01") {
     throw(AipsError("Failed format test 2"));
   }
@@ -383,7 +383,7 @@ void doitLinear(const Double refVal, const Double refPix, const Double incr, con
   //
   {
     AlwaysAssert(lc.nPixelAxes() == 1, AipsError);
-    Vector<Bool> axes(1, True);
+    Vector<bool> axes(1, true);
     Vector<Int> shape(1);
     shape(0) = 128;
 
@@ -418,7 +418,7 @@ void doitLinear(const Double refVal, const Double refPix, const Double incr, con
     // No axes
 
     {
-      axes.set(False);
+      axes.set(false);
       Coordinate* pC = lc.makeFourierCoordinate(axes, shape);
       if (pC) {
         delete pC;
@@ -494,7 +494,7 @@ void doitNonLinear(const Vector<Double>& pixelValues, const Vector<Double>& worl
   // Fourier
 
   {
-    Vector<Bool> axes(lc.nPixelAxes(), True);
+    Vector<bool> axes(lc.nPixelAxes(), true);
     Vector<Int> shape(lc.nPixelAxes(), 10);
     Coordinate* pC = lc.makeFourierCoordinate(axes, shape);
     if (pC) {

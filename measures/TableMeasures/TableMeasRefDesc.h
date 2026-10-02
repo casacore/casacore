@@ -200,26 +200,26 @@ class TableMeasRefDesc {
   uInt getRefCode() const { return itsRefCode; }
 
   // Is the reference variable?
-  Bool isRefCodeVariable() const { return (!itsColumn.empty()); }
+  bool isRefCodeVariable() const { return (!itsColumn.empty()); }
 
   // Return the name of its variable reference code column.
   const String& columnName() const { return itsColumn; }
 
   // Is the reference code variable and stored in an integer column?
-  Bool isRefCodeColumnInt() const { return itsRefCodeColInt; }
+  bool isRefCodeColumnInt() const { return itsRefCodeColInt; }
 
   // Do the keywords contain the reference codes and types.
   // For old tables this might not be the case.
-  Bool hasRefTab() const { return itsHasRefTab; }
+  bool hasRefTab() const { return itsHasRefTab; }
 
   // Returns True if the reference has an offset.
-  Bool hasOffset() const { return (itsOffset != 0); }
+  bool hasOffset() const { return (itsOffset != 0); }
 
   // Returns True if the offset is variable.
-  Bool isOffsetVariable() const { return (itsOffset != 0 ? itsOffset->isVariable() : False); }
+  bool isOffsetVariable() const { return (itsOffset != 0 ? itsOffset->isVariable() : false); }
 
   // Returns True is the offset is variable and it is an ArrayMeasColumn.
-  Bool isOffsetArray() const { return (itsOffset != 0 ? itsOffset->isArray() : False); }
+  bool isOffsetArray() const { return (itsOffset != 0 ? itsOffset->isArray() : false); }
 
   // Return the fixed Measure offset.
   // It does not test if the offset is defined; hasOffset() should be used
@@ -275,9 +275,9 @@ class TableMeasRefDesc {
   // The name of column containing its variable references.
   String itsColumn;
   // Is the reference code column a string column?
-  Bool itsRefCodeColInt;
+  bool itsRefCodeColInt;
   // Do the keywords contain the reference codes and types?
-  Bool itsHasRefTab;
+  bool itsHasRefTab;
   // # Its reference offset.
   TableMeasOffsetDesc* itsOffset;
   // # Define the vectors holding the measref codes and types.

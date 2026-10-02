@@ -44,7 +44,7 @@ namespace casacore {
 // analogous methods in this class (and the methods in StatisticsAlgorithm also
 // do necessary bookkeeping for the StatisticsAlgorithm and derived objects).
 
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class StatisticsDataset {
  public:
@@ -60,7 +60,7 @@ class StatisticsDataset {
     uInt dataStride;
     // associated ranges. If nullptr, then there are none. If not, the
     // second member of the pair indicates if they are include ranges.
-    std::unique_ptr<std::pair<DataRanges, Bool>> ranges;
+    std::unique_ptr<std::pair<DataRanges, bool>> ranges;
     // associated mask. If nullptr, then there is no mask.
     // If there is a mask, the second member is the mask stride.
     std::unique_ptr<std::pair<MaskIterator, uInt>> mask;
@@ -96,37 +96,37 @@ class StatisticsDataset {
   // and it is considered bad (excluded) if <src>isInclude</src> is False.
 
   void addData(const DataIterator& first, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False);
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False, uInt maskStride = 1);
+               uInt dataStride = 1, bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False);
+               uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False,
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false,
                uInt maskStride = 1);
   // </group>
 
   // returns ! dataProvider && _data.empty()
-  Bool empty() const;
+  bool empty() const;
 
   // get data counts associated with the underlying data sets
   const std::vector<Int64>& getCounts() const { return _counts; }
@@ -137,7 +137,7 @@ class StatisticsDataset {
 
   Int64 iDataset() const { return _idataset; }
 
-  Bool increment(Bool includeIDataset);
+  bool increment(bool includeIDataset);
 
   void incrementThreadIters(DataIterator& dataIter, MaskIterator& maskIter,
                             WeightsIterator& weightsIter, uInt64& offset, uInt nthreads) const;
@@ -145,15 +145,15 @@ class StatisticsDataset {
   void initIterators();
 
   // used for threaded methods
-  void initLoopVars(uInt64& chunkCount, uInt& chunkStride, Bool& chunkHasRanges,
-                    DataRanges& chunkRanges, Bool& chunkIsIncludeRanges, Bool& chunkHasMask,
-                    uInt& chunkMaskStride, Bool& chunkHasWeights);
+  void initLoopVars(uInt64& chunkCount, uInt& chunkStride, bool& chunkHasRanges,
+                    DataRanges& chunkRanges, bool& chunkIsIncludeRanges, bool& chunkHasMask,
+                    uInt& chunkMaskStride, bool& chunkHasWeights);
 
   // used for unthreaded methods
   void initLoopVars(DataIterator& chunkData, uInt64& chunkCount, uInt& chunkStride,
-                    Bool& chunkHasRanges, DataRanges& chunkRanges, Bool& chunkIsIncludeRanges,
-                    Bool& chunkHasMask, MaskIterator& chunkMask, uInt& chunkMaskStride,
-                    Bool& chunkHasWeights, WeightsIterator& chunkWeights);
+                    bool& chunkHasRanges, DataRanges& chunkRanges, bool& chunkIsIncludeRanges,
+                    bool& chunkHasMask, MaskIterator& chunkMask, uInt& chunkMaskStride,
+                    bool& chunkHasWeights, WeightsIterator& chunkWeights);
 
   const ChunkData& initLoopVars();
 
@@ -173,32 +173,32 @@ class StatisticsDataset {
   // sets for which statistics are to be calculated. See addData() for
   // parameter meanings.
   void setData(const DataIterator& first, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False);
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False, uInt maskStride = 1);
+               uInt dataStride = 1, bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False);
+               uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False,
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false,
                uInt maskStride = 1);
   // </group>
 
@@ -218,7 +218,7 @@ class StatisticsDataset {
   std::vector<Int64> _counts{};
   std::vector<uInt> _dataStrides{};
   std::map<uInt, uInt> _maskStrides{};
-  std::map<uInt, Bool> _isIncludeRanges{};
+  std::map<uInt, bool> _isIncludeRanges{};
   std::map<uInt, DataRanges> _dataRanges{};
   StatsDataProvider<CASA_STATP>* _dataProvider{nullptr};
 

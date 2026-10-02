@@ -39,12 +39,12 @@ const Double NonLinearFit<T>::CRITERIUM = 0.001;
 
 // # Constructors
 template <class T>
-NonLinearFit<T>::NonLinearFit(Bool svd)
+NonLinearFit<T>::NonLinearFit(bool svd)
     : GenericL2Fit<T>(),
       maxiter_p(MAXITER),
       curiter_p(MAXITER),
       criterium_p(CRITERIUM),
-      converge_p(False) {
+      converge_p(false) {
   svd_p = svd;
   if (!svd_p) set(0.0);
 }

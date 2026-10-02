@@ -93,16 +93,16 @@ void TSMCoordColumn::setShape(rownr_t rownr, const IPosition& shape) {
   }
 }
 
-Bool TSMCoordColumn::isShapeDefined(rownr_t rownr) {
+bool TSMCoordColumn::isShapeDefined(rownr_t rownr) {
   // # The shape is defined when the shape is fixed, when
   // # a hypercube has been defined for this row or when the
   // # coordinate values have already been defined.
   if (shapeColumn().nelements() != 0) {
-    return True;  // FixedShape
+    return true;  // FixedShape
   }
   TSMCube* hypercube = stmanPtr_p->getHypercube(rownr);
   if (hypercube->valueRecord().isDefined(columnName())) {
-    return True;  // already defined
+    return true;  // already defined
   }
   return (hypercube->cubeShape().nelements() != 0);
 }

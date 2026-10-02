@@ -362,10 +362,10 @@ class MVTime {
   //  chk=True means that the entire string should be consumed.
   //  throwExcp=True means that an exception is thrown in case of an error.
   //  <group>
-  static Bool read(Quantity &res, const String &in, Bool chk = True);
-  static Bool read(Quantity &res, MUString &in, Bool chk = True);
-  static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
-  static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
+  static bool read(Quantity &res, const String &in, bool chk = true);
+  static bool read(Quantity &res, MUString &in, bool chk = true);
+  static bool read(Quantity &res, const String &in, bool chk, bool throwExcp);
+  static bool read(Quantity &res, MUString &in, bool chk, bool throwExcp);
   // </group>
   // Get value of date/time (MJD) in given units
   // <group>
@@ -435,7 +435,7 @@ class MVTime {
   // Temporary format
   // <group>
   static MVTime::Format interimFormat;
-  static Bool interimSet;
+  static bool interimSet;
   // </group>
 
   // # Member functions
@@ -453,22 +453,22 @@ ostream &operator<<(ostream &os, const MVTime::Format &form);
 // </group>
 
 // equality and comparison operators, use operator Double which returns days
-inline Bool operator==(const MVTime &lh, const MVTime &rh) {
+inline bool operator==(const MVTime &lh, const MVTime &rh) {
   return (lh.operator Double() == rh.operator Double());
 }
-inline Bool operator!=(const MVTime &lh, const MVTime &rh) {
+inline bool operator!=(const MVTime &lh, const MVTime &rh) {
   return (lh.operator Double() != rh.operator Double());
 }
-inline Bool operator<(const MVTime &lh, const MVTime &rh) {
+inline bool operator<(const MVTime &lh, const MVTime &rh) {
   return (lh.operator Double() < rh.operator Double());
 }
-inline Bool operator<=(const MVTime &lh, const MVTime &rh) {
+inline bool operator<=(const MVTime &lh, const MVTime &rh) {
   return (lh.operator Double() <= rh.operator Double());
 }
-inline Bool operator>(const MVTime &lh, const MVTime &rh) {
+inline bool operator>(const MVTime &lh, const MVTime &rh) {
   return (lh.operator Double() > rh.operator Double());
 }
-inline Bool operator>=(const MVTime &lh, const MVTime &rh) {
+inline bool operator>=(const MVTime &lh, const MVTime &rh) {
   return (lh.operator Double() >= rh.operator Double());
 }
 

@@ -81,7 +81,7 @@ class LELLattCoord : public LELLattCoordBase {
   virtual ~LELLattCoord();
 
   // The class does not have true coordinates.
-  virtual Bool hasCoordinates() const;
+  virtual bool hasCoordinates() const;
 
   // Create a SubLattice for an expression node.
   virtual LatticeExprNode makeSubLattice(const LatticeExprNode& expr,

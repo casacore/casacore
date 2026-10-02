@@ -56,7 +56,7 @@ class TableExprGroupKey {
 
   // Set the key's value.
   // <group>
-  void set(Bool v) { itsBool = v; }
+  void set(bool v) { itsBool = v; }
   void set(Int64 v) { itsInt64 = v; }
   void set(Double v) { itsDouble = v; }
   void set(const String& v) { itsString = v; }
@@ -70,7 +70,7 @@ class TableExprGroupKey {
 
  private:
   TableExprNodeRep::NodeDataType itsDT;
-  Bool itsBool = false;
+  bool itsBool = false;
   Int64 itsInt64 = 0;
   Double itsDouble = 0.0;
   String itsString;
@@ -188,7 +188,7 @@ class TableExprGroupFuncBase {
   TableExprGroupFuncBase& operator=(const TableExprGroupFuncBase&) = delete;
   // Does the aggregate function use lazy semantics?
   // The default implementation returns False.
-  virtual Bool isLazy() const;
+  virtual bool isLazy() const;
   // Get the function's sequence nr.
   uInt seqnr() const { return itsSeqnr; }
   // Set the function's sequence nr.
@@ -207,13 +207,13 @@ class TableExprGroupFuncBase {
   // lazy classes will get the values of all rows given by the TableExprIds
   // and do the aggregation.
   // <group>
-  virtual Bool getBool(const vector<TableExprId>& = vector<TableExprId>());
+  virtual bool getBool(const vector<TableExprId>& = vector<TableExprId>());
   virtual Int64 getInt(const vector<TableExprId>& = vector<TableExprId>());
   virtual Double getDouble(const vector<TableExprId>& = vector<TableExprId>());
   virtual DComplex getDComplex(const vector<TableExprId>& = vector<TableExprId>());
   virtual MVTime getDate(const vector<TableExprId>& = vector<TableExprId>());
   virtual String getString(const vector<TableExprId>& = vector<TableExprId>());
-  virtual MArray<Bool> getArrayBool(const vector<TableExprId>& = vector<TableExprId>());
+  virtual MArray<bool> getArrayBool(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<Int64> getArrayInt(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<Double> getArrayDouble(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<DComplex> getArrayDComplex(const vector<TableExprId>& = vector<TableExprId>());
@@ -241,7 +241,7 @@ class TableExprGroupNull : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupNull(TableExprNodeRep* node);
   virtual ~TableExprGroupNull();
-  virtual Bool isLazy() const;
+  virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
 };
 
@@ -260,13 +260,13 @@ class TableExprGroupFirst : public TableExprGroupFuncBase {
   explicit TableExprGroupFirst(TableExprNodeRep* node);
   virtual ~TableExprGroupFirst();
   virtual void apply(const TableExprId& id);
-  virtual Bool getBool(const vector<TableExprId>&);
+  virtual bool getBool(const vector<TableExprId>&);
   virtual Int64 getInt(const vector<TableExprId>&);
   virtual Double getDouble(const vector<TableExprId>&);
   virtual DComplex getDComplex(const vector<TableExprId>&);
   virtual MVTime getDate(const vector<TableExprId>&);
   virtual String getString(const vector<TableExprId>&);
-  virtual MArray<Bool> getArrayBool(const vector<TableExprId>&);
+  virtual MArray<bool> getArrayBool(const vector<TableExprId>&);
   virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
   virtual MArray<Double> getArrayDouble(const vector<TableExprId>&);
   virtual MArray<DComplex> getArrayDComplex(const vector<TableExprId>&);
@@ -310,7 +310,7 @@ class TableExprGroupExprId : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupExprId(TableExprNodeRep* node);
   virtual ~TableExprGroupExprId();
-  virtual Bool isLazy() const;
+  virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
   virtual std::shared_ptr<vector<TableExprId>> getIds() const;
 
@@ -331,7 +331,7 @@ class TableExprGroupRowid : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupRowid(TableExprNodeRep* node);
   virtual ~TableExprGroupRowid();
-  virtual Bool isLazy() const;
+  virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
 };
@@ -350,9 +350,9 @@ class TableExprGroupAggr : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupAggr(TableExprNodeRep* node);
   virtual ~TableExprGroupAggr();
-  virtual Bool isLazy() const;
+  virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
-  virtual MArray<Bool> getArrayBool(const vector<TableExprId>&);
+  virtual MArray<bool> getArrayBool(const vector<TableExprId>&);
   virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
   virtual MArray<Double> getArrayDouble(const vector<TableExprId>&);
   virtual MArray<DComplex> getArrayDComplex(const vector<TableExprId>&);
@@ -374,7 +374,7 @@ class TableExprGroupAggr : public TableExprGroupFuncBase {
     // Use the first non-null value to determine the shape and if masked.
     MArray<T> arr;
     size_t id;
-    Bool hasMask = False;
+    bool hasMask = false;
     IPosition shp;
     for (id = 0; id < ids.size(); ++id) {
       itsOperand->get(ids[id], arr);
@@ -392,11 +392,11 @@ class TableExprGroupAggr : public TableExprGroupFuncBase {
     }
     Array<T> result(shp);
     ArrayIterator<T> iter(result, arr.ndim());
-    Array<Bool> mask;
-    std::shared_ptr<ArrayIterator<Bool>> miter;
+    Array<bool> mask;
+    std::shared_ptr<ArrayIterator<bool>> miter;
     if (hasMask) {
       mask.resize(shp);
-      miter.reset(new ArrayIterator<Bool>(mask, arr.ndim()));
+      miter.reset(new ArrayIterator<bool>(mask, arr.ndim()));
     }
     for (; id < ids.size(); ++id) {
       MArray<T> values;
@@ -413,9 +413,9 @@ class TableExprGroupAggr : public TableExprGroupFuncBase {
     }
     if (ndef < ids.size()) {
       shp[shp.size() - 1] = ndef;
-      result.resize(shp, True);
+      result.resize(shp, true);
       if (hasMask) {
-        mask.resize(shp, True);
+        mask.resize(shp, true);
       }
     }
     return MArray<T>(result, mask);
@@ -438,13 +438,13 @@ class TableExprGroupAggr : public TableExprGroupFuncBase {
 class TableExprGroupFuncBool : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupFuncBool(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
-  TableExprGroupFuncBool(TableExprNodeRep* node, Bool initValue)
+  TableExprGroupFuncBool(TableExprNodeRep* node, bool initValue)
       : TableExprGroupFuncBase(node), itsValue(initValue) {}
   virtual ~TableExprGroupFuncBool();
-  virtual Bool getBool(const vector<TableExprId>&);
+  virtual bool getBool(const vector<TableExprId>&);
 
  protected:
-  Bool itsValue;
+  bool itsValue;
 };
 
 // <summary>
@@ -586,13 +586,13 @@ class TableExprGroupFuncArrayBool : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupFuncArrayBool(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
   virtual ~TableExprGroupFuncArrayBool();
-  virtual MArray<Bool> getArrayBool(const vector<TableExprId>&);
+  virtual MArray<bool> getArrayBool(const vector<TableExprId>&);
 
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
-  Bool checkShape(const MArrayBase& arr, const String& func);
-  MArray<Bool> itsValue;
+  bool checkShape(const MArrayBase& arr, const String& func);
+  MArray<bool> itsValue;
 };
 
 // <summary>
@@ -617,7 +617,7 @@ class TableExprGroupFuncArrayInt : public TableExprGroupFuncBase {
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
-  Bool checkShape(const MArrayBase& arr, const String& func);
+  bool checkShape(const MArrayBase& arr, const String& func);
   MArray<Int64> itsValue;
 };
 
@@ -643,7 +643,7 @@ class TableExprGroupFuncArrayDouble : public TableExprGroupFuncBase {
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
-  Bool checkShape(const MArrayBase& arr, const String& func);
+  bool checkShape(const MArrayBase& arr, const String& func);
   MArray<Double> itsValue;
 };
 
@@ -669,7 +669,7 @@ class TableExprGroupFuncArrayDComplex : public TableExprGroupFuncBase {
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
-  Bool checkShape(const MArrayBase& arr, const String& func);
+  bool checkShape(const MArrayBase& arr, const String& func);
   MArray<DComplex> itsValue;
 };
 
@@ -695,7 +695,7 @@ class TableExprGroupFuncArrayDate : public TableExprGroupFuncBase {
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
-  Bool checkShape(const MArrayBase& arr, const String& func);
+  bool checkShape(const MArrayBase& arr, const String& func);
   MArray<MVTime> itsValue;
 };
 
@@ -721,7 +721,7 @@ class TableExprGroupFuncArrayString : public TableExprGroupFuncBase {
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
-  Bool checkShape(const MArrayBase& arr, const String& func);
+  bool checkShape(const MArrayBase& arr, const String& func);
   MArray<String> itsValue;
 };
 

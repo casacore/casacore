@@ -116,17 +116,17 @@ MVEpoch MVEpoch::operator-(const MVEpoch &other) const {
   return tmp;
 }
 
-Bool MVEpoch::operator==(const MVEpoch &other) const {
+bool MVEpoch::operator==(const MVEpoch &other) const {
   return (wday == other.wday && frday == other.frday);
 }
 
-Bool MVEpoch::operator!=(const MVEpoch &other) const { return (!(*this == other)); }
+bool MVEpoch::operator!=(const MVEpoch &other) const { return (!(*this == other)); }
 
-Bool MVEpoch::near(const MVEpoch &other, Double tol) const {
+bool MVEpoch::near(const MVEpoch &other, Double tol) const {
   return ::casacore::near(get(), other.get(), tol);
 }
 
-Bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
+bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
   return ::casacore::nearAbs(get(), other.get(), tol);
 }
 
@@ -205,14 +205,14 @@ Vector<Quantum<Double>> MVEpoch::getRecordValue() const {
   return tmp;
 }
 
-Bool MVEpoch::putValue(const Vector<Quantum<Double>> &in) {
+bool MVEpoch::putValue(const Vector<Quantum<Double>> &in) {
   for (uInt i = 0; i < in.nelements(); i++) {
-    if (!in(i).check(UnitVal::TIME)) return False;
+    if (!in(i).check(UnitVal::TIME)) return false;
   }
   wday = frday = 0;
   for (uInt i = 0; i < in.nelements(); i++) addTime(makeDay(in(i)));
   adjust();
-  return True;
+  return true;
 }
 
 Double MVEpoch::makeDay(const Quantity &in) const {

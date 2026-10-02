@@ -136,29 +136,29 @@ class QuantumHolder : public RecordTransformable {
   //  Check if it holds a Quantity. Note that a Vector of length 1 will give
   //  True to scalar questions.
   //  <group>
-  Bool isEmpty() const;
-  Bool isQuantum() const;
-  Bool isScalar() const;
-  Bool isVector() const;
-  Bool isArray() const;
-  Bool isReal() const;
-  Bool isComplex() const;
-  Bool isQuantity() const;
-  Bool isQuantumDouble() const;
-  Bool isQuantumFloat() const;
-  Bool isQuantumInt() const;
-  Bool isQuantumComplex() const;
-  Bool isQuantumDComplex() const;
-  Bool isQuantumVectorDouble() const;
-  Bool isQuantumVectorFloat() const;
-  Bool isQuantumVectorInt() const;
-  Bool isQuantumVectorComplex() const;
-  Bool isQuantumVectorDComplex() const;
-  Bool isQuantumArrayDouble() const;
-  Bool isQuantumArrayFloat() const;
-  Bool isQuantumArrayInt() const;
-  Bool isQuantumArrayComplex() const;
-  Bool isQuantumArrayDComplex() const;
+  bool isEmpty() const;
+  bool isQuantum() const;
+  bool isScalar() const;
+  bool isVector() const;
+  bool isArray() const;
+  bool isReal() const;
+  bool isComplex() const;
+  bool isQuantity() const;
+  bool isQuantumDouble() const;
+  bool isQuantumFloat() const;
+  bool isQuantumInt() const;
+  bool isQuantumComplex() const;
+  bool isQuantumDComplex() const;
+  bool isQuantumVectorDouble() const;
+  bool isQuantumVectorFloat() const;
+  bool isQuantumVectorInt() const;
+  bool isQuantumVectorComplex() const;
+  bool isQuantumVectorDComplex() const;
+  bool isQuantumArrayDouble() const;
+  bool isQuantumArrayFloat() const;
+  bool isQuantumArrayInt() const;
+  bool isQuantumArrayComplex() const;
+  bool isQuantumArrayDComplex() const;
   // </group>
   // Get number of numeric elements (1 if scalar, else
   // vector length) or dimensions (0 if scalar)
@@ -207,12 +207,12 @@ class QuantumHolder : public RecordTransformable {
   // value with a valid unit string.
   // Illegal values or units will return False and write an error message.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
+  virtual bool fromRecord(String &error, const RecordInterface &in);
+  virtual bool fromString(String &error, const String &in);
   // </group>
   // Create a record from a Quantum. A False return and an error message is
   // only generated if there is no valid Quantum in the holder.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  virtual bool toRecord(String &error, RecordInterface &out) const;
   // this version throws an exception rather than returning false
   virtual void toRecord(RecordInterface &out) const;
   // this version throws an exception or returns the result Record.

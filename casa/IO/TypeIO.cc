@@ -54,13 +54,13 @@ Int64 TypeIO::seek(Int offset, ByteIO::SeekOption option) {
   return itsByteIO->seek(offset, option);
 }
 
-Bool TypeIO::isReadable() const { return itsByteIO->isReadable(); }
+bool TypeIO::isReadable() const { return itsByteIO->isReadable(); }
 
-Bool TypeIO::isWritable() const { return itsByteIO->isWritable(); }
+bool TypeIO::isWritable() const { return itsByteIO->isWritable(); }
 
-Bool TypeIO::isSeekable() const { return itsByteIO->isSeekable(); }
+bool TypeIO::isSeekable() const { return itsByteIO->isSeekable(); }
 
-size_t TypeIO::write(size_t nvalues, const Bool* value) {
+size_t TypeIO::write(size_t nvalues, const bool* value) {
   size_t nb = (nvalues + 7) / 8;
   uChar* buf = new uChar[nb];
   Conversion::boolToBit(buf, value, nvalues);
@@ -107,7 +107,7 @@ size_t TypeIO::write(size_t nvalues, const String* value) {
   return n;
 }
 
-size_t TypeIO::read(size_t nvalues, Bool* value) {
+size_t TypeIO::read(size_t nvalues, bool* value) {
   size_t nb = (nvalues + 7) / 8;
   uChar* buf = new uChar[nb];
   read(nb, buf);

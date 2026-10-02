@@ -118,7 +118,7 @@ class HeaderDataUnit {
   // Parameterss: keyword list, hdu type, data type, error handler and
   // error status.
   // Returns False if a serious error was detected, otherwise True
-  static Bool determine_type(FitsKeywordList &, FITS::HDUType &, FITS::ValueType &,
+  static bool determine_type(FitsKeywordList &, FITS::HDUType &, FITS::ValueType &,
                              FITSErrorHandler, HDUErrs &);
 
   // Compute the total size of the data associated with an HDU.
@@ -126,7 +126,7 @@ class HeaderDataUnit {
   // assumes that hdu type has been appropriately set, but it may
   // be changed in the process.  Data type is also determined.
   // Returns False if a serious error was detected, otherwise True
-  static Bool compute_size(FitsKeywordList &, OFF_T &, Int &, FITS::HDUType &, FITS::ValueType &,
+  static bool compute_size(FitsKeywordList &, OFF_T &, Int &, FITS::HDUType &, FITS::ValueType &,
                            FITSErrorHandler, HDUErrs &);
 
   // Operations on the HDU's keyword list
@@ -134,7 +134,7 @@ class HeaderDataUnit {
   ConstFitsKeywordList &kwlist() { return constkwlist_; }
   // return the header of the chdu as a vector of String. You can
   // force the strings to be length 80 (padded with spaces)
-  Vector<String> kwlist_str(Bool length80 = False);
+  Vector<String> kwlist_str(bool length80 = false);
   void firstkw() { kwlist_.first(); }
   void lastkw() { kwlist_.last(); }
   const FitsKeyword *nextkw() { return kwlist_.next(); }
@@ -148,15 +148,15 @@ class HeaderDataUnit {
   const FitsKeyword *nextkw(FITS::ReservedName &n, int i) { return kwlist_.next(n, i); }
   const FitsKeyword *kw(const char *n) { return kwlist_(n); }
   const FitsKeyword *nextkw(const char *n) { return kwlist_.next(n); }
-  void mk(FITS::ReservedName k, Bool v, const char *c = 0);
+  void mk(FITS::ReservedName k, bool v, const char *c = 0);
   void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
   void mk(FITS::ReservedName k, Int v, const char *c = 0);
   void mk(FITS::ReservedName k, double v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, Bool v, const char *c = 0);
+  void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, Int v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
-  void mk(const char *n, Bool v, const char *c = 0);
+  void mk(const char *n, bool v, const char *c = 0);
   void mk(const char *n, const char *v = 0, const char *c = 0);
   void mk(const char *n, Int v, const char *c = 0);
   void mk(const char *n, float v, const char *c = 0);
@@ -169,9 +169,9 @@ class HeaderDataUnit {
   void history(const char *c = 0);
   //</group>
 
-  Bool notnull(double x) const { return double_null < x ? True : False; }
-  Bool notnull(char *s) const { return !s ? False : (s[0] != '\0' ? True : False); }
-  Bool notnull(Int l) const { return Int_null < l ? True : False; }
+  bool notnull(double x) const { return double_null < x ? true : false; }
+  bool notnull(char *s) const { return !s ? false : (s[0] != '\0' ? true : false); }
+  bool notnull(Int l) const { return Int_null < l ? true : false; }
 
  protected:
   //	For input -- ~ should delete the keyword list: kwflag = 1
@@ -229,7 +229,7 @@ class HeaderDataUnit {
 };
 
 inline std::ostream &operator<<(std::ostream &o, HeaderDataUnit &h) { return o << h.kwlist_; }
-inline void HeaderDataUnit::mk(FITS::ReservedName k, Bool v, const char *c) {
+inline void HeaderDataUnit::mk(FITS::ReservedName k, bool v, const char *c) {
   posEnd();
   kwlist_.mk(k, v, c);
 }
@@ -245,7 +245,7 @@ inline void HeaderDataUnit::mk(FITS::ReservedName k, double v, const char *c) {
   posEnd();
   kwlist_.mk(k, v, c);
 }
-inline void HeaderDataUnit::mk(int n, FITS::ReservedName k, Bool v, const char *c) {
+inline void HeaderDataUnit::mk(int n, FITS::ReservedName k, bool v, const char *c) {
   posEnd();
   kwlist_.mk(n, k, v, c);
 }
@@ -261,7 +261,7 @@ inline void HeaderDataUnit::mk(int n, FITS::ReservedName k, double v, const char
   posEnd();
   kwlist_.mk(n, k, v, c);
 }
-inline void HeaderDataUnit::mk(const char *n, Bool v, const char *c) {
+inline void HeaderDataUnit::mk(const char *n, bool v, const char *c) {
   posEnd();
   kwlist_.mk(n, v, c);
 }
@@ -401,7 +401,7 @@ class PrimaryArray : public HeaderDataUnit {
   double bscale() const { return bscale_x; }
   double bzero() const { return bzero_x; }
   char *bunit() const { return bunit_x; }
-  Bool isablank() const { return isablank_x; }
+  bool isablank() const { return isablank_x; }
   Int blank() const { return blank_x; }
   char *ctype(int n) const { return ctype_x[n]; }
   double crpix(int n) const { return crpix_x[n]; }
@@ -507,7 +507,7 @@ class PrimaryArray : public HeaderDataUnit {
   double bscale_x;
   double bzero_x;
   char *bunit_x;
-  Bool isablank_x;
+  bool isablank_x;
   Int blank_x;
   char **ctype_x;
   double *crpix_x;
@@ -1092,7 +1092,7 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   const char *tform(int n) const { return tform_x[n]; }
   double tscal(int n) const { return tscal_x[n]; }
   double tzero(int n) const { return tzero_x[n]; }
-  Bool isatnull(int n) const { return isatnull_x[n]; }
+  bool isatnull(int n) const { return isatnull_x[n]; }
   Int tnull(int n) const { return tnull_x[n]; }
   const char *ttype(int n) const { return ttype_x[n]; }
   const char *tunit(int n) const { return tunit_x[n]; }
@@ -1148,7 +1148,7 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   char **tform_x;
   double *tscal_x;
   double *tzero_x;
-  Bool *isatnull_x;
+  bool *isatnull_x;
   Int *tnull_x;
   char **ttype_x;
   char **tunit_x;
@@ -1172,7 +1172,7 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   unsigned char *fitsrow;  // the FITS data row buffer
   uInt *fits_offset;       // Offsets to the fields within a FITS row
   uInt fitsrowsize;        // size in bytes of a FITS data row
-  Bool isoptimum;          // tells whether optimum case exists or not
+  bool isoptimum;          // tells whether optimum case exists or not
 
   // sets field addresses in the current row
   void set_fitsrow(Int);

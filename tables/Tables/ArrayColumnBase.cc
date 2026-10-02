@@ -51,11 +51,11 @@ void ArrayColumnBase::reference(const ArrayColumnBase& that) { TableColumn::refe
 
 ArrayColumnBase::~ArrayColumnBase() {}
 
-Bool ArrayColumnBase::checkShape(const IPosition& expShape, const IPosition& arrShape,
-                                 Bool noSlicing, Int64 rownr, const String& where) const {
+bool ArrayColumnBase::checkShape(const IPosition& expShape, const IPosition& arrShape,
+                                 bool noSlicing, Int64 rownr, const String& where) const {
   if (!expShape.isEqual(arrShape)) {
     if (noSlicing && canChangeShape_p) {
-      return False;
+      return false;
     }
     String msg(where);
     if (rownr >= 0) {
@@ -64,21 +64,21 @@ Bool ArrayColumnBase::checkShape(const IPosition& expShape, const IPosition& arr
     throw TableArrayConformanceError(msg + " in column " + baseColPtr_p->columnDesc().name(),
                                      arrShape, expShape);
   }
-  return True;
+  return true;
 }
 
-void ArrayColumnBase::adaptShape(const IPosition& shp, ArrayBase& arr, Bool resize, Int64 rownr,
+void ArrayColumnBase::adaptShape(const IPosition& shp, ArrayBase& arr, bool resize, Int64 rownr,
                                  const String& where) const {
   if (!shp.isEqual(arr.shape())) {
     if (resize || arr.nelements() == 0) {
       arr.resize(shp);
     } else {
-      checkShape(shp, arr.shape(), False, rownr, where);
+      checkShape(shp, arr.shape(), false, rownr, where);
     }
   }
 }
 
-void ArrayColumnBase::acbGet(rownr_t rownr, ArrayBase& arr, Bool resize) const {
+void ArrayColumnBase::acbGet(rownr_t rownr, ArrayBase& arr, bool resize) const {
   TABLECOLUMNCHECKROW(rownr);
   // Check array conformance and resize if needed and possible.
   adaptShape(shape(rownr), arr, resize, rownr, "ArrayColumn::get");
@@ -86,7 +86,7 @@ void ArrayColumnBase::acbGet(rownr_t rownr, ArrayBase& arr, Bool resize) const {
 }
 
 void ArrayColumnBase::acbGetSlice(rownr_t rownr, const Slicer& arraySection, ArrayBase& arr,
-                                  Bool resize) const {
+                                  bool resize) const {
   TABLECOLUMNCHECKROW(rownr);
   // Check array conformance and resize if needed and possible.
   IPosition arrayShape(shape(rownr));
@@ -104,7 +104,7 @@ void ArrayColumnBase::acbGetSlice(rownr_t rownr, const Slicer& arraySection, Arr
 }
 
 void ArrayColumnBase::acbGetSlice(rownr_t rownr, const Vector<Vector<Slice>>& arraySlices,
-                                  ArrayBase& arr, Bool resize) const {
+                                  ArrayBase& arr, bool resize) const {
   TABLECOLUMNCHECKROW(rownr);
   // Use shape of row.
   IPosition colShp = shape(rownr);
@@ -119,7 +119,7 @@ void ArrayColumnBase::acbGetSlice(rownr_t rownr, const Vector<Vector<Slice>>& ar
   handleSlices(slices, functor, slicer, arr);
 }
 
-void ArrayColumnBase::acbGetColumn(ArrayBase& arr, Bool resize) const {
+void ArrayColumnBase::acbGetColumn(ArrayBase& arr, bool resize) const {
   rownr_t nrrow = nrow();
   // # Take shape of array in first row.
   IPosition shp;
@@ -136,7 +136,7 @@ void ArrayColumnBase::acbGetColumn(ArrayBase& arr, Bool resize) const {
   }
 }
 
-void ArrayColumnBase::acbGetColumn(const Slicer& arraySection, ArrayBase& arr, Bool resize) const {
+void ArrayColumnBase::acbGetColumn(const Slicer& arraySection, ArrayBase& arr, bool resize) const {
   rownr_t nrrow = nrow();
   // # Use shape of array in first row.
   IPosition shp, blc, trc, inc;
@@ -155,7 +155,7 @@ void ArrayColumnBase::acbGetColumn(const Slicer& arraySection, ArrayBase& arr, B
 }
 
 void ArrayColumnBase::acbGetColumn(const Vector<Vector<Slice>>& arraySlices, ArrayBase& arr,
-                                   Bool resize) const {
+                                   bool resize) const {
   rownr_t nrrow = nrow();
   // Get total shape.
   // Use shape of first row (if there) as overall array shape.
@@ -175,7 +175,7 @@ void ArrayColumnBase::acbGetColumn(const Vector<Vector<Slice>>& arraySlices, Arr
   handleSlices(slices, functor, slicer, arr);
 }
 
-void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, ArrayBase& arr, Bool resize) const {
+void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, ArrayBase& arr, bool resize) const {
   rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
@@ -187,7 +187,7 @@ void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, ArrayBase& arr, 
   }
 }
 
-void ArrayColumnBase::acbGetColumnCells(const RefRows& rownrs, ArrayBase& arr, Bool resize) const {
+void ArrayColumnBase::acbGetColumnCells(const RefRows& rownrs, ArrayBase& arr, bool resize) const {
   rownr_t nrrow = rownrs.nrow();
   // # Take shape of array in first row.
   IPosition arrshp;
@@ -202,7 +202,7 @@ void ArrayColumnBase::acbGetColumnCells(const RefRows& rownrs, ArrayBase& arr, B
 }
 
 void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, const Slicer& arraySection,
-                                        ArrayBase& arr, Bool resize) const {
+                                        ArrayBase& arr, bool resize) const {
   rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
@@ -215,7 +215,7 @@ void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, const Slicer& ar
 }
 
 void ArrayColumnBase::acbGetColumnCells(const RefRows& rownrs, const Slicer& arraySection,
-                                        ArrayBase& arr, Bool resize) const {
+                                        ArrayBase& arr, bool resize) const {
   rownr_t nrrow = rownrs.nrow();
   IPosition arrshp, arrblc, arrtrc, arrinc;
   if (nrrow > 0) {
@@ -272,7 +272,7 @@ void ArrayColumnBase::acbPut(rownr_t rownr, const ArrayBase& arr) {
   if (!isDefined(rownr)) {
     baseColPtr_p->setShape(rownr, arr.shape());
   } else {
-    if (!checkShape(baseColPtr_p->shape(rownr), arr.shape(), True, rownr, "ArrayColumn::put")) {
+    if (!checkShape(baseColPtr_p->shape(rownr), arr.shape(), true, rownr, "ArrayColumn::put")) {
       baseColPtr_p->setShape(rownr, arr.shape());
     }
   }
@@ -286,7 +286,7 @@ void ArrayColumnBase::acbPutSlice(rownr_t rownr, const Slicer& arraySection, con
   IPosition arrayShape(shape(rownr));
   IPosition blc, trc, inc;
   IPosition shp = arraySection.inferShapeFromSource(arrayShape, blc, trc, inc);
-  checkShape(shp, arr.shape(), False, rownr, "ArrayColumn::putSlice");
+  checkShape(shp, arr.shape(), false, rownr, "ArrayColumn::putSlice");
   // # Put the slice.
   baseColPtr_p->putSlice(rownr, arraySection, arr);
 }
@@ -300,7 +300,7 @@ void ArrayColumnBase::acbPutSlice(rownr_t rownr, const Vector<Vector<Slice>>& ar
   Vector<Vector<Slice>> slices(arraySlices);
   Slicer slicer;
   IPosition shp = Slice::checkSlices(slices, slicer, colShp);
-  checkShape(shp, arr.shape(), False, rownr, "ArrayColumn::putSlice(slices)");
+  checkShape(shp, arr.shape(), false, rownr, "ArrayColumn::putSlice(slices)");
   // Now loop through all the slices and fill the array in parts.
   PutCellSlices functor(*this, rownr);
   handleSlices(slices, functor, slicer, arr);
@@ -321,7 +321,7 @@ void ArrayColumnBase::acbPutColumn(const ArrayBase& arr) {
   shp.resize(last);
   // # If the array is fixed shape, check if the shape matches.
   if ((columnDesc().options() & ColumnDesc::FixedShape) == ColumnDesc::FixedShape) {
-    checkShape(shapeColumn(), shp, False, -1, "ArrayColumn::putColumn");
+    checkShape(shapeColumn(), shp, false, -1, "ArrayColumn::putColumn");
   } else {
     // # Otherwise set the shape of each cell (as far as needed).
     for (rownr_t i = 0; i < nrrow; i++) {
@@ -350,7 +350,7 @@ void ArrayColumnBase::acbPutColumn(const Slicer& arraySection, const ArrayBase& 
     arrshp.resize(last);
     IPosition blc, trc, inc;
     IPosition shp = arraySection.inferShapeFromSource(shapeColumn(), blc, trc, inc);
-    checkShape(shp, arrshp, False, -1, "ArrayColumn::putColumn(slicer)");
+    checkShape(shp, arrshp, false, -1, "ArrayColumn::putColumn(slicer)");
   }
   // # Put the column slice.
   baseColPtr_p->putColumnSlice(arraySection, arr);
@@ -492,7 +492,7 @@ void ArrayColumnBase::acbPutColumnCells(const RefRows& rows,
 }
 
 void ArrayColumnBase::acbGetColumnCells(const RefRows& rows, const ColumnSlicer& columnSlicer,
-                                        ArrayBase& destination, Bool resize) const {
+                                        ArrayBase& destination, bool resize) const {
   // Calculate the shape of the destination data.  This will be
   // [s1, s2, ..., nR] where sI are the sum of the slice elements for
   // that axis as contained in arraySlices [i].  nR is the number of rows
@@ -532,7 +532,7 @@ void ArrayColumnBase::acbPutColumnCells(const RefRows& rows, const ColumnSlicer&
   const Vector<Slicer*>& destSlicers = columnSlicer.getDestinationSlicers();
   IPosition destShape(columnSlicer.shape());
   destShape.append(IPosition(1, rows.nrows()));
-  checkShape(destShape, source.shape(), False, -1,
+  checkShape(destShape, source.shape(), false, -1,
              "ArrayColumn::putColumnCells (rows, columnSlicer, ...)");
   // Fill the source array one row at a time.
   RefRowsSliceIter rowIter(rows);
@@ -591,7 +591,7 @@ void ArrayColumnBase::handleSlices(const Vector<Vector<Slice>>& slices, BaseSlic
   IPosition colIncr(slicer.stride());
   uInt nrdim = slicer.ndim();
   IPosition pos(nrdim, 0);
-  while (True) {
+  while (true) {
     std::shared_ptr<ArrayBase> refArr(arr.getSection(Slicer(arrStart, arrEnd, Slicer::endIsLast)));
     functor.apply(Slicer(colStart, colLen, colIncr), *refArr);
     uInt i;

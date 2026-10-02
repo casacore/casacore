@@ -56,11 +56,11 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool ImageUtilities::pixToWorld(Vector<String>& sWorld, const CoordinateSystem& cSysIn,
+bool ImageUtilities::pixToWorld(Vector<String>& sWorld, const CoordinateSystem& cSysIn,
                                 const Int& pixelAxis, const Vector<Int>& cursorAxes,
                                 const IPosition& blc, const IPosition& trc,
                                 const Vector<Double>& pixels, const Int& prec,
-                                const Bool usePrecForMixed)
+                                const bool usePrecForMixed)
 //
 // This function converts pixel coordinates to world coordinates.
 // You specify pixel coordinates for only  one axis, the pixel axis,
@@ -95,7 +95,7 @@ Bool ImageUtilities::pixToWorld(Vector<String>& sWorld, const CoordinateSystem& 
   // CHeck blc,trc
 
   if (blc.nelements() != cSysIn.nPixelAxes() || trc.nelements() != cSysIn.nPixelAxes())
-    return False;
+    return false;
 
   // Create pixel and world vectors for all pixel axes. Initialize pixel values
   // to reference pixel, but if an axis is a cursor axis (whose coordinate is
@@ -104,7 +104,7 @@ Bool ImageUtilities::pixToWorld(Vector<String>& sWorld, const CoordinateSystem& 
   Vector<Double> pix(cSysIn.nPixelAxes());
   Vector<Double> world(cSysIn.nPixelAxes());
   pix = cSysIn.referencePixel();
-  Bool found;
+  bool found;
   uInt i;
   for (i = 0; i < pix.nelements(); i++) {
     if (linearSearch(found, cursorAxes, Int(i), cursorAxes.nelements()) != -1) {
@@ -127,14 +127,14 @@ Bool ImageUtilities::pixToWorld(Vector<String>& sWorld, const CoordinateSystem& 
   for (i = 0; i < n1; i++) {
     pix(pixelAxis) = pixels(i);
     if (cSysIn.toWorld(world, pix)) {
-      sWorld(i) = cSysIn.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), worldAxis, True,
-                                True, prec, usePrecForMixed);
+      sWorld(i) = cSysIn.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), worldAxis, true,
+                                true, prec, usePrecForMixed);
     } else {
       sWorld(i) = "?";
     }
   }
 
-  return True;
+  return true;
 }
 
 String ImageUtilities::shortAxisName(const String& axisName)
@@ -164,7 +164,7 @@ String ImageUtilities::shortAxisName(const String& axisName)
 }
 
 GaussianBeam ImageUtilities::makeFakeBeam(LogIO& logIO, const CoordinateSystem& csys,
-                                          Bool suppressWarnings) {
+                                          bool suppressWarnings) {
   Int dirCoordinate = csys.findCoordinate(Coordinate::DIRECTION);
   if (dirCoordinate == -1) {
     logIO << "CoordinateSystem does not contain "
@@ -188,7 +188,7 @@ GaussianBeam ImageUtilities::makeFakeBeam(LogIO& logIO, const CoordinateSystem& 
 
 void ImageUtilities::writeImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
                                 const String& imageName, const Array<Float>& pixels, LogIO& log,
-                                const Array<Bool>& maskPixels) {
+                                const Array<bool>& maskPixels) {
   // using pattern from ImageProxy
   if (!maskPixels.empty()) {
     if (!maskPixels.shape().isEqual(mapShape.shape())) {
@@ -201,7 +201,7 @@ void ImageUtilities::writeImage(const TiledShape& mapShape, const CoordinateSyst
   }
   newImage->put(pixels);
   if (!maskPixels.empty()) {
-    newImage->makeMask("mask0", True, True).asMask().put(maskPixels);
+    newImage->makeMask("mask0", true, true).asMask().put(maskPixels);
   }
 
   log << LogIO::NORMAL << "Created image " << imageName << LogIO::POST;

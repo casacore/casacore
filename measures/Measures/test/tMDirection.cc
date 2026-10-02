@@ -27,7 +27,7 @@
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/casa/namespace.h>
 
-Bool testShiftAngle() {
+bool testShiftAngle() {
   Double rav = 30;
   Double decv = 40;
   Quantity ra(rav, "deg");
@@ -69,12 +69,12 @@ Bool testShiftAngle() {
   exp = decv - offset.getValue("deg");
   AlwaysAssert(abs((angle.getValue("deg")[1] - exp) / exp) < 1e-6, AipsError);
 
-  return True;
+  return true;
 }
 
 int main() {
   try {
-    Bool success = True;
+    bool success = true;
     success = success && testShiftAngle();
 
     if (success) {

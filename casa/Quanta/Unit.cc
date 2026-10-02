@@ -59,11 +59,11 @@ Unit &Unit::operator=(const Unit &other) {
   return *this;
 }
 
-Bool Unit::operator==(const Unit &other) const { return (uVal == other.uVal); }
+bool Unit::operator==(const Unit &other) const { return (uVal == other.uVal); }
 
-Bool Unit::operator!=(const Unit &other) const { return (uVal != other.uVal); }
+bool Unit::operator!=(const Unit &other) const { return (uVal != other.uVal); }
 
-Bool Unit::empty() const { return (uName.empty()); }
+bool Unit::empty() const { return (uName.empty()); }
 
 const UnitVal &Unit::getValue() const { return uVal; }
 

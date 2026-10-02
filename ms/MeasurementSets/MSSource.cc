@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSSource::MSSource() : hasBeenDestroyed_p(True) {}
+MSSource::MSSource() : hasBeenDestroyed_p(true) {}
 
 MSSource::MSSource(const String &tableName, TableOption option)
-    : MSTable<MSSourceEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSSourceEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSSource::MSSource(const String &tableName, TableOption option)
 }
 
 MSSource::MSSource(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSSourceEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSSourceEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSSource::MSSource(const String &tableName, const String &tableDescName, TableOp
                   "table is not a valid MSSource"));
 }
 
-MSSource::MSSource(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSSourceEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSSource::MSSource(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSSourceEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -67,7 +67,7 @@ MSSource::MSSource(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
                   "table is not a valid MSSource"));
 }
 
-MSSource::MSSource(const Table &table) : MSTable<MSSourceEnums>(table), hasBeenDestroyed_p(False) {
+MSSource::MSSource(const Table &table) : MSTable<MSSourceEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -76,7 +76,7 @@ MSSource::MSSource(const Table &table) : MSTable<MSSourceEnums>(table), hasBeenD
 }
 
 MSSource::MSSource(const MSSource &other)
-    : MSTable<MSSourceEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSSourceEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -93,7 +93,7 @@ MSSource::~MSSource() {
     LogIO os;
     os << LogIO::WARN << "~MSSource() - Table written is not a valid MSSource" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSSource &MSSource::operator=(const MSSource &other) {

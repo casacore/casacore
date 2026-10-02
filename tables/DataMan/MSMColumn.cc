@@ -39,7 +39,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 #define EXTBLSZ 32
 
-MSMColumn::MSMColumn(MSMBase* smptr, int dataType, Bool byPtr)
+MSMColumn::MSMColumn(MSMBase* smptr, int dataType, bool byPtr)
     : StManColumnBase(dataType),
       stmanPtr_p(smptr),
       byPtr_p(byPtr),
@@ -82,7 +82,7 @@ void MSMColumn::resize(rownr_t nr) {
   return;
 }
 
-uInt MSMColumn::findExt(rownr_t index, Bool setCache) {
+uInt MSMColumn::findExt(rownr_t index, bool setCache) {
   // # Use a binary search to get the block containing the index.
   Int st = 0;
   Int ent = nrext_p;
@@ -118,7 +118,7 @@ void MSMColumn::getScalarColumnV(ArrayBase& vec) {
   rownr_t nrow = stmanPtr_p->nrow();
   // Get a pointer to the destination data.
   // It assures the data are contiguous.
-  Bool deleteIt;
+  bool deleteIt;
   void* ptr = vec.getVStorage(deleteIt);
   // About all data types can be simply copied.
   // Only String has to be handled specifically.
@@ -148,7 +148,7 @@ void MSMColumn::putScalarColumnV(const ArrayBase& vec) {
   rownr_t nrow = stmanPtr_p->nrow();
   // Get a pointer to the destination data.
   // It assures the data are contiguous.
-  Bool deleteIt;
+  bool deleteIt;
   const void* ptr = vec.getVStorage(deleteIt);
   // About all data types can be simply copied.
   // Only String has to be handled specifically.
@@ -174,23 +174,23 @@ void MSMColumn::putScalarColumnV(const ArrayBase& vec) {
   vec.freeVStorage(ptr, deleteIt);
 }
 
-void MSMColumn::getBool(rownr_t rownr, Bool* value) {
+void MSMColumn::getBool(rownr_t rownr, bool* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const Bool*>(cache.dataPtr())[inx];
+  *value = static_cast<const bool*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putBool(rownr_t rownr, const Bool* value) {
+void MSMColumn::putBool(rownr_t rownr, const bool* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<Bool*>(static_cast<const Bool*>(cache.dataPtr()))[inx] = *value;
+  const_cast<bool*>(static_cast<const bool*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
@@ -198,7 +198,7 @@ void MSMColumn::getuChar(rownr_t rownr, uChar* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const uChar*>(cache.dataPtr())[inx];
@@ -207,7 +207,7 @@ void MSMColumn::putuChar(rownr_t rownr, const uChar* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<uChar*>(static_cast<const uChar*>(cache.dataPtr()))[inx] = *value;
@@ -218,7 +218,7 @@ void MSMColumn::getShort(rownr_t rownr, Short* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const Short*>(cache.dataPtr())[inx];
@@ -227,7 +227,7 @@ void MSMColumn::putShort(rownr_t rownr, const Short* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<Short*>(static_cast<const Short*>(cache.dataPtr()))[inx] = *value;
@@ -238,7 +238,7 @@ void MSMColumn::getuShort(rownr_t rownr, uShort* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const uShort*>(cache.dataPtr())[inx];
@@ -247,7 +247,7 @@ void MSMColumn::putuShort(rownr_t rownr, const uShort* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<uShort*>(static_cast<const uShort*>(cache.dataPtr()))[inx] = *value;
@@ -258,7 +258,7 @@ void MSMColumn::getInt(rownr_t rownr, Int* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const Int*>(cache.dataPtr())[inx];
@@ -267,7 +267,7 @@ void MSMColumn::putInt(rownr_t rownr, const Int* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<Int*>(static_cast<const Int*>(cache.dataPtr()))[inx] = *value;
@@ -278,7 +278,7 @@ void MSMColumn::getuInt(rownr_t rownr, uInt* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const uInt*>(cache.dataPtr())[inx];
@@ -287,7 +287,7 @@ void MSMColumn::putuInt(rownr_t rownr, const uInt* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<uInt*>(static_cast<const uInt*>(cache.dataPtr()))[inx] = *value;
@@ -298,7 +298,7 @@ void MSMColumn::getInt64(rownr_t rownr, Int64* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const Int64*>(cache.dataPtr())[inx];
@@ -307,7 +307,7 @@ void MSMColumn::putInt64(rownr_t rownr, const Int64* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<Int64*>(static_cast<const Int64*>(cache.dataPtr()))[inx] = *value;
@@ -318,7 +318,7 @@ void MSMColumn::getfloat(rownr_t rownr, float* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const float*>(cache.dataPtr())[inx];
@@ -327,7 +327,7 @@ void MSMColumn::putfloat(rownr_t rownr, const float* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<float*>(static_cast<const float*>(cache.dataPtr()))[inx] = *value;
@@ -338,7 +338,7 @@ void MSMColumn::getdouble(rownr_t rownr, double* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const double*>(cache.dataPtr())[inx];
@@ -347,7 +347,7 @@ void MSMColumn::putdouble(rownr_t rownr, const double* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<double*>(static_cast<const double*>(cache.dataPtr()))[inx] = *value;
@@ -358,7 +358,7 @@ void MSMColumn::getComplex(rownr_t rownr, Complex* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const Complex*>(cache.dataPtr())[inx];
@@ -367,7 +367,7 @@ void MSMColumn::putComplex(rownr_t rownr, const Complex* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<Complex*>(static_cast<const Complex*>(cache.dataPtr()))[inx] = *value;
@@ -378,7 +378,7 @@ void MSMColumn::getDComplex(rownr_t rownr, DComplex* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const DComplex*>(cache.dataPtr())[inx];
@@ -387,7 +387,7 @@ void MSMColumn::putDComplex(rownr_t rownr, const DComplex* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<DComplex*>(static_cast<const DComplex*>(cache.dataPtr()))[inx] = *value;
@@ -398,7 +398,7 @@ void MSMColumn::getString(rownr_t rownr, String* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   *value = static_cast<const String*>(cache.dataPtr())[inx];
@@ -407,7 +407,7 @@ void MSMColumn::putString(rownr_t rownr, const String* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
-    findExt(rownr, True);
+    findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
   const_cast<String*>(static_cast<const String*>(cache.dataPtr()))[inx] = *value;
@@ -416,7 +416,7 @@ void MSMColumn::putString(rownr_t rownr, const String* value) {
 
 void MSMColumn::remove(rownr_t index) {
   // # Find the extension.
-  uInt extnr = findExt(index, False);
+  uInt extnr = findExt(index, false);
   rownr_t nrval = ncum_p[extnr] - ncum_p[extnr - 1];
   void* datap = data_p[extnr];
   // # If the extension contains only this element, remove the extension.
@@ -443,23 +443,23 @@ void MSMColumn::remove(rownr_t index) {
   // #    cout << endl;
 }
 
-Bool MSMColumn::ok() const {
+bool MSMColumn::ok() const {
   // # Internal blocks cannot be empty and must be equal in length.
   // # Their lengths must be >= nr of extensions.
   // # Their first elements must be zero.
-  if (data_p.nelements() == 0 || data_p.nelements() < nrext_p) return False;
-  if (data_p.nelements() != ncum_p.nelements()) return False;
-  if (data_p[0] != 0 || ncum_p[0] != 0) return False;
+  if (data_p.nelements() == 0 || data_p.nelements() < nrext_p) return false;
+  if (data_p.nelements() != ncum_p.nelements()) return false;
+  if (data_p[0] != 0 || ncum_p[0] != 0) return false;
   // # If no points, there should be no extensions (and vice versa).
-  if ((nralloc_p == 0) != (nrext_p == 0)) return False;
+  if ((nralloc_p == 0) != (nrext_p == 0)) return false;
   // # If no extensions, first length must also be zero.
-  if (nrext_p == 0 && ncum_p[1] != 0) return False;
+  if (nrext_p == 0 && ncum_p[1] != 0) return false;
   // # All extension pointers must be filled in.
   // # The ncum_p array must be increasing.
   for (uInt i = 1; i <= nrext_p; i++) {
-    if (data_p[i] == 0 || ncum_p[i] <= ncum_p[i - 1]) return False;
+    if (data_p[i] == 0 || ncum_p[i] <= ncum_p[i - 1]) return false;
   }
-  return True;
+  return true;
 }
 
 void MSMColumn::deleteAll() {
@@ -471,7 +471,7 @@ void MSMColumn::deleteAll() {
   ncum_p[1] = 0;
 }
 
-void MSMColumn::deleteData(void* datap, Bool byPtr) {
+void MSMColumn::deleteData(void* datap, bool byPtr) {
   if (byPtr) {
     delete[] static_cast<void**>(datap);
   } else if (dtype() == TpString) {
@@ -482,7 +482,7 @@ void MSMColumn::deleteData(void* datap, Bool byPtr) {
   datap = 0;
 }
 
-void* MSMColumn::allocData(rownr_t nrval, Bool byPtr) {
+void* MSMColumn::allocData(rownr_t nrval, bool byPtr) {
   void* datap = 0;
   if (byPtr) {
     datap = new void*[nrval];
@@ -513,7 +513,7 @@ void MSMColumn::initData(void* datap, rownr_t nrval) {
   // Pointers are already initialized by allocData.
   if (!byPtr_p) {
     if (dtype() == TpBool) {
-      objset(static_cast<Bool*>(datap), True, nrval);
+      objset(static_cast<bool*>(datap), true, nrval);
     } else if (dtype() != TpString) {
       memset(datap, 0, nrval * elemSize());
     }
@@ -521,12 +521,12 @@ void MSMColumn::initData(void* datap, rownr_t nrval) {
 }
 
 void* MSMColumn::getArrayPtr(rownr_t rownr) {
-  uInt extnr = findExt(rownr, False);
+  uInt extnr = findExt(rownr, false);
   return (static_cast<void**>(data_p[extnr]))[rownr - ncum_p[extnr - 1]];
 }
 
 void MSMColumn::putArrayPtr(rownr_t rownr, void* ptr) {
-  uInt extnr = findExt(rownr, False);
+  uInt extnr = findExt(rownr, false);
   (static_cast<void**>(data_p[extnr]))[rownr - ncum_p[extnr - 1]] = ptr;
   stmanPtr_p->setHasPut();
 }

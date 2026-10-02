@@ -209,7 +209,7 @@ class TableColumn;
 // same as 1. lastLine <= 0 means until end-of-file.
 // Note that lines matching the comment marker are also counted.
 String readAsciiTable(const String& filein, const String& tableDescName, const String& tableName,
-                      Bool autoHeader = False, Char separator = ' ',
+                      bool autoHeader = false, Char separator = ' ',
                       const String& commentMarkerRegex = "", Int firstLine = 1, Int lastLine = -1,
                       const IPosition& autoShape = IPosition());
 
@@ -260,7 +260,7 @@ String readAsciiTable(const String& headerFile, const String& dataFile, const St
 // The type of Table can be given (Plain or Memory).
 // <group>
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& filein,
-                     const String& tableDescName, const String& tableName, Bool autoHeader = False,
+                     const String& tableDescName, const String& tableName, bool autoHeader = false,
                      Char separator = ' ', const String& commentMarkerRegex = "", Int firstLine = 1,
                      Int lastLine = -1, const IPosition& autoShape = IPosition());
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& filein,
@@ -295,12 +295,12 @@ class ReadAsciiTable {
  public:
   // Run the readAsciiTable.
   static String run(const String& headerfile, const String& filein, const String& tableproto,
-                    const String& tablename, Bool autoHeader, const IPosition& autoShape,
+                    const String& tablename, bool autoHeader, const IPosition& autoShape,
                     const Vector<String>& columnNames, const Vector<String>& dataTypes,
                     Char separator, const String& commentMarkerRegex, Int firstLine, Int lastLine);
   static Table runt(String& formatString, Table::TableType tableType, const String& headerfile,
                     const String& filein, const String& tableproto, const String& tablename,
-                    Bool autoHeader, const IPosition& autoShape, const Vector<String>& columnNames,
+                    bool autoHeader, const IPosition& autoShape, const Vector<String>& columnNames,
                     const Vector<String>& dataTypes, Char separator,
                     const String& commentMarkerRegex, Int firstLine, Int lastLine);
 
@@ -308,7 +308,7 @@ class ReadAsciiTable {
   // If isDMS is True, a position with : is treated as DMS instead of HMS.
   // This function is a bit more relaxed than MVAngle::read.
   // It allows whitespace. Furthermore it allows whitespace as separator :.
-  static double stringToPos(const String& pos, Bool isDMS);
+  static double stringToPos(const String& pos, bool isDMS);
 
  private:
   // Define types.
@@ -329,22 +329,22 @@ class ReadAsciiTable {
 
   // Do the actual run.
   static String doRun(const String& headerfile, const String& filein, const String& tableproto,
-                      const String& tablename, Bool autoHeader, const IPosition& autoShape,
+                      const String& tablename, bool autoHeader, const IPosition& autoShape,
                       const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                      Char separator, Bool testComment, const Regex& commentMarker, Int firstLine,
+                      Char separator, bool testComment, const Regex& commentMarker, Int firstLine,
                       Int lastLine);
 
   // Do the actual work of making and filling the table.
   static Table makeTab(String& formatString, Table::TableType tableType, const String& headerfile,
                        const String& filein, const String& tableproto, const String& tablename,
-                       Bool autoHeader, const IPosition& autoShape,
+                       bool autoHeader, const IPosition& autoShape,
                        const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                       Char separator, Bool testComment, const Regex& commentMarker, Int firstLine,
+                       Char separator, bool testComment, const Regex& commentMarker, Int firstLine,
                        Int lastLine);
 
   // Get the next line. Skip lines to be ignored.
   // It returns False when no more lines are available.
-  static Bool getLine(ifstream& file, Int& lineNumber, char* line, Int lineSize, Bool testComment,
+  static bool getLine(ifstream& file, Int& lineNumber, char* line, Int lineSize, bool testComment,
                       const Regex& commentMarker, Int firstLine, Int lastLine);
 
   // Get the next part of the line using the separator as delimiter.
@@ -357,19 +357,19 @@ class ReadAsciiTable {
 
   // Turn the string into a Bool value.
   // Empty string, value 0 and any value starting with f, F, n or N are False.
-  static Bool makeBool(const String& str);
+  static bool makeBool(const String& str);
 
   // Handle a keyword set.
   static void handleKeyset(Int lineSize, char* string1, char* first, char* second,
                            TableRecord& keysets, LogIO& logger, const std::string& fileName,
-                           ifstream& jFile, Int& lineNumber, Char separator, Bool testComment,
+                           ifstream& jFile, Int& lineNumber, Char separator, bool testComment,
                            const Regex& commentMarker, Int firstLine, Int lastLine);
 
   // Get the shape and type from the type string.
   static Int getTypeShape(const String& typestr, IPosition& shape, Int& type);
 
   // Get the next scalar value with the given type from string1.
-  static Bool getValue(char* string1, Int lineSize, char* first, Int& at1, Char separator, Int type,
+  static bool getValue(char* string1, Int lineSize, char* first, Int& at1, Char separator, Int type,
                        void* value);
 
   // Handle the next scalar with the given type from the data line and

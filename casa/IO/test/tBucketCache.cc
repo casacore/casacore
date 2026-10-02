@@ -34,8 +34,8 @@
 // Test program for the BucketCache class
 // </summary>
 
-void a(Bool);
-void b(Bool);
+void a(bool);
+void b(bool);
 void c(uInt bufSize);
 void d(uInt bufSize);
 
@@ -107,7 +107,7 @@ char* bToLocal(void*, const char* data) {
 void bFromLocal(void*, char* data, const char* local) { memcpy(data, local, 32768); }
 
 // Build a file.
-void a(Bool) {
+void a(bool) {
   // Create the file.
   BucketFile file("tBucketCache_tmp.data");
   file.open();
@@ -144,9 +144,9 @@ void a(Bool) {
   cache.flush();
 }
 
-void b(Bool) {
+void b(bool) {
   // Open the file.
-  BucketFile file("tBucketCache_tmp.data", False);
+  BucketFile file("tBucketCache_tmp.data", false);
   file.open();
   Int i;
   Int rec[128];
@@ -196,7 +196,7 @@ void b(Bool) {
 void c(uInt) {
   Timer timer;
   // Open the file.
-  BucketFile file("tBucketCache_tmp.data", False);
+  BucketFile file("tBucketCache_tmp.data", false);
   file.open();
   uInt i;
   Int rec[128];
@@ -218,7 +218,7 @@ void c(uInt) {
 void d(uInt) {
   Timer timer;
   // Open the file.
-  BucketFile file("tBucketCache_tmp.data", False);
+  BucketFile file("tBucketCache_tmp.data", false);
   file.open();
   uInt i;
   Int rec[128];

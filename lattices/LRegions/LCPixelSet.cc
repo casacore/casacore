@@ -33,7 +33,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LCPixelSet::LCPixelSet() {}
 
-LCPixelSet::LCPixelSet(const Array<Bool>& mask, const LCBox& box)
+LCPixelSet::LCPixelSet(const Array<bool>& mask, const LCBox& box)
     : LCRegionFixed(box.latticeShape()), itsBox(box) {
   if (!mask.shape().isEqual(itsBox.shape())) {
     throw(
@@ -56,11 +56,11 @@ LCPixelSet& LCPixelSet::operator=(const LCPixelSet& that) {
   return *this;
 }
 
-Bool LCPixelSet::equals(const LCRegion& other) const {
+bool LCPixelSet::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionFixed::equals(other)) {
-    return False;
+    return false;
   }
   const LCPixelSet& that = (const LCPixelSet&)other;
   // Check the box and mask.

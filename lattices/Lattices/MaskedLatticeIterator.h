@@ -132,17 +132,17 @@ class RO_MaskedLatticeIterator : public RO_LatticeIterator<T> {
   // useRef=True means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
-  explicit RO_MaskedLatticeIterator(const MaskedLattice<T>& data, Bool useRef = True);
+  explicit RO_MaskedLatticeIterator(const MaskedLattice<T>& data, bool useRef = true);
 
   // Construct the Iterator with the supplied data, and iteration strategy
   RO_MaskedLatticeIterator(const MaskedLattice<T>& data, const LatticeNavigator& method,
-                           Bool useRef = True);
+                           bool useRef = true);
 
   // Construct the Iterator with the supplied data.
   // It uses a LatticeStepper with the supplied cursor shape as the
   // iteration strategy.
   RO_MaskedLatticeIterator(const MaskedLattice<T>& data, const IPosition& cursorShape,
-                           Bool useRef = True);
+                           bool useRef = true);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -168,15 +168,15 @@ class RO_MaskedLatticeIterator : public RO_LatticeIterator<T> {
   MaskedLattice<T>& lattice() const { return const_cast<MaskedLattice<T>&>(*itsMaskLattPtr); }
 
   // Is the underlying MaskedLattice really masked?
-  Bool isMasked() const { return itsMaskLattPtr->isMasked(); }
+  bool isMasked() const { return itsMaskLattPtr->isMasked(); }
 
   // Get the mask for the current position.
   // It returns the same flag as
   // <linkto class=MaskedLattice>MaskedLattice::getMaskSlice</linkto>.
   // <group>
-  Bool getMask(COWPtr<Array<Bool>>&, Bool removeDegenerateAxes = False) const;
-  Bool getMask(Array<Bool>&, Bool removeDegenerateAxes = False) const;
-  Array<Bool> getMask(Bool removeDegenerateAxes = False) const;
+  bool getMask(COWPtr<Array<bool>>&, bool removeDegenerateAxes = false) const;
+  bool getMask(Array<bool>&, bool removeDegenerateAxes = false) const;
+  Array<bool> getMask(bool removeDegenerateAxes = false) const;
   // </group>
 
  private:

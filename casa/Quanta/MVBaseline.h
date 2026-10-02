@@ -149,11 +149,11 @@ class MVBaseline : public MVPosition {
 
   // Equality comparisons
   // <group>
-  Bool operator==(const MVBaseline &other) const;
-  Bool operator!=(const MVBaseline &other) const;
-  Bool near(const MVBaseline &other, Double tol = 1e-13) const;
-  Bool near(const MVBaseline &other, Quantity tol) const;
-  Bool nearAbs(const MVBaseline &other, Double tol = 1e-13) const;
+  bool operator==(const MVBaseline &other) const;
+  bool operator!=(const MVBaseline &other) const;
+  bool near(const MVBaseline &other, Double tol = 1e-13) const;
+  bool near(const MVBaseline &other, Quantity tol) const;
+  bool nearAbs(const MVBaseline &other, Double tol = 1e-13) const;
   // </group>
 
   // Addition and subtraction
@@ -224,7 +224,7 @@ class MVBaseline : public MVPosition {
   virtual Vector<Quantum<Double>> getTMRecordValue() const { return getXRecordValue(); };
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 };
 
 // # Global functions

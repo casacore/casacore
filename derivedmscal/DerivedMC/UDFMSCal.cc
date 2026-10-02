@@ -251,11 +251,11 @@ void UDFMSCal::setupDir(TENShPtr& operand) {
     // First try the string as a planetary object.
     // In the future comets can be supported like COMET:cometname.
     String str = operand->getString(0);
-    Bool fnd = True;
+    bool fnd = true;
     try {
       itsEngine.setDirection(MDirection::makeMDirection(str));
     } catch (std::exception&) {
-      fnd = False;
+      fnd = false;
     }
     if (!fnd) {
       // Now do it as a FIELD column name.
@@ -338,7 +338,7 @@ void UDFMSCal::setupStokes(const Table& table, vector<TENShPtr>& operands) {
     ToUpperCaseInPlace(type);
   }
   // The optional third argument tells if a factor 2 must be applied to I.
-  Bool rescale = False;
+  bool rescale = false;
   if (operands.size() > 2) {
     if (!operands[2]->isConstant() || operands[2]->valueType() != TableExprNodeRep::VTScalar ||
         operands[2]->dataType() != TableExprNodeRep::NTBool) {
@@ -631,7 +631,7 @@ Array<Double> UDFMSCal::toWvls(const TableExprId& id) {
   return itsTmpUvwWvl(IPosition(2, 0, 0), IPosition(2, 2, wvl.size() - 1));
 }
 
-Bool UDFMSCal::getBool(const TableExprId& id) {
+bool UDFMSCal::getBool(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   switch (itsType) {
     case SELECTION:
@@ -639,7 +639,7 @@ Bool UDFMSCal::getBool(const TableExprId& id) {
     case GETVALUE: {
       rownr_t rownr = getRowNr(id);
       if (itsArg < 0 && rownr >= itsDataNode.nrow()) {
-        return False;
+        return false;
       }
       return itsDataNode.getBool(rownr);
     }
@@ -715,22 +715,22 @@ String UDFMSCal::getString(const TableExprId& id) {
   }
 }
 
-MArray<Bool> UDFMSCal::getArrayBool(const TableExprId& id) {
+MArray<bool> UDFMSCal::getArrayBool(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   switch (itsType) {
     case STOKES: {
-      Array<Bool> out;
-      MArray<Bool> marr;
+      Array<bool> out;
+      MArray<bool> marr;
       itsDataNode.get(id, marr);
       // Combine the flags.
       itsStokesConv.convert(out, marr.array());
       if (!marr.hasMask()) {
-        return MArray<Bool>(out);
+        return MArray<bool>(out);
       }
       // Combine the mask elements.
-      Array<Bool> mask;
+      Array<bool> mask;
       itsStokesConv.convert(mask, marr.mask());
-      return MArray<Bool>(out, mask);
+      return MArray<bool>(out, mask);
     }
     case GETVALUE:
       return itsDataNode.getBoolAS(getRowNr(id));
@@ -795,7 +795,7 @@ MArray<Double> UDFMSCal::getArrayDouble(const TableExprId& id) {
         return MArray<Double>(outd);
       }
       // Combine the mask elements.
-      Array<Bool> mask;
+      Array<bool> mask;
       itsStokesConv.convert(mask, datad.mask());
       return MArray<Double>(outd, mask);
     }
@@ -827,7 +827,7 @@ MArray<DComplex> UDFMSCal::getArrayDComplex(const TableExprId& id) {
         return MArray<DComplex>(outd);
       }
       // Combine the mask elements.
-      Array<Bool> mask;
+      Array<bool> mask;
       itsStokesConv.convert(mask, datad.mask());
       return MArray<DComplex>(outd, mask);
     }

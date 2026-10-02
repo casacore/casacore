@@ -87,7 +87,7 @@ class BucketMapped : public BucketBase {
   // Get a writable pointer to the given bucket in memory.
   // It sets the hasWritten flag.
   char* getrwBucket(uInt bucketNr) {
-    itsHasWritten = True;
+    itsHasWritten = true;
     return const_cast<char*>(getBucket(bucketNr));
   }
 

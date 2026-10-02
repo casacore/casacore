@@ -39,18 +39,18 @@ void FrequencyUDF::setup(const Table&, const TaQLStyle&) {
   }
   // Get the 'to' reference type.
   // Determine the argnr of the epoch.
-  Bool needRadVel = False;
+  bool needRadVel = false;
   uInt argnr = 0;
   if (itsType == REST) {
     itsRefType = MFrequency::REST;
   } else if (itsType != SHIFT) {
     // A to-type has to be given if not shifting frequencies.
-    if (itsEngine.handleMeasType(operands()[0], True)) {
+    if (itsEngine.handleMeasType(operands()[0], true)) {
       itsRefType = itsEngine.refType();
       argnr = 1;
       if (itsRefType == MFrequency::REST) {
         itsType = REST;  // Conversion to REST
-        needRadVel = True;
+        needRadVel = true;
       }
     }
   }
@@ -60,17 +60,17 @@ void FrequencyUDF::setup(const Table&, const TaQLStyle&) {
   }
   itsEngine.handleFrequency(operands(), argnr);
   if (itsEngine.refType() == MFrequency::REST) {
-    needRadVel = True;
+    needRadVel = true;
   }
-  Bool useDoppler = False;
+  bool useDoppler = false;
   if (itsType == SHIFT) {
     // For shift the output reftype is the same as the input.
     itsRefType = itsEngine.refType();
     // Only get the doppler if shifting.
     if (operands().size() > argnr) {
-      itsDopplerEngine.handleDoppler(operands(), argnr, False, False);
+      itsDopplerEngine.handleDoppler(operands(), argnr, false, false);
       itsEngine.setDopplerEngine(itsDopplerEngine);
-      useDoppler = True;
+      useDoppler = true;
     } else {
       throw AipsError("No doppler given in function MEAS.SHIFTFREQ");
     }
@@ -82,7 +82,7 @@ void FrequencyUDF::setup(const Table&, const TaQLStyle&) {
   if (!useDoppler) {
     // Handle possible Direction arguments.
     if (operands().size() > argnr) {
-      itsDirectionEngine.handleDirection(operands(), argnr, False, False);
+      itsDirectionEngine.handleDirection(operands(), argnr, false, false);
       itsEngine.setDirectionEngine(itsDirectionEngine);
     }
     // Handle possible Epoch arguments.
@@ -119,7 +119,7 @@ void FrequencyUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType));
 }
 
-Bool FrequencyUDF::handleRadVelDoppler(uInt& argnr, Bool mustRadVel) {
+bool FrequencyUDF::handleRadVelDoppler(uInt& argnr, bool mustRadVel) {
   // In the REST function a radial velocity or doppler can be used.
   // They can be distinguished by unit or type, so the velocity unit
   // and/or a type is required for radial velocity.
@@ -129,16 +129,16 @@ Bool FrequencyUDF::handleRadVelDoppler(uInt& argnr, Bool mustRadVel) {
       try {
         itsRadVelEngine.handleRadialVelocity(operands(), argnr);
         itsEngine.setRadVelEngine(itsRadVelEngine);
-        return False;
+        return false;
       } catch (const AipsError&) {
       }
     }
     if (!mustRadVel) {
       argnr = argnrOld;
       try {
-        itsDopplerEngine.handleDoppler(operands(), argnr, False, False);
+        itsDopplerEngine.handleDoppler(operands(), argnr, false, false);
         itsEngine.setDopplerEngine(itsDopplerEngine);
-        return True;
+        return true;
       } catch (const AipsError&) {
       }
     }

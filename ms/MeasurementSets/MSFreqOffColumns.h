@@ -79,7 +79,7 @@ class MSFreqOffsetColumns {
   ~MSFreqOffsetColumns();
 
   // Is this object defined? (MSFreqOffset table is optional)
-  Bool isNull() const { return isNull_p; }
+  bool isNull() const { return isNull_p; }
 
   // Access to required columns
   // <group>
@@ -124,7 +124,7 @@ class MSFreqOffsetColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -141,7 +141,7 @@ class MSFreqOffsetColumns {
   MSFreqOffsetColumns& operator=(const MSFreqOffsetColumns&);
 
   // # Is the object not attached to a Table.
-  Bool isNull_p;
+  bool isNull_p;
 
   // # required columns
   ScalarColumn<Int> antenna1_p;

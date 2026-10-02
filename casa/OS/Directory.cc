@@ -131,17 +131,17 @@ uInt Directory::nEntries() const {
   return nentries;
 }
 
-Bool Directory::isEmpty() const {
+bool Directory::isEmpty() const {
   DirectoryIterator iter(*this);
   while (!iter.pastEnd()) {
     String nm(iter.name());
     if (!nm.starts_with(".nfs")) {
       ///        cout <<"iter at "<<iter.name()<<endl;
-      return False;
+      return false;
     }
     iter++;
   }
-  return True;
+  return true;
 }
 
 Double Directory::freeSpace() const {
@@ -168,7 +168,7 @@ Double Directory::freeSpace() const {
 #endif
 }
 
-void Directory::create(Bool overwrite) {
+void Directory::create(bool overwrite) {
   // If overwrite is False the directory will not be overwritten.
   if (exists()) {
     if (!itsFile.isDirectory()) {
@@ -179,7 +179,7 @@ void Directory::create(Bool overwrite) {
       throw(AipsError("Directory::create: " + itsFile.path().expandedName() + " already exists"));
     }
     // Keep the directory, so special allocation on Lustre is preserved.
-    Directory(itsFile).removeRecursive(True);
+    Directory(itsFile).removeRecursive(true);
   } else {
     if (mkdir(itsFile.path().expandedName().c_str(), 0777) < 0) {
       throw(AipsError("Directory::create error on " + itsFile.path().expandedName() + ": " +
@@ -203,18 +203,18 @@ void Directory::removeFiles() {
   DirectoryIterator iter(*this);
   while (!iter.pastEnd()) {
     File file = iter.file();
-    if (!file.isDirectory(False)) {
+    if (!file.isDirectory(false)) {
       unlink(file.path().originalName().c_str());
     }
     iter++;
   }
 }
 
-void Directory::removeRecursive(Bool keepDir) {
+void Directory::removeRecursive(bool keepDir) {
   DirectoryIterator iter(*this);
   while (!iter.pastEnd()) {
     File file = iter.file();
-    if (file.isDirectory(False)) {
+    if (file.isDirectory(false)) {
       Directory(file).removeRecursive();
     } else {
       unlink(file.path().originalName().c_str());
@@ -241,14 +241,14 @@ Int64 Directory::size() const {
   return totSize;
 }
 
-void Directory::copy(const Path& target, Bool overwrite, Bool setUserWritePermission) const {
+void Directory::copy(const Path& target, bool overwrite, bool setUserWritePermission) const {
   Path targetName(target);
-  checkTarget(targetName, overwrite, True);
+  checkTarget(targetName, overwrite, true);
   // Remove the target if it already exists.
   File targetFile(targetName);
-  if (targetFile.isRegular(False)) {
+  if (targetFile.isRegular(false)) {
     RegularFile(targetFile).remove();
-  } else if (targetFile.isDirectory(False)) {
+  } else if (targetFile.isDirectory(false)) {
     Directory(targetFile).removeRecursive();
   } else {
     SymLink(targetFile).remove();
@@ -283,13 +283,13 @@ void Directory::copy(const Path& target, Bool overwrite, Bool setUserWritePermis
 void Directory::copyRecursive(const String& target) const {
   // First create the directory.
   Directory dir(target);
-  dir.create(True);
+  dir.create(true);
   // Now loop over all files and copy.
   DirectoryIterator iter(*this);
   while (!iter.pastEnd()) {
     File file = iter.file();
     String outName = target + '/' + file.path().baseName();
-    if (file.isDirectory(False)) {
+    if (file.isDirectory(false)) {
       Directory(file).copyRecursive(outName);
     } else {
       RegularFile::manualCopy(file.path().originalName(), outName);
@@ -298,9 +298,9 @@ void Directory::copyRecursive(const String& target) const {
   }
 }
 
-void Directory::move(const Path& target, Bool overwrite) {
+void Directory::move(const Path& target, bool overwrite) {
   Path targetPath(target);
-  checkTarget(targetPath, overwrite, True);
+  checkTarget(targetPath, overwrite, true);
   // Start trying to rename.
   // If source and target are the same directory, rename does nothing
   // and returns a success status.
@@ -309,18 +309,18 @@ void Directory::move(const Path& target, Bool overwrite) {
   }
   // The rename failed for one reason or another.
   // Remove the target if it already exists.
-  Bool alrExist = False;
+  bool alrExist = false;
   if (errno == EEXIST) {
-    alrExist = True;
+    alrExist = true;
   }
 #if defined(ENOTEMPTY)
   if (errno == ENOTEMPTY) {
-    alrExist = True;
+    alrExist = true;
   }
 #endif
 #if defined(EBUSY)
   if (errno == EBUSY) {
-    alrExist = True;
+    alrExist = true;
   }
 #endif
   if (alrExist) {
@@ -338,7 +338,7 @@ void Directory::move(const Path& target, Bool overwrite) {
                     targetPath.expandedName() + ": " + strerror(errno)));
   }
   // Copy the directory and remove it thereafter.
-  copy(targetPath, overwrite, False);
+  copy(targetPath, overwrite, false);
   removeRecursive();
 }
 
@@ -349,7 +349,7 @@ void Directory::move(const Path& target, Bool overwrite) {
 //     return find (Regex (Regex::fromString (fileName)), followSymLinks);
 // }
 
-Vector<String> Directory::find(const Regex& regexp, Bool followSymLinks, Bool recursive) const {
+Vector<String> Directory::find(const Regex& regexp, bool followSymLinks, bool recursive) const {
   DirectoryIterator iter(*this);
   Vector<String> myentries(10);
   uInt count = 0;
@@ -358,14 +358,14 @@ Vector<String> Directory::find(const Regex& regexp, Bool followSymLinks, Bool re
     if (RegexMatches(iter.name(), regexp)) {
       if (count + 1 >= myentries.nelements()) {
         // More entries have been added - have to resize
-        myentries.resize(2 * myentries.nelements(), True);
+        myentries.resize(2 * myentries.nelements(), true);
       }
       myentries(count) = iter.name();
       count++;
     }
     iter++;
   }
-  myentries.resize(count, True);  // Trim the trailing entries
+  myentries.resize(count, true);  // Trim the trailing entries
 
   // Now recursively add all the ones we find in subdirectories, prepending
   // the pathname.
@@ -379,7 +379,7 @@ Vector<String> Directory::find(const Regex& regexp, Bool followSymLinks, Bool re
         String basename = iter.name() + "/";
         subentries = basename + subentries;
         uInt oldsize = myentries.nelements();
-        myentries.resize(oldsize + subentries.nelements(), True);
+        myentries.resize(oldsize + subentries.nelements(), true);
         myentries(Slice(oldsize, subentries.nelements())) = subentries;
       }
       iter++;
@@ -388,7 +388,7 @@ Vector<String> Directory::find(const Regex& regexp, Bool followSymLinks, Bool re
   return myentries;
 }
 
-Vector<String> Directory::shellExpand(const Vector<String>& files, Bool stripPath)
+Vector<String> Directory::shellExpand(const Vector<String>& files, bool stripPath)
 //
 // Take a list of potentially wild-carded file names, and expand
 // them into (optional) absolute path and name.  Some more development
@@ -417,9 +417,9 @@ Vector<String> Directory::shellExpand(const Vector<String>& files, Bool stripPat
 
     // Find all the matched files
 
-    Vector<String> expFiles = dir.find(exp, True, False);
+    Vector<String> expFiles = dir.find(exp, true, false);
     nExpInNames += expFiles.nelements();
-    expInNames.resize(nExpInNames, True);
+    expInNames.resize(nExpInNames, true);
 
     // Add the path back on to each name
 
@@ -450,7 +450,7 @@ Vector<String> Directory::shellExpand(const Vector<String>& files, Bool stripPat
 #include <sys/vnode.h>
 #endif
 
-Bool Directory::isNFSMounted() const {
+bool Directory::isNFSMounted() const {
   struct statfs buf;
   if (statfs(itsFile.path().expandedName().c_str(), &buf) < 0) {
     throw(AipsError("Directory::isNFSMounted error on " + itsFile.path().expandedName() + ": " +

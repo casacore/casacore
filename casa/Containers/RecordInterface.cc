@@ -131,10 +131,10 @@ IPosition RecordInterface::shape(const RecordFieldId& id) const {
 }
 
 void RecordInterface::defineField(const RecordFieldId& id, DataType type, const void* value) {
-  defineField(id, type, IPosition(), False, value);
+  defineField(id, type, IPosition(), false, value);
 }
 void RecordInterface::defineField(const RecordFieldId& id, DataType type, const IPosition& shape,
-                                  Bool fixedShape, const void* value) {
+                                  bool fixedShape, const void* value) {
   Int whichField = newIdToNumber(id);
   if (whichField < 0) {
     throwIfFixed();
@@ -151,7 +151,7 @@ void RecordInterface::defineField(const RecordFieldId& id, DataType type, const 
   }
 }
 
-void RecordInterface::define(const RecordFieldId& id, Bool value) {
+void RecordInterface::define(const RecordFieldId& id, bool value) {
   defineField(id, TpBool, &value);
 }
 void RecordInterface::define(const RecordFieldId& id, uChar value) {
@@ -182,43 +182,43 @@ void RecordInterface::define(const RecordFieldId& id, const DComplex& value) {
 void RecordInterface::define(const RecordFieldId& id, const String& value) {
   defineField(id, TpString, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Bool>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<bool>& value, bool fixedShape) {
   defineField(id, TpArrayBool, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<uChar>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<uChar>& value, bool fixedShape) {
   defineField(id, TpArrayUChar, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Short>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<Short>& value, bool fixedShape) {
   defineField(id, TpArrayShort, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Int>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<Int>& value, bool fixedShape) {
   defineField(id, TpArrayInt, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<uInt>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<uInt>& value, bool fixedShape) {
   defineField(id, TpArrayUInt, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Int64>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<Int64>& value, bool fixedShape) {
   defineField(id, TpArrayInt64, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<float>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<float>& value, bool fixedShape) {
   defineField(id, TpArrayFloat, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<double>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<double>& value, bool fixedShape) {
   defineField(id, TpArrayDouble, value.shape(), fixedShape, &value);
 }
 void RecordInterface::define(const RecordFieldId& id, const Array<Complex>& value,
-                             Bool fixedShape) {
+                             bool fixedShape) {
   defineField(id, TpArrayComplex, value.shape(), fixedShape, &value);
 }
 void RecordInterface::define(const RecordFieldId& id, const Array<DComplex>& value,
-                             Bool fixedShape) {
+                             bool fixedShape) {
   defineField(id, TpArrayDComplex, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<String>& value, Bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<String>& value, bool fixedShape) {
   defineField(id, TpArrayString, value.shape(), fixedShape, &value);
 }
 
-void RecordInterface::get(const RecordFieldId& id, Bool& value) const { value = asBool(id); }
+void RecordInterface::get(const RecordFieldId& id, bool& value) const { value = asBool(id); }
 void RecordInterface::get(const RecordFieldId& id, uChar& value) const { value = asuChar(id); }
 void RecordInterface::get(const RecordFieldId& id, Short& value) const { value = asShort(id); }
 void RecordInterface::get(const RecordFieldId& id, Int& value) const { value = asInt(id); }
@@ -231,8 +231,8 @@ void RecordInterface::get(const RecordFieldId& id, DComplex& value) const {
   value = asDComplex(id);
 }
 void RecordInterface::get(const RecordFieldId& id, String& value) const { value = asString(id); }
-void RecordInterface::get(const RecordFieldId& id, Array<Bool>& value) const {
-  Array<Bool> array = toArrayBool(id);
+void RecordInterface::get(const RecordFieldId& id, Array<bool>& value) const {
+  Array<bool> array = toArrayBool(id);
   value.resize(array.shape());
   value = array;
 }
@@ -287,7 +287,7 @@ void RecordInterface::get(const RecordFieldId& id, Array<String>& value) const {
   value = array;
 }
 
-Bool RecordInterface::asBool(const RecordFieldId& id) const {
+bool RecordInterface::asBool(const RecordFieldId& id) const {
   Int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
@@ -298,7 +298,7 @@ Bool RecordInterface::asBool(const RecordFieldId& id) const {
     default:
       throw(AipsError("RecordInterface::asBool - invalid data type"));
   }
-  return *(const Bool*)get_pointer(whichField, TpBool);
+  return *(const bool*)get_pointer(whichField, TpBool);
 }
 uChar RecordInterface::asuChar(const RecordFieldId& id) const {
   Int whichField = idToNumber(id);
@@ -499,9 +499,9 @@ const String& RecordInterface::asString(const RecordFieldId& id) const {
   Int whichField = idToNumber(id);
   return *(const String*)get_pointer(whichField, TpString);
 }
-const Array<Bool>& RecordInterface::asArrayBool(const RecordFieldId& id) const {
+const Array<bool>& RecordInterface::asArrayBool(const RecordFieldId& id) const {
   Int whichField = idToNumber(id);
-  return *(const Array<Bool>*)get_pointer(whichField, TpArrayBool);
+  return *(const Array<bool>*)get_pointer(whichField, TpArrayBool);
 }
 const Array<uChar>& RecordInterface::asArrayuChar(const RecordFieldId& id) const {
   Int whichField = idToNumber(id);

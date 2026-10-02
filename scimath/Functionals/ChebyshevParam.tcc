@@ -214,8 +214,8 @@ Vector<String> ChebyshevParam<T>::modes_s =
     stringToVector("constant zeroth extrapolate cyclic edge", ' ');
 
 template <class T>
-Bool ChebyshevParamModeImpl<T>::hasMode() const {
-  return True;
+bool ChebyshevParamModeImpl<T>::hasMode() const {
+  return true;
 }
 
 template <class T>

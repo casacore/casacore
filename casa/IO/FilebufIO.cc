@@ -36,9 +36,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 FilebufIO::FilebufIO()
-    : itsSeekable(False),
-      itsReadable(False),
-      itsWritable(False),
+    : itsSeekable(false),
+      itsReadable(false),
+      itsWritable(false),
       itsFile(-1),
       itsBufSize(0),
       itsBufLen(0),
@@ -46,7 +46,7 @@ FilebufIO::FilebufIO()
       itsBufOffset(-1),
       itsOffset(-1),
       itsSeekOffset(-1),
-      itsDirty(False) {}
+      itsDirty(false) {}
 
 FilebufIO::FilebufIO(int fd, uInt bufferSize)
     : itsFile(-1),
@@ -56,7 +56,7 @@ FilebufIO::FilebufIO(int fd, uInt bufferSize)
       itsBufOffset(-1),
       itsOffset(-1),
       itsSeekOffset(-1),
-      itsDirty(False) {
+      itsDirty(false) {
   attach(fd, bufferSize);
 }
 
@@ -67,7 +67,7 @@ void FilebufIO::attach(int fd, uInt bufSize) {
   itsFile = fd;
   itsOffset = 0;
   itsSeekOffset = -1;
-  itsDirty = False;
+  itsDirty = false;
   fillRWFlags(fd);
   fillSeekable();
   setBuffer(bufSize);
@@ -89,7 +89,7 @@ void FilebufIO::setBuffer(Int64 bufSize) {
   }
 }
 
-void FilebufIO::detach(Bool closeFile) {
+void FilebufIO::detach(bool closeFile) {
   setBuffer(0);
   if (closeFile && itsFile >= 0) {
     ::traceCLOSE(itsFile);
@@ -98,16 +98,16 @@ void FilebufIO::detach(Bool closeFile) {
 }
 
 void FilebufIO::fillRWFlags(int fd) {
-  itsReadable = False;
-  itsWritable = False;
+  itsReadable = false;
+  itsWritable = false;
   int flags = fcntl(fd, F_GETFL);
   if ((flags & O_RDWR) == O_RDWR) {
-    itsReadable = True;
-    itsWritable = True;
+    itsReadable = true;
+    itsWritable = true;
   } else if ((flags & O_WRONLY) == O_WRONLY) {
-    itsWritable = True;
+    itsWritable = true;
   } else {
-    itsReadable = True;
+    itsReadable = true;
   }
 }
 
@@ -122,7 +122,7 @@ String FilebufIO::fileName() const { return ""; }
 void FilebufIO::flush() {
   if (itsDirty) {
     writeBuffer(itsBufOffset, itsBuffer, itsBufLen);
-    itsDirty = False;
+    itsDirty = false;
   }
 }
 
@@ -154,7 +154,7 @@ void FilebufIO::writeBuffer(Int64 offset, const char* buf, Int64 size) {
   }
 }
 
-Int64 FilebufIO::readBuffer(Int64 offset, char* buf, Int64 size, Bool throwException) {
+Int64 FilebufIO::readBuffer(Int64 offset, char* buf, Int64 size, bool throwException) {
   if (offset != itsSeekOffset) {
     ::traceLSEEK(itsFile, offset, SEEK_SET);
     itsSeekOffset = offset;
@@ -168,7 +168,7 @@ Int64 FilebufIO::readBuffer(Int64 offset, char* buf, Int64 size, Bool throwExcep
         " for file " +
         fileName());
   }
-  if (bytesRead != Int(size) && throwException == True) {
+  if (bytesRead != Int(size) && throwException == true) {
     // # In case of a table reparation the remainder has to be filled with 0.
 #if defined(TABLEREPAIR)
     memset((char*)buf + bytesRead, 0, size - bytesRead);
@@ -207,7 +207,7 @@ void FilebufIO::write(Int64 size, const void* buf) {
     writeBuffer(st * itsBufSize, bufc + blkst, sz);
     // Discard the current buffer if within these full blocks.
     if (st * itsBufSize <= itsBufOffset && end * itsBufSize >= itsBufOffset + itsBufSize) {
-      itsDirty = False;
+      itsDirty = false;
       itsBufOffset = -Int(itsBufSize + 1);
       itsBufLen = 0;
     }
@@ -232,7 +232,7 @@ void FilebufIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 FilebufIO::read(Int64 size, void* buf, Bool throwException) {
+Int64 FilebufIO::read(Int64 size, void* buf, bool throwException) {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError("FilebufIO object (file " + fileName() + ") is not readable");
@@ -298,17 +298,17 @@ void FilebufIO::writeBlock(Int64 size, const char* buf) {
     }
     // Read the new buffer.
     itsBufOffset = itsOffset / itsBufSize * itsBufSize;
-    itsBufLen = readBuffer(itsBufOffset, itsBuffer, itsBufSize, False);
+    itsBufLen = readBuffer(itsBufOffset, itsBuffer, itsBufSize, false);
   }
   Int64 st = itsOffset - itsBufOffset;
   memcpy(itsBuffer + st, buf, size);
-  itsDirty = True;
+  itsDirty = true;
   if (st + size > itsBufLen) {
     itsBufLen = st + size;
   }
 }
 
-Int64 FilebufIO::readBlock(Int64 size, char* buf, Bool throwException) {
+Int64 FilebufIO::readBlock(Int64 size, char* buf, bool throwException) {
   // Read a part of a block.
   // It is ensured that the buffer fits in a single block and that it
   // is not a full block.
@@ -319,7 +319,7 @@ Int64 FilebufIO::readBlock(Int64 size, char* buf, Bool throwException) {
     }
     // Read the new buffer.
     itsBufOffset = itsOffset / itsBufSize * itsBufSize;
-    itsBufLen = readBuffer(itsBufOffset, itsBuffer, itsBufSize, False);
+    itsBufLen = readBuffer(itsBufOffset, itsBuffer, itsBufSize, false);
   }
   Int64 st = itsOffset - itsBufOffset;
 #if defined(TABLEREPAIR)
@@ -370,10 +370,10 @@ Int64 FilebufIO::length() {
   return len;
 }
 
-Bool FilebufIO::isReadable() const { return itsReadable; }
+bool FilebufIO::isReadable() const { return itsReadable; }
 
-Bool FilebufIO::isWritable() const { return itsWritable; }
+bool FilebufIO::isWritable() const { return itsWritable; }
 
-Bool FilebufIO::isSeekable() const { return itsSeekable; }
+bool FilebufIO::isSeekable() const { return itsSeekable; }
 
 }  // namespace casacore

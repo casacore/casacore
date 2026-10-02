@@ -163,13 +163,13 @@ class LatticeExpr : public MaskedLattice<T> {
   virtual MaskedLattice<T>* cloneML() const;
 
   // Has the object really a mask?
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Get the region used (always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
   // Returns False, as the LatticeExpr lattice is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
   // <br>hasLock() is True if all parts of the expression return True.
@@ -178,9 +178,9 @@ class LatticeExpr : public MaskedLattice<T> {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -204,12 +204,12 @@ class LatticeExpr : public MaskedLattice<T> {
   // Do the actual get of the data.
   // The return value is always False, thus the buffer does not reference
   // another array.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual get of the mask data.
   // The return value is always False, thus the buffer does not reference
   // another array.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // An expression is not writable so this functions throws an exception.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -234,7 +234,7 @@ class LatticeExpr : public MaskedLattice<T> {
 };
 
 template <>
-inline void LatticeExpr<Bool>::handleMathTo(Lattice<Bool>&, int) const {
+inline void LatticeExpr<bool>::handleMathTo(Lattice<bool>&, int) const {
   throwBoolMath();
 }
 

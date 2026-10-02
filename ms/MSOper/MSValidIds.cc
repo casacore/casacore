@@ -35,15 +35,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSValidIds::MSValidIds() : romsCols_p(0), hasDoppler_p(False), hasSource_p(False) { ; }
+MSValidIds::MSValidIds() : romsCols_p(0), hasDoppler_p(false), hasSource_p(false) { ; }
 
 MSValidIds::MSValidIds(const MeasurementSet &ms)
-    : romsCols_p(0), hasDoppler_p(False), hasSource_p(False) {
+    : romsCols_p(0), hasDoppler_p(false), hasSource_p(false) {
   attach(ms);
 }
 
 MSValidIds::MSValidIds(const MSValidIds &other)
-    : romsCols_p(0), hasDoppler_p(False), hasSource_p(False) {
+    : romsCols_p(0), hasDoppler_p(false), hasSource_p(false) {
   *this = other;
 }
 
@@ -165,7 +165,7 @@ void MSValidIds::clear() {
   delete romsCols_p;
   romsCols_p = 0;
 
-  hasDoppler_p = hasSource_p = False;
+  hasDoppler_p = hasSource_p = false;
 }
 
 }  // namespace casacore

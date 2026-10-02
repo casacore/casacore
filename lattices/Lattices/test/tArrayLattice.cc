@@ -97,7 +97,7 @@ int main() {
     // test copy nature
     AlwaysAssert(near(al0(IPosition(2, 0)), 0.0f, 1E-6), AipsError);
     al0.putAt(33.0, IPosition(2, 0));
-    AlwaysAssert(near(al4(IPosition(2, 0)), 33.0f, 1E-6) == False, AipsError);
+    AlwaysAssert(near(al4(IPosition(2, 0)), 33.0f, 1E-6) == false, AipsError);
 
     ArrayLattice<Int> al6(IPosition(4, 5, 6, 7, 8));
     // returns the shape of the ArrayLattice.
@@ -310,19 +310,19 @@ int main() {
     AlwaysAssert(zarray.shape() == IPosition(4, 1, 1, 7, 1), AipsError);
 
     // test functions which should throw exceptions
-    Bool caught = False;
+    bool caught = false;
     try {
       al6ROIter.matrixCursor();
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssert(caught, AipsError);
 
-    caught = False;
+    caught = false;
     try {
       al6ROIter.cubeCursor();
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssert(caught, AipsError);
 
@@ -364,19 +364,19 @@ int main() {
     AlwaysAssert(xyarray.ndim() == 4, AipsError);
     AlwaysAssert(xyarray.shape() == IPosition(4, 5, 6, 1, 1), AipsError);
     // test functions which should throw exceptions
-    caught = False;
+    caught = false;
     try {
       al6Iter.vectorCursor();
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssert(caught, AipsError);
 
-    caught = False;
+    caught = false;
     try {
       al6Iter.cubeCursor();
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssert(caught, AipsError);
 

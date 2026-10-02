@@ -27,7 +27,7 @@
 
 namespace casacore {
 
-DirectionUDF::DirectionUDF(FuncType type, Bool riseSet) : itsType(type), itsRiseSet(riseSet) {}
+DirectionUDF::DirectionUDF(FuncType type, bool riseSet) : itsType(type), itsRiseSet(riseSet) {}
 
 UDFBase* DirectionUDF::makeDIR(const String&) { return new DirectionUDF(DIRECTION); }
 UDFBase* DirectionUDF::makeDIRCOS(const String&) { return new DirectionUDF(DIRCOS); }
@@ -40,7 +40,7 @@ UDFBase* DirectionUDF::makeECL(const String&) { return new DirectionUDF(ECLIPTIC
 UDFBase* DirectionUDF::makeGAL(const String&) { return new DirectionUDF(GALACTIC); }
 UDFBase* DirectionUDF::makeSGAL(const String&) { return new DirectionUDF(SUPERGALACTIC); }
 UDFBase* DirectionUDF::makeITRF(const String&) { return new DirectionUDF(ITRF); }
-UDFBase* DirectionUDF::makeRISESET(const String&) { return new DirectionUDF(HADEC, True); }
+UDFBase* DirectionUDF::makeRISESET(const String&) { return new DirectionUDF(HADEC, true); }
 
 void DirectionUDF::setup(const Table&, const TaQLStyle&) {
   if (operands().size() < 1) {
@@ -68,7 +68,7 @@ void DirectionUDF::setup(const Table&, const TaQLStyle&) {
   } else if (itsType == ITRF) {
     itsRefType = MDirection::ITRF;
   } else {
-    itsEngine.handleMeasType(operands()[0], True);
+    itsEngine.handleMeasType(operands()[0], true);
     itsRefType = itsEngine.refType();
     argnr = 1;
   }
@@ -120,7 +120,7 @@ MArray<Double> DirectionUDF::getArrayDouble(const TableExprId& id) {
   return MArray<Double>(itsEngine.getArrayDouble(id, itsRiseSet, itsType == DIRCOS));
 }
 MArray<MVTime> DirectionUDF::getArrayDate(const TableExprId& id) {
-  Array<Double> res = itsEngine.getArrayDouble(id, itsRiseSet, False);
+  Array<Double> res = itsEngine.getArrayDouble(id, itsRiseSet, false);
   Array<MVTime> dates(res.shape());
   for (uInt i = 0; i < res.size(); ++i) {
     dates.data()[i] = MVTime(res.data()[i]);

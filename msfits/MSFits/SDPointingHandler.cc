@@ -55,7 +55,7 @@ SDPointingHandler::SDPointingHandler()
   ;
 }
 
-SDPointingHandler::SDPointingHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
+SDPointingHandler::SDPointingHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                      const Record &row)
     : msPointing_p(0),
       msPointingCols_p(0),
@@ -97,7 +97,7 @@ SDPointingHandler &SDPointingHandler::operator=(const SDPointingHandler &other) 
   return *this;
 }
 
-void SDPointingHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDPointingHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
 }
@@ -109,7 +109,7 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
   if (msPointing_p) {
     String name = "";
     if (objectField_p.isAttached()) name = *objectField_p;
-    Bool newRow = rownr_p < 0;
+    bool newRow = rownr_p < 0;
     newRow = newRow || name != name_p;
     newRow = newRow || antennaId != antId_p;
     newRow = newRow || direction.getRef() != direction_p.getRef() ||
@@ -201,7 +201,7 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
         msPointingCols_p->tracking().put(rownr_p, *trackingField_p);
       } else {
         // assume it was tracking
-        msPointingCols_p->tracking().put(rownr_p, True);
+        msPointingCols_p->tracking().put(rownr_p, true);
       }
       // extraction the direction poly for use by the FIELD table as necessary
       directionPoly_p = msPointingCols_p->direction()(rownr_p);
@@ -240,7 +240,7 @@ void SDPointingHandler::clearRow() {
   trackingField_p.detach();
 }
 
-void SDPointingHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDPointingHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   msPointing_p = new MSPointing(ms.pointing());
   AlwaysAssert(msPointing_p, AipsError);
 
@@ -254,32 +254,32 @@ void SDPointingHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, c
   initRow(handledCols, row);
 }
 
-void SDPointingHandler::initRow(Vector<Bool> &handledCols, const Record &row) {
+void SDPointingHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   rownr_p = -1;
   if (row.fieldNumber("OBJECT") >= 0) {
     objectField_p.attachToRecord(row, "OBJECT");
-    handledCols(row.fieldNumber("OBJECT")) = True;
+    handledCols(row.fieldNumber("OBJECT")) = true;
   }
   if (row.fieldNumber("FIELD_POINTING_DIR_RATE") >= 0 &&
       row.dataType("FIELD_POINTING_DIR_RATE") == TpArrayDouble) {
     pointingDirRateField_p.attachToRecord(row, "FIELD_POINTING_DIR_RATE");
-    handledCols(row.fieldNumber("FIELD_POINTING_DIR_RATE")) = True;
+    handledCols(row.fieldNumber("FIELD_POINTING_DIR_RATE")) = true;
   }
   if (row.fieldNumber("POINTING_INTERVAL") >= 0 && row.dataType("POINTING_INTERVAL") == TpDouble) {
     intervalField_p.attachToRecord(row, "POINTING_INTERVAL");
-    handledCols(row.fieldNumber("POINTING_INTERVAL")) = True;
+    handledCols(row.fieldNumber("POINTING_INTERVAL")) = true;
   }
   if (row.fieldNumber("POINTING_TIME") >= 0 && row.dataType("POINTING_TIME") == TpDouble) {
     timeField_p.attachToRecord(row, "POINTING_TIME");
-    handledCols(row.fieldNumber("POINTING_TIME")) = True;
+    handledCols(row.fieldNumber("POINTING_TIME")) = true;
   }
   if (row.fieldNumber("POINTING_NAME") >= 0 && row.dataType("POINTING_NAME") == TpString) {
     nameField_p.attachToRecord(row, "POINTING_NAME");
-    handledCols(row.fieldNumber("POINTING_NAME")) = True;
+    handledCols(row.fieldNumber("POINTING_NAME")) = true;
   }
   if (row.fieldNumber("POINTING_TRACKING") >= 0 && row.dataType("POINTING_TRACKING") == TpBool) {
     trackingField_p.attachToRecord(row, "POINTING_TRACKING");
-    handledCols(row.fieldNumber("POINTING_TRACKING")) = True;
+    handledCols(row.fieldNumber("POINTING_TRACKING")) = true;
   }
 }
 

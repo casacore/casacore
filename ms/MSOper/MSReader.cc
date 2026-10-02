@@ -129,7 +129,7 @@ MSReader::MSReader(const MeasurementSet &ms)
   itsTabId["MAIN"] = itsMainId;
 
   // at this point, we know the size of the things we need == idCount
-  Vector<Bool> handledTab(idCount, False);
+  Vector<bool> handledTab(idCount, false);
 
   itsIndexes.resize(idCount);
   itsTabRows.resize(idCount);
@@ -139,47 +139,47 @@ MSReader::MSReader(const MeasurementSet &ms)
 
   // MAIN table, no index, just the table row
   itsTabRows[itsMainId] = ROTableRow(itsMS);
-  handledTab(itsMainId) = True;
+  handledTab(itsMainId) = true;
 
   // ANTENNA1 - no index, indexed simply via ANTENNA1 value
   itsTabRows[itsAnt1Id] = ROTableRow(itsMS.antenna());
-  handledTab(itsAnt1Id) = True;
+  handledTab(itsAnt1Id) = true;
 
   // ANTENNA2 - no index, indexed simply via ANTENNA2 value
   itsTabRows[itsAnt2Id] = ROTableRow(itsMS.antenna());
-  handledTab(itsAnt2Id) = True;
+  handledTab(itsAnt2Id) = true;
 
   // DATA_DESCRIPTION - no index, indexed simply via DATA_DESC_ID value
   // This table is required.
   itsDDId = itsTabId.at("DATA_DESCRIPTION");
   DebugAssert(itsDDId >= 0, AipsError);
   itsTabRows[itsDDId] = ROTableRow(itsMS.dataDescription());
-  handledTab(itsDDId) = True;
+  handledTab(itsDDId) = true;
 
   // DOPPLER - has a special index.  This table is OPTIONAL
   itsDopplerId = itsTabId.at("DOPPLER");
   if (itsDopplerId >= 0) {
     itsDopplerIndex.attach(itsMS.doppler());
     itsTabRows[itsDopplerId] = ROTableRow(itsMS.doppler());
-    handledTab(itsDopplerId) = True;
+    handledTab(itsDopplerId) = true;
   }
 
   // FEED1 - indexed
   itsFeed1Index.attach(itsMS.feed());
   itsTabRows[itsFeed1Id] = ROTableRow(itsMS.feed());
-  handledTab(itsFeed1Id) = True;
+  handledTab(itsFeed1Id) = true;
 
   // FEED2 - indexed
   itsFeed2Index.attach(itsMS.feed());
   itsTabRows[itsFeed2Id] = ROTableRow(itsMS.feed());
-  handledTab(itsFeed2Id) = True;
+  handledTab(itsFeed2Id) = true;
 
   // FIELD - no index, indexed simply via FIELD_ID value
   // This table is required.
   itsFieldId = itsTabId.at("FIELD");
   DebugAssert(itsFieldId >= 0, AipsError);
   itsTabRows[itsFieldId] = ROTableRow(itsMS.field());
-  handledTab(itsFieldId) = True;
+  handledTab(itsFieldId) = true;
 
   // FLAG_CMD, simple time and interval MSTableIndex
   // This table is required
@@ -187,7 +187,7 @@ MSReader::MSReader(const MeasurementSet &ms)
   DebugAssert(itsFlagCmdId >= 0, AipsError);
   itsIndexes[itsFlagCmdId] = MSTableIndex(itsMS.flagCmd(), Vector<String>());
   itsTabRows[itsFlagCmdId] = ROTableRow(itsMS.flagCmd());
-  handledTab(itsFlagCmdId) = True;
+  handledTab(itsFlagCmdId) = true;
 
   // FREQ_OFFSET - indexed
   // This table is optional
@@ -195,7 +195,7 @@ MSReader::MSReader(const MeasurementSet &ms)
   if (itsFreqOffsetId >= 0) {
     itsFreqOffIndex.attach(itsMS.freqOffset());
     itsTabRows[itsFreqOffsetId] = ROTableRow(itsMS.freqOffset());
-    handledTab(itsFreqOffsetId) = True;
+    handledTab(itsFreqOffsetId) = true;
   }
 
   // HISTORY - not handled here, this is a required table
@@ -203,55 +203,55 @@ MSReader::MSReader(const MeasurementSet &ms)
   Int histId = itsTabId.at("HISTORY");
   if (histId >= 0) {
     itsTabId["HISTORY"] = -1;
-    handledTab(histId) = True;
+    handledTab(histId) = true;
   }
 
   // OBSERVATION - not indexed, this is a required table
   itsObsId = itsTabId.at("OBSERVATION");
   DebugAssert(itsObsId >= 0, AipsError);
   itsTabRows[itsObsId] = ROTableRow(itsMS.observation());
-  handledTab(itsObsId) = True;
+  handledTab(itsObsId) = true;
 
   // POINTING1 and POINTING2 - indexed, this is a required table
   // Allready have itsPointing1Id and itsPointing2Id
   itsPointing1Index.attach(itsMS.pointing());
   itsTabRows[itsPointing1Id] = ROTableRow(itsMS.pointing());
-  handledTab(itsPointing1Id) = True;
+  handledTab(itsPointing1Id) = true;
   itsPointing2Index.attach(itsMS.pointing());
   itsTabRows[itsPointing2Id] = ROTableRow(itsMS.pointing());
-  handledTab(itsPointing2Id) = True;
+  handledTab(itsPointing2Id) = true;
 
   // POLARIZATION - not indexed, this is a required table
   itsPolId = itsTabId.at("POLARIZATION");
   DebugAssert(itsPolId >= 0, AipsError);
   itsTabRows[itsPolId] = ROTableRow(itsMS.polarization());
-  handledTab(itsPolId) = True;
+  handledTab(itsPolId) = true;
 
   // PROCESSOR - not indexed, this is a required table
   itsProcId = itsTabId.at("PROCESSOR");
   DebugAssert(itsProcId >= 0, AipsError);
   itsTabRows[itsProcId] = ROTableRow(itsMS.processor());
-  handledTab(itsProcId) = True;
+  handledTab(itsProcId) = true;
 
   // SOURCE - indexed, this is an optional table
   itsSourceId = itsTabId.at("SOURCE");
   if (itsSourceId >= 0) {
     itsSourceIndex.attach(itsMS.source());
     itsTabRows[itsSourceId] = ROTableRow(itsMS.source());
-    handledTab(itsSourceId) = True;
+    handledTab(itsSourceId) = true;
   }
 
   // SPECTRAL_WINDOW - not indexed, this is a required table
   itsSpwId = itsTabId.at("SPECTRAL_WINDOW");
   DebugAssert(itsSpwId >= 0, AipsError);
   itsTabRows[itsSpwId] = ROTableRow(itsMS.spectralWindow());
-  handledTab(itsSpwId) = True;
+  handledTab(itsSpwId) = true;
 
   // STATE - not indexed, this is an optional table
   itsStateId = itsTabId.at("STATE");
   if (itsStateId >= 0) {
     itsTabRows[itsStateId] = ROTableRow(itsMS.state());
-    handledTab(itsStateId) = True;
+    handledTab(itsStateId) = true;
   }
 
   // SYSCAL1 and SYSCAL2 - indexed, this is an optional table
@@ -259,11 +259,11 @@ MSReader::MSReader(const MeasurementSet &ms)
   if (itsSyscal1Id >= 0) {
     itsSyscal1Index.attach(itsMS.sysCal());
     itsTabRows[itsSyscal1Id] = ROTableRow(itsMS.sysCal());
-    handledTab(itsSyscal1Id) = True;
+    handledTab(itsSyscal1Id) = true;
     // SYSCAL2 must exist if SYSCAL1 exists
     itsSyscal2Index.attach(itsMS.sysCal());
     itsTabRows[itsSyscal2Id] = ROTableRow(itsMS.sysCal());
-    handledTab(itsSyscal2Id) = True;
+    handledTab(itsSyscal2Id) = true;
   }
 
   // WEATHER1 and WEATHER2 - indexed, this is an optional table
@@ -271,11 +271,11 @@ MSReader::MSReader(const MeasurementSet &ms)
   if (itsWeather1Id >= 0) {
     itsWeather1Index.attach(itsMS.weather());
     itsTabRows[itsWeather1Id] = ROTableRow(itsMS.weather());
-    handledTab(itsWeather1Id) = True;
+    handledTab(itsWeather1Id) = true;
     // WEATHER2 must exist if WEATHER1 exists
     itsWeather2Index.attach(itsMS.weather());
     itsTabRows[itsWeather2Id] = ROTableRow(itsMS.weather());
-    handledTab(itsWeather2Id) = True;
+    handledTab(itsWeather2Id) = true;
   }
 
   // and now, for everything not handled above, also fill in itsTableNames
@@ -288,7 +288,7 @@ MSReader::MSReader(const MeasurementSet &ms)
       if (!handledTab(tabId)) {
         itsIndexes[tabId].attach(kwSet.asTable(tabName), Vector<String>());
         itsTabRows[tabId] = ROTableRow(kwSet.asTable(tabName));
-        handledTab(tabId) = True;
+        handledTab(tabId) = true;
       }
     }
   }
@@ -299,7 +299,7 @@ MSReader::MSReader(const MeasurementSet &ms)
       itsTableNames(nameCount++) = tableNames(i);
     }
   }
-  itsTableNames.resize(nameCount, True);
+  itsTableNames.resize(nameCount, true);
 }
 
 void MSReader::gotoRow(rownr_t which) {
@@ -371,7 +371,7 @@ void MSReader::gotoRow(rownr_t which) {
   Double sint = interval.getValue(itsSecUnit);
 
   // DOPPLER - optional
-  Bool found;
+  bool found;
   if (itsDopplerId >= 0) {
     itsDopplerIndex.dopplerId() = itsIds.dopplerId(which);
     itsDopplerIndex.sourceId() = itsIds.sourceId(which);

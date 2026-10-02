@@ -153,22 +153,22 @@ size_t LECanonicalDataConversion::fromLocal(void* to, const double* from, size_t
   return LECanonicalConversion::fromLocal(to, from, nr);
 }
 
-Bool LECanonicalDataConversion::canCopy(const char*) const { return (CONVERT_LECAN_CHAR == 0); }
-Bool LECanonicalDataConversion::canCopy(const unsigned char*) const {
+bool LECanonicalDataConversion::canCopy(const char*) const { return (CONVERT_LECAN_CHAR == 0); }
+bool LECanonicalDataConversion::canCopy(const unsigned char*) const {
   return (CONVERT_LECAN_UCHAR == 0);
 }
-Bool LECanonicalDataConversion::canCopy(const short*) const { return (CONVERT_LECAN_SHORT == 0); }
-Bool LECanonicalDataConversion::canCopy(const unsigned short*) const {
+bool LECanonicalDataConversion::canCopy(const short*) const { return (CONVERT_LECAN_SHORT == 0); }
+bool LECanonicalDataConversion::canCopy(const unsigned short*) const {
   return (CONVERT_LECAN_USHORT == 0);
 }
-Bool LECanonicalDataConversion::canCopy(const int*) const { return (CONVERT_LECAN_INT == 0); }
-Bool LECanonicalDataConversion::canCopy(const unsigned int*) const {
+bool LECanonicalDataConversion::canCopy(const int*) const { return (CONVERT_LECAN_INT == 0); }
+bool LECanonicalDataConversion::canCopy(const unsigned int*) const {
   return (CONVERT_LECAN_UINT == 0);
 }
-Bool LECanonicalDataConversion::canCopy(const Int64*) const { return (CONVERT_LECAN_INT64 == 0); }
-Bool LECanonicalDataConversion::canCopy(const uInt64*) const { return (CONVERT_LECAN_UINT64 == 0); }
-Bool LECanonicalDataConversion::canCopy(const float*) const { return (CONVERT_LECAN_FLOAT == 0); }
-Bool LECanonicalDataConversion::canCopy(const double*) const { return (CONVERT_LECAN_DOUBLE == 0); }
+bool LECanonicalDataConversion::canCopy(const Int64*) const { return (CONVERT_LECAN_INT64 == 0); }
+bool LECanonicalDataConversion::canCopy(const uInt64*) const { return (CONVERT_LECAN_UINT64 == 0); }
+bool LECanonicalDataConversion::canCopy(const float*) const { return (CONVERT_LECAN_FLOAT == 0); }
+bool LECanonicalDataConversion::canCopy(const double*) const { return (CONVERT_LECAN_DOUBLE == 0); }
 
 unsigned int LECanonicalDataConversion::externalSize(const char*) const { return SIZE_LECAN_CHAR; }
 unsigned int LECanonicalDataConversion::externalSize(const unsigned char*) const {

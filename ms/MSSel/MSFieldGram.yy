@@ -78,7 +78,7 @@
 %{
 #include <casacore/ms/MSSel/MSSelectionTools.h>
   int MSFieldGramlex (YYSTYPE*);
-  void checkFieldError(Vector<Int>& list, ostringstream& msg, Bool force=False, char* = NULL)
+  void checkFieldError(Vector<Int>& list, ostringstream& msg, bool force=false, char* = NULL)
   {
     if ((list.nelements() == 0) || force)
       {
@@ -171,7 +171,7 @@ fieldid: IDENTIFIER
 	    //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->msInterface()->field());
 	    //MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	    MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->subTable());
-	    $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1,True));
+	    $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1,true));
 	    
 	    ostringstream m; m << "No match found for \"" << $1 << "\"";
 	    free($1);
@@ -260,7 +260,7 @@ indexlist: fieldidlist
               $$ = $1;
 	      Int N0=(*($1)).nelements(), 
 		N1 = (*($3)).nelements();
-	      (*($$)).resize(N0+N1,True);  // Resize the existing list
+	      (*($$)).resize(N0+N1,true);  // Resize the existing list
 	      for(Int i=N0;i<N0+N1;i++)
 		(*($$))(i) = (*($3))(i-N0);
 	      delete $3;

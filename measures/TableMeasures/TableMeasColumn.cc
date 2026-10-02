@@ -33,7 +33,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableMeasColumn::TableMeasColumn() : itsNvals(0), itsVarRefFlag(False), itsVarOffFlag(False) {}
+TableMeasColumn::TableMeasColumn() : itsNvals(0), itsVarRefFlag(false), itsVarOffFlag(false) {}
 
 TableMeasColumn::TableMeasColumn(const Table& tab, const String& columnName)
     : itsNvals(0), itsTabDataCol(tab, columnName) {
@@ -65,7 +65,7 @@ void TableMeasColumn::attach(const Table& tab, const String& columnName) {
 
 const String& TableMeasColumn::columnName() const { return itsDescPtr->columnName(); }
 
-Bool TableMeasColumn::isDefined(rownr_t rownr) const { return itsTabDataCol.isDefined(rownr); }
+bool TableMeasColumn::isDefined(rownr_t rownr) const { return itsTabDataCol.isDefined(rownr); }
 
 void TableMeasColumn::throwIfNull() const {
   if (isNull()) {
@@ -75,17 +75,17 @@ void TableMeasColumn::throwIfNull() const {
 
 Table TableMeasColumn::table() const { return itsTabDataCol.table(); }
 
-Bool TableMeasColumn::isScalar() const {
+bool TableMeasColumn::isScalar() const {
   if (itsTabDataCol.columnDesc().isScalar()) {
-    return True;
+    return true;
   }
   IPosition shape = itsTabDataCol.shapeColumn();
   if (shape.nelements() == 1) {
     if (itsNvals == 0 || Int(itsNvals) == shape(0)) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 }  // namespace casacore

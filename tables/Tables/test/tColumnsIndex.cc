@@ -49,7 +49,7 @@ void a() {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn(ScalarColumnDesc<Bool>("abool"));
+  td.addColumn(ScalarColumnDesc<bool>("abool"));
   td.addColumn(ScalarColumnDesc<uChar>("auchar"));
   td.addColumn(ScalarColumnDesc<Short>("ashort"));
   td.addColumn(ScalarColumnDesc<Int>("aint"));
@@ -64,7 +64,7 @@ void a() {
   const Int nrrow = 10;
   SetupNewTable newtab("tColumnsIndex_tmp.data", td, Table::New);
   Table tab(newtab, nrrow);
-  ScalarColumn<Bool> abool(tab, "abool");
+  ScalarColumn<bool> abool(tab, "abool");
   ScalarColumn<uChar> auchar(tab, "auchar");
   ScalarColumn<Short> ashort(tab, "ashort");
   ScalarColumn<Int> aint(tab, "aint");
@@ -105,7 +105,7 @@ void b() {
   ColumnsIndex colInx9(tab, "astring");
   AlwaysAssertExit(!colInx0.isUnique());
   AlwaysAssertExit(colInx1.isUnique());
-  RecordFieldPtr<Bool> abool(colInx0.accessKey(), "abool");
+  RecordFieldPtr<bool> abool(colInx0.accessKey(), "abool");
   RecordFieldPtr<uChar> auchar(colInx1.accessKey(), "auchar");
   RecordFieldPtr<Short> ashort(colInx2.accessKey(), "ashort");
   RecordFieldPtr<Int> aint(colInx3.accessKey(), "aint");
@@ -117,7 +117,7 @@ void b() {
   RecordFieldPtr<String> astring(colInx9.accessKey(), "astring");
   Record rec;
   RowNumbers rows;
-  Bool found;
+  bool found;
   char str[8];
   // Test each individual type.
   uInt i;
@@ -152,7 +152,7 @@ void b() {
   colInx3.getRowNumber(found);
   AlwaysAssertExit((!found));
   // Test a bool.
-  *abool = True;
+  *abool = true;
   try {
     colInx0.getRowNumber(found);
   } catch (std::exception& x) {
@@ -163,7 +163,7 @@ void b() {
   for (i = 0; i < rows.nelements(); i++) {
     AlwaysAssertExit(rows(i) == i * 2);
   }
-  *abool = False;
+  *abool = false;
   rows.resize(0);
   rows = colInx0.getRowNumbers();
   AlwaysAssertExit(rows.nelements() == nrrow / 2);
@@ -175,14 +175,14 @@ void b() {
   lower.define("auint", uInt(2));
   upper.define("auint", uInt(4));
   rows.resize(0);
-  rows = colInx4.getRowNumbers(lower, upper, True, False);
+  rows = colInx4.getRowNumbers(lower, upper, true, false);
   AlwaysAssertExit(rows.nelements() == 2 && rows(0) == 2 && rows(1) == 3);
   rows.resize(0);
-  rows = colInx4.getRowNumbers(lower, upper, False, True);
+  rows = colInx4.getRowNumbers(lower, upper, false, true);
   AlwaysAssertExit(rows.nelements() == 2 && rows(0) == 3 && rows(1) == 4);
   upper.define("auint", uInt(1));
   rows.resize(0);
-  rows = colInx4.getRowNumbers(lower, upper, True, True);
+  rows = colInx4.getRowNumbers(lower, upper, true, true);
   AlwaysAssertExit(rows.nelements() == 0);
 }
 
@@ -224,7 +224,7 @@ void c() {
   colInx0.setChanged("auint");
   colInx0.setChanged("afloat");
   // Now test the special compare function.
-  Bool found;
+  bool found;
   *keydouble = -0.5;
   for (i = 0; i < 21; i++) {
     Int inx = colInx0.getRowNumber(found);
@@ -244,7 +244,7 @@ void d() {
   ColumnsIndex colInx4(tab, "auint");
   RecordFieldPtr<Int> aint(colInx3.accessKey(), "aint");
   RecordFieldPtr<uInt> auint(colInx4.accessKey(), "auint");
-  Bool found;
+  bool found;
   Int i;
   for (i = 0; i < nrrow; i++) {
     *aint = -i;
@@ -256,38 +256,38 @@ void d() {
   }
   // Now test an index consisting of multiple columns.
   ColumnsIndex colInx5(tab, stringToVector("abool,auint"));
-  RecordFieldPtr<Bool> abool1(colInx5.accessKey(), "abool");
+  RecordFieldPtr<bool> abool1(colInx5.accessKey(), "abool");
   RecordFieldPtr<uInt> auint1(colInx5.accessKey(), "auint");
   for (i = 0; i < (nrrow + 2) / 3; i++) {
     *auint1 = 1 + 2 * i;
-    *abool1 = True;
+    *abool1 = true;
     cout << colInx5.getRowNumbers() << ' ';
-    *abool1 = False;
+    *abool1 = false;
     cout << colInx5.getRowNumbers() << endl;
   }
   // Now test a range of multiple columns.
-  RecordFieldPtr<Bool> abool1l(colInx5.accessLowerKey(), "abool");
+  RecordFieldPtr<bool> abool1l(colInx5.accessLowerKey(), "abool");
   RecordFieldPtr<uInt> auint1l(colInx5.accessLowerKey(), "auint");
-  RecordFieldPtr<Bool> abool1u(colInx5.accessUpperKey(), "abool");
+  RecordFieldPtr<bool> abool1u(colInx5.accessUpperKey(), "abool");
   RecordFieldPtr<uInt> auint1u(colInx5.accessUpperKey(), "auint");
-  *abool1l = True;
-  *abool1u = True;
+  *abool1l = true;
+  *abool1u = true;
   *auint1l = 3;
   *auint1u = 10;
-  cout << colInx5.getRowNumbers(True, True) << ' ';
-  cout << colInx5.getRowNumbers(False, False) << endl;
+  cout << colInx5.getRowNumbers(true, true) << ' ';
+  cout << colInx5.getRowNumbers(false, false) << endl;
   *auint1l = 0;
   *auint1u = 10;
-  cout << colInx5.getRowNumbers(True, True) << ' ';
-  cout << colInx5.getRowNumbers(False, False) << endl;
+  cout << colInx5.getRowNumbers(true, true) << ' ';
+  cout << colInx5.getRowNumbers(false, false) << endl;
   *auint1l = 2;
   *auint1u = 6;
-  cout << colInx5.getRowNumbers(True, True) << ' ';
-  cout << colInx5.getRowNumbers(False, False) << endl;
-  *abool1l = False;
-  *abool1u = False;
-  cout << colInx5.getRowNumbers(True, True) << ' ';
-  cout << colInx5.getRowNumbers(False, False) << endl;
+  cout << colInx5.getRowNumbers(true, true) << ' ';
+  cout << colInx5.getRowNumbers(false, false) << endl;
+  *abool1l = false;
+  *abool1u = false;
+  cout << colInx5.getRowNumbers(true, true) << ' ';
+  cout << colInx5.getRowNumbers(false, false) << endl;
 
   // Now test extending the table.
   // The index should be updated automatically, so create that first.

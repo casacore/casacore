@@ -146,7 +146,7 @@ class Block : public BlockTrace {
         capacity_p(0),
         used_p(0),
         array(0),
-        destroyPointer(True) {}
+        destroyPointer(true) {}
   // Create a zero-length Block. Note that any index into this Block
   // is an error.
   template <typename Allocator>
@@ -155,7 +155,7 @@ class Block : public BlockTrace {
         capacity_p(0),
         used_p(0),
         array(0),
-        destroyPointer(True) {}
+        destroyPointer(true) {}
 
   // Create a Block with the given number of points. The values in Block
   // are initialized. Note that indices range between 0 and n-1.
@@ -163,7 +163,7 @@ class Block : public BlockTrace {
   explicit Block(size_t n)
       : allocator_p(get_allocator<typename DefaultAllocator<T>::type>()),
         used_p(n),
-        destroyPointer(True) {
+        destroyPointer(true) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
@@ -171,7 +171,7 @@ class Block : public BlockTrace {
   // are initialized. Note that indices range between 0 and n-1.
   template <typename Allocator>
   Block(size_t n, AllocSpec<Allocator> const &)
-      : allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(True) {
+      : allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(true) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
@@ -181,7 +181,7 @@ class Block : public BlockTrace {
   Block(size_t n, ArrayInitPolicy initPolicy)
       : allocator_p(get_allocator<typename DefaultAllocator<T>::type>()),
         used_p(n),
-        destroyPointer(True) {
+        destroyPointer(true) {
     init(initPolicy);
   }
 
@@ -189,7 +189,7 @@ class Block : public BlockTrace {
   // Note that indices range between 0 and n-1.
   template <typename Allocator>
   Block(size_t n, ArrayInitPolicy initPolicy, AllocSpec<Allocator> const &)
-      : allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(True) {
+      : allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(true) {
     init(initPolicy);
   }
 
@@ -199,7 +199,7 @@ class Block : public BlockTrace {
   Block(size_t n, T const &val)
       : allocator_p(get_allocator<typename DefaultAllocator<T>::type>()),
         used_p(n),
-        destroyPointer(True) {
+        destroyPointer(true) {
     init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
@@ -213,7 +213,7 @@ class Block : public BlockTrace {
   // objects of type T) with the provided value.
   template <typename Allocator>
   Block(size_t n, T const &val, AllocSpec<Allocator> const &)
-      : allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(True) {
+      : allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(true) {
     init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
@@ -233,7 +233,7 @@ class Block : public BlockTrace {
   // to let <src>Block</src> to know how to release the <src>storagePointer</src>.
   // The default allocator set by this constructor will be changed from
   // <src>NewDelAllocator<T>::value</src> to <src>DefaultAllocator<T>::value</src> in future.
-  Block(size_t n, T *&storagePointer, Bool takeOverStorage = True)
+  Block(size_t n, T *&storagePointer, bool takeOverStorage = true)
       : allocator_p(get_allocator<typename NewDelAllocator<T>::type>()),
         capacity_p(n),
         used_p(n),
@@ -247,7 +247,7 @@ class Block : public BlockTrace {
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
   template <typename Allocator>
-  Block(size_t n, T *&storagePointer, Bool takeOverStorage, AllocSpec<Allocator> const &)
+  Block(size_t n, T *&storagePointer, bool takeOverStorage, AllocSpec<Allocator> const &)
       : allocator_p(get_allocator<typename Allocator::type>()),
         capacity_p(n),
         used_p(n),
@@ -258,7 +258,7 @@ class Block : public BlockTrace {
 
   // Copy the other block into this one. Uses copy, not reference, semantics.
   Block(const Block<T> &other)
-      : allocator_p(other.allocator_p), used_p(other.size()), destroyPointer(True) {
+      : allocator_p(other.allocator_p), used_p(other.size()), destroyPointer(true) {
     init(ArrayInitPolicies::NO_INIT);
 
     try {
@@ -288,7 +288,7 @@ class Block : public BlockTrace {
   Block<T> &operator=(const Block<T> &other) {
     if (&other != this) {
       T *old = array;
-      this->resize(other.size(), True, False, ArrayInitPolicies::NO_INIT);
+      this->resize(other.size(), true, false, ArrayInitPolicies::NO_INIT);
       if (array == old) {
         objcopy(array, other.array, get_size());
       } else {
@@ -344,15 +344,15 @@ class Block : public BlockTrace {
   // <src>initPolicy</src> makes sense to determine whether extended elements
   // should be initialized or not when you enlarge Block.
   // <group>
-  void resize(size_t n, Bool forceSmaller = False, Bool copyElements = True) {
+  void resize(size_t n, bool forceSmaller = false, bool copyElements = true) {
     resize(n, forceSmaller, copyElements,
            init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
-  void resize(size_t n, Bool forceSmaller, Bool copyElements, ArrayInitPolicy initPolicy) {
+  void resize(size_t n, bool forceSmaller, bool copyElements, ArrayInitPolicy initPolicy) {
     if (n == get_size()) {
       return;
     }
-    if (n < get_size() && forceSmaller == False) {
+    if (n < get_size() && forceSmaller == false) {
       return;
     }
     if (get_size() < n && n <= get_capacity()) {
@@ -389,7 +389,7 @@ class Block : public BlockTrace {
       }
     }
     deinit();
-    destroyPointer = True;
+    destroyPointer = true;
     array = tp;  // ... and update pointer
     set_capacity(n);
     set_size(n);
@@ -406,11 +406,11 @@ class Block : public BlockTrace {
   // <src>initPolicy</src> makes sense to determine whether new storage
   // should be initialized or not before copying when <src>forceSmaller</src> is True.
   // <group>
-  void remove(size_t whichOne, Bool forceSmaller = True) {
+  void remove(size_t whichOne, bool forceSmaller = true) {
     remove(whichOne, forceSmaller,
            init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
-  void remove(size_t whichOne, Bool forceSmaller, ArrayInitPolicy initPolicy) {
+  void remove(size_t whichOne, bool forceSmaller, ArrayInitPolicy initPolicy) {
     if (whichOne >= get_size()) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
       throw(indexError<uInt>(whichOne,
@@ -421,7 +421,7 @@ class Block : public BlockTrace {
 #endif
     }
     size_t n = get_size() - 1;
-    if (forceSmaller == True) {
+    if (forceSmaller == true) {
       T *tp = n > 0 ? allocator_p->allocate(n) : 0;
       traceAlloc(array, n);
       if (initPolicy == ArrayInitPolicies::INIT && n > 0) {
@@ -457,7 +457,7 @@ class Block : public BlockTrace {
       set_capacity(n);
       set_size(n);
       array = tp;
-      destroyPointer = True;
+      destroyPointer = true;
     } else {
       objmove(&array[whichOne], &array[whichOne + 1], get_size() - whichOne - 1);
     }
@@ -478,11 +478,11 @@ class Block : public BlockTrace {
   // >::value</src> to <src>AllocSpec<DefaultAllocator<T> >::value</src> in future. AipsError is
   // thrown if allocator is incompatible with the current allocator of the instance and changing
   // allocator is prohibited, even if takeOverStorage == False. <group>
-  void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage = True) {
+  void replaceStorage(size_t n, T *&storagePointer, bool takeOverStorage = true) {
     replaceStorage(n, storagePointer, takeOverStorage, AllocSpec<NewDelAllocator<T>>::value);
   }
   template <typename Allocator>
-  void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage,
+  void replaceStorage(size_t n, T *&storagePointer, bool takeOverStorage,
                       AllocSpec<Allocator> const &) {
     if (array && destroyPointer) {
       traceFree(array, get_capacity());
@@ -571,7 +571,7 @@ class Block : public BlockTrace {
   size_t capacity() const { return get_capacity(); }
 
   // Is the block empty (i.e. no elements)?
-  Bool empty() const { return size() == 0; }
+  bool empty() const { return size() == 0; }
 
   // Define the STL-style iterators.
   // It makes it possible to iterate through all data elements.
@@ -658,7 +658,7 @@ class Block : public BlockTrace {
   }
 
   template <typename Allocator>
-  Bool isCompatibleAllocator() {
+  bool isCompatibleAllocator() {
     typename Allocator_private::BulkAllocator<typename Allocator::type::value_type>
         *other_allocator = Allocator_private::get_allocator<typename Allocator::type>();
     return other_allocator == allocator_p;
@@ -688,7 +688,7 @@ class Block : public BlockTrace {
   // The actual storage
   T *array;
   // Can we delete the storage upon destruction?
-  Bool destroyPointer;
+  bool destroyPointer;
 };
 
 /**
@@ -702,7 +702,7 @@ using PtrBlock [[deprecated(
     Block<T>;
 
 // # Instantiate extern templates for often used types.
-extern template class Block<Bool>;
+extern template class Block<bool>;
 extern template class Block<Char>;
 extern template class Block<Short>;
 extern template class Block<uShort>;

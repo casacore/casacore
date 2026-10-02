@@ -28,14 +28,14 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSSelectionError::MSSelectionError(Category c)
-    : AipsError("MSSelection Error", c), hasMessage(False) {}
+    : AipsError("MSSelection Error", c), hasMessage(false) {}
 MSSelectionError::MSSelectionError(const String& str, Category c)
-    : AipsError(str, c), hasMessage(False) {}
+    : AipsError(str, c), hasMessage(false) {}
 MSSelectionError::~MSSelectionError() noexcept {}
 
 void MSSelectionError::addMessage(String& mesg) {
   message = message + mesg;
-  hasMessage = True;
+  hasMessage = true;
 }
 
 void MSSelectionError::changeMessage(String& mesg) { message = mesg; }

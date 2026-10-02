@@ -37,7 +37,7 @@
 // A script compares this output with a reference output file.
 
 // # Forward declaration.
-void doit(Bool doExcp);
+void doit(bool doExcp);
 
 int main(int argc, const char*[]) {
   try {
@@ -50,7 +50,7 @@ int main(int argc, const char*[]) {
   return 0;  // successfully executed
 }
 
-void doit(Bool) {
+void doit(bool) {
   {
     Complex cp[1000];
     Int ip[1000];

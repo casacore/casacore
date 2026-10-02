@@ -43,20 +43,20 @@ CompressComplex::CompressComplex(const String& virtualColumnName, const String& 
     : BaseMappedArrayEngine<Complex, Int>(virtualColumnName, storedColumnName),
       scale_p(scale),
       offset_p(offset),
-      fixed_p(True),
-      autoScale_p(False),
+      fixed_p(true),
+      autoScale_p(false),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
 
 CompressComplex::CompressComplex(const String& virtualColumnName, const String& storedColumnName,
                                  const String& scaleColumnName, const String& offsetColumnName,
-                                 Bool autoScale)
+                                 bool autoScale)
     : BaseMappedArrayEngine<Complex, Int>(virtualColumnName, storedColumnName),
       scaleName_p(scaleColumnName),
       offsetName_p(offsetColumnName),
       scale_p(0.0),
       offset_p(0.0),
-      fixed_p(False),
+      fixed_p(false),
       autoScale_p(autoScale),
       scaleColumn_p(0),
       offsetColumn_p(0) {}
@@ -65,8 +65,8 @@ CompressComplex::CompressComplex(const Record& spec)
     : BaseMappedArrayEngine<Complex, Int>(),
       scale_p(1.0),
       offset_p(0.0),
-      fixed_p(True),
-      autoScale_p(False),
+      fixed_p(true),
+      autoScale_p(false),
       scaleColumn_p(0),
       offsetColumn_p(0) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
@@ -77,7 +77,7 @@ CompressComplex::CompressComplex(const Record& spec)
     } else {
       spec.get("SCALENAME", scaleName_p);
       spec.get("OFFSETNAME", offsetName_p);
-      fixed_p = False;
+      fixed_p = false;
     }
     if (spec.isDefined("AUTOSCALE")) {
       spec.get("AUTOSCALE", autoScale_p);
@@ -178,17 +178,17 @@ void CompressComplex::addRowInit(rownr_t startRow, rownr_t nrrow) {
 void CompressComplex::findMinMax(Float& minVal, Float& maxVal, const Array<Complex>& array) const {
   setNaN(minVal);
   setNaN(maxVal);
-  Bool deleteIt;
+  bool deleteIt;
   const Complex* data = array.getStorage(deleteIt);
   const Int64 nr = array.nelements();
-  Bool firstTime = True;
+  bool firstTime = true;
   for (Int64 i = 0; i < nr; i++) {
     if (isFinite(data[i].real()) && isFinite(data[i].imag())) {
       Float tmp = data[i].real();
       if (firstTime) {
         minVal = tmp;
         maxVal = tmp;
-        firstTime = False;
+        firstTime = false;
       }
       if (tmp < minVal) {
         minVal = tmp;
@@ -225,7 +225,7 @@ void CompressComplex::makeScaleOffset(Float& scale, Float& offset, Float minVal,
 // Scale/offset an array for get.
 void CompressComplex::scaleOnGet(Float scale, Float offset, Array<Complex>& array,
                                  const Array<Int>& target) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   Complex* out = array.getStorage(deleteOut);
   const Int* in = target.getStorage(deleteIn);
   const Int64 nr = array.nelements();
@@ -252,7 +252,7 @@ void CompressComplex::scaleOnGet(Float scale, Float offset, Array<Complex>& arra
 // Scale/offset an array for put.
 void CompressComplex::scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
                                  Array<Int>& target) {
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   const Complex* in = array.getStorage(deleteIn);
   Int* out = target.getStorage(deleteOut);
   const Int64 nr = array.nelements();
@@ -548,7 +548,7 @@ CompressComplexSD::CompressComplexSD(const String& virtualColumnName,
 
 CompressComplexSD::CompressComplexSD(const String& virtualColumnName,
                                      const String& storedColumnName, const String& scaleColumnName,
-                                     const String& offsetColumnName, Bool autoScale)
+                                     const String& offsetColumnName, bool autoScale)
     : CompressComplex(virtualColumnName, storedColumnName, scaleColumnName, offsetColumnName,
                       autoScale) {}
 
@@ -561,7 +561,7 @@ CompressComplexSD::CompressComplexSD(const Record& spec) : CompressComplex(spec)
     } else {
       spec.get("SCALENAME", scaleName_p);
       spec.get("OFFSETNAME", offsetName_p);
-      fixed_p = False;
+      fixed_p = false;
     }
     if (spec.isDefined("AUTOSCALE")) {
       spec.get("AUTOSCALE", autoScale_p);
@@ -599,17 +599,17 @@ void CompressComplexSD::findMinMax(Float& minVal, Float& maxVal,
                                    const Array<Complex>& array) const {
   setNaN(minVal);
   setNaN(maxVal);
-  Bool deleteIt;
+  bool deleteIt;
   const Complex* data = array.getStorage(deleteIt);
   const Int64 nr = array.nelements();
-  Bool firstTime = True;
+  bool firstTime = true;
   for (Int64 i = 0; i < nr; i++) {
     if (isFinite(data[i].real()) && isFinite(data[i].imag())) {
       Float tmp = data[i].real();
       if (firstTime) {
         minVal = tmp;
         maxVal = tmp;
-        firstTime = False;
+        firstTime = false;
       }
       if (tmp < minVal) {
         minVal = tmp;
@@ -634,7 +634,7 @@ void CompressComplexSD::scaleOnGet(Float scale, Float offset, Array<Complex>& ar
                                    const Array<Int>& target) {
   Float fullScale = scale / 32768;
   Float imagScale = scale * 2;
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   Complex* out = array.getStorage(deleteOut);
   const Int* in = target.getStorage(deleteIn);
   const Int64 nr = array.nelements();
@@ -670,7 +670,7 @@ void CompressComplexSD::scaleOnPut(Float scale, Float offset, const Array<Comple
                                    Array<Int>& target) {
   Float fullScale = scale / 32768;
   Float imagScale = scale * 2;
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   const Complex* in = array.getStorage(deleteIn);
   Int* out = target.getStorage(deleteOut);
   const Int64 nr = array.nelements();

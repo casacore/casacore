@@ -165,16 +165,16 @@ class RecordDescRep {
   String uniqueName(const String& name) const;
 
   // Returns True if whichField is an array.
-  Bool isArray(Int whichField) const;
+  bool isArray(Int whichField) const;
 
   // Returns True if whichField is a scalar.
-  Bool isScalar(Int whichField) const;
+  bool isScalar(Int whichField) const;
 
   // Returns True if whichField is a sub-record.
-  Bool isSubRecord(Int whichField) const;
+  bool isSubRecord(Int whichField) const;
 
   // Returns True if whichField is a table.
-  Bool isTable(Int whichField) const;
+  bool isTable(Int whichField) const;
 
   // What is the shape of the given field. Returns [1] if the field is a
   // scalar, table or, sub-record, [-1] if it is a variable length array,
@@ -195,8 +195,8 @@ class RecordDescRep {
   // This and other compare equal if the field types and shapes are identical
   // (recursively if there are described sub-records or tables).
   // The field names are not used.
-  Bool operator==(const RecordDescRep& other) const;
-  Bool operator!=(const RecordDescRep& other) const;
+  bool operator==(const RecordDescRep& other) const;
+  bool operator!=(const RecordDescRep& other) const;
   // </group>
 
   // Test if this description conforms the other.
@@ -205,7 +205,7 @@ class RecordDescRep {
   // description.
   // <br>This is used by Record, to see if another record can be assigned
   // to this record.
-  Bool conform(const RecordDescRep& other) const;
+  bool conform(const RecordDescRep& other) const;
 
   // Test if this description equals another one.
   // It is equal if the number of fields is equal and all field names in
@@ -215,19 +215,19 @@ class RecordDescRep {
   // of all fields match.
   // <br>Use function operator== if order and types are important,
   // but names are not.
-  Bool isEqual(const RecordDescRep& other, Bool& equalDataTypes) const;
+  bool isEqual(const RecordDescRep& other, bool& equalDataTypes) const;
 
   // Test if this description is a subset of another one.
   // It is similar to isEqual above.
-  Bool isSubset(const RecordDescRep& other, Bool& equalDataTypes) const;
+  bool isSubset(const RecordDescRep& other, bool& equalDataTypes) const;
 
   // Test if this description is a strict subset of another one, thus
   // if it is a subset and not equal.
-  Bool isStrictSubset(const RecordDescRep& other, Bool& equalDataTypes) const;
+  bool isStrictSubset(const RecordDescRep& other, bool& equalDataTypes) const;
 
   // Test if the set of field names in this and other record description
   // is disjoint (i.e. if they do not share names).
-  Bool isDisjoint(const RecordDescRep& other) const;
+  bool isDisjoint(const RecordDescRep& other) const;
 
  protected:
   // Add a field name and its type.
@@ -259,7 +259,7 @@ class RecordDescRep {
   // Test if all fields are part of the other description.
   // The flag equalDataTypes is set to True if the data types of the
   // fields in both descriptions are the same.
-  Bool allExist(const RecordDescRep&, Bool& equalDataTypes) const;
+  bool allExist(const RecordDescRep&, bool& equalDataTypes) const;
 
   // Number of fields in the description.
   uInt n_p;
@@ -275,7 +275,7 @@ class RecordDescRep {
   // The shape of the field [1] for scalars and sub-records.
   Block<IPosition> shapes_p;
   // True if the corresponding field is an array.
-  Block<Bool> is_array_p;
+  Block<bool> is_array_p;
   // Table description name for table fields.
   Block<String> tableDescNames_p;
   // Comments for each field.
@@ -292,17 +292,17 @@ inline const String& RecordDescRep::name(Int whichField) const { return names_p[
 
 inline const IPosition& RecordDescRep::shape(Int whichField) const { return shapes_p[whichField]; }
 
-inline Bool RecordDescRep::isArray(Int whichField) const { return is_array_p[whichField]; }
+inline bool RecordDescRep::isArray(Int whichField) const { return is_array_p[whichField]; }
 
-inline Bool RecordDescRep::isScalar(Int whichField) const {
+inline bool RecordDescRep::isScalar(Int whichField) const {
   return isScalarFun(DataType(types_p[whichField]));
 }
 
-inline Bool RecordDescRep::isSubRecord(Int whichField) const {
+inline bool RecordDescRep::isSubRecord(Int whichField) const {
   return (types_p[whichField] == TpRecord);
 }
 
-inline Bool RecordDescRep::isTable(Int whichField) const {
+inline bool RecordDescRep::isTable(Int whichField) const {
   return (types_p[whichField] == TpTable);
 }
 

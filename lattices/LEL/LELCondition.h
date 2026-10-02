@@ -92,7 +92,7 @@ class LELCondition : public LELInterface<T> {
  public:
   // Construct the condition on the given expression.
   LELCondition(const std::shared_ptr<LELInterface<T>>& expr,
-               const std::shared_ptr<LELInterface<Bool>>& cond);
+               const std::shared_ptr<LELInterface<bool>>& cond);
 
   // Destructor does nothing
   ~LELCondition();
@@ -104,22 +104,22 @@ class LELCondition : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
  private:
   std::shared_ptr<LELInterface<T>> pExpr_p;
-  std::shared_ptr<LELInterface<Bool>> pCond_p;
+  std::shared_ptr<LELInterface<bool>> pCond_p;
 };
 
 }  // namespace casacore

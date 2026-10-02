@@ -132,7 +132,7 @@ class LSQMatrix : public RecordTransformable {
   // will be taken as double the number given (assumes complex).
   // <group>
   explicit LSQMatrix(uInt n);
-  LSQMatrix(uInt n, Bool);
+  LSQMatrix(uInt n, bool);
   // </group>
   // Copy constructor (deep copy)
   LSQMatrix(const LSQMatrix &other);
@@ -155,7 +155,7 @@ class LSQMatrix : public RecordTransformable {
   // Set new sizes (default is for Real, a Bool argument will make it complex)
   // <group>
   void set(uInt n);
-  void set(uInt n, Bool);
+  void set(uInt n, bool);
   // </group>
   // Get row pointer in normal equation (points to element <src>[i][0]</src>)
   Double *row(uInt i) const { return &trian_p[((n2m1_p - i) * i) / 2]; };
@@ -192,12 +192,12 @@ class LSQMatrix : public RecordTransformable {
   // returned if an invalid record is given. A valid record will return True.
   // Error messages are postfixed to error.
   // <group>
-  Bool fromRecord(String &error, const RecordInterface &in);
+  bool fromRecord(String &error, const RecordInterface &in);
   // </group>
   // Create a record from an LSQMatrix. The return will be False and an error
   // message generated only if the object does not contain a valid Matrix.
   // Error messages are postfixed to error.
-  Bool toRecord(String &error, RecordInterface &out) const;
+  bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   const String &ident() const;
   // Convert a <src>carray</src> to/from a record. Field only written if
@@ -205,13 +205,13 @@ class LSQMatrix : public RecordTransformable {
   // False returned if unexpectedly no data available for non-zero length
   // (put), or a field has zero length vector(get).
   // <group>
-  static Bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
+  static bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
                         const Double *const in);
-  static Bool getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
+  static bool getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
                         Double *&out);
-  static Bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
+  static bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
                         const uInt *const in);
-  static Bool getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
+  static bool getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
                         uInt *&out);
   // </group>
 

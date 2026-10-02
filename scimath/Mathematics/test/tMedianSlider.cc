@@ -43,11 +43,11 @@ int main() {
   cout << "add {0.5, 3.5, 1.5, 4.5, 2.5, 5.5} with flags {f,t,f,t,f,t} to m1" << endl;
 
   m1.add(0.5);
-  m1.add(3.5, True);
+  m1.add(3.5, true);
   m1.add(1.5);
-  m1.add(4.5, True);
+  m1.add(4.5, true);
   m1.add(2.5);
-  m1.add(5.5, True);
+  m1.add(5.5, true);
   m1.next();
   cout << "the function next() add 1 flagged value into m1 window, and make it full " << endl;
 
@@ -86,11 +86,11 @@ int main() {
   vl(2) = 5.5;
   vl(3) = 11.5;
   cout << "Create Vector<Float> vl = {10.5, 4.5, 5.5, 11.5}" << endl;
-  Vector<Bool> bl(4);
-  bl(0) = False;
-  bl(1) = True;
-  bl(2) = True;
-  bl(3) = False;
+  Vector<bool> bl(4);
+  bl(0) = false;
+  bl(1) = true;
+  bl(2) = true;
+  bl(3) = false;
   cout << "Create Vector<Bool> bl = {False, True, True, False}" << endl;
 
   m1.add(vl, bl);
@@ -98,7 +98,7 @@ int main() {
   cout << "The number of non-flagged values in m1 window is " << m1.nval() << endl;
   cout << "Current median value in m1 window is " << m1.median() << endl;
 
-  Bool flag = False;
+  bool flag = false;
 
   cout << "The value takes 4 step back from end " << m1.prevVal(uInt(4), flag) << endl;
   cout << "The value at the midpoint " << m1.midpoint(flag) << endl;

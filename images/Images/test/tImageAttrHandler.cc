@@ -39,7 +39,7 @@ using namespace std;
 
 void testCreate(ImageInterface<Float>& image) {
   cout << "testCreate ..." << endl;
-  ImageAttrHandler& attrHand(image.attrHandler(True));
+  ImageAttrHandler& attrHand(image.attrHandler(true));
   cout << "GOT HANDLER" << endl;
   cout << attrHand.groupNames() << endl;
   cout << attrHand.hasGroup("testGroup1") << endl;
@@ -100,7 +100,7 @@ void testUpdate(const String& imageName) {
   delete image;
 }
 
-void testCopy(const String& nameIn, const String& nameOut, Bool hdf5) {
+void testCopy(const String& nameIn, const String& nameOut, bool hdf5) {
   cout << endl << "testCopy " << nameIn << " to " << nameOut << endl;
   ImageInterface<Float>* image = doOpen(nameIn);
   ImageInterface<Float>* newImage = 0;
@@ -117,7 +117,7 @@ void testCopy(const String& nameIn, const String& nameOut, Bool hdf5) {
   delete newImage;
 }
 
-void testSub(const String& nameIn, const String& nameOut, Bool hdf5) {
+void testSub(const String& nameIn, const String& nameOut, bool hdf5) {
   cout << endl << "testSub " << nameIn << " to " << nameOut << endl;
   ImageInterface<Float>* image = doOpen(nameIn);
   IPosition shp = image->shape();
@@ -157,22 +157,22 @@ void showAll(const String& imageName) {
   delete image;
 }
 
-void testAll(const String& imageName, Bool hasHDF5) {
+void testAll(const String& imageName, bool hasHDF5) {
   testRead(imageName);
   showAll(imageName);
   testUpdate(imageName);
   showAll(imageName);
-  testCopy(imageName, imageName + "_cp1", False);
+  testCopy(imageName, imageName + "_cp1", false);
   showAll(imageName + "_cp1");
   testCopy(imageName, imageName + "_cp2", hasHDF5);
   showAll(imageName + "_cp2");
-  testSub(imageName, imageName + "_sub", False);
+  testSub(imageName, imageName + "_sub", false);
   showAll(imageName + "_sub");
 }
 
 int main(int argc, char* argv[]) {
   try {
-    Bool hasHDF5 = HDF5Object::hasHDF5Support();
+    bool hasHDF5 = HDF5Object::hasHDF5Support();
     // Test PagedImage.
     cout << endl << ">>> Test Casa image <<<" << endl;
     testCreateCasa("tImageAttrHandler_tmp.img1");
@@ -190,9 +190,9 @@ int main(int argc, char* argv[]) {
     // If an image is given, show its attributes.
     if (argc > 1) {
       showAll(argv[1]);
-      testCopy(argv[1], argv[1] + String("_cp"), True);
+      testCopy(argv[1], argv[1] + String("_cp"), true);
       showAll(argv[1] + String("_cp"));
-      testSub(argv[1], argv[1] + String("_sub"), False);
+      testSub(argv[1], argv[1] + String("_sub"), false);
       showAll(argv[1] + String("_sub"));
     }
   } catch (std::exception& x) {

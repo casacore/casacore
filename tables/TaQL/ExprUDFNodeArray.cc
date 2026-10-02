@@ -61,7 +61,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprUDFNodeArray::makeGroupAggrFunc
   return std::make_shared<TableExprGroupNull>(this);
 }
 
-MArray<Bool> TableExprUDFNodeArray::getArrayBool(const TableExprId& id) {
+MArray<bool> TableExprUDFNodeArray::getArrayBool(const TableExprId& id) {
   return itsUDF->getArrayBool(id);
 }
 MArray<Int64> TableExprUDFNodeArray::getArrayInt(const TableExprId& id) {

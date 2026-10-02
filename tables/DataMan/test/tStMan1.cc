@@ -159,7 +159,7 @@ int main(int argc, const char* argv[]) {
     StandardStMan st2(max(bucketSize, 100u));
     doTest(nrrow, st2, flushnr);
     cout << endl << "IncrementalStMan" << endl;
-    IncrementalStMan st3(max(bucketSize, 1000u), False);
+    IncrementalStMan st3(max(bucketSize, 1000u), false);
     doTest(nrrow, st3, flushnr);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

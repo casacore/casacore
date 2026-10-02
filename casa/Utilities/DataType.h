@@ -195,7 +195,7 @@ inline DataType whatType() {
   }
 
 DEFINE_WHATTYPE(void, TpOther)
-DEFINE_WHATTYPE(Bool, TpBool)
+DEFINE_WHATTYPE(bool, TpBool)
 DEFINE_WHATTYPE(Char, TpChar)
 DEFINE_WHATTYPE(uChar, TpUChar)
 DEFINE_WHATTYPE(Short, TpShort)
@@ -209,7 +209,7 @@ DEFINE_WHATTYPE(Complex, TpComplex)
 DEFINE_WHATTYPE(DComplex, TpDComplex)
 DEFINE_WHATTYPE(String, TpString)
 DEFINE_WHATTYPE(Table, TpTable)
-DEFINE_WHATTYPE(Array<Bool>, TpArrayBool)
+DEFINE_WHATTYPE(Array<bool>, TpArrayBool)
 DEFINE_WHATTYPE(Array<Char>, TpArrayChar)
 DEFINE_WHATTYPE(Array<uChar>, TpArrayUChar)
 DEFINE_WHATTYPE(Array<Short>, TpArrayShort)
@@ -293,21 +293,21 @@ constexpr size_t SizeOfType(DataType dtype) {
 // an array or scalar value. Note that TpTable, TpRecord, and TpOther are neither
 // scalar nor array types.
 // <group>
-Bool isScalar(DataType type);
-Bool isArray(DataType type);
-Bool isScalarFun(DataType type);  //{return isScalar(type);}
+bool isScalar(DataType type);
+bool isArray(DataType type);
+bool isScalarFun(DataType type);  //{return isScalar(type);}
 // </group>
 
 // It is sometimes useful to discover if a DataType represents a real
 // numeric value (i.e., can it be cast to a Double?) This returns True
 // for both real scalar and array type.
-Bool isReal(DataType type);
+bool isReal(DataType type);
 
 // Returns True for Complex or DComplex scalar or array types
-Bool isComplex(DataType type);
+bool isComplex(DataType type);
 
 // Returns True if the type is either Real or Complex/DComplex
-Bool isNumeric(DataType type);
+bool isNumeric(DataType type);
 
 // </group>
 

@@ -95,7 +95,7 @@ class WCExtension : public WCCompound {
   WCExtension& operator=(const WCExtension& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Make a copy of the derived object.
   virtual WCRegion* cloneRegion() const;
@@ -114,7 +114,7 @@ class WCExtension : public WCCompound {
 
  protected:
   // WCExtension can extend a region if WCBox can do so.
-  virtual Bool canExtend() const;
+  virtual bool canExtend() const;
 
   // Convert to an LCRegion using the given coordinate system and shape.
   // pixelAxesMap(i) gives the pixel axis in cSys of axes <src>i</src>
@@ -126,7 +126,7 @@ class WCExtension : public WCCompound {
   // Construct from multiple regions given as a Block.
   // When <src>takeOver</src> is True, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
-  WCExtension(Bool takeOver, const Block<const WCRegion*>& regions);
+  WCExtension(bool takeOver, const Block<const WCRegion*>& regions);
 
   // Find the axes to be extended and stretched.
   // The extend axes are the axis numbers in the box.

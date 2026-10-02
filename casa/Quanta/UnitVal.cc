@@ -109,9 +109,9 @@ UnitVal operator/(const UnitVal &in, const UnitVal &other) {
   return result;
 }
 
-Bool UnitVal::operator==(const UnitVal &other) const { return kindDim == other.kindDim; }
+bool UnitVal::operator==(const UnitVal &other) const { return kindDim == other.kindDim; }
 
-Bool UnitVal::operator!=(const UnitVal &other) const { return kindDim != other.kindDim; }
+bool UnitVal::operator!=(const UnitVal &other) const { return kindDim != other.kindDim; }
 
 ostream &operator<<(ostream &os, const UnitVal &ku) {
   os << ku.kindFactor << ku.kindDim;
@@ -145,46 +145,46 @@ const UnitDim &UnitVal::getDim() const { return kindDim; }
 
 Double UnitVal::getFac() const { return kindFactor; }
 
-Bool UnitVal::check(const String &s) {
+bool UnitVal::check(const String &s) {
   UnitVal loc;
   if (UnitMap::getCache(s, loc))
     ;
   else if (UnitVal::create(s, loc))
     UnitMap::putCache(s, loc);
   else
-    return False;
-  return True;
+    return false;
+  return true;
 }
 
-Bool UnitVal::check(const String &s, UnitVal &loc) {
+bool UnitVal::check(const String &s, UnitVal &loc) {
   if (UnitMap::getCache(s, loc)) {
   } else if (UnitVal::create(s, loc)) {
     UnitMap::putCache(s, loc);
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool UnitVal::create(const String &s, UnitVal &res, UMaps *maps) {
+bool UnitVal::create(const String &s, UnitVal &res, UMaps *maps) {
   MUString str(s);  // non-const copy
   return create(str, res, maps);
 }
 
-Bool UnitVal::create(MUString &str, UnitVal &res, UMaps *maps) {
+bool UnitVal::create(MUString &str, UnitVal &res, UMaps *maps) {
   UnitVal kind;
   Int ptr = str.getPtr();
-  if (str.eos()) return True;
+  if (str.eos()) return true;
   Int ps = UnitVal::psign(str);  // power sign
-  if (str.eos()) return True;
+  if (str.eos()) return true;
   if (str.testChar('(')) {
-    if (!str.matchPair(')')) return False;
-    if (!UnitVal::create(str.lastGet(), kind, maps)) return False;
+    if (!str.matchPair(')')) return false;
+    if (!UnitVal::create(str.lastGet(), kind, maps)) return false;
   } else {
-    if (!UnitVal::field(str, kind, maps)) return False;
+    if (!UnitVal::field(str, kind, maps)) return false;
   }
   ps *= UnitVal::power(str);              // full power
-  if (str.getPtr() == ptr) return False;  // must have been error
+  if (str.getPtr() == ptr) return false;  // must have been error
   res *= kind.pow(ps);
   return UnitVal::create(str, res, maps);  // add next part
 }
@@ -207,7 +207,7 @@ Int UnitVal::power(MUString &str) {
   return (lp == 0 ? lc : lc * lp);
 }
 
-Bool UnitVal::field(MUString &str, UnitVal &res, UMaps *maps) {
+bool UnitVal::field(MUString &str, UnitVal &res, UMaps *maps) {
   static const Regex un1("[a-zA-Z_\"'$:%]");
   static const Regex un2("[a-zA-Z_0\"'$:%]");
   UnitName loc;
@@ -220,26 +220,26 @@ Bool UnitVal::field(MUString &str, UnitVal &res, UMaps *maps) {
   String key = str.get(wh, str.getPtr());
   if (key.length() == 0) {
     res = loc.getVal();
-    return True;
+    return true;
   }
-  if (UnitMap::getCache(key, res)) return True;
+  if (UnitMap::getCache(key, res)) return true;
   if (UnitMap::getUnit(key, loc, maps)) {
     res = loc.getVal();
-    return True;
+    return true;
   }
   if (key.length() > 1 && UnitMap::getPref(key.substr(0, 1), loc, maps)) {
     UnitName loc1 = UnitName();
     if (UnitMap::getUnit(key.substr(1), loc1, maps)) {
       res = (loc.getVal() * loc1.getVal());
-      return True;
+      return true;
     } else if (key.length() > 2 && UnitMap::getPref(key.substr(0, 2), loc)) {
       if (UnitMap::getUnit(key.substr(2), loc1, maps)) {
         res = (loc.getVal() * loc1.getVal());
-        return True;
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 }  // namespace casacore

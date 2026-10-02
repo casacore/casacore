@@ -129,21 +129,21 @@ class TableParseQuery {
   // Optionally the maximum nr of rows to be selected can be given.
   // It will be used as the default value for the LIMIT clause.
   // 0 = no maximum.
-  void execute(Bool showTimings, Bool setInGiving, Bool mustSelect, rownr_t maxRow,
-               Bool doTracing = False,
+  void execute(bool showTimings, bool setInGiving, bool mustSelect, rownr_t maxRow,
+               bool doTracing = false,
                const std::vector<const Table*>& tempTables = std::vector<const Table*>(),
                const std::vector<TableParseQuery*>& stack = std::vector<TableParseQuery*>());
 
   // Execute a query in a FROM clause resulting in a Table.
-  Table doFromQuery(Bool showTimings);
+  Table doFromQuery(bool showTimings);
 
   // Execute a subquery and create an appropriate node for the result.
-  TableExprNode doSubQuery(Bool showTimings);
+  TableExprNode doSubQuery(bool showTimings);
 
   // Test if a subquery has sufficient elements.
   // It uses default LIMIT=1, but that can be overidden in the subquery.
   // The flag tells if NOT EXISTS or EXISTS was given.
-  TableExprNode doExists(Bool noexists, Bool showTimings);
+  TableExprNode doExists(bool noexists, bool showTimings);
 
   // Show the expression tree.
   void show(ostream& os) const;
@@ -156,7 +156,7 @@ class TableParseQuery {
 
   // Keep the groupby expressions.
   // It checks if they are all scalar expressions.
-  void handleGroupby(const std::vector<TableExprNode>&, Bool rollup);
+  void handleGroupby(const std::vector<TableExprNode>&, bool rollup);
 
   // Keep the having expression.
   void handleHaving(const TableExprNode&);
@@ -174,7 +174,7 @@ class TableParseQuery {
 
   // Keep the column specification in a create table command.
   void handleColSpec(const String& columnName, const String& likeColName, const String& dataType,
-                     const Record& spec, Bool isCOrder = False);
+                     const Record& spec, bool isCOrder = false);
 
   // Reopen the table (for update) used in the ALTER TABLE command.
   void handleAltTab();
@@ -184,7 +184,7 @@ class TableParseQuery {
   void handleAddCol(const Record& dmInfo);
 
   // Handle copying of columns.
-  void handleCopyCol(Bool showTimings);
+  void handleCopyCol(bool showTimings);
 
   // Add a keyword or replace a keyword with a value.
   // The keyword can be a table or column keyword (col::key).
@@ -213,7 +213,7 @@ class TableParseQuery {
   void handleCount();
 
   // Keep the sort expressions.
-  void handleSort(const std::vector<TableParseSortKey>& sortList, Bool noDuplicates,
+  void handleSort(const std::vector<TableParseSortKey>& sortList, bool noDuplicates,
                   Sort::Order defaultSortOrder);
 
   // Evaluate and keep limit/offset/stride given as start:end:incr
@@ -234,7 +234,7 @@ class TableParseQuery {
   // Find the keyword or column name and create a TableExprNode from it.
   // If <src>tryProj=True</src> it is first tried if the column is a column
   // in the projected table (i.e., result from the SELECT part).
-  TableExprNode handleKeyCol(const String& name, Bool tryProj);
+  TableExprNode handleKeyCol(const String& name, bool tryProj);
 
   // Handle a slice operator.
   static TableExprNode handleSlice(const TableExprNode& array, const TableExprNodeSet& indices,
@@ -248,7 +248,7 @@ class TableParseQuery {
                     const String& nameMask, const String& newDtype);
 
   // Finish the addition of columns to the list of column names.
-  void handleColumnFinish(Bool distinct);
+  void handleColumnFinish(bool distinct);
 
   // Handle the name and type given in a GIVING clause.
   void handleGiving(const String& name, const Record& type);
@@ -270,7 +270,7 @@ class TableParseQuery {
   // Find the keywordset for it and fill in the final keyword name.
   // It is a helper function for handleSetKey, etc.
   // If update=True, rwKeywordSet() is used to ensure the table is updated.
-  TableRecord& findKeyword(const String& name, String& keyName, Bool update = True);
+  TableRecord& findKeyword(const String& name, String& keyName, bool update = true);
 
   // Add an update object.
   void addUpdate(const std::shared_ptr<TableParseUpdate>& upd) { update_p.push_back(upd); }
@@ -306,29 +306,29 @@ class TableParseQuery {
   // Do the update step.
   // Rows 0,1,2,.. in UpdTable are updated from the expression result
   // for the rows in the given rownrs vector.
-  void doUpdate(Bool showTimings, const Table& origTable, Table& updTable,
+  void doUpdate(bool showTimings, const Table& origTable, Table& updTable,
                 const Vector<rownr_t>& rownrs,
                 const std::shared_ptr<TableExprGroupResult>& groups =
                     std::shared_ptr<TableExprGroupResult>());
 
   // Do the insert step and return a selection containing the new rows.
-  Table doInsert(Bool showTimings, Table& table);
+  Table doInsert(bool showTimings, Table& table);
 
   // Do the delete step.
-  void doDelete(Bool showTimings, Table& table);
+  void doDelete(bool showTimings, Table& table);
 
   // Do the count step returning a memory table containing the unique
   // column values and the counts of the column values.
-  Table doCount(Bool showTimings, const Table&);
+  Table doCount(bool showTimings, const Table&);
 
   // Do the projection step returning a table containing the projection.
-  Table doProject(Bool showTimings, const Table&,
+  Table doProject(bool showTimings, const Table&,
                   const std::shared_ptr<TableExprGroupResult>& groups =
                       std::shared_ptr<TableExprGroupResult>());
 
   // Do the projection containing column expressions.
   // Use the selected or unselected columns depending on <src>useSel</src>.
-  Table doProjectExpr(Bool useSel, const std::shared_ptr<TableExprGroupResult>& groups);
+  Table doProjectExpr(bool useSel, const std::shared_ptr<TableExprGroupResult>& groups);
 
   // Create a subtable (used by createTable).
   Table createSubTable(const String& subtableName, const TableDesc& td, Int64 nrow,
@@ -347,20 +347,20 @@ class TableParseQuery {
 
   // Do the HAVING step.
   // It returns False if no HAVING step was given.
-  Bool doHaving(Bool showTimings, const std::shared_ptr<TableExprGroupResult>& groups);
+  bool doHaving(bool showTimings, const std::shared_ptr<TableExprGroupResult>& groups);
 
   // Do the sort step.
-  void doSort(Bool showTimings);
+  void doSort(bool showTimings);
 
   // Do the limit/offset step.
-  void doLimOff(Bool showTimings);
-  Table doLimOff(Bool showTimings, const Table& table);
+  void doLimOff(bool showTimings);
+  Table doLimOff(bool showTimings, const Table& table);
 
   // Do the 'select distinct' step.
-  Table doDistinct(Bool showTimings, const Table& table);
+  Table doDistinct(bool showTimings, const Table& table);
 
   // Finish the table (rename, copy, and/or flush).
-  Table doFinish(Bool showTimings, Table& table, const std::vector<const Table*>& tempTables,
+  Table doFinish(bool showTimings, Table& table, const std::vector<const Table*>& tempTables,
                  const std::vector<TableParseQuery*>& stack);
 
   // Make an array from the contents of a column in a subquery.
@@ -384,10 +384,10 @@ class TableParseQuery {
   // # Name and type of the resulting table (from GIVING part).
   String resultName_p;
   uInt resultType_p;     // # 0-unknown 1=memory 2=scratch 3=plain
-  Bool resultCreated_p;  // # Has the result table been created?
+  bool resultCreated_p;  // # Has the result table been created?
   StorageOption storageOption_p;
   Table::EndianFormat endianFormat_p;
-  Bool overwrite_p;
+  bool overwrite_p;
   // # Resulting set (from GIVING part).
   TableExprNodeSet* resultSet_p;
   // # The WHERE expression tree.
@@ -395,7 +395,7 @@ class TableParseQuery {
   // # The GROUPBY, aggregate and HAVING info.
   TableParseGroupby groupby_p;
   // # Distinct values in output?
-  Bool distinct_p;
+  bool distinct_p;
   // # The possible limit (= max nr of selected rows) (0 means no limit).
   Int64 limit_p;
   // # The possible last row (0 means no end; can be <0).
@@ -414,7 +414,7 @@ class TableParseQuery {
   // # The sort list.
   std::vector<TableParseSortKey> sort_p;
   // # The noDuplicates sort switch.
-  Bool noDupl_p;
+  bool noDupl_p;
   // # The default sort order.
   Sort::Order order_p;
   // # All nodes that need to be adjusted for a selection of rownrs.

@@ -200,11 +200,11 @@ void Sort::addKey(SortKey* key) {
   keys_p[nrkey_p++] = key;
 }
 
-uInt Sort::sort(Vector<uInt>& indexVector, uInt nrrec, int options, Bool tryGenSort) const {
+uInt Sort::sort(Vector<uInt>& indexVector, uInt nrrec, int options, bool tryGenSort) const {
   return doSort(indexVector, nrrec, options, tryGenSort);
 }
 
-uInt64 Sort::sort(Vector<uInt64>& indexVector, uInt64 nrrec, int options, Bool tryGenSort) const {
+uInt64 Sort::sort(Vector<uInt64>& indexVector, uInt64 nrrec, int options, bool tryGenSort) const {
   return doSort(indexVector, nrrec, options, tryGenSort);
 }
 

@@ -71,7 +71,7 @@ class TableExprNode;
 // Declare the bison parser (is implemented by bison command).
 int msUvDistGramParseCommand(const MeasurementSet* ms, const String& command);
 int msUvDistGramParseCommand(const MeasurementSet* ms, const String& command,
-                             Matrix<Double>& selectedUV, Vector<Bool>& units);
+                             Matrix<Double>& selectedUV, Vector<bool>& units);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.

@@ -81,7 +81,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps) {
     Vector<Int> currentMatch = matchFreqGrp(freqGrps(freqgrp));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedSpWindowIds);
-      matchedSpWindowIds.resize(matchedSpWindowIds.nelements() + currentMatch.nelements(), True);
+      matchedSpWindowIds.resize(matchedSpWindowIds.nelements() + currentMatch.nelements(), true);
       matchedSpWindowIds = concatenateArray(temp, currentMatch);
     }
   }
@@ -120,7 +120,7 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
   // Do the match per frequency channel on each row
   uInt nChan = std::min(chanFreq.nelements(), chanWidth.nelements());
   uInt nrows = msSpWindowCols_p.nrow();
-  Vector<Bool> freqMatch(nrows, False);
+  Vector<bool> freqMatch(nrows, false);
   for (uInt row = 0; row < nrows; row++) {
     Vector<MFrequency> rowChanFreq;
     msSpWindowCols_p.chanFreqMeas().get(row, rowChanFreq);

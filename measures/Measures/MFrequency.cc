@@ -126,7 +126,7 @@ const String *MFrequency::allTypes(Int &nall, Int &nextra, const uInt *&typ) con
   return MFrequency::allMyTypes(nall, nextra, typ);
 }
 
-Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
+bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MFrequency::allMyTypes(nall, nex, oname);
@@ -134,10 +134,10 @@ Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MFrequency::Types>(oname[i]);
-  return True;
+  return true;
 }
 
 MFrequency::Types MFrequency::typeFromString(const String &in) {
@@ -149,9 +149,9 @@ MFrequency::Types MFrequency::typeFromString(const String &in) {
 void MFrequency::checkTypes() const { MFrequency::checkMyTypes(); }
 
 void MFrequency::checkMyTypes() {
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MFrequency::allMyTypes(nall, nex, typ);
@@ -167,31 +167,31 @@ void MFrequency::checkMyTypes() {
   }
 }
 
-Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
+bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
   MFrequency::Types tp;
   if (MFrequency::getType(tp, in))
     mr = MFrequency::Ref(tp);
   else {
     mr = MFrequency::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MFrequency::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MFrequency *>(&in)) return False;
+bool MFrequency::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MFrequency *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MFrequency::setRefString(const String &in) {
+bool MFrequency::setRefString(const String &in) {
   MFrequency::Types tp;
   if (MFrequency::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MFrequency::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MFrequency::getDefaultType() const {

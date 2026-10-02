@@ -34,12 +34,12 @@ using namespace std;
 
 namespace casacore {
 
-ImageAttrHandlerHDF5::ImageAttrHandlerHDF5() : itsCanWrite(False) {}
+ImageAttrHandlerHDF5::ImageAttrHandlerHDF5() : itsCanWrite(false) {}
 
 ImageAttrHandlerHDF5::~ImageAttrHandlerHDF5() {}
 
-ImageAttrHandlerHDF5& ImageAttrHandlerHDF5::attachHid(const HDF5Object& hid, Bool createHandler,
-                                                      Bool isWritable) {
+ImageAttrHandlerHDF5& ImageAttrHandlerHDF5::attachHid(const HDF5Object& hid, bool createHandler,
+                                                      bool isWritable) {
   itsGroupMap.clear();
   // If ATTRGROUPS is defined, get all groups in it.
   if (HDF5Group::exists(hid, "ATTRGROUPS")) {
@@ -59,7 +59,7 @@ ImageAttrHandlerHDF5& ImageAttrHandlerHDF5::attachHid(const HDF5Object& hid, Boo
           "image is not writable");
     }
     itsGroup = std::make_shared<HDF5Group>(hid, "ATTRGROUPS", false);
-    itsCanWrite = True;
+    itsCanWrite = true;
   }
   return *this;
 }
@@ -71,7 +71,7 @@ void ImageAttrHandlerHDF5::flush() {
   }
 }
 
-Bool ImageAttrHandlerHDF5::hasGroup(const String& groupName) {
+bool ImageAttrHandlerHDF5::hasGroup(const String& groupName) {
   return (itsGroupMap.find(groupName) != itsGroupMap.end());
 }
 
@@ -107,7 +107,7 @@ ImageAttrGroup& ImageAttrHandlerHDF5::createGroup(const String& groupName) {
     throw AipsError("ImageAttrHandlerHDF5: cannot create group " + groupName +
                     " because image is not writable");
   }
-  return itsGroupMap[groupName] = ImageAttrGroupHDF5(True);
+  return itsGroupMap[groupName] = ImageAttrGroupHDF5(true);
 }
 
 void ImageAttrHandlerHDF5::closeGroup(const String& groupName) {

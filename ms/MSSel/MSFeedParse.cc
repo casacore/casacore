@@ -81,7 +81,7 @@ MSFeedParse::MSFeedParse(const MeasurementSet* myms)
 // correlations if baselineType==CrossOnly
 //
 const TableExprNode* MSFeedParse::setTEN(TableExprNode& condition, BaselineListType baselineType,
-                                         Bool negate) {
+                                         bool negate) {
   if (baselineType == CrossOnly) {
     TableExprNode noAutoCorr = (column1AsTEN_p != column2AsTEN_p);
     condition = noAutoCorr && condition;
@@ -98,7 +98,7 @@ const TableExprNode* MSFeedParse::setTEN(TableExprNode& condition, BaselineListT
 }
 
 const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds,
-                                                BaselineListType baselineType, Bool negate) {
+                                                BaselineListType baselineType, bool negate) {
   TableExprNode condition;
   if ((baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly)) {
     Int n = feedIds.nelements();
@@ -133,7 +133,7 @@ const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds,
   return setTEN(condition, baselineType, negate);
 }
 
-void MSFeedParse::makeFeedList(Vector<Int>& feedList, const Vector<Int>& thisList, Bool negate) {
+void MSFeedParse::makeFeedList(Vector<Int>& feedList, const Vector<Int>& thisList, bool negate) {
   Vector<Int> f2;
   if (negate)
     f2 = -thisList;
@@ -147,7 +147,7 @@ void MSFeedParse::makeFeedList(Vector<Int>& feedList, const Vector<Int>& thisLis
 
 const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds1,
                                                 const Vector<Int>& feedIds2,
-                                                BaselineListType baselineType, Bool negate) {
+                                                BaselineListType baselineType, bool negate) {
   TableExprNode condition;
 
   condition = (column1AsTEN_p.in(feedIds1) && column2AsTEN_p.in(feedIds2)) ||
@@ -163,21 +163,21 @@ const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds1,
   return setTEN(condition, baselineType, negate);
 }
 
-Bool MSFeedParse::addFeedPair(const Matrix<Int>& feedpairlist, const Int feed1, const Int feed2,
+bool MSFeedParse::addFeedPair(const Matrix<Int>& feedpairlist, const Int feed1, const Int feed2,
                               BaselineListType baselineType) {
-  Bool doAutoCorr;
+  bool doAutoCorr;
   doAutoCorr = (baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly);
-  if ((feed1 == feed2) && (!doAutoCorr)) return False;
-  if ((baselineType == AutoCorrOnly) && (feed1 != feed2)) return False;
+  if ((feed1 == feed2) && (!doAutoCorr)) return false;
+  if ((baselineType == AutoCorrOnly) && (feed1 != feed2)) return false;
 
   Int n = feedpairlist.shape()(0);
   for (Int i = 0; i < n; i++) {
     if (((feedpairlist(i, 0) == feed1) && (feedpairlist(i, 1) == feed2)) ||
         ((feedpairlist(i, 1) == feed1) && (feedpairlist(i, 0) == feed2))) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 //
 // Method to make a list of unique feed pairs, given a list of
@@ -186,7 +186,7 @@ Bool MSFeedParse::addFeedPair(const Matrix<Int>& feedpairlist, const Int feed1, 
 //
 void MSFeedParse::makeFeedPairList(const Vector<Int>& f1, const Vector<Int>& f2,
                                    Matrix<Int>& feedpairlist, BaselineListType baselineType,
-                                   Bool /*negate*/) {
+                                   bool /*negate*/) {
   Int n1, n2, nb0;
   n1 = f1.nelements();
   n2 = f2.nelements();
@@ -201,7 +201,7 @@ void MSFeedParse::makeFeedPairList(const Vector<Int>& f1, const Vector<Int>& f2,
       if (addFeedPair(feedpairlist, feed1, feed2, baselineType)) {
         nb0++;
         newSize[0] = nb0;
-        feedpairlist.resize(newSize, True);
+        feedpairlist.resize(newSize, true);
         feedpairlist(nb0 - 1, 0) = feed1;
         feedpairlist(nb0 - 1, 1) = feed2;
       }

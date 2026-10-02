@@ -284,8 +284,8 @@ class ScaledArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType> 
   String offsetName_p;                        // # name of offset column
   VirtualType scale_p;                        // # scale factor
   VirtualType offset_p;                       // # offset value
-  Bool fixedScale_p;                          // # scale is a fixed column
-  Bool fixedOffset_p;                         // # scale is a fixed column
+  bool fixedScale_p;                          // # scale is a fixed column
+  bool fixedOffset_p;                         // # scale is a fixed column
   ScalarColumn<VirtualType>* scaleColumn_p;   // # column with scale value
   ScalarColumn<VirtualType>* offsetColumn_p;  // # column with offset value
 

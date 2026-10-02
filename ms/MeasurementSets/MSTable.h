@@ -145,21 +145,21 @@ class MSTable : public Table {
   // ColEnum convenience functions
   // <group name=columns>
   // check to see if a column exists
-  Bool isColumn(ColEnum which) const;
+  bool isColumn(ColEnum which) const;
 
   // check to see if a column is writable
   // <group>
-  Bool isColumnWritable(ColEnum which) const;
-  Bool isColumnWritable(const String& columnName) const {
+  bool isColumnWritable(ColEnum which) const;
+  bool isColumnWritable(const String& columnName) const {
     return Table::isColumnWritable(columnName);
   }
-  Bool isColumnWritable(uInt columnIndex) const { return Table::isColumnWritable(columnIndex); }
+  bool isColumnWritable(uInt columnIndex) const { return Table::isColumnWritable(columnIndex); }
   // </group>
 
   // Information about scalar vs array of a column
   // <group>
-  Bool isScalar(ColEnum which) const;
-  Bool isArray(ColEnum which) const;
+  bool isScalar(ColEnum which) const;
+  bool isArray(ColEnum which) const;
   // </group>
 
   // Return the UNIT keyword value associated with the specified column
@@ -214,7 +214,7 @@ class MSTable : public Table {
   static const String& keywordStandardComment(KeyEnum which);
 
   // check to see if a keyword exists
-  Bool isKeyword(KeyEnum which) const;
+  bool isKeyword(KeyEnum which) const;
 
   // add a keyword to a TableDesc
   // An exception is thrown for an invalid data type.  This indicates a
@@ -231,13 +231,13 @@ class MSTable : public Table {
   // <group>
 
   // check that a TableDesc is valid
-  static Bool validate(const TableDesc& tabDesc);
+  static bool validate(const TableDesc& tabDesc);
 
   // check that the keyword set is valid
-  static Bool validate(const TableRecord& tabKeySet);
+  static bool validate(const TableRecord& tabKeySet);
 
   // validate self (make sure that this MS is valid)
-  Bool validate() const { return this->isNull() ? False : validate(this->tableDesc()); }
+  bool validate() const { return this->isNull() ? false : validate(this->tableDesc()); }
 
   // return the required table description
   static const TableDesc& requiredTableDesc();
@@ -247,7 +247,7 @@ class MSTable : public Table {
   // For complex columns the type determines which CompressComplex
   // engine is used. "SD" means that CompressComplexSD is used; otherwise
   // CompressComplex is used.
-  static void addColumnCompression(TableDesc& td, ColEnum which, Bool autoScale = True,
+  static void addColumnCompression(TableDesc& td, ColEnum which, bool autoScale = true,
                                    const String& type = String());
 
   // </group>
@@ -262,12 +262,12 @@ class MSTable : public Table {
   MSTable(const String& tableName, const String& tableDescName, TableOption option);
   MSTable(const String& tableName, const String& tableDescName, const TableLock& lockOptions,
           TableOption option);
-  MSTable(SetupNewTable& newTab, rownr_t nrrow, Bool initialize);
-  MSTable(SetupNewTable& newTab, const TableLock& lockOptions, rownr_t nrrow, Bool initialize);
+  MSTable(SetupNewTable& newTab, rownr_t nrrow, bool initialize);
+  MSTable(SetupNewTable& newTab, const TableLock& lockOptions, rownr_t nrrow, bool initialize);
 #ifdef HAVE_MPI
-  MSTable(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow, Bool initialize);
+  MSTable(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow, bool initialize);
   MSTable(MPI_Comm comm, SetupNewTable& newTab, const TableLock& lockOptions, rownr_t nrrow,
-          Bool initialize);
+          bool initialize);
 #endif  // HAVE_MPI
   MSTable(const Table& table);
   MSTable(const MSTable<MSEnum>& other);

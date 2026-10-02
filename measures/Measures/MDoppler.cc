@@ -117,9 +117,9 @@ void MDoppler::checkTypes() const { MDoppler::checkMyTypes(); }
 
 void MDoppler::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MDoppler::allMyTypes(nall, nex, typ);
@@ -135,7 +135,7 @@ void MDoppler::checkMyTypes() {
   }
 }
 
-Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
+bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MDoppler::allMyTypes(nall, nex, oname);
@@ -143,37 +143,37 @@ Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MDoppler::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
+bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
   MDoppler::Types tp;
   if (MDoppler::getType(tp, in))
     mr = MDoppler::Ref(tp);
   else {
     mr = MDoppler::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MDoppler::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MDoppler *>(&in)) return False;
+bool MDoppler::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MDoppler *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MDoppler::setRefString(const String &in) {
+bool MDoppler::setRefString(const String &in) {
   MDoppler::Types tp;
   if (MDoppler::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MDoppler::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MDoppler::getDefaultType() const { return MDoppler::showType(MDoppler::DEFAULT); }

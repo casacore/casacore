@@ -113,7 +113,7 @@ class BinaryTable : public BinaryTableExtension {
   //   are treated as if they were columns with constant values
   //   "virtual columns" in the sdfits convention.
   BinaryTable(FitsInput &, FITSErrorHandler errhandler = FITSError::defaultHandler,
-              Bool useMiriadSM = False, Bool sdfits = False);
+              bool useMiriadSM = false, bool sdfits = false);
 
   ~BinaryTable();
 
@@ -122,7 +122,7 @@ class BinaryTable : public BinaryTableExtension {
   // BinarTableExtension.If useMiriadSM is True, use the Miriad storage
   // manager for all columns, otherwise AipsIO.
   Table fullTable(const String &tabName, const Table::TableOption = Table::NewNoReplace,
-                  Bool useMiriadSM = False);
+                  bool useMiriadSM = false);
 
   // This version  of the fullTable return a Memory based table
   // Its recommended if its being used as a temporary

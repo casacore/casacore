@@ -94,7 +94,7 @@ class MSSpWindowColumns {
   ArrayQuantColumn<Double>& chanWidthQuant() { return chanWidthQuant_p; }
   ArrayColumn<Double>& effectiveBW() { return effectiveBW_p; }
   ArrayQuantColumn<Double>& effectiveBWQuant() { return effectiveBWQuant_p; }
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<Int>& freqGroup() { return freqGroup_p; }
   ScalarColumn<String>& freqGroupName() { return freqGroupName_p; }
   ScalarColumn<Int>& ifConvChain() { return ifConvChain_p; }
@@ -133,7 +133,7 @@ class MSSpWindowColumns {
   const ScalarColumn<Int>& freqGroup() const { return freqGroup_p; }
   const ScalarColumn<String>& freqGroupName() const { return freqGroupName_p; }
   const ScalarColumn<Int>& ifConvChain() const { return ifConvChain_p; }
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<Int>& measFreqRef() const { return measFreqRef_p; }
   const ScalarColumn<String>& name() const { return name_p; }
   const ScalarColumn<Int>& netSideband() const { return netSideband_p; }
@@ -192,7 +192,7 @@ class MSSpWindowColumns {
   //  like an upper or lower side band having same characteristics
   Int64 matchSpw(const MFrequency& refFreq, uInt nChan, const Quantum<Double>& bandwidth,
                  Int ifChain, const Quantum<Double>& tolerance, Vector<Double>& otherFreqs,
-                 Bool& reversed) const;
+                 bool& reversed) const;
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -214,22 +214,22 @@ class MSSpWindowColumns {
   // # functions to match the supplied arguments against the values in the
   // # specified row.
   //<group>
-  Bool matchRefFrequency(rownr_t row, MFrequency::Types refType, Double refFreqInHz,
+  bool matchRefFrequency(rownr_t row, MFrequency::Types refType, Double refFreqInHz,
                          Double tolInHz) const;
-  Bool matchRefFreqCnvtrd(rownr_t row, MFrequency refOrChanFreq, const Bool isRefFreq,
+  bool matchRefFreqCnvtrd(rownr_t row, MFrequency refOrChanFreq, const bool isRefFreq,
                           const MeasFrame& measFrm, const MSDopplerColumns& msdopc,
                           const MSSourceColumns& mssrcc, Double tolInHz) const;
-  Bool matchChanFreq(rownr_t row, const Vector<Double>& chanFreqInHz, Double tolInHz) const;
-  Bool matchIfConvChain(rownr_t row, Int ifChain) const;
-  Bool matchTotalBandwidth(rownr_t row, Double bandwidthInHz, Double tolInHz) const;
-  Bool matchNumChan(rownr_t row, Int nChan) const;
+  bool matchChanFreq(rownr_t row, const Vector<Double>& chanFreqInHz, Double tolInHz) const;
+  bool matchIfConvChain(rownr_t row, Int ifChain) const;
+  bool matchTotalBandwidth(rownr_t row, Double bandwidthInHz, Double tolInHz) const;
+  bool matchNumChan(rownr_t row, Int nChan) const;
   //</group>
 
   // # required columns
   ArrayColumn<Double> chanFreq_p;
   ArrayColumn<Double> chanWidth_p;
   ArrayColumn<Double> effectiveBW_p;
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<Int> freqGroup_p;
   ScalarColumn<String> freqGroupName_p;
   ScalarColumn<Int> ifConvChain_p;

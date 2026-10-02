@@ -82,7 +82,7 @@ class String;  // Forward declarations
 
 //<group name=ReadFITS>
 // blabla
-Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, String *unitName = 0,
+Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName = 0,
                       Vector<String> *axisNames = 0, Vector<Float> *refPixel = 0,
                       Vector<Float> *refLocation = 0, Vector<Float> *delta = 0,
                       std::map<String, Double> *keywords = 0, String *objectName = 0);
@@ -123,7 +123,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, Stri
 
 //<group name=WriteFITS>
 // blabla
-Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
+bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
                const char *unitName = 0, const Vector<String> *axisNames = 0,
                const Vector<Float> *refPixel = 0, const Vector<Float> *refLocation = 0,
                const Vector<Float> *delta = 0, const std::map<String, Double> *keywords = 0,

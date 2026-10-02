@@ -319,7 +319,7 @@ class VSCEngine : public VirtualColumnEngine, public VirtualScalarColumn<T> {
   // The column is in principle writable.
   // This does not mean it is actually writable, because that
   // depends on the fact if the table is writable.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Create the column object for the scalar column in this engine.
   // It will check if the given column name matches the source

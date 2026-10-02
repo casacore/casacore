@@ -116,16 +116,16 @@ class LELBinary : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -197,7 +197,7 @@ class LELBinary : public LELInterface<T> {
 // </todo>
 
 template <class T>
-class LELBinaryCmp : public LELInterface<Bool> {
+class LELBinaryCmp : public LELInterface<bool> {
  public:
   // Constructor takes operation and left and right expressions
   // to be operated upon. It can only handle the comparison operators.
@@ -209,22 +209,22 @@ class LELBinaryCmp : public LELInterface<Bool> {
   ~LELBinaryCmp();
 
   // Recursively evaluate the expression
-  virtual void eval(LELArray<Bool>& result, const Slicer& section) const;
+  virtual void eval(LELArray<bool>& result, const Slicer& section) const;
 
   // Recursively evaluate the scalar expression
-  virtual LELScalar<Bool> getScalar() const;
+  virtual LELScalar<bool> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -291,41 +291,41 @@ class LELBinaryCmp : public LELInterface<Bool> {
 // <todo asof="1998/01/20">
 // </todo>
 
-class LELBinaryBool : public LELInterface<Bool> {
+class LELBinaryBool : public LELInterface<bool> {
  public:
   // Constructor takes operation and left and right expressions
   // to be operated upon.
   LELBinaryBool(const LELBinaryEnums::Operation op,
-                const std::shared_ptr<LELInterface<Bool>>& pLeftExpr,
-                const std::shared_ptr<LELInterface<Bool>>& pRightExpr);
+                const std::shared_ptr<LELInterface<bool>>& pLeftExpr,
+                const std::shared_ptr<LELInterface<bool>>& pRightExpr);
 
   // Destructor
   ~LELBinaryBool();
 
   // Recursively evaluate the expression
-  virtual void eval(LELArray<Bool>& result, const Slicer& section) const;
+  virtual void eval(LELArray<bool>& result, const Slicer& section) const;
 
   // Recursively evaluate the scalar expression
-  virtual LELScalar<Bool> getScalar() const;
+  virtual LELScalar<bool> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
  private:
   LELBinaryEnums::Operation op_p;
-  std::shared_ptr<LELInterface<Bool>> pLeftExpr_p;
-  std::shared_ptr<LELInterface<Bool>> pRightExpr_p;
+  std::shared_ptr<LELInterface<bool>> pLeftExpr_p;
+  std::shared_ptr<LELInterface<bool>> pRightExpr_p;
 };
 
 }  // namespace casacore

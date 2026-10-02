@@ -117,7 +117,7 @@ class VanVleck {
   // integral calculation will be used.  That is much faster
   // than the more general numerical integration used
   // by setQuantization.
-  static Bool setEquiSpaced(Double xlev, Double ylev, Double xmean, Double ymean, Int n);
+  static bool setEquiSpaced(Double xlev, Double ylev, Double xmean, Double ymean, Int n);
 
   // Get the data used in setting up the interpolation
   static void getTable(Vector<Double> &rs, Vector<Double> &rhos);
@@ -156,13 +156,13 @@ class VanVleck {
   // and the dcoffset can not be determined.  In that case,
   // the returned dcoffset is 0 and thresh() is used to set
   // the threshold level.
-  static Bool dcoff(Double &dcoffset, Double &threshold, Int n, Double zerolag, Double bias);
+  static bool dcoff(Double &dcoffset, Double &threshold, Int n, Double zerolag, Double bias);
 
  private:
   // the number of points to use in setting up the interpolator
   static uInt itsSize, itsNx, itsNy;
 
-  static Bool itsEquiSpaced;
+  static bool itsEquiSpaced;
 
   static Double itsXlev, itsYlev, itsXmean, itsYmean;
 
@@ -221,7 +221,7 @@ class VanVleck {
   static Double predictN3(Double threshhold) { return ::erfc(threshhold / sqrt(2.0)); }
 
   // implementation of dcoff for the 3-level case
-  static Bool dcoff3(Double &dcoffset, Double &threshold, Double zerolag, Double bias);
+  static bool dcoff3(Double &dcoffset, Double &threshold, Double zerolag, Double bias);
 };
 
 }  // namespace casacore

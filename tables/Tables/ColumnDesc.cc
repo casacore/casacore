@@ -44,15 +44,15 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Initialize the statics.
 std::mutex ColumnDesc::theirMutex;
 
-ColumnDesc::ColumnDesc(const BaseColumnDesc& cold) : colPtr_p(cold.clone()), allocated_p(True) {}
+ColumnDesc::ColumnDesc(const BaseColumnDesc& cold) : colPtr_p(cold.clone()), allocated_p(true) {}
 
-ColumnDesc::ColumnDesc(const ColumnDesc& that) : colPtr_p(that.colPtr_p), allocated_p(True) {
+ColumnDesc::ColumnDesc(const ColumnDesc& that) : colPtr_p(that.colPtr_p), allocated_p(true) {
   if (colPtr_p != 0) {
     colPtr_p = colPtr_p->clone();
   }
 }
 
-ColumnDesc::ColumnDesc(BaseColumnDesc* bcdp) : colPtr_p(bcdp), allocated_p(False) {}
+ColumnDesc::ColumnDesc(BaseColumnDesc* bcdp) : colPtr_p(bcdp), allocated_p(false) {}
 
 ColumnDesc::~ColumnDesc() {
   if (allocated_p) {
@@ -69,31 +69,31 @@ ColumnDesc& ColumnDesc::operator=(const ColumnDesc& that) {
     if (colPtr_p != 0) {
       colPtr_p = colPtr_p->clone();
     }
-    allocated_p = True;
+    allocated_p = true;
   }
   return *this;
 }
 
-Bool ColumnDesc::operator==(const ColumnDesc& that) const {
-  if (dataType() != that.dataType()) return False;
-  if (options() != that.options()) return False;
-  if (ndim() != that.ndim()) return False;
-  if (isScalar() && that.isScalar()) return True;
-  if (isArray() && that.isArray()) return True;
-  if (isTable() && that.isTable()) return True;
-  return False;
+bool ColumnDesc::operator==(const ColumnDesc& that) const {
+  if (dataType() != that.dataType()) return false;
+  if (options() != that.options()) return false;
+  if (ndim() != that.ndim()) return false;
+  if (isScalar() && that.isScalar()) return true;
+  if (isArray() && that.isArray()) return true;
+  if (isTable() && that.isTable()) return true;
+  return false;
 }
 
-Bool ColumnDesc::operator!=(const ColumnDesc& that) const { return !(*this == that); }
+bool ColumnDesc::operator!=(const ColumnDesc& that) const { return !(*this == that); }
 
-Bool ColumnDesc::isFixedShape() const {
+bool ColumnDesc::isFixedShape() const {
   if (isScalar()) {
-    return True;
+    return true;
   }
   if ((options() & ColumnDesc::FixedShape) == ColumnDesc::FixedShape) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 DataType ColumnDesc::trueDataType() const {
@@ -129,7 +129,7 @@ DataType ColumnDesc::trueDataType() const {
     case TpString:
       return TpArrayString;
     default:
-      AlwaysAssert(False, AipsError);
+      AlwaysAssert(false, AipsError);
   }
   return TpOther;
 }
@@ -169,7 +169,7 @@ void ColumnDesc::getFile(AipsIO& ios, const TableAttr& parentAttr) {
   // If tp is not in the map, (tp, unknownColumnDesc) is added and called (throws).
   ColumnDesc::ColumnDescCtor* cdFunc = getCtor(tp);
   colPtr_p = (*cdFunc)(tp);
-  allocated_p = True;
+  allocated_p = true;
   colPtr_p->getFile(ios, parentAttr);
 }
 
@@ -217,7 +217,7 @@ std::map<String, ColumnDesc::ColumnDescCtor*>& ColumnDesc::getRegisterMap() {
 std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap() {
   std::map<String, ColumnDesc::ColumnDescCtor*> regMap;
 
-  ScalarColumnDesc<Bool> scdb("x");
+  ScalarColumnDesc<bool> scdb("x");
   regMap.insert(std::make_pair(scdb.className(), &scdb.makeDesc));
   ScalarColumnDesc<uChar> scduc("x");
   regMap.insert(std::make_pair(scduc.className(), &scduc.makeDesc));
@@ -245,7 +245,7 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap() {
   ScalarRecordColumnDesc srcd("x");
   regMap.insert(std::make_pair(srcd.className(), &srcd.makeDesc));
 
-  ArrayColumnDesc<Bool> acdb("x");
+  ArrayColumnDesc<bool> acdb("x");
   regMap.insert(std::make_pair(acdb.className(), &acdb.makeDesc));
   ArrayColumnDesc<uChar> acduc("x");
   regMap.insert(std::make_pair(acduc.className(), &acduc.makeDesc));

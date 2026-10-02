@@ -117,8 +117,8 @@ class EvenPolynomialParam : public Function1D<T> {
   //  Comparisons.
   //  EvenPolynomials are equal if they are the same order
   //  <group>
-  Bool operator==(const EvenPolynomialParam<T> &other) const { return (param_p == other.param_p); }
-  Bool operator!=(const EvenPolynomialParam<T> &other) const { return (param_p != other.param_p); }
+  bool operator==(const EvenPolynomialParam<T> &other) const { return (param_p == other.param_p); }
+  bool operator!=(const EvenPolynomialParam<T> &other) const { return (param_p != other.param_p); }
   // </group>
 
   // # Member functions

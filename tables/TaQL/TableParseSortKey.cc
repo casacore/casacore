@@ -30,15 +30,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableParseSortKey::TableParseSortKey() : order_p(Sort::Ascending), given_p(False) {}
+TableParseSortKey::TableParseSortKey() : order_p(Sort::Ascending), given_p(false) {}
 
 TableParseSortKey::TableParseSortKey(const TableExprNode& node)
-    : node_p(node), order_p(Sort::Ascending), given_p(False) {
+    : node_p(node), order_p(Sort::Ascending), given_p(false) {
   checkNode();
 }
 
 TableParseSortKey::TableParseSortKey(const TableExprNode& node, Sort::Order order)
-    : node_p(node), order_p(order), given_p(True) {
+    : node_p(node), order_p(order), given_p(true) {
   checkNode();
 }
 
@@ -59,9 +59,9 @@ std::shared_ptr<ArrayBase> TableParseSortKey::addSortValues(Sort& sort, Sort::Or
   std::shared_ptr<ArrayBase> arrPtr;
   switch (node_p.getColumnDataType()) {
     case TpBool: {
-      auto array = std::make_shared<Array<Bool>>(node_p.getColumnBool(rownrs));
+      auto array = std::make_shared<Array<bool>>(node_p.getColumnBool(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<Bool>>(array->copy());
+        array = std::make_shared<Array<bool>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpBool, 0, order);
@@ -155,7 +155,7 @@ std::shared_ptr<ArrayBase> TableParseSortKey::addSortValues(Sort& sort, Sort::Or
       sort.sortKey(array->data(), TpString, 0, order);
     } break;
     default:
-      AlwaysAssert(False, AipsError);
+      AlwaysAssert(false, AipsError);
   }
   return arrPtr;
 }

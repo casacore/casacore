@@ -283,7 +283,7 @@ class TableRecord : public RecordInterface {
   // not contain any field), otherwise they are fixed.
   // <br>Restructuring is not possible and an exception is thrown
   // if the Record has a fixed structure.
-  virtual void restructure(const RecordDesc& newDescription, Bool recursive = True);
+  virtual void restructure(const RecordDesc& newDescription, bool recursive = true);
 
   // Returns True if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
@@ -295,7 +295,7 @@ class TableRecord : public RecordInterface {
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>
-  Bool conform(const TableRecord& other) const;
+  bool conform(const TableRecord& other) const;
 
   // How many fields does this structure have? A convenient synonym for
   // <src>description().nfields()</src>.
@@ -382,13 +382,13 @@ class TableRecord : public RecordInterface {
   void closeTables() const;
 
   // Flush all open subtables.
-  void flushTables(Bool fsync = False) const;
+  void flushTables(bool fsync = false) const;
 
   // Rename the subtables with a path containing the old parent table name.
   void renameTables(const String& newParentName, const String& oldParentName);
 
   // Are subtables used in other processes.
-  Bool areTablesMultiUsed() const;
+  bool areTablesMultiUsed() const;
 
   // Write the TableRecord to an output stream.
   friend AipsIO& operator<<(AipsIO& os, const TableRecord& rec);
@@ -460,7 +460,7 @@ class TableRecord : public RecordInterface {
 
   // Add a field to the record.
   virtual void addDataField(const String& name, DataType type, const IPosition& shape,
-                            Bool fixedShape, const void* value);
+                            bool fixedShape, const void* value);
 
   // Define a value in the given field.
   virtual void defineDataField(Int whichField, DataType type, const void* value);
@@ -489,7 +489,7 @@ class TableRecord : public RecordInterface {
 inline const TableRecordRep& TableRecord::ref() const { return rep_p.ref(); }
 inline const RecordDesc& TableRecord::description() const { return ref().description(); }
 
-inline Bool TableRecord::conform(const TableRecord& other) const {
+inline bool TableRecord::conform(const TableRecord& other) const {
   return ref().conform(other.ref());
 }
 
@@ -505,13 +505,13 @@ inline void TableRecord::reopenRW() { rwRef().reopenRW(); }
 
 inline void TableRecord::closeTables() const { ref().closeTables(); }
 
-inline void TableRecord::flushTables(Bool fsync) const { ref().flushTables(fsync); }
+inline void TableRecord::flushTables(bool fsync) const { ref().flushTables(fsync); }
 
 inline void TableRecord::renameTables(const String& newParentName, const String& oldParentName) {
   rwRef().renameTables(newParentName, oldParentName);
 }
 
-inline Bool TableRecord::areTablesMultiUsed() const { return ref().areTablesMultiUsed(); }
+inline bool TableRecord::areTablesMultiUsed() const { return ref().areTablesMultiUsed(); }
 
 }  // namespace casacore
 

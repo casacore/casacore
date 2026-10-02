@@ -123,7 +123,7 @@ class RecordRep {
   // Change the structure of this Record to contain the fields in
   // newDescription. After calling restructure, <src>description() ==
   // newDescription</src>.
-  void restructure(const RecordDesc& newDescription, Bool recursive);
+  void restructure(const RecordDesc& newDescription, bool recursive);
 
   // Returns True if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
@@ -135,7 +135,7 @@ class RecordRep {
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>
-  Bool conform(const RecordRep& other) const;
+  bool conform(const RecordRep& other) const;
 
   // Copy all data of the Record.
   void copyData(const RecordRep& other);
@@ -154,7 +154,7 @@ class RecordRep {
   // The data type of the field is determined by the data type of the value.
   // For arrays it is possible to define if the shape is fixed.
   // <group>
-  void addDataField(const String& name, DataType type, const IPosition& shape, Bool fixedShape,
+  void addDataField(const String& name, DataType type, const IPosition& shape, bool fixedShape,
                     const void* data);
   void addField(const String& name, const Record& value, RecordInterface::RecordType type);
   // </group>
@@ -228,7 +228,7 @@ class RecordRep {
 
   // Add a field to the description.
   virtual void addFieldToDesc(const String& name, DataType type, const IPosition& shape,
-                              Bool fixedShape);
+                              bool fixedShape);
 
   // Remove a data field.
   virtual void removeData(Int whichField, void* ptr, void* vecptr);

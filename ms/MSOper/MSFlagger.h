@@ -104,7 +104,7 @@ class MSFlagger {
   // processing. Only a single DATA related quantity can be requested, the
   // corresponding FLAG and FLAG_ROW columns are read automatically.
   // Reorder the data to 4d with ifr and time axis if ifrAxis is True.
-  Bool fillDataBuffer(const String& item, Bool ifrAxis);
+  bool fillDataBuffer(const String& item, bool ifrAxis);
 
   // Difference the data, subtracting the average over a window of
   // specified width and taking the absolute value. Complex quantities are
@@ -118,7 +118,7 @@ class MSFlagger {
   // Available directions are: TIME, CHANNEL
   // Returns statistics over the buffer: median for times and channels,
   // average absolute deviation over times, channels and all pixels.
-  Record diffDataBuffer(const String& direction, Int window = 1, Bool doMedian = False);
+  Record diffDataBuffer(const String& direction, Int window = 1, bool doMedian = false);
 
   // Return the contents of the internal data buffer, including the flags
   // as a Record
@@ -130,40 +130,40 @@ class MSFlagger {
   // A value of zero or less will skip the corresponding clip operation.
   // Clipping will be done repeatedly, recalculating the deviations, until
   // no more points are clipped.
-  Bool clipDataBuffer(Float pixelLevel, Float timeLevel, Float channelLevel);
+  bool clipDataBuffer(Float pixelLevel, Float timeLevel, Float channelLevel);
 
   // Replace the flags in the buffer with those in the supplied record.
   // This allows interactive flagging from glish to be written back to the
   // buffer for subsequent operations. The record should contain a
   // flag and flag_row field.
-  Bool setDataBufferFlags(const Record& flags);
+  bool setDataBufferFlags(const Record& flags);
 
   // Write the flags in the buffer back to the table
-  Bool writeDataBufferFlags();
+  bool writeDataBufferFlags();
 
   // Clear the internal data buffer, reclaiming memory
-  Bool clearDataBuffer() {
+  bool clearDataBuffer() {
     buffer_p = Record();
-    return True;
+    return true;
   }
 
   // Create the FLAG_HISTORY column and initialize it from the
   // FLAG_ROW and FLAG columns. Returns False if FLAG_HISTORY already exists.
   // The first flagging bit is filled with the flags as found in the MS,
   // subsequent bits can be used for user generated flags.
-  Bool createFlagHistory(Int nHis = 2);
+  bool createFlagHistory(Int nHis = 2);
 
   // Apply the flags in the FLAG_HISTORY column to the FLAG and FLAG_ROW
   // columns. Returns False if FLAG_HISTORY doesn't exist.
   // The default argument will apply the currently active flag level
   // (as specified by the FLAG_LEVEL column keyword).
   // Sets the current level to the flag level restored.
-  Bool restoreFlags(Int level = -1);
+  bool restoreFlags(Int level = -1);
 
   // Save the current flags to the FLAG_HISTORY. Save to the currently
   // active level or (newLevel=True) the next highest level (if available).
   // Will reset the current level to the level saved to.
-  Bool saveFlags(Bool newLevel);
+  bool saveFlags(bool newLevel);
 
   // Return the current flaglevel (value of FLAG_LEVEL keyword)
   Int flagLevel();
@@ -173,7 +173,7 @@ class MSFlagger {
   void fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab);
 
   // find the HypercubeId column for a tiled column (if any)
-  Bool findHypercubeId(String& hyperCubeId, const String& column, const Table& tab);
+  bool findHypercubeId(String& hyperCubeId, const String& column, const Table& tab);
 
   // copy the flags to the flag history
   void saveToFlagHist(Int level, Table& tab);
@@ -185,25 +185,25 @@ class MSFlagger {
   // T=Time, F=Frequency.
   void getStats(Array<Float>& medTF, Array<Float>& adTF, Array<Float>& medT, Array<Float>& medFmedT,
                 Array<Float>& adT, Array<Float>& medF, Array<Float>& medTmedF, Array<Float>& adF,
-                const Array<Float>& diff, const Array<Bool>& flag, const Array<Bool>& flagRow);
+                const Array<Float>& diff, const Array<bool>& flag, const Array<bool>& flagRow);
 
   // add the statistics to a buffer
-  void addStats(Record& buf, const Array<Bool>& flag, const Array<Bool> flagRow,
+  void addStats(Record& buf, const Array<bool>& flag, const Array<bool> flagRow,
                 const Array<Float>& data);
 
   // reorder from 2d to 1d (removing ifr axis)
-  void reorderFlagRow(Array<Bool>& flagRow);
+  void reorderFlagRow(Array<bool>& flagRow);
 
   // collapse array "in" (with absolute differences)
   // along specified axis by taking medians by profile taking into account
   // the flags.
-  void diffMedian(Array<Float>& out, const Array<Float>& in, Int axis, const Array<Bool>& flag);
+  void diffMedian(Array<Float>& out, const Array<Float>& in, Int axis, const Array<bool>& flag);
 
   // apply the row flags to the data flags and v.v.
-  void applyRowFlags(Array<Bool>& flag, Array<Bool>& flagRow);
+  void applyRowFlags(Array<bool>& flag, Array<bool>& flagRow);
 
   // check if we are attached to an MSSelector
-  Bool check();
+  bool check();
 
  private:
   MSSelector* msSel_p;

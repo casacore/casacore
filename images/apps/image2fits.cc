@@ -67,7 +67,7 @@ int main(int argc, const char* argv[]) {
     // First try to open as a normal image.
     ImageInterface<Float>* img = 0;
     String error;
-    Bool res = True;
+    bool res = true;
     LatticeBase* lattice = ImageOpener::openImage(imgin);
     if (lattice) {
       // Succeeded to open as an image.

@@ -94,9 +94,9 @@ MVDouble &MVDouble::operator-=(const MVDouble &other) {
   return *this;
 }
 
-Bool MVDouble::operator==(const MVDouble &other) const { return (val == other.val); }
+bool MVDouble::operator==(const MVDouble &other) const { return (val == other.val); }
 
-Bool MVDouble::operator!=(const MVDouble &other) const { return (val != other.val); }
+bool MVDouble::operator!=(const MVDouble &other) const { return (val != other.val); }
 
 // # Member functions
 
@@ -106,11 +106,11 @@ void MVDouble::assure(const MeasValue &in) {
   }
 }
 
-Bool MVDouble::near(const MVDouble &other, Double tol) const {
+bool MVDouble::near(const MVDouble &other, Double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-Bool MVDouble::nearAbs(const MVDouble &other, Double tol) const {
+bool MVDouble::nearAbs(const MVDouble &other, Double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -139,16 +139,16 @@ Vector<Quantum<Double>> MVDouble::getRecordValue() const {
   return tmp;
 }
 
-Bool MVDouble::putValue(const Vector<Quantum<Double>> &in) {
+bool MVDouble::putValue(const Vector<Quantum<Double>> &in) {
   uInt i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
     val = (in(0)).get().getValue();
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

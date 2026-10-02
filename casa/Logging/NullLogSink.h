@@ -82,7 +82,7 @@ class NullLogSink : public LogSinkInterface {
   // Always throws the message away, but it does return <src>True</src> or
   // <src>False</src> depending on whether or not <src>message</src> passes
   // the filter.
-  virtual Bool postLocally(const LogMessage &message);
+  virtual bool postLocally(const LogMessage &message);
 
   // Returns the id for this class...
   static String localId();

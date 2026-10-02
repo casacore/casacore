@@ -206,15 +206,15 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // # Constructors
   //  Constructors
   //  <group>
-  Function() : param_p(), arg_p(0), parset_p(False), locked_p(False) {}
-  explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False), locked_p(False) {}
+  Function() : param_p(), arg_p(0), parset_p(false), locked_p(false) {}
+  explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(false), locked_p(false) {}
   explicit Function(const Vector<T> &in)
-      : param_p(in), arg_p(0), parset_p(False), locked_p(False) {}
+      : param_p(in), arg_p(0), parset_p(false), locked_p(false) {}
   Function(const FunctionParam<T> &other)
-      : param_p(other), arg_p(0), parset_p(False), locked_p(False) {}
+      : param_p(other), arg_p(0), parset_p(false), locked_p(false) {}
   template <class W, class X>
   Function(const Function<W, X> &other)
-      : param_p(other.parameters()), arg_p(0), parset_p(other.parsetp()), locked_p(False) {}
+      : param_p(other.parameters()), arg_p(0), parset_p(other.parsetp()), locked_p(false) {}
   // </group>
 
   // Destructor
@@ -264,17 +264,17 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // nonadjustable).
   // Note: no index check.
   // <group>
-  Bool &mask(const uInt n) {
+  bool &mask(const uInt n) {
     parset_p |= !locked_p;
     return param_p.mask(n);
   }
-  const Bool &mask(const uInt n) const { return param_p.mask(n); }
+  const bool &mask(const uInt n) const { return param_p.mask(n); }
   // </group>
   // Return the parameter interface
   // <group>
   const FunctionParam<T> &parameters() const { return param_p; }
   FunctionParam<T> &parameters() {
-    parset_p = True;
+    parset_p = true;
     return param_p;
   }
   // </group>
@@ -282,7 +282,7 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // of protection in the copying of non-conforming Functions.
   // <group>
   const Vector<ArgType> &argp() const { return arg_p; }
-  Bool parsetp() const { return parset_p; }
+  bool parsetp() const { return parset_p; }
   // </group>
   // Compiler cannot always find the correct 'const' version of parameter
   // access. In cases where this would lead to excessive overheads in
@@ -290,8 +290,8 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // parameter changing can be set to be locked, and no changes are
   // assumed.
   // <group>
-  void lockParam() { locked_p = True; }
-  void unlockParam() { locked_p = False; }
+  void lockParam() { locked_p = true; }
+  void unlockParam() { locked_p = false; }
   // </group>
 
   // get/set the function mode.  These provide an interface to
@@ -315,7 +315,7 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
 
   // return True if the implementing function supports a mode.  The default
   // implementation returns False.
-  virtual Bool hasMode() const;
+  virtual bool hasMode() const;
 
   // Print the function (i.e. the parameters)
   ostream &print(ostream &os) const { return param_p.print(os); }
@@ -338,9 +338,9 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // Aid for non-contiguous argument storage
   mutable Vector<ArgType> arg_p;
   // Indicate parameter written
-  mutable Bool parset_p;
+  mutable bool parset_p;
   // Indicate that parameters are expected to be locked from changing
-  mutable Bool locked_p;
+  mutable bool locked_p;
 };
 
 // # Global functions

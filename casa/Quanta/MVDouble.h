@@ -117,10 +117,10 @@ class MVDouble : public MeasValue {
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVDouble &other) const;
-  Bool operator!=(const MVDouble &other) const;
-  Bool near(const MVDouble &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVDouble &other, Double tol = 1e-13) const;
+  bool operator==(const MVDouble &other) const;
+  bool operator!=(const MVDouble &other) const;
+  bool near(const MVDouble &other, Double tol = 1e-13) const;
+  bool nearAbs(const MVDouble &other, Double tol = 1e-13) const;
   // </group>
 
   // # General member functions
@@ -144,7 +144,7 @@ class MVDouble : public MeasValue {
   virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 
  private:
   // # Data

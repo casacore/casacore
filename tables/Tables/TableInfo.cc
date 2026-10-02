@@ -33,9 +33,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableInfo::TableInfo() : writeIt_p(True) {}
+TableInfo::TableInfo() : writeIt_p(true) {}
 
-TableInfo::TableInfo(const String& fileName) : writeIt_p(True) {
+TableInfo::TableInfo(const String& fileName) : writeIt_p(true) {
   String absName = Path(fileName).absoluteName();
   // check cache first, table may not be flushed yet
   PlainTable* tb = PlainTable::tableCache()(Path(absName).dirName());
@@ -82,23 +82,23 @@ TableInfo::TableInfo(const String& fileName) : writeIt_p(True) {
   }
   // The info file existed and is normal.
   // So it does not need to be written.
-  writeIt_p = False;
+  writeIt_p = false;
 }
 
 // Create a TableInfo object of one of the predefined types.
 // This is a centralised way of setting the Table type/subType.
 TableInfo::TableInfo(Type tableType)
-    : type_p(type(tableType)), subType_p(subType(tableType)), readme_p(), writeIt_p(True) {}
+    : type_p(type(tableType)), subType_p(subType(tableType)), readme_p(), writeIt_p(true) {}
 
 TableInfo::TableInfo(const TableInfo& that)
-    : type_p(that.type_p), subType_p(that.subType_p), readme_p(that.readme_p), writeIt_p(True) {}
+    : type_p(that.type_p), subType_p(that.subType_p), readme_p(that.readme_p), writeIt_p(true) {}
 
 TableInfo& TableInfo::operator=(const TableInfo& that) {
   if (this != &that) {
     type_p = that.type_p;
     subType_p = that.subType_p;
     readme_p = that.readme_p;
-    writeIt_p = True;
+    writeIt_p = true;
   }
   return *this;
 }
@@ -112,29 +112,29 @@ void TableInfo::flush(const String& fileName) {
     os << "SubType = " << subType_p << endl;
     os << endl;
     os << readme_p;
-    writeIt_p = False;
+    writeIt_p = false;
   }
 }
 
 void TableInfo::setType(const String& type) {
   type_p = type;
-  writeIt_p = True;
+  writeIt_p = true;
 }
 
 void TableInfo::setSubType(const String& subType) {
   subType_p = subType;
-  writeIt_p = True;
+  writeIt_p = true;
 }
 
 void TableInfo::readmeClear() {
   readme_p = "";
-  writeIt_p = True;
+  writeIt_p = true;
 }
 
 void TableInfo::readmeAddLine(const String& readmeLine) {
   readme_p += readmeLine;
   readme_p += '\n';
-  writeIt_p = True;
+  writeIt_p = true;
 }
 
 String TableInfo::type(Type tableType) {

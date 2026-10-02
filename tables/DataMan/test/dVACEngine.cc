@@ -85,7 +85,7 @@ void VACExampleVACEngine::setShape(rownr_t rownr, const IPosition& shape) {
   coly.setShape(rownr, shape);
   colz.setShape(rownr, shape);
 }
-Bool VACExampleVACEngine::isShapeDefined(rownr_t rownr) { return colx.isDefined(rownr); }
+bool VACExampleVACEngine::isShapeDefined(rownr_t rownr) { return colx.isDefined(rownr); }
 IPosition VACExampleVACEngine::shape(rownr_t rownr) { return colx.shape(rownr); }
 
 void VACExampleVACEngine::getArray(rownr_t rownr, Array<VACExample>& value) {

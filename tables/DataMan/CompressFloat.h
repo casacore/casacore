@@ -155,7 +155,7 @@ class CompressFloat : public BaseMappedArrayEngine<Float, Short> {
   // The virtual column using this engine must have data type Float.
   CompressFloat(const String& virtualColumnName, const String& storedColumnName,
                 const String& scaleColumnName, const String& offsetColumnName,
-                Bool autoScale = True);
+                bool autoScale = true);
 
   // Construct from a record specification as created by getmanagerSpec().
   CompressFloat(const Record& spec);
@@ -285,8 +285,8 @@ class CompressFloat : public BaseMappedArrayEngine<Float, Short> {
   String offsetName_p;                  // # name of offset column
   Float scale_p;                        // # fixed scale factor
   Float offset_p;                       // # fixed offset value
-  Bool fixed_p;                         // # scale/offset is fixed
-  Bool autoScale_p;                     // # determine scale/offset automatically
+  bool fixed_p;                         // # scale/offset is fixed
+  bool autoScale_p;                     // # determine scale/offset automatically
   ScalarColumn<Float>* scaleColumn_p;   // # column with scale value
   ScalarColumn<Float>* offsetColumn_p;  // # column with offset value
   Array<Short> buffer_p;                // # buffer to avoid Array constructions

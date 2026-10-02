@@ -69,7 +69,7 @@
 
 void showKeys(const TableRecord& record, const String& indent) { record.print(cout, -1, indent); }
 
-void testMain(Bool doExcep) {
+void testMain(bool doExcep) {
   // Need a table to work with.
   TableDesc td("tTableMeasures_tmp", "1", TableDesc::New);
   td.comment() = "A test of TableMeasures class.";
@@ -276,7 +276,7 @@ void testMain(Bool doExcep) {
     TableMeasDesc<MEpoch> tmdOffset(arrOffset);
 
     // the True says wants to have an ArrayMeasColumn for offset
-    TableMeasOffsetDesc tmodOS(tmdOffset, True);
+    TableMeasOffsetDesc tmodOS(tmdOffset, true);
 
     TableMeasRefDesc tmrdGast(MEpoch::GAST, tmodOS);
     TableMeasValueDesc tmvdGast(td, "SpareCol1");
@@ -290,7 +290,7 @@ void testMain(Bool doExcep) {
     TableMeasValueDesc arrOffset(td, "Time2ArrOffset");
     // The descriptor gives the offset column a type.
     TableMeasDesc<MEpoch> tmdOffset(arrOffset);
-    TableMeasOffsetDesc tmOSDesc(tmdOffset, True);
+    TableMeasOffsetDesc tmOSDesc(tmdOffset, true);
     // measure reference column and associated offset
     TableMeasRefDesc tmARef(td, "Time2ArrRef", tmOSDesc);
     // the "main" value descriptor
@@ -824,7 +824,7 @@ void testMain(Bool doExcep) {
     }
     arrayCol.put(0, ev);
     Vector<MEpoch> ew;
-    arrayCol.get(0, ew, True);
+    arrayCol.get(0, ew, true);
 
     // now row 0 should contain a valid entry
     if (arrayCol.isDefined(0)) {
@@ -898,7 +898,7 @@ void testMain(Bool doExcep) {
     cout << "Creating an MEpoch Array Column\n";
     MEpoch::ArrayColumn arrayCol(tab, "Time1Arr");
     Vector<MEpoch> ew;
-    arrayCol.get(0, ew, True);
+    arrayCol.get(0, ew, true);
     ew = arrayCol(0);
     for (uInt i = 0; i < 10; i++) {
       AlwaysAssertExit(ew(i).getRef().getType() == MEpoch::TAI);
@@ -943,7 +943,7 @@ void testMain(Bool doExcep) {
     MEpoch::ArrayColumn testAttach;
     testAttach.attach(tab, "Time2Arr");
     Vector<MEpoch> outArr;
-    testAttach.get(0, outArr, True);
+    testAttach.get(0, outArr, true);
     const MEpoch* offptr;
     const MEpoch* offptrin;
     for (uInt i = 0; i < 10; i++) {
@@ -986,7 +986,7 @@ void testMain(Bool doExcep) {
     for (uInt i = 0; i < tabRows; i++) {
       varStrRefCol.put(i, inArr);
     }
-    varStrRefCol.get(0, outArr, True);
+    varStrRefCol.get(0, outArr, true);
     for (uInt i = 0; i < 10; i++) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(i).getRef().getType());
       offptrin = dynamic_cast<const MEpoch*>(inArr(i).getRef().offset());
@@ -1000,7 +1000,7 @@ void testMain(Bool doExcep) {
     Vector<MEpoch> dummy;
     varStrRefCol.put(0, dummy);
     dummy.resize(1);
-    varStrRefCol.get(0, dummy, True);
+    varStrRefCol.get(0, dummy, true);
     AlwaysAssertExit(dummy.nelements() == 0);
 
     // last thing to test.  Array columns with scalar column offsets
@@ -1015,7 +1015,7 @@ void testMain(Bool doExcep) {
     for (uInt i = 0; i < tabRows; i++) {
       scaStrRefCol.put(i, inArr);
     }
-    scaStrRefCol.get(0, outArr, True);
+    scaStrRefCol.get(0, outArr, true);
     for (uInt i = 0; i < 10; i++) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(0).getRef().getType());
       offptrin = dynamic_cast<const MEpoch*>(inArr(0).getRef().offset());
@@ -1036,18 +1036,18 @@ void testMain(Bool doExcep) {
     {
       // Resetting cannot be done, since the table is not empty.
       MEpoch::ArrayColumn arrayCol(tab, "Time1Arr");
-      Bool excp = False;
+      bool excp = false;
       try {
         arrayCol.setDescRefCode(MEpoch::TAI);
       } catch (std::exception&) {
-        excp = True;
+        excp = true;
       }
       AlwaysAssertExit(excp);
-      excp = False;
+      excp = false;
       try {
         arrayCol.setDescOffset(obsTime);
       } catch (std::exception&) {
-        excp = True;
+        excp = true;
       }
       AlwaysAssertExit(excp);
     }
@@ -1055,7 +1055,7 @@ void testMain(Bool doExcep) {
     if (doExcep) {
       try {
         Array<MEpoch> badShapeArr(IPosition(2, 2));
-        scaStrRefCol.get(0, badShapeArr, False);
+        scaStrRefCol.get(0, badShapeArr, false);
       } catch (std::exception& x) {
         cout << "The following line should be a ";
         cout << "Table array conformance error exception.\n";
@@ -1081,33 +1081,33 @@ void getRef1(Vector<String>& curTypes, Vector<uInt>& curCodes, const MeasureHold
   TableMeasRefDesc::defaultTypesFunc(curTypes, curCodes, measHolder);
   AlwaysAssertExit(curTypes.nelements() > 10);
   curCodes[3] = 8;
-  curTypes.resize(6, True);
-  curCodes.resize(6, True);
+  curTypes.resize(6, true);
+  curCodes.resize(6, true);
 }
 void getRef2(Vector<String>& curTypes, Vector<uInt>& curCodes, const MeasureHolder& measHolder) {
   TableMeasRefDesc::defaultTypesFunc(curTypes, curCodes, measHolder);
   AlwaysAssertExit(curTypes.nelements() > 10);
-  curTypes.resize(7, True);
-  curCodes.resize(7, True);
+  curTypes.resize(7, true);
+  curCodes.resize(7, true);
   curCodes[3] = 5;
   curCodes[4] = 8;
   curCodes[5] = 3;
   curCodes[6] = 4;
 }
 
-Bool check(const MEpoch& ep1, const MEpoch& ep2) {
-  if (ep1.getRefString() != ep2.getRefString()) return False;
-  if (ep1.get("d") != ep2.get("d")) return False;
-  return True;
+bool check(const MEpoch& ep1, const MEpoch& ep2) {
+  if (ep1.getRefString() != ep2.getRefString()) return false;
+  if (ep1.get("d") != ep2.get("d")) return false;
+  return true;
 }
-Bool check(const Vector<MEpoch>& ep1, const Vector<MEpoch>& ep2) {
-  if (ep1.size() != ep2.size()) return False;
+bool check(const Vector<MEpoch>& ep1, const Vector<MEpoch>& ep2) {
+  if (ep1.size() != ep2.size()) return false;
   for (uInt i = 0; i < ep1.size(); ++i) {
     if (!check(ep1[i], ep2[i])) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 void testRefCodeChg() {
@@ -1319,7 +1319,7 @@ void testRefCodeChg() {
 
 int main(int argc, const char*[]) {
   try {
-    Bool doExcep = (argc < 2);
+    bool doExcep = (argc < 2);
     if (doExcep) {
       cout << "Test of TableMeasures classes.\n";
     } else {

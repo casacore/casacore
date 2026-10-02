@@ -64,29 +64,29 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class T>
 ImageConcat<T>::ImageConcat()
     : latticeConcat_p(),
-      combineMiscInfo_p(True),
-      warnAxisNames_p(True),
-      warnAxisUnits_p(True),
-      warnImageUnits_p(True),
-      warnRefPix_p(True),
-      warnRefVal_p(True),
-      warnInc_p(True),
-      warnTab_p(True),
-      isContig_p(True) {}
+      combineMiscInfo_p(true),
+      warnAxisNames_p(true),
+      warnAxisUnits_p(true),
+      warnImageUnits_p(true),
+      warnRefPix_p(true),
+      warnRefVal_p(true),
+      warnInc_p(true),
+      warnTab_p(true),
+      isContig_p(true) {}
 
 template <class T>
-ImageConcat<T>::ImageConcat(uInt axis, Bool tempClose, Bool combineMiscInfo)
+ImageConcat<T>::ImageConcat(uInt axis, bool tempClose, bool combineMiscInfo)
     : latticeConcat_p(axis, tempClose),
       combineMiscInfo_p(combineMiscInfo),
-      warnAxisNames_p(True),
-      warnAxisUnits_p(True),
-      warnImageUnits_p(True),
-      warnContig_p(True),
-      warnRefPix_p(True),
-      warnRefVal_p(True),
-      warnInc_p(True),
-      warnTab_p(True),
-      isContig_p(True) {}
+      warnAxisNames_p(true),
+      warnAxisUnits_p(true),
+      warnImageUnits_p(true),
+      warnContig_p(true),
+      warnRefPix_p(true),
+      warnRefVal_p(true),
+      warnInc_p(true),
+      warnTab_p(true),
+      isContig_p(true) {}
 
 template <class T>
 ImageConcat<T>::ImageConcat(const ImageConcat<T>& other)
@@ -148,21 +148,21 @@ ImageInterface<T>* ImageConcat<T>::cloneII() const {
 template <class T>
 ImageConcat<T>::ImageConcat(const JsonKVMap& jmap, const String& fileName)
     : latticeConcat_p(),
-      combineMiscInfo_p(False),
-      warnAxisNames_p(True),
-      warnAxisUnits_p(True),
-      warnImageUnits_p(True),
-      warnContig_p(True),
-      warnRefPix_p(True),
-      warnRefVal_p(True),
-      warnInc_p(True),
-      warnTab_p(True),
-      isContig_p(True),
+      combineMiscInfo_p(false),
+      warnAxisNames_p(true),
+      warnAxisUnits_p(true),
+      warnImageUnits_p(true),
+      warnContig_p(true),
+      warnRefPix_p(true),
+      warnRefVal_p(true),
+      warnInc_p(true),
+      warnTab_p(true),
+      isContig_p(true),
       fileName_p(Path(fileName).absoluteName()) {
   // This must be the opposite of function save.
   AlwaysAssert(jmap.getInt("Version", 1) == 1, AipsError);
   uInt axis = jmap.get("Axis").getInt();
-  Bool tmpClose = jmap.getBool("TempClose", True);
+  bool tmpClose = jmap.getBool("TempClose", true);
   Vector<String> names(jmap.get("Images").getArrayString());
   latticeConcat_p = LatticeConcat<T>(axis, tmpClose);
   // Combine miscinfo if not defined in the Json file.
@@ -177,7 +177,7 @@ ImageConcat<T>::ImageConcat(const JsonKVMap& jmap, const String& fileName)
       throw AipsError("ImageConcat " + fileName + " contains image " + names[i] +
                       " of another data type");
     }
-    setImage(*img, True);
+    setImage(*img, true);
     delete img;
   }
   if (jmap.isDefined("MiscInfo")) {
@@ -203,7 +203,7 @@ void ImageConcat<T>::save(const String& fileName) const {
   // Create the directory if not existing already.
   Directory dir(fullName);
   if (!dir.exists()) {
-    dir.create(False);
+    dir.create(false);
   }
   // Create the Json file.
   JsonOut jout(fullName + "/imageconcat.json");
@@ -216,7 +216,7 @@ void ImageConcat<T>::save(const String& fileName) const {
   jout.write("TempClose", latticeConcat_p.isTempClose());
   Vector<String> names(latticeConcat_p.nlattices());
   for (uInt i = 0; i < latticeConcat_p.nlattices(); ++i) {
-    String name = latticeConcat_p.lattice(i)->name(False);
+    String name = latticeConcat_p.lattice(i)->name(false);
     String fname = Path(name).absoluteName();
     // Make path relative to parent, so parent can be moved.
     names[i] = Path::stripDirectory(fname, fullName);
@@ -228,16 +228,16 @@ void ImageConcat<T>::save(const String& fileName) const {
 }
 
 template <class T>
-Bool ImageConcat<T>::setMiscInfo(const RecordInterface& newInfo) {
+bool ImageConcat<T>::setMiscInfo(const RecordInterface& newInfo) {
   setMiscInfoMember(newInfo);
   if (isPersistent()) {
     save(fileName_p);
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool ImageConcat<T>::setImageInfo(const ImageInfo& info) {
+bool ImageConcat<T>::setImageInfo(const ImageInfo& info) {
   // Check the beamset and set the Imageinfo for the concat image.
   this->setImageInfoMember(info);
   // Set the ImageInfo in each individual image.
@@ -251,11 +251,11 @@ Bool ImageConcat<T>::setImageInfo(const ImageInfo& info) {
         ii.setInfoSplitBeamSet(ndone, info, img.shape(), img.coordinates(), latticeConcat_p.axis());
     img.setImageInfo(ii);
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool ImageConcat<T>::isPersistent() const {
+bool ImageConcat<T>::isPersistent() const {
   return !fileName_p.empty();
 }
 
@@ -267,7 +267,7 @@ String ImageConcat<T>::imageType() const {
 // Public functions
 
 template <class T>
-void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax) {
+void ImageConcat<T>::setImage(ImageInterface<T>& image, bool relax) {
   LogIO os(LogOrigin("ImageConcat", __func__, WHERE));
   // How many images have we set so far ?
   const uInt nIm = latticeConcat_p.nlattices();
@@ -287,8 +287,8 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax) {
   // Do the extra image stuff.  Most of it is coordinate rubbish.
   // The ImageInfo (except beams) comes from the first image only.
   // The miscInfo is merged from all images.
-  isImage_p.resize(nIm + 1, True);
-  isImage_p(nIm) = True;
+  isImage_p.resize(nIm + 1, true);
+  isImage_p(nIm) = true;
   if (nIm == 0) {
     ImageInterface<T>::setCoordinateInfo(image.coordinates());
     this->setUnitMember(image.units());
@@ -335,7 +335,7 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax) {
       ImageInfo::logMessage(warnAxisUnits_p, os, relax, "Image axis units differ");
     }
     if (image.units().getName() != this->units().getName()) {
-      ImageInfo::logMessage(warnAxisUnits_p, os, True,
+      ImageInfo::logMessage(warnAxisUnits_p, os, true,
                             "Image units differ. "
                             "Image units of the first image (" +
                                 this->units().getName() + ") will be used for the output image");
@@ -400,9 +400,9 @@ void ImageConcat<T>::setLattice(MaskedLattice<T>& lattice) {
   // a non-contiguity situation.  Function setCoordinates
   // will make up a coordinate for this lattice
 
-  isImage_p.resize(nIm + 1, True);
-  isImage_p(nIm) = False;
-  isContig_p = False;
+  isImage_p.resize(nIm + 1, true);
+  isImage_p(nIm) = false;
+  isContig_p = false;
   //
   this->setCoordinates();
 }
@@ -417,7 +417,7 @@ void ImageConcat<T>::resize(const TiledShape&) {
 }
 
 template <class T>
-Bool ImageConcat<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool ImageConcat<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   return latticeConcat_p.doGetSlice(buffer, section);
 }
 
@@ -428,7 +428,7 @@ void ImageConcat<T>::doPutSlice(const Array<T>& buffer, const IPosition& where,
 }
 
 template <class T>
-Bool ImageConcat<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
+bool ImageConcat<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   return latticeConcat_p.doGetMaskSlice(buffer, section);
 }
 
@@ -460,12 +460,12 @@ IPosition ImageConcat<T>::doNiceCursorShape(uInt maxPixels) const {
 }
 
 template <class T>
-Bool ImageConcat<T>::ok() const {
-  return True;
+bool ImageConcat<T>::ok() const {
+  return true;
 }
 
 template <class T>
-LatticeIterInterface<T>* ImageConcat<T>::makeIter(const LatticeNavigator& nav, Bool useRef) const {
+LatticeIterInterface<T>* ImageConcat<T>::makeIter(const LatticeNavigator& nav, bool useRef) const {
   return latticeConcat_p.makeIter(nav, useRef);
 }
 
@@ -474,7 +474,7 @@ LatticeIterInterface<T>* ImageConcat<T>::makeIter(const LatticeNavigator& nav, B
 template <class T>
 void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateSystem& cSys1,
                                       const CoordinateSystem& cSys2, LogIO& os, uInt axis,
-                                      Bool relax) {
+                                      bool relax) {
   //
   // cSys1 from last image
   // cSys2 from current image
@@ -503,7 +503,7 @@ void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateS
           "Images are not contiguous along the "
           "concatenation axis",
           "For this axis, a non-regular " + coordType + " coordinate will be made");
-      isContig_p = False;
+      isContig_p = false;
     }
   } else {
     Int worldAxis;
@@ -518,7 +518,7 @@ void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateS
           "Images are not contiguous along the "
           "concatenation axis",
           "For this axis, a non-regular " + coordType + " coordinate will be made");
-      isContig_p = False;
+      isContig_p = false;
     }
   }
 }
@@ -543,7 +543,7 @@ Double ImageConcat<T>::coordConvert(Int& worldAxis, LogIO& os, const CoordinateS
 
 template <class T>
 void ImageConcat<T>::checkNonConcatAxisCoordinates(LogIO& os, const ImageInterface<T>& imageIn,
-                                                   Bool relax)
+                                                   bool relax)
 //
 // Check coordinate descriptors for each non-concatenation axis
 // for the current image being set and the coordinates currently
@@ -559,7 +559,7 @@ void ImageConcat<T>::checkNonConcatAxisCoordinates(LogIO& os, const ImageInterfa
   ImageSummary<T> sum0(*pIm0);
   if (latticeConcat_p.isTempClose()) latticeConcat_p.tempClose(0);
   //
-  Bool pixelOrder = True;
+  bool pixelOrder = true;
   const uInt dim = sumIn.ndim();
   Vector<Double> refPix = sumIn.referencePixels();
   Vector<Double> refPix0 = sum0.referencePixels();
@@ -673,12 +673,12 @@ void ImageConcat<T>::setCoordinates()
     // Make TabularCoordinate and replace it.    If it's not monotonic, we
     // can't make the TC, so fall back to CS from first image
 
-    Bool ok = True;
+    bool ok = true;
     String msg;
     try {
       if (originalAxisType_p == Coordinate::SPECTRAL) {
         SpectralCoordinate origSpCoord = cSys.spectralCoordinate();
-        SpectralCoordinate newSp(origSpCoord.frequencySystem(False), worldValues_p,
+        SpectralCoordinate newSp(origSpCoord.frequencySystem(false), worldValues_p,
                                  origSpCoord.restFrequency());
         cSys.replaceCoordinate(newSp, uInt(coord));
       } else {
@@ -691,11 +691,11 @@ void ImageConcat<T>::setCoordinates()
            << LogIO::EXCEPTION;
       }
     } catch (const AipsError& x) {
-      ok = False;
+      ok = false;
       msg = x.getMesg();
     }
     if (!ok) {
-      ImageInfo::logMessage(warnTab_p, os, True, "Could not create Coordinate because " + msg,
+      ImageInfo::logMessage(warnTab_p, os, true, "Could not create Coordinate because " + msg,
                             "CoordinateSystem set to that of first image "
                             "instead");
     }
@@ -707,8 +707,8 @@ void ImageConcat<T>::_updatePixelAndWorldValues(uInt iIm) {
   const uInt nPixelsOld = pixelValues_p.nelements();
   uInt axis = latticeConcat_p.axis();
   const uInt shapeNew = latticeConcat_p.lattice(iIm)->shape()(axis);
-  pixelValues_p.resize(nPixelsOld + shapeNew, True);
-  worldValues_p.resize(nPixelsOld + shapeNew, True);
+  pixelValues_p.resize(nPixelsOld + shapeNew, true);
+  worldValues_p.resize(nPixelsOld + shapeNew, true);
   if (isImage_p(iIm)) {
     if (latticeConcat_p.isTempClose()) {
       latticeConcat_p.reopen(iIm);
@@ -754,11 +754,11 @@ void ImageConcat<T>::_updatePixelAndWorldValues(uInt iIm) {
 template <class T>
 Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1, const Vector<Int>& stokes2) {
   Vector<Int> stokes = concatenateArray(stokes1, stokes2);
-  Bool ok = True;
+  bool ok = true;
   try {
     StokesCoordinate tmp(stokes);
   } catch (AipsError& x) {
-    ok = False;
+    ok = false;
   }
   //
   if (ok) {
@@ -770,7 +770,7 @@ Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1, const Vect
 }
 
 template <class T>
-Bool ImageConcat<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool ImageConcat<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return latticeConcat_p.lock(type, nattempts);
 }
 template <class T>
@@ -778,7 +778,7 @@ void ImageConcat<T>::unlock() {
   latticeConcat_p.unlock();
 }
 template <class T>
-Bool ImageConcat<T>::hasLock(FileLocker::LockType type) const {
+bool ImageConcat<T>::hasLock(FileLocker::LockType type) const {
   return latticeConcat_p.hasLock(type);
 }
 template <class T>
@@ -799,7 +799,7 @@ void ImageConcat<T>::reopen() {
 }
 
 template <class T>
-String ImageConcat<T>::name(Bool stripPath) const {
+String ImageConcat<T>::name(bool stripPath) const {
   if (fileName_p.empty()) {
     return "Concatenation :";
   }
@@ -811,21 +811,21 @@ String ImageConcat<T>::name(Bool stripPath) const {
 }
 
 template <class T>
-Bool ImageConcat<T>::isMasked() const {
+bool ImageConcat<T>::isMasked() const {
   return latticeConcat_p.isMasked();
 }
 
 template <class T>
-Bool ImageConcat<T>::hasPixelMask() const {
+bool ImageConcat<T>::hasPixelMask() const {
   return latticeConcat_p.hasPixelMask();
 }
 
 template <class T>
-const Lattice<Bool>& ImageConcat<T>::pixelMask() const {
+const Lattice<bool>& ImageConcat<T>::pixelMask() const {
   return latticeConcat_p.pixelMask();
 }
 template <class T>
-Lattice<Bool>& ImageConcat<T>::pixelMask() {
+Lattice<bool>& ImageConcat<T>::pixelMask() {
   return latticeConcat_p.pixelMask();
 }
 
@@ -835,7 +835,7 @@ const LatticeRegion* ImageConcat<T>::getRegionPtr() const {
 }
 
 template <class T>
-Bool ImageConcat<T>::isWritable() const {
+bool ImageConcat<T>::isWritable() const {
   return latticeConcat_p.isWritable();
 }
 

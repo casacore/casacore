@@ -112,7 +112,7 @@ int main() {
     cout << "--------------------------------------" << endl;
     cout << "Testing all conversions forward/backward" << endl;
 
-    Bool isok = True;
+    bool isok = true;
     Vector<Double> tvec(3);
     tvec = 0.0;
     for (uInt i = MEarthMagnetic::ITRF; i < MEarthMagnetic::N_Types; i++) {
@@ -126,7 +126,7 @@ int main() {
                         1.5e-3)) {
           cout << MEarthMagnetic::showType(i) << " to " << MEarthMagnetic::showType(j) << ": "
                << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-          isok = False;
+          isok = false;
         };
       };
     };

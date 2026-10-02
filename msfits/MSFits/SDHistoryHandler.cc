@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDHistoryHandler::SDHistoryHandler() : msHis_p(0), msHisCols_p(0) { ; }
 
-SDHistoryHandler::SDHistoryHandler(MeasurementSet &ms, const Vector<Bool> &handledCols,
+SDHistoryHandler::SDHistoryHandler(MeasurementSet &ms, const Vector<bool> &handledCols,
                                    const Record &row)
     : msHis_p(0), msHisCols_p(0) {
   initAll(ms, handledCols, row);
@@ -65,7 +65,7 @@ SDHistoryHandler &SDHistoryHandler::operator=(const SDHistoryHandler &other) {
   return *this;
 }
 
-void SDHistoryHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDHistoryHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
 }
@@ -112,7 +112,7 @@ void SDHistoryHandler::clearAll() {
 
 void SDHistoryHandler::clearRow() { timesys_p.detach(); }
 
-void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<Bool> &handledCols,
+void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<bool> &handledCols,
                                const Record &row) {
   msHis_p = new MSHistory(ms.history());
   AlwaysAssert(msHis_p, AipsError);
@@ -123,7 +123,7 @@ void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<Bool> &handledCo
   initRow(handledCols, row);
 }
 
-void SDHistoryHandler::initRow(const Vector<Bool> &, const Record &row) {
+void SDHistoryHandler::initRow(const Vector<bool> &, const Record &row) {
   // look for a TIMESYS field in row
   if (row.fieldNumber("TIMESYS") >= 0) {
     timesys_p.attachToRecord(row, "TIMESYS");

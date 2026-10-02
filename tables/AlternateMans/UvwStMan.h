@@ -45,7 +45,7 @@ class UvwStMan final : public DataManager {
   Record dataManagerSpec() const final { return Record(); }
 
  private:
-  Bool flush(AipsIO &, Bool) final { return false; }
+  bool flush(AipsIO &, bool) final { return false; }
 
   void create64(rownr_t nRow) final;
 

@@ -145,7 +145,7 @@ class SSMStringHandler {
   // shape will be put first.
   // <group>
   void put(Int& bucketNr, Int& offset, Int& length, const String& string);
-  void put(Int& bucketNr, Int& offset, Int& length, const Array<String>& string, Bool handleShape);
+  void put(Int& bucketNr, Int& offset, Int& length, const Array<String>& string, bool handleShape);
   // </group>
 
   // Put a single string or an array of strings into a bucket.
@@ -172,7 +172,7 @@ class SSMStringHandler {
   // indicating that the data are preceeded by the shape.
   // <group>
   void get(String& string, Int bucket, Int offset, Int length);
-  void get(Array<String>& string, Int bucket, Int offset, Int length, Bool handleShape);
+  void get(Array<String>& string, Int bucket, Int offset, Int length, bool handleShape);
   // </group>
 
   // Flush the currently used string bucket.
@@ -192,13 +192,13 @@ class SSMStringHandler {
   // <br>
   // If <src>isNew</src> is True the bucket is new,
   // so the Ints at its beginning do not have to be interpreted.
-  void getBucket(uInt bucketNr, Bool isNew = False);
+  void getBucket(uInt bucketNr, bool isNew = false);
 
   // Get a new bucket and make it current.
   // If <src>doConcat</src> is True, the new bucket is a continuation,
   // so <src>itsNextBucket</src> in the currently used bucket is filled
   // with the new bucket number.
-  void getNewBucket(Bool doConcat);
+  void getNewBucket(bool doConcat);
 
   // Put the data with the given length at the end of the current bucket.
   // If they do not fit, they are continued in a new bucket.
@@ -217,7 +217,7 @@ class SSMStringHandler {
   void replace(Int bucketNr, Int offset, Int length, const String& string);
   void replace(Int bucketNr, Int offset, Int length, Int totalLength, const IPosition& aShape);
   void replace(Int bucketNr, Int offset, Int length, Int totalLength, const Array<String>& string,
-               Bool handleShape);
+               bool handleShape);
   void replaceData(Int& offset, Int length, const Char* data);
   // </group>
 
@@ -229,7 +229,7 @@ class SSMStringHandler {
   Int itsNextBucket;     // next bucket for long strings
   char* itsData;         // bucket string data
   char* itsIntBuf;       // buffer for initialisation params
-  Bool isChanged;        // has current bucket been changed?
+  bool isChanged;        // has current bucket been changed?
   uInt itsIntSize;       // size of integers in this system
   Int itsLastBucket;     // last string bucket used
   uInt itsStart;         // Start position of actual data in bucket

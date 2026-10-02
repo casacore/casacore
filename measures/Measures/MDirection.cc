@@ -88,7 +88,7 @@ MDirection MDirection::makeMDirection(const String &sourceName) {
   }
   // Now see if it is a known standard source.
   MVDirection mvdir;
-  Bool fnd = True;
+  bool fnd = true;
   // Make it case-insensitive.
   String name(sourceName);
   ToUpperCaseInPlace(name);
@@ -109,7 +109,7 @@ MDirection MDirection::makeMDirection(const String &sourceName) {
   } else if (name == "PERA") {
     mvdir = MVDirection(0.87180363, 0.72451580);
   } else {
-    fnd = False;
+    fnd = false;
   }
   if (fnd) {
     return MDirection(mvdir, MDirection::J2000);
@@ -204,9 +204,9 @@ void MDirection::checkTypes() const { MDirection::checkMyTypes(); }
 
 void MDirection::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MDirection::allMyTypes(nall, nex, typ);
@@ -225,7 +225,7 @@ void MDirection::checkMyTypes() {
   }
 }
 
-Bool MDirection::getType(MDirection::Types &tp, const String &in) {
+bool MDirection::getType(MDirection::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MDirection::allMyTypes(nall, nex, oname);
@@ -233,21 +233,21 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MDirection::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
+bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
   MDirection::Types tp;
   if (MDirection::getType(tp, in))
     mr = MDirection::Ref(tp);
   else {
     mr = MDirection::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 MDirection::GlobalTypes MDirection::globalType(uInt tp) {
@@ -264,20 +264,20 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
   return oname[tp];
 }
 
-Bool MDirection::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MDirection *>(&in)) return False;
+bool MDirection::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MDirection *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MDirection::setRefString(const String &in) {
+bool MDirection::setRefString(const String &in) {
   MDirection::Types tp;
   if (MDirection::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MDirection::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MDirection::getDefaultType() const {
@@ -286,7 +286,7 @@ const String &MDirection::getDefaultType() const {
 
 String MDirection::getRefString() const { return MDirection::showType(ref.getType()); }
 
-Bool MDirection::isModel() const { return ((ref.getType() & MDirection::EXTRA) != 0); }
+bool MDirection::isModel() const { return ((ref.getType() & MDirection::EXTRA) != 0); }
 
 Quantum<Vector<Double>> MDirection::getAngle() const { return (data.getAngle()); }
 
@@ -294,25 +294,25 @@ Quantum<Vector<Double>> MDirection::getAngle(const Unit &inunit) const {
   return (data.getAngle(inunit));
 }
 
-void MDirection::shift(const Quantum<Double> &lng, const Quantum<Double> &lat, Bool trueAngle) {
+void MDirection::shift(const Quantum<Double> &lng, const Quantum<Double> &lat, bool trueAngle) {
   data.shift(lng, lat, trueAngle);
 }
 
-void MDirection::shift(Double lng, Double lat, Bool trueAngle) { data.shift(lng, lat, trueAngle); }
+void MDirection::shift(Double lng, Double lat, bool trueAngle) { data.shift(lng, lat, trueAngle); }
 
-void MDirection::shiftLongitude(const Quantum<Double> &lng, Bool trueAngle) {
+void MDirection::shiftLongitude(const Quantum<Double> &lng, bool trueAngle) {
   data.shiftLongitude(lng, trueAngle);
 }
 
-void MDirection::shiftLongitude(Double lng, Bool trueAngle) { data.shiftLongitude(lng, trueAngle); }
+void MDirection::shiftLongitude(Double lng, bool trueAngle) { data.shiftLongitude(lng, trueAngle); }
 
-void MDirection::shiftLatitude(const Quantum<Double> &lat, Bool trueAngle) {
+void MDirection::shiftLatitude(const Quantum<Double> &lat, bool trueAngle) {
   data.shiftLatitude(lat, trueAngle);
 }
 
-void MDirection::shiftLatitude(Double lat, Bool trueAngle) { data.shiftLatitude(lat, trueAngle); }
+void MDirection::shiftLatitude(Double lat, bool trueAngle) { data.shiftLatitude(lat, trueAngle); }
 
-void MDirection::shift(const MVDirection &shft, Bool trueAngle) { data.shift(shft, trueAngle); }
+void MDirection::shift(const MVDirection &shft, bool trueAngle) { data.shift(shft, trueAngle); }
 
 void MDirection::shiftAngle(const Quantum<Double> &off, const Quantum<Double> &pa) {
   data.shiftAngle(off, pa);

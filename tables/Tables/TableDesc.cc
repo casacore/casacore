@@ -62,19 +62,19 @@ TableDesc::TableDesc(const String& nam, const String& version, const TabPath& td
 }
 
 TableDesc::TableDesc(const TableDesc& td, const String& nam, const String& version, TDOption opt,
-                     Bool copyColumns)
+                     bool copyColumns)
     : name_p(nam), vers_p(version), option_p(opt) {
   copy(td, TabPath(), copyColumns);  // use default search path
 }
 
 TableDesc::TableDesc(const TableDesc& td, const String& nam, const String& version,
-                     const TabPath& tdpath, TDOption opt, Bool copyColumns)
+                     const TabPath& tdpath, TDOption opt, bool copyColumns)
     : name_p(nam), vers_p(version), option_p(opt) {
   copy(td, tdpath, copyColumns);  // use given search path
 }
 
 TableDesc::TableDesc(const TableDesc& td, TDOption opt) : option_p(opt) {
-  copy(td, TabPath(), True);  // use default search path
+  copy(td, TabPath(), true);  // use default search path
 }
 
 TableDesc::~TableDesc() {
@@ -99,7 +99,7 @@ TableDesc::~TableDesc() {
 // </thrown>
 void TableDesc::init(const TabPath& tdpath) {
   // # Initialize some variables.
-  swwrite_p = False;  // writing is not possible yet
+  swwrite_p = false;  // writing is not possible yet
   // # If non-scratch, check if name is not blank and look if the
   // # description already exists.
   if (option_p == Scratch) {
@@ -108,7 +108,7 @@ void TableDesc::init(const TabPath& tdpath) {
     if (name_p.empty()) {
       throw TableDescNoName();
     }
-    Bool exsw = tdpath.found(name_p + ".tabdsc", dir_p);
+    bool exsw = tdpath.found(name_p + ".tabdsc", dir_p);
     if (option_p == NewNoReplace) {
       if (exsw) {
         throw(TableDuplFile("desc. " + name_p));  // table already exists
@@ -163,13 +163,13 @@ void TableDesc::init(const TabPath& tdpath) {
       }
     }
   }
-  swwrite_p = True;  // writing is possible now
+  swwrite_p = true;  // writing is possible now
 }
 
 // <thrown>
 //   <li> TableInvOpt
 // </thrown>
-void TableDesc::copy(const TableDesc& td, const TabPath& tdpath, Bool copyColumns) {
+void TableDesc::copy(const TableDesc& td, const TabPath& tdpath, bool copyColumns) {
   // # Check the options; it has to be a new description.
   if (option_p != New && option_p != NewNoReplace && option_p != Scratch) {
     throw(TableInvOpt("TableDesc", "must be New, NewNoReplace or Scratch"));
@@ -190,7 +190,7 @@ void TableDesc::copy(const TableDesc& td, const TabPath& tdpath, Bool copyColumn
 }
 
 // Test if a description exists.
-Bool TableDesc::isReadable(const String& tableDescName) {
+bool TableDesc::isReadable(const String& tableDescName) {
   File file(tableDescName + ".tabdsc");
   return file.isReadable();
 }
@@ -204,7 +204,7 @@ Vector<String> TableDesc::columnNames() const {
   return names;
 }
 
-void TableDesc::add(const TableDesc& that, Bool addKeywordSet) {
+void TableDesc::add(const TableDesc& that, bool addKeywordSet) {
   // First check if all sets are disjoint.
   if (!col_p.isDisjoint(that.col_p)) {
     throw(TableInvOper("TableDesc::add; columns not disjoint"));
@@ -357,7 +357,7 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
   // Also check if their dimensionality matches the number of
   // coordinate vectors (if coordinates are defined).
   // Find out if all data columns have FixedShape.
-  Bool fixedShape = True;
+  bool fixedShape = true;
   uInt cellNdim = 0;
   for (i = 0; i < dataColumnNames.nelements(); i++) {
     if (!isColumn(dataColumnNames(i))) {
@@ -381,7 +381,7 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
                                             " mismatches that of previous data columns");
     }
     if (!desc.isFixedShape()) {
-      fixedShape = False;
+      fixedShape = false;
     }
   }
   if ((firstCoordSca > 0 && firstCoordSca <= cellNdim) || lastCoordVec > cellNdim) {
@@ -456,7 +456,7 @@ void TableDesc::throwHypercolumn(const String& name, const String& message) {
   throw(TableInvHyperDesc(name, message));
 }
 
-Bool TableDesc::isHypercolumn(const String& name) const {
+bool TableDesc::isHypercolumn(const String& name) const {
   return privKey_p->isDefined(theHyperPrefix + name);
 }
 
@@ -502,8 +502,8 @@ uInt TableDesc::hypercolumnDesc(const String& name, Vector<String>& dataColumnNa
   return set.asuInt("ndim");
 }
 
-void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, Bool keepUnknownData,
-                                   Bool keepUnknownCoord, Bool keepUnknownId) {
+void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, bool keepUnknownData,
+                                   bool keepUnknownCoord, bool keepUnknownId) {
   Vector<String> hcNames = hypercolumnNames();
   Vector<String> dataNames, coordNames, idNames;
   for (uInt i = 0; i < hcNames.nelements(); i++) {
@@ -522,7 +522,7 @@ void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, Bool
     }
     // If no data columns left, there is no need to recreate the hypercolumn.
     if (nr > 0) {
-      dataNames.resize(nr, True);
+      dataNames.resize(nr, true);
       nr = 0;
       for (uInt j = 0; j < coordNames.nelements(); j++) {
         std::map<String, String>::const_iterator iter = old2new.find(dataNames(j));
@@ -550,7 +550,7 @@ void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, Bool
           nr++;
         }
       }
-      idNames.resize(nr, True);
+      idNames.resize(nr, true);
       // Add the hypercolumn again.
       defineHypercolumn(hcNames(i), ndim, dataNames, coordNames, idNames);
     }

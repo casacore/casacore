@@ -107,7 +107,7 @@ class ByteSource : virtual public BaseSinkSource {
   // These functions read one value of the given type.
   // If this function does not succeed, an exception will be thrown.
   // <group>
-  ByteSource& operator>>(Bool& value);
+  ByteSource& operator>>(bool& value);
   ByteSource& operator>>(Char& value);
   ByteSource& operator>>(uChar& value);
   ByteSource& operator>>(Short& value);
@@ -126,7 +126,7 @@ class ByteSource : virtual public BaseSinkSource {
   // These functions read multiple values of the given type.
   // If this function does not succeed, an exception will be thrown.
   // <group>
-  void read(size_t nvalues, Bool* value);
+  void read(size_t nvalues, bool* value);
   void read(size_t nvalues, Char* value);
   void read(size_t nvalues, uChar* value);
   void read(size_t nvalues, Short* value);

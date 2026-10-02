@@ -115,24 +115,24 @@ LCBox& LCBox::operator=(const LCBox& other) {
   return *this;
 }
 
-Bool LCBox::equals(const LCRegion& other) const {
+bool LCBox::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionFixed::equals(other)) {
-    return False;
+    return false;
   }
   const LCBox& that = (const LCBox&)other;
   // Compare private data.
   if (itsBlc.nelements() != that.itsBlc.nelements() ||
       itsTrc.nelements() != that.itsTrc.nelements()) {
-    return False;
+    return false;
   }
   for (uInt i = 0; i < itsBlc.nelements(); i++) {
     if (!near(itsBlc(i), that.itsBlc(i)) || !near(itsTrc(i), that.itsTrc(i))) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 LCRegion* LCBox::cloneRegion() const { return new LCBox(*this); }
@@ -157,7 +157,7 @@ TableRecord LCBox::toRecord(const String&) const {
   TableRecord rec;
   defineRecordFields(rec, className());
   // Write 1-relative.
-  rec.define("oneRel", True);
+  rec.define("oneRel", true);
   rec.define("blc", itsBlc + Float(1));
   rec.define("trc", itsTrc + Float(1));
   rec.define("shape", latticeShape().asVector());
@@ -166,7 +166,7 @@ TableRecord LCBox::toRecord(const String&) const {
 
 LCBox* LCBox::fromRecord(const TableRecord& rec, const String&) {
   // If 1-relative, subtract 1 from blc and trc.
-  Bool oneRel = rec.asBool("oneRel");
+  bool oneRel = rec.asBool("oneRel");
   Float off = (oneRel ? 1 : 0);
   Array<Float> blc(rec.toArrayFloat("blc"));
   Array<Float> trc(rec.toArrayFloat("trc"));
@@ -215,7 +215,7 @@ void LCBox::fillBlcTrc() {
   }
 }
 
-Bool LCBox::verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPosition& shape) {
+bool LCBox::verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPosition& shape) {
   IPosition inBlc(blc);
   IPosition inTrc(trc);
   IPosition inInc(inc);
@@ -224,7 +224,7 @@ Bool LCBox::verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPositi
   // Check blc
 
   const Int blcDim = blc.nelements();
-  blc.resize(nDim, True);
+  blc.resize(nDim, true);
   if (blcDim == 0) {
     blc = 0;
   } else {
@@ -240,7 +240,7 @@ Bool LCBox::verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPositi
   // Check trc
 
   const Int trcDim = trc.nelements();
-  trc.resize(nDim, True);
+  trc.resize(nDim, true);
   if (trcDim == 0) {
     trc = shape - 1;
   } else {
@@ -258,7 +258,7 @@ Bool LCBox::verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPositi
   // Check increment
 
   const Int incDim = inc.nelements();
-  inc.resize(nDim, True);
+  inc.resize(nDim, true);
   if (incDim == 0) {
     inc = 1;
   } else {
@@ -280,7 +280,7 @@ Bool LCBox::verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPositi
     }
   }
   //
-  Bool changed = (blc.nelements() != inBlc.nelements() || trc.nelements() != inTrc.nelements() ||
+  bool changed = (blc.nelements() != inBlc.nelements() || trc.nelements() != inTrc.nelements() ||
                   inc.nelements() != inInc.nelements());
   if (!changed) changed = (blc != inBlc || trc != inTrc || inc != inInc);
   //

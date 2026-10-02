@@ -101,8 +101,8 @@ void AipsError::addStackTrace() {
   // See if the default is to tack on the stack trace on the exception
   // message.  N.B.: Turning this on will break some of the low-level tests
   // which simply compare expected to actual output.
-  Bool enabled;
-  AipsrcValue<Bool>::find(enabled, "AipsError.enableStackTrace", False);
+  bool enabled;
+  AipsrcValue<bool>::find(enabled, "AipsError.enableStackTrace", false);
   if (enabled) {
     // If permitted, append to the error message.
     message += stackTrace;

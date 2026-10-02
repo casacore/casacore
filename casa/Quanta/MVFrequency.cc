@@ -99,15 +99,15 @@ MVFrequency &MVFrequency::operator-=(const MVFrequency &other) {
   return *this;
 }
 
-Bool MVFrequency::operator==(const MVFrequency &other) const { return (val == other.val); }
+bool MVFrequency::operator==(const MVFrequency &other) const { return (val == other.val); }
 
-Bool MVFrequency::operator!=(const MVFrequency &other) const { return (val != other.val); }
+bool MVFrequency::operator!=(const MVFrequency &other) const { return (val != other.val); }
 
-Bool MVFrequency::near(const MVFrequency &other, Double tol) const {
+bool MVFrequency::near(const MVFrequency &other, Double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-Bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
+bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -127,7 +127,7 @@ Double MVFrequency::getValue() const { return val; }
 
 Quantity MVFrequency::get() const { return Quantity(val, "Hz"); }
 
-Quantity MVFrequency::get(const Unit &unit) const { return Quantity(makeF(val, unit, True), unit); }
+Quantity MVFrequency::get(const Unit &unit) const { return Quantity(makeF(val, unit, true), unit); }
 
 Vector<Double> MVFrequency::getVector() const {
   Vector<Double> x(1);
@@ -149,7 +149,7 @@ Vector<Quantum<Double>> MVFrequency::getRecordValue() const {
   return tmp;
 }
 
-Bool MVFrequency::putValue(const Vector<Quantum<Double>> &in) {
+bool MVFrequency::putValue(const Vector<Quantum<Double>> &in) {
   static const UnitVal InvTime = UnitVal::NODIM / UnitVal::TIME;
   static const UnitVal AngleTime = UnitVal::ANGLE / UnitVal::TIME;
   static const UnitVal InvLength = UnitVal::NODIM / UnitVal::LENGTH;
@@ -165,15 +165,15 @@ Bool MVFrequency::putValue(const Vector<Quantum<Double>> &in) {
         dt == InvLength || dt == Energy || dt == Impuls) {
       val = makeF(in(0).getValue(), in(0).getFullUnit());
     } else {
-      return False;
+      return false;
     }
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const {
+Double MVFrequency::makeF(Double v, const Unit &dt, bool rev) const {
   static const UnitVal InvTime = UnitVal::NODIM / UnitVal::TIME;
   static const UnitVal AngleTime = UnitVal::ANGLE / UnitVal::TIME;
   static const UnitVal InvLength = UnitVal::NODIM / UnitVal::LENGTH;

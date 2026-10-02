@@ -75,7 +75,7 @@ void StatAcc<T>::copy(const StatAcc<T>& that) {
 template <class T>
 void StatAcc<T>::put(const Array<T>& v) {
   uInt ntotal = v.nelements();
-  Bool vDelete;
+  bool vDelete;
   const T* vStorage = v.getStorage(vDelete);
   const T* vs = vStorage;
   while (ntotal--) {
@@ -92,7 +92,7 @@ void StatAcc<T>::put(const Array<T>& v, const Array<Float>& w) {
   if (ntotal != w.nelements()) {
     throw(AipsError("StatAcc<T>::put(Array& v, Array& w): v and w have different length"));
   }
-  Bool vDelete, wDelete;
+  bool vDelete, wDelete;
   const T* vStorage = v.getStorage(vDelete);
   const T* vs = vStorage;
   const Float* wStorage = w.getStorage(wDelete);

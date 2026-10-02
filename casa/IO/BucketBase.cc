@@ -35,7 +35,7 @@ BucketBase::BucketBase(BucketFile* file, Int64 startOffset, uInt bucketSize, uIn
       itsBucketSize(bucketSize),
       itsCurNrOfBuckets(0),
       itsNewNrOfBuckets(nrOfBuckets),
-      itsHasWritten(False) {
+      itsHasWritten(false) {
   // The bucketsize must be set.
   if (bucketSize == 0) {
     throw AipsError("BucketBase::BucketBase; bucketsize=0");
@@ -54,16 +54,16 @@ BucketBase::BucketBase(BucketFile* file, Int64 startOffset, uInt bucketSize, uIn
 
 BucketBase::~BucketBase() {}
 
-Bool BucketBase::flush() {
+bool BucketBase::flush() {
   if (itsNewNrOfBuckets > 0) {
     initializeBuckets(itsNewNrOfBuckets - 1);
   }
   if (itsHasWritten) {
     doFlush();
-    itsHasWritten = False;
-    return True;
+    itsHasWritten = false;
+    return true;
   }
-  return False;
+  return false;
 }
 
 void BucketBase::resync(uInt nrBucket) {
@@ -80,7 +80,7 @@ void BucketBase::extend(uInt nrBucket) {
   if (nrBucket > 0) {
     itsNewNrOfBuckets += nrBucket;
     doExtend(nrBucket);
-    itsHasWritten = True;
+    itsHasWritten = true;
   }
 }
 

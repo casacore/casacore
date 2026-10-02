@@ -50,7 +50,7 @@ FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
       file_names_p(fileNames.copy()),
       nfiles_p(fileNames.nelements()),
       which_file_p(0),
-      hasChanged_p(False),
+      hasChanged_p(false),
       row_p(RecordInterface::Variable) {
   AlwaysAssert(nfiles_p > 0, AipsError);
   for (uInt i = 0; i < nfiles_p; i++) {
@@ -74,7 +74,7 @@ FITSMultiTable::~FITSMultiTable() {
   table_p = 0;
 }
 
-Bool FITSMultiTable::isValid() const { return table_p->isValid(); }
+bool FITSMultiTable::isValid() const { return table_p->isValid(); }
 
 const TableRecord &FITSMultiTable::keywords() const { return table_p->keywords(); }
 
@@ -86,17 +86,17 @@ const Record &FITSMultiTable::displayFormats() const { return table_p->displayFo
 
 const Record &FITSMultiTable::nulls() const { return table_p->nulls(); }
 
-Bool FITSMultiTable::pastEnd() const { return (which_file_p >= nfiles_p); }
+bool FITSMultiTable::pastEnd() const { return (which_file_p >= nfiles_p); }
 
 void FITSMultiTable::next() {
   table_p->next();
-  Bool status = True;
+  bool status = true;
   uInt thisWhich = which_file_p;
   if (table_p->pastEnd()) {
     which_file_p++;
     RecordDesc oldDescription = table_p->description();
-    status = False;
-    if (which_file_p >= nfiles_p) status = True;
+    status = false;
+    if (which_file_p >= nfiles_p) status = true;
     while (which_file_p < nfiles_p && !status) {
       status = table_p->reopen(file_names_p(which_file_p));
       if (!status) {
@@ -105,7 +105,7 @@ void FITSMultiTable::next() {
         which_file_p++;
       } else {
         if (oldDescription != description()) {
-          hasChanged_p = True;
+          hasChanged_p = true;
           row_p.restructure(table_p->description());
         }
       }
@@ -142,8 +142,8 @@ void timeRangeStatusMsg(uInt count) {
 }
 
 Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName, const Time &startTime,
-                                                const Time &endTime, Bool verboseErrors,
-                                                Bool verboseStatus) {
+                                                const Time &endTime, bool verboseErrors,
+                                                bool verboseStatus) {
   Time t1(startTime), t2(endTime);  // Should not be necessary
   Double timeRange = t2 - t1;
   // If the screwed up start and end, work anyway

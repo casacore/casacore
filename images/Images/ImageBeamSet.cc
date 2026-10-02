@@ -108,12 +108,12 @@ const GaussianBeam& ImageBeamSet::getBeam(Int chan, Int stokes) const {
   return _beams(chan, stokes);
 }
 
-Bool ImageBeamSet::operator==(const ImageBeamSet& other) const {
+bool ImageBeamSet::operator==(const ImageBeamSet& other) const {
   return (this == &other ||
           (_beams.shape() == other._beams.shape() && allEQ(_beams, other._beams)));
 }
 
-Bool ImageBeamSet::operator!=(const ImageBeamSet& other) const { return !(*this == other); }
+bool ImageBeamSet::operator!=(const ImageBeamSet& other) const { return !(*this == other); }
 
 const GaussianBeam& ImageBeamSet::getBeam() const {
   if (size() > 1) {
@@ -194,7 +194,7 @@ void ImageBeamSet::setBeam(Int chan, Int stokes, const GaussianBeam& beam) {
 }
 
 void ImageBeamSet::_replaceBeam(const GaussianBeam& beam, const IPosition& location1,
-                                const IPosition& location2, Bool overwriteMaxMin) {
+                                const IPosition& location2, bool overwriteMaxMin) {
   _beams(location1, location2) = beam;
   if (overwriteMaxMin) {
     // we are overwriting the max or min beam, so we need to recalculate
@@ -282,7 +282,7 @@ GaussianBeam ImageBeamSet::getMedianAreaBeam() const {
 
 const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
   BeamIter ibend = _beams.end();
-  Bool found = False;
+  bool found = false;
   Quantity minAxis;
   GaussianBeam res = *(_beams.begin());
   for (BeamIter ibeam = _beams.begin(); ibeam != ibend; ++ibeam) {
@@ -296,7 +296,7 @@ const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
     } else if (!ibeam->isNull()) {
       minAxis = ibeam->getMinor();
       res = *ibeam;
-      found = True;
+      found = true;
     }
   }
   return res;
@@ -349,7 +349,7 @@ ImageBeamSet ImageBeamSet::subset(const Slicer& slicer, const CoordinateSystem& 
   return ImageBeamSet(_beams(beamss, beamse, beamsi));
 }
 
-Bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
+bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
   if (empty() || that.empty()) {
     return empty() == that.empty();
   }
@@ -358,7 +358,7 @@ Bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
   uInt nc2 = that.nchan();
   uInt np2 = that.nstokes();
   if (!(nc1 == nc2 || nc1 == 1 || nc2 == 1) || !(np1 == np2 || np1 == 1 || np2 == 1)) {
-    return False;  // shapes mismatch
+    return false;  // shapes mismatch
   }
   uInt nc = max(nc1, nc2);
   uInt np = max(np1, np2);
@@ -370,14 +370,14 @@ Bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
   for (uInt p = 0; p < np; ++p) {
     for (uInt c = 0; c < nc; ++c, c1 += incrc1, c2 += incrc2) {
       if (_beams(c1, p1) != that._beams(c2, p2)) {
-        return False;  // mismatch in a beam
+        return false;  // mismatch in a beam
       }
     }
     c1 = c2 = 0;
     p1 += incrp1;
     p2 += incrp2;
   }
-  return True;
+  return true;
 }
 
 ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
@@ -426,19 +426,19 @@ Record ImageBeamSet::toRecord() const {
   return perPlaneBeams;
 }
 
-void ImageBeamSet::rotate(const Quantity& angle, Bool unwrap) {
+void ImageBeamSet::rotate(const Quantity& angle, bool unwrap) {
   ThrowIf(!angle.isConform("rad"), "Quantity is not an angle");
   Matrix<GaussianBeam>::iterator iter = _beams.begin();
   Matrix<GaussianBeam>::iterator end = _beams.end();
   while (iter != end) {
-    iter->setPA(iter->getPA(True) + angle, unwrap);
+    iter->setPA(iter->getPA(true) + angle, unwrap);
     ++iter;
   }
   _minBeam.setPA(_minBeam.getPA() + angle, unwrap);
   _maxBeam.setPA(_maxBeam.getPA() + angle, unwrap);
 }
 
-void ImageBeamSet::summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const {
+void ImageBeamSet::summarize(LogIO& log, bool verbose, const CoordinateSystem& csys) const {
   ostream& os = log.output();
   Unit u("deg");
   for (Matrix<GaussianBeam>::const_iterator iter = _beams.begin(); iter != _beams.end(); iter++) {
@@ -450,8 +450,8 @@ void ImageBeamSet::summarize(LogIO& log, Bool verbose, const CoordinateSystem& c
       u = Unit("arcsec");
     }
   }
-  Bool hasSpectral = csys.hasSpectralAxis();
-  Bool hasStokes = csys.hasPolarizationCoordinate();
+  bool hasSpectral = csys.hasSpectralAxis();
+  bool hasStokes = csys.hasPolarizationCoordinate();
   log.output() << "Restoring Beams " << endl;
   const SpectralCoordinate* spCoord = 0;
   IPosition beamsShape = _beams.shape();
@@ -462,7 +462,7 @@ void ImageBeamSet::summarize(LogIO& log, Bool verbose, const CoordinateSystem& c
   uInt velWidth = 0;
   uInt polWidth = 3;
   uInt typeWidth = 6;
-  Bool myverbose = verbose || !hasSpectral || (hasSpectral && beamsShape[0] <= 3);
+  bool myverbose = verbose || !hasSpectral || (hasSpectral && beamsShape[0] <= 3);
   const StokesCoordinate* polCoord = hasStokes ? &csys.stokesCoordinate() : 0;
   if (hasSpectral) {
     spCoord = &csys.spectralCoordinate();
@@ -511,7 +511,7 @@ void ImageBeamSet::summarize(LogIO& log, Bool verbose, const CoordinateSystem& c
     os << endl;
     Int stokesPos = hasStokes ? hasSpectral ? 1 : 0 : -1;
     IPosition axisPath = hasSpectral && hasStokes ? IPosition(2, 1, 0) : IPosition(1, 0);
-    ArrayPositionIterator iter(beamsShape, axisPath, False);
+    ArrayPositionIterator iter(beamsShape, axisPath, false);
     while (!iter.pastEnd()) {
       const IPosition pos = iter.pos();
       if (hasSpectral) {
@@ -618,7 +618,7 @@ void ImageBeamSet::_beamToStream(ostream& os, const GaussianBeam& beam, const Un
   majAx.convert(unit);
   Quantity minAx = beam.getMinor();
   minAx.convert(unit);
-  Quantity pa = beam.getPA(True);
+  Quantity pa = beam.getPA(true);
   pa.convert("deg");
   os << fixed << std::setprecision(4) << std::setw(9) << majAx << " x " << std::setw(9) << minAx
      << " pa=" << std::setw(8) << pa;

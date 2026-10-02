@@ -103,7 +103,7 @@ class StManColumnAipsIO : public MSMColumn {
  public:
   // Create a column of the given type.
   // It will maintain a pointer to its parent storage manager.
-  StManColumnAipsIO(StManAipsIO* stMan, int dataType, Bool byPtr);
+  StManColumnAipsIO(StManAipsIO* stMan, int dataType, bool byPtr);
 
   // Frees up the storage.
   virtual ~StManColumnAipsIO();
@@ -225,7 +225,7 @@ class StManAipsIO : public MSMBase {
  private:
   // Flush and optionally fsync the data.
   // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool fsync);
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.

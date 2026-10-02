@@ -32,13 +32,13 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-PtrHolder<T>::PtrHolder() : ptr_p(0), isCarray_p(False) {}
+PtrHolder<T>::PtrHolder() : ptr_p(0), isCarray_p(false) {}
 
 template <class T>
-PtrHolder<T>::PtrHolder(T *pointer, Bool isCarray) : ptr_p(pointer), isCarray_p(isCarray) {}
+PtrHolder<T>::PtrHolder(T *pointer, bool isCarray) : ptr_p(pointer), isCarray_p(isCarray) {}
 
 template <class T>
-void PtrHolder<T>::set(T *pointer, Bool isCarray, Bool deleteCurrentPtr) {
+void PtrHolder<T>::set(T *pointer, bool isCarray, bool deleteCurrentPtr) {
   if (deleteCurrentPtr) {
     delete_pointer_if_necessary();
   }
@@ -47,7 +47,7 @@ void PtrHolder<T>::set(T *pointer, Bool isCarray, Bool deleteCurrentPtr) {
 }
 
 template <class T>
-void PtrHolder<T>::clear(Bool deleteCurrentPtr) {
+void PtrHolder<T>::clear(bool deleteCurrentPtr) {
   if (deleteCurrentPtr) {
     delete_pointer_if_necessary();
   }

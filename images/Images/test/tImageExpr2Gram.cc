@@ -45,7 +45,7 @@
 
 #include <casacore/casa/namespace.h>
 int main(int argc, const char* argv[]) {
-  Bool foundError = False;
+  bool foundError = false;
 
   try {
     Input inp(1);
@@ -63,26 +63,26 @@ int main(int argc, const char* argv[]) {
     Array<Float> arrm1, arrm2;
     arrm1 = arr;
     arrm2 = arr;
-    Array<Bool> m1;
-    Array<Bool> m2;
+    Array<bool> m1;
+    Array<bool> m2;
     {
       PagedImage<Float> image(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr2Gram_tmp.img");
       image.put(arr);
 
       // Define 2 masks for the image and make the first one the default.
-      ImageRegion maskreg1 = image.makeMask("mask1", True, True);
-      ImageRegion maskreg2 = image.makeMask("mask2", True, False);
+      ImageRegion maskreg1 = image.makeMask("mask1", true, true);
+      ImageRegion maskreg2 = image.makeMask("mask2", true, false);
       LCRegion& mask1 = maskreg1.asMask();
       LCRegion& mask2 = maskreg2.asMask();
-      Matrix<Bool> mask(shape);
-      mask = True;
-      mask(0, 0) = False;
+      Matrix<bool> mask(shape);
+      mask = true;
+      mask(0, 0) = false;
       arrm1(IPosition(2, 0, 0)) = -1;
       mask1.put(mask);
       m1 = mask;
-      mask = True;
-      mask(0, 1) = False;
-      mask(1, 1) = False;
+      mask = true;
+      mask(0, 1) = false;
+      mask(1, 1) = false;
       arrm2(IPosition(2, 0, 1)) = -1;
       arrm2(IPosition(2, 1, 1)) = -1;
       mask2.put(mask);
@@ -104,7 +104,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr)) {
         cout << "Result should be " << arr << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -116,7 +116,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr)) {
         cout << "Result should be " << arr << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -127,7 +127,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 1) {
         cout << "Result should be " << shape.product() - 1 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -139,7 +139,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.nelements()) {
         cout << "Result should be " << shape.nelements() << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -150,7 +150,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.nelements()) {
         cout << "Result should be " << shape.nelements() << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -158,11 +158,11 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  any('tImageExpr2Gram_tmp.img::mask2')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("any('tImageExpr2Gram_tmp.img::mask2')", temps, tempRegs));
-      Bool result = expr.getBool();
+      bool result = expr.getBool();
       if (!result) {
-        cout << "Result should be " << True << endl;
+        cout << "Result should be " << true << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -170,11 +170,11 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  all('tImageExpr2Gram_tmp.img::mask2')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("all('tImageExpr2Gram_tmp.img::mask2')", temps, tempRegs));
-      Bool result = expr.getBool();
+      bool result = expr.getBool();
       if (result) {
-        cout << "Result should be " << False << endl;
+        cout << "Result should be " << false << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -186,7 +186,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 1) {
         cout << "Result should be " << shape.product() - 1 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -198,7 +198,7 @@ int main(int argc, const char* argv[]) {
       if (result != 1) {
         cout << "Result should be " << 1 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -210,7 +210,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product()) {
         cout << "Result should be " << shape.product() << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -218,12 +218,12 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  'tImageExpr2Gram_tmp.img::mask2' == tImageExpr2Gram_tmp.img::mask2" << endl;
       LatticeExprNode expr(ImageExprParse::command(
           "'tImageExpr2Gram_tmp.img::mask2' == tImageExpr2Gram_tmp.img::mask2", temps, tempRegs));
-      LELArray<Bool> result(shape);
+      LELArray<bool> result(shape);
       expr.eval(result, section);
-      if (!allEQ(result.value(), True)) {
+      if (!allEQ(result.value(), true)) {
         cout << "Result should be " << m2 << endl;
         cout << "Result is " << result.value() << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -239,12 +239,12 @@ int main(int argc, const char* argv[]) {
                                   "(tImageExpr2Gram_tmp.img::mask1=="
                                   "tImageExpr2Gram_tmp.img::mask2)",
                                   temps, tempRegs));
-      LELArray<Bool> result(shape);
+      LELArray<bool> result(shape);
       expr.eval(result, section);
       if (!allEQ(result.value(), m1 && m2)) {
-        cout << "Result should be " << False << endl;
+        cout << "Result should be " << false << endl;
         cout << "Result is " << result.value() << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -261,7 +261,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arrm2)) {
         cout << "Result should be " << arr << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -273,7 +273,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 1) {
         cout << "Result should be " << shape.product() - 1 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -285,7 +285,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product()) {
         cout << "Result should be " << shape.product() << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -297,7 +297,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 2) {
         cout << "Result should be " << shape.product() - 2 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -309,7 +309,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 2) {
         cout << "Result should be " << shape.product() - 2 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -321,7 +321,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 3) {
         cout << "Result should be " << shape.product() - 3 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -333,7 +333,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 3) {
         cout << "Result should be " << shape.product() - 3 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -349,7 +349,7 @@ int main(int argc, const char* argv[]) {
       if (result != shape.product() - 3) {
         cout << "Result should be " << shape.product() - 3 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
 
@@ -359,7 +359,7 @@ int main(int argc, const char* argv[]) {
 
   } catch (std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
-    foundError = True;
+    foundError = true;
   }
 
   if (foundError) {

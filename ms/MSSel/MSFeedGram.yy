@@ -60,7 +60,7 @@
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 
   int MSFeedGramlex (YYSTYPE*);
-  Bool MSFeedGramNegate=False;
+  bool MSFeedGramNegate=false;
 %}
 
 %%
@@ -75,8 +75,8 @@ indexcombexpr: gfeedpairs                         {$$=$1;}
 		  $$ = $1;
                 }
 
-gfeedpairs: NOT {MSFeedGramNegate=True;}  feedpairs {$$=$3;}
-         |     {MSFeedGramNegate=False;} feedpairs {$$=$2;}
+gfeedpairs: NOT {MSFeedGramNegate=true;}  feedpairs {$$=$3;}
+         |     {MSFeedGramNegate=false;} feedpairs {$$=$2;}
 
 feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' operator
            {
@@ -141,7 +141,7 @@ feedlist: feedids  // single feed or range
           {
             $$ = $1;
 	    Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
-	    (*($$)).resize(N0+N1,True);  // Resize the existing list
+	    (*($$)).resize(N0+N1,true);  // Resize the existing list
 	    for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
 	    delete $3;
 	  }

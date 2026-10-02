@@ -209,7 +209,7 @@ void doIt() {
 
     {
       LCRegion* regptr = wcspoly.toLCRegion(cSys, IPosition(3, 30, 40, 50));
-      Array<Bool> mask = regptr->get();
+      Array<bool> mask = regptr->get();
       IPosition shape = mask.shape();
       for (Int k = 0; k < shape[2]; k++) {
         for (Int j = shape[1] - 1; j >= 0; j--) {

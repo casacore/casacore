@@ -30,11 +30,11 @@
 
 int main() {
   try {
-    Bool thrown = False;
+    bool thrown = false;
     try {
       ImageExprParse::command("''");
     } catch (const std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     AlwaysAssert(thrown, AipsError);
     cout << "ok" << endl;

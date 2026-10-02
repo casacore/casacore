@@ -156,27 +156,27 @@ void LattStatsSpecialize::setUseItTrue(Complex& useIt) {
   useIt = Complex(1.0, 1.0);
 }
 
-Bool LattStatsSpecialize::hasSomePoints(Double npts) { return (npts > 0.5); }
+bool LattStatsSpecialize::hasSomePoints(Double npts) { return (npts > 0.5); }
 
-Bool LattStatsSpecialize::hasSomePoints(DComplex npts) {
+bool LattStatsSpecialize::hasSomePoints(DComplex npts) {
   return (real(npts) > 0.5 || imag(npts) > 0.5);
 }
 
-Bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<Complex>& range,
-                                            Bool& noInclude, Bool& noExclude,
+bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<Complex>& range,
+                                            bool& noInclude, bool& noExclude,
                                             const Vector<Complex>& include,
                                             const Vector<Complex>& exclude)
 
 {
   Vector<Float> rangeReal;
-  Bool okReal = LattStatsSpecialize::setIncludeExclude<Float>(
+  bool okReal = LattStatsSpecialize::setIncludeExclude<Float>(
       errorMessage, rangeReal, noInclude, noExclude, real(include), real(exclude));
-  if (!okReal) return False;
+  if (!okReal) return false;
   //
   Vector<Float> rangeImag;
-  Bool okImag = LattStatsSpecialize::setIncludeExclude<Float>(
+  bool okImag = LattStatsSpecialize::setIncludeExclude<Float>(
       errorMessage, rangeImag, noInclude, noExclude, imag(include), imag(exclude));
-  if (!okImag) return False;
+  if (!okImag) return false;
   //
   if (rangeReal.nelements() != rangeImag.nelements()) {
     throw(AipsError("Internal error in LattStatsSpecialize"));
@@ -187,12 +187,12 @@ Bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<Complex
     range(i) = Complex(rangeReal(i), rangeImag(i));
   }
   //
-  return True;
+  return true;
 }
 
-Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax,
+bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax,
                                  const MaskedLattice<Float>* pLattice, const Vector<Float>& range,
-                                 Bool noInclude, Bool noExclude)
+                                 bool noInclude, bool noExclude)
 
 {
   RO_LatticeIterator<Float> it(*pLattice);
@@ -201,15 +201,15 @@ Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax,
   dataMax = -1.0e30;
   //
   const Float* pData = 0;
-  Bool deleteData;
+  bool deleteData;
   //
   if (pLattice->isMasked()) {
-    const Bool* pMask = 0;
-    Bool deleteMask;
+    const bool* pMask = 0;
+    bool deleteMask;
     //
     for (it.reset(); !it.atEnd(); it++) {
       const Array<Float>& data = it.cursor();
-      const Array<Bool>& mask = pLattice->getMaskSlice(it.position(), it.cursor().shape(), False);
+      const Array<bool>& mask = pLattice->getMaskSlice(it.position(), it.cursor().shape(), false);
       pData = data.getStorage(deleteData);
       pMask = mask.getStorage(deleteMask);
       uInt n = data.nelements();
@@ -271,9 +271,9 @@ Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax,
   return (dataMax > dataMin);
 }
 
-Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax,
+bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax,
                                  const MaskedLattice<Complex>* pLattice,
-                                 const Vector<Complex>& range, Bool noInclude, Bool noExclude) {
+                                 const Vector<Complex>& range, bool noInclude, bool noExclude) {
   LatticeExprNode nodeR(real(*pLattice));
   LatticeExprNode nodeI(imag(*pLattice));
   LatticeExpr<Float> latR(nodeR);
@@ -291,7 +291,7 @@ Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax,
   }
   //
   Float realMin, realMax, imagMin, imagMax;
-  Bool ok = LattStatsSpecialize::minMax(realMin, realMax, &latR, realRange, noInclude, noExclude);
+  bool ok = LattStatsSpecialize::minMax(realMin, realMax, &latR, realRange, noInclude, noExclude);
   if (ok) {
     ok = LattStatsSpecialize::minMax(imagMin, imagMax, &latI, imagRange, noInclude, noExclude);
   }

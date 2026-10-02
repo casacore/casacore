@@ -39,10 +39,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSSpectralWindow::MSSpectralWindow() : hasBeenDestroyed_p(True) {}
+MSSpectralWindow::MSSpectralWindow() : hasBeenDestroyed_p(true) {}
 
 MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option)
-    : MSTable<MSSpectralWindowEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSSpectralWindowEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -52,7 +52,7 @@ MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option)
 
 MSSpectralWindow::MSSpectralWindow(const String &tableName, const String &tableDescName,
                                    TableOption option)
-    : MSTable<MSSpectralWindowEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSSpectralWindowEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -60,8 +60,8 @@ MSSpectralWindow::MSSpectralWindow(const String &tableName, const String &tableD
                   "table is not a valid MSSpectralWindow"));
 }
 
-MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSSpectralWindowEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSSpectralWindowEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -70,7 +70,7 @@ MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow, Bool in
 }
 
 MSSpectralWindow::MSSpectralWindow(const Table &table)
-    : MSTable<MSSpectralWindowEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSSpectralWindowEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -79,7 +79,7 @@ MSSpectralWindow::MSSpectralWindow(const Table &table)
 }
 
 MSSpectralWindow::MSSpectralWindow(const MSSpectralWindow &other)
-    : MSTable<MSSpectralWindowEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSSpectralWindowEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -97,7 +97,7 @@ MSSpectralWindow::~MSSpectralWindow() {
     os << LogIO::WARN << "~MSSpectralWindow() - Table written is not a valid MSSpectralWindow"
        << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSSpectralWindow &MSSpectralWindow::operator=(const MSSpectralWindow &other) {

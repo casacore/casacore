@@ -75,16 +75,16 @@ int main() {
   return 0;  // exit with success status
 }
 
-void init(Matrix<Float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc) {
+void init(Matrix<Float>& array, Matrix<bool>& arrayb, Matrix<Complex>& arrayc) {
   // The SGI compiler bug is the cause of this static_cast workaround.
   indgen(static_cast<Matrix<Float>&>(array));
   uInt i = 0;
   for (uInt k = 0; k < 20; k++) {
     for (uInt j = 0; j < 12; j++) {
       if (i % 7 == 2) {
-        arrayb(j, k) = False;
+        arrayb(j, k) = false;
       } else {
-        arrayb(j, k) = True;
+        arrayb(j, k) = true;
       }
       arrayc(j, k) = Complex(i + 1.5, i + 2.6);
       i++;
@@ -103,7 +103,7 @@ void a() {
   td.addColumn(ScalarColumnDesc<float>("Id"));
   td.addColumn(ArrayColumnDesc<float>("Data", 2, ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<float>("Weight", IPosition(2, 12, 20), ColumnDesc::FixedShape));
-  td.addColumn(ArrayColumnDesc<Bool>("Flag", IPosition(2, 12, 20), ColumnDesc::FixedShape));
+  td.addColumn(ArrayColumnDesc<bool>("Flag", IPosition(2, 12, 20), ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<Complex>("OData", IPosition(2, 12, 20), ColumnDesc::FixedShape));
   td.defineHypercolumn("TSMExample", 4, stringToVector("Data,Weight,Flag"),
                        stringToVector("Pol,Freq,Baseline,Time"), stringToVector("Id"));
@@ -145,12 +145,12 @@ void a() {
   ScalarColumn<float> id(table, "Id");
   ArrayColumn<float> data(table, "Data");
   ArrayColumn<float> weight(table, "Weight");
-  ArrayColumn<Bool> flag(table, "Flag");
+  ArrayColumn<bool> flag(table, "Flag");
   ArrayColumn<Complex> odata(table, "OData");
   Matrix<float> array(IPosition(2, 12, 20));
   Matrix<float> result(IPosition(2, 12, 20));
-  Matrix<Bool> arrayb(IPosition(2, 12, 20));
-  Matrix<Bool> resultb(IPosition(2, 12, 20));
+  Matrix<bool> arrayb(IPosition(2, 12, 20));
+  Matrix<bool> resultb(IPosition(2, 12, 20));
   Matrix<Complex> arrayc(IPosition(2, 12, 20));
   Matrix<Complex> resultc(IPosition(2, 12, 20));
   init(array, arrayb, arrayc);
@@ -214,12 +214,12 @@ void b() {
   ArrayColumn<float> data(table, "Data");
   ArrayColumn<float> weight(table, "Weight");
   ArrayColumn<Complex> odata(table, "OData");
-  ArrayColumn<Bool> flag(table, "Flag");
+  ArrayColumn<bool> flag(table, "Flag");
   ScalarColumn<float> data1(table, "Data1");
   Matrix<float> array(IPosition(2, 12, 20));
   Matrix<float> result;
-  Matrix<Bool> arrayb(IPosition(2, 12, 20));
-  Matrix<Bool> resultb;
+  Matrix<bool> arrayb(IPosition(2, 12, 20));
+  Matrix<bool> resultb;
   Matrix<Complex> arrayc(IPosition(2, 12, 20));
   Matrix<Complex> resultc;
   Vector<float> timeValues(42);

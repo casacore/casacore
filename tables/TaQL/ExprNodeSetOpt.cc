@@ -35,50 +35,50 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableExprNodeSetOptBase::TableExprNodeSetOptBase(const TableExprNodeRep& orig)
     : TableExprNodeRep(orig) {}
-Bool TableExprNodeSetOptBase::contains(const TableExprId&, Int64 value) {
+bool TableExprNodeSetOptBase::contains(const TableExprId&, Int64 value) {
   return (find(value) >= 0);
 }
-Bool TableExprNodeSetOptBase::contains(const TableExprId&, Double value) {
+bool TableExprNodeSetOptBase::contains(const TableExprId&, Double value) {
   return (find(value) >= 0);
 }
-Bool TableExprNodeSetOptBase::contains(const TableExprId&, String value) {
+bool TableExprNodeSetOptBase::contains(const TableExprId&, String value) {
   return (find(value) >= 0);
 }
-MArray<Bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<Int64>& value) {
-  Array<Bool> result(value.shape());
-  Bool deleteIn, deleteOut;
+MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<Int64>& value) {
+  Array<bool> result(value.shape());
+  bool deleteIn, deleteOut;
   const Int64* in = value.array().getStorage(deleteIn);
-  Bool* out = result.getStorage(deleteOut);
+  bool* out = result.getStorage(deleteOut);
   for (size_t i = 0; i < value.size(); ++i) {
     out[i] = (find(in[i]) >= 0);
   }
   value.array().freeStorage(in, deleteIn);
   result.putStorage(out, deleteOut);
-  return MArray<Bool>(result, value.mask());
+  return MArray<bool>(result, value.mask());
 }
-MArray<Bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<Double>& value) {
-  Array<Bool> result(value.shape());
-  Bool deleteIn, deleteOut;
+MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<Double>& value) {
+  Array<bool> result(value.shape());
+  bool deleteIn, deleteOut;
   const Double* in = value.array().getStorage(deleteIn);
-  Bool* out = result.getStorage(deleteOut);
+  bool* out = result.getStorage(deleteOut);
   for (size_t i = 0; i < value.size(); ++i) {
     out[i] = (find(in[i]) >= 0);
   }
   value.array().freeStorage(in, deleteIn);
   result.putStorage(out, deleteOut);
-  return MArray<Bool>(result, value.mask());
+  return MArray<bool>(result, value.mask());
 }
-MArray<Bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<String>& value) {
-  Array<Bool> result(value.shape());
-  Bool deleteIn, deleteOut;
+MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<String>& value) {
+  Array<bool> result(value.shape());
+  bool deleteIn, deleteOut;
   const String* in = value.array().getStorage(deleteIn);
-  Bool* out = result.getStorage(deleteOut);
+  bool* out = result.getStorage(deleteOut);
   for (size_t i = 0; i < value.size(); ++i) {
     out[i] = (find(in[i]) >= 0);
   }
   value.array().freeStorage(in, deleteIn);
   result.putStorage(out, deleteOut);
-  return MArray<Bool>(result, value.mask());
+  return MArray<bool>(result, value.mask());
 }
 Int64 TableExprNodeSetOptBase::find(Int64) const { return -1; }
 Int64 TableExprNodeSetOptBase::find(Double) const { return -1; }
@@ -128,7 +128,7 @@ void TableExprNodeSetOptContSetBase<T>::show(ostream& os, uInt indent) const {
 }
 
 template <typename T>
-TENShPtr TableExprNodeSetOptContSetBase<T>::transform(const TableExprNodeSet& set, Bool combine) {
+TENShPtr TableExprNodeSetOptContSetBase<T>::transform(const TableExprNodeSet& set, bool combine) {
   DebugAssert(set.size() > 0, AipsError);
   // Get all start values and sort them (indirectly) in ascending order.
   // Use lowest value if no start given.
@@ -151,8 +151,8 @@ TENShPtr TableExprNodeSetOptContSetBase<T>::transform(const TableExprNodeSet& se
   GenSortIndirect<T, Int64>::sort(index, stvals, stvals.size());
   std::vector<T> newStart;
   std::vector<T> newEnd;
-  std::vector<Bool> newLeftC;
-  std::vector<Bool> newRightC;
+  std::vector<bool> newLeftC;
+  std::vector<bool> newRightC;
   if (!combine) {
     for (size_t i = 0; i < index.size(); ++i) {
       Int64 inx = index[i];
@@ -165,8 +165,8 @@ TENShPtr TableExprNodeSetOptContSetBase<T>::transform(const TableExprNodeSet& se
     // Get the start and end value of first interval in sorted list.
     T stval = stvals[index[0]];
     T endval = endvals[index[0]];
-    Bool leftC = set[index[0]]->isLeftClosed();
-    Bool rightC = set[index[0]]->isRightClosed();
+    bool leftC = set[index[0]]->isLeftClosed();
+    bool rightC = set[index[0]]->isRightClosed();
     // Loop through the next intervals and combine if possible.
     for (size_t i = 1; i < index.size(); i++) {
       Int64 inx = index[i];
@@ -208,17 +208,17 @@ template <typename T>
 TENShPtr TableExprNodeSetOptContSetBase<T>::createOptSet(const TableExprNodeSet& set,
                                                          const std::vector<T>& start,
                                                          const std::vector<T>& end,
-                                                         const std::vector<Bool>& leftC,
-                                                         const std::vector<Bool>& rightC) {
+                                                         const std::vector<bool>& leftC,
+                                                         const std::vector<bool>& rightC) {
   AlwaysAssert(start.size() == end.size(), AipsError);
   AlwaysAssert(leftC.size() == rightC.size(), AipsError);
   // See if all intervals have the same left and right closedness.
   // If so, a better version can be used that does not need to test on it
   // for each compare.
-  Bool same = True;
+  bool same = true;
   for (size_t i = 1; i < leftC.size(); ++i) {
     if (leftC[i] != leftC[0] || rightC[i] != rightC[0]) {
-      same = False;
+      same = false;
       break;
     }
   }
@@ -255,8 +255,8 @@ template <typename T>
 TableExprNodeSetOptContSetMixOC<T>::TableExprNodeSetOptContSetMixOC(const TableExprNodeSet& orig,
                                                                     const std::vector<T>& starts,
                                                                     const std::vector<T>& ends,
-                                                                    const std::vector<Bool>& leftC,
-                                                                    const std::vector<Bool>& rightC)
+                                                                    const std::vector<bool>& leftC,
+                                                                    const std::vector<bool>& rightC)
     : TableExprNodeSetOptContSetBase<T>(orig, starts, ends), itsLeftC(leftC), itsRightC(rightC) {
   AlwaysAssert(starts.size() == leftC.size(), AipsError);
   AlwaysAssert(starts.size() == rightC.size(), AipsError);

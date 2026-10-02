@@ -71,7 +71,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <group name=reorderMArray>
 template <class T>
 MArray<T> reorderArray(const MArray<T>& array, const IPosition& newAxisOrder,
-                       Bool alwaysCopy = True) {
+                       bool alwaysCopy = true) {
   return (array.isNull()
               ? MArray<T>()
               : (array.hasMask()
@@ -110,7 +110,7 @@ MArray<T> reorderArray(const MArray<T>& array, const IPosition& newAxisOrder,
 // <group name=reverseMArray>
 template <class T>
 MArray<T> reverseArray(const MArray<T>& array, const IPosition& reversedAxes,
-                       Bool alwaysCopy = True) {
+                       bool alwaysCopy = true) {
   return (array.isNull()
               ? MArray<T>()
               : (array.hasMask()

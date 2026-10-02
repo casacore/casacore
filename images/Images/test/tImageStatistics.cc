@@ -65,7 +65,7 @@ int main() {
       Vector<LatticeStatistics<Float>::AccumType> exp;
       for (uInt i = 0; i < shape[2]; i++) {
         for (uInt j = 0; j < shape[3]; j++) {
-          stats.getStats(myStats, IPosition(2, i, j), False);
+          stats.getStats(myStats, IPosition(2, i, j), false);
           if (i == 0 && j == 0) {
             exp = myStats;
           }
@@ -81,7 +81,7 @@ int main() {
       stats.setAxes(axes);
       for (uInt i = 0; i < shape[2]; i++) {
         for (uInt j = 0; j < shape[3]; j++) {
-          stats.getStats(myStats, IPosition(2, i, j), False);
+          stats.getStats(myStats, IPosition(2, i, j), false);
           if (i == 0 && j == 0) {
             exp = myStats;
           }
@@ -95,7 +95,7 @@ int main() {
       stats.setAxes(axes);
       for (uInt i = 0; i < shape[2]; i++) {
         for (uInt j = 0; j < shape[3]; j++) {
-          stats.getStats(myStats, IPosition(2, i, j), False);
+          stats.getStats(myStats, IPosition(2, i, j), false);
           if (i == 0 && j == 0) {
             exp = myStats;
           }
@@ -109,7 +109,7 @@ int main() {
       stats.setAxes(axes);
       for (uInt i = 0; i < shape[2]; i++) {
         for (uInt j = 0; j < shape[3]; j++) {
-          stats.getStats(myStats, IPosition(2, i, j), False);
+          stats.getStats(myStats, IPosition(2, i, j), false);
           if (i == 0 && j == 0) {
             exp = myStats;
           }
@@ -153,7 +153,7 @@ int main() {
       for (uInt i = 0; i < 20; ++i) {
         Float expFlux = sum(arr(IPosition(3, 0, 0, i), IPosition(3, 9, 14, i))) / area;
         AlwaysAssert(near(flux(IPosition(1, i)), expFlux), AipsError);
-        AlwaysAssert(stats.getStats(statVals, IPosition(1, i), False), AipsError);
+        AlwaysAssert(stats.getStats(statVals, IPosition(1, i), false), AipsError);
         AlwaysAssert(near(statVals[LatticeStatsBase::FLUX], expFlux), AipsError);
       }
       tim.setUnits("K");
@@ -168,7 +168,7 @@ int main() {
       for (uInt i = 0; i < 20; ++i) {
         Float expFlux = sum(arr(IPosition(3, 0, 0, i), IPosition(3, 9, 14, i))) * 3600;
         AlwaysAssert(near(flux(IPosition(1, i)), expFlux), AipsError);
-        AlwaysAssert(stats.getStats(statVals, IPosition(1, i), False), AipsError);
+        AlwaysAssert(stats.getStats(statVals, IPosition(1, i), false), AipsError);
         AlwaysAssert(near(statVals[LatticeStatsBase::FLUX], expFlux), AipsError);
       }
       Vector<GaussianBeam> beams(20);

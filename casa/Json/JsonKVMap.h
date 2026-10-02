@@ -85,7 +85,7 @@ class JsonKVMap : public std::map<String, JsonValue> {
   JsonKVMap& operator=(const JsonKVMap& that);
 
   // Is a key defined?
-  Bool isDefined(const String& name) const { return find(name) != end(); }
+  bool isDefined(const String& name) const { return find(name) != end(); }
 
   // Get the value of a key. An exception is thrown if undefined.
   const JsonValue& get(const String& name) const;
@@ -93,7 +93,7 @@ class JsonKVMap : public std::map<String, JsonValue> {
   // \name Get the typed value of a key
   // Use the default if not existing.
   // <group>
-  Bool getBool(const String& name, Bool defVal) const;
+  bool getBool(const String& name, bool defVal) const;
   Int64 getInt(const String& name, Int64 defVal) const;
   double getDouble(const String& name, double defVal) const;
   DComplex getDComplex(const String& name, const DComplex& defVal) const;

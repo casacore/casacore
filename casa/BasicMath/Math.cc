@@ -37,12 +37,12 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool near(uInt val1, uInt val2, Double tol) {
+bool near(uInt val1, uInt val2, Double tol) {
   if (tol <= 0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   } else if (val1 > val2) {
     return (Double(val1 - val2) <= tol * max(val1, val2));
   } else {
@@ -50,27 +50,27 @@ Bool near(uInt val1, uInt val2, Double tol) {
   }
 }
 
-Bool near(Int val1, Int val2, Double tol) {
+bool near(Int val1, Int val2, Double tol) {
   if (tol <= 0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   }
   if ((0 < val1) != (0 < val2)) {
-    return False;
+    return false;
   }
   const Int aval1 = std::abs(val1);
   const Int aval2 = std::abs(val2);
   return (Double(aval1 - aval2) <= tol * Double(max(aval1, aval2)));
 }
 
-Bool near(Float val1, Float val2, Double tol) {
+bool near(Float val1, Float val2, Double tol) {
   if (tol <= 0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   }
   if (val1 == 0) {
     return (fabs(val2) <= (1 + tol) * FLT_MIN);
@@ -78,21 +78,21 @@ Bool near(Float val1, Float val2, Double tol) {
     return (fabs(val1) <= (1 + tol) * FLT_MIN);
   }
   if ((0 < val1) != (0 < val2)) {
-    return False;
+    return false;
   }
   return (fabs(val1 - val2) <= tol * max(fabs(val1), fabs(val2)));
 }
 
-Bool near(Float val1, Double val2, Double tol) { return near(Double(val1), val2, tol); }
+bool near(Float val1, Double val2, Double tol) { return near(Double(val1), val2, tol); }
 
-Bool near(Double val1, Float val2, Double tol) { return near(val1, Double(val2), tol); }
+bool near(Double val1, Float val2, Double tol) { return near(val1, Double(val2), tol); }
 
-Bool near(Double val1, Double val2, Double tol) {
+bool near(Double val1, Double val2, Double tol) {
   if (tol <= 0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   }
   if (val1 == 0) {
     return (fabs(val2) <= (1 + tol) * DBL_MIN);
@@ -100,14 +100,14 @@ Bool near(Double val1, Double val2, Double tol) {
     return (fabs(val1) <= (1 + tol) * DBL_MIN);
   }
   if ((0 < val1) != (0 < val2)) {
-    return False;
+    return false;
   }
   return (fabs(val1 - val2) <= tol * max(fabs(val1), fabs(val2)));
 }
 
-Bool nearAbs(uInt val1, uInt val2, Double tol) {
+bool nearAbs(uInt val1, uInt val2, Double tol) {
   if (val1 == val2) {
-    return True;
+    return true;
   } else if (val1 > val2) {
     return (tol >= Double(val1 - val2));
   } else {
@@ -115,17 +115,17 @@ Bool nearAbs(uInt val1, uInt val2, Double tol) {
   }
 }
 
-Bool nearAbs(Int val1, Int val2, Double tol) { return (tol >= Double(std::abs(val2 - val1))); }
+bool nearAbs(Int val1, Int val2, Double tol) { return (tol >= Double(std::abs(val2 - val1))); }
 
-Bool nearAbs(Float val1, Float val2, Double tol) { return (tol >= Double(fabs(val2 - val1))); }
+bool nearAbs(Float val1, Float val2, Double tol) { return (tol >= Double(fabs(val2 - val1))); }
 
-Bool nearAbs(Double val1, Double val2, Double tol) { return (tol >= fabs(val2 - val1)); }
+bool nearAbs(Double val1, Double val2, Double tol) { return (tol >= fabs(val2 - val1)); }
 
 Float floatNaN() {
   static Float nanval;
-  static Bool init = False;
+  static bool init = false;
   if (!init) {
-    init = True;
+    init = true;
     // All bits on is a NaN
     uChar *uptr = (uChar *)&nanval;
     for (uInt i = 0; i < sizeof(nanval); i++) {
@@ -138,9 +138,9 @@ Float floatNaN() {
 
 Double doubleNaN() {
   static Double nanval;
-  static Bool init = False;
+  static bool init = false;
   if (!init) {
-    init = True;
+    init = true;
     // All bits on is a NaN
     uChar *uptr = (uChar *)&nanval;
     for (uInt i = 0; i < sizeof(nanval); i++) {
@@ -155,7 +155,7 @@ void setNaN(Float &val) { val = floatNaN(); }
 
 void setNaN(Double &val) { val = doubleNaN(); }
 
-Bool isInf(Float val) {
+bool isInf(Float val) {
   // first see if the OS has a function for determining if the number is
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
@@ -170,25 +170,25 @@ Bool isInf(Float val) {
   uInt start, stop;
 #if defined(AIPS_LITTLE_ENDIAN)
   if (((uptr[sizeof(val) - 1] & 0x7f) != 0x7f) || (uptr[sizeof(val) - 2] != 0x80)) {
-    return False;
+    return false;
   }
   start = 0;
   stop = sizeof(val) - 2;
 #else
   if (((uptr[0] & 0x7f) != 0x7f) || (uptr[1] != 0x80)) {
-    return False;
+    return false;
   }
   start = 2;
   stop = sizeof(val);
 #endif
   for (uInt i = start; i < stop; i++) {
-    if (uptr[i] != 0x00) return False;
+    if (uptr[i] != 0x00) return false;
   }
-  return True;
+  return true;
 #endif
 }
 
-Bool isInf(Double val) {
+bool isInf(Double val) {
   // first see if the OS has a function for determining if the number is
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
@@ -203,29 +203,29 @@ Bool isInf(Double val) {
   uInt start, stop;
 #if defined(AIPS_LITTLE_ENDIAN)
   if (((uptr[sizeof(val) - 1] & 0x7f) != 0x7f) || (uptr[sizeof(val) - 2] != 0xf0)) {
-    return False;
+    return false;
   }
   start = 0;
   stop = sizeof(val) - 2;
 #else
   if (((uptr[0] & 0x7f) != 0x7f) || (uptr[1] != 0xf0)) {
-    return False;
+    return false;
   }
   start = 2;
   stop = sizeof(val);
 #endif
   for (uInt i = start; i < stop; i++) {
-    if (uptr[i] != 0x00) return False;
+    if (uptr[i] != 0x00) return false;
   }
-  return True;
+  return true;
 #endif
 }
 
 Float floatInf() {
   static Float infval;
-  static Bool init = False;
+  static bool init = false;
   if (!init) {
-    init = True;
+    init = true;
     uChar *uptr = (uChar *)&infval;
 
     for (uInt i = 0; i < sizeof(infval); i++) {
@@ -245,9 +245,9 @@ Float floatInf() {
 
 Double doubleInf() {
   static Double infval;
-  static Bool init = False;
+  static bool init = false;
   if (!init) {
-    init = True;
+    init = true;
     uChar *uptr = (uChar *)&infval;
     for (uInt i = 0; i < sizeof(infval); i++) {
       uptr[i] = 0x00;

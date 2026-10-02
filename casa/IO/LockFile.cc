@@ -68,9 +68,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LockFile::LockFile(const String& fileName, double inspectInterval, Bool create, Bool setRequestFlag,
-                   Bool mustExist, uInt seqnr, Bool permLocking, Bool noLocking)
-    : itsWritable(True),
+LockFile::LockFile(const String& fileName, double inspectInterval, bool create, bool setRequestFlag,
+                   bool mustExist, uInt seqnr, bool permLocking, bool noLocking)
+    : itsWritable(true),
       itsAddToList(setRequestFlag),
       itsInterval(inspectInterval),
       itsPid(getpid()),
@@ -91,7 +91,7 @@ LockFile::LockFile(const String& fileName, double inspectInterval, Bool create, 
       if (!f.canCreate() && !mustExist) {
         return;  // Acceptable that lock file does not exist
       }
-      create = True;
+      create = true;
     }
   }
   // # Open the lock file as read/write if it exists.
@@ -99,11 +99,11 @@ LockFile::LockFile(const String& fileName, double inspectInterval, Bool create, 
   // # For noLocking, it does not need to exist.
   int fd = -1;
   if (!create) {
-    fd = FiledesIO::open(itsName.c_str(), True, False);
+    fd = FiledesIO::open(itsName.c_str(), true, false);
     if (fd == -1) {
-      fd = FiledesIO::open(itsName.c_str(), False, !noLocking);
-      itsWritable = False;
-      itsAddToList = False;
+      fd = FiledesIO::open(itsName.c_str(), false, !noLocking);
+      itsWritable = false;
+      itsAddToList = false;
     }
   } else if (!noLocking) {
     // # Create a new file with world write access.
@@ -137,29 +137,29 @@ LockFile::~LockFile() {
   }
 }
 
-Bool LockFile::isMultiUsed() {
+bool LockFile::isMultiUsed() {
   // # If a write lock cannot be obtained, the file is in use.
   return ((itsUseLocker.fd() >= 0 && !itsUseLocker.canLock(FileLocker::Write)));
 }
 
-Bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts) {
+bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts) {
   // # If no lock file, lock requests always succeed,
   // # but we cannot return any info.
   if (!itsFileIO) {
     if (info != 0) {
       info->clear();
     }
-    return True;
+    return true;
   }
   // # Try to set a lock without waiting.
-  Bool succ = itsLocker.acquire(type, 1);
-  Bool added = False;
+  bool succ = itsLocker.acquire(type, 1);
+  bool added = false;
   // # When unsuccessful and multiple attempts have to be done,
   // # add the process to the request list (if needed) and try to acquire.
   if (!succ && nattempts != 1) {
     if (itsAddToList) {
       addReqId();
-      added = True;
+      added = true;
     }
     succ = itsLocker.acquire(type, nattempts);
   }
@@ -187,10 +187,10 @@ Bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts
   return succ;
 }
 
-Bool LockFile::release(const MemoryIO* info) {
+bool LockFile::release(const MemoryIO* info) {
   // # If no lock file, lock requests are not really handled.
   if (!itsFileIO) {
-    return True;
+    return true;
   }
   if (info != 0) {
     putInfo(*info);
@@ -198,23 +198,23 @@ Bool LockFile::release(const MemoryIO* info) {
   return itsLocker.release();
 }
 
-Bool LockFile::inspect(Bool always) {
+bool LockFile::inspect(bool always) {
   // # If no lock file, lock requests are not really handled.
   if (!itsFileIO) {
-    return False;
+    return false;
   }
 
   if (!always) {
     // # Only check elapsed time every n-th request (where n=25 at present),
     // # as the elapsed time calculation is computationally expensive
     if (itsInterval > 0 && itsInspectCount++ < 25) {
-      return False;
+      return false;
     }
     itsInspectCount = 0;
 
     // # Only inspect if time interval has passed.
     if (itsInterval > 0 && itsLastTime.age() < itsInterval) {
-      return False;
+      return false;
     }
   }
 
@@ -361,16 +361,16 @@ void LockFile::getReqId() {
   }
 }
 
-uInt LockFile::showLock(uInt& pid, Bool& permLocked, const String& fileName) {
+uInt LockFile::showLock(uInt& pid, bool& permLocked, const String& fileName) {
   pid = 0;
-  permLocked = False;
+  permLocked = false;
   String fullName = Path(fileName).absoluteName();
   File f(fullName);
   if (!f.exists()) {
     throw AipsError("LockFile::showLock - File " + fileName + " does not exist");
   }
   // # Open the lock file as readonly.
-  int fd = FiledesIO::open(fullName.c_str(), False);
+  int fd = FiledesIO::open(fullName.c_str(), false);
   if (fd == -1) {
     throw AipsError("LockFile::showLock - File " + fileName + " could not be opened");
   }
@@ -399,7 +399,7 @@ uInt LockFile::showLock(uInt& pid, Bool& permLocked, const String& fileName) {
     return 1;
   }
   if (!permLocker.canLock(usePid, FileLocker::Write)) {
-    permLocked = True;
+    permLocked = true;
   }
   return result;
 }

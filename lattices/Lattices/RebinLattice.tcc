@@ -40,7 +40,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-RebinLattice<T>::RebinLattice() : itsLatticePtr(0), itsAllUnity(False) {}
+RebinLattice<T>::RebinLattice() : itsLatticePtr(0), itsAllUnity(false) {}
 
 template <class T>
 RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& bin)
@@ -53,7 +53,7 @@ RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& 
   //
   itsBin.resize(bin.nelements());
   const IPosition shapeIn = lattice.shape();
-  itsAllUnity = True;
+  itsAllUnity = true;
   for (uInt i = 0; i < bin.nelements(); i++) {
     if (bin[i] == 0) {
       os << "Binning vector values must be positive integers" << LogIO::EXCEPTION;
@@ -64,7 +64,7 @@ RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& 
       os << LogIO::WARN << "Truncating bin to lattice shape for axis " << i + 1 << LogIO::POST;
       itsBin[i] = shapeIn[i];
     }
-    if (bin[i] != 1) itsAllUnity = False;
+    if (bin[i] != 1) itsAllUnity = false;
   }
 }
 
@@ -103,22 +103,22 @@ MaskedLattice<T>* RebinLattice<T>::cloneML() const {
 }
 
 template <class T>
-Bool RebinLattice<T>::isMasked() const {
+bool RebinLattice<T>::isMasked() const {
   return itsLatticePtr->isMasked();
 }
 
 template <class T>
-Bool RebinLattice<T>::isPaged() const {
+bool RebinLattice<T>::isPaged() const {
   return itsLatticePtr->isPaged();
 }
 
 template <class T>
-Bool RebinLattice<T>::isWritable() const {
-  return False;
+bool RebinLattice<T>::isWritable() const {
+  return false;
 }
 
 template <class T>
-Bool RebinLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool RebinLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return itsLatticePtr->lock(type, nattempts);
 }
 
@@ -128,7 +128,7 @@ void RebinLattice<T>::unlock() {
 }
 
 template <class T>
-Bool RebinLattice<T>::hasLock(FileLocker::LockType type) const {
+bool RebinLattice<T>::hasLock(FileLocker::LockType type) const {
   return itsLatticePtr->hasLock(type);
 }
 
@@ -163,12 +163,12 @@ IPosition RebinLattice<T>::shape() const {
 }
 
 template <class T>
-String RebinLattice<T>::name(Bool stripPath) const {
+String RebinLattice<T>::name(bool stripPath) const {
   return itsLatticePtr->name(stripPath);
 }
 
 template <class T>
-Bool RebinLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool RebinLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   // If all unity, access the lattice directly.
 
   if (itsAllUnity) {
@@ -181,7 +181,7 @@ Bool RebinLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
     getDataAndMask(section);
   }
   buffer.reference(itsData);
-  return True;
+  return true;
 }
 
 template <class T>
@@ -195,13 +195,13 @@ uInt RebinLattice<T>::advisedMaxPixels() const {
 }
 
 template <class T>
-Bool RebinLattice<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
+bool RebinLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   // If not masked, simply fill the buffer
 
   if (!itsLatticePtr->isMasked()) {
     buffer.resize(section.length());
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
   }
 
   // If all unity, access the lattice directly.
@@ -216,11 +216,11 @@ Bool RebinLattice<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section)
     getDataAndMask(section);
   }
   buffer.reference(itsMask);
-  return True;
+  return true;
 }
 
 template <class T>
-Bool RebinLattice<T>::ok() const {
+bool RebinLattice<T>::ok() const {
   return itsLatticePtr->ok();
 }
 
@@ -234,7 +234,7 @@ void RebinLattice<T>::getDataAndMask(const Slicer& section) {
   // Fetch
 
   Array<T> data;
-  Array<Bool> mask;
+  Array<bool> mask;
   itsData.resize(section.length());
   itsLatticePtr->getSlice(data, sectionIn);
   if (itsLatticePtr->isMasked()) {
@@ -277,12 +277,12 @@ void RebinLattice<T>::bin(const Array<T>& dataIn) {
 }
 
 template <class T>
-void RebinLattice<T>::bin(const Array<T>& dataIn, const Array<Bool>& maskIn) {
+void RebinLattice<T>::bin(const Array<T>& dataIn, const Array<bool>& maskIn) {
   // Make Lattice from Array to get decent iterators
 
   const uInt nDim = dataIn.ndim();
   ArrayLattice<T> latIn(dataIn);
-  Array<Bool> maskInRef(maskIn);
+  Array<bool> maskInRef(maskIn);
 
   // Make Lattice iterators
 
@@ -292,11 +292,11 @@ void RebinLattice<T>::bin(const Array<T>& dataIn, const Array<Bool>& maskIn) {
   // Do it
 
   IPosition outPos(nDim);
-  Array<Bool> cursorMask;
+  Array<bool> cursorMask;
   //
   for (inIter.reset(); !inIter.atEnd(); inIter++) {
     const Array<T>& cursor(inIter.cursor());
-    Array<Bool> cursorMask(maskInRef(inIter.position(), inIter.endPosition()));
+    Array<bool> cursorMask(maskInRef(inIter.position(), inIter.endPosition()));
 
     // Iterate through cursor with STL iterators
 
@@ -304,7 +304,7 @@ void RebinLattice<T>::bin(const Array<T>& dataIn, const Array<Bool>& maskIn) {
     Int nSum = 0;
     typename Array<T>::const_iterator dataIterEnd = cursor.end();
     typename Array<T>::const_iterator dataIter;
-    typename Array<Bool>::const_iterator maskIter;
+    typename Array<bool>::const_iterator maskIter;
     for (dataIter = cursor.begin(), maskIter = cursorMask.begin(); dataIter != dataIterEnd;
          ++dataIter, ++maskIter) {
       if (*maskIter) {

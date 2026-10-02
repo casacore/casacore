@@ -122,13 +122,13 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 	  }
 {TRUE}    {
             imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (True);
+            lvalp->val = new ImageExprParse (true);
 	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {FALSE}   {
             imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (False);
+            lvalp->val = new ImageExprParse (false);
 	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }

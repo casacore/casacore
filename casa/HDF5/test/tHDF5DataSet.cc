@@ -155,7 +155,7 @@ int main() {
     {
       // Yet another with boolean values.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::Update);
-      HDF5DataSet dset(file, "mask", shape, ts, (Bool*)0);
+      HDF5DataSet dset(file, "mask", shape, ts, (bool*)0);
       AlwaysAssertExit(dset.shape() == shape);
       AlwaysAssertExit(dset.tileShape() == shape);
     }

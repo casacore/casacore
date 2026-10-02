@@ -144,7 +144,7 @@ class LCPolygon : public LCRegionFixed {
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCPolygon (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box.
@@ -160,7 +160,7 @@ class LCPolygon : public LCRegionFixed {
   void defineMask();
 
   // Fill the mask from the given points.
-  void fillMask(Bool* mask, Int nx, Int ny, Int blcx, Int blcy, const Float* ptrX,
+  void fillMask(bool* mask, Int nx, Int ny, Int blcx, Int blcy, const Float* ptrX,
                 const Float* ptrY, uInt nrline);
 
   // Truncate a start value to a pixel point.
@@ -175,7 +175,7 @@ class LCPolygon : public LCRegionFixed {
 
   // takes into account when one value is zero and the other is absolutely (as
   // opposed to relatively) near zero.
-  static Bool _isNear(Float val1, Float val2);
+  static bool _isNear(Float val1, Float val2);
 
   Vector<Float> itsX;
   Vector<Float> itsY;

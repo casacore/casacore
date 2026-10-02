@@ -161,16 +161,16 @@ class LatticeHistograms {
   // You can also specify whether you want to see progress meters or not.
   // You can force the storage lattice to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  LatticeHistograms(const MaskedLattice<T>& lattice, LogIO& os, Bool showProgress = True,
-                    Bool forceDisk = False);
+  LatticeHistograms(const MaskedLattice<T>& lattice, LogIO& os, bool showProgress = true,
+                    bool forceDisk = false);
 
   // Constructor takes the MaskedLattice only. In the absence of a logger you get no messages.
   // This includes error messages and potential listing of statistics.
   // You can specify whether you want to see progress meters or not.
   // You can force the storage lattice to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  LatticeHistograms(const MaskedLattice<T>& lattice, Bool showProgress = True,
-                    Bool forceDisk = False);
+  LatticeHistograms(const MaskedLattice<T>& lattice, bool showProgress = true,
+                    bool forceDisk = false);
 
   // Copy constructor (copy semantics)
   LatticeHistograms(const LatticeHistograms<T>& other);
@@ -185,14 +185,14 @@ class LatticeHistograms {
   // indicates you have asked for an invalid axis or that the internal
   // status of the class is bad.  The default state of the class is to set
   // the cursor axes to all axes in the lattice.
-  Bool setAxes(const Vector<Int>& cursorAxes);
+  bool setAxes(const Vector<Int>& cursorAxes);
 
   // Set the number of bins for the histogram.  Note that the bin width is
   // worked out for each histogram separately from the data minimum and maximum.
   // The default state of the class is to set 25 bins.  A return value of <src>False</src>
   // indicates you gave a non-positive bin width or  that the internal status of the
   // class is bad.
-  Bool setNBins(const uInt& nBins);
+  bool setNBins(const uInt& nBins);
 
   // Specify a pixel intensity range for which all pixels in that range are
   // included.  A vector of length 1 for <src>include</src> means that the
@@ -200,28 +200,28 @@ class LatticeHistograms {
   // A return value of <src>False</src> indicates that the internal
   // status of the class is bad. If you don't call this function, the default
   // state of the class is to include all pixels.
-  Bool setIncludeRange(const Vector<T>& include);
+  bool setIncludeRange(const Vector<T>& include);
 
   // Specify that a Gaussian overlay should be plotted on the histogram. This
   // Gaussian has the same mean and standard deviation as the data that were
   // binned, and the same integral as the histogram.   A return value of <src>False</src>
   // indicates that the internal status of the class is bad. The default state of
   // the class is to not draw a Gaussian overlay.
-  Bool setGaussian(const Bool& doGauss);
+  bool setGaussian(const bool& doGauss);
 
   // Specify the form of the histogram.   It can be plotted linearly or
   // logarithmically, and cumulatively or non-cumulatively.   A return value
   // of <src>False</src> indicates that the internal status of the class is bad.
   // The default state of the class is to draw the histograms linearly and
   // non-cumulatively.
-  Bool setForm(const Bool& doLog, const Bool& doCumu);
+  bool setForm(const bool& doLog, const bool& doCumu);
 
   // This function allows you to control whether some statistics of the
   // data that contributed to the histogram are written to  the output
   // stream.   A return value of <src>False</src> indicates that the internal
   // status of the class is bad. The default state of the class is to not
   // list statistics.
-  Bool setStatsList(const Bool& doList);
+  bool setStatsList(const bool& doList);
 
   // This function sets the name of the PGPLOT plotting device and the number of
   // subplots in x and y per page.   If you set <src>plotter</src> but offer
@@ -230,12 +230,12 @@ class LatticeHistograms {
   // plotting arguments or that the internal status of the class is bad. If you
   // don't call this function, the default state of the class is to not set
   // a plotting device.
-  Bool setPlotting(PGPlotter& plotter, const Vector<Int>& nxy);
+  bool setPlotting(PGPlotter& plotter, const Vector<Int>& nxy);
 
   // Display the histograms by plotting them.  A return value of <src>False</src>
   // indicates an invalid plotting device, or that the internal status of the class is bad.
   // If you don't call this function you won't see any histograms.
-  Bool display();
+  bool display();
 
   // CLose the plotter
   void closePlotting();
@@ -250,11 +250,11 @@ class LatticeHistograms {
   // array would be [nbins,nx,nz].    The histograms are retrieved in the form
   // specified by the <src>setForm</src> function. The arrays are resized internally.
   // A return value of <src>False</src> indicates  that the internal status of the class is bad.
-  Bool getHistograms(Array<T>& values, Array<T>& counts);
+  bool getHistograms(Array<T>& values, Array<T>& counts);
 
   // in this version, the set of stats for each histogram is also returned. The
   // stats array has the  shape of the display axes.
-  Bool getHistograms(Array<T>& values, Array<T>& counts, Array<Vector<T>>& stats);
+  bool getHistograms(Array<T>& values, Array<T>& counts, Array<Vector<T>>& stats);
 
   // This function retrieves the histogram at the specified location
   // into <src>Vectors</src>.  The histogram is retrieved in the form
@@ -264,35 +264,35 @@ class LatticeHistograms {
   // are ignored.  Otherwise, you should just give locations for
   // the display axes only. A return  value of <src>False</src> indicates  that
   // the internal status  of the class is bad.
-  Bool getHistogram(Vector<T>& values, Vector<T>& counts, const IPosition& pos,
-                    const Bool posInLattice = False);
+  bool getHistogram(Vector<T>& values, Vector<T>& counts, const IPosition& pos,
+                    const bool posInLattice = false);
 
   // Reset argument error condition.  If you specify invalid arguments to
   // one of the above <src>set</src> functions, an internal flag will be set which will
   // prevent the work functions from doing anything (should you have chosen
   // to ignore the Boolean return values of the <src>set</src> functions).
   // This function allows you to reset that internal state to good.
-  void resetError() { goodParameterStatus_p = True; };
+  void resetError() { goodParameterStatus_p = true; };
 
   // Recover last error message
   String errorMessage() const { return error_p; };
 
   // Set a MaskedLattice.  A return value of <src>False</src> indicates the
   // lattice had an invalid type or that the internal status of the class is bad.
-  Bool setNewLattice(const MaskedLattice<T>& lattice);
+  bool setNewLattice(const MaskedLattice<T>& lattice);
 
   // These things are protected only so that they are available to ImageHistograms
   // which inherits from LatticeHistograms
 
  protected:
   LogIO os_p;
-  Bool goodParameterStatus_p;
+  bool goodParameterStatus_p;
   Vector<Int> cursorAxes_p, displayAxes_p;
   String error_p;
 
   // Given a location in the histogram storage lattice, convert those locations on the
   // non-histogram axis (the first one) relative to the parent or current lattice
-  IPosition locHistInLattice(const IPosition& histPosition, Bool relativeToParent = True) const;
+  IPosition locHistInLattice(const IPosition& histPosition, bool relativeToParent = true) const;
 
  private:
   // A useful typedef
@@ -301,9 +301,9 @@ class LatticeHistograms {
   const MaskedLattice<T>* pInLattice_p;
   TempLattice<T>* pStoreLattice_p;
   LatticeStatistics<T>* pStats_p;
-  Bool binAll_p, needStorageLattice_p;
-  Bool doCumu_p, doGauss_p, doList_p, doLog_p;
-  Bool haveLogger_p, showProgress_p, forceDisk_p;
+  bool binAll_p, needStorageLattice_p;
+  bool doCumu_p, doGauss_p, doList_p, doLog_p;
+  bool haveLogger_p, showProgress_p, forceDisk_p;
   uInt nBins_p;
   PGPlotter plotter_p;
   Vector<Int> nxy_p;
@@ -317,10 +317,10 @@ class LatticeHistograms {
   static T convertF(const Float value) { return T(value); };
 
   // Display histograms as a function of display axis
-  Bool displayHistograms();
+  bool displayHistograms();
 
   // Display one histogram
-  Bool displayOneHistogram(const T& linearSum, const T& linearYMax, const IPosition& histPos,
+  bool displayOneHistogram(const T& linearSum, const T& linearYMax, const IPosition& histPos,
                            const Vector<T>& stats, const Vector<T>& values, const Vector<T>& counts,
                            PGPlotter& plotter);
 
@@ -330,7 +330,7 @@ class LatticeHistograms {
                            const Vector<T>& stats, const Vector<T>& intCounts);
 
   // Iterate through the lattice and generate the histogram accumulation lattice
-  Bool generateStorageLattice();
+  bool generateStorageLattice();
 
   // Get the statistics from the statistics object for the current
   // location of either the input lattice, or the histogram storage lattice
@@ -343,10 +343,10 @@ class LatticeHistograms {
   void makeHistograms();
 
   // Create and fill statistics object
-  Bool makeStatistics();
+  bool makeStatistics();
 
   // Check/set include pixel range
-  Bool setInclude(Vector<T>& range, Bool& noInclude, const Vector<T>& include, std::ostream& os);
+  bool setInclude(Vector<T>& range, bool& noInclude, const Vector<T>& include, std::ostream& os);
 
   // Set stream attributes
   void setStream(std::ostream& os, Int oPrec);
@@ -356,7 +356,7 @@ class LatticeHistograms {
   virtual String writeCoordinates(const IPosition& histPos) const;
 
   // Write values of display axes on plots
-  Bool writeDispAxesValues(const String& coords, PGPlotter& plotter, Float nchar) const;
+  bool writeDispAxesValues(const String& coords, PGPlotter& plotter, Float nchar) const;
 };
 
 // <summary> Generate histograms, tile by tile, from a masked lattice </summary>
@@ -441,15 +441,15 @@ class HistTiledCollapser : public TiledCollapser<T, T> {
   virtual void initAccumulator(uInt64 n1, uInt64 n3);
 
   // Process the data in the current chunk.
-  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const Bool* inMask,
+  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const bool* inMask,
                        uInt inDataIncr, uInt inMaskIncr, uInt nrval, const IPosition& startPos,
                        const IPosition& shape);
 
   // End the accumulation process and return the result arrays
-  virtual void endAccumulator(Array<T>& result, Array<Bool>& resultMask, const IPosition& shape);
+  virtual void endAccumulator(Array<T>& result, Array<bool>& resultMask, const IPosition& shape);
 
   // Can handle null mask
-  virtual Bool canHandleNullMask() const { return True; };
+  virtual bool canHandleNullMask() const { return true; };
 
  private:
   LatticeStatistics<T>* pStats_p;

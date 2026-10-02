@@ -33,7 +33,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LELUnaryBool::LELUnaryBool(const LELUnaryEnums::Operation op,
-                           const std::shared_ptr<LELInterface<Bool>>& pExpr)
+                           const std::shared_ptr<LELInterface<bool>>& pExpr)
     : op_p(op), pExpr_p(pExpr) {
   setAttr(pExpr_p->getAttribute());
 
@@ -48,7 +48,7 @@ LELUnaryBool::~LELUnaryBool() {
 #endif
 }
 
-void LELUnaryBool::eval(LELArray<Bool>& result, const Slicer& section) const {
+void LELUnaryBool::eval(LELArray<bool>& result, const Slicer& section) const {
 #if defined(AIPS_TRACE)
   cout << "LELUnaryBool:: eval " << endl;
 #endif
@@ -57,7 +57,7 @@ void LELUnaryBool::eval(LELArray<Bool>& result, const Slicer& section) const {
   pExpr_p->eval(result, section);
   switch (op_p) {
     case LELUnaryEnums::NOT: {
-      Array<Bool> tmp(!result.value());
+      Array<bool> tmp(!result.value());
       result.value().reference(tmp);
       break;
     }
@@ -66,12 +66,12 @@ void LELUnaryBool::eval(LELArray<Bool>& result, const Slicer& section) const {
   }
 }
 
-LELScalar<Bool> LELUnaryBool::getScalar() const {
+LELScalar<bool> LELUnaryBool::getScalar() const {
 #if defined(AIPS_TRACE)
   cout << "LELUnaryBool::getScalar" << endl;
 #endif
 
-  LELScalar<Bool> temp(pExpr_p->getScalar());
+  LELScalar<bool> temp(pExpr_p->getScalar());
   switch (op_p) {
     case LELUnaryEnums::NOT:
       temp.value() = (!(temp.value()));
@@ -82,21 +82,21 @@ LELScalar<Bool> LELUnaryBool::getScalar() const {
   return temp;
 }
 
-Bool LELUnaryBool::prepareScalarExpr() {
+bool LELUnaryBool::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELUnaryBool::prepare" << endl;
 #endif
 
-  return LELInterface<Bool>::replaceScalarExpr(pExpr_p);
+  return LELInterface<bool>::replaceScalarExpr(pExpr_p);
 }
 
 String LELUnaryBool::className() const { return String("LELUnaryBool"); }
 
-Bool LELUnaryBool::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELUnaryBool::lock(FileLocker::LockType type, uInt nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 void LELUnaryBool::unlock() { pExpr_p->unlock(); }
-Bool LELUnaryBool::hasLock(FileLocker::LockType type) const { return pExpr_p->hasLock(type); }
+bool LELUnaryBool::hasLock(FileLocker::LockType type) const { return pExpr_p->hasLock(type); }
 void LELUnaryBool::resync() { pExpr_p->resync(); }
 
 }  // namespace casacore

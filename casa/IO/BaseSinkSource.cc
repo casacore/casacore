@@ -51,12 +51,12 @@ Int64 BaseSinkSource::seek(Int offset, ByteIO::SeekOption option) {
   return itsTypeIO->seek(offset, option);
 }
 
-Bool BaseSinkSource::isReadable() const { return itsTypeIO->isReadable(); }
+bool BaseSinkSource::isReadable() const { return itsTypeIO->isReadable(); }
 
-Bool BaseSinkSource::isWritable() const { return itsTypeIO->isWritable(); }
+bool BaseSinkSource::isWritable() const { return itsTypeIO->isWritable(); }
 
-Bool BaseSinkSource::isSeekable() const { return itsTypeIO->isSeekable(); }
+bool BaseSinkSource::isSeekable() const { return itsTypeIO->isSeekable(); }
 
-Bool BaseSinkSource::isNull() const { return !itsTypeIO; }
+bool BaseSinkSource::isNull() const { return !itsTypeIO; }
 
 }  // namespace casacore

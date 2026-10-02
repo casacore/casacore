@@ -86,7 +86,7 @@ class MSProcessor : public MSProcessorEnums, public MSTable<MSProcessorEnums> {
   // <group name=tableLikeConstructors>
   MSProcessor(const String &tableName, TableOption = Table::Old);
   MSProcessor(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSProcessor(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSProcessor(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSProcessor(const Table &table);
   MSProcessor(const MSProcessor &other);
   // </group>
@@ -118,7 +118,7 @@ class MSProcessor : public MSProcessorEnums, public MSTable<MSProcessorEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

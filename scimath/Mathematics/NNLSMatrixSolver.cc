@@ -61,11 +61,11 @@ NNLSMatrixSolver::NNLSMatrixSolver(const Matrix<FType> &A, const Vector<FType> &
 // Destructor
 NNLSMatrixSolver::~NNLSMatrixSolver() {}
 
-Bool NNLSMatrixSolver::solve()  // Solve AX=B for X
+bool NNLSMatrixSolver::solve()  // Solve AX=B for X
 {
   LogMessage message(LogOrigin("NNLSMatrixSolver", "solve"));
 
-  Bool delete_it;
+  bool delete_it;
   FType *a_data = AMatrix.getStorage(delete_it);
   FType *x_data = XVector.getStorage(delete_it);
   FType *b_data = BVector.getStorage(delete_it);
@@ -89,7 +89,7 @@ Bool NNLSMatrixSolver::solve()  // Solve AX=B for X
     message.priority(LogMessage::SEVERE);
     message.message(o.str());
     logSink().post(message);
-    setSolved(False);
+    setSolved(false);
     return Solved();
   }
   if (mode == 3) {
@@ -98,7 +98,7 @@ Bool NNLSMatrixSolver::solve()  // Solve AX=B for X
     message.priority(LogMessage::SEVERE);
     message.message(o.str());
     logSink().post(message);
-    setSolved(False);
+    setSolved(false);
     return Solved();
   }
 
@@ -107,13 +107,13 @@ Bool NNLSMatrixSolver::solve()  // Solve AX=B for X
     o << "Solution acheived";
     message.message(o.str());
     logSink().post(message);
-    setSolved(True);
+    setSolved(true);
   } else {
     ostringstream o;
     o << "Solution not formally accurate enough";
     message.message(o.str());
     logSink().post(message);
-    setSolved(False);
+    setSolved(false);
   }
   return Solved();
 }

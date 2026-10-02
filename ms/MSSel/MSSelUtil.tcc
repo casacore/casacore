@@ -35,9 +35,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-Array<Float> MSSelUtil<T>::diffData(const Array<T>& data, const Array<Bool>& flag,
-                                    const Array<Bool>& flagRow, Int diffAxis, Int window,
-                                    Bool doMedian) {
+Array<Float> MSSelUtil<T>::diffData(const Array<T>& data, const Array<bool>& flag,
+                                    const Array<bool>& flagRow, Int diffAxis, Int window,
+                                    bool doMedian) {
   IPosition shape = data.shape();
   Array<Float> diff(shape);
   diff.set(0);
@@ -51,10 +51,10 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data, const Array<Bool>& fla
   }
   const Int nOff = nXY * nIfr;
   const Int win = max(2, window);
-  Bool deleteData, deleteFlag, deleteFlagRow, deleteDiff;
+  bool deleteData, deleteFlag, deleteFlagRow, deleteDiff;
   const T* pdata = data.getStorage(deleteData);
-  const Bool* pflag = flag.getStorage(deleteFlag);
-  const Bool* pflagRow = flagRow.getStorage(deleteFlagRow);
+  const bool* pflag = flag.getStorage(deleteFlag);
+  const bool* pflagRow = flagRow.getStorage(deleteFlagRow);
   Float* pdiff = diff.getStorage(deleteDiff);
   T zero(0.), sum;
   Block<Float> buf(win);

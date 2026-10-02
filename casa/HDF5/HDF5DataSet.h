@@ -94,7 +94,7 @@ class HDF5DataSet : public HDF5Object {
   // It gets the given name, shape (also tile shape), and data type.
   // <group>
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const Bool*);
+              const bool*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
               const uChar*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
@@ -118,7 +118,7 @@ class HDF5DataSet : public HDF5Object {
   // Open an existing HDF5 data set in the given hid (file or group).
   // It checks if the internal type matches the given type.
   // <group>
-  HDF5DataSet(const HDF5Object&, const String&, const Bool*);
+  HDF5DataSet(const HDF5Object&, const String&, const bool*);
   HDF5DataSet(const HDF5Object&, const String&, const uChar*);
   HDF5DataSet(const HDF5Object&, const String&, const Short*);
   HDF5DataSet(const HDF5Object&, const String&, const Int*);
@@ -153,7 +153,7 @@ class HDF5DataSet : public HDF5Object {
   // The array is resized if its shape does not match the slicer's shape.
   // This is only possible if the array is empty or if resize=True.
   // It is not checked if the data type of array and HDF5DataSet match.
-  void get(const Slicer&, ArrayBase& buf, Bool resize = False);
+  void get(const Slicer&, ArrayBase& buf, bool resize = false);
 
   // Get a section of data.
   // The buffer must be large enough to hold the section.

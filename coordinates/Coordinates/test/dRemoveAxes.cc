@@ -47,7 +47,7 @@ int main() {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
       Vector<Int> list(1);
       list(0) = 2;
-      Bool remove = False;
+      bool remove = false;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -61,7 +61,7 @@ int main() {
 
       Vector<Int> list(1);
       list(0) = 2;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -76,7 +76,7 @@ int main() {
       Vector<Int> list(2);
       list(0) = 0;
       list(1) = 2;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -91,7 +91,7 @@ int main() {
 
       Vector<Int> list(1);
       list(0) = 0;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
         list.resize(2);
         list(0) = 0;
@@ -113,7 +113,7 @@ int main() {
       Vector<Int> list(2);
       list(0) = 0;
       list(1) = 2;
-      Bool remove = True;
+      bool remove = true;
       Vector<Double> incr = cSys.increment();
       Vector<Double> refVal = cSys.referenceValue();
       Vector<Double> refPix = cSys.referencePixel();
@@ -138,7 +138,7 @@ int main() {
       Vector<Int> list(2);
       list(0) = 0;
       list(1) = 2;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -155,7 +155,7 @@ int main() {
 
       Vector<Int> list(1);
       list(0) = 0;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -171,7 +171,7 @@ int main() {
       cout << "specified pixel replacement values = " << pixelReplacement << endl;
       Vector<Int> list(1);
       list(0) = 1;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -189,7 +189,7 @@ int main() {
       Vector<Int> list(2);
       list(0) = 0;
       list(1) = 1;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -207,7 +207,7 @@ int main() {
       Vector<Int> list(2);
       list(0) = 0;
       list(1) = 2;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {
@@ -225,7 +225,7 @@ int main() {
       Vector<Int> list(2);
       list(0) = 1;
       list(1) = 2;
-      Bool remove = True;
+      bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
         cSys.list(os, MDoppler::RADIO, d1, d2);
       } else {

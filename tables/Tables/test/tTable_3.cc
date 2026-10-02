@@ -116,7 +116,7 @@ void a(uInt nrrow) {
       timer.mark();
       Vector<Int> adv = ad.getColumn();
       timer.show("cells ISM");
-      Bool del;
+      bool del;
       uInt st = 0;
       const uInt* abvv = abv.getStorage(del);
       timer.mark();

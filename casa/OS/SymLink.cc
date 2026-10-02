@@ -67,7 +67,7 @@ void SymLink::checkPath() const {
   }
 }
 
-void SymLink::create(const Path& target, Bool overwrite) {
+void SymLink::create(const Path& target, bool overwrite) {
   // If overwrite is False the file will not be overwritten.
   if (exists()) {
     if (!isSymLink()) {
@@ -87,25 +87,25 @@ void SymLink::create(const Path& target, Bool overwrite) {
 
 void SymLink::remove() { unlink(path().expandedName().c_str()); }
 
-void SymLink::copy(const Path& target, Bool overwrite) const {
+void SymLink::copy(const Path& target, bool overwrite) const {
   Path targetName(target);
   checkTarget(targetName, overwrite);
   // This function cannot the system function cp, because
   // that copies the file the symlink is pointing to and
   // refuses to copy when it points to a directory.
   File targetFile(targetName);
-  if (targetFile.isRegular(False)) {
+  if (targetFile.isRegular(false)) {
     RegularFile(targetFile).remove();
   }
   SymLink newLink(targetFile);
   newLink.create(getSymLink());
 }
 
-void SymLink::move(const Path& target, Bool overwrite) {
+void SymLink::move(const Path& target, bool overwrite) {
   Path targetName(target);
   checkTarget(targetName, overwrite);
   File targetFile(targetName);
-  if (targetFile.isRegular(False)) {
+  if (targetFile.isRegular(false)) {
     RegularFile(targetFile).remove();
   }
   SymLink newLink(targetFile);

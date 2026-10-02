@@ -41,13 +41,13 @@ ImageAttrGroupCasa::~ImageAttrGroupCasa() { flush(); }
 
 void ImageAttrGroupCasa::flush() {
   if (!itsTable.table().isNull()) {
-    itsTable.flush(True);
+    itsTable.flush(true);
   }
 }
 
 uInt ImageAttrGroupCasa::nrows() const { return itsTable.table().nrow(); }
 
-Bool ImageAttrGroupCasa::hasAttr(const String& attrName) const {
+bool ImageAttrGroupCasa::hasAttr(const String& attrName) const {
   return itsTable.table().tableDesc().isColumn(attrName);
 }
 
@@ -106,7 +106,7 @@ void ImageAttrGroupCasa::putData(const String& attrName, uInt rownr, const Value
     // so only put them for the first time, thus if the column has been added.
     TableColumn col(itsTable.table(), attrName);
     if (!units.empty()) {
-      itsTable.putKeyword(attrName, "QuantumUnits", -1, False, ValueHolder(units));
+      itsTable.putKeyword(attrName, "QuantumUnits", -1, false, ValueHolder(units));
     }
     if (!measInfo.empty()) {
       AlwaysAssert(measInfo.size() == 2, AipsError);
@@ -115,8 +115,8 @@ void ImageAttrGroupCasa::putData(const String& attrName, uInt rownr, const Value
         TableRecord rec;
         col.rwKeywordSet().defineRecord("MEASINFO", rec);
       }
-      itsTable.putKeyword(attrName, "MEASINFO.type", -1, False, ValueHolder(measInfo[0]));
-      itsTable.putKeyword(attrName, "MEASINFO.Ref", -1, False, ValueHolder(measInfo[1]));
+      itsTable.putKeyword(attrName, "MEASINFO.type", -1, false, ValueHolder(measInfo[0]));
+      itsTable.putKeyword(attrName, "MEASINFO.Ref", -1, false, ValueHolder(measInfo[1]));
     }
   }
   checkRows(attrName, rownr);
@@ -135,21 +135,21 @@ void ImageAttrGroupCasa::checkRows(const std::string& attrName, uInt rownr) {
   }
 }
 
-Bool ImageAttrGroupCasa::addNewColumn(const String& attrName, const ValueHolder& data) {
+bool ImageAttrGroupCasa::addNewColumn(const String& attrName, const ValueHolder& data) {
   Table& tab = itsTable.table();
   if (tab.tableDesc().isColumn(attrName)) {
     // Column already exists.
-    return False;
+    return false;
   }
   // Add the column with the correct type.
   // Assume arrays can have varying shapes.
   IPosition colShape(1, 1);
   switch (data.dataType()) {
     case TpBool:
-      tab.addColumn(ScalarColumnDesc<Bool>(attrName));
+      tab.addColumn(ScalarColumnDesc<bool>(attrName));
       break;
     case TpArrayBool:
-      tab.addColumn(ArrayColumnDesc<Bool>(attrName));
+      tab.addColumn(ArrayColumnDesc<bool>(attrName));
       break;
     case TpChar:
     case TpUChar:
@@ -196,7 +196,7 @@ Bool ImageAttrGroupCasa::addNewColumn(const String& attrName, const ValueHolder&
       throw AipsError("ImageAttrGroupCasa::addNewColumn: Unknown datatype " +
                       ValueToString(data.dataType()));
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

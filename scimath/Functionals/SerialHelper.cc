@@ -33,8 +33,8 @@ const String SerialHelper::FUNCTYPE("functype");
 const String SerialHelper::gtype[] = {"Bool",   "Byte",    "Short",    "Int",   "Float",
                                       "Double", "Complex", "DComplex", "String"};
 
-Bool SerialHelper::getFuncType(String& ftype) const {
-  if (!gr.isDefined(FUNCTYPE)) return False;
+bool SerialHelper::getFuncType(String& ftype) const {
+  if (!gr.isDefined(FUNCTYPE)) return false;
 
   try {
     ftype = gr.asString(RecordFieldId(FUNCTYPE));
@@ -44,7 +44,7 @@ Bool SerialHelper::getFuncType(String& ftype) const {
   } catch (std::exception& x) {
     throw InvalidSerializationError("Wrong type for functype field");
   }
-  return True;
+  return true;
 }
 
 void SerialHelper::checkFuncType(const String& ftype) const {
@@ -56,7 +56,7 @@ void SerialHelper::checkFuncType(const String& ftype) const {
 }
 
 template <>
-void getArrayVal<Bool>(Bool& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<bool>(bool& val, Int, const Record& gr, const String& name, uInt index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -64,7 +64,7 @@ void getArrayVal<Bool>(Bool& val, Int, const Record& gr, const String& name, uIn
       val = gr.asBool(RecordFieldId(name));
       break;
     case TpArrayBool: {
-      Array<Bool> tmp = gr.asArrayBool(RecordFieldId(name));
+      Array<bool> tmp = gr.asArrayBool(RecordFieldId(name));
       val = tmp(IPosition(tmp.nelements(), index));
     } break;
     default:
@@ -201,7 +201,7 @@ void getArrayVal<String>(String& val, Int, const Record& gr, const String& name,
 }
 
 template <>
-void getArray<Bool>(Array<Bool>& val, Int, const Record& gr, const String& name) {
+void getArray<bool>(Array<bool>& val, Int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayBool)
@@ -273,7 +273,7 @@ void getArray<String>(Array<String>& val, Int, const Record& gr, const String& n
   val = gr.asArrayString(RecordFieldId(name));
 }
 
-void SerialHelper::get(Bool& val, const String& name, uInt index) const {
+void SerialHelper::get(bool& val, const String& name, uInt index) const {
   getArrayVal(val, SerialHelper::shtBOOL, gr, name, index);
 }
 
@@ -310,7 +310,7 @@ void SerialHelper::get(DComplex& val, const String& name, uInt index) const {
   getArrayVal(val, SerialHelper::shtDCOMPLEX, gr, name, index);
 }
 
-void SerialHelper::get(Array<Bool>& val, const String& name) const {
+void SerialHelper::get(Array<bool>& val, const String& name) const {
   getArray(val, SerialHelper::shtBOOL, gr, name);
 }
 

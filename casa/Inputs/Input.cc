@@ -45,7 +45,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // This can be turned off by overriding the default `init' argument.
 //
 
-Input::Input(Int createEnv) : is_closed(False), do_prompt(False), debug_level(0), p_count(0) {
+Input::Input(Int createEnv) : is_closed(false), do_prompt(false), debug_level(0), p_count(0) {
   if (createEnv) {
     envCreate("DEBUG", "debug", "0");
     envCreate("HELP", "help", "0");
@@ -108,7 +108,7 @@ void Input::createPar(Int system, const String& key, const String& value, const 
 
   if (key == "help") {
     if (value == "prompt") {
-      do_prompt = True;
+      do_prompt = true;
     }
     help_mode = value;
   }
@@ -118,7 +118,7 @@ void Input::createPar(Int system, const String& key, const String& value, const 
   }
   Param tmp(key, value, help, type, range, unit);
   if (system) {
-    tmp.setSystem(True);
+    tmp.setSystem(true);
   } else {
     tmp.setIndex(++p_count);
   }
@@ -130,7 +130,7 @@ void Input::close() {
     String msg = "Input::Close: parameter creation is already closed.";
     throw(AipsError(msg));
   } else {
-    is_closed = True;
+    is_closed = true;
   }
   if (debug(1)) {  // Display Param as: 'key=val: help'
     cout << "INPUT> Closing parameter creation: \n";
@@ -208,7 +208,7 @@ String Input::getString(const String& key) {
   return x.getString();
 }
 
-Bool Input::getBool(const String& key) {
+bool Input::getBool(const String& key) {
   Int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetBool: Parameter " + key + " is unknown.";
@@ -222,7 +222,7 @@ Bool Input::getBool(const String& key) {
 }
 
 // Modifiers
-Bool Input::put(const String& key, const String& value) {
+bool Input::put(const String& key, const String& value) {
   String akey, avalue;
 
   if (debug(5)) {
@@ -235,10 +235,10 @@ Bool Input::put(const String& key, const String& value) {
   }
   Param& x = parList_p[i];
   x.put(value);
-  return True;
+  return true;
 }
 
-Bool Input::put(const String& key) {
+bool Input::put(const String& key) {
   String k = key;  // Need non-const string
   const std::string::size_type inx = key.find('=');
   if (inx == std::string::npos) {
@@ -264,7 +264,7 @@ void Input::announce() {
   }
 
   if (StringContains(help_mode, "prompt")) {
-    do_prompt = True;
+    do_prompt = true;
   }
   if (StringContains(help_mode, "keys")) {
     keys();
@@ -297,16 +297,16 @@ void Input::prompt(Param& x) const {
     String msg = "Input::Prompt: keyword=" + x.getKey() + " doesn't have an associated help field.";
     throw(AipsError(msg));
   }
-  Bool ok = False;
+  bool ok = false;
   Char input[1024];
-  while (ok == False) {
+  while (ok == false) {
     cout << x.getHelp() << " [" << x.getString() << "]: " << x.getKey() << "=";
     cin.getline(input, 80);
     if (input[0] != 0) {
       String s = input;
       ok = x.put(s);
     } else {
-      ok = True;
+      ok = true;
     }
   }
 }
@@ -398,12 +398,12 @@ void Input::readArguments(int ac, char const* const* av) {
   announce();  // Announce and possibly die here
 }
 
-Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length, Bool oneRelative) {
+Vector<bool> Input::makeMaskFromRanges(const String& ranges, uInt length, bool oneRelative) {
   const std::regex single("^[ \t]*[0-9]+[ \t]*$", 1);
   const std::regex range("^[ \t]*[0-9]+[ \t]*-[ \t]*[0-9]+[ \t]*$", 1);
 
-  Vector<Bool> mask(length);
-  mask = False;
+  Vector<bool> mask(length);
+  mask = false;
 
   // Step through the string, comma separated expression by comma separated
   // expression.
@@ -435,7 +435,7 @@ Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length, Bool o
                              "out of range or end<start ") +
                       ranges));
     }
-    mask(Slice(Int(left), Int(right - left + 1))) = True;
+    mask(Slice(Int(left), Int(right - left + 1))) = true;
   }
 
   return mask;

@@ -161,7 +161,7 @@ class StIndArray {
   // If the shape is already defined and does not change,
   // nothing is done and a False value is returned.
   // If the shape changes, the old file space is lost.
-  Bool setShape(StManArrayFile&, int dataType, const IPosition& shape);
+  bool setShape(StManArrayFile&, int dataType, const IPosition& shape);
 
   // Read the shape if not read yet.
   void getShape(StManArrayFile& ios);
@@ -222,7 +222,7 @@ class StIndArray {
   // <group>
   static void getVecBoolV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                           uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<Bool>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<bool>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecuCharV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, void* value) {
@@ -299,7 +299,7 @@ class StIndArray {
   // <group>
   static void putVecBoolV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                           uInt64 increment, uInt64 valueIndex, const void* value) {
-    PutVectorGeneric<Bool>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    PutVectorGeneric<bool>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void putVecuCharV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, const void* value) {

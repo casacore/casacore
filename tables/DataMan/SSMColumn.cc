@@ -72,7 +72,7 @@ void SSMColumn::doCreate(rownr_t) {}
 
 void SSMColumn::getFile(rownr_t) {}
 
-void SSMColumn::addRow(rownr_t aNewNrRows, rownr_t, Bool doInit) {
+void SSMColumn::addRow(rownr_t aNewNrRows, rownr_t, bool doInit) {
   if (doInit && dataType() == TpString) {
     rownr_t aRowNr = 0;
     rownr_t aNrRows = aNewNrRows;
@@ -112,10 +112,10 @@ void SSMColumn::deleteRow(rownr_t aRowNr) {
   aValue = itsSSMPtr->find(aRowNr, itsColNr, aSRow, anERow, columnName());
 
   // For bools be sure that cache is actual
-  Bool isBool = (aDT == TpBool);
+  bool isBool = (aDT == TpBool);
 
   if (isBool && aRowNr < anERow) {
-    Bool aVal;
+    bool aVal;
     getBool(aRowNr, &aVal);
   }
 
@@ -166,9 +166,9 @@ void SSMColumn::shiftRows(char* aValue, rownr_t aRowNr, rownr_t aSRow, rownr_t a
   memset(aToPtr + aLength, 0, itsExternalSizeBytes);
 }
 
-void SSMColumn::getBool(rownr_t aRowNr, Bool* aValue) {
+void SSMColumn::getBool(rownr_t aRowNr, bool* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<Bool*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<bool*>(itsData)[aRowNr - columnCache().start()];
 }
 void SSMColumn::getuChar(rownr_t aRowNr, uChar* aValue) {
   getValue(aRowNr);
@@ -274,7 +274,7 @@ void SSMColumn::getValue(rownr_t aRowNr) {
   }
 }
 
-void SSMColumn::putBool(rownr_t aRowNr, const Bool* aValue) {
+void SSMColumn::putBool(rownr_t aRowNr, const bool* aValue) {
   rownr_t aStartRow;
   rownr_t anEndRow;
   char* aDummy;
@@ -417,7 +417,7 @@ void SSMColumn::getScalarColumnV(ArrayBase& aDataPtr) {
       getString(i, &(vec[i]));
     }
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     void* anArray = aDataPtr.getVStorage(deleteIt);
     getColumnValue(anArray, aDataPtr.nelements());
     aDataPtr.putVStorage(anArray, deleteIt);
@@ -449,7 +449,7 @@ void SSMColumn::putScalarColumnV(const ArrayBase& aDataPtr) {
       putString(i, &(vec[i]));
     }
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     const void* anArray = aDataPtr.getVStorage(deleteIt);
     putColumnValue(anArray, aDataPtr.nelements());
     aDataPtr.freeVStorage(anArray, deleteIt);
@@ -493,7 +493,7 @@ void SSMColumn::removeColumn() {
 void SSMColumn::init() {
   DataType aDT = static_cast<DataType>(dataType());
   itsLocalSize = ValType::getTypeSize(aDT);
-  Bool asBigEndian = itsSSMPtr->asBigEndian();
+  bool asBigEndian = itsSSMPtr->asBigEndian();
   itsNrCopy = itsNrElem;
   if (aDT == TpString) {
     // Fixed length strings are written directly.

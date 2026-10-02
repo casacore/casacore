@@ -240,7 +240,7 @@ class MSMetaData {
   rownr_t nRows(CorrelationType cType, uInt fieldID) const;
 
   // get number of spectral windows
-  uInt nSpw(Bool includewvr) const;
+  uInt nSpw(bool includewvr) const;
 
   // number of unique states (number of rows from the STATE table)
   uInt nStates() const;
@@ -339,7 +339,7 @@ class MSMetaData {
   std::set<Int> getStatesForScan(Int obsID, Int arrayID, Int scan) const;
 
   // get a map of spectral windows to unique timestamps.
-  std::vector<std::set<Double>> getTimesForSpws(Bool showProgress = True) const;
+  std::vector<std::set<Double>> getTimesForSpws(bool showProgress = true) const;
 
   // get the position of the specified antenna relative to the observatory position.
   // the three vector returned represents the longitudinal, latitudinal, and elevation
@@ -475,10 +475,10 @@ class MSMetaData {
   // get the sub scan properties for the specified sub scan.
 
   SubScanProperties getSubScanProperties(const SubScanKey& subScan,
-                                         Bool showProgress = False) const;
+                                         bool showProgress = false) const;
 
   std::shared_ptr<const std::map<SubScanKey, SubScanProperties>> getSubScanProperties(
-      Bool showProgress = False) const;
+      bool showProgress = false) const;
 
   // If True, force the subscan properties structure to be
   // cached regardless of the stipulations on the maximum cache. Normally,
@@ -486,7 +486,7 @@ class MSMetaData {
   // one column that is necessary to create it, and since creating this
   // structure can be very expensive, especially for large datasets, it
   // is often a good idea to cache it if it will be accessed many times.
-  void setForceSubScanPropsToCache(Bool b) { _forceSubScanPropsToCache = b; }
+  void setForceSubScanPropsToCache(bool b) { _forceSubScanPropsToCache = b; }
 
   // get a data structure, consumable by users, representing a summary of the dataset
   Record getSummary() const;
@@ -496,7 +496,7 @@ class MSMetaData {
 
   // get the time stamps associated with the specified intent
   std::set<Double> getTimesForIntent(const String& intent) const;
-  Bool hasBBCNo() const;
+  bool hasBBCNo() const;
 
   // std::map<Double, Double> getExposuresForTimes() const;
 
@@ -505,12 +505,12 @@ class MSMetaData {
   // the main MS table, which in theory can be less than n(n-1)/2 (for example if samples for
   // certain antenna pairs are not recorded. The returned Matrix is nAnts x nAnts in size. Pairs
   // that are true represent baselines represented in the main MS table.
-  Matrix<Bool> getUniqueBaselines();
+  Matrix<bool> getUniqueBaselines();
 
   // get the number of unique baselines represented in the main MS table which in theory can be
   // less than n*(n-1)/2. If <src>includeAutoCorrelation</src> is True, include autocorrelation
   // "baselines" in the enumeration.
-  virtual uInt nBaselines(Bool includeAutoCorrelation = False);
+  virtual uInt nBaselines(bool includeAutoCorrelation = false);
 
   // get the effective total exposure time. This is the effective time spent collecting unflagged
   // data.
@@ -561,7 +561,7 @@ class MSMetaData {
   // the returned vector represents a separate spectral window, with
   // ID given by its location in the vector. If asVelWidths is True,
   // convert the values to velocity widths.
-  vector<QVD> getChanEffectiveBWs(Bool asVelWidths) const;
+  vector<QVD> getChanEffectiveBWs(bool asVelWidths) const;
 
   vector<QVD> getChanFreqs() const;
 
@@ -569,7 +569,7 @@ class MSMetaData {
   // the returned vector represents a separate spectral window, with
   // ID given by its location in the vector. If asVelWidths is True,
   // convert the values to velocity widths.
-  vector<QVD> getChanResolutions(Bool asVelWidths) const;
+  vector<QVD> getChanResolutions(bool asVelWidths) const;
 
   vector<QVD> getChanWidths() const;
 
@@ -589,7 +589,7 @@ class MSMetaData {
   std::vector<std::map<Int, Quantity>> getFirstExposureTimeMap();
 
   // get map of scans to first exposure times
-  std::map<ScanKey, FirstExposureTimeMap> getScanToFirstExposureTimeMap(Bool showProgress) const;
+  std::map<ScanKey, FirstExposureTimeMap> getScanToFirstExposureTimeMap(bool showProgress) const;
 
   // get polarization IDs for the specified scan and spwid
   std::set<uInt> getPolarizationIDs(uInt obsID, Int arrayID, Int scan, uInt spwid) const;
@@ -611,12 +611,12 @@ class MSMetaData {
   // get the pointing directions associated with antenna1 and antenna2 for
   // the specified row of the main MS table
   std::pair<MDirection, MDirection> getPointingDirection(Int& ant1, Int& ant2, Double& time,
-                                                         rownr_t row, Bool interpolate = false,
+                                                         rownr_t row, bool interpolate = false,
                                                          Int initialguess = 0) const;
 
   // get the time range for the entire dataset. min(TIME(x) - 0.5*INTERVAL(x)) to
   // max(TIME(x) + 0.5*INTERVAL(x))
-  std::pair<Double, Double> getTimeRange(Bool showProgress = False) const;
+  std::pair<Double, Double> getTimeRange(bool showProgress = false) const;
 
   // Number of unique values from SOURCE.SOURCE_ID
   uInt nUniqueSourceIDsFromSourceTable() const;
@@ -627,7 +627,7 @@ class MSMetaData {
 
   const MeasurementSet* getMS() const { return _ms; }
 
-  void setShowProgress(Bool b) { _showProgress = b; }
+  void setShowProgress(bool b) { _showProgress = b; }
 
   // get statistics related to the values of the INTERVAL column. Returned
   // values are in seconds. All values in this column are used in the computation,
@@ -725,7 +725,7 @@ class MSMetaData {
   // will occur.
 
   const MeasurementSet* _ms;
-  Bool _showProgress;
+  bool _showProgress;
   mutable Float _cacheMB;
   const Float _maxCacheMB;
   mutable rownr_t _nACRows, _nXCRows;
@@ -774,7 +774,7 @@ class MSMetaData {
   mutable vector<MPosition> _observatoryPositions, _antennaPositions;
   mutable vector<QVD> _antennaOffsets;
   mutable QVD _antennaDiameters;
-  Matrix<Bool> _uniqueBaselines;
+  Matrix<bool> _uniqueBaselines;
   Quantity _exposureTime;
   mutable Double _nUnflaggedACRows, _nUnflaggedXCRows;
   mutable std::shared_ptr<vector<Double>> _unflaggedFieldNACRows, _unflaggedFieldNXCRows;
@@ -783,7 +783,7 @@ class MSMetaData {
   const String _taqlTableName;
   const vector<const Table*> _taqlTempTable;
 
-  mutable Bool _spwInfoStored, _forceSubScanPropsToCache;
+  mutable bool _spwInfoStored, _forceSubScanPropsToCache;
   vector<std::map<Int, Quantity>> _firstExposureTimeMap;
   mutable vector<Int> _numCorrs, _source_sourceIDs, _field_sourceIDs;
 
@@ -821,7 +821,7 @@ class MSMetaData {
   // set metadata from OBSERVATION table
   void _setObservation(const MeasurementSet& ms);
 
-  Bool _cacheUpdated(const Float incrementInBytes) const;
+  bool _cacheUpdated(const Float incrementInBytes) const;
 
   void _checkField(uInt fieldID) const;
 
@@ -836,7 +836,7 @@ class MSMetaData {
   void _computeScanAndSubScanProperties(
       std::shared_ptr<std::map<ScanKey, MSMetaData::ScanProperties>>& scanProps,
       std::shared_ptr<std::map<SubScanKey, MSMetaData::SubScanProperties>>& subScanProps,
-      Bool showProgress) const;
+      bool showProgress) const;
 
   static void _getScalarIntColumn(Vector<Int>& v, TableProxy& table, const String& colname,
                                   rownr_t beginRow, rownr_t nrows);
@@ -926,7 +926,7 @@ class MSMetaData {
   void _getFieldsAndTimesMaps(std::shared_ptr<std::map<Int, std::set<Double>>>& fieldToTimesMap,
                               std::shared_ptr<std::map<Double, std::set<Int>>>& timesToFieldMap);
 
-  std::shared_ptr<ArrayColumn<Bool>> _getFlags() const;
+  std::shared_ptr<ArrayColumn<bool>> _getFlags() const;
 
   std::map<String, std::set<Double>> _getIntentsToTimesMap() const;
 
@@ -948,11 +948,11 @@ class MSMetaData {
 
   // std::shared_ptr<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
 
-  Bool _hasIntent(const String& intent) const;
+  bool _hasIntent(const String& intent) const;
 
-  Bool _hasFieldID(Int fieldID) const;
+  bool _hasFieldID(Int fieldID) const;
 
-  Bool _hasStateID(Int stateID) const;
+  bool _hasStateID(Int stateID) const;
 
   void _hasAntennaID(Int antennaID);
 
@@ -982,7 +982,7 @@ class MSMetaData {
 
   // get scan properties
   std::shared_ptr<const std::map<ScanKey, MSMetaData::ScanProperties>> _getScanProperties(
-      Bool showProgress) const;
+      bool showProgress) const;
 
   // get the scan keys in the specified set that have the associated arrayKey
   std::set<ScanKey> _getScanKeys(const std::set<ScanKey>& scanKeys, const ArrayKey& arrayKey) const;
@@ -1030,7 +1030,7 @@ class MSMetaData {
   void _getScanAndSubScanProperties(
       std::shared_ptr<const std::map<ScanKey, ScanProperties>>& scanProps,
       std::shared_ptr<const std::map<SubScanKey, SubScanProperties>>& subScanProps,
-      Bool showProgress) const;
+      bool showProgress) const;
 
   std::set<SubScanKey> _getSubScanKeys() const;
 

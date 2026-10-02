@@ -43,11 +43,11 @@
 // Main program to test the Interpolate1D class
 
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   // Test the Interpolate1D class with Floating point Vectors and linear
   // interpolation
   {
-    Bool failed = False;
+    bool failed = false;
     Vector<Float> x(5);
     indgen(x);
     Vector<Float> y(5);
@@ -56,10 +56,10 @@ int main() {
     Interpolate1D<Float, Float> value(fx, fy);
     Float xs;
     for (xs = -1; xs < 5; xs += 0.1)
-      if (near(value(xs), xs) == False) {
+      if (near(value(xs), xs) == false) {
         cout << "value(" << xs << ") = " << value(xs) << " which is not near the expected value of "
              << xs << endl;
-        failed = True;
+        failed = true;
       }
     // Check the assignment operator and copy constructor use copy symantics
     Interpolate1D<Float, Float> v1(value), v2;
@@ -72,20 +72,20 @@ int main() {
     v1.setData(fx, fy1);
     v2.setData(fx, fy2);
     for (xs = -1; xs < 5; xs += 0.1) {
-      if (near(v1(xs), xs + 1.0f, 1.0E-5) == False) {
+      if (near(v1(xs), xs + 1.0f, 1.0E-5) == false) {
         cout << "v1(" << xs << ") = " << v1(xs) << " which is not near the expected value of "
              << xs + 1.0f << endl;
-        failed = True;
+        failed = true;
       }
-      if (near(v2(xs), xs + 2.0f, 1.0E-5) == False) {
+      if (near(v2(xs), xs + 2.0f, 1.0E-5) == false) {
         cout << "v2(" << xs << ") = " << v2(xs) << " which is not near the expected value of "
              << xs + 2.0f << endl;
-        failed = True;
+        failed = true;
       }
     }
     if (failed) {
       cout << "Failed ";
-      anyFailures = True;
+      anyFailures = true;
     } else
       cout << "Passed ";
     cout << "the Interpolate1D<Float,Float> test with linear interpolation" << endl;
@@ -93,7 +93,7 @@ int main() {
   // Test the Interpolate1D class with Int/Double Vectors and cubic
   // interpolation
   {
-    Bool failed = False;
+    bool failed = false;
     Vector<Int> x(5);
     indgen(x);
     Vector<Double> y(5);
@@ -104,26 +104,26 @@ int main() {
     Interpolate1D<Int, Double> value(fx, fy);
     value.setMethod(Interpolate1D<Int, Double>::cubic);
     for (Int xs = -5; xs < 10; xs += 1)
-      if (near(value(xs), (Double)xs * xs * xs, 1E-6) == False) {
+      if (near(value(xs), (Double)xs * xs * xs, 1E-6) == false) {
         cout << "value(" << xs << ") = " << value(xs) << " which is not near the expected value of "
              << xs * xs * xs << endl;
-        failed = True;
+        failed = true;
       }
     if (!failed) {
       Vector<Int> xd = value.getX();
-      if (xd.nelements() != 5) failed = True;
+      if (xd.nelements() != 5) failed = true;
       if (!failed)
         for (Int i = 0; i < 5; i++)
-          if (x(i) != xd(i)) failed = True;
+          if (x(i) != xd(i)) failed = true;
       Vector<Double> yd = value.getY();
-      if (yd.nelements() != 5) failed = True;
+      if (yd.nelements() != 5) failed = true;
       if (!failed)
         for (Int j = 0; j < 5; j++)
-          if (y(j) != yd(j)) failed = True;
+          if (y(j) != yd(j)) failed = true;
     }
     if (failed) {
       cout << "Failed ";
-      anyFailures = True;
+      anyFailures = true;
     } else
       cout << "Passed ";
     cout << "the Interpolate1D<Int,Double> test with cubic interpolation" << endl;
@@ -131,7 +131,7 @@ int main() {
   // Test the Interpolate1D class with Double/Complex Blocks and nearest
   // neighbour interpolation
   {
-    Bool failed = False;
+    bool failed = false;
     Vector<Double> x(5);
     indgen(x);
     Vector<DComplex> y(5);
@@ -148,15 +148,15 @@ int main() {
     Double ev;
     for (Float xs = -5.0000001; xs < 5; xs += .1) {
       ev = max(min((Int)(xs + 0.5), 4), 0);
-      if (near((value(xs)).real(), ev) == False || near((value(xs)).imag(), ev * ev) == False) {
+      if (near((value(xs)).real(), ev) == false || near((value(xs)).imag(), ev * ev) == false) {
         cout << "value(" << xs << ") = " << value(xs) << " is not near the expected value of ("
              << ev << ", " << ev * ev << ")" << endl;
-        failed = True;
+        failed = true;
       }
     }
     if (failed) {
       cout << "Failed ";
-      anyFailures = True;
+      anyFailures = true;
     } else
       cout << "Passed ";
     cout << "the Interpolate1D<Double,DComplex> test with nearest neighbour" << endl
@@ -166,7 +166,7 @@ int main() {
   // Test the Interpolate1D class with Float / Float Array and spline
   // interpolation
   {
-    Bool failed = False;
+    bool failed = false;
     Vector<Float> x(5);
     indgen(x);
     IPosition shape(3, 3, 5, 1);
@@ -200,36 +200,36 @@ int main() {
     Array<Float> iv;
     for (Float xs = 0; xs < 5; xs += 1) {
       iv = value(xs);
-      if ((near(iv(IPosition(1, 0)), y(IPosition(3, 0, (uInt)xs, 0))) == False) ||
-          (near(iv(IPosition(1, 1)), y(IPosition(3, 1, (uInt)xs, 0))) == False) ||
-          (near(iv(IPosition(1, 2)), y(IPosition(3, 2, (uInt)xs, 0))) == False)) {
+      if ((near(iv(IPosition(1, 0)), y(IPosition(3, 0, (uInt)xs, 0))) == false) ||
+          (near(iv(IPosition(1, 1)), y(IPosition(3, 1, (uInt)xs, 0))) == false) ||
+          (near(iv(IPosition(1, 2)), y(IPosition(3, 2, (uInt)xs, 0))) == false)) {
         cout << "value(" << xs << ")" << endl
              << iv << " is not near the expected value of " << endl
              << y(blc, trc) << endl;
-        failed = True;
+        failed = true;
       }
       trc += step;
       blc += step;
     }
     iv = value((Float)5);
-    if ((near(iv(IPosition(1, 0)), (Float)5) == False) ||
-        (near(iv(IPosition(1, 1)), (Float)23) == False) ||
-        (near(iv(IPosition(1, 2)), (Float)101) == False))
-      failed = True;
+    if ((near(iv(IPosition(1, 0)), (Float)5) == false) ||
+        (near(iv(IPosition(1, 1)), (Float)23) == false) ||
+        (near(iv(IPosition(1, 2)), (Float)101) == false))
+      failed = true;
     // Switch out of spline mode back to cubic interpolation
     value.setMethod(Interpolate1D<Float, Array<Float>>::cubic);
     if (value.getMethod() != Interpolate1D<Float, Array<Float>>::cubic) {
-      failed = True;
+      failed = true;
       cout << "Could not change the interpolation method" << endl;
     }
     iv = value(Float(-1));
-    if (near(iv(IPosition(1, 1)), Float(1)) == False) {
-      failed = True;
+    if (near(iv(IPosition(1, 1)), Float(1)) == false) {
+      failed = true;
       cout << "Did not really change the interpolation method" << endl;
     }
     if (failed) {
       cout << "Failed ";
-      anyFailures = True;
+      anyFailures = true;
     } else
       cout << "Passed ";
     cout << "the Interpolate1D<Float, Array<Float> > test with "
@@ -249,7 +249,7 @@ int main() {
     // Now I have constructed a table with two scalar and one array column
     // Test the Interpolate1D class with the scalar columns
     {
-      Bool failed = False;
+      bool failed = false;
 
       Vector<Float> x(time);
       Vector<Double> y(amp);
@@ -259,14 +259,14 @@ int main() {
       value.setMethod(Interpolate1D<Float, Double>::cubic);
 
       for (Float xs = -5; xs < 10; xs += .5)
-        if (near(value(xs), (Double)xs * xs) == False) {
+        if (near(value(xs), (Double)xs * xs) == false) {
           cout << "value(" << xs << ") = " << value(xs)
                << " which is not near the expected value of " << xs * xs << endl;
-          failed = True;
+          failed = true;
         }
       if (failed) {
         cout << "Failed ";
-        anyFailures = True;
+        anyFailures = true;
       } else
         cout << "Passed ";
       cout << "the Interpolate1D<Float,Double> test with cubic interpolation" << endl

@@ -90,7 +90,7 @@ void MCuvw::clearConvert() {}
 
 // # Conversion routines
 void MCuvw::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
     case J2000_JMEAN:
@@ -245,7 +245,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getJ2000();
         toPole(in);
         in.adjust(g2);
-        measMath.applyJ2000toB1950(in, False);
+        measMath.applyJ2000toB1950(in, false);
         in.readjust(g2);
         measMath.applyJ2000toB1950(MVDIR1);
         break;
@@ -254,7 +254,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getJ2000();
         toPole(in);
         in.adjust(g2);
-        measMath.applyJ2000toB1950_VLA(in, False);
+        measMath.applyJ2000toB1950_VLA(in, false);
         in.readjust(g2);
         measMath.applyJ2000toB1950_VLA(MVDIR1);
         break;
@@ -263,7 +263,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getB1950();
         toPole(in);
         in.adjust(g2);
-        measMath.deapplyJ2000toB1950(in, False);
+        measMath.deapplyJ2000toB1950(in, false);
         in.readjust(g2);
         measMath.deapplyJ2000toB1950(MVDIR1);
         break;
@@ -272,7 +272,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getB1950();
         toPole(in);
         in.adjust(g2);
-        measMath.deapplyJ2000toB1950_VLA(in, False);
+        measMath.deapplyJ2000toB1950_VLA(in, false);
         in.readjust(g2);
         measMath.deapplyJ2000toB1950_VLA(MVDIR1);
         break;
@@ -352,7 +352,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getJ2000();
         toPole(in);
         in.adjust(g2);
-        measMath.applySolarPos(in, False);
+        measMath.applySolarPos(in, false);
         in.readjust(g2);
         measMath.applySolarPos(MVDIR1);
         break;
@@ -362,7 +362,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         measMath.applySolarPos(MVDIR1);
         toPole(in);
         in.adjust(g2);
-        measMath.applyAberration(in, False);
+        measMath.applyAberration(in, false);
         in.readjust(g2);
         measMath.applyPrecNutat(in);
         measMath.applyAberration(MVDIR1);
@@ -374,7 +374,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         toPole(in);
         measMath.deapplyPrecNutat(in);
         in.adjust(g2);
-        measMath.deapplyAberration(in, False);
+        measMath.deapplyAberration(in, false);
         in.readjust(g2);
         measMath.deapplyPrecNutat(MVDIR1);
         measMath.deapplyAberration(MVDIR1);
@@ -385,7 +385,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         measMath.applySolarPos(MVDIR1);
         toPole(in);
         in.adjust(g2);
-        measMath.deapplySolarPos(in, False);
+        measMath.deapplySolarPos(in, false);
         in.readjust(g2);
         measMath.deapplySolarPos(MVDIR1);
         break;
@@ -394,8 +394,8 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getB1950();
         toPole(in);
         in.adjust(g2);
-        measMath.applyPrecNutatB1950(in, False);
-        measMath.applyAberrationB1950(in, False);
+        measMath.applyPrecNutatB1950(in, false);
+        measMath.applyAberrationB1950(in, false);
         in.readjust(g2);
         measMath.applyPrecNutatB1950(MVDIR1);
         measMath.applyAberrationB1950(MVDIR1);
@@ -405,8 +405,8 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getAPP();
         toPole(in);
         in.adjust(g2);
-        measMath.deapplyAberrationB1950(in, False);
-        measMath.deapplyPrecNutatB1950(in, False);
+        measMath.deapplyAberrationB1950(in, false);
+        measMath.deapplyPrecNutatB1950(in, false);
         in.readjust(g2);
         measMath.deapplyAberrationB1950(MVDIR1);
         measMath.deapplyPrecNutatB1950(MVDIR1);
@@ -417,7 +417,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         measMath.applyAPPtoTOPO(in, lengthP);
         toPole(in);
         in.adjust(g2);
-        measMath.applyTOPOtoHADEC(in, False);
+        measMath.applyTOPOtoHADEC(in, false);
         in.readjust(g2);
         measMath.applyTOPOtoHADEC(MVDIR1);
         break;
@@ -466,7 +466,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         measMath.applyTOPOtoHADEC(MVDIR1);
         toPole(in);
         in.adjust(g2);
-        measMath.deapplyTOPOtoHADEC(in, False);
+        measMath.deapplyTOPOtoHADEC(in, false);
         in.readjust(g2);
         measMath.deapplyTOPOtoHADEC(MVDIR1);
         break;
@@ -475,7 +475,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         getAPP();
         toPole(in);
         in.adjust(g2);
-        measMath.applyAPPtoTOPO(in, lengthP, False);
+        measMath.applyAPPtoTOPO(in, lengthP, false);
         in.readjust(g2);
         measMath.applyAPPtoTOPO(MVDIR1, lengthP);
         break;
@@ -485,7 +485,7 @@ void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBa
         measMath.applyAPPtoTOPO(in, lengthP);
         toPole(in);
         in.adjust(g2);
-        measMath.deapplyAPPtoTOPO(in, lengthP, False);
+        measMath.deapplyAPPtoTOPO(in, lengthP, false);
         in.readjust(g2);
         measMath.deapplyAPPtoTOPO(MVDIR1, lengthP);
         break;

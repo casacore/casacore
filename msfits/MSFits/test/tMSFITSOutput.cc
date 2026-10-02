@@ -47,21 +47,21 @@ int main() {
     MeasurementSet ms(msname);
     cout << "Test overwrite parameter" << endl;
     String fitsFile = "test1.ms";
-    AlwaysAssert(MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, False, False, False,
-                                             False, 1.0, False, 1, 0, True),
+    AlwaysAssert(MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, false, false, false,
+                                             false, 1.0, false, 1, 0, true),
                  AipsError);
     // this should fail since overwrite is False
-    Bool thrown = False;
+    bool thrown = false;
     try {
-      MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, False, False, False, False, 1.0,
-                                  False, 1, 0, False);
+      MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, false, false, false, false, 1.0,
+                                  false, 1, 0, false);
     } catch (const AipsError&) {
-      thrown = True;
+      thrown = true;
     }
     AlwaysAssert(thrown, AipsError);
     // this should succeed, since overwrite is True
-    AlwaysAssert(MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, False, False, False,
-                                             False, 1.0, False, 1, 0, True),
+    AlwaysAssert(MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, false, false, false,
+                                             false, 1.0, false, 1, 0, true),
                  AipsError);
     // clean up
     RegularFile(fitsFile).remove();

@@ -107,7 +107,7 @@ class MeasBase : public Measure {
 
   // # General Member Functions
   //  Check the type of derived entity
-  virtual Bool areYou(const String &tp) const;
+  virtual bool areYou(const String &tp) const;
   // Assert that we are the correct type
   // <thrown>
   //   <li> AipsError if wrong Measure
@@ -121,7 +121,7 @@ class MeasBase : public Measure {
   void set(const Mv &dt, const Mr &rf);
   void set(const Unit &inunit);
   virtual void set(const MeasValue &dt);
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
   // </group>
 
   // Get reference

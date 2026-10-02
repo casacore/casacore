@@ -40,7 +40,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-PagedArrIter<T>::PagedArrIter(const PagedArray<T>& data, const LatticeNavigator& nav, Bool useRef)
+PagedArrIter<T>::PagedArrIter(const PagedArray<T>& data, const LatticeNavigator& nav, bool useRef)
     : LatticeIterInterface<T>(data, nav, useRef), itsData(data) {
   setupTileCache();
 }

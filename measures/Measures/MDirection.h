@@ -301,14 +301,14 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // </group>
   // Translate string to reference code
   // <group>
-  static Bool getType(MDirection::Types &tp, const String &in);
-  Bool giveMe(MDirection::Ref &mr, const String &in);
+  static bool getType(MDirection::Types &tp, const String &in);
+  bool giveMe(MDirection::Ref &mr, const String &in);
   // </group>
   // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
+  virtual bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
@@ -331,7 +331,7 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Tell me if you are a pure model (e.g. a planet)
-  virtual Bool isModel() const;
+  virtual bool isModel() const;
 
   // Get Measure data
   // <group>
@@ -344,13 +344,13 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // circle. See <linkto class=MVDirection>MVDirection</linkto>
   // for more details.
   // <group>
-  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, Bool trueAngle = False);
-  void shift(Double lng, Double lat, Bool trueAngle = False);
-  void shiftLongitude(const Quantity &lng, Bool trueAngle = False);
-  void shiftLongitude(Double lng, Bool trueAngle = False);
-  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle = False);
-  void shiftLatitude(Double lat, Bool trueAngle = False);
-  void shift(const MVDirection &shft, Bool trueAngle = False);
+  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, bool trueAngle = false);
+  void shift(Double lng, Double lat, bool trueAngle = false);
+  void shiftLongitude(const Quantity &lng, bool trueAngle = false);
+  void shiftLongitude(Double lng, bool trueAngle = false);
+  void shiftLatitude(const Quantum<Double> &lat, bool trueAngle = false);
+  void shiftLatitude(Double lat, bool trueAngle = false);
+  void shift(const MVDirection &shft, bool trueAngle = false);
   // </group>
   // Shift over an angle off in the direction pa. pa is measured from North,
   // in the direction of increasing longitude.

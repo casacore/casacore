@@ -45,7 +45,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class M>
 ScalarMeasColumn<M>::ScalarMeasColumn()
-    : itsConvFlag(False),
+    : itsConvFlag(false),
       itsArrDataCol(0),
       itsScaDataCol(0),
       itsRefIntCol(0),
@@ -55,7 +55,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn()
 template <class M>
 ScalarMeasColumn<M>::ScalarMeasColumn(const Table& tab, const String& columnName)
     : TableMeasColumn(tab, columnName),
-      itsConvFlag(False),
+      itsConvFlag(false),
       itsArrDataCol(0),
       itsScaDataCol(0),
       itsRefIntCol(0),
@@ -104,7 +104,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn(const Table& tab, const String& columnName
 
   // Only need to convert (during a put) if some component of the reference
   // for the column is fixed.
-  itsConvFlag = (itsVarRefFlag == False) || (itsOffsetCol == 0);
+  itsConvFlag = (itsVarRefFlag == false) || (itsOffsetCol == 0);
   // For an old table write the reference codes and types.
   if (tab.isWritable()) {
     tmDesc.writeIfOld(tab);
@@ -178,7 +178,7 @@ void ScalarMeasColumn<M>::get(rownr_t rownr, M& meas) const {
     qvec(0).setUnit(units(0));
   } else {
     Array<Double> tmpArr((*itsArrDataCol)(rownr));
-    Bool deleteData;
+    bool deleteData;
     const Double* d_p = tmpArr.getStorage(deleteData);
     for (uInt i = 0; i < itsNvals; i++) {
       qvec(i).setValue(d_p[i]);
@@ -235,7 +235,7 @@ MeasRef<M> ScalarMeasColumn<M>::makeMeasRef(rownr_t rownr) const {
 }
 
 template <class M>
-void ScalarMeasColumn<M>::setDescRefCode(uInt refCode, Bool tableMustBeEmpty) {
+void ScalarMeasColumn<M>::setDescRefCode(uInt refCode, bool tableMustBeEmpty) {
   Table tab = table();
   if (tableMustBeEmpty && tab.nrow() != 0) {
     throw(
@@ -248,7 +248,7 @@ void ScalarMeasColumn<M>::setDescRefCode(uInt refCode, Bool tableMustBeEmpty) {
 }
 
 template <class M>
-void ScalarMeasColumn<M>::setDescOffset(const Measure& offset, Bool tableMustBeEmpty) {
+void ScalarMeasColumn<M>::setDescOffset(const Measure& offset, bool tableMustBeEmpty) {
   Table tab = table();
   if (tableMustBeEmpty && tab.nrow() != 0) {
     throw(
@@ -261,7 +261,7 @@ void ScalarMeasColumn<M>::setDescOffset(const Measure& offset, Bool tableMustBeE
 }
 
 template <class M>
-void ScalarMeasColumn<M>::setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty) {
+void ScalarMeasColumn<M>::setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty) {
   Table tab = table();
   if (tableMustBeEmpty && tab.nrow() != 0) {
     throw(
@@ -358,7 +358,7 @@ void ScalarMeasColumn<M>::put(rownr_t rownr, const M& meas) {
 }
 
 template <class M>
-Bool ScalarMeasColumn<M>::equalRefs(const MRBase& r1, const MRBase& r2) const {
+bool ScalarMeasColumn<M>::equalRefs(const MRBase& r1, const MRBase& r2) const {
   return ((r1.getType() == r2.getType()) && (r1.offset() == r2.offset()));
 }
 

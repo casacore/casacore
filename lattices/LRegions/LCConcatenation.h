@@ -106,8 +106,8 @@ class LCConcatenation : public LCRegionMulti {
   // The extend range has to be given as a 1-dimensional box.
   // The default range is the entire axis.
   // <group>
-  LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis);
-  LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis,
+  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis);
+  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis,
                   const LCBox& extendRange);
   // </group>
 
@@ -142,7 +142,7 @@ class LCConcatenation : public LCRegionMulti {
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
@@ -151,7 +151,7 @@ class LCConcatenation : public LCRegionMulti {
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
+  void multiGetSlice(Array<bool>& buffer, const Slicer& section) override;
 
   // This function is needed here because the niceCursorShape of the
   // contributing region does not make any sense (other dimensionality).

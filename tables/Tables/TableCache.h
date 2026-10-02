@@ -124,7 +124,7 @@ class TableCache {
   // If <src>all=True</src> all such tables will be unlocked.
   // If <src>all=False</src> only tables requested by another process
   // will be unlocked.
-  void relinquishAutoLocks(Bool all);
+  void relinquishAutoLocks(bool all);
 
   // Get the names of the tables in the cache.
   Vector<String> getTableNames() const;
@@ -137,7 +137,7 @@ class TableCache {
   Vector<String> getLockedTables(FileLocker::LockType, int lockOption);
 
   // Flush a possibly cached Table.
-  void flushTable(const String& tableName, Bool fsync, Bool recursive);
+  void flushTable(const String& tableName, bool fsync, bool recursive);
 
   // Look in the cache if the table is already open.
   // If so, check if table option matches.

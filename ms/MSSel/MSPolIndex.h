@@ -91,7 +91,7 @@ class MSPolarizationIndex {
   // ///////////////////  Add for MS selection //////////////////////////////
   // Only Look up POLARIZATION_ID's for a given set of polarization correlation
   // types
-  Vector<Int> matchCorrType(const Vector<Int>& corrType, Bool exactMatch = True);
+  Vector<Int> matchCorrType(const Vector<Int>& corrType, bool exactMatch = true);
 
  private:
   // Disallow null constructor

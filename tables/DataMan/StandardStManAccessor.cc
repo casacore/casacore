@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ROStandardStManAccessor::ROStandardStManAccessor(const Table& table, const String& name,
-                                                 Bool byColumn)
+                                                 bool byColumn)
     : RODataManAccessor(table, name, byColumn), itsSSMPtr(0) {
   itsSSMPtr = dynamic_cast<SSMBase*>(baseDataManager());
   if (itsSSMPtr == 0) {
@@ -53,7 +53,7 @@ ROStandardStManAccessor& ROStandardStManAccessor::operator=(const ROStandardStMa
   return *this;
 }
 
-void ROStandardStManAccessor::setCacheSize(uInt aSize, Bool canExceedNrBuckets) {
+void ROStandardStManAccessor::setCacheSize(uInt aSize, bool canExceedNrBuckets) {
   itsSSMPtr->setCacheSize(aSize, canExceedNrBuckets);
 }
 

@@ -131,10 +131,10 @@ int main(int argc, char* argv[]) {
     if (argc > 6) {
       IPosition cubeShape(3, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
       IPosition tileShape(3, atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
-      Bool useHDF = (argc > 7 && argv[7][0] == '1');
+      bool useHDF = (argc > 7 && argv[7][0] == '1');
       makeCube(useHDF, cubeShape, tileShape);
     } else {
-      Bool useHDF = (argc > 2 && argv[2][0] == '1');
+      bool useHDF = (argc > 2 && argv[2][0] == '1');
       if (useHDF) {
         cout << "HDF5 ";
         getCube(HDF5Lattice<Float>("tLatticePerf_tmp.hdf"), argv[1]);

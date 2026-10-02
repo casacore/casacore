@@ -36,9 +36,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LCSlicer::LCSlicer()
-    : itsIsFractional(False), itsIsAbsolute(False), itsIsUnspecified(True), itsIsStrided(False) {}
+    : itsIsFractional(false), itsIsAbsolute(false), itsIsUnspecified(true), itsIsStrided(false) {}
 
-LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, Bool fractional,
+LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, bool fractional,
                    RegionType::AbsRelType absRel)
     : itsBlc(blc.copy()), itsTrc(trc.copy()), itsInc(blc.size()) {
   itsInc = 1;
@@ -47,15 +47,15 @@ LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, Bool frac
 }
 
 LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vector<Float>& inc,
-                   Bool fractional, RegionType::AbsRelType absRel)
+                   bool fractional, RegionType::AbsRelType absRel)
     : itsBlc(blc.copy()), itsTrc(trc.copy()), itsInc(inc.copy()) {
   fillFlags(fractional, absRel, blc.size(), trc.size(), inc.size());
   fill();
 }
 
 LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vector<Float>& inc,
-                   const Vector<Bool>& fractionalBlc, const Vector<Bool>& fractionalTrc,
-                   const Vector<Bool>& fractionalInc, const Vector<Int>& absRelBlc,
+                   const Vector<bool>& fractionalBlc, const Vector<bool>& fractionalTrc,
+                   const Vector<bool>& fractionalInc, const Vector<Int>& absRelBlc,
                    const Vector<Int>& absRelTrc)
     : itsBlc(blc.copy()),
       itsTrc(trc.copy()),
@@ -68,7 +68,7 @@ LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vec
   fill();
 }
 
-LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, Bool fractional,
+LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, bool fractional,
                    RegionType::AbsRelType absRel) {
   Vector<Double> inc(blc.size());
   inc = 1;
@@ -77,14 +77,14 @@ LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, Bool fr
 }
 
 LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
-                   Bool fractional, RegionType::AbsRelType absRel) {
+                   bool fractional, RegionType::AbsRelType absRel) {
   fillFlags(fractional, absRel, blc.size(), trc.size(), inc.size());
   fillFromDouble(blc, trc, inc);
 }
 
 LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
-                   const Vector<Bool>& fractionalBlc, const Vector<Bool>& fractionalTrc,
-                   const Vector<Bool>& fractionalInc, const Vector<Int>& absRelBlc,
+                   const Vector<bool>& fractionalBlc, const Vector<bool>& fractionalTrc,
+                   const Vector<bool>& fractionalInc, const Vector<Int>& absRelBlc,
                    const Vector<Int>& absRelTrc)
     : itsFracBlc(fractionalBlc.copy()),
       itsFracTrc(fractionalTrc.copy()),
@@ -96,20 +96,20 @@ LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const V
 
 LCSlicer::LCSlicer(const Slicer& slicer) {
   uInt ndim = slicer.ndim();
-  fillFlags(False, False, ndim, ndim, ndim);
+  fillFlags(false, false, ndim, ndim, ndim);
   fillFromIPosition(slicer.start(), slicer.end(), slicer.stride());
 }
 
 LCSlicer::LCSlicer(const IPosition& blc, const IPosition& trc, RegionType::AbsRelType absRel) {
   IPosition inc(blc.size());
   inc = 1;
-  fillFlags(False, absRel, blc.size(), trc.size(), inc.size());
+  fillFlags(false, absRel, blc.size(), trc.size(), inc.size());
   fillFromIPosition(blc, trc, inc);
 }
 
 LCSlicer::LCSlicer(const IPosition& blc, const IPosition& trc, const IPosition& inc,
                    RegionType::AbsRelType absRel) {
-  fillFlags(False, absRel, blc.size(), trc.size(), inc.size());
+  fillFlags(false, absRel, blc.size(), trc.size(), inc.size());
   fillFromIPosition(blc, trc, inc);
 }
 
@@ -120,9 +120,9 @@ LCSlicer::LCSlicer(const IPosition& blc, const IPosition& trc, const IPosition& 
       itsFracInc(inc.size()),
       itsAbsRelBlc(absRelBlc.copy()),
       itsAbsRelTrc(absRelTrc.copy()) {
-  itsFracBlc = False;
-  itsFracTrc = False;
-  itsFracInc = False;
+  itsFracBlc = false;
+  itsFracTrc = false;
+  itsFracInc = false;
   fillFromIPosition(blc, trc, inc);
 }
 
@@ -171,28 +171,28 @@ LCSlicer& LCSlicer::operator=(const LCSlicer& other) {
   return *this;
 }
 
-Bool LCSlicer::operator==(const LCSlicer& other) const {
+bool LCSlicer::operator==(const LCSlicer& other) const {
   // Compare private data.
   if (itsBlc.size() != other.itsBlc.size() || itsIsFractional != other.itsIsFractional ||
       itsIsAbsolute != other.itsIsAbsolute || itsIsUnspecified != other.itsIsUnspecified ||
       itsIsStrided != other.itsIsStrided) {
-    return False;
+    return false;
   }
   for (uInt i = 0; i < itsInc.size(); i++) {
     if (!near(itsBlc[i], other.itsBlc[i]) || !near(itsTrc[i], other.itsTrc[i]) ||
         !near(itsInc[i], other.itsInc[i])) {
-      return False;
+      return false;
     }
     if (itsFracBlc[i] != other.itsFracBlc[i] || itsFracTrc[i] != other.itsFracTrc[i] ||
         itsFracInc[i] != other.itsFracInc[i] || itsAbsRelBlc[i] != other.itsAbsRelBlc[i] ||
         itsAbsRelTrc[i] != other.itsAbsRelTrc[i]) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-void LCSlicer::fillFlags(Bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uInt nrinc) {
+void LCSlicer::fillFlags(bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uInt nrinc) {
   itsFracBlc.resize(nrblc);
   itsFracTrc.resize(nrtrc);
   itsFracInc.resize(nrinc);
@@ -200,7 +200,7 @@ void LCSlicer::fillFlags(Bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uI
   itsAbsRelTrc.resize(nrtrc);
   itsFracBlc = fractional;
   itsFracTrc = fractional;
-  itsFracInc = False;
+  itsFracInc = false;
   itsAbsRelBlc = absRel;
   itsAbsRelTrc = absRel;
 }
@@ -264,59 +264,59 @@ void LCSlicer::fill() {
   // Pad with default values.
   uInt nr = max(max(nrblc, nrtrc), nrinc);
   if (nrblc < nr) {
-    itsBlc.resize(nr, True);
-    itsFracBlc.resize(nr, True);
-    itsAbsRelBlc.resize(nr, True);
+    itsBlc.resize(nr, true);
+    itsFracBlc.resize(nr, true);
+    itsAbsRelBlc.resize(nr, true);
     for (uInt i = nrblc; i < nr; i++) {
       itsBlc[i] = Slicer::MimicSource;
-      itsFracBlc[i] = False;
+      itsFracBlc[i] = false;
       itsAbsRelBlc[i] = RegionType::Abs;
     }
   }
   if (nrtrc < nr) {
-    itsTrc.resize(nr, True);
-    itsFracTrc.resize(nr, True);
-    itsAbsRelTrc.resize(nr, True);
+    itsTrc.resize(nr, true);
+    itsFracTrc.resize(nr, true);
+    itsAbsRelTrc.resize(nr, true);
     for (uInt i = nrtrc; i < nr; i++) {
       itsTrc[i] = Slicer::MimicSource;
-      itsFracTrc[i] = False;
+      itsFracTrc[i] = false;
       itsAbsRelTrc[i] = RegionType::Abs;
     }
   }
   if (nrinc < nr) {
-    itsInc.resize(nr, True);
-    itsFracInc.resize(nr, True);
+    itsInc.resize(nr, true);
+    itsFracInc.resize(nr, true);
     for (uInt i = nrinc; i < nr; i++) {
       itsInc[i] = 1;
-      itsFracInc[i] = False;
+      itsFracInc[i] = false;
     }
   }
   // Check if the region is absloute, fractional, unspecified, or strided.
   // The float representation of MimicSource (-2147483646) is inaccurate in the
   // last digits, so be relaxed in testing it. Use a margin of 10.
-  itsIsFractional = False;
-  itsIsAbsolute = True;
-  itsIsUnspecified = False;
-  itsIsStrided = False;
+  itsIsFractional = false;
+  itsIsAbsolute = true;
+  itsIsUnspecified = false;
+  itsIsStrided = false;
   for (uInt i = 0; i < nr; i++) {
     if (static_cast<Int64>(itsBlc[i]) < Slicer::MimicSource + 10) {
-      itsIsUnspecified = True;
-      itsFracBlc[i] = False;
+      itsIsUnspecified = true;
+      itsFracBlc[i] = false;
       itsAbsRelBlc[i] = RegionType::Abs;
     }
     if (static_cast<Int64>(itsTrc[i]) < Slicer::MimicSource + 10) {
-      itsIsUnspecified = True;
-      itsFracTrc[i] = False;
+      itsIsUnspecified = true;
+      itsFracTrc[i] = false;
       itsAbsRelTrc[i] = RegionType::Abs;
     }
     if (itsFracBlc[i] || itsFracTrc[i] || itsFracInc[i]) {
-      itsIsFractional = True;
+      itsIsFractional = true;
     }
     if (itsAbsRelBlc != RegionType::Abs || itsAbsRelTrc != RegionType::Abs) {
-      itsIsAbsolute = False;
+      itsIsAbsolute = false;
     }
     if (itsInc[i] != 1 || itsFracInc[i]) {
-      itsIsStrided = True;
+      itsIsStrided = true;
     }
   }
 }
@@ -427,7 +427,7 @@ Slicer LCSlicer::toSlicer(const Vector<Float>& referencePixel,
   return Slicer(blc, trc, inc, Slicer::endIsLast);
 }
 
-Bool LCSlicer::isComplete() const {
+bool LCSlicer::isComplete() const {
   return (!itsIsFractional && itsIsAbsolute && !itsIsUnspecified);
 }
 
@@ -441,7 +441,7 @@ TableRecord LCSlicer::toRecord(const String&) const {
   rec.define("name", className());
   rec.define("comment", itsComment);
   // Write 1-relative.
-  rec.define("oneRel", True);
+  rec.define("oneRel", true);
   Vector<Float> blc(itsBlc.copy());
   Vector<Float> trc(itsTrc.copy());
   for (uInt i = 0; i < itsBlc.size(); i++) {
@@ -471,11 +471,11 @@ LCSlicer* LCSlicer::fromRecord(const TableRecord& rec, const String&) {
                   "record does not contain an LCSlicer"));
   }
   // If 1-relative, subtract 1 from blc and trc.
-  Bool oneRel = rec.asBool("oneRel");
+  bool oneRel = rec.asBool("oneRel");
   Vector<Float> blc(rec.toArrayFloat("blc").copy());
   Vector<Float> trc(rec.toArrayFloat("trc").copy());
-  Vector<Bool> fracblc(rec.toArrayBool("fracblc"));
-  Vector<Bool> fractrc(rec.toArrayBool("fractrc"));
+  Vector<bool> fracblc(rec.toArrayBool("fracblc"));
+  Vector<bool> fractrc(rec.toArrayBool("fractrc"));
   Vector<Int> arblc(rec.toArrayInt("arblc"));
   Vector<Int> artrc(rec.toArrayInt("artrc"));
   // If blc,trc is 1-relative, make it 0-relative by subtracting 1.

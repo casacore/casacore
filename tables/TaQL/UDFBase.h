@@ -244,14 +244,14 @@ class UDFBase {
   // Evaluate the function and return the result.
   // Their default implementations throw a "not implemented" exception.
   // <group>
-  virtual Bool getBool(const TableExprId& id);
+  virtual bool getBool(const TableExprId& id);
   virtual Int64 getInt(const TableExprId& id);
   virtual Double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
   virtual TaqlRegex getRegex(const TableExprId& id);
   virtual MVTime getDate(const TableExprId& id);
-  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
@@ -303,10 +303,10 @@ class UDFBase {
   // Define if the result is constant (e.g. if all arguments are constant).
   // If this function is not called by the setup function of the derived
   // class, the result is not constant.
-  void setConstant(Bool isConstant);
+  void setConstant(bool isConstant);
 
   // Define if the UDF is an aggregate function (usually used in GROUPBY).
-  void setAggregate(Bool isAggregate);
+  void setAggregate(bool isAggregate);
 
   // Let a derived class recreate its column objects in case a selection
   // has to be applied.
@@ -333,13 +333,13 @@ class UDFBase {
   const IPosition& shape() const { return itsShape; }
 
   // Tell if the UDF gives a constant result.
-  Bool isConstant() const { return itsIsConstant; }
+  bool isConstant() const { return itsIsConstant; }
 
   // Tell if the UDF is an aggregate function.
-  Bool isAggregate() const { return itsIsAggregate; }
+  bool isAggregate() const { return itsIsAggregate; }
 
   // Do not apply the selection.
-  void disableApplySelection() { itsApplySelection = False; }
+  void disableApplySelection() { itsApplySelection = false; }
 
   // If needed, let the UDF re-create column objects for a selection of rows.
   // It calls the function recreateColumnObjects.
@@ -358,9 +358,9 @@ class UDFBase {
   IPosition itsShape;
   String itsUnit;
   Record itsAttributes;
-  Bool itsIsConstant;
-  Bool itsIsAggregate;
-  Bool itsApplySelection;
+  bool itsIsConstant;
+  bool itsIsAggregate;
+  bool itsApplySelection;
   // # The registry is used for two purposes:
   // # 1. It is a map of known function names (lib.func) to funcptr.
   // #    Function name * means that the library can contain any function,

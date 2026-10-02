@@ -65,7 +65,7 @@ namespace TableParseUtil {
 // ordinary table name to handle .. in a case such as '../my.tab::SUB' correctly.
 Table getTable(Int tabnr, const String& name, const Table& ftab,
                const std::vector<const Table*>& tempTables,
-               const std::vector<TableParseQuery*>& stack, Bool alwaysOpen) {
+               const std::vector<TableParseQuery*>& stack, bool alwaysOpen) {
   // A table from a nested query.
   if (!ftab.isNull()) {
     return ftab;
@@ -97,7 +97,7 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
     }
     if (table.isNull()) {
       // Not a table name. Try it as first table in previous query.
-      table = TableParseTableList::findTable(String(), True, stack).table();
+      table = TableParseTableList::findTable(String(), true, stack).table();
       if (table.isNull()) {
         throw TableInvExpr(":: or . is invalid in table name " + name +
                            ": no previous table available");
@@ -112,7 +112,7 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
       table = *(tempTables[tabnr - 1]);
     } else {
       // See if the first part is a shorthand.
-      table = TableParseTableList::findTable(parts[0], True, stack).table();
+      table = TableParseTableList::findTable(parts[0], true, stack).table();
       if (table.isNull()) {
         // It was not something like shorthand.column, thus try as a full name.
         // However, do not open if alwaysOpen=False.
@@ -184,18 +184,18 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
 // For columns one can go a bit further by accepting something like:
 //  col.subtable[select expression resulting in scalar]
 // which is something for the far away future.
-Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames,
-               const String& name, Bool checkError, Bool isKeyword, Bool allowNoKey) {
+bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames,
+               const String& name, bool checkError, bool isKeyword, bool allowNoKey) {
   // # Make a copy, because some String functions are non-const.
   // # Usually the name consists of a columnName only, so use that.
   // # A keyword is given if :: is part of the name or if isKeyword is set.
   columnName = name;
   String restName;
-  Bool isKey = isKeyword;
+  bool isKey = isKeyword;
   const size_t sep_index = columnName.find("::");
   if (sep_index != std::string::npos) {
     // The name contains ::, thus represents a keyword name.
-    isKey = True;
+    isKey = true;
     restName = columnName.substr(sep_index + 2);
   } else if (isKey) {
     // It is a keyword, but no ::.
@@ -213,7 +213,7 @@ Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
       if (checkError) {
         throw(TableInvExpr("No keyword given in name " + name));
       }
-      return False;
+      return false;
     }
     fldNam = stringToVector(restName, '.');
     // The part before the :: can be empty, an optional shorthand,
@@ -236,7 +236,7 @@ Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
                                " is invalid: More"
                                " than 2 name parts given before ::");
           }
-          return False;
+          return false;
       }
     }
   } else {
@@ -254,7 +254,7 @@ Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
       if (checkError) {
         throw(TableInvExpr("No name given"));
       }
-      return False;
+      return false;
     }
     if (fldNam.size() == 1) {
       stfld = 0;  // one part simply means column
@@ -269,7 +269,7 @@ Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
       if (checkError) {
         throw(TableInvExpr("No column given in name " + name));
       }
-      return False;
+      return false;
     }
   }
   fieldNames.resize(fldNam.size() - stfld);
@@ -278,7 +278,7 @@ Bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
       if (checkError) {
         throw(TableInvExpr("Name " + name + " has empty field names"));
       }
-      return False;
+      return false;
     }
     fieldNames(i - stfld) = fldNam(i);
   }
@@ -291,7 +291,7 @@ Table openParentTable(const String& fullName, const String& subTableName,
   // Remove ::subtableName from the full table name to get the parent's name.
   String tableName(fullName.substr(0, fullName.size() - subTableName.size() - 2));
   // Open the parent table.
-  Table parent = getTable(-1, tableName, Table(), tempTables, stack, True);
+  Table parent = getTable(-1, tableName, Table(), tempTables, stack, true);
   // Create the subtable and define the keyword in the parent referring it.
   String parentName = parent.tableName();
   if (parentName.empty()) {
@@ -453,7 +453,7 @@ TableExprNode getColSet(const Table& table) {
     switch (colDesc.dataType()) {
       case TpBool:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstBool>(ScalarColumn<Bool>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstBool>(ScalarColumn<bool>(tabcol).getColumn());
         break;
       case TpUChar:
         tsnptr =
@@ -506,7 +506,7 @@ TableExprNode getColSet(const Table& table) {
     switch (colDesc.dataType()) {
       case TpBool:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstBool>(ArrayColumn<Bool>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstBool>(ArrayColumn<bool>(tabcol).getColumn());
         break;
       case TpUChar:
         tsnptr =

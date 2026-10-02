@@ -102,7 +102,7 @@ MDirection MSFieldColumns::interpolateDirMeas(const Array<MDirection>& arrDir, I
   }
 }
 
-void MSFieldColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSFieldColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
@@ -211,11 +211,11 @@ Quantity MSFieldColumns::rho(rownr_t row, Double interTime) const {
   return rval;
 }
 
-Bool MSFieldColumns::needInterTime(rownr_t row) const {
+bool MSFieldColumns::needInterTime(rownr_t row) const {
   if ((measCometsV_p.size() > 0 && ephemerisId()(row) >= 0) || (numPoly()(row) > 0)) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 Int MSFieldColumns::measCometIndex(rownr_t row) const {
@@ -238,46 +238,46 @@ String MSFieldColumns::ephemPath(rownr_t row) const {
   return rval;
 }
 
-Bool MSFieldColumns::matchReferenceDir(rownr_t row, const MVDirection& dirVal,
+bool MSFieldColumns::matchReferenceDir(rownr_t row, const MVDirection& dirVal,
                                        const Double& sepInRad, MVDirection& mvdir,
                                        Double time) const {
   try {
     mvdir = referenceDirMeas(row, time).getAngle();
   } catch (std::exception& x) {
-    return False;
+    return false;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
-    return True;
+    return true;
   } else {
-    return False;
+    return false;
   }
 }
 
-Bool MSFieldColumns::matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
+bool MSFieldColumns::matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
                                    MVDirection& mvdir, Double time) const {
   try {
     mvdir = delayDirMeas(row, time).getAngle();
   } catch (std::exception& x) {
-    return False;
+    return false;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
-    return True;
+    return true;
   } else {
-    return False;
+    return false;
   }
 }
 
-Bool MSFieldColumns::matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
+bool MSFieldColumns::matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
                                    MVDirection& mvdir, Double time) const {
   try {
     mvdir = phaseDirMeas(row, time).getAngle();
   } catch (std::exception& x) {
-    return False;
+    return false;
   }
   if (dirVal.separation(mvdir) < sepInRad) {
-    return True;
+    return true;
   } else {
-    return False;
+    return false;
   }
 }
 
@@ -373,7 +373,7 @@ void MSFieldColumns::updateMeasComets() {
       ss << theEphId;
       Regex ephemTableRegex(Regex::fromPattern("EPHEM" + ss.str() + "_*\\.tab"));
       Vector<String> candidates =
-          fieldDir.find(ephemTableRegex, True, False);  // followSymLinks=True, recursive=False
+          fieldDir.find(ephemTableRegex, true, false);  // followSymLinks=True, recursive=False
       if (candidates.size() == 0) {
         throw(AipsError("Ephemeris table " + ephemTableRegex.regexp() + " not found in " +
                         measCometsPath_p));
@@ -385,7 +385,7 @@ void MSFieldColumns::updateMeasComets() {
       // create the new MeasComet object and store pointer to it in measCometsV_p
       MeasComet* mC = new MeasComet(ephemTablePath);
       size_t nMeasCom = measCometsV_p.size();
-      measCometsV_p.resize(nMeasCom + 1, True);
+      measCometsV_p.resize(nMeasCom + 1, true);
       measCometsV_p(nMeasCom) = mC;
       // remember the connection ephId to the measCometsV_p index
       ephIdToMeasComet_p.insert(std::make_pair(theEphId, nMeasCom));
@@ -416,7 +416,7 @@ MDirection MSFieldColumns::extractDirMeas(const MDirection& offsetDir, Int index
     MVDirection mvxdir(xmvpos.getAngle());
     MVDirection mvodir(offsetDir.getAngle());
 
-    mvxdir.shift(offsetDir.getAngle(), True);  // shift in true angle, i.e. correcting for DEC
+    mvxdir.shift(offsetDir.getAngle(), true);  // shift in true angle, i.e. correcting for DEC
 
     return MDirection(mvxdir, measCometsV_p(index)->getType());
   }

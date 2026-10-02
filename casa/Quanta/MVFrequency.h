@@ -131,10 +131,10 @@ class MVFrequency : public MeasValue {
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVFrequency &other) const;
-  Bool operator!=(const MVFrequency &other) const;
-  Bool near(const MVFrequency &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVFrequency &other, Double tol = 1e-13) const;
+  bool operator==(const MVFrequency &other) const;
+  bool operator!=(const MVFrequency &other) const;
+  bool near(const MVFrequency &other, Double tol = 1e-13) const;
+  bool nearAbs(const MVFrequency &other, Double tol = 1e-13) const;
   // </group>
 
   // # General member functions
@@ -166,7 +166,7 @@ class MVFrequency : public MeasValue {
   virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 
  private:
   // # Data
@@ -175,7 +175,7 @@ class MVFrequency : public MeasValue {
 
   // # Member functions
   //  Get correct data type conversion factor from input Quantum
-  Double makeF(Double v, const Unit &dt, Bool rev = False) const;
+  Double makeF(Double v, const Unit &dt, bool rev = false) const;
 };
 
 }  // namespace casacore

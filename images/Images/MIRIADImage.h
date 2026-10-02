@@ -133,7 +133,7 @@ class MIRIADImage : public ImageInterface<Float> {
   // in the MIRIAD disk file.
   // <group>
 #if 0
-  virtual Bool setUnits(const Unit& newUnits);
+  virtual bool setUnits(const Unit& newUnits);
   virtual Unit units() const;
 #endif
   // </group>
@@ -143,7 +143,7 @@ class MIRIADImage : public ImageInterface<Float> {
   // MiscInfo record, but it will not be stored with the MIRIAD file
   // <group>
   virtual const RecordInterface& miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface& newInfo);
+  virtual bool setMiscInfo(const RecordInterface& newInfo);
   // </group>
 
   // # MaskedLattice virtual functions
@@ -151,20 +151,20 @@ class MIRIADImage : public ImageInterface<Float> {
   // Has the object really a mask?  The MIRIADImage always
   // has a pixel mask and never has a region mask so this
   // should always return True
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // MIRIADimage always has a pixel mask so should return True
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  MIRIADImage always has a pixel mask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Do the actual get of the mask data.   The return value is always
   // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Get the region used.  There is no region.
   // Always returns 0.
@@ -174,7 +174,7 @@ class MIRIADImage : public ImageInterface<Float> {
 
   // Do the actual get of the data.
   // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The MIRIADImage is not writable, so this throws an exception.
   virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
@@ -183,16 +183,16 @@ class MIRIADImage : public ImageInterface<Float> {
   // # LatticeBase virtual functions
 
   // The lattice is paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // The MIRIADImage is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // return the shape of the MIRIADImage
   virtual IPosition shape() const;
@@ -213,7 +213,7 @@ class MIRIADImage : public ImageInterface<Float> {
   virtual void reopen();
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Return the (internal) data type (TpFloat or TpShort).
   DataType dataType() const { return dataType_p; }
@@ -249,15 +249,15 @@ class MIRIADImage : public ImageInterface<Float> {
   Unit unit_p;
   Record rec_p;
   std::shared_ptr<TiledFileAccess> pTiledFile_p;
-  Lattice<Bool>* pPixelMask_p;
+  Lattice<bool>* pPixelMask_p;
   //  Float          scale_p;
   //  Float          offset_p;
   //  Short          magic_p;
   TiledShape shape_p;
-  Bool hasBlanks_p;
+  bool hasBlanks_p;
   DataType dataType_p;  // always float's for miriad
   Int64 fileOffset_p;   // always 4 for direct (tiled) access
-  Bool isClosed_p;
+  bool isClosed_p;
 
   // Reopen the image if needed.
   void reopenIfNeeded() const {
@@ -272,7 +272,7 @@ class MIRIADImage : public ImageInterface<Float> {
 
   // Fish things out of the MIRIAD file
   void getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& info,
-                          Unit& brightnessUnit, Record& miscInfo, Bool& hasBlanks,
+                          Unit& brightnessUnit, Record& miscInfo, bool& hasBlanks,
                           const String& name);
 
   // <group>

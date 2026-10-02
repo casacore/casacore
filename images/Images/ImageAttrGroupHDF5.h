@@ -56,17 +56,17 @@ namespace casacore {
 class ImageAttrGroupHDF5 : public ImageAttrGroup {
  public:
   // The default constructor creates a null object.
-  explicit ImageAttrGroupHDF5(Bool isWritable = False)
-      : itsChanged(False), itsCanWrite(isWritable) {}
+  explicit ImageAttrGroupHDF5(bool isWritable = false)
+      : itsChanged(false), itsCanWrite(isWritable) {}
 
   // Construct the object for an attribute group in the image.
   // If present, it reads all attributes.
-  ImageAttrGroupHDF5(const HDF5Group& image, const String& attrGroupName, Bool writable);
+  ImageAttrGroupHDF5(const HDF5Group& image, const String& attrGroupName, bool writable);
 
   virtual ~ImageAttrGroupHDF5();
 
   // Test if it is a null object.
-  Bool isNull() const { return itsRecord.empty(); }
+  bool isNull() const { return itsRecord.empty(); }
 
   // Flush the attibrutes if needed.
   void flush(HDF5Group& image, const String& attrGroupName);
@@ -75,7 +75,7 @@ class ImageAttrGroupHDF5 : public ImageAttrGroup {
   virtual uInt nrows() const;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr(const String& attrName) const;
+  virtual bool hasAttr(const String& attrName) const;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const;
@@ -113,8 +113,8 @@ class ImageAttrGroupHDF5 : public ImageAttrGroup {
 
   // # Data members.
   Record itsRecord;  // # Record containing all attributes (subrecord per row)
-  Bool itsChanged;   // # Has the Record changed?
-  Bool itsCanWrite;  // # Can attributes be written?
+  bool itsChanged;   // # Has the Record changed?
+  bool itsCanWrite;  // # Can attributes be written?
 };
 
 }  // namespace casacore

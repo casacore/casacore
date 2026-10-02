@@ -246,7 +246,7 @@ int main() {
   gauss[2] = AutoDiff<Double>(10, 3, 2);
 
   // Set the mask of center to false to mask it
-  gauss.mask(1) = False;
+  gauss.mask(1) = false;
 
   // Set the function
   fitter.setFunction(gauss);
@@ -437,8 +437,8 @@ int main() {
   gauss2d_auto[Gaussian2D<AutoDiff<Double>>::RATIO] =
       AutoDiff<Double>(1.0, 6, Gaussian2D<AutoDiff<Double>>::RATIO);
   gauss2d_auto.setPA(AutoDiff<Double>(0.05, 6, Gaussian2D<AutoDiff<Double>>::PANGLE));
-  gauss2d_auto.mask(4) = False;
-  gauss2d_auto.mask(5) = False;
+  gauss2d_auto.mask(4) = false;
+  gauss2d_auto.mask(5) = false;
 
   Gaussian2D<AutoDiff<Double>> gauss2d2 = gauss2d_auto;
 

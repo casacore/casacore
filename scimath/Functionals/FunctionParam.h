@@ -120,8 +120,8 @@ class FunctionParam {
   // </group>
   // Compare two parameter sets for equal size, values and masks.
   // <group>
-  Bool operator==(const FunctionParam<T> &other) const;
-  Bool operator!=(const FunctionParam<T> &other) const;
+  bool operator==(const FunctionParam<T> &other) const;
+  bool operator!=(const FunctionParam<T> &other) const;
   // </group>
 
   // # Member functions
@@ -137,8 +137,8 @@ class FunctionParam {
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  Bool &mask(const uInt n);
-  const Bool &mask(const uInt n) const { return mask_p[n]; }
+  bool &mask(const uInt n);
+  const bool &mask(const uInt n) const { return mask_p[n]; }
   // </group>
 
   // Get all parameters at once.  Returns zero length
@@ -151,11 +151,11 @@ class FunctionParam {
 
   // Get all parameter masks at once.  Returns zero length
   // Vector if there are no parameters.
-  const Vector<Bool> &getParamMasks() const { return mask_p; }
+  const Vector<bool> &getParamMasks() const { return mask_p; }
 
   // Set all parameter masks at once. Only the minimum of the input number and
   // the object number of parameters will be set.
-  void setParamMasks(const Vector<Bool> &masks);
+  void setParamMasks(const Vector<bool> &masks);
 
   // Operations on the masked parameters only. For possible re-use the
   // results are cached.
@@ -179,7 +179,7 @@ class FunctionParam {
   // Parameters
   Vector<T> param_p;
   // Masks
-  Vector<Bool> mask_p;
+  Vector<bool> mask_p;
   // Cached masked data
   mutable Vector<T> *maskedPtr_p;
 

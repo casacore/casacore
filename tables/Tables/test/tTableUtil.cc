@@ -129,11 +129,11 @@ void testDelete() {
   }
   TableUtil::deleteTable(mainName + "::SubTab2::SubSubTab5");
   // Check it is deleted.
-  Bool ok = False;
+  bool ok = false;
   try {
     Table tab(TableUtil::openTable(mainName + "::SubTab2::SubSubTab5"));
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit(ok);
@@ -146,11 +146,11 @@ void testDelete() {
     // Do the same, but leave the created table open to make deletion fail.
     TableDesc td;
     Table tab(TableUtil::createTable(mainName + "::SubTab2::SubSubTab5", td, Table::NewNoReplace));
-    ok = False;
+    ok = false;
     try {
       TableUtil::deleteTable(mainName + "::SubTab2::SubSubTab5");
     } catch (const TableError& x) {
-      ok = True;
+      ok = true;
       cout << "Expected exception: " << x.what() << endl;
     }
     AlwaysAssertExit(ok);
@@ -183,40 +183,40 @@ void testReplace() {
 void testErrors() {
   // Do some erroneous createTable calls.
   TableDesc td;
-  Bool ok = False;
+  bool ok = false;
   try {
     // SubTab22 does not exist
     TableUtil::createTable(mainName + "::SubTab22::SubSubTab4", td, Table::New);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit(ok);
-  ok = False;
+  ok = false;
   try {
     // main33data does not exist.
     TableUtil::createTable("tTableUtil_tmp/main33data::SubTab2::SubSubTab4", td,
                            Table::NewNoReplace);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit(ok);
-  ok = False;
+  ok = false;
   try {
     // SubSubTab4 already exists.
     TableUtil::createTable(mainName + "::SubTab2::SubSubTab4", td, Table::NewNoReplace);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit(ok);
-  ok = False;
+  ok = false;
   try {
     // Empty part given.
     TableUtil::createTable("tTableUtil_tmp/main3data::::SubTab2::SubSubTab4", td, Table::New);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit(ok);

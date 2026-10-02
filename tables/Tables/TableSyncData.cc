@@ -42,22 +42,22 @@ TableSyncData::TableSyncData()
 
 TableSyncData::~TableSyncData() { itsAipsIO.close(); }
 
-void TableSyncData::write(rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
-                          const Block<Bool>& dataManChanged) {
+void TableSyncData::write(rownr_t nrrow, uInt nrcolumn, bool tableChanged,
+                          const Block<bool>& dataManChanged) {
   // Increment change counter when the table has changed.
-  Bool changed = False;
+  bool changed = false;
   itsNrrow = nrrow;
   itsNrcolumn = nrcolumn;
   if (tableChanged) {
     itsTableChangeCounter++;
-    changed = True;
+    changed = true;
   }
   // Increment a counter when a data manager has changed.
   // Resize and initialize the block when needed.
   uInt ndmOld = itsDataManChangeCounter.nelements();
   uInt ndmNew = dataManChanged.nelements();
   if (ndmNew != ndmOld) {
-    itsDataManChangeCounter.resize(ndmNew, True, True);
+    itsDataManChangeCounter.resize(ndmNew, true, true);
     for (uInt i = ndmOld; i < ndmNew; i++) {
       itsDataManChangeCounter[i] = 0;
     }
@@ -65,7 +65,7 @@ void TableSyncData::write(rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
   for (uInt i = 0; i < ndmNew; i++) {
     if (dataManChanged[i]) {
       itsDataManChangeCounter[i]++;
-      changed = True;
+      changed = true;
     }
   }
   // Increment modify counter if anything has changed.
@@ -112,8 +112,8 @@ void TableSyncData::write(rownr_t nrrow) {
   itsAipsIO.putend();
 }
 
-Bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
-                         Block<Bool>& dataManChanged) {
+bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged,
+                         Block<bool>& dataManChanged) {
   // Read the data into the memoryIO object.
   // When no columns, don't read the remaining part (then it is used
   // by an external filler).
@@ -135,14 +135,14 @@ Bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
     itsAipsIO >> itsModifyCounter;
   }
   if (nrcol < 0) {
-    tableChanged = True;
-    dataManChanged.set(True);
+    tableChanged = true;
+    dataManChanged.set(true);
     if (itsMemIO->length() > 0) {
       itsAipsIO.getend();
-      return True;  // not empty
+      return true;  // not empty
     }
     nrcolumn = 0;
-    return False;  // empty MemoryIO object
+    return false;  // empty MemoryIO object
   }
   nrcolumn = nrcol;
   // The table has changed when the change counter has changed.
@@ -158,22 +158,22 @@ Bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
   // Resize and initialize the array when needed.
   uInt ndmOld = itsDataManChangeCounter.nelements();
   uInt ndmNew = dataManChangeCounter.nelements();
-  dataManChanged.resize(ndmNew, True, False);
-  dataManChanged.set(False);
+  dataManChanged.resize(ndmNew, true, false);
+  dataManChanged.set(false);
   if (ndmNew != ndmOld) {
-    itsDataManChangeCounter.resize(ndmNew, True, True);
+    itsDataManChangeCounter.resize(ndmNew, true, true);
     for (uInt i = ndmOld; i < ndmNew; i++) {
-      dataManChanged[i] = True;
+      dataManChanged[i] = true;
       itsDataManChangeCounter[i] = dataManChangeCounter[i];
     }
   }
   for (uInt i = 0; i < ndmNew; i++) {
     if (dataManChangeCounter[i] != itsDataManChangeCounter[i]) {
-      dataManChanged[i] = True;
+      dataManChanged[i] = true;
       itsDataManChangeCounter[i] = dataManChangeCounter[i];
     }
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

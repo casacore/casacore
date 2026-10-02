@@ -128,10 +128,10 @@ class MVRadialVelocity : public MeasValue {
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVRadialVelocity &other) const;
-  Bool operator!=(const MVRadialVelocity &other) const;
-  Bool near(const MVRadialVelocity &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVRadialVelocity &other, Double tol = 1e-13) const;
+  bool operator==(const MVRadialVelocity &other) const;
+  bool operator!=(const MVRadialVelocity &other) const;
+  bool near(const MVRadialVelocity &other, Double tol = 1e-13) const;
+  bool nearAbs(const MVRadialVelocity &other, Double tol = 1e-13) const;
   // </group>
 
   // # General member functions
@@ -163,7 +163,7 @@ class MVRadialVelocity : public MeasValue {
   virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
   // Shift the input frequencies to the output frequencies. In the case of
   // simple Double inputs, it is assumed that the values are linearly dependent
   // on frequency. I.e. frequencies given as wavelength or time cannot be used.

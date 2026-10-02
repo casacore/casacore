@@ -124,7 +124,7 @@ class DynBuffer {
   // Get the pointer to the next buffer and its used length in bytes.
   // The function returns a <src>False</src> value if there are no more
   // buffers.
-  Bool next(uInt& usedLength, Char*& ptr);
+  bool next(uInt& usedLength, Char*& ptr);
 
  private:
   // Get the next buffer for storing <src>nrOfValues</src> values of

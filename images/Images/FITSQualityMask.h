@@ -90,7 +90,7 @@ class FITSErrorImage;
 // #   <li> start discussion of this possible extension
 // # </todo>
 
-class FITSQualityMask : public Lattice<Bool> {
+class FITSQualityMask : public Lattice<bool> {
  public:
   // The pointers are not cloned, just copied.
   FITSQualityMask(FITSImage* fitsData, FITSErrorImage* fitsError);
@@ -105,41 +105,41 @@ class FITSQualityMask : public Lattice<Bool> {
   FITSQualityMask& operator=(const FITSQualityMask& other);
 
   // Make a copy of the object (reference semantics).
-  virtual Lattice<Bool>* clone() const;
+  virtual Lattice<bool>* clone() const;
 
   // Is the FITSMask writable? Returns False. Although it is not hard
   // to implement writing of the mask, data values would be lost
   // because of magic blanking.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Return the shape of the Lattice including all degenerate
   // axes (ie. axes with a length of one)
   IPosition shape() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<bool>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values. Throws an exception.
-  virtual void doPutSlice(const Array<Bool>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<bool>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
 
   // Set the switch for filtering 0.0
-  virtual void setFilterZero(Bool filterZero);
+  virtual void setFilterZero(bool filterZero);
 
  private:
   FITSQualityMask();
 
   // Mask out ONLY NaN's
-  Bool filterNaN(bool* pMask, const float* pData, const uInt nelems);
+  bool filterNaN(bool* pMask, const float* pData, const uInt nelems);
 
   // Mask out NaN's and values 0.0
-  Bool filterZeroNaN(Bool* pMask, const Float* pData, const uInt nelems);
+  bool filterZeroNaN(bool* pMask, const Float* pData, const uInt nelems);
 
   //
   FITSImage* itsFitsData;
   FITSErrorImage* itsFitsError;
   Array<Float> itsBuffer;
-  Bool itsFilterZero;
+  bool itsFilterZero;
 };
 
 }  // namespace casacore

@@ -48,7 +48,7 @@ LELSpectralIndex<T>::LELSpectralIndex(const Block<LatticeExprNode>& expr) {
   Block<Int> argType(2);
   argType[0] = arg0_p.dataType();
   argType[1] = argType[0];
-  setAttr(LatticeExprNode::checkArg(expr, argType, True, False));
+  setAttr(LatticeExprNode::checkArg(expr, argType, true, false));
   // Get the spectral coordinate info of the arguments.
   const LELAttribute& attr0 = arg0_p.getAttribute();
   const LELAttribute& attr1 = arg1_p.getAttribute();
@@ -138,7 +138,7 @@ void LELSpectralIndex<T>::eval(LELArray<T>& result, const Slicer& section) const
     }
   }
   // Loop through all the data in that way.
-  Bool deleteRes, deleteTmp;
+  bool deleteRes, deleteTmp;
   T* res = result.value().getStorage(deleteRes);
   T* resd = res;
   const T* tmp = tempr.value().getStorage(deleteTmp);
@@ -175,9 +175,9 @@ String LELSpectralIndex<T>::className() const {
 }
 
 template <class T>
-Bool LELSpectralIndex<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELSpectralIndex<T>::lock(FileLocker::LockType type, uInt nattempts) {
   if (!arg0_p.lock(type, nattempts)) {
-    return False;
+    return false;
   }
   return arg1_p.lock(type, nattempts);
 }
@@ -187,9 +187,9 @@ void LELSpectralIndex<T>::unlock() {
   arg1_p.unlock();
 }
 template <class T>
-Bool LELSpectralIndex<T>::hasLock(FileLocker::LockType type) const {
+bool LELSpectralIndex<T>::hasLock(FileLocker::LockType type) const {
   if (!arg0_p.hasLock(type)) {
-    return False;
+    return false;
   }
   return arg1_p.hasLock(type);
 }
@@ -209,11 +209,11 @@ LELScalar<T> LELSpectralIndex<T>::getScalar() const {
 }
 
 template <class T>
-Bool LELSpectralIndex<T>::prepareScalarExpr() {
+bool LELSpectralIndex<T>::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELSpectralIndex::prepare" << endl;
 #endif
-  return False;
+  return false;
 }
 
 }  // namespace casacore

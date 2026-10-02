@@ -156,7 +156,7 @@ void MSMainColumns::setFlagCategories(const Vector<String>& categories) {
   keywords.define(key, categories);
 }
 
-void MSMainColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSMainColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   timeCentroidMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

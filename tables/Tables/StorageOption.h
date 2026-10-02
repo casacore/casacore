@@ -111,17 +111,17 @@ class StorageOption {
   void setBlockSize(Int blockSize) { itsBlockSize = blockSize; }
 
   // Get the O_DIRECT option.
-  Bool useODirect() const { return itsUseODirect; }
+  bool useODirect() const { return itsUseODirect; }
 
   // Set the O_DIRECT option.
   // It is only set if the OS supports O_DIRECT.
-  void setUseODirect(Bool useODirect);
+  void setUseODirect(bool useODirect);
 
  private:
   Option itsOption;
   Int itsBlockSize;
-  Bool itsUseODirect;
-  Bool itsUseAipsrcODirect;
+  bool itsUseODirect;
+  bool itsUseAipsrcODirect;
 };
 
 }  // namespace casacore

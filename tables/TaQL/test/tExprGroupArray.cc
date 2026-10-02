@@ -51,15 +51,15 @@
 // </summary>
 
 // Keeps track if errors occurred.
-Bool foundError = False;
+bool foundError = false;
 
 #define checkFailure(STR, EXPR)                                     \
   {                                                                 \
-    bool failed = False;                                            \
+    bool failed = false;                                            \
     try {                                                           \
       TableExprNode n(EXPR);                                        \
     } catch (std::exception&) {                                     \
-      failed = True;                                                \
+      failed = true;                                                \
     }                                                               \
     if (!failed) {                                                  \
       cout << STR << ": was expected to fail, but did not" << endl; \
@@ -67,7 +67,7 @@ Bool foundError = False;
   }
 
 void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
-               const Array<Bool>& expVal, const String& str) {
+               const Array<bool>& expVal, const String& str) {
   cout << "Test Bool " << str << endl;
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
@@ -79,9 +79,9 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   }
   funcid.finish();
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  MArray<Bool> val = func->getArrayBool(*funcid.getIds());
+  MArray<bool> val = func->getArrayBool(*funcid.getIds());
   if (!allEQ(val.array(), expVal)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
   }
 }
@@ -104,7 +104,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   funcSets[0]->add(func);
   MArray<Int64> val = func->getArrayInt(*funcid.getIds());
   if (!allEQ(val.array(), expVal)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
   }
   std::vector<std::shared_ptr<std::vector<TableExprId>>> ids(1, funcid.getIds());
@@ -113,7 +113,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   aid.setRownr(0);
   MArray<Int64> val2 = aggr.getArrayInt(aid);
   if (!allEQ(val2.array(), expVal)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val2.array() << "; expected " << expVal << endl;
   }
 }
@@ -133,7 +133,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   MArray<Double> val = func->getArrayDouble(*funcid.getIds());
   if (!allNear(val.array(), expVal, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
   }
 }
@@ -153,7 +153,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   MArray<DComplex> val = func->getArrayDComplex(*funcid.getIds());
   if (!allNear(val.array(), expVal, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
   }
 }
@@ -172,20 +172,20 @@ void checkHist(const TableExprNode& expr, const std::vector<Record>& recs,
   func->finish();
   MArray<Int64> val = func->getArrayInt(std::vector<TableExprId>());
   if (!allEQ(val.array(), expVal)) {
-    foundError = True;
+    foundError = true;
     cout << "ghist: found value " << val.array() << "; expected " << expVal << endl;
   }
 }
 
 void doBoolArr() {
   // Define an Array with values.
-  Cube<Bool> arr(2, 3, 4);
-  arr = False;
-  arr(0, 1, 3) = True;
-  arr(0, 2, 2) = True;
+  Cube<bool> arr(2, 3, 4);
+  arr = false;
+  arr(0, 1, 3) = true;
+  arr(0, 2, 2) = true;
   // Define records containing equal parts of the array.
   std::vector<Record> recs(arr.shape()[2]);
-  MatrixIterator<Bool> iter(arr);
+  MatrixIterator<bool> iter(arr);
   int i = 0;
   while (!iter.pastEnd()) {
     recs[i++].define("fld", iter.matrix());

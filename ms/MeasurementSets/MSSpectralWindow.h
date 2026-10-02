@@ -87,7 +87,7 @@ class MSSpectralWindow : public MSSpectralWindowEnums, public MSTable<MSSpectral
   // <group name=tableLikeConstructors>
   MSSpectralWindow(const String &tableName, TableOption = Table::Old);
   MSSpectralWindow(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSSpectralWindow(const Table &table);
   MSSpectralWindow(const MSSpectralWindow &other);
   // </group>
@@ -120,7 +120,7 @@ class MSSpectralWindow : public MSSpectralWindowEnums, public MSTable<MSSpectral
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

@@ -33,11 +33,11 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasDescBase& column, Bool asArray)
+TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasDescBase& column, bool asArray)
     : itsTMDesc(column.clone()), itsVarPerArr(asArray) {}
 
 TableMeasOffsetDesc::TableMeasOffsetDesc(const Measure& measure)
-    : itsTMDesc(0), itsMeasure(measure), itsVarPerArr(False) {}
+    : itsTMDesc(0), itsMeasure(measure), itsVarPerArr(false) {}
 
 TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasOffsetDesc& that) : itsTMDesc(0) {
   *this = that;

@@ -75,7 +75,7 @@ class Adios2StMan : public DataManager {
   virtual void create64(rownr_t aNrRows);
   virtual rownr_t open64(rownr_t aRowNr, AipsIO &ios);
   virtual rownr_t resync64(rownr_t aRowNr);
-  virtual Bool flush(AipsIO &, Bool doFsync);
+  virtual bool flush(AipsIO &, bool doFsync);
   virtual DataManagerColumn *makeScalarColumn(const String &aName, int aDataType,
                                               const String &aDataTypeID);
   virtual DataManagerColumn *makeDirArrColumn(const String &aName, int aDataType,

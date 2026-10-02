@@ -364,7 +364,7 @@ void toDouble() {
   AlwaysAssertExit(String::toDouble(x) == 0);
   bool ok = false;
   try {
-    y = String::toDouble(x, True);
+    y = String::toDouble(x, true);
   } catch (const std::exception&) {
     ok = true;
   }
@@ -379,7 +379,7 @@ void toFloat() {
   AlwaysAssertExit(String::toFloat(x) == 1.5);
   bool ok = false;
   try {
-    y = String::toFloat(x, True);
+    y = String::toFloat(x, true);
   } catch (const std::exception&) {
     ok = true;
   }
@@ -397,7 +397,7 @@ void toInt() {
   AlwaysAssertExit(String::toInt(x) == 6);
   bool ok = false;
   try {
-    y = String::toInt(x, True);
+    y = String::toInt(x, true);
   } catch (const std::exception&) {
     ok = true;
   }

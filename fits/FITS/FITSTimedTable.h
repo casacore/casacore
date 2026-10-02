@@ -82,18 +82,18 @@ class FITSTimedTable : public FITSTabular {
   FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTime = 0);
   ~FITSTimedTable();
 
-  virtual Bool isValid() const;
+  virtual bool isValid() const;
   virtual const TableRecord &keywords() const;
   virtual const RecordDesc &description() const;
   virtual const Record &units() const;
   virtual const Record &displayFormats() const;
   virtual const Record &nulls() const;
 
-  virtual Bool hasChanged() const { return hasChanged_p; }
-  virtual void resetChangedFlag() { hasChanged_p = False; }
+  virtual bool hasChanged() const { return hasChanged_p; }
+  virtual void resetChangedFlag() { hasChanged_p = false; }
   virtual const String &name() const { return table_p->name(); }
-  virtual Bool pastEnd() const;
-  virtual Bool pastEnd();
+  virtual bool pastEnd() const;
+  virtual bool pastEnd();
   virtual void next();
   // interpolate to the desired time which must be >= the currentTime()
   // This uses a linear interpolation between adjacent floating point values.
@@ -110,17 +110,17 @@ class FITSTimedTable : public FITSTabular {
   // this is True if the last setTime() finished as expected
   // It is False only if the requested time is before the current time
   // and the timed table as just been opened
-  Bool ok() const { return ok_p; }
+  bool ok() const { return ok_p; }
 
   // What will the time of the next row be? Returns a very large number if
   // it is past the end of the table.
   Double nextTime();
 
  private:
-  Bool atStart_p;
-  Bool ok_p;
-  Bool hasChanged_p;
-  Bool changePending_p;
+  bool atStart_p;
+  bool ok_p;
+  bool hasChanged_p;
+  bool changePending_p;
   FITSTabular *table_p;
   Record *row_now_p;
   Record *row_next_p;

@@ -116,12 +116,12 @@ class FITSSpectralUtil {
   //  <li> The combination FELO and RADIO is used (which does not make sense).
   //  <li> The combination VELO and OPTICAL is used (not yet implemented).
   // </ul>
-  static Bool fromFITSHeader(Int &spectralAxis, Double &referenceChannel,
+  static bool fromFITSHeader(Int &spectralAxis, Double &referenceChannel,
                              Double &referenceFrequency, Double &deltaFrequency,
                              Vector<Double> &frequencies, MFrequency::Types &refFrame,
                              MDoppler::Types &velocityPreference, Double &restFrequency,
                              LogIO &logger, const RecordInterface &header, char prefix = 'c',
-                             Bool oneRelative = True);
+                             bool oneRelative = true);
 
   // Nearly the inverse of fromFITSHeader. This returns parameters which could
   // be used in filling in a header record with appropriate values for
@@ -148,14 +148,14 @@ class FITSSpectralUtil {
   // This parameter has an effect only if preferWavelength is True.
 
   // This method always returns True.
-  static Bool toFITSHeader(String &ctype, Double &crval, Double &cdelt, Double &crpix,
-                           String &cunit, Bool &haveAlt, Double &altrval, Double &altrpix,
+  static bool toFITSHeader(String &ctype, Double &crval, Double &cdelt, Double &crpix,
+                           String &cunit, bool &haveAlt, Double &altrval, Double &altrpix,
                            Int &velref, Double &restfreq, String &specsys, LogIO &logger,
                            Double refFrequency, Double refChannel, Double freqIncrement,
-                           MFrequency::Types referenceFrame, Bool preferVelocity = True,
+                           MFrequency::Types referenceFrame, bool preferVelocity = true,
                            MDoppler::Types velocityPreference = MDoppler::OPTICAL,
-                           Bool preferWavelength = False, Bool airWavelength = False,
-                           Bool useDeprecatedCtypes = False);
+                           bool preferWavelength = false, bool airWavelength = false,
+                           bool useDeprecatedCtypes = false);
 
   // Convert a reference frame tag (typically found as the characters
   // after the first 4 characters in a ctype string for the
@@ -170,7 +170,7 @@ class FITSSpectralUtil {
   //  <li> The tag is empty and velref is < 0 (no velref was supplied).
   // </ul>
   // The default value (set when the return value is False) is TOPO.
-  static Bool frameFromTag(MFrequency::Types &referenceFrame, const String &tag, Int velref = -1);
+  static bool frameFromTag(MFrequency::Types &referenceFrame, const String &tag, Int velref = -1);
 
   // Construct a reference frame tag from the given referenceFrame
   // An appropriate velref value is also constructed (this may need
@@ -178,14 +178,14 @@ class FITSSpectralUtil {
   // being used in a FITS file).  This returns False if the
   // reference frame is not recognized.  The value of tag defaults
   // to "-OBS".
-  static Bool tagFromFrame(String &tag, Int &velref, MFrequency::Types referenceFrame);
+  static bool tagFromFrame(String &tag, Int &velref, MFrequency::Types referenceFrame);
 
   // Construct a SPECSYS keyword value from the given referenceFrame
   // This returns False if the reference frame is not recognized.
   // The value of tag defaults to "TOPOCENT".
-  static Bool specsysFromFrame(String &specsys, MFrequency::Types referenceFrame);
+  static bool specsysFromFrame(String &specsys, MFrequency::Types referenceFrame);
 
-  static Bool frameFromSpecsys(MFrequency::Types &refFrame, String &specsys);
+  static bool frameFromSpecsys(MFrequency::Types &refFrame, String &specsys);
 
   // The refractive index of air (argument can be vacuum wavelength or airwavelength)
   // according to Greisen et al., 2006, A&A, 464, 746.

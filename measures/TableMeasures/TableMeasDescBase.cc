@@ -195,7 +195,7 @@ void TableMeasDescBase::resetUnits(const Vector<Unit>& units) {
   }
 }
 
-Bool TableMeasDescBase::hasMeasures(const TableColumn& column) {
+bool TableMeasDescBase::hasMeasures(const TableColumn& column) {
   return column.keywordSet().isDefined("MEASINFO");
 }
 

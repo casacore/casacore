@@ -232,13 +232,13 @@ int main() {
       for (uInt i = 0; i < shape2.nelements(); i++) shape2(i) = shape(i);
       //      cout << "toLCRegion called with shape = " << shape2 << endl;
       //
-      Bool ok = False;
+      bool ok = false;
       try {
         LCRegion* pLCRegion = box3.toLCRegion(cSys2, shape2);
         if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
         //         cout << "aipserror: caught error " << x.what() << endl;
-        ok = True;
+        ok = true;
       }
       if (!ok) {
         throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -260,13 +260,13 @@ int main() {
 
       LCRegion* pLCRegion = 0;
       //      cout << "toLCRegion called with shape = " << shape << endl;
-      Bool ok = False;
+      bool ok = false;
       try {
         pLCRegion = box.toLCRegion(cSys2, shape);
         if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
         //         cout << "aipserror: caught error " << x.what() << endl;
-        ok = True;
+        ok = true;
       }
       if (!ok) {
         throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -351,13 +351,13 @@ int main() {
 
       LCRegion* pLCRegion = 0;
       //      cout << "toLCRegion called with shape = " << shape2 << endl;
-      Bool ok = False;
+      bool ok = false;
       try {
         pLCRegion = box1.toLCRegion(cSys2, shape2);
         if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
         //          cout << "aipserror: caught error " << x.what() << endl;
-        ok = True;
+        ok = true;
       }
       if (!ok) {
         throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -377,14 +377,14 @@ int main() {
       IPosition shape2(cSys2.nPixelAxes() + 1, 10);
       LCRegion* pLCRegion = 0;
 
-      Bool ok = False;
+      bool ok = false;
       try {
         //         cout << "toLCRegion called with shape = " << shape2 << endl;
         pLCRegion = box1.toLCRegion(cSys2, shape2);
         if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
         //         cout << "aipserror: caught expected error " << x.what() << endl;
-        ok = True;
+        ok = true;
       }
       if (!ok) {
         throw(AipsError("Conversion to LCRegion did not fail as expected"));

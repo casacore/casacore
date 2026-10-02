@@ -187,7 +187,7 @@ class TiledCellStMan : public TiledStMan {
   String dataManagerType() const;
 
   // This tiled storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Set the shape and tile shape of the hypercube.
   virtual void setShape(rownr_t rownr, TSMCube* hypercube, const IPosition& shape,
@@ -221,14 +221,14 @@ class TiledCellStMan : public TiledStMan {
 
   // Flush and optionally fsync the data.
   // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool fsync);
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
   virtual void create64(rownr_t nrrow);
 
   // Read the header info.
-  virtual void readHeader(rownr_t nrrow, Bool firstTime);
+  virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // # Declare the data members.
   IPosition defaultTileShape_p;

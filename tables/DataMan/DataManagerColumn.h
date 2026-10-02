@@ -146,7 +146,7 @@ class ArrayBase;
 class DataManagerColumn {
  public:
   // Create a column.
-  DataManagerColumn() : isFixedShape_p(False) {}
+  DataManagerColumn() : isFixedShape_p(false) {}
 
   // Frees up the storage.
   virtual ~DataManagerColumn();
@@ -158,10 +158,10 @@ class DataManagerColumn {
   DataManagerColumn& operator=(const DataManagerColumn&) = delete;
 
   // Set the isFixedShape flag.
-  void setIsFixedShape(Bool isFixedShape) { isFixedShape_p = isFixedShape; }
+  void setIsFixedShape(bool isFixedShape) { isFixedShape_p = isFixedShape; }
 
   // Is this a fixed shape column?
-  Bool isFixedShape() const { return isFixedShape_p; }
+  bool isFixedShape() const { return isFixedShape_p; }
 
   // Get the data type of the column as defined in DataType.h.
   virtual int dataType() const = 0;
@@ -177,7 +177,7 @@ class DataManagerColumn {
   // it is in principle allowed to store data into the column.
   // (It may not be allowed for virtual columns).
   // The default is True.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Set the maximum length of the value (can be used for strings).
   // By default the maximum length is ignored.
@@ -188,7 +188,7 @@ class DataManagerColumn {
   // the isFixedShape_p flag.
   void setFixedShapeColumn(const IPosition& shape) {
     setShapeColumn(shape);
-    isFixedShape_p = True;
+    isFixedShape_p = true;
   }
 
   // Set the shape of an (variable-shaped) array in the given row.
@@ -202,7 +202,7 @@ class DataManagerColumn {
 
   // Is the value shape defined in the given row?
   // By default it returns True.
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   // By default it returns shape(rownr).nelements().
@@ -218,7 +218,7 @@ class DataManagerColumn {
 
   // Can the data manager handle chaging the shape of an existing array?
   // Default is no.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Get access to the ColumnCache object.
   // <group>
@@ -234,7 +234,7 @@ class DataManagerColumn {
   // The compiler complains about hiding virtual functions if you do not
   // declare all virtual functions with the same name in a derived class.
   // <group>
-  void get(rownr_t rownr, Bool* dataPtr) { getBool(rownr, dataPtr); }
+  void get(rownr_t rownr, bool* dataPtr) { getBool(rownr, dataPtr); }
   void get(rownr_t rownr, uChar* dataPtr) { getuChar(rownr, dataPtr); }
   void get(rownr_t rownr, Short* dataPtr) { getShort(rownr, dataPtr); }
   void get(rownr_t rownr, uShort* dataPtr) { getuShort(rownr, dataPtr); }
@@ -258,7 +258,7 @@ class DataManagerColumn {
   // The compiler complains about hiding virtual functions if you do not
   // declare all virtual functions with the same name in a derived class.
   // <group>
-  void put(rownr_t rownr, const Bool* dataPtr) { putBool(rownr, dataPtr); }
+  void put(rownr_t rownr, const bool* dataPtr) { putBool(rownr, dataPtr); }
   void put(rownr_t rownr, const uChar* dataPtr) { putuChar(rownr, dataPtr); }
   void put(rownr_t rownr, const Short* dataPtr) { putShort(rownr, dataPtr); }
   void put(rownr_t rownr, const uShort* dataPtr) { putuShort(rownr, dataPtr); }
@@ -389,7 +389,7 @@ class DataManagerColumn {
   // Get the scalar value in the given row.
   // The default implementation throws an "invalid operation" exception.
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -408,7 +408,7 @@ class DataManagerColumn {
   // Put the scalar value into the given row.
   // The default implementation throws an "invalid operation" exception.
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr);
   virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
   virtual void putShort(rownr_t rownr, const Short* dataPtr);
   virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
@@ -426,7 +426,7 @@ class DataManagerColumn {
 
   template <typename T>
   void getValueGeneric(rownr_t rownr, T* dataPtr) {
-    if constexpr (std::is_same_v<T, Bool>) {
+    if constexpr (std::is_same_v<T, bool>) {
       getBool(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, uChar>) {
       getuChar(rownr, dataPtr);
@@ -457,7 +457,7 @@ class DataManagerColumn {
 
   template <typename T>
   void putValueGeneric(rownr_t rownr, const T* dataPtr) {
-    if constexpr (std::is_same_v<T, Bool>) {
+    if constexpr (std::is_same_v<T, bool>) {
       putBool(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, uChar>) {
       putuChar(rownr, dataPtr);
@@ -530,7 +530,7 @@ class DataManagerColumn {
                    const ArrayBase& arr);
 
   // # Data members
-  Bool isFixedShape_p;
+  bool isFixedShape_p;
   String colName_p;
   ColumnCache colCache_p;
 };

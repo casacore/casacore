@@ -101,7 +101,7 @@ class RegionHandler {
 
   // Can the class indeed define and handle regions?
   // The default implementation returns False.
-  virtual Bool canDefineRegion() const;
+  virtual bool canDefineRegion() const;
 
   // Set the default mask to the mask with the given name.
   // It constructs a ImageRegion object for the new default mask.
@@ -120,32 +120,32 @@ class RegionHandler {
   // already exists in the "regions" or "masks" keyword.
   // Otherwise the region will be removed first.
   // <br>A False status is returned if the table is not writable
-  virtual Bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
-                            Bool overwrite = False);
+  virtual bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
+                            bool overwrite = false);
 
   // Does the table have a region with the given name?
-  virtual Bool hasRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any) const;
+  virtual bool hasRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any) const;
 
   // Get a region belonging to the table.
   // A zero pointer is returned if the region does not exist.
   // The caller has to delete the <src>ImageRegion</src> object created.
   // <br>No exception is thrown if the region does not exist.
   virtual ImageRegion* getRegion(const String& name, RegionHandler::GroupType = Any,
-                                 Bool throwIfUnknown = True) const;
+                                 bool throwIfUnknown = true) const;
 
   // Rename a region.
   // If a region with the new name already exists, it is deleted or
   // an exception is thrown (depending on <src>overwrite</src>).
   // The region name is looked up in the given group(s).
   // <br>An exception is thrown if the old region name does not exist.
-  virtual Bool renameRegion(const String& newName, const String& oldName,
-                            RegionHandler::GroupType = Any, Bool overwrite = False);
+  virtual bool renameRegion(const String& newName, const String& oldName,
+                            RegionHandler::GroupType = Any, bool overwrite = false);
 
   // Remove a region belonging to the table.
   // <br>Optionally an exception is thrown if the region does not exist.
   // <br>A False status is returned if the table is not writable
-  virtual Bool removeRegion(const String& name, RegionHandler::GroupType = Any,
-                            Bool throwIfUnknown = True);
+  virtual bool removeRegion(const String& name, RegionHandler::GroupType = Any,
+                            bool throwIfUnknown = true);
 
   // Get the names of all regions/masks.
   virtual Vector<String> regionNames(RegionHandler::GroupType = Any) const;

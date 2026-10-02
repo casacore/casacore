@@ -43,7 +43,7 @@ int main() {
     String ctype, cunit;
     Double crval, cdelt, crpix, altrval, altrpix;
     Int velref;
-    Bool haveAlt;
+    bool haveAlt;
     String specsys;
     Double restFreq = 1420.4058e6;
     Double refFreq = 1400.0e6;
@@ -54,7 +54,7 @@ int main() {
     LogIO logger;
     AlwaysAssertExit(FITSSpectralUtil::toFITSHeader(
         ctype, crval, cdelt, crpix, cunit, haveAlt, altrval, altrpix, velref, restFreq, specsys,
-        logger, refFreq, refPix, freqInc, refFrame, True, velPref));
+        logger, refFreq, refPix, freqInc, refFrame, true, velPref));
     // Actually construct the header record
     Record header;
     if (restFreq > 0) {
@@ -111,7 +111,7 @@ int main() {
     MDoppler::Types velPrefOut = MDoppler::RADIO;
     AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis, refPixOut, refFreqOut, freqIncOut,
                                                       freqs, refFrameOut, velPrefOut, restFreqOut,
-                                                      logger, header, 'c', False));
+                                                      logger, header, 'c', false));
     AlwaysAssertExit(whichAxis == 0);
     // note: the following is only true when onRelative==False in
     // fromFITSHeader
@@ -159,7 +159,7 @@ int main() {
     String ctype, cunit, specsys;
     Double crval, cdelt, crpix, altrval, altrpix;
     Int velref;
-    Bool haveAlt;
+    bool haveAlt;
     Double restFreq = 1420.4058e6;
     Double refFreq = 1400.0e6;
     Double freqInc = 2.5e6;
@@ -169,8 +169,8 @@ int main() {
     LogIO logger;
     AlwaysAssertExit(FITSSpectralUtil::toFITSHeader(
         ctype, crval, cdelt, crpix, cunit, haveAlt, altrval, altrpix, velref, restFreq, specsys,
-        logger, refFreq, refPix, freqInc, refFrame, False, velPref,
-        True));  // wavelength preferred
+        logger, refFreq, refPix, freqInc, refFrame, false, velPref,
+        true));  // wavelength preferred
     // Actually construct the header record
     Record header;
     if (restFreq > 0) {
@@ -227,7 +227,7 @@ int main() {
     MDoppler::Types velPrefOut = MDoppler::RADIO;
     AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis, refPixOut, refFreqOut, freqIncOut,
                                                       freqs, refFrameOut, velPrefOut, restFreqOut,
-                                                      logger, header, 'c', False));
+                                                      logger, header, 'c', false));
     AlwaysAssertExit(whichAxis == 0);
     // note: the following is only true when onRelative==False in
     // fromFITSHeader
@@ -246,7 +246,7 @@ int main() {
     String ctype, cunit, specsys;
     Double crval, cdelt, crpix, altrval, altrpix;
     Int velref;
-    Bool haveAlt;
+    bool haveAlt;
     Double restFreq = 1420.4058e6;
     Double refFreq = 1400.0e6;
     Double freqInc = 2.5e6;
@@ -256,8 +256,8 @@ int main() {
     LogIO logger;
     AlwaysAssertExit(FITSSpectralUtil::toFITSHeader(
         ctype, crval, cdelt, crpix, cunit, haveAlt, altrval, altrpix, velref, restFreq, specsys,
-        logger, refFreq, refPix, freqInc, refFrame, False, velPref, True,
-        True));  // air wavelength preferred
+        logger, refFreq, refPix, freqInc, refFrame, false, velPref, true,
+        true));  // air wavelength preferred
     // Actually construct the header record
     Record header;
     if (restFreq > 0) {
@@ -314,7 +314,7 @@ int main() {
     MDoppler::Types velPrefOut = MDoppler::RADIO;
     AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis, refPixOut, refFreqOut, freqIncOut,
                                                       freqs, refFrameOut, velPrefOut, restFreqOut,
-                                                      logger, header, 'c', False));
+                                                      logger, header, 'c', false));
     AlwaysAssertExit(whichAxis == 0);
     // note: the following is only true when onRelative==False in
     // fromFITSHeader

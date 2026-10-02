@@ -182,7 +182,7 @@ int main() {
       // add using non-absolute path
       {
         Directory vgeo(tablePathName2);
-        vgeo.copy(Path(".").absoluteName() + "/VGEO", True);
+        vgeo.copy(Path(".").absoluteName() + "/VGEO", true);
       }
       AlwaysAssertExit(ms.field().addEphemeris(1, "./VGEO", "VenusGeo"));
 
@@ -190,7 +190,7 @@ int main() {
       AlwaysAssertExit(ms.field().addEphemeris(0, "./VGEO", "Venus"));
       AlwaysAssertExit(ms.field().addEphemeris(0, tablePathName, "Venus"));
       // test error handling
-      AlwaysAssertExit(ms.field().addEphemeris(1, "idontexist", "unknown") == False);
+      AlwaysAssertExit(ms.field().addEphemeris(1, "idontexist", "unknown") == false);
       // test removal
       AlwaysAssertExit(ms.field().addEphemeris(2, "./VGEO", "Venus2"));
       AlwaysAssertExit(ms.field().removeEphemeris(2));
@@ -293,7 +293,7 @@ int main() {
 
         MVDirection original(Quantity(305.6145129, "deg"), Quantity(-19.8873316, "deg"));
         MDirection unalteredExpected(original, MDirection::TOPO);
-        original.shift(dirb(0), dirb(1), True);
+        original.shift(dirb(0), dirb(1), true);
         MDirection expected(original, MDirection::TOPO);
 
         // MDirection expected(Quantity(305.6145129 +
@@ -363,31 +363,31 @@ int main() {
 
         // test error handling
 
-        Bool didThrow = False;
+        bool didThrow = false;
 
         try {
           MDirection xDir = msfc.delayDirMeas(row, 12345.);  // time outside validity range
         } catch (std::exception& x) {
           // cout <<  x.what() <<std::endl;
-          didThrow = True;
+          didThrow = true;
         }
         AlwaysAssertExit(didThrow);
 
-        didThrow = False;
+        didThrow = false;
         try {
           MRadialVelocity xmradvel = msfc.radVelMeas(row, 12345.);  // time outside validity range
         } catch (std::exception& x) {
           // cout <<  x.what() <<std::endl;
-          didThrow = True;
+          didThrow = true;
         }
         AlwaysAssertExit(didThrow);
 
-        didThrow = False;
+        didThrow = false;
         try {
           MRadialVelocity xrho = msfc.rho(row, 12345.);  // time outside validity range
         } catch (std::exception& x) {
           // cout <<  x.what() <<std::endl;
-          didThrow = True;
+          didThrow = true;
         }
         AlwaysAssertExit(didThrow);
 

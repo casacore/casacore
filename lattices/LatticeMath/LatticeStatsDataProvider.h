@@ -62,7 +62,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   uInt estimatedSteps() const;
 
   // Are there any data sets left to provide?
-  Bool atEnd() const;
+  bool atEnd() const;
 
   // Take any actions necessary to finalize the provider. This will be called when
   // atEnd() returns True.
@@ -77,13 +77,13 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   const T* getData();
 
   // Get the associated mask of the current dataset. Only called if hasMask() returns True;
-  const Bool* getMask();
+  const bool* getMask();
 
   // returns something reasonable based on the lattice size.
   uInt getNMaxThreads() const;
 
   // Does the current data set have an associated mask?
-  Bool hasMask() const;
+  bool hasMask() const;
 
   // reset the provider to point to the first data set it manages.
   void reset();
@@ -113,7 +113,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   std::shared_ptr<RO_LatticeIterator<T>> _iter;
   Array<T> _currentSlice;
   const T* _currentPtr;
-  Bool _delData, _atEnd;
+  bool _delData, _atEnd;
   uInt _nMaxThreads;
 
   void _freeStorage();

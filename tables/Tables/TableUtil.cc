@@ -65,7 +65,7 @@ Table openTable(const String& tableName, const TableLock& lockOpt, Table::TableO
 Table createTable(const String& tableName, const TableDesc& desc, Table::TableOption tabOpt,
                   Table::TableType tabType, const StorageOption& storageOption,
                   const Record& dmInfo, const TableLock& lockOptions, rownr_t nrrow,
-                  Bool initialize, Table::EndianFormat endian, const TSMOption& tsmOpt) {
+                  bool initialize, Table::EndianFormat endian, const TSMOption& tsmOpt) {
   // Find and open the one but last subtable and get the name of the last one.
   // An empty name results in a Scratch table.
   std::pair<Table, String> t;
@@ -88,7 +88,7 @@ Table createTable(const String& tableName, const TableDesc& desc, Table::TableOp
 Table createSubTable(Table& parent, const String& subName, const TableDesc& desc,
                      Table::TableOption tabOpt, const StorageOption& storageOption,
                      const Record& dmInfo, const TableLock& lockOptions, rownr_t nrrow,
-                     Bool initialize, Table::EndianFormat endian, const TSMOption& tsmOpt) {
+                     bool initialize, Table::EndianFormat endian, const TSMOption& tsmOpt) {
   // See if the subtable and its keyword already exist.
   Int inx = parent.keywordSet().fieldNumber(subName);
   if (inx >= 0) {
@@ -112,13 +112,13 @@ Table createSubTable(Table& parent, const String& subName, const TableDesc& desc
   return subtab;
 }
 
-Bool canDeleteTable(const String& tableName, Bool checkSubTables) {
+bool canDeleteTable(const String& tableName, bool checkSubTables) {
   String message;
   return canDeleteTable(message, tableName, checkSubTables);
 }
 
-Bool canDeleteTable(String& message, const String& tableName, Bool checkSubTables,
-                    Bool splitColons) {
+bool canDeleteTable(String& message, const String& tableName, bool checkSubTables,
+                    bool splitColons) {
   if (splitColons) {
     std::pair<Table, String> t = findParentTable(tableName);
     if (!t.first.isNull()) {
@@ -128,34 +128,34 @@ Bool canDeleteTable(String& message, const String& tableName, Bool checkSubTable
   String tabName = Path(tableName).absoluteName();
   if (!Table::isWritable(tabName)) {
     message = "table is not writable";
-    return False;
+    return false;
   }
   if (Table::isOpened(tabName)) {
     message = "table is still open in this process";
-    return False;
+    return false;
   }
   Table table(tabName);
   if (table.isMultiUsed()) {
     message = "table is still open in another process";
-    return False;
+    return false;
   }
-  if (checkSubTables && table.isMultiUsed(True)) {
+  if (checkSubTables && table.isMultiUsed(true)) {
     message = "a subtable of the table is still open in another process";
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool canDeleteSubTable(String& message, const Table& parent, const String& subtableName,
-                       Bool checkSubTables) {
+bool canDeleteSubTable(String& message, const Table& parent, const String& subtableName,
+                       bool checkSubTables) {
   // Get the full table name of the subtable.
   // Note: the temporary Table object is deleted before canDeleteTable.
   // Otherwise isOpened() used internally would be true.
   const String fullName(parent.keywordSet().asTable(subtableName).tableName());
-  return canDeleteTable(message, fullName, checkSubTables, False);
+  return canDeleteTable(message, fullName, checkSubTables, false);
 }
 
-void deleteTable(const String& tableName, Bool checkSubTables) {
+void deleteTable(const String& tableName, bool checkSubTables) {
   // Check that the name is not empty, because making it absolute results in /
   if (tableName.empty()) {
     throw TableError("Empty string provided for tableName; will not attempt delete.");
@@ -178,7 +178,7 @@ void deleteTable(const String& tableName, Bool checkSubTables) {
   Table table(tabName, Table::Delete);
 }
 
-void deleteSubTable(Table& parent, const String& subtableName, Bool checkSubTables) {
+void deleteSubTable(Table& parent, const String& subtableName, bool checkSubTables) {
   String message;
   if (!canDeleteSubTable(message, parent, subtableName, checkSubTables)) {
     throw(TableError("Subtable " + subtableName + " in " + parent.tableName() +

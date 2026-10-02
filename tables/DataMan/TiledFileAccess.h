@@ -92,13 +92,13 @@ class TiledFileAccess {
   // The TSMOption determines how the file is accessed.
   TiledFileAccess(const String& fileName, Int64 fileOffset, const IPosition& shape,
                   const IPosition& tileShape, DataType dataType, const TSMOption& = TSMOption(),
-                  Bool writable = False);
+                  bool writable = false);
 
   // Create a TiledFileAccess object.
   // The endian format of the data is explicitly given.
   TiledFileAccess(const String& fileName, Int64 fileOffset, const IPosition& shape,
-                  const IPosition& tileShape, DataType dataType, const TSMOption&, Bool writable,
-                  Bool bigEndian);
+                  const IPosition& tileShape, DataType dataType, const TSMOption&, bool writable,
+                  bool bigEndian);
 
   ~TiledFileAccess();
 
@@ -109,14 +109,14 @@ class TiledFileAccess {
   TiledFileAccess& operator=(const TiledFileAccess&) = delete;
 
   // Is the file writable?
-  Bool isWritable() const { return itsWritable; }
+  bool isWritable() const { return itsWritable; }
 
   DataType dataType() const { return itsDataType; }
 
   // Get part of the array.
   // The Array object is resized if needed.
   // <group>
-  Array<Bool> getBool(const Slicer& section);
+  Array<bool> getBool(const Slicer& section);
   Array<uChar> getUChar(const Slicer& section);
   Array<Short> getShort(const Slicer& section);
   Array<Int> getInt(const Slicer& section);
@@ -124,7 +124,7 @@ class TiledFileAccess {
   Array<Double> getDouble(const Slicer& section);
   Array<Complex> getComplex(const Slicer& section);
   Array<DComplex> getDComplex(const Slicer& section);
-  void get(Array<Bool>&, const Slicer& section);
+  void get(Array<bool>&, const Slicer& section);
   void get(Array<uChar>&, const Slicer& section);
   void get(Array<Short>&, const Slicer& section);
   void get(Array<Int>&, const Slicer& section);
@@ -140,22 +140,22 @@ class TiledFileAccess {
   // A deleteValue is set to a NaN without being scaled.
   // <group>
   Array<Float> getFloat(const Slicer& section, Float scale, Float offset, uChar deleteValue,
-                        Bool examineForDeleteValues = True);
+                        bool examineForDeleteValues = true);
   Array<Float> getFloat(const Slicer& section, Float scale, Float offset, Short deleteValue,
-                        Bool examineForDeleteValues = True);
+                        bool examineForDeleteValues = true);
   Array<Float> getFloat(const Slicer& section, Float scale, Float offset, Int deleteValue,
-                        Bool examineForDeleteValues = True);
+                        bool examineForDeleteValues = true);
   void get(Array<Float>&, const Slicer& section, Float scale, Float offset, uChar deleteValue,
-           Bool examineForDeleteValues = True);
+           bool examineForDeleteValues = true);
   void get(Array<Float>&, const Slicer& section, Float scale, Float offset, Short deleteValue,
-           Bool examineForDeleteValues = True);
+           bool examineForDeleteValues = true);
   void get(Array<Float>&, const Slicer& section, Float scale, Float offset, Int deleteValue,
-           Bool examineForDeleteValues = True);
+           bool examineForDeleteValues = true);
   // </group>
 
   // Put part of the array.
   // <group>
-  void put(const Array<Bool>&, const Slicer& section);
+  void put(const Array<bool>&, const Slicer& section);
   void put(const Array<uChar>&, const Slicer& section);
   void put(const Array<Short>&, const Slicer& section);
   void put(const Array<Int>&, const Slicer& section);
@@ -196,13 +196,13 @@ class TiledFileAccess {
   // Set the cache size using the given access pattern.
   // <group>
   void setCacheSize(const IPosition& sliceShape, const IPosition& axisPath,
-                    Bool forceSmaller = True) {
-    itsCube->setCacheSize(sliceShape, IPosition(), IPosition(), axisPath, forceSmaller, True);
+                    bool forceSmaller = true) {
+    itsCube->setCacheSize(sliceShape, IPosition(), IPosition(), axisPath, forceSmaller, true);
   }
   void setCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
                     const IPosition& windowLength, const IPosition& axisPath,
-                    Bool forceSmaller = True) {
-    itsCube->setCacheSize(sliceShape, windowStart, windowLength, axisPath, forceSmaller, True);
+                    bool forceSmaller = true) {
+    itsCube->setCacheSize(sliceShape, windowStart, windowLength, axisPath, forceSmaller, true);
   }
   // </group>
 
@@ -211,8 +211,8 @@ class TiledFileAccess {
   // than 10%, the maximum cache size is used instead.
   // <br>When forceSmaller is False, the cache is not resized when the
   // new size is smaller.
-  void setCacheSize(uInt nbuckets, Bool forceSmaller = True) {
-    itsCube->setCacheSize(nbuckets, forceSmaller, True);
+  void setCacheSize(uInt nbuckets, bool forceSmaller = true) {
+    itsCube->setCacheSize(nbuckets, forceSmaller, true);
   }
 
   // Make a tile shape from the array shape to fit as closely as possible
@@ -223,7 +223,7 @@ class TiledFileAccess {
   TSMCube* itsCube;
   TiledFileHelper* itsTSM;
   uInt itsLocalPixelSize;
-  Bool itsWritable;
+  bool itsWritable;
   DataType itsDataType;
 };
 

@@ -137,7 +137,7 @@ class DirectoryIterator {
   void reset();
 
   // Checks if the iterator is past the end.
-  Bool pastEnd() const;
+  bool pastEnd() const;
 
  private:
   // Initialize the iterator.
@@ -152,7 +152,7 @@ class DirectoryIterator {
   dirent* itsDirectoryEntry;
 
   // Boolean to check if the directory stream has past the end
-  Bool itsEnd;
+  bool itsEnd;
 
   // class directory
   Directory itsDirectory;

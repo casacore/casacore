@@ -33,8 +33,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Array<Bool> RecordInterface::toArrayBool(const RecordFieldId& id) const {
-  Array<Bool> arr;
+Array<bool> RecordInterface::toArrayBool(const RecordFieldId& id) const {
+  Array<bool> arr;
   Int whichField = idToNumber(id);
   switch (type(whichField)) {
     case TpInt:

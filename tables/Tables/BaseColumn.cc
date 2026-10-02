@@ -76,8 +76,8 @@ IPosition BaseColumn::tileShape(rownr_t) const {
                      "; only valid for an array"));
 }
 
-Bool BaseColumn::canChangeShape() const {
-  return False;  // can not be changed
+bool BaseColumn::canChangeShape() const {
+  return false;  // can not be changed
 }
 
 void BaseColumn::get(rownr_t, void*) const {
@@ -189,7 +189,7 @@ void BaseColumn::freeIterBuf(void*&, void*&) {
                      " is only valid for a scalar"));
 }
 
-void BaseColumn::getScalar(rownr_t rownr, Bool& value) const {
+void BaseColumn::getScalar(rownr_t rownr, bool& value) const {
   if (!colDescPtr_p->isScalar()) {
     throwGetScalar();
   }
@@ -585,7 +585,7 @@ void BaseColumn::getScalar(rownr_t rownr, void* value, const String& dataTypeId)
   get(rownr, value);
 }
 
-void BaseColumn::putScalar(rownr_t rownr, const Bool& value) {
+void BaseColumn::putScalar(rownr_t rownr, const bool& value) {
   if (!colDescPtr_p->isScalar()) {
     throwPutScalar();
   }

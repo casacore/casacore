@@ -74,27 +74,27 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, LogIO& os,
-                                        Bool showProgress, Bool forceDisk, Bool clone)
+                                        bool showProgress, bool forceDisk, bool clone)
     //
     // Constructor
     //
     : os_p(os),
-      goodParameterStatus_p(True),
-      haveLogger_p(True),
-      fixedMinMax_p(False),
-      doRobust_p(False),
-      doList_p(False),
+      goodParameterStatus_p(true),
+      haveLogger_p(true),
+      fixedMinMax_p(false),
+      doRobust_p(false),
+      doList_p(false),
       error_p(""),
       pInLattice_p(0),
       pStoreLattice_p(0),
-      noInclude_p(True),
-      noExclude_p(True),
-      needStorageLattice_p(True),
-      doneSomeGoodPoints_p(False),
-      someGoodPointsValue_p(False),
+      noInclude_p(true),
+      noExclude_p(true),
+      needStorageLattice_p(true),
+      doneSomeGoodPoints_p(false),
+      someGoodPointsValue_p(false),
       showProgress_p(showProgress),
       forceDisk_p(forceDisk),
-      doneFullMinMax_p(False),
+      doneFullMinMax_p(false),
       _saf(),
       _chauvIters(),
       _latticeStatsAlgortihm() {
@@ -111,32 +111,32 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, LogIO& 
     Vector<Int> cursorAxes;
     goodParameterStatus_p = setAxes(cursorAxes);
   } else {
-    goodParameterStatus_p = False;
+    goodParameterStatus_p = false;
   }
 }
 
 template <class T>
-LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, Bool showProgress,
-                                        Bool forceDisk, Bool clone)
+LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, bool showProgress,
+                                        bool forceDisk, bool clone)
     //
     // Constructor
     //
-    : goodParameterStatus_p(True),
-      haveLogger_p(False),
-      fixedMinMax_p(False),
-      doRobust_p(False),
-      doList_p(False),
+    : goodParameterStatus_p(true),
+      haveLogger_p(false),
+      fixedMinMax_p(false),
+      doRobust_p(false),
+      doList_p(false),
       error_p(""),
       pInLattice_p(0),
       pStoreLattice_p(0),
-      noInclude_p(True),
-      noExclude_p(True),
-      needStorageLattice_p(True),
-      doneSomeGoodPoints_p(False),
-      someGoodPointsValue_p(False),
+      noInclude_p(true),
+      noExclude_p(true),
+      needStorageLattice_p(true),
+      doneSomeGoodPoints_p(false),
+      someGoodPointsValue_p(false),
       showProgress_p(showProgress),
       forceDisk_p(forceDisk),
-      doneFullMinMax_p(False),
+      doneFullMinMax_p(false),
       _saf(),
       _chauvIters(),
       _latticeStatsAlgortihm() {
@@ -153,7 +153,7 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, Bool sh
     Vector<Int> cursorAxes;
     goodParameterStatus_p = setAxes(cursorAxes);
   } else {
-    goodParameterStatus_p = False;
+    goodParameterStatus_p = false;
   }
 }
 
@@ -192,7 +192,7 @@ LatticeStatistics<T>& LatticeStatistics<T>::operator=(const LatticeStatistics<T>
 
     pStoreLattice_p.reset();
 
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
     // Do the rest
 
     os_p = other.os_p;
@@ -245,13 +245,13 @@ template <class T>
 LatticeStatistics<T>::~LatticeStatistics() {}
 
 template <class T>
-Bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
+bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
 //
 // This function sets the cursor axes and the display axes
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Save current cursor axes
@@ -278,7 +278,7 @@ Bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
         ostringstream oss;
         oss << "Invalid cursor axes: " << axes;
         error_p = oss.str();
-        return False;
+        return false;
       }
     }
   }
@@ -286,7 +286,7 @@ Bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
   // Signal that we have changed the axes and need a new storage lattice
 
   if (saveAxes.nelements() != cursorAxes_p.nelements() || !allEQ(saveAxes, cursorAxes_p))
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
 
   // Set the display axes vector.  We also do this in generateStorageLattice
   // but it is possible the user will want to see the display axes
@@ -295,37 +295,37 @@ Bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
 
   displayAxes_p.resize(0);
   displayAxes_p = IPosition::otherAxes(ndim, cursorAxes_p).asVector();
-  return True;
+  return true;
 }
 
 template <class T>
-void LatticeStatistics<T>::setComputeQuantiles(Bool b) {
+void LatticeStatistics<T>::setComputeQuantiles(bool b) {
   doRobust_p = b;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include, const Vector<T>& exclude,
-                                             Bool setMinMaxToInclude)
+bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include, const Vector<T>& exclude,
+                                             bool setMinMaxToInclude)
 // Assign the desired exclude range
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Save current ranges
 
   Vector<T> saveRange(range_p.copy());
-  Bool saveFixedMinMax = fixedMinMax_p;
+  bool saveFixedMinMax = fixedMinMax_p;
 
   // Check
 
   ostringstream os;
-  Bool saveNoInclude = noInclude_p;
-  Bool saveNoExclude = noExclude_p;
+  bool saveNoInclude = noInclude_p;
+  bool saveNoExclude = noExclude_p;
   if (!LattStatsSpecialize::setIncludeExclude(error_p, range_p, noInclude_p, noExclude_p, include,
                                               exclude)) {
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   }
 
   // Can't have fixed min and max with an exclusion range
@@ -335,50 +335,50 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include, const Vec
     if (haveLogger_p) {
       error_p = "Can't have a fixed min and max with an exclusion range";
     }
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   }
 
   // Can only have fixed min and max range if user gives it
 
-  if (noInclude_p) fixedMinMax_p = False;
+  if (noInclude_p) fixedMinMax_p = false;
 
   // Signal that we have changed the pixel range and need a new storage lattice
 
   if (saveNoInclude != noInclude_p || saveNoExclude != noExclude_p ||
       saveFixedMinMax != fixedMinMax_p || saveRange.size() != range_p.size() ||
       !allEQ(saveRange, range_p)) {
-    needStorageLattice_p = True;
-    doneFullMinMax_p = False;
+    needStorageLattice_p = true;
+    doneFullMinMax_p = false;
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::setList(const Bool& doList)
+bool LatticeStatistics<T>::setList(const bool& doList)
 //
 // See if user wants to list statistics as well as plot them
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
   doList_p = doList;
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice, Bool clone) {
+bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice, bool clone) {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
   DataType latticeType = whatType<T>();
   if (latticeType != TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
     ostringstream oss;
     oss << "Statistics cannot yet be evaluated from lattices of type : " << latticeType << endl;
     error_p = oss.str();
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   }
 
   if (clone) {
@@ -396,16 +396,16 @@ Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice, Bool c
 
   // Signal that we have changed the lattice and need a new storage  lattice
 
-  needStorageLattice_p = True;
-  return True;
+  needStorageLattice_p = true;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getConvertedStatistic(Array<T>& stats,
+bool LatticeStatistics<T>::getConvertedStatistic(Array<T>& stats,
                                                  LatticeStatsBase::StatisticsTypes type,
-                                                 Bool dropDeg) {
+                                                 bool dropDeg) {
   Array<AccumType> tmp;
-  Bool ok = getStatistic(tmp, type, dropDeg);
+  bool ok = getStatistic(tmp, type, dropDeg);
   stats.resize(tmp.shape());
   convertArray(stats, tmp);
   return ok;
@@ -417,8 +417,8 @@ StatisticsData::ALGORITHM LatticeStatistics<T>::_getAlgorithm() const {
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getStatistic(Array<AccumType>& stats,
-                                        LatticeStatsBase::StatisticsTypes type, Bool dropDeg) {
+bool LatticeStatistics<T>::getStatistic(Array<AccumType>& stats,
+                                        LatticeStatsBase::StatisticsTypes type, bool dropDeg) {
   if (_getAlgorithm() == StatisticsData::BIWEIGHT) {
     ThrowIf(type == LatticeStatsBase::FLUX,
             "The biweight algorithm does not support"
@@ -442,7 +442,7 @@ Bool LatticeStatistics<T>::getStatistic(Array<AccumType>& stats,
             "computation of quantile or quantile-like values");
   }
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
   if (needStorageLattice_p) {
     generateStorageLattice();
@@ -457,7 +457,7 @@ Bool LatticeStatistics<T>::getStatistic(Array<AccumType>& stats,
              type == LatticeStatsBase::QUARTILE || type == LatticeStatsBase::Q1 ||
              type == LatticeStatsBase::Q3) {
     if (!doRobust_p) {
-      doRobust_p = True;
+      doRobust_p = true;
       generateRobust();
     }
     return retrieveStorageStatistic(stats, type, dropDeg);
@@ -482,12 +482,12 @@ Bool LatticeStatistics<T>::getStatistic(Array<AccumType>& stats,
   } else if (type == LatticeStatsBase::FLUX) {
     return calculateStatistic(stats, FLUX, dropDeg);
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getStats(Vector<AccumType>& stats, const IPosition& pos,
-                                    const Bool posInLattice) {
+bool LatticeStatistics<T>::getStats(Vector<AccumType>& stats, const IPosition& pos,
+                                    const bool posInLattice) {
   // This function retrieves the statistics from the storage
   // lattice at the specified location.
 
@@ -498,45 +498,45 @@ Bool LatticeStatistics<T>::getStats(Vector<AccumType>& stats, const IPosition& p
   //                  display axes only.
   // Check class status
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
   // Retrieve storage array statistics
 
   stats.resize(NSTATS);
   if (!retrieveStorageStatistic(stats, pos, posInLattice)) {
-    return False;
+    return false;
   }
   // Compute the rest
 
   const AccumType& n = stats(NPTS);
   if (n <= 0) {
     stats.resize(0);
-    return True;
+    return true;
   }
   stats(RMS) = _rms(stats(SUMSQ), n);
   stats(FLUX) = 0;
   if (_canDoFlux()) {
     Quantum<AccumType> q;
     if (!_computeFlux(q, stats(SUM), pos, posInLattice)) {
-      return False;
+      return false;
     }
     stats(FLUX) = q.getValue();
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos) {
+bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos) {
   ThrowIf(_saf.algorithm() == StatisticsData::BIWEIGHT,
           "The biweight algorithm does not support "
           "computing minimum and maximum positions");
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Generate storage lattice if required
   if (needStorageLattice_p) {
-    if (!generateStorageLattice()) return False;
+    if (!generateStorageLattice()) return false;
   }
   if (displayAxes_p.nelements() == 0) {
     minPos.resize(minPos_p.nelements());
@@ -547,17 +547,17 @@ Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos) {
     minPos.resize(0);
     maxPos.resize(0);
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getFullMinMax(T& dataMin, T& dataMax) {
+bool LatticeStatistics<T>::getFullMinMax(T& dataMin, T& dataMax) {
   if (!doneFullMinMax_p) {
     // Specialize
 
     LattStatsSpecialize::minMax(minFull_p, maxFull_p, pInLattice_p, range_p, noInclude_p,
                                 noExclude_p);
-    doneFullMinMax_p = True;
+    doneFullMinMax_p = true;
   }
   //
   dataMin = minFull_p;
@@ -569,19 +569,19 @@ Bool LatticeStatistics<T>::getFullMinMax(T& dataMin, T& dataMax) {
 // Private functions
 
 template <class T>
-Bool LatticeStatistics<T>::_computeFlux(Array<AccumType>&, const Array<AccumType>&,
+bool LatticeStatistics<T>::_computeFlux(Array<AccumType>&, const Array<AccumType>&,
                                         const Array<AccumType>&) {
   ThrowCc("This object does not support computing fluxes");
 }
 
 template <class T>
-Bool LatticeStatistics<T>::_computeFlux(Quantum<AccumType>&, AccumType, const IPosition&, Bool) {
+bool LatticeStatistics<T>::_computeFlux(Quantum<AccumType>&, AccumType, const IPosition&, bool) {
   ThrowCc("This object does not support computing fluxes");
 }
 
 template <class T>
-Bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
-                                              LatticeStatsBase::StatisticsTypes type, Bool dropDeg)
+bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
+                                              LatticeStatsBase::StatisticsTypes type, bool dropDeg)
 //
 // Calculate desired statistic from storage lattice and return in array
 //
@@ -595,11 +595,11 @@ Bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
 
   // Generate storage lattice if required
   if (needStorageLattice_p) {
-    if (!generateStorageLattice()) return False;
+    if (!generateStorageLattice()) return false;
   }
   // Return asap if no good points
 
-  if (!someGoodPoints()) return True;
+  if (!someGoodPoints()) return true;
 
   // Retrieve nPts statistics
   Array<AccumType> nPts;
@@ -633,7 +633,7 @@ Bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
       return _computeFlux(slice, nPts, sum);
     } else {
       slice.resize(IPosition(0, 0));
-      return False;
+      return false;
     }
   } else if (type == RMS) {
     retrieveStorageStatistic(sumSq, SUMSQ, dropDeg);
@@ -651,44 +651,44 @@ Bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
   } else {
     if (haveLogger_p) os_p << LogIO::SEVERE << "Internal error" << endl << LogIO::POST;
     slice.resize(IPosition(0, 0));
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::configureBiweight(Int maxIter, Double c) {
-  Bool reconfig = _saf.algorithm() != StatisticsData::BIWEIGHT;
+bool LatticeStatistics<T>::configureBiweight(Int maxIter, Double c) {
+  bool reconfig = _saf.algorithm() != StatisticsData::BIWEIGHT;
   if (!reconfig) {
     StatisticsAlgorithmFactoryData::BiweightData data = _saf.biweightData();
     reconfig = maxIter != data.maxIter || !near(c, data.c);
   }
   if (reconfig) {
     _saf.configureBiweight(maxIter, c);
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
   }
   return reconfig;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::configureClassical() {
-  Bool reconfig = False;
+bool LatticeStatistics<T>::configureClassical() {
+  bool reconfig = false;
   if (_saf.algorithm() != StatisticsData::CLASSICAL) {
     _saf.configureClassical();
-    needStorageLattice_p = True;
-    reconfig = True;
+    needStorageLattice_p = true;
+    reconfig = true;
   }
   _setDefaultCoeffs();
   return reconfig;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::configureClassical(Double aOld, Double bOld, Double aNew, Double bNew) {
-  Bool reconfig = False;
+bool LatticeStatistics<T>::configureClassical(Double aOld, Double bOld, Double aNew, Double bNew) {
+  bool reconfig = false;
   if (_saf.algorithm() != StatisticsData::CLASSICAL) {
     _saf.configureClassical();
-    needStorageLattice_p = True;
-    reconfig = True;
+    needStorageLattice_p = true;
+    reconfig = true;
   }
   _aOld = aOld;
   _bOld = bOld;
@@ -698,21 +698,21 @@ Bool LatticeStatistics<T>::configureClassical(Double aOld, Double bOld, Double a
 }
 
 template <class T>
-Bool LatticeStatistics<T>::configureHingesFences(Double f) {
-  Bool reconfig = False;
+bool LatticeStatistics<T>::configureHingesFences(Double f) {
+  bool reconfig = false;
   if (_saf.algorithm() != StatisticsData::HINGESFENCES || !near(f, _saf.hingesFencesFactor())) {
     _saf.configureHingesFences(f);
-    needStorageLattice_p = True;
-    reconfig = True;
+    needStorageLattice_p = true;
+    reconfig = true;
   }
   return reconfig;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::configureFitToHalf(FitToHalfStatisticsData::CENTER centerType,
+bool LatticeStatistics<T>::configureFitToHalf(FitToHalfStatisticsData::CENTER centerType,
                                               FitToHalfStatisticsData::USE_DATA useData,
                                               AccumType centerValue) {
-  Bool reconfig = _saf.algorithm() != StatisticsData::FITTOHALF;
+  bool reconfig = _saf.algorithm() != StatisticsData::FITTOHALF;
   if (!reconfig) {
     StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> data = _saf.fitToHalfData();
     reconfig =
@@ -721,21 +721,21 @@ Bool LatticeStatistics<T>::configureFitToHalf(FitToHalfStatisticsData::CENTER ce
   }
   if (reconfig) {
     _saf.configureFitToHalf(centerType, useData, centerValue);
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
   }
   return reconfig;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::configureChauvenet(Double zscore, Int maxIterations) {
-  Bool reconfig = _saf.algorithm() != StatisticsData::CHAUVENETCRITERION;
+bool LatticeStatistics<T>::configureChauvenet(Double zscore, Int maxIterations) {
+  bool reconfig = _saf.algorithm() != StatisticsData::CHAUVENETCRITERION;
   if (!reconfig) {
     typename StatisticsAlgorithmFactoryData::ChauvenetData data = _saf.chauvenetData();
     reconfig = !near(zscore, data.zScore) || maxIterations != data.maxIter;
   }
   if (reconfig) {
     _saf.configureChauvenet(zscore, maxIterations);
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
   }
   return reconfig;
 }
@@ -761,7 +761,7 @@ void LatticeStatistics<T>::forceAllowCodeDecideWhichAlgortihmToUse() {
 }
 
 template <class T>
-Bool LatticeStatistics<T>::generateStorageLattice() {
+bool LatticeStatistics<T>::generateStorageLattice() {
   // Iterate through the lattice and generate the storage lattice
   // The shape of the storage lattice is n1, n2, ..., NACCUM
   // where n1, n2 etc are the display axes
@@ -774,7 +774,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
   // are along the last axis)
   IPosition storeLatticeShape;
   IPosition shape = pInLattice_p->shape();
-  LatticeStatsBase::setStorageImageShape(storeLatticeShape, True, Int(LatticeStatsBase::NACCUM),
+  LatticeStatsBase::setStorageImageShape(storeLatticeShape, true, Int(LatticeStatsBase::NACCUM),
                                          displayAxes_p, shape);
   // Set the storage lattice tile shape to the tile shape of the
   // axes of the parent lattice from which it is created.
@@ -802,11 +802,11 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
   Double timeOld = 0;
   Double timeNew = 0;
   uInt nsets = pStoreLattice_p->size() / storeLatticeShape.getLast(1)[0];
-  Bool forceTiledApply = _latticeStatsAlgortihm && *_latticeStatsAlgortihm == TILED_APPLY;
+  bool forceTiledApply = _latticeStatsAlgortihm && *_latticeStatsAlgortihm == TILED_APPLY;
   ThrowIf(forceTiledApply && _saf.algorithm() != StatisticsData::CLASSICAL,
           "Tiled Apply method can only be run using the Classical Statistics algorithm");
-  Bool skipTiledApply = _latticeStatsAlgortihm && *_latticeStatsAlgortihm != TILED_APPLY;
-  Bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL && !skipTiledApply;
+  bool skipTiledApply = _latticeStatsAlgortihm && *_latticeStatsAlgortihm != TILED_APPLY;
+  bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL && !skipTiledApply;
   if (tryOldMethod) {
     if (!forceTiledApply) {
       uInt nel = pInLattice_p->size() / nsets;
@@ -815,7 +815,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
       tryOldMethod = timeOld < timeNew;
     }
   }
-  Bool ranOldMethod = False;
+  bool ranOldMethod = false;
   uInt ndim = shape.size();
   if (tryOldMethod) {
     if (forceTiledApply && haveLogger_p) {
@@ -827,13 +827,13 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     maxPos_p.resize(ndim);
     StatsTiledCollapser<T, AccumType> collapser(range_p, noInclude_p, noExclude_p, fixedMinMax_p);
     Int newOutAxis = pStoreLattice_p->ndim() - 1;
-    SubLattice<AccumType> outLatt(*pStoreLattice_p, True);
+    SubLattice<AccumType> outLatt(*pStoreLattice_p, true);
     try {
       LatticeApply<T, AccumType>::tiledApply(outLatt, *pInLattice_p, collapser,
                                              IPosition(cursorAxes_p), newOutAxis,
                                              pProgressMeter.get());
       collapser.minMaxPos(minPos_p, maxPos_p);
-      ranOldMethod = True;
+      ranOldMethod = true;
     } catch (const AipsError& x) {
       // if the data or mask arrays are not contiguous,
       // an exception will be thrown. Catch it here, so
@@ -856,9 +856,9 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
   if (!ranOldMethod) {
     _doStatsLoop(nsets, pProgressMeter);
   }
-  needStorageLattice_p = False;
-  doneSomeGoodPoints_p = False;
-  return True;
+  needStorageLattice_p = false;
+  doneSomeGoodPoints_p = false;
+  return true;
 }
 
 template <class T>
@@ -886,7 +886,7 @@ void LatticeStatistics<T>::_doStatsLoop(uInt nsets,
   const auto nMaxThreads = OMP::nMaxThreads();
   const auto nDPMaxThreads = min(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
   const auto nArrMaxThreads = min(nMaxThreads, nsets);
-  auto computed = False;
+  auto computed = false;
   const auto forceUsingArrays =
       _latticeStatsAlgortihm && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
   if (nArrMaxThreads >= nDPMaxThreads || forceUsingArrays) {
@@ -896,7 +896,7 @@ void LatticeStatistics<T>::_doStatsLoop(uInt nsets,
     const auto subCursorShape = _cursorShapeForArrayMethod(setSize);
     if (subCursorShape.product() >= nDPMaxThreads || forceUsingArrays) {
       _computeStatsUsingArrays(progressMeter, subCursorShape);
-      computed = True;
+      computed = true;
     }
   }
   const auto forceUsingDP =
@@ -937,7 +937,7 @@ IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const
   // arbitrary, but reasonable, max memory limit in bytes for storing arrays in bytes
   static const uInt64 limit = 2e7;
   static const uInt sizeT = sizeof(T);
-  static const uInt sizeBool = sizeof(Bool);
+  static const uInt sizeBool = sizeof(bool);
   static const uInt sizeInt = sizeof(Int);
   static const uInt sizeStats = sizeof(StatsData<AccumType>);
   const uInt posSize = sizeof(Int) * ndim;
@@ -974,17 +974,17 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     std::shared_ptr<LattStatsProgress> progressMeter, const IPosition& cursorShape) {
   T overallMax = 0;
   T overallMin = 0;
-  Bool isReal = whatType<T>();
+  bool isReal = whatType<T>();
   const uInt nMaxThreads = OMP::nMaxThreads();
   IPosition displayAxes(displayAxes_p);
   uInt nArraysMax = cursorShape.keepAxes(displayAxes).product();
   uInt nSA = min(nMaxThreads, nArraysMax);
   StatisticsAlgorithmFactory<AccumType, typename Array<T>::const_iterator,
-                             Array<Bool>::const_iterator>
+                             Array<bool>::const_iterator>
       saf2;
   _saf.copy(saf2);
   std::vector<std::shared_ptr<StatisticsAlgorithm<AccumType, typename Array<T>::const_iterator,
-                                                  Array<Bool>::const_iterator>>>
+                                                  Array<bool>::const_iterator>>>
       sa(nSA);
   for (uInt i = 0; i < nSA; ++i) {
     sa[i] = saf2.createStatsAlgorithm();
@@ -994,11 +994,11 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     range = std::make_shared<DataRanges>();
     range->push_back(std::pair<T, T>(range_p[0], range_p[1]));
   }
-  const Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
+  const bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
   std::vector<Array<T>> dataArray;
-  std::vector<Array<Bool>> maskArray;
+  std::vector<Array<bool>> maskArray;
   std::vector<IPosition> curPos;
-  Bool isMasked = pInLattice_p->isMasked();
+  bool isMasked = pInLattice_p->isMasked();
   IPosition latShape = pInLattice_p->shape();
   const uInt nCursorAxes = cursorAxes_p.size();
   IPosition chunkSliceStart(latShape.size(), 0);
@@ -1025,7 +1025,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     cp = latIter.position();
     const Array<T>& chunk = latIter.cursor();
     IPosition chunkShape = chunk.shape();
-    const Array<Bool> maskChunk = isMasked ? latIter.getMask() : Array<Bool>();
+    const Array<bool> maskChunk = isMasked ? latIter.getMask() : Array<bool>();
     uInt nSets = chunkShape.keepAxes(displayAxes).product();
     if (dataArray.size() != nSets) {
       dataArray.resize(nSets);
@@ -1036,25 +1036,25 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     }
     chunkSliceStart = 0;
     chunkSliceEnd = chunkSliceEndAtChunkIterBegin;
-    Bool done = False;
+    bool done = false;
     uInt setIndex = 0;
     while (!done) {
       // use assign rather than = because array shapes can differ, throwing
       // a conformance exception if = is used
       dataArray[setIndex].assign(chunk(chunkSliceStart, chunkSliceEnd));
       if (isMasked) {
-        Array<Bool> maskSlice = maskChunk(chunkSliceStart, chunkSliceEnd);
+        Array<bool> maskSlice = maskChunk(chunkSliceStart, chunkSliceEnd);
         // use assign rather than = because array shapes can differ
-        maskArray[setIndex].assign(allTrue(maskSlice) ? Array<Bool>() : maskSlice);
+        maskArray[setIndex].assign(allTrue(maskSlice) ? Array<bool>() : maskSlice);
       }
       curPos[setIndex] = cp + chunkSliceStart;
-      done = True;
+      done = true;
       for (uInt i = 0; i < nDisplayAxes; ++i) {
         uInt dax = displayAxes_p[i];
         if (chunkSliceStart[dax] < chunkShape[dax] - 1) {
           ++chunkSliceStart[dax];
           ++chunkSliceEnd[dax];
-          done = False;
+          done = false;
           ++setIndex;
           break;
         } else {
@@ -1076,17 +1076,17 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
 template <class T>
 void LatticeStatistics<T>::_doComputationUsingArrays(
     std::vector<std::shared_ptr<StatisticsAlgorithm<AccumType, typename Array<T>::const_iterator,
-                                                    Array<Bool>::const_iterator>>>& sa,
+                                                    Array<bool>::const_iterator>>>& sa,
     T& overallMin, T& overallMax, IPosition& arrayShape, std::vector<Array<T>>& dataArray,
-    std::vector<Array<Bool>>& maskArray, std::vector<IPosition>& curPos,
+    std::vector<Array<bool>>& maskArray, std::vector<IPosition>& curPos,
     uInt
 #ifdef _OPENMP
         nthreads
 #endif
     ,
-    Bool isChauv, Bool isMasked, Bool isReal, std::shared_ptr<const DataRanges> range) {
+    bool isChauv, bool isMasked, bool isReal, std::shared_ptr<const DataRanges> range) {
   uInt nArrays = dataArray.size();
-  Bool fixedCurMinMax = (fixedMinMax_p && !noInclude_p);
+  bool fixedCurMinMax = (fixedMinMax_p && !noInclude_p);
   T currentMin = fixedCurMinMax ? range_p[0] : 0;
   T currentMax = fixedCurMinMax ? range_p[1] : 0;
   std::vector<StatsData<AccumType>> statsArray(nArrays);
@@ -1123,9 +1123,9 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     }
     if (isChauv) {
       ChauvenetCriterionStatistics<AccumType, typename Array<T>::const_iterator,
-                                   Array<Bool>::const_iterator>* ch =
+                                   Array<bool>::const_iterator>* ch =
           dynamic_cast<ChauvenetCriterionStatistics<AccumType, typename Array<T>::const_iterator,
-                                                    Array<Bool>::const_iterator>*>(&*sa[tid]);
+                                                    Array<bool>::const_iterator>*>(&*sa[tid]);
       chauvIterArray[i] = ch->getNiter();
     }
   }
@@ -1145,7 +1145,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
       _chauvIters[chos.str()] = chauvIterArray[i];
     }
     if (isReal && (!fixedMinMax_p || noInclude_p)) {
-      Bool atStart = arrayShape.empty();
+      bool atStart = arrayShape.empty();
       if (atStart) {
         arrayShape = dataArray[0].shape();
       }
@@ -1169,18 +1169,18 @@ template <class T>
 void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
     std::shared_ptr<LattStatsProgress> progressMeter, uInt nsets) {
-  Bool fixedCurMinMax = (fixedMinMax_p && !noInclude_p);
+  bool fixedCurMinMax = (fixedMinMax_p && !noInclude_p);
   T currentMin = fixedCurMinMax ? range_p[0] : 0;
   T currentMax = fixedCurMinMax ? range_p[1] : 0;
   T overallMax = 0;
   T overallMin = 0;
-  Bool isReal = whatType<T>();
+  bool isReal = whatType<T>();
   IPosition curPos;
   LatticeStatsDataProvider<T> lattDP;
   MaskedLatticeStatsDataProvider<T> maskedLattDP;
   LatticeStatsDataProviderBase<T>* dataProvider;
   _configureDataProviders(lattDP, maskedLattDP);
-  Bool nsetsIsLarge = nsets > 50;
+  bool nsetsIsLarge = nsets > 50;
   if (progressMeter) {
     if (nsetsIsLarge) {
       progressMeter->init(nsets);
@@ -1191,9 +1191,9 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
       }
     }
   }
-  std::shared_ptr<StatisticsAlgorithm<AccumType, const T*, const Bool*>> sa =
+  std::shared_ptr<StatisticsAlgorithm<AccumType, const T*, const bool*>> sa =
       _saf.createStatsAlgorithm();
-  Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
+  bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
   AccumType q1, q3;
   for (stepper.reset(); !stepper.atEnd(); stepper++) {
     curPos = stepper.position();
@@ -1224,8 +1224,8 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
       currentMax = stats.max ? *stats.max : 0;
     }
     if (isChauv) {
-      ChauvenetCriterionStatistics<AccumType, const T*, const Bool*>* ch =
-          dynamic_cast<ChauvenetCriterionStatistics<AccumType, const T*, const Bool*>*>(&*sa);
+      ChauvenetCriterionStatistics<AccumType, const T*, const bool*>* ch =
+          dynamic_cast<ChauvenetCriterionStatistics<AccumType, const T*, const bool*>*>(&*sa);
       ostringstream os;
       os << curPos;
       // using strings as keys rather than the IPosition objects directly because for some reason,
@@ -1235,7 +1235,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     }
     if (isReal && (!fixedMinMax_p || noInclude_p)) {
       IPosition maxPos, minPos;
-      Bool atStart = stepper.atStart();
+      bool atStart = stepper.atStart();
       if (atStart || currentMin < overallMin || currentMax > overallMax) {
         dataProvider->minMaxPos(minPos, maxPos);
         _updateMinMaxPos(overallMin, overallMax, currentMin, currentMax, minPos, maxPos, atStart);
@@ -1257,7 +1257,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
 template <class T>
 void LatticeStatistics<T>::_updateMinMaxPos(T& overallMin, T& overallMax, T currentMin,
                                             T currentMax, const IPosition& minPos,
-                                            const IPosition& maxPos, Bool atStart) {
+                                            const IPosition& maxPos, bool atStart) {
   // CAUTION The way this has worked in the past apparently for
   // lattices is that the max and min positions are representative
   // of the *entire* lattice, and were not stored on a sublattice
@@ -1291,7 +1291,7 @@ void LatticeStatistics<T>::_updateMinMaxPos(T& overallMin, T& overallMax, T curr
 
 template <class T>
 void LatticeStatistics<T>::_fillStorageLattice(T currentMin, T currentMax, const IPosition& curPos,
-                                               const StatsData<AccumType>& stats, Bool doQuantiles,
+                                               const StatsData<AccumType>& stats, bool doQuantiles,
                                                AccumType q1, AccumType q3) {
   const uInt ndim = pStoreLattice_p->ndim();
   IPosition pos(ndim, 0);
@@ -1329,7 +1329,7 @@ void LatticeStatistics<T>::_fillStorageLattice(T currentMin, T currentMax, const
 
 template <class T>
 void LatticeStatistics<T>::generateRobust() {
-  Bool showMsg = haveLogger_p && displayAxes_p.empty();
+  bool showMsg = haveLogger_p && displayAxes_p.empty();
   if (showMsg) {
     os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
   }
@@ -1342,7 +1342,7 @@ void LatticeStatistics<T>::generateRobust() {
   IPosition axisPath = cursorAxes_p;
   axisPath.append(displayAxes_p);
   LatticeStepper stepper(latticeShape, cursorShape, axisPath);
-  std::shared_ptr<StatisticsAlgorithm<AccumType, const T*, const Bool*>> sa;
+  std::shared_ptr<StatisticsAlgorithm<AccumType, const T*, const bool*>> sa;
   LatticeStatsDataProvider<T> lattDP;
   MaskedLatticeStatsDataProvider<T> maskedLattDP;
   IPosition curPos, pos, pos2, pos3, posQ1, posQ3, posNpts, posMax, posMin;
@@ -1416,10 +1416,10 @@ void LatticeStatistics<T>::_computeQuantiles(
   std::shared_ptr<AccumType> mymin = std::make_shared<AccumType>(knownMin);
   std::shared_ptr<AccumType> mymax = std::make_shared<AccumType>(knownMax);
   median = statsAlg->getMedianAndQuantiles(quantiles, fracs, npts, mymin, mymax, maxArraySizeBytes,
-                                           False, nBins);
+                                           false, nBins);
   q1 = quantiles[0.25];
   q3 = quantiles[0.75];
-  medAbsDevMed = statsAlg->getMedianAbsDevMed(npts, mymin, mymax, maxArraySizeBytes, False, nBins);
+  medAbsDevMed = statsAlg->getMedianAbsDevMed(npts, mymin, mymax, maxArraySizeBytes, false, nBins);
 }
 
 template <class T>
@@ -1480,7 +1480,7 @@ void LatticeStatistics<T>::listMinMax(ostringstream& osMin, ostringstream& osMax
 }
 
 template <class T>
-Bool LatticeStatistics<T>::listStats(Bool hasBeam, const IPosition& dPos,
+bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
                                      const Matrix<AccumType>& stats)
 //
 // List the statistics for this row to the logger
@@ -1496,7 +1496,7 @@ Bool LatticeStatistics<T>::listStats(Bool hasBeam, const IPosition& dPos,
   if (!haveLogger_p) {
     // We will consider this situation as successful
 
-    return True;
+    return true;
   }
   os_p << endl;
 
@@ -1534,7 +1534,7 @@ Bool LatticeStatistics<T>::listStats(Bool hasBeam, const IPosition& dPos,
     //
     os_p << LogIO::NORMAL;
     for (uInt j = 1; j < nDisplayAxes; j++) {
-      os_p << "Axis " << displayAxes_p(j) + 1 << " = " << locInLattice(dPos, True)(j) + 1;
+      os_p << "Axis " << displayAxes_p(j) + 1 << " = " << locInLattice(dPos, true)(j) + 1;
       if (j < nDisplayAxes - 1) os_p << ", ";
     }
   }
@@ -1623,19 +1623,19 @@ Bool LatticeStatistics<T>::listStats(Bool hasBeam, const IPosition& dPos,
   }
   os_p.post();
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, Int zLayer,
+bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, Int zLayer,
                                          Int hAxis, Int hLayer) {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   if (needStorageLattice_p) {
     if (!generateStorageLattice()) {
-      return False;
+      return false;
     }
   }
 
@@ -1673,7 +1673,7 @@ Bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     AccumType dMax = statsV(pos);
 
     if (nPts <= 0) {
-      return False;
+      return false;
     }
 
     stringstream os;
@@ -1704,7 +1704,7 @@ Bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     setStream(os, oPrec);
     os << setw(oDWidth) << sum;
     if (_canDoFlux()) {
-      Bool unused;
+      bool unused;
       setStream(os, oPrec);
       os << setw(oDWidth) << _flux(unused, sum, area);
     }
@@ -1724,7 +1724,7 @@ Bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     os << setw(oDWidth) << dMax;
     stats += os.str();
     stats += '\n';
-    return True;
+    return true;
   }
 
   const uInt n1 = pStoreLattice_p->shape()(0);
@@ -1773,8 +1773,8 @@ Bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     }
 
     Matrix<AccumType> matrix(pixelIterator.matrixCursor());
-    Bool canDoFlux = _canDoFlux();
-    Bool unused;
+    bool canDoFlux = _canDoFlux();
+    bool unused;
     for (uInt i = 0; i < n1; i++) {
       const AccumType& nPts = matrix(i, NPTS);
       if (nPts > 0) {
@@ -1797,21 +1797,21 @@ Bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
   stats += os.str();
   stats += '\n';
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxis, Int zLayer,
+bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxis, Int zLayer,
                                          Int hAxis, Int hLayer) {
   char buffer[256];
 
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   if (needStorageLattice_p) {
     if (!generateStorageLattice()) {
-      return False;
+      return false;
     }
   }
 
@@ -1849,7 +1849,7 @@ Bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     AccumType dMax = statsV(pos);
 
     if (nPts <= 0) {
-      return False;
+      return false;
     }
 
     // const Int oPrec = 6;
@@ -1866,7 +1866,7 @@ Bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     stats.push_back(stat_element("Sum", buffer));
 
     if (_canDoFlux()) {
-      Bool unused;
+      bool unused;
       snprintf(buffer, sizeof(buffer), "%e", _flux(unused, sum, area).getValue());
       stats.push_back(stat_element("FluxDensity", buffer));
     }
@@ -1891,7 +1891,7 @@ Bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     snprintf(buffer, sizeof(buffer), "%e", dMax);
     stats.push_back(stat_element("Maximum", buffer));
 
-    return True;
+    return true;
   }
 
   const uInt n1 = pStoreLattice_p->shape()(0);
@@ -1939,7 +1939,7 @@ Bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     }
 
     Matrix<AccumType> matrix(pixelIterator.matrixCursor());
-    Bool unused;
+    bool unused;
     for (uInt i = 0; i < n1; i++) {
       const AccumType& nPts = matrix(i, NPTS);
       if (nPts > 0) {
@@ -2013,11 +2013,11 @@ Bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     }
     break;
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::listLayerStats(const Matrix<AccumType>& stats, ostringstream& os,
+bool LatticeStatistics<T>::listLayerStats(const Matrix<AccumType>& stats, ostringstream& os,
                                           Int zLayer) {
   // const uInt nDisplayAxes = displayAxes_p.nelements();
   const uInt n1 = stats.shape()(0);
@@ -2090,12 +2090,12 @@ Bool LatticeStatistics<T>::listLayerStats(const Matrix<AccumType>& stats, ostrin
     }
   }
 
-  return True;
+  return true;
 }
 
 template <class T>
 IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition,
-                                             Bool relativeToParent) const
+                                             bool relativeToParent) const
 
 //
 // Given a location in the storage lattice, convert those locations on
@@ -2136,7 +2136,7 @@ IPosition LatticeStatistics<T>::locInStorageLattice(const IPosition& latticePosi
 }
 
 template <class T>
-void LatticeStatistics<T>::minMax(Bool& none, AccumType& dMin, AccumType& dMax,
+void LatticeStatistics<T>::minMax(bool& none, AccumType& dMin, AccumType& dMax,
                                   const Vector<AccumType>& d, const Vector<AccumType>& n) const
 //
 //
@@ -2151,8 +2151,8 @@ void LatticeStatistics<T>::minMax(Bool& none, AccumType& dMin, AccumType& dMax,
 //   dMin,DMax  Min and max of array pd
 
 {
-  Bool init = True;
-  none = True;
+  bool init = true;
+  none = true;
   const Int n1 = d.nelements();
 
   for (Int i = 0; i < n1; i++) {
@@ -2160,44 +2160,44 @@ void LatticeStatistics<T>::minMax(Bool& none, AccumType& dMin, AccumType& dMax,
       if (init) {
         dMin = d(i);
         dMax = d(i);
-        init = False;
+        init = false;
       } else {
         dMin = min(dMin, d(i));
         dMax = max(dMax, d(i));
       }
-      none = False;
+      none = false;
     }
   }
 }
 
 template <class T>
-Bool LatticeStatistics<T>::display()
+bool LatticeStatistics<T>::display()
 
 // This function displays (plotting and listing) the requested
 // statistics as a function of the display axes
 
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Do we have anything to do
 
   if (!doList_p && haveLogger_p) {
     os_p << LogIO::NORMAL1 << "There is nothing to plot or list" << LogIO::POST;
-    return True;
+    return true;
   }
 
   // Generate storage lattice if required
 
   if (needStorageLattice_p) {
-    if (!generateStorageLattice()) return False;
+    if (!generateStorageLattice()) return false;
   }
 
   // If we don't have any display axes just summarise the lattice statistics
   if (displayAxes_p.nelements() == 0) {
     summStats();
-    return True;
+    return true;
   }
 
   // Size of plotting abcissa axis
@@ -2226,7 +2226,7 @@ Bool LatticeStatistics<T>::display()
 
   // Get beam area
 
-  Bool hasBeam = False;
+  bool hasBeam = false;
   //
   for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
     // Convert accumulations to  mean, sigma, and rms.
@@ -2252,16 +2252,16 @@ Bool LatticeStatistics<T>::display()
     // List statistics
 
     if (doList_p) {
-      if (!listStats(hasBeam, pixelIterator.position(), ord)) return False;
+      if (!listStats(hasBeam, pixelIterator.position(), ord)) return false;
     }
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
+bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
                                                     const LatticeStatsBase::StatisticsTypes type,
-                                                    const Bool dropDeg)
+                                                    const bool dropDeg)
 //
 // Retrieve values from storage lattice
 //
@@ -2275,7 +2275,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
   // Generate storage lattice if required
   if (needStorageLattice_p) {
     if (!generateStorageLattice()) {
-      return False;
+      return false;
     }
   }
   // Were there some good points ?
@@ -2294,12 +2294,12 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
     pos(nDim - 1) = ISTAT;
     pStoreLattice_p->getSlice(slice, pos, sliceShape, IPosition(nDim, 1), dropDeg);
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, const IPosition& pos,
-                                                    const Bool posInLattice) {
+bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, const IPosition& pos,
+                                                    const bool posInLattice) {
   //
   // Retrieve values from storage lattice
   //
@@ -2317,7 +2317,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, co
     if (pos.nelements() != displayAxes_p.nelements()) {
       error_p = "Incorrectly sized position given";
       slice.resize(0);
-      return False;
+      return false;
     }
   }
 
@@ -2325,7 +2325,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, co
 
   if (needStorageLattice_p) {
     if (!generateStorageLattice()) {
-      return False;
+      return false;
     }
   }
 
@@ -2347,7 +2347,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, co
   IPosition sliceShape(nDim + 1, 1);
   sliceShape(nDim) = LatticeStatsBase::NACCUM;
   Array<AccumType> tSlice;
-  pStoreLattice_p->getSlice(tSlice, slicePos, sliceShape, IPosition(nDim + 1, 1), False);
+  pStoreLattice_p->getSlice(tSlice, slicePos, sliceShape, IPosition(nDim + 1, 1), false);
   // Copy to vector
 
   slicePos = 0;
@@ -2355,7 +2355,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, co
     slicePos(nDim) = i;
     slice(i) = tSlice(slicePos);
   }
-  return True;
+  return true;
 }
 
 template <class T>
@@ -2375,7 +2375,7 @@ void LatticeStatistics<T>::_latticePosToStoragePos(IPosition& storagePos,
 }
 
 template <class T>
-Bool LatticeStatistics<T>::someGoodPoints()
+bool LatticeStatistics<T>::someGoodPoints()
 //
 // If any of the locations in the statistics storage array contain
 // some valid points return true straight away.  DOn't bother
@@ -2385,7 +2385,7 @@ Bool LatticeStatistics<T>::someGoodPoints()
   if (doneSomeGoodPoints_p) {
     return someGoodPointsValue_p;
   } else {
-    doneSomeGoodPoints_p = True;
+    doneSomeGoodPoints_p = true;
     if (pStoreLattice_p->ndim() == 1) {
       // If storage lattice only 1D take cheap way out. Can't invoke
       // retrieveStorageStatistic or we will be stuck in a time loop
@@ -2425,12 +2425,12 @@ Bool LatticeStatistics<T>::someGoodPoints()
       for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
         for (Int i = 0; i < n1; i++) {
           if (uInt64(real(pixelIterator.matrixCursor()(i, NPTS)) + 0.1) > 0) {
-            someGoodPointsValue_p = True;
+            someGoodPointsValue_p = true;
             return someGoodPointsValue_p;
           }
         }
       }
-      someGoodPointsValue_p = False;
+      someGoodPointsValue_p = false;
       return someGoodPointsValue_p;
     }
   }

@@ -208,12 +208,12 @@ ConvolveGridder<Domain, Range>::ConvolveGridder(const IPosition& shape, const Ve
 }
 
 template <class Domain, class Range>
-Bool ConvolveGridder<Domain, Range>::grid(Array<Range>& gridded, const Vector<Domain>& p,
+bool ConvolveGridder<Domain, Range>::grid(Array<Range>& gridded, const Vector<Domain>& p,
                                           const Range& value) {
   loc = this->location(loc, p);
   loc -= offsetVec;
   if (onGrid(loc, supportVec)) {
-    Bool del;
+    bool del;
     posVec = this->position(posVec, p);
     const IPosition& fs = gridded.shape();
     std::vector<Int> s(fs.begin(), fs.end());
@@ -231,22 +231,22 @@ Bool ConvolveGridder<Domain, Range>::grid(Array<Range>& gridded, const Vector<Do
               &support, &sampling, &posVec(0), &posVec(1), &posVec(2), convFunc.getStorage(del));
         break;
       default:
-        return False;
+        return false;
         break;
     }
-    return True;
+    return true;
   } else {
     std::cout << "Off grid" << std::endl;
-    return False;
+    return false;
   }
 }
 
 template <class Domain, class Range>
-Bool ConvolveGridder<Domain, Range>::degrid(const Array<Range>& gridded, const Vector<Domain>& p,
+bool ConvolveGridder<Domain, Range>::degrid(const Array<Range>& gridded, const Vector<Domain>& p,
                                             Range& value) {
   loc = this->location(loc, p);
   if (onGrid(loc, supportVec)) {
-    Bool del;
+    bool del;
     posVec = this->position(posVec, p);
     const IPosition& fs = gridded.shape();
     std::vector<Int> s(fs.begin(), fs.end());
@@ -264,12 +264,12 @@ Bool ConvolveGridder<Domain, Range>::degrid(const Array<Range>& gridded, const V
                &support, &sampling, &posVec(0), &posVec(1), &posVec(2), convFunc.getStorage(del));
         break;
       default:
-        return False;
+        return false;
         break;
     }
-    return True;
+    return true;
   } else {
-    return False;
+    return false;
   }
 }
 

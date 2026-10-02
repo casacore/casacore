@@ -165,13 +165,13 @@ class LogOrigin {
   String location() const;
 
   // Return true if the line number and file name are not set.
-  Bool isUnset() const;
+  bool isUnset() const;
 
  private:
   String task_p;
   String function_p;
   String class_p;
-  ObjectID id_p = True;
+  ObjectID id_p = true;
   uInt line_p = 0;
   String file_p;
   String node_p;

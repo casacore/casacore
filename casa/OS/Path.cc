@@ -132,26 +132,26 @@ String Path::resolvedName() const {
   return String(name);
 }
 
-Bool Path::isValid() const {
+bool Path::isValid() const {
   // Check if the length of the pathname is not too long
   if (itsOriginalPathName.length() > getMaxPathNameSize()) {
-    return False;
+    return false;
   }
   // Check if pathname contains double slashes
   if (itsOriginalPathName.find("//") != std::string::npos) {
-    return False;
+    return false;
   }
   // Check if pathname contains non-printables
   uInt i;
   for (i = 0; i < itsOriginalPathName.length(); i++) {
     if (isprint(itsOriginalPathName[i]) == 0) {
-      return False;
+      return false;
     }
   }
 
   // Check if the length of the pathname is not too long
   if (itsOriginalPathName.length() > getMaxPathNameSize()) {
-    return False;
+    return false;
   }
 
   // Check if filenames are not too long
@@ -161,27 +161,27 @@ Bool Path::isValid() const {
   uInt nameSize = getMaxNameSize();
   for (i = 0; i < nw; i++) {
     if (subPathname[i].length() > nameSize) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-Bool Path::isStrictlyPosix() const {
+bool Path::isStrictlyPosix() const {
   // Check if the length of the pathname is not too long, according POSIX
   // standard
   if (itsOriginalPathName.length() > pathmax_posix) {
-    return False;
+    return false;
   }
   // Check if pathname contains double slashes
   if (itsOriginalPathName.find("//") != std::string::npos) {
-    return False;
+    return false;
   }
   // Check if pathname contains non-printables
   uInt i;
   for (i = 0; i < itsOriginalPathName.length(); i++) {
     if (!isprint(itsOriginalPathName[i])) {
-      return False;
+      return false;
     }
   }
 
@@ -190,9 +190,9 @@ Bool Path::isStrictlyPosix() const {
   String sep = "/";
   uInt nw = split(itsOriginalPathName, subPathname, 15, sep);
   for (i = 0; i < nw; ++i) {
-    if (subPathname[i].length() > namemax_posix) return False;
+    if (subPathname[i].length() > namemax_posix) return false;
   }
-  return True;
+  return true;
 }
 
 uInt Path::length() const { return itsOriginalPathName.length(); }
@@ -266,7 +266,7 @@ String Path::expandName(const String& inString) const {
   String tempString(inString);
   uInt cursor = 0;
   uInt i = 0;
-  Bool flag = True;
+  bool flag = true;
   uInt count = 0;
   // Flag is set True if an environment variable is detected. When this
   // happens more then 25 times, there is probably a recursive variable set.
@@ -274,7 +274,7 @@ String Path::expandName(const String& inString) const {
   while (flag && count < 25) {
     // flag is False, if there is not an environment variable
     // the name will not be checked again
-    flag = False;
+    flag = false;
     count++;     // count is increased when the string is
     cursor = 0;  // walked through
     // Replace tilde with the name of the home directory
@@ -340,7 +340,7 @@ String Path::expandName(const String& inString) const {
             tempString = res;
             // flag is set True, so the name will be checked again
             // for environment variables
-            flag = True;
+            flag = true;
           }
         }
       }
@@ -408,13 +408,13 @@ String Path::removeDots(const String& inString) const {
   // Combine the parts into the output string.
   // Start it with a slash if the input started with a slash.
   String outString;
-  Bool doSlash = (parts(0).empty());
+  bool doSlash = (parts(0).empty());
   for (i = 0; i < nvalid; i++) {
     if (doSlash) {
       outString += '/';
     }
     outString += parts(validParts(i));
-    doSlash = True;
+    doSlash = true;
   }
   return outString;
 }

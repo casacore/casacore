@@ -92,16 +92,16 @@ class FitsLogical {
 
  public:
   FitsLogical() : v('\0') {}
-  FitsLogical(Bool x) : v(x == True ? 'T' : 'F') {}
-  FitsLogical &operator=(Bool x) {
-    v = (x == True ? 'T' : 'F');
+  FitsLogical(bool x) : v(x == true ? 'T' : 'F') {}
+  FitsLogical &operator=(bool x) {
+    v = (x == true ? 'T' : 'F');
     return *this;
   }
   /// ARO 2021-02-20:
   /// Removed the following function, because it seems incorrectly implemented and isn't used
   /// Bool isdefined() const { return v == '\0' ? True : False; }
   void undefine() { v = '\0'; }
-  operator Bool() const { return v == 'T'; }
+  operator bool() const { return v == 'T'; }
 
  protected:
   char v;
@@ -375,10 +375,10 @@ class FITS {
 
   static ReservedFitsKeywordCollection &ResWord;
   static void valstr(ostream &o, const ValueType &ty, const void *val);
-  static Bool isa_digit(char c);
+  static bool isa_digit(char c);
   static int digit2bin(char c);
-  static Bool isa_text(char c);
-  static Bool isa_letter(char);
+  static bool isa_text(char c);
+  static bool isa_letter(char);
   static int letter2bin(char);
   static void fstr2str(char *, const char *, int);
   static int str2fstr(char *, const char *, int);
@@ -457,10 +457,10 @@ class FITS {
 };
 
 inline FITS::FITS() {}  // just a dummy function to prevent instantiation
-inline Bool FITS::isa_digit(char c) { return isdigit(c) ? True : False; }
+inline bool FITS::isa_digit(char c) { return isdigit(c) ? true : false; }
 inline int FITS::digit2bin(char c) { return c - '0'; }
-inline Bool FITS::isa_text(char c) { return isprint(c) ? True : False; }
-inline Bool FITS::isa_letter(char c) { return isupper(c) ? True : False; }
+inline bool FITS::isa_text(char c) { return isprint(c) ? true : false; }
+inline bool FITS::isa_letter(char c) { return isupper(c) ? true : false; }
 inline int FITS::letter2bin(char c) { return c - 'A'; }
 
 ostream &operator<<(ostream &, const FITS::ValueType &);
@@ -484,8 +484,8 @@ class ReservedFitsKeyword {
   FITS::ReservedName name() const;
   int namesize() const;
   FITS::ValueType type() const;
-  Bool isindexed() const;
-  Bool isessential() const;
+  bool isindexed() const;
+  bool isessential() const;
 #if defined(TURBOCPP)
   // It is best for the following to be private, but
   // C-Front won't allow an initializer list if they are private.
@@ -497,15 +497,15 @@ class ReservedFitsKeyword {
   const char *aname_;
   int namesize_;
   FITS::ValueType type_;
-  Bool isindexed_;    // 0 = NOT INDEXED, 1 = INDEXED
-  Bool isessential_;  // 0 = NO, 1 = YES
+  bool isindexed_;    // 0 = NOT INDEXED, 1 = INDEXED
+  bool isessential_;  // 0 = NO, 1 = YES
 };
 
 inline const char *ReservedFitsKeyword::aname() const { return aname_; }
 inline int ReservedFitsKeyword::namesize() const { return namesize_; }
 inline FITS::ValueType ReservedFitsKeyword::type() const { return type_; }
-inline Bool ReservedFitsKeyword::isindexed() const { return isindexed_; }
-inline Bool ReservedFitsKeyword::isessential() const { return isessential_; }
+inline bool ReservedFitsKeyword::isindexed() const { return isindexed_; }
+inline bool ReservedFitsKeyword::isessential() const { return isessential_; }
 
 //<summary> collection of reserved FITS keywords </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -515,24 +515,24 @@ class ReservedFitsKeywordCollection {
  public:
   const ReservedFitsKeyword &operator[](int i) const;
   int no() const;
-  const ReservedFitsKeyword &get(FITS::ReservedName, Bool, FITS::ValueType, const void *, int,
+  const ReservedFitsKeyword &get(FITS::ReservedName, bool, FITS::ValueType, const void *, int,
                                  const char *&) const;
-  const ReservedFitsKeyword &get(const char *, int, Bool, FITS::ValueType, const void *, int,
+  const ReservedFitsKeyword &get(const char *, int, bool, FITS::ValueType, const void *, int,
                                  const char *&) const;
   const char *aname(FITS::ReservedName) const;
   int essential_name(const char *, int) const;
-  const ReservedFitsKeyword &get_essential(int, Bool, FITS::ValueType, const void *, int,
+  const ReservedFitsKeyword &get_essential(int, bool, FITS::ValueType, const void *, int,
                                            const char *&) const;
   int isreserved(const char *, int) const;
-  Bool isunique(int) const;
-  Bool requires_value(int) const;
+  bool isunique(int) const;
+  bool requires_value(int) const;
   const ReservedFitsKeyword &userdef_item() const;
   const ReservedFitsKeyword &err_item() const;
   const ReservedFitsKeyword &end_item() const;
   const ReservedFitsKeyword &spaces() const;
   const ReservedFitsKeyword &comment() const;
   const ReservedFitsKeyword &history() const;
-  int rules(const ReservedFitsKeyword &, const char *, int, Bool, FITS::ValueType, const void *,
+  int rules(const ReservedFitsKeyword &, const char *, int, bool, FITS::ValueType, const void *,
             int, const char *&) const;
 
  private:
@@ -550,62 +550,62 @@ class ReservedFitsKeywordCollection {
       //         |               |           |  type           | isessential   in|NOST
       //        \|/             \|/         \|/\|/            \|/     \|/      \|/
       //         ------          ------      -  -------        -----  -----    ------------
-      /*  0 */ {FITS::USER_DEF, "", 0, FITS::NOVALUE, False, False},
-      /*  1 */ {FITS::AUTHOR, "AUTHOR", 6, FITS::STRING, False, False},      // 5.2.2.3
-      /*  2 */ {FITS::BITPIX, "BITPIX", 6, FITS::LONG, False, True},         // 5.2.1.1
-      /*  3 */ {FITS::BLANK, "BLANK", 5, FITS::LONG, False, False},          // 5.2.2.5
-      /*  4 */ {FITS::BLOCKED, "BLOCKED", 7, FITS::LOGICAL, False, False},   // 5.2.2.1
-      /*  5 */ {FITS::BSCALE, "BSCALE", 6, FITS::REAL, False, False},        // 5.2.2.5
-      /*  6 */ {FITS::BUNIT, "BUNIT", 5, FITS::STRING, False, False},        // 5.2.2.5
-      /*  7 */ {FITS::BZERO, "BZERO", 5, FITS::REAL, False, False},          // 5.2.2.5
-      /*  8 */ {FITS::CDELT, "CDELT", 5, FITS::REAL, True, False},           // 5.2.2.5
-      /*  9 */ {FITS::COMMENT, "COMMENT", 7, FITS::NOVALUE, False, False},   // 5.2.2.4
-      /* 10 */ {FITS::CROTA, "CROTA", 5, FITS::REAL, True, False},           // 5.2.2.5
-      /* 11 */ {FITS::CRPIX, "CRPIX", 5, FITS::REAL, True, False},           // 5.2.2.5
-      /* 12 */ {FITS::CRVAL, "CRVAL", 5, FITS::REAL, True, False},           // 5.2.2.5
-      /* 13 */ {FITS::CTYPE, "CTYPE", 5, FITS::STRING, True, False},         // 5.2.2.5
-      /* 14 */ {FITS::DATAMAX, "DATAMAX", 7, FITS::REAL, False, False},      // 5.2.2.5
-      /* 15 */ {FITS::DATAMIN, "DATAMIN", 7, FITS::REAL, False, False},      // 5.2.2.5
-      /* 16 */ {FITS::DATE, "DATE", 4, FITS::STRING, False, False},          // 5.2.2.1
-      /* 17 */ {FITS::DATE_OBS, "DATE-OBS", 8, FITS::STRING, False, False},  // 5.2.2.2
-      /* 18 */ {FITS::END, "END", 3, FITS::NOVALUE, False, True},            // 5.2.1.1
-      /* 19 */ {FITS::EPOCH, "EPOCH", 5, FITS::REAL, False, False},          // 5.2.2.2
-      /* 20 */ {FITS::EQUINOX, "EQUINOX", 7, FITS::REAL, False, False},      // 5.2.2.2
-      /* 21 */ {FITS::EXTEND, "EXTEND", 6, FITS::LOGICAL, False, True},      // 5.2.1.2
-      /* 22 */ {FITS::EXTLEVEL, "EXTLEVEL", 8, FITS::LONG, False, False},    // 5.2.2.6
-      /* 23 */ {FITS::EXTNAME, "EXTNAME", 7, FITS::STRING, False, False},    // 5.2.2.6
-      /* 24 */ {FITS::EXTVER, "EXTVER", 6, FITS::LONG, False, False},        // 5.2.2.6
-      /* 25 */ {FITS::GCOUNT, "GCOUNT", 6, FITS::LONG, False, True},         // 5.2.1.2
-      /* 26 */ {FITS::GROUPS, "GROUPS", 6, FITS::LOGICAL, False, True},      // 7.1.1.6
-      /* 27 */ {FITS::HISTORY, "HISTORY", 7, FITS::NOVALUE, False, False},   // 5.2.2.4
-      /* 28 */ {FITS::INSTRUME, "INSTRUME", 8, FITS::STRING, False, False},  // 5.2.2.2
-      /* 29 */ {FITS::NAXIS, "NAXIS", 5, FITS::LONG, False, True},           // 5.2.1.1
-      /* 30 */ {FITS::NAXIS, "NAXIS", 5, FITS::LONG, True, True},            // 5.2.1.1
-      /* 31 */ {FITS::OBJECT, "OBJECT", 6, FITS::STRING, False, False},      // 5.2.2.2
-      /* 32 */ {FITS::OBSERVER, "OBSERVER", 8, FITS::STRING, False, False},  // 5.2.2.2
-      /* 33 */ {FITS::ORIGIN, "ORIGIN", 6, FITS::STRING, False, False},      // 5.2.2.1
-      /* 34 */ {FITS::PCOUNT, "PCOUNT", 6, FITS::LONG, False, True},         // 5.2.1.2
-      /* 35 */ {FITS::PSCAL, "PSCAL", 5, FITS::REAL, True, False},           // 7.1.2.2
-      /* 36 */ {FITS::PTYPE, "PTYPE", 5, FITS::STRING, True, False},         // 7.1.2.1
-      /* 37 */ {FITS::PZERO_FITS, "PZERO", 5, FITS::REAL, True, False},      // 7.1.2.3
-      /* 38 */ {FITS::REFERENC, "REFERENC", 8, FITS::STRING, False, False},  // 5.2.2.3
-      /* 39 */ {FITS::SIMPLE, "SIMPLE", 6, FITS::LOGICAL, False, True},      // 5.2.1.1
-      /* 40 */ {FITS::SPACES, "        ", 8, FITS::NOVALUE, False, False},   // 5.2.2.4
-      /* 41 */ {FITS::TBCOL, "TBCOL", 5, FITS::LONG, True, False},           // 8.1.1
-      /* 42 */ {FITS::TDIM, "TDIM", 4, FITS::STRING, True, False},           // A.4, A.9.1
-      /* 43 */ {FITS::TDISP, "TDISP", 5, FITS::STRING, True, False},         // A.4
-      /* 44 */ {FITS::TELESCOP, "TELESCOP", 8, FITS::STRING, False, False},  // 5.2.2.2
-      /* 45 */ {FITS::TFIELDS, "TFIELDS", 7, FITS::LONG, False, False},      // 8.1.1
-      /* 46 */ {FITS::TFORM, "TFORM", 5, FITS::STRING, True, False},         // 8.1.1
-      /* 47 */ {FITS::THEAP, "THEAP", 5, FITS::LONG, False, False},          // A.4, A.9.2
-      /* 48 */ {FITS::TNULL, "TNULL", 5, FITS::STRING, True, False},         // 8.1.2
-      /* 49 */ {FITS::TNULL, "TNULL", 5, FITS::LONG, True, False},           // A.4
-      /* 50 */ {FITS::TSCAL, "TSCAL", 5, FITS::REAL, True, False},           // 8.1.2
-      /* 51 */ {FITS::TTYPE, "TTYPE", 5, FITS::STRING, True, False},         // 8.1.2
-      /* 52 */ {FITS::TUNIT, "TUNIT", 5, FITS::STRING, True, False},         // 8.1.2
-      /* 53 */ {FITS::TZERO, "TZERO", 5, FITS::REAL, True, False},           // 8.1.2
-      /* 54 */ {FITS::XTENSION, "XTENSION", 8, FITS::STRING, False, True},   // 5.2.1.2
-      /* 55 */ {FITS::ERRWORD, "", 0, FITS::NOVALUE, False, False}           // last
+      /*  0 */ {FITS::USER_DEF, "", 0, FITS::NOVALUE, false, false},
+      /*  1 */ {FITS::AUTHOR, "AUTHOR", 6, FITS::STRING, false, false},      // 5.2.2.3
+      /*  2 */ {FITS::BITPIX, "BITPIX", 6, FITS::LONG, false, true},         // 5.2.1.1
+      /*  3 */ {FITS::BLANK, "BLANK", 5, FITS::LONG, false, false},          // 5.2.2.5
+      /*  4 */ {FITS::BLOCKED, "BLOCKED", 7, FITS::LOGICAL, false, false},   // 5.2.2.1
+      /*  5 */ {FITS::BSCALE, "BSCALE", 6, FITS::REAL, false, false},        // 5.2.2.5
+      /*  6 */ {FITS::BUNIT, "BUNIT", 5, FITS::STRING, false, false},        // 5.2.2.5
+      /*  7 */ {FITS::BZERO, "BZERO", 5, FITS::REAL, false, false},          // 5.2.2.5
+      /*  8 */ {FITS::CDELT, "CDELT", 5, FITS::REAL, true, false},           // 5.2.2.5
+      /*  9 */ {FITS::COMMENT, "COMMENT", 7, FITS::NOVALUE, false, false},   // 5.2.2.4
+      /* 10 */ {FITS::CROTA, "CROTA", 5, FITS::REAL, true, false},           // 5.2.2.5
+      /* 11 */ {FITS::CRPIX, "CRPIX", 5, FITS::REAL, true, false},           // 5.2.2.5
+      /* 12 */ {FITS::CRVAL, "CRVAL", 5, FITS::REAL, true, false},           // 5.2.2.5
+      /* 13 */ {FITS::CTYPE, "CTYPE", 5, FITS::STRING, true, false},         // 5.2.2.5
+      /* 14 */ {FITS::DATAMAX, "DATAMAX", 7, FITS::REAL, false, false},      // 5.2.2.5
+      /* 15 */ {FITS::DATAMIN, "DATAMIN", 7, FITS::REAL, false, false},      // 5.2.2.5
+      /* 16 */ {FITS::DATE, "DATE", 4, FITS::STRING, false, false},          // 5.2.2.1
+      /* 17 */ {FITS::DATE_OBS, "DATE-OBS", 8, FITS::STRING, false, false},  // 5.2.2.2
+      /* 18 */ {FITS::END, "END", 3, FITS::NOVALUE, false, true},            // 5.2.1.1
+      /* 19 */ {FITS::EPOCH, "EPOCH", 5, FITS::REAL, false, false},          // 5.2.2.2
+      /* 20 */ {FITS::EQUINOX, "EQUINOX", 7, FITS::REAL, false, false},      // 5.2.2.2
+      /* 21 */ {FITS::EXTEND, "EXTEND", 6, FITS::LOGICAL, false, true},      // 5.2.1.2
+      /* 22 */ {FITS::EXTLEVEL, "EXTLEVEL", 8, FITS::LONG, false, false},    // 5.2.2.6
+      /* 23 */ {FITS::EXTNAME, "EXTNAME", 7, FITS::STRING, false, false},    // 5.2.2.6
+      /* 24 */ {FITS::EXTVER, "EXTVER", 6, FITS::LONG, false, false},        // 5.2.2.6
+      /* 25 */ {FITS::GCOUNT, "GCOUNT", 6, FITS::LONG, false, true},         // 5.2.1.2
+      /* 26 */ {FITS::GROUPS, "GROUPS", 6, FITS::LOGICAL, false, true},      // 7.1.1.6
+      /* 27 */ {FITS::HISTORY, "HISTORY", 7, FITS::NOVALUE, false, false},   // 5.2.2.4
+      /* 28 */ {FITS::INSTRUME, "INSTRUME", 8, FITS::STRING, false, false},  // 5.2.2.2
+      /* 29 */ {FITS::NAXIS, "NAXIS", 5, FITS::LONG, false, true},           // 5.2.1.1
+      /* 30 */ {FITS::NAXIS, "NAXIS", 5, FITS::LONG, true, true},            // 5.2.1.1
+      /* 31 */ {FITS::OBJECT, "OBJECT", 6, FITS::STRING, false, false},      // 5.2.2.2
+      /* 32 */ {FITS::OBSERVER, "OBSERVER", 8, FITS::STRING, false, false},  // 5.2.2.2
+      /* 33 */ {FITS::ORIGIN, "ORIGIN", 6, FITS::STRING, false, false},      // 5.2.2.1
+      /* 34 */ {FITS::PCOUNT, "PCOUNT", 6, FITS::LONG, false, true},         // 5.2.1.2
+      /* 35 */ {FITS::PSCAL, "PSCAL", 5, FITS::REAL, true, false},           // 7.1.2.2
+      /* 36 */ {FITS::PTYPE, "PTYPE", 5, FITS::STRING, true, false},         // 7.1.2.1
+      /* 37 */ {FITS::PZERO_FITS, "PZERO", 5, FITS::REAL, true, false},      // 7.1.2.3
+      /* 38 */ {FITS::REFERENC, "REFERENC", 8, FITS::STRING, false, false},  // 5.2.2.3
+      /* 39 */ {FITS::SIMPLE, "SIMPLE", 6, FITS::LOGICAL, false, true},      // 5.2.1.1
+      /* 40 */ {FITS::SPACES, "        ", 8, FITS::NOVALUE, false, false},   // 5.2.2.4
+      /* 41 */ {FITS::TBCOL, "TBCOL", 5, FITS::LONG, true, false},           // 8.1.1
+      /* 42 */ {FITS::TDIM, "TDIM", 4, FITS::STRING, true, false},           // A.4, A.9.1
+      /* 43 */ {FITS::TDISP, "TDISP", 5, FITS::STRING, true, false},         // A.4
+      /* 44 */ {FITS::TELESCOP, "TELESCOP", 8, FITS::STRING, false, false},  // 5.2.2.2
+      /* 45 */ {FITS::TFIELDS, "TFIELDS", 7, FITS::LONG, false, false},      // 8.1.1
+      /* 46 */ {FITS::TFORM, "TFORM", 5, FITS::STRING, true, false},         // 8.1.1
+      /* 47 */ {FITS::THEAP, "THEAP", 5, FITS::LONG, false, false},          // A.4, A.9.2
+      /* 48 */ {FITS::TNULL, "TNULL", 5, FITS::STRING, true, false},         // 8.1.2
+      /* 49 */ {FITS::TNULL, "TNULL", 5, FITS::LONG, true, false},           // A.4
+      /* 50 */ {FITS::TSCAL, "TSCAL", 5, FITS::REAL, true, false},           // 8.1.2
+      /* 51 */ {FITS::TTYPE, "TTYPE", 5, FITS::STRING, true, false},         // 8.1.2
+      /* 52 */ {FITS::TUNIT, "TUNIT", 5, FITS::STRING, true, false},         // 8.1.2
+      /* 53 */ {FITS::TZERO, "TZERO", 5, FITS::REAL, true, false},           // 8.1.2
+      /* 54 */ {FITS::XTENSION, "XTENSION", 8, FITS::STRING, false, true},   // 5.2.1.2
+      /* 55 */ {FITS::ERRWORD, "", 0, FITS::NOVALUE, false, false}           // last
   };
   static constexpr const ReservedFitsKeyword &user_def_item = resword[0];  // user-defined keyword
   static constexpr const ReservedFitsKeyword &error_item = resword[55];    // error in keyword
@@ -619,7 +619,7 @@ class ReservedFitsKeywordCollection {
       1, 2, 8, 14, 18, 0, 25, 27, 28, 0, 0, 0, 0, 29, 31, 34, 0, 38,
       //  S   T  U  V  W   X  Y  Z
       39, 41, 0, 0, 0, 54, 0, 0};
-  const ReservedFitsKeyword &match(int, const char *, int, Bool, FITS::ValueType, const void *, int,
+  const ReservedFitsKeyword &match(int, const char *, int, bool, FITS::ValueType, const void *, int,
                                    const char *&) const;
 };
 
@@ -627,8 +627,8 @@ inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::operator[](int 
   return resword[i];
 }
 inline int ReservedFitsKeywordCollection::no() const { return no_items; }
-inline Bool ReservedFitsKeywordCollection::isunique(int i) const {
-  return (Bool)(resword[i + 1].name() != resword[i].name());
+inline bool ReservedFitsKeywordCollection::isunique(int i) const {
+  return (bool)(resword[i + 1].name() != resword[i].name());
 }
 inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::userdef_item() const {
   return user_def_item;
@@ -658,10 +658,10 @@ inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::history() const
 
 class FitsNameResult {
  public:
-  Bool isaname;   // 1 if there is a name present, otherwise 0
+  bool isaname;   // 1 if there is a name present, otherwise 0
   int begpos;     // beginning position of name
   int endpos;     // ending position of name
-  Bool isaindex;  // whether an index is present or not
+  bool isaindex;  // whether an index is present or not
   int index;      // index if present
   int len;        // length of name without index
   enum ErrMsg { OK = 0, NO_0_NDX };
@@ -679,7 +679,7 @@ class FitsValueResult {
  public:
   FITS::ValueType type;
   union {
-    Bool b;
+    bool b;
     int s[2];  // for strings, s[0] is offset, s[1] length
     Int l;
     float f;
@@ -690,7 +690,7 @@ class FitsValueResult {
   DComplex dc;
   int begpos;          // beginning position of value
   int endpos;          // ending position of value
-  Bool isa_point;      // 1 if a point, otherwise 0
+  bool isa_point;      // 1 if a point, otherwise 0
   int pointpos;        // position of point, if any
   int no_sig;          // number of significant digits
   const char *errmsg;  // error message, if any
@@ -750,8 +750,8 @@ class FitsKeyword {
   // get info about the name
   const char *name() const;
   int namelen() const;
-  Bool isreserved() const;
-  Bool isindexed() const;
+  bool isreserved() const;
+  bool isindexed() const;
   const ReservedFitsKeyword &kw() const;
   int index() const;
   //</group>
@@ -770,7 +770,7 @@ class FitsKeyword {
 
   // access the value of the keyword
   //<group>
-  Bool asBool() const;
+  bool asBool() const;
   const char *asString() const;
   int valStrlen() const;
   Int asInt() const;
@@ -784,7 +784,7 @@ class FitsKeyword {
 
   // change the value of the keyword
   //<group>
-  FitsKeyword &operator=(Bool);
+  FitsKeyword &operator=(bool);
   FitsKeyword &operator=(const char *);
   FitsKeyword &operator=(Int);
   FitsKeyword &operator=(float);
@@ -825,7 +825,7 @@ class FitsKeyword {
   // the keyword value
   FITS::ValueType type_;
   union {
-    Bool bval;
+    bool bval;
     Int ival;
     float fval;
     double dval;
@@ -874,14 +874,14 @@ inline FitsKeyword::~FitsKeyword() {
 }
 
 inline const ReservedFitsKeyword &FitsKeyword::kw() const { return *kw_; }
-inline Bool FitsKeyword::isreserved() const {
-  return (kw().name() != FITS::ERRWORD && kw().name() != FITS::USER_DEF) ? True : False;
+inline bool FitsKeyword::isreserved() const {
+  return (kw().name() != FITS::ERRWORD && kw().name() != FITS::USER_DEF) ? true : false;
 }
 inline const char *FitsKeyword::name() const {
   return isreserved() ? kw().aname() : (namelen_ ? name_ : "");
 }
 inline int FitsKeyword::namelen() const { return namelen_; }
-inline Bool FitsKeyword::isindexed() const { return ndx > 0 ? True : False; }
+inline bool FitsKeyword::isindexed() const { return ndx > 0 ? true : false; }
 inline int FitsKeyword::index() const { return ndx; }
 
 inline const char *FitsKeyword::comm() const { return comm_ ? comm_ : ""; }
@@ -889,7 +889,7 @@ inline int FitsKeyword::commlen() const { return commlen_; }
 inline int FitsKeyword::err() const { return (kw().name() == FITS::ERRWORD); }
 inline FITS::ValueType FitsKeyword::type() const { return type_; }
 
-inline Bool FitsKeyword::asBool() const { return bval; }
+inline bool FitsKeyword::asBool() const { return bval; }
 inline const char *FitsKeyword::asString() const { return vallen ? (const char *)val : ""; }
 inline int FitsKeyword::valStrlen() const { return vallen; }
 inline Int FitsKeyword::asInt() const {
@@ -935,7 +935,7 @@ inline IComplex FitsKeyword::asIComplex() const { return *((IComplex *)val); }
 inline Complex FitsKeyword::asComplex() const { return *((Complex *)val); }
 inline DComplex FitsKeyword::asDComplex() const { return *((DComplex *)val); }
 
-inline FitsKeyword &FitsKeyword::operator=(Bool x) {
+inline FitsKeyword &FitsKeyword::operator=(bool x) {
   bval = x;
   type_ = FITS::LOGICAL;
   return *this;
@@ -999,7 +999,7 @@ class FitsKeywordList {
   // String values must be less than 69 characters.  String values longer than
   // that will result in an ERROR keyword instead of the desired keyword.
   // <group>
-  void mk(FITS::ReservedName k, Bool v, const char *c = 0);
+  void mk(FITS::ReservedName k, bool v, const char *c = 0);
   void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
   void mk(FITS::ReservedName k, Int v, const char *c = 0);
   void mk(FITS::ReservedName k, long v, const char *c = 0);
@@ -1011,7 +1011,7 @@ class FitsKeywordList {
   // String values must be less than 69 characters.  String values longer than
   // that will result in an ERROR keyword instead of the desired keyword.
   // <group>
-  void mk(int n, FITS::ReservedName k, Bool v, const char *c = 0);
+  void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, Int v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, long v, const char *c = 0);
@@ -1025,7 +1025,7 @@ class FitsKeywordList {
   // String values must no longer than 69 characters.  String values longer than
   // that will result in an ERROR keyword instead of the desired keyword.
   // <group>
-  void mk(const char *n, Bool v, const char *c = 0);
+  void mk(const char *n, bool v, const char *c = 0);
   void mk(const char *n, const char *v = 0, const char *c = 0);
   void mk(const char *n, Int v, const char *c = 0);
   void mk(const char *n, long v, const char *c = 0);
@@ -1064,7 +1064,7 @@ class FitsKeywordList {
   //</group>
 
   //<group>
-  Bool isempty() const;
+  bool isempty() const;
   void first();
   void last();
   FitsKeyword *next();
@@ -1076,7 +1076,7 @@ class FitsKeywordList {
   void delete_all();
   int rules(FitsKeyword &, FITSErrorHandler errhandler = FITSError::defaultHandler);
   int rules(FITSErrorHandler errhandler = FITSError::defaultHandler);
-  Bool basic_rules();
+  bool basic_rules();
   //</group>
 
   //<group>
@@ -1113,7 +1113,7 @@ ostream &operator<<(ostream &o, FitsKeywordList &);  // print the entire list
 
 inline FitsKeywordList::FitsKeywordList() : beg_(0), end_(0), pos(0), total(0), cursor(0) {}
 inline FitsKeywordList::~FitsKeywordList() { delete_all(); }
-inline Bool FitsKeywordList::isempty() const { return total == 0 ? True : False; }
+inline bool FitsKeywordList::isempty() const { return total == 0 ? true : false; }
 inline void FitsKeywordList::first() {
   cursor = 0;
   pos = beg_;
@@ -1140,7 +1140,7 @@ inline int FitsKeywordList::no_parse_errs() const { return card.no_errs(); }
 inline const char *FitsKeywordList::parse_err(int n) const { return card.err(n); }
 
 // FitsKeyword constructors for non-indexed Reserved keywords
-inline void FitsKeywordList::mk(FITS::ReservedName k, Bool v, const char *c) {
+inline void FitsKeywordList::mk(FITS::ReservedName k, bool v, const char *c) {
   insert(make(k, FITS::LOGICAL, &v, c));
 }
 inline void FitsKeywordList::mk(FITS::ReservedName k, const char *v, const char *c) {
@@ -1156,8 +1156,8 @@ inline void FitsKeywordList::mk(FITS::ReservedName k, double v, const char *c) {
   insert(make(k, FITS::DOUBLE, &v, c));
 }
 // FitsKeyword constructors for indexed Reserved keywords
-inline void FitsKeywordList::mk(int n, FITS::ReservedName k, Bool v, const char *c) {
-  Bool tmp;
+inline void FitsKeywordList::mk(int n, FITS::ReservedName k, bool v, const char *c) {
+  bool tmp;
   tmp = v;
   insert(make(n, k, FITS::LOGICAL, &tmp, c));
 }
@@ -1174,8 +1174,8 @@ inline void FitsKeywordList::mk(int n, FITS::ReservedName k, double v, const cha
   insert(make(n, k, FITS::DOUBLE, &v, c));
 }
 // FitsKeyword constructors for User-Defined keywords
-inline void FitsKeywordList::mk(const char *n, Bool v, const char *c) {
-  Bool tmp;
+inline void FitsKeywordList::mk(const char *n, bool v, const char *c) {
+  bool tmp;
   tmp = v;
   insert(make(n, FITS::LOGICAL, &tmp, c));
 }
@@ -1238,7 +1238,7 @@ class ConstFitsKeywordList {
   const FitsKeyword *operator()(const char *x) { return kw(x); }
   const FitsKeyword *next(const char *x) { return kw.next(x); }
 
-  Bool isempty() const { return kw.isempty(); }
+  bool isempty() const { return kw.isempty(); }
   void first() { kw.first(); }
   void last() { kw.last(); }
   const FitsKeyword *next() { return kw.next(); }
@@ -1260,7 +1260,7 @@ class FitsKeyCardTranslator {
  public:
   FitsKeyCardTranslator(int = 100);
   ~FitsKeyCardTranslator();
-  FitsKeywordList &parse(const char *, FitsKeywordList &, int, FITSErrorHandler, Bool);
+  FitsKeywordList &parse(const char *, FitsKeywordList &, int, FITSErrorHandler, bool);
   int build(char *, FitsKeywordList &);
   int no_errs() const;
   const char *err(int) const;
@@ -1297,9 +1297,9 @@ class FitsFPUtil {
   // This is useful in a templated function, where the processing can vary
   // depending on whether the type is FP or not (e.g. blank handling).
   // <group>
-  static Bool isFP(const float *);
-  static Bool isFP(const double *);
-  static Bool isFP(const void *);
+  static bool isFP(const float *);
+  static bool isFP(const double *);
+  static bool isFP(const void *);
   // </group>
 
   // For blanking purposes, we need to be able to get a NaN. The NaN we set

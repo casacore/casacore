@@ -101,7 +101,7 @@ class TSMShape {
   uInt nelements() const;
 
   // conform returns true if nelements() == other.nelements().
-  Bool conform(const TSMShape& other) const;
+  bool conform(const TSMShape& other) const;
 
   // Calculate the offset for a given position.
   // <group>
@@ -158,7 +158,7 @@ inline uInt TSMShape::nelements() const { return size_p; }
 
 inline Int TSMShape::operator()(uInt index) const { return data_p(index); }
 
-inline Bool TSMShape::conform(const TSMShape& other) const { return data_p.conform(other.data_p); }
+inline bool TSMShape::conform(const TSMShape& other) const { return data_p.conform(other.data_p); }
 
 }  // namespace casacore
 

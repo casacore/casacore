@@ -134,7 +134,7 @@ class TSMOption {
 
   // Fill the option in case Aipsrc or Default was given.
   // It is done as explained in the synopsis.
-  void fillOption(Bool newFile);
+  void fillOption(bool newFile);
 
   // Get the option.
   Option option() const { return itsOption; }

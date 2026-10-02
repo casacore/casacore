@@ -79,7 +79,7 @@ class RODataManAccessor {
   // Construct the accessor object for a data manager in the table.
   // An exception is thrown if the name of the data manager or column is
   // unknown.
-  RODataManAccessor(const Table& table, const String& name, Bool byColumn);
+  RODataManAccessor(const Table& table, const String& name, bool byColumn);
 
   virtual ~RODataManAccessor();
 

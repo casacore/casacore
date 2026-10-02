@@ -48,7 +48,7 @@ template <typename T>
 void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                             Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale,
                             Float& offset, uChar& magicUChar, Short& magicShort, Int& magicInt,
-                            Bool& hasBlanks, LogIO& os, FitsInput& infile, uInt whichRep) {
+                            bool& hasBlanks, LogIO& os, FitsInput& infile, uInt whichRep) {
   // Shape
   PrimaryArray<T> fitsImage(infile);
   Int ndim = fitsImage.dims();
@@ -59,12 +59,12 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
   }
 
   // Get header as Vector of strings
-  Vector<String> header = fitsImage.kwlist_str(True);
+  Vector<String> header = fitsImage.kwlist_str(true);
 
   // Get Coordinate System.  Return un-used FITS cards in a Record for further use.
 
   Record headerRec;
-  Bool dropStokes = True;
+  bool dropStokes = true;
   Int stokesFITSValue = 1;
   cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header, os, whichRep,
                                                  shape, dropStokes);
@@ -124,7 +124,7 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
 
   // Will only be present for Int and Short and uChar
 
-  hasBlanks = False;
+  hasBlanks = false;
   if (headerRec.isDefined("blank")) {
     subRec = headerRec.asRecord("blank");
     Int m;
@@ -141,7 +141,7 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
       magicShort = m;
       magicInt = m;
     }
-    hasBlanks = True;
+    hasBlanks = true;
   }
 
   // Brightness Unit
@@ -204,7 +204,7 @@ template <typename T>
 void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                                Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale,
                                Float& offset, uChar& magicUChar, Short& magicShort, Int& magicInt,
-                               Bool& hasBlanks, LogIO& os, FitsInput& infile, uInt whichRep) {
+                               bool& hasBlanks, LogIO& os, FitsInput& infile, uInt whichRep) {
   // Shape
 
   ImageExtension<T> fitsImage(infile);
@@ -217,12 +217,12 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 
   // Get header as Vector of strings
 
-  Vector<String> header = fitsImage.kwlist_str(True);
+  Vector<String> header = fitsImage.kwlist_str(true);
 
   // Get Coordinate System.  Return un-used FITS cards in a Record for further use.
 
   Record headerRec;
-  Bool dropStokes = True;
+  bool dropStokes = true;
   Int stokesFITSValue = 1;
   cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header, os, whichRep,
                                                  shape, dropStokes);
@@ -281,7 +281,7 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 
   // Will only be present for Int and Short
 
-  hasBlanks = False;
+  hasBlanks = false;
   if (headerRec.isDefined("blank")) {
     subRec = headerRec.asRecord("blank");
     Int m;
@@ -298,7 +298,7 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
       magicShort = m;
       magicInt = m;
     }
-    hasBlanks = True;
+    hasBlanks = true;
   }
 
   // Brightness Unit

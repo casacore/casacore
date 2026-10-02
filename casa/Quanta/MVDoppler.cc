@@ -95,15 +95,15 @@ MVDoppler &MVDoppler::operator-=(const MVDoppler &other) {
   return *this;
 }
 
-Bool MVDoppler::operator==(const MVDoppler &other) const { return (val == other.val); }
+bool MVDoppler::operator==(const MVDoppler &other) const { return (val == other.val); }
 
-Bool MVDoppler::operator!=(const MVDoppler &other) const { return (val != other.val); }
+bool MVDoppler::operator!=(const MVDoppler &other) const { return (val != other.val); }
 
-Bool MVDoppler::near(const MVDoppler &other, Double tol) const {
+bool MVDoppler::near(const MVDoppler &other, Double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-Bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
+bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -123,7 +123,7 @@ Double MVDoppler::getValue() const { return val; }
 
 Quantity MVDoppler::get() const { return Quantity(val * C::c, "m/s"); }
 
-Quantity MVDoppler::get(const Unit &unit) const { return Quantity(makeD(val, unit, True), unit); }
+Quantity MVDoppler::get(const Unit &unit) const { return Quantity(makeD(val, unit, true), unit); }
 
 Vector<Double> MVDoppler::getVector() const {
   Vector<Double> x(1);
@@ -145,7 +145,7 @@ Vector<Quantum<Double>> MVDoppler::getRecordValue() const {
   return tmp;
 }
 
-Bool MVDoppler::putValue(const Vector<Quantum<Double>> &in) {
+bool MVDoppler::putValue(const Vector<Quantum<Double>> &in) {
   static const UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
   uInt i = in.nelements();
   if (i == 0) {
@@ -155,15 +155,15 @@ Bool MVDoppler::putValue(const Vector<Quantum<Double>> &in) {
     if (dt == UnitVal::NODIM || dt == Velocity) {
       val = makeD(in(0).getValue(), in(0).getFullUnit());
     } else {
-      return False;
+      return false;
     }
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const {
+Double MVDoppler::makeD(Double v, const Unit &dt, bool rev) const {
   static const UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
   static const Double LVel = QC::c().getBaseValue();
   Double x;

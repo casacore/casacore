@@ -90,11 +90,11 @@ void ColumnSet::addDataManager(DataManager* dmPtr) {
 void ColumnSet::removeLastDataManager() {
   uInt nr = blockDataMan_p.nelements() - 1;
   delete BLOCKDATAMANVAL(nr);
-  blockDataMan_p.resize(nr, True);
+  blockDataMan_p.resize(nr, true);
   seqCount_p--;
 }
 
-void ColumnSet::initDataManagers(rownr_t nrrow, Bool bigEndian, const TSMOption& tsmOption,
+void ColumnSet::initDataManagers(rownr_t nrrow, bool bigEndian, const TSMOption& tsmOption,
                                  Table& tab) {
   for (uInt i = 0; i < blockDataMan_p.nelements(); i++) {
     BLOCKDATAMANVAL(i)->setEndian(bigEndian);
@@ -113,7 +113,7 @@ void ColumnSet::initDataManagers(rownr_t nrrow, Bool bigEndian, const TSMOption&
     }
   }
   // # Remove possible trailing elements by resizing the block.
-  blockDataMan_p.resize(nr, True);
+  blockDataMan_p.resize(nr, true);
   // # Set the number of rows.
   nrrow_p = nrrow;
   // # Initialize all data managers further.
@@ -155,7 +155,7 @@ void ColumnSet::openMultiFile(uInt from, const Table& tab, ByteIO::OpenOption op
     return;
   }
   // See if any data manager can use MultiFile/HDF5.
-  Bool useMultiFile = False;
+  bool useMultiFile = false;
   for (uInt i = from; i < blockDataMan_p.nelements(); i++) {
     useMultiFile = useMultiFile || BLOCKDATAMANVAL(i)->hasMultiFileSupport();
   }
@@ -179,7 +179,7 @@ void ColumnSet::openMultiFile(uInt from, const Table& tab, ByteIO::OpenOption op
   }
 }
 
-rownr_t ColumnSet::resync(rownr_t nrrow, Bool forceSync) {
+rownr_t ColumnSet::resync(rownr_t nrrow, bool forceSync) {
   // # There may be no sync data (when new table locked for first time).
   if (dataManChanged_p.nelements() > 0) {
     AlwaysAssert(dataManChanged_p.nelements() == blockDataMan_p.nelements(), AipsError);
@@ -189,7 +189,7 @@ rownr_t ColumnSet::resync(rownr_t nrrow, Bool forceSync) {
         if (nrr > nrrow) {
           nrrow = nrr;
         }
-        dataManChanged_p[i] = False;
+        dataManChanged_p[i] = false;
       }
     }
     nrrow_p = nrrow;
@@ -204,38 +204,38 @@ void ColumnSet::invalidateColumnCaches() {
 }
 
 // # Do all data managers allow to add and remove rows and columns?
-Bool ColumnSet::canAddRow() const {
+bool ColumnSet::canAddRow() const {
   for (uInt i = 0; i < blockDataMan_p.nelements(); i++) {
     if (!BLOCKDATAMANVAL(i)->canAddRow()) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
-Bool ColumnSet::canRemoveRow() const {
+bool ColumnSet::canRemoveRow() const {
   for (uInt i = 0; i < blockDataMan_p.nelements(); i++) {
     if (!BLOCKDATAMANVAL(i)->canRemoveRow()) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
-Bool ColumnSet::canRemoveColumn(const Vector<String>& columnNames) const {
+bool ColumnSet::canRemoveColumn(const Vector<String>& columnNames) const {
   // Cannot be removed if column is unknown.
   for (uInt i = 0; i < columnNames.nelements(); i++) {
     if (!tdescPtr_p->isColumn(columnNames(i))) {
-      return False;
+      return false;
     }
     if (!getColumn(columnNames(i))->dataManager()->canRemoveColumn()) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
-Bool ColumnSet::canRenameColumn(const String& columnName) const {
+bool ColumnSet::canRenameColumn(const String& columnName) const {
   // Cannot be renamed if column is unknown.
   if (!tdescPtr_p->isColumn(columnName)) {
-    return False;
+    return false;
   }
   return getColumn(columnName)->dataManager()->canRenameColumn();
 }
@@ -272,7 +272,7 @@ void ColumnSet::removeRow(rownr_t rownr) {
   nrrow_p--;
 }
 
-void ColumnSet::addColumn(const ColumnDesc& columnDesc, Bool bigEndian, const TSMOption& tsmOption,
+void ColumnSet::addColumn(const ColumnDesc& columnDesc, bool bigEndian, const TSMOption& tsmOption,
                           Table& tab) {
   // Find a storage manager allowing addition of columns.
   // If found, add the column to it and exit.
@@ -293,8 +293,8 @@ void ColumnSet::addColumn(const ColumnDesc& columnDesc, Bool bigEndian, const TS
   delete dmptr;
 }
 
-void ColumnSet::addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                          Bool bigEndian, const TSMOption& tsmOption, Table& tab) {
+void ColumnSet::addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                          bool bigEndian, const TSMOption& tsmOption, Table& tab) {
   // Give an error when no data manager name/type given.
   if (dataManager.empty()) {
     throw(
@@ -334,7 +334,7 @@ void ColumnSet::doAddColumn(const ColumnDesc& columnDesc, DataManager* dataManPt
                      dataManPtr->dataManagerType() +
                      ") does not support column addition to table " + baseTablePtr_p->tableName());
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   // # When the column already exists, TableDesc::addColumn throws
   // # an exception.
   // # The creation and binding of a column will always succeed.
@@ -347,7 +347,7 @@ void ColumnSet::doAddColumn(const ColumnDesc& columnDesc, DataManager* dataManPt
   // # column to the storage manager.
   // # Take care of this by catching an exception and deleting the stuff.
   // # Rethrow the exception by getting the message and throwing it.
-  Bool error = False;
+  bool error = false;
   String msg;
   DataManagerColumn* dmcol = 0;
   uInt nrcol = dataManPtr->ncolumn();
@@ -356,7 +356,7 @@ void ColumnSet::doAddColumn(const ColumnDesc& columnDesc, DataManager* dataManPt
     dmcol = col->dataManagerColumn();
     dataManPtr->addColumn(dmcol);
   } catch (const std::exception& x) {
-    error = True;
+    error = true;
     msg = x.what();
     // # Get the column pointer (it may not have been filled yet).
     // # When #columns has grown, the column has been already added.
@@ -381,21 +381,21 @@ void ColumnSet::doAddColumn(const ColumnDesc& columnDesc, DataManager* dataManPt
 }
 
 void ColumnSet::addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
-                          Bool bigEndian, const TSMOption& tsmOption, Table& tab) {
+                          bool bigEndian, const TSMOption& tsmOption, Table& tab) {
   TableDesc td;
   td.addColumn(columnDesc);
   addColumn(td, dataManager, bigEndian, tsmOption, tab);
 }
 
 void ColumnSet::addColumn(const TableDesc& tableDesc, const DataManager& dataManager,
-                          Bool bigEndian, const TSMOption& tsmOption, Table& tab) {
-  checkWriteLock(True);
+                          bool bigEndian, const TSMOption& tsmOption, Table& tab) {
+  checkWriteLock(true);
   // Check if the data manager name has not been used already.
   checkDataManagerName(dataManager.dataManagerName(), 0, baseTablePtr_p->tableName());
   // Add the new table description to the current one.
   // This adds column and possible hypercolumn descriptions.
   // When failing, nothing will have been added.
-  tdescPtr_p->add(tableDesc, False);
+  tdescPtr_p->add(tableDesc, false);
   // Clone the data manager (to get our own copy) and add it to the list.
   DataManager* dmptr = dataManager.clone();
   dmptr->setEndian(bigEndian);
@@ -405,7 +405,7 @@ void ColumnSet::addColumn(const TableDesc& tableDesc, const DataManager& dataMan
   // We have to use the column description in our table description.
   // Bind the column to the data manager and create a column in there.
   // An exception may be thrown in this loop, so things have to be cleaned.
-  Bool error = False;
+  bool error = false;
   String msg;
   try {
     for (uInt i = 0; i < tableDesc.ncolumn(); i++) {
@@ -418,7 +418,7 @@ void ColumnSet::addColumn(const TableDesc& tableDesc, const DataManager& dataMan
     // Let the new data manager create space, etc. for its columns.
     initSomeDataManagers(blockDataMan_p.nelements() - 1, tab);
   } catch (const std::exception& x) {
-    error = True;
+    error = true;
     msg = x.what();
     for (uInt i = 0; i < tableDesc.ncolumn(); i++) {
       const String& name = tableDesc[i].name();
@@ -442,30 +442,30 @@ void ColumnSet::removeColumn(const Vector<String>& columnNames) {
   // Also find out about the data managers.
   std::map<void*, Int> dmCounts = checkRemoveColumn(columnNames);
   // Write lock table.
-  checkWriteLock(True);
+  checkWriteLock(true);
   // Remove all data managers possible.
   for (auto& x : dmCounts) {
     if (x.second < 0) {
       DataManager* dmPtr = static_cast<DataManager*>(const_cast<void*>(x.first));
       dmPtr->deleteManager();
-      Bool found = False;
+      bool found = false;
       for (uInt j = 0; j < blockDataMan_p.nelements(); j++) {
         if (dmPtr == blockDataMan_p[j]) {
-          found = True;
+          found = true;
           delete dmPtr;
           uInt nrb = blockDataMan_p.nelements();
           uInt nr = nrb - j - 1;
           if (nr > 0) {
             objmove(&blockDataMan_p[j], &blockDataMan_p[j + 1], nr);
           }
-          blockDataMan_p.resize(nrb - 1, True, True);
+          blockDataMan_p.resize(nrb - 1, true, true);
           uInt nrc = dataManChanged_p.nelements();
           if (j < nrc) {
             nr = nrc - j - 1;
             if (nr > 0) {
               objmove(&dataManChanged_p[j], &dataManChanged_p[j + 1], nr);
             }
-            dataManChanged_p.resize(nrc - 1, True, True);
+            dataManChanged_p.resize(nrc - 1, true, true);
           }
           break;
         }
@@ -491,7 +491,7 @@ void ColumnSet::removeColumn(const Vector<String>& columnNames) {
 
 std::map<void*, Int> ColumnSet::checkRemoveColumn(const Vector<String>& columnNames) {
   // Check if the column names are valid.
-  baseTablePtr_p->checkRemoveColumn(columnNames, True);
+  baseTablePtr_p->checkRemoveColumn(columnNames, true);
   // Count how many columns in each data manager are to be deleted.
   std::map<void*, Int> dmCounts;
   for (uInt i = 0; i < columnNames.nelements(); i++) {
@@ -534,7 +534,7 @@ void ColumnSet::renameColumn(const String& newName, const String& oldName) {
     throw(TableInvOper("Table::renameColumn; new column " + newName + " already exists in table " +
                        baseTablePtr_p->tableName()));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   tdescPtr_p->renameColumn(newName, oldName);
   void* ptr = colMap_p.at(oldName);
   colMap_p.erase(oldName);
@@ -542,7 +542,7 @@ void ColumnSet::renameColumn(const String& newName, const String& oldName) {
   autoReleaseLock();
 }
 
-DataManager* ColumnSet::findDataManager(const String& name, Bool byColumn) const {
+DataManager* ColumnSet::findDataManager(const String& name, bool byColumn) const {
   if (byColumn) {
     return COLMAPNAME(name)->dataManager();
   }
@@ -564,8 +564,8 @@ void ColumnSet::checkDataManagerNames(const String& tableName) const {
     checkDataManagerName(BLOCKDATAMANVAL(i)->dataManagerName(), i + 1, tableName);
   }
 }
-Bool ColumnSet::checkDataManagerName(const String& name, uInt from, const String& tableName,
-                                     Bool doTthrow) const {
+bool ColumnSet::checkDataManagerName(const String& name, uInt from, const String& tableName,
+                                     bool doTthrow) const {
   // Loop through all data managers.
   // A name can appear only once (except a blank name).
   if (!name.empty()) {
@@ -575,17 +575,17 @@ Bool ColumnSet::checkDataManagerName(const String& name, uInt from, const String
           throw TableInvOper("Data manager name " + name + " is already used in table " +
                              tableName);
         }
-        return False;
+        return false;
       }
     }
   }
-  return True;
+  return true;
 }
 
 String ColumnSet::uniqueDataManagerName(const std::string& name) const {
   String dmName = name;
   Int nr = 0;
-  while (!checkDataManagerName(dmName, 0, String(), False)) {
+  while (!checkDataManagerName(dmName, 0, String(), false)) {
     nr++;
     dmName = name + '_' + std::to_string(nr);
   }
@@ -608,7 +608,7 @@ TableDesc ColumnSet::actualTableDesc() const {
   return td;
 }
 
-Record ColumnSet::dataManagerInfo(Bool virtualOnly) const {
+Record ColumnSet::dataManagerInfo(bool virtualOnly) const {
   Record rec;
   uInt nrec = 0;
   // Loop through all data managers.
@@ -631,7 +631,7 @@ Record ColumnSet::dataManagerInfo(Bool virtualOnly) const {
         }
       }
       if (nc > 0) {
-        columns.resize(nc, True);
+        columns.resize(nc, true);
         subrec.define("COLUMNS", columns);
         rec.defineRecord(nrec, subrec);
         nrec++;
@@ -668,22 +668,22 @@ void ColumnSet::renameTables(const String& newName, const String& oldName) {
   }
 }
 
-Bool ColumnSet::areTablesMultiUsed() const {
+bool ColumnSet::areTablesMultiUsed() const {
   for (uInt i = 0; i < colMap_p.size(); i++) {
     if (getColumn(i)->keywordSet().areTablesMultiUsed()) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
-Bool ColumnSet::putFile(Bool writeTable, AipsIO& ios, const TableAttr& attr, Bool fsync) {
-  Bool written = False;
+bool ColumnSet::putFile(bool writeTable, AipsIO& ios, const TableAttr& attr, bool fsync) {
+  bool written = false;
   // # Only write the table data when the flag is set.
   uInt nrold = dataManChanged_p.nelements();
-  dataManChanged_p.resize(blockDataMan_p.nelements(), True);
+  dataManChanged_p.resize(blockDataMan_p.nelements(), true);
   for (uInt i = nrold; i < dataManChanged_p.nelements(); i++) {
-    dataManChanged_p[i] = False;
+    dataManChanged_p[i] = false;
   }
   if (writeTable) {
     // # The first version of ColumnSet did not put a version.
@@ -726,8 +726,8 @@ Bool ColumnSet::putFile(Bool writeTable, AipsIO& ios, const TableAttr& attr, Boo
   AipsIO aio(memio);
   for (uInt i = 0; i < blockDataMan_p.nelements(); i++) {
     if (BLOCKDATAMANVAL(i)->flush(aio, fsync)) {
-      dataManChanged_p[i] = True;
-      written = True;
+      dataManChanged_p[i] = true;
+      written = true;
     }
     if (writeTable) {
       ios.put(uInt(memio->length()), memio->getBuffer());
@@ -740,7 +740,7 @@ Bool ColumnSet::putFile(Bool writeTable, AipsIO& ios, const TableAttr& attr, Boo
   return written;
 }
 
-rownr_t ColumnSet::getFile(AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndian,
+rownr_t ColumnSet::getFile(AipsIO& ios, Table& tab, rownr_t nrrow, bool bigEndian,
                            const TSMOption& tsmOption) {
   // # If the first value is negative, it is the version.
   // # Otherwise it is nrrow_p.
@@ -837,7 +837,7 @@ DataManager* ColumnSet::getDataManager(uInt seqnr) const {
   return 0;
 }
 
-Bool ColumnSet::userLock(FileLocker::LockType type, Bool wait) {
+bool ColumnSet::userLock(FileLocker::LockType type, bool wait) {
   // Acquire automatically a lock when:
   // - Userlocking
   // - not locked yet
@@ -847,14 +847,14 @@ Bool ColumnSet::userLock(FileLocker::LockType type, Bool wait) {
       if (type != FileLocker::Read || lockPtr_p->readLocking()) {
         uInt nattempts = (wait ? 0 : 1);
         baseTablePtr_p->lock(type, nattempts);
-        return True;
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
-void ColumnSet::doLock(FileLocker::LockType type, Bool wait) {
+void ColumnSet::doLock(FileLocker::LockType type, bool wait) {
   if (lockPtr_p->option() != TableLock::AutoLocking) {
     String str = "PermanentLocking";
     if (lockPtr_p->option() == TableLock::UserLocking) {

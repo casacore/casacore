@@ -492,7 +492,7 @@ Vector<Double> Binomial::parameters() const {
   return retVal;
 }
 
-Bool Binomial::checkParameters(const Vector<Double>& pars) const {
+bool Binomial::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && pars(0) >= 0.5 && pars(1) >= 0.0 && pars(1) <= 1.0;
 }
 
@@ -540,7 +540,7 @@ Vector<Double> DiscreteUniform::parameters() const {
   return retVal;
 }
 
-Bool DiscreteUniform::checkParameters(const Vector<Double>& pars) const {
+bool DiscreteUniform::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && pars(0) <= pars(1);
 }
 
@@ -579,7 +579,7 @@ Vector<Double> Erlang::parameters() const {
   return retVal;
 }
 
-Bool Erlang::checkParameters(const Vector<Double>& pars) const {
+bool Erlang::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0;
 }
 
@@ -610,7 +610,7 @@ void Geometric::setParameters(const Vector<Double>& pars) {
 
 Vector<Double> Geometric::parameters() const { return Vector<Double>(1, probability()); }
 
-Bool Geometric::checkParameters(const Vector<Double>& pars) const {
+bool Geometric::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 1 && pars(0) >= 0.0 && pars(0) < 1.0;
 }
 
@@ -634,7 +634,7 @@ Vector<Double> HyperGeometric::parameters() const {
   return retVal;
 }
 
-Bool HyperGeometric::checkParameters(const Vector<Double>& pars) const {
+bool HyperGeometric::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0 &&
          square(pars(0)) <= pars(1);
 }
@@ -648,7 +648,7 @@ void HyperGeometric::setState() {
 }
 
 Normal::Normal(RNG* gen, Double mean, Double variance)
-    : Random(gen), itsMean(mean), itsVariance(variance), itsCached(False), itsCachedValue(0) {
+    : Random(gen), itsMean(mean), itsVariance(variance), itsCached(false), itsCachedValue(0) {
   AlwaysAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
 }
@@ -661,7 +661,7 @@ Normal::~Normal() {}
 //      We cache the one & return the other.
 Double Normal::operator()() {
   if (itsCached) {
-    itsCached = False;
+    itsCached = false;
     return itsCachedValue * itsStdDev + itsMean;
   }
 
@@ -675,7 +675,7 @@ Double Normal::operator()() {
       const Double y = sqrt((-2 * log(w)) / w);
       const Double x1 = v1 * y;
       itsCachedValue = v2 * y;
-      itsCached = True;
+      itsCached = true;
       return x1 * itsStdDev + itsMean;
     }
   }
@@ -702,7 +702,7 @@ Vector<Double> Normal::parameters() const {
   return retVal;
 }
 
-Bool Normal::checkParameters(const Vector<Double>& pars) const {
+bool Normal::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && pars(1) > 0.0;
 }
 
@@ -747,7 +747,7 @@ Vector<Double> LogNormal::parameters() const {
   return retVal;
 }
 
-Bool LogNormal::checkParameters(const Vector<Double>& pars) const {
+bool LogNormal::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0;
 }
 
@@ -766,7 +766,7 @@ void NegativeExpntl::setParameters(const Vector<Double>& pars) {
 
 Vector<Double> NegativeExpntl::parameters() const { return Vector<Double>(1, mean()); }
 
-Bool NegativeExpntl::checkParameters(const Vector<Double>& pars) const {
+bool NegativeExpntl::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 1;
 }
 
@@ -801,7 +801,7 @@ void Poisson::setParameters(const Vector<Double>& pars) {
 
 Vector<Double> Poisson::parameters() const { return Vector<Double>(1, mean()); }
 
-Bool Poisson::checkParameters(const Vector<Double>& pars) const {
+bool Poisson::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 1 && pars(0) >= 0.0;
 }
 
@@ -845,7 +845,7 @@ Vector<Double> Uniform::parameters() const {
   return retVal;
 }
 
-Bool Uniform::checkParameters(const Vector<Double>& pars) const {
+bool Uniform::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && pars(0) < pars(1);
 }
 
@@ -884,7 +884,7 @@ Vector<Double> Weibull::parameters() const {
   return retVal;
 }
 
-Bool Weibull::checkParameters(const Vector<Double>& pars) const {
+bool Weibull::checkParameters(const Vector<Double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0;
 }
 

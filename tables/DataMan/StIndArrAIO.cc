@@ -41,10 +41,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 #define STMANINDGETBLOCK(rownr) ((StIndArray*)(getArrayPtr(rownr)))
 
 StManColumnIndArrayAipsIO::StManColumnIndArrayAipsIO(StManAipsIO* smptr, int dataType)
-    : StManColumnAipsIO(smptr, dataType, True),
+    : StManColumnAipsIO(smptr, dataType, true),
       staioPtr_p(smptr),
       seqnr_p(smptr->uniqueNr()),
-      shapeIsFixed_p(False),
+      shapeIsFixed_p(false),
       version_p(2),
       iosfile_p(0) {}
 
@@ -91,7 +91,7 @@ void StManColumnIndArrayAipsIO::reopenRW() { iosfile_p->reopenRW(); }
 
 void StManColumnIndArrayAipsIO::setShapeColumn(const IPosition& shape) {
   fixedShape_p = shape;
-  shapeIsFixed_p = True;
+  shapeIsFixed_p = true;
 }
 
 void StManColumnIndArrayAipsIO::addRow(rownr_t nrnew, rownr_t nrold) {
@@ -129,15 +129,15 @@ StIndArray* StManColumnIndArrayAipsIO::getShape(rownr_t rownr) {
   return ptr;
 }
 
-Bool StManColumnIndArrayAipsIO::isShapeDefined(rownr_t rownr) {
-  return (STMANINDGETBLOCK(rownr) == 0 ? False : True);
+bool StManColumnIndArrayAipsIO::isShapeDefined(rownr_t rownr) {
+  return (STMANINDGETBLOCK(rownr) == 0 ? false : true);
 }
 
 uInt StManColumnIndArrayAipsIO::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
 
 IPosition StManColumnIndArrayAipsIO::shape(rownr_t rownr) { return getShape(rownr)->shape(); }
 
-Bool StManColumnIndArrayAipsIO::canChangeShape() const { return (shapeIsFixed_p ? False : True); }
+bool StManColumnIndArrayAipsIO::canChangeShape() const { return (shapeIsFixed_p ? false : true); }
 
 void StManColumnIndArrayAipsIO::getArrayV(rownr_t rownr, ArrayBase& arr) {
   StIndArray* sia = getShape(rownr);
@@ -166,7 +166,7 @@ void StManColumnIndArrayAipsIO::remove(rownr_t rownr) {
   StManColumnAipsIO::remove(rownr);
 }
 
-Bool StManColumnIndArrayAipsIO::ok() const { return StManColumnAipsIO::ok(); }
+bool StManColumnIndArrayAipsIO::ok() const { return StManColumnAipsIO::ok(); }
 
 void StManColumnIndArrayAipsIO::deleteArray(rownr_t rownr) { delete STMANINDGETBLOCK(rownr); }
 
@@ -177,7 +177,7 @@ void StManColumnIndArrayAipsIO::putFile(rownr_t nrval, AipsIO& ios) {
   ios << seqnr_p;
   StManColumnAipsIO::putFile(nrval, ios);
   ios.putend();
-  iosfile_p->flush(False);
+  iosfile_p->flush(false);
 }
 
 void StManColumnIndArrayAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {

@@ -56,7 +56,7 @@ WCBox::WCBox()
     //
     // Default constructor
     //
-    : itsNull(True) {
+    : itsNull(true) {
   unitInit();
 }
 
@@ -72,7 +72,7 @@ WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& 
       itsTrc(trc.copy()),
       itsCSys(cSys),
       itsAbsRel(absRel.copy()),
-      itsNull(False) {
+      itsNull(false) {
   AlwaysAssert(itsCSys.nWorldAxes() > 0, AipsError);
   AlwaysAssert(itsCSys.nPixelAxes() > 0, AipsError);
   //
@@ -135,7 +135,7 @@ WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& 
       itsPixelAxes(pixelAxes),
       itsCSys(cSys),
       itsAbsRel(absRel.copy()),
-      itsNull(False) {
+      itsNull(false) {
   AlwaysAssert(itsCSys.nWorldAxes() > 0, AipsError);
   AlwaysAssert(itsCSys.nPixelAxes() > 0, AipsError);
   //
@@ -185,7 +185,7 @@ WCBox::WCBox(const LCRegion& region, const CoordinateSystem& cSys)
     //
     // Constructor from the bounding box of an LCRegion
     //
-    : itsCSys(cSys), itsNull(False) {
+    : itsCSys(cSys), itsNull(false) {
   AlwaysAssert(itsCSys.nWorldAxes() > 0, AipsError);
   AlwaysAssert(itsCSys.nPixelAxes() > 0, AipsError);
   String msg;
@@ -290,14 +290,14 @@ WCBox& WCBox::operator=(const WCBox& other)
   return *this;
 }
 
-Bool WCBox::operator==(const WCRegion& other) const {
+bool WCBox::operator==(const WCRegion& other) const {
   // Type check
 
-  if (type() != other.type()) return False;
+  if (type() != other.type()) return false;
 
   // Base class
 
-  if (!WCRegion::operator==(other)) return False;
+  if (!WCRegion::operator==(other)) return false;
 
   // Caste
 
@@ -305,27 +305,27 @@ Bool WCBox::operator==(const WCRegion& other) const {
 
   // Check private data
 
-  if (itsNull != that.itsNull) return False;
-  if (itsBlc.nelements() != that.itsBlc.nelements()) return False;
-  if (itsTrc.nelements() != that.itsTrc.nelements()) return False;
-  if (itsPixelAxes.nelements() != that.itsPixelAxes.nelements()) return False;
+  if (itsNull != that.itsNull) return false;
+  if (itsBlc.nelements() != that.itsBlc.nelements()) return false;
+  if (itsTrc.nelements() != that.itsTrc.nelements()) return false;
+  if (itsPixelAxes.nelements() != that.itsPixelAxes.nelements()) return false;
 
   // Exact match for units and values is required.  That is,
   // the check is not done in intrinsic values.
 
   for (uInt i = 0; i < itsBlc.nelements(); i++) {
-    if (itsBlc(i).getValue() != that.itsBlc(i).getValue()) return False;
-    if (itsBlc(i).getUnit() != that.itsBlc(i).getUnit()) return False;
+    if (itsBlc(i).getValue() != that.itsBlc(i).getValue()) return false;
+    if (itsBlc(i).getUnit() != that.itsBlc(i).getUnit()) return false;
     //
-    if (itsTrc(i).getValue() != that.itsTrc(i).getValue()) return False;
-    if (itsTrc(i).getUnit() != that.itsTrc(i).getUnit()) return False;
+    if (itsTrc(i).getValue() != that.itsTrc(i).getValue()) return false;
+    if (itsTrc(i).getUnit() != that.itsTrc(i).getUnit()) return false;
     //
-    if (itsPixelAxes(i) != that.itsPixelAxes(i)) return False;
-    if (itsAbsRel(i) != that.itsAbsRel(i)) return False;
+    if (itsPixelAxes(i) != that.itsPixelAxes(i)) return false;
+    if (itsAbsRel(i) != that.itsAbsRel(i)) return false;
   }
-  if (!itsCSys.near(that.itsCSys)) return False;
+  if (!itsCSys.near(that.itsCSys)) return false;
 
-  return True;
+  return true;
 }
 
 WCRegion* WCBox::cloneRegion() const { return new WCBox(*this); }
@@ -365,7 +365,7 @@ TableRecord WCBox::toRecord(const String&) const
   TableRecord rec;
   defineRecordFields(rec, className());
   rec.define("absrel", itsAbsRel);
-  rec.define("oneRel", True);
+  rec.define("oneRel", true);
   //
   const uInt nAxes = itsPixelAxes.nelements();
   Vector<Int> pixelAxes(nAxes);
@@ -427,7 +427,7 @@ WCBox* WCBox::fromRecord(const TableRecord& rec, const String&) {
 
   // See if the values in the record are 1-rel or 0-rel
 
-  Bool oneRel = rec.asBool("oneRel");
+  bool oneRel = rec.asBool("oneRel");
 
   // Get the pixelAxes.  Pixel things must be converted to zero rel
 
@@ -508,7 +508,7 @@ WCBox* WCBox::fromRecord(const TableRecord& rec, const String&) {
   return pBox;
 }
 
-Bool WCBox::canExtend() const { return True; }
+bool WCBox::canExtend() const { return true; }
 
 LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& latticeShape,
                               const IPosition& pixelAxesMap, const IPosition& outOrder) const
@@ -588,11 +588,11 @@ LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& lat
     Int latticePixelAxis = pixelAxesMap(i);
     //
     Double pixel = pBlc(latticePixelAxis);
-    convertPixel(pixel, itsBlc(i), itsAbsRel(i), refPix(i), latticeShape(latticePixelAxis), True);
+    convertPixel(pixel, itsBlc(i), itsAbsRel(i), refPix(i), latticeShape(latticePixelAxis), true);
     outBlc(outOrder(i)) = pixel;
     //
     pixel = pTrc(latticePixelAxis);
-    convertPixel(pixel, itsTrc(i), itsAbsRel(i), refPix(i), latticeShape(latticePixelAxis), False);
+    convertPixel(pixel, itsTrc(i), itsAbsRel(i), refPix(i), latticeShape(latticePixelAxis), false);
     outTrc(outOrder(i)) = pixel;
     //
     outShape(outOrder(i)) = latticeShape(latticePixelAxis);
@@ -653,7 +653,7 @@ void WCBox::checkUnits(const IPosition& pixelAxes, const Vector<Quantum<Double>>
 }
 
 void WCBox::convertPixel(Double& pixel, const Quantum<Double>& value, const Int absRel,
-                         const Double refPix, const Int shape, const Bool isBlc) const {
+                         const Double refPix, const Int shape, const bool isBlc) const {
   // Defaults get 0 or shape-1
 
   if (value.getUnit() == "default") {
@@ -665,16 +665,16 @@ void WCBox::convertPixel(Double& pixel, const Quantum<Double>& value, const Int 
   } else {
     // Deal with pixel or fractional coordinates
 
-    Bool world = True;
+    bool world = true;
     if (value.getUnit() == "pix") {
       pixel = value.getValue();
-      world = False;
+      world = false;
     } else if (value.getUnit() == "frac") {
       pixel = value.getValue() * shape;
       if (!isBlc) {
         pixel -= 1;
       }
-      world = False;
+      world = false;
     }
 
     // Convert to absolute pixel; rel = abs - ref

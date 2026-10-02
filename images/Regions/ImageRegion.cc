@@ -82,14 +82,14 @@ ImageRegion& ImageRegion::operator=(const ImageRegion& other) {
 
 ImageRegion* ImageRegion::clone() const { return new ImageRegion(*this); }
 
-Bool ImageRegion::operator==(const LattRegionHolder& other) const {
+bool ImageRegion::operator==(const LattRegionHolder& other) const {
   if (!LattRegionHolder::operator==(other)) {
-    return False;
+    return false;
   }
   if (itsWC != 0) {
     return (*itsWC == *other.asWCRegionPtr());
   }
-  return True;
+  return true;
 }
 
 ImageRegion* ImageRegion::fromLatticeExpression(const String& latticeExpression) {
@@ -133,7 +133,7 @@ ImageRegion* ImageRegion::fromRecord(LogIO* logger, const CoordinateSystem& coor
   return pRegion;
 }
 
-Bool ImageRegion::isWCRegion() const { return (itsWC != 0); }
+bool ImageRegion::isWCRegion() const { return (itsWC != 0); }
 
 const WCRegion* ImageRegion::asWCRegionPtr() const {
   AlwaysAssert(isWCRegion(), AipsError);

@@ -145,10 +145,10 @@ class TableLock {
   LockOption option() const;
 
   // Is read locking needed?
-  Bool readLocking() const;
+  bool readLocking() const;
 
   // Is permanent locking used?
-  Bool isPermanent() const;
+  bool isPermanent() const;
 
   // Get the inspection interval.
   double interval() const;
@@ -157,15 +157,15 @@ class TableLock {
   uInt maxWait() const;
 
   // Is table locking disabled (because AIPS_TABLE_NOLOCKING or table.nolocking is set)?
-  static Bool lockingDisabled();
+  static bool lockingDisabled();
 
  private:
   LockOption itsOption;
-  Bool itsReadLocking;
+  bool itsReadLocking;
   uInt itsMaxWait;
   double itsInterval;
-  Bool itsIsDefaultLocking;
-  Bool itsIsDefaultInterval;
+  bool itsIsDefaultLocking;
+  bool itsIsDefaultInterval;
 
   // Set itsOption and itsReadLocking when needed.
   void init();
@@ -173,9 +173,9 @@ class TableLock {
 
 inline TableLock::LockOption TableLock::option() const { return itsOption; }
 
-inline Bool TableLock::readLocking() const { return itsReadLocking; }
+inline bool TableLock::readLocking() const { return itsReadLocking; }
 
-inline Bool TableLock::isPermanent() const {
+inline bool TableLock::isPermanent() const {
   return (itsOption == PermanentLocking || itsOption == PermanentLockingWait);
 }
 

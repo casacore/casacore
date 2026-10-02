@@ -67,18 +67,18 @@ template <typename T>
 class MArray : public MArrayBase {
  public:
   // Default constructor creates a null array.
-  MArray() : MArrayBase(True) {}
+  MArray() : MArrayBase(true) {}
 
   // Construct from an array without a mask.
   // It references the given array.
-  explicit MArray(const Array<T>& array) : MArrayBase(False), itsArray(array) {
-    resizeBase(array, False);
+  explicit MArray(const Array<T>& array) : MArrayBase(false), itsArray(array) {
+    resizeBase(array, false);
   }
 
   // Construct from an array and a mask.
   // It references the given arrays.
   // <src>isNull=True</src> requires the arrays to be empty.
-  MArray(const Array<T>& array, const Array<Bool>& mask, Bool isNull = False)
+  MArray(const Array<T>& array, const Array<bool>& mask, bool isNull = false)
       : MArrayBase(array, mask, isNull), itsArray(array) {}
 
   // Construct from an array with the mask and null from another MArray.
@@ -89,7 +89,7 @@ class MArray : public MArrayBase {
 
   // Construct from two MArrays, one the array, the other the mask.
   // If one of them is null, the constructed MArray is null.
-  MArray(const MArray<T>& array, const MArray<Bool>& mask)
+  MArray(const MArray<T>& array, const MArray<bool>& mask)
       : MArrayBase(array.isNull() || mask.isNull()) {
     if (!isNull()) {
       itsArray.reference(array.array());
@@ -105,7 +105,7 @@ class MArray : public MArrayBase {
 
   // Resize the array and optionally the mask.
   // It always sets the MArray to non-null.
-  void resize(const IPosition& shape, Bool useMask) {
+  void resize(const IPosition& shape, bool useMask) {
     itsArray.resize(shape);
     resizeBase(itsArray, useMask);
   }
@@ -128,7 +128,7 @@ class MArray : public MArrayBase {
   void fill(const Array<U>& from) {
     itsArray.resize(from.shape());
     convertArray(itsArray, from);
-    resizeBase(itsArray, False);
+    resizeBase(itsArray, false);
   }
 
   // Get access to the array.
@@ -180,14 +180,14 @@ size_t MArray<T>::flatten(T* out, size_t size) const {
   } else {
     // Copy only the valid elements.
     if (itsArray.contiguousStorage() && mask().contiguousStorage()) {
-      typename Array<Bool>::const_contiter miter = mask().cbegin();
+      typename Array<bool>::const_contiter miter = mask().cbegin();
       typename Array<T>::const_contiter iterEnd = itsArray.cend();
       for (typename Array<T>::const_contiter iter = itsArray.cbegin(); iter != iterEnd;
            ++iter, ++miter) {
         if (!*miter) out[nr++] = *iter;
       }
     } else {
-      typename Array<Bool>::const_iterator miter = mask().begin();
+      typename Array<bool>::const_iterator miter = mask().begin();
       typename Array<T>::const_iterator iterEnd = itsArray.end();
       for (typename Array<T>::const_iterator iter = itsArray.begin(); iter != iterEnd;
            ++iter, ++miter) {

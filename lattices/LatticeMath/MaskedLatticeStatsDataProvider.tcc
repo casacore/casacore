@@ -37,9 +37,9 @@ MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider()
       _currentMaskSlice(),
       _currentPtr(0),
       _currentMaskPtr(0),
-      _delData(False),
-      _delMask(False),
-      _atEnd(False),
+      _delData(false),
+      _delMask(false),
+      _atEnd(false),
       _nMaxThreads(0) {}
 
 template <class T>
@@ -50,8 +50,8 @@ MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider(MaskedLattice<
       _currentMaskSlice(),
       _currentPtr(0),
       _currentMaskPtr(0),
-      _delData(False),
-      _delMask(False) {
+      _delData(false),
+      _delMask(false) {
   setLattice(lattice);
 }
 
@@ -62,7 +62,7 @@ template <class T>
 void MaskedLatticeStatsDataProvider<T>::operator++() {
   _freeStorage();
   if (!_iter) {
-    _atEnd = True;
+    _atEnd = true;
   } else {
     ++(*_iter);
   }
@@ -89,7 +89,7 @@ uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
 }
 
 template <class T>
-Bool MaskedLatticeStatsDataProvider<T>::atEnd() const {
+bool MaskedLatticeStatsDataProvider<T>::atEnd() const {
   if (!_iter) {
     return _atEnd;
   } else {
@@ -122,7 +122,7 @@ const T* MaskedLatticeStatsDataProvider<T>::getData() {
 }
 
 template <class T>
-const Bool* MaskedLatticeStatsDataProvider<T>::getMask() {
+const bool* MaskedLatticeStatsDataProvider<T>::getMask() {
   if (_iter) {
     _currentMaskSlice.assign(_iter->getMask());
   }
@@ -140,8 +140,8 @@ uInt MaskedLatticeStatsDataProvider<T>::getNMaxThreads() const {
 }
 
 template <class T>
-Bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
-  return True;
+bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
+  return true;
 }
 
 template <class T>
@@ -163,7 +163,7 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(const MaskedLattice<T>& latti
     _iter = NULL;
     _currentSlice.assign(lattice.get());
     _currentMaskSlice.assign(lattice.getMask());
-    _atEnd = False;
+    _atEnd = false;
   }
 #ifdef _OPENMP
   _nMaxThreads = min(omp_get_max_threads(),
@@ -192,9 +192,9 @@ void MaskedLatticeStatsDataProvider<T>::updateMinPos(const std::pair<Int64, Int6
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::_freeStorage() {
   _currentSlice.freeStorage(_currentPtr, _delData);
-  _delData = False;
+  _delData = false;
   _currentMaskSlice.freeStorage(_currentMaskPtr, _delMask);
-  _delMask = False;
+  _delMask = false;
 }
 
 }  // namespace casacore

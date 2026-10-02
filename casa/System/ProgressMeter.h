@@ -110,7 +110,7 @@ class ProgressMeter {
   // in the progress bar position at that level. If updateEvery is <=0, it
   // is set to 1 for you.
   ProgressMeter(Double min, Double max, const String &title, const String &subtitle,
-                const String &minlabel, const String &maxlabel, Bool estimateTime = True,
+                const String &minlabel, const String &maxlabel, bool estimateTime = true,
                 Int updateEvery = 1);
 
   ProgressMeter(Double min, Double max, const String &title);
@@ -120,8 +120,8 @@ class ProgressMeter {
   // as the calculation it is tracking.
   ~ProgressMeter();
 
-  void update(Double value, Bool force = False);
-  void _update(Double value, Bool force = False);
+  void update(Double value, bool force = false);
+  void _update(Double value, bool force = false);
   void busy();
   void done();
 
@@ -140,12 +140,12 @@ class ProgressMeter {
   Int update_every_p, update_count_p;
   // Time the progress meter began
   time_t startTime;
-  Bool showProgress;
+  bool showProgress;
 
   // These are set by ObjectController for executables that have the tasking
   // system in them, otherwise they are null and this class just does no-ops.
   static Int (*creation_function_p)(Double, Double, const String &, const String &, const String &,
-                                    const String &, Bool);
+                                    const String &, bool);
   static void (*update_function_p)(Int, Double);
   static void (*show_function_p)(Int, Double);
   static void (*busy_function_p)(Int);

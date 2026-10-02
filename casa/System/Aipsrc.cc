@@ -45,82 +45,82 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.
 
-Bool Aipsrc::matchKeyword(uInt &where, const String &keyword, uInt start) {
+bool Aipsrc::matchKeyword(uInt &where, const String &keyword, uInt start) {
   for (uInt i = start; i < keywordPattern.nelements(); i++) {
     if (std::regex_search(keyword, std::regex(keywordPattern[i]))) {
       where = i;
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
-Bool Aipsrc::find(String &value, const String &keyword, uInt start) {
+bool Aipsrc::find(String &value, const String &keyword, uInt start) {
   std::call_once(theirCallOnceFlag, parse);
   return findNoParse(value, keyword, start);
 }
 
-Bool Aipsrc::findNoParse(String &value, const String &keyword, uInt start) {
+bool Aipsrc::findNoParse(String &value, const String &keyword, uInt start) {
   uInt keyInMap;
   if (matchKeyword(keyInMap, keyword, start)) {
     value = keywordValue[keyInMap];
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool Aipsrc::find(String &value, const String &keyword) { return find(value, keyword, 0); }
+bool Aipsrc::find(String &value, const String &keyword) { return find(value, keyword, 0); }
 
-Bool Aipsrc::findNoHome(String &value, const String &keyword) {
+bool Aipsrc::findNoHome(String &value, const String &keyword) {
   return find(value, keyword, fileEnd);
 }
 
-Bool Aipsrc::find(String &value, const String &keyword, const String &default_value) {
-  return (find(value, keyword) ? True : (value = default_value, False));
+bool Aipsrc::find(String &value, const String &keyword, const String &default_value) {
+  return (find(value, keyword) ? true : (value = default_value, false));
 }
 
-Bool Aipsrc::findNoHome(String &value, const String &keyword, const String &default_value) {
-  return (findNoHome(value, keyword) ? True : (value = default_value, False));
+bool Aipsrc::findNoHome(String &value, const String &keyword, const String &default_value) {
+  return (findNoHome(value, keyword) ? true : (value = default_value, false));
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword, Int Nname, const String tname[]) {
+bool Aipsrc::find(uInt &value, const String &keyword, Int Nname, const String tname[]) {
   String res;
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, Nname, tname);
-    return ((Int)value < Nname ? True : False);
+    return ((Int)value < Nname ? true : false);
   }
-  return False;
+  return false;
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword, const Vector<String> &tname) {
+bool Aipsrc::find(uInt &value, const String &keyword, const Vector<String> &tname) {
   String res;
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, tname);
-    return (value < tname.nelements() ? True : False);
+    return (value < tname.nelements() ? true : false);
   }
-  return False;
+  return false;
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword, Int Nname, const String tname[],
+bool Aipsrc::find(uInt &value, const String &keyword, Int Nname, const String tname[],
                   const String &default_value) {
   if (!find(value, keyword, Nname, tname)) {
     value = MUString::minimaxNC(default_value, Nname, tname);
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool Aipsrc::find(uInt &value, const String &keyword, const Vector<String> &tname,
+bool Aipsrc::find(uInt &value, const String &keyword, const Vector<String> &tname,
                   const String &default_value) {
   if (!find(value, keyword, tname)) {
     value = MUString::minimaxNC(default_value, tname);
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool Aipsrc::findDir(String &foundDir, const String &lastPart, const Vector<String> &prepends,
-                     const Vector<String> &appends, Bool useStds) {
+bool Aipsrc::findDir(String &foundDir, const String &lastPart, const Vector<String> &prepends,
+                     const Vector<String> &appends, bool useStds) {
   // Setup a string that is either "/" + lastPart or blank.
   String myLastPart("");
   if (lastPart != "") {
@@ -132,7 +132,7 @@ Bool Aipsrc::findDir(String &foundDir, const String &lastPart, const Vector<Stri
     foundDir = prepends[i] + myLastPart;
     File testPath(foundDir);
     if (testPath.isDirectory()) {
-      return True;
+      return true;
     }
   }
   if (useStds) {
@@ -144,27 +144,27 @@ Bool Aipsrc::findDir(String &foundDir, const String &lastPart, const Vector<Stri
     }
     File testDot(foundDir);
     if (testDot.isDirectory()) {
-      return True;
+      return true;
     }
     foundDir = aipsHome() + myLastPart;
     File testAipsHome(foundDir);
     if (testAipsHome.isDirectory()) {
-      return True;
+      return true;
     }
     foundDir = aipsRoot() + myLastPart;
     File testAipsRoot(foundDir);
     if (testAipsRoot.isDirectory()) {
-      return True;
+      return true;
     }
   }
   for (uInt i = 0; i < appends.nelements(); ++i) {
     foundDir = appends[i] + myLastPart;
     File testPath(foundDir);
     if (testPath.isDirectory()) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 void Aipsrc::reRead() {
@@ -333,7 +333,7 @@ void Aipsrc::save(const String keyword, const String val) {
   RegularFile fil(filn);
   RegularFile filo(filno);
   if (fil.exists()) {
-    fil.move(filno, True);
+    fil.move(filno, true);
   } else if (filo.exists()) {
     filo.remove();
   }
@@ -345,7 +345,7 @@ void Aipsrc::save(const String keyword, const String val) {
   if (fil.exists()) {
     String buffer;
     Int nv = atoi(Aipsrc::get(nv_r).c_str());  // number to keep
-    Bool editSeen = False;                     // if edit line seen
+    bool editSeen = false;                     // if edit line seen
     String editBuf;                            // edit line buffer
     Int editCnt = 0;                           // count for edits
     String kwt = keyword + ":";                // keyword test
@@ -359,7 +359,7 @@ void Aipsrc::save(const String keyword, const String val) {
             ostr << editBuf << endl;
             ostr << buffer << endl;
           }
-          editSeen = False;
+          editSeen = false;
           continue;
         } else {
           ostr << editBuf << endl;
@@ -426,8 +426,8 @@ void Aipsrc::doParse(String &fileList) {
 
 uInt Aipsrc::genParse(Block<String> &keywordPattern, Block<String> &keywordValue, uInt &fileEnd,
                       const String &fileList) {
-  keywordValue.resize(0, True);  // Clear the old values if any
-  keywordPattern.resize(0, True);
+  keywordValue.resize(0, true);  // Clear the old values if any
+  keywordPattern.resize(0, true);
   Block<String> keywordFile;
   fileEnd = 0;
   uInt nkw = 0;   // # of keywords found
@@ -483,8 +483,8 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern, Block<String> &keywordValue
   delete[] directories;
 
   // Resize static lists
-  keywordValue.resize(nkw, True);
-  keywordPattern.resize(nkw, True);
+  keywordValue.resize(nkw, true);
+  keywordPattern.resize(nkw, true);
 
   return keywordValue.nelements();
 }
@@ -534,7 +534,7 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst, const Strin
   RegularFile fil(fnam);
   RegularFile filo(filno);
   if (fil.exists()) {
-    fil.move(filno, True);
+    fil.move(filno, true);
   } else if (filo.exists()) {
     filo.remove();
   }
@@ -549,40 +549,40 @@ void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst, const String
                     const String &val) {
   std::vector<String> nl(namlst.begin(), namlst.end());
   uInt n = Aipsrc::registerRC(nam, nl);
-  if (n > vallst.nelements()) vallst.resize(n, True);
+  if (n > vallst.nelements()) vallst.resize(n, true);
   vallst(n - 1) = val;
   //   if (n > namlst.nelements()) namlst.resize(n, True);
   namlst.resize(0);
   namlst = Vector<String>(nl.begin(), nl.end());
 }
 
-Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam) {
+bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam) {
   uInt n;
   uInt N = namlst.nelements();
   for (n = 0; n < N; n++) {
     if (namlst(n) == nam) break;
   }
   n++;
-  if (n > N) return False;
+  if (n > N) return false;
   for (uInt i = n; i < N; i++) {
     namlst(i - 1) = namlst(i);
     vallst(i - 1) = vallst(i);
   }
-  namlst.resize(N - 1, True);
-  vallst.resize(N - 1, True);
-  return True;
+  namlst.resize(N - 1, true);
+  vallst.resize(N - 1, true);
+  return true;
 }
 
-Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
+bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
                     const String &nam) {
   uInt n;
   for (n = 0; n < namlst.nelements(); n++) {
     if (namlst(n) == nam) break;
   }
   n++;
-  if (n > vallst.nelements()) return False;
+  if (n > vallst.nelements()) return false;
   val = vallst(n - 1);
-  return True;
+  return true;
 }
 
 // Static Initializations -- Only really want to read the files once
@@ -599,7 +599,7 @@ String Aipsrc::site = String();
 String Aipsrc::host = String();
 String Aipsrc::home = String();
 String Aipsrc::uhome = String();
-Bool Aipsrc::filled = False;
+bool Aipsrc::filled = false;
 std::vector<String> Aipsrc::string_values_;
 std::vector<String> Aipsrc::string_names_;
 std::vector<uInt> Aipsrc::coded_values_;

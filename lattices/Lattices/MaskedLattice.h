@@ -237,17 +237,17 @@ class MaskedLattice : public Lattice<T> {
   // Has the object really a mask?
   // The default implementation returns True if the MaskedLattice has
   // a region with a mask.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the lattice have a pixelmask?
   // The default implementation returns False.
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.
   // An exception is thrown if the lattice does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get the region used.
@@ -262,25 +262,25 @@ class MaskedLattice : public Lattice<T> {
   // If there is no mask, it still works fine.
   // In that case it sizes the buffer correctly and sets it to True.
   // <group>
-  Bool getMask(COWPtr<Array<Bool>>& buffer, Bool removeDegenerateAxes = False) const;
-  Bool getMaskSlice(COWPtr<Array<Bool>>& buffer, const Slicer& section,
-                    Bool removeDegenerateAxes = False) const;
-  Bool getMaskSlice(COWPtr<Array<Bool>>& buffer, const IPosition& start, const IPosition& shape,
-                    Bool removeDegenerateAxes = False) const;
-  Bool getMaskSlice(COWPtr<Array<Bool>>& buffer, const IPosition& start, const IPosition& shape,
-                    const IPosition& stride, Bool removeDegenerateAxes = False) const;
-  Bool getMask(Array<Bool>& buffer, Bool removeDegenerateAxes = False);
-  Bool getMaskSlice(Array<Bool>& buffer, const Slicer& section, Bool removeDegenerateAxes = False);
-  Bool getMaskSlice(Array<Bool>& buffer, const IPosition& start, const IPosition& shape,
-                    Bool removeDegenerateAxes = False);
-  Bool getMaskSlice(Array<Bool>& buffer, const IPosition& start, const IPosition& shape,
-                    const IPosition& stride, Bool removeDegenerateAxes = False);
-  Array<Bool> getMask(Bool removeDegenerateAxes = False) const;
-  Array<Bool> getMaskSlice(const Slicer& section, Bool removeDegenerateAxes = False) const;
-  Array<Bool> getMaskSlice(const IPosition& start, const IPosition& shape,
-                           Bool removeDegenerateAxes = False) const;
-  Array<Bool> getMaskSlice(const IPosition& start, const IPosition& shape, const IPosition& stride,
-                           Bool removeDegenerateAxes = False) const;
+  bool getMask(COWPtr<Array<bool>>& buffer, bool removeDegenerateAxes = false) const;
+  bool getMaskSlice(COWPtr<Array<bool>>& buffer, const Slicer& section,
+                    bool removeDegenerateAxes = false) const;
+  bool getMaskSlice(COWPtr<Array<bool>>& buffer, const IPosition& start, const IPosition& shape,
+                    bool removeDegenerateAxes = false) const;
+  bool getMaskSlice(COWPtr<Array<bool>>& buffer, const IPosition& start, const IPosition& shape,
+                    const IPosition& stride, bool removeDegenerateAxes = false) const;
+  bool getMask(Array<bool>& buffer, bool removeDegenerateAxes = false);
+  bool getMaskSlice(Array<bool>& buffer, const Slicer& section, bool removeDegenerateAxes = false);
+  bool getMaskSlice(Array<bool>& buffer, const IPosition& start, const IPosition& shape,
+                    bool removeDegenerateAxes = false);
+  bool getMaskSlice(Array<bool>& buffer, const IPosition& start, const IPosition& shape,
+                    const IPosition& stride, bool removeDegenerateAxes = false);
+  Array<bool> getMask(bool removeDegenerateAxes = false) const;
+  Array<bool> getMaskSlice(const Slicer& section, bool removeDegenerateAxes = false) const;
+  Array<bool> getMaskSlice(const IPosition& start, const IPosition& shape,
+                           bool removeDegenerateAxes = false) const;
+  Array<bool> getMaskSlice(const IPosition& start, const IPosition& shape, const IPosition& stride,
+                           bool removeDegenerateAxes = false) const;
   // </group>
 
   // The function (in the derived classes) doing the actual work.
@@ -292,7 +292,7 @@ class MaskedLattice : public Lattice<T> {
   // should be used with care and only when performance is an issue.
   // <br>The default implementation gets the mask from the region
   // and fills the buffer with True values if there is no region.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
  protected:
   // Assignment can only be used by derived classes.

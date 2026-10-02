@@ -36,18 +36,18 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //
 Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2) {
   Vector<Int> loc;
-  Bool found = False;
+  bool found = false;
   Int n1 = v1.nelements(), n2 = v2.nelements();
 
   for (Int i = 0; i < n1; i++) {
-    found = False;
+    found = false;
     for (Int j = 0; j < n2; j++)
       if (v2(j) == v1(i)) {
-        found = True;
+        found = true;
         break;
       }
     if (found) {
-      loc.resize(loc.nelements() + 1, True);
+      loc.resize(loc.nelements() + 1, true);
       loc(loc.nelements() - 1) = v1(i);
     }
   }
@@ -59,20 +59,20 @@ Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2) {
 //
 Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2) {
   Vector<Int> loc;
-  Bool found = False;
+  bool found = false;
   loc = v2;
   Int n1 = v1.nelements(), n2;
 
   for (Int i = 0; i < n1; i++) {
     n2 = loc.nelements();
-    found = False;
+    found = false;
     for (Int j = 0; j < n2; j++)
       if (loc(j) == v1(i)) {
-        found = True;
+        found = true;
         break;
       }
     if (!found) {
-      loc.resize(loc.nelements() + 1, True);
+      loc.resize(loc.nelements() + 1, true);
       loc(loc.nelements() - 1) = v1(i);
     }
   }
@@ -82,7 +82,7 @@ Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2) {
 //
 //----------------------------------------------------------------------------
 //
-Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName,
+bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName,
                 const String& timeExpr, const String& antennaExpr, const String& fieldExpr,
                 const String& spwExpr, const String& uvDistExpr, const String& taQLExpr,
                 const String& polnExpr, const String& scanExpr, const String& arrayExpr,
@@ -92,7 +92,7 @@ Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const Stri
                      mymss);
 }
 
-Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName,
+bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName,
                  const String& timeExpr, const String& antennaExpr, const String& fieldExpr,
                  const String& spwExpr, const String& uvDistExpr, const String& taQLExpr,
                  const String& polnExpr, const String& scanExpr, const String& arrayExpr,
@@ -104,7 +104,7 @@ Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const Str
   //
 
   MSSelection* mss = mymss;
-  Bool rstat;
+  bool rstat;
   if (mss == NULL) mss = new MSSelection();
 
   try {
@@ -130,7 +130,7 @@ Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const Str
 //
 //----------------------------------------------------------------------------
 //
-Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
+bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
                 Vector<Vector<Slice>>& chanSlices, Vector<Vector<Slice>>& corrSlices,
                 const String& outMSName, const String& timeExpr, const String& antennaExpr,
                 const String& fieldExpr, const String& spwExpr, const String& uvDistExpr,
@@ -142,7 +142,7 @@ Bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
                      stateExpr, obsExpr, "", defaultChanStep, mymss);
 }
 
-Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
+bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
                  Vector<Vector<Slice>>& chanSlices, Vector<Vector<Slice>>& corrSlices,
                  const String& outMSName, const String& timeExpr, const String& antennaExpr,
                  const String& fieldExpr, const String& spwExpr, const String& uvDistExpr,
@@ -154,7 +154,7 @@ Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
   // internally.
   //
   MSSelection* mss = mymss;
-  Bool rstat;
+  bool rstat;
   if (mss == NULL) mss = new MSSelection();
 
   try {
@@ -183,7 +183,7 @@ Bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
 //
 //----------------------------------------------------------------------------
 //
-String stripWhite(const String& str, Bool onlyends) {
+String stripWhite(const String& str, bool onlyends) {
   // if ((str == "" ) || (str.length() <=0)) return str;
   Int j0, j1;
   j0 = 0;
@@ -245,7 +245,7 @@ Record mssSelectedIndices(MSSelection& thisSelection, const MeasurementSet* ms) 
 //
 //----------------------------------------------------------------------------
 //
-int tokenize(const String& str, const String& sep, Vector<String>& tokens, Bool upcase) {
+int tokenize(const String& str, const String& sep, Vector<String>& tokens, bool upcase) {
   String tmpStr(str);
   /* String::size_type tokpos,startpos=0; */
   if (upcase) ToUpperCaseInPlace(tmpStr);
@@ -256,8 +256,8 @@ int tokenize(const String& str, const String& sep, Vector<String>& tokens, Bool 
     tokens.resize(1);
     tokens(0) = tok;
     while ((tok = strtok((char*)NULL, sep_p))) {
-      tokens.resize(tokens.nelements() + 1, True);
-      tokens(tokens.nelements() - 1) = stripWhite(String(tok), True).c_str();
+      tokens.resize(tokens.nelements() + 1, true);
+      tokens(tokens.nelements() - 1) = stripWhite(String(tok), true).c_str();
     }
   } else {
     tokens.resize(1);
@@ -296,9 +296,9 @@ Vector<String>& split(const String& s, char delim, Vector<String>& elems) {
   return elems;
 }
 
-Bool getSelectedTable(Table& selectedTab, const Table& baseTab, TableExprNode& fullTEN,
+bool getSelectedTable(Table& selectedTab, const Table& baseTab, TableExprNode& fullTEN,
                       const String& outName) {
-  Bool newRefTab = False;
+  bool newRefTab = false;
   if ((!fullTEN.isNull()) && (fullTEN.nrow() > 0)) {
     selectedTab = Table((baseTab)(fullTEN));
     // If the TEN was not NULL and at least one expression was
@@ -308,7 +308,7 @@ Bool getSelectedTable(Table& selectedTab, const Table& baseTab, TableExprNode& f
           MSSelectionNullSelection("MSSelectionNullSelection : The selected table has zero rows."));
     if (outName != "") selectedTab.rename(outName, Table::New);
     selectedTab.flush();
-    newRefTab = True;
+    newRefTab = true;
   }
 
   return newRefTab;

@@ -82,7 +82,7 @@ LELScalar<T> LELConvert<T, F>::getScalar() const {
 }
 
 template <class T, class F>
-Bool LELConvert<T, F>::prepareScalarExpr() {
+bool LELConvert<T, F>::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELConvert::prepare" << endl;
 #endif
@@ -96,7 +96,7 @@ String LELConvert<T, F>::className() const {
 }
 
 template <class T, class F>
-Bool LELConvert<T, F>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELConvert<T, F>::lock(FileLocker::LockType type, uInt nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 template <class T, class F>
@@ -104,7 +104,7 @@ void LELConvert<T, F>::unlock() {
   pExpr_p->unlock();
 }
 template <class T, class F>
-Bool LELConvert<T, F>::hasLock(FileLocker::LockType type) const {
+bool LELConvert<T, F>::hasLock(FileLocker::LockType type) const {
   return pExpr_p->hasLock(type);
 }
 template <class T, class F>

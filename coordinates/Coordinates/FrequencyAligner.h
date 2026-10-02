@@ -118,10 +118,10 @@ class FrequencyAligner {
   // to extrapolate outside of the abcissa domain. Otherwise masked pixels will result.
   // Returns True if a regrid triggered, else False if just copied (see function
   // <src>setTolerance</src>.
-  Bool align(Vector<T>& yOut, Vector<Bool>& maskOut, const Vector<T>& yIn,
-             const Vector<Bool>& maskIn, const MEpoch& epoch, Bool useCachedAbcissa,
+  bool align(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<T>& yIn,
+             const Vector<bool>& maskIn, const MEpoch& epoch, bool useCachedAbcissa,
              typename InterpolateArray1D<Double, T>::InterpolationMethod method,
-             Bool extrapolate = False);
+             bool extrapolate = false);
 
   // This function is the same as the previous except that you can specify the input abcissa as well
   // as the data and mask.  The input abcissa must be in the same units as the Construction
@@ -133,19 +133,19 @@ class FrequencyAligner {
   // as reference value/pixel etc.   The output spectrum is still regridded to the
   // abcissa at the reference time generated at construction.
   // from the current
-  Bool align(Vector<T>& yOut, Vector<Bool>& maskOut, const Vector<Double>& xIn,
-             const Vector<T>& yIn, const Vector<Bool>& maskIn, const MEpoch& epoch,
-             Bool useCachedAbcissa,
+  bool align(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<Double>& xIn,
+             const Vector<T>& yIn, const Vector<bool>& maskIn, const MEpoch& epoch,
+             bool useCachedAbcissa,
              typename InterpolateArray1D<Double, T>::InterpolationMethod method,
-             Bool extrapolate = False);
+             bool extrapolate = false);
 
   // Align many spectra stored in an Array along the specified axis.  All spectra are aligned
   // to the same frequency abcissa (as described in previous function).  If any alignment
   // returns False, then the return value will be False, otherwise  True is returned.
-  Bool alignMany(Array<T>& yOut, Array<Bool>& maskOut, const Array<T>& yIn,
-                 const Array<Bool>& maskIn, uInt axis, const MEpoch& epoch,
+  bool alignMany(Array<T>& yOut, Array<bool>& maskOut, const Array<T>& yIn,
+                 const Array<bool>& maskIn, uInt axis, const MEpoch& epoch,
                  typename InterpolateArray1D<Double, T>::InterpolationMethod method,
-                 Bool extrapolate = False);
+                 bool extrapolate = false);
 
   // Get the reference abcissa (as a frequency in the axis units set in the SpectralCoordinate) at
   // the reference epoch
@@ -157,7 +157,7 @@ class FrequencyAligner {
 
   // Get new aligned SpectralCoordinate.  It is probably non-linear, but if you would
   // like a linear approximation, use the doLinear argument.
-  SpectralCoordinate alignedSpectralCoordinate(Bool doLinear = True) const;
+  SpectralCoordinate alignedSpectralCoordinate(bool doLinear = true) const;
 
  private:
   SpectralCoordinate itsSpecCoord;
@@ -179,12 +179,12 @@ class FrequencyAligner {
                    MFrequency::Types freqSystem, const Unit& unit);
 
   // Generate an abcissa with the machine
-  Double makeAbcissa(Vector<Double>& f, Bool doMaxDiff);
+  Double makeAbcissa(Vector<Double>& f, bool doMaxDiff);
 
   // Regrid one spectrum
-  Bool regrid(Vector<T>& yOut, Vector<Bool>& maskOut, const Vector<Double>& xOut,
-              const Vector<Double>& xIn, const Vector<T>& yIn, const Vector<Bool>& maskIn,
-              typename InterpolateArray1D<Double, T>::InterpolationMethod method, Bool extrapolate,
+  bool regrid(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<Double>& xOut,
+              const Vector<Double>& xIn, const Vector<T>& yIn, const Vector<bool>& maskIn,
+              typename InterpolateArray1D<Double, T>::InterpolationMethod method, bool extrapolate,
               Double maxDiff) const;
 };
 

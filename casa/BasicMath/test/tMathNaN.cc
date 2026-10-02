@@ -39,9 +39,9 @@
 #define isnanfmacro(x) \
   (((*(Int *)(x) & 0x7f800000) == 0x7f800000) && ((*(Int *)(x) & 0x007fffff) != 0x00000000))
 
-inline Bool isNaN_isnan(Float val) { return (std::isnan(Double(val))); }
+inline bool isNaN_isnan(Float val) { return (std::isnan(Double(val))); }
 
-inline Bool isNaN_isnanf(const Float &val) {
+inline bool isNaN_isnanf(const Float &val) {
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
   return (isnanf(val));
 #else
@@ -49,18 +49,18 @@ inline Bool isNaN_isnanf(const Float &val) {
 #endif
 }
 
-inline Bool isNaN_ref(const Float &x) {
+inline bool isNaN_ref(const Float &x) {
   return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) &&
           ((*(Int *)&(x) & 0x007fffff) != 0x00000000));
 }
 
-inline Bool isNaN_val(Float x) {
+inline bool isNaN_val(Float x) {
   Float *xp = &x;
   return (((*(Int *)xp & 0x7f800000) == 0x7f800000) && ((*(Int *)xp & 0x007fffff) != 0x00000000));
 }
 
-Bool doIt(Int n, Float x, Bool nan) {
-  Bool ok = True;
+bool doIt(Int n, Float x, bool nan) {
+  bool ok = true;
   const Int narr = 100000;
   // Determine the expected nr of NaN's.
   uInt nrnan = 0;
@@ -102,7 +102,7 @@ Bool doIt(Int n, Float x, Bool nan) {
   }
   if (nf != nrnan) {
     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-    ok = False;
+    ok = false;
   }
   cout << "nf=" << nf << "    isnan ";
   t.show();
@@ -118,7 +118,7 @@ Bool doIt(Int n, Float x, Bool nan) {
   }
   if (nf != nrnan) {
     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-    ok = False;
+    ok = false;
   }
   cout << "nf=" << nf << "   isnanf ";
   t.show();
@@ -134,7 +134,7 @@ Bool doIt(Int n, Float x, Bool nan) {
   }
   if (nf != nrnan) {
     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-    ok = False;
+    ok = false;
   }
   cout << "nf=" << nf << "   by ref ";
   t.show();
@@ -167,7 +167,7 @@ Bool doIt(Int n, Float x, Bool nan) {
   }
   if (nf != nrnan) {
     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-    ok = False;
+    ok = false;
   }
   cout << "nf=" << nf << "    isNaN ";
   t.show();
@@ -183,7 +183,7 @@ Bool doIt(Int n, Float x, Bool nan) {
   }
   if (nf != nrnan) {
     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-    ok = False;
+    ok = false;
   }
   cout << "nf=" << nf << "    macro ";
   t.show();
@@ -201,20 +201,20 @@ int main(int argc, const char *argv[]) {
   const Int n = inputs.getInt("n");
   cout << "n = " << n << endl;
   //
-  Bool ok = True;
+  bool ok = true;
   Float x = 0;
-  if (!doIt(n, x, False)) {
-    ok = False;
+  if (!doIt(n, x, false)) {
+    ok = false;
   }
   setNaN(x);
-  if (!doIt(n, x, True)) {
-    ok = False;
+  if (!doIt(n, x, true)) {
+    ok = false;
   }
   // Let the machine generate a NaN.
   // I don't know if this is really portable.
   x = sqrt(double(-1));
-  if (!doIt(n, x, True)) {
-    ok = False;
+  if (!doIt(n, x, true)) {
+    ok = false;
   }
 
   if (ok) {

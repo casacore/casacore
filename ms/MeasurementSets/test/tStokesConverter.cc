@@ -70,9 +70,9 @@ int main() {
         cerr << "dataout=" << dataout << std::endl;
       }
 
-      Vector<Bool> flagout, flagin(4);
-      flagin.set(False);
-      flagin(2) = True;
+      Vector<bool> flagout, flagin(4);
+      flagin.set(false);
+      flagin(2) = true;
       sc.convert(flagout, flagin);
       if (flagout(0) || !flagout(1) || !flagout(2) || flagout(3) || !flagout(4) || !flagout(5) ||
           !flagout(6)) {

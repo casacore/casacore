@@ -30,7 +30,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void doIt(Bool doExcp);
+void doIt(bool doExcp);
 
 int main(int argc, const char*[]) {
   try {
@@ -42,8 +42,8 @@ int main(int argc, const char*[]) {
   return 0;  // exit with success status
 }
 
-void doIt(Bool doExcp) {
-  Bool equalDataTypes;
+void doIt(bool doExcp) {
+  bool equalDataTypes;
   //    RecordDesc();
   RecordDesc a, b;
   AlwaysAssertExit(a == b && a.nfields() == 0 && b.nfields() == 0);
@@ -105,32 +105,32 @@ void doIt(Bool doExcp) {
   a.addField("c1", TpRecord);
 
   if (doExcp) {
-    Bool caught = False;
+    bool caught = false;
     try {
       a.addField("a", TpDouble);  // already exists
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssertExit(caught);
-    caught = False;
+    caught = false;
     try {
       a.addField("a", TpDouble, IPosition(1, 1));  // already exists
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssertExit(caught);
-    caught = False;
+    caught = false;
     try {
       a.addField("a", TpDouble, IPosition(1, 1));  // already exists
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssertExit(caught);
-    caught = False;
+    caught = false;
     try {
       a.addField("aaa", TpOther);  // invalid type
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssertExit(caught);
   }
@@ -191,11 +191,11 @@ void doIt(Bool doExcp) {
     AlwaysAssertExit(ab.comment(3) == "a-comment-a");
     AlwaysAssertExit(ab.type(ab.fieldNumber("a")) == TpString);
     if (doExcp) {
-      Bool caught = False;
+      bool caught = false;
       try {
         ab.mergeField(cd, cd.fieldNumber("a"), RecordInterface::ThrowOnDuplicates);
       } catch (std::exception& x) {
-        caught = True;
+        caught = true;
       }
       AlwaysAssertExit(caught);
     }
@@ -268,18 +268,18 @@ void doIt(Bool doExcp) {
   }
 
   if (doExcp) {
-    Bool caught = False;
+    bool caught = false;
     try {
       g.addField("Other", TpRecord, IPosition(1, 1));
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssertExit(caught);
-    caught = False;
+    caught = false;
     try {
       g.addField("Other", TpTable, IPosition(1, 1));
     } catch (std::exception& x) {
-      caught = True;
+      caught = true;
     }
     AlwaysAssertExit(caught);
   }

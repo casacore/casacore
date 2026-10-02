@@ -83,7 +83,7 @@ void CompoundFunction<AutoDiff<T>>::fromParam_p() const {
           this->param_p[i].value();
       this->functionPtr_p[this->funpar_p[i]]->mask(this->locpar_p[i]) = this->param_p.mask(i);
     }
-    this->parset_p = False;
+    this->parset_p = false;
   }
 }
 

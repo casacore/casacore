@@ -106,7 +106,7 @@ class SSMIndColumn : public SSMColumn {
   virtual void setMaxLength(uInt maxLength);
 
   // Add (newNrrow-oldNrrow) rows to the column.
-  virtual void addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit);
+  virtual void addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit);
 
   // Set the (fixed) shape of the arrays in the entire column.
   virtual void setShapeColumn(const IPosition& aShape);
@@ -119,13 +119,13 @@ class SSMIndColumn : public SSMColumn {
   void setShape(rownr_t aRowNr, const IPosition& aShape);
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined(rownr_t aRowNr);
+  virtual bool isShapeDefined(rownr_t aRowNr);
 
   // Get the shape of the array in the given row.
   virtual IPosition shape(rownr_t aRowNr);
 
   // This storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Get an array value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
@@ -172,7 +172,7 @@ class SSMIndColumn : public SSMColumn {
   // # The shape off all arrays in case it is fixed
   IPosition itsFixedShape;
   // # Switch indicating if the shape is fixed.
-  Bool isShapeFixed;
+  bool isShapeFixed;
   // # The file containing the arrays.
   StManArrayFile* itsIosFile;
   // # The indirect array object.

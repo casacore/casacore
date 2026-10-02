@@ -80,7 +80,7 @@ class HaDecColumn : public VirtualArrayColumn<Double> {
   explicit HaDecColumn(MSCalEngine* engine, Int antnr) : itsEngine(engine), itsAntNr(antnr) {}
   virtual ~HaDecColumn();
   virtual IPosition shape(rownr_t rownr);
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
   virtual void getArray(rownr_t rowNr, Array<Double>& data);
 
  private:
@@ -95,7 +95,7 @@ class AzElColumn : public VirtualArrayColumn<Double> {
   explicit AzElColumn(MSCalEngine* engine, Int antnr) : itsEngine(engine), itsAntNr(antnr) {}
   virtual ~AzElColumn();
   virtual IPosition shape(rownr_t rownr);
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
   virtual void getArray(rownr_t rowNr, Array<Double>& data);
 
  private:
@@ -110,7 +110,7 @@ class ItrfColumn : public VirtualArrayColumn<Double> {
   explicit ItrfColumn(MSCalEngine* engine, Int antnr) : itsEngine(engine), itsAntNr(antnr) {}
   virtual ~ItrfColumn();
   virtual IPosition shape(rownr_t rownr);
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
   virtual void getArray(rownr_t rowNr, Array<Double>& data);
 
  private:
@@ -125,7 +125,7 @@ class UVWJ2000Column : public VirtualArrayColumn<Double> {
   explicit UVWJ2000Column(MSCalEngine* engine) : itsEngine(engine) {}
   virtual ~UVWJ2000Column();
   virtual IPosition shape(rownr_t rownr);
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
   virtual void getArray(rownr_t rowNr, Array<Double>& data);
 
  private:

@@ -59,7 +59,7 @@ void invert(Matrix<T> &out, T &det, const Matrix<T> &in) {
 
   out.resize(in.shape());
   out = in;
-  Bool deleteIt;
+  bool deleteIt;
   T *a = out.getStorage(deleteIt);  // a
 
   Block<Int> ipiv(m);  // ipiv

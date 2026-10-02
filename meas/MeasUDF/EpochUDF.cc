@@ -41,9 +41,9 @@ void EpochUDF::setup(const Table&, const TaQLStyle&) {
   uInt argnr = 0;
   if (itsType == LAST) {
     itsRefType = MEpoch::LAST;
-    itsSidFrac = True;
+    itsSidFrac = true;
   } else {
-    itsEngine.handleMeasType(operands()[0], True);
+    itsEngine.handleMeasType(operands()[0], true);
     itsRefType = itsEngine.refType();
     itsSidFrac = itsEngine.sidFrac();
     argnr = 1;

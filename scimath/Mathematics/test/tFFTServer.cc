@@ -54,7 +54,7 @@
   } while (0)
 
 unsigned tests_done = 0;
-const Bool debug = False;  // True;
+const bool debug = false;  // True;
 
 template <class T>
 void dum(const Array<T> &d) {
@@ -1214,7 +1214,7 @@ template <class T, class S, class TServer, class SServer>
 class Test {
  public:
   Test(FFTServer<TServer, SServer> &server,
-       Bool shifted_mode,  // use fft() instead of fft0 ?
+       bool shifted_mode,  // use fft() instead of fft0 ?
        double epsilon, const Array<T> input, const Array<S> expectedResult) {
     Array<S> result(expectedResult.shape());
 
@@ -1319,49 +1319,49 @@ class TestFFTShift {
     a(IPosition(2, 1, 8)) = Complex(80., 0.);
     a(IPosition(2, 1, 9)) = Complex(90., 0.);
 
-    Array<Bool> aflags(IPosition(2, 2, 10));
-    aflags(IPosition(2, 0, 0)) = True;
-    aflags(IPosition(2, 0, 1)) = True;
-    aflags(IPosition(2, 0, 2)) = True;
-    aflags(IPosition(2, 0, 3)) = True;
-    aflags(IPosition(2, 0, 4)) = False;
-    aflags(IPosition(2, 0, 5)) = True;
-    aflags(IPosition(2, 0, 6)) = True;
-    aflags(IPosition(2, 0, 7)) = False;
-    aflags(IPosition(2, 0, 8)) = True;
-    aflags(IPosition(2, 0, 9)) = True;
-    aflags(IPosition(2, 1, 0)) = True;
-    aflags(IPosition(2, 1, 1)) = True;
-    aflags(IPosition(2, 1, 2)) = True;
-    aflags(IPosition(2, 1, 3)) = True;
-    aflags(IPosition(2, 1, 4)) = False;
-    aflags(IPosition(2, 1, 5)) = True;
-    aflags(IPosition(2, 1, 6)) = True;
-    aflags(IPosition(2, 1, 7)) = False;
-    aflags(IPosition(2, 1, 8)) = True;
-    aflags(IPosition(2, 1, 9)) = True;
+    Array<bool> aflags(IPosition(2, 2, 10));
+    aflags(IPosition(2, 0, 0)) = true;
+    aflags(IPosition(2, 0, 1)) = true;
+    aflags(IPosition(2, 0, 2)) = true;
+    aflags(IPosition(2, 0, 3)) = true;
+    aflags(IPosition(2, 0, 4)) = false;
+    aflags(IPosition(2, 0, 5)) = true;
+    aflags(IPosition(2, 0, 6)) = true;
+    aflags(IPosition(2, 0, 7)) = false;
+    aflags(IPosition(2, 0, 8)) = true;
+    aflags(IPosition(2, 0, 9)) = true;
+    aflags(IPosition(2, 1, 0)) = true;
+    aflags(IPosition(2, 1, 1)) = true;
+    aflags(IPosition(2, 1, 2)) = true;
+    aflags(IPosition(2, 1, 3)) = true;
+    aflags(IPosition(2, 1, 4)) = false;
+    aflags(IPosition(2, 1, 5)) = true;
+    aflags(IPosition(2, 1, 6)) = true;
+    aflags(IPosition(2, 1, 7)) = false;
+    aflags(IPosition(2, 1, 8)) = true;
+    aflags(IPosition(2, 1, 9)) = true;
 
-    Array<Bool> aflags2(IPosition(2, 2, 10));
-    aflags2(IPosition(2, 0, 0)) = True;
-    aflags2(IPosition(2, 0, 1)) = True;
-    aflags2(IPosition(2, 0, 2)) = True;
-    aflags2(IPosition(2, 0, 3)) = True;
-    aflags2(IPosition(2, 0, 4)) = True;
-    aflags2(IPosition(2, 0, 5)) = True;
-    aflags2(IPosition(2, 0, 6)) = False;
-    aflags2(IPosition(2, 0, 7)) = False;
-    aflags2(IPosition(2, 0, 8)) = True;
-    aflags2(IPosition(2, 0, 9)) = True;
-    aflags2(IPosition(2, 1, 0)) = True;
-    aflags2(IPosition(2, 1, 1)) = True;
-    aflags2(IPosition(2, 1, 2)) = True;
-    aflags2(IPosition(2, 1, 3)) = True;
-    aflags2(IPosition(2, 1, 4)) = True;
-    aflags2(IPosition(2, 1, 5)) = True;
-    aflags2(IPosition(2, 1, 6)) = False;
-    aflags2(IPosition(2, 1, 7)) = False;
-    aflags2(IPosition(2, 1, 8)) = True;
-    aflags2(IPosition(2, 1, 9)) = True;
+    Array<bool> aflags2(IPosition(2, 2, 10));
+    aflags2(IPosition(2, 0, 0)) = true;
+    aflags2(IPosition(2, 0, 1)) = true;
+    aflags2(IPosition(2, 0, 2)) = true;
+    aflags2(IPosition(2, 0, 3)) = true;
+    aflags2(IPosition(2, 0, 4)) = true;
+    aflags2(IPosition(2, 0, 5)) = true;
+    aflags2(IPosition(2, 0, 6)) = false;
+    aflags2(IPosition(2, 0, 7)) = false;
+    aflags2(IPosition(2, 0, 8)) = true;
+    aflags2(IPosition(2, 0, 9)) = true;
+    aflags2(IPosition(2, 1, 0)) = true;
+    aflags2(IPosition(2, 1, 1)) = true;
+    aflags2(IPosition(2, 1, 2)) = true;
+    aflags2(IPosition(2, 1, 3)) = true;
+    aflags2(IPosition(2, 1, 4)) = true;
+    aflags2(IPosition(2, 1, 5)) = true;
+    aflags2(IPosition(2, 1, 6)) = false;
+    aflags2(IPosition(2, 1, 7)) = false;
+    aflags2(IPosition(2, 1, 8)) = true;
+    aflags2(IPosition(2, 1, 9)) = true;
 
     Array<S> b(IPosition(2, 10, 2));
     b(IPosition(2, 0, 0)) = Complex(0., 0.);
@@ -1473,137 +1473,137 @@ class TestFFTShift {
     expectd(IPosition(2, 1, 8)) = Complex(90., 0.);
     expectd(IPosition(2, 1, 9)) = Complex(0., 0.);
 
-    Array<Bool> expflags(IPosition(2, 2, 10));
-    expflags(IPosition(2, 0, 0)) = False;
-    expflags(IPosition(2, 0, 1)) = True;
-    expflags(IPosition(2, 0, 2)) = True;
-    expflags(IPosition(2, 0, 3)) = True;
-    expflags(IPosition(2, 0, 4)) = True;
-    expflags(IPosition(2, 0, 5)) = False;
-    expflags(IPosition(2, 0, 6)) = True;
-    expflags(IPosition(2, 0, 7)) = True;
-    expflags(IPosition(2, 0, 8)) = False;
-    expflags(IPosition(2, 0, 9)) = True;
-    expflags(IPosition(2, 1, 0)) = False;
-    expflags(IPosition(2, 1, 1)) = True;
-    expflags(IPosition(2, 1, 2)) = True;
-    expflags(IPosition(2, 1, 3)) = True;
-    expflags(IPosition(2, 1, 4)) = True;
-    expflags(IPosition(2, 1, 5)) = False;
-    expflags(IPosition(2, 1, 6)) = True;
-    expflags(IPosition(2, 1, 7)) = True;
-    expflags(IPosition(2, 1, 8)) = False;
-    expflags(IPosition(2, 1, 9)) = True;
+    Array<bool> expflags(IPosition(2, 2, 10));
+    expflags(IPosition(2, 0, 0)) = false;
+    expflags(IPosition(2, 0, 1)) = true;
+    expflags(IPosition(2, 0, 2)) = true;
+    expflags(IPosition(2, 0, 3)) = true;
+    expflags(IPosition(2, 0, 4)) = true;
+    expflags(IPosition(2, 0, 5)) = false;
+    expflags(IPosition(2, 0, 6)) = true;
+    expflags(IPosition(2, 0, 7)) = true;
+    expflags(IPosition(2, 0, 8)) = false;
+    expflags(IPosition(2, 0, 9)) = true;
+    expflags(IPosition(2, 1, 0)) = false;
+    expflags(IPosition(2, 1, 1)) = true;
+    expflags(IPosition(2, 1, 2)) = true;
+    expflags(IPosition(2, 1, 3)) = true;
+    expflags(IPosition(2, 1, 4)) = true;
+    expflags(IPosition(2, 1, 5)) = false;
+    expflags(IPosition(2, 1, 6)) = true;
+    expflags(IPosition(2, 1, 7)) = true;
+    expflags(IPosition(2, 1, 8)) = false;
+    expflags(IPosition(2, 1, 9)) = true;
 
-    Array<Bool> expflagsb(IPosition(2, 2, 10));
-    expflagsb(IPosition(2, 0, 0)) = False;
-    expflagsb(IPosition(2, 0, 1)) = True;
-    expflagsb(IPosition(2, 0, 2)) = True;
-    expflagsb(IPosition(2, 0, 3)) = True;
-    expflagsb(IPosition(2, 0, 4)) = True;
-    expflagsb(IPosition(2, 0, 5)) = True;
-    expflagsb(IPosition(2, 0, 6)) = True;
-    expflagsb(IPosition(2, 0, 7)) = True;
-    expflagsb(IPosition(2, 0, 8)) = True;
-    expflagsb(IPosition(2, 0, 9)) = True;
-    expflagsb(IPosition(2, 1, 0)) = False;
-    expflagsb(IPosition(2, 1, 1)) = True;
-    expflagsb(IPosition(2, 1, 2)) = True;
-    expflagsb(IPosition(2, 1, 3)) = True;
-    expflagsb(IPosition(2, 1, 4)) = True;
-    expflagsb(IPosition(2, 1, 5)) = True;
-    expflagsb(IPosition(2, 1, 6)) = True;
-    expflagsb(IPosition(2, 1, 7)) = True;
-    expflagsb(IPosition(2, 1, 8)) = True;
-    expflagsb(IPosition(2, 1, 9)) = True;
+    Array<bool> expflagsb(IPosition(2, 2, 10));
+    expflagsb(IPosition(2, 0, 0)) = false;
+    expflagsb(IPosition(2, 0, 1)) = true;
+    expflagsb(IPosition(2, 0, 2)) = true;
+    expflagsb(IPosition(2, 0, 3)) = true;
+    expflagsb(IPosition(2, 0, 4)) = true;
+    expflagsb(IPosition(2, 0, 5)) = true;
+    expflagsb(IPosition(2, 0, 6)) = true;
+    expflagsb(IPosition(2, 0, 7)) = true;
+    expflagsb(IPosition(2, 0, 8)) = true;
+    expflagsb(IPosition(2, 0, 9)) = true;
+    expflagsb(IPosition(2, 1, 0)) = false;
+    expflagsb(IPosition(2, 1, 1)) = true;
+    expflagsb(IPosition(2, 1, 2)) = true;
+    expflagsb(IPosition(2, 1, 3)) = true;
+    expflagsb(IPosition(2, 1, 4)) = true;
+    expflagsb(IPosition(2, 1, 5)) = true;
+    expflagsb(IPosition(2, 1, 6)) = true;
+    expflagsb(IPosition(2, 1, 7)) = true;
+    expflagsb(IPosition(2, 1, 8)) = true;
+    expflagsb(IPosition(2, 1, 9)) = true;
 
-    Array<Bool> expflagsc(IPosition(2, 2, 10));
-    expflagsc(IPosition(2, 0, 0)) = True;
-    expflagsc(IPosition(2, 0, 1)) = True;
-    expflagsc(IPosition(2, 0, 2)) = True;
-    expflagsc(IPosition(2, 0, 3)) = False;
-    expflagsc(IPosition(2, 0, 4)) = True;
-    expflagsc(IPosition(2, 0, 5)) = True;
-    expflagsc(IPosition(2, 0, 6)) = False;
-    expflagsc(IPosition(2, 0, 7)) = True;
-    expflagsc(IPosition(2, 0, 8)) = True;
-    expflagsc(IPosition(2, 0, 9)) = False;
-    expflagsc(IPosition(2, 1, 0)) = True;
-    expflagsc(IPosition(2, 1, 1)) = True;
-    expflagsc(IPosition(2, 1, 2)) = True;
-    expflagsc(IPosition(2, 1, 3)) = False;
-    expflagsc(IPosition(2, 1, 4)) = True;
-    expflagsc(IPosition(2, 1, 5)) = True;
-    expflagsc(IPosition(2, 1, 6)) = False;
-    expflagsc(IPosition(2, 1, 7)) = True;
-    expflagsc(IPosition(2, 1, 8)) = True;
-    expflagsc(IPosition(2, 1, 9)) = False;
+    Array<bool> expflagsc(IPosition(2, 2, 10));
+    expflagsc(IPosition(2, 0, 0)) = true;
+    expflagsc(IPosition(2, 0, 1)) = true;
+    expflagsc(IPosition(2, 0, 2)) = true;
+    expflagsc(IPosition(2, 0, 3)) = false;
+    expflagsc(IPosition(2, 0, 4)) = true;
+    expflagsc(IPosition(2, 0, 5)) = true;
+    expflagsc(IPosition(2, 0, 6)) = false;
+    expflagsc(IPosition(2, 0, 7)) = true;
+    expflagsc(IPosition(2, 0, 8)) = true;
+    expflagsc(IPosition(2, 0, 9)) = false;
+    expflagsc(IPosition(2, 1, 0)) = true;
+    expflagsc(IPosition(2, 1, 1)) = true;
+    expflagsc(IPosition(2, 1, 2)) = true;
+    expflagsc(IPosition(2, 1, 3)) = false;
+    expflagsc(IPosition(2, 1, 4)) = true;
+    expflagsc(IPosition(2, 1, 5)) = true;
+    expflagsc(IPosition(2, 1, 6)) = false;
+    expflagsc(IPosition(2, 1, 7)) = true;
+    expflagsc(IPosition(2, 1, 8)) = true;
+    expflagsc(IPosition(2, 1, 9)) = false;
 
-    Array<Bool> expflagsd(IPosition(2, 2, 10));
-    expflagsd(IPosition(2, 0, 0)) = True;
-    expflagsd(IPosition(2, 0, 1)) = True;
-    expflagsd(IPosition(2, 0, 2)) = True;
-    expflagsd(IPosition(2, 0, 3)) = True;
-    expflagsd(IPosition(2, 0, 4)) = True;
-    expflagsd(IPosition(2, 0, 5)) = True;
-    expflagsd(IPosition(2, 0, 6)) = True;
-    expflagsd(IPosition(2, 0, 7)) = True;
-    expflagsd(IPosition(2, 0, 8)) = True;
-    expflagsd(IPosition(2, 0, 9)) = False;
-    expflagsd(IPosition(2, 1, 0)) = True;
-    expflagsd(IPosition(2, 1, 1)) = True;
-    expflagsd(IPosition(2, 1, 2)) = True;
-    expflagsd(IPosition(2, 1, 3)) = True;
-    expflagsd(IPosition(2, 1, 4)) = True;
-    expflagsd(IPosition(2, 1, 5)) = True;
-    expflagsd(IPosition(2, 1, 6)) = True;
-    expflagsd(IPosition(2, 1, 7)) = True;
-    expflagsd(IPosition(2, 1, 8)) = True;
-    expflagsd(IPosition(2, 1, 9)) = False;
+    Array<bool> expflagsd(IPosition(2, 2, 10));
+    expflagsd(IPosition(2, 0, 0)) = true;
+    expflagsd(IPosition(2, 0, 1)) = true;
+    expflagsd(IPosition(2, 0, 2)) = true;
+    expflagsd(IPosition(2, 0, 3)) = true;
+    expflagsd(IPosition(2, 0, 4)) = true;
+    expflagsd(IPosition(2, 0, 5)) = true;
+    expflagsd(IPosition(2, 0, 6)) = true;
+    expflagsd(IPosition(2, 0, 7)) = true;
+    expflagsd(IPosition(2, 0, 8)) = true;
+    expflagsd(IPosition(2, 0, 9)) = false;
+    expflagsd(IPosition(2, 1, 0)) = true;
+    expflagsd(IPosition(2, 1, 1)) = true;
+    expflagsd(IPosition(2, 1, 2)) = true;
+    expflagsd(IPosition(2, 1, 3)) = true;
+    expflagsd(IPosition(2, 1, 4)) = true;
+    expflagsd(IPosition(2, 1, 5)) = true;
+    expflagsd(IPosition(2, 1, 6)) = true;
+    expflagsd(IPosition(2, 1, 7)) = true;
+    expflagsd(IPosition(2, 1, 8)) = true;
+    expflagsd(IPosition(2, 1, 9)) = false;
 
-    Array<Bool> expflagse(IPosition(2, 2, 10));
-    expflagse(IPosition(2, 0, 0)) = True;
-    expflagse(IPosition(2, 0, 1)) = True;
-    expflagse(IPosition(2, 0, 2)) = False;
-    expflagse(IPosition(2, 0, 3)) = False;
-    expflagse(IPosition(2, 0, 4)) = True;
-    expflagse(IPosition(2, 0, 5)) = False;
-    expflagse(IPosition(2, 0, 6)) = False;
-    expflagse(IPosition(2, 0, 7)) = True;
-    expflagse(IPosition(2, 0, 8)) = False;
-    expflagse(IPosition(2, 0, 9)) = False;
-    expflagse(IPosition(2, 1, 0)) = True;
-    expflagse(IPosition(2, 1, 1)) = True;
-    expflagse(IPosition(2, 1, 2)) = False;
-    expflagse(IPosition(2, 1, 3)) = False;
-    expflagse(IPosition(2, 1, 4)) = True;
-    expflagse(IPosition(2, 1, 5)) = False;
-    expflagse(IPosition(2, 1, 6)) = False;
-    expflagse(IPosition(2, 1, 7)) = True;
-    expflagse(IPosition(2, 1, 8)) = False;
-    expflagse(IPosition(2, 1, 9)) = False;
+    Array<bool> expflagse(IPosition(2, 2, 10));
+    expflagse(IPosition(2, 0, 0)) = true;
+    expflagse(IPosition(2, 0, 1)) = true;
+    expflagse(IPosition(2, 0, 2)) = false;
+    expflagse(IPosition(2, 0, 3)) = false;
+    expflagse(IPosition(2, 0, 4)) = true;
+    expflagse(IPosition(2, 0, 5)) = false;
+    expflagse(IPosition(2, 0, 6)) = false;
+    expflagse(IPosition(2, 0, 7)) = true;
+    expflagse(IPosition(2, 0, 8)) = false;
+    expflagse(IPosition(2, 0, 9)) = false;
+    expflagse(IPosition(2, 1, 0)) = true;
+    expflagse(IPosition(2, 1, 1)) = true;
+    expflagse(IPosition(2, 1, 2)) = false;
+    expflagse(IPosition(2, 1, 3)) = false;
+    expflagse(IPosition(2, 1, 4)) = true;
+    expflagse(IPosition(2, 1, 5)) = false;
+    expflagse(IPosition(2, 1, 6)) = false;
+    expflagse(IPosition(2, 1, 7)) = true;
+    expflagse(IPosition(2, 1, 8)) = false;
+    expflagse(IPosition(2, 1, 9)) = false;
 
-    Array<Bool> expflagse2(IPosition(2, 2, 10));
-    expflagse2(IPosition(2, 0, 0)) = True;
-    expflagse2(IPosition(2, 0, 1)) = True;
-    expflagse2(IPosition(2, 0, 2)) = True;
-    expflagse2(IPosition(2, 0, 3)) = True;
-    expflagse2(IPosition(2, 0, 4)) = True;
-    expflagse2(IPosition(2, 0, 5)) = False;
-    expflagse2(IPosition(2, 0, 6)) = False;
-    expflagse2(IPosition(2, 0, 7)) = False;
-    expflagse2(IPosition(2, 0, 8)) = True;
-    expflagse2(IPosition(2, 0, 9)) = False;
-    expflagse2(IPosition(2, 1, 0)) = True;
-    expflagse2(IPosition(2, 1, 1)) = True;
-    expflagse2(IPosition(2, 1, 2)) = True;
-    expflagse2(IPosition(2, 1, 3)) = True;
-    expflagse2(IPosition(2, 1, 4)) = True;
-    expflagse2(IPosition(2, 1, 5)) = False;
-    expflagse2(IPosition(2, 1, 6)) = False;
-    expflagse2(IPosition(2, 1, 7)) = False;
-    expflagse2(IPosition(2, 1, 8)) = True;
-    expflagse2(IPosition(2, 1, 9)) = False;
+    Array<bool> expflagse2(IPosition(2, 2, 10));
+    expflagse2(IPosition(2, 0, 0)) = true;
+    expflagse2(IPosition(2, 0, 1)) = true;
+    expflagse2(IPosition(2, 0, 2)) = true;
+    expflagse2(IPosition(2, 0, 3)) = true;
+    expflagse2(IPosition(2, 0, 4)) = true;
+    expflagse2(IPosition(2, 0, 5)) = false;
+    expflagse2(IPosition(2, 0, 6)) = false;
+    expflagse2(IPosition(2, 0, 7)) = false;
+    expflagse2(IPosition(2, 0, 8)) = true;
+    expflagse2(IPosition(2, 0, 9)) = false;
+    expflagse2(IPosition(2, 1, 0)) = true;
+    expflagse2(IPosition(2, 1, 1)) = true;
+    expflagse2(IPosition(2, 1, 2)) = true;
+    expflagse2(IPosition(2, 1, 3)) = true;
+    expflagse2(IPosition(2, 1, 4)) = true;
+    expflagse2(IPosition(2, 1, 5)) = false;
+    expflagse2(IPosition(2, 1, 6)) = false;
+    expflagse2(IPosition(2, 1, 7)) = false;
+    expflagse2(IPosition(2, 1, 8)) = true;
+    expflagse2(IPosition(2, 1, 9)) = false;
 
     Array<T> ra(IPosition(2, 2, 10));
     ra(IPosition(2, 0, 0)) = 0.;
@@ -1682,7 +1682,7 @@ class TestFFTShift {
       Array<S> inVal;
       inVal.assign(a);
 
-      server.fftshift(inVal, whichAxis, relshift, False);
+      server.fftshift(inVal, whichAxis, relshift, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1701,7 +1701,7 @@ class TestFFTShift {
       relshift = 1. / 10.;
       inVal.assign(a);
 
-      server.fftshift(inVal, whichAxis, relshift, False);
+      server.fftshift(inVal, whichAxis, relshift, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1721,9 +1721,9 @@ class TestFFTShift {
       relshift = -0.5 / 10.;
       inVal.assign(a);
 
-      server.fftshift(inVal, whichAxis, relshift, False);
+      server.fftshift(inVal, whichAxis, relshift, false);
       server.fftshift(inVal, whichAxis, relshift,
-                      False);  // two consecutive shifts should shift by 1 channel
+                      false);  // two consecutive shifts should shift by 1 channel
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1741,7 +1741,7 @@ class TestFFTShift {
       whichAxis = 0;
       relshift = 1. / 10.;
 
-      server.fftshift(b, whichAxis, relshift, False);
+      server.fftshift(b, whichAxis, relshift, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1761,12 +1761,12 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = 1. / 10.;
       Array<S> outVal;
-      Array<Bool> outFlag;
-      Array<Bool> inFlags;
+      Array<bool> outFlag;
+      Array<bool> inFlags;
       inFlags.assign(aflags);
-      inFlags = True;
+      inFlags = true;
 
-      server.fftshift(outVal, outFlag, a, inFlags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, inFlags, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1789,7 +1789,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = 1. / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1810,7 +1810,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = 0.;
 
-      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1832,12 +1832,12 @@ class TestFFTShift {
 
       whichAxis = 1;
       relshift = -0.5 / 10.;
-      inFlags = True;
+      inFlags = true;
 
-      server.fftshift(outVal, outFlag, a, inFlags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, inFlags, whichAxis, relshift, true, false);
 
       inVal.assign(outVal);
-      server.fftshift(outVal, outFlag, inVal, inFlags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, inVal, inFlags, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1859,7 +1859,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = -1. / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1881,7 +1881,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = -1.5 / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1900,7 +1900,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = -0.25 / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1918,7 +1918,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = -0.5 / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1936,7 +1936,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = -0.55 / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1954,7 +1954,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = -0.75 / 10.;
 
-      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, True, False);
+      server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -1975,9 +1975,9 @@ class TestFFTShift {
       relshift = 1. / 10.;
       Array<T> routVal;
       inFlags.assign(aflags);
-      inFlags = True;
+      inFlags = true;
 
-      server.fftshift(routVal, outFlag, ra, inFlags, whichAxis, relshift, True);
+      server.fftshift(routVal, outFlag, ra, inFlags, whichAxis, relshift, true);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -2000,7 +2000,7 @@ class TestFFTShift {
       whichAxis = 1;
       relshift = 1. / 10.;
 
-      server.fftshift(routVal, outFlag, ra, aflags, whichAxis, relshift, True);
+      server.fftshift(routVal, outFlag, ra, aflags, whichAxis, relshift, true);
 
       {
         for (uInt i = 0; i < 2; i++) {
@@ -2027,13 +2027,13 @@ class TestR2C  // real->complex and complex->real
   TestR2C(FFTServer<TServer, SServer> &server, double epsilon = FLT_EPSILON) {
     Array<T> input = P<T, S>::input();
     Array<S> expectedResult = P<T, S>::expectedResult();
-    Test<T, S, TServer, SServer>(server, False, epsilon, input, expectedResult);
-    Test<T, S, TServer, SServer>(server, True, epsilon,
+    Test<T, S, TServer, SServer>(server, false, epsilon, input, expectedResult);
+    Test<T, S, TServer, SServer>(server, true, epsilon,
                                  shift<T>(input, input.shape(), expectedResult.shape()),
                                  shift<S>(expectedResult, input.shape(), expectedResult.shape()));
 
     // Test the non-default  constInput = True
-    Bool constInput = True;
+    bool constInput = true;
 
     Array<T> input_before;
     Array<S> whatever(expectedResult.shape());
@@ -2052,7 +2052,7 @@ class TestR2C  // real->complex and complex->real
 template <class T, template <class> class P, class TServer, class SServer>
 class TestC2C {
  private:
-  void go(FFTServer<TServer, SServer> &server, Bool shifted, double epsilon1, double epsilon2,
+  void go(FFTServer<TServer, SServer> &server, bool shifted, double epsilon1, double epsilon2,
           const Array<T> &input, const Array<T> &expected) {
     Test<T, T, TServer, SServer>(server, shifted, epsilon1, input, expected);
 
@@ -2078,9 +2078,9 @@ class TestC2C {
         dump(copy);
       }
       if (shifted) {
-        server.fft(copy, False);
+        server.fft(copy, false);
       } else {
-        server.fft0(copy, False);
+        server.fft0(copy, false);
       }
 
       if (debug) {
@@ -2099,11 +2099,11 @@ class TestC2C {
     Array<T> p1, p2;
 
     if (shifted) {
-      server.fft(p1, expected, False);
-      server.fft(p2, p1, False);
+      server.fft(p1, expected, false);
+      server.fft(p2, p1, false);
     } else {
-      server.fft0(p1, expected, False);
-      server.fft0(p2, p1, False);
+      server.fft0(p1, expected, false);
+      server.fft0(p2, p1, false);
     }
     // Now input should be the forward transform of p2
     Test<T, T, TServer, SServer>(server, shifted, epsilon2, p2, input);
@@ -2115,11 +2115,11 @@ class TestC2C {
     Array<T> input = P<T>::input();
     Array<T> expectedResult = P<T>::expectedResult();
 
-    go(server, False, epsilon1, epsilon2, input, expectedResult);
+    go(server, false, epsilon1, epsilon2, input, expectedResult);
 
     // repeat using shifted arrays
 
-    go(server, True, epsilon1, epsilon2, shift<T>(input, input.shape(), expectedResult.shape()),
+    go(server, true, epsilon1, epsilon2, shift<T>(input, input.shape(), expectedResult.shape()),
        shift<T>(expectedResult, input.shape(), expectedResult.shape()));
   }
 };

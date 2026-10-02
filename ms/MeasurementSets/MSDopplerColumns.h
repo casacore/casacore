@@ -78,7 +78,7 @@ class MSDopplerColumns {
   ~MSDopplerColumns();
 
   // Is this object defined? (MSDoppler table is optional)
-  Bool isNull() const { return isNull_p; }
+  bool isNull() const { return isNull_p; }
 
   // Access to required columns
   // <group>
@@ -122,7 +122,7 @@ class MSDopplerColumns {
   MSDopplerColumns& operator=(const MSDopplerColumns&);
 
   // # Is the object not attached to a Table.
-  Bool isNull_p;
+  bool isNull_p;
 
   // # required columns
   ScalarColumn<Int> dopplerId_p;

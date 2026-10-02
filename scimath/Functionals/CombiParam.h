@@ -115,7 +115,7 @@ class CombiParam : public Function<T> {
   // Make this object a (deep) copy of other.
   // <group>
   CombiParam(const CombiParam<T> &other);
-  CombiParam(const CombiParam<T> &other, Bool)
+  CombiParam(const CombiParam<T> &other, bool)
       : Function<T>(other), ndim_p(other.ndim_p), functionPtr_p(other.functionPtr_p.nelements()) {
     for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
@@ -129,7 +129,7 @@ class CombiParam : public Function<T> {
     }
   }
   template <class W>
-  CombiParam(const CombiParam<W> &other, Bool)
+  CombiParam(const CombiParam<W> &other, bool)
       : Function<T>(other), ndim_p(other.ndim()), functionPtr_p(other.nFunctions()) {
     for (uInt i = 0; i < nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();

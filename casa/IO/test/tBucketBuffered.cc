@@ -35,8 +35,8 @@
 // Test program for the BucketBuffered class
 // </summary>
 
-void a(Bool);
-void b(Bool);
+void a(bool);
+void b(bool);
 
 int main(int argc, const char*[]) {
   try {
@@ -50,9 +50,9 @@ int main(int argc, const char*[]) {
 }
 
 // Build a file.
-void a(Bool) {
+void a(bool) {
   // Create the file.
-  BucketFile file("tBucketBuffered_tmp.data", 4000, False);
+  BucketFile file("tBucketBuffered_tmp.data", 4000, false);
   file.open();
   BucketBuffered cache(&file, 512, 32768, 5);
   Int i;
@@ -82,9 +82,9 @@ void a(Bool) {
   cout << "wrote " << cache.nBucket() << " buckets of 32768 bytes" << endl;
 }
 
-void b(Bool) {
+void b(bool) {
   // Open the file.
-  BucketFile file("tBucketBuffered_tmp.data", False, 1000, False);
+  BucketFile file("tBucketBuffered_tmp.data", false, 1000, false);
   file.open();
   Int i;
   BucketBuffered cache(&file, 512, 32768, 105);

@@ -136,7 +136,7 @@ class VirtualArrayColumnBase : public DataManagerColumn {
   virtual ~VirtualArrayColumnBase();
 
   // By default no data can be put in a virtual column.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
  protected:
   // Set the shape of all arrays in the column.
@@ -151,7 +151,7 @@ class VirtualArrayColumnBase : public DataManagerColumn {
 
   // Is the value shape defined in the given row?
   // By default it throws a "not possible" exception.
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the shape of the item in the given row.
   // By default it throws a "not possible" exception.

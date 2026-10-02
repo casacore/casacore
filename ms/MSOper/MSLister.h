@@ -140,11 +140,11 @@ class MSLister {
   // <todo> os is currently not used as the primary steam for log messages.
   //   This should be corrected, or os removed completely from the class.
   // </todo>
-  Bool setNewOS(LogIO& os);
+  bool setNewOS(LogIO& os);
 
   // Change or set the MS this MSLister refers to, and reinitialise the
   // MSLister object.  Do this after setNewOS() if doing both.
-  Bool setMS(MeasurementSet& ms);
+  bool setMS(MeasurementSet& ms);
 
   // Page size for various formats, output devices (default for landscape
   // printing).
@@ -164,7 +164,7 @@ class MSLister {
             const String& spw = "", const String& antenna = "", const String& timerange = "",
             const String& correlation = "", const String& scan = "", const String& feed = "",
             const String& array = "", const String& observation = "", const String& uvrange = "",
-            const String& average = "", const bool showflags = False, const String& msSelect = "",
+            const String& average = "", const bool showflags = false, const String& msSelect = "",
             const long pagerows = 50, const String& listfile = "");
 
   // Set uv-data selection via MSSelection
@@ -225,7 +225,7 @@ class MSLister {
   // List of channels
   Matrix<Int> chanList_p;
   // True if listing multiple channels.
-  Bool multiChan_p;
+  bool multiChan_p;
 
   // Pol counters
   uInt npols_p;
@@ -237,7 +237,7 @@ class MSLister {
   // SpWId map from DDIs:
   Vector<Int> spwins_p;
   // True if listing multiple spws
-  Bool multiSpw_p;
+  bool multiSpw_p;
 
   // Polarization indexing variables; for polarization (correlation) selection.
   Vector<Int> indexPols_p;
@@ -268,7 +268,7 @@ class MSLister {
   Vector<String> items_p;
 
   // Bools for column showing and to identify FLOAT_DATA column of single dish
-  Bool doFld_p, doSpW_p, doChn_p, is_float;
+  bool doFld_p, doSpW_p, doChn_p, is_float;
 
   // Data selections
   // data --> "amplitude", "phase"

@@ -86,10 +86,10 @@ String MemoryLogSink::getObjectID(uInt i) const {
   return objectID_p[i];
 }
 
-Bool MemoryLogSink::postLocally(const LogMessage& message) {
-  Bool posted = False;
+bool MemoryLogSink::postLocally(const LogMessage& message) {
+  bool posted = false;
   if (filter().pass(message)) {
-    posted = True;
+    posted = true;
     if (nmsg_p >= time_p.nelements()) {
       resize(nmsg_p + 1);
     }
@@ -120,11 +120,11 @@ void MemoryLogSink::writeLocally(Double time, const String& message, const Strin
 
 void MemoryLogSink::clearLocally() {
   // Resize the block to 0 elements.
-  time_p.resize(0, True, True);
-  priority_p.resize(0, True, True);
-  message_p.resize(0, True, True);
-  location_p.resize(0, True, True);
-  objectID_p.resize(0, True, True);
+  time_p.resize(0, true, true);
+  priority_p.resize(0, true, true);
+  message_p.resize(0, true, true);
+  location_p.resize(0, true, true);
+  objectID_p.resize(0, true, true);
   nmsg_p = 0;
 }
 

@@ -97,7 +97,7 @@ ImageOpener::ImageTypes ImageOpener::imageType(const String& name) {
     }
     RegularFileIO fio((RegularFile(file)));
     char buf[2880];
-    Int nread = fio.read(2880, buf, False);
+    Int nread = fio.read(2880, buf, false);
     if (nread == 2880) {
       String str(buf, 80);
       if (RegexMatches(str, Regex("^SIMPLE *= *T.*"))) {

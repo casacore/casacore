@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 #define EXTBLSZ 32
 
-StManColumnAipsIO::StManColumnAipsIO(StManAipsIO* smptr, int dataType, Bool byPtr)
+StManColumnAipsIO::StManColumnAipsIO(StManAipsIO* smptr, int dataType, bool byPtr)
     : MSMColumn(smptr, dataType, byPtr) {}
 
 StManColumnAipsIO::~StManColumnAipsIO() {}
@@ -72,7 +72,7 @@ void StManColumnAipsIO::putFile(rownr_t nrval, AipsIO& ios) {
 void StManColumnAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {
   switch (dtype()) {
     case TpBool:
-      ios.put(nrval, (Bool*)dp);
+      ios.put(nrval, (bool*)dp);
       break;
     case TpUChar:
       ios.put(nrval, (uChar*)dp);
@@ -147,7 +147,7 @@ void StManColumnAipsIO::getData(void* datap, uInt inx, uInt nrval, AipsIO& ios, 
   ios >> nr;
   switch (dtype()) {
     case TpBool:
-      ios.get(nrval, (Bool*)datap + inx);
+      ios.get(nrval, (bool*)datap + inx);
       break;
     case TpUChar:
       ios.get(nrval, (uChar*)datap + inx);
@@ -217,7 +217,7 @@ DataManagerColumn* StManAipsIO::makeScalarColumn(const String& columnName, int d
   if (ncolumn() >= colSet_p.nelements()) {
     colSet_p.resize(colSet_p.nelements() + 32);
   }
-  StManColumnAipsIO* colp = new StManColumnAipsIO(this, dataType, False);
+  StManColumnAipsIO* colp = new StManColumnAipsIO(this, dataType, false);
   colSet_p[ncolumn()] = colp;
   return colp;
 }
@@ -246,10 +246,10 @@ DataManagerColumn* StManAipsIO::makeIndArrColumn(const String& columnName, int d
   return colp;
 }
 
-Bool StManAipsIO::flush(AipsIO&, Bool) {
+bool StManAipsIO::flush(AipsIO&, bool) {
   // # Do not write if nothing has been put.
   if (!hasPut_p) {
-    return False;
+    return false;
   }
   uInt i;
   AipsIO ios(fileName(), ByteIO::New);
@@ -270,8 +270,8 @@ Bool StManAipsIO::flush(AipsIO&, Bool) {
     colSet_p[i]->putFile(nrrow_p, ios);
   }
   ios.putend();
-  hasPut_p = False;
-  return True;
+  hasPut_p = false;
+  return true;
 }
 
 void StManAipsIO::create64(rownr_t nrrow) {
@@ -355,8 +355,8 @@ void StManAipsIO::reopenRW() {
 void StManAipsIO::deleteManager() {
   delete iosfile_p;
   iosfile_p = 0;
-  DOos::remove(fileName() + 'i', False, False);
-  DOos::remove(fileName(), False, False);
+  DOos::remove(fileName() + 'i', false, false);
+  DOos::remove(fileName(), false, false);
 }
 
 }  // namespace casacore

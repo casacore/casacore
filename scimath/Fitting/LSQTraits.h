@@ -78,12 +78,12 @@ class LSQType {
  private:
   template <class U>
   struct PointerTraits {
-    enum { result = False };
+    enum { result = false };
     typedef LSQNull Pointee;
   };
   template <class U>
   struct PointerTraits<U*> {
-    enum { result = True };
+    enum { result = true };
     typedef U Pointee;
   };
 

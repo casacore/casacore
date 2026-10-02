@@ -38,46 +38,46 @@ template <class T>
 FunctionWrapper<T>::FunctionWrapper() : WrapperParam<T>(0) {}
 
 template <class T>
-FunctionWrapper<T>::FunctionWrapper(T (*f)(const T &), const Bool)
-    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, T, False, True>(f)) {}
+FunctionWrapper<T>::FunctionWrapper(T (*f)(const T &), const bool)
+    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, T, false, true>(f)) {}
 
 template <class T>
-FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &), const Bool)
-    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, Vector<T>, False, True>(f)) {}
+FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &), const bool)
+    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, Vector<T>, false, true>(f)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)())
-    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, T, False, False>(f)) {}
+    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, T, false, false>(f)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const T &))
-    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, T, True, False>(f, 1)) {}
+    : WrapperParam<T>(0), doit_p(new WrapperData<T, T, T, true, false>(f, 1)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const T &, const T &), const T &par)
-    : WrapperParam<T>(1), doit_p(new WrapperData<T, T, T, True, True>(f, 1)) {
+    : WrapperParam<T>(1), doit_p(new WrapperData<T, T, T, true, true>(f, 1)) {
   param_p[0] = par;
 }
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const T &, const Vector<T> &), const Vector<T> &par)
-    : WrapperParam<T>(par), doit_p(new WrapperData<T, T, Vector<T>, True, True>(f, 1)) {}
+    : WrapperParam<T>(par), doit_p(new WrapperData<T, T, Vector<T>, true, true>(f, 1)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &), const Int dim)
-    : WrapperParam<T>(0), doit_p(new WrapperData<T, Vector<T>, T, True, False>(f, dim)) {}
+    : WrapperParam<T>(0), doit_p(new WrapperData<T, Vector<T>, T, true, false>(f, dim)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &, const T &), const T &par,
                                     const uInt dim)
-    : WrapperParam<T>(1), doit_p(new WrapperData<T, Vector<T>, T, True, True>(f, dim)) {
+    : WrapperParam<T>(1), doit_p(new WrapperData<T, Vector<T>, T, true, true>(f, dim)) {
   param_p[0] = par;
 }
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &, const Vector<T> &),
                                     const Vector<T> &par, const uInt dim)
-    : WrapperParam<T>(par), doit_p(new WrapperData<T, Vector<T>, Vector<T>, True, True>(f, dim)) {}
+    : WrapperParam<T>(par), doit_p(new WrapperData<T, Vector<T>, Vector<T>, true, true>(f, dim)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(const FunctionWrapper<T> &other)

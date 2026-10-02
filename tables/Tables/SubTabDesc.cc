@@ -35,34 +35,34 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SubTableDesc::SubTableDesc(const String& name, const String& comment, const String& descname,
                            int opt)
-    : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), False, False, True),
+    : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), false, false, true),
       tabDescPtr_p(0),
       tabDescTyp_p(descname),
-      byName_p(True),
-      allocSelf_p(True),
-      shallowCopy_p(False) {
+      byName_p(true),
+      allocSelf_p(true),
+      shallowCopy_p(false) {
   readTableDesc();
 }
 
 SubTableDesc::SubTableDesc(const String& name, const String& comment, const TableDesc& desc,
                            int opt)
-    : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), False, False, True),
+    : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), false, false, true),
       tabDescPtr_p(new TableDesc(desc, "", "", TableDesc::Scratch)),
       tabDescTyp_p(desc.getType()),
-      byName_p(False),
-      allocSelf_p(True),
-      shallowCopy_p(False) {}
+      byName_p(false),
+      allocSelf_p(true),
+      shallowCopy_p(false) {}
 
 SubTableDesc::SubTableDesc(const String& name, const String& comment, TableDesc* descptr, int opt)
-    : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), False, False, True),
+    : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), false, false, true),
       tabDescPtr_p(descptr),
       tabDescTyp_p(descptr->getType()),
-      byName_p(False),
-      allocSelf_p(False),
-      shallowCopy_p(True) {}
+      byName_p(false),
+      allocSelf_p(false),
+      shallowCopy_p(true) {}
 
 SubTableDesc::SubTableDesc(const SubTableDesc& that)
-    : BaseColumnDesc(that), tabDescPtr_p(0), tabDescTyp_p(""), allocSelf_p(False) {
+    : BaseColumnDesc(that), tabDescPtr_p(0), tabDescTyp_p(""), allocSelf_p(false) {
   operator=(that);
 }
 
@@ -86,11 +86,11 @@ SubTableDesc& SubTableDesc::operator=(const SubTableDesc& that) {
   tabDescPtr_p = 0;
   tabDescTyp_p = that.tabDescTyp_p;
   byName_p = that.byName_p;
-  allocSelf_p = True;
+  allocSelf_p = true;
   shallowCopy_p = that.shallowCopy_p;
   if (shallowCopy_p) {
     tabDescPtr_p = that.tabDescPtr_p;
-    allocSelf_p = False;
+    allocSelf_p = false;
   } else if (byName_p) {
     readTableDesc();
   } else if (that.tabDescPtr_p != 0) {
@@ -150,8 +150,8 @@ TableDesc* SubTableDesc::tableDesc() {
 }
 
 // # Reread the table description if referenced by name.
-Bool SubTableDesc::readTableDesc() {
-  Bool success = True;
+bool SubTableDesc::readTableDesc() {
+  bool success = true;
   if (byName_p) {
     if (allocSelf_p) {
       delete tabDescPtr_p;
@@ -160,14 +160,14 @@ Bool SubTableDesc::readTableDesc() {
     if (TableDesc::isReadable(tabDescTyp_p)) {
       tabDescPtr_p = new TableDesc(tabDescTyp_p);
     } else {
-      success = False;
+      success = false;
     }
   }
   return success;
 }
 
 // # Once the column is added, a deep copy has to be made.
-void SubTableDesc::handleAdd(ColumnDescSet&) { shallowCopy_p = False; }
+void SubTableDesc::handleAdd(ColumnDescSet&) { shallowCopy_p = false; }
 
 // # Show the column.
 void SubTableDesc::show(ostream& os) const {

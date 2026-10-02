@@ -57,18 +57,18 @@ int main() {
         throw(AipsError("Type recovery inconsistent"));
       }
       //
-      Bool isZen = Projection::isZenithal(type);
-      Bool ok = False;
+      bool isZen = Projection::isZenithal(type);
+      bool ok = false;
       if (isZen) {
         if (type == Projection::AZP || type == Projection::TAN || type == Projection::SIN ||
             type == Projection::STG || type == Projection::ARC || type == Projection::ZPN ||
             type == Projection::ZEA || type == Projection::AIR || type == Projection::SZP)
-          ok = True;
+          ok = true;
       } else {
         if (type != Projection::AZP && type != Projection::TAN && type != Projection::SIN &&
             type != Projection::STG && type != Projection::ARC && type != Projection::ZPN &&
             type != Projection::ZEA && type != Projection::AIR && type != Projection::SZP)
-          ok = True;
+          ok = true;
       }
       if (!ok) {
         throw(AipsError("isZenithal fails"));

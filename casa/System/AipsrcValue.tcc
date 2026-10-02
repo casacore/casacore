@@ -36,9 +36,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword) {
+bool AipsrcValue<T>::find(T &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     istringstream instr(res);
     instr >> value;
@@ -47,14 +47,14 @@ Bool AipsrcValue<T>::find(T &value, const String &keyword) {
 }
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword, const T &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+bool AipsrcValue<T>::find(T &value, const String &keyword, const T &deflt) {
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, const Unit &resun) {
+bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, const Unit &resun) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     Quantum<Double> qres;
     istringstream instr(res);
@@ -66,9 +66,9 @@ Bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, co
 }
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, const Unit &resun,
+bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, const Unit &resun,
                           const T &deflt) {
-  return (find(value, keyword, defun, resun) ? True : (value = deflt, False));
+  return (find(value, keyword, defun, resun) ? true : (value = deflt, false));
 }
 
 template <class T>

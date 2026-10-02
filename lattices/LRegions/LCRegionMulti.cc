@@ -37,10 +37,10 @@ LCRegionMulti::LCRegionMulti(const LCRegion& region1, const LCRegion& region2)
     : LCRegion(region1.latticeShape()), itsRegions(2) {
   itsRegions[0] = &region1;
   itsRegions[1] = &region2;
-  init(False);
+  init(false);
 }
 
-LCRegionMulti::LCRegionMulti(Bool takeOver, const LCRegion* region1, const LCRegion* region2,
+LCRegionMulti::LCRegionMulti(bool takeOver, const LCRegion* region1, const LCRegion* region2,
                              const LCRegion* region3, const LCRegion* region4,
                              const LCRegion* region5, const LCRegion* region6,
                              const LCRegion* region7, const LCRegion* region8,
@@ -57,11 +57,11 @@ LCRegionMulti::LCRegionMulti(Bool takeOver, const LCRegion* region1, const LCReg
   if (region8 != 0) itsRegions[n++] = region8;
   if (region9 != 0) itsRegions[n++] = region9;
   if (region10 != 0) itsRegions[n++] = region10;
-  itsRegions.resize(n, True, True);
+  itsRegions.resize(n, true, true);
   init(takeOver);
 }
 
-LCRegionMulti::LCRegionMulti(Bool takeOver, const Block<const LCRegion*>& regions)
+LCRegionMulti::LCRegionMulti(bool takeOver, const Block<const LCRegion*>& regions)
     : LCRegion(regions[0]->latticeShape()), itsRegions(regions) {
   init(takeOver);
 }
@@ -96,7 +96,7 @@ LCRegionMulti& LCRegionMulti::operator=(const LCRegionMulti& other) {
       delete itsRegions[j];
       itsRegions[j] = 0;
     }
-    itsRegions.resize(other.itsRegions.nelements(), True);
+    itsRegions.resize(other.itsRegions.nelements(), true);
     nr = itsRegions.nelements();
     for (uInt i = 0; i < nr; i++) {
       itsRegions[i] = other.itsRegions[i]->cloneRegion();
@@ -105,51 +105,51 @@ LCRegionMulti& LCRegionMulti::operator=(const LCRegionMulti& other) {
   return *this;
 }
 
-Bool LCRegionMulti::hasMask() const { return (itsHasMask >= 0); }
+bool LCRegionMulti::hasMask() const { return (itsHasMask >= 0); }
 
 void LCRegionMulti::multiTranslate(Block<const LCRegion*>& regions,
                                    const Vector<Float>& translateVector,
                                    const IPosition& newLatticeShape) const {
-  regions.resize(itsRegions.nelements(), True);
+  regions.resize(itsRegions.nelements(), true);
   for (uInt i = 0; i < itsRegions.nelements(); i++) {
     regions[i] = itsRegions[i]->translate(translateVector, newLatticeShape);
   }
 }
 
-Bool LCRegionMulti::equals(const LCRegion& other) const {
+bool LCRegionMulti::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegion::equals(other)) {
-    return False;
+    return false;
   }
   const LCRegionMulti& that = (const LCRegionMulti&)other;
   // Check the regions.
   if (itsRegions.nelements() != that.itsRegions.nelements()) {
-    return False;
+    return false;
   }
   // The regions do not have to be in the same order.
   // It makes it a bit slower.
   uInt nr = itsRegions.nelements();
-  Vector<Bool> used(nr, False);
+  Vector<bool> used(nr, false);
   for (uInt i = 0; i < nr; i++) {
-    Bool found = False;
+    bool found = false;
     for (uInt j = 0; j < nr; j++) {
       if (!used(j)) {
         if (*itsRegions[i] == *(that.itsRegions[j])) {
-          used(j) = True;
-          found = True;
+          used(j) = true;
+          found = true;
           break;
         }
       }
     }
     if (!found) {
-      return False;  // no matching region
+      return false;  // no matching region
     }
   }
-  return True;
+  return true;
 }
 
-void LCRegionMulti::init(Bool takeOver) {
+void LCRegionMulti::init(bool takeOver) {
   itsHasMask = 0;
   for (uInt i = 0; i < itsRegions.nelements(); i++) {
     AlwaysAssert(itsRegions[i] != 0, AipsError);
@@ -174,7 +174,7 @@ void LCRegionMulti::fillHasMask() {
   }
 }
 
-Bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart,
+bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart,
                               IPosition& regEnd, const Slicer& section, uInt regNr) const {
   DebugAssert(regNr < itsRegions.nelements(), AipsError);
   uInt nrdim = section.ndim();
@@ -185,7 +185,7 @@ Bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
   const IPosition& bboxstart = boundingBox().start();
   const IPosition& rstart = itsRegions[regNr]->boundingBox().start();
   const IPosition& rend = itsRegions[regNr]->boundingBox().end();
-  Bool overlap = True;
+  bool overlap = true;
   for (uInt j = 0; j < nrdim; j++) {
     Int bstart = bboxstart(j);
     Int secst = section.start()(j);  // section start in bounding box
@@ -196,7 +196,7 @@ Bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
                                      // Exit if there is no overlap between this region and the
                                      // requested section in the entire bounding box.
     if (regst > secend || regend < secst) {
-      overlap = False;
+      overlap = false;
       break;
     }
     // Fine, there is overlap.
@@ -253,7 +253,7 @@ Bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
         regEnd(j) = secend - regst;
       }
       if (regEnd(j) < regStart(j)) {
-        overlap = False;
+        overlap = false;
         break;
       }
       bufEnd(j) = bufStart(j) + (regEnd(j) - regStart(j)) / secinc;
@@ -276,27 +276,27 @@ TableRecord LCRegionMulti::makeRecord(const String& tableName) const {
 void LCRegionMulti::unmakeRecord(Block<const LCRegion*>& regions, const TableRecord& rec,
                                  const String& tableName) {
   Int nr = rec.asInt("nr");
-  regions.resize(nr, True);
+  regions.resize(nr, true);
   for (Int i = 0; i < nr; i++) {
     regions[i] = LCRegion::fromRecord(rec.asRecord(i), tableName);
   }
 }
 
-Bool LCRegionMulti::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
+bool LCRegionMulti::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   if (itsHasMask >= 0) {
     multiGetSlice(buffer, section);
   } else {
     buffer.resize(section.length());
-    buffer = True;
+    buffer = true;
   }
-  return False;
+  return false;
 }
 
 IPosition LCRegionMulti::doNiceCursorShape(uInt maxPixels) const {
   if (itsHasMask >= 0) {
     return itsRegions[itsHasMask]->niceCursorShape(maxPixels);
   }
-  return Lattice<Bool>::doNiceCursorShape(maxPixels);
+  return Lattice<bool>::doNiceCursorShape(maxPixels);
 }
 
 }  // namespace casacore

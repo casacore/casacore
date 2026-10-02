@@ -99,7 +99,7 @@ class MSMColumn : public StManColumnBase {
  public:
   // Create a column of the given type.
   // It will maintain a pointer to its parent storage manager.
-  MSMColumn(MSMBase* smptr, int dataType, Bool byPtr);
+  MSMColumn(MSMBase* smptr, int dataType, bool byPtr);
 
   // Frees up the storage.
   virtual ~MSMColumn();
@@ -114,7 +114,7 @@ class MSMColumn : public StManColumnBase {
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn get function).
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -132,7 +132,7 @@ class MSMColumn : public StManColumnBase {
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn put function).
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr);
   virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
   virtual void putShort(rownr_t rownr, const Short* dataPtr);
   virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
@@ -183,12 +183,12 @@ class MSMColumn : public StManColumnBase {
   virtual void reopenRW();
 
   // Check if the class invariants still hold.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
  protected:
   MSMBase* stmanPtr_p;
   // The data is indirectly accessed via a pointer (for the derived classes).
-  Bool byPtr_p;
+  bool byPtr_p;
   // The number of allocated rows in the column.
   rownr_t nralloc_p;
   // The nr of extensions in use.
@@ -200,10 +200,10 @@ class MSMColumn : public StManColumnBase {
 
   // Find the extension in which the row number is.
   // If the flag is true, it also sets the columnCache object.
-  uInt findExt(rownr_t rownr, Bool setCache);
+  uInt findExt(rownr_t rownr, bool setCache);
 
   // Allocate an extension with the data type of the column.
-  void* allocData(rownr_t nrval, Bool byPtr);
+  void* allocData(rownr_t nrval, bool byPtr);
 
   // Delete all extensions.
   // Possible underlying data (as used by StManArrayColumnMemory)
@@ -211,7 +211,7 @@ class MSMColumn : public StManColumnBase {
   void deleteAll();
 
   // Delete an extension.
-  void deleteData(void* datap, Bool byPtr);
+  void deleteData(void* datap, bool byPtr);
 
   // Remove an entry (i.e. a row) from an extension at the given index.
   // It will do this by shifting the rest (nrvalAfter elements)

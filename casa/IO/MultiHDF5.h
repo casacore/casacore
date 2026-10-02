@@ -160,7 +160,7 @@ class MultiHDF5 : public MultiFileBase {
   void writeHeader() override;
   // Read the header info. If always==False, the info is only read if the
   // header counter has changed.
-  void readHeader(Bool always = True) override;
+  void readHeader(bool always = true) override;
   // Extend the virtual file to fit lastblk.
   void extend(MultiFileInfo& info, Int64 lastblk) override;
   // Read a data block.

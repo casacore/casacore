@@ -92,7 +92,7 @@ class ImageAttrHandlerCasa : public ImageAttrHandler {
   // If the keyword does not exist, it will be added if <src>createHandler</src>
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
-  ImageAttrHandlerCasa& attachTable(const Table& image, Bool createHandler = False);
+  ImageAttrHandlerCasa& attachTable(const Table& image, bool createHandler = false);
 
   virtual ~ImageAttrHandlerCasa();
 
@@ -100,7 +100,7 @@ class ImageAttrHandlerCasa : public ImageAttrHandler {
   virtual void flush();
 
   // Test if the given attribute group is present.
-  virtual Bool hasGroup(const String& name);
+  virtual bool hasGroup(const String& name);
 
   // Get all attribute group names.
   virtual Vector<String> groupNames() const;
@@ -116,7 +116,7 @@ class ImageAttrHandlerCasa : public ImageAttrHandler {
   virtual void closeGroup(const String& groupName);
 
  private:
-  Bool itsCanAdd;                                    // # can groups be added?
+  bool itsCanAdd;                                    // # can groups be added?
   Table itsImageTable;                               // # Table object of image
   std::map<String, ImageAttrGroupCasa> itsGroupMap;  // # attribute groups
 };

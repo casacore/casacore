@@ -158,7 +158,7 @@ class MSFeedColumns {
   // reference, offset, or units can be set by using a False
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
   // set the direction type for the BEAM_OFFSET column. This can only be done
   // when the table has no rows. Trying to do so at other times will throw an

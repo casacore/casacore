@@ -86,13 +86,13 @@ class ISMBase : public DataManager {
   // The bucket size has to be given in bytes and the cache size in buckets.
   // The bucket size is checked or calculated (if 0) as described in
   // IncrementalStMan.h.
-  explicit ISMBase(uInt bucketSize = 0, Bool checkBucketSize = True, uInt cacheSize = 1);
+  explicit ISMBase(uInt bucketSize = 0, bool checkBucketSize = true, uInt cacheSize = 1);
 
   // Create an incremental storage manager with the given name.
   // The bucket size has to be given in bytes and the cache size in buckets.
   // The bucket size is checked or calculated (if 0) as described in
   // IncrementalStMan.h.
-  ISMBase(const String& dataManagerName, uInt bucketSize, Bool checkBucketSize, uInt cacheSize);
+  ISMBase(const String& dataManagerName, uInt bucketSize, bool checkBucketSize, uInt cacheSize);
 
   // Create an incremental storage manager with the given name.
   // The specifications are in the record (as created by dataManagerSpec).
@@ -136,7 +136,7 @@ class ISMBase : public DataManager {
   // be made large enough for a future file extnsion.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize(uInt cacheSize, Bool canExceedNrBuckets);
+  void setCacheSize(uInt cacheSize, bool canExceedNrBuckets);
 
   // Get the current cache size (in buckets).
   uInt cacheSize() const;
@@ -189,16 +189,16 @@ class ISMBase : public DataManager {
   rownr_t nrow() const;
 
   // Can the storage manager add rows? (yes)
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Can the storage manager delete rows? (yes)
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Can the storage manager add columns? (not yet)
-  virtual Bool canAddColumn() const;
+  virtual bool canAddColumn() const;
 
   // Can the storage manager delete columns? (not yet)
-  virtual Bool canRemoveColumn() const;
+  virtual bool canRemoveColumn() const;
 
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
@@ -222,7 +222,7 @@ class ISMBase : public DataManager {
   StManArrayFile* openArrayFile(ByteIO::OpenOption opt);
 
   // Check that there are no repeated rowIds in the buckets comprising this ISM.
-  Bool checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
+  bool checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
                          uInt& offendingBucketNrow, uInt& offendingBucketNr, uInt& offendingCol,
                          uInt& ffendingIndex, rownr_t& offendingRow, rownr_t& offendingPrevRow);
 
@@ -234,11 +234,11 @@ class ISMBase : public DataManager {
   void recreate();
 
   // The data manager supports use of MultiFile.
-  virtual Bool hasMultiFileSupport() const;
+  virtual bool hasMultiFileSupport() const;
 
   // Flush and optionally fsync the data.
   // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool fsync);
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
@@ -352,9 +352,9 @@ class ISMBase : public DataManager {
   // The bucket size.
   uInt bucketSize_p;
   // Check a positive bucketsize?
-  Bool checkBucketSize_p;
+  bool checkBucketSize_p;
   // Has the data changed since the last flush?
-  Bool dataChanged_p;
+  bool dataChanged_p;
   // The size of a uInt in external format (local or canonical).
   uInt uIntSize_p;
   // The size of a rownr in external format (local or canonical).

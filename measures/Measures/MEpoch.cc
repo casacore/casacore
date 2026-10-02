@@ -114,9 +114,9 @@ void MEpoch::checkTypes() const { MEpoch::checkMyTypes(); }
 
 void MEpoch::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MEpoch::allMyTypes(nall, nex, typ);
@@ -132,7 +132,7 @@ void MEpoch::checkMyTypes() {
   }
 }
 
-Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
+bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MEpoch::allMyTypes(nall, nex, oname);
@@ -140,35 +140,35 @@ Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MEpoch::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
+bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
   MEpoch::Types tp;
   if (MEpoch::getType(tp, in))
     mr = MEpoch::Ref(tp);
   else {
     mr = MEpoch::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MEpoch::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MEpoch *>(&in)) return False;
+bool MEpoch::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MEpoch *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MEpoch::setRefString(const String &in) {
+bool MEpoch::setRefString(const String &in) {
   MEpoch::Types tp;
   String x = in;
-  Bool raze = False;
+  bool raze = false;
   if (x.starts_with("r_") || x.starts_with("R_")) {
-    raze = True;
+    raze = true;
     x = x.substr(2);
   }
   if (MEpoch::getType(tp, x)) {
@@ -177,10 +177,10 @@ Bool MEpoch::setRefString(const String &in) {
     } else {
       ref.setType(tp);
     }
-    return True;
+    return true;
   }
   ref.setType(MEpoch::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MEpoch::getDefaultType() const { return MEpoch::showType(MEpoch::DEFAULT); }

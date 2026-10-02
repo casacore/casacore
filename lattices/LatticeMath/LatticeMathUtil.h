@@ -71,16 +71,16 @@ class LatticeMathUtil {
   // but dropDegenerateAxes is stil honoured
   template <class T>
   static void collapse(Array<T>& data, const IPosition& axes, const MaskedLattice<T>& in,
-                       Bool dropDegenerateAxes);
+                       bool dropDegenerateAxes);
   //
   // Collapse the specified axes by averaging and recover either/and
   // the pixel values and mask. If axes is empty, then the data and mask just contains
   // all of the lattice (i.e. no collapse)
   // but dropDegenerateAxes is stil honoured
   template <class T>
-  static void collapse(Array<T>& data, Array<Bool>& mask, const IPosition& axes,
-                       const MaskedLattice<T>& lat, Bool dropDegenerateAxes, Bool getPixels = True,
-                       Bool getMask = True,
+  static void collapse(Array<T>& data, Array<bool>& mask, const IPosition& axes,
+                       const MaskedLattice<T>& lat, bool dropDegenerateAxes, bool getPixels = true,
+                       bool getMask = true,
                        const LatticeStatsBase::StatisticsTypes stat = LatticeStatsBase::MEAN);
 };
 

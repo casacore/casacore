@@ -78,7 +78,7 @@ int main() {
       AlwaysAssert(near(pa(IPosition(2, 3, 1)), 2.0f), AipsError);
       pa.putAt(99.0, IPosition(2, 11));
       pa.putAt(98.0f, IPosition(2, 11, 10));
-      AlwaysAssert(pa.name(True) == "tHDF5Lattice_tmp.dat", AipsError);
+      AlwaysAssert(pa.name(true) == "tHDF5Lattice_tmp.dat", AipsError);
       AlwaysAssert(pa.isPersistent(), AipsError);
       AlwaysAssert(pa.isPaged(), AipsError);
       AlwaysAssert(pa.isWritable(), AipsError);
@@ -91,7 +91,7 @@ int main() {
         li.woCursor() = i;
       }
       COWPtr<Array<Int>> ptrM;
-      scratch.getSlice(ptrM, IPosition(3, 0), IPosition(3, 9, 9, 1), IPosition(3, 1), True);
+      scratch.getSlice(ptrM, IPosition(3, 0), IPosition(3, 9, 9, 1), IPosition(3, 1), true);
       AlwaysAssert(ptrM->shape().isEqual(IPosition(2, 9)), AipsError);
       Array<Int> expectedResult(IPosition(2, 9));
       indgen(expectedResult);
@@ -100,7 +100,7 @@ int main() {
       AlwaysAssert(allEQ(*ptrM, 0), AipsError);
       Slicer sl(IPosition(3, 0, 0, 5), IPosition(3, 9, 9, 1), IPosition(3, 1));
 
-      scratch.getSlice(ptrM, sl, True);
+      scratch.getSlice(ptrM, sl, true);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
     }
     {
@@ -161,7 +161,7 @@ int main() {
         iarr = 0;
         pa4.getSlice(iarr, IPosition(2, 0), IPosition(2, 16), IPosition(2, 1));
         AlwaysAssert(allEQ(iarr, expected), AipsError);
-        AlwaysAssert(pa4.ok() == True, AipsError);
+        AlwaysAssert(pa4.ok() == true, AipsError);
       }
     }
     {

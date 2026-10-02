@@ -123,9 +123,9 @@ void MPosition::checkTypes() const { MPosition::checkMyTypes(); }
 
 void MPosition::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = MPosition::allMyTypes(nall, nex, typ);
@@ -156,7 +156,7 @@ const String &MPosition::showType(MPosition::Types tp) {
 
 const String &MPosition::showType(uInt tp) { return MPosition::showType(MPosition::castType(tp)); }
 
-Bool MPosition::getType(MPosition::Types &tp, const String &in) {
+bool MPosition::getType(MPosition::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = MPosition::allMyTypes(nall, nex, oname);
@@ -164,10 +164,10 @@ Bool MPosition::getType(MPosition::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<MPosition::Types>(oname[i]);
-  return True;
+  return true;
 }
 
 MPosition::Types MPosition::getType(const String &in) {
@@ -178,31 +178,31 @@ MPosition::Types MPosition::getType(const String &in) {
   return myType;
 }
 
-Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
+bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
   MPosition::Types tp;
   if (MPosition::getType(tp, in))
     mr = MPosition::Ref(tp);
   else {
     mr = MPosition::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MPosition::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MPosition *>(&in)) return False;
+bool MPosition::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MPosition *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MPosition::setRefString(const String &in) {
+bool MPosition::setRefString(const String &in) {
   MPosition::Types tp;
   if (MPosition::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MPosition::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MPosition::getDefaultType() const { return MPosition::showType(MPosition::DEFAULT); }

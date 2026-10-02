@@ -100,7 +100,7 @@ TaQLNodeResult TaQLNodeHandler::visitRegexNode(const TaQLRegexNodeRep& node) {
   String str = node.itsValue.substr(2, node.itsValue.size() - 3);
   if (node.itsValue[0] == 'd') {
     return new TaQLNodeHRValue(TableExprNode(TaqlRegex(StringDistance(
-        str, node.itsMaxDistance, True, node.itsIgnoreBlanks, node.itsCaseInsensitive))));
+        str, node.itsMaxDistance, true, node.itsIgnoreBlanks, node.itsCaseInsensitive))));
   } else if (node.itsValue[0] == 'p') {
     str = Regex::fromPattern(str);
   } else if (node.itsValue[0] == 'm') {
@@ -109,11 +109,11 @@ TaQLNodeResult TaQLNodeHandler::visitRegexNode(const TaQLRegexNodeRep& node) {
   if (node.itsCaseInsensitive) {
     str = Regex::makeCaseInsensitive(str);
   }
-  return new TaQLNodeHRValue(TableExprNode(TaqlRegex(Regex(str, True))));
+  return new TaQLNodeHRValue(TableExprNode(TaqlRegex(Regex(str, true))));
 }
 
 TaQLNodeResult TaQLNodeHandler::visitUnaryNode(const TaQLUnaryNodeRep& node) {
-  Bool notexists = True;
+  bool notexists = true;
   TaQLNodeResult res = visitNode(node.itsChild);
   TableExprNode expr = getHR(res).getExpr();
   switch (node.itsType) {
@@ -122,7 +122,7 @@ TaQLNodeResult TaQLNodeHandler::visitUnaryNode(const TaQLUnaryNodeRep& node) {
     case TaQLUnaryNodeRep::U_NOT:
       return new TaQLNodeHRValue(!expr);
     case TaQLUnaryNodeRep::U_EXISTS:
-      notexists = False;
+      notexists = false;
       break;
     case TaQLUnaryNodeRep::U_NOTEXISTS:
       break;
@@ -263,7 +263,7 @@ TableExprNode TaQLNodeHandler::handleIdFunc(const TaQLFuncNodeRep& node) {
   } else if (colParts.size() == 2) {
     shand = colParts[0];
   }
-  TableExprInfo tabInfo = topStack()->tableList().findTable(shand, False).getTableInfo();
+  TableExprInfo tabInfo = topStack()->tableList().findTable(shand, false).getTableInfo();
   // Check that a table is given.
   if (tabInfo.table().isNull()) {
     throw TableInvExpr("No table found for the shorthand in the MSID function");
@@ -273,7 +273,7 @@ TableExprNode TaQLNodeHandler::handleIdFunc(const TaQLFuncNodeRep& node) {
     if (!shand.empty()) {
       colName = shand + '.' + colName;
     }
-    return topStack()->handleKeyCol(colName, False);
+    return topStack()->handleKeyCol(colName, false);
   }
   return TableExprNode::newRowidNode(tabInfo);
 }
@@ -327,7 +327,7 @@ TaQLNodeResult TaQLNodeHandler::visitIndexNode(const TaQLIndexNodeRep& node) {
 TaQLNodeResult TaQLNodeHandler::visitKeyColNode(const TaQLKeyColNodeRep& node) {
   TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
   TaQLNodeResult res(hrval);
-  hrval->setExpr(topStack()->handleKeyCol(node.itsName, True));
+  hrval->setExpr(topStack()->handleKeyCol(node.itsName, true));
   return res;
 }
 
@@ -509,12 +509,12 @@ TaQLNodeResult TaQLNodeHandler::visitUpdExprNode(const TaQLUpdExprNodeRep& node)
 
 TaQLNodeResult TaQLNodeHandler::visitSelectNode(const TaQLSelectNodeRep& node) {
   // Add an entry to the stack.
-  Bool outer = itsStack.empty();
+  bool outer = itsStack.empty();
   TableParseQuery* curSel = pushStack(TableParseQuery::PSELECT);
   // First handle LIMIT/OFFSET, because limit is needed when creating
   // a temp table for a select without a FROM.
   // In its turn limit/offset might use WITH tables, so do them very first.
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   visitNode(node.itsLimitOff);
   if (node.itsTables.isValid()) {
     handleTables(node.itsTables);
@@ -539,7 +539,7 @@ TaQLNodeResult TaQLNodeHandler::visitSelectNode(const TaQLSelectNodeRep& node) {
   TaQLNodeResult res(hrval);
   if (!node.getNoExecute()) {
     if (outer) {
-      curSel->execute(node.style().doTiming(), False, False, 0, node.style().doTracing(),
+      curSel->execute(node.style().doTiming(), false, false, 0, node.style().doTracing(),
                       itsTempTables, itsStack);
       hrval->setTable(curSel->getTable());
       Block<String> block = curSel->getColumnNames();
@@ -562,14 +562,14 @@ TaQLNodeResult TaQLNodeHandler::visitUpdateNode(const TaQLUpdateNodeRep& node) {
   // First handle LIMIT/OFFSET, because limit is needed when creating
   // a temp table for a select without a FROM.
   // In its turn limit/offset might use WITH tables, so do them very first.
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   handleTables(node.itsTables);
   handleTables(node.itsFrom);
   handleUpdate(node.itsUpdate);
   handleWhere(node.itsWhere);
   visitNode(node.itsSort);
   visitNode(node.itsLimitOff);
-  curSel->execute(node.style().doTiming(), False, True, 0);
+  curSel->execute(node.style().doTiming(), false, true, 0);
   TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
   TaQLNodeResult res(hrval);
   hrval->setTable(curSel->getTable());
@@ -582,14 +582,14 @@ TaQLNodeResult TaQLNodeHandler::visitUpdateNode(const TaQLUpdateNodeRep& node) {
 
 TaQLNodeResult TaQLNodeHandler::visitInsertNode(const TaQLInsertNodeRep& node) {
   TableParseQuery* curSel = pushStack(TableParseQuery::PINSERT);
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   handleTables(node.itsTables);
   handleInsCol(node.itsColumns);
   if (node.itsLimit.isValid()) {
     TaQLNodeResult res = visitNode(node.itsLimit);
     curSel->handleLimit(getHR(res).getExpr());
   }
-  Bool addedSel = False;
+  bool addedSel = false;
   if (node.itsValues.nodeType() == TaQLNode_Multi) {
     // Individual value expressions given.
     handleInsVal(node.itsValues);
@@ -599,9 +599,9 @@ TaQLNodeResult TaQLNodeHandler::visitInsertNode(const TaQLInsertNodeRep& node) {
     AlwaysAssert(node.itsValues.nodeType() == TaQLNode_Select, AipsError);
     visitNode(node.itsValues);
     curSel->handleInsert(topStack());
-    addedSel = True;
+    addedSel = true;
   }
-  curSel->execute(node.style().doTiming(), False, True, 0);
+  curSel->execute(node.style().doTiming(), false, true, 0);
   if (addedSel) {
     popStack();  // remove insert subquery
   }
@@ -617,12 +617,12 @@ TaQLNodeResult TaQLNodeHandler::visitInsertNode(const TaQLInsertNodeRep& node) {
 
 TaQLNodeResult TaQLNodeHandler::visitDeleteNode(const TaQLDeleteNodeRep& node) {
   TableParseQuery* curSel = pushStack(TableParseQuery::PDELETE);
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   handleTables(node.itsTables);
   handleWhere(node.itsWhere);
   visitNode(node.itsSort);
   visitNode(node.itsLimitOff);
-  curSel->execute(node.style().doTiming(), False, True, 0);
+  curSel->execute(node.style().doTiming(), false, true, 0);
   TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
   TaQLNodeResult res(hrval);
   hrval->setTable(curSel->getTable());
@@ -632,9 +632,9 @@ TaQLNodeResult TaQLNodeHandler::visitDeleteNode(const TaQLDeleteNodeRep& node) {
 }
 
 TaQLNodeResult TaQLNodeHandler::visitCountNode(const TaQLCountNodeRep& node) {
-  Bool outer = itsStack.empty();
+  bool outer = itsStack.empty();
   TableParseQuery* curSel = pushStack(TableParseQuery::PCOUNT);
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   handleTables(node.itsTables);
   visitNode(node.itsColumns);
   handleWhere(node.itsWhere);
@@ -643,7 +643,7 @@ TaQLNodeResult TaQLNodeHandler::visitCountNode(const TaQLCountNodeRep& node) {
   TaQLNodeResult res(hrval);
   AlwaysAssert(!node.getNoExecute(), AipsError);
   if (outer) {
-    curSel->execute(node.style().doTiming(), False, True, 0);
+    curSel->execute(node.style().doTiming(), false, true, 0);
     hrval->setTable(curSel->getTable());
     Block<String> block = curSel->getColumnNames();
     hrval->setNames(Vector<String>(block.begin(), block.end()));
@@ -658,7 +658,7 @@ TaQLNodeResult TaQLNodeHandler::visitCountNode(const TaQLCountNodeRep& node) {
 
 TaQLNodeResult TaQLNodeHandler::visitCalcNode(const TaQLCalcNodeRep& node) {
   TableParseQuery* curSel = pushStack(TableParseQuery::PCALC);
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   handleTables(node.itsTables);
   // If where, orderby, limit and/or offset is given, handle as FROM query.
   if (node.itsWhere.isValid() || node.itsSort.isValid() || node.itsLimitOff.isValid()) {
@@ -681,7 +681,7 @@ TaQLNodeResult TaQLNodeHandler::visitCalcNode(const TaQLCalcNodeRep& node) {
 
 TaQLNodeResult TaQLNodeHandler::visitCreTabNode(const TaQLCreTabNodeRep& node) {
   TableParseQuery* curSel = pushStack(TableParseQuery::PCRETAB);
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   visitNode(node.itsGiving);
   topStack()->initDescriptions(TableDesc(), Record());
   handleLikeDrop(node.itsLikeDrop);
@@ -716,7 +716,7 @@ TaQLNodeResult TaQLNodeHandler::visitRecFldNode(const TaQLRecFldNodeRep& node) {
     vh = topStack()->getRecFld(node.itsFromName);
   } else if (!node.itsValues.isValid()) {
     // Invalid node means an empty vector.
-    vh = ValueHolder(1, True);
+    vh = ValueHolder(1, true);
   } else if (node.itsValues.nodeType() == TaQLNode_Multi && node.itsValues.getRep() != 0 &&
              !((const TaQLMultiNodeRep*)(node.itsValues.getRep()))->itsIsSetOrArray) {
     vh = ValueHolder(handleMultiRecFld(node.itsValues));
@@ -811,8 +811,8 @@ TaQLNodeResult TaQLNodeHandler::visitUnitNode(const TaQLUnitNodeRep& node) {
 
 TaQLNodeResult TaQLNodeHandler::visitAltTabNode(const TaQLAltTabNodeRep& node) {
   TableParseQuery* curSel = pushStack(TableParseQuery::PALTTAB);
-  handleTables(node.itsWith, False);
-  TaQLMultiNode tmnode(False);
+  handleTables(node.itsWith, false);
+  TaQLMultiNode tmnode(false);
   tmnode.add(node.itsTable);
   handleTables(tmnode);  // must be the first table
   handleTables(node.itsFrom);
@@ -907,7 +907,7 @@ void TaQLNodeHandler::handleTableName(TaQLNodeHRValue* hrval, const TaQLNode& no
   }
 }
 
-void TaQLNodeHandler::handleTables(const TaQLMultiNode& node, Bool addToFromList) {
+void TaQLNodeHandler::handleTables(const TaQLMultiNode& node, bool addToFromList) {
   if (!node.isValid()) {
     return;
   }
@@ -938,7 +938,7 @@ TaQLNodeResult TaQLNodeHandler::visitConcTabNode(const TaQLConcTabNodeRep& node)
     const TaQLNodeHRValue& res = getHR(result);
     const String& name = res.getString();
     Table tab(TableParseUtil::getTable(res.getInt(), name, res.getTable(), itsTempTables, itsStack,
-                                       False));
+                                       false));
     if (!tab.isNull()) {
       tables.push_back(tab);
     } else if (name.empty()) {
@@ -979,7 +979,7 @@ TaQLNodeResult TaQLNodeHandler::visitConcTabNode(const TaQLConcTabNodeRep& node)
 
 TaQLNodeResult TaQLNodeHandler::visitShowNode(const TaQLShowNodeRep& node) {
   String info;
-  Bool doInfo = True;
+  bool doInfo = true;
   Vector<String> parts;
   if (node.itsNames.isValid()) {
     const std::vector<TaQLNode>& nodes = node.itsNames.getMultiRep()->itsNodes;
@@ -993,7 +993,7 @@ TaQLNodeResult TaQLNodeHandler::visitShowNode(const TaQLShowNodeRep& node) {
       TaQLNodeHRValue res;
       handleTableName(&res, nodes[1]);
       curSel->tableList().addTable(res.getInt(), res.getString(), res.getTable(), res.getAlias(),
-                                   True, itsTempTables, itsStack);
+                                   true, itsTempTables, itsStack);
       parts[1] = res.getString();
       for (uInt i = 2; i < nodes.size(); ++i) {
         TaQLNodeResult result = visitNode(nodes[i]);
@@ -1001,7 +1001,7 @@ TaQLNodeResult TaQLNodeHandler::visitShowNode(const TaQLShowNodeRep& node) {
         parts[i] = res.getExpr().getString(0);
       }
       info = curSel->getTableStructure(parts, node.style());
-      doInfo = False;
+      doInfo = false;
       popStack();
     } else {
       for (uInt i = 1; i < nodes.size(); ++i) {
@@ -1050,7 +1050,7 @@ TaQLNodeResult TaQLNodeHandler::visitCopyColNode(const TaQLCopyColNodeRep& node)
 
 TaQLNodeResult TaQLNodeHandler::visitDropTabNode(const TaQLDropTabNodeRep& node) {
   TableParseQuery* curSel = pushStack(TableParseQuery::PDROPTAB);
-  handleTables(node.itsWith, False);
+  handleTables(node.itsWith, false);
   handleTables(node.itsTables);
   curSel->handleDropTab(itsTempTables, itsStack);
   return TaQLNodeResult(new TaQLNodeHRValue());
@@ -1139,7 +1139,7 @@ void TaQLNodeHandler::handleLikeDrop(const TaQLMultiNode& node) {
   TaQLNodeResult result = visitNode(nodes[0]);
   const TaQLNodeHRValue& res = getHR(result);
   Table tab(topStack()->tableList().addTable(res.getInt(), res.getString(), res.getTable(),
-                                             res.getAlias(), True, itsTempTables, itsStack));
+                                             res.getAlias(), true, itsTempTables, itsStack));
   // An exception should be thrown if the table does not exist, but be defensive.
   AlwaysAssert(!tab.isNull(), AipsError);
   TableDesc desc(tab.tableDesc());

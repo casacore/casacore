@@ -213,7 +213,7 @@ class TaQLJoinColumn : public TableExprNodeRep {
   // Using the Join object it maps the row number in the main table
   // to the row number in the join table.
   // <group>
-  MArray<Bool> getArrayBool(const TableExprId& id) override;
+  MArray<bool> getArrayBool(const TableExprId& id) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
@@ -249,11 +249,11 @@ class TaQLJoinColumnBool : public TaQLJoinColumn {
  public:
   TaQLJoinColumnBool(const TENShPtr& columnNode, const TableParseJoin&);
   ~TaQLJoinColumnBool() override = default;
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   void clear() override;
 
  private:
-  Vector<Bool> itsData;
+  Vector<bool> itsData;
 };
 
 class TaQLJoinColumnInt : public TaQLJoinColumn {

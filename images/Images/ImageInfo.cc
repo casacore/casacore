@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ImageInfo::ImageInfo()
     : _beams(ImageBeamSet()),
-      _warnBeam(True),
+      _warnBeam(true),
       itsImageType(defaultImageType()),
       itsObjectName(defaultObjectName()) {}
 
@@ -109,7 +109,7 @@ void ImageInfo::_setRestoringBeam(const Record& inRecord) {
 
 void ImageInfo::removeRestoringBeam() { _beams = ImageBeamSet(); }
 
-Bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
+bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
   for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
     String line = iter->message();
     if (StringContains(line, "BMAJ") && StringContains(line, "BMIN") &&
@@ -123,7 +123,7 @@ Bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
           Double x;
           oss >> x;
           if (x <= 0) {
-            return False;
+            return false;
           }
           major = Quantity(x, Unit(String("deg")));
         } else if (StringContains(s[i], "BMIN")) {
@@ -131,7 +131,7 @@ Bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
           Double x;
           oss >> x;
           if (x <= 0) {
-            return False;
+            return false;
           }
           minor = Quantity(x, Unit(String("deg")));
         } else if (StringContains(s[i], "BPA")) {
@@ -143,13 +143,13 @@ Bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
       }
       if (!(minor.isConform("rad") && major.isConform("rad") && pa.isConform("rad")) ||
           (minor.getValue() > major.getValue())) {
-        return False;
+        return false;
       }
       _beams = ImageBeamSet(GaussianBeam(major, minor, pa));
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 ImageInfo::ImageTypes ImageInfo::imageType() const { return itsImageType; }
@@ -239,9 +239,9 @@ ImageInfo& ImageInfo::setObjectName(const String& objectName) {
   return *this;
 }
 
-Bool ImageInfo::toRecord(String& error, RecordInterface& outRecord) const {
+bool ImageInfo::toRecord(String& error, RecordInterface& outRecord) const {
   error = "";
-  Bool ok = True;
+  bool ok = true;
   // If the beam is null, don't do anything as it will get
   // restored as null as well if it is not in the record
   if (_beams.hasSingleBeam()) {
@@ -255,16 +255,16 @@ Bool ImageInfo::toRecord(String& error, RecordInterface& outRecord) const {
       outRecord.defineRecord("perplanebeams", _beams.toRecord());
     } catch (const AipsError& x) {
       error = x.getLastMessage();
-      return False;
+      return false;
     } catch (const std::exception& x) {
       error = x.what();
-      return False;
+      return false;
     }
   }
   return ok;
 }
 
-Bool ImageInfo::fromRecord(String& error, const RecordInterface& inRecord) {
+bool ImageInfo::fromRecord(String& error, const RecordInterface& inRecord) {
   // Returns default object if none in record
 
   // Make sure we are "empty" first
@@ -290,10 +290,10 @@ Bool ImageInfo::fromRecord(String& error, const RecordInterface& inRecord) {
     Record hpBeams = inRecord.asRecord("perplanebeams");
     _beams = ImageBeamSet::fromRecord(hpBeams);
   }
-  return True;
+  return true;
 }
 
-Bool ImageInfo::toFITS(String& error, RecordInterface& outRecord) const {
+bool ImageInfo::toFITS(String& error, RecordInterface& outRecord) const {
   error = "";
   if (hasBeam()) {
     if (hasSingleBeam()) {
@@ -329,16 +329,16 @@ Bool ImageInfo::toFITS(String& error, RecordInterface& outRecord) const {
     outRecord.define("object", itsObjectName);
   }
 
-  return True;
+  return true;
 }
 
-Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header) {
+bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header) {
   // keyname
   //   value          - required
   //   unit           - optional
   //   comment        - optional
   error.resize(3);
-  Bool ok = True;
+  bool ok = true;
   ImageInfo tmp;
   (*this) = tmp;  // Make sure we are "empty" first;
   if (header.isDefined("bmaj") && header.isDefined("bmin") && header.isDefined("bpa")) {
@@ -366,11 +366,11 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header) {
         std::ostringstream oss;
         oss << "BMAJ, BMIN (" << bmaj << ", " << bmin << ") are not positive";
         error(0) = oss.str();
-        ok = False;
+        ok = false;
       }
     } catch (const std::exception& x) {
       error(0) = std::string("ERROR reading BMAJ, BMIN, BPA: ") + x.what();
-      ok = False;
+      ok = false;
     }
   }
   if (header.isDefined("btype")) {
@@ -395,7 +395,7 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header) {
       }
     } else {
       error(1) = "BTYPE field is not of type String";
-      ok = False;
+      ok = false;
     }
   }
   if (header.isDefined("object")) {
@@ -406,7 +406,7 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header) {
       setObjectName(objectName);
     } else {
       error(2) = "OBJECT field is not of type String";
-      ok = False;
+      ok = false;
     }
   }
   if (ok) {
@@ -423,7 +423,7 @@ ostream& operator<<(ostream& os, const ImageInfo& info) {
   } else if (info.hasSingleBeam()) {
     GaussianBeam beam = info.getBeamSet().getBeam();
     os << "Restoring beam : " << beam.getMajor() << ", " << beam.getMinor() << ", "
-       << beam.getPA(True) << endl;
+       << beam.getPA(true) << endl;
   }
   os << "Image Type  = " << info.imageType(info.imageType()) << endl;
   os << "Object Name = " << info.objectName() << endl;
@@ -586,7 +586,7 @@ void ImageInfo::_checkBeamShape(uInt& nchan, uInt& npol, const IPosition& shape,
 
 void ImageInfo::combineBeams(const ImageInfo& infoThat, const IPosition& shapeThis,
                              const IPosition& shapeThat, const CoordinateSystem& csysThis,
-                             const CoordinateSystem& csysThat, Int axis, Bool relax, LogIO& os) {
+                             const CoordinateSystem& csysThat, Int axis, bool relax, LogIO& os) {
   ImageBeamSet beamSet;
   // Check if coord shape and beam shape match.
   uInt nchan1, npol1, nchan2, npol2;
@@ -643,7 +643,7 @@ uInt ImageInfo::setInfoSplitBeamSet(uInt ndone, const ImageInfo& concatInfo, con
 }
 
 void ImageInfo::concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int nchanThis,
-                                Int nchanThat, Bool, LogIO&) const {
+                                Int nchanThat, bool, LogIO&) const {
   // Determine the number of beams for the axes in both sets.
   Int nc1 = _beams.nchan();
   Int np1 = _beams.nstokes();
@@ -679,7 +679,7 @@ void ImageInfo::concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoTha
 }
 
 void ImageInfo::concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int npolThis,
-                               Int npolThat, Bool, LogIO&) const {
+                               Int npolThat, bool, LogIO&) const {
   // Determine the number of beams for the axes in both sets.
   Int nc1 = _beams.nchan();
   Int np1 = _beams.nstokes();
@@ -714,7 +714,7 @@ void ImageInfo::concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat
   }
 }
 
-void ImageInfo::mergeBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Bool relax,
+void ImageInfo::mergeBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, bool relax,
                            LogIO& os) const {
   // Determine the number of beams for the axes in both sets.
   Int nc1 = _beams.nchan();
@@ -749,12 +749,12 @@ void ImageInfo::mergeBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Bo
   }
 }
 
-void ImageInfo::logMessage(Bool& warn, LogIO& os, Bool relax, const String& msg1,
+void ImageInfo::logMessage(bool& warn, LogIO& os, bool relax, const String& msg1,
                            const String msg2) {
   if (relax) {
     if (warn) {
       os << LogIO::WARN << msg1 << " " << msg2 << LogIO::POST;
-      warn = False;
+      warn = false;
     }
   } else {
     os << msg1 << LogIO::EXCEPTION;

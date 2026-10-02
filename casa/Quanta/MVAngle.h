@@ -327,21 +327,21 @@ class MVAngle {
   //  Normalisation between pi*norm and pi*norm + pi
   const MVAngle &binorm(Double norm);
   // Check if String unit
-  static Bool unitString(UnitVal &uv, String &us, MUString &in);
+  static bool unitString(UnitVal &uv, String &us, MUString &in);
 
   // Make res angle Quantity from string in angle/time-like format. In the
   // case of String input, also quantities are recognised.
   // chk=True means that the entire string should be consumed.
   // throwExcp=True means that an exception is thrown in case of an error.
   // <group>
-  static Bool read(Quantity &res, const String &in, Bool chk = True);
-  static Bool read(Quantity &res, MUString &in, Bool chk = True);
-  static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
-  static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
+  static bool read(Quantity &res, const String &in, bool chk = true);
+  static bool read(Quantity &res, MUString &in, bool chk = true);
+  static bool read(Quantity &res, const String &in, bool chk, bool throwExcp);
+  static bool read(Quantity &res, MUString &in, bool chk, bool throwExcp);
   // </group>
   // Handle a read error. An exception is thrown if indicated so.
   // Otherwise in.pop() is called and False is returned.
-  static Bool handleReadError(MUString &in, Bool throwExcp);
+  static bool handleReadError(MUString &in, bool throwExcp);
 
   // Make co-angle (e.g. zenith distance from elevation)
   MVAngle coAngle() const;
@@ -366,7 +366,7 @@ class MVAngle {
   String string(uInt inprec) const;
   String string(const MVAngle::Format &form) const;
   void print(ostream &oss, const MVAngle::Format &form) const;
-  void print(ostream &oss, const MVAngle::Format &form, Bool loc) const;
+  void print(ostream &oss, const MVAngle::Format &form, bool loc) const;
   // </group>
   // Set default format
   // <note role=warning>
@@ -396,7 +396,7 @@ class MVAngle {
   // Temporary format
   // <group>
   static MVAngle::Format interimFormat;
-  static Bool interimSet;
+  static bool interimSet;
   // </group>
 
   // # Member functions

@@ -70,7 +70,7 @@ MSSummary::MSSummary(const MeasurementSet& ms, Float maxCacheMB)
       _msmd(new MSMetaData(&ms, maxCacheMB)),
       dashlin1(replicate("-", 80)),
       dashlin2(replicate("=", 80)),
-      _listUnflaggedRowCount(False),
+      _listUnflaggedRowCount(false),
       _cacheSizeMB(maxCacheMB) {}
 
 MSSummary::MSSummary(const MeasurementSet* ms, Float maxCacheMB)
@@ -78,7 +78,7 @@ MSSummary::MSSummary(const MeasurementSet* ms, Float maxCacheMB)
       _msmd(new MSMetaData(ms, maxCacheMB)),
       dashlin1(replicate("-", 80)),
       dashlin2(replicate("=", 80)),
-      _listUnflaggedRowCount(False),
+      _listUnflaggedRowCount(false),
       _cacheSizeMB(maxCacheMB) {}
 
 MSSummary::MSSummary(const MeasurementSet* ms, const String msname, Float maxCacheMB)
@@ -87,7 +87,7 @@ MSSummary::MSSummary(const MeasurementSet* ms, const String msname, Float maxCac
       dashlin1(replicate("-", 80)),
       dashlin2(replicate("=", 80)),
       msname_p(msname),
-      _listUnflaggedRowCount(False),
+      _listUnflaggedRowCount(false),
       _cacheSizeMB(maxCacheMB) {}
 
 MSSummary::MSSummary(std::shared_ptr<MSMetaData> msmd)
@@ -95,7 +95,7 @@ MSSummary::MSSummary(std::shared_ptr<MSMetaData> msmd)
       _msmd(msmd),
       dashlin1(replicate("-", 80)),
       dashlin2(replicate("=", 80)),
-      _listUnflaggedRowCount(False),
+      _listUnflaggedRowCount(false),
       _cacheSizeMB(msmd->getMaxCacheSizeMB()) {}
 
 //
@@ -120,29 +120,29 @@ String MSSummary::name() const {
 //
 // Reassign pointer.
 //
-Bool MSSummary::setMS(const MeasurementSet& ms, Float maxCacheMB) {
+bool MSSummary::setMS(const MeasurementSet& ms, Float maxCacheMB) {
   const MeasurementSet* pTemp;
   pTemp = &ms;
   if (pTemp == 0) {
-    return False;
+    return false;
   } else {
     pMS = pTemp;
     Float cache = maxCacheMB < 0 ? _cacheSizeMB : maxCacheMB;
     _msmd = std::make_shared<MSMetaData>(&ms, cache);
-    return True;
+    return true;
   }
 }
 
 //
 // List information about an ms to the logger
 //
-void MSSummary::list(LogIO& os, Bool verbose, Bool oneBased) const {
+void MSSummary::list(LogIO& os, bool verbose, bool oneBased) const {
   Record dummy;
-  list(os, dummy, verbose, False, oneBased);
+  list(os, dummy, verbose, false, oneBased);
 }
 
-void MSSummary::list(LogIO& os, Record& outRec, Bool verbose, Bool fillRecord,
-                     Bool oneBased) const {
+void MSSummary::list(LogIO& os, Record& outRec, bool verbose, bool fillRecord,
+                     bool oneBased) const {
   // List a title for the Summary
   listTitle(os);
   // List the main table as well as the subtables in a useful order and format
@@ -184,17 +184,17 @@ void MSSummary::listTitle(LogIO& os) const {
 //
 // Convenient table groupings
 //
-void MSSummary::listWhere(LogIO& os, Bool verbose) const { listObservation(os, verbose); }
-void MSSummary::listWhat(LogIO& os, Bool verbose) const {
+void MSSummary::listWhere(LogIO& os, bool verbose) const { listObservation(os, verbose); }
+void MSSummary::listWhat(LogIO& os, bool verbose) const {
   Record dummy;
-  listWhat(os, dummy, verbose, False);
+  listWhat(os, dummy, verbose, false);
 }
-void MSSummary::listWhat(LogIO& os, Record& outRec, Bool verbose, Bool fillRecord) const {
+void MSSummary::listWhat(LogIO& os, Record& outRec, bool verbose, bool fillRecord) const {
   listMain(os, outRec, verbose, fillRecord);
   listField(os, outRec, verbose, fillRecord);
 }
 
-void MSSummary::listHow(LogIO& os, Bool verbose, Bool oneBased) const {
+void MSSummary::listHow(LogIO& os, bool verbose, bool oneBased) const {
   // listSpectralWindow (os,verbose);
   // listPolarization (os,verbose);
   listSpectralAndPolInfo(os, verbose, oneBased);
@@ -206,19 +206,19 @@ void MSSummary::listHow(LogIO& os, Bool verbose, Bool oneBased) const {
 //
 // SUBTABLES
 //
-void MSSummary::listMain(LogIO& os, Bool verbose) const {
+void MSSummary::listMain(LogIO& os, bool verbose) const {
   Record dummy;
-  listMain(os, dummy, verbose, False);
+  listMain(os, dummy, verbose, false);
 }
 
 // TESTING CAS-2751
-void MSSummary::listMain(LogIO& os, Record& outRec, Bool verbose, Bool fillRecord) const {
+void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecord) const {
   if (nrow() <= 0) {
     os << "The MAIN table is empty: there are no data!!!" << std::endl << LogIO::POST;
     return;
   }
-  _msmd->setForceSubScanPropsToCache(True);
-  std::pair<Double, Double> timerange = _msmd->getTimeRange(True);
+  _msmd->setForceSubScanPropsToCache(true);
+  std::pair<Double, Double> timerange = _msmd->getTimeRange(true);
   Double startTime = timerange.first;
   Double stopTime = timerange.second;
   Double exposTime = stopTime - startTime;
@@ -253,7 +253,7 @@ void MSSummary::listMain(LogIO& os, Record& outRec, Bool verbose, Bool fillRecor
   //   function.
   MSSelector mssel;
   mssel.setMS(const_cast<MeasurementSet&>(*pMS));
-  mssel.initSelection(True);
+  mssel.initSelection(true);
   Table mstab(mssel.selectedTable());
 
   // Field names:
@@ -295,7 +295,7 @@ void MSSummary::listMain(LogIO& os, Record& outRec, Bool verbose, Bool fillRecor
   std::shared_ptr<const std::map<ScanKey, std::pair<Double, Double>>> scanToTRMap =
       _msmd->getScanToTimeRangeMap();
   std::shared_ptr<const std::map<SubScanKey, MSMetaData::SubScanProperties>> ssprops =
-      _msmd->getSubScanProperties(True);
+      _msmd->getSubScanProperties(true);
   std::shared_ptr<const std::map<SubScanKey, std::set<String>>> ssToIntents =
       _msmd->getSubScanToIntentsMap();
   std::shared_ptr<const map<SubScanKey, rownr_t>> nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
@@ -476,7 +476,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
   //   function.
   MSSelector mssel;
   mssel.setMS(const_cast<MeasurementSet&>(*pMS));
-  mssel.initSelection(True);
+  mssel.initSelection(true);
   Table mstab(mssel.selectedTable());
 
   // Field names:
@@ -532,7 +532,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
     Int nddi(1);
     Int nst(1);
     Double btime(0.0), etime(0.0);
-    Bool firsttime(True);
+    bool firsttime(true);
     Int64 thisnrow(0);
     Double meanIntTim(0.0);
 
@@ -559,14 +559,14 @@ void MSSummary::getScanSummary(Record& outRec) const {
       Int thisscan(scncol(0));
 
       // First field and ddi at this timestamp:
-      fldids.resize(1, False);
+      fldids.resize(1, false);
       fldids(0) = fldcol(0);
       nfld = 1;
-      ddids.resize(1, False);
+      ddids.resize(1, false);
       ddids(0) = ddicol(0);
       nddi = 1;
 
-      stids.resize(1, False);
+      stids.resize(1, false);
       stids(0) = stidcol(0);
       nst = 1;
 
@@ -576,19 +576,19 @@ void MSSummary::getScanSummary(Record& outRec) const {
       for (Int64 i = 1; i < nrow; i++) {
         if (!anyEQ(fldids, fldcol(i))) {
           nfld++;
-          fldids.resize(nfld, True);
+          fldids.resize(nfld, true);
           fldids(nfld - 1) = fldcol(i);
         }
 
         if (!anyEQ(ddids, ddicol(i))) {
           nddi++;
-          ddids.resize(nddi, True);
+          ddids.resize(nddi, true);
           ddids(nddi - 1) = ddicol(i);
         }
 
         if (!anyEQ(stids, stidcol(i))) {
           nst++;
-          stids.resize(nst, True);
+          stids.resize(nst, true);
           stids(nst - 1) = stidcol(i);
         }
       }
@@ -596,16 +596,16 @@ void MSSummary::getScanSummary(Record& outRec) const {
       // If not first timestamp, check if scan changed, etc.
       if (!firsttime) {
         // Has state changed?
-        Bool samefld;
+        bool samefld;
         samefld = fldids.conform(lastfldids) && !anyNE(fldids, lastfldids);
 
-        Bool sameddi;
+        bool sameddi;
         sameddi = ddids.conform(lastddids) && !anyNE(ddids, lastddids);
 
-        Bool samest;
+        bool samest;
         samest = stids.conform(laststids) && !anyNE(stids, laststids);
 
-        Bool samescan;
+        bool samescan;
         samescan = (thisscan == lastscan);
 
         samescan = samescan && samefld && sameddi && samest;
@@ -665,7 +665,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
         btime = thistime;
         etime = thistime;
         // no longer first time thru
-        firsttime = False;
+        firsttime = false;
       }
 
       thisnrow += nrow;
@@ -720,7 +720,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
   }  // end of OBS/ARR iteration
 }
 
-void MSSummary::listAntenna(LogIO& os, Bool verbose) const {
+void MSSummary::listAntenna(LogIO& os, bool verbose) const {
   if (_msmd->nAntennas() == 0) {
     os << "The ANTENNA table is empty" << std::endl;
     return;
@@ -787,7 +787,7 @@ void MSSummary::listAntenna(LogIO& os, Bool verbose) const {
     os << "z";
     os << std::endl;
     vector<MPosition> antPos = _msmd->getAntennaPositions();
-    Bool posIsITRF = antPos[0].getRef().getType() != MPosition::ITRF;
+    bool posIsITRF = antPos[0].getRef().getType() != MPosition::ITRF;
     vector<QVD> offsets = _msmd->getAntennaOffsets();
     QVD diameters = _msmd->getAntennaDiameters();
     std::set<Int>::const_iterator iter = antIds.begin();
@@ -873,7 +873,7 @@ void MSSummary::listAntenna(LogIO& os, Bool verbose) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listFeed(LogIO& os, Bool verbose, Bool oneBased) const {
+void MSSummary::listFeed(LogIO& os, bool verbose, bool oneBased) const {
   // Do nothing in terse mode
   if (verbose) {
     // Make a MS-feed-columns object
@@ -927,13 +927,13 @@ void MSSummary::listFeed(LogIO& os, Bool verbose, Bool oneBased) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listField(LogIO& os, Bool verbose) const {
+void MSSummary::listField(LogIO& os, bool verbose) const {
   Record dummy;
-  listField(os, dummy, verbose, False);
+  listField(os, dummy, verbose, false);
 }
-void MSSummary::listField(LogIO& os, Record& outrec, Bool verbose, Bool fillRecord) const {
+void MSSummary::listField(LogIO& os, Record& outrec, bool verbose, bool fillRecord) const {
   // Is source table present?
-  Bool srcok = !(pMS->source().isNull() || pMS->source().nrow() < 1);
+  bool srcok = !(pMS->source().isNull() || pMS->source().nrow() < 1);
   uInt nfields = _msmd->nFields();
   std::set<Int> uniqueFields = _msmd->getUniqueFieldIDs();
   uInt nFieldsInMain = uniqueFields.size();
@@ -1060,7 +1060,7 @@ void MSSummary::listField(LogIO& os, Record& outrec, Bool verbose, Bool fillReco
   os << std::endl << LogIO::POST;
 }
 
-void MSSummary::listObservation(LogIO& os, Bool verbose) const {
+void MSSummary::listObservation(LogIO& os, bool verbose) const {
   // Make objects
   MSColumns msc(*pMS);
   const MSObservationColumns& msOC(msc.observation());
@@ -1176,7 +1176,7 @@ void MSSummary::listHistory(LogIO& os) const {
   }
 }
 
-void MSSummary::listSource(LogIO& os, Bool verbose) const {
+void MSSummary::listSource(LogIO& os, bool verbose) const {
   // Check if optional SOURCE table is present:
   if (pMS->source().isNull()) {
     os << "The SOURCE table is absent: see the FIELD table" << std::endl;
@@ -1187,8 +1187,8 @@ void MSSummary::listSource(LogIO& os, Bool verbose) const {
   MSSourceColumns msSC(pMS->source());
 
   // Are restFreq and sysvel present?
-  Bool restFreqOK = pMS->source().tableDesc().isColumn("REST_FREQUENCY");
-  Bool sysVelOK = pMS->source().tableDesc().isColumn("SYSVEL");
+  bool restFreqOK = pMS->source().tableDesc().isColumn("REST_FREQUENCY");
+  bool sysVelOK = pMS->source().tableDesc().isColumn("SYSVEL");
 
   if (msSC.name().nrow() <= 0) {
     os << "The SOURCE table is empty: see the FIELD table" << std::endl;
@@ -1290,7 +1290,7 @@ void MSSummary::listSource(LogIO& os, Bool verbose) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listSpectralWindow(LogIO& os, Bool verbose) const {
+void MSSummary::listSpectralWindow(LogIO& os, bool verbose) const {
   // Create a MS-spwin-columns object
   MSSpWindowColumns msSWC(pMS->spectralWindow());
 
@@ -1419,7 +1419,7 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const {
   }
 }
 
-void MSSummary::listPolarization(LogIO& os, Bool) const {
+void MSSummary::listPolarization(LogIO& os, bool) const {
   // Create a MS-pol-columns object
   MSPolarizationColumns msPolC(pMS->polarization());
 
@@ -1459,11 +1459,11 @@ void MSSummary::listPolarization(LogIO& os, Bool) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listSpectralAndPolInfo(LogIO& os, Bool, Bool) const {
+void MSSummary::listSpectralAndPolInfo(LogIO& os, bool, bool) const {
   if (_msmd->nDataDescriptions() == 0) {
     os << "The DATA_DESCRIPTION table is empty: see the FEED table" << std::endl;
   }
-  if (_msmd->nSpw(True) == 0) {
+  if (_msmd->nSpw(true) == 0) {
     os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << std::endl;
   }
   if (_msmd->nPol() == 0) {
@@ -1529,7 +1529,7 @@ void MSSummary::listSpectralAndPolInfo(LogIO& os, Bool, Bool) const {
     os << " TotBW(kHz)";
     os.output().width(widthFreq);
     os << "CtrFreq(MHz) ";
-    Bool hasBBCNo = _msmd->hasBBCNo();
+    bool hasBBCNo = _msmd->hasBBCNo();
     if (hasBBCNo) {
       os.output().width(widthBBCNo);
       os << "BBC Num ";
@@ -1556,14 +1556,14 @@ void MSSummary::listSpectralAndPolInfo(LogIO& os, Bool, Bool) const {
       std::set<uInt> ddids = spwToDDID[spw];
       std::set<uInt>::const_iterator diter = ddids.begin();
       std::set<uInt>::const_iterator dend = ddids.end();
-      Bool isSpwInMainTable = False;
+      bool isSpwInMainTable = false;
       for (; diter != dend; ++diter) {
         uInt dd = *diter;
         if (ddId.find(dd) == ddId.end()) {
           // data description ID not in main table, so not reported here
           continue;
         }
-        isSpwInMainTable = True;
+        isSpwInMainTable = true;
         os.output().setf(ios::left, ios::adjustfield);
         os.output().width(widthLead);
         os << "  ";
@@ -1623,7 +1623,7 @@ void MSSummary::listSpectralAndPolInfo(LogIO& os, Bool, Bool) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listSysCal(LogIO& os, Bool verbose) const {
+void MSSummary::listSysCal(LogIO& os, bool verbose) const {
   // Check for existence of optional SYSCAL table:
   if (pMS->sysCal().isNull()) {
     os << "The SYSCAL table is absent" << std::endl;
@@ -1646,7 +1646,7 @@ void MSSummary::listSysCal(LogIO& os, Bool verbose) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listWeather(LogIO& os, Bool verbose) const {
+void MSSummary::listWeather(LogIO& os, bool verbose) const {
   // Check for existence of optional WEATHER table:
   if (pMS->weather().isNull()) {
     os << "The WEATHER table is absent" << std::endl;
@@ -1669,7 +1669,7 @@ void MSSummary::listWeather(LogIO& os, Bool verbose) const {
   os << LogIO::POST;
 }
 
-void MSSummary::listTables(LogIO& os, Bool verbose) const {
+void MSSummary::listTables(LogIO& os, bool verbose) const {
   // Get nrows for each table (=-1 if table absent)
   Vector<Int64> tableRows(18);
   tableRows(0) = nrow();

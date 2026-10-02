@@ -58,7 +58,7 @@ template <class T>
 void UnequalShapeCopier<T>::writeField() {
   uInt n = (*out_p).nelements();
   AlwaysAssert(n == (*in_p).nelements(), AipsError);
-  Bool deleteOut, deleteIn;
+  bool deleteOut, deleteIn;
   T *out = (*out_p).getStorage(deleteOut);
   const T *in = (*in_p).getStorage(deleteIn);
   objcopy(out, in, n);

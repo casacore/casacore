@@ -34,7 +34,7 @@
 
 void doIt(const IPosition& latticeShape, const Vector<Float>& x, const Vector<Float>& y) {
   LCPolygon polygon(x, y, latticeShape);
-  Array<Bool> mask(polygon.maskArray());
+  Array<bool> mask(polygon.maskArray());
   // cout << mask(IPosition(2,498,498), IPosition(2,525,525));
   cout << mask;
 }

@@ -130,16 +130,16 @@ class ModcompDataConversion : public DataConversion {
   // Determine if the data for a data type can be simply copied, thus
   // if no conversion is needed.
   // <group>
-  virtual Bool canCopy(const Char*) const;
-  virtual Bool canCopy(const uChar*) const;
-  virtual Bool canCopy(const Short*) const;
-  virtual Bool canCopy(const uShort*) const;
-  virtual Bool canCopy(const Int*) const;
-  virtual Bool canCopy(const uInt*) const;
-  virtual Bool canCopy(const Int64*) const;
-  virtual Bool canCopy(const uInt64*) const;
-  virtual Bool canCopy(const Float*) const;
-  virtual Bool canCopy(const Double*) const;
+  virtual bool canCopy(const Char*) const;
+  virtual bool canCopy(const uChar*) const;
+  virtual bool canCopy(const Short*) const;
+  virtual bool canCopy(const uShort*) const;
+  virtual bool canCopy(const Int*) const;
+  virtual bool canCopy(const uInt*) const;
+  virtual bool canCopy(const Int64*) const;
+  virtual bool canCopy(const uInt64*) const;
+  virtual bool canCopy(const Float*) const;
+  virtual bool canCopy(const Double*) const;
   // </group>
 
   // Get the external size of the data type.

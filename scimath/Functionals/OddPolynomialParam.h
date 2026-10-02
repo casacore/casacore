@@ -118,8 +118,8 @@ class OddPolynomialParam : public Function1D<T> {
   //  Comparisons.
   //  OddPolynomials are equal if they are the same order
   //  <group>
-  Bool operator==(const OddPolynomialParam<T> &other) const { return (param_p == other.param_p); }
-  Bool operator!=(const OddPolynomialParam<T> &other) const { return (param_p != other.param_p); }
+  bool operator==(const OddPolynomialParam<T> &other) const { return (param_p == other.param_p); }
+  bool operator!=(const OddPolynomialParam<T> &other) const { return (param_p != other.param_p); }
   // </group>
 
   // # Member functions

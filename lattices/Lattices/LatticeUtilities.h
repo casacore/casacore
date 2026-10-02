@@ -70,7 +70,7 @@ class LatticeUtilities {
   // a writeable mask.
   template <class T>
   static void copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const MaskedLattice<T>& in,
-                              Bool zeroMasked = False);
+                              bool zeroMasked = false);
 
   // Replicate array through lattice in the specified region.
   // The shape of <src>pixels</src> has to fit exactly into the shape of

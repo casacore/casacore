@@ -184,14 +184,14 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline>> {
   // </group>
   // Translate string to reference code
   // <group>
-  static Bool getType(MBaseline::Types &tp, const String &in);
-  Bool giveMe(MBaseline::Ref &mr, const String &in);
+  static bool getType(MBaseline::Types &tp, const String &in);
+  bool giveMe(MBaseline::Ref &mr, const String &in);
   // </group>
   // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
+  virtual bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,

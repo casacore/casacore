@@ -40,7 +40,7 @@ uInt hashFunc(const ObjectID& key) {
 }
 
 String ObjectID::extractIDs(Block<ObjectID>& objectIDs, const String& command) {
-  objectIDs.resize(0, True, True);
+  objectIDs.resize(0, true, true);
   String error;
   String result;
   String str = command;

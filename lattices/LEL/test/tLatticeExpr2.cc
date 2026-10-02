@@ -186,7 +186,7 @@ int main(int argc, const char* argv[]) {
       PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
       LCPagedMask mask(lat.shape(), lat.tableName() + "/mask");
-      mask.set(True);
+      mask.set(true);
       timer.show("filling mask    ");
       SubLattice<Float> sublat(lat, mask);
       timer.mark();

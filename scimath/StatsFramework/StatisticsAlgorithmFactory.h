@@ -35,7 +35,7 @@ namespace casacore {
 
 // Provides a single interface for creation of stats algorithm objects
 
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class StatisticsAlgorithmFactory {
  public:

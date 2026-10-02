@@ -240,7 +240,7 @@ class Nutation {
   static void load_static_values();
 
   // Calculate Nutation angles for time t; also derivatives if True given
-  void calcNut(Double t, Bool calcDer = False);
+  void calcNut(Double t, bool calcDer = false);
 };
 
 }  // namespace casacore

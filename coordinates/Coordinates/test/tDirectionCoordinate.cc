@@ -503,10 +503,10 @@ int main() {
       dc.toWorld(world, pixel);
       AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
       AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
-      dc.toWorld(world, pixel, True);
+      dc.toWorld(world, pixel, true);
       AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
       AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
-      dc.toWorld(world, pixel, False);
+      dc.toWorld(world, pixel, false);
       AlwaysAssert(near(world[0], 6.28289, 1e-5), AipsError);
       AlwaysAssert(near(world[1], 2.90888e-4, 1e-5), AipsError);
     }
@@ -832,12 +832,12 @@ void doit3(DirectionCoordinate& lc) {
   //
   Int prec;
   Coordinate::formatType fType = Coordinate::SCIENTIFIC;
-  lc.getPrecision(prec, fType, True, 6, 4, 2);
+  lc.getPrecision(prec, fType, true, 6, 4, 2);
   if (prec != 6) {
     throw(AipsError("Failed getPrecision test 1"));
   }
   fType = Coordinate::FIXED;
-  lc.getPrecision(prec, fType, True, 6, 4, 2);
+  lc.getPrecision(prec, fType, true, 6, 4, 2);
   if (prec != 4) {
     throw(AipsError("Failed getPrecision test 2"));
   }
@@ -847,40 +847,40 @@ void doit3(DirectionCoordinate& lc) {
   Quantum<Double> valq(0.12343, "rad");
   valq.convert(Unit("deg"));
   //
-  String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+  String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
   if (unit != "rad" || str != "0.1234") {
     throw(AipsError("Failed format test 1a"));
   }
   uInt axis = 0;
   Int prec2 = 4;
-  str = lc.formatQuantity(unit, Coordinate::FIXED, valq, axis, True, True, prec2);
+  str = lc.formatQuantity(unit, Coordinate::FIXED, valq, axis, true, true, prec2);
   if (unit != "rad" || str != "0.1234") {
     throw(AipsError("Failed format test 1b"));
   }
   //
-  str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, True, True, 4);
+  str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, true, true, 4);
   if (unit != "rad" || str != "1.2343e-01") {
     throw(AipsError("Failed format test 2a"));
   }
-  str = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, True, True, 4);
+  str = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, true, true, 4);
   if (unit != "rad" || str != "1.2343e-01") {
     throw(AipsError("Failed format test 2b"));
   }
   //
-  str = lc.format(unit, Coordinate::FIXED, val, 1, True, True, 4);
+  str = lc.format(unit, Coordinate::FIXED, val, 1, true, true, 4);
   if (unit != "rad" || str != "0.1234") {
     throw(AipsError("Failed format test 3a"));
   }
-  str = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1, True, True, 4);
+  str = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1, true, true, 4);
   if (str != "0.1234") {
     throw(AipsError("Failed format test 3b"));
   }
   //
-  str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1, True, True, 4);
+  str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1, true, true, 4);
   if (unit != "rad" || str != "1.2343e-01") {
     throw(AipsError("Failed format test 4a"));
   }
-  str = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 1, True, True, 4);
+  str = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 1, true, true, 4);
   if (unit != "rad" || str != "1.2343e-01") {
     throw(AipsError("Failed format test 4b"));
   }
@@ -889,8 +889,8 @@ void doit3(DirectionCoordinate& lc) {
   // we have in the DC.  Need to know this to figure out what
   // the formatting is going to do !
   //
-  str = lc.format(unit, Coordinate::TIME, val, 0, True, True, 4);
-  String str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 0, True, True, 4);
+  str = lc.format(unit, Coordinate::TIME, val, 0, true, true, 4);
+  String str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 0, true, true, 4);
   MDirection::GlobalTypes globalType = dir.globalType(lc.directionType());
   if (globalType == MDirection::GRADEC) {
     if (str != "00:28:17.2843" || str2 != "00:28:17.2843") {
@@ -904,8 +904,8 @@ void doit3(DirectionCoordinate& lc) {
     throw(AipsError("Internal error"));
   }
   //
-  str = lc.format(unit, Coordinate::TIME, val, 1, True, True, 4);
-  str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 1, True, True, 4);
+  str = lc.format(unit, Coordinate::TIME, val, 1, true, true, 4);
+  str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 1, true, true, 4);
   if (globalType == MDirection::GRADEC) {
     if (str != "+07.04.19.2650" || str2 != "+07.04.19.2650") {
       throw(AipsError("Failed format test 6a"));
@@ -925,7 +925,7 @@ void doit4(DirectionCoordinate& dC)
 //
 {
   Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
-  Vector<Bool> pixelAxes(2), worldAxes(2);
+  Vector<bool> pixelAxes(2), worldAxes(2);
   Vector<String> units = dC.worldAxisUnits().copy();
   Vector<Double> refVal = dC.referenceValue().copy();
   Vector<Double> refPix = dC.referencePixel().copy();
@@ -937,22 +937,22 @@ void doit4(DirectionCoordinate& dC)
   //
   // Forced errors
   //
-  pixelAxes.set(False);
-  worldAxes.set(False);
+  pixelAxes.set(false);
+  worldAxes.set(false);
   Vector<Double> minWorld = dC.worldMixMin().copy();
   Vector<Double> maxWorld = dC.worldMixMax().copy();
   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Forced fail 1 of toMix did not occur")));
   }
-  pixelAxes(0) = True;
+  pixelAxes(0) = true;
   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Forced fail 2 of toMix did not occur")));
   }
   //
   // pixel,pixel->world,world
   //
-  pixelAxes.set(True);
-  worldAxes.set(False);
+  pixelAxes.set(true);
+  worldAxes.set(false);
   pixelIn = dC.referencePixel().copy();
   //
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
@@ -967,8 +967,8 @@ void doit4(DirectionCoordinate& dC)
   //
   // world,world->pixel,pixel
   //
-  pixelAxes.set(False);
-  worldAxes.set(True);
+  pixelAxes.set(false);
+  worldAxes.set(true);
   worldIn = dC.referenceValue().copy();
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Failed world->pixel conversion failed because ") + dC.errorMessage()));
@@ -984,10 +984,10 @@ void doit4(DirectionCoordinate& dC)
   //
   worldIn(0) = dC.referenceValue()(0);
   pixelIn(1) = dC.referencePixel()(1);
-  pixelAxes.set(False);
-  worldAxes.set(False);
-  worldAxes(0) = True;
-  pixelAxes(1) = True;
+  pixelAxes.set(false);
+  worldAxes.set(false);
+  worldAxes(0) = true;
+  pixelAxes(1) = true;
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Conversion failed because ") + dC.errorMessage()));
   }
@@ -1002,10 +1002,10 @@ void doit4(DirectionCoordinate& dC)
   //
   pixelIn(0) = dC.referencePixel()(0);
   worldIn(1) = dC.referenceValue()(1);
-  pixelAxes.set(False);
-  worldAxes.set(False);
-  worldAxes(1) = True;
-  pixelAxes(0) = True;
+  pixelAxes.set(false);
+  worldAxes.set(false);
+  worldAxes(1) = true;
+  pixelAxes(0) = true;
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Conversion failed because ") + dC.errorMessage()));
   }
@@ -1021,10 +1021,10 @@ void doit4(DirectionCoordinate& dC)
   //
   worldIn(0) = dC.referenceValue()(0) + 5 * dC.increment()(0);
   pixelIn(1) = 2.32;
-  pixelAxes.set(False);
-  pixelAxes(1) = True;
-  worldAxes.set(False);
-  worldAxes(0) = True;
+  pixelAxes.set(false);
+  pixelAxes(1) = true;
+  worldAxes.set(false);
+  worldAxes(0) = true;
   Vector<Double> saveWorldIn(worldIn.copy());
   Vector<Double> savePixelIn(pixelIn.copy());
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
@@ -1032,10 +1032,10 @@ void doit4(DirectionCoordinate& dC)
   }
   pixelIn(0) = pixelOut(0);
   worldIn(1) = worldOut(1);
-  pixelAxes.set(False);
-  pixelAxes(0) = True;
-  worldAxes.set(False);
-  worldAxes(1) = True;
+  pixelAxes.set(false);
+  pixelAxes(0) = true;
+  worldAxes.set(false);
+  worldAxes(1) = true;
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Conversion failed because ") + dC.errorMessage()));
   }
@@ -1051,10 +1051,10 @@ void doit4(DirectionCoordinate& dC)
   //
   worldIn(1) = dC.referenceValue()(1) + 5 * dC.increment()(1);
   pixelIn(0) = 2.32;
-  pixelAxes.set(False);
-  pixelAxes(0) = True;
-  worldAxes.set(False);
-  worldAxes(1) = True;
+  pixelAxes.set(false);
+  pixelAxes(0) = true;
+  worldAxes.set(false);
+  worldAxes(1) = true;
   saveWorldIn = worldIn.copy();
   savePixelIn = pixelIn.copy();
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
@@ -1062,10 +1062,10 @@ void doit4(DirectionCoordinate& dC)
   }
   pixelIn(1) = pixelOut(1);
   worldIn(0) = worldOut(0);
-  pixelAxes.set(False);
-  pixelAxes(1) = True;
-  worldAxes.set(False);
-  worldAxes(0) = True;
+  pixelAxes.set(false);
+  pixelAxes(1) = true;
+  worldAxes.set(false);
+  worldAxes(0) = true;
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Conversion failed because ") + dC.errorMessage()));
   }
@@ -1084,7 +1084,7 @@ void doit5(DirectionCoordinate& dC)
 // the values much
 //
 {
-  Vector<Bool> axes(2, True);
+  Vector<bool> axes(2, true);
   Vector<Int> shape(2);
   shape(0) = 128;
   shape(1) = 256;
@@ -1129,8 +1129,8 @@ void doit5(DirectionCoordinate& dC)
   // Not all axes
 
   {
-    axes.set(True);
-    axes(1) = False;
+    axes.set(true);
+    axes(1) = false;
     Coordinate* pC = dC.makeFourierCoordinate(axes, shape);
     if (pC) {
       delete pC;
@@ -1163,7 +1163,7 @@ void doit6() {
                          crpix(1), longPole * M_PI / 180.0, latPole * M_PI / 180.0);
   //
   Vector<Double> poles = dc.longLatPoles();
-  Bool ok = (near(poles(0), crval(0)) && near(poles(1), crval(1)) && near(poles(2), longPole));
+  bool ok = (near(poles(0), crval(0)) && near(poles(1), crval(1)) && near(poles(2), longPole));
 
   // The lat pole get recomputed so don't test it
 
@@ -1244,7 +1244,7 @@ void doit8() {
   {
     DirectionCoordinate lc = makeCoordinate(MDirection::J2000, proj, crval, crpix, cdelt, xform);
     //
-    Vector<Bool> failures, failures2;
+    Vector<bool> failures, failures2;
     const Int nCoord = 1000;
     Matrix<Double> pixel(2, nCoord), pixel2;
     Matrix<Double> world(2, nCoord);
@@ -1284,7 +1284,7 @@ void doit8() {
     DirectionCoordinate lc = makeCoordinate(MDirection::J2000, proj, crval, crpix, cdelt, xform);
     lc.setReferenceConversion(MDirection::GALACTIC);
     //
-    Vector<Bool> failures, failures2;
+    Vector<bool> failures, failures2;
     const Int nCoord = 1000;
     Matrix<Double> pixel(2, nCoord), pixel2;
     Matrix<Double> world(2, nCoord);
@@ -1327,7 +1327,7 @@ void doit9() {
                          0.0, 999.0, 999.0);
   Vector<Double> pixel(2), world;
   pixel = 0.0;
-  Bool ok = dc.toWorld(world, pixel);
+  bool ok = dc.toWorld(world, pixel);
   AlwaysAssert(ok, AipsError);
   cerr << "pixel, world = " << pixel << world << endl;
 }

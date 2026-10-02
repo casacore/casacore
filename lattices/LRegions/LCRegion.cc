@@ -38,7 +38,7 @@ LCRegion::LCRegion() {}
 LCRegion::LCRegion(const IPosition& latticeShape) : itsShape(latticeShape) {}
 
 LCRegion::LCRegion(const LCRegion& other)
-    : Lattice<Bool>(),
+    : Lattice<bool>(),
       itsShape(other.itsShape),
       itsBoundingBox(other.itsBoundingBox),
       itsComment(other.itsComment) {}
@@ -53,25 +53,25 @@ LCRegion& LCRegion::operator=(const LCRegion& other) {
   return *this;
 }
 
-Bool LCRegion::equals(const LCRegion& other) const {
+bool LCRegion::equals(const LCRegion& other) const {
   // Type check.
   if (type() != other.type()) {
-    return False;
+    return false;
   }
   // Compare bounding boxes, which also takes care of dimensionality.
   if (!itsBoundingBox.length().isEqual(other.itsBoundingBox.length()) ||
       !itsBoundingBox.start().isEqual(other.itsBoundingBox.start())) {
-    return False;
+    return false;
   }
   return itsShape.isEqual(other.itsShape);
 }
 
 LCRegion::~LCRegion() {}
 
-Lattice<Bool>* LCRegion::clone() const { return cloneRegion(); }
+Lattice<bool>* LCRegion::clone() const { return cloneRegion(); }
 
 void LCRegion::handleDelete() {}
-void LCRegion::handleRename(const String&, Bool) {}
+void LCRegion::handleRename(const String&, bool) {}
 
 LCRegion* LCRegion::translate(const IPosition& translateVector,
                               const IPosition& newLatticeShape) const {
@@ -143,21 +143,21 @@ uInt LCRegion::ndim() const { return itsShape.nelements(); }
 
 IPosition LCRegion::shape() const { return itsBoundingBox.length(); }
 
-Bool LCRegion::isWritable() const { return False; }
+bool LCRegion::isWritable() const { return false; }
 
-void LCRegion::doPutSlice(const Array<Bool>&, const IPosition&, const IPosition&) {
+void LCRegion::doPutSlice(const Array<bool>&, const IPosition&, const IPosition&) {
   throw(AipsError("LCRegion::putSlice is not possible"));
 }
-void LCRegion::set(const Bool&) { throw(AipsError("LCRegion: set is not possible")); }
-void LCRegion::apply(Bool (*)(Bool)) { throw(AipsError("LCRegion: apply is not possible")); }
-void LCRegion::apply(Bool (*)(const Bool&)) { throw(AipsError("LCRegion: apply is not possible")); }
-void LCRegion::apply(const Functional<Bool, Bool>&) {
+void LCRegion::set(const bool&) { throw(AipsError("LCRegion: set is not possible")); }
+void LCRegion::apply(bool (*)(bool)) { throw(AipsError("LCRegion: apply is not possible")); }
+void LCRegion::apply(bool (*)(const bool&)) { throw(AipsError("LCRegion: apply is not possible")); }
+void LCRegion::apply(const Functional<bool, bool>&) {
   throw(AipsError("LCRegion: apply is not possible"));
 }
-void LCRegion::putAt(const Bool&, const IPosition&) {
+void LCRegion::putAt(const bool&, const IPosition&) {
   throw(AipsError("LCRegion: putAt is not possible"));
 }
-void LCRegion::copyData(const Lattice<Bool>&) {
+void LCRegion::copyData(const Lattice<bool>&) {
   throw(AipsError("LCRegion: copyData is not possible"));
 }
 

@@ -90,14 +90,14 @@ StatisticsAlgorithm<CASA_STATP>* BiweightStatistics<CASA_STATP>::clone() const {
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt64>,
                                                     std::shared_ptr<AccumType>,
-                                                    std::shared_ptr<AccumType>, uInt, Bool, uInt) {
+                                                    std::shared_ptr<AccumType>, uInt, bool, uInt) {
   ThrowCc("The biweight algorithm does not support computation of the median");
 }
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>&, const std::set<Double>&, std::shared_ptr<uInt64>,
-    std::shared_ptr<AccumType>, std::shared_ptr<AccumType>, uInt, Bool, uInt) {
+    std::shared_ptr<AccumType>, std::shared_ptr<AccumType>, uInt, bool, uInt) {
   ThrowCc(
       "The biweight algorithm does not support computation "
       "of the median nor quantile values");
@@ -106,7 +106,7 @@ AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAbsDevMed(std::shared_ptr<uInt64>,
                                                              std::shared_ptr<AccumType>,
-                                                             std::shared_ptr<AccumType>, uInt, Bool,
+                                                             std::shared_ptr<AccumType>, uInt, bool,
                                                              uInt) {
   ThrowCc(
       "The biweight algorithm does not support computation "
@@ -121,7 +121,7 @@ std::map<Double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(const s
                                                                          std::shared_ptr<uInt64>,
                                                                          std::shared_ptr<AccumType>,
                                                                          std::shared_ptr<AccumType>,
-                                                                         uInt, Bool, uInt) {
+                                                                         uInt, bool, uInt) {
   ThrowCc("The biweight algorithm does not support computation of quantile values");
 }
 
@@ -133,7 +133,7 @@ std::pair<Int64, Int64> BiweightStatistics<CASA_STATP>::getStatisticIndex(Statis
 }
 
 CASA_STATD
-void BiweightStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void BiweightStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
   ThrowIf(c,
           "BiweightStatistics does not support calculating "
           "statistics incrementally as data sets are added");
@@ -162,9 +162,9 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
     MaskIterator maskIter, WeightsIterator weightsIter, uInt64 dataCount,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk) {
   if (chunk.weights) {
-    this->_getStatsData().weighted = True;
+    this->_getStatsData().weighted = true;
     if (chunk.mask) {
-      this->_getStatsData().masked = True;
+      this->_getStatsData().masked = true;
       if (chunk.ranges) {
         _locationAndScaleSums(sxw2, sw2, sx_M2w4, ww_4u2, dataIter, weightsIter, dataCount,
                               chunk.dataStride, maskIter, chunk.mask->second, chunk.ranges->first,
@@ -182,7 +182,7 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
                             chunk.dataStride);
     }
   } else if (chunk.mask) {
-    this->_getStatsData().masked = True;
+    this->_getStatsData().masked = true;
     // this data set has no weights, but does have a mask
     if (chunk.ranges) {
       _locationAndScaleSums(sxw2, sw2, sx_M2w4, ww_4u2, dataIter, dataCount, chunk.dataStride,
@@ -213,9 +213,9 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
   if (chunk.weights) {
     // no need to put these in atomic or critical blocks because
     // they always get set to True here
-    this->_getStatsData().weighted = True;
+    this->_getStatsData().weighted = true;
     if (chunk.mask) {
-      this->_getStatsData().masked = True;
+      this->_getStatsData().masked = true;
       if (chunk.ranges) {
         _locationSums(sxw2, sw2, dataIter, weightsIter, dataCount, chunk.dataStride, maskIter,
                       chunk.mask->second, chunk.ranges->first, chunk.ranges->second);
@@ -231,7 +231,7 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
       _locationSums(sxw2, sw2, dataIter, weightsIter, dataCount, chunk.dataStride);
     }
   } else if (chunk.mask) {
-    this->_getStatsData().masked = True;
+    this->_getStatsData().masked = true;
     // this data set has no weights, but does have a mask
     if (chunk.ranges) {
       _locationSums(sxw2, sw2, dataIter, dataCount, chunk.dataStride, maskIter, chunk.mask->second,
@@ -354,7 +354,7 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
     tsw2[idx8] = 0;
   }
   const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -375,7 +375,7 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
       ds.incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                               nthreads);
     }
-    if (ds.increment(False)) {
+    if (ds.increment(false)) {
       break;
     }
   }
@@ -404,7 +404,7 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
     tww_4u2[idx8] = 0;
   }
   const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -425,7 +425,7 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
       ds.incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                               nthreads);
     }
-    if (ds.increment(False)) {
+    if (ds.increment(false)) {
       break;
     }
   }
@@ -460,7 +460,7 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
     tww_4u2[idx8] = 0;
   }
   const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
-  while (True) {
+  while (true) {
     const auto& chunk = ds.initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -482,7 +482,7 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
       ds.incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                               nthreads);
     }
-    if (ds.increment(False)) {
+    if (ds.increment(false)) {
       break;
     }
   }
@@ -550,7 +550,7 @@ void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(AccumType& sxw2, Accu
                                                            const DataIterator& dataBegin, uInt64 nr,
                                                            uInt dataStride,
                                                            const DataRanges& ranges,
-                                                           Bool isInclude) const {
+                                                           bool isInclude) const {
   DataIterator datum = dataBegin;
   uInt64 count = 0;
   typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -587,7 +587,7 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) const {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) const {
   DataIterator datum = dataBegin;
   MaskIterator mask = maskBegin;
   uInt64 count = 0;
@@ -625,7 +625,7 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude) const {
+    const DataRanges& ranges, bool isInclude) const {
   DataIterator datum = dataBegin;
   WeightsIterator weight = weightsBegin;
   uInt64 count = 0;
@@ -646,7 +646,7 @@ void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude) const {
+    bool isInclude) const {
   DataIterator datum = dataBegin;
   WeightsIterator weight = weightsBegin;
   MaskIterator mask = maskBegin;
@@ -710,7 +710,7 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(AccumType& sxw2, AccumType& sw2,
                                                    const DataIterator& dataBegin, uInt64 nr,
                                                    uInt dataStride, const DataRanges& ranges,
-                                                   Bool isInclude) const {
+                                                   bool isInclude) const {
   DataIterator datum = dataBegin;
   uInt64 count = 0;
   typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -746,7 +746,7 @@ void BiweightStatistics<CASA_STATP>::_locationSums(AccumType& sxw2, AccumType& s
                                                    const DataIterator& dataBegin, uInt64 nr,
                                                    uInt dataStride, const MaskIterator& maskBegin,
                                                    uInt maskStride, const DataRanges& ranges,
-                                                   Bool isInclude) const {
+                                                   bool isInclude) const {
   DataIterator datum = dataBegin;
   MaskIterator mask = maskBegin;
   uInt64 count = 0;
@@ -784,7 +784,7 @@ void BiweightStatistics<CASA_STATP>::_locationSums(AccumType& sxw2, AccumType& s
                                                    const DataIterator& dataBegin,
                                                    const WeightsIterator& weightsBegin, uInt64 nr,
                                                    uInt dataStride, const DataRanges& ranges,
-                                                   Bool isInclude) const {
+                                                   bool isInclude) const {
   DataIterator datum = dataBegin;
   WeightsIterator weight = weightsBegin;
   uInt64 count = 0;
@@ -806,7 +806,7 @@ void BiweightStatistics<CASA_STATP>::_locationSums(AccumType& sxw2, AccumType& s
                                                    const WeightsIterator& weightsBegin, uInt64 nr,
                                                    uInt dataStride, const MaskIterator& maskBegin,
                                                    uInt maskStride, const DataRanges& ranges,
-                                                   Bool isInclude) const {
+                                                   bool isInclude) const {
   DataIterator datum = dataBegin;
   WeightsIterator weight = weightsBegin;
   MaskIterator mask = maskBegin;
@@ -873,7 +873,7 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2,
                                                 const DataIterator& dataBegin, uInt64 nr,
                                                 uInt dataStride, const DataRanges& ranges,
-                                                Bool isInclude) const {
+                                                bool isInclude) const {
   DataIterator datum = dataBegin;
   uInt64 count = 0;
   typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -909,7 +909,7 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(AccumType& sx_M2w4, AccumType& w
                                                 const DataIterator& dataBegin, uInt64 nr,
                                                 uInt dataStride, const MaskIterator& maskBegin,
                                                 uInt maskStride, const DataRanges& ranges,
-                                                Bool isInclude) const {
+                                                bool isInclude) const {
   DataIterator datum = dataBegin;
   MaskIterator mask = maskBegin;
   uInt64 count = 0;
@@ -947,7 +947,7 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(AccumType& sx_M2w4, AccumType& w
                                                 const DataIterator& dataBegin,
                                                 const WeightsIterator& weightsBegin, uInt64 nr,
                                                 uInt dataStride, const DataRanges& ranges,
-                                                Bool isInclude) const {
+                                                bool isInclude) const {
   DataIterator datum = dataBegin;
   WeightsIterator weight = weightsBegin;
   uInt64 count = 0;
@@ -969,7 +969,7 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(AccumType& sx_M2w4, AccumType& w
                                                 const WeightsIterator& weightsBegin, uInt64 nr,
                                                 uInt dataStride, const MaskIterator& maskBegin,
                                                 uInt maskStride, const DataRanges& ranges,
-                                                Bool isInclude) const {
+                                                bool isInclude) const {
   DataIterator datum = dataBegin;
   WeightsIterator weight = weightsBegin;
   MaskIterator mask = maskBegin;

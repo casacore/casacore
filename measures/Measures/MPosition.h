@@ -155,17 +155,17 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition>> {
   // </group>
   // Translate string to reference code
   // <group>
-  static Bool getType(MPosition::Types &tp, const String &in);
+  static bool getType(MPosition::Types &tp, const String &in);
   // this one throws an exception for an unrecognized String
   static MPosition::Types getType(const String &in);
 
-  Bool giveMe(MPosition::Ref &mr, const String &in);
+  bool giveMe(MPosition::Ref &mr, const String &in);
   // </group>
   // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
+  virtual bool setOffset(const Measure &in);
   // Set the reference type to the specified String. False if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,

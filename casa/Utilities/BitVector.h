@@ -116,7 +116,7 @@ class BitVector {
 
   // Create a bit vector with <src>length</src> bits
   // and set all bits to to the specified state.
-  BitVector(uInt length, Bool state);
+  BitVector(uInt length, bool state);
 
   // Copy constructor (copy semantics).
   BitVector(const BitVector& that);
@@ -128,7 +128,7 @@ class BitVector {
   BitVector& operator=(const BitVector& that);
 
   // Set all bits to the given state.
-  BitVector& operator=(Bool state);
+  BitVector& operator=(bool state);
 
   // Return the number of bits in the bitvector.
   uInt nbits() const;
@@ -144,20 +144,20 @@ class BitVector {
   // Toggle a bit at the given position (0-relative).
   // It returns the original state.
   // In debug-mode an exception is thrown when the position is invalid.
-  Bool toggleBit(uInt pos);
+  bool toggleBit(uInt pos);
 
   // Get a bit at the given position (0-relative).
   // In debug-mode an exception is thrown when the position is invalid.
-  Bool getBit(uInt pos) const;
+  bool getBit(uInt pos) const;
 
   // Set a bit at the given position (0-relative) to the given state.
   // In debug-mode an exception is thrown when the position is invalid.
-  void putBit(uInt pos, Bool state);
+  void putBit(uInt pos, bool state);
 
   // Index operator to access the specified bit.
   // In debug-mode an exception is thrown when the position is invalid.
   // <group>
-  Bool operator[](uInt pos) const;
+  bool operator[](uInt pos) const;
   BitVectorHelper operator[](uInt pos);
   // </group>
 
@@ -187,26 +187,26 @@ class BitVector {
 
   // Returns True if all bits are equal.
   // An exception is thrown if the lengths of the vectors differ.
-  Bool operator==(const BitVector& that) const;
+  bool operator==(const BitVector& that) const;
 
   // Returns True if a bit differs.
   // An exception is thrown if the lengths of the vectors differ.
-  Bool operator!=(const BitVector& that) const;
+  bool operator!=(const BitVector& that) const;
 
   // Resize the bit vector to the new length.
   // By default the original bits are copied.
   // The remaining bits (or all bits in case of no copy) are
   // set the the given state.
-  void resize(uInt length, Bool state = False, Bool copy = True);
+  void resize(uInt length, bool state = false, bool copy = true);
 
   // Set all bits of the bit vector to the specified state.
-  void set(Bool state);
+  void set(bool state);
 
   // Set <src>length</src> bits starting at the start position
   // (0-relative) to the given state.
   // An exception is thrown if start+length exceeds the length
   // of the vector.
-  void set(uInt start, uInt length, Bool state);
+  void set(uInt start, uInt length, bool state);
 
   // Copy <src>length</src> bits starting at thatStart in the
   // other BitVector to this BitVector starting at thisStart.
@@ -254,11 +254,11 @@ class BitVectorHelper {
   const BitVectorHelper& operator=(const BitVectorHelper& that) const;
 
   // Set to a state.
-  const BitVectorHelper& operator=(Bool state) const;
+  const BitVectorHelper& operator=(bool state) const;
 
   // Defines the conversion from <src>BitVectorHelper</src> to
   // <src>Bool</src>.
-  operator Bool() const;
+  operator bool() const;
 
  private:
   uInt bitNumber_p;
@@ -282,7 +282,7 @@ inline void BitVector::clearBit(uInt pos) {
   bits_p[index] &= (~(1 << (pos - index * WORDSIZE)));
 }
 
-inline Bool BitVector::operator[](uInt pos) const { return getBit(pos); }
+inline bool BitVector::operator[](uInt pos) const { return getBit(pos); }
 
 inline uInt BitVector::nbits() const { return size_p; }
 
@@ -294,12 +294,12 @@ inline BitVectorHelper BitVector::operator[](uInt pos) { return BitVectorHelper(
 inline BitVectorHelper::BitVectorHelper(const BitVectorHelper& that)
     : bitNumber_p(that.bitNumber_p), vecPtr_p(that.vecPtr_p) {}
 
-inline const BitVectorHelper& BitVectorHelper::operator=(Bool state) const {
+inline const BitVectorHelper& BitVectorHelper::operator=(bool state) const {
   vecPtr_p->putBit(bitNumber_p, state);
   return *this;
 }
 
-inline BitVectorHelper::operator Bool() const { return vecPtr_p->getBit(bitNumber_p); }
+inline BitVectorHelper::operator bool() const { return vecPtr_p->getBit(bitNumber_p); }
 
 inline const BitVectorHelper& BitVectorHelper::operator=(const BitVectorHelper& that) const {
   vecPtr_p->putBit(bitNumber_p, that.vecPtr_p->getBit(that.bitNumber_p));

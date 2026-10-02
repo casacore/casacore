@@ -49,7 +49,7 @@ LSQFit::LSQFit(uInt nUnknowns, uInt nConstraints)
       stepfactor_p(10),
       epsval_p(1e-6),
       epsder_p(1e-6),
-      balanced_p(False),
+      balanced_p(false),
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
@@ -81,7 +81,7 @@ LSQFit::LSQFit(uInt nUnknowns, const LSQReal &, uInt nConstraints)
       stepfactor_p(10),
       epsval_p(1e-6),
       epsder_p(1e-6),
-      balanced_p(False),
+      balanced_p(false),
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
@@ -112,7 +112,7 @@ LSQFit::LSQFit(uInt nUnknowns, const LSQComplex &, uInt nConstraints)
       nonlin_p(1),
       epsval_p(1e-8),
       epsder_p(1e-8),
-      balanced_p(False),
+      balanced_p(false),
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
@@ -144,7 +144,7 @@ LSQFit::LSQFit()
       stepfactor_p(10),
       epsval_p(1e-8),
       epsder_p(1e-8),
-      balanced_p(False),
+      balanced_p(false),
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
@@ -267,7 +267,7 @@ void LSQFit::deinit() {
   wcov_p = 0;
 }
 
-void LSQFit::copy(const LSQFit &other, Bool all) {
+void LSQFit::copy(const LSQFit &other, bool all) {
   if (!nun_p) return;
   if (other.known_p && !known_p) known_p = new Double[n_p];
   if (other.error_p && !error_p) error_p = new Double[N_ErrorField];
@@ -293,9 +293,9 @@ void LSQFit::copy(const LSQFit &other, Bool all) {
 
 // # Member functions
 
-Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
+bool LSQFit::invert(uInt &nRank, bool doSVD) {
   // Already done
-  if ((n_p != nun_p) && (state_p & INVERTED)) return True;
+  if ((n_p != nun_p) && (state_p & INVERTED)) return true;
   // Copy the data for solution equations
   createNCEQ();
   Double d0(0);  // collinearity test
@@ -305,20 +305,20 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
   nceq_p->doDiagonal(nun_p);
   // Special if constraints
   if (nnc_p != nun_p) {
-    if (!invertRect()) return False;
+    if (!invertRect()) return false;
   } else {
     // decompose
     for (uInt i = 0; i < nnc_p; i++) {
       if (i < r_p) {                  // still rank left
         Double *i3 = nceq_p->row(i);  // row pointer
-        while (True) {
+        while (true) {
           d0 = i3[i];  // get collinearity
           for (uInt i2 = 0; i2 < i; i2++) {
             Double *i4 = nceq_p->row(i2);  // row pointer
             d0 -= i4[i] * i4[i] / i4[i2];
           }
           if (d0 * d0 / i3[i] <= prec_p) {       // dependancy
-            if (!doSVD) return False;            // should be ok
+            if (!doSVD) return false;            // should be ok
             if (i < r_p - 1) {                   // rank left
               uInt j0 = r_p - 1;                 // rank pointer
               for (uInt i2 = 0; i2 < i; i2++) {  // shift pivot
@@ -387,7 +387,7 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
   //
   nRank = r_p;  // rank
   // ready
-  return True;
+  return true;
 }
 
 void LSQFit::solveIt() {
@@ -442,7 +442,7 @@ void LSQFit::solveIt() {
   }
 }
 
-Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
+bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
   if (!(state_p & NONLIN)) {  // first time through loop
     nonlin_p = startnon_p;
     if (balanced_p) startnon_p *= norm_p->maxDiagonal(nun_p);  // start factor
@@ -454,7 +454,7 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
     createNCEQ();
     ;
     ;
-    save(False);        // save current information
+    save(false);        // save current information
     state_p |= NONLIN;  // non-first loop
   } else {
     Double d0((error_p[SUMLL] + nar_p->error_p[SUMLL]) / 2.0);
@@ -482,7 +482,7 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
       } else
         nonlin_p *= 0.3;
       stepfactor_p = 2;
-      save(False);
+      save(false);
       if (normInfKnown(known_p) <= epsder_p) ready_p = DERIVLEVEL;  // known
     } else {
       nonlin_p *= stepfactor_p;
@@ -490,7 +490,7 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
       if (stepfactor_p > 1e10) ready_p = NOREDUCTION;  /// make it a constant
       for (Double *i = wsol_p, *i1 = nar_p->sol_p; i != wsol_p + nun_p; ++i, ++i1)
         *i -= *i1;     // new solution
-      restore(False);  // restore info
+      restore(false);  // restore info
     }
   }
   if (!ready_p && (maxiter_p == 0 || niter_p > 0)) {
@@ -501,7 +501,7 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
       norm_p->mulDiagonal(nun_p, nonlin_p);
     if (!invert(nRank, doSVD)) {
       ready_p = SINGULAR;
-      return False;  // decompose
+      return false;  // decompose
     }
     std::copy(wsol_p, wsol_p + nun_p, nar_p->sol_p);  // save current solution
     solveIt();                                        // solve
@@ -526,7 +526,7 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
     fit = -1e-10;  // force fit (old system)
   else
     fit = 1.0;
-  return True;
+  return true;
 }
 
 void LSQFit::solveMR(uInt nin) {
@@ -562,9 +562,9 @@ void LSQFit::solveMR(uInt nin) {
   }
 }
 
-Bool LSQFit::invertRect() {
+bool LSQFit::invertRect() {
   // Already done?
-  if (state_p & INVERTED) return True;
+  if (state_p & INVERTED) return true;
   if (!lar_p) lar_p = new Double[nnc_p * nnc_p];  // get workspace
   if (nnc_p != nun_p) {                           // lu necessary
     // lu decomposition
@@ -585,7 +585,7 @@ Bool LSQFit::invertRect() {
         Double *j1 = rowrt(i1);
         if (std::abs(j1[i]) > d0) d0 = std::abs(j1[i]);
       }
-      if (d0 == 0) return False;  // cannot solve
+      if (d0 == 0) return false;  // cannot solve
       sol_p[i] = 1. / d0;         // save scaling
     }
     // do crout
@@ -646,7 +646,7 @@ Bool LSQFit::invertRect() {
       }
     }
     state_p |= INVERTED;
-    return True;
+    return true;
   }
   // invert cholesky
   for (uInt i = 0; i < r_p; i++) {
@@ -695,11 +695,11 @@ Bool LSQFit::invertRect() {
   }
 
   state_p |= INVERTED;
-  return True;
+  return true;
 }
 
-Bool LSQFit::merge(const LSQFit &other) {
-  if (other.nun_p != nun_p || (state_p & ~NONLIN) != (other.state_p & ~NONLIN)) return False;
+bool LSQFit::merge(const LSQFit &other) {
+  if (other.nun_p != nun_p || (state_p & ~NONLIN) != (other.state_p & ~NONLIN)) return false;
   // Copy normal equations
   Double *i2 = norm_p->row(0);
   Double *i3 = other.norm_p->row(0);
@@ -717,12 +717,12 @@ Bool LSQFit::merge(const LSQFit &other) {
   for (uInt i = 0; i < other.ncon_p; ++i) {
     addConstraint(other.constr_p + i * other.nun_p, other.known_p[nun_p + i]);
   }
-  return True;
+  return true;
 }
 
-Bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
+bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
   ///  if (other.nun_p != nIndex || state_p || other.state_p) return False;
-  if (other.nun_p != nIndex) return False;
+  if (other.nun_p != nIndex) return false;
   // Copy normal equations
   for (uInt i = 0; i < nIndex; ++i) {
     if (nEqIndex[i] < nun_p) {
@@ -752,7 +752,7 @@ Bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
     addConstraint(nIndex, const_cast<uInt *>(nEqIndex), other.constr_p + i * other.nun_p,
                   other.known_p[nun_p + i]);
   }
-  return True;
+  return true;
 }
 
 void LSQFit::reset() { clear(); }
@@ -845,7 +845,7 @@ const std::string &LSQFit::readyText() const {
   return txt[ready_p];
 }
 
-void LSQFit::save(Bool all) {
+void LSQFit::save(bool all) {
   if (!nar_p) {
     nar_p = new LSQFit(*this);
   } else {
@@ -853,7 +853,7 @@ void LSQFit::save(Bool all) {
   }
 }
 
-void LSQFit::restore(Bool all) {
+void LSQFit::restore(bool all) {
   if (nar_p) copy(*nar_p, all);
 }
 

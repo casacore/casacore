@@ -71,7 +71,7 @@ class LCIntersection : public LCRegionMulti {
   LCIntersection(const LCRegion& region1, const LCRegion& region2);
 
   // Construct from multiple regions.
-  LCIntersection(Bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
+  LCIntersection(bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
                  const LCRegion* region3 = 0, const LCRegion* region4 = 0,
                  const LCRegion* region5 = 0, const LCRegion* region6 = 0,
                  const LCRegion* region7 = 0, const LCRegion* region8 = 0,
@@ -80,7 +80,7 @@ class LCIntersection : public LCRegionMulti {
   // Construct from multiple regions given as a Block.
   // When <src>takeOver</src> is True, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
-  LCIntersection(Bool takeOver, const Block<const LCRegion*>& regions);
+  LCIntersection(bool takeOver, const Block<const LCRegion*>& regions);
 
   // Copy constructor (copy semantics).
   LCIntersection(const LCIntersection& other);
@@ -106,7 +106,7 @@ class LCIntersection : public LCRegionMulti {
   static LCIntersection* fromRecord(const TableRecord&, const String& tableName);
 
  protected:
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
@@ -115,7 +115,7 @@ class LCIntersection : public LCRegionMulti {
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
+  void multiGetSlice(Array<bool>& buffer, const Slicer& section) override;
 
  private:
   // Make the bounding box and determine the offsets.

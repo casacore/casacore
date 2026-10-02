@@ -24,7 +24,7 @@
 
 // This program tests the class TiledShapeStMan and related classes.
 
-TSMOption makeAccessType(int accessType, Bool read = True) {
+TSMOption makeAccessType(int accessType, bool read = true) {
   if (!read) {
     accessType = accessType >> 2;
   }
@@ -39,13 +39,13 @@ TSMOption makeAccessType(int accessType, Bool read = True) {
   return TSMOption(TSMOption::Cache, 0, 0);
 }
 
-Bool readTable(int accessType, Bool chk, const IPosition& shape, uInt nrrow,
-               Bool extrainc = false) {
-  Bool ok = True;
+bool readTable(int accessType, bool chk, const IPosition& shape, uInt nrrow,
+               bool extrainc = false) {
+  bool ok = true;
   Table table("tTiledShapeStM_2_tmp.data", Table::Old, makeAccessType(accessType));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
-    return False;
+    return false;
   }
   ArrayColumn<Float> data(table, "Data");
   Array<Float> result;
@@ -60,7 +60,7 @@ Bool readTable(int accessType, Bool chk, const IPosition& shape, uInt nrrow,
     if (chk) {
       if (!allEQ(array, result)) {
         cout << "mismatch in data row " << i << endl;
-        ok = False;
+        ok = false;
       }
       array += (Float)1;
     }
@@ -72,7 +72,7 @@ Bool readTable(int accessType, Bool chk, const IPosition& shape, uInt nrrow,
   return ok;
 }
 
-void writeVar(int accessType, Bool chk, const IPosition& shape, const IPosition& tileShape,
+void writeVar(int accessType, bool chk, const IPosition& shape, const IPosition& tileShape,
               uInt nrrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
@@ -84,7 +84,7 @@ void writeVar(int accessType, Bool chk, const IPosition& shape, const IPosition&
   // Create a storage manager for it.
   TiledShapeStMan sm1("TSMExample", tileShape);
   newtab.bindAll(sm1);
-  Table table(newtab, 0, False, Table::AipsrcEndian, makeAccessType(accessType, False));
+  Table table(newtab, 0, false, Table::AipsrcEndian, makeAccessType(accessType, false));
   ArrayColumn<Float> data(table, "Data");
   Array<Float> array(shape);
   uInt i;
@@ -99,14 +99,14 @@ void writeVar(int accessType, Bool chk, const IPosition& shape, const IPosition&
       }
     }
     // Sync to measure true IO.
-    table.flush(True);
+    table.flush(true);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
   }
   timer.show("Write     ");
 }
 
-void updateVar(int accessType, Bool chk, Bool tiledAccess, const IPosition& shape,
+void updateVar(int accessType, bool chk, bool tiledAccess, const IPosition& shape,
                const IPosition& tileShape, uInt nrrow, int rank, int numRank) {
   Table table("tTiledShapeStM_2_tmp.data", TableLock::NoLocking, Table::Old,
               makeAccessType(accessType));
@@ -156,7 +156,7 @@ void updateVar(int accessType, Bool chk, Bool tiledAccess, const IPosition& shap
       data.put(i, array);
     }
     // Sync to measure true IO.
-    table.flush(True);
+    table.flush(true);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
   }
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
     cout << " Running test with " << numRank << " ranks" << endl;
   }
 #endif
-  Bool ok = True;
+  bool ok = true;
   try {
     if (argc < 6) {
       if (rank == 0) {
@@ -226,7 +226,7 @@ int main(int argc, char* argv[]) {
     if (rank == 0) {
       writeVar(accessType, mode % 2 == 1, shape, tileShape, nrow);
       if (!readTable(accessType, mode % 2 == 1, shape, nrow)) {
-        ok = False;
+        ok = false;
       }
     }
 // all ranks wait for table to be written
@@ -245,7 +245,7 @@ int main(int argc, char* argv[]) {
     // check read back with rank 0
     if (rank == 0) {
       if (!readTable(accessType, mode % 2 == 1, shape, nrow, true)) {
-        ok = False;
+        ok = false;
       }
     }
   } catch (std::exception& x) {

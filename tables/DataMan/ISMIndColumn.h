@@ -120,13 +120,13 @@ class ISMIndColumn : public ISMColumn {
   virtual void setShape(rownr_t rownr, const IPosition& shape);
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   virtual IPosition shape(rownr_t rownr);
 
   // This storage manager can handle changing array shapes.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Get an array value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
@@ -155,7 +155,7 @@ class ISMIndColumn : public ISMColumn {
   virtual void getFile(rownr_t nrrow);
 
   // Flush and optionally fsync the data.
-  virtual Bool flush(rownr_t nrrow, Bool fsync);
+  virtual bool flush(rownr_t nrrow, bool fsync);
 
   // Resync the storage manager with the new file contents.
   virtual void resync(rownr_t nrrow);
@@ -181,7 +181,7 @@ class ISMIndColumn : public ISMColumn {
   // value in the previous or next row.
   // It always return False, because comparing large arrays is
   // too expensive (it could be changed in the future).
-  virtual Bool compareValue(const void* val1, const void* val2) const;
+  virtual bool compareValue(const void* val1, const void* val2) const;
 
   // Read the shape at the given row.
   // This will cache the information in the StIndArray
@@ -204,20 +204,20 @@ class ISMIndColumn : public ISMColumn {
 
   // When needed, create an array in the given row with the given shape.
   // When the array is created, its data are copied when the flag is set.
-  StIndArray* putArrayPtr(rownr_t rownr, const IPosition& shape, Bool copyData);
+  StIndArray* putArrayPtr(rownr_t rownr, const IPosition& shape, bool copyData);
 
   // The (unique) sequence number of the column.
   uInt seqnr_p;
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
   // Switch indicating if the shape is fixed.
-  Bool shapeIsFixed_p;
+  bool shapeIsFixed_p;
   // The file containing the arrays.
   StManArrayFile* iosfile_p;
   // The indirect array object.
   StIndArray indArray_p;
   // The indirect array exists for the row interval last accessed.
-  Bool foundArray_p;
+  bool foundArray_p;
 };
 
 }  // namespace casacore

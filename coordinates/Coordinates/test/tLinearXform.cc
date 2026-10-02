@@ -184,7 +184,7 @@ int main() {
 
       // All axes
 
-      Vector<Bool> axes(2, True);
+      Vector<bool> axes(2, true);
       Vector<Double> crpix2(2);
       Vector<Double> scale(2);
       crpix2(0) = 1.0;
@@ -214,7 +214,7 @@ int main() {
       // Not all axes
 
       {
-        axes(1) = False;
+        axes(1) = false;
         LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
         if (!near(crpix2(0), lxf2->crpix()(0), 1e-13) ||
             !near(lxf.crpix()(1), lxf2->crpix()(1), 1e-13)) {
@@ -235,7 +235,7 @@ int main() {
       // Non-diagonal pc matrix all axes
 
       {
-        axes.set(True);
+        axes.set(true);
         pc(1, 0) = 2.0;
         pc(0, 1) = 2.0;
         lxf.pc(pc);
@@ -258,8 +258,8 @@ int main() {
       // Non-diagonal pc matrix not axes
 
       {
-        axes.set(True);
-        axes(1) = False;
+        axes.set(true);
+        axes(1) = false;
         pc(1, 0) = 2.0;
         pc(0, 1) = 2.0;
         lxf.pc(pc);
@@ -289,7 +289,7 @@ int main() {
       Vector<Double> world(crpix.copy());
       Vector<Double> pixel(3);
       String error;
-      Bool ok = lxf.forward(pixel, world, error);
+      bool ok = lxf.forward(pixel, world, error);
       if (!ok) {
         throw(AipsError(String("Forwards conversion failed because ") + error));
       }

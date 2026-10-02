@@ -53,7 +53,7 @@ namespace casacore {  // # namespace casacore begin
 
 template <class T>
 void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const MaskedLattice<T>& in,
-                                       Bool zeroMasked)
+                                       bool zeroMasked)
 //
 // This function coould be implemented with LEL
 // but requires two passes if zeroMask=True so
@@ -64,17 +64,17 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const M
   // Therefore we need to transfer those mask values to the
   // output if an output mask exists.
 
-  Bool doMask = out.isMasked() && out.hasPixelMask();
-  Lattice<Bool>* pMaskOut = 0;
+  bool doMask = out.isMasked() && out.hasPixelMask();
+  Lattice<bool>* pMaskOut = 0;
   if (doMask) {
     pMaskOut = &out.pixelMask();
     if (!pMaskOut->isWritable()) {
-      doMask = False;
+      doMask = false;
       os << LogIO::WARN << "The output image has a mask but it is not writable" << endl;
       os << LogIO::WARN << "So the mask will not be transferred to the output" << LogIO::POST;
     }
   }
-  if (!doMask) zeroMasked = False;
+  if (!doMask) zeroMasked = false;
 
   // Use the same stepper for input and output.
 
@@ -90,9 +90,9 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const M
     IPosition cursorShape = iter.cursorShape();
     if (zeroMasked) {
       Array<T> pixels = iter.cursor().copy();
-      const Array<Bool>& mask = iter.getMask();
+      const Array<bool>& mask = iter.getMask();
       //
-      typename Array<Bool>::const_iterator mIt;
+      typename Array<bool>::const_iterator mIt;
       typename Array<T>::iterator dIt;
       typename Array<T>::iterator dItend = pixels.end();
       for (dIt = pixels.begin(), mIt = mask.begin(); dIt != dItend; ++dIt, ++mIt) {
@@ -113,7 +113,7 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const M
 
 template <class T>
 void LatticeUtilities::replicate(Lattice<T>& lat, const Slicer& region, const Array<T>& pixels) {
-  SubLattice<T> subLattice(lat, region, True);
+  SubLattice<T> subLattice(lat, region, true);
   const IPosition shapePixels = pixels.shape();
   const IPosition shapeLattice = subLattice.shape();
   AlwaysAssert(shapePixels.nelements() <= shapeLattice.nelements(), AipsError);
@@ -155,10 +155,10 @@ void LatticeUtilities::bin(MaskedArray<T>& out, const MaskedArray<T>& in, uInt a
   // Make input MaskedLattice
 
   ArrayLattice<T> data(in.getArray());
-  ArrayLattice<Bool> mask(in.getMask());
+  ArrayLattice<bool> mask(in.getMask());
   //
   SubLattice<T> mLat(data);
-  mLat.setPixelMask(mask, False);
+  mLat.setPixelMask(mask, false);
 
   // Create binner
 

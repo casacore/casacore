@@ -57,7 +57,7 @@ TableExprNode::TableExprNode() : node_p(0) {}
 
 // # Constructors for the various constants.
 // # These objects are created as temporaries by the compiler.
-TableExprNode::TableExprNode(const Bool& val) {
+TableExprNode::TableExprNode(const bool& val) {
   node_p = std::make_shared<TableExprNodeConstBool>(val);
 }
 TableExprNode::TableExprNode(const Int& val) {
@@ -105,7 +105,7 @@ TableExprNode::TableExprNode(const TaqlRegex& val) {
 TableExprNode::TableExprNode(const MVTime& val) {
   node_p = std::make_shared<TableExprNodeConstDate>(val);
 }
-TableExprNode::TableExprNode(const Array<Bool>& val) {
+TableExprNode::TableExprNode(const Array<bool>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstBool>(val);
 }
 TableExprNode::TableExprNode(const Array<uChar>& val) {
@@ -148,7 +148,7 @@ TableExprNode::TableExprNode(const Array<MVTime>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstDate>(val);
 }
 
-TableExprNode::TableExprNode(const MArray<Bool>& val) {
+TableExprNode::TableExprNode(const MArray<bool>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstBool>(val);
 }
 TableExprNode::TableExprNode(const MArray<uChar>& val) {
@@ -220,7 +220,7 @@ TableExprNode TableExprNode::in(const TableExprNodeSet& set, const TaQLStyle& st
   // Note it makes it possible to use an empty set that has
   // no data type yet.
   if (set.size() == 0) {
-    return TableExprNode(False);
+    return TableExprNode(false);
   }
   set.checkEqualDataTypes();
   TableExprNodeSet setcp = set;
@@ -245,12 +245,12 @@ DataType TableExprNode::getColumnDataType() const {
   return dataType();
 }
 
-Bool TableExprNode::checkTableSize(const Table& table, Bool canBeConst) const {
+bool TableExprNode::checkTableSize(const Table& table, bool canBeConst) const {
   // Always correct if no original table.
   if (table.isNull()) {
-    return True;
+    return true;
   }
-  std::vector<Table> tables(TableExprNodeUtil::getNodeTables(node_p.get(), True));
+  std::vector<Table> tables(TableExprNodeUtil::getNodeTables(node_p.get(), true));
   if (tables.empty()) {
     return canBeConst;
   }

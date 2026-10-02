@@ -51,7 +51,7 @@ int main() {
     v1[2] = 10;
     Double k[] = {1.5, 1, 2, 3, 2.5};
     {
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -79,7 +79,7 @@ int main() {
     }
     {
       // just another way of specifying the data
-      HingesFencesStatistics<Double, Double*, Bool*> cs1;
+      HingesFencesStatistics<Double, Double*, bool*> cs1;
       cs1.setData(k, 5);
       StatsData<Double> sd = cs1.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
@@ -106,7 +106,7 @@ int main() {
     }
     {
       // two datasets
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
@@ -172,9 +172,9 @@ int main() {
       t1[0] = 5;
       t1[1] = 8;
       t1[2] = 10;
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      cs.setCalculateAsAdded(False);
+      cs.setCalculateAsAdded(false);
       cs.setData(t0.begin(), t0.size());
       std::fill(t0.begin(), t0.begin() + t0.size(), 0);
       cs.addData(t1.begin(), t1.size());
@@ -205,17 +205,17 @@ int main() {
       t1[1] = 8;
       t1[2] = 10;
 
-      Bool exceptionRaised = False;
+      bool exceptionRaised = false;
       try {
-        cs.setCalculateAsAdded(True);
+        cs.setCalculateAsAdded(true);
       } catch (std::exception& x) {
-        exceptionRaised = True;
+        exceptionRaised = true;
       }
       AlwaysAssert(exceptionRaised, AipsError);
     }
     {
       // two datasets, stride = 2,1
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs;
       hfs.setData(v0.begin(), v0.size(), 2);
       hfs.addData(v1.begin(), v1.size());
@@ -239,16 +239,16 @@ int main() {
     }
     {
       // data ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 5;
       r0[0].second = -5;
-      Bool expectedFail = False;
+      bool expectedFail = false;
       try {
         cs.setData(v0.begin(), 3, r0);
       } catch (const std::exception& x) {
-        expectedFail = True;
+        expectedFail = true;
       }
       AlwaysAssert(expectedFail, AipsError);
       r0[0].first = 2.4;
@@ -259,7 +259,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       cs.setData(v0.begin(), v0.size(), r0);
-      cs.addData(v1.begin(), v1.size(), r1, False);
+      cs.addData(v1.begin(), v1.size(), r1, false);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (79.25 - 13.5 * 13.5 / 3.0) / 2.0;
       AlwaysAssert(!sd.masked, AipsError);
@@ -280,18 +280,18 @@ int main() {
     }
     {
       // mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -314,26 +314,26 @@ int main() {
     }
     {
       // mask and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (79.25 - 13.5 * 13.5 / 3.0) / 2.0;
       AlwaysAssert(sd.masked, AipsError);
@@ -354,7 +354,7 @@ int main() {
     }
     {
       // weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -389,7 +389,7 @@ int main() {
     }
     {
       // integer weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -425,7 +425,7 @@ int main() {
     }
     {
       // weights and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -443,8 +443,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(!sd.masked, AipsError);
@@ -466,9 +466,9 @@ int main() {
 
       // test cloning gives same results
       std::shared_ptr<HingesFencesStatistics<Double, std::vector<Double>::const_iterator,
-                                             std::vector<Bool>::const_iterator>>
+                                             std::vector<bool>::const_iterator>>
           cs1(dynamic_cast<HingesFencesStatistics<Double, std::vector<Double>::const_iterator,
-                                                  std::vector<Bool>::const_iterator>*>(cs.clone()));
+                                                  std::vector<bool>::const_iterator>*>(cs.clone()));
       StatsData<Double> sd1 = cs1->getStatistics();
       AlwaysAssert(sd1.masked == sd.masked, AipsError);
       AlwaysAssert(sd1.weighted == sd.weighted, AipsError);
@@ -489,7 +489,7 @@ int main() {
     }
     {
       // integer weights and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -508,8 +508,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(!sd.masked, AipsError);
@@ -531,7 +531,7 @@ int main() {
     }
     {
       // weights, ranges, and masks
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -543,24 +543,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(sd.masked, AipsError);
@@ -588,7 +588,7 @@ int main() {
     }
     {
       // integer weights, ranges, and masks
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -601,24 +601,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = cs.getStatistics();
       Double variance = (195.25 - 40.5 * 40.5 / 11.0) / 10.0;
       AlwaysAssert(sd.masked, AipsError);
@@ -646,7 +646,7 @@ int main() {
     }
     {
       // weights, masks
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -658,16 +658,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -691,7 +691,7 @@ int main() {
     }
     {
       // integer weights, masks
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -704,16 +704,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = cs.getStatistics();
@@ -738,7 +738,7 @@ int main() {
 
     {
       // getMinMax(), two datasets
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
@@ -749,7 +749,7 @@ int main() {
     }
     {
       // getMinMax(), two datasets, stride = 2,1
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), 3, 2);
       cs.addData(v1.begin(), v1.size());
@@ -760,7 +760,7 @@ int main() {
     }
     {
       // getMaxMin(), data ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 2.4;
@@ -771,7 +771,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       cs.setData(v0.begin(), v0.size(), r0);
-      cs.addData(v1.begin(), v1.size(), r1, False);
+      cs.addData(v1.begin(), v1.size(), r1, false);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -779,18 +779,18 @@ int main() {
     }
     {
       // getMinMax(), mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), m1.begin(), v1.size());
       Double mymin, mymax;
@@ -800,26 +800,26 @@ int main() {
     }
     {
       // getMinMax(), mask and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -827,7 +827,7 @@ int main() {
     }
     {
       // getMinMax, weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 1;
@@ -848,7 +848,7 @@ int main() {
     }
     {
       // getMinMax, integer weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -870,7 +870,7 @@ int main() {
     }
     {
       // getMinMax(), weights and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -888,8 +888,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -897,7 +897,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -916,8 +916,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -925,7 +925,7 @@ int main() {
     }
     {
       // getMinMax(), weights, ranges, and masks
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -937,24 +937,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -962,7 +962,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights, ranges, and masks
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -975,24 +975,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       cs.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1001,28 +1001,28 @@ int main() {
 
     {
       // general quantile exceptions
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
-      Bool thrown = False;
+      bool thrown = false;
       try {
         cs.getQuantile(0);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         cs.getQuantile(1);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
     }
     {
       // getQuantile(), no weights, no mask, no ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
@@ -1048,7 +1048,7 @@ int main() {
     {
       // getQuantile(): two datasets, stride = 2,1
       // 1.5, 2, 2.5 5, 8, 10
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs;
       hfs.setData(v0.begin(), v0.size(), 2);
       hfs.addData(v1.begin(), v1.size());
@@ -1073,7 +1073,7 @@ int main() {
     }
     {
       // getQuantile(), ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<std::pair<Double, Double>> r0(1), r1(2);
       r0[0].first = 2.4;
@@ -1083,7 +1083,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       cs.setData(v0.begin(), v0.size(), r0);
-      cs.addData(v1.begin(), v1.size(), r1, False);
+      cs.addData(v1.begin(), v1.size(), r1, false);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1106,18 +1106,18 @@ int main() {
     }
     {
       // getQuantile(): mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), m1.begin(), v1.size());
       // 2.5, 3, 8
@@ -1142,26 +1142,26 @@ int main() {
     }
     {
       // getQuantile(): mask and ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1184,7 +1184,7 @@ int main() {
     }
     {
       // getQuantile(): weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -1220,7 +1220,7 @@ int main() {
     }
     {
       // getQuantile(): integer weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1257,7 +1257,7 @@ int main() {
     }
     {
       // getQuantile(): ranges and weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -1275,8 +1275,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1299,7 +1299,7 @@ int main() {
     }
     {
       // getQuantile(): ranges and integer weights
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1318,8 +1318,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1342,7 +1342,7 @@ int main() {
     }
     {
       // getQuantile(): weights and mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -1354,16 +1354,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       // 2.5, 3, 8
@@ -1388,7 +1388,7 @@ int main() {
     }
     {
       // getQuantile(): integer weights and mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1401,16 +1401,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       // 2.5, 3, 8
@@ -1435,7 +1435,7 @@ int main() {
     }
     {
       // getQuantile(): weights, mask, ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -1447,24 +1447,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1507,7 +1507,7 @@ int main() {
     }
     {
       // getQuantile(): integer weights, mask, ranges
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           cs;
       vector<Int> w0(v0.size());
@@ -1520,24 +1520,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       // 2.5, 3, 8
       Double q = cs.getQuantile(0.1);
       AlwaysAssert(q == 2.5, AipsError);
@@ -1580,19 +1580,19 @@ int main() {
     }
     {
       // leave in for compile check
-      HingesFencesStatistics<Complex, vector<Complex>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Complex, vector<Complex>::const_iterator, vector<bool>::const_iterator>
           cs;
     }
     {
       // getMedian()
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.addData(v0.begin(), v0.size());
       Double median = cs.getMedian();
       AlwaysAssert(median == 2, AipsError);
       cs.reset();
-      vector<Bool> m0(v0.size(), True);
-      m0[0] = False;
+      vector<bool> m0(v0.size(), true);
+      m0[0] = false;
       cs.addData(v0.begin(), m0.begin(), v0.size());
       median = cs.getMedian();
       AlwaysAssert(median == 2, AipsError);
@@ -1609,7 +1609,7 @@ int main() {
       quantiles.insert(0.7);
       quantiles.insert(0.8);
       quantiles.insert(0.9);
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
@@ -1641,10 +1641,10 @@ int main() {
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 9;
       r0[0].second = 11;
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
-      cs.addData(v1.begin(), v1.size(), r0, False);
+      cs.addData(v1.begin(), v1.size(), r0, false);
       std::map<Double, Double> quantileToValue;
       Double median = cs.getMedianAndQuantiles(quantileToValue, quantiles);
       AlwaysAssert(median == 2.5, AipsError);
@@ -1660,7 +1660,7 @@ int main() {
     }
     {
       // getMedianAndQuantiles (even sized data set)
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
       cs.addData(v1.begin(), v1.size());
@@ -1672,10 +1672,10 @@ int main() {
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 9;
       r0[0].second = 11;
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(v0.begin(), v0.size());
-      cs.addData(v1.begin(), v1.size(), r0, False);
+      cs.addData(v1.begin(), v1.size(), r0, false);
       Double medabsdevmed = cs.getMedianAbsDevMed();
       AlwaysAssert(medabsdevmed == 1.0, AipsError);
     }
@@ -1689,11 +1689,11 @@ int main() {
       ++iter;
       ++count;
     }
-    vector<Bool> bigMask(npts, True);
-    bigMask[0] = False;
+    vector<bool> bigMask(npts, true);
+    bigMask[0] = false;
     {
       // getMedian() with binning, no ranges, weights, or mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -1702,7 +1702,7 @@ int main() {
     }
     {
       // getMedian() with mask, but no weights or ranges, using binning
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(bigData.begin(), bigMask.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -1711,7 +1711,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed() with binning, no ranges, weights, or mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -1720,7 +1720,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed() with mask, but no weights or ranges, using binning
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.setData(bigData.begin(), bigMask.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -1729,7 +1729,7 @@ int main() {
     }
     {  // large array with all the same values, getMedianAndQuartile()
       vector<Float> big(100000, 0);
-      HingesFencesStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Float>::const_iterator, vector<bool>::const_iterator>
           cs;
       cs.addData(big.begin(), big.size());
       std::set<Double> quantiles;
@@ -1761,7 +1761,7 @@ int main() {
     // for v, the members between Q1 and Q3 inclusive are
     // 2, 5, 6, 6, 7, 10, 11
     {
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size());
       StatsData<Double> sd = hfs.getStatistics();
@@ -1794,7 +1794,7 @@ int main() {
     {
       // just another way of specifying the data
       Double kk[] = {5, 2, 6, 10, 7, -1, 15, 11, 6, 20, -3, 14};
-      HingesFencesStatistics<Double, Double*, Bool*> hfs(0);
+      HingesFencesStatistics<Double, Double*, bool*> hfs(0);
       hfs.setData(kk, 12);
       Double eSum = 47;
       Double eNpts = 7;
@@ -1825,7 +1825,7 @@ int main() {
     }
     {
       // two datasets
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2);
@@ -1884,20 +1884,20 @@ int main() {
     }
     {
       // verify that datasets cannot be accumulated as added
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
-      Bool except = False;
+      bool except = false;
       try {
-        hfs.setCalculateAsAdded(True);
+        hfs.setCalculateAsAdded(true);
       } catch (const AipsError&) {
-        except = True;
+        except = true;
       }
       AlwaysAssert(except, AipsError);
     }
     {
       // two datasets, stride = 2,1
       // values of the inner quartile in this case are 6, 7, 11, 6, 14
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size() / 2, 2);
       hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2);
@@ -1938,16 +1938,16 @@ int main() {
 
       // 5, 6, 15, 20, -3, 14
       // 5, 6, 15, 14
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 5;
       r0[0].second = -5;
-      Bool expectedFail = False;
+      bool expectedFail = false;
       try {
         hfs.setData(v0.begin(), v0.size(), r0);
       } catch (const std::exception& x) {
-        expectedFail = True;
+        expectedFail = true;
       }
       AlwaysAssert(expectedFail, AipsError);
       r0[0].first = 2.4;
@@ -1958,7 +1958,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       hfs.setData(v0.begin(), v0.size() / 2, r0);
-      hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2, r1, False);
+      hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2, r1, false);
       StatsData<Double> sd = hfs.getStatistics();
       Double eSum = 40;
       Double eNpts = 4;
@@ -1992,21 +1992,21 @@ int main() {
       // 15, 11, 6, 20, -3, 14
       // 10, 7, 15, 11, 14
       // 10, 11, 14
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      m0[5] = False;
-      m0[6] = True;
-      m0[7] = True;
-      m0[8] = False;
-      m0[9] = False;
-      m0[10] = False;
-      m0[11] = True;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      m0[5] = false;
+      m0[6] = true;
+      m0[7] = true;
+      m0[8] = false;
+      m0[9] = false;
+      m0[10] = false;
+      m0[11] = true;
       hfs.setData(v0.begin(), m0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, m0.begin() + m0.size() / 2,
                   v0.size() - v0.size() / 2);
@@ -2046,30 +2046,30 @@ int main() {
       // 2, 6, 10, -1
       // 11, 6, 20, 14
       // 2, 6, 10, 11, 6
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      m0[5] = True;
-      m0[6] = False;
-      m0[7] = True;
-      m0[8] = True;
-      m0[9] = True;
-      m0[10] = True;
-      m0[11] = True;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      m0[5] = true;
+      m0[6] = false;
+      m0[7] = true;
+      m0[8] = true;
+      m0[9] = true;
+      m0[10] = true;
+      m0[11] = true;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 7;
       r0[0].second = 8;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 21;
-      hfs.setData(v0.begin(), m0.begin(), v0.size() / 2, r0, False);
+      hfs.setData(v0.begin(), m0.begin(), v0.size() / 2, r0, false);
       hfs.addData(v0.begin() + v0.size() / 2, m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2,
-                  r1, True);
+                  r1, true);
       StatsData<Double> sd = hfs.getStatistics();
       Double eSum = 35;
       Double eNpts = 5;
@@ -2109,7 +2109,7 @@ int main() {
       // 11, 6
 
       // 4 + 18 + 40 + 35 + 22 + 18
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -2167,7 +2167,7 @@ int main() {
       // 11, 6
 
       // 4 + 18 + 40 + 35 + 22 + 18
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           hfs(0);
       vector<Int> w0(v0.size());
@@ -2228,7 +2228,7 @@ int main() {
       // 6, 10, 7
       // 11, 6
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -2249,9 +2249,9 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 0;
       r1[0].second = 15;
-      hfs.setData(v0.begin(), w0.begin(), v0.size() / 2, r0, False);
+      hfs.setData(v0.begin(), w0.begin(), v0.size() / 2, r0, false);
       hfs.addData(v0.begin() + v0.size() / 2, w0.begin() + w0.size() / 2, v0.size() - v0.size() / 2,
-                  r1, True);
+                  r1, true);
       StatsData<Double> sd = hfs.getStatistics();
       Double eSum = 133;
       Double eSumWeights = 17;
@@ -2296,7 +2296,7 @@ int main() {
       // 6, 10, 7
       // 11, 6
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           hfs(0);
       vector<Int> w0(v0.size());
@@ -2318,9 +2318,9 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 0;
       r1[0].second = 15;
-      hfs.setData(v0.begin(), w0.begin(), v0.size() / 2, r0, False);
+      hfs.setData(v0.begin(), w0.begin(), v0.size() / 2, r0, false);
       hfs.addData(v0.begin() + v0.size() / 2, w0.begin() + w0.size() / 2, v0.size() - v0.size() / 2,
-                  r1, True);
+                  r1, true);
       StatsData<Double> sd = hfs.getStatistics();
       Double eSum = 133;
       Double eSumWeights = 17;
@@ -2368,7 +2368,7 @@ int main() {
       // 6, 10
       // 11
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -2389,12 +2389,12 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 0;
       r1[0].second = 15;
-      vector<Bool> m0(v0.size(), True);
-      m0[4] = False;
-      m0[8] = False;
-      hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size() / 2, r0, False);
+      vector<bool> m0(v0.size(), true);
+      m0[4] = false;
+      m0[8] = false;
+      hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size() / 2, r0, false);
       hfs.addData(v0.begin() + v0.size() / 2, w0.begin() + w0.size() / 2,
-                  m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2, r1, True);
+                  m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2, r1, true);
       StatsData<Double> sd = hfs.getStatistics();
       Double eSum = 80;
       Double eSumWeights = 9;
@@ -2440,7 +2440,7 @@ int main() {
       // 6, 10
       // 11
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           hfs(0);
       vector<Int> w0(v0.size());
@@ -2462,12 +2462,12 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 0;
       r1[0].second = 15;
-      vector<Bool> m0(v0.size(), True);
-      m0[4] = False;
-      m0[8] = False;
-      hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size() / 2, r0, False);
+      vector<bool> m0(v0.size(), true);
+      m0[4] = false;
+      m0[8] = false;
+      hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size() / 2, r0, false);
       hfs.addData(v0.begin() + v0.size() / 2, w0.begin() + w0.size() / 2,
-                  m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2, r1, True);
+                  m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2, r1, true);
       StatsData<Double> sd = hfs.getStatistics();
       Double eSum = 80;
       Double eSumWeights = 9;
@@ -2510,7 +2510,7 @@ int main() {
       // 2, 6, 10, -1
       // 11
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -2525,9 +2525,9 @@ int main() {
       w0[9] = 2;
       w0[10] = 1;
       w0[11] = 2;
-      vector<Bool> m0(v0.size(), True);
-      m0[4] = False;
-      m0[8] = False;
+      vector<bool> m0(v0.size(), true);
+      m0[4] = false;
+      m0[8] = false;
       hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, w0.begin() + w0.size() / 2,
                   m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2);
@@ -2573,7 +2573,7 @@ int main() {
       // 2, 6, 10, -1
       // 11
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                              vector<Int>::const_iterator>
           hfs(0);
       vector<Int> w0(v0.size());
@@ -2589,9 +2589,9 @@ int main() {
       w0[9] = 2;
       w0[10] = 1;
       w0[11] = 2;
-      vector<Bool> m0(v0.size(), True);
-      m0[4] = False;
-      m0[8] = False;
+      vector<bool> m0(v0.size(), true);
+      m0[4] = false;
+      m0[8] = false;
       hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, w0.begin() + w0.size() / 2,
                   m0.begin() + m0.size() / 2, v0.size() - v0.size() / 2);
@@ -2631,7 +2631,7 @@ int main() {
       // 5, 2, 6, 10, 7
       // 11, 6
 
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2);
@@ -2642,22 +2642,22 @@ int main() {
     }
     {
       // general quantile exceptions
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2);
-      Bool thrown = False;
+      bool thrown = false;
       try {
         hfs.getQuantile(0);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         hfs.getQuantile(1);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
     }
@@ -2666,7 +2666,7 @@ int main() {
       // 5, 2, 6, 10, 7
       // 11, 6
       // 2, 5, 6, 6, 7, 10, 11
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2);
@@ -2715,7 +2715,7 @@ int main() {
       // 11, 6
       // 2, 5, 6, 6, 7, 10, 11
       // 4, 1, 0, 0, 1, 4, 5
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(v0.begin(), v0.size() / 2);
       hfs.addData(v0.begin() + v0.size() / 2, v0.size() - v0.size() / 2);
@@ -2724,7 +2724,7 @@ int main() {
     }
     {
       // getMedian() with binning, no ranges, weights, or mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -2733,7 +2733,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed() with binning, no ranges, weights, or mask
-      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -2743,7 +2743,7 @@ int main() {
     {
       // large array with all the same values, getMedianAndQuartile()
       vector<Float> big(100000, 0);
-      HingesFencesStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator>
+      HingesFencesStatistics<Double, vector<Float>::const_iterator, vector<bool>::const_iterator>
           hfs(0);
       hfs.addData(big.begin(), big.size());
       std::set<Double> quantiles;

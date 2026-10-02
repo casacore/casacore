@@ -98,18 +98,18 @@ class DynLib {
   // <br>If <src>closeOnDestruction=True</src>, the dynamic library is
   // closed on destruction of the DynLib object.
   DynLib(const std::string& library, const std::string& prefix = std::string(),
-         const std::string& funcName = std::string(), bool closeOnDestruction = True);
+         const std::string& funcName = std::string(), bool closeOnDestruction = true);
 
   // The same as above, but it is tried with and without the given version
   // (in that order).
   DynLib(const std::string& library, const std::string& prefix, const std::string& version,
-         const std::string& funcName, bool closeOnDestruction = True);
+         const std::string& funcName, bool closeOnDestruction = true);
 
   // Load the dynamic library with the given name, prefix, and suffix.
   // If not loaded successfully, the internal handle is NULL.
   // <br>If <src>closeOnDestruction=True</src>, the dynamic library is closed
   // when the DynLib object is destructed.
-  DynLib(const std::string& library, Bool closeOnDestruction, const std::string& prefix = "lib",
+  DynLib(const std::string& library, bool closeOnDestruction, const std::string& prefix = "lib",
 #ifdef __APPLE__
          const std::string& suffix = ".dylib");
 #else
@@ -170,7 +170,7 @@ class DynLib {
   // # Handle to dynamic library; note that the pointer is not owned, so the
   // # generated copy ctor and assignment are fine.
   void* itsHandle;
-  Bool itsDoClose;
+  bool itsDoClose;
   std::string itsError;
 };
 

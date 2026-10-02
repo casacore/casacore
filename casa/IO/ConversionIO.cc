@@ -64,7 +64,7 @@ ConversionIO& ConversionIO::operator=(const ConversionIO& that) {
 ConversionIO::~ConversionIO() { delete[] itsBuffer; }
 
 template <typename T>
-void ConversionIO::initType(uInt& size, Bool& copy) const {
+void ConversionIO::initType(uInt& size, bool& copy) const {
   copy = itsConversion->canCopyGeneric<T>();
   size = itsConversion->externalSizeGeneric<T>();
 }
@@ -82,7 +82,7 @@ void ConversionIO::init() {
   initType<Double>(itsSizeDouble, itsCopyDouble);
 }
 
-size_t ConversionIO::write(size_t nvalues, const Bool* value) {
+size_t ConversionIO::write(size_t nvalues, const bool* value) {
   return TypeIO::write(nvalues, value);
 }
 
@@ -98,7 +98,7 @@ size_t ConversionIO::write(size_t nvalues, const String* value) {
   return TypeIO::write(nvalues, value);
 }
 
-size_t ConversionIO::read(size_t nvalues, Bool* value) { return TypeIO::read(nvalues, value); }
+size_t ConversionIO::read(size_t nvalues, bool* value) { return TypeIO::read(nvalues, value); }
 
 size_t ConversionIO::read(size_t nvalues, Complex* value) { return TypeIO::read(nvalues, value); }
 

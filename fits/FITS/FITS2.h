@@ -45,7 +45,7 @@ class String;  // Forward declaration
 // and copy() then these functions won't be necessary.
 //<group name=ReadFITSin>
 template <class StorageType>
-void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, Bool &ok,
+void ReadFITSin(PrimaryArray<StorageType> &fitsdata, Array<Float> &data, bool &ok,
                 String &ErrorMessage, String *unitName, Vector<String> *axisNames,
                 Vector<Float> *refPixel, Vector<Float> *refLocation, Vector<Float> *delta,
                 std::map<String, Double> *keywords, String *objectName);

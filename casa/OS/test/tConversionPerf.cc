@@ -32,7 +32,7 @@
 #include <casacore/casa/namespace.h>
 // This program tests various ways to convert bits to Bools and vice-versa.
 
-void bool2char(unsigned char* out, const Bool* in, size_t nr) {
+void bool2char(unsigned char* out, const bool* in, size_t nr) {
   // Define the union that equivalences an unsigned char to 8 bits.
   // This works slightly faster than the boolToBit implementation,
   // but is a bit more tricky and maybe less portable.
@@ -76,7 +76,7 @@ void bool2char(unsigned char* out, const Bool* in, size_t nr) {
 }
 
 size_t boolToBit(void* to, const void* from, size_t nvalues) {
-  const Bool* data = (const Bool*)from;
+  const bool* data = (const bool*)from;
   unsigned char* bits = (unsigned char*)to;
   // # Fill as many full bytes as possible.
   size_t nfbytes = nvalues / 8;
@@ -113,7 +113,7 @@ size_t boolToBit(void* to, const void* from, size_t nvalues) {
 }
 
 void boolToBit(void* to, const void* from, size_t startBit, size_t nvalues) {
-  const Bool* data = (const Bool*)from;
+  const bool* data = (const bool*)from;
   unsigned char* bits = (unsigned char*)to;
   // # Determine the first and last byte to be set
   // # and the first and last bit in the first and last byte.
@@ -181,11 +181,11 @@ void checkPerf() {
   for (uInt i = 0; i < 256; ++i) {
     bits[i] = i;
   }
-  Bool flagArr[8 * 260];
+  bool flagArr[8 * 260];
   // Make sure to use an aligned array.
-  Bool* flags = flagArr;
+  bool* flags = flagArr;
   cout << "unaligned flag pointer " << flags << endl;
-  flags = (Bool*)(8 * (((unsigned long long)flags - 1) / 8 + 1));
+  flags = (bool*)(8 * (((unsigned long long)flags - 1) / 8 + 1));
   cout << "  aligned flag pointer " << flags << endl;
   // Time difference between old and optimized version.
   {

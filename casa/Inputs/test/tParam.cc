@@ -111,7 +111,7 @@ int main() {
     AlwaysAssertExit(String("unit") == deflt.getUnit());
 
     // set a parameter as a system parameter
-    deflt.setSystem(True);
+    deflt.setSystem(true);
 
     // check if a parameter is a system parameter
     AlwaysAssertExit(deflt.isSystem());

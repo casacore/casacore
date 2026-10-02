@@ -31,7 +31,7 @@
 using namespace casacore;
 
 template <typename T>
-void testDT(DataType dt, DataType arrdt, uInt sz, Bool isC = False) {
+void testDT(DataType dt, DataType arrdt, uInt sz, bool isC = false) {
   // Test scalar.
   HDF5DataType hdt((T*)0);
   AlwaysAssertExit(hdt.size() == sz);
@@ -65,7 +65,7 @@ void testCompound() {
   names.push_back("fa1");
   names.push_back("fa2");
   names.push_back("fc");
-  types.push_back(HDF5DataType(HDF5DataType((Bool*)0), IPosition(1, 8)));
+  types.push_back(HDF5DataType(HDF5DataType((bool*)0), IPosition(1, 8)));
   types.push_back(HDF5DataType(HDF5DataType((DComplex*)0), IPosition(2, 1, 2)));
   types.push_back(dtcom1);
   HDF5DataType dtcom2(names, types);
@@ -79,7 +79,7 @@ int main() {
     return 3;
   }
   try {
-    testDT<Bool>(TpBool, TpArrayBool, 1);
+    testDT<bool>(TpBool, TpArrayBool, 1);
     testDT<uChar>(TpUChar, TpArrayUChar, 1);
     testDT<Short>(TpShort, TpArrayShort, 2);
     testDT<Int>(TpInt, TpArrayInt, 4);
@@ -87,8 +87,8 @@ int main() {
     testDT<Int64>(TpInt64, TpArrayInt64, 8);
     testDT<Float>(TpFloat, TpArrayFloat, 4);
     testDT<Double>(TpDouble, TpArrayDouble, 8);
-    testDT<Complex>(TpComplex, TpArrayComplex, 8, True);
-    testDT<DComplex>(TpDComplex, TpArrayDComplex, 16, True);
+    testDT<Complex>(TpComplex, TpArrayComplex, 8, true);
+    testDT<DComplex>(TpDComplex, TpArrayDComplex, 16, true);
     testCompound();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
