@@ -37,7 +37,7 @@
 #include <hdf5.h>
 #else
 typedef int64_t hid_t;
-typedef casacore::uint64_t hsize_t;
+typedef uint64_t hsize_t;
 #endif
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
