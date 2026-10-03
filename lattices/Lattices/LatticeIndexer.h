@@ -222,7 +222,7 @@ class LatticeIndexer {
 
  private:
   IPosition itsFullShape;  // # Size of the main-Lattice.
-  unsigned int itsNdim;            // # Number of dimensions in the main/sub-Lattice
+  unsigned int itsNdim;    // # Number of dimensions in the main/sub-Lattice
   IPosition itsShape;      // # Shape of the sub-Lattice
   IPosition itsAxisInc;    // # Increment along each axis of main Lattice
   IPosition itsOffset;     // # Offset between a sub-Lattice and the main one.

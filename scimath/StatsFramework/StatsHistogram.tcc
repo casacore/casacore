@@ -35,7 +35,8 @@
 namespace casacore {
 
 template <class AccumType>
-StatsHistogram<AccumType>::StatsHistogram(AccumType minLimit, AccumType maxLimit, unsigned int nBins)
+StatsHistogram<AccumType>::StatsHistogram(AccumType minLimit, AccumType maxLimit,
+                                          unsigned int nBins)
     : _binWidth(0),
       _minHistLimit(minLimit),
       _maxHistLimit(maxLimit),

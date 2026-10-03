@@ -259,20 +259,20 @@ void StatisticsUtilities<AccumType>::convertToAbsDevMedArray(DataArray& myArray,
 }
 
 template <class AccumType>
-std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
-    DataArray& myArray, const std::set<uInt64>& indices) {
+std::map<uint64_t, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
+    DataArray& myArray, const std::set<uint64_t>& indices) {
   auto arySize = myArray.size();
   ThrowIf(*indices.rbegin() >= arySize, "Logic Error: Index " + ValueToString(*indices.rbegin()) +
                                             " is too "
                                             "large. The sorted array has size " +
                                             ValueToString(arySize));
-  std::map<uInt64, AccumType> indexToValuesMap;
-  uInt64 lastIndex = 0;
-  for_each(indices.cbegin(), indices.cend(), [&myArray, &lastIndex, &arySize](uInt64 index) {
+  std::map<uint64_t, AccumType> indexToValuesMap;
+  uint64_t lastIndex = 0;
+  for_each(indices.cbegin(), indices.cend(), [&myArray, &lastIndex, &arySize](uint64_t index) {
     GenSort<AccumType>::kthLargest(&myArray[lastIndex], arySize - lastIndex, index - lastIndex);
     lastIndex = index;
   });
-  for_each(indices.cbegin(), indices.cend(), [&myArray, &indexToValuesMap](uInt64 index) {
+  for_each(indices.cbegin(), indices.cend(), [&myArray, &indexToValuesMap](uint64_t index) {
     indexToValuesMap[index] = myArray[index];
   });
   return indexToValuesMap;
@@ -291,7 +291,7 @@ void StatisticsUtilities<AccumType>::mergeResults(
     auto titer = tBins[idx8].cbegin();
     for_each(bins.begin(), bins.end(), [&titer](BinCountArray& bcArray) {
       std::transform(bcArray.begin(), bcArray.end(), titer->begin(), bcArray.begin(),
-                     std::plus<Int64>());
+                     std::plus<int64_t>());
       ++titer;
     });
     // typename std::vector<std::shared_ptr<AccumType>>::iterator siter;

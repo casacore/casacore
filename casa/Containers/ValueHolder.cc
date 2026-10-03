@@ -38,7 +38,7 @@ ValueHolder::ValueHolder(short value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(unsigned short value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(int value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(unsigned int value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(Int64 value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(int64_t value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(float value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(double value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Complex& value) : itsRep(new ValueHolderRep(value)) {}
@@ -51,7 +51,7 @@ ValueHolder::ValueHolder(const Array<short>& value) : itsRep(new ValueHolderRep(
 ValueHolder::ValueHolder(const Array<unsigned short>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<int>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<unsigned int>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<Int64>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<int64_t>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<float>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<double>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<Complex>& value) : itsRep(new ValueHolderRep(value)) {}

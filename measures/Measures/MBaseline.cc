@@ -97,7 +97,9 @@ const String &MBaseline::showType(MBaseline::Types tp) {
   return tname[tp];
 }
 
-const String &MBaseline::showType(unsigned int tp) { return MBaseline::showType(MBaseline::castType(tp)); }
+const String &MBaseline::showType(unsigned int tp) {
+  return MBaseline::showType(MBaseline::castType(tp));
+}
 
 const String *MBaseline::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
   static const int N_name = 24;

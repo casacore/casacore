@@ -214,10 +214,10 @@ class BucketCache {
   // bucketSize*nrOfBuckets bytes.
   // When the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketCache(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets,
-              unsigned int cacheSize, void* ownerObject, BucketCacheToLocal readCallBack,
-              BucketCacheFromLocal writeCallBack, BucketCacheAddBuffer addCallBack,
-              BucketCacheDeleteBuffer deleteCallBack);
+  BucketCache(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+              unsigned int nrOfBuckets, unsigned int cacheSize, void* ownerObject,
+              BucketCacheToLocal readCallBack, BucketCacheFromLocal writeCallBack,
+              BucketCacheAddBuffer addCallBack, BucketCacheDeleteBuffer deleteCallBack);
 
   ~BucketCache();
 
@@ -288,11 +288,11 @@ class BucketCache {
 
   // Get a part from the file outside the cached area.
   // It is checked if that part is indeed outside the cached file area.
-  void get(char* buf, unsigned int length, Int64 offset);
+  void get(char* buf, unsigned int length, int64_t offset);
 
   // Put a part from the file outside the cached area.
   // It is checked if that part is indeed outside the cached file area.
-  void put(const char* buf, unsigned int length, Int64 offset);
+  void put(const char* buf, unsigned int length, int64_t offset);
 
   // Get the bucket number of the first free bucket.
   // -1 = no free buckets.
@@ -321,7 +321,7 @@ class BucketCache {
   // The delete callback function.
   BucketCacheDeleteBuffer its_DeleteCallBack;
   // The starting offsets of the buckets in the file.
-  Int64 its_StartOffset;
+  int64_t its_StartOffset;
   // The bucket size.
   unsigned int its_BucketSize;
   // The current nr of buckets in the file.
@@ -382,7 +382,7 @@ class BucketCache {
   void initializeBuckets(unsigned int bucketNr);
 
   // Check if the offset of a non-cached part is correct.
-  void checkOffset(unsigned int length, Int64 offset) const;
+  void checkOffset(unsigned int length, int64_t offset) const;
 };
 
 inline unsigned int BucketCache::cacheSize() const { return its_CacheSize; }

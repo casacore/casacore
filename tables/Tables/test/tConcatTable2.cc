@@ -120,8 +120,8 @@ void fill(const String& name, const String& name2, int stval) {
   }
 }
 
-void checkTable(const Table& tab, unsigned int nkey, unsigned int nsubrow, int stval, bool reorder = true,
-                unsigned int nrow = 10) {
+void checkTable(const Table& tab, unsigned int nkey, unsigned int nsubrow, int stval,
+                bool reorder = true, unsigned int nrow = 10) {
   AlwaysAssertExit(tab.nrow() == nrow);
   AlwaysAssertExit(tab.keywordSet().nfields() == nkey);
   AlwaysAssertExit(tab.keywordSet().asInt("key1") == 1);
@@ -167,7 +167,9 @@ void checkTable(const Table& tab, unsigned int nkey, unsigned int nsubrow, int s
   }
 }
 
-void check(const String& name, unsigned int nkey, int stval) { checkTable(Table(name), nkey, 10, stval); }
+void check(const String& name, unsigned int nkey, int stval) {
+  checkTable(Table(name), nkey, 10, stval);
+}
 
 void checkComb(const String& name1, const String& name2, unsigned int nkey, int stval) {
   Block<Table> tabs(2);

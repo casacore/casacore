@@ -207,12 +207,12 @@ class LSQMatrix : public RecordTransformable {
   // <group>
   static bool putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
                         const double *const in);
-  static bool getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
-                        double *&out);
+  static bool getCArray(String &error, const RecordInterface &in, const String &fname,
+                        unsigned int len, double *&out);
   static bool putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
                         const unsigned int *const in);
-  static bool getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
-                        unsigned int *&out);
+  static bool getCArray(String &error, const RecordInterface &in, const String &fname,
+                        unsigned int len, unsigned int *&out);
   // </group>
 
   // Save or restore using AipsIO.

@@ -168,7 +168,7 @@ class RegularFile : public File {
 
   // Return the size of the file. If the file
   // does not exist, an exception will be thrown.
-  virtual Int64 size() const;
+  virtual int64_t size() const;
 
  private:
   // Check if the path of the file is valid.

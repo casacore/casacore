@@ -279,7 +279,8 @@ class Chebyshev : public ChebyshevParamModeImpl<T> {
   // <linkto class="ChebyshevParam">ChebyshevPara::setMode()</linkto>
   // function.
   // <group>
-  Chebyshev(unsigned int order, const RecordInterface &mode) : ChebyshevParamModeImpl<T>(order, mode) {}
+  Chebyshev(unsigned int order, const RecordInterface &mode)
+      : ChebyshevParamModeImpl<T>(order, mode) {}
   Chebyshev(const Vector<T> &coeffs, const RecordInterface &mode)
       : ChebyshevParamModeImpl<T>(coeffs, mode) {}
   // </group>

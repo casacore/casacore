@@ -180,9 +180,9 @@ void CompressComplex::findMinMax(float& minVal, float& maxVal, const Array<Compl
   setNaN(maxVal);
   bool deleteIt;
   const Complex* data = array.getStorage(deleteIt);
-  const Int64 nr = array.nelements();
+  const int64_t nr = array.nelements();
   bool firstTime = true;
-  for (Int64 i = 0; i < nr; i++) {
+  for (int64_t i = 0; i < nr; i++) {
     if (isFinite(data[i].real()) && isFinite(data[i].imag())) {
       float tmp = data[i].real();
       if (firstTime) {
@@ -228,8 +228,8 @@ void CompressComplex::scaleOnGet(float scale, float offset, Array<Complex>& arra
   bool deleteIn, deleteOut;
   Complex* out = array.getStorage(deleteOut);
   const int* in = target.getStorage(deleteIn);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     int r = in[i] / 65536;
     if (r == -32768) {
       setNaN(out[i]);
@@ -255,8 +255,8 @@ void CompressComplex::scaleOnPut(float scale, float offset, const Array<Complex>
   bool deleteIn, deleteOut;
   const Complex* in = array.getStorage(deleteIn);
   int* out = target.getStorage(deleteOut);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     if (!isFinite(in[i].real()) || !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else {
@@ -601,9 +601,9 @@ void CompressComplexSD::findMinMax(float& minVal, float& maxVal,
   setNaN(maxVal);
   bool deleteIt;
   const Complex* data = array.getStorage(deleteIt);
-  const Int64 nr = array.nelements();
+  const int64_t nr = array.nelements();
   bool firstTime = true;
-  for (Int64 i = 0; i < nr; i++) {
+  for (int64_t i = 0; i < nr; i++) {
     if (isFinite(data[i].real()) && isFinite(data[i].imag())) {
       float tmp = data[i].real();
       if (firstTime) {
@@ -637,8 +637,8 @@ void CompressComplexSD::scaleOnGet(float scale, float offset, Array<Complex>& ar
   bool deleteIn, deleteOut;
   Complex* out = array.getStorage(deleteOut);
   const int* in = target.getStorage(deleteIn);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     int inval = in[i];
     if (inval % 2 == 0) {
       inval >>= 1;
@@ -673,8 +673,8 @@ void CompressComplexSD::scaleOnPut(float scale, float offset, const Array<Comple
   bool deleteIn, deleteOut;
   const Complex* in = array.getStorage(deleteIn);
   int* out = target.getStorage(deleteOut);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     if (!isFinite(in[i].real()) || !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else if (in[i].imag() == 0) {

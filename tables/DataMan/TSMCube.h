@@ -110,7 +110,7 @@ class TSMCube {
   // can be added later with setShape. That is only used by TiledCellStMan.
   // <br> The fileOffset argument is meant for class TiledFileAccess.
   TSMCube(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape, const IPosition& tileShape,
-          const Record& values, Int64 fileOffset, bool useDerived = false);
+          const Record& values, int64_t fileOffset, bool useDerived = false);
 
   // Reconstruct the hypercube by reading its data from the AipsIO stream.
   // It will link itself to the correct TSMFile. The TSMFile objects
@@ -192,7 +192,7 @@ class TSMCube {
 
   // Extend the last dimension of the cube with the given number.
   // The record can contain the coordinates of the elements added.
-  virtual void extend(uInt64 nr, const Record& coordValues, const TSMColumn* lastCoordColumn);
+  virtual void extend(uint64_t nr, const Record& coordValues, const TSMColumn* lastCoordColumn);
 
   // Extend the coordinates vector for the given coordinate
   // to the given length with the given coordValues.
@@ -203,14 +203,14 @@ class TSMCube {
   // Read or write a section in the cube.
   // It is assumed that the section buffer is long enough.
   virtual void accessSection(const IPosition& start, const IPosition& end, char* section,
-                             unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
-                             bool writeFlag);
+                             unsigned int colnr, unsigned int localPixelSize,
+                             unsigned int externalPixelSize, bool writeFlag);
 
   // Read or write a section in a strided way.
   // It is assumed that the section buffer is long enough.
   virtual void accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
-                             char* section, unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
-                             bool writeFlag);
+                             char* section, unsigned int colnr, unsigned int localPixelSize,
+                             unsigned int externalPixelSize, bool writeFlag);
 
   // Get the current cache size (in buckets).
   unsigned int cacheSize() const;
@@ -219,11 +219,12 @@ class TSMCube {
   // and access path.
   // <group>
   unsigned int calcCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
-                     const IPosition& windowLength, const IPosition& axisPath) const;
-  static unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape, bool extensible,
-                            const IPosition& sliceShape, const IPosition& windowStart,
-                            const IPosition& windowLength, const IPosition& axisPath,
-                            unsigned int maxCacheSizeMiB, unsigned int bucketSize);
+                             const IPosition& windowLength, const IPosition& axisPath) const;
+  static unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                                    bool extensible, const IPosition& sliceShape,
+                                    const IPosition& windowStart, const IPosition& windowLength,
+                                    const IPosition& axisPath, unsigned int maxCacheSizeMiB,
+                                    unsigned int bucketSize);
   // </group>
 
   // Set the cache size for the given slice and access path.
@@ -246,7 +247,8 @@ class TSMCube {
   // Otherwise the maximum is returned.
   // <group>
   unsigned int validateCacheSize(unsigned int cacheSize) const;
-  static unsigned int validateCacheSize(unsigned int cacheSize, unsigned int maxSizeMiB, unsigned int bucketSize);
+  static unsigned int validateCacheSize(unsigned int cacheSize, unsigned int maxSizeMiB,
+                                        unsigned int bucketSize);
   // </group>
 
   // Determine if the user set the cache size (using setCacheSize).
@@ -293,9 +295,10 @@ class TSMCube {
   virtual void deleteCache();
 
   // Access a line in a more optimized way.
-  void accessLine(char* section, unsigned int pixelOffset, unsigned int localPixelSize, bool writeFlag,
-                  BucketCache* cachePtr, const IPosition& startTile, unsigned int endTile,
-                  const IPosition& startPixelInFirstTile, unsigned int endPixelInLastTile, unsigned int lineIndex);
+  void accessLine(char* section, unsigned int pixelOffset, unsigned int localPixelSize,
+                  bool writeFlag, BucketCache* cachePtr, const IPosition& startTile,
+                  unsigned int endTile, const IPosition& startPixelInFirstTile,
+                  unsigned int endPixelInLastTile, unsigned int lineIndex);
 
   // Define the callback functions for the BucketCache.
   // <group>
@@ -346,7 +349,7 @@ class TSMCube {
   // Pointer to the TSMFile object holding the data.
   TSMFile* filePtr_p;
   // Offset in the TSMFile object where the data of this hypercube starts.
-  Int64 fileOffset_p;
+  int64_t fileOffset_p;
   // Offset for each data column in a tile (in external format).
   Block<unsigned int> externalOffset_p;
   // Offset for each data column in a tile (in local format).

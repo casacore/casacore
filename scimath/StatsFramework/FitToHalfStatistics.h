@@ -76,7 +76,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   // The median is just the center value, so none of the parameters to this
   // method are used.
-  AccumType getMedian(std::shared_ptr<uInt64> knownNpts = nullptr,
+  AccumType getMedian(std::shared_ptr<uint64_t> knownNpts = nullptr,
                       std::shared_ptr<AccumType> knownMin = nullptr,
                       std::shared_ptr<AccumType> knownMax = nullptr,
                       unsigned int binningThreshholdSizeBytes = 4096 * 4096,
@@ -113,14 +113,14 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // possible (and ideally the actual min/max values of the data set).
   AccumType getMedianAndQuantiles(std::map<double, AccumType>& quantiles,
                                   const std::set<double>& fractions,
-                                  std::shared_ptr<uInt64> knownNpts = nullptr,
+                                  std::shared_ptr<uint64_t> knownNpts = nullptr,
                                   std::shared_ptr<AccumType> knownMin = nullptr,
                                   std::shared_ptr<AccumType> knownMax = nullptr,
                                   unsigned int binningThreshholdSizeBytes = 4096 * 4096,
                                   bool persistSortedArray = false, unsigned int nBins = 10000);
 
   // get the median of the absolute deviation about the median of the data.
-  AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
+  AccumType getMedianAbsDevMed(std::shared_ptr<uint64_t> knownNpts = nullptr,
                                std::shared_ptr<AccumType> knownMin = nullptr,
                                std::shared_ptr<AccumType> knownMax = nullptr,
                                unsigned int binningThreshholdSizeBytes = 4096 * 4096,
@@ -129,11 +129,12 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // Get the specified quantiles. <src>fractions</src> must be between 0 and
   // 1, noninclusive.
   std::map<double, AccumType> getQuantiles(const std::set<double>& fractions,
-                                           std::shared_ptr<uInt64> knownNpts = nullptr,
+                                           std::shared_ptr<uint64_t> knownNpts = nullptr,
                                            std::shared_ptr<AccumType> knownMin = nullptr,
                                            std::shared_ptr<AccumType> knownMax = nullptr,
                                            unsigned int binningThreshholdSizeBytes = 4096 * 4096,
-                                           bool persistSortedArray = false, unsigned int nBins = 10000);
+                                           bool persistSortedArray = false,
+                                           unsigned int nBins = 10000);
   // </group>
 
   // scan the dataset(s) that have been added, and find the min and max.
@@ -146,7 +147,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // called and NPTS has been excluded. If setCalculateAsAdded(true) has
   // previously been called after this object has been (re)initialized, an
   // exception will be thrown.
-  uInt64 getNPts();
+  uint64_t getNPts();
 
   // reset object to initial state. Clears all private fields including data,
   // accumulators, global range. It does not affect the center type, center
@@ -172,22 +173,22 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   // <group>
   // no weights, no mask, no ranges
-  void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                        const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride);
+  void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+                        const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride);
 
   // no weights, no mask
-  void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                        const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+  void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+                        const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
                         const DataRanges& ranges, bool isInclude);
 
-  void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                        const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+  void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+                        const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
                         const MaskIterator& maskBegin, unsigned int maskStride);
 
-  void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                        const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                        const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-                        bool isInclude);
+  void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+                        const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+                        const MaskIterator& maskBegin, unsigned int maskStride,
+                        const DataRanges& ranges, bool isInclude);
   // </group>
 
   void _updateDataProviderMaxMin(const StatsData<AccumType>& threadStats);
@@ -195,21 +196,23 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // <group>
   // has weights, but no mask, no ranges
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
-                      const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-                      unsigned int dataStride);
+                      const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+                      uint64_t nr, unsigned int dataStride);
 
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
-                      const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-                      unsigned int dataStride, const DataRanges& ranges, bool isInclude);
+                      const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+                      uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
+                      bool isInclude);
 
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
-                      const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
-                      unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride);
+                      const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+                      uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                      unsigned int maskStride);
 
   void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
-                      const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
-                      unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
-                      const DataRanges& ranges, bool isInclude);
+                      const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+                      uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                      unsigned int maskStride, const DataRanges& ranges, bool isInclude);
   // </group>
 
  private:

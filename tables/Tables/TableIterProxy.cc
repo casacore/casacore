@@ -139,8 +139,8 @@ void TableIterProxy::makeStepIter(const Table& tab, const Block<String>& columns
           comps[i] = std::make_shared<CompareIntervalInt<unsigned int>>(iterSteps[i], start);
         } break;
         case TpInt64: {
-          Int64 start = ScalarColumn<Int64>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<Int64>>(iterSteps[i], start);
+          int64_t start = ScalarColumn<int64_t>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<int64_t>>(iterSteps[i], start);
         } break;
         case TpFloat: {
           float start = ScalarColumn<float>(sortab, columns[i])(0);

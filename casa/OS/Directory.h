@@ -214,7 +214,7 @@ class Directory : public File {
   static Vector<String> shellExpand(const Vector<String>& files, bool stripPath = false);
   // Return the total size  of everything in the Directory. If the Directory
   // does not exist, an exception will be thrown.
-  virtual Int64 size() const;
+  virtual int64_t size() const;
 
   // Check if a directory is mounted via NFS or not.
   bool isNFSMounted() const;
@@ -234,7 +234,9 @@ inline void Directory::copy(const String& target, bool overwrite,
   copy(Path(target), overwrite, setUserWritePermission);
 }
 inline void Directory::move(const String& target, bool overwrite) { move(Path(target), overwrite); }
-inline unsigned int Directory::freeSpaceInMB() const { return static_cast<unsigned int>(0.5 + freeSpace() / (1024 * 1024)); }
+inline unsigned int Directory::freeSpaceInMB() const {
+  return static_cast<unsigned int>(0.5 + freeSpace() / (1024 * 1024));
+}
 
 }  // namespace casacore
 

@@ -61,11 +61,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
 template <class HDUType>
-void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<float>*& pNewImage, String& error,
-                                                  const String& newImageName, const unsigned int whichRep,
-                                                  HDUType& fitsImage, const String& fitsFilename,
-                                                  const DataType dataType, const unsigned int memoryInMB,
-                                                  const bool zeroBlanks) {
+void ImageFITSConverterImpl<HDUType>::FITSToImage(
+    ImageInterface<float>*& pNewImage, String& error, const String& newImageName,
+    const unsigned int whichRep, HDUType& fitsImage, const String& fitsFilename,
+    const DataType dataType, const unsigned int memoryInMB, const bool zeroBlanks) {
   LogIO os(LogOrigin("ImageFITSConverterImpl", __FUNCTION__, WHERE));
   // Crack the header and get what we need out of it.  DOn't get tricked
   // by the fact that HDUType is referring to the template type, not

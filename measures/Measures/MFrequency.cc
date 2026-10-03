@@ -110,10 +110,10 @@ const String *MFrequency::allMyTypes(int &nall, int &nextra, const unsigned int 
   static const String tname[N_name] = {"REST", "LSRK",    "LSRD",   "BARY", "GEO",
                                        "TOPO", "GALACTO", "LGROUP", "CMB",  "Undefined"};
 
-  static const unsigned int oname[N_name] = {MFrequency::REST,     MFrequency::LSRK,   MFrequency::LSRD,
-                                     MFrequency::BARY,     MFrequency::GEO,    MFrequency::TOPO,
-                                     MFrequency::GALACTO,  MFrequency::LGROUP, MFrequency::CMB,
-                                     MFrequency::Undefined};
+  static const unsigned int oname[N_name] = {
+      MFrequency::REST, MFrequency::LSRK,     MFrequency::LSRD,    MFrequency::BARY,
+      MFrequency::GEO,  MFrequency::TOPO,     MFrequency::GALACTO, MFrequency::LGROUP,
+      MFrequency::CMB,  MFrequency::Undefined};
 
   MFrequency::checkMyTypes();
   nall = N_name;

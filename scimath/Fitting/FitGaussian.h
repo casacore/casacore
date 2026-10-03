@@ -161,8 +161,8 @@ class FitGaussian {
   // The fit will retry from different initial estimates until it converges
   // to a value with an RMS error less than maximumRMS.  If this cannot be
   // accomplished it will simply take the result that generated the best RMS.
-  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS = 1.0, unsigned int maxiter = 1024,
-                T convcriteria = 0.0001);
+  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS = 1.0,
+                unsigned int maxiter = 1024, T convcriteria = 0.0001);
   Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, const Vector<T>& sigma,
                 T maximumRMS = 1.0, unsigned int maxiter = 1024, T convcriteria = 0.0001);
 
@@ -187,10 +187,10 @@ class FitGaussian {
   unsigned int itsDimension;   // how many dimensions (1, 2, or 3)
   unsigned int itsNGaussians;  // number of gaussians to fit
   unsigned int itsMaxRetries;  // maximum number of retries to attempt
-  double itsMaxTime;   // maximum time to spend fitting in secs
-  T itsChisquare;      // chisquare of fit
-  T itsRMS;            // RMS of fit (sqrt[chisquare / N])
-  bool itsSuccess;     // flags success or failure
+  double itsMaxTime;           // maximum time to spend fitting in secs
+  T itsChisquare;              // chisquare of fit
+  T itsRMS;                    // RMS of fit (sqrt[chisquare / N])
+  bool itsSuccess;             // flags success or failure
   LogIO os;
 
   Matrix<T> itsFirstEstimate;  // user's estimate.

@@ -103,7 +103,7 @@ class MSPolarizationColumns {
   // others are tested. Setting tryRow to a positive value greater than the
   // table length will throw an exception (AipsError), when compiled in debug
   // mode.
-  Int64 match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow = -1);
+  int64_t match(const Vector<Stokes::StokesTypes>& polType, int64_t tryRow = -1);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

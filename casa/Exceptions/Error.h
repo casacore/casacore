@@ -185,7 +185,8 @@ class AipsError : public std::exception {
   // <group>
   AipsError(const char *str, Category c = GENERAL);
   AipsError(const String &str, Category c = GENERAL);
-  AipsError(const String &msg, const String &filename, unsigned int lineNumber, Category c = GENERAL);
+  AipsError(const String &msg, const String &filename, unsigned int lineNumber,
+            Category c = GENERAL);
   AipsError(Category c = GENERAL);
   // </group>
 
@@ -451,8 +452,8 @@ class SystemCallError : public AipsError {
   // and the errno.
   SystemCallError(const String &funcName, int error, Category c = GENERAL);
 
-  SystemCallError(int error, const std::string &msg, const std::string &filename, unsigned int lineNumber,
-                  Category c = GENERAL);
+  SystemCallError(int error, const std::string &msg, const std::string &filename,
+                  unsigned int lineNumber, Category c = GENERAL);
 
   // Destructor which does nothing.
   ~SystemCallError() noexcept;

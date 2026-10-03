@@ -121,7 +121,8 @@ class PixelCurve1D {
 
   // Get the pixel coordinates in the original lattice for point start
   // till end with given step.
-  void getPixelCoord(Vector<float>& x, Vector<float>& y, unsigned int start, unsigned int end, unsigned int incr = 1) const;
+  void getPixelCoord(Vector<float>& x, Vector<float>& y, unsigned int start, unsigned int end,
+                     unsigned int incr = 1) const;
 
  private:
   // Initialize the object.

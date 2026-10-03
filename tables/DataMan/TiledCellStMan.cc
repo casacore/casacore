@@ -44,7 +44,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TiledCellStMan::TiledCellStMan() : TiledStMan() {}
 
 TiledCellStMan::TiledCellStMan(const String& hypercolumnName, const IPosition& defaultTileShape,
-                               uInt64 maximumCacheSize)
+                               uint64_t maximumCacheSize)
     : TiledStMan(hypercolumnName, maximumCacheSize), defaultTileShape_p(defaultTileShape) {}
 
 TiledCellStMan::TiledCellStMan(const String& hypercolumnName, const Record& spec)
@@ -145,14 +145,14 @@ void TiledCellStMan::readHeader(rownr_t tabNrrow, bool firstTime) {
 
 void TiledCellStMan::addRow64(rownr_t nrow) {
   // Resize block when needed.
-  uInt64 size = cubeSet_p.nelements();
+  uint64_t size = cubeSet_p.nelements();
   if (size < nrrow_p + nrow) {
     size += 32;
     if (size < nrrow_p + nrow) {
       size = nrrow_p + nrow;
     }
     cubeSet_p.resize(size);
-    for (uInt64 i = nrrow_p; i < cubeSet_p.nelements(); i++) {
+    for (uint64_t i = nrrow_p; i < cubeSet_p.nelements(); i++) {
       cubeSet_p[i] = 0;
     }
   }

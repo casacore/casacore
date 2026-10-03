@@ -153,7 +153,9 @@ class MSTable : public Table {
   bool isColumnWritable(const String& columnName) const {
     return Table::isColumnWritable(columnName);
   }
-  bool isColumnWritable(unsigned int columnIndex) const { return Table::isColumnWritable(columnIndex); }
+  bool isColumnWritable(unsigned int columnIndex) const {
+    return Table::isColumnWritable(columnIndex);
+  }
   // </group>
 
   // Information about scalar vs array of a column

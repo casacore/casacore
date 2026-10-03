@@ -456,28 +456,28 @@ TableExprNode getColSet(const Table& table) {
             std::make_shared<TableExprNodeArrayConstBool>(ScalarColumn<bool>(tabcol).getColumn());
         break;
       case TpUChar:
-        tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<unsigned char>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(
+            ScalarColumn<unsigned char>(tabcol).getColumn());
         break;
       case TpShort:
         tsnptr =
             std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<short>(tabcol).getColumn());
         break;
       case TpUShort:
-        tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<unsigned short>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(
+            ScalarColumn<unsigned short>(tabcol).getColumn());
         break;
       case TpInt:
         tsnptr =
             std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<int>(tabcol).getColumn());
         break;
       case TpUInt:
-        tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<unsigned int>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(
+            ScalarColumn<unsigned int>(tabcol).getColumn());
         break;
       case TpInt64:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<Int64>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<int64_t>(tabcol).getColumn());
         break;
       case TpFloat:
         tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(
@@ -509,27 +509,27 @@ TableExprNode getColSet(const Table& table) {
             std::make_shared<TableExprNodeArrayConstBool>(ArrayColumn<bool>(tabcol).getColumn());
         break;
       case TpUChar:
-        tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<unsigned char>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(
+            ArrayColumn<unsigned char>(tabcol).getColumn());
         break;
       case TpShort:
         tsnptr =
             std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<short>(tabcol).getColumn());
         break;
       case TpUShort:
-        tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<unsigned short>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(
+            ArrayColumn<unsigned short>(tabcol).getColumn());
         break;
       case TpInt:
         tsnptr = std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<int>(tabcol).getColumn());
         break;
       case TpUInt:
-        tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<unsigned int>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(
+            ArrayColumn<unsigned int>(tabcol).getColumn());
         break;
       case TpInt64:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<Int64>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<int64_t>(tabcol).getColumn());
         break;
       case TpFloat:
         tsnptr =

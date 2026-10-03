@@ -106,8 +106,8 @@ void HDF5Record::readScalar(hid_t attrId, hid_t dtid, const String& name, Record
         } else if (sz == sizeof(int)) {
           readSca<int>(attrId, name, rec);
         } else {
-          AlwaysAssert(sz == sizeof(Int64), AipsError);
-          readSca<Int64>(attrId, name, rec);
+          AlwaysAssert(sz == sizeof(int64_t), AipsError);
+          readSca<int64_t>(attrId, name, rec);
         }
       } else {
         if (sz == 1) {
@@ -162,8 +162,8 @@ void HDF5Record::readArray(hid_t attrId, hid_t dtid, const IPosition& shape, con
         } else if (sz == sizeof(int)) {
           readArr<int>(attrId, shape, name, rec);
         } else {
-          AlwaysAssert(sz == sizeof(Int64), AipsError);
-          readArr<Int64>(attrId, shape, name, rec);
+          AlwaysAssert(sz == sizeof(int64_t), AipsError);
+          readArr<int64_t>(attrId, shape, name, rec);
         }
       } else {
         if (sz == 1) {
@@ -222,7 +222,7 @@ void HDF5Record::readEmptyArray(hid_t attrId, const String& name, RecordInterfac
       rec.define(name, Array<unsigned int>(IPosition(rank, 0)));
       break;
     case TpInt64:
-      rec.define(name, Array<Int64>(IPosition(rank, 0)));
+      rec.define(name, Array<int64_t>(IPosition(rank, 0)));
       break;
     case TpFloat:
       rec.define(name, Array<float>(IPosition(rank, 0)));
@@ -307,7 +307,7 @@ void HDF5Record::doWriteRecord(const HDF5Object& groupHid, const RecordInterface
         writeSca<unsigned int>(groupHid, name, rec, i);
         break;
       case TpInt64:
-        writeSca<Int64>(groupHid, name, rec, i);
+        writeSca<int64_t>(groupHid, name, rec, i);
         break;
       case TpFloat:
         writeSca<float>(groupHid, name, rec, i);
@@ -340,7 +340,7 @@ void HDF5Record::doWriteRecord(const HDF5Object& groupHid, const RecordInterface
         writeArr<unsigned int>(groupHid, name, rec, i);
         break;
       case TpArrayInt64:
-        writeArr<Int64>(groupHid, name, rec, i);
+        writeArr<int64_t>(groupHid, name, rec, i);
         break;
       case TpArrayFloat:
         writeArr<float>(groupHid, name, rec, i);

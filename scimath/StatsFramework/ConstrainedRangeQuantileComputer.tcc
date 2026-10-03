@@ -66,11 +66,9 @@ ConstrainedRangeQuantileComputer<CASA_STATP>::clone() const {
 }
 
 CASA_STATD
-AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(uInt64 mynpts, AccumType mymin,
-                                                                  AccumType mymax,
-                                                                  unsigned int binningThreshholdSizeBytes,
-                                                                  bool persistSortedArray,
-                                                                  unsigned int nBins) {
+AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(
+    uint64_t mynpts, AccumType mymin, AccumType mymax, unsigned int binningThreshholdSizeBytes,
+    bool persistSortedArray, unsigned int nBins) {
   auto median = this->_getMedian();
   if (!median) {
     median.reset(new AccumType(ClassicalQuantileComputer<CASA_STATP>::getMedian(
@@ -82,7 +80,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(uInt64 mynpts,
 
 CASA_STATD
 AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
-    uInt64 mynpts, AccumType mymin, AccumType mymax, unsigned int binningThreshholdSizeBytes,
+    uint64_t mynpts, AccumType mymin, AccumType mymax, unsigned int binningThreshholdSizeBytes,
     bool persistSortedArray, unsigned int nBins) {
   auto medabsdevmed = this->_getMedianAbsDevMedian();
   if (!medabsdevmed) {
@@ -110,7 +108,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
       iMaxLimit = bMaxLimit;                                                             \
       while (iBinDesc != eBinDesc) {                                                     \
         if (myDatum >= iBinDesc->getMinHistLimit() && myDatum < *iMaxLimit) {            \
-          unsigned int idx = iBinDesc->getIndex(myDatum);                                        \
+          unsigned int idx = iBinDesc->getIndex(myDatum);                                \
           ++(*iCounts)[idx];                                                             \
           if (*iAllSame) {                                                               \
             if (!*iSameVal) {                                                            \
@@ -136,7 +134,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc, const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
@@ -150,7 +148,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto bMaxLimit = maxLimit.cbegin();
   auto iMaxLimit = bMaxLimit;
   auto datum = dataBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     _findBinCodeCR StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
   }
@@ -159,7 +157,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
     const DataRanges& ranges, bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
     const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -174,7 +172,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto bMaxLimit = maxLimit.cbegin();
   auto iMaxLimit = bMaxLimit;
   auto datum = dataBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -188,7 +186,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
     const MaskIterator& maskBegin, unsigned int maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc, const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -204,7 +202,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto iMaxLimit = bMaxLimit;
   auto datum = dataBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*mask) {
       _findBinCodeCR
@@ -216,9 +214,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges, bool isInclude,
-    const std::vector<StatsHistogram<AccumType>>& binDesc, const DataArray& maxLimit) const {
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+    bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
+    const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
   auto bSameVal = sameVal.begin();
@@ -232,7 +231,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto iMaxLimit = bMaxLimit;
   auto datum = dataBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -248,7 +247,7 @@ CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
     std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, unsigned int dataStride, const std::vector<StatsHistogram<AccumType>>& binDesc,
+    uint64_t nr, unsigned int dataStride, const std::vector<StatsHistogram<AccumType>>& binDesc,
     const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
@@ -263,7 +262,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto iMaxLimit = bMaxLimit;
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*weight > 0) {
       _findBinCodeCR
@@ -276,7 +275,7 @@ CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
     std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, unsigned int dataStride, const DataRanges& ranges, bool isInclude,
+    uint64_t nr, unsigned int dataStride, const DataRanges& ranges, bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc, const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
@@ -291,7 +290,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto iMaxLimit = bMaxLimit;
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -307,7 +306,7 @@ CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
     std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
     const DataRanges& ranges, bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
     const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -324,7 +323,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -341,7 +340,7 @@ CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
     std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc, const DataArray& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
@@ -357,7 +356,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*mask && *weight > 0) {
       _findBinCodeCR
@@ -378,9 +377,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
                                                                   const DataIterator& dataBegin,
-                                                                  uInt64 nr,
+                                                                  uint64_t nr,
                                                                   unsigned int dataStride) const {
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   while (count < nr) {
     _populateArrayCodeCR1 StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
@@ -388,12 +387,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary
 }
 
 CASA_STATD
-void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
-                                                                  const DataIterator& dataBegin,
-                                                                  uInt64 nr, unsigned int dataStride,
-                                                                  const DataRanges& ranges,
-                                                                  bool isInclude) const {
-  uInt64 count = 0;
+void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const DataRanges& ranges, bool isInclude) const {
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
@@ -406,12 +403,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary
 }
 
 CASA_STATD
-void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
-                                                                  const DataIterator& dataBegin,
-                                                                  uInt64 nr, unsigned int dataStride,
-                                                                  const MaskIterator& maskBegin,
-                                                                  unsigned int maskStride) const {
-  uInt64 count = 0;
+void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride) const {
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
   while (count < nr) {
@@ -424,10 +419,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
-    DataArray& ary, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
     const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
     bool isInclude) const {
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
   auto beginRange = ranges.cbegin();
@@ -443,11 +438,11 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
     unsigned int dataStride) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*weight > 0) {
       _populateArrayCodeCR1
@@ -458,11 +453,11 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
     unsigned int dataStride, const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -476,12 +471,12 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
     unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*mask && *weight > 0) {
       _populateArrayCodeCR1
@@ -493,13 +488,13 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-    bool isInclude) const {
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -536,14 +531,15 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
-    unsigned int dataStride, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    uint64_t nr, unsigned int dataStride, const IncludeLimits& includeLimits,
+    uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
   auto iIncludeLimits = bIncludeLimits;
   auto eIncludeLimits = includeLimits.cend();
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   while (count < nr) {
     _populateArraysCodeCR StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
@@ -552,15 +548,15 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
-    unsigned int dataStride, const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
-    uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    uint64_t nr, unsigned int dataStride, const DataRanges& ranges, bool isInclude,
+    const IncludeLimits& includeLimits, uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
   auto iIncludeLimits = bIncludeLimits;
   auto eIncludeLimits = includeLimits.cend();
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
@@ -574,15 +570,15 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
-    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
-    const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const IncludeLimits& includeLimits, uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
   auto iIncludeLimits = bIncludeLimits;
   auto eIncludeLimits = includeLimits.cend();
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
   while (count < nr) {
@@ -595,15 +591,16 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
-    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-    bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
+    uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
   auto iIncludeLimits = bIncludeLimits;
   auto eIncludeLimits = includeLimits.cend();
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
   auto beginRange = ranges.cbegin();
@@ -619,9 +616,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-    const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+    const IncludeLimits& includeLimits, uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
@@ -629,7 +626,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
   auto eIncludeLimits = includeLimits.cend();
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*weight > 0) {
       _populateArraysCodeCR
@@ -640,9 +637,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride, const DataRanges& ranges,
-    bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+    const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
+    uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
@@ -650,7 +648,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
   auto eIncludeLimits = includeLimits.cend();
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -664,9 +662,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
-    unsigned int maskStride, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const IncludeLimits& includeLimits,
+    uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
@@ -675,7 +674,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   while (count < nr) {
     if (*mask && *weight > 0) {
       _populateArraysCodeCR
@@ -687,10 +686,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
-    unsigned int maskStride, const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
-    uInt64 maxCount) const {
+    std::vector<DataArray>& arys, uint64_t& currentCount, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+    bool isInclude, const IncludeLimits& includeLimits, uint64_t maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
@@ -699,7 +698,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   while (count < nr) {
@@ -724,11 +723,10 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
   }
 
 CASA_STATD
-bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
-                                                                      const DataIterator& dataBegin,
-                                                                      uInt64 nr, unsigned int dataStride,
-                                                                      unsigned int maxElements) const {
-  uInt64 count = 0;
+bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    unsigned int maxElements) const {
+  uint64_t count = 0;
   auto npts = ary.size();
   auto datum = dataBegin;
   while (count < nr) {
@@ -739,9 +737,9 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(DataArray&
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
     const DataRanges& ranges, bool isInclude, unsigned int maxElements) const {
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto npts = ary.size();
   auto datum = dataBegin;
   auto beginRange = ranges.cbegin();
@@ -757,9 +755,9 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
     const MaskIterator& maskBegin, unsigned int maskStride, unsigned int maxElements) const {
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
   auto npts = ary.size();
@@ -774,10 +772,10 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges, bool isInclude,
-    unsigned int maxElements) const {
-  uInt64 count = 0;
+    DataArray& ary, const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+    bool isInclude, unsigned int maxElements) const {
+  uint64_t count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
   auto npts = ary.size();
@@ -795,11 +793,11 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
     unsigned int dataStride, unsigned int maxElements) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto npts = ary.size();
   while (count < nr) {
     if (*weight > 0) {
@@ -812,11 +810,12 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    unsigned int dataStride, const DataRanges& ranges, bool isInclude, unsigned int maxElements) const {
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const DataRanges& ranges, bool isInclude,
+    unsigned int maxElements) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   auto npts = ary.size();
@@ -832,12 +831,13 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride, unsigned int maxElements) const {
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    unsigned int maxElements) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto npts = ary.size();
   while (count < nr) {
     if (*mask && *weight > 0) {
@@ -851,13 +851,13 @@ bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 bool ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
-    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-    bool isInclude, unsigned int maxElements) const {
+    DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const DataRanges& ranges, bool isInclude, unsigned int maxElements) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
-  uInt64 count = 0;
+  uint64_t count = 0;
   auto beginRange = ranges.cbegin();
   auto endRange = ranges.cend();
   auto npts = ary.size();

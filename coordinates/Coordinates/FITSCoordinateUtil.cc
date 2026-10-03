@@ -1697,7 +1697,8 @@ Vector<String> FITSCoordinateUtil::cTypeFromDirection(const Projection& proj,
 
 void FITSCoordinateUtil::setWCS(::wcsprm& wcs) const { Coordinate::set_wcs(wcs); }
 
-bool FITSCoordinateUtil::getCDFromHeader(Matrix<double>& cd, unsigned int n, const RecordInterface& header)
+bool FITSCoordinateUtil::getCDFromHeader(Matrix<double>& cd, unsigned int n,
+                                         const RecordInterface& header)
 //
 // We have to read the CDj_i cards and ultimately pack them into the
 // WCS linprm structure in the right order.
@@ -1752,8 +1753,9 @@ bool FITSCoordinateUtil::getCDFromHeader(Matrix<double>& cd, unsigned int n, con
   return true;
 }
 
-void FITSCoordinateUtil::getPCFromHeader(LogIO& os, int& rotationAxis, Matrix<double>& pc, unsigned int n,
-                                         const RecordInterface& header, const String& sprefix) {
+void FITSCoordinateUtil::getPCFromHeader(LogIO& os, int& rotationAxis, Matrix<double>& pc,
+                                         unsigned int n, const RecordInterface& header,
+                                         const String& sprefix) {
   if (header.isDefined("pc")) {
     // Unlikely to encounter this, as the current WCS papers
     // use the CD rather than PC matrix. The Casacore user binding

@@ -2396,8 +2396,8 @@ bool CoordinateSystem::nearPixel(const CoordinateSystem& other, double tol) cons
 }
 
 String CoordinateSystem::format(String& units, Coordinate::formatType format, double worldValue,
-                                unsigned int worldAxis, bool isAbsolute, bool showAsAbsolute, int precision,
-                                bool usePrecForMixed) const {
+                                unsigned int worldAxis, bool isAbsolute, bool showAsAbsolute,
+                                int precision, bool usePrecForMixed) const {
   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
   //
   int coord, axis;
@@ -3030,14 +3030,15 @@ Vector<String> CoordinateSystem::list(LogIO& os, MDoppler::Types doppler,
 }
 
 void CoordinateSystem::getFieldWidths(
-    LogIO& os, unsigned int& widthAxis, unsigned int& widthCoordType, unsigned int& widthCoordNumber, unsigned int& widthName,
-    unsigned int& widthProj, unsigned int& widthShape, unsigned int& widthTile, unsigned int& widthRefValue, unsigned int& widthRefPixel,
-    unsigned int& widthInc, unsigned int& widthUnits, int& precRefValSci, int& precRefValFloat,
-    int& precRefValRADEC, int& precRefPixFloat, int& precIncSci, String& nameAxis,
-    String& nameCoordType, String& nameCoordNumber, String& nameName, String& nameProj,
-    String& nameShape, String& nameTile, String& nameRefValue, String& nameRefPixel,
-    String& nameInc, String& nameUnits, MDoppler::Types doppler, const IPosition& latticeShape,
-    const IPosition& tileShape) const
+    LogIO& os, unsigned int& widthAxis, unsigned int& widthCoordType,
+    unsigned int& widthCoordNumber, unsigned int& widthName, unsigned int& widthProj,
+    unsigned int& widthShape, unsigned int& widthTile, unsigned int& widthRefValue,
+    unsigned int& widthRefPixel, unsigned int& widthInc, unsigned int& widthUnits,
+    int& precRefValSci, int& precRefValFloat, int& precRefValRADEC, int& precRefPixFloat,
+    int& precIncSci, String& nameAxis, String& nameCoordType, String& nameCoordNumber,
+    String& nameName, String& nameProj, String& nameShape, String& nameTile, String& nameRefValue,
+    String& nameRefPixel, String& nameInc, String& nameUnits, MDoppler::Types doppler,
+    const IPosition& latticeShape, const IPosition& tileShape) const
 //
 // All these silly format and precision things should really be
 // in  a little class, but I can't be bothered !
@@ -3108,29 +3109,31 @@ void CoordinateSystem::getFieldWidths(
   // Compare with header widths.  We only list the coordinate type
   // if we are not listing the shape
 
-  widthAxis = max(nameAxis.length(), widthAxis) + 1;
-  widthCoordType = max(nameCoordType.length(), widthCoordType) + 1;
-  widthCoordNumber = max(nameCoordNumber.length(), widthCoordNumber) + 1;
-  widthName = max(nameName.length(), widthName) + 1;
-  widthProj = max(nameProj.length(), widthProj) + 1;
+  widthAxis = std::max<unsigned int>(nameAxis.length(), widthAxis) + 1;
+  widthCoordType = std::max<unsigned int>(nameCoordType.length(), widthCoordType) + 1;
+  widthCoordNumber = std::max<unsigned int>(nameCoordNumber.length(), widthCoordNumber) + 1;
+  widthName = std::max<unsigned int>(nameName.length(), widthName) + 1;
+  widthProj = std::max<unsigned int>(nameProj.length(), widthProj) + 1;
   if (doShape) {
-    widthShape = max(nameShape.length(), widthShape) + 1;
-    widthTile = max(nameTile.length(), widthTile) + 1;
+    widthShape = std::max<unsigned int>(nameShape.length(), widthShape) + 1;
+    widthTile = std::max<unsigned int>(nameTile.length(), widthTile) + 1;
   }
-  widthRefValue = max(nameRefValue.length(), widthRefValue) + 1;
-  widthRefPixel = max(nameRefPixel.length(), widthRefPixel) + 1;
-  widthInc = max(nameInc.length(), widthInc) + 1;
-  widthUnits = max(nameUnits.length(), widthUnits);
+  widthRefValue = std::max<unsigned int>(nameRefValue.length(), widthRefValue) + 1;
+  widthRefPixel = std::max<unsigned int>(nameRefPixel.length(), widthRefPixel) + 1;
+  widthInc = std::max<unsigned int>(nameInc.length(), widthInc) + 1;
+  widthUnits = std::max<unsigned int>(nameUnits.length(), widthUnits);
 }
 
-void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& widthAxis, unsigned int& widthCoordType,
-                                  unsigned int& widthCoordNumber, unsigned int& widthName, unsigned int& widthProj,
-                                  unsigned int& widthShape, unsigned int& widthTile, unsigned int& widthRefValue,
-                                  unsigned int& widthRefPixel, unsigned int& widthInc, unsigned int& widthUnits,
-                                  bool findWidths, int coordinate, int axisInCoordinate,
-                                  int pixelAxis, int precRefValSci, int precRefValFloat,
-                                  int precRefValRADEC, int precRefPixFloat, int,
-                                  const IPosition& latticeShape, const IPosition& tileShape) const
+void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& widthAxis,
+                                  unsigned int& widthCoordType, unsigned int& widthCoordNumber,
+                                  unsigned int& widthName, unsigned int& widthProj,
+                                  unsigned int& widthShape, unsigned int& widthTile,
+                                  unsigned int& widthRefValue, unsigned int& widthRefPixel,
+                                  unsigned int& widthInc, unsigned int& widthUnits, bool findWidths,
+                                  int coordinate, int axisInCoordinate, int pixelAxis,
+                                  int precRefValSci, int precRefValFloat, int precRefValRADEC,
+                                  int precRefPixFloat, int, const IPosition& latticeShape,
+                                  const IPosition& tileShape) const
 //
 // List all the good stuff
 //
@@ -3159,7 +3162,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
     }
     string = oss.str();
     if (findWidths) {
-      widthAxis = max(widthAxis, string.length());
+      widthAxis = std::max<unsigned int>(widthAxis, string.length());
     } else {
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthAxis);
@@ -3175,7 +3178,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
     oss << coordinate;
     string = oss.str();
     if (findWidths) {
-      widthCoordNumber = max(widthCoordNumber, string.length());
+      widthCoordNumber = std::max<unsigned int>(widthCoordNumber, string.length());
     } else {
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthCoordNumber);
@@ -3187,7 +3190,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
 
   string = Coordinate::typeToString(pc->type());
   if (findWidths) {
-    widthCoordType = max(widthCoordType, string.length());
+    widthCoordType = std::max<unsigned int>(widthCoordType, string.length());
   } else {
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthCoordType);
@@ -3204,7 +3207,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
     }
   }
   if (findWidths) {
-    widthName = max(widthName, string.length());
+    widthName = std::max<unsigned int>(widthName, string.length());
   } else {
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthName);
@@ -3220,7 +3223,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
     string = " ";
   }
   if (findWidths) {
-    widthProj = max(widthProj, string.length());
+    widthProj = std::max<unsigned int>(widthProj, string.length());
   } else {
     os.output().setf(ios::right, ios::adjustfield);
     os.output().width(widthProj);
@@ -3240,7 +3243,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
       string = " ";
     }
     if (findWidths) {
-      widthShape = max(widthShape, string.length());
+      widthShape = std::max<unsigned int>(widthShape, string.length());
     } else {
       os.output().width(widthShape);
       os << string;
@@ -3256,7 +3259,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
       string = " ";
     }
     if (findWidths) {
-      widthTile = max(widthTile, string.length());
+      widthTile = std::max<unsigned int>(widthTile, string.length());
     } else {
       os.output().width(widthTile);
       os << string;
@@ -3361,7 +3364,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
     }
   }
   if (findWidths) {
-    widthRefValue = max(widthRefValue, string.length());
+    widthRefValue = std::max<unsigned int>(widthRefValue, string.length());
   } else {
     os.output().width(widthRefValue);
     os << string;
@@ -3380,7 +3383,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
     }
     string = oss.str();
     if (findWidths) {
-      widthRefPixel = max(widthRefPixel, string.length());
+      widthRefPixel = std::max<unsigned int>(widthRefPixel, string.length());
     } else {
       os.output().width(widthRefPixel);
       os << string;
@@ -3402,7 +3405,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
       string = " ";
     }
     if (findWidths) {
-      widthInc = max(widthInc, string.length());
+      widthInc = std::max<unsigned int>(widthInc, string.length());
     } else {
       os.output().width(widthInc);
       os << string;
@@ -3418,7 +3421,7 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
       string = " " + refValListUnits;
     }
     if (findWidths) {
-      widthUnits = max(widthUnits, string.length());
+      widthUnits = std::max<unsigned int>(widthUnits, string.length());
     } else {
       os.output().setf(ios::left, ios::adjustfield);
       os << string;
@@ -3428,10 +3431,12 @@ void CoordinateSystem::listHeader(LogIO& os, Coordinate* pc, unsigned int& width
   if (!findWidths) os << endl;
 }
 
-void CoordinateSystem::listVelocity(LogIO& os, Coordinate* pc, unsigned int widthAxis, unsigned int widthCoordType,
-                                    unsigned int widthCoordNumber, unsigned int& widthName, unsigned int widthProj,
-                                    unsigned int widthShape, unsigned int widthTile, unsigned int& widthRefValue,
-                                    unsigned int widthRefPixel, unsigned int& widthInc, unsigned int& widthUnits,
+void CoordinateSystem::listVelocity(LogIO& os, Coordinate* pc, unsigned int widthAxis,
+                                    unsigned int widthCoordType, unsigned int widthCoordNumber,
+                                    unsigned int& widthName, unsigned int widthProj,
+                                    unsigned int widthShape, unsigned int widthTile,
+                                    unsigned int& widthRefValue, unsigned int widthRefPixel,
+                                    unsigned int& widthInc, unsigned int& widthUnits,
                                     bool findWidths, int axisInCoordinate, int pixelAxis,
                                     MDoppler::Types doppler, int precRefValSci, int precRefValFloat,
                                     int precRefValRADEC, int precRefPixFloat, int precIncSci) const
@@ -3488,7 +3493,7 @@ void CoordinateSystem::listVelocity(LogIO& os, Coordinate* pc, unsigned int widt
 
   string = "Velocity";
   if (findWidths) {
-    widthName = max(widthName, string.length());
+    widthName = std::max<unsigned int>(widthName, string.length());
   } else {
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthName);
@@ -3541,7 +3546,7 @@ void CoordinateSystem::listVelocity(LogIO& os, Coordinate* pc, unsigned int widt
   string = sc.format(velUnits, form, sc.referenceValue()(axisInCoordinate), axisInCoordinate, true,
                      true, prec);
   if (findWidths) {
-    widthRefValue = max(widthRefValue, string.length());
+    widthRefValue = std::max<unsigned int>(widthRefValue, string.length());
   } else {
     os.output().width(widthRefValue);
     os << string;
@@ -3580,7 +3585,7 @@ void CoordinateSystem::listVelocity(LogIO& os, Coordinate* pc, unsigned int widt
     string = " ";
   }
   if (findWidths) {
-    widthInc = max(widthInc, string.length());
+    widthInc = std::max<unsigned int>(widthInc, string.length());
   } else {
     os.output().width(widthInc);
     os << string;
@@ -3594,7 +3599,7 @@ void CoordinateSystem::listVelocity(LogIO& os, Coordinate* pc, unsigned int widt
     string = " ";
   }
   if (findWidths) {
-    widthUnits = max(widthUnits, string.length());
+    widthUnits = std::max<unsigned int>(widthUnits, string.length());
   } else {
     os.output().setf(ios::left, ios::adjustfield);
     os << string;

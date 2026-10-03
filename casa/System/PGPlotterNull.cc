@@ -44,7 +44,8 @@ PGPlotterNull::PGPlotterNull(const String &) : beenWarned(true) {
 
 PGPlotterNull::~PGPlotterNull() { noplotter(); }
 
-PGPlotter PGPlotterNull::createPlotter(const String &device, unsigned int, unsigned int, unsigned int, unsigned int) {
+PGPlotter PGPlotterNull::createPlotter(const String &device, unsigned int, unsigned int,
+                                       unsigned int, unsigned int) {
   return PGPlotter(new PGPlotterNull(device));
 }
 

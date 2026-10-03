@@ -434,7 +434,7 @@ class LatticeStepper : public LatticeNavigator {
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
   virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             unsigned int maxCacheSize, unsigned int bucketSize) const;
+                                     unsigned int maxCacheSize, unsigned int bucketSize) const;
 
  private:
   // Prevent the default constructor from being used.
@@ -450,7 +450,7 @@ class LatticeStepper : public LatticeNavigator {
   IPosition itsCursorShape;   // # The shape of the cursor
   IPosition itsCursorPos;     // # The current position of the iterator.
   IPosition itsAxisPath;      // # the heading to follow for the cursor
-  unsigned int itsNsteps;             // # the number of iterator steps taken thus far;
+  unsigned int itsNsteps;     // # the number of iterator steps taken thus far;
                               // # set to 0 on reset ()
   bool itsEnd;                // # is the cursor beyond the end?
   bool itsStart;              // # is the cursor at the beginning?
@@ -462,7 +462,7 @@ class LatticeStepper : public LatticeNavigator {
                               // # decrement operators if itsNiceFit == false. It
                               // # is used to tell if the cursor "Hangs over"
                               // # the edge of the lattice shape.
-  unsigned int itsPolicy;             // # what to do if the cursor does hang over
+  unsigned int itsPolicy;     // # what to do if the cursor does hang over
 };
 
 }  // namespace casacore

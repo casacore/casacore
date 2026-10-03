@@ -51,7 +51,7 @@ TableExprNodeSet::TableExprNodeSet(const IPosition& indices)
   unsigned int n = indices.size();
   itsElems.resize(n);
   for (unsigned int i = 0; i < n; i++) {
-    itsElems[i] = std::make_shared<TableExprNodeSetElemSingle>(TableExprNode(Int64(indices(i))));
+    itsElems[i] = std::make_shared<TableExprNodeSetElemSingle>(TableExprNode(int64_t(indices(i))));
   }
 }
 
@@ -67,12 +67,12 @@ TableExprNodeSet::TableExprNodeSet(const Slicer& indices)
     TableExprNode start;
     TableExprNode end;
     if (indices.start()(i) != Slicer::MimicSource) {
-      start = TableExprNode(Int64(indices.start()(i)));
+      start = TableExprNode(int64_t(indices.start()(i)));
     }
     if (indices.end()(i) != Slicer::MimicSource) {
-      end = TableExprNode(Int64(indices.end()(i)));
+      end = TableExprNode(int64_t(indices.end()(i)));
     }
-    TableExprNode incr(Int64(indices.stride()(i)));
+    TableExprNode incr(int64_t(indices.stride()(i)));
     itsElems[i] = std::make_shared<TableExprNodeSetElemDiscrete>(start, end, incr);
   }
 }
@@ -279,7 +279,7 @@ TENShPtr TableExprNodeSet::toConstArray() const {
       tsnptr = std::make_shared<TableExprNodeArrayConstBool>(toArray<bool>(0));
       break;
     case NTInt:
-      tsnptr = std::make_shared<TableExprNodeArrayConstInt>(toArray<Int64>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstInt>(toArray<int64_t>(0));
       break;
     case NTDouble:
       tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(toArray<double>(0));
@@ -301,7 +301,9 @@ TENShPtr TableExprNodeSet::toConstArray() const {
 }
 
 MArray<bool> TableExprNodeSet::getArrayBool(const TableExprId& id) { return toArray<bool>(id); }
-MArray<Int64> TableExprNodeSet::getArrayInt(const TableExprId& id) { return toArray<Int64>(id); }
+MArray<int64_t> TableExprNodeSet::getArrayInt(const TableExprId& id) {
+  return toArray<int64_t>(id);
+}
 MArray<double> TableExprNodeSet::getArrayDouble(const TableExprId& id) {
   return toArray<double>(id);
 }
@@ -322,7 +324,7 @@ bool TableExprNodeSet::contains(const TableExprId& id, bool value) {
   }
   return result;
 }
-bool TableExprNodeSet::contains(const TableExprId& id, Int64 value) {
+bool TableExprNodeSet::contains(const TableExprId& id, int64_t value) {
   bool result = false;
   size_t n = itsElems.size();
   for (size_t i = 0; i < n; i++) {
@@ -382,11 +384,11 @@ MArray<bool> TableExprNodeSet::contains(const TableExprId& id, const MArray<bool
   result.putStorage(out, deleteOut);
   return MArray<bool>(result, value.mask());
 }
-MArray<bool> TableExprNodeSet::contains(const TableExprId& id, const MArray<Int64>& value) {
+MArray<bool> TableExprNodeSet::contains(const TableExprId& id, const MArray<int64_t>& value) {
   Array<bool> result(value.shape());
   result.set(false);
   bool deleteIn, deleteOut;
-  const Int64* in = value.array().getStorage(deleteIn);
+  const int64_t* in = value.array().getStorage(deleteIn);
   bool* out = result.getStorage(deleteOut);
   size_t nval = value.size();
   size_t n = itsElems.size();

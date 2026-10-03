@@ -43,7 +43,8 @@ void doit(double majorPixels, double minorPixels, const Quantum<double>& pa1,
           const CoordinateSystem& cSys, const Vector<unsigned int>& worldAxes, double exMinorWorld,
           double exMajorWorld, double exPAWorld);
 
-void doit2(Vector<double>& pixel, const CoordinateSystem& cSys, const Vector<unsigned int>& worldAxes);
+void doit2(Vector<double>& pixel, const CoordinateSystem& cSys,
+           const Vector<unsigned int>& worldAxes);
 
 int main() {
   try {
@@ -156,7 +157,8 @@ void doit(double majorPixels, double minorPixels, const Quantum<double>& pa1,
   AlwaysAssert(near(pa1.getValue(), pa3.getValue(), 1e-6), AipsError);
 }
 
-void doit2(Vector<double>& pixel, const CoordinateSystem& cSys, const Vector<unsigned int>& worldAxes) {
+void doit2(Vector<double>& pixel, const CoordinateSystem& cSys,
+           const Vector<unsigned int>& worldAxes) {
   //
   // Convert from pixels to world
   //

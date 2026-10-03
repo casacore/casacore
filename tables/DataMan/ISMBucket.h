@@ -147,8 +147,8 @@ class ISMBucket {
   // and the offset of its current value.
   // It returns the index where the row number can be put in the
   // bucket index.
-  unsigned int getInterval(unsigned int colnr, rownr_t rownr, rownr_t bucketNrrow, rownr_t& start, rownr_t& end,
-                   unsigned int& offset) const;
+  unsigned int getInterval(unsigned int colnr, rownr_t rownr, rownr_t bucketNrrow, rownr_t& start,
+                           rownr_t& end, unsigned int& offset) const;
 
   // Is the bucket large enough to add a value?
   bool canAddData(unsigned int leng) const;
@@ -156,7 +156,8 @@ class ISMBucket {
   // Add the data to the data part.
   // It updates the bucket index at the given index.
   // An exception is thrown if the bucket is too small.
-  void addData(unsigned int colnr, rownr_t rownr, unsigned int index, const char* data, unsigned int leng);
+  void addData(unsigned int colnr, rownr_t rownr, unsigned int index, const char* data,
+               unsigned int leng);
 
   // Is the bucket large enough to replace a value?
   bool canReplaceData(unsigned int newLeng, unsigned int oldLeng) const;
@@ -165,7 +166,8 @@ class ISMBucket {
   // When its length is variable (indicated by fixedLength=0), the old
   // value will be removed and the new one appended at the end.
   // An exception is thrown if the bucket is too small.
-  void replaceData(unsigned int& offset, const char* data, unsigned int newLeng, unsigned int fixedLength);
+  void replaceData(unsigned int& offset, const char* data, unsigned int newLeng,
+                   unsigned int fixedLength);
 
   // Get a pointer to the data for the given offset.
   const char* get(unsigned int offset) const;
@@ -216,15 +218,16 @@ class ISMBucket {
 
   // Return the index where the bucket should be split to get
   // two parts with almost identical length.
-  unsigned int getSplit(unsigned int totLeng, const Block<unsigned int>& rowLeng, const Block<unsigned int>& cumLeng);
+  unsigned int getSplit(unsigned int totLeng, const Block<unsigned int>& rowLeng,
+                        const Block<unsigned int>& cumLeng);
 
   // Remove <src>nr</src> items from data and index part by shifting
   // to the left. The <src>rowIndex</src>, <src>offIndex</src>, and
   // <src>nused</src> get updated. The caller is responsible for
   // removing data when needed (e.g. <src>ISMIndColumn</src> removes
   // the indirect arrays from its file).
-  void shiftLeft(unsigned int index, unsigned int nr, Block<rownr_t>& rowIndex, Block<unsigned int>& offIndex, unsigned int& nused,
-                 unsigned int leng);
+  void shiftLeft(unsigned int index, unsigned int nr, Block<rownr_t>& rowIndex,
+                 Block<unsigned int>& offIndex, unsigned int& nused, unsigned int leng);
 
   // Copy the contents of that bucket to this bucket.
   // This is used after a split operation.
@@ -268,7 +271,8 @@ class ISMBucket {
   unsigned int insertData(const char* data, unsigned int leng);
 
   // Copy a data item from this bucket to the other bucket.
-  unsigned int copyData(ISMBucket& other, unsigned int colnr, rownr_t toRownr, unsigned int fromIndex, unsigned int toIndex) const;
+  unsigned int copyData(ISMBucket& other, unsigned int colnr, rownr_t toRownr,
+                        unsigned int fromIndex, unsigned int toIndex) const;
 
   // Read the data from the storage into this bucket.
   void read(const char* bucketStorage);

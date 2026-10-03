@@ -59,7 +59,7 @@ TSMDataColumn::TSMDataColumn(const TSMColumn& column) : TSMColumn(column) {
 
 TSMDataColumn::~TSMDataColumn() {}
 
-uInt64 TSMDataColumn::dataLength(uInt64 nrPixels) const {
+uint64_t TSMDataColumn::dataLength(uint64_t nrPixels) const {
   // For Bools a byte can hold 8 pixels.
   if (tilePixelSize_p == 0) {
     return (nrPixels + 7) / 8;
@@ -273,9 +273,9 @@ void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& ar
   char* data = (char*)(dataPtr);
   unsigned int lastAxis = arrShape.nelements() - 1;
   IPosition cellShape = arrShape.getFirst(lastAxis);
-  uInt64 chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
-  uInt64 nrinc = 0;
-  Int64 lastRowPos = 0;
+  uint64_t chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
+  uint64_t nrinc = 0;
+  int64_t lastRowPos = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis + 1);
@@ -292,7 +292,7 @@ void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& ar
       // A read has to be done if we have another hypercube
       // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, rowpos);
-      Int64 hcRowPos = rowpos(lastAxis);
+      int64_t hcRowPos = rowpos(lastAxis);
       bool doIt = false;
       if (hypercube != lastCube || hcRowPos <= lastRowPos) {
         doIt = true;
@@ -352,9 +352,9 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
                                            bool writeFlag) {
   char* data = (char*)(dataPtr);
   unsigned int lastAxis = arrShape.nelements() - 1;
-  uInt64 chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
-  uInt64 nrinc = 0;
-  Int64 lastRowPos = 0;
+  uint64_t chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
+  uint64_t nrinc = 0;
+  int64_t lastRowPos = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis + 1);
@@ -371,7 +371,7 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
       // A read has to be done if we have another hypercube
       // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, rowpos);
-      Int64 hcRowPos = rowpos(lastAxis);
+      int64_t hcRowPos = rowpos(lastAxis);
       bool doIt = false;
       if (hypercube != lastCube || hcRowPos <= lastRowPos) {
         doIt = true;

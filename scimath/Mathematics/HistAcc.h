@@ -118,8 +118,8 @@ class HistAcc {
   // specified, they will be determined automatically from the
   // first nBuff input values (which are stored in a temporary buffer).
   // <group>
-  HistAcc(const unsigned int nBuff);                          // # fully automatic
-  HistAcc(const unsigned int nBuff, const T width);           // # semi-automatic
+  HistAcc(const unsigned int nBuff);                  // # fully automatic
+  HistAcc(const unsigned int nBuff, const T width);   // # semi-automatic
   HistAcc(const T low, const T high, const T width);  // # fully specified
   HistAcc(const HistAcc&);                            // # copy an existing one
   ~HistAcc() { ; }
@@ -176,13 +176,13 @@ class HistAcc {
 
  private:
   Block<unsigned int> itsBinContents;  // # Contents of histogram bins
-  Block<T> itsBinHighLimit;    // # High limit of each bin
-  T itsUserDefinedBinWidth;    // # if defined
+  Block<T> itsBinHighLimit;            // # High limit of each bin
+  T itsUserDefinedBinWidth;            // # if defined
 
   StatAcc<T> itsStatAcc;  // # private Statistics Accumulator
 
-  bool itsAutoDefineMode;  // # If true: automatic mode
-  Block<T> itsBuffer;      // # temporary storage of input T-values
+  bool itsAutoDefineMode;          // # If true: automatic mode
+  Block<T> itsBuffer;              // # temporary storage of input T-values
   unsigned int itsBufferContents;  // # nr of T-values in buffer
 
   // Accumulate a single value into the histogram.

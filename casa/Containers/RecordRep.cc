@@ -182,7 +182,7 @@ void RecordRep::checkShape(DataType type, const IPosition& shape, const void* va
       arrShape = static_cast<const Array<unsigned int>*>(value)->shape();
       break;
     case TpArrayInt64:
-      arrShape = static_cast<const Array<Int64>*>(value)->shape();
+      arrShape = static_cast<const Array<int64_t>*>(value)->shape();
       break;
     case TpArrayFloat:
       arrShape = static_cast<const Array<float>*>(value)->shape();
@@ -269,7 +269,7 @@ void* RecordRep::createDataField(DataType type, const IPosition& shape) {
       return ptr;
     }
     case TpInt64: {
-      Int64* ptr = new Int64;
+      int64_t* ptr = new int64_t;
       *ptr = 0;
       return ptr;
     }
@@ -315,7 +315,7 @@ void* RecordRep::createDataField(DataType type, const IPosition& shape) {
       return ptr;
     }
     case TpArrayInt64: {
-      Array<Int64>* ptr = new Array<Int64>(arrayShape);
+      Array<int64_t>* ptr = new Array<int64_t>(arrayShape);
       *ptr = 0;
       return ptr;
     }
@@ -359,11 +359,12 @@ void RecordRep::makeDataVec(int whichField, DataType type) {
       datavec_p[whichField] = new Array<int>(shape, static_cast<int*>(data_p[whichField]), SHARE);
       break;
     case TpUInt:
-      datavec_p[whichField] = new Array<unsigned int>(shape, static_cast<unsigned int*>(data_p[whichField]), SHARE);
+      datavec_p[whichField] =
+          new Array<unsigned int>(shape, static_cast<unsigned int*>(data_p[whichField]), SHARE);
       break;
     case TpInt64:
       datavec_p[whichField] =
-          new Array<Int64>(shape, static_cast<Int64*>(data_p[whichField]), SHARE);
+          new Array<int64_t>(shape, static_cast<int64_t*>(data_p[whichField]), SHARE);
       break;
     case TpFloat:
       datavec_p[whichField] =
@@ -424,8 +425,8 @@ void RecordRep::deleteDataField(DataType type, void* ptr, void* vecptr) {
       delete static_cast<Array<unsigned int>*>(vecptr);
       break;
     case TpInt64:
-      delete static_cast<Int64*>(ptr);
-      delete static_cast<Array<Int64>*>(vecptr);
+      delete static_cast<int64_t*>(ptr);
+      delete static_cast<Array<int64_t>*>(vecptr);
       break;
     case TpFloat:
       delete static_cast<float*>(ptr);
@@ -463,7 +464,7 @@ void RecordRep::deleteDataField(DataType type, void* ptr, void* vecptr) {
       delete static_cast<Array<unsigned int>*>(ptr);
       break;
     case TpArrayInt64:
-      delete static_cast<Array<Int64>*>(ptr);
+      delete static_cast<Array<int64_t>*>(ptr);
       break;
     case TpArrayFloat:
       delete static_cast<Array<float>*>(ptr);
@@ -543,7 +544,7 @@ void RecordRep::copyDataField(DataType type, void* ptr, const void* that) const 
       *static_cast<unsigned int*>(ptr) = *static_cast<const unsigned int*>(that);
       break;
     case TpInt64:
-      *static_cast<Int64*>(ptr) = *static_cast<const Int64*>(that);
+      *static_cast<int64_t*>(ptr) = *static_cast<const int64_t*>(that);
       break;
     case TpFloat:
       *static_cast<float*>(ptr) = *static_cast<const float*>(that);
@@ -565,7 +566,8 @@ void RecordRep::copyDataField(DataType type, void* ptr, const void* that) const 
       *static_cast<Array<bool>*>(ptr) = *static_cast<const Array<bool>*>(that);
       break;
     case TpArrayUChar:
-      static_cast<Array<unsigned char>*>(ptr)->resize(static_cast<const Array<unsigned char>*>(that)->shape());
+      static_cast<Array<unsigned char>*>(ptr)->resize(
+          static_cast<const Array<unsigned char>*>(that)->shape());
       *static_cast<Array<unsigned char>*>(ptr) = *static_cast<const Array<unsigned char>*>(that);
       break;
     case TpArrayShort:
@@ -577,12 +579,13 @@ void RecordRep::copyDataField(DataType type, void* ptr, const void* that) const 
       *static_cast<Array<int>*>(ptr) = *static_cast<const Array<int>*>(that);
       break;
     case TpArrayUInt:
-      static_cast<Array<unsigned int>*>(ptr)->resize(static_cast<const Array<unsigned int>*>(that)->shape());
+      static_cast<Array<unsigned int>*>(ptr)->resize(
+          static_cast<const Array<unsigned int>*>(that)->shape());
       *static_cast<Array<unsigned int>*>(ptr) = *static_cast<const Array<unsigned int>*>(that);
       break;
     case TpArrayInt64:
-      static_cast<Array<Int64>*>(ptr)->resize(static_cast<const Array<Int64>*>(that)->shape());
-      *static_cast<Array<Int64>*>(ptr) = *static_cast<const Array<Int64>*>(that);
+      static_cast<Array<int64_t>*>(ptr)->resize(static_cast<const Array<int64_t>*>(that)->shape());
+      *static_cast<Array<int64_t>*>(ptr) = *static_cast<const Array<int64_t>*>(that);
       break;
     case TpArrayFloat:
       static_cast<Array<float>*>(ptr)->resize(static_cast<const Array<float>*>(that)->shape());
@@ -689,7 +692,7 @@ void RecordRep::printDataField(std::ostream& os, DataType type, const String& in
       os << "uInt " << *static_cast<const unsigned int*>(ptr);
       break;
     case TpInt64:
-      os << "Int64 " << *static_cast<const Int64*>(ptr);
+      os << "Int64 " << *static_cast<const int64_t*>(ptr);
       break;
     case TpFloat:
       os << "Float " << *static_cast<const float*>(ptr);
@@ -787,13 +790,13 @@ void RecordRep::printDataField(std::ostream& os, DataType type, const String& in
       }
       break;
     case TpArrayInt64:
-      os << "Int64 array with shape " << static_cast<const Array<Int64>*>(ptr)->shape();
+      os << "Int64 array with shape " << static_cast<const Array<int64_t>*>(ptr)->shape();
       if (maxNrValues != 0) {
-        const Array<Int64>& arr = *static_cast<const Array<Int64>*>(ptr);
+        const Array<int64_t>& arr = *static_cast<const Array<int64_t>*>(ptr);
         if (maxNrValues < 0) {
           os << endl << arr;
         } else {
-          Vector<Int64> vec = arr.reform(IPosition(1, arr.nelements()));
+          Vector<int64_t> vec = arr.reform(IPosition(1, arr.nelements()));
           if (static_cast<unsigned int>(maxNrValues + 1) >= vec.nelements()) {
             os << endl << indent << "  " << vec;
           } else {
@@ -919,7 +922,7 @@ void RecordRep::putDataField(AipsIO& os, DataType type, const void* ptr) const {
       os << *static_cast<const unsigned int*>(ptr);
       break;
     case TpInt64:
-      os << *static_cast<const Int64*>(ptr);
+      os << *static_cast<const int64_t*>(ptr);
       break;
     case TpFloat:
       os << *static_cast<const float*>(ptr);
@@ -952,7 +955,7 @@ void RecordRep::putDataField(AipsIO& os, DataType type, const void* ptr) const {
       putArray(os, *static_cast<const Array<unsigned int>*>(ptr), "Array<uInt>");
       break;
     case TpArrayInt64:
-      putArray(os, *static_cast<const Array<Int64>*>(ptr), "Array<Int64>");
+      putArray(os, *static_cast<const Array<int64_t>*>(ptr), "Array<Int64>");
       break;
     case TpArrayFloat:
       putArray(os, *static_cast<const Array<float>*>(ptr), "Array<float>");
@@ -992,7 +995,7 @@ void RecordRep::getDataField(AipsIO& os, DataType type, void* ptr) {
       os >> *static_cast<unsigned int*>(ptr);
       break;
     case TpInt64:
-      os >> *static_cast<Int64*>(ptr);
+      os >> *static_cast<int64_t*>(ptr);
       break;
     case TpFloat:
       os >> *static_cast<float*>(ptr);
@@ -1025,7 +1028,7 @@ void RecordRep::getDataField(AipsIO& os, DataType type, void* ptr) {
       os >> *static_cast<Array<unsigned int>*>(ptr);
       break;
     case TpArrayInt64:
-      os >> *static_cast<Array<Int64>*>(ptr);
+      os >> *static_cast<Array<int64_t>*>(ptr);
       break;
     case TpArrayFloat:
       os >> *static_cast<Array<float>*>(ptr);

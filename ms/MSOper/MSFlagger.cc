@@ -692,8 +692,8 @@ bool MSFlagger::createFlagHistory(int nHis) {
       int cube;
       for (cube = 0; cube < nId; cube++)
         if (ids(cube) == hypercubeId(0)) break;
-      Int64 nRow = tab.nrow();
-      for (Int64 i = 0; i < nRow; i++) {
+      int64_t nRow = tab.nrow();
+      for (int64_t i = 0; i < nRow; i++) {
         // add new hyperCube
         if (i > 0 && hypercubeId(i) != hypercubeId(i - 1)) {
           values1.define("FLAG_CATEGORY_HYPERCUBE_ID", hypercubeId(i));

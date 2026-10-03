@@ -39,7 +39,7 @@ class MSSelUtil2 {
                           const Vector<int>& timeSlot, int nTime, const T& defvalue);
 
   // reorder data from 4d (corr,chan,ifr,time) to 3d (corr,chan,row)
-  static void reorderData(Array<T>& data, const Matrix<Int64>& rowIndex, Int64 nRow);
+  static void reorderData(Array<T>& data, const Matrix<int64_t>& rowIndex, int64_t nRow);
 
   // average data (with flags & weights applied) over it's last axis (time or
   // row), return in data (overwritten), dataFlag gives new flags.

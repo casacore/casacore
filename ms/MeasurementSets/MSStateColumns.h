@@ -111,9 +111,10 @@ class MSStateColumns {
   // to see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int64 matchState(const Quantum<double>& stateCalQ, const Quantum<double>& stateLoadQ,
-                   const String& stateObsMode, const bool& stateRef, const bool& stateSig,
-                   const int& stateSubScan, const Quantum<double>& tolerance, Int64 tryRow = -1);
+  int64_t matchState(const Quantum<double>& stateCalQ, const Quantum<double>& stateLoadQ,
+                     const String& stateObsMode, const bool& stateRef, const bool& stateSig,
+                     const int& stateSubScan, const Quantum<double>& tolerance,
+                     int64_t tryRow = -1);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

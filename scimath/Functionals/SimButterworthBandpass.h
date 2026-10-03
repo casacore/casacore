@@ -141,8 +141,9 @@ class SimButterworthBandpass : public Function1D<T> {
   SimButterworthBandpass();
 
   // create a Butterworth bandpass function.
-  SimButterworthBandpass(const unsigned int minord, const unsigned int maxord, const T &mincut = T(-1),
-                         const T &maxcut = T(1), const T &center = T(0), const T &peak = T(1));
+  SimButterworthBandpass(const unsigned int minord, const unsigned int maxord,
+                         const T &mincut = T(-1), const T &maxcut = T(1), const T &center = T(0),
+                         const T &peak = T(1));
 
   // create a fully specified Butterworth bandpass in which the
   // low and high pass orders are stored in a Record

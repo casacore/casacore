@@ -125,7 +125,8 @@ void MSMIndColumn::getSliceV(rownr_t rownr, const Slicer& ns, ArrayBase& arr) {
                      false);
       break;
     case TpUChar:
-      arr.assignBase(Array<unsigned char>(shp, static_cast<unsigned char*>(data->data()), SHARE)(blc, trc, inc),
+      arr.assignBase(Array<unsigned char>(shp, static_cast<unsigned char*>(data->data()), SHARE)(
+                         blc, trc, inc),
                      false);
       break;
     case TpShort:
@@ -133,18 +134,20 @@ void MSMIndColumn::getSliceV(rownr_t rownr, const Slicer& ns, ArrayBase& arr) {
                      false);
       break;
     case TpUShort:
-      arr.assignBase(Array<unsigned short>(shp, static_cast<unsigned short*>(data->data()), SHARE)(blc, trc, inc),
+      arr.assignBase(Array<unsigned short>(shp, static_cast<unsigned short*>(data->data()), SHARE)(
+                         blc, trc, inc),
                      false);
       break;
     case TpInt:
       arr.assignBase(Array<int>(shp, static_cast<int*>(data->data()), SHARE)(blc, trc, inc), false);
       break;
     case TpUInt:
-      arr.assignBase(Array<unsigned int>(shp, static_cast<unsigned int*>(data->data()), SHARE)(blc, trc, inc),
-                     false);
+      arr.assignBase(
+          Array<unsigned int>(shp, static_cast<unsigned int*>(data->data()), SHARE)(blc, trc, inc),
+          false);
       break;
     case TpInt64:
-      arr.assignBase(Array<Int64>(shp, static_cast<Int64*>(data->data()), SHARE)(blc, trc, inc),
+      arr.assignBase(Array<int64_t>(shp, static_cast<int64_t*>(data->data()), SHARE)(blc, trc, inc),
                      false);
       break;
     case TpFloat:
@@ -202,7 +205,7 @@ void MSMIndColumn::putSliceV(rownr_t rownr, const Slicer& ns, const ArrayBase& a
           .assignBase(arr, false);
       break;
     case TpInt64:
-      Array<Int64>(shp, static_cast<Int64*>(data->data()), SHARE)(blc, trc, inc)
+      Array<int64_t>(shp, static_cast<int64_t*>(data->data()), SHARE)(blc, trc, inc)
           .assignBase(arr, false);
       break;
     case TpFloat:
@@ -243,7 +246,7 @@ void MSMIndColumn::deleteArray(rownr_t rownr) {
 
 MSMIndColumn::Data::Data(const IPosition& shape, int dtype, int elemSize)
     : shape_p(shape), data_p(nullptr), data_is_string(dtype == TpString) {
-  Int64 nelem = shape.product();
+  int64_t nelem = shape.product();
   if (data_is_string) {
     data_p = new String[nelem];
   } else {

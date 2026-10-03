@@ -70,7 +70,8 @@ class LatticeHistSpecialize {
   template <class T>
   static void makeCumulative(Vector<T>& counts, T& yMax, unsigned int nBins,
                              typename NumericTraits<T>::BaseType scale);
-  static void makeCumulative(Vector<Complex>& counts, Complex& yMax, unsigned int nBins, float scale);
+  static void makeCumulative(Vector<Complex>& counts, Complex& yMax, unsigned int nBins,
+                             float scale);
 
   // Make histogram logarithmic
   template <class T>
@@ -89,18 +90,19 @@ class LatticeHistSpecialize {
                    unsigned int ci, bool page);
   static void plot(PGPlotter& plot, bool doGauss, bool doCumu, bool doLog, Complex linearSum,
                    Complex yMax, Complex binWidth, const Vector<Complex>& values,
-                   const Vector<Complex>& counts, const Vector<Complex>& stats, unsigned int whereLabel,
-                   unsigned int ci, bool page);
+                   const Vector<Complex>& counts, const Vector<Complex>& stats,
+                   unsigned int whereLabel, unsigned int ci, bool page);
 
   // Process data chunk creating histogram.
   template <class T>
   static void process(const T* pInData, const bool* pInMask, Block<T>* pHist, const Vector<T>& clip,
-                      T binWidth, unsigned int offset, unsigned int nrval, unsigned int nBins, unsigned int dataIncr,
-                      unsigned int maskIncr);
+                      T binWidth, unsigned int offset, unsigned int nrval, unsigned int nBins,
+                      unsigned int dataIncr, unsigned int maskIncr);
   //
   static void process(const Complex* pInData, const bool* pInMask, Block<Complex>* pHist,
-                      const Vector<Complex>& clip, Complex binWidth, unsigned int offset, unsigned int nrval,
-                      unsigned int nBins, unsigned int dataIncr, unsigned int maskIncr);
+                      const Vector<Complex>& clip, Complex binWidth, unsigned int offset,
+                      unsigned int nrval, unsigned int nBins, unsigned int dataIncr,
+                      unsigned int maskIncr);
 
   // Set bin width.  For complex, real and imaginary treated separately
   static float setBinWidth(float dmin, float dmax, unsigned int nBins);
@@ -110,9 +112,9 @@ class LatticeHistSpecialize {
  private:
   static unsigned int bin(float datum, float min, float width, unsigned int nBins);
   //
-  static void makeGauss(unsigned int& nGPts, float& gMax, Vector<float>& gX, Vector<float>& gY, float dMean,
-                        float dSigma, float dSum, float xMin, float xMax, float binWidth,
-                        bool doCumu, bool doLog);
+  static void makeGauss(unsigned int& nGPts, float& gMax, Vector<float>& gX, Vector<float>& gY,
+                        float dMean, float dSigma, float dSum, float xMin, float xMax,
+                        float binWidth, bool doCumu, bool doLog);
   //
   static void plotHist(const Vector<float>& x, const Vector<float>& y, PGPlotter& plotter);
 };

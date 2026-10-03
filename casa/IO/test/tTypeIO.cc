@@ -42,7 +42,7 @@
 #include <casacore/casa/namespace.h>
 void doIt(TypeIO* io) {
   // Save current file position.
-  Int64 position = io->seek(0, ByteIO::Current);
+  int64_t position = io->seek(0, ByteIO::Current);
 
   AlwaysAssertExit(io->isReadable());
   AlwaysAssertExit(io->isWritable());
@@ -53,8 +53,8 @@ void doIt(TypeIO* io) {
   unsigned short testuShort = 10;
   int testInt = -20;
   unsigned int testuInt = 80;
-  Int64 testInt64 = -100000;
-  uInt64 testuInt64 = 100000;
+  int64_t testInt64 = -100000;
+  uint64_t testuInt64 = 100000;
   float testFloat = 18.5;
   double testDouble = 23.5;
   Complex testComplex(2, 3);
@@ -85,8 +85,8 @@ void doIt(TypeIO* io) {
   unsigned short tuShort;
   int tInt;
   unsigned int tuInt;
-  Int64 tInt64;
-  uInt64 tuInt64;
+  int64_t tInt64;
+  uint64_t tuInt64;
   float tFloat;
   double tDouble;
   Complex tComplex;

@@ -81,7 +81,7 @@ static bool splitKW2D(String &name, int &nrow, int &ncol, String &fullName) {
   name = "";
 
   if (fullName.find('_') != std::string::npos) {  // assume new matrix syntax  ii_jj or i_j
-    unsigned int where = 0;                               // Where the frst number starts
+    unsigned int where = 0;                       // Where the frst number starts
     while (where++ < fullName.length() && !isdigit(fullName[where])) {
       ;  // Nothing
     }
@@ -291,8 +291,8 @@ bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, const RecordInterface &i
           String slen = std::to_string(length);
           if (in.name(j).length() + slen.length() > 8) {
             os << LogIO::SEVERE << "Name is too long for array field " << in.name(j)
-               << " - name will be truncated to first " << (8 - static_cast<unsigned int>(slen.length()))
-               << " characters." << LogIO::POST;
+               << " - name will be truncated to first "
+               << (8 - static_cast<unsigned int>(slen.length())) << " characters." << LogIO::POST;
             ok = false;
           }
         }

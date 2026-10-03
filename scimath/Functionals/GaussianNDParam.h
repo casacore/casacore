@@ -196,8 +196,10 @@ class GaussianNDParam : public Function<T> {
   explicit GaussianNDParam(unsigned int ndim);
   GaussianNDParam(unsigned int ndim, const T &height);
   GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean);
-  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean, const Vector<T> &variance);
-  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean, const Matrix<T> &covar);
+  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean,
+                  const Vector<T> &variance);
+  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean,
+                  const Matrix<T> &covar);
   // </group>
 
   // Copy constructor (deep copy)

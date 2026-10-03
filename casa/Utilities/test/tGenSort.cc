@@ -38,7 +38,8 @@
 
 void sortall(int*, unsigned int, int, Sort::Order, bool);
 
-unsigned int doSort(Vector<unsigned int>& inx, const int* arr, unsigned int nr, Sort::Order ord, int type) {
+unsigned int doSort(Vector<unsigned int>& inx, const int* arr, unsigned int nr, Sort::Order ord,
+                    int type) {
   inx.resize(nr);
   indgen(inx);
   if ((type & Sort::QuickSort) != 0) {

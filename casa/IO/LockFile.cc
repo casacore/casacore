@@ -252,7 +252,7 @@ void LockFile::getInfo(MemoryIO& info) {
   if (leng > infoLeng) {
     leng = infoLeng;
   }
-  info.seek(Int64(0));
+  info.seek(int64_t(0));
   info.write(leng, buffer + SIZEREQID + SIZEINT);
   // Read the remaining info parts.
   if (infoLeng > leng) {
@@ -262,7 +262,7 @@ void LockFile::getInfo(MemoryIO& info) {
     info.write(infoLeng, buf);
     delete[] buf;
   }
-  info.seek(Int64(0));
+  info.seek(int64_t(0));
 }
 
 void LockFile::putInfo(const MemoryIO& info) const {
@@ -347,7 +347,8 @@ void LockFile::removeReqId() {
 void LockFile::putReqId(int fd) const {
   if (itsAddToList) {
     unsigned char buffer[SIZEREQID];
-    unsigned int leng = CanonicalConversion::fromLocal(buffer, itsReqId.storage(), itsReqId.nelements());
+    unsigned int leng =
+        CanonicalConversion::fromLocal(buffer, itsReqId.storage(), itsReqId.nelements());
     AlwaysAssert(tracePWRITE(fd, (char*)buffer, leng, 0) == int(leng), AipsError);
     fsync(fd);
   }

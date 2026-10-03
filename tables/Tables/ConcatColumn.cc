@@ -231,8 +231,8 @@ void ConcatColumn::accessRows(const RefRows& rownrs, const Slicer* ns, ArrayBase
   // be accessed.
   // First setup the various loop variables.
   unsigned int rowAxis = arr.ndim() - 1;  // row axis in array
-  IPosition st(arr.ndim(), 0);    // start of array part
-  IPosition sz(arr.shape());      // size of array part
+  IPosition st(arr.ndim(), 0);            // start of array part
+  IPosition sz(arr.shape());              // size of array part
   int lastTabNr = -1;
   unsigned int tableNr;
   // Step through all concat rownrs.

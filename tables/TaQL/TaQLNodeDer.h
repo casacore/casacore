@@ -60,13 +60,13 @@ class TaQLConstNodeRep : public TaQLNodeRep {
   // Do not change the values of this enum, as objects might be persistent.
   enum Type { CTBool = 0, CTInt = 1, CTReal = 2, CTComplex = 3, CTString = 4, CTTime = 5 };
   explicit TaQLConstNodeRep(bool value);
-  explicit TaQLConstNodeRep(Int64 value);
+  explicit TaQLConstNodeRep(int64_t value);
   explicit TaQLConstNodeRep(double value);
   explicit TaQLConstNodeRep(double value, const String& unit);
   explicit TaQLConstNodeRep(DComplex value);
   explicit TaQLConstNodeRep(const String& value, bool isTableName = false);
   explicit TaQLConstNodeRep(const MVTime& value);
-  explicit TaQLConstNodeRep(Int64 value, const String& subTableName);
+  explicit TaQLConstNodeRep(int64_t value, const String& subTableName);
   void setIsTableName() { itsIsTableName = true; }
   const String& getString() const;
   const String& getUnit() const { return itsUnit; }
@@ -78,7 +78,7 @@ class TaQLConstNodeRep : public TaQLNodeRep {
   Type itsType;
   bool itsIsTableName;
   bool itsBValue;
-  Int64 itsIValue;
+  int64_t itsIValue;
   double itsRValue;
   DComplex itsCValue;
   String itsSValue;

@@ -45,7 +45,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TSMCubeBuff::TSMCubeBuff(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
-                         const IPosition& tileShape, const Record& values, Int64 fileOffset)
+                         const IPosition& tileShape, const Record& values, int64_t fileOffset)
     : TSMCube(stman, file, cubeShape, tileShape, values, fileOffset, true) {
   // Note that the TSMCube constructor calls setShape.
   // However, because it is in the constructor TSMCube's setShape is called.
@@ -91,7 +91,7 @@ void TSMCubeBuff::setShape(const IPosition& cubeShape, const IPosition& tileShap
   makeCache();
 }
 
-void TSMCubeBuff::extend(uInt64 nr, const Record& coordValues, const TSMColumn* lastCoordColumn) {
+void TSMCubeBuff::extend(uint64_t nr, const Record& coordValues, const TSMColumn* lastCoordColumn) {
   if (!extensible_p) {
     throw(TSMError("Hypercube is not extensible"));
   }
@@ -118,8 +118,8 @@ void TSMCubeBuff::setCacheSize(const IPosition&, const IPosition&, const IPositi
                                const IPosition&, bool, bool) {}
 
 void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, char* section,
-                                unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
-                                bool writeFlag) {
+                                unsigned int colnr, unsigned int localPixelSize,
+                                unsigned int externalPixelSize, bool writeFlag) {
   // A tile can contain more than one data column.
   // Get the offset of the column's data array in the tile.
   unsigned int tileOffset = externalOffset_p[colnr];
@@ -403,7 +403,8 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
 
 void TSMCubeBuff::accessStrided(const IPosition& start, const IPosition& end,
                                 const IPosition& stride, char* section, unsigned int colnr,
-                                unsigned int localPixelSize, unsigned int externalPixelSize, bool writeFlag) {
+                                unsigned int localPixelSize, unsigned int externalPixelSize,
+                                bool writeFlag) {
   // If no strides, use accessSection.
   if (stride.allOne()) {
     accessSection(start, end, section, colnr, localPixelSize, externalPixelSize, writeFlag);

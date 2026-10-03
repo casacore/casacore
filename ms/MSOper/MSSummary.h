@@ -105,7 +105,7 @@ class MSSummary {
   ~MSSummary();
 
   // Retrieve number of rows
-  Int64 nrow() const;
+  int64_t nrow() const;
 
   // Retrieve image name
   String name() const;

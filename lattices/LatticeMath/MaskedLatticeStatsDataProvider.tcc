@@ -43,7 +43,8 @@ MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider()
       _nMaxThreads(0) {}
 
 template <class T>
-MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider(MaskedLattice<T>& lattice, unsigned int)
+MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider(MaskedLattice<T>& lattice,
+                                                                  unsigned int)
     : LatticeStatsDataProviderBase<T>(),
       _iter(),
       _currentSlice(),
@@ -104,7 +105,7 @@ void MaskedLatticeStatsDataProvider<T>::finalize() {
 }
 
 template <class T>
-uInt64 MaskedLatticeStatsDataProvider<T>::getCount() {
+uint64_t MaskedLatticeStatsDataProvider<T>::getCount() {
   if (!_iter) {
     return _currentSlice.size();
   } else {
@@ -172,7 +173,7 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(const MaskedLattice<T>& latti
 }
 
 template <class T>
-void MaskedLatticeStatsDataProvider<T>::updateMaxPos(const std::pair<Int64, Int64>& maxpos) {
+void MaskedLatticeStatsDataProvider<T>::updateMaxPos(const std::pair<int64_t, int64_t>& maxpos) {
   IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
   if (_iter) {
     p += _iter->position();
@@ -181,7 +182,7 @@ void MaskedLatticeStatsDataProvider<T>::updateMaxPos(const std::pair<Int64, Int6
 }
 
 template <class T>
-void MaskedLatticeStatsDataProvider<T>::updateMinPos(const std::pair<Int64, Int64>& minpos) {
+void MaskedLatticeStatsDataProvider<T>::updateMinPos(const std::pair<int64_t, int64_t>& minpos) {
   IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
   if (_iter) {
     p += _iter->position();

@@ -43,7 +43,7 @@ const short ValType::undefshort = -32768;
 const unsigned short ValType::undefushort = 0;
 const int ValType::undefint = -2 * int(32768 * 32768);
 const unsigned int ValType::undefuint = 0;
-const Int64 ValType::undefint64 = -2 * Int64(32768 * 32768) * Int64(32768 * 32768);
+const int64_t ValType::undefint64 = -2 * int64_t(32768 * 32768) * int64_t(32768 * 32768);
 const float ValType::undeffloat = -FLT_MIN;
 const Complex ValType::undefcomplex(-FLT_MIN, -FLT_MIN);
 const double ValType::undefdouble = -DBL_MIN;
@@ -117,7 +117,7 @@ int ValType::getTypeSize(DataType dt) {
       return sizeof(unsigned int);
     case TpInt64:
     case TpArrayInt64:
-      return sizeof(Int64);
+      return sizeof(int64_t);
     case TpFloat:
     case TpArrayFloat:
       return sizeof(float);
@@ -163,7 +163,7 @@ int ValType::getCanonicalSize(DataType dt, bool BECanonical) {
         return CanonicalConversion::canonicalSize(static_cast<unsigned int*>(0));
       case TpInt64:
       case TpArrayInt64:
-        return CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
       case TpFloat:
       case TpArrayFloat:
         return CanonicalConversion::canonicalSize(static_cast<float*>(0));
@@ -201,7 +201,7 @@ int ValType::getCanonicalSize(DataType dt, bool BECanonical) {
         return LECanonicalConversion::canonicalSize(static_cast<unsigned int*>(0));
       case TpInt64:
       case TpArrayInt64:
-        return LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
       case TpFloat:
       case TpArrayFloat:
         return LECanonicalConversion::canonicalSize(static_cast<float*>(0));
@@ -222,8 +222,8 @@ int ValType::getCanonicalSize(DataType dt, bool BECanonical) {
 }
 
 void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc,
-                               Conversion::ValueFunction*& writeFunc, unsigned int& nrElementsPerValue,
-                               bool BECanonical) {
+                               Conversion::ValueFunction*& writeFunc,
+                               unsigned int& nrElementsPerValue, bool BECanonical) {
   nrElementsPerValue = 1;
   if (BECanonical) {
     switch (dt) {
@@ -264,8 +264,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         break;
       case TpInt64:
       case TpArrayInt64:
-        readFunc = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
         break;
       case TpComplex:
       case TpArrayComplex:
@@ -328,8 +328,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         break;
       case TpInt64:
       case TpArrayInt64:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
         break;
       case TpComplex:
       case TpArrayComplex:
@@ -415,7 +415,7 @@ ObjCompareFunc* ValType::getCmpFunc(DataType dt) {
     case TpUInt:
       return &ObjCompare<unsigned int>::compare;
     case TpInt64:
-      return &ObjCompare<Int64>::compare;
+      return &ObjCompare<int64_t>::compare;
     case TpFloat:
       return &ObjCompare<float>::compare;
     case TpDouble:
@@ -450,7 +450,7 @@ std::shared_ptr<BaseCompare> ValType::getCmpObj(DataType dt) {
     case TpUInt:
       return std::make_shared<ObjCompare<unsigned int>>();
     case TpInt64:
-      return std::make_shared<ObjCompare<Int64>>();
+      return std::make_shared<ObjCompare<int64_t>>();
     case TpFloat:
       return std::make_shared<ObjCompare<float>>();
     case TpDouble:

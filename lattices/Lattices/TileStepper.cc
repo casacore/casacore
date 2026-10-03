@@ -349,7 +349,8 @@ const IPosition& TileStepper::axisPath() const {
   return itsAxisPath;
 }
 
-unsigned int TileStepper::calcCacheSize(const IPosition&, const IPosition&, unsigned int, unsigned int) const {
+unsigned int TileStepper::calcCacheSize(const IPosition&, const IPosition&, unsigned int,
+                                        unsigned int) const {
   // Cache needs to be 1 tile only.
   return 1;
 }

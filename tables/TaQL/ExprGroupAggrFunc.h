@@ -51,7 +51,7 @@ class TableExprGroupCountAll : public TableExprGroupFuncInt {
   virtual ~TableExprGroupCountAll();
   virtual void apply(const TableExprId& id);
   // Set result in case it is known directly.
-  void setResult(Int64 cnt) { itsValue = cnt; }
+  void setResult(int64_t cnt) { itsValue = cnt; }
 };
 
 // <summary>
@@ -314,7 +314,7 @@ class TableExprGroupMeanDouble : public TableExprGroupFuncDouble {
   virtual void finish();
 
  private:
-  Int64 itsNr;
+  int64_t itsNr;
 };
 
 // <summary>
@@ -337,7 +337,7 @@ class TableExprGroupVarianceDouble : public TableExprGroupFuncDouble {
 
  protected:
   unsigned int itsDdof;
-  Int64 itsNr;
+  int64_t itsNr;
   double itsCurMean;
 };
 
@@ -376,7 +376,7 @@ class TableExprGroupRmsDouble : public TableExprGroupFuncDouble {
   virtual void finish();
 
  private:
-  Int64 itsNr;
+  int64_t itsNr;
 };
 
 // <summary>
@@ -468,7 +468,7 @@ class TableExprGroupMeanDComplex : public TableExprGroupFuncDComplex {
   virtual void finish();
 
  private:
-  Int64 itsNr;
+  int64_t itsNr;
 };
 
 // <summary>
@@ -492,7 +492,7 @@ class TableExprGroupVarianceDComplex : public TableExprGroupFuncDouble {
 
  protected:
   unsigned int itsDdof;
-  Int64 itsNr;
+  int64_t itsNr;
   DComplex itsCurMean;
 };
 

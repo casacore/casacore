@@ -398,7 +398,8 @@ void Input::readArguments(int ac, char const* const* av) {
   announce();  // Announce and possibly die here
 }
 
-Vector<bool> Input::makeMaskFromRanges(const String& ranges, unsigned int length, bool oneRelative) {
+Vector<bool> Input::makeMaskFromRanges(const String& ranges, unsigned int length,
+                                       bool oneRelative) {
   const std::regex single("^[ \t]*[0-9]+[ \t]*$", 1);
   const std::regex range("^[ \t]*[0-9]+[ \t]*-[ \t]*[0-9]+[ \t]*$", 1);
 

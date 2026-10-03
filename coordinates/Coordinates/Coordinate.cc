@@ -288,8 +288,8 @@ void Coordinate::getPrecision(int& precision, Coordinate::formatType& format, bo
 }
 
 String Coordinate::format(String& units, Coordinate::formatType format, double worldValue,
-                          unsigned int worldAxis, bool isAbsolute, bool showAsAbsolute, int precision,
-                          bool usePrecForMixed) const
+                          unsigned int worldAxis, bool isAbsolute, bool showAsAbsolute,
+                          int precision, bool usePrecForMixed) const
 //
 // isAbsolute
 //    T means the worldValue is given as absolute

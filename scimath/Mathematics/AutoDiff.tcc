@@ -50,7 +50,8 @@ AutoDiff<T>::AutoDiff(const T &v, const unsigned int ndiffs, const unsigned int 
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const unsigned int ndiffs) : val_p(v), nd_p(ndiffs), grad_p(ndiffs) {
+AutoDiff<T>::AutoDiff(const T &v, const unsigned int ndiffs)
+    : val_p(v), nd_p(ndiffs), grad_p(ndiffs) {
   grad_p = T(0);
 }
 

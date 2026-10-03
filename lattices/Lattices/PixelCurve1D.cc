@@ -40,7 +40,8 @@ PixelCurve1D::PixelCurve1D(double x1, double y1, double x2, double y2, unsigned 
   init(x, y, npoints);
 }
 
-PixelCurve1D::PixelCurve1D(const Function1D<float, float>& func, float x1, float x2, unsigned int npoints) {
+PixelCurve1D::PixelCurve1D(const Function1D<float, float>& func, float x1, float x2,
+                           unsigned int npoints) {
   // Calculate the length of the curve numerically.
   // Analytically it is the integral of (sqrt(1 + sqr(df/dx)).
   // Use 1000 times the number of pixels in x or y for the numeric calculation.
@@ -153,8 +154,8 @@ void PixelCurve1D::init(const Vector<double>& x, const Vector<double>& y, unsign
   AlwaysAssert(np == npoints, AipsError);
 }
 
-void PixelCurve1D::getPixelCoord(Vector<float>& x, Vector<float>& y, unsigned int start, unsigned int end,
-                                 unsigned int incr) const {
+void PixelCurve1D::getPixelCoord(Vector<float>& x, Vector<float>& y, unsigned int start,
+                                 unsigned int end, unsigned int incr) const {
   AlwaysAssert(start <= end && end < itsNpoints, AipsError);
   unsigned int nr = 1 + (end - start) / incr;
   x.resize(nr);

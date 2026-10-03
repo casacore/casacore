@@ -150,7 +150,7 @@ class TabVecRep {
  protected:
   unsigned int count_p;  // # reference count
   TabVecTag tag_p;
-  Int64 nrel_p;  // # #elements (<0 = ask derived class)
+  int64_t nrel_p;  // # #elements (<0 = ask derived class)
 
   // Get nr of elements.
   virtual rownr_t nelem() const;

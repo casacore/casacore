@@ -53,8 +53,9 @@ void LatticeHistSpecialize::makeLogarithmic(Vector<T>& counts, T& yMax, unsigned
 
 template <class T>
 void LatticeHistSpecialize::process(const T* pInData, const bool* pInMask, Block<T>* pHist,
-                                    const Vector<T>& clip, T binWidth, unsigned int offset, unsigned int nrval,
-                                    unsigned int nBins, unsigned int dataIncr, unsigned int maskIncr) {
+                                    const Vector<T>& clip, T binWidth, unsigned int offset,
+                                    unsigned int nrval, unsigned int nBins, unsigned int dataIncr,
+                                    unsigned int maskIncr) {
   T datum;
   unsigned int rBin;
   unsigned int index;

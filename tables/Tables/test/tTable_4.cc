@@ -101,11 +101,11 @@ TableDesc makeDesc(bool ask) {
         if (op == 1) {
           td.addColumn(ScalarColumnDesc<unsigned int>(strs(0), "", stman, stmanname));
         } else if (op == 2) {
-          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname, IPosition(1, 10),
-                                             ColumnDesc::Direct));
+          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname,
+                                                     IPosition(1, 10), ColumnDesc::Direct));
         } else if (op == 3) {
-          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname, IPosition(1, 10),
-                                             ColumnDesc::FixedShape));
+          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname,
+                                                     IPosition(1, 10), ColumnDesc::FixedShape));
         } else if (op == 4) {
           td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname));
         }

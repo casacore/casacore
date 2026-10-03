@@ -34,7 +34,7 @@ template class ScalarColumnDesc<short>;
 template class ScalarColumnDesc<unsigned short>;
 template class ScalarColumnDesc<int>;
 template class ScalarColumnDesc<unsigned int>;
-template class ScalarColumnDesc<Int64>;
+template class ScalarColumnDesc<int64_t>;
 template class ScalarColumnDesc<float>;
 template class ScalarColumnDesc<double>;
 template class ScalarColumnDesc<Complex>;

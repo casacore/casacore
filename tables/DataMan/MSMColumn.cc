@@ -294,23 +294,23 @@ void MSMColumn::putuInt(rownr_t rownr, const unsigned int* value) {
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getInt64(rownr_t rownr, Int64* value) {
+void MSMColumn::getInt64(rownr_t rownr, int64_t* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const Int64*>(cache.dataPtr())[inx];
+  *value = static_cast<const int64_t*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putInt64(rownr_t rownr, const Int64* value) {
+void MSMColumn::putInt64(rownr_t rownr, const int64_t* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<Int64*>(static_cast<const Int64*>(cache.dataPtr()))[inx] = *value;
+  const_cast<int64_t*>(static_cast<const int64_t*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 

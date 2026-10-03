@@ -251,7 +251,7 @@ class MSCreate {
   virtual void flush() = 0;
 
   // Return the nr of rows in the MS.
-  virtual Int64 nrow() const = 0;
+  virtual int64_t nrow() const = 0;
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const = 0;
@@ -327,7 +327,7 @@ class MSCreateCasa : public MSCreate {
   virtual void flush() { itsMS.flush(true); }
 
   // Return the nr of rows in the MS.
-  virtual Int64 nrow() const { return itsMS.nrow(); }
+  virtual int64_t nrow() const { return itsMS.nrow(); }
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const;
@@ -380,7 +380,7 @@ class MSCreateCasa : public MSCreate {
   // </group>
 
   // # Define the data.
-  Int64 itsNrRow;
+  int64_t itsNrRow;
   MeasurementSet itsMS;
   MSMainColumns* itsMSCol;
 };
@@ -405,7 +405,7 @@ class MSCreateHDF5 : public MSCreate {
   virtual void flush();
 
   // Return the nr of rows in the MS.
-  virtual Int64 nrow() const;
+  virtual int64_t nrow() const;
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const;
@@ -447,7 +447,7 @@ class MSCreateHDF5 : public MSCreate {
   void makeMetaType();
 
   // # Define the data.
-  Int64 itsNrRow;
+  int64_t itsNrRow;
   HDF5DataType itsMetaType;
   std::shared_ptr<HDF5File> itsFile;
   vector<HDF5Spw> itsSpws;
@@ -1539,7 +1539,7 @@ void MSCreateHDF5::updateTimes() {}
 void MSCreateHDF5::closeSubTables() {}
 void MSCreateHDF5::showCacheStatistics() const {}
 void MSCreateHDF5::flush() { itsFile->flush(); }
-Int64 MSCreateHDF5::nrow() const { return itsNrRow; }
+int64_t MSCreateHDF5::nrow() const { return itsNrRow; }
 
 IPosition formTileShape(int tileSize, int tileNPol, int tileNFreq, bool writeFloatData,
                         const Vector<int>& npol, const Vector<int>& nfreq) {
@@ -1573,11 +1573,11 @@ void showHelp() {
   cout << "Use   writems -h   to see the possible parameters." << std::endl;
 }
 
-Int64 parmInt(Input& params, const String& name, const Record& vars = Record()) {
+int64_t parmInt(Input& params, const String& name, const Record& vars = Record()) {
   return RecordGram::expr2Int(params.getString(name), vars);
 }
 
-Array<Int64> parmArrayInt(Input& params, const String& name) {
+Array<int64_t> parmArrayInt(Input& params, const String& name) {
   return RecordGram::expr2ArrayInt(params.getString(name));
 }
 
@@ -1708,20 +1708,23 @@ bool readParms(int argc, char* argv[]) {
     myNPol.resize(myTotalNBand, true);
     myNPol = np;
   }
-  AlwaysAssertExit(myNChan.size() == 1 || myNChan.size() == static_cast<unsigned int>(myTotalNBand));
+  AlwaysAssertExit(myNChan.size() == 1 ||
+                   myNChan.size() == static_cast<unsigned int>(myTotalNBand));
   if (myNChan.size() != static_cast<unsigned int>(myTotalNBand)) {
     int nf = myNChan[0];
     myNChan.resize(myTotalNBand);
     myNChan = nf;
   }
   // Determine start and step frequency per band.
-  AlwaysAssertExit(myStepFreq.size() == 1 || myStepFreq.size() == static_cast<unsigned int>(myTotalNBand));
+  AlwaysAssertExit(myStepFreq.size() == 1 ||
+                   myStepFreq.size() == static_cast<unsigned int>(myTotalNBand));
   if (myStepFreq.size() != static_cast<unsigned int>(myTotalNBand)) {
     double f = myStepFreq[0];
     myStepFreq.resize(myTotalNBand, true);
     myStepFreq = f;
   }
-  AlwaysAssertExit(myStartFreq.size() == 1 || myStartFreq.size() == static_cast<unsigned int>(myTotalNBand));
+  AlwaysAssertExit(myStartFreq.size() == 1 ||
+                   myStartFreq.size() == static_cast<unsigned int>(myTotalNBand));
   if (myStartFreq.size() != static_cast<unsigned int>(myTotalNBand)) {
     myStartFreq.resize(myTotalNBand, true);
     for (int i = 1; i < myTotalNBand; ++i) {

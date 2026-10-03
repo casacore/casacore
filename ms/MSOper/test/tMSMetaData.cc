@@ -113,7 +113,7 @@ void testIt(MSMetaData& md) {
   cout << "*** test getScanNumbers()" << std::endl;
   std::set<int> scans = md.getScanNumbers(0, 0);
   unsigned int myints[] = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
-                   17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+                           17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
   {
     std::set<int> exp;
     exp.insert(myints, myints + 32);
@@ -183,7 +183,7 @@ void testIt(MSMetaData& md) {
       exp.insert(myints, myints + 9);
     } else if (*intent == "CALIBRATE_WVR#ON_SOURCE") {
       unsigned int myints[] = {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                       13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                               13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
       exp.insert(myints, myints + 25);
     }
     AlwaysAssert(md.getSpwsForIntent(*intent) == exp, AipsError);
@@ -238,7 +238,7 @@ void testIt(MSMetaData& md) {
       std::set<unsigned int> exp;
       if (i == 0 || i == 3) {
         unsigned int myints[] = {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                         13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                                 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
         exp.insert(myints, myints + 25);
       }
       if (i == 1) {
@@ -390,7 +390,7 @@ void testIt(MSMetaData& md) {
       cout << "*** test getTDMSpw()" << std::endl;
       std::set<unsigned int> exp;
       unsigned int myints[] = {0,  1,  3,  5,  7,  9,  11, 13, 15, 25, 26, 27,
-                       28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
+                               28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
       exp.insert(myints, myints + 24);
       AlwaysAssert(md.getTDMSpw() == exp, AipsError);
     }
@@ -783,12 +783,12 @@ void testIt(MSMetaData& md) {
       for (unsigned int i = 0; i < nfields; ++i) {
         std::set<double> times = md.getTimesForField(i);
         unsigned int expec = i == 0   ? 818
-                     : i == 1 ? 81
-                     : i == 2 ? 248
-                     : i == 3 ? 402
-                     : i == 4 ? 963
-                     : i == 5 ? 965
-                              : 0;
+                             : i == 1 ? 81
+                             : i == 2 ? 248
+                             : i == 3 ? 402
+                             : i == 4 ? 963
+                             : i == 5 ? 965
+                                      : 0;
         AlwaysAssert(md.getTimesForField(i).size() == expec, AipsError);
       }
     }
@@ -917,13 +917,14 @@ void testIt(MSMetaData& md) {
                                                      : MSMetaData::SQLD_ONLY;
         std::map<unsigned int, std::set<unsigned int>> got = md.getBBCNosToSpwMap(sqldSwitch);
         std::map<unsigned int, std::set<unsigned int>>::const_iterator end = got.end();
-        for (std::map<unsigned int, std::set<unsigned int>>::const_iterator iter = got.begin(); iter != end;
-             ++iter) {
+        for (std::map<unsigned int, std::set<unsigned int>>::const_iterator iter = got.begin();
+             iter != end; ++iter) {
           std::set<unsigned int> expec;
           switch (iter->first) {
             case 0: {
               if (sqldSwitch != MSMetaData::SQLD_ONLY) {
-                unsigned int mine[] = {0, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
+                unsigned int mine[] = {0,  25, 26, 27, 28, 29, 30, 31,
+                                       32, 33, 34, 35, 36, 37, 38, 39};
                 expec.insert(mine, mine + 16);
               }
               break;
@@ -971,10 +972,13 @@ void testIt(MSMetaData& md) {
       }
       {
         cout << "*** test getSpwIDPolIDToDataDescIDMap()" << std::endl;
-        std::map<std::pair<unsigned int, unsigned int>, unsigned int> dataDescToPolID = md.getSpwIDPolIDToDataDescIDMap();
+        std::map<std::pair<unsigned int, unsigned int>, unsigned int> dataDescToPolID =
+            md.getSpwIDPolIDToDataDescIDMap();
         std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator iter;
-        std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator begin = dataDescToPolID.begin();
-        std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator end = dataDescToPolID.end();
+        std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator begin =
+            dataDescToPolID.begin();
+        std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator end =
+            dataDescToPolID.end();
         for (iter = begin; iter != end; ++iter) {
           std::pair<unsigned int, unsigned int> mypair = iter->first;
           unsigned int spw = mypair.first;
@@ -1887,7 +1891,9 @@ void testIt(MSMetaData& md) {
       cout << "*** test getUniqueDataDescIDs()" << std::endl;
       std::set<unsigned int> ddids = md.getUniqueDataDescIDs();
       Vector<unsigned int> expec = indgen(25, (unsigned int)0, (unsigned int)1);
-      AlwaysAssert(allEQ(Vector<unsigned int>(vector<unsigned int>(ddids.begin(), ddids.end())), expec), AipsError);
+      AlwaysAssert(
+          allEQ(Vector<unsigned int>(vector<unsigned int>(ddids.begin(), ddids.end())), expec),
+          AipsError);
     }
     {
       cout << "*** test getUniqueAntennaIDs()" << std::endl;
@@ -1958,7 +1964,7 @@ void testIt(MSMetaData& md) {
       unsigned int n = vec.size();
       AlwaysAssert(n == 40, AipsError);
       unsigned int evals[] = {351, 75,  150, 75,  150, 75,   150, 75,   150, 69,   138, 69,  138,
-                      69,  138, 69,  138, 385, 2310, 385, 2310, 385, 2310, 385, 2310};
+                              69,  138, 69,  138, 385, 2310, 385, 2310, 385, 2310, 385, 2310};
       std::vector<unsigned int> expec(evals, evals + 25);
       for (unsigned int i = 0; i < n; ++i) {
         unsigned int esize = i < 25 ? expec[i] : 0;

@@ -172,27 +172,28 @@ class MSSpWindowColumns {
   // set to a non-negative value then that row is checked first to see if it
   // matches. An AIpsError exception is thrown if tryRow is bigger than the
   // number of rows in the Table. Returns -1 if no match could be found.
-  Int64 matchSpw(const MFrequency& refFreq, unsigned int nChan, const Quantum<double>& bandwidth,
-                 int ifChain, const Quantum<double>& tolerance, Int64 tryRow = -1) const;
+  int64_t matchSpw(const MFrequency& refFreq, unsigned int nChan, const Quantum<double>& bandwidth,
+                   int ifChain, const Quantum<double>& tolerance, int64_t tryRow = -1) const;
   // Similar to above, but also pass in the frame info.
-  Int64 matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1, const MeasFrame& measFrm,
-                 const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, unsigned int nChan,
-                 const Quantum<double>& bandwidth, int ifChain, const Quantum<double>& tolerance,
-                 Int64 tryRow = -1) const;
+  int64_t matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1, const MeasFrame& measFrm,
+                   const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc,
+                   unsigned int nChan, const Quantum<double>& bandwidth, int ifChain,
+                   const Quantum<double>& tolerance, int64_t tryRow = -1) const;
   // This is to check that the channels are matched individually
   // and also if the spw is matched in reverse;
 
   // Same as the above but returns all the possible match that it could find
   //  in the spectral window table.
-  RowNumbers allMatchedSpw(const MFrequency& refFreq, unsigned int nChan, const Quantum<double>& bandwidth,
-                           int ifChain, const Quantum<double>& tolerance) const;
+  RowNumbers allMatchedSpw(const MFrequency& refFreq, unsigned int nChan,
+                           const Quantum<double>& bandwidth, int ifChain,
+                           const Quantum<double>& tolerance) const;
 
   // This version does a channel to channel match too and also return
   //  the reversed if it matches but the channels are in inverse order
   //  like an upper or lower side band having same characteristics
-  Int64 matchSpw(const MFrequency& refFreq, unsigned int nChan, const Quantum<double>& bandwidth,
-                 int ifChain, const Quantum<double>& tolerance, Vector<double>& otherFreqs,
-                 bool& reversed) const;
+  int64_t matchSpw(const MFrequency& refFreq, unsigned int nChan, const Quantum<double>& bandwidth,
+                   int ifChain, const Quantum<double>& tolerance, Vector<double>& otherFreqs,
+                   bool& reversed) const;
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

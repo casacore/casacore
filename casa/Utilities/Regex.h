@@ -278,7 +278,8 @@ class Regex : public std::regex {
   // </group>
 
   // Search backwards.
-  String::size_type searchBack(const char* s, String::size_type len, int& matchlen, unsigned int pos) const;
+  String::size_type searchBack(const char* s, String::size_type len, int& matchlen,
+                               unsigned int pos) const;
 
   // Write the regex string.
   friend ostream& operator<<(ostream& ios, const Regex& exp);

@@ -65,7 +65,9 @@ unsigned int RefColumn::ndimColumn() const { return colPtr_p->ndimColumn(); }
 
 IPosition RefColumn::shapeColumn() const { return colPtr_p->shapeColumn(); }
 
-unsigned int RefColumn::ndim(rownr_t rownr) const { return colPtr_p->ndim(refTabPtr_p->rootRownr(rownr)); }
+unsigned int RefColumn::ndim(rownr_t rownr) const {
+  return colPtr_p->ndim(refTabPtr_p->rootRownr(rownr));
+}
 
 IPosition RefColumn::shape(rownr_t rownr) const {
   return colPtr_p->shape(refTabPtr_p->rootRownr(rownr));

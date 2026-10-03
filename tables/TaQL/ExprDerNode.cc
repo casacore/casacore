@@ -46,9 +46,9 @@ TableExprNodeConstBool::TableExprNodeConstBool(const bool& val)
     : TableExprNodeBinary(NTBool, VTScalar, OtLiteral, Constant), value_p(val) {}
 bool TableExprNodeConstBool::getBool(const TableExprId&) { return value_p; }
 
-TableExprNodeConstInt::TableExprNodeConstInt(const Int64& val)
+TableExprNodeConstInt::TableExprNodeConstInt(const int64_t& val)
     : TableExprNodeBinary(NTInt, VTScalar, OtLiteral, Constant), value_p(val) {}
-Int64 TableExprNodeConstInt::getInt(const TableExprId&) { return value_p; }
+int64_t TableExprNodeConstInt::getInt(const TableExprId&) { return value_p; }
 double TableExprNodeConstInt::getDouble(const TableExprId&) { return value_p; }
 DComplex TableExprNodeConstInt::getDComplex(const TableExprId&) { return double(value_p); }
 
@@ -151,8 +151,8 @@ bool TableExprNodeColumn::getBool(const TableExprId& id) {
   tabCol_p.getScalar(id.rownr(), val);
   return val;
 }
-Int64 TableExprNodeColumn::getInt(const TableExprId& id) {
-  Int64 val;
+int64_t TableExprNodeColumn::getInt(const TableExprId& id) {
+  int64_t val;
   tabCol_p.getScalar(id.rownr(), val);
   return val;
 }
@@ -201,8 +201,8 @@ Array<unsigned int> TableExprNodeColumn::getColumnuInt(const Vector<rownr_t>& ro
   ScalarColumn<unsigned int> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<Int64> TableExprNodeColumn::getColumnInt64(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Int64> col(tabCol_p);
+Array<int64_t> TableExprNodeColumn::getColumnInt64(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<int64_t> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
 Array<float> TableExprNodeColumn::getColumnFloat(const Vector<rownr_t>& rownrs) {
@@ -231,7 +231,7 @@ TableExprNodeRownr::TableExprNodeRownr(const TableExprInfo& tableInfo, unsigned 
       tableInfo_p(tableInfo),
       origin_p(origin) {}
 TableExprInfo TableExprNodeRownr::getTableInfo() const { return tableInfo_p; }
-Int64 TableExprNodeRownr::getInt(const TableExprId& id) {
+int64_t TableExprNodeRownr::getInt(const TableExprId& id) {
   AlwaysAssert(id.byRow(), AipsError);
   return id.rownr() + origin_p;
 }
@@ -260,9 +260,9 @@ void TableExprNodeRowid::applySelection(const Vector<rownr_t>& rownrs) {
     rownrs_p.reference(newRows);
   }
 }
-Int64 TableExprNodeRowid::getInt(const TableExprId& id) {
+int64_t TableExprNodeRowid::getInt(const TableExprId& id) {
   AlwaysAssert(id.byRow(), AipsError);
-  if (id.rownr() < Int64(rownrs_p.size())) {
+  if (id.rownr() < int64_t(rownrs_p.size())) {
     return rownrs_p[id.rownr()];
   }
   return 0;

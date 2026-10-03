@@ -110,7 +110,7 @@ class MSDataDescColumns {
   // that row is tested to see if it matches before any others are
   // tested. Setting tryRow to a positive value greater than the table length
   // will throw an exception (AipsError).
-  Int64 match(unsigned int spwId, unsigned int polId, Int64 tryRow = -1);
+  int64_t match(unsigned int spwId, unsigned int polId, int64_t tryRow = -1);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

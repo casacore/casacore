@@ -171,9 +171,9 @@ bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Ve
 
 template <class T>
 bool FrequencyAligner<T>::alignMany(
-    Array<T>& yOut, Array<bool>& maskOut, const Array<T>& yIn, const Array<bool>& maskIn, unsigned int axis,
-    const MEpoch& epoch, typename InterpolateArray1D<double, T>::InterpolationMethod method,
-    bool extrapolate) {
+    Array<T>& yOut, Array<bool>& maskOut, const Array<T>& yIn, const Array<bool>& maskIn,
+    unsigned int axis, const MEpoch& epoch,
+    typename InterpolateArray1D<double, T>::InterpolationMethod method, bool extrapolate) {
   // Checks
 
   const IPosition shp = yIn.shape();

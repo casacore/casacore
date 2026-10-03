@@ -140,7 +140,7 @@ class LatticeFractile {
   // of masked-on values. Masked-off values are ignored.
   // <group>
   static unsigned int maskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<unsigned int>& hist,
-                              Block<T>& boundaries, const MaskedLattice<T>& lattice);
+                                      Block<T>& boundaries, const MaskedLattice<T>& lattice);
   static void unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<unsigned int>& hist,
                                 Block<T>& boundaries, const Lattice<T>& lattice);
   // </group>
@@ -156,8 +156,8 @@ class LatticeFractile {
   // to minv and the last bin to maxv.
   // If the bins are getting too small (i.e. if stv is nearly endv), 0 is
   // returned. In that case endv contains the fractile.
-  static unsigned int findBin(unsigned int& fractileInx, T& stv, T& endv, T minv, T maxv, const Block<unsigned int>& hist,
-                      const Block<T>& boundaries);
+  static unsigned int findBin(unsigned int& fractileInx, T& stv, T& endv, T minv, T maxv,
+                              const Block<unsigned int>& hist, const Block<T>& boundaries);
 };
 
 }  // namespace casacore

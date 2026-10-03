@@ -50,7 +50,7 @@ ISMIndColumn::ISMIndColumn(ISMBase* smptr, int dataType, unsigned int colnr)
 ISMIndColumn::~ISMIndColumn() { clear(); }
 
 void ISMIndColumn::clear() {
-  delete (Int64*)lastValue_p;
+  delete (int64_t*)lastValue_p;
   lastValue_p = 0;
   if (stmanPtr_p->version() < 3) {
     delete iosfile_p;
@@ -66,7 +66,7 @@ void ISMIndColumn::doCreate(ISMBucket* bucket) {
   init(ByteIO::New);
   // Insert a dummy zero offset as the first value.
   lastRowPut_p = 0;
-  *(Int64*)lastValue_p = 0;
+  *(int64_t*)lastValue_p = 0;
   char* buffer = stmanPtr_p->tempBuffer();
   unsigned int leng = writeFunc_p(buffer, lastValue_p, 1);
   bucket->addData(colnr_p, 0, 0, buffer, leng);
@@ -115,7 +115,7 @@ void ISMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
 StIndArray* ISMIndColumn::getArrayPtr(rownr_t rownr) {
   if (isLastValueInvalid(rownr)) {
     getValue(rownr, lastValue_p, false);
-    Int64 offset = *(Int64*)lastValue_p;
+    int64_t offset = *(int64_t*)lastValue_p;
     if (offset != 0) {
       indArray_p = StIndArray(offset);
       foundArray_p = true;
@@ -192,7 +192,7 @@ StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, boo
     if (ptr->refCount(*iosfile_p) <= 1) {
       // The value is not shared, so we can replace it.
       ptr->setShape(*iosfile_p, dataType(), shape);
-      Int64 offset = ptr->fileOffset();
+      int64_t offset = ptr->fileOffset();
       putValue(rownr, &offset);
       return ptr;
     }
@@ -204,7 +204,7 @@ StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, boo
     tmp.copyData(*iosfile_p, dataType(), *ptr);
   }
   indArray_p = tmp;
-  Int64 offset = indArray_p.fileOffset();
+  int64_t offset = indArray_p.fileOffset();
   putValue(rownr, &offset);
   return &indArray_p;
 }
@@ -232,17 +232,17 @@ void ISMIndColumn::init(ByteIO::OpenOption fileOption) {
   DebugAssert(nrelem_p == 1, AipsError);
   bool asBigEndian = stmanPtr_p->asBigEndian();
   if (asBigEndian) {
-    readFunc_p = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    writeFunc_p = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    fixedLength_p = CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+    readFunc_p = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
+    writeFunc_p = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
+    fixedLength_p = CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
     nrcopy_p = 1;
   } else {
-    readFunc_p = LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    writeFunc_p = LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    fixedLength_p = LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+    readFunc_p = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
+    writeFunc_p = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
+    fixedLength_p = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
     nrcopy_p = 1;
   }
-  lastValue_p = new Int64;
+  lastValue_p = new int64_t;
   // # Open or create the type 1 file to hold the arrays in the column.
   // # For newer versions one file is maintained by the parent
   // # for all indirect columns.
@@ -256,7 +256,7 @@ void ISMIndColumn::init(ByteIO::OpenOption fileOption) {
 }
 
 void ISMIndColumn::handleCopy(rownr_t, const char* value) {
-  Int64 offset;
+  int64_t offset;
   readFunc_p(&offset, value, nrcopy_p);
   if (offset != 0) {
     StIndArray tmp(offset);
@@ -265,7 +265,7 @@ void ISMIndColumn::handleCopy(rownr_t, const char* value) {
 }
 
 void ISMIndColumn::handleRemove(rownr_t, const char* value) {
-  Int64 offset;
+  int64_t offset;
   readFunc_p(&offset, value, nrcopy_p);
   if (offset != 0) {
     StIndArray tmp(offset);

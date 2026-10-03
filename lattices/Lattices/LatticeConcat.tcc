@@ -700,7 +700,8 @@ bool LatticeConcat<T>::putSlice2(const Array<T>& buffer, const IPosition& where,
 }
 
 template <class T>
-bool LatticeConcat<T>::getMaskSlice1(Array<bool>& buffer, const Slicer& section, unsigned int nLattices) {
+bool LatticeConcat<T>::getMaskSlice1(Array<bool>& buffer, const Slicer& section,
+                                     unsigned int nLattices) {
   const unsigned int dimIn = axis_p;
 
   // The concatenated lattice section
@@ -738,7 +739,8 @@ bool LatticeConcat<T>::getMaskSlice1(Array<bool>& buffer, const Slicer& section,
 }
 
 template <class T>
-bool LatticeConcat<T>::getMaskSlice2(Array<bool>& buffer, const Slicer& section, unsigned int nLattices) {
+bool LatticeConcat<T>::getMaskSlice2(Array<bool>& buffer, const Slicer& section,
+                                     unsigned int nLattices) {
   // Setup positions
 
   IPosition blc, trc, stride;

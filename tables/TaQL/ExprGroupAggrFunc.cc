@@ -90,18 +90,18 @@ void TableExprGroupNFalse::apply(const TableExprId& id) {
 }
 
 TableExprGroupMinInt::TableExprGroupMinInt(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node, std::numeric_limits<Int64>::max()) {}
+    : TableExprGroupFuncInt(node, std::numeric_limits<int64_t>::max()) {}
 TableExprGroupMinInt::~TableExprGroupMinInt() {}
 void TableExprGroupMinInt::apply(const TableExprId& id) {
-  Int64 v = itsOperand->getInt(id);
+  int64_t v = itsOperand->getInt(id);
   if (v < itsValue) itsValue = v;
 }
 
 TableExprGroupMaxInt::TableExprGroupMaxInt(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node, std::numeric_limits<Int64>::min()) {}
+    : TableExprGroupFuncInt(node, std::numeric_limits<int64_t>::min()) {}
 TableExprGroupMaxInt::~TableExprGroupMaxInt() {}
 void TableExprGroupMaxInt::apply(const TableExprId& id) {
-  Int64 v = itsOperand->getInt(id);
+  int64_t v = itsOperand->getInt(id);
   if (v > itsValue) itsValue = v;
 }
 
@@ -118,7 +118,7 @@ TableExprGroupSumSqrInt::TableExprGroupSumSqrInt(TableExprNodeRep* node)
     : TableExprGroupFuncInt(node) {}
 TableExprGroupSumSqrInt::~TableExprGroupSumSqrInt() {}
 void TableExprGroupSumSqrInt::apply(const TableExprId& id) {
-  Int64 v = itsOperand->getInt(id);
+  int64_t v = itsOperand->getInt(id);
   itsValue += v * v;
 }
 
@@ -173,7 +173,8 @@ void TableExprGroupMeanDouble::finish() {
   }
 }
 
-TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node, unsigned int ddof)
+TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node,
+                                                           unsigned int ddof)
     : TableExprGroupFuncDouble(node), itsDdof(ddof), itsNr(0), itsCurMean(0) {}
 TableExprGroupVarianceDouble::~TableExprGroupVarianceDouble() {}
 void TableExprGroupVarianceDouble::apply(const TableExprId& id) {
@@ -269,7 +270,8 @@ void TableExprGroupMeanDComplex::finish() {
   }
 }
 
-TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node, unsigned int ddof)
+TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node,
+                                                               unsigned int ddof)
     : TableExprGroupFuncDouble(node), itsDdof(ddof), itsNr(0) {}
 TableExprGroupVarianceDComplex::~TableExprGroupVarianceDComplex() {}
 void TableExprGroupVarianceDComplex::apply(const TableExprId& id) {
@@ -291,7 +293,8 @@ void TableExprGroupVarianceDComplex::finish() {
   }
 }
 
-TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node, unsigned int ddof)
+TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node,
+                                                           unsigned int ddof)
     : TableExprGroupVarianceDComplex(node, ddof) {}
 TableExprGroupStdDevDComplex::~TableExprGroupStdDevDComplex() {}
 void TableExprGroupStdDevDComplex::finish() {

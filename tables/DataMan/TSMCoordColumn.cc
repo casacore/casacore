@@ -161,7 +161,8 @@ void TSMCoordColumn::putArrayV(rownr_t rownr, const ArrayBase& dataPtr) {
       hypercube->rwValueRecord().define(columnName(), static_cast<const Array<int>&>(dataPtr));
       break;
     case TpUInt:
-      hypercube->rwValueRecord().define(columnName(), static_cast<const Array<unsigned int>&>(dataPtr));
+      hypercube->rwValueRecord().define(columnName(),
+                                        static_cast<const Array<unsigned int>&>(dataPtr));
       break;
     case TpFloat:
       hypercube->rwValueRecord().define(columnName(), static_cast<const Array<float>&>(dataPtr));

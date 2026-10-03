@@ -74,7 +74,8 @@ class BucketBuffered : public BucketBase {
   // bucketSize*nrOfBuckets bytes.
   // If the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketBuffered(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets);
+  BucketBuffered(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+                 unsigned int nrOfBuckets);
 
   virtual ~BucketBuffered();
 
@@ -82,7 +83,8 @@ class BucketBuffered : public BucketBase {
   char* getBuffer() { return itsBuffer; }
 
   // Read the given part into the internal buffer at the given offset.
-  void read(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes, unsigned int bufferOffset = 0);
+  void read(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes,
+            unsigned int bufferOffset = 0);
 
   // Write the given part from the internal buffer.
   void write(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes);

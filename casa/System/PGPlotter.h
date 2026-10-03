@@ -91,8 +91,8 @@ class String;
 class PGPlotter : public PGPlotterInterface {
  public:
   // Define the signature of a function creating a PGPlotter object.
-  typedef PGPlotter CreateFunction(const String &device, unsigned int mincolors, unsigned int maxcolors, unsigned int sizex,
-                                   unsigned int sizey);
+  typedef PGPlotter CreateFunction(const String &device, unsigned int mincolors,
+                                   unsigned int maxcolors, unsigned int sizex, unsigned int sizey);
 
   // The default constructor does not attach to any plotter, that is
   // <src>isAttached()</src> returns false. An exception is thrown if you
@@ -100,8 +100,8 @@ class PGPlotter : public PGPlotterInterface {
   PGPlotter();
 
   // Create PGPlotter object using the curreent create function.
-  PGPlotter(const String &device, unsigned int mincolors = 2, unsigned int maxcolors = 100, unsigned int sizex = 600,
-            unsigned int sizey = 450);
+  PGPlotter(const String &device, unsigned int mincolors = 2, unsigned int maxcolors = 100,
+            unsigned int sizex = 600, unsigned int sizey = 450);
 
   // Create from the given PGPlotterInterface instantiation.
   // It takes over the pointer.
@@ -118,8 +118,9 @@ class PGPlotter : public PGPlotterInterface {
   virtual ~PGPlotter();
 
   // Create a PGPlotter object using the current create function.
-  static PGPlotter create(const String &device, unsigned int mincolors = 2, unsigned int maxcolors = 100,
-                          unsigned int sizex = 600, unsigned int sizey = 450);
+  static PGPlotter create(const String &device, unsigned int mincolors = 2,
+                          unsigned int maxcolors = 100, unsigned int sizex = 600,
+                          unsigned int sizey = 450);
 
   // Set the create function. It returns the current create function.
   // It is, for example, used by ObjectController to attach to glish.

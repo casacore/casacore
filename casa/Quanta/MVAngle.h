@@ -280,7 +280,10 @@ class MVAngle {
     };
     Format(unsigned int inprec) : typ(MVAngle::ANGLE), prec(inprec) { ; };
     // Construct from type and precision (present due to overlaoding problems)
-    Format(unsigned int intyp, unsigned int inprec) : typ((MVAngle::formatTypes)intyp), prec(inprec) { ; };
+    Format(unsigned int intyp, unsigned int inprec)
+        : typ((MVAngle::formatTypes)intyp), prec(inprec) {
+      ;
+    };
 
    private:
     MVAngle::formatTypes typ;

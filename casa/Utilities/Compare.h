@@ -128,7 +128,7 @@ template <typename T>
 class CompareIntervalInt : public BaseCompare {
  public:
   // Construct from the given interval values.
-  CompareIntervalInt(Int64 interval, Int64 start);
+  CompareIntervalInt(int64_t interval, int64_t start);
 
   virtual ~CompareIntervalInt();
 
@@ -136,8 +136,8 @@ class CompareIntervalInt : public BaseCompare {
   virtual int comp(const void* obj1, const void* obj2) const;
 
  private:
-  Int64 itsInterval;
-  Int64 itsStart;
+  int64_t itsInterval;
+  int64_t itsStart;
 };
 
 // <summary>Real comparison class with intervals</summary>

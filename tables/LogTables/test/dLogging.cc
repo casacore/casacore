@@ -75,8 +75,8 @@ DataClass::DataClass(const IPosition &shape, const LogSink &sink)
 void DataClass::set(int toWhat) {
   os_p << LogIO::NORMAL << LogOrigin("DataClass", "set(Int toWhat)");   // 1
   os_p << "Setting data values to " << toWhat << WHERE << LogIO::POST;  // 2
-  unsigned int n = data_p.nelements();                                          // 3
-  for (unsigned int i = 0; i < n; i++) {                                        // 4
+  unsigned int n = data_p.nelements();                                  // 3
+  for (unsigned int i = 0; i < n; i++) {                                // 4
 #ifdef AIPS_DEBUG                                                       // 5
     os_p << LogIO::DEBUGGING << WHERE <<                                // 6
         "Setting element  " << i << " to " << toWhat << LogIO::POST;    // 7

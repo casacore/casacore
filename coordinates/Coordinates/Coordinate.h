@@ -413,13 +413,13 @@ class Coordinate {
   //<group>
   virtual void getPrecision(int& precision, Coordinate::formatType& format, bool showAsAbsolute,
                             int defPrecScientific, int defPrecFixed, int defPrecTime) const;
-  virtual String format(String& units, Coordinate::formatType format, double worldValue, unsigned int axis,
-                        bool isAbsolute = true, bool showAsAbsolute = true, int precision = -1,
-                        bool usePrecForMixed = false) const;
+  virtual String format(String& units, Coordinate::formatType format, double worldValue,
+                        unsigned int axis, bool isAbsolute = true, bool showAsAbsolute = true,
+                        int precision = -1, bool usePrecForMixed = false) const;
 
   String formatQuantity(String& units, Coordinate::formatType format,
-                        const Quantum<double>& worldValue, unsigned int axis, bool isAbsolute = true,
-                        bool showAsAbsolute = true, int precision = -1);
+                        const Quantum<double>& worldValue, unsigned int axis,
+                        bool isAbsolute = true, bool showAsAbsolute = true, int precision = -1);
   //</group>
 
   // Used for persistence. Derived classes will have similar static

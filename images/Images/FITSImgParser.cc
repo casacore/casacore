@@ -371,7 +371,8 @@ void FITSImgParser::setup(void) {
 
   unsigned int extindex = 0;
   bool isfitsimg = true;
-  while (fin.rectype() != FITS::EndOfFile && isfitsimg && !fin.err() && extindex < (unsigned int)num_hdu) {
+  while (fin.rectype() != FITS::EndOfFile && isfitsimg && !fin.err() &&
+         extindex < (unsigned int)num_hdu) {
     extindex++;
     if (fin.rectype() == FITS::HDURecord) {
       switch (fin.hdutype()) {

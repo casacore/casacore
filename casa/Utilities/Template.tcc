@@ -435,9 +435,9 @@ void Template::read(const String &filename) {
   // Save filename in list
   tdflist_p.resize(tdflist_p.nelements() + 1);
   tdflist_p[tdflist_p.nelements() - 1] = filename;
-  String extracted;  // a single input line
-  String combine;    // a full combined line
-  unsigned int c1 = 0;       // the input line count
+  String extracted;     // a single input line
+  String combine;       // a full combined line
+  unsigned int c1 = 0;  // the input line count
   bool ok(true);
   while (ok && (((extracted = ""), (ok = getline(file, extracted))) || !combine.empty())) {
     c1++;  // Count input lines

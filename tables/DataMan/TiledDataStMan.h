@@ -356,7 +356,7 @@ class TiledDataStMan : public TiledStMan {
   // the name of the arguments in uppercase. If not defined, their
   // default value is used.
   // <group>
-  TiledDataStMan(const String& hypercolumnName, uInt64 maximumCacheSize = 0);
+  TiledDataStMan(const String& hypercolumnName, uint64_t maximumCacheSize = 0);
   TiledDataStMan(const String& hypercolumnName, const Record& spec);
   // </group>
 
@@ -405,7 +405,7 @@ class TiledDataStMan : public TiledStMan {
   // the last dimension.
   // The record should contain the id values (to get the correct
   // hypercube) and optionally coordinate values for the elements added.
-  void extendHypercube(uInt64 incrInLastDim, const Record& values);
+  void extendHypercube(uint64_t incrInLastDim, const Record& values);
 
   // Get the hypercube in which the given row is stored.
   virtual TSMCube* getHypercube(rownr_t rownr);
@@ -426,11 +426,11 @@ class TiledDataStMan : public TiledStMan {
   virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // Update the map of row numbers to cube number plus offset.
-  void updateRowMap(unsigned int cubeNr, uInt64 incrInLastDim);
+  void updateRowMap(unsigned int cubeNr, uint64_t incrInLastDim);
 
   // Check if the table is large enough to hold this
   // hypercube extension.
-  void checkNrrow(const IPosition& cubeShape, uInt64 incrInLastDim) const;
+  void checkNrrow(const IPosition& cubeShape, uint64_t incrInLastDim) const;
 
   // # Declare the data members.
   //  The map of row number to cube and position in cube.

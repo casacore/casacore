@@ -49,7 +49,8 @@ void CompositeNumber::generate(const unsigned int maxval) {
   for (unsigned int i2 = 0; i2 < n2; i2++) {
     for (unsigned int i3 = 0; i3 < n3; i3++) {
       for (unsigned int i5 = 0; i5 < n5; i5++) {
-        itsNumbers[n] = (unsigned int)(pow(2.0, (float)i2) * pow(3.0, (float)i3) * pow(5.0, (float)i5));
+        itsNumbers[n] =
+            (unsigned int)(pow(2.0, (float)i2) * pow(3.0, (float)i3) * pow(5.0, (float)i5));
         n++;
       }
     }

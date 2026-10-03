@@ -152,7 +152,7 @@ bool TableExprNodeRep::getBool(const TableExprId&) {
   TableExprNode::throwInvDT("(getBool not implemented)");
   return false;
 }
-Int64 TableExprNodeRep::getInt(const TableExprId&) {
+int64_t TableExprNodeRep::getInt(const TableExprId&) {
   TableExprNode::throwInvDT("(getInt not implemented)");
   return 0;
 }
@@ -174,12 +174,12 @@ MArray<bool> TableExprNodeRep::getArrayBool(const TableExprId&) {
   TableExprNode::throwInvDT("(getArrayBool not implemented)");
   return MArray<bool>();
 }
-MArray<Int64> TableExprNodeRep::getArrayInt(const TableExprId&) {
+MArray<int64_t> TableExprNodeRep::getArrayInt(const TableExprId&) {
   TableExprNode::throwInvDT("(getArrayInt not implemented)");
-  return MArray<Int64>();
+  return MArray<int64_t>();
 }
 MArray<double> TableExprNodeRep::getArrayDouble(const TableExprId& id) {
-  MArray<Int64> tmp(getArrayInt(id));
+  MArray<int64_t> tmp(getArrayInt(id));
   MArray<double> res;
   res.fill(tmp);
   return res;
@@ -205,13 +205,13 @@ MArray<bool> TableExprNodeRep::getBoolAS(const TableExprId& id) {
   res[0] = getBool(id);
   return MArray<bool>(res);
 }
-MArray<Int64> TableExprNodeRep::getIntAS(const TableExprId& id) {
+MArray<int64_t> TableExprNodeRep::getIntAS(const TableExprId& id) {
   if (valueType() == VTArray) {
     return getArrayInt(id);
   }
-  Vector<Int64> res(1);
+  Vector<int64_t> res(1);
   res[0] = getInt(id);
-  return MArray<Int64>(res);
+  return MArray<int64_t>(res);
 }
 MArray<double> TableExprNodeRep::getDoubleAS(const TableExprId& id) {
   if (valueType() == VTArray) {
@@ -249,7 +249,7 @@ MArray<MVTime> TableExprNodeRep::getDateAS(const TableExprId& id) {
 bool TableExprNodeRep::contains(const TableExprId& id, bool value) {
   return (value == getBool(id));
 }
-bool TableExprNodeRep::contains(const TableExprId& id, Int64 value) {
+bool TableExprNodeRep::contains(const TableExprId& id, int64_t value) {
   return (value == getInt(id));
 }
 bool TableExprNodeRep::contains(const TableExprId& id, double value) {
@@ -267,7 +267,7 @@ bool TableExprNodeRep::contains(const TableExprId& id, MVTime value) {
 MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<bool>& value) {
   return (getBool(id) == value);
 }
-MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Int64>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<int64_t>& value) {
   return (getInt(id) == value);
 }
 MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<double>& value) {
@@ -321,11 +321,11 @@ Array<unsigned int> TableExprNodeRep::getColumnuInt(const Vector<rownr_t>&) {
   TableExprNode::throwInvDT("(getColumnuInt not implemented)");
   return Array<unsigned int>();
 }
-Array<Int64> TableExprNodeRep::getColumnInt64(const Vector<rownr_t>& rownrs) {
+Array<int64_t> TableExprNodeRep::getColumnInt64(const Vector<rownr_t>& rownrs) {
   TableExprId id;
   rownr_t nrrow = rownrs.size();
-  Array<Int64> arr(IPosition(1, nrrow));
-  Int64* vec = arr.data();
+  Array<int64_t> arr(IPosition(1, nrrow));
+  int64_t* vec = arr.data();
   for (rownr_t i = 0; i < nrrow; i++) {
     id.setRownr(rownrs[i]);
     vec[i] = getInt(id);
@@ -829,7 +829,8 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc() {
 
 bool TableExprNodeRep::isLazyAggregate() const { return true; }
 
-unsigned int TableExprNodeMulti::checkNumOfArg(unsigned int low, unsigned int high, const vector<TENShPtr>& nodes) {
+unsigned int TableExprNodeMulti::checkNumOfArg(unsigned int low, unsigned int high,
+                                               const vector<TENShPtr>& nodes) {
   if (nodes.size() < low) {
     throw(TableInvExpr("too few function arguments"));
   } else if (nodes.size() > high) {

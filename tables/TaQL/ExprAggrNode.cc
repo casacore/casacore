@@ -398,7 +398,7 @@ bool TableExprAggrNode::getBool(const TableExprId& id) {
   TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
   return set.getFuncs()[itsFunc->seqnr()]->getBool();
 }
-Int64 TableExprAggrNode::getInt(const TableExprId& id) {
+int64_t TableExprAggrNode::getInt(const TableExprId& id) {
   const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
   if (itsFunc->isLazy()) {
     return itsFunc->getInt(aid.result().ids(id.rownr()));

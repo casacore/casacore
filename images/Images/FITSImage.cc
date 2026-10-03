@@ -675,7 +675,8 @@ void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, Ima
                          uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::BYTE) {
       crackHeader<unsigned char>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
-                         uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+                                 uCharMagic, shortMagic, longMagic, hasBlanks, os, infile,
+                                 whichRep);
     }
   } else {
     if (dataType == FITS::FLOAT) {
@@ -692,7 +693,8 @@ void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, Ima
                             uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::BYTE) {
       crackExtHeader<unsigned char>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
-                            uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+                                    uCharMagic, shortMagic, longMagic, hasBlanks, os, infile,
+                                    whichRep);
     }
   }
   //  }

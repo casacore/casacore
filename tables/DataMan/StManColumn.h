@@ -90,7 +90,8 @@ class StManColumn : public StManColumnBase {
   // in the given row.
   // By default it ignores the tile shape (thus only sets the shape).
   virtual void setShapeTiled(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
-  virtual void setShapeTiled(unsigned int rownr, const IPosition& shape, const IPosition& tileShape);
+  virtual void setShapeTiled(unsigned int rownr, const IPosition& shape,
+                             const IPosition& tileShape);
 
   // Is the value shape defined in the given row?
   // By default it returns true.
@@ -319,7 +320,7 @@ class StManColumn : public StManColumnBase {
   virtual void getScalarColumnuShortV(Vector<unsigned short>* dataPtr);
   virtual void getScalarColumnIntV(Vector<int>* dataPtr);
   virtual void getScalarColumnuIntV(Vector<unsigned int>* dataPtr);
-  virtual void getScalarColumnInt64V(Vector<Int64>* dataPtr);
+  virtual void getScalarColumnInt64V(Vector<int64_t>* dataPtr);
   virtual void getScalarColumnfloatV(Vector<float>* dataPtr);
   virtual void getScalarColumndoubleV(Vector<double>* dataPtr);
   virtual void getScalarColumnComplexV(Vector<Complex>* dataPtr);
@@ -338,7 +339,7 @@ class StManColumn : public StManColumnBase {
   virtual void putScalarColumnuShortV(const Vector<unsigned short>* dataPtr);
   virtual void putScalarColumnIntV(const Vector<int>* dataPtr);
   virtual void putScalarColumnuIntV(const Vector<unsigned int>* dataPtr);
-  virtual void putScalarColumnInt64V(const Vector<Int64>* dataPtr);
+  virtual void putScalarColumnInt64V(const Vector<int64_t>* dataPtr);
   virtual void putScalarColumnfloatV(const Vector<float>* dataPtr);
   virtual void putScalarColumndoubleV(const Vector<double>* dataPtr);
   virtual void putScalarColumnComplexV(const Vector<Complex>* dataPtr);
@@ -357,7 +358,7 @@ class StManColumn : public StManColumnBase {
   virtual void getScalarColumnCellsuShortV(const RefRows& rownrs, Vector<unsigned short>* dataPtr);
   virtual void getScalarColumnCellsIntV(const RefRows& rownrs, Vector<int>* dataPtr);
   virtual void getScalarColumnCellsuIntV(const RefRows& rownrs, Vector<unsigned int>* dataPtr);
-  virtual void getScalarColumnCellsInt64V(const RefRows& rownrs, Vector<Int64>* dataPtr);
+  virtual void getScalarColumnCellsInt64V(const RefRows& rownrs, Vector<int64_t>* dataPtr);
   virtual void getScalarColumnCellsfloatV(const RefRows& rownrs, Vector<float>* dataPtr);
   virtual void getScalarColumnCellsdoubleV(const RefRows& rownrs, Vector<double>* dataPtr);
   virtual void getScalarColumnCellsComplexV(const RefRows& rownrs, Vector<Complex>* dataPtr);
@@ -371,12 +372,15 @@ class StManColumn : public StManColumnBase {
   // The default implementations call DataManagerColumn::putScalarColumnCellsBase.
   // <group>
   virtual void putScalarColumnCellsBoolV(const RefRows& rownrs, const Vector<bool>* dataPtr);
-  virtual void putScalarColumnCellsuCharV(const RefRows& rownrs, const Vector<unsigned char>* dataPtr);
+  virtual void putScalarColumnCellsuCharV(const RefRows& rownrs,
+                                          const Vector<unsigned char>* dataPtr);
   virtual void putScalarColumnCellsShortV(const RefRows& rownrs, const Vector<short>* dataPtr);
-  virtual void putScalarColumnCellsuShortV(const RefRows& rownrs, const Vector<unsigned short>* dataPtr);
+  virtual void putScalarColumnCellsuShortV(const RefRows& rownrs,
+                                           const Vector<unsigned short>* dataPtr);
   virtual void putScalarColumnCellsIntV(const RefRows& rownrs, const Vector<int>* dataPtr);
-  virtual void putScalarColumnCellsuIntV(const RefRows& rownrs, const Vector<unsigned int>* dataPtr);
-  virtual void putScalarColumnCellsInt64V(const RefRows& rownrs, const Vector<Int64>* dataPtr);
+  virtual void putScalarColumnCellsuIntV(const RefRows& rownrs,
+                                         const Vector<unsigned int>* dataPtr);
+  virtual void putScalarColumnCellsInt64V(const RefRows& rownrs, const Vector<int64_t>* dataPtr);
   virtual void putScalarColumnCellsfloatV(const RefRows& rownrs, const Vector<float>* dataPtr);
   virtual void putScalarColumnCellsdoubleV(const RefRows& rownrs, const Vector<double>* dataPtr);
   virtual void putScalarColumnCellsComplexV(const RefRows& rownrs, const Vector<Complex>* dataPtr);
@@ -396,7 +400,7 @@ class StManColumn : public StManColumnBase {
   virtual void getArrayuShortV(unsigned int rownr, Array<unsigned short>* dataPtr);
   virtual void getArrayIntV(unsigned int rownr, Array<int>* dataPtr);
   virtual void getArrayuIntV(unsigned int rownr, Array<unsigned int>* dataPtr);
-  virtual void getArrayInt64V(unsigned int rownr, Array<Int64>* dataPtr);
+  virtual void getArrayInt64V(unsigned int rownr, Array<int64_t>* dataPtr);
   virtual void getArrayfloatV(unsigned int rownr, Array<float>* dataPtr);
   virtual void getArraydoubleV(unsigned int rownr, Array<double>* dataPtr);
   virtual void getArrayComplexV(unsigned int rownr, Array<Complex>* dataPtr);
@@ -415,7 +419,7 @@ class StManColumn : public StManColumnBase {
   virtual void putArrayuShortV(unsigned int rownr, const Array<unsigned short>* dataPtr);
   virtual void putArrayIntV(unsigned int rownr, const Array<int>* dataPtr);
   virtual void putArrayuIntV(unsigned int rownr, const Array<unsigned int>* dataPtr);
-  virtual void putArrayInt64V(unsigned int rownr, const Array<Int64>* dataPtr);
+  virtual void putArrayInt64V(unsigned int rownr, const Array<int64_t>* dataPtr);
   virtual void putArrayfloatV(unsigned int rownr, const Array<float>* dataPtr);
   virtual void putArraydoubleV(unsigned int rownr, const Array<double>* dataPtr);
   virtual void putArrayComplexV(unsigned int rownr, const Array<Complex>* dataPtr);
@@ -434,7 +438,7 @@ class StManColumn : public StManColumnBase {
   virtual void getArrayColumnuShortV(Array<unsigned short>* dataPtr);
   virtual void getArrayColumnIntV(Array<int>* dataPtr);
   virtual void getArrayColumnuIntV(Array<unsigned int>* dataPtr);
-  virtual void getArrayColumnInt64V(Array<Int64>* dataPtr);
+  virtual void getArrayColumnInt64V(Array<int64_t>* dataPtr);
   virtual void getArrayColumnfloatV(Array<float>* dataPtr);
   virtual void getArrayColumndoubleV(Array<double>* dataPtr);
   virtual void getArrayColumnComplexV(Array<Complex>* dataPtr);
@@ -453,7 +457,7 @@ class StManColumn : public StManColumnBase {
   virtual void putArrayColumnuShortV(const Array<unsigned short>* dataPtr);
   virtual void putArrayColumnIntV(const Array<int>* dataPtr);
   virtual void putArrayColumnuIntV(const Array<unsigned int>* dataPtr);
-  virtual void putArrayColumnInt64V(const Array<Int64>* dataPtr);
+  virtual void putArrayColumnInt64V(const Array<int64_t>* dataPtr);
   virtual void putArrayColumnfloatV(const Array<float>* dataPtr);
   virtual void putArrayColumndoubleV(const Array<double>* dataPtr);
   virtual void putArrayColumnComplexV(const Array<Complex>* dataPtr);
@@ -472,7 +476,7 @@ class StManColumn : public StManColumnBase {
   virtual void getArrayColumnCellsuShortV(const RefRows& rownrs, Array<unsigned short>* dataPtr);
   virtual void getArrayColumnCellsIntV(const RefRows& rownrs, Array<int>* dataPtr);
   virtual void getArrayColumnCellsuIntV(const RefRows& rownrs, Array<unsigned int>* dataPtr);
-  virtual void getArrayColumnCellsInt64V(const RefRows& rownrs, Array<Int64>* dataPtr);
+  virtual void getArrayColumnCellsInt64V(const RefRows& rownrs, Array<int64_t>* dataPtr);
   virtual void getArrayColumnCellsfloatV(const RefRows& rownrs, Array<float>* dataPtr);
   virtual void getArrayColumnCellsdoubleV(const RefRows& rownrs, Array<double>* dataPtr);
   virtual void getArrayColumnCellsComplexV(const RefRows& rownrs, Array<Complex>* dataPtr);
@@ -486,12 +490,14 @@ class StManColumn : public StManColumnBase {
   // The default implementations call DataManagerColumn::putArrayColumnCellsBase.
   // <group>
   virtual void putArrayColumnCellsBoolV(const RefRows& rownrs, const Array<bool>* dataPtr);
-  virtual void putArrayColumnCellsuCharV(const RefRows& rownrs, const Array<unsigned char>* dataPtr);
+  virtual void putArrayColumnCellsuCharV(const RefRows& rownrs,
+                                         const Array<unsigned char>* dataPtr);
   virtual void putArrayColumnCellsShortV(const RefRows& rownrs, const Array<short>* dataPtr);
-  virtual void putArrayColumnCellsuShortV(const RefRows& rownrs, const Array<unsigned short>* dataPtr);
+  virtual void putArrayColumnCellsuShortV(const RefRows& rownrs,
+                                          const Array<unsigned short>* dataPtr);
   virtual void putArrayColumnCellsIntV(const RefRows& rownrs, const Array<int>* dataPtr);
   virtual void putArrayColumnCellsuIntV(const RefRows& rownrs, const Array<unsigned int>* dataPtr);
-  virtual void putArrayColumnCellsInt64V(const RefRows& rownrs, const Array<Int64>* dataPtr);
+  virtual void putArrayColumnCellsInt64V(const RefRows& rownrs, const Array<int64_t>* dataPtr);
   virtual void putArrayColumnCellsfloatV(const RefRows& rownrs, const Array<float>* dataPtr);
   virtual void putArrayColumnCellsdoubleV(const RefRows& rownrs, const Array<double>* dataPtr);
   virtual void putArrayColumnCellsComplexV(const RefRows& rownrs, const Array<Complex>* dataPtr);
@@ -507,10 +513,11 @@ class StManColumn : public StManColumnBase {
   virtual void getSliceBoolV(unsigned int rownr, const Slicer& ns, Array<bool>* dataPtr);
   virtual void getSliceuCharV(unsigned int rownr, const Slicer& ns, Array<unsigned char>* dataPtr);
   virtual void getSliceShortV(unsigned int rownr, const Slicer& ns, Array<short>* dataPtr);
-  virtual void getSliceuShortV(unsigned int rownr, const Slicer& ns, Array<unsigned short>* dataPtr);
+  virtual void getSliceuShortV(unsigned int rownr, const Slicer& ns,
+                               Array<unsigned short>* dataPtr);
   virtual void getSliceIntV(unsigned int rownr, const Slicer& ns, Array<int>* dataPtr);
   virtual void getSliceuIntV(unsigned int rownr, const Slicer& ns, Array<unsigned int>* dataPtr);
-  virtual void getSliceInt64V(unsigned int rownr, const Slicer& ns, Array<Int64>* dataPtr);
+  virtual void getSliceInt64V(unsigned int rownr, const Slicer& ns, Array<int64_t>* dataPtr);
   virtual void getSlicefloatV(unsigned int rownr, const Slicer& ns, Array<float>* dataPtr);
   virtual void getSlicedoubleV(unsigned int rownr, const Slicer& ns, Array<double>* dataPtr);
   virtual void getSliceComplexV(unsigned int rownr, const Slicer& ns, Array<Complex>* dataPtr);
@@ -524,16 +531,21 @@ class StManColumn : public StManColumnBase {
   // The default implementations call DataManagerColumn::putSliceBase.
   // <group>
   virtual void putSliceBoolV(unsigned int rownr, const Slicer& ns, const Array<bool>* dataPtr);
-  virtual void putSliceuCharV(unsigned int rownr, const Slicer& ns, const Array<unsigned char>* dataPtr);
+  virtual void putSliceuCharV(unsigned int rownr, const Slicer& ns,
+                              const Array<unsigned char>* dataPtr);
   virtual void putSliceShortV(unsigned int rownr, const Slicer& ns, const Array<short>* dataPtr);
-  virtual void putSliceuShortV(unsigned int rownr, const Slicer& ns, const Array<unsigned short>* dataPtr);
+  virtual void putSliceuShortV(unsigned int rownr, const Slicer& ns,
+                               const Array<unsigned short>* dataPtr);
   virtual void putSliceIntV(unsigned int rownr, const Slicer& ns, const Array<int>* dataPtr);
-  virtual void putSliceuIntV(unsigned int rownr, const Slicer& ns, const Array<unsigned int>* dataPtr);
-  virtual void putSliceInt64V(unsigned int rownr, const Slicer& ns, const Array<Int64>* dataPtr);
+  virtual void putSliceuIntV(unsigned int rownr, const Slicer& ns,
+                             const Array<unsigned int>* dataPtr);
+  virtual void putSliceInt64V(unsigned int rownr, const Slicer& ns, const Array<int64_t>* dataPtr);
   virtual void putSlicefloatV(unsigned int rownr, const Slicer& ns, const Array<float>* dataPtr);
   virtual void putSlicedoubleV(unsigned int rownr, const Slicer& ns, const Array<double>* dataPtr);
-  virtual void putSliceComplexV(unsigned int rownr, const Slicer& ns, const Array<Complex>* dataPtr);
-  virtual void putSliceDComplexV(unsigned int rownr, const Slicer& ns, const Array<DComplex>* dataPtr);
+  virtual void putSliceComplexV(unsigned int rownr, const Slicer& ns,
+                                const Array<Complex>* dataPtr);
+  virtual void putSliceDComplexV(unsigned int rownr, const Slicer& ns,
+                                 const Array<DComplex>* dataPtr);
   virtual void putSliceStringV(unsigned int rownr, const Slicer& ns, const Array<String>* dataPtr);
   // </group>
 
@@ -548,7 +560,7 @@ class StManColumn : public StManColumnBase {
   virtual void getColumnSliceuShortV(const Slicer& ns, Array<unsigned short>* dataPtr);
   virtual void getColumnSliceIntV(const Slicer& ns, Array<int>* dataPtr);
   virtual void getColumnSliceuIntV(const Slicer& ns, Array<unsigned int>* dataPtr);
-  virtual void getColumnSliceInt64V(const Slicer& ns, Array<Int64>* dataPtr);
+  virtual void getColumnSliceInt64V(const Slicer& ns, Array<int64_t>* dataPtr);
   virtual void getColumnSlicefloatV(const Slicer& ns, Array<float>* dataPtr);
   virtual void getColumnSlicedoubleV(const Slicer& ns, Array<double>* dataPtr);
   virtual void getColumnSliceComplexV(const Slicer& ns, Array<Complex>* dataPtr);
@@ -567,7 +579,7 @@ class StManColumn : public StManColumnBase {
   virtual void putColumnSliceuShortV(const Slicer& ns, const Array<unsigned short>* dataPtr);
   virtual void putColumnSliceIntV(const Slicer& ns, const Array<int>* dataPtr);
   virtual void putColumnSliceuIntV(const Slicer& ns, const Array<unsigned int>* dataPtr);
-  virtual void putColumnSliceInt64V(const Slicer& ns, const Array<Int64>* dataPtr);
+  virtual void putColumnSliceInt64V(const Slicer& ns, const Array<int64_t>* dataPtr);
   virtual void putColumnSlicefloatV(const Slicer& ns, const Array<float>* dataPtr);
   virtual void putColumnSlicedoubleV(const Slicer& ns, const Array<double>* dataPtr);
   virtual void putColumnSliceComplexV(const Slicer& ns, const Array<Complex>* dataPtr);
@@ -593,7 +605,7 @@ class StManColumn : public StManColumnBase {
   virtual void getColumnSliceCellsuIntV(const RefRows& rownrs, const Slicer& ns,
                                         Array<unsigned int>* dataPtr);
   virtual void getColumnSliceCellsInt64V(const RefRows& rownrs, const Slicer& ns,
-                                         Array<Int64>* dataPtr);
+                                         Array<int64_t>* dataPtr);
   virtual void getColumnSliceCellsfloatV(const RefRows& rownrs, const Slicer& ns,
                                          Array<float>* dataPtr);
   virtual void getColumnSliceCellsdoubleV(const RefRows& rownrs, const Slicer& ns,
@@ -624,7 +636,7 @@ class StManColumn : public StManColumnBase {
   virtual void putColumnSliceCellsuIntV(const RefRows& rownrs, const Slicer& ns,
                                         const Array<unsigned int>* dataPtr);
   virtual void putColumnSliceCellsInt64V(const RefRows& rownrs, const Slicer& ns,
-                                         const Array<Int64>* dataPtr);
+                                         const Array<int64_t>* dataPtr);
   virtual void putColumnSliceCellsfloatV(const RefRows& rownrs, const Slicer& ns,
                                          const Array<float>* dataPtr);
   virtual void putColumnSliceCellsdoubleV(const RefRows& rownrs, const Slicer& ns,

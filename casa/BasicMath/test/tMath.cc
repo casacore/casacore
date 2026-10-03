@@ -107,9 +107,9 @@ int main() {
       AlwaysAssert(floormod(-3., -3.) == 0., AipsError);
     }
     {
-      // min/max uInt64
-      uInt64 a = 9876543210;
-      uInt64 b = 9876543211;
+      // min/max uint64_t
+      uint64_t a = 9876543210;
+      uint64_t b = 9876543211;
       AlwaysAssert(min(a, b) == a, AipsError);
       AlwaysAssert(max(a, b) == b, AipsError);
     }

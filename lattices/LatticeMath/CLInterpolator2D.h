@@ -94,8 +94,8 @@ class CLInterpolator2D {
   // Note that only a copy of the lattice pointer is made.
   // Thereafter the virtual function preset() is called to give a derived
   // class the opportunity to do some initial work.
-  void set(MaskedLattice<T>* lattice, const AxesMapping& axesMap, unsigned int axis1, unsigned int axis2,
-           unsigned int curveAxis);
+  void set(MaskedLattice<T>* lattice, const AxesMapping& axesMap, unsigned int axis1,
+           unsigned int axis2, unsigned int curveAxis);
 
   // Get the data for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.

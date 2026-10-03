@@ -47,10 +47,10 @@ const ByteIO& TypeIO::byteIO() const { return *itsByteIO; }
 
 ByteIO& TypeIO::byteIO() { return *itsByteIO; }
 
-Int64 TypeIO::seek(Int64 offset, ByteIO::SeekOption option) {
+int64_t TypeIO::seek(int64_t offset, ByteIO::SeekOption option) {
   return itsByteIO->seek(offset, option);
 }
-Int64 TypeIO::seek(int offset, ByteIO::SeekOption option) {
+int64_t TypeIO::seek(int offset, ByteIO::SeekOption option) {
   return itsByteIO->seek(offset, option);
 }
 

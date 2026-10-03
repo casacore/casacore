@@ -220,7 +220,7 @@ class TableExprData {
   // The default <src>getDComplex</src> invokes <src>getDouble</src>.
   // <group>
   virtual bool getBool(const Block<int>& fieldNrs) const;
-  virtual Int64 getInt(const Block<int>& fieldNrs) const;
+  virtual int64_t getInt(const Block<int>& fieldNrs) const;
   virtual double getDouble(const Block<int>& fieldNrs) const;
   virtual DComplex getDComplex(const Block<int>& fieldNrs) const;
   virtual String getString(const Block<int>& fieldNrs) const;
@@ -233,7 +233,7 @@ class TableExprData {
   // <src>getArrayDouble</src>.
   // <group>
   virtual Array<bool> getArrayBool(const Block<int>& fieldNrs) const;
-  virtual Array<Int64> getArrayInt(const Block<int>& fieldNrs) const;
+  virtual Array<int64_t> getArrayInt(const Block<int>& fieldNrs) const;
   virtual Array<double> getArrayDouble(const Block<int>& fieldNrs) const;
   virtual Array<DComplex> getArrayDComplex(const Block<int>& fieldNrs) const;
   virtual Array<String> getArrayString(const Block<int>& fieldNrs) const;

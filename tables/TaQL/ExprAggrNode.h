@@ -104,7 +104,7 @@ class TableExprAggrNode : public TableExprFuncNode {
   // Functions to get the result of an aggregate function.
   // <group>
   virtual bool getBool(const TableExprId& id);
-  virtual Int64 getInt(const TableExprId& id);
+  virtual int64_t getInt(const TableExprId& id);
   virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);

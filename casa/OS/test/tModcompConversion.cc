@@ -133,7 +133,7 @@ void compare(int& error, unsigned int exp, unsigned int res) {
   }
 }
 
-void compare(int& error, Int64 exp, Int64 res) {
+void compare(int& error, int64_t exp, int64_t res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
@@ -154,7 +154,7 @@ void compare(int& error, Int64 exp, Int64 res) {
   }
 }
 
-void compare(int& error, uInt64 exp, uInt64 res) {
+void compare(int& error, uint64_t exp, uint64_t res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
@@ -382,7 +382,7 @@ void checkConversion(int& error) {
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    Int64 result[2];
+    int64_t result[2];
     result[0] = 0;
     result[1] = 0;
     unsigned int nbytes = ModcompConversion::toLocal(result[0], input);
@@ -423,7 +423,7 @@ void checkConversion(int& error) {
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    uInt64 result[2];
+    uint64_t result[2];
     result[0] = 0u;
     result[1] = 0u;
     unsigned int nbytes = ModcompConversion::toLocal(result[0], input);
@@ -483,7 +483,7 @@ void checkFloat(int& error) {
 
   unsigned char data[4], cdata[4];
   data[2] = 0x00;
-  data[3] = 0x01;                     // put a bit at the end to make sure it does not get lost
+  data[3] = 0x01;  // put a bit at the end to make sure it does not get lost
   for (unsigned short j = 0; j < 512; j++) {  // exponent is nine bits
     data[0] = j >> 2;
     double exponent;
@@ -560,8 +560,8 @@ void checkDouble(int& error) {
 
   unsigned char data[8], cdata[8];
   data[2] = data[3] = data[4] = data[5] = data[6] = 0x00;
-  data[7] = 0x02;                     // put a bit nearly at the end to make sure it does
-                                      // not get lost. The last bit IS lost.
+  data[7] = 0x02;                             // put a bit nearly at the end to make sure it does
+                                              // not get lost. The last bit IS lost.
   for (unsigned short j = 0; j < 512; j++) {  // exponent is nine bits
     data[0] = j >> 2;
     double exponent;

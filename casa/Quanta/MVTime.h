@@ -308,12 +308,16 @@ class MVTime {
   class Format {
    public:
     friend class MVTime;
-    Format(MVTime::formatTypes intyp = MVTime::TIME, unsigned int inprec = 0) : typ(intyp), prec(inprec) {
+    Format(MVTime::formatTypes intyp = MVTime::TIME, unsigned int inprec = 0)
+        : typ(intyp), prec(inprec) {
       ;
     };
     Format(unsigned int inprec) : typ(MVTime::TIME), prec(inprec) { ; };
     // Construct from type and precision (present due to overlaoding problems)
-    Format(unsigned int intyp, unsigned int inprec) : typ((MVTime::formatTypes)intyp), prec(inprec) { ; };
+    Format(unsigned int intyp, unsigned int inprec)
+        : typ((MVTime::formatTypes)intyp), prec(inprec) {
+      ;
+    };
 
    private:
     MVTime::formatTypes typ;

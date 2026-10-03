@@ -167,7 +167,7 @@ void MultiFile::writeHeader() {
   auto cio = std::make_shared<CanonicalIO>(mio);
   AipsIO aio(cio);
   itsHdrCounter++;
-  Int64 zero64 = 0;
+  int64_t zero64 = 0;
   unsigned int zero32 = 0;
   char char8[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   int version = 2;
@@ -199,11 +199,11 @@ void MultiFile::writeHeader() {
   // actually used blocknrs.
   // If continuation is needed, they might change and cannot
   // be written yet.
-  Int64 todo = mio->length();
-  DebugAssert(static_cast<uInt64>(todo) <= mio->allocated(), AipsError);
-  Int64 totalSize =
+  int64_t todo = mio->length();
+  DebugAssert(static_cast<uint64_t>(todo) <= mio->allocated(), AipsError);
+  int64_t totalSize =
       todo + 2 * sizeof(unsigned int) +
-      (2 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
+      (2 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size()) * sizeof(int64_t);
   // Allocate a temp buffer if header too large or if O_DIRECT.
   // This buffer is used by writeRemainder and
   bool hasRemainder = (totalSize > itsBlockSize);
@@ -241,7 +241,7 @@ void MultiFile::writeHeader() {
 void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer& mfbuf) {
   char* iobuf = mfbuf.data();
   // Get the size of the remainder.
-  Int64 todo = mio.length() - itsBlockSize;
+  int64_t todo = mio.length() - itsBlockSize;
   // Use the other continuation set.
   int newContInx = 1 - itsHdrContInx;
   // Determine the nr of continuation blocks to be used.
@@ -252,13 +252,14 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   // might require an extra block, etc.
   // To avoid that the free list is changed and needs to be rewritten,
   // new continuation blocks are created by adding a new block.
-  Int64 contBlkSize = itsBlockSize - sizeof(Int64);
-  Int64 ncontOther = itsHdrCont[itsHdrContInx].blockNrs.size();
-  Int64 ncontOld = itsHdrCont[newContInx].blockNrs.size();
-  Int64 ncont = (todo + contBlkSize - 1) / contBlkSize;
-  Int64 ncontNew = std::max(ncont, ncontOld);
+  int64_t contBlkSize = itsBlockSize - sizeof(int64_t);
+  int64_t ncontOther = itsHdrCont[itsHdrContInx].blockNrs.size();
+  int64_t ncontOld = itsHdrCont[newContInx].blockNrs.size();
+  int64_t ncont = (todo + contBlkSize - 1) / contBlkSize;
+  int64_t ncontNew = std::max(ncont, ncontOld);
   while (true) {
-    Int64 szCont = (todo + 2 * sizeof(unsigned int) + (ncontOther + ncontNew + 2) * sizeof(Int64));
+    int64_t szCont =
+        (todo + 2 * sizeof(unsigned int) + (ncontOther + ncontNew + 2) * sizeof(int64_t));
     ncont = (szCont + contBlkSize - 1) / contBlkSize;
     if (ncont <= ncontNew) {
       break;
@@ -275,14 +276,14 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   itsNrContUsed[newContInx] = ncontNew;
   cio.write(2, itsNrContUsed);
   // Write the continuation blocks.
-  const std::vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
+  const std::vector<int64_t>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
   const unsigned char* remHdr = mio.getBuffer() + itsBlockSize;
   todo = mio.length() - itsBlockSize;
   writeHeaderShow(ncont, todo);
-  for (Int64 i = 0; i < ncont; ++i) {
-    Int64 next = (i == ncont - 1 ? Int64(0) : hdrContNrs[i + 1]);
+  for (int64_t i = 0; i < ncont; ++i) {
+    int64_t next = (i == ncont - 1 ? int64_t(0) : hdrContNrs[i + 1]);
     CanonicalConversion::fromLocal(iobuf, next);
-    memcpy(iobuf + sizeof(Int64), remHdr, std::min(todo, contBlkSize));
+    memcpy(iobuf + sizeof(int64_t), remHdr, std::min(todo, contBlkSize));
     remHdr += contBlkSize;
     todo -= contBlkSize;
     itsIO->pwrite(itsBlockSize, hdrContNrs[i] * itsBlockSize, iobuf);
@@ -296,9 +297,9 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   CanonicalConversion::fromLocal(buf + 48, itsNrBlock);
 }
 
-void MultiFile::writeVector(CanonicalIO& cio, const std::vector<Int64>& index) {
+void MultiFile::writeVector(CanonicalIO& cio, const std::vector<int64_t>& index) {
   // Write in the same way as AipsIO is doing.
-  Int64 sz = index.size();
+  int64_t sz = index.size();
   cio.write(1, &sz);
   if (sz > 0) {
     cio.write(index.size(), index.data());
@@ -307,15 +308,15 @@ void MultiFile::writeVector(CanonicalIO& cio, const std::vector<Int64>& index) {
 
 void MultiFile::writeVector(CanonicalIO& cio, const std::vector<unsigned int>& index) {
   // Write in the same way as AipsIO is doing.
-  Int64 sz = index.size();
+  int64_t sz = index.size();
   cio.write(1, &sz);
   if (sz > 0) {
     cio.write(index.size(), index.data());
   }
 }
 
-void MultiFile::readVector(CanonicalIO& cio, std::vector<Int64>& index) {
-  Int64 sz;
+void MultiFile::readVector(CanonicalIO& cio, std::vector<int64_t>& index) {
+  int64_t sz;
   cio.read(1, &sz);
   if (sz > 0) {
     index.resize(sz);
@@ -326,7 +327,7 @@ void MultiFile::readVector(CanonicalIO& cio, std::vector<Int64>& index) {
 }
 
 void MultiFile::readVector(CanonicalIO& cio, std::vector<unsigned int>& index) {
-  Int64 sz;
+  int64_t sz;
   cio.read(1, &sz);
   if (sz > 0) {
     index.resize(sz);
@@ -339,39 +340,39 @@ void MultiFile::readVector(CanonicalIO& cio, std::vector<unsigned int>& index) {
 void MultiFile::readHeader(bool always) {
   /*  header layout is described in Casacore note 260, but repeated here.
       version 1
-        Int64  header size
-        Int64  blockSize
-        Int64  hdrCounter
+        int64_t  header size
+        int64_t  blockSize
+        int64_t  hdrCounter
         AipsIO 'MultiFile' version 1
-            Int64   nr of blocks used
+            int64_t   nr of blocks used
             nfile*fileinfo
                 String   file name
-                Int64[n] index (MultiFile block containing file block i)
-                Int64    file size (bytes)
+                int64_t[n] index (MultiFile block containing file block i)
+                int64_t    file size (bytes)
             Note that .hdrext is used if header does not fit in first block
       version 2
-        Int64  0
-        Int64  first block of header continuation (<0=none)
-        Int64  hdrCounter
+        int64_t  0
+        int64_t  first block of header continuation (<0=none)
+        int64_t  hdrCounter
         Int32  version
         uInt32 headerCRC
-        Int64  header size
-        Int64  blockSize
+        int64_t  header size
+        int64_t  blockSize
         char   useCRC
         char[7] spare
         AipsIO 'MultiFile' with same version as above
-            Int64   nr of blocks used
+            int64_t   nr of blocks used
             nfile*fileinfo
                 String   file name
-                Int64    file size (bytes)
+                int64_t    file size (bytes)
                 Bool     nested MultiFile?
         nfile*index
-            Int64        size of packed index
-            Int64[size]  packed index (MultiFile block of file block i)
+            int64_t        size of packed index
+            int64_t[size]  packed index (MultiFile block of file block i)
         index      packed index of free blocks
         Int32[nblock]    CRC value of each block (only if useCRC=1)
-        Int64[ncont0]    block numbers of header continuation buffer 0
-        Int64[ncont1]    block numbers of header continuation buffer 1
+        int64_t[ncont0]    block numbers of header continuation buffer 0
+        int64_t[ncont1]    block numbers of header continuation buffer 1
             Note that 'first block of header' tells if cont.block 0 or 1
             is used by comparing it with the first entry.
 
@@ -383,18 +384,18 @@ void MultiFile::readHeader(bool always) {
   - Make CRC of entire header (with 0 in headerCRC)
   - First write cont.blocks and finally first block (reset cont.blocknr)
   */
-  // Read the first 24 bytes (3x Int64) of the header.
-  std::vector<char> buf(3 * sizeof(Int64));
+  // Read the first 24 bytes (3x int64_t) of the header.
+  std::vector<char> buf(3 * sizeof(int64_t));
   itsIO->pread(buf.size(), 0, buf.data());
   // First get the header change count.
-  Int64 hdrCounter;
+  int64_t hdrCounter;
   CanonicalConversion::toLocal(hdrCounter, &(buf[16]));
   // Only if needed, read the rest of the header.
   if (always || hdrCounter != itsHdrCounter) {
     itsHdrCounter = hdrCounter;
     // In version 1 the headerSize is in the first 8 bytes.
     // For version 2 and higher it is 0.
-    Int64 headerSize;
+    int64_t headerSize;
     CanonicalConversion::toLocal(headerSize, buf.data());
     if (headerSize == 0) {
       readHeaderVersion2(buf);
@@ -409,8 +410,8 @@ void MultiFile::readHeader(bool always) {
   }
 }
 
-void MultiFile::readHeaderVersion1(Int64 headerSize, std::vector<char>& buf) {
-  Int64 leadSize = buf.size();
+void MultiFile::readHeaderVersion1(int64_t headerSize, std::vector<char>& buf) {
+  int64_t leadSize = buf.size();
   AlwaysAssert(leadSize == 24, AipsError);
   CanonicalConversion::toLocal(itsBlockSize, &(buf[8]));
   buf.resize(headerSize);
@@ -437,10 +438,10 @@ void MultiFile::readHeaderVersion1(Int64 headerSize, std::vector<char>& buf) {
 }
 
 void MultiFile::readHeaderVersion2(std::vector<char>& buf) {
-  Int64 leadSize = buf.size();
+  int64_t leadSize = buf.size();
   AlwaysAssert(leadSize == 24, AipsError);
-  Int64 contBlockNr = 0;
-  Int64 headerSize;
+  int64_t contBlockNr = 0;
+  int64_t headerSize;
   unsigned int headerCRC = 0;
   int version;
   // For version 2 and higher the next 40 bytes have to be read.
@@ -494,8 +495,8 @@ void MultiFile::readHeaderVersion2(std::vector<char>& buf) {
   getInfoVersion2(contBlockNr, *cio);
 }
 
-void MultiFile::getInfoVersion2(Int64 contBlockNr, CanonicalIO& cio) {
-  std::vector<Int64> bl;
+void MultiFile::getInfoVersion2(int64_t contBlockNr, CanonicalIO& cio) {
+  std::vector<int64_t> bl;
   for (MultiFileInfo& fileInfo : itsInfo) {
     readVector(cio, bl);
     fileInfo.blockNrs = unpackIndex(bl);
@@ -517,17 +518,17 @@ void MultiFile::getInfoVersion2(Int64 contBlockNr, CanonicalIO& cio) {
   }
 }
 
-void MultiFile::readRemainder(Int64 headerSize, Int64 blockNr, std::vector<char>& buf) {
+void MultiFile::readRemainder(int64_t headerSize, int64_t blockNr, std::vector<char>& buf) {
   MultiFileBuffer mfbuf(itsBlockSize, itsUseODirect);
   char* iobuf = mfbuf.data();
   size_t off = itsBlockSize;
-  Int64 blknr = blockNr;
-  Int64 todo = headerSize - itsBlockSize;
-  Int64 contBlkSize = itsBlockSize - sizeof(Int64);
+  int64_t blknr = blockNr;
+  int64_t todo = headerSize - itsBlockSize;
+  int64_t contBlkSize = itsBlockSize - sizeof(int64_t);
   while (off < buf.size()) {
     AlwaysAssert(blknr != 0, AipsError);
     itsIO->pread(itsBlockSize, blknr * itsBlockSize, iobuf);
-    memcpy(&(buf[off]), iobuf + sizeof(Int64), std::min(todo, contBlkSize));
+    memcpy(&(buf[off]), iobuf + sizeof(int64_t), std::min(todo, contBlkSize));
     off += contBlkSize;
     todo -= contBlkSize;
     CanonicalConversion::toLocal(blknr, iobuf);
@@ -547,7 +548,7 @@ void MultiFile::doDeleteFile(MultiFileInfo& info) {
   doTruncateFile(info, 0);
 }
 
-void MultiFile::doTruncateFile(MultiFileInfo& info, uInt64 nrblk) {
+void MultiFile::doTruncateFile(MultiFileInfo& info, uint64_t nrblk) {
   if (nrblk < info.blockNrs.size()) {
     // Add the blocknrs to the free list.
     // Later we can merge them in order and leave out blocks past last block used.
@@ -588,13 +589,13 @@ void MultiFile::truncateIfNeeded() {
   }
 }
 
-void MultiFile::extend(MultiFileInfo& info, Int64 lastblk) { extendVF(info, lastblk, true); }
+void MultiFile::extend(MultiFileInfo& info, int64_t lastblk) { extendVF(info, lastblk, true); }
 
-void MultiFile::extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks) {
-  Int64 curnrb = info.blockNrs.size();
+void MultiFile::extendVF(MultiFileInfo& info, int64_t lastblk, bool useFreeBlocks) {
+  int64_t curnrb = info.blockNrs.size();
   info.blockNrs.resize(lastblk);
-  Int64 nfree = itsFreeBlocks.size();
-  for (Int64 i = curnrb; i < lastblk; ++i) {
+  int64_t nfree = itsFreeBlocks.size();
+  for (int64_t i = curnrb; i < lastblk; ++i) {
     if (!useFreeBlocks || nfree == 0) {
       info.blockNrs[i] = itsNrBlock;
       itsNrBlock++;
@@ -602,44 +603,44 @@ void MultiFile::extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks)
       info.blockNrs[i] = itsFreeBlocks[--nfree];
     }
   }
-  if (nfree != Int64(itsFreeBlocks.size())) {
+  if (nfree != int64_t(itsFreeBlocks.size())) {
     itsFreeBlocks.resize(nfree);
   }
 }
 
-void MultiFile::writeHeaderShow(Int64, Int64) const {}
+void MultiFile::writeHeaderShow(int64_t, int64_t) const {}
 void MultiFile::writeHeaderTest() {}
 
-void MultiFile::readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) {
+void MultiFile::readBlock(MultiFileInfo& info, int64_t blknr, void* buffer) {
   itsIO->pread(itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
   if (itsUseCRC) {
     checkCRC(buffer, info.blockNrs[blknr]);
   }
 }
 
-void MultiFile::writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) {
+void MultiFile::writeBlock(MultiFileInfo& info, int64_t blknr, const void* buffer) {
   itsIO->pwrite(itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
   if (itsUseCRC) {
     storeCRC(buffer, info.blockNrs[blknr]);
   }
 }
 
-void MultiFile::storeCRC(const void* buffer, Int64 blknr) {
-  if (blknr >= Int64(itsCRC.size())) {
+void MultiFile::storeCRC(const void* buffer, int64_t blknr) {
+  if (blknr >= int64_t(itsCRC.size())) {
     itsCRC.resize(blknr + 1);
   }
   itsCRC[blknr] = calcCRC(buffer, itsBlockSize);
 }
 
-void MultiFile::checkCRC(const void* buffer, Int64 blknr) const {
-  AlwaysAssert(blknr < Int64(itsCRC.size()), AipsError);
+void MultiFile::checkCRC(const void* buffer, int64_t blknr) const {
+  AlwaysAssert(blknr < int64_t(itsCRC.size()), AipsError);
   unsigned int crc = calcCRC(buffer, itsBlockSize);
   if (crc != itsCRC[blknr]) {
     throw AipsError("Mismatch in CRC of MultiFile block " + std::to_string(blknr));
   }
 }
 
-unsigned int MultiFile::calcCRC(const void* buffer, Int64 size) const {
+unsigned int MultiFile::calcCRC(const void* buffer, int64_t size) const {
   // The algorithm is taken from crctester.c by Sven Reifegerste
   // (www.zorc/reflex)
   // See also https://www.lammertbies.nl/comm/info/crc-calculation
@@ -656,7 +657,7 @@ unsigned int MultiFile::calcCRC(const void* buffer, Int64 size) const {
   // #		}
   //  Normal lookup table algorithm with augmented zero bytes.
   unsigned int crc = crcinit;
-  for (Int64 i = 0; i < size; ++i) {
+  for (int64_t i = 0; i < size; ++i) {
     crc = ((crc << 8) | buf[i]) ^ CRCTable()[(crc >> (32 - 8)) & 0xff];
   }
   // Augment zero bytes.
@@ -674,22 +675,22 @@ void MultiFile::show(std::ostream& os) const {
      << ' ' << itsHdrCont[itsHdrContInx].blockNrs << "  free=" << freeBlocks() << endl;
 }
 
-std::vector<Int64> MultiFile::packIndex(const std::vector<Int64>& blockNrs) {
+std::vector<int64_t> MultiFile::packIndex(const std::vector<int64_t>& blockNrs) {
   // See if subsequent block numbers are used, so the index can be
   // compressed.
   // Compression is done by counting the nr of subsequent blocknrs
   // and writing the negative count if > 0.
   // Note that the count does not include the first block number.
-  std::vector<Int64> buf;
+  std::vector<int64_t> buf;
   if (blockNrs.empty()) {
-    return std::vector<Int64>();
+    return std::vector<int64_t>();
   }
   buf.reserve(blockNrs.size());
   buf.push_back(blockNrs[0]);
-  Int64 next = blockNrs[0] + 1;
+  int64_t next = blockNrs[0] + 1;
   for (size_t j = 1; j < blockNrs.size(); ++j) {
     if (blockNrs[j] != next) {
-      Int64 nr = next - buf.back() - 1;
+      int64_t nr = next - buf.back() - 1;
       if (nr > 0) {
         buf.push_back(-nr);
       }
@@ -698,21 +699,21 @@ std::vector<Int64> MultiFile::packIndex(const std::vector<Int64>& blockNrs) {
     }
     next++;
   }
-  Int64 nr = next - buf.back() - 1;
+  int64_t nr = next - buf.back() - 1;
   if (nr > 0) {
     buf.push_back(-nr);
   }
   return buf;
 }
 
-std::vector<Int64> MultiFile::unpackIndex(const std::vector<Int64>& blockNrs) {
+std::vector<int64_t> MultiFile::unpackIndex(const std::vector<int64_t>& blockNrs) {
   // Expand if subsequent block numbers are used indicated by a
   // negative value.
-  std::vector<Int64> buf;
+  std::vector<int64_t> buf;
   buf.reserve(blockNrs.size());
   for (auto bl : blockNrs) {
     if (bl < 0) {
-      Int64 next = buf.back() + 1;
+      int64_t next = buf.back() + 1;
       size_t nr = -bl;
       for (size_t i = 0; i < nr; ++i) {
         buf.push_back(next + i);

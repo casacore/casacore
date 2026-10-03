@@ -35,7 +35,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TiledFileAccess::TiledFileAccess(const String& fileName, Int64 fileOffset, const IPosition& shape,
+TiledFileAccess::TiledFileAccess(const String& fileName, int64_t fileOffset, const IPosition& shape,
                                  const IPosition& tileShape, DataType dataType,
                                  const TSMOption& tsmOpt, bool writable)
     : itsCube(0), itsTSM(0), itsWritable(writable), itsDataType(dataType) {
@@ -44,7 +44,7 @@ TiledFileAccess::TiledFileAccess(const String& fileName, Int64 fileOffset, const
   itsCube = itsTSM->makeTSMCube(itsTSM->file(), shape, tileShape, Record(), fileOffset);
 }
 
-TiledFileAccess::TiledFileAccess(const String& fileName, Int64 fileOffset, const IPosition& shape,
+TiledFileAccess::TiledFileAccess(const String& fileName, int64_t fileOffset, const IPosition& shape,
                                  const IPosition& tileShape, DataType dataType,
                                  const TSMOption& tsmOpt, bool writable, bool bigEndian)
     : itsCube(0), itsTSM(0), itsWritable(writable), itsDataType(dataType) {
@@ -223,9 +223,9 @@ void TiledFileAccess::get(Array<float>& buffer, const Slicer& section, float sca
   bool deleteArr, deleteBuf;
   const unsigned char* arrPtr = arr.getStorage(deleteArr);
   float* bufPtr = buffer.getStorage(deleteBuf);
-  uInt64 n = arr.nelements();
+  uint64_t n = arr.nelements();
   if (examineForDeleteValues) {
-    for (uInt64 i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
       if (arrPtr[i] == deleteValue) {
         setNaN(bufPtr[i]);
       } else {
@@ -233,7 +233,7 @@ void TiledFileAccess::get(Array<float>& buffer, const Slicer& section, float sca
       }
     }
   } else {
-    for (uInt64 i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
@@ -248,9 +248,9 @@ void TiledFileAccess::get(Array<float>& buffer, const Slicer& section, float sca
   bool deleteArr, deleteBuf;
   const short* arrPtr = arr.getStorage(deleteArr);
   float* bufPtr = buffer.getStorage(deleteBuf);
-  uInt64 n = arr.nelements();
+  uint64_t n = arr.nelements();
   if (examineForDeleteValues) {
-    for (uInt64 i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
       if (arrPtr[i] == deleteValue) {
         setNaN(bufPtr[i]);
       } else {
@@ -258,7 +258,7 @@ void TiledFileAccess::get(Array<float>& buffer, const Slicer& section, float sca
       }
     }
   } else {
-    for (uInt64 i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
@@ -273,9 +273,9 @@ void TiledFileAccess::get(Array<float>& buffer, const Slicer& section, float sca
   bool deleteArr, deleteBuf;
   const int* arrPtr = arr.getStorage(deleteArr);
   float* bufPtr = buffer.getStorage(deleteBuf);
-  uInt64 n = arr.nelements();
+  uint64_t n = arr.nelements();
   if (examineForDeleteValues) {
-    for (uInt64 i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
       if (arrPtr[i] == deleteValue) {
         setNaN(bufPtr[i]);
       } else {
@@ -283,7 +283,7 @@ void TiledFileAccess::get(Array<float>& buffer, const Slicer& section, float sca
       }
     }
   } else {
-    for (uInt64 i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
@@ -395,29 +395,30 @@ void TiledFileAccess::put(const Array<DComplex>& buffer, const Slicer& section) 
   buffer.freeStorage(dataPtr, deleteIt);
 }
 
-void TiledFileAccess::setMaximumCacheSize(uInt64 nbytes) { itsTSM->setMaximumCacheSize(nbytes); }
+void TiledFileAccess::setMaximumCacheSize(uint64_t nbytes) { itsTSM->setMaximumCacheSize(nbytes); }
 
-uInt64 TiledFileAccess::maximumCacheSize() const { return itsTSM->maximumCacheSize(); }
+uint64_t TiledFileAccess::maximumCacheSize() const { return itsTSM->maximumCacheSize(); }
 
-IPosition TiledFileAccess::makeTileShape(const IPosition& arrayShape, unsigned int nrPixelsPerTile) {
+IPosition TiledFileAccess::makeTileShape(const IPosition& arrayShape,
+                                         unsigned int nrPixelsPerTile) {
   float nrPixels = nrPixelsPerTile;
   unsigned int ndim = arrayShape.nelements();
   IPosition tileShape(ndim, 1);
   for (unsigned int i = 0; i < ndim; i++) {
-    uInt64 leng = arrayShape(i);
+    uint64_t leng = arrayShape(i);
     if (leng <= nrPixels) {
       tileShape(i) = leng;
       nrPixels /= tileShape(i);
     } else {
       // Take a part of the axis as the tile shape.
       // The part must be exactly divisible, so we may have some work to do.
-      uInt64 tileLeng = int(nrPixels + 0.5);
+      uint64_t tileLeng = int(nrPixels + 0.5);
       if (leng % tileLeng == 0) {
         tileShape(i) = tileLeng;
       } else {
         // Not exact, so try around this value until we find something.
-        uInt64 nr = min(tileLeng, leng - tileLeng + 1);
-        for (uInt64 j = 1; j < nr; j++) {
+        uint64_t nr = min(tileLeng, leng - tileLeng + 1);
+        for (uint64_t j = 1; j < nr; j++) {
           if (leng % (tileLeng - j) == 0) {
             tileShape(i) = tileLeng - j;
             break;

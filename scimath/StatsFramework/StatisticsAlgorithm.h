@@ -160,10 +160,12 @@ class StatisticsAlgorithm {
                bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, unsigned int nr, const DataRanges& dataRanges,
-               bool isInclude = true, unsigned int dataStride = 1, bool nrAccountsForStride = false);
+               bool isInclude = true, unsigned int dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
-               unsigned int dataStride = 1, bool nrAccountsForStride = false, unsigned int maskStride = 1);
+               unsigned int dataStride = 1, bool nrAccountsForStride = false,
+               unsigned int maskStride = 1);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
                const DataRanges& dataRanges, bool isInclude = true, unsigned int dataStride = 1,
@@ -189,7 +191,7 @@ class StatisticsAlgorithm {
   // get the algorithm that this object uses for computing stats
   virtual StatisticsData::ALGORITHM algorithm() const = 0;
 
-  virtual AccumType getMedian(std::shared_ptr<uInt64> knownNpts = nullptr,
+  virtual AccumType getMedian(std::shared_ptr<uint64_t> knownNpts = nullptr,
                               std::shared_ptr<AccumType> knownMin = nullptr,
                               std::shared_ptr<AccumType> knownMax = nullptr,
                               unsigned int binningThreshholdSizeBytes = 4096 * 4096,
@@ -199,34 +201,34 @@ class StatisticsAlgorithm {
   // <src>quantileToValue</src> map.
   virtual AccumType getMedianAndQuantiles(std::map<double, AccumType>& quantileToValue,
                                           const std::set<double>& quantiles,
-                                          std::shared_ptr<uInt64> knownNpts = nullptr,
+                                          std::shared_ptr<uint64_t> knownNpts = nullptr,
                                           std::shared_ptr<AccumType> knownMin = nullptr,
                                           std::shared_ptr<AccumType> knownMax = nullptr,
                                           unsigned int binningThreshholdSizeBytes = 4096 * 4096,
-                                          bool persistSortedArray = false, unsigned int nBins = 10000) = 0;
+                                          bool persistSortedArray = false,
+                                          unsigned int nBins = 10000) = 0;
 
   // get the median of the absolute deviation about the median of the data.
-  virtual AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
+  virtual AccumType getMedianAbsDevMed(std::shared_ptr<uint64_t> knownNpts = nullptr,
                                        std::shared_ptr<AccumType> knownMin = nullptr,
                                        std::shared_ptr<AccumType> knownMax = nullptr,
                                        unsigned int binningThreshholdSizeBytes = 4096 * 4096,
-                                       bool persistSortedArray = false, unsigned int nBins = 10000) = 0;
+                                       bool persistSortedArray = false,
+                                       unsigned int nBins = 10000) = 0;
 
   // Purposefully not virtual. Derived classes should not implement.
-  AccumType getQuantile(double quantile, std::shared_ptr<uInt64> knownNpts = nullptr,
+  AccumType getQuantile(double quantile, std::shared_ptr<uint64_t> knownNpts = nullptr,
                         std::shared_ptr<AccumType> knownMin = nullptr,
                         std::shared_ptr<AccumType> knownMax = nullptr,
                         unsigned int binningThreshholdSizeBytes = 4096 * 4096,
                         bool persistSortedArray = false, unsigned int nBins = 10000);
 
   // get a map of quantiles to values.
-  virtual std::map<double, AccumType> getQuantiles(const std::set<double>& quantiles,
-                                                   std::shared_ptr<uInt64> npts = nullptr,
-                                                   std::shared_ptr<AccumType> min = nullptr,
-                                                   std::shared_ptr<AccumType> max = nullptr,
-                                                   unsigned int binningThreshholdSizeBytes = 4096 * 4096,
-                                                   bool persistSortedArray = false,
-                                                   unsigned int nBins = 10000) = 0;
+  virtual std::map<double, AccumType> getQuantiles(
+      const std::set<double>& quantiles, std::shared_ptr<uint64_t> npts = nullptr,
+      std::shared_ptr<AccumType> min = nullptr, std::shared_ptr<AccumType> max = nullptr,
+      unsigned int binningThreshholdSizeBytes = 4096 * 4096, bool persistSortedArray = false,
+      unsigned int nBins = 10000) = 0;
 
   // get the value of the specified statistic. Purposefully not virtual.
   // Derived classes should not implement.
@@ -257,10 +259,12 @@ class StatisticsAlgorithm {
                bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, unsigned int nr, const DataRanges& dataRanges,
-               bool isInclude = true, unsigned int dataStride = 1, bool nrAccountsForStride = false);
+               bool isInclude = true, unsigned int dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
-               unsigned int dataStride = 1, bool nrAccountsForStride = false, unsigned int maskStride = 1);
+               unsigned int dataStride = 1, bool nrAccountsForStride = false,
+               unsigned int maskStride = 1);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
                const DataRanges& dataRanges, bool isInclude = true, unsigned int dataStride = 1,

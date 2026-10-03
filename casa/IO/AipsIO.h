@@ -194,7 +194,8 @@ class AipsIO {
 
   // Open/create file (either a regular file or a MultiFileBase virtual file).
   // An exception is thrown if the object contains an already open file.
-  void open(const String& fileName, ByteIO::OpenOption = ByteIO::Old, unsigned int filebufSize = 65536,
+  void open(const String& fileName, ByteIO::OpenOption = ByteIO::Old,
+            unsigned int filebufSize = 65536,
             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
   // Open by connecting to the given byte stream.
@@ -242,8 +243,8 @@ class AipsIO {
   AipsIO& operator<<(const unsigned short& value);
   AipsIO& operator<<(const int& value);
   AipsIO& operator<<(const unsigned int& value);
-  AipsIO& operator<<(const Int64& value);
-  AipsIO& operator<<(const uInt64& value);
+  AipsIO& operator<<(const int64_t& value);
+  AipsIO& operator<<(const uint64_t& value);
   AipsIO& operator<<(const float& value);
   AipsIO& operator<<(const double& value);
   AipsIO& operator<<(const Complex& value);
@@ -262,8 +263,8 @@ class AipsIO {
   AipsIO& put(unsigned int nrval, const unsigned short* values, bool putNR = true);
   AipsIO& put(unsigned int nrval, const int* values, bool putNR = true);
   AipsIO& put(unsigned int nrval, const unsigned int* values, bool putNR = true);
-  AipsIO& put(unsigned int nrval, const Int64* values, bool putNR = true);
-  AipsIO& put(unsigned int nrval, const uInt64* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const int64_t* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const uint64_t* values, bool putNR = true);
   AipsIO& put(unsigned int nrval, const float* values, bool putNR = true);
   AipsIO& put(unsigned int nrval, const double* values, bool putNR = true);
   AipsIO& put(unsigned int nrval, const Complex* values, bool putNR = true);
@@ -291,8 +292,8 @@ class AipsIO {
 
   // Get and set file-offset.
   // <group>
-  Int64 getpos();
-  Int64 setpos(Int64 offset);
+  int64_t getpos();
+  int64_t setpos(int64_t offset);
   // </group>
 
   // Get the type of the next object stored.
@@ -319,8 +320,8 @@ class AipsIO {
   AipsIO& operator>>(unsigned short& value);
   AipsIO& operator>>(int& value);
   AipsIO& operator>>(unsigned int& value);
-  AipsIO& operator>>(Int64& value);
-  AipsIO& operator>>(uInt64& value);
+  AipsIO& operator>>(int64_t& value);
+  AipsIO& operator>>(uint64_t& value);
   AipsIO& operator>>(float& value);
   AipsIO& operator>>(double& value);
   AipsIO& operator>>(Complex& value);
@@ -338,8 +339,8 @@ class AipsIO {
   AipsIO& get(unsigned int nrval, unsigned short* values);
   AipsIO& get(unsigned int nrval, int* values);
   AipsIO& get(unsigned int nrval, unsigned int* values);
-  AipsIO& get(unsigned int nrval, Int64* values);
-  AipsIO& get(unsigned int nrval, uInt64* values);
+  AipsIO& get(unsigned int nrval, int64_t* values);
+  AipsIO& get(unsigned int nrval, uint64_t* values);
   AipsIO& get(unsigned int nrval, float* values);
   AipsIO& get(unsigned int nrval, double* values);
   AipsIO& get(unsigned int nrval, Complex* values);
@@ -376,8 +377,8 @@ class AipsIO {
   AipsIO& getnew(unsigned int& nrval, unsigned short*& values);
   AipsIO& getnew(unsigned int& nrval, int*& values);
   AipsIO& getnew(unsigned int& nrval, unsigned int*& values);
-  AipsIO& getnew(unsigned int& nrval, Int64*& values);
-  AipsIO& getnew(unsigned int& nrval, uInt64*& values);
+  AipsIO& getnew(unsigned int& nrval, int64_t*& values);
+  AipsIO& getnew(unsigned int& nrval, uint64_t*& values);
   AipsIO& getnew(unsigned int& nrval, float*& values);
   AipsIO& getnew(unsigned int& nrval, double*& values);
   AipsIO& getnew(unsigned int& nrval, Complex*& values);
@@ -437,7 +438,7 @@ class AipsIO {
   // Object length to be read at each level
   Block<unsigned int> objtln_p;
   // Offset of length at each level
-  Block<Int64> objptr_p;
+  Block<int64_t> objptr_p;
   // true = the object type has already been read
   bool hasCachedType_p;
   // The cached object type.

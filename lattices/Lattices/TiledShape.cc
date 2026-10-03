@@ -85,7 +85,8 @@ IPosition TiledShape::defaultTileShape(unsigned int nrPixelsPerTile, double tole
   return defaultTileShape(nrPixelsPerTile, tol, weight);
 }
 
-IPosition TiledShape::defaultTileShape(unsigned int nrPixelsPerTile, const Vector<double>& tolerance,
+IPosition TiledShape::defaultTileShape(unsigned int nrPixelsPerTile,
+                                       const Vector<double>& tolerance,
                                        const Vector<double>& weight) const {
   unsigned int nrdim = itsShape.nelements();
   if (tolerance.nelements() != nrdim || weight.nelements() != nrdim) {

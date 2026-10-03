@@ -280,8 +280,8 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, bool us
         //		BYTE stored as uChar
       case FITS::BYTE:
         if (isArray) {
-          td.addColumn(
-              ArrayColumnDesc<unsigned char>(colname, "", IPosition(1, nelem[i]), ColumnDesc::Direct));
+          td.addColumn(ArrayColumnDesc<unsigned char>(colname, "", IPosition(1, nelem[i]),
+                                                      ColumnDesc::Direct));
         } else {
           td.addColumn(ScalarColumnDesc<unsigned char>(colname, ""));
         }

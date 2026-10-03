@@ -185,7 +185,7 @@ LatticeExprNode::LatticeExprNode(LELInterface<bool>* pExpr)
 #endif
 }
 
-LatticeExprNode::LatticeExprNode(Int64 constant)
+LatticeExprNode::LatticeExprNode(int64_t constant)
     : donePrepare_p(false),
       dtype_p(TpFloat),
       isInvalid_p(false),
@@ -212,19 +212,6 @@ LatticeExprNode::LatticeExprNode(int constant)
 }
 
 LatticeExprNode::LatticeExprNode(unsigned int constant)
-    : donePrepare_p(false),
-      dtype_p(TpFloat),
-      isInvalid_p(false),
-      pExprFloat_p(std::make_shared<LELUnaryConst<float>>(constant)) {
-  pAttr_p = &pExprFloat_p->getAttribute();
-
-#if defined(AIPS_TRACE)
-  cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = " << pExprFloat_p.nrefs()
-       << endl;
-#endif
-}
-
-LatticeExprNode::LatticeExprNode(long constant)
     : donePrepare_p(false),
       dtype_p(TpFloat),
       isInvalid_p(false),

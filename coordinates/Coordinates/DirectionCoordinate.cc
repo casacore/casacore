@@ -1883,7 +1883,7 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs, const Matrix<double>& xform,
   const Vector<double>& projParameters = proj.parameters();
   const unsigned int nProj = projParameters.nelements();
   unsigned int startAt = ((proj.type() == Projection::ZPN) ? 0 : 1);  // Only ZPN uses prjprm->p[0]
-                                                              //
+                                                                      //
   wcs.npv = nProj;
   for (unsigned int i = 0; i < nProj; i++) {
     //

@@ -49,23 +49,23 @@ class MultiFileLarge : public MultiFile {
                  bool useCRC, int testMode)
       : MultiFile(name, option, blockSize, useODirect, useCRC), itsTestMode(testMode) {}
   ~MultiFileLarge() override { flush(); }
-  void readBlock(MultiFileInfo&, Int64, void*) override;
-  void writeBlock(MultiFileInfo&, Int64, const void*) override;
-  void extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks) override;
-  void writeHeaderShow(Int64 ncont, Int64 todo) const override;
+  void readBlock(MultiFileInfo&, int64_t, void*) override;
+  void writeBlock(MultiFileInfo&, int64_t, const void*) override;
+  void extendVF(MultiFileInfo& info, int64_t lastblk, bool useFreeBlocks) override;
+  void writeHeaderShow(int64_t ncont, int64_t todo) const override;
   void writeHeaderTest() override;
 
  private:
   int itsTestMode;
 };
 
-void MultiFileLarge::readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) {
+void MultiFileLarge::readBlock(MultiFileInfo& info, int64_t blknr, void* buffer) {
   if (itsTestMode != 0) {
     MultiFile::readBlock(info, blknr, buffer);
   }
 }
 
-void MultiFileLarge::writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) {
+void MultiFileLarge::writeBlock(MultiFileInfo& info, int64_t blknr, const void* buffer) {
   if (itsTestMode != 0) {
     MultiFile::writeBlock(info, blknr, buffer);
   } else if (itsUseCRC) {
@@ -73,9 +73,9 @@ void MultiFileLarge::writeBlock(MultiFileInfo& info, Int64 blknr, const void* bu
   }
 }
 
-void MultiFileLarge::extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks) {
-  Int64 nrb1 = 0;
-  Int64 nrb2 = 0;
+void MultiFileLarge::extendVF(MultiFileInfo& info, int64_t lastblk, bool useFreeBlocks) {
+  int64_t nrb1 = 0;
+  int64_t nrb2 = 0;
   if (!useFreeBlocks && itsTestMode != 0) {
     nrb1 = itsNrBlock;
     itsNrBlock = 1 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size();
@@ -89,10 +89,10 @@ void MultiFileLarge::extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBl
   }
 }
 
-void MultiFileLarge::writeHeaderShow(Int64 ncont, Int64 todo) const {
+void MultiFileLarge::writeHeaderShow(int64_t ncont, int64_t todo) const {
   if (itsTestMode != 0) {
     int newContInx = 1 - itsHdrContInx;
-    const std::vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
+    const std::vector<int64_t>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
     cout << ' ' << newContInx << itsHdrCont[0].blockNrs << itsHdrCont[1].blockNrs << hdrContNrs[0]
          << ' ' << ncont << ' ' << todo << endl;
   }
@@ -124,10 +124,10 @@ void testLarge(bool oDirect, bool useCRC, int testMode) {
     MultiFileLarge mfile("tMultiFileLarge_tmp.dat", ByteIO::New, 4096, oDirect, useCRC, testMode);
     int fid0 = mfile.createFile("file0");
     int fid1 = mfile.createFile("file1");
-    Vector<Int64> buf(4096 / sizeof(Int64));
+    Vector<int64_t> buf(4096 / sizeof(int64_t));
     indgen(buf);
-    Int64 offs0 = 0;
-    Int64 offs1 = 0;
+    int64_t offs0 = 0;
+    int64_t offs1 = 0;
     for (size_t i = 0; i < 1024; ++i) {
       for (size_t j = 0; j < 128; ++j) {
         mfile.write(fid0, buf.data(), 4096, offs0);

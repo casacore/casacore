@@ -67,7 +67,7 @@ void retypedArrayEngineSet(Array<SourceType>& out, const Array<TargetType>& in,
   SourceType* dataOut = out.getStorage(deleteOut);
   const TargetType* dataIn = in.getStorage(deleteIn);
   // Set element by element.
-  Int64 n = shape.product();
+  int64_t n = shape.product();
   SourceType* op = dataOut;
   const TargetType* ip = dataIn;
   const TargetType* last = ip + in.nelements();
@@ -90,7 +90,7 @@ void retypedArrayEngineGet(Array<TargetType>& out, const Array<SourceType>& in,
   TargetType* dataOut = out.getStorage(deleteOut);
   const SourceType* dataIn = in.getStorage(deleteIn);
   // Set element by element.
-  Int64 n = shape.product();
+  int64_t n = shape.product();
   TargetType* op = dataOut;
   const SourceType* ip = dataIn;
   const SourceType* last = ip + in.nelements();

@@ -75,7 +75,7 @@ class TabPath {
 
  private:
   Block<String> tabDir_p;  // file directories
-  unsigned int nrDir_p;            // # directories
+  unsigned int nrDir_p;    // # directories
 };
 
 }  // namespace casacore

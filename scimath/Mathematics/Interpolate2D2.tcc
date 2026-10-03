@@ -49,9 +49,13 @@ bool Interpolate2D::interpNearest(T &result, const Vector<double> &where, const 
   double wj = where[1];
   if (wj < 0 - half || wj > jmax + half || jmax < 0) return false;
 
-  unsigned int i = (wi <= 0.) ? 0 : (wi >= imax) ? static_cast<unsigned int>(imax) : static_cast<unsigned int>(wi + .5);
+  unsigned int i = (wi <= 0.)     ? 0
+                   : (wi >= imax) ? static_cast<unsigned int>(imax)
+                                  : static_cast<unsigned int>(wi + .5);
 
-  unsigned int j = (wj <= 0.) ? 0 : (wj >= jmax) ? static_cast<unsigned int>(jmax) : static_cast<unsigned int>(wj + .5);
+  unsigned int j = (wj <= 0.)     ? 0
+                   : (wj >= jmax) ? static_cast<unsigned int>(jmax)
+                                  : static_cast<unsigned int>(wj + .5);
 
   bool dataValid = !maskPtr || (*maskPtr)(i, j);
   if (dataValid) result = data(i, j);

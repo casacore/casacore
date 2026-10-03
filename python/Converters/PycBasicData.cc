@@ -61,7 +61,7 @@ void register_convert_basicdata() {
   casacore::python::register_convert_casa_iposition();
   casacore::python::register_convert_casa_vector<bool>();
   casacore::python::register_convert_casa_vector<int>();
-  casacore::python::register_convert_casa_vector<casacore::Int64>();
+  casacore::python::register_convert_casa_vector<int64_t>();
   casacore::python::register_convert_casa_vector<double>();
   casacore::python::register_convert_casa_vector<float>();
   casacore::python::register_convert_casa_vector<casacore::DComplex>();

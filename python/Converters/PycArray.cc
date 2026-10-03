@@ -93,7 +93,7 @@ template boost::python::object makePyArrayObject(casacore::Array<short> const& a
 template boost::python::object makePyArrayObject(casacore::Array<unsigned short> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<int> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<unsigned int> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Int64> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<int64_t> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<float> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<double> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<Complex> const& arr);

@@ -64,12 +64,12 @@ class TestUDFAggr : public UDFBase {
     setNDim(0);          // scalar
     setAggregate(true);  // aggregate function
   }
-  Int64 getInt(const TableExprId& id) {
+  int64_t getInt(const TableExprId& id) {
     const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
     const std::vector<TableExprId>& ids = aid.result().ids(id.rownr());
-    Int64 sum3 = 0;
+    int64_t sum3 = 0;
     for (std::vector<TableExprId>::const_iterator it = ids.begin(); it != ids.end(); ++it) {
-      Int64 v = operands()[0]->getInt(*it);
+      int64_t v = operands()[0]->getInt(*it);
       sum3 += v * v * v;
     }
     return sum3;
@@ -129,7 +129,7 @@ int main() {
       std::shared_ptr<TableExprGroupResult> res(new TableExprGroupResult(funcVec, idVec));
       TableExprIdAggr aid(res);
       aid.setRownr(0);
-      Int64 val = node2.getInt(aid);
+      int64_t val = node2.getInt(aid);
       cout << "aggregated value=" << val << endl;
       Vector<int> colval(ScalarColumn<int>(tab, "ANTENNA1").getColumn());
       AlwaysAssertExit(val == sum(colval * colval * colval));

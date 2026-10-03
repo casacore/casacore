@@ -210,7 +210,8 @@ class BitVector {
 
   // Copy <src>length</src> bits starting at thatStart in the
   // other BitVector to this BitVector starting at thisStart.
-  void copy(unsigned int thisStart, unsigned int length, const BitVector& that, unsigned int thatStart);
+  void copy(unsigned int thisStart, unsigned int length, const BitVector& that,
+            unsigned int thatStart);
 
   // Write a representation of the bit vector (a list of
   // <em>zeros</em> and <em>ones</em> enclosed in square
@@ -289,7 +290,9 @@ inline unsigned int BitVector::nbits() const { return size_p; }
 inline BitVectorHelper::BitVectorHelper(unsigned int bitNumber, BitVector* vector)
     : bitNumber_p(bitNumber), vecPtr_p(vector) {}
 
-inline BitVectorHelper BitVector::operator[](unsigned int pos) { return BitVectorHelper(pos, this); }
+inline BitVectorHelper BitVector::operator[](unsigned int pos) {
+  return BitVectorHelper(pos, this);
+}
 
 inline BitVectorHelper::BitVectorHelper(const BitVectorHelper& that)
     : bitNumber_p(that.bitNumber_p), vecPtr_p(that.vecPtr_p) {}

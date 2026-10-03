@@ -180,8 +180,8 @@ const bool& FitGaussian<T>::mask(unsigned int gaussian, unsigned int parameter) 
 }
 
 template <class T>
-Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS, unsigned int maxiter,
-                              T convcriteria) {
+Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS,
+                              unsigned int maxiter, T convcriteria) {
   // Same as below, with all sigma = 1.
 
   Vector<T> sigma(f.nelements(), 1);
@@ -234,7 +234,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f, const Ve
   fitter.setCriteria(convcriteria);
 
   Vector<int> targetmask(itsNGaussians, -1);  // should rename this...
-  unsigned int attempt = 0;                           // overall attempt number
+  unsigned int attempt = 0;                   // overall attempt number
   int fitfailure;
   T bestRMS = FLT_MAX;  // how to template this properly...
 

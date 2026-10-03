@@ -35,7 +35,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Int64 TaQLJoinRow::findRow(const TableExprId&) { return itsRow; }
+int64_t TaQLJoinRow::findRow(const TableExprId&) { return itsRow; }
 
 TaQLJoin::TaQLJoin(const TENShPtr& mainNode, const TENShPtr& joinNode,
                    const std::vector<std::shared_ptr<TaQLJoinBase>>& children)
@@ -44,8 +44,8 @@ TaQLJoin::TaQLJoin(const TENShPtr& mainNode, const TENShPtr& joinNode,
   AlwaysAssert(itsOptSet, AipsError);
 }
 
-Int64 TaQLJoin::findRow(const TableExprId& id) {
-  Int64 index;
+int64_t TaQLJoin::findRow(const TableExprId& id) {
+  int64_t index;
   switch (itsMainNode->dataType()) {
     case TableExprNodeRep::NTInt:
       index = itsOptSet->find(itsMainNode->getInt(id));
@@ -87,14 +87,14 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::makeOptDiscrete(TableExprNodeRep& node,
     // For other levels a TaQLJoin object is created for each unique value.
     // It contains all row numbers per value.
     // Sort the values and get the unique ones.
-    Vector<Int64> index;
-    GenSortIndirect<T, Int64>::sort(index, vec.data(), vec.size());
+    Vector<int64_t> index;
+    GenSortIndirect<T, int64_t>::sort(index, vec.data(), vec.size());
     std::vector<T> vals;
     T val = vec[index[0]];
     std::vector<rownr_t> srows;
     srows.push_back(index[0]);
     for (size_t j = 1; j < rows.size(); ++j) {
-      Int64 row = index[j];
+      int64_t row = index[j];
       T val2 = vec[row];
       if (val2 == val) {
         srows.push_back(row);
@@ -132,8 +132,8 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::makeOptInterval(const TableExprNodeSet& 
     newElem->getEnd(0, endvals[i]);
   }
   // Sort the intervals in order of start value.
-  Vector<Int64> index;
-  GenSortIndirect<T, Int64>::sort(index, stvals, stvals.size());
+  Vector<int64_t> index;
+  GenSortIndirect<T, int64_t>::sort(index, stvals, stvals.size());
   std::vector<T> starts;
   std::vector<T> ends;
   std::vector<std::shared_ptr<TaQLJoinBase>> children;
@@ -141,7 +141,7 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::makeOptInterval(const TableExprNodeSet& 
     // For the lowest level, the children are TaQLJoinRow objects
     // containing the row number only.
     for (size_t j = 0; j < rows.size(); ++j) {
-      Int64 row = rows[index[j]];
+      int64_t row = rows[index[j]];
       starts.push_back(stvals[index[j]]);
       ends.push_back(endvals[index[j]]);
       children.push_back(std::shared_ptr<TaQLJoinBase>(new TaQLJoinRow(row)));
@@ -154,7 +154,7 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::makeOptInterval(const TableExprNodeSet& 
     std::vector<rownr_t> srows;
     srows.push_back(index[0]);
     for (size_t j = 1; j < rows.size(); ++j) {
-      Int64 row = rows[index[j]];
+      int64_t row = rows[index[j]];
       T st2 = stvals[row];
       T end2 = endvals[row];
       if (st2 == st && end2 == end) {
@@ -200,7 +200,7 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::createRecursive(const std::vector<TableE
     AlwaysAssert(node->valueType() == TableExprNodeRep::VTScalar, AipsError);
     if (node->dataType() == TableExprNodeRep::NTInt &&
         mainNode->dataType() == TableExprNodeRep::NTInt) {
-      joinTree = makeOptDiscrete<Int64>(*node, mainNodes, joinNodes, rows, level);
+      joinTree = makeOptDiscrete<int64_t>(*node, mainNodes, joinNodes, rows, level);
     } else if (node->dataType() == TableExprNodeRep::NTString &&
                mainNode->dataType() == TableExprNodeRep::NTString) {
       joinTree = makeOptDiscrete<String>(*node, mainNodes, joinNodes, rows, level);
@@ -246,23 +246,23 @@ TableExprInfo TaQLJoinColumn::getTableInfo() const { return itsColumn->getTableI
 void TaQLJoinColumn::clear() {}
 
 MArray<bool> TaQLJoinColumn::getArrayBool(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return MArray<bool>();
   }
   return itsColumn->getArrayBool(rownr);
 }
 
-MArray<Int64> TaQLJoinColumn::getArrayInt(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+MArray<int64_t> TaQLJoinColumn::getArrayInt(const TableExprId& id) {
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return MArray<Int64>();
+    return MArray<int64_t>();
   }
   return itsColumn->getArrayInt(rownr);
 }
 
 MArray<double> TaQLJoinColumn::getArrayDouble(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return MArray<double>();
   }
@@ -270,7 +270,7 @@ MArray<double> TaQLJoinColumn::getArrayDouble(const TableExprId& id) {
 }
 
 MArray<DComplex> TaQLJoinColumn::getArrayDComplex(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return MArray<DComplex>();
   }
@@ -278,7 +278,7 @@ MArray<DComplex> TaQLJoinColumn::getArrayDComplex(const TableExprId& id) {
 }
 
 MArray<String> TaQLJoinColumn::getArrayString(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return MArray<String>();
   }
@@ -286,7 +286,7 @@ MArray<String> TaQLJoinColumn::getArrayString(const TableExprId& id) {
 }
 
 MArray<MVTime> TaQLJoinColumn::getArrayDate(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return MArray<MVTime>();
   }
@@ -326,11 +326,11 @@ TaQLJoinColumnBool::TaQLJoinColumnBool(const TENShPtr& columnNode, const TablePa
   }
 }
 bool TaQLJoinColumnBool::getBool(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return false;
   }
-  DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
+  DebugAssert(rownr < static_cast<int64_t>(itsData.size()), AipsError);
   return itsData[rownr];
 }
 void TaQLJoinColumnBool::clear() { itsData.resize(); }
@@ -343,12 +343,12 @@ TaQLJoinColumnInt::TaQLJoinColumnInt(const TENShPtr& columnNode, const TablePars
     itsData[row] = itsColumn->getInt(row);
   }
 }
-Int64 TaQLJoinColumnInt::getInt(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+int64_t TaQLJoinColumnInt::getInt(const TableExprId& id) {
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return std::numeric_limits<Int64>::max();
+    return std::numeric_limits<int64_t>::max();
   }
-  DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
+  DebugAssert(rownr < static_cast<int64_t>(itsData.size()), AipsError);
   return itsData[rownr];
 }
 void TaQLJoinColumnInt::clear() { itsData.resize(); }
@@ -362,11 +362,11 @@ TaQLJoinColumnDouble::TaQLJoinColumnDouble(const TENShPtr& columnNode, const Tab
   }
 }
 double TaQLJoinColumnDouble::getDouble(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return std::numeric_limits<double>::quiet_NaN();
   }
-  DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
+  DebugAssert(rownr < static_cast<int64_t>(itsData.size()), AipsError);
   return itsData[rownr];
 }
 void TaQLJoinColumnDouble::clear() { itsData.resize(); }
@@ -381,12 +381,12 @@ TaQLJoinColumnDComplex::TaQLJoinColumnDComplex(const TENShPtr& columnNode,
   }
 }
 DComplex TaQLJoinColumnDComplex::getDComplex(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return DComplex(std::numeric_limits<double>::quiet_NaN(),
                     std::numeric_limits<double>::quiet_NaN());
   }
-  DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
+  DebugAssert(rownr < static_cast<int64_t>(itsData.size()), AipsError);
   return itsData[rownr];
 }
 void TaQLJoinColumnDComplex::clear() { itsData.resize(); }
@@ -400,11 +400,11 @@ TaQLJoinColumnString::TaQLJoinColumnString(const TENShPtr& columnNode, const Tab
   }
 }
 String TaQLJoinColumnString::getString(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return "none";
   }
-  DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
+  DebugAssert(rownr < static_cast<int64_t>(itsData.size()), AipsError);
   return itsData[rownr];
 }
 void TaQLJoinColumnString::clear() { itsData.resize(); }
@@ -418,11 +418,11 @@ TaQLJoinColumnDate::TaQLJoinColumnDate(const TENShPtr& columnNode, const TablePa
   }
 }
 MVTime TaQLJoinColumnDate::getDate(const TableExprId& id) {
-  Int64 rownr = itsJoin.findRow(id);
+  int64_t rownr = itsJoin.findRow(id);
   if (rownr < 0) {
     return MVTime();
   }
-  DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
+  DebugAssert(rownr < static_cast<int64_t>(itsData.size()), AipsError);
   return itsData[rownr];
 }
 void TaQLJoinColumnDate::clear() { itsData.resize(); }
@@ -430,6 +430,6 @@ void TaQLJoinColumnDate::clear() { itsData.resize(); }
 TaQLJoinRowid::TaQLJoinRowid(const TableExprInfo& tabInfo, const TableParseJoin& join)
     : TableExprNodeRep(NTInt, VTScalar, OtRownr, Variable), itsTabInfo(tabInfo), itsJoin(join) {}
 TableExprInfo TaQLJoinRowid::getTableInfo() const { return itsTabInfo; }
-Int64 TaQLJoinRowid::getInt(const TableExprId& id) { return itsJoin.findRow(id); }
+int64_t TaQLJoinRowid::getInt(const TableExprId& id) { return itsJoin.findRow(id); }
 
 }  // namespace casacore

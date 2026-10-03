@@ -54,11 +54,11 @@ size_t ModcompDataConversion::toLocal(unsigned int& to, const void* from) const 
   return ModcompConversion::toLocal(to, from);
 }
 
-size_t ModcompDataConversion::toLocal(Int64& to, const void* from) const {
+size_t ModcompDataConversion::toLocal(int64_t& to, const void* from) const {
   return ModcompConversion::toLocal(to, from);
 }
 
-size_t ModcompDataConversion::toLocal(uInt64& to, const void* from) const {
+size_t ModcompDataConversion::toLocal(uint64_t& to, const void* from) const {
   return ModcompConversion::toLocal(to, from);
 }
 
@@ -94,11 +94,11 @@ size_t ModcompDataConversion::toLocal(unsigned int* to, const void* from, size_t
   return ModcompConversion::toLocal(to, from, nr);
 }
 
-size_t ModcompDataConversion::toLocal(Int64* to, const void* from, size_t nr) const {
+size_t ModcompDataConversion::toLocal(int64_t* to, const void* from, size_t nr) const {
   return ModcompConversion::toLocal(to, from, nr);
 }
 
-size_t ModcompDataConversion::toLocal(uInt64* to, const void* from, size_t nr) const {
+size_t ModcompDataConversion::toLocal(uint64_t* to, const void* from, size_t nr) const {
   return ModcompConversion::toLocal(to, from, nr);
 }
 
@@ -134,11 +134,11 @@ size_t ModcompDataConversion::fromLocal(void* to, unsigned int from) const {
   return ModcompConversion::fromLocal(to, from);
 }
 
-size_t ModcompDataConversion::fromLocal(void* to, Int64 from) const {
+size_t ModcompDataConversion::fromLocal(void* to, int64_t from) const {
   return ModcompConversion::fromLocal(to, from);
 }
 
-size_t ModcompDataConversion::fromLocal(void* to, uInt64 from) const {
+size_t ModcompDataConversion::fromLocal(void* to, uint64_t from) const {
   return ModcompConversion::fromLocal(to, from);
 }
 
@@ -174,11 +174,11 @@ size_t ModcompDataConversion::fromLocal(void* to, const unsigned int* from, size
   return ModcompConversion::fromLocal(to, from, nr);
 }
 
-size_t ModcompDataConversion::fromLocal(void* to, const Int64* from, size_t nr) const {
+size_t ModcompDataConversion::fromLocal(void* to, const int64_t* from, size_t nr) const {
   return ModcompConversion::fromLocal(to, from, nr);
 }
 
-size_t ModcompDataConversion::fromLocal(void* to, const uInt64* from, size_t nr) const {
+size_t ModcompDataConversion::fromLocal(void* to, const uint64_t* from, size_t nr) const {
   return ModcompConversion::fromLocal(to, from, nr);
 }
 
@@ -192,19 +192,25 @@ size_t ModcompDataConversion::fromLocal(void* to, const double* from, size_t nr)
 
 bool ModcompDataConversion::canCopy(const char*) const { return (CONVERT_MODCOMP_CHAR == 0); }
 
-bool ModcompDataConversion::canCopy(const unsigned char*) const { return (CONVERT_MODCOMP_UCHAR == 0); }
+bool ModcompDataConversion::canCopy(const unsigned char*) const {
+  return (CONVERT_MODCOMP_UCHAR == 0);
+}
 
 bool ModcompDataConversion::canCopy(const short*) const { return (CONVERT_MODCOMP_SHORT == 0); }
 
-bool ModcompDataConversion::canCopy(const unsigned short*) const { return (CONVERT_MODCOMP_USHORT == 0); }
+bool ModcompDataConversion::canCopy(const unsigned short*) const {
+  return (CONVERT_MODCOMP_USHORT == 0);
+}
 
 bool ModcompDataConversion::canCopy(const int*) const { return (CONVERT_MODCOMP_INT == 0); }
 
-bool ModcompDataConversion::canCopy(const unsigned int*) const { return (CONVERT_MODCOMP_UINT == 0); }
+bool ModcompDataConversion::canCopy(const unsigned int*) const {
+  return (CONVERT_MODCOMP_UINT == 0);
+}
 
-bool ModcompDataConversion::canCopy(const Int64*) const { return (CONVERT_MODCOMP_INT64 == 0); }
+bool ModcompDataConversion::canCopy(const int64_t*) const { return (CONVERT_MODCOMP_INT64 == 0); }
 
-bool ModcompDataConversion::canCopy(const uInt64*) const { return (CONVERT_MODCOMP_UINT64 == 0); }
+bool ModcompDataConversion::canCopy(const uint64_t*) const { return (CONVERT_MODCOMP_UINT64 == 0); }
 
 bool ModcompDataConversion::canCopy(const float*) const { return (CONVERT_MODCOMP_FLOAT == 0); }
 
@@ -212,23 +218,35 @@ bool ModcompDataConversion::canCopy(const double*) const { return (CONVERT_MODCO
 
 unsigned int ModcompDataConversion::externalSize(const char*) const { return SIZE_MODCOMP_CHAR; }
 
-unsigned int ModcompDataConversion::externalSize(const unsigned char*) const { return SIZE_MODCOMP_UCHAR; }
+unsigned int ModcompDataConversion::externalSize(const unsigned char*) const {
+  return SIZE_MODCOMP_UCHAR;
+}
 
 unsigned int ModcompDataConversion::externalSize(const short*) const { return SIZE_MODCOMP_SHORT; }
 
-unsigned int ModcompDataConversion::externalSize(const unsigned short*) const { return SIZE_MODCOMP_USHORT; }
+unsigned int ModcompDataConversion::externalSize(const unsigned short*) const {
+  return SIZE_MODCOMP_USHORT;
+}
 
 unsigned int ModcompDataConversion::externalSize(const int*) const { return SIZE_MODCOMP_INT; }
 
-unsigned int ModcompDataConversion::externalSize(const unsigned int*) const { return SIZE_MODCOMP_UINT; }
+unsigned int ModcompDataConversion::externalSize(const unsigned int*) const {
+  return SIZE_MODCOMP_UINT;
+}
 
-unsigned int ModcompDataConversion::externalSize(const Int64*) const { return SIZE_MODCOMP_INT64; }
+unsigned int ModcompDataConversion::externalSize(const int64_t*) const {
+  return SIZE_MODCOMP_INT64;
+}
 
-unsigned int ModcompDataConversion::externalSize(const uInt64*) const { return SIZE_MODCOMP_UINT64; }
+unsigned int ModcompDataConversion::externalSize(const uint64_t*) const {
+  return SIZE_MODCOMP_UINT64;
+}
 
 unsigned int ModcompDataConversion::externalSize(const float*) const { return SIZE_MODCOMP_FLOAT; }
 
-unsigned int ModcompDataConversion::externalSize(const double*) const { return SIZE_MODCOMP_DOUBLE; }
+unsigned int ModcompDataConversion::externalSize(const double*) const {
+  return SIZE_MODCOMP_DOUBLE;
+}
 // Local Variables:
 // compile-command: "gmake OPTLIB=1 ModcompDataConversion"
 // End:

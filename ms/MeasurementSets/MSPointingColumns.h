@@ -171,7 +171,7 @@ class MSPointingColumns {
   // returns -1 if no match was found
   // For long tables you may give a guess row...the last return
   // is usually a good one.
-  Int64 pointingIndex(int antenna, double time, Int64 guessRow = 0) const;
+  int64_t pointingIndex(int antenna, double time, int64_t guessRow = 0) const;
 
   // Convenience function that returns the number of rows in any of the columns
   rownr_t nrow() const { return antennaId_p.nrow(); }

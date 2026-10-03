@@ -76,8 +76,8 @@ void ConversionIO::init() {
   initType<unsigned short>(itsSizeuShort, itsCopyuShort);
   initType<int>(itsSizeInt, itsCopyInt);
   initType<unsigned int>(itsSizeuInt, itsCopyuInt);
-  initType<Int64>(itsSizeInt64, itsCopyInt64);
-  initType<uInt64>(itsSizeuInt64, itsCopyuInt64);
+  initType<int64_t>(itsSizeInt64, itsCopyInt64);
+  initType<uint64_t>(itsSizeuInt64, itsCopyuInt64);
   initType<float>(itsSizeFloat, itsCopyFloat);
   initType<double>(itsSizeDouble, itsCopyDouble);
 }
@@ -162,11 +162,11 @@ size_t ConversionIO::write(size_t nvalues, const int* data) {
 size_t ConversionIO::write(size_t nvalues, const unsigned int* data) {
   return writeGeneric<unsigned int>(nvalues, data, itsSizeuInt, itsCopyuInt);
 }
-size_t ConversionIO::write(size_t nvalues, const Int64* data) {
-  return writeGeneric<Int64>(nvalues, data, itsSizeInt64, itsCopyInt64);
+size_t ConversionIO::write(size_t nvalues, const int64_t* data) {
+  return writeGeneric<int64_t>(nvalues, data, itsSizeInt64, itsCopyInt64);
 }
-size_t ConversionIO::write(size_t nvalues, const uInt64* data) {
-  return writeGeneric<uInt64>(nvalues, data, itsSizeuInt64, itsCopyuInt64);
+size_t ConversionIO::write(size_t nvalues, const uint64_t* data) {
+  return writeGeneric<uint64_t>(nvalues, data, itsSizeuInt64, itsCopyuInt64);
 }
 size_t ConversionIO::write(size_t nvalues, const float* data) {
   return writeGeneric<float>(nvalues, data, itsSizeFloat, itsCopyFloat);
@@ -193,11 +193,11 @@ size_t ConversionIO::read(size_t nvalues, int* data) {
 size_t ConversionIO::read(size_t nvalues, unsigned int* data) {
   return readGeneric<unsigned int>(nvalues, data, itsSizeuInt, itsCopyuInt);
 }
-size_t ConversionIO::read(size_t nvalues, Int64* data) {
-  return readGeneric<Int64>(nvalues, data, itsSizeInt64, itsCopyInt64);
+size_t ConversionIO::read(size_t nvalues, int64_t* data) {
+  return readGeneric<int64_t>(nvalues, data, itsSizeInt64, itsCopyInt64);
 }
-size_t ConversionIO::read(size_t nvalues, uInt64* data) {
-  return readGeneric<uInt64>(nvalues, data, itsSizeuInt64, itsCopyuInt64);
+size_t ConversionIO::read(size_t nvalues, uint64_t* data) {
+  return readGeneric<uint64_t>(nvalues, data, itsSizeuInt64, itsCopyuInt64);
 }
 size_t ConversionIO::read(size_t nvalues, float* data) {
   return readGeneric<float>(nvalues, data, itsSizeFloat, itsCopyFloat);

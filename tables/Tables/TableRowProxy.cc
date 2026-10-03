@@ -66,9 +66,9 @@ TableRowProxy& TableRowProxy::operator=(const TableRowProxy& that) {
 
 bool TableRowProxy::isNull() const { return (rorow_p.isAttached() ? false : true); }
 
-Record TableRowProxy::get(Int64 rownr) const { return rorow_p.get(rownr, true).toRecord(); }
+Record TableRowProxy::get(int64_t rownr) const { return rorow_p.get(rownr, true).toRecord(); }
 
-void TableRowProxy::put(Int64 rownr, const Record& record, bool matchingFields) {
+void TableRowProxy::put(int64_t rownr, const Record& record, bool matchingFields) {
   if (!isWritable_p) {
     throw TableError("TableRowProxy: the given TableRow is not writable");
   }

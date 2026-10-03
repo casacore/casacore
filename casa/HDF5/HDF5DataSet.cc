@@ -58,7 +58,7 @@ HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const 
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Int64* type)
+                         const IPosition& tileShape, const int64_t* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
@@ -113,7 +113,7 @@ HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const 
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Int64* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const int64_t* type)
     : itsDataType(type) {
   open(parentHid, name);
 }

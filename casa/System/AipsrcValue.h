@@ -180,8 +180,8 @@ class AipsrcValue : public Aipsrc {
   // returned value is the index for get() and set().
   // <group>
   static unsigned int registerRC(const String &keyword, const T &deflt);
-  static unsigned int registerRC(const String &keyword, const Unit &default_unit, const Unit &result_unit,
-                         const T &deflt);
+  static unsigned int registerRC(const String &keyword, const Unit &default_unit,
+                                 const Unit &result_unit, const T &deflt);
   // </group>
 
   // Gets are like find, but using registered integers rather than names. The

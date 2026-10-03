@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
 unsigned int MCPosition::ToRef_p[N_Routes][3] = {{MPosition::ITRF, MPosition::WGS84, 0},
-                                         {MPosition::WGS84, MPosition::ITRF, 0}};
+                                                 {MPosition::WGS84, MPosition::ITRF, 0}};
 unsigned int MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
 std::once_flag MCPosition::theirInitOnceFlag;
 

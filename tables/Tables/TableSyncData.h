@@ -86,7 +86,8 @@ class TableSyncData {
   // Update the synchronization data and write it into the MemoryIO object.
   // This function is called when a table flush is done to reflect
   // if anything has changed compared to the previous flush.
-  void write(rownr_t nrrow, unsigned int nrcolumn, bool tableChanged, const Block<bool>& dataManChanged);
+  void write(rownr_t nrrow, unsigned int nrcolumn, bool tableChanged,
+             const Block<bool>& dataManChanged);
 
   // Update the synchronization data and write it into the MemoryIO object.
   // This function should be used by an external filler when it flushes
@@ -97,7 +98,8 @@ class TableSyncData {
   // This function is called when a lock is acquired to see if
   // table data has to be reread.
   // <br>It returns false when the MemoryIO object is empty.
-  bool read(rownr_t& nrrow, unsigned int& nrcolumn, bool& tableChanged, Block<bool>& dataManChanged);
+  bool read(rownr_t& nrrow, unsigned int& nrcolumn, bool& tableChanged,
+            Block<bool>& dataManChanged);
 
   // Get the MemoryIO object.
   // This is used to let <src>LockFile</src> read or write the

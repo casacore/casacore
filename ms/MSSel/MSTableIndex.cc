@@ -196,7 +196,7 @@ RowNumbers MSTableIndex::getRowNumbers() {
   return lastSearch_p;
 }
 
-Int64 MSTableIndex::getNearestRow(bool &found) {
+int64_t MSTableIndex::getNearestRow(bool &found) {
   // getInternals ensures that lastSearch_p is the match to the integer keys
   getInternals();
   if (!nearestReady_p) {

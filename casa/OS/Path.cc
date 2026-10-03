@@ -57,7 +57,7 @@ static unsigned int pathMax = 0;
 #endif
 
 const unsigned int PATH_MAX_GUESS = 1024;  // if PATH_MAX is indeterminate
-                                   // we're not guaranteed this is adequate.
+                                           // we're not guaranteed this is adequate.
 
 // The maximum number of bytes in a filename is 14 (_POSIX_NAME_MAX)
 // Definition for POSIX systems
@@ -75,7 +75,7 @@ static unsigned int nameMax = 0;
 #endif
 
 const unsigned int NAME_MAX_GUESS = 255;  // if NAME_MAX is indeterminate
-                                  // we're not guaranteed this is adequate. '
+                                          // we're not guaranteed this is adequate. '
 
 Path::Path() : itsOriginalPathName(".") {}
 

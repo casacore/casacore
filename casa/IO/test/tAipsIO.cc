@@ -124,9 +124,9 @@ void doIO(bool doExcp, bool out, AipsIO& io) {
   tii = -5;
   unsigned int tuii, tuio;
   tuii = 6;
-  Int64 tli, tlo;
+  int64_t tli, tlo;
   tli = -7;
-  uInt64 tuli, tulo;
+  uint64_t tuli, tulo;
   tuli = 8;
   float tfi, tfo;
   tfi = 3.15;

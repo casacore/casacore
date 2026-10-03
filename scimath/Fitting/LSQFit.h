@@ -532,8 +532,9 @@ class LSQFit {
   void makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
                 bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
-  void makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
-                const U &obs, const U &obs2, bool doNorm = true, bool doKnown = true);
+  void makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const V &cEq2,
+                const U &weight, const U &obs, const U &obs2, bool doNorm = true,
+                bool doKnown = true);
   template <class U, class V, class W>
   void makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
                 LSQFit::Real, bool doNorm = true, bool doKnown = true);
@@ -584,11 +585,12 @@ class LSQFit {
                 bool doKnown = true);
   //
   template <class U, class V, class W>
-  void makeNormSorted(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                      bool doNorm = true, bool doKnown = true);
+  void makeNormSorted(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                      const U &obs, bool doNorm = true, bool doKnown = true);
   template <class U, class V, class W>
-  void makeNormSorted(unsigned int nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
-                      const U &obs, const U &obs2, bool doNorm = true, bool doKnown = true);
+  void makeNormSorted(unsigned int nIndex, const W &cEqIndex, const V &cEq, const V &cEq2,
+                      const U &weight, const U &obs, const U &obs2, bool doNorm = true,
+                      bool doKnown = true);
   // </group>
   // Get the <src>n-th</src> (from 0 to the rank deficiency, or missing rank,
   // see e.g. <src>getDeficiency()</src>)
@@ -619,7 +621,8 @@ class LSQFit {
   template <class U, class V>
   bool setConstraint(unsigned int n, const V &cEq, const std::complex<U> &obs);
   template <class U, class V, class W>
-  bool setConstraint(unsigned int n, unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &obs);
+  bool setConstraint(unsigned int n, unsigned int nIndex, const W &cEqIndex, const V &cEq,
+                     const U &obs);
   template <class U, class V, class W>
   bool setConstraint(unsigned int n, unsigned int nIndex, const W &cEqIndex, const V &cEq,
                      const std::complex<U> &obs);
@@ -630,7 +633,8 @@ class LSQFit {
   template <class U, class V, class W>
   bool addConstraint(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &obs);
   template <class U, class V, class W>
-  bool addConstraint(unsigned int nIndex, const W &cEqIndex, const V &cEq, const std::complex<U> &obs);
+  bool addConstraint(unsigned int nIndex, const W &cEqIndex, const V &cEq,
+                     const std::complex<U> &obs);
   // </group>
   // Merge other <src>LSQFit</src> object (i.e. the normal equation and
   // related information) into <src>this</src>. Both objects must have the
@@ -674,7 +678,8 @@ class LSQFit {
   void set(int nUnknowns, const LSQReal &, int nConstraints = 0) { set(nUnknowns, nConstraints); };
   void set(unsigned int nUnknowns, const LSQComplex &, unsigned int nConstraints = 0);
   void set(int nUnknowns, const LSQComplex &, int nConstraints = 0) {
-    set(static_cast<unsigned int>(nUnknowns), LSQComplex(), static_cast<unsigned int>(nConstraints));
+    set(static_cast<unsigned int>(nUnknowns), LSQComplex(),
+        static_cast<unsigned int>(nConstraints));
   };
   // </group>
   // Set new factors (collinearity <src>factor</src>, and Levenberg-Marquardt
@@ -745,9 +750,9 @@ class LSQFit {
   // <li> <src>nonlin = </src> current Levenberg factor-1
   // </ul>
   // Note that all pointers may be 0.
-  void debugIt(unsigned int &nun, unsigned int &np, unsigned int &ncon, unsigned int &ner, unsigned int &rank, double *&nEq, double *&known,
-               double *&constr, double *&er, unsigned int *&piv, double *&sEq, double *&sol, double &prec,
-               double &nonlin) const;
+  void debugIt(unsigned int &nun, unsigned int &np, unsigned int &ncon, unsigned int &ner,
+               unsigned int &rank, double *&nEq, double *&known, double *&constr, double *&er,
+               unsigned int *&piv, double *&sEq, double *&sol, double &prec, double &nonlin) const;
   //
   // Create an LSQFit object from a record.
   // An error message is generated, and false

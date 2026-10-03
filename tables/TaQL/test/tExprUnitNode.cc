@@ -54,7 +54,7 @@ void checkScaInt(const String& str, const TableExprId& exprid, const TableExprNo
   cout << "checkScaInt " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpInt64);
   AlwaysAssertExit(expr.unit().getName().empty());
-  Int64 val;
+  int64_t val;
   expr.get(exprid, val);
   if (val != value) {
     foundError = true;

@@ -98,7 +98,7 @@ class TSMCubeMMap : public TSMCube {
   // can be added later with setShape. That is only used by TiledCellStMan.
   // <br> The fileOffset argument is meant for class TiledFileAccess.
   TSMCubeMMap(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
-              const IPosition& tileShape, const Record& values, Int64 fileOffset);
+              const IPosition& tileShape, const Record& values, int64_t fileOffset);
 
   // Reconstruct the hypercube by reading its data from the AipsIO stream.
   // It will link itself to the correct TSMFile. The TSMFile objects
@@ -125,19 +125,19 @@ class TSMCubeMMap : public TSMCube {
 
   // Extend the last dimension of the cube with the given number.
   // The record can contain the coordinates of the elements added.
-  virtual void extend(uInt64 nr, const Record& coordValues, const TSMColumn* lastCoordColumn);
+  virtual void extend(uint64_t nr, const Record& coordValues, const TSMColumn* lastCoordColumn);
 
   // Read or write a section in the cube.
   // It is assumed that the section buffer is long enough.
   virtual void accessSection(const IPosition& start, const IPosition& end, char* section,
-                             unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
-                             bool writeFlag);
+                             unsigned int colnr, unsigned int localPixelSize,
+                             unsigned int externalPixelSize, bool writeFlag);
 
   // Read or write a section in a strided way.
   // It is assumed that the section buffer is long enough.
   virtual void accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
-                             char* section, unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
-                             bool writeFlag);
+                             char* section, unsigned int colnr, unsigned int localPixelSize,
+                             unsigned int externalPixelSize, bool writeFlag);
 
   // Set the cache size for the given slice and access path.
   virtual void setCacheSize(const IPosition& sliceShape, const IPosition& windowStart,

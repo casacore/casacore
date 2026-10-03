@@ -96,7 +96,8 @@ std::vector<Vector<double>> MeasTable::dIGRF;
 // # Member functions
 bool MeasTable::useIAU2000() {
   // Aipsrc registration (for speed) of use of iau2000 and if so the 2000a version.
-  static const unsigned int iau2000_reg = AipsrcValue<bool>::registerRC("measures.iau2000.b_use", false);
+  static const unsigned int iau2000_reg =
+      AipsrcValue<bool>::registerRC("measures.iau2000.b_use", false);
   return AipsrcValue<bool>::get(iau2000_reg);
 }
 
@@ -3739,8 +3740,8 @@ Euler MeasTable::polarMotion(double ut) {
 // Time functions
 double MeasTable::dUTC(double utc) {
   static const Statics_dUTC st(calc_dUTC());
-  double(*const &LEAP)[4] = st.LEAP;  // alias to avoid more clutter below
-  const int &N = st.N;                // idem
+  double (*const &LEAP)[4] = st.LEAP;  // alias to avoid more clutter below
+  const int &N = st.N;                 // idem
 
   double val(0);
   if (utc < LEAP[0][0]) {
@@ -3787,7 +3788,7 @@ MeasTable::Statics_dUTC MeasTable::calc_dUTC() {
           "times and coordinates derived from UTC could be wrong by 1s or more."
        << LogIO::POST;
   }
-  rv.LEAP = (double(*)[4])(new double[4 * rv.N]);
+  rv.LEAP = (double (*)[4])(new double[4 * rv.N]);
   for (int i = 0; i < rv.N; i++) {
     row.get(i);
     for (int j = 0; j < 4; j++) {

@@ -181,12 +181,12 @@ class StatAcc {
   // </group>
 
  private:
-  double itsWtot;   // # Sum of weights
-  double itsWsum;   // # Sum of weighted values
-  double itsWssum;  // # Sum of weighted squares
-  double itsMin;    // # Minimum value
-  double itsMax;    // # Maximum value
-  unsigned int itsCount;    // # Number of samples
+  double itsWtot;         // # Sum of weights
+  double itsWsum;         // # Sum of weighted values
+  double itsWssum;        // # Sum of weighted squares
+  double itsMin;          // # Minimum value
+  double itsMax;          // # Maximum value
+  unsigned int itsCount;  // # Number of samples
 
   // Accumulate a single weighted value.
   void put1(const T, const float);

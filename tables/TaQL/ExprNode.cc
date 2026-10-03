@@ -66,10 +66,10 @@ TableExprNode::TableExprNode(const int& val) {
 TableExprNode::TableExprNode(const unsigned int& val) {
   node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
-TableExprNode::TableExprNode(const Int64& val) {
+TableExprNode::TableExprNode(const int64_t& val) {
   node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
-TableExprNode::TableExprNode(const uInt64& val) {
+TableExprNode::TableExprNode(const uint64_t& val) {
   node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
 TableExprNode::TableExprNode(const float& val) {
@@ -123,10 +123,10 @@ TableExprNode::TableExprNode(const Array<int>& val) {
 TableExprNode::TableExprNode(const Array<unsigned int>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
-TableExprNode::TableExprNode(const Array<Int64>& val) {
+TableExprNode::TableExprNode(const Array<int64_t>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
-TableExprNode::TableExprNode(const Array<uInt64>& val) {
+TableExprNode::TableExprNode(const Array<uint64_t>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode(const Array<float>& val) {
@@ -166,10 +166,10 @@ TableExprNode::TableExprNode(const MArray<int>& val) {
 TableExprNode::TableExprNode(const MArray<unsigned int>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
-TableExprNode::TableExprNode(const MArray<Int64>& val) {
+TableExprNode::TableExprNode(const MArray<int64_t>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
-TableExprNode::TableExprNode(const MArray<uInt64>& val) {
+TableExprNode::TableExprNode(const MArray<uint64_t>& val) {
   node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode(const MArray<float>& val) {

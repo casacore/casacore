@@ -33,7 +33,8 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-void testit(const Vector<double>& x, const Vector<double>& y, const unsigned int expectedPrecision) {
+void testit(const Vector<double>& x, const Vector<double>& y,
+            const unsigned int expectedPrecision) {
   std::ostringstream testStream;
   testStream << "x = " << x[0] << " +/- " << x[1] << ", y ";
   if (y.size() == 0) {

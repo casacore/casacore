@@ -272,9 +272,9 @@ class Aipsrc {
   // <group>
   static unsigned int registerRC(const String &keyword, const String &default_value);
   static unsigned int registerRC(const String &keyword, int Nname, const String tname[],
-                         const String &default_value);
+                                 const String &default_value);
   static unsigned int registerRC(const String &keyword, const Vector<String> &tname,
-                         const String &default_value);
+                                 const String &default_value);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
@@ -287,7 +287,8 @@ class Aipsrc {
   // Sets allow registered values to be set
   // <group>
   static void set(unsigned int keyword, const String &default_value);
-  static void set(unsigned int keyword, int Nname, const String tname[], const String &default_value);
+  static void set(unsigned int keyword, int Nname, const String tname[],
+                  const String &default_value);
   static void set(unsigned int keyword, const Vector<String> &tname, const String &default_value);
   // </group>
 
@@ -345,7 +346,8 @@ class Aipsrc {
   // <group>
   // Read aipsrc type files (without wildcards), and return the unique names
   // and values in the Vector arguments. The return value is number of names.
-  static unsigned int genRestore(Vector<String> &namlst, Vector<String> &vallst, const String &fileList);
+  static unsigned int genRestore(Vector<String> &namlst, Vector<String> &vallst,
+                                 const String &fileList);
   // Save the names/values in file
   static void genSave(Vector<String> &namlst, Vector<String> &vallst, const String &fnam);
   // Set (new or overwrite) keyword/value pair
@@ -417,8 +419,8 @@ class Aipsrc {
   // The following parse function can be used for any list of files. It will
   // return the list of Patterns and values found, and the last keyword number
   // of first file in list.
-  static unsigned int genParse(Block<String> &keywordPattern, Block<String> &keywordValue, unsigned int &fileEnd,
-                       const String &fileList);
+  static unsigned int genParse(Block<String> &keywordPattern, Block<String> &keywordValue,
+                               unsigned int &fileEnd, const String &fileList);
 
   // Locate the right keyword in the static maps
   static bool matchKeyword(unsigned int &where, const String &keyword, unsigned int start);

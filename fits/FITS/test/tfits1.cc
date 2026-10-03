@@ -77,7 +77,7 @@ void show(HeaderDataUnit *h) {
     int i, j, n0, n1;                                                                       \
     cout << " The header card images are( testing kwlist_str()): " << endl;                 \
     Vector<String> imageCards = x.kwlist_str();                                             \
-    for (unsigned int k = 0; k < imageCards.nelements(); k++) {                                     \
+    for (unsigned int k = 0; k < imageCards.nelements(); k++) {                             \
       cout << imageCards[k] << endl;                                                        \
     }                                                                                       \
     if (x.fitsdatasize())                                                                   \

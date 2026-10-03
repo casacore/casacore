@@ -72,7 +72,7 @@ static std::shared_ptr<HDF5File> theLastHDF5;
   String savDirName = theDirName;                                   \
   Block<void*> savNodes = theNodes;                                 \
   Block<bool> savNodesType = theNodesType;                          \
-  unsigned int savNrNodes = theNrNodes;                                     \
+  unsigned int savNrNodes = theNrNodes;                             \
   Table savLastTable = theLastTable;                                \
   std::shared_ptr<HDF5File> savLastHDF5 = theLastHDF5;
 

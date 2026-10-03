@@ -73,7 +73,8 @@ void testTable(rownr_t nrrow) {
   Array<int> adv = ad.getColumn();
   {
     // Get entire column (minus last cell).
-    Vector<unsigned int> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+    Vector<unsigned int> abv1 =
+        ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
     Array<int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
   }
   {

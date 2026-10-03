@@ -609,7 +609,8 @@ void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
     count = 0;
     for (i = 0; i < static_cast<unsigned int>(dims()); ++i) sub[i] = 0;
     for (;;) {
-      for (i = 0, offset = 0; i < static_cast<unsigned int>(dims()); ++i) offset += sub[i] * C_factor[i];
+      for (i = 0, offset = 0; i < static_cast<unsigned int>(dims()); ++i)
+        offset += sub[i] * C_factor[i];
       target[offset] = array[count++];
       if (count == static_cast<unsigned int>(nelements())) break;
       for (i = 0; i < static_cast<unsigned int>(dims()); ++i) {

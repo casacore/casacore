@@ -298,7 +298,7 @@ class TableParseQuery {
 
   // Create a table using the given parameters.
   // The variables set by handleGiven are used for name and type.
-  Table createTable(const TableDesc& td, Int64 nrow, const Record& dmInfo,
+  Table createTable(const TableDesc& td, int64_t nrow, const Record& dmInfo,
                     const std::vector<const Table*>& tempTables,
                     const std::vector<TableParseQuery*>& stack);
 
@@ -331,7 +331,7 @@ class TableParseQuery {
   Table doProjectExpr(bool useSel, const std::shared_ptr<TableExprGroupResult>& groups);
 
   // Create a subtable (used by createTable).
-  Table createSubTable(const String& subtableName, const TableDesc& td, Int64 nrow,
+  Table createSubTable(const String& subtableName, const TableDesc& td, int64_t nrow,
                        const Record& dmInfo, const std::vector<const Table*>& tempTables,
                        const std::vector<TableParseQuery*>& stack);
 
@@ -370,7 +370,7 @@ class TableParseQuery {
   TableExprNode makeSubSet() const;
 
   // Evaluate an int scalar expression.
-  Int64 evalIntScaExpr(const TableExprNode& expr) const;
+  int64_t evalIntScaExpr(const TableExprNode& expr) const;
 
   // # Data mambers.
   // # Command type.
@@ -383,8 +383,8 @@ class TableParseQuery {
   TableParseProject tableProject_p;
   // # Name and type of the resulting table (from GIVING part).
   String resultName_p;
-  unsigned int resultType_p;     // # 0-unknown 1=memory 2=scratch 3=plain
-  bool resultCreated_p;  // # Has the result table been created?
+  unsigned int resultType_p;  // # 0-unknown 1=memory 2=scratch 3=plain
+  bool resultCreated_p;       // # Has the result table been created?
   StorageOption storageOption_p;
   Table::EndianFormat endianFormat_p;
   bool overwrite_p;
@@ -397,14 +397,14 @@ class TableParseQuery {
   // # Distinct values in output?
   bool distinct_p;
   // # The possible limit (= max nr of selected rows) (0 means no limit).
-  Int64 limit_p;
+  int64_t limit_p;
   // # The possible last row (0 means no end; can be <0).
   // # limit_p and endrow_p cannot be both !=0.
-  Int64 endrow_p;
+  int64_t endrow_p;
   // # The possible offset (= nr of selected rows to skip).
-  Int64 offset_p;
+  int64_t offset_p;
   // # The possible stride in offset:endrow:stride.
-  Int64 stride_p;
+  int64_t stride_p;
   // # The update and insert list.
   std::vector<std::shared_ptr<TableParseUpdate>> update_p;
   // # The insert expressions (possibly for multiple rows).

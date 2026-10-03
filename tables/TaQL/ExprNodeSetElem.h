@@ -114,12 +114,12 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  virtual void fillVector(Vector<bool>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<double>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<DComplex>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<String>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<MVTime>& vec, Int64& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<bool>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<int64_t>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<double>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<DComplex>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<String>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<MVTime>& vec, int64_t& cnt, const TableExprId& id) const;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
@@ -129,7 +129,8 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // are initialized that way.
   // <group>
   virtual void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const;
-  virtual void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const;
+  virtual void matchInt(bool* match, const int64_t* value, size_t nval,
+                        const TableExprId& id) const;
   virtual void matchDouble(bool* match, const double* value, size_t nval,
                            const TableExprId& id) const;
   virtual void matchDComplex(bool* match, const DComplex* value, size_t nval,
@@ -218,12 +219,12 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  void fillVector(Vector<bool>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<double>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<DComplex>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<String>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<MVTime>& vec, Int64& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<bool>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<int64_t>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<double>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<DComplex>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<String>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<MVTime>& vec, int64_t& cnt, const TableExprId& id) const override;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
@@ -233,7 +234,8 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   // are initialized that way.
   // <group>
   void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const override;
-  void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
+  void matchInt(bool* match, const int64_t* value, size_t nval,
+                const TableExprId& id) const override;
   void matchDouble(bool* match, const double* value, size_t nval,
                    const TableExprId& id) const override;
   void matchDComplex(bool* match, const DComplex* value, size_t nval,
@@ -309,9 +311,9 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<double>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<MVTime>& vec, Int64& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<int64_t>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<double>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<MVTime>& vec, int64_t& cnt, const TableExprId& id) const override;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
@@ -320,7 +322,8 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
+  void matchInt(bool* match, const int64_t* value, size_t nval,
+                const TableExprId& id) const override;
   void matchDouble(bool* match, const double* value, size_t nval,
                    const TableExprId& id) const override;
   void matchDate(bool* match, const MVTime* value, size_t nval,

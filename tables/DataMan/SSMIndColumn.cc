@@ -104,13 +104,13 @@ void SSMIndColumn::setShape(rownr_t aRowNr, const IPosition& aShape) {
   // put the new shape (if changed)
   // when changed put the file offset
   if (itsIndArray.setShape(*itsIosFile, dataType(), aShape)) {
-    Int64 anOffset = itsIndArray.fileOffset();
+    int64_t anOffset = itsIndArray.fileOffset();
     putValue(aRowNr, &anOffset);
   }
 }
 
 StIndArray* SSMIndColumn::getArrayPtr(rownr_t aRowNr) {
-  Int64 anOffset;
+  int64_t anOffset;
   rownr_t aStartRow;
   rownr_t anEndRow;
   char* aValue;
@@ -181,13 +181,13 @@ void SSMIndColumn::putSliceV(rownr_t aRowNr, const Slicer& ns, const ArrayBase& 
 void SSMIndColumn::init() {
   DebugAssert(itsNrElem == 1, AipsError);
   if (itsSSMPtr->asBigEndian()) {
-    itsReadFunc = CanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+    itsReadFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
+    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
+    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
   } else {
-    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
-    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
-    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
+    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
+    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
   }
   itsNrCopy = 1;
   itsExternalSizeBits = 8 * itsExternalSizeBytes;

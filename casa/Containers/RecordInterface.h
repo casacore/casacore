@@ -75,7 +75,7 @@ class IPosition;
 // <li> <linkto class=TableRecord>TableRecord</linkto>
 // </ul>
 // Presently, the scalar types are chosen to be compatible with the native
-// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Int64,
+// types of the Table system, viz: Bool, uChar, Short, Int, uInt, int64_t,
 // Float, Double, Complex, DComplex, String.
 // Arrays of all these types are also available.
 // It is fairly straightforward to extend this set if necessary, although it
@@ -302,7 +302,7 @@ class RecordInterface {
   void define(const RecordFieldId&, short value);
   void define(const RecordFieldId&, int value);
   void define(const RecordFieldId&, unsigned int value);
-  void define(const RecordFieldId&, Int64 value);
+  void define(const RecordFieldId&, int64_t value);
   void define(const RecordFieldId&, float value);
   void define(const RecordFieldId&, double value);
   void define(const RecordFieldId&, const Complex& value);
@@ -314,7 +314,7 @@ class RecordInterface {
   void define(const RecordFieldId&, const Array<short>& value, bool FixedShape = false);
   void define(const RecordFieldId&, const Array<int>& value, bool FixedShape = false);
   void define(const RecordFieldId&, const Array<unsigned int>& value, bool FixedShape = false);
-  void define(const RecordFieldId&, const Array<Int64>& value, bool FixedShape = false);
+  void define(const RecordFieldId&, const Array<int64_t>& value, bool FixedShape = false);
   void define(const RecordFieldId&, const Array<float>& value, bool FixedShape = false);
   void define(const RecordFieldId&, const Array<double>& value, bool FixedShape = false);
   void define(const RecordFieldId&, const Array<Complex>& value, bool FixedShape = false);
@@ -335,7 +335,7 @@ class RecordInterface {
   void get(const RecordFieldId&, short& value) const;
   void get(const RecordFieldId&, int& value) const;
   void get(const RecordFieldId&, unsigned int& value) const;
-  void get(const RecordFieldId&, Int64& value) const;
+  void get(const RecordFieldId&, int64_t& value) const;
   void get(const RecordFieldId&, float& value) const;
   void get(const RecordFieldId&, double& value) const;
   void get(const RecordFieldId&, Complex& value) const;
@@ -346,7 +346,7 @@ class RecordInterface {
   void get(const RecordFieldId&, Array<short>& value) const;
   void get(const RecordFieldId&, Array<int>& value) const;
   void get(const RecordFieldId&, Array<unsigned int>& value) const;
-  void get(const RecordFieldId&, Array<Int64>& value) const;
+  void get(const RecordFieldId&, Array<int64_t>& value) const;
   void get(const RecordFieldId&, Array<float>& value) const;
   void get(const RecordFieldId&, Array<double>& value) const;
   void get(const RecordFieldId&, Array<Complex>& value) const;
@@ -365,7 +365,7 @@ class RecordInterface {
   short asShort(const RecordFieldId&) const;
   int asInt(const RecordFieldId&) const;
   unsigned int asuInt(const RecordFieldId&) const;
-  Int64 asInt64(const RecordFieldId&) const;
+  int64_t asInt64(const RecordFieldId&) const;
   float asFloat(const RecordFieldId&) const;
   double asDouble(const RecordFieldId&) const;
   Complex asComplex(const RecordFieldId&) const;
@@ -376,7 +376,7 @@ class RecordInterface {
   const Array<short>& asArrayShort(const RecordFieldId&) const;
   const Array<int>& asArrayInt(const RecordFieldId&) const;
   const Array<unsigned int>& asArrayuInt(const RecordFieldId&) const;
-  const Array<Int64>& asArrayInt64(const RecordFieldId&) const;
+  const Array<int64_t>& asArrayInt64(const RecordFieldId&) const;
   const Array<float>& asArrayFloat(const RecordFieldId&) const;
   const Array<double>& asArrayDouble(const RecordFieldId&) const;
   const Array<Complex>& asArrayComplex(const RecordFieldId&) const;
@@ -396,7 +396,7 @@ class RecordInterface {
       return asArrayInt(id);
     } else if constexpr (std::is_same_v<T, unsigned int>) {
       return asArrayuInt(id);
-    } else if constexpr (std::is_same_v<T, Int64>) {
+    } else if constexpr (std::is_same_v<T, int64_t>) {
       return asArrayInt64(id);
     } else if constexpr (std::is_same_v<T, float>) {
       return asArrayFloat(id);
@@ -424,7 +424,7 @@ class RecordInterface {
   Array<short> toArrayShort(const RecordFieldId&) const;
   Array<int> toArrayInt(const RecordFieldId&) const;
   Array<unsigned int> toArrayuInt(const RecordFieldId&) const;
-  Array<Int64> toArrayInt64(const RecordFieldId&) const;
+  Array<int64_t> toArrayInt64(const RecordFieldId&) const;
   Array<float> toArrayFloat(const RecordFieldId&) const;
   Array<double> toArrayDouble(const RecordFieldId&) const;
   Array<Complex> toArrayComplex(const RecordFieldId&) const;
@@ -442,7 +442,7 @@ class RecordInterface {
       return toArrayInt(id);
     } else if constexpr (std::is_same_v<T, unsigned int>) {
       return toArrayuInt(id);
-    } else if constexpr (std::is_same_v<T, Int64>) {
+    } else if constexpr (std::is_same_v<T, int64_t>) {
       return toArrayInt64(id);
     } else if constexpr (std::is_same_v<T, float>) {
       return toArrayFloat(id);
@@ -474,7 +474,7 @@ class RecordInterface {
   void toArray(const RecordFieldId& id, Array<unsigned int>& array) const {
     array.reference(toArrayuInt(id));
   }
-  void toArray(const RecordFieldId& id, Array<Int64>& array) const {
+  void toArray(const RecordFieldId& id, Array<int64_t>& array) const {
     array.reference(toArrayInt64(id));
   }
   void toArray(const RecordFieldId& id, Array<float>& array) const {

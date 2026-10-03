@@ -199,7 +199,8 @@ int main() {
       TiledFileAccess tfac("tTiledFileAccess_tmp.dat", 0, shape, IPosition(2, 10, 5), TpUChar,
                            TSMOption::Cache, true, true);
       AlwaysAssertExit(allEQ(arrs, tfac.getUChar(slicer)));
-      AlwaysAssertExit(allEQ(arrf, tfac.getFloat(slicer, scale, offset, static_cast<unsigned char>(255))));
+      AlwaysAssertExit(
+          allEQ(arrf, tfac.getFloat(slicer, scale, offset, static_cast<unsigned char>(255))));
       AlwaysAssertExit(tfac.shape() == shape);
       AlwaysAssertExit(tfac.tileShape() == IPosition(2, 10, 5));
     } catch (std::exception& x) {

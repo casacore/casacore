@@ -98,7 +98,8 @@ class Time {
   //  <li>  year. Beware, because '94' refers to the early Christian era, not
   // the 20th century.
   // </ul>
-  Time(unsigned int year, unsigned int month, unsigned int day, unsigned int hour = 0, unsigned int min = 0, double sec = 0.0);
+  Time(unsigned int year, unsigned int month, unsigned int day, unsigned int hour = 0,
+       unsigned int min = 0, double sec = 0.0);
 
   // Copy constructor
   Time(const Time& time);
@@ -143,7 +144,8 @@ class Time {
 
   // reset date to the present instant
   void now();
-  void setDate(unsigned int year, unsigned int month, unsigned int day, unsigned int hour = 0, unsigned int min = 0, double sec = 0.0);
+  void setDate(unsigned int year, unsigned int month, unsigned int day, unsigned int hour = 0,
+               unsigned int min = 0, double sec = 0.0);
 
   // number of seconds which have elapsed since Time object was created
   // or reset

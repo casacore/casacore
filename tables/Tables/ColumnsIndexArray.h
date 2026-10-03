@@ -64,7 +64,7 @@ class TableColumn;
 // When constructing a <src>ColumnsIndexArray</src> object, one has to define
 // which column forms the key for this index on the given
 // <src>table</src> object.
-// Not every data type is supported; only uChar, Short, Int, uInt, Int64 and
+// Not every data type is supported; only uChar, Short, Int, uInt, int64_t and
 // String array columns are supported.
 // The column can contain arrays of any shape and it can also contain
 // empty cells. The class will probably mostly be used for vectors, as
@@ -277,7 +277,7 @@ class ColumnsIndexArray {
   void getArray(Vector<short>& result, const String& name);
   void getArray(Vector<int>& result, const String& name);
   void getArray(Vector<unsigned int>& result, const String& name);
-  void getArray(Vector<Int64>& result, const String& name);
+  void getArray(Vector<int64_t>& result, const String& name);
   void getArray(Vector<String>& result, const String& name);
   // </group>
 

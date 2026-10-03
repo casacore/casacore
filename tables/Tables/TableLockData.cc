@@ -77,21 +77,21 @@ bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, unsigned 
       s = "write";
     }
     LogIO os;
-    os << "Process " << static_cast<unsigned int>(getpid()) << ": waiting for " << s << "-lock on file "
-       << itsLock->name();
+    os << "Process " << static_cast<unsigned int>(getpid()) << ": waiting for " << s
+       << "-lock on file " << itsLock->name();
     os.post();
     if (nattempts > 0) {
       nattempts -= n;
     }
     status = itsLock->acquire(info, type, nattempts);
     if (status) {
-      os << "Process " << static_cast<unsigned int>(getpid()) << ": acquired " << s << "-lock on file "
-         << itsLock->name();
+      os << "Process " << static_cast<unsigned int>(getpid()) << ": acquired " << s
+         << "-lock on file " << itsLock->name();
       os.post();
     } else {
       if (nattempts > 0) {
-        os << "Process " << static_cast<unsigned int>(getpid()) << ": gave up acquiring " << s << "-lock on file "
-           << itsLock->name() << " after " << nattempts << " seconds";
+        os << "Process " << static_cast<unsigned int>(getpid()) << ": gave up acquiring " << s
+           << "-lock on file " << itsLock->name() << " after " << nattempts << " seconds";
         os.post();
       }
     }

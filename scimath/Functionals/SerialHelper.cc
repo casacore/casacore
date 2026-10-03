@@ -128,7 +128,8 @@ void getArrayVal<float>(float& val, int, const Record& gr, const String& name, u
   }
 }
 template <>
-void getArrayVal<double>(double& val, int, const Record& gr, const String& name, unsigned int index) {
+void getArrayVal<double>(double& val, int, const Record& gr, const String& name,
+                         unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -146,7 +147,8 @@ void getArrayVal<double>(double& val, int, const Record& gr, const String& name,
   }
 }
 template <>
-void getArrayVal<Complex>(Complex& val, int, const Record& gr, const String& name, unsigned int index) {
+void getArrayVal<Complex>(Complex& val, int, const Record& gr, const String& name,
+                          unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -164,7 +166,8 @@ void getArrayVal<Complex>(Complex& val, int, const Record& gr, const String& nam
   }
 }
 template <>
-void getArrayVal<DComplex>(DComplex& val, int, const Record& gr, const String& name, unsigned int index) {
+void getArrayVal<DComplex>(DComplex& val, int, const Record& gr, const String& name,
+                           unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -182,7 +185,8 @@ void getArrayVal<DComplex>(DComplex& val, int, const Record& gr, const String& n
   }
 }
 template <>
-void getArrayVal<String>(String& val, int, const Record& gr, const String& name, unsigned int index) {
+void getArrayVal<String>(String& val, int, const Record& gr, const String& name,
+                         unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {

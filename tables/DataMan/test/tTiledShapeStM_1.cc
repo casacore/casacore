@@ -285,7 +285,8 @@ bool readCol(int acc, bool chk, const IPosition& shape, const IPosition& blc, co
   return ok;
 }
 
-void writeVar(int acc, bool chk, const IPosition& shape, const IPosition& tileShape, unsigned int nrrow) {
+void writeVar(int acc, bool chk, const IPosition& shape, const IPosition& tileShape,
+              unsigned int nrrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ArrayColumnDesc<Type>("Data", shape.nelements()));

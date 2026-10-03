@@ -165,7 +165,8 @@ class StandardStMan : public SSMBase {
   // and not too small for large tables.
   // <group>
   explicit StandardStMan(int bucketSize = 0, unsigned int cacheSize = 1);
-  explicit StandardStMan(const String& dataManagerName, int bucketSize = 0, unsigned int cacheSize = 1);
+  explicit StandardStMan(const String& dataManagerName, int bucketSize = 0,
+                         unsigned int cacheSize = 1);
   // </group>
 
   ~StandardStMan();

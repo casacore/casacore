@@ -46,11 +46,11 @@ void MSStateColumns::attach(const MSState& msState) {
   loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 
-Int64 MSStateColumns::matchState(const Quantum<double>& stateCalQ,
-                                 const Quantum<double>& stateLoadQ, const String& stateObsMode,
-                                 const bool& stateRef, const bool& stateSig,
-                                 const int& stateSubScan, const Quantum<double>& tolerance,
-                                 Int64 tryRow) {
+int64_t MSStateColumns::matchState(const Quantum<double>& stateCalQ,
+                                   const Quantum<double>& stateLoadQ, const String& stateObsMode,
+                                   const bool& stateRef, const bool& stateSig,
+                                   const int& stateSubScan, const Quantum<double>& tolerance,
+                                   int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the temperatures and tolerance to Kelvin

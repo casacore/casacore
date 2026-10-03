@@ -99,7 +99,8 @@ class PGPlotterNull : public PGPlotterInterface {
 
   // The create function to create a PGPlotter object using a PGPlotterNull.
   // It only uses the device argument.
-  static PGPlotter createPlotter(const String &device, unsigned int, unsigned int, unsigned int, unsigned int);
+  static PGPlotter createPlotter(const String &device, unsigned int, unsigned int, unsigned int,
+                                 unsigned int);
 
   // This is an emulated standard PGPLOT command. It returns a record
   // containing the fields:

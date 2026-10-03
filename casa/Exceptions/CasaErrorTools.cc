@@ -51,7 +51,7 @@ String CasaErrorTools::replaceStackAddresses(const String& stackTrace) {
 
 namespace {
 
-std::map<casacore::String, casacore::uInt64> sharedObjectMap;
+std::map<casacore::String, casacore::uint64_t> sharedObjectMap;
 
 extern "C" int callback(struct dl_phdr_info *info, size_t, void *) {
   sharedObjectMap[info->dlpi_name] = info->dlpi_addr;
@@ -137,11 +137,11 @@ String CasaErrorTools::replaceStackAddresses(const String &stackTrace) {
 
       String addressText = line.substr(leftSquare + 1, rightSquare - leftSquare - 1);
 
-      uInt64 address = strtoll(addressText.c_str(), NULL, 16);
+      uint64_t address = strtoll(addressText.c_str(), NULL, 16);
 
-      uInt64 objectBase = sharedObjectMap[objectName];
+      uint64_t objectBase = sharedObjectMap[objectName];
 
-      uInt64 offset = address - objectBase;
+      uint64_t offset = address - objectBase;
 
       // Now rebuild the line replacing the original address ([0xHHHH...])
       // with the offset (format [+0xHHHH...]

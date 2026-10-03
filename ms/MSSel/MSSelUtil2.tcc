@@ -40,7 +40,7 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Vector<int>& ifrSlot, int 
                                 const Vector<int>& timeSlot, int nTime, const T& defvalue) {
   int nPol = data.shape()(0);
   int nChan = data.shape()(1);
-  Int64 nRow = data.shape()(2);
+  int64_t nRow = data.shape()(2);
   Array<T> data2(IPosition(4, nPol, nChan, nIfr, nTime));
   data2.set(defvalue);
 
@@ -48,8 +48,8 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Vector<int>& ifrSlot, int 
   const T* pdata = data.getStorage(deleteData);
   T* pdata2 = data2.getStorage(deleteData2);
   int n = nPol * nChan;
-  for (Int64 i = 0; i < nRow; i++) {
-    Int64 start1 = i * n, start2 = (ifrSlot(i) + timeSlot(i) * nIfr) * n;
+  for (int64_t i = 0; i < nRow; i++) {
+    int64_t start1 = i * n, start2 = (ifrSlot(i) + timeSlot(i) * nIfr) * n;
     for (int j = 0; j < n; j++) pdata2[start2 + j] = pdata[start1 + j];
   }
   data.freeStorage(pdata, deleteData);
@@ -59,7 +59,7 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Vector<int>& ifrSlot, int 
 
 // reorder from 4d to 3d (removing ifr axis)
 template <class T>
-void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex, Int64 nRow) {
+void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<int64_t>& rowIndex, int64_t nRow) {
   int nPol = data.shape()(0), nChan = data.shape()(1), nIfr = data.shape()(2),
       nTime = data.shape()(3);
   if (nIfr != rowIndex.shape()(0) || nTime != rowIndex.shape()(1)) {
@@ -75,9 +75,9 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex, I
   int n = nPol * nChan;
   for (int i = 0; i < nTime; i++) {
     for (int j = 0; j < nIfr; j++) {
-      Int64 k = rowIndex(j, i);
+      int64_t k = rowIndex(j, i);
       if (k >= 0) {
-        Int64 start2 = k * n, start1 = (j + i * nIfr) * n;
+        int64_t start2 = k * n, start1 = (j + i * nIfr) * n;
         for (int l = 0; l < n; l++) pData2[start2 + l] = pData[start1 + l];
       }
     }

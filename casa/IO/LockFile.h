@@ -215,7 +215,8 @@ class LockFile {
   // 0 means forever, while 1 means do not retry.
   // <group>
   bool acquire(FileLocker::LockType = FileLocker::Write, unsigned int nattempts = 0);
-  bool acquire(MemoryIO& info, FileLocker::LockType = FileLocker::Write, unsigned int nattempts = 0);
+  bool acquire(MemoryIO& info, FileLocker::LockType = FileLocker::Write,
+               unsigned int nattempts = 0);
   bool acquire(MemoryIO* info, FileLocker::LockType type, unsigned int nattempts);
   // </group>
 

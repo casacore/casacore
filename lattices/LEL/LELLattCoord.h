@@ -97,7 +97,8 @@ class LELLattCoord : public LELLattCoordBase {
 
   // Get the coordinates of the spectral axis for the given shape.
   // This function throws an exception as a Lattice has no coordinates.
-  virtual unsigned int getSpectralInfo(Vector<double>& worldCoordinates, const IPosition& shape) const;
+  virtual unsigned int getSpectralInfo(Vector<double>& worldCoordinates,
+                                       const IPosition& shape) const;
 
   // The name of the class.
   virtual String classname() const;

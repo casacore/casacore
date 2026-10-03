@@ -71,7 +71,7 @@ class BaseTable;
 // The classes ScalarColumn<T> and ArrayColumn<T> have to be
 // used to get/put the data in the column cells.
 // However, TableColumn has get functions for the basic data types
-// (Bool, uChar, Short, uSort, Int, uInt, Int64, float, double,
+// (Bool, uChar, Short, uSort, Int, uInt, int64_t, float, double,
 //  Complex, DComplex and String).
 // Opposite to the get functions in ScalarColumn<T>, the
 // TableColumn get functions support data type promotion.
@@ -144,7 +144,9 @@ class TableColumn {
   void attach(const Table& table, const String& columnName) {
     reference(TableColumn(table, columnName));
   }
-  void attach(const Table& table, unsigned int columnIndex) { reference(TableColumn(table, columnIndex)); }
+  void attach(const Table& table, unsigned int columnIndex) {
+    reference(TableColumn(table, columnIndex));
+  }
   // </group>
 
   // Test if the object is null, i.e. does not reference a column.
@@ -255,7 +257,7 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
-  void getScalar(rownr_t rownr, Int64& value) const {
+  void getScalar(rownr_t rownr, int64_t& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
@@ -290,7 +292,7 @@ class TableColumn {
   unsigned short asuShort(rownr_t rownr) const;
   int asInt(rownr_t rownr) const;
   unsigned int asuInt(rownr_t rownr) const;
-  Int64 asInt64(rownr_t rownr) const;
+  int64_t asInt64(rownr_t rownr) const;
   float asfloat(rownr_t rownr) const;
   double asdouble(rownr_t rownr) const;
   Complex asComplex(rownr_t rownr) const;
@@ -327,7 +329,7 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
-  void getScalarValue(rownr_t rownr, Int64* value, const String&) const {
+  void getScalarValue(rownr_t rownr, int64_t* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
@@ -410,7 +412,7 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const Int64& value) {
+  void putScalar(rownr_t rownr, const int64_t& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }

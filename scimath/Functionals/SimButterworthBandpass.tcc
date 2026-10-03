@@ -44,9 +44,9 @@ SimButterworthBandpass<T>::SimButterworthBandpass() : Function1D<T>(4), nl_p(0),
 }
 
 template <class T>
-SimButterworthBandpass<T>::SimButterworthBandpass(const unsigned int minord, const unsigned int maxord,
-                                                  const T &mincut, const T &maxcut, const T &center,
-                                                  const T &peak)
+SimButterworthBandpass<T>::SimButterworthBandpass(const unsigned int minord,
+                                                  const unsigned int maxord, const T &mincut,
+                                                  const T &maxcut, const T &center, const T &peak)
     : Function1D<T>(4), nl_p(minord), nh_p(maxord) {
   param_p[MINCUTOFF] = mincut;
   param_p[MAXCUTOFF] = maxcut;

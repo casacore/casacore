@@ -35,20 +35,21 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-unsigned int MCRadialVelocity::ToRef_p[N_Routes][3] = {{MRadialVelocity::LSRD, MRadialVelocity::BARY, 0},
-                                               {MRadialVelocity::BARY, MRadialVelocity::LSRD, 0},
-                                               {MRadialVelocity::BARY, MRadialVelocity::GEO, 0},
-                                               {MRadialVelocity::GEO, MRadialVelocity::TOPO, 2},
-                                               {MRadialVelocity::GEO, MRadialVelocity::BARY, 0},
-                                               {MRadialVelocity::TOPO, MRadialVelocity::GEO, 2},
-                                               {MRadialVelocity::LSRD, MRadialVelocity::GALACTO, 0},
-                                               {MRadialVelocity::GALACTO, MRadialVelocity::LSRD, 0},
-                                               {MRadialVelocity::LSRK, MRadialVelocity::BARY, 0},
-                                               {MRadialVelocity::BARY, MRadialVelocity::LSRK, 0},
-                                               {MRadialVelocity::BARY, MRadialVelocity::LGROUP, 0},
-                                               {MRadialVelocity::LGROUP, MRadialVelocity::BARY, 0},
-                                               {MRadialVelocity::BARY, MRadialVelocity::CMB, 0},
-                                               {MRadialVelocity::CMB, MRadialVelocity::BARY, 0}};
+unsigned int MCRadialVelocity::ToRef_p[N_Routes][3] = {
+    {MRadialVelocity::LSRD, MRadialVelocity::BARY, 0},
+    {MRadialVelocity::BARY, MRadialVelocity::LSRD, 0},
+    {MRadialVelocity::BARY, MRadialVelocity::GEO, 0},
+    {MRadialVelocity::GEO, MRadialVelocity::TOPO, 2},
+    {MRadialVelocity::GEO, MRadialVelocity::BARY, 0},
+    {MRadialVelocity::TOPO, MRadialVelocity::GEO, 2},
+    {MRadialVelocity::LSRD, MRadialVelocity::GALACTO, 0},
+    {MRadialVelocity::GALACTO, MRadialVelocity::LSRD, 0},
+    {MRadialVelocity::LSRK, MRadialVelocity::BARY, 0},
+    {MRadialVelocity::BARY, MRadialVelocity::LSRK, 0},
+    {MRadialVelocity::BARY, MRadialVelocity::LGROUP, 0},
+    {MRadialVelocity::LGROUP, MRadialVelocity::BARY, 0},
+    {MRadialVelocity::BARY, MRadialVelocity::CMB, 0},
+    {MRadialVelocity::CMB, MRadialVelocity::BARY, 0}};
 unsigned int MCRadialVelocity::FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
 std::once_flag MCRadialVelocity::theirInitOnceFlag;
 

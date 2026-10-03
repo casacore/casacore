@@ -90,29 +90,29 @@ void TableExprNodeSetElemBase::flattenTree(std::vector<TableExprNodeRep*>& nodes
   }
 }
 
-void TableExprNodeSetElemBase::fillVector(Vector<bool>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<bool>&, int64_t&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<Bool>");
 }
-void TableExprNodeSetElemBase::fillVector(Vector<Int64>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<int64_t>&, int64_t&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<Int64>");
 }
-void TableExprNodeSetElemBase::fillVector(Vector<double>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<double>&, int64_t&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<Double>");
 }
-void TableExprNodeSetElemBase::fillVector(Vector<DComplex>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<DComplex>&, int64_t&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<DComplex>");
 }
-void TableExprNodeSetElemBase::fillVector(Vector<String>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<String>&, int64_t&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<String>");
 }
-void TableExprNodeSetElemBase::fillVector(Vector<MVTime>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<MVTime>&, int64_t&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<MVTime>");
 }
 
 void TableExprNodeSetElemBase::matchBool(bool*, const bool*, size_t, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::matchBool");
 }
-void TableExprNodeSetElemBase::matchInt(bool*, const Int64*, size_t, const TableExprId&) const {
+void TableExprNodeSetElemBase::matchInt(bool*, const int64_t*, size_t, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::matchInt");
 }
 void TableExprNodeSetElemBase::matchDouble(bool*, const double*, size_t, const TableExprId&) const {
@@ -221,49 +221,49 @@ bool TableExprNodeSetElemSingle::isDiscrete() const { return true; }
 
 bool TableExprNodeSetElemSingle::isSingle() const { return true; }
 
-void TableExprNodeSetElemSingle::fillVector(Vector<bool>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<bool>& vec, int64_t& cnt,
                                             const TableExprId& id) const {
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + 1) {
     vec.resize(cnt + 64, true);
   }
   vec(cnt++) = itsStart->getBool(id);
 }
-void TableExprNodeSetElemSingle::fillVector(Vector<Int64>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<int64_t>& vec, int64_t& cnt,
                                             const TableExprId& id) const {
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + 1) {
     vec.resize(cnt + 64, true);
   }
   vec(cnt++) = itsStart->getInt(id);
 }
-void TableExprNodeSetElemSingle::fillVector(Vector<double>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<double>& vec, int64_t& cnt,
                                             const TableExprId& id) const {
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + 1) {
     vec.resize(cnt + 64, true);
   }
   vec(cnt++) = itsStart->getDouble(id);
 }
-void TableExprNodeSetElemSingle::fillVector(Vector<DComplex>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<DComplex>& vec, int64_t& cnt,
                                             const TableExprId& id) const {
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + 1) {
     vec.resize(cnt + 64, true);
   }
   vec(cnt++) = itsStart->getDComplex(id);
 }
-void TableExprNodeSetElemSingle::fillVector(Vector<String>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<String>& vec, int64_t& cnt,
                                             const TableExprId& id) const {
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + 1) {
     vec.resize(cnt + 64, true);
   }
   vec(cnt++) = itsStart->getString(id);
 }
-void TableExprNodeSetElemSingle::fillVector(Vector<MVTime>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<MVTime>& vec, int64_t& cnt,
                                             const TableExprId& id) const {
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + 1) {
     vec.resize(cnt + 64, true);
   }
@@ -293,7 +293,7 @@ void TableExprNodeSetElemSingle::matchBool(bool* match, const bool* value, size_
     }
   }
 }
-void TableExprNodeSetElemSingle::matchInt(bool* match, const Int64* value, size_t nval,
+void TableExprNodeSetElemSingle::matchInt(bool* match, const int64_t* value, size_t nval,
                                           const TableExprId& id) const {
   bool* lastVal = match + nval;
   if (itsStart->valueType() == VTArray) {
@@ -306,7 +306,7 @@ void TableExprNodeSetElemSingle::matchInt(bool* match, const Int64* value, size_
       match++;
     }
   } else {
-    Int64 start = itsStart->getInt(id);
+    int64_t start = itsStart->getInt(id);
     while (match < lastVal) {
       if (*value == start) {
         *match = true;
@@ -470,31 +470,31 @@ TENSEBShPtr TableExprNodeSetElemDiscrete::evaluate(const TableExprId& id) const 
 
 bool TableExprNodeSetElemDiscrete::isDiscrete() const { return true; }
 
-void TableExprNodeSetElemDiscrete::fillVector(Vector<Int64>& vec, Int64& cnt,
+void TableExprNodeSetElemDiscrete::fillVector(Vector<int64_t>& vec, int64_t& cnt,
                                               const TableExprId& id) const {
-  Int64 start = !itsStart ? 0 : itsStart->getInt(id);
-  Int64 end = !itsEnd ? start : itsEnd->getInt(id);
-  Int64 incr = !itsIncr ? 1 : itsIncr->getInt(id);
+  int64_t start = !itsStart ? 0 : itsStart->getInt(id);
+  int64_t end = !itsEnd ? start : itsEnd->getInt(id);
+  int64_t incr = !itsIncr ? 1 : itsIncr->getInt(id);
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
-  Int64 nval = std::max(Int64(0), 1 + (end - start) / incr);
+  int64_t nval = std::max(int64_t(0), 1 + (end - start) / incr);
   if (itsEndExcl && nval > 0) {
-    Int64 rngend = start + (nval - 1) * incr;
+    int64_t rngend = start + (nval - 1) * incr;
     if (rngend == end) {
       nval -= 1;
     }
   }
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + nval) {
     vec.resize(cnt + max(64, nval), true);
   }
-  for (Int64 i = 0; i < nval; i++) {
+  for (int64_t i = 0; i < nval; i++) {
     vec(cnt++) = start;
     start += incr;
   }
 }
-void TableExprNodeSetElemDiscrete::fillVector(Vector<double>& vec, Int64& cnt,
+void TableExprNodeSetElemDiscrete::fillVector(Vector<double>& vec, int64_t& cnt,
                                               const TableExprId& id) const {
   double start = !itsStart ? 0 : itsStart->getDouble(id);
   double end = !itsEnd ? start : itsEnd->getDouble(id);
@@ -502,23 +502,23 @@ void TableExprNodeSetElemDiscrete::fillVector(Vector<double>& vec, Int64& cnt,
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
-  Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
+  int64_t nval = std::max(int64_t(0), int64_t(1 + (end - start) / incr + 1e-10));
   if (itsEndExcl && nval > 0) {
     double rngend = start + (nval - 1) * incr;
     if (near(rngend, end) || (end == 0 && nearAbs(rngend, end))) {
       nval -= 1;
     }
   }
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + nval) {
     vec.resize(cnt + max(64, nval), true);
   }
-  for (Int64 i = 0; i < nval; i++) {
+  for (int64_t i = 0; i < nval; i++) {
     vec(cnt++) = start;
     start += incr;
   }
 }
-void TableExprNodeSetElemDiscrete::fillVector(Vector<MVTime>& vec, Int64& cnt,
+void TableExprNodeSetElemDiscrete::fillVector(Vector<MVTime>& vec, int64_t& cnt,
                                               const TableExprId& id) const {
   double start = !itsStart ? 0 : double(itsStart->getDate(id));
   double end = !itsEnd ? start : double(itsEnd->getDate(id));
@@ -526,28 +526,28 @@ void TableExprNodeSetElemDiscrete::fillVector(Vector<MVTime>& vec, Int64& cnt,
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
-  Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
+  int64_t nval = std::max(int64_t(0), int64_t(1 + (end - start) / incr + 1e-10));
   if (itsEndExcl && nval > 0) {
     double rngend = start + (nval - 1) * incr;
     if (near(rngend, end) || (end == 0 && nearAbs(rngend, end))) {
       nval -= 1;
     }
   }
-  Int64 n = vec.size();
+  int64_t n = vec.size();
   if (n < cnt + nval) {
     vec.resize(cnt + max(64, nval), true);
   }
-  for (Int64 i = 0; i < nval; i++) {
+  for (int64_t i = 0; i < nval; i++) {
     vec(cnt++) = start;
     start += incr;
   }
 }
 
-void TableExprNodeSetElemDiscrete::matchInt(bool* match, const Int64* value, size_t nval,
+void TableExprNodeSetElemDiscrete::matchInt(bool* match, const int64_t* value, size_t nval,
                                             const TableExprId& id) const {
-  Int64 start = !itsStart ? 0 : itsStart->getInt(id);
-  Int64 end = !itsEnd ? start : itsEnd->getInt(id);
-  Int64 incr = !itsIncr ? 1 : itsIncr->getInt(id);
+  int64_t start = !itsStart ? 0 : itsStart->getInt(id);
+  int64_t end = !itsEnd ? start : itsEnd->getInt(id);
+  int64_t incr = !itsIncr ? 1 : itsIncr->getInt(id);
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
@@ -557,7 +557,7 @@ void TableExprNodeSetElemDiscrete::matchInt(bool* match, const Int64* value, siz
     end -= 1;
   }
   while (match < lastVal) {
-    Int64 tmp = *value - start;
+    int64_t tmp = *value - start;
     if (incr > 0) {
       if (tmp >= 0 && (!itsEnd || tmp <= end)) {
         if (tmp % incr == 0) {
@@ -589,13 +589,13 @@ void TableExprNodeSetElemDiscrete::matchDouble(bool* match, const double* value,
     double tmp = *value - start;
     if (incr > 0) {
       if (tmp >= 0 && (!itsEnd || tmp < end || (!itsEndExcl && tmp == end))) {
-        if (near(tmp, incr * Int64(tmp / incr + 0.5))) {
+        if (near(tmp, incr * int64_t(tmp / incr + 0.5))) {
           *match = true;
         }
       }
     } else {
       if (tmp <= 0 && (!itsEnd || tmp > end || (!itsEndExcl && tmp == end))) {
-        if (near(tmp, incr * Int64(tmp / incr + 0.5))) {
+        if (near(tmp, incr * int64_t(tmp / incr + 0.5))) {
           *match = true;
         }
       }
@@ -618,13 +618,13 @@ void TableExprNodeSetElemDiscrete::matchDate(bool* match, const MVTime* value, s
     double tmp = double(*value) - start;
     if (incr > 0) {
       if (tmp >= 0 && (!itsEnd || tmp < end || (!itsEndExcl && tmp == end))) {
-        if (near(tmp, incr * Int64(tmp / incr + 0.5))) {
+        if (near(tmp, incr * int64_t(tmp / incr + 0.5))) {
           *match = true;
         }
       }
     } else {
       if (tmp <= 0 && (!itsEnd || tmp > end || (!itsEndExcl && tmp == end))) {
-        if (near(tmp, incr * Int64(tmp / incr + 0.5))) {
+        if (near(tmp, incr * int64_t(tmp / incr + 0.5))) {
           *match = true;
         }
       }

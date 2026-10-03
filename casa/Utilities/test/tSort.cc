@@ -39,7 +39,7 @@
 
 void sortit(int opt) {
   int arr[10];
-  Int64 ar2[10];
+  int64_t ar2[10];
   int ar3[10];
   unsigned int i;
   double ard[10];
@@ -81,7 +81,7 @@ void sortit(int opt) {
   cout << endl;
 
   // Also test copy constructor.
-  Sort sort3(ar2, sizeof(Int64));
+  Sort sort3(ar2, sizeof(int64_t));
   sort3.sortKey(0, TpInt64, Sort::Ascending);
   Sort sort3a(sort3);
   nr = sort3a.sort(inxvec, 10, opt, false);  // same, but now with original

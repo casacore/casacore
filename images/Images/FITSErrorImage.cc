@@ -37,8 +37,9 @@ FITSErrorImage::FITSErrorImage(const String& name, unsigned int whichRep, unsign
   setupMask();
 }
 
-FITSErrorImage::FITSErrorImage(const String& name, const MaskSpecifier& maskSpec, unsigned int whichRep,
-                               unsigned int whichHDU, FITSErrorImage::ErrorType errtype)
+FITSErrorImage::FITSErrorImage(const String& name, const MaskSpecifier& maskSpec,
+                               unsigned int whichRep, unsigned int whichHDU,
+                               FITSErrorImage::ErrorType errtype)
     : FITSImage(name, maskSpec, whichRep, whichHDU), errtype_p(errtype) {
   setupMask();
 }

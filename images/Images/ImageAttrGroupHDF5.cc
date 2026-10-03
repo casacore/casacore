@@ -121,8 +121,9 @@ Vector<String> ImageAttrGroupHDF5::getMeasInfo(const String& attrName) {
   return Vector<String>();
 }
 
-void ImageAttrGroupHDF5::putData(const String& attrName, unsigned int rownr, const ValueHolder& data,
-                                 const Vector<String>& units, const Vector<String>& measInfo) {
+void ImageAttrGroupHDF5::putData(const String& attrName, unsigned int rownr,
+                                 const ValueHolder& data, const Vector<String>& units,
+                                 const Vector<String>& measInfo) {
   if (!itsCanWrite) {
     throw AipsError("ImageAttrGroupHDF5: attribute data cannot be written");
   }

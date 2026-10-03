@@ -126,7 +126,8 @@ class Euler {
   // Constructs an Euler with specified angles and (1,2,3) axes
   Euler(double in0, double in1 = 0, double in2 = 0);
   // Constructs an Euler with specified angles and axes
-  Euler(double in0, unsigned int ax0, double in1 = 0, unsigned int ax1 = 0, double in2 = 0, unsigned int ax2 = 0);
+  Euler(double in0, unsigned int ax0, double in1 = 0, unsigned int ax1 = 0, double in2 = 0,
+        unsigned int ax2 = 0);
   // <thrown>
   //    <li> AipsError if non-angle units used
   // </thrown>
@@ -137,8 +138,8 @@ class Euler {
   Euler(const Quantity &in0, const Quantity &in1, const Quantity &in2);
   Euler(const Quantity &in0, unsigned int ax0);
   Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1 = 0);
-  Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1, const Quantity &in2,
-        unsigned int ax2 = 0);
+  Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1,
+        const Quantity &in2, unsigned int ax2 = 0);
   // Constructs an Euler (zero filled) from elements of Quantity vector
   // <group>
   Euler(const Quantum<Vector<double>> &in);

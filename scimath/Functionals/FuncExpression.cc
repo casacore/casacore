@@ -286,7 +286,8 @@ bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
           }
           state_p.rpslow = rps_p[state_p.rpslow - 1].state.rpslow;
           rps_p.pop_back();
-          code_p[state_p.pcptr - 1].info = static_cast<unsigned int>(code_p.end() - code_p.begin()) + 1;
+          code_p[state_p.pcptr - 1].info =
+              static_cast<unsigned int>(code_p.end() - code_p.begin()) + 1;
           if (!setCode(exd.special()["GOTO"])) return false;
           code_p.back().state = state_p;
           code_p.back().state.pcptr = code_p[state_p.pcptr - 1].state.pcptr;

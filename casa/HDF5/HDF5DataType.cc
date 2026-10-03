@@ -77,10 +77,10 @@ HDF5DataType::HDF5DataType(const unsigned int*) : itsSize(sizeof(unsigned int)) 
   H5Tset_precision(itsHidMem, 8 * sizeof(unsigned int));
 }
 
-HDF5DataType::HDF5DataType(const Int64*) : itsSize(sizeof(Int64)) {
+HDF5DataType::HDF5DataType(const int64_t*) : itsSize(sizeof(int64_t)) {
   itsHidFile = H5Tcopy(H5T_STD_I64LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_INT);
-  H5Tset_precision(itsHidMem, 8 * sizeof(Int64));
+  H5Tset_precision(itsHidMem, 8 * sizeof(int64_t));
 }
 
 HDF5DataType::HDF5DataType(const float*) : itsSize(sizeof(float)) {
@@ -194,7 +194,7 @@ DataType HDF5DataType::getDataType(hid_t dtid) {
         } else if (sz == sizeof(int)) {
           dtype = TpInt;
         } else {
-          AlwaysAssert(sz == sizeof(Int64), AipsError);
+          AlwaysAssert(sz == sizeof(int64_t), AipsError);
           dtype = TpInt64;
         }
       } else {
@@ -330,7 +330,7 @@ HDF5DataType::HDF5DataType(const unsigned int*) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const float*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const Int64*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const int64_t*) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const double*) { HDF5Object::throwNoHDF5(); }
 

@@ -71,16 +71,18 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(const DataIterator& fir
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(const DataIterator& first,
-                                                         const MaskIterator& maskFirst, unsigned int nr,
-                                                         unsigned int dataStride, bool nrAccountsForStride,
+                                                         const MaskIterator& maskFirst,
+                                                         unsigned int nr, unsigned int dataStride,
+                                                         bool nrAccountsForStride,
                                                          unsigned int maskStride) {
   _dataset.addData(first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride);
   _addData();
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-    const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr, const DataRanges& dataRanges,
-    bool isInclude, unsigned int dataStride, bool nrAccountsForStride, unsigned int maskStride) {
+    const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
+    const DataRanges& dataRanges, bool isInclude, unsigned int dataStride, bool nrAccountsForStride,
+    unsigned int maskStride) {
   _dataset.addData(first, maskFirst, nr, dataRanges, isInclude, dataStride, nrAccountsForStride,
                    maskStride);
   _addData();
@@ -96,18 +98,17 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(const DataIterator& fir
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(const DataIterator& first,
                                                          const WeightsIterator& weightFirst,
-                                                         unsigned int nr, const DataRanges& dataRanges,
+                                                         unsigned int nr,
+                                                         const DataRanges& dataRanges,
                                                          bool isInclude, unsigned int dataStride,
                                                          bool nrAccountsForStride) {
   _dataset.addData(first, weightFirst, nr, dataRanges, isInclude, dataStride, nrAccountsForStride);
   _addData();
 }
 
-CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(const DataIterator& first,
-                                                         const WeightsIterator& weightFirst,
-                                                         const MaskIterator& maskFirst, unsigned int nr,
-                                                         unsigned int dataStride, bool nrAccountsForStride,
-                                                         unsigned int maskStride) {
+CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
+    const DataIterator& first, const WeightsIterator& weightFirst, const MaskIterator& maskFirst,
+    unsigned int nr, unsigned int dataStride, bool nrAccountsForStride, unsigned int maskStride) {
   _dataset.addData(first, weightFirst, maskFirst, nr, dataStride, nrAccountsForStride, maskStride);
   _addData();
 }
@@ -122,9 +123,9 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
 }
 
 CASA_STATD AccumType StatisticsAlgorithm<CASA_STATP>::getQuantile(
-    double quantile, std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
-    std::shared_ptr<AccumType> knownMax, unsigned int binningThreshholdSizeBytes, bool persistSortedArray,
-    unsigned int nBins) {
+    double quantile, std::shared_ptr<uint64_t> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, unsigned int binningThreshholdSizeBytes,
+    bool persistSortedArray, unsigned int nBins) {
   std::set<double> qs;
   qs.insert(quantile);
   return getQuantiles(qs, knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
@@ -163,8 +164,9 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& fir
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& first,
-                                                         const MaskIterator& maskFirst, unsigned int nr,
-                                                         unsigned int dataStride, bool nrAccountsForStride,
+                                                         const MaskIterator& maskFirst,
+                                                         unsigned int nr, unsigned int dataStride,
+                                                         bool nrAccountsForStride,
                                                          unsigned int maskStride) {
   _resetExceptDataset();
   _dataset.setData(first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride);
@@ -172,8 +174,9 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& fir
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-    const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr, const DataRanges& dataRanges,
-    bool isInclude, unsigned int dataStride, bool nrAccountsForStride, unsigned int maskStride) {
+    const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
+    const DataRanges& dataRanges, bool isInclude, unsigned int dataStride, bool nrAccountsForStride,
+    unsigned int maskStride) {
   _resetExceptDataset();
   _dataset.setData(first, maskFirst, nr, dataRanges, isInclude, dataStride, nrAccountsForStride,
                    maskStride);
@@ -191,7 +194,8 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& fir
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& first,
                                                          const WeightsIterator& weightFirst,
-                                                         unsigned int nr, const DataRanges& dataRanges,
+                                                         unsigned int nr,
+                                                         const DataRanges& dataRanges,
                                                          bool isInclude, unsigned int dataStride,
                                                          bool nrAccountsForStride) {
   _resetExceptDataset();
@@ -199,11 +203,9 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& fir
   _addData();
 }
 
-CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(const DataIterator& first,
-                                                         const WeightsIterator& weightFirst,
-                                                         const MaskIterator& maskFirst, unsigned int nr,
-                                                         unsigned int dataStride, bool nrAccountsForStride,
-                                                         unsigned int maskStride) {
+CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
+    const DataIterator& first, const WeightsIterator& weightFirst, const MaskIterator& maskFirst,
+    unsigned int nr, unsigned int dataStride, bool nrAccountsForStride, unsigned int maskStride) {
   _resetExceptDataset();
   _dataset.setData(first, weightFirst, maskFirst, nr, dataStride, nrAccountsForStride, maskStride);
   _addData();

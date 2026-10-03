@@ -322,8 +322,8 @@ bool sort2(unsigned int nr) {
     bl += vec2;
     cout << "  fill    ";
     timer.show();
-    Vector<uInt64> inx;
-    GenSortIndirect<int, uInt64>::sort(inx, bl);
+    Vector<uint64_t> inx;
+    GenSortIndirect<int, uint64_t>::sort(inx, bl);
     cout << "indsort   ";
     timer.show();
   }

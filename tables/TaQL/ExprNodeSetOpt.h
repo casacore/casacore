@@ -65,14 +65,14 @@ class TableExprNodeSetOptBase : public TableExprNodeRep {
   // Does the set contain the given value?
   // They call the <src>find</src> function.
   // <group>
-  bool contains(const TableExprId& id, Int64 value) override;
+  bool contains(const TableExprId& id, int64_t value) override;
   bool contains(const TableExprId& id, double value) override;
   bool contains(const TableExprId& id, String value) override;
   // </group>
   // Tell for each array value if the set contains that value.
   // It calls the scalar <src>contains</src> function for each value.
   // <group>
-  MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<int64_t>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<double>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
   // </group>
@@ -81,9 +81,9 @@ class TableExprNodeSetOptBase : public TableExprNodeRep {
   // # The String version is passed by value to use the same mechanism
   // # as used for the other types to make templates possible.
   // <group>
-  virtual Int64 find(Int64 value) const;
-  virtual Int64 find(double value) const;
-  virtual Int64 find(String value) const;
+  virtual int64_t find(int64_t value) const;
+  virtual int64_t find(double value) const;
+  virtual int64_t find(String value) const;
   // </group>
  private:
   // Explicitly hide base function to prevent warning
@@ -124,10 +124,10 @@ class TableExprNodeSetOptUSet : public TableExprNodeSetOptBase {
   void show(ostream& os, unsigned int indent) const override;
 
   // Where does a value occur in the set? -1 is no match.
-  Int64 find(T value) const override;
+  int64_t find(T value) const override;
 
  private:
-  std::unordered_map<T, Int64> itsMap;
+  std::unordered_map<T, int64_t> itsMap;
   // Explicitly hide base function to prevent warning
   using TableExprNodeSetOptBase::find;
 };
@@ -213,7 +213,7 @@ class TableExprNodeSetOptContSetMixOC : public TableExprNodeSetOptContSetBase<T>
   // Show the node.
   void show(ostream& os, unsigned int indent) const override;
   // Tell which interval contains a value. -1 = no match.
-  Int64 find(T value) const override;
+  int64_t find(T value) const override;
 
  protected:
   std::vector<bool> itsLeftC;
@@ -255,7 +255,7 @@ class TableExprNodeSetOptContSet : public TableExprNodeSetOptContSetBase<T> {
   // Show the node.
   void show(ostream& os, unsigned int indent) const override;
   // Tell which interval contains a value. -1 = no match.
-  Int64 find(T value) const override;
+  int64_t find(T value) const override;
 
  private:
   LeftComp itsLeftCmp;

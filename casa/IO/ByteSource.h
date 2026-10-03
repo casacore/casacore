@@ -114,8 +114,8 @@ class ByteSource : virtual public BaseSinkSource {
   ByteSource& operator>>(unsigned short& value);
   ByteSource& operator>>(int& value);
   ByteSource& operator>>(unsigned int& value);
-  ByteSource& operator>>(Int64& value);
-  ByteSource& operator>>(uInt64& value);
+  ByteSource& operator>>(int64_t& value);
+  ByteSource& operator>>(uint64_t& value);
   ByteSource& operator>>(float& value);
   ByteSource& operator>>(double& value);
   ByteSource& operator>>(Complex& value);
@@ -133,8 +133,8 @@ class ByteSource : virtual public BaseSinkSource {
   void read(size_t nvalues, unsigned short* value);
   void read(size_t nvalues, int* value);
   void read(size_t nvalues, unsigned int* value);
-  void read(size_t nvalues, Int64* value);
-  void read(size_t nvalues, uInt64* value);
+  void read(size_t nvalues, int64_t* value);
+  void read(size_t nvalues, uint64_t* value);
   void read(size_t nvalues, float* value);
   void read(size_t nvalues, double* value);
   void read(size_t nvalues, Complex* value);

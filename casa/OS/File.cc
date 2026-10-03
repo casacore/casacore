@@ -192,7 +192,7 @@ long File::groupID() const {
   return buf.st_gid;
 }
 
-Int64 File::size() const {
+int64_t File::size() const {
   // The struct buf is filled in by mylstat, and the size
   // of the file is extracted from buf.
   struct fileSTAT buf;
@@ -205,7 +205,8 @@ unsigned int File::readPermissions() const {
   // is extracted from buf.
   struct fileSTAT buf;
   getstat(&buf);
-  return (static_cast<unsigned int>(buf.st_mode & 07) + (static_cast<unsigned int>(buf.st_mode & 070) >> 3) * 10 +
+  return (static_cast<unsigned int>(buf.st_mode & 07) +
+          (static_cast<unsigned int>(buf.st_mode & 070) >> 3) * 10 +
           (static_cast<unsigned int>(buf.st_mode & 0700) >> 6) * 100);
 }
 

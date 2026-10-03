@@ -49,7 +49,7 @@ struct TConvert {
     cout << "Int " << in << endl;
     return in;
   }
-  Int64 testint64(Int64 in) {
+  int64_t testint64(int64_t in) {
     cout << "Int64 " << in << endl;
     return in;
   }
@@ -117,7 +117,8 @@ struct TConvert {
     cout << "vecuInt " << in << endl;
     return in;
   }
-  std::vector<std::vector<unsigned int>> teststdvecvecuint(const std::vector<std::vector<unsigned int>>& in) {
+  std::vector<std::vector<unsigned int>> teststdvecvecuint(
+      const std::vector<std::vector<unsigned int>>& in) {
     cout << "vecvecuInt " << in << endl;
     return in;
   }

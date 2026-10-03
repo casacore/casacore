@@ -119,16 +119,19 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       case FuncExprData::NOP:
         break;
       case FuncExprData::GOTO:
-        pos += pos->info - (static_cast<unsigned int>(pos - this->functionPtr_p->getCode().begin()) + 1);
+        pos += pos->info -
+               (static_cast<unsigned int>(pos - this->functionPtr_p->getCode().begin()) + 1);
         break;
       case FuncExprData::GOTOF:
         if (exec_p.back() == T(0.0)) {
-          pos += pos->info - (static_cast<unsigned int>(pos - this->functionPtr_p->getCode().begin()) + 1);
+          pos += pos->info -
+                 (static_cast<unsigned int>(pos - this->functionPtr_p->getCode().begin()) + 1);
         }
         break;
       case FuncExprData::GOTOT:
         if (exec_p.back() != T(0.0)) {
-          pos += pos->info - (static_cast<unsigned int>(pos - this->functionPtr_p->getCode().begin()) + 1);
+          pos += pos->info -
+                 (static_cast<unsigned int>(pos - this->functionPtr_p->getCode().begin()) + 1);
         }
         break;
 

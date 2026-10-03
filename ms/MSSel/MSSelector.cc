@@ -496,9 +496,9 @@ bool MSSelector::select(const Record& items, bool oneBased) {
         // }
       } break;
       case MSS::ROWS: {
-        Vector<Int64> rows = items.toArrayInt64(RecordFieldId(i));
+        Vector<int64_t> rows = items.toArrayInt64(RecordFieldId(i));
         if (rows.nelements() > 0) {
-          if (oneBased) rows -= Int64(1);
+          if (oneBased) rows -= int64_t(1);
           Vector<rownr_t> uRows(rows.size());
           convertArray(uRows, rows);
           // Select rows from the base table.
@@ -1646,7 +1646,7 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<bool>& flag
     chanSel(3) = 1;
   }
   int nChan = chanSel(0);
-  Int64 nRow = data.shape()(2);
+  int64_t nRow = data.shape()(2);
   avData.resize(IPosition(3, nPol, nChan, nRow));
   if (chanSel(2) == 1) {
     // no averaging, just copy the data across
@@ -1717,7 +1717,7 @@ void MSSelector::getAveragedData(Array<float>& avData, const Array<bool>& flag,
     chanSel(3) = 1;
   }
   int nChan = chanSel(0);
-  Int64 nRow = data.shape()(2);
+  int64_t nRow = data.shape()(2);
   avData.resize(IPosition(3, nPol, nChan, nRow));
   if (chanSel(2) == 1) {
     // no averaging, just copy the data across
@@ -1791,7 +1791,7 @@ Array<bool> MSSelector::getAveragedFlag(Array<bool>& avFlag, const ArrayColumn<b
     chanSel(3) = 1;
   }
   int nChan = chanSel(0);
-  Int64 nRow = flag.shape()(2);
+  int64_t nRow = flag.shape()(2);
   avFlag.resize(IPosition(3, nPol, nChan, nRow));
   if (chanSel(2) == 1) {
     // no averaging, just copy flags
@@ -1832,7 +1832,7 @@ void MSSelector::putAveragedFlag(const Array<bool>& avFlag, ArrayColumn<bool>& c
   Array<bool> polFlag = avFlag;
   Array<bool> out;
   int n = polIndex_p.nelements();
-  Int64 nRow = avFlag.shape()(2);
+  int64_t nRow = avFlag.shape()(2);
   // check if we need to read the data before writing it back
   if (convert_p || (n > 2 && n < col.shape(0)(0)) ||
       (chanSel_p(2) > 1 && chanSel_p(3) > chanSel_p(2))) {
@@ -1913,7 +1913,7 @@ void MSSelector::reorderFlagRow(Array<bool>& flagRow) {
   rownr_t nRow = selms_p.nrow();
   bool deleteFlag, deleteRow;
   const bool* pFlag = flagRow.getStorage(deleteFlag);
-  const Int64* pRow = rowIndex_p.getStorage(deleteRow);
+  const int64_t* pRow = rowIndex_p.getStorage(deleteRow);
   Vector<bool> rowFlag(nRow);
   int offset = 0;
   for (int i = 0; i < nSlot; i++, offset += nIfr) {
@@ -1932,10 +1932,10 @@ void MSSelector::reorderFlagRow(Array<bool>& flagRow) {
 // reorder from 3d to 2d (removing ifr axis)
 void MSSelector::reorderWeight(Array<float>& weight) {
   int nCorr = weight.shape()(0), nIfr = weight.shape()(1), nSlot = weight.shape()(2);
-  Int64 nRow = selms_p.nrow();
+  int64_t nRow = selms_p.nrow();
   bool deleteWeight, deleteRow, deleteRowWeight;
   const float* pWeight = weight.getStorage(deleteWeight);
-  const Int64* pRow = rowIndex_p.getStorage(deleteRow);
+  const int64_t* pRow = rowIndex_p.getStorage(deleteRow);
   Matrix<float> rowWeight(nCorr, nRow);
   float* pRowWeight = rowWeight.getStorage(deleteRowWeight);
   int offset = 0;

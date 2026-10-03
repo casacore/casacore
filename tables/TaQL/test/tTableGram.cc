@@ -275,7 +275,7 @@ void showExpr(const TableExprNode& expr) {
           break;
         }
         case TpInt64: {
-          MArray<Int64> arr;
+          MArray<int64_t> arr;
           expr.get(i, arr);
           cout << arr.array();
           break;

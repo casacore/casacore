@@ -212,8 +212,8 @@ void doArray() {
     }
     zvec.push_back(yvec);
   }
-  Array<Int64> arr = JsonValue(zvec).getArrayInt();
-  Array<Int64> exp(IPosition(3, 5, 3, 4));
+  Array<int64_t> arr = JsonValue(zvec).getArrayInt();
+  Array<int64_t> exp(IPosition(3, 5, 3, 4));
   indgen(exp);
   AlwaysAssertExit(allEQ(arr, exp));
 }

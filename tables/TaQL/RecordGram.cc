@@ -159,8 +159,8 @@ bool RecordGram::expr2Bool(const String& expr, const Record& vars) {
   return result;
 }
 
-Int64 RecordGram::expr2Int(const String& expr, const Record& vars) {
-  return Int64(expr2Double(expr, vars) + 0.0001);
+int64_t RecordGram::expr2Int(const String& expr, const Record& vars) {
+  return int64_t(expr2Double(expr, vars) + 0.0001);
 }
 
 double RecordGram::expr2Double(const String& expr, const Record& vars, const String& unit) {
@@ -219,11 +219,11 @@ Array<bool> RecordGram::expr2ArrayBool(const String& expr, const Record& vars) {
   return result;
 }
 
-Array<Int64> RecordGram::expr2ArrayInt(const String& expr, const Record& vars) {
+Array<int64_t> RecordGram::expr2ArrayInt(const String& expr, const Record& vars) {
   // Convert expression to tree.
   TableExprNode node(RecordGram::parse(vars, expr));
   // Evaluate.
-  Array<Int64> result;
+  Array<int64_t> result;
   if (node.isScalar()) {
     result.resize(IPosition(1, 1));
     node.get(vars, result.data()[0]);

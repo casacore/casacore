@@ -157,7 +157,8 @@ class PagedImage : public ImageInterface<T> {
 
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
-  explicit PagedImage(const String& filename, MaskSpecifier = MaskSpecifier(), unsigned int rowNumber = 0);
+  explicit PagedImage(const String& filename, MaskSpecifier = MaskSpecifier(),
+                      unsigned int rowNumber = 0);
 
   // Reconstruct an image from a pre-existing file with Locking.
   // By default the default pixelmask (if available) is used.
@@ -393,7 +394,8 @@ class PagedImage : public ImageInterface<T> {
   void applyMaskSpecifier(const MaskSpecifier&);
   void applyMask(const String& maskName);
   void makePagedImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-                      const String& nameOfNewFile, const TableLock& lockOptions, unsigned int rowNumber);
+                      const String& nameOfNewFile, const TableLock& lockOptions,
+                      unsigned int rowNumber);
   void makePagedImage(const String& filename, const TableLock& lockOptions, const MaskSpecifier&,
                       unsigned int rowNumber);
 

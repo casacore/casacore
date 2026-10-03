@@ -124,7 +124,8 @@ class GenSort {
 
   static unsigned int sort(Array<T>&, Sort::Order = Sort::Ascending, int options = 0);
 
-  static unsigned int sort(Block<T>&, unsigned int nr, Sort::Order = Sort::Ascending, int options = 0);
+  static unsigned int sort(Block<T>&, unsigned int nr, Sort::Order = Sort::Ascending,
+                           int options = 0);
   // <group>
 
   // Find the k-th largest value.
@@ -132,14 +133,16 @@ class GenSort {
   static T kthLargest(T* data, unsigned int nr, unsigned int k);
 
   // Sort C-array using quicksort.
-  static unsigned int quickSort(T*, unsigned int nr, Sort::Order = Sort::Ascending, int options = 0);
+  static unsigned int quickSort(T*, unsigned int nr, Sort::Order = Sort::Ascending,
+                                int options = 0);
   // Sort C-array using heapsort.
   static unsigned int heapSort(T*, unsigned int nr, Sort::Order = Sort::Ascending, int options = 0);
   // Sort C-array using insertion sort.
   static unsigned int insSort(T*, unsigned int nr, Sort::Order = Sort::Ascending, int options = 0);
   // Sort C-array using parallel merge sort (using OpenMP).
   // By default OpenMP determines the number of threads that can be used.
-  static unsigned int parSort(T*, unsigned int nr, Sort::Order = Sort::Ascending, int options = 0, int nthread = 0);
+  static unsigned int parSort(T*, unsigned int nr, Sort::Order = Sort::Ascending, int options = 0,
+                              int nthread = 0);
 
   // Swap 2 elements in array.
   static inline void swap(T&, T&);
@@ -193,7 +196,7 @@ class GenSort {
 //
 // The class is templated on the type T of the sort key and the type
 // INX of the index vector. In principle INX can be any type, but
-// it should be a sufficiently large integer type (say uInt or uInt64).
+// it should be a sufficiently large integer type (say uInt or uint64_t).
 template <class T, class INX = unsigned int>
 class GenSortIndirect {
  public:
@@ -287,7 +290,8 @@ class GenSortIndirect {
 // <group name=genSortInPlace>
 
 template <class T>
-inline unsigned int genSort(T* data, unsigned int nr, Sort::Order order = Sort::Ascending, int options = 0) {
+inline unsigned int genSort(T* data, unsigned int nr, Sort::Order order = Sort::Ascending,
+                            int options = 0) {
   return GenSort<T>::sort(data, nr, order, options);
 }
 
@@ -302,7 +306,8 @@ inline unsigned int genSort(Block<T>& data, Sort::Order order = Sort::Ascending,
 }
 
 template <class T>
-inline unsigned int genSort(Block<T>& data, unsigned int nr, Sort::Order order = Sort::Ascending, int options = 0) {
+inline unsigned int genSort(Block<T>& data, unsigned int nr, Sort::Order order = Sort::Ascending,
+                            int options = 0) {
   return GenSort<T>::sort(data, nr, order, options);
 }
 // </group>
@@ -329,25 +334,25 @@ inline unsigned int genSort(Block<T>& data, unsigned int nr, Sort::Order order =
 
 template <class T, class INX = unsigned int>
 inline unsigned int genSort(Vector<INX>& indexVector, const T* data, INX nr,
-                    Sort::Order order = Sort::Ascending, int options = 0) {
+                            Sort::Order order = Sort::Ascending, int options = 0) {
   return GenSortIndirect<T, INX>::sort(indexVector, data, nr, order, options);
 }
 
 template <class T, class INX = unsigned int>
 inline unsigned int genSort(Vector<INX>& indexVector, const Array<T>& data,
-                    Sort::Order order = Sort::Ascending, int options = 0) {
+                            Sort::Order order = Sort::Ascending, int options = 0) {
   return GenSortIndirect<T, INX>::sort(indexVector, data, order, options);
 }
 
 template <class T, class INX = unsigned int>
 inline unsigned int genSort(Vector<INX>& indexVector, const Block<T>& data,
-                    Sort::Order order = Sort::Ascending, int options = 0) {
+                            Sort::Order order = Sort::Ascending, int options = 0) {
   return GenSortIndirect<T, INX>::sort(indexVector, data, data.nelements(), order, options);
 }
 
 template <class T, class INX = unsigned int>
 inline unsigned int genSort(Vector<INX>& indexVector, const Block<T>& data, INX nr,
-                    Sort::Order order = Sort::Ascending, int options = 0) {
+                            Sort::Order order = Sort::Ascending, int options = 0) {
   return GenSortIndirect<T, INX>::sort(indexVector, data, nr, order, options);
 }
 // </group>

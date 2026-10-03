@@ -121,7 +121,9 @@ MVAngle::Format MVAngle::setFormat(unsigned int intyp, unsigned int inprec) {
   return setFormat((MVAngle::formatTypes)intyp, inprec);
 }
 
-MVAngle::Format MVAngle::setFormat(unsigned int inprec) { return setFormat(MVAngle::ANGLE, inprec); }
+MVAngle::Format MVAngle::setFormat(unsigned int inprec) {
+  return setFormat(MVAngle::ANGLE, inprec);
+}
 
 MVAngle::Format MVAngle::setFormat(const MVAngle::Format &form) {
   Format tmp = MVAngle::defaultFormat;

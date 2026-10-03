@@ -608,8 +608,8 @@ void UDFMSCal::recreateColumnObjects(const Vector<rownr_t>& rownrs) {
   }
 }
 
-Int64 UDFMSCal::getRowNr(const TableExprId& id) {
-  Int64 rownr = itsIdNode.getInt(id);
+int64_t UDFMSCal::getRowNr(const TableExprId& id) {
+  int64_t rownr = itsIdNode.getInt(id);
   if (itsArg == 1) {
     rownr = itsDDIds[rownr];
   }
@@ -648,7 +648,7 @@ bool UDFMSCal::getBool(const TableExprId& id) {
   }
 }
 
-Int64 UDFMSCal::getInt(const TableExprId& id) {
+int64_t UDFMSCal::getInt(const TableExprId& id) {
   switch (itsType) {
     case GETVALUE: {
       rownr_t rownr = getRowNr(id);
@@ -739,7 +739,7 @@ MArray<bool> UDFMSCal::getArrayBool(const TableExprId& id) {
   }
 }
 
-MArray<Int64> UDFMSCal::getArrayInt(const TableExprId& id) {
+MArray<int64_t> UDFMSCal::getArrayInt(const TableExprId& id) {
   switch (itsType) {
     case GETVALUE:
       return itsDataNode.getIntAS(getRowNr(id));

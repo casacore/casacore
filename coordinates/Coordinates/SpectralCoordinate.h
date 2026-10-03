@@ -534,9 +534,9 @@ class SpectralCoordinate : public Coordinate {
   // wavelength axis, if <src>airWaveDef=True</src> air wavelength will be used, the
   // default is vacuum wavelength.
   //<group>
-  void toFITS(RecordInterface& header, unsigned int whichAxis, LogIO& logger, bool oneRelative = true,
-              bool preferVelocity = true, bool opticalVelDef = true, bool preferWavelength = false,
-              bool airWaveDef = false) const;
+  void toFITS(RecordInterface& header, unsigned int whichAxis, LogIO& logger,
+              bool oneRelative = true, bool preferVelocity = true, bool opticalVelDef = true,
+              bool preferWavelength = false, bool airWaveDef = false) const;
 
   // Old interface.  Handled by wcs in new interface in FITSCoordinateUtil.cc
   //    static bool fromFITSOld(SpectralCoordinate &out, String &error,
@@ -574,7 +574,7 @@ class SpectralCoordinate : public Coordinate {
                                                 //
   MFrequency::Types type_p, conversionType_p;   // Frequency system and conversion system
   Vector<double> restfreqs_p;                   // List of possible rest frequencies
-  unsigned int restfreqIdx_p;                           // Current active rest frequency index
+  unsigned int restfreqIdx_p;                   // Current active rest frequency index
 
   // Conversion machines; for pixel<->world conversions only.
   mutable MFrequency::Convert* pConversionMachineTo_p;    // For type_p -> conversionType_p

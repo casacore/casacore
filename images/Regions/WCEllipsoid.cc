@@ -60,8 +60,9 @@ WCEllipsoid::WCEllipsoid(const Vector<Quantity>& center, const Quantity& radius,
 
 WCEllipsoid::WCEllipsoid(const Quantity& xcenter, const Quantity& ycenter,
                          const Quantity& majorAxis, const Quantity& minorAxis,
-                         const Quantity& theta, const unsigned int pixelAxis0, const unsigned int pixelAxis1,
-                         const CoordinateSystem& csys, const RegionType::AbsRelType absRel)
+                         const Quantity& theta, const unsigned int pixelAxis0,
+                         const unsigned int pixelAxis1, const CoordinateSystem& csys,
+                         const RegionType::AbsRelType absRel)
     : _csys(csys), _absRel(absRel), _specType(ELLIPSE_2D) {
   AlwaysAssert(csys.nPixelAxes() >= 2, AipsError);
   AlwaysAssert(csys.nWorldAxes() >= 2, AipsError);

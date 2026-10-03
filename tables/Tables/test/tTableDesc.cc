@@ -100,7 +100,8 @@ void a(bool doExcp) {
 
   td.addColumn(ArrayColumnDesc<Complex>("Arr1", "comment for Arr1", 0));
   td.addColumn(ArrayColumnDesc<int>("A2r1", "comment for Arr1", 3));
-  ArrayColumnDesc<unsigned int> coldes("Arr3", "comment for Arr1", IPosition(2, 3, 4), ColumnDesc::Direct);
+  ArrayColumnDesc<unsigned int> coldes("Arr3", "comment for Arr1", IPosition(2, 3, 4),
+                                       ColumnDesc::Direct);
   td.addColumn(coldes);
 
   // Set the shape of some columns.

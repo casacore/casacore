@@ -60,7 +60,7 @@ void checkScaInt(const String& str, TableExprId& exprid, const TableExprNode& ex
                  const int& value) {
   cout << "checkScaInt " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpInt64);
-  Int64 val;
+  int64_t val;
   expr.get(exprid, val);
   if (val != value) {
     foundError = true;
@@ -132,7 +132,7 @@ void checkArrInt(const String& str, TableExprId& exprid, const TableExprNode& ex
                  const Array<int>& value) {
   cout << "checkArrInt " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpInt64);
-  MArray<Int64> val64;
+  MArray<int64_t> val64;
   expr.get(exprid, val64);
   Array<int> val(val64.shape());
   convertArray(val, val64.array());

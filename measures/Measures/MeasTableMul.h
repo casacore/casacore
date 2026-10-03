@@ -96,8 +96,8 @@ class MeasTableMul {
 
  protected:
   std::mutex itsMutex;
-  Int64 itsLastUsed;
-  std::vector<Int64> itsUsed;
+  int64_t itsLastUsed;
+  std::vector<int64_t> itsUsed;
   std::vector<double> itsTimes;
   std::vector<std::shared_ptr<Matrix<double>>> itsArrays;
   Matrix<double> itsDefArray;

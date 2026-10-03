@@ -302,7 +302,7 @@ class MSSelector {
   Vector<int> ifrSelection_p, ifrAxis_p;
   Matrix<double> chanFreq_p, bandwidth_p;
   MSDerivedValues msd_p;
-  Matrix<Int64> rowIndex_p;      // mapping of rows to time and ifr slots
+  Matrix<int64_t> rowIndex_p;    // mapping of rows to time and ifr slots
   RowNumbers selRows_p;          // range of rows from selms_p returned by getData
   rownr_t startRow_p, maxRow_p;  // start and length of range of rows
   bool useIfrDefault_p;

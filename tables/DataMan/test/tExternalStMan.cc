@@ -417,7 +417,9 @@ void SigmaColumn::getArrayfloatV(unsigned int, Array<float>* dataPtr) { *dataPtr
 
 WSpectrumColumn::~WSpectrumColumn() {}
 IPosition WSpectrumColumn::shape(unsigned int) { return IPosition(2, npol, nchan); }
-void WSpectrumColumn::getArrayfloatV(unsigned int rownr, Array<float>* dataPtr) { *dataPtr = float(rownr); }
+void WSpectrumColumn::getArrayfloatV(unsigned int rownr, Array<float>* dataPtr) {
+  *dataPtr = float(rownr);
+}
 
 FlagCatColumn::~FlagCatColumn() {}
 bool FlagCatColumn::isShapeDefined(unsigned int) { return false; }
@@ -523,7 +525,9 @@ unsigned int LofarStMan::open1(unsigned int, AipsIO&) { return getNRow(); }
 
 void LofarStMan::prepare() {}
 
-void LofarStMan::resync(unsigned int) { throw DataManError("LofarStMan::resync should never be called"); }
+void LofarStMan::resync(unsigned int) {
+  throw DataManError("LofarStMan::resync should never be called");
+}
 unsigned int LofarStMan::resync1(unsigned int) { return getNRow(); }
 
 void LofarStMan::reopenRW() {}

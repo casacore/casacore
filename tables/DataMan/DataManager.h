@@ -388,9 +388,9 @@ class DataManager {
   void throwDataTypeOther(const String& columnName, int dataType) const;
 
  private:
-  unsigned int nrcol_p;        // # #columns in this st.man.
-  unsigned int seqnr_p;        // # Unique nr of this st.man. in a Table
-  bool asBigEndian_p;  // # store data in big or little endian
+  unsigned int nrcol_p;  // # #columns in this st.man.
+  unsigned int seqnr_p;  // # Unique nr of this st.man. in a Table
+  bool asBigEndian_p;    // # store data in big or little endian
   TSMOption tsmOption_p;
   std::shared_ptr<MultiFileBase> multiFile_p;  // # Possible MultiFile to use
   Table* table_p;                              // # Table this data manager belongs to

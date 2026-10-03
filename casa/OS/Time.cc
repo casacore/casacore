@@ -62,7 +62,8 @@ Time::Time(double jdn) {
   }
 }
 
-Time::Time(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int min, double sec) {
+Time::Time(unsigned int year, unsigned int month, unsigned int day, unsigned int hour,
+           unsigned int min, double sec) {
   setDate(year, month, day, hour, min, sec);
 }
 
@@ -340,7 +341,8 @@ void Time::now() {
   mJulianDayfrac = d - (int)d;
 }
 
-void Time::setDate(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int min, double sec) {
+void Time::setDate(unsigned int year, unsigned int month, unsigned int day, unsigned int hour,
+                   unsigned int min, double sec) {
   // Converting between Julian calendar date and Julian date number
   // Valid for all values of year>=-4712 ( for all dates with Julian
   // Day >= 0).
@@ -364,8 +366,8 @@ void Time::setDate(unsigned int year, unsigned int month, unsigned int day, unsi
     }
   }
 
-  double jd;  // the fraction of the day
-  unsigned int md;    // Modify Julian day number
+  double jd;        // the fraction of the day
+  unsigned int md;  // Modify Julian day number
   int y = year, m = month, d = day;
 
   md = (1461 * (y + 4800 + (m - 14) / 12)) / 4 + (367 * (m - 2 - 12 * ((m - 14) / 12))) / 12 -

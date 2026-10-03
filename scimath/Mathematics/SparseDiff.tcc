@@ -126,12 +126,14 @@ void SparseDiff<T>::operator*=(const SparseDiff<T> &other) {
          i != other.grad().end(); ++i)
       if (value() != T(0)) grad().push_back(std::make_pair(i->first, i->second * value()));
   } else if (other.grad().empty()) {
-    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i)
+    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+         ++i)
       if (value() != T(0)) i->second *= other.value();
   } else {
     SparseDiffRep<T> *tmp = ObjectStack<SparseDiffRep<T>>::stack().get();
     typename vector<pair<unsigned int, T>>::const_iterator j = other.grad().begin();
-    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i) {
+    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+         ++i) {
       if (j == other.grad().end()) {
         if (other.value() != T(0))
           tmp->grad_p.push_back(std::make_pair(i->first, i->second * other.value()));
@@ -167,12 +169,14 @@ void SparseDiff<T>::operator/=(const SparseDiff<T> &other) {
          i != other.grad().end(); ++i)
       if (value() != T(0)) grad().push_back(std::make_pair(i->first, -i->second * value() / t));
   } else if (other.grad().empty()) {
-    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i)
+    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+         ++i)
       i->second /= other.value();
   } else {
     SparseDiffRep<T> *tmp = ObjectStack<SparseDiffRep<T>>::stack().get();
     typename vector<pair<unsigned int, T>>::const_iterator j = other.grad().begin();
-    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i) {
+    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+         ++i) {
       if (j == other.grad().end()) {
         tmp->grad_p.push_back(std::make_pair(i->first, i->second / other.value()));
       } else if (j->first == i->first) {
@@ -209,7 +213,8 @@ void SparseDiff<T>::operator+=(const SparseDiff<T> &other) {
   } else {
     SparseDiffRep<T> *tmp = ObjectStack<SparseDiffRep<T>>::stack().get();
     typename vector<pair<unsigned int, T>>::const_iterator j = other.grad().begin();
-    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i) {
+    for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+         ++i) {
       if (j == other.grad().end()) {
         tmp->grad_p.push_back(*i);
       } else if (j->first == i->first) {
@@ -234,7 +239,8 @@ void SparseDiff<T>::operator+=(const SparseDiff<T> &other) {
 template <class T>
 void SparseDiff<T>::operator-=(const SparseDiff<T> &other) {
   SparseDiff<T> tmp = other;
-  for (typename vector<pair<unsigned int, T>>::iterator i = tmp.grad().begin(); i != tmp.grad().end(); ++i)
+  for (typename vector<pair<unsigned int, T>>::iterator i = tmp.grad().begin();
+       i != tmp.grad().end(); ++i)
     i->second = -i->second;
   tmp.value() = -tmp.value();
   SparseDiff<T>::operator+=(tmp);
@@ -243,7 +249,8 @@ void SparseDiff<T>::operator-=(const SparseDiff<T> &other) {
 template <class T>
 AutoDiff<T> SparseDiff<T>::toAutoDiff(unsigned int n) const {
   AutoDiff<T> tmp(n);
-  for (typename vector<pair<unsigned int, T>>::const_iterator i = grad().begin(); i != grad().end(); ++i) {
+  for (typename vector<pair<unsigned int, T>>::const_iterator i = grad().begin(); i != grad().end();
+       ++i) {
     if (i->first < n) tmp.derivative(i->first) = i->second;
   }
   return tmp;
@@ -270,7 +277,8 @@ void SparseDiff<T>::sort() {
   std::sort_heap(grad().begin(), grad().end(), SparseDiff<T>::ltSort);
   // Remove empty ones; and add identical ones
   SparseDiffRep<T> *tmp = ObjectStack<SparseDiffRep<T>>::stack().get();
-  for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i) {
+  for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+       ++i) {
     if (i != grad().begin()) {
       if (i->first == (i - 1)->first) {
         i->second += (i - 1)->second;
@@ -278,7 +286,8 @@ void SparseDiff<T>::sort() {
       }
     }
   }
-  for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end(); ++i) {
+  for (typename vector<pair<unsigned int, T>>::iterator i = grad().begin(); i != grad().end();
+       ++i) {
     if (i->second != T(0)) tmp->grad_p.push_back(*i);
   }
   tmp->val_p = value();

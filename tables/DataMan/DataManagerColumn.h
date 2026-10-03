@@ -240,7 +240,7 @@ class DataManagerColumn {
   void get(rownr_t rownr, unsigned short* dataPtr) { getuShort(rownr, dataPtr); }
   void get(rownr_t rownr, int* dataPtr) { getInt(rownr, dataPtr); }
   void get(rownr_t rownr, unsigned int* dataPtr) { getuInt(rownr, dataPtr); }
-  void get(rownr_t rownr, Int64* dataPtr) { getInt64(rownr, dataPtr); }
+  void get(rownr_t rownr, int64_t* dataPtr) { getInt64(rownr, dataPtr); }
   void get(rownr_t rownr, float* dataPtr) { getfloat(rownr, dataPtr); }
   void get(rownr_t rownr, double* dataPtr) { getdouble(rownr, dataPtr); }
   void get(rownr_t rownr, Complex* dataPtr) { getComplex(rownr, dataPtr); }
@@ -264,7 +264,7 @@ class DataManagerColumn {
   void put(rownr_t rownr, const unsigned short* dataPtr) { putuShort(rownr, dataPtr); }
   void put(rownr_t rownr, const int* dataPtr) { putInt(rownr, dataPtr); }
   void put(rownr_t rownr, const unsigned int* dataPtr) { putuInt(rownr, dataPtr); }
-  void put(rownr_t rownr, const Int64* dataPtr) { putInt64(rownr, dataPtr); }
+  void put(rownr_t rownr, const int64_t* dataPtr) { putInt64(rownr, dataPtr); }
   void put(rownr_t rownr, const float* dataPtr) { putfloat(rownr, dataPtr); }
   void put(rownr_t rownr, const double* dataPtr) { putdouble(rownr, dataPtr); }
   void put(rownr_t rownr, const Complex* dataPtr) { putComplex(rownr, dataPtr); }
@@ -395,7 +395,7 @@ class DataManagerColumn {
   virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
   virtual void getInt(rownr_t rownr, int* dataPtr);
   virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
+  virtual void getInt64(rownr_t rownr, int64_t* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
   virtual void getComplex(rownr_t rownr, Complex* dataPtr);
@@ -414,7 +414,7 @@ class DataManagerColumn {
   virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr);
   virtual void putInt(rownr_t rownr, const int* dataPtr);
   virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr);
-  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
+  virtual void putInt64(rownr_t rownr, const int64_t* dataPtr);
   virtual void putfloat(rownr_t rownr, const float* dataPtr);
   virtual void putdouble(rownr_t rownr, const double* dataPtr);
   virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
@@ -438,7 +438,7 @@ class DataManagerColumn {
       getInt(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, unsigned int>) {
       getuInt(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, Int64>) {
+    } else if constexpr (std::is_same_v<T, int64_t>) {
       getInt64(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, float>) {
       getfloat(rownr, dataPtr);
@@ -469,7 +469,7 @@ class DataManagerColumn {
       putInt(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, unsigned int>) {
       putuInt(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, Int64>) {
+    } else if constexpr (std::is_same_v<T, int64_t>) {
       putInt64(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, float>) {
       putfloat(rownr, dataPtr);

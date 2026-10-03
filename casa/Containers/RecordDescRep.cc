@@ -139,7 +139,8 @@ void RecordDescRep::addFieldAny(DataType type) {
   }
 }
 
-unsigned int RecordDescRep::addArray(const String& fieldName, DataType type, const IPosition& shape) {
+unsigned int RecordDescRep::addArray(const String& fieldName, DataType type,
+                                     const IPosition& shape) {
   addFieldName(fieldName, type);
   addFieldArray(type, shape);
   return n_p;
@@ -241,7 +242,8 @@ void RecordDescRep::setShape(int whichField, const IPosition& shape) {
   shapes_p[whichField] = shape;
 }
 
-unsigned int RecordDescRep::mergeField(const RecordDescRep& other, int whichField, int duplicateAction) {
+unsigned int RecordDescRep::mergeField(const RecordDescRep& other, int whichField,
+                                       int duplicateAction) {
   AlwaysAssert(whichField >= 0 && whichField < int(other.nfields()), AipsError);
   String newName = other.name(whichField);
   int duplicateNumber = fieldNumber(newName);

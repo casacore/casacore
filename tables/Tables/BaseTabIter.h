@@ -120,7 +120,7 @@ class BaseTableIterator {
  protected:
   std::shared_ptr<BaseTable> sortTab_p;  // # Table sorted in iteration order
   rownr_t lastRow_p;                     // # last row used from reftab
-  unsigned int nrkeys_p;                         // # nr of columns in group
+  unsigned int nrkeys_p;                 // # nr of columns in group
   String keyChangeAtLastNext_p;          // # name of column that terminated most recent next()
   Block<BaseColumn*> colPtr_p;           // # pointer to column objects
   Block<std::shared_ptr<BaseCompare>> cmpObj_p;  // # comparison object per column

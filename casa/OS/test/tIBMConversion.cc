@@ -163,7 +163,7 @@ void checkConversion(int& error) {
     val[2] = 54;
     val[3] = 78;
     val[4] = 145 - 256;
-    Int64 result;
+    int64_t result;
     IBMConversion::toLocal(&result, val + 1, 1);
     if (result != 2 * 256 * 256 * 256 + 54 * 256 * 256 + 78 * 256 + 145) {
       cout << "invalid Int64 to conversion 1 " << result << endl;
@@ -191,7 +191,7 @@ void checkConversion(int& error) {
     val[2] = 54;
     val[3] = 78;
     val[4] = 100;
-    uInt64 result;
+    uint64_t result;
     IBMConversion::toLocal(&result, val + 1, 1);
     if (result != 128U * 256U * 256U * 256U + 54U * 256U * 256U + 78U * 256U + 100U) {
       cout << "invalid uInt64 to conversion " << result << endl;

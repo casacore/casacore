@@ -93,7 +93,8 @@ void a(unsigned int nrrow) {
   {
     // Get entire column (minus last cell) to test range performance.
     timer.mark();
-    Vector<unsigned int> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+    Vector<unsigned int> abv1 =
+        ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
     timer.show("range AIO");
     timer.mark();
     Vector<int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
@@ -136,7 +137,8 @@ void a(unsigned int nrrow) {
     {
       // Get entire column (minus last cell) to test range performance.
       timer.mark();
-      Vector<unsigned int> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+      Vector<unsigned int> abv1 =
+          ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
       timer.show("cells/range AIO");
       timer.mark();
       Vector<int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));

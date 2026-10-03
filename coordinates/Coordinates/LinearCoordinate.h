@@ -241,9 +241,9 @@ class LinearCoordinate : public Coordinate {
   void copy(const LinearCoordinate &other);
 
   // Make wcs structure
-  void makeWCS(wcsprm &wcs, unsigned int naxis, const Vector<double> &refPix, const Vector<double> &refVal,
-               const Vector<double> &incr, const Matrix<double> &pc, const Vector<String> &units,
-               const Vector<String> &names);
+  void makeWCS(wcsprm &wcs, unsigned int naxis, const Vector<double> &refPix,
+               const Vector<double> &refVal, const Vector<double> &incr, const Matrix<double> &pc,
+               const Vector<String> &units, const Vector<String> &names);
 };
 
 }  // namespace casacore

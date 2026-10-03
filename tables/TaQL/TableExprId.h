@@ -115,7 +115,7 @@ class TableExprId {
   bool byData() const;
 
   // Get the row number.
-  Int64 rownr() const;
+  int64_t rownr() const;
 
   // Get the Record reference.
   const RecordInterface& record() const;
@@ -132,7 +132,7 @@ class TableExprId {
  private:
   int type_p;
   union {
-    Int64 row_p;
+    int64_t row_p;
     const RecordInterface* record_p;
     const TableExprData* data_p;
   };
@@ -146,7 +146,7 @@ inline TableExprId::TableExprId(const RecordInterface& record) : type_p(-1), rec
 
 inline TableExprId::TableExprId(const TableExprData& data) : type_p(-2), data_p(&data) {}
 
-inline Int64 TableExprId::rownr() const { return row_p; }
+inline int64_t TableExprId::rownr() const { return row_p; }
 
 inline const RecordInterface& TableExprId::record() const { return *record_p; }
 

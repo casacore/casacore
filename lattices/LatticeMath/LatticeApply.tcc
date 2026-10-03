@@ -474,8 +474,8 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
       }
       firstTime = false;
       outPos = iterPos;
-      uInt64 n1 = 1;
-      uInt64 n3 = 1;
+      uint64_t n1 = 1;
+      uint64_t n3 = 1;
       for (j = 0; j < outDim; ++j) {
         if (ioMap(j) >= 0) {
           outShape(j) = cursorShape(ioMap(j));

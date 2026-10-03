@@ -43,8 +43,8 @@
 using namespace casacore;
 using namespace std;
 
-void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
-           ArrayColumn<double>& azel) {
+void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha,
+           ScalarColumn<double>& last, ArrayColumn<double>& azel) {
   double mha = mdv.hourAngle();
   double tha = ha(rownr);
   AlwaysAssertExit(near(mha, tha, 1e-10));
@@ -59,8 +59,8 @@ void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha, S
   AlwaysAssertExit(azel.isDefined(rownr));
 }
 
-void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
-           ArrayColumn<double>& azel, ArrayColumn<double>& itrf) {
+void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha,
+           ScalarColumn<double>& last, ArrayColumn<double>& azel, ArrayColumn<double>& itrf) {
   check(mdv, rownr, ha, last, azel);
   Vector<double> titrf = itrf(rownr);
   cout << titrf << endl;
@@ -69,8 +69,8 @@ void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha, S
   AlwaysAssertExit(itrf.isDefined(rownr));
 }
 
-void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
-           ScalarColumn<double>& pa, ArrayColumn<double>& azel) {
+void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha,
+           ScalarColumn<double>& last, ScalarColumn<double>& pa, ArrayColumn<double>& azel) {
   check(mdv, rownr, ha, last, azel);
   double mpa = mdv.parAngle();
   double tpa = pa(rownr);

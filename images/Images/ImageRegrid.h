@@ -236,8 +236,9 @@ class ImageRegrid {
                             MaskedLattice<T>*& outPtr, CoordinateSystem& outCoords,
                             const CoordinateSystem& inCoords, int outPixelAxis,
                             const ImageInterface<T>& inImage, const IPosition& outShape,
-                            bool replicate, unsigned int decimate, bool outIsMasked, bool showProgress,
-                            bool forceRegrid, typename Interpolate2D::Method method, bool verbose);
+                            bool replicate, unsigned int decimate, bool outIsMasked,
+                            bool showProgress, bool forceRegrid,
+                            typename Interpolate2D::Method method, bool verbose);
 
   // Regrid  DirectionCoordinate or 2-axis LinearCoordinate
   void regridTwoAxisCoordinate(LogIO& os, MaskedLattice<T>& outLattice,
@@ -246,24 +247,26 @@ class ImageRegrid {
                                int inCoordinate, int outCoordinate, const Vector<int> inPixelAxes,
                                const Vector<int> outPixelAxes, const Vector<int> pixelAxisMap1,
                                const Vector<int> pixelAxisMap2,
-                               typename Interpolate2D::Method method, bool replicate, unsigned int decimate,
-                               bool showProgress);
+                               typename Interpolate2D::Method method, bool replicate,
+                               unsigned int decimate, bool showProgress);
 
   // Make regridding coordinate grid for this cursor.
   void make2DCoordinateGrid(LogIO& os, bool& allFail, bool& missedIt, double& minInX,
                             double& minInY, double& maxInX, double& maxInY, Cube<double>& in2DPos,
                             Matrix<bool>& succeed, const CoordinateSystem& inCoords,
                             const CoordinateSystem& outCoords, int inCoordinate, int outCoordinate,
-                            unsigned int xInAxis, unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis,
-                            const IPosition& inPixelAxes, const IPosition& outPixelAxes,
-                            const IPosition& inShape, const IPosition& outPos,
-                            const IPosition& cursorShape, unsigned int decimate = 0);
+                            unsigned int xInAxis, unsigned int yInAxis, unsigned int xOutAxis,
+                            unsigned int yOutAxis, const IPosition& inPixelAxes,
+                            const IPosition& outPixelAxes, const IPosition& inShape,
+                            const IPosition& outPos, const IPosition& cursorShape,
+                            unsigned int decimate = 0);
 
   // Make replication coordinate grid for this cursor
   void make2DCoordinateGrid(Cube<double>& in2DPos, double& minInX, double& minInY, double& maxInX,
                             double& maxInY, const Vector<double>& pixelScale, unsigned int xInAxis,
-                            unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis, unsigned int xInCorrAxis,
-                            unsigned int yInCorrAxis, unsigned int xOutCorrAxis, unsigned int yOutCorrAxis,
+                            unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis,
+                            unsigned int xInCorrAxis, unsigned int yInCorrAxis,
+                            unsigned int xOutCorrAxis, unsigned int yOutCorrAxis,
                             const IPosition& outPos, const IPosition& cursorShape);
 
   // Make regridding coordinate grid for this axis
@@ -287,17 +290,18 @@ class ImageRegrid {
   //
   void regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<bool>*& outMaskIterPtr,
                       const Interpolate2D& interp, ProgressMeter*& pProgress, double& iPix,
-                      unsigned int nDim, unsigned int xInAxis, unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis,
-                      double scale, bool inIsMasked, bool outIsMasked, const IPosition& outPos,
-                      const IPosition& outCursorShape, const IPosition& inChunkShape,
-                      const IPosition& inChunkBlc, const IPosition& pixelAxisMap2,
-                      Array<T>& inDataChunk, Array<bool>*& inMaskChunkPtr,
-                      const Cube<double>& pix2DPos, const Matrix<bool>& succeed);
+                      unsigned int nDim, unsigned int xInAxis, unsigned int yInAxis,
+                      unsigned int xOutAxis, unsigned int yOutAxis, double scale, bool inIsMasked,
+                      bool outIsMasked, const IPosition& outPos, const IPosition& outCursorShape,
+                      const IPosition& inChunkShape, const IPosition& inChunkBlc,
+                      const IPosition& pixelAxisMap2, Array<T>& inDataChunk,
+                      Array<bool>*& inMaskChunkPtr, const Cube<double>& pix2DPos,
+                      const Matrix<bool>& succeed);
 
   void findXYExtent(bool& missedIt, bool& allFailed, double& minInX, double& minInY, double& maxInX,
                     double& maxInY, Cube<double>& in2DPos, const Matrix<bool>& succeed,
-                    unsigned int xInAxis, unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis,
-                    const IPosition& outPos, const IPosition& outCursorShape,
+                    unsigned int xInAxis, unsigned int yInAxis, unsigned int xOutAxis,
+                    unsigned int yOutAxis, const IPosition& outPos, const IPosition& outCursorShape,
                     const IPosition& inShape);
   //
   bool minmax(double& minX, double& maxX, double& minY, double& maxY, const Array<double>& xData,

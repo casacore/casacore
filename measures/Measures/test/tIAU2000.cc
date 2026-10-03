@@ -198,7 +198,8 @@ int main() {
     {
       cout << "IAU2000A/B comparisons ..." << endl;
       SEPAR();
-      unsigned int iau2000_reg = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
+      unsigned int iau2000_reg =
+          AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
       unsigned int iau2000a_reg =
           AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
       cout << "Registrations old: " << iau2000_reg << ", " << iau2000a_reg << endl;
@@ -261,8 +262,10 @@ int main() {
     {
       cout << "Test Aipsrc value cross talk ..." << endl;
       SEPAR();
-      unsigned int iau2000_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
-      unsigned int iau2000a_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
+      unsigned int iau2000_r =
+          AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
+      unsigned int iau2000a_r =
+          AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
       cout << "Registrations now: " << iau2000_r << ", " << iau2000a_r << endl;
       cout << "New J2000 " << AipsrcBool::get(iau2000_r) << ", " << "J2000A "
            << AipsrcBool::get(iau2000a_r) << endl;

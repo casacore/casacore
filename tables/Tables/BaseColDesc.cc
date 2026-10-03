@@ -39,8 +39,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 BaseColumnDesc::BaseColumnDesc(const String& name, const String& comment, const String& dataManType,
                                const String& dataManGroup, DataType dt, const String& dtId, int opt,
-                               unsigned int ndim, const IPosition& shape, bool isScalar, bool isArray,
-                               bool isTable)
+                               unsigned int ndim, const IPosition& shape, bool isScalar,
+                               bool isArray, bool isTable)
     : colName_p(name),
       comment_p(comment),
       dataManType_p(dataManType),

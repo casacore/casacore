@@ -140,7 +140,8 @@ template class VSCEngine<VSCExample>;
 template class VirtualScalarColumn<VSCExample>;
 template class ObjCompare<VSCExample>;
 template void objcopy<VSCExample>(VSCExample*, VSCExample const*, unsigned int);
-template void objcopy<VSCExample>(VSCExample*, VSCExample const*, unsigned int, unsigned int, unsigned int);
+template void objcopy<VSCExample>(VSCExample*, VSCExample const*, unsigned int, unsigned int,
+                                  unsigned int);
 template void objset<VSCExample>(VSCExample*, VSCExample, unsigned int);
 template void objset<VSCExample>(VSCExample*, VSCExample, unsigned int, unsigned int);
 template void objmove<VSCExample>(VSCExample*, VSCExample const*, unsigned int);

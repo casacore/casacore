@@ -118,7 +118,7 @@ class ArrayColumnDescBase : public BaseColumnDesc {
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
-//  Bool, uChar, Short, uShort, Int, uInt, Int64, float, double,
+//  Bool, uChar, Short, uShort, Int, uInt, int64_t, float, double,
 //  Complex, DComplex and String.
 //
 // At table creation time (when a table gets created from a table
@@ -312,7 +312,7 @@ extern template class ArrayColumnDesc<short>;
 extern template class ArrayColumnDesc<unsigned short>;
 extern template class ArrayColumnDesc<int>;
 extern template class ArrayColumnDesc<unsigned int>;
-extern template class ArrayColumnDesc<Int64>;
+extern template class ArrayColumnDesc<int64_t>;
 extern template class ArrayColumnDesc<float>;
 extern template class ArrayColumnDesc<double>;
 extern template class ArrayColumnDesc<Complex>;

@@ -86,15 +86,16 @@ class MSFitsOutputAstron {
 
   // Write the GC table.
   static bool writeGC(FitsOutput* output, const MeasurementSet& ms, const Table& syscal,
-                      const Block<int>& spwidMap, unsigned int nrif, bool combineSpw, double sensitivity,
-                      int refPixelFreq, double refFreq, double chanbw);
+                      const Block<int>& spwidMap, unsigned int nrif, bool combineSpw,
+                      double sensitivity, int refPixelFreq, double refFreq, double chanbw);
 
   // Convert time to day and fraction.
   static void timeToDay(int& day, double& dayFraction, double time);
 
   // Get the time and hourangle from the MS at the given row.
   // It uses the field-id and observation-id to calculate the hourangle.
-  static void getStartHA(double& startTime, double& startHA, const MeasurementSet& ms, unsigned int rownr);
+  static void getStartHA(double& startTime, double& startHA, const MeasurementSet& ms,
+                         unsigned int rownr);
 
   // Handle the SYSCAL table.
   // It skips the entries not needed and sorts it in the correct order.

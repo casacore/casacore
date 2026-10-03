@@ -199,7 +199,7 @@ void simpleTests() {
   AlwaysAssertExit(whatType<unsigned short>() == TpUShort);
   AlwaysAssertExit(whatType<int>() == TpInt);
   AlwaysAssertExit(whatType<unsigned int>() == TpUInt);
-  AlwaysAssertExit(whatType<Int64>() == TpInt64);
+  AlwaysAssertExit(whatType<int64_t>() == TpInt64);
   AlwaysAssertExit(whatType<float>() == TpFloat);
   AlwaysAssertExit(whatType<double>() == TpDouble);
   AlwaysAssertExit(whatType<Complex>() == TpComplex);
@@ -213,7 +213,7 @@ void simpleTests() {
   AlwaysAssertExit(whatType<Array<unsigned short>>() == TpArrayUShort);
   AlwaysAssertExit(whatType<Array<int>>() == TpArrayInt);
   AlwaysAssertExit(whatType<Array<unsigned int>>() == TpArrayUInt);
-  AlwaysAssertExit(whatType<Array<Int64>>() == TpArrayInt64);
+  AlwaysAssertExit(whatType<Array<int64_t>>() == TpArrayInt64);
   AlwaysAssertExit(whatType<Array<float>>() == TpArrayFloat);
   AlwaysAssertExit(whatType<Array<double>>() == TpArrayDouble);
   AlwaysAssertExit(whatType<Array<Complex>>() == TpArrayComplex);

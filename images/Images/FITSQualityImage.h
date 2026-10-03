@@ -92,7 +92,8 @@ class FITSQualityImage : public ImageInterface<float> {
   explicit FITSQualityImage(const String& name);
 
   // Construct a FITSQualityImage from the disk FITS file name and extensions.
-  explicit FITSQualityImage(const String& name, unsigned int whichDataHDU, unsigned int whichErrorHDU);
+  explicit FITSQualityImage(const String& name, unsigned int whichDataHDU,
+                            unsigned int whichErrorHDU);
 
   // Copy constructor (reference semantics)
   FITSQualityImage(const FITSQualityImage& other);

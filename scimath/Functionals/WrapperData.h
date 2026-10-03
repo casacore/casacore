@@ -381,7 +381,8 @@ class WrapperData_VF<T, Vector<T>, T, true, false> : public WrapperBase<T> {
   typedef WrapperData_VF<T, Vector<T>, T, true, false> myData;
 
  public:
-  explicit WrapperData_VF(T (*f)(const Vector<T> &), unsigned int dim = 1) : WrapperBase<T>(dim), pf_p(f) {}
+  explicit WrapperData_VF(T (*f)(const Vector<T> &), unsigned int dim = 1)
+      : WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_VF() {}
   virtual T eval(typename Function<T>::FunctionArg x, const Vector<T> &) const {
     if (pf_p) {

@@ -150,8 +150,8 @@ void TEGSumSqr(const MArray<T>& src, MArray<T>& dst) {
 }
 
 template <typename T>
-void TEGMeanAdd(const MArray<T>& src, Array<T>& dst, Array<Int64>& nr) {
-  typename Array<Int64>::contiter itn = nr.cbegin();
+void TEGMeanAdd(const MArray<T>& src, Array<T>& dst, Array<int64_t>& nr) {
+  typename Array<int64_t>::contiter itn = nr.cbegin();
   if (src.hasMask()) {
     typename Array<T>::const_iterator in = src.array().begin();
     typename Array<bool>::const_iterator min = src.mask().begin();
@@ -172,11 +172,11 @@ void TEGMeanAdd(const MArray<T>& src, Array<T>& dst, Array<Int64>& nr) {
 }
 
 template <typename T>
-void TEGMeanFinish(MArray<T>& val, const Array<Int64>& nr) {
+void TEGMeanFinish(MArray<T>& val, const Array<int64_t>& nr) {
   DebugAssert(nr.contiguousStorage() && val.array().contiguousStorage(), AipsError);
   typename Array<T>::contiter itv = val.array().cbegin();
   typename Array<bool>::contiter itm = val.wmask().cbegin();
-  for (Array<Int64>::const_contiter itn = nr.cbegin(); itn != nr.cend(); ++itn, ++itv, ++itm) {
+  for (Array<int64_t>::const_contiter itn = nr.cbegin(); itn != nr.cend(); ++itn, ++itv, ++itm) {
     if (*itn > 0) {
       *itv /= *itn;
     } else if (val.hasMask()) {
@@ -220,23 +220,23 @@ void TableExprGroupArrayNFalse::apply(const TableExprId& id) {
 }
 
 TableExprGroupMinArrayInt::TableExprGroupMinArrayInt(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node, std::numeric_limits<Int64>::max()) {}
+    : TableExprGroupFuncInt(node, std::numeric_limits<int64_t>::max()) {}
 TableExprGroupMinArrayInt::~TableExprGroupMinArrayInt() {}
 void TableExprGroupMinArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   if (!arr.empty()) {
-    Int64 v = min(arr);
+    int64_t v = min(arr);
     if (v < itsValue) itsValue = v;
   }
 }
 
 TableExprGroupMaxArrayInt::TableExprGroupMaxArrayInt(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node, std::numeric_limits<Int64>::min()) {}
+    : TableExprGroupFuncInt(node, std::numeric_limits<int64_t>::min()) {}
 TableExprGroupMaxArrayInt::~TableExprGroupMaxArrayInt() {}
 void TableExprGroupMaxArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   if (!arr.empty()) {
-    Int64 v = max(arr);
+    int64_t v = max(arr);
     if (v > itsValue) itsValue = v;
   }
 }
@@ -252,7 +252,7 @@ TableExprGroupProductArrayInt::TableExprGroupProductArrayInt(TableExprNodeRep* n
     : TableExprGroupFuncInt(node, 1) {}
 TableExprGroupProductArrayInt::~TableExprGroupProductArrayInt() {}
 void TableExprGroupProductArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   if (!arr.empty()) {
     itsValue *= product(arr);
   }
@@ -262,7 +262,7 @@ TableExprGroupSumSqrArrayInt::TableExprGroupSumSqrArrayInt(TableExprNodeRep* nod
     : TableExprGroupFuncInt(node) {}
 TableExprGroupSumSqrArrayInt::~TableExprGroupSumSqrArrayInt() {}
 void TableExprGroupSumSqrArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   itsValue += sum(arr * arr);
 }
 
@@ -372,7 +372,8 @@ void TableExprGroupVarianceArrayDouble::finish() {
   }
 }
 
-TableExprGroupStdDevArrayDouble::TableExprGroupStdDevArrayDouble(TableExprNodeRep* node, unsigned int ddof)
+TableExprGroupStdDevArrayDouble::TableExprGroupStdDevArrayDouble(TableExprNodeRep* node,
+                                                                 unsigned int ddof)
     : TableExprGroupVarianceArrayDouble(node, ddof) {}
 TableExprGroupStdDevArrayDouble::~TableExprGroupStdDevArrayDouble() {}
 void TableExprGroupStdDevArrayDouble::finish() {
@@ -424,7 +425,7 @@ double TableExprGroupFractileArrayDouble::getDouble(const vector<TableExprId>& i
       nr += arr.flatten(&(values[0]) + nr, values.size() - nr);
     }
     return GenSort<double>::kthLargest(&(values[0]), nr,
-                                       static_cast<Int64>((nr - 1.) * itsFrac + 0.001));
+                                       static_cast<int64_t>((nr - 1.) * itsFrac + 0.001));
   } catch (const std::exception& x) {
     throw TableInvExpr(
         "Cannot compute gfractile; "
@@ -600,7 +601,7 @@ void TableExprGroupArrayNTrues::apply(const TableExprId& id) {
       Array<bool>::const_iterator in = arr.array().begin();
       Array<bool>::const_iterator min = arr.mask().begin();
       Array<bool>::contiter mout = itsValue.wmask().cbegin();
-      for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      for (Array<int64_t>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++mout) {
         if (!*min) {
           *mout = false;
@@ -611,7 +612,7 @@ void TableExprGroupArrayNTrues::apply(const TableExprId& id) {
       }
     } else {
       Array<bool>::const_iterator in = arr.array().begin();
-      for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      for (Array<int64_t>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++out) {
         if (*in) {
           (*out)++;
@@ -635,7 +636,7 @@ void TableExprGroupArrayNFalses::apply(const TableExprId& id) {
       Array<bool>::const_iterator in = arr.array().begin();
       Array<bool>::const_iterator min = arr.mask().begin();
       Array<bool>::contiter mout = itsValue.wmask().cbegin();
-      for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      for (Array<int64_t>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++mout) {
         if (!*min) {
           *mout = false;
@@ -646,7 +647,7 @@ void TableExprGroupArrayNFalses::apply(const TableExprId& id) {
       }
     } else {
       Array<bool>::const_iterator in = arr.array().begin();
-      for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      for (Array<int64_t>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++out) {
         if (!*in) {
           (*out)++;
@@ -660,10 +661,10 @@ TableExprGroupMinsArrayInt::TableExprGroupMinsArrayInt(TableExprNodeRep* node)
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupMinsArrayInt::~TableExprGroupMinsArrayInt() {}
 void TableExprGroupMinsArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr(itsOperand->getArrayInt(id));
+  MArray<int64_t> arr(itsOperand->getArrayInt(id));
   if (!arr.empty()) {
     if (checkShape(arr, "GMINS")) {
-      itsValue.array() = std::numeric_limits<Int64>::max();
+      itsValue.array() = std::numeric_limits<int64_t>::max();
       itsValue.wmask() = true;
     }
     TEGMin(arr, itsValue);
@@ -675,10 +676,10 @@ TableExprGroupMaxsArrayInt::TableExprGroupMaxsArrayInt(TableExprNodeRep* node)
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupMaxsArrayInt::~TableExprGroupMaxsArrayInt() {}
 void TableExprGroupMaxsArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr(itsOperand->getArrayInt(id));
+  MArray<int64_t> arr(itsOperand->getArrayInt(id));
   if (!arr.empty()) {
     if (checkShape(arr, "GMAXS")) {
-      itsValue.array() = std::numeric_limits<Int64>::min();
+      itsValue.array() = std::numeric_limits<int64_t>::min();
       itsValue.wmask() = true;
     }
     TEGMax(arr, itsValue);
@@ -690,7 +691,7 @@ TableExprGroupSumsArrayInt::TableExprGroupSumsArrayInt(TableExprNodeRep* node)
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupSumsArrayInt::~TableExprGroupSumsArrayInt() {}
 void TableExprGroupSumsArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMS")) {
       itsValue.array() = 0;
@@ -704,7 +705,7 @@ TableExprGroupProductsArrayInt::TableExprGroupProductsArrayInt(TableExprNodeRep*
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupProductsArrayInt::~TableExprGroupProductsArrayInt() {}
 void TableExprGroupProductsArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   if (!arr.empty()) {
     if (checkShape(arr, "GPRODUCTS")) {
       itsValue.array() = 1;
@@ -719,7 +720,7 @@ TableExprGroupSumSqrsArrayInt::TableExprGroupSumSqrsArrayInt(TableExprNodeRep* n
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupSumSqrsArrayInt::~TableExprGroupSumSqrsArrayInt() {}
 void TableExprGroupSumSqrsArrayInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMSQRS")) {
       itsValue.array() = 0;
@@ -838,7 +839,7 @@ void TableExprGroupVariancesArrayDouble::apply(const TableExprId& id) {
       itsNr = 0;
     }
     Array<double>::contiter itm = itsCurMean.cbegin();
-    Array<Int64>::contiter itn = itsNr.cbegin();
+    Array<int64_t>::contiter itn = itsNr.cbegin();
     Array<double>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
       Array<bool>::const_iterator min = arr.mask().begin();
@@ -868,7 +869,7 @@ void TableExprGroupVariancesArrayDouble::finish() {
   DebugAssert(itsNr.contiguousStorage() && itsValue.array().contiguousStorage(), AipsError);
   Array<double>::contiter itv = itsValue.array().cbegin();
   Array<bool>::contiter itm = itsValue.wmask().cbegin();
-  for (Array<Int64>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
+  for (Array<int64_t>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
        ++itn, ++itv, ++itm) {
     if (*itn > itsDdof) {
       *itv /= *itn - itsDdof;
@@ -900,7 +901,7 @@ void TableExprGroupRmssArrayDouble::apply(const TableExprId& id) {
       itsNr.resize(arr.shape());
       itsNr = 0;
     }
-    Array<Int64>::contiter itn = itsNr.cbegin();
+    Array<int64_t>::contiter itn = itsNr.cbegin();
     Array<double>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
       Array<bool>::const_iterator min = arr.mask().begin();
@@ -924,7 +925,7 @@ void TableExprGroupRmssArrayDouble::finish() {
   DebugAssert(itsNr.contiguousStorage() && itsValue.array().contiguousStorage(), AipsError);
   Array<double>::contiter itv = itsValue.array().cbegin();
   Array<bool>::contiter itm = itsValue.wmask().cbegin();
-  for (Array<Int64>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
+  for (Array<int64_t>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
        ++itn, ++itv, ++itm) {
     if (*itn > 0) {
       *itv = sqrt(*itv / *itn);
@@ -1010,7 +1011,7 @@ void TableExprGroupVariancesArrayDComplex::apply(const TableExprId& id) {
       itsNr = 0;
     }
     Array<DComplex>::contiter itm = itsCurMean.cbegin();
-    Array<Int64>::contiter itn = itsNr.cbegin();
+    Array<int64_t>::contiter itn = itsNr.cbegin();
     Array<DComplex>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
       Array<bool>::const_iterator min = arr.mask().begin();
@@ -1040,7 +1041,7 @@ void TableExprGroupVariancesArrayDComplex::finish() {
   DebugAssert(itsNr.contiguousStorage() && itsValue.array().contiguousStorage(), AipsError);
   Array<double>::contiter itv = itsValue.array().cbegin();
   Array<bool>::contiter itm = itsValue.wmask().cbegin();
-  for (Array<Int64>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
+  for (Array<int64_t>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
        ++itn, ++itv, ++itm) {
     if (*itn > itsDdof) {
       *itv /= *itn - itsDdof;
@@ -1060,7 +1061,7 @@ void TableExprGroupStdDevsArrayDComplex::finish() {
   itsValue = sqrt(itsValue);
 }
 
-TableExprGroupHistBase::TableExprGroupHistBase(TableExprNodeRep* node, Int64 nbin, double start,
+TableExprGroupHistBase::TableExprGroupHistBase(TableExprNodeRep* node, int64_t nbin, double start,
                                                double end)
     : TableExprGroupFuncBase(node), itsHist(nbin + 2, 0), itsStart(start) {
   AlwaysAssert(nbin > 0 && end > start, AipsError);
@@ -1074,40 +1075,40 @@ void TableExprGroupHistBase::add(double val) {
   }
   itsHist[bin]++;
 }
-MArray<Int64> TableExprGroupHistBase::getArrayInt(const vector<TableExprId>&) {
-  return MArray<Int64>(itsHist);
+MArray<int64_t> TableExprGroupHistBase::getArrayInt(const vector<TableExprId>&) {
+  return MArray<int64_t>(itsHist);
 }
 
-TableExprGroupHistScalar::TableExprGroupHistScalar(TableExprNodeRep* node, Int64 nbin, double start,
-                                                   double end)
+TableExprGroupHistScalar::TableExprGroupHistScalar(TableExprNodeRep* node, int64_t nbin,
+                                                   double start, double end)
     : TableExprGroupHistBase(node, nbin, start, end) {}
 TableExprGroupHistScalar::~TableExprGroupHistScalar() {}
 void TableExprGroupHistScalar::apply(const TableExprId& id) { add(itsOperand->getDouble(id)); }
 
-TableExprGroupHistInt::TableExprGroupHistInt(TableExprNodeRep* node, Int64 nbin, double start,
+TableExprGroupHistInt::TableExprGroupHistInt(TableExprNodeRep* node, int64_t nbin, double start,
                                              double end)
     : TableExprGroupHistBase(node, nbin, start, end) {}
 TableExprGroupHistInt::~TableExprGroupHistInt() {}
 void TableExprGroupHistInt::apply(const TableExprId& id) {
-  MArray<Int64> arr = itsOperand->getArrayInt(id);
+  MArray<int64_t> arr = itsOperand->getArrayInt(id);
   // Array does not need to be contiguous, so use iterator.
   if (!arr.hasMask()) {
-    Array<Int64>::const_iterator iterEnd = arr.array().end();
-    for (Array<Int64>::const_iterator iter = arr.array().begin(); iter != iterEnd; ++iter) {
+    Array<int64_t>::const_iterator iterEnd = arr.array().end();
+    for (Array<int64_t>::const_iterator iter = arr.array().begin(); iter != iterEnd; ++iter) {
       add(*iter);
     }
   } else {
-    Array<Int64>::const_iterator iterEnd = arr.array().end();
+    Array<int64_t>::const_iterator iterEnd = arr.array().end();
     Array<bool>::const_iterator miter = arr.mask().begin();
-    for (Array<Int64>::const_iterator iter = arr.array().begin(); iter != iterEnd;
+    for (Array<int64_t>::const_iterator iter = arr.array().begin(); iter != iterEnd;
          ++iter, ++miter) {
       if (!*miter) add(*iter);
     }
   }
 }
 
-TableExprGroupHistDouble::TableExprGroupHistDouble(TableExprNodeRep* node, Int64 nbin, double start,
-                                                   double end)
+TableExprGroupHistDouble::TableExprGroupHistDouble(TableExprNodeRep* node, int64_t nbin,
+                                                   double start, double end)
     : TableExprGroupHistBase(node, nbin, start, end) {}
 TableExprGroupHistDouble::~TableExprGroupHistDouble() {}
 void TableExprGroupHistDouble::apply(const TableExprId& id) {

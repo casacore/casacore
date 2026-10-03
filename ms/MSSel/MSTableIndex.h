@@ -121,7 +121,7 @@ class MSTableIndex {
 
   // get the row number which falls in the interval and has the time nearest to the
   // center of the interval (time()).  This also has the same problem as the previous function.
-  virtual Int64 getNearestRow(bool &found);
+  virtual int64_t getNearestRow(bool &found);
 
   // is this attached to a null table
   virtual bool isNull() { return tab_p.isNull(); }
@@ -152,7 +152,7 @@ class MSTableIndex {
   RowNumbers lastSearch_p;
 
   // last nearest
-  Int64 lastNearest_p;
+  int64_t lastNearest_p;
   bool nearestFound_p, nearestReady_p;
 
   // last known sub-table size

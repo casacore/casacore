@@ -233,7 +233,8 @@ TableExprNode TableParseFunc::makeUDFNode(TableParseQuery* sel, const String& na
   return udf;
 }
 
-TableExprFuncNode::FunctionType TableParseFunc::findFunc(const String& name, unsigned int narguments,
+TableExprFuncNode::FunctionType TableParseFunc::findFunc(const String& name,
+                                                         unsigned int narguments,
                                                          const Vector<int>& ignoreFuncs) {
   // # Determine the function type.
   // # Use the function name in lower case.

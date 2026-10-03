@@ -85,7 +85,8 @@ class LatticeUtilities {
 
   // Bin up one axis of MaskedArray (uses Lattices in implementation)
   template <class T>
-  static void bin(MaskedArray<T>& out, const MaskedArray<T>& in, unsigned int axis, unsigned int bin);
+  static void bin(MaskedArray<T>& out, const MaskedArray<T>& in, unsigned int axis,
+                  unsigned int bin);
 
   // Add degenerate axes to the lattice if needed (nDim is the desired number of dimensions
   // for the output lattice).  If the shapes are the same, the returned

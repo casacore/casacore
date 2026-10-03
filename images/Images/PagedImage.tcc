@@ -79,14 +79,16 @@ PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coord
 
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
-                          const String& filename, TableLock::LockOption lockMode, unsigned int rowNumber)
+                          const String& filename, TableLock::LockOption lockMode,
+                          unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   makePagedImage(shape, coordinateInfo, filename, TableLock(lockMode), rowNumber);
 }
 
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
-                          const String& filename, const TableLock& lockOptions, unsigned int rowNumber)
+                          const String& filename, const TableLock& lockOptions,
+                          unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   makePagedImage(shape, coordinateInfo, filename, lockOptions, rowNumber);
 }

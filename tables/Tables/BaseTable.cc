@@ -542,7 +542,7 @@ void BaseTable::removeRow(const Vector<rownr_t>& rownrs) {
   Vector<rownr_t> rownrsCopy;
   rownrsCopy = rownrs;
   genSort(rownrsCopy);
-  for (Int64 i = rownrsCopy.nelements() - 1; i >= 0; i--) {
+  for (int64_t i = rownrsCopy.nelements() - 1; i >= 0; i--) {
     removeRow(rownrsCopy(i));
   }
 }

@@ -34,7 +34,7 @@ template class Block<short>;
 template class Block<unsigned short>;
 template class Block<int>;
 template class Block<unsigned int>;
-template class Block<Int64>;
+template class Block<int64_t>;
 template class Block<float>;
 template class Block<double>;
 template class Block<Complex>;

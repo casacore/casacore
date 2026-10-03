@@ -74,8 +74,8 @@ BucketFile::BucketFile(const String& fileName, unsigned int bufSizeFile, bool ma
   createMapBuf();
 }
 
-BucketFile::BucketFile(const String& fileName, bool isWritable, unsigned int bufSizeFile, bool mappedFile,
-                       const std::shared_ptr<MultiFileBase>& mfile)
+BucketFile::BucketFile(const String& fileName, bool isWritable, unsigned int bufSizeFile,
+                       bool mappedFile, const std::shared_ptr<MultiFileBase>& mfile)
     : name_p(Path(fileName).expandedName()),
       isWritable_p(isWritable),
       isMapped_p(mappedFile),
@@ -174,22 +174,24 @@ void BucketFile::setRW() {
   }
 }
 
-unsigned int BucketFile::read(void* buffer, unsigned int length) { return file_p->read(length, buffer); }
+unsigned int BucketFile::read(void* buffer, unsigned int length) {
+  return file_p->read(length, buffer);
+}
 
 unsigned int BucketFile::write(const void* buffer, unsigned int length) {
   file_p->write(length, buffer);
   return length;
 }
 
-void BucketFile::seek(Int64 offset) {
+void BucketFile::seek(int64_t offset) {
   AlwaysAssert(bufferedFile_p == 0, AipsError);
   file_p->seek(offset, ByteIO::Begin);
 }
 
-Int64 BucketFile::fileSize() const {
+int64_t BucketFile::fileSize() const {
   // If a buffered file is used, seek in there. Otherwise its internal
   // offset is wrong.
-  Int64 size;
+  int64_t size;
   if (bufferedFile_p) {
     size = bufferedFile_p->seek(0, ByteIO::End);
   } else {

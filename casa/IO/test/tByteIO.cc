@@ -45,8 +45,8 @@ static short vals = -3;
 static unsigned short valus = 2;
 static int vali = 1000;
 static unsigned int valui = 32768;
-static Int64 vall = -14793;
-static uInt64 valul = 17;
+static int64_t vall = -14793;
+static uint64_t valul = 17;
 static float valf = 1.2;
 static double vald = -3.14;
 
@@ -68,11 +68,11 @@ void checkValues(ByteIO& fio, unsigned short incr) {
   unsigned int resui;
   AlwaysAssertExit(fio.read(sizeof(unsigned int), &resui) == sizeof(unsigned int));
   AlwaysAssertExit(resui == valui);
-  Int64 resl;
-  AlwaysAssertExit(fio.read(sizeof(Int64), &resl) == sizeof(Int64));
+  int64_t resl;
+  AlwaysAssertExit(fio.read(sizeof(int64_t), &resl) == sizeof(int64_t));
   AlwaysAssertExit(resl == vall);
-  uInt64 resul;
-  AlwaysAssertExit(fio.read(sizeof(uInt64), &resul) == sizeof(uInt64));
+  uint64_t resul;
+  AlwaysAssertExit(fio.read(sizeof(uint64_t), &resul) == sizeof(uint64_t));
   AlwaysAssertExit(resul == valul);
   float resf;
   AlwaysAssertExit(fio.read(sizeof(float), &resf) == sizeof(float));
@@ -96,10 +96,10 @@ void doIt(ByteIO& fio) {
   checkLength(fio, length, sizeof(int));
   fio.write(sizeof(unsigned int), &valui);
   checkLength(fio, length, sizeof(unsigned int));
-  fio.write(sizeof(Int64), &vall);
-  checkLength(fio, length, sizeof(Int64));
-  fio.write(sizeof(uInt64), &valul);
-  checkLength(fio, length, sizeof(uInt64));
+  fio.write(sizeof(int64_t), &vall);
+  checkLength(fio, length, sizeof(int64_t));
+  fio.write(sizeof(uint64_t), &valul);
+  checkLength(fio, length, sizeof(uint64_t));
   fio.write(sizeof(float), &valf);
   checkLength(fio, length, sizeof(float));
   fio.write(sizeof(double), &vald);
@@ -130,7 +130,7 @@ void doIt(ByteIO& fio) {
   checkValues(fio, incr);
 
   AlwaysAssertExit(fio.length() == length);
-  Int64 offset = sizeof(bool);
+  int64_t offset = sizeof(bool);
   incr = 100;
   vals1 = vals - incr;
   fio.pwrite(sizeof(short), offset, &vals1);
@@ -156,11 +156,11 @@ void checkReopen() {
     RegularFileIO fio(rfile);
     checkValues(fio, 100);
     fio.reopenRW();
-    fio.seek(Int64(sizeof(bool)));
+    fio.seek(int64_t(sizeof(bool)));
     short vals;
     fio.read(sizeof(short), &vals);
     vals -= 50;
-    fio.seek(Int64(sizeof(bool)));
+    fio.seek(int64_t(sizeof(bool)));
     fio.write(sizeof(short), &vals);
     unsigned short valus;
     fio.read(sizeof(unsigned short), &valus);
@@ -195,13 +195,13 @@ void testMemoryIO() {
     MemoryIO membuf(buf, sizeof(buf), ByteIO::New, 6);
     doIt(membuf);
     AlwaysAssertExit(membuf.getBuffer() != (const unsigned char*)&buf);
-    Int64 length = membuf.length();
+    int64_t length = membuf.length();
     int incr = 20;
     membuf.seek(incr, ByteIO::End);
     AlwaysAssertExit(membuf.length() == length + incr);
     checkValues(membuf, 100);
     char val;
-    Int64 lincr = incr;
+    int64_t lincr = incr;
     membuf.seek(-lincr, ByteIO::End);
     for (int i = 0; i < incr; i++) {
       membuf.read(1, &val);

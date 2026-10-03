@@ -105,9 +105,9 @@ void MSSpWindowColumns::attachOptionalCols(const MSSpectralWindow& msSpWindow) {
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow, receiverId);
 }
 
-Int64 MSSpWindowColumns::matchSpw(const MFrequency& refFreq, unsigned int nChan,
-                                  const Quantum<double>& bandwidth, int ifChain,
-                                  const Quantum<double>& tolerance, Int64 tryRow) const {
+int64_t MSSpWindowColumns::matchSpw(const MFrequency& refFreq, unsigned int nChan,
+                                    const Quantum<double>& bandwidth, int ifChain,
+                                    const Quantum<double>& tolerance, int64_t tryRow) const {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the reference frequency to Hz
@@ -150,11 +150,11 @@ Int64 MSSpWindowColumns::matchSpw(const MFrequency& refFreq, unsigned int nChan,
   return -1;
 }
 // this version has info of MeasFrame.
-Int64 MSSpWindowColumns::matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/,
-                                  const MeasFrame& measFrm, const MSDopplerColumns& msdopc,
-                                  const MSSourceColumns& mssrcc, unsigned int nChan,
-                                  const Quantum<double>& bandwidth, int ifChain,
-                                  const Quantum<double>& tolerance, Int64 tryRow) const {
+int64_t MSSpWindowColumns::matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/,
+                                    const MeasFrame& measFrm, const MSDopplerColumns& msdopc,
+                                    const MSSourceColumns& mssrcc, unsigned int nChan,
+                                    const Quantum<double>& bandwidth, int ifChain,
+                                    const Quantum<double>& tolerance, int64_t tryRow) const {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the totalBandwidth to Hz
@@ -228,10 +228,10 @@ RowNumbers MSSpWindowColumns::allMatchedSpw(const MFrequency& refFreq, unsigned 
   return matched;
 }
 
-Int64 MSSpWindowColumns::matchSpw(const MFrequency& refFreq, unsigned int nChan,
-                                  const Quantum<double>& bandwidth, int ifChain,
-                                  const Quantum<double>& tolerance, Vector<double>& otherFreqs,
-                                  bool& reversed) const {
+int64_t MSSpWindowColumns::matchSpw(const MFrequency& refFreq, unsigned int nChan,
+                                    const Quantum<double>& bandwidth, int ifChain,
+                                    const Quantum<double>& tolerance, Vector<double>& otherFreqs,
+                                    bool& reversed) const {
   reversed = false;
 
   int matchedSpw = -1;

@@ -34,8 +34,8 @@ DirectionEngine::DirectionEngine() : itsEpochEngine(0), itsPositionEngine(0) {}
 
 DirectionEngine::~DirectionEngine() {}
 
-void DirectionEngine::handleDirection(const vector<TENShPtr>& args, unsigned int& argnr, bool riseSet,
-                                      bool asDirCos) {
+void DirectionEngine::handleDirection(const vector<TENShPtr>& args, unsigned int& argnr,
+                                      bool riseSet, bool asDirCos) {
   // Initialize to unknown reference type.
   itsRefType = MDirection::N_Types;
   // Normally directions must be given in an array, but a single one

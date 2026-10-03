@@ -48,7 +48,7 @@ static Record emptyRecord;
 TiledColumnStMan::TiledColumnStMan() : TiledStMan() {}
 
 TiledColumnStMan::TiledColumnStMan(const String& hypercolumnName, const IPosition& tileShape,
-                                   uInt64 maximumCacheSize)
+                                   uint64_t maximumCacheSize)
     : TiledStMan(hypercolumnName, maximumCacheSize), tileShape_p(tileShape) {}
 
 TiledColumnStMan::TiledColumnStMan(const String& hypercolumnName, const Record& spec)

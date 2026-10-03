@@ -101,7 +101,7 @@ void LatticeStatsDataProvider<T>::finalize() {
 }
 
 template <class T>
-uInt64 LatticeStatsDataProvider<T>::getCount() {
+uint64_t LatticeStatsDataProvider<T>::getCount() {
   if (!_iter) {
     return _currentSlice.size();
   }
@@ -145,7 +145,8 @@ void LatticeStatsDataProvider<T>::reset() {
 }
 
 template <class T>
-void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice, unsigned int iteratorLimitBytes) {
+void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice,
+                                             unsigned int iteratorLimitBytes) {
   finalize();
   if (lattice.size() > iteratorLimitBytes / sizeof(T)) {
     TileStepper stepper(lattice.shape(), lattice.niceCursorShape(lattice.advisedMaxPixels()));
@@ -162,7 +163,7 @@ void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice, unsigned
 }
 
 template <class T>
-void LatticeStatsDataProvider<T>::updateMaxPos(const std::pair<Int64, Int64>& maxpos) {
+void LatticeStatsDataProvider<T>::updateMaxPos(const std::pair<int64_t, int64_t>& maxpos) {
   IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
   if (_iter) {
     p += _iter->position();
@@ -171,7 +172,7 @@ void LatticeStatsDataProvider<T>::updateMaxPos(const std::pair<Int64, Int64>& ma
 }
 
 template <class T>
-void LatticeStatsDataProvider<T>::updateMinPos(const std::pair<Int64, Int64>& minpos) {
+void LatticeStatsDataProvider<T>::updateMinPos(const std::pair<int64_t, int64_t>& minpos) {
   IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
   if (_iter) {
     p += _iter->position();

@@ -237,9 +237,11 @@ class ROTiledStManAccessor : public RODataManAccessor {
   // The non-specified <src>axisPath</src> parts get the natural order.
   // E.g. in the previous example axisPath=[2] defines the same path.
   // <group>
-  unsigned int calcCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& axisPath) const;
-  unsigned int calcCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& windowStart,
-                     const IPosition& windowLength, const IPosition& axisPath) const;
+  unsigned int calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                             const IPosition& axisPath) const;
+  unsigned int calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                             const IPosition& windowStart, const IPosition& windowLength,
+                             const IPosition& axisPath) const;
   // </group>
 
   // Set the cache size using the corresponding <src>calcCacheSize</src>
@@ -263,7 +265,8 @@ class ROTiledStManAccessor : public RODataManAccessor {
 
   // This version allows setting the tile cache for a particular hypercube.  This
   // is useful when iterating over the hypercubes in an StMan.
-  void setHypercubeCacheSize(unsigned int hypercube, unsigned int nbuckets, bool forceSmaller = true);
+  void setHypercubeCacheSize(unsigned int hypercube, unsigned int nbuckets,
+                             bool forceSmaller = true);
 
   // Clear the caches used by the hypercubes in this storage manager.
   // It will flush the caches as needed and remove all buckets from them

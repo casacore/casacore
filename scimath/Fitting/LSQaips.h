@@ -86,7 +86,9 @@ class LSQaips : public LSQFit {
   //  default Levenberg-Marquardt adjustment factor
   //  <group>
   //  Assume real
-  LSQaips(unsigned int nUnknowns, unsigned int nConstraints = 0) : LSQFit(nUnknowns, nConstraints) { ; }
+  LSQaips(unsigned int nUnknowns, unsigned int nConstraints = 0) : LSQFit(nUnknowns, nConstraints) {
+    ;
+  }
   // Allow explicit complex/real specification
   // <group>
   LSQaips(unsigned int nUnknowns, const LSQReal &, unsigned int nConstraints = 0)

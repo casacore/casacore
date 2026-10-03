@@ -149,7 +149,7 @@ String JsonParser::removeEscapes(const String& in) {
             if (i < leng + 4) {
               String hex("0X" + in.substr(i + 1, 4));
               char* endPtr;
-              Int64 val = strtoll(hex.c_str(), &endPtr, 0);
+              int64_t val = strtoll(hex.c_str(), &endPtr, 0);
               if (endPtr == hex.c_str() + hex.size() && val < 128) {
                 out += char(val);
                 i += 4;

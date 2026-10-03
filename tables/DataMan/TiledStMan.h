@@ -159,10 +159,10 @@ class TiledStMan : public DataManager {
   // the algorithm works out for a given tile size and cube shape.
   // <group>
   static IPosition makeTileShape(const IPosition& hypercubeShape, double tolerance = 0.5,
-                                 uInt64 maxNrPixelsPerTile = 4 * 1024 * 1024);
+                                 uint64_t maxNrPixelsPerTile = 4 * 1024 * 1024);
   static IPosition makeTileShape(const IPosition& hypercubeShape, const Vector<double>& weight,
                                  const Vector<double>& tolerance,
-                                 uInt64 maxNrPixelsPerTile = 4 * 1024 * 1024);
+                                 uint64_t maxNrPixelsPerTile = 4 * 1024 * 1024);
   // </group>
 
   // Set the maximum cache size (in MiB) in a non-persistent way.
@@ -182,7 +182,7 @@ class TiledStMan : public DataManager {
   const IPosition& tileShape(rownr_t rownr) const;
 
   // Get the bucket size (in bytes) of the hypercube in the given row.
-  uInt64 bucketSize(rownr_t rownr) const;
+  uint64_t bucketSize(rownr_t rownr) const;
 
   // Can the tiled storage manager handle changing array shapes?
   // The default is no (but TiledCellStMan can).
@@ -219,8 +219,9 @@ class TiledStMan : public DataManager {
   // new size is smaller.
   // <br>A flag is set indicating that the TSMDataColumn
   // access functions do not need to size the cache.
-  unsigned int calcCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& windowStart,
-                     const IPosition& windowLength, const IPosition& axisPath) const;
+  unsigned int calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+                             const IPosition& windowStart, const IPosition& windowLength,
+                             const IPosition& axisPath) const;
 
   // Set the cache size using the <src>calcCacheSize</src>
   // function mentioned above.
@@ -254,8 +255,8 @@ class TiledStMan : public DataManager {
 
   // Get the length of the data for the given number of pixels.
   // This can be used to calculate the length of a tile.
-  uInt64 getLengthOffset(uInt64 nrPixels, Block<unsigned int>& dataOffset, Block<unsigned int>& localOffset,
-                         unsigned int& localTileLength) const;
+  uint64_t getLengthOffset(uint64_t nrPixels, Block<unsigned int>& dataOffset,
+                           Block<unsigned int>& localOffset, unsigned int& localTileLength) const;
 
   // Get the number of coordinate vectors.
   unsigned int nrCoordVector() const;
@@ -295,7 +296,7 @@ class TiledStMan : public DataManager {
 
   // Make the correct TSMCube type (depending on tsmOption()).
   TSMCube* makeTSMCube(TSMFile* file, const IPosition& cubeShape, const IPosition& tileShape,
-                       const Record& values, Int64 fileOffset = -1);
+                       const Record& values, int64_t fileOffset = -1);
 
   // Read a tile and convert the data to local format.
   void readTile(char* local, const Block<unsigned int>& localOffset, const char* external,
@@ -371,7 +372,7 @@ class TiledStMan : public DataManager {
   // is not bound.
   // It returns the number of bound columns.
   unsigned int getBindings(const Vector<String>& columnNames, Block<TSMColumn*>& colSet,
-                   bool mustExist) const;
+                           bool mustExist) const;
 
   // Function setup calls this function to allow the derived class
   // to check specific information. In case of errors, an exception
@@ -434,7 +435,7 @@ class TiledStMan : public DataManager {
 
   // Write the data into the header file.
   // The given number of TSMCube objects have to be written.
-  void headerFilePut(AipsIO& headerFile, uInt64 nrCube);
+  void headerFilePut(AipsIO& headerFile, uint64_t nrCube);
 
   // Read the data from the header file.
   // When done for the first time, setup() is called to initialize

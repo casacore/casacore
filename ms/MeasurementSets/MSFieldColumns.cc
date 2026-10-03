@@ -281,11 +281,11 @@ bool MSFieldColumns::matchPhaseDir(rownr_t row, const MVDirection& dirVal, const
   }
 }
 
-Int64 MSFieldColumns::matchDirection(const MDirection& referenceDirection,
-                                     const MDirection& delayDirection,
-                                     const MDirection& phaseDirection,
-                                     const Quantum<double>& maxSeparation, Int64 tryRow,
-                                     double time) {
+int64_t MSFieldColumns::matchDirection(const MDirection& referenceDirection,
+                                       const MDirection& delayDirection,
+                                       const MDirection& phaseDirection,
+                                       const Quantum<double>& maxSeparation, int64_t tryRow,
+                                       double time) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   const MVDirection& referenceDirVal = referenceDirection.getValue();

@@ -56,17 +56,20 @@ StokesCoordinate makeStokesCoordinate(bool silly = true);
 QualityCoordinate makeQualityCoordinate();
 LinearCoordinate makeLinearCoordinate(unsigned int nAxes = 2);
 TabularCoordinate makeTabularCoordinate();
-CoordinateSystem makeCoordinateSystem(unsigned int& nCoords, Vector<int>& types, Vector<String>& sTypes,
-                                      unsigned int& iDC, unsigned int& iSpC, unsigned int& iTC, unsigned int& iStC, unsigned int& iQuC,
-                                      unsigned int& iLC, DirectionCoordinate& dC, SpectralCoordinate& spC,
-                                      TabularCoordinate& tC, StokesCoordinate& stC,
-                                      QualityCoordinate& quC, LinearCoordinate& lC);
+CoordinateSystem makeCoordinateSystem(unsigned int& nCoords, Vector<int>& types,
+                                      Vector<String>& sTypes, unsigned int& iDC, unsigned int& iSpC,
+                                      unsigned int& iTC, unsigned int& iStC, unsigned int& iQuC,
+                                      unsigned int& iLC, DirectionCoordinate& dC,
+                                      SpectralCoordinate& spC, TabularCoordinate& tC,
+                                      StokesCoordinate& stC, QualityCoordinate& quC,
+                                      LinearCoordinate& lC);
 
 void doit(CoordinateSystem& lc, unsigned int nCoords, const Vector<int>& types,
-          const Vector<String>& sTypes, const unsigned int iDC, const unsigned int iSpC, const unsigned int iTC,
-          const unsigned int iStC, const unsigned int iQuC, const unsigned int iLC, const DirectionCoordinate&,
-          const SpectralCoordinate&, const TabularCoordinate&, const StokesCoordinate&,
-          const QualityCoordinate&, const LinearCoordinate&);
+          const Vector<String>& sTypes, const unsigned int iDC, const unsigned int iSpC,
+          const unsigned int iTC, const unsigned int iStC, const unsigned int iQuC,
+          const unsigned int iLC, const DirectionCoordinate&, const SpectralCoordinate&,
+          const TabularCoordinate&, const StokesCoordinate&, const QualityCoordinate&,
+          const LinearCoordinate&);
 void doit2(CoordinateSystem& cSys);
 void doit3(CoordinateSystem& cSys);
 void doit4();
@@ -445,10 +448,11 @@ int main() {
 }
 
 void doit(CoordinateSystem& cSys, unsigned int nCoords, const Vector<int>& types,
-          const Vector<String>& sTypes, const unsigned int iDC, const unsigned int iSpC, const unsigned int iTC,
-          const unsigned int iStC, const unsigned int iQuC, const unsigned int iLC, const DirectionCoordinate& dC,
-          const SpectralCoordinate& spC, const TabularCoordinate& tC, const StokesCoordinate& stC,
-          const QualityCoordinate& quC, const LinearCoordinate& lC) {
+          const Vector<String>& sTypes, const unsigned int iDC, const unsigned int iSpC,
+          const unsigned int iTC, const unsigned int iStC, const unsigned int iQuC,
+          const unsigned int iLC, const DirectionCoordinate& dC, const SpectralCoordinate& spC,
+          const TabularCoordinate& tC, const StokesCoordinate& stC, const QualityCoordinate& quC,
+          const LinearCoordinate& lC) {
   // Test copy constructor
   {
     CoordinateSystem cSys2(cSys);
@@ -2210,11 +2214,13 @@ TabularCoordinate makeTabularCoordinate() {
   return TabularCoordinate(crval, cdelt, crpix, axisUnit, axisName);
 }
 
-CoordinateSystem makeCoordinateSystem(unsigned int& nCoords, Vector<int>& types, Vector<String>& sTypes,
-                                      unsigned int& iDC, unsigned int& iSpC, unsigned int& iTC, unsigned int& iStC, unsigned int& iQuC,
-                                      unsigned int& iLC, DirectionCoordinate& dC, SpectralCoordinate& spC,
-                                      TabularCoordinate& tC, StokesCoordinate& stC,
-                                      QualityCoordinate& quC, LinearCoordinate& lC) {
+CoordinateSystem makeCoordinateSystem(unsigned int& nCoords, Vector<int>& types,
+                                      Vector<String>& sTypes, unsigned int& iDC, unsigned int& iSpC,
+                                      unsigned int& iTC, unsigned int& iStC, unsigned int& iQuC,
+                                      unsigned int& iLC, DirectionCoordinate& dC,
+                                      SpectralCoordinate& spC, TabularCoordinate& tC,
+                                      StokesCoordinate& stC, QualityCoordinate& quC,
+                                      LinearCoordinate& lC) {
   CoordinateSystem cSys;
   dC = makeDirectionCoordinate();
   spC = makeSpectralCoordinate();

@@ -110,7 +110,8 @@ class LELImageCoord : public LELLattCoord {
   // It returns the pixel axis number of the spectral coordinates.
   // -1 indicates that there is no pixel spectral axis.
   // An exception is thrown if there are no world spectral coordinates.
-  virtual unsigned int getSpectralInfo(Vector<double>& worldCoordinates, const IPosition& shape) const;
+  virtual unsigned int getSpectralInfo(Vector<double>& worldCoordinates,
+                                       const IPosition& shape) const;
 
   // The name of the class.
   virtual String classname() const;

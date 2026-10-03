@@ -66,7 +66,8 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
   CoordinateSystem cSys = inImage.coordinates();
   IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
 
-  unsigned int nExtra = CoordinateUtil::addAxes(cSys, direction, spectral, stokes, linear, tabular, silent);
+  unsigned int nExtra =
+      CoordinateUtil::addAxes(cSys, direction, spectral, stokes, linear, tabular, silent);
 
   if (nExtra > 0) {
     unsigned int n = shape.nelements();

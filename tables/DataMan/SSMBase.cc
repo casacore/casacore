@@ -568,16 +568,16 @@ void SSMBase::writeIndex() {
     anOs.putstart("StandardStMan", 3);
     anOs << asBigEndian();
   }
-  anOs << itsBucketSize;                  // Size of the bucket
-  anOs << aNrBuckets;                     // Present number of buckets
-  anOs << itsPersCacheSize;               // Size of Persistent cache
-  anOs << getCache().nFreeBucket();       // Nr of Free Buckets
-  anOs << getCache().firstFreeBucket();   // First Free Bucket nr
-  anOs << itsNrIdxBuckets;                // Nr buckets needed for index
-  anOs << itsFirstIdxBucket;              // First Index bucket number
-  anOs << itsIdxBucketOffset;             // Offset of bucket if fitting
-  anOs << itsLastStringBucket;            // Last String bucket in use
-  anOs << idxLength;                      // length of index
+  anOs << itsBucketSize;                                       // Size of the bucket
+  anOs << aNrBuckets;                                          // Present number of buckets
+  anOs << itsPersCacheSize;                                    // Size of Persistent cache
+  anOs << getCache().nFreeBucket();                            // Nr of Free Buckets
+  anOs << getCache().firstFreeBucket();                        // First Free Bucket nr
+  anOs << itsNrIdxBuckets;                                     // Nr buckets needed for index
+  anOs << itsFirstIdxBucket;                                   // First Index bucket number
+  anOs << itsIdxBucketOffset;                                  // Offset of bucket if fitting
+  anOs << itsLastStringBucket;                                 // Last String bucket in use
+  anOs << idxLength;                                           // length of index
   anOs << static_cast<unsigned int>(itsPtrIndex.nelements());  // Nr of indices
 
   anOs.putend();

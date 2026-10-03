@@ -267,7 +267,8 @@ void TableExprFuncNode::fillUnits() {
   }
 }
 
-const Unit& TableExprFuncNode::makeEqualUnits(vector<TENShPtr>& nodes, unsigned int starg, unsigned int endarg) {
+const Unit& TableExprFuncNode::makeEqualUnits(vector<TENShPtr>& nodes, unsigned int starg,
+                                              unsigned int endarg) {
   // These functions have multiple children, which must have the same unit.
   // The first real unit is chosen as the result unit.
   const Unit* unit = &(nodes[starg]->unit());
@@ -462,18 +463,18 @@ bool TableExprFuncNode::getBool(const TableExprId& id) {
   return true;
 }
 
-Int64 TableExprFuncNode::getInt(const TableExprId& id) {
+int64_t TableExprFuncNode::getInt(const TableExprId& id) {
   switch (funcType_p) {
     case powFUNC: {
       double val = pow(operands_p[0]->getDouble(id), operands_p[1]->getDouble(id));
-      return Int64(val < 0 ? ceil(val - 0.5) : floor(val + 0.5));
+      return int64_t(val < 0 ? ceil(val - 0.5) : floor(val + 0.5));
     }
     case squareFUNC: {
-      Int64 val = operands_p[0]->getInt(id);
+      int64_t val = operands_p[0]->getInt(id);
       return val * val;
     }
     case cubeFUNC: {
-      Int64 val = operands_p[0]->getInt(id);
+      int64_t val = operands_p[0]->getInt(id);
       return val * val * val;
     }
     case minFUNC:
@@ -481,7 +482,7 @@ Int64 TableExprFuncNode::getInt(const TableExprId& id) {
     case maxFUNC:
       return std::max(operands_p[0]->getInt(id), operands_p[1]->getInt(id));
     case normFUNC: {
-      Int64 val = operands_p[0]->getInt(id);
+      int64_t val = operands_p[0]->getInt(id);
       return val * val;
     }
     case absFUNC:
@@ -492,11 +493,11 @@ Int64 TableExprFuncNode::getInt(const TableExprId& id) {
       } else if (operands_p[0]->dataType() == NTBool) {
         return operands_p[0]->getBool(id) ? 1 : 0;
       } else if (argDataType_p == NTDouble) {
-        return Int64(operands_p[0]->getDouble(id));
+        return int64_t(operands_p[0]->getDouble(id));
       }
       return operands_p[0]->getInt(id);
     case signFUNC: {
-      Int64 val = operands_p[0]->getInt(id);
+      int64_t val = operands_p[0]->getInt(id);
       if (val > 0) {
         return 1;
       }
@@ -527,13 +528,13 @@ Int64 TableExprFuncNode::getInt(const TableExprId& id) {
       return operands_p[0]->getDate(id).yearweek();
     case arrminFUNC:
       if (operands_p[0]->valueType() == VTArray) {
-        MArray<Int64> tmp = operands_p[0]->getArrayInt(id);
+        MArray<int64_t> tmp = operands_p[0]->getArrayInt(id);
         return min(tmp);
       }
       return operands_p[0]->getInt(id);
     case arrmaxFUNC:
       if (operands_p[0]->valueType() == VTArray) {
-        MArray<Int64> tmp = operands_p[0]->getArrayInt(id);
+        MArray<int64_t> tmp = operands_p[0]->getArrayInt(id);
         return max(tmp);
       }
       return operands_p[0]->getInt(id);
@@ -551,7 +552,7 @@ Int64 TableExprFuncNode::getInt(const TableExprId& id) {
       if (operands_p[0]->valueType() == VTArray) {
         return sumsqr(operands_p[0]->getArrayInt(id));
       } else {
-        Int64 val = operands_p[0]->getInt(id);
+        int64_t val = operands_p[0]->getInt(id);
         return val * val;
       }
     case arrntrueFUNC:
@@ -566,7 +567,7 @@ Int64 TableExprFuncNode::getInt(const TableExprId& id) {
       return (operands_p[0]->getBool(id) ? 0 : 1);
     case ndimFUNC: {
       // Return fixed dimensionality if available.
-      Int64 nrdim = operands_p[0]->ndim();
+      int64_t nrdim = operands_p[0]->ndim();
       return (nrdim >= 0 ? nrdim : operands_p[0]->shape(id).size());
     }
     case nelemFUNC:
@@ -949,13 +950,13 @@ String TableExprFuncNode::getString(const TableExprId& id) {
     }
     case substrFUNC: {
       String str = operands_p[0]->getString(id);
-      Int64 st = operands_p[1]->getInt(id);
+      int64_t st = operands_p[1]->getInt(id);
       if (st < 0) st += str.size();
       if (st < 0) st = 0;
-      if (st > Int64(str.size())) st = str.size();
-      Int64 sz = String::npos;
+      if (st > int64_t(str.size())) st = str.size();
+      int64_t sz = String::npos;
       if (operands_p.size() > 2) {
-        sz = std::max(Int64(0), operands_p[2]->getInt(id));
+        sz = std::max(int64_t(0), operands_p[2]->getInt(id));
       }
       return str.substr(st, sz);
     }
@@ -1146,7 +1147,7 @@ String TableExprFuncNode::stringValue(bool val, const String& fmt, int width) {
   }
   return FormatString(fmt.c_str(), val);
 }
-String TableExprFuncNode::stringValue(Int64 val, const String& fmt, int width) {
+String TableExprFuncNode::stringValue(int64_t val, const String& fmt, int width) {
   if (fmt.empty()) {
     ostringstream os;
     if (width > 0) os << std::setw(width);
@@ -1837,10 +1838,10 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands(Block<int>& dtyp
   return NTNumeric;
 }
 
-Int64 TableExprFuncNode::string2Int(const String& str) {
+int64_t TableExprFuncNode::string2Int(const String& str) {
   istringstream istr(str);
   // Initialize to 0 to make sure an empty string is handled correctly.
-  Int64 v = 0;
+  int64_t v = 0;
   istr >> v;
   return v;
 }

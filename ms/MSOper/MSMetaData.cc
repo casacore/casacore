@@ -479,7 +479,8 @@ void MSMetaData::_getRowStats(rownr_t& nACRows, rownr_t& nXCRows,
   scanToNXCRowsMap.reset(myScanToNXCRowsMap);
   fieldToNACRowsMap.reset(myFieldToNACRowsMap);
   fieldToNXCRowsMap.reset(myFieldToNXCRowsMap);
-  unsigned int size = 2 * (sizeof(unsigned int) + _sizeof(*scanToNACRowsMap) + _sizeof(*fieldToNACRowsMap));
+  unsigned int size =
+      2 * (sizeof(unsigned int) + _sizeof(*scanToNACRowsMap) + _sizeof(*fieldToNACRowsMap));
   if (_cacheUpdated(size)) {
     _nACRows = nACRows;
     _nXCRows = nXCRows;
@@ -872,10 +873,13 @@ std::set<unsigned int> MSMetaData::getSpwsForIntent(const String& intent) {
 
 std::vector<std::set<unsigned int>> MSMetaData::getSpwToDataDescriptionIDMap() const {
   // TODO perhaps cache the result, but atm doesn't seem worth doing
-  std::map<std::pair<unsigned int, unsigned int>, unsigned int> spwPolToDDID = getSpwIDPolIDToDataDescIDMap();
+  std::map<std::pair<unsigned int, unsigned int>, unsigned int> spwPolToDDID =
+      getSpwIDPolIDToDataDescIDMap();
   std::vector<std::set<unsigned int>> mymap(nSpw(true));
-  std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator iter = spwPolToDDID.begin();
-  std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator end = spwPolToDDID.end();
+  std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator iter =
+      spwPolToDDID.begin();
+  std::map<std::pair<unsigned int, unsigned int>, unsigned int>::const_iterator end =
+      spwPolToDDID.end();
   while (iter != end) {
     mymap[iter->first.first].insert(iter->second);
     ++iter;
@@ -965,7 +969,8 @@ std::shared_ptr<std::set<int>> MSMetaData::_getEphemFieldIDs() const {
   return _ephemFields;
 }
 
-MDirection MSMetaData::phaseDirFromFieldIDAndTime(const unsigned int fieldID, const MEpoch& ep) const {
+MDirection MSMetaData::phaseDirFromFieldIDAndTime(const unsigned int fieldID,
+                                                  const MEpoch& ep) const {
   _hasFieldID(fieldID);
   MSFieldColumns msfc(_ms->field());
   if (!msfc.needInterTime(fieldID)) {
@@ -1380,7 +1385,8 @@ unsigned int MSMetaData::nDataDescriptions() const {
   return _nDataDescIDs;
 }
 
-vector<String> MSMetaData::_getAntennaNames(std::map<String, std::set<unsigned int>>& namesToIDsMap) const {
+vector<String> MSMetaData::_getAntennaNames(
+    std::map<String, std::set<unsigned int>>& namesToIDsMap) const {
   if (!_antennaNames.empty()) {
     namesToIDsMap = _antennaNameToIDMap;
     return _antennaNames;
@@ -1818,7 +1824,8 @@ vector<String> MSMetaData::getCorrBits() const {
   return out;
 }
 
-std::map<unsigned int, std::set<unsigned int>> MSMetaData::getBBCNosToSpwMap(SQLDSwitch sqldSwitch) {
+std::map<unsigned int, std::set<unsigned int>> MSMetaData::getBBCNosToSpwMap(
+    SQLDSwitch sqldSwitch) {
   vector<unsigned int> mymap = getBBCNos();
   std::map<unsigned int, std::set<unsigned int>> out;
   vector<unsigned int>::const_iterator end = mymap.end();
@@ -2035,7 +2042,8 @@ std::set<double> MSMetaData::getTimesForScan(const ScanKey& scan) const {
   return getTimesForScans(scans);
 }
 
-std::map<unsigned int, std::set<double>> MSMetaData::getSpwToTimesForScan(const ScanKey& scan) const {
+std::map<unsigned int, std::set<double>> MSMetaData::getSpwToTimesForScan(
+    const ScanKey& scan) const {
   _checkScan(scan);
   std::shared_ptr<const map<ScanKey, ScanProperties>> scanProps;
   std::shared_ptr<const map<SubScanKey, SubScanProperties>> subScanProps;
@@ -2329,7 +2337,7 @@ Record MSMetaData::getSummary() const {
     ++oIter;
     ++oCount;
   }
-  summary.define("nrows", (Int64)nRows());
+  summary.define("nrows", (int64_t)nRows());
   std::shared_ptr<Vector<double>> times = _getTimes();
   summary.define("begin time", min(*times));
   summary.define("end time", max(*times));
@@ -2348,7 +2356,7 @@ void MSMetaData::_createScanRecords(
     rownr_t scanNRows = 0;
     Record scanRec;
     _createSubScanRecords(scanRec, scanNRows, antennasForScan, scanKey, subScanProps);
-    scanRec.define("nrows", (Int64)scanNRows);
+    scanRec.define("nrows", (int64_t)scanNRows);
     scanRec.define("antennas", Vector<int>(antennasForScan.begin(), antennasForScan.size(), 0));
     parent.defineRecord("scan=" + std::to_string(scanKey.scan), scanRec);
     ++scanIter;
@@ -2367,7 +2375,7 @@ void MSMetaData::_createSubScanRecords(
     subScanRec.define("data description IDs",
                       Vector<int>(props.ddIDs.begin(), props.ddIDs.size(), 0));
     rownr_t nrows = props.acRows + props.xcRows;
-    subScanRec.define("nrows", (Int64)nrows);
+    subScanRec.define("nrows", (int64_t)nrows);
     scanNRows += nrows;
     subScanRec.define("antennas", Vector<int>(props.antennas.begin(), props.antennas.size(), 0));
     antennasForScan.insert(props.antennas.begin(), props.antennas.end());
@@ -2389,7 +2397,7 @@ void MSMetaData::_createTimeStampRecords(Record& parent, const SubScanProperties
     Record timeRec;
     timeRec.define("data description IDs",
                    Vector<int>(tpIter->second.ddIDs.begin(), tpIter->second.ddIDs.size(), 0));
-    timeRec.define("nrows", (Int64)(tpIter->second.nrows));
+    timeRec.define("nrows", (int64_t)(tpIter->second.nrows));
     timeRec.define("time", tpIter->first);
     parent.defineRecord(std::to_string(timeCount), timeRec);
     ++tpIter;
@@ -3396,8 +3404,10 @@ void MSMetaData::_mergeScanProps(
   map<ScanKey, ScanProperties>::iterator scanPropsEnd = scanProps->end();
   for (; scanPropsIter != scanPropsEnd; ++scanPropsIter) {
     const ScanKey& scanKey = scanPropsIter->first;
-    map<unsigned int, rownr_t>::const_iterator scanSpwNRowsIter = scanPropsIter->second.spwNRows.begin();
-    map<unsigned int, rownr_t>::const_iterator scanSpwNRowsEnd = scanPropsIter->second.spwNRows.end();
+    map<unsigned int, rownr_t>::const_iterator scanSpwNRowsIter =
+        scanPropsIter->second.spwNRows.begin();
+    map<unsigned int, rownr_t>::const_iterator scanSpwNRowsEnd =
+        scanPropsIter->second.spwNRows.end();
     for (; scanSpwNRowsIter != scanSpwNRowsEnd; ++scanSpwNRowsIter) {
       const unsigned int& spw = scanSpwNRowsIter->first;
       const rownr_t& nrows = scanSpwNRowsIter->second;
@@ -3683,8 +3693,8 @@ std::map<double, double> MSMetaData::_getTimeToTotalBWMap(const Vector<double>& 
   vector<unsigned int> dataDescIDToSpwMap = getDataDescIDToSpwMap();
   std::set<unsigned int> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
   vector<SpwProperties> spwInfo = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
-  for (std::map<double, std::set<unsigned int>>::const_iterator iter = timeToDDIDMap.begin(); iter != end1;
-       ++iter) {
+  for (std::map<double, std::set<unsigned int>>::const_iterator iter = timeToDDIDMap.begin();
+       iter != end1; ++iter) {
     std::set<unsigned int> ddIDs = iter->second;
     timeToBWMap[iter->first] = 0;
     std::set<unsigned int>::const_iterator end2 = ddIDs.end();
@@ -3768,7 +3778,7 @@ void MSMetaData::_getUnflaggedRowStats(double& nACRows, double& nXCRows,
   Vector<int>::const_iterator arIter = arrIDs->begin();
   Vector<int>::const_iterator dIter = dataDescIDs->begin();
   unsigned int i = 0;
-  // uInt64 count = 0;
+  // uint64_t count = 0;
   //  a flag value of true means the datum is bad (flagged), so false => unflagged
   vector<unsigned int> dataDescIDToSpwMap = getDataDescIDToSpwMap();
   std::set<unsigned int> a, b, c, d, e;
@@ -4021,7 +4031,8 @@ void MSMetaData::_getFieldsAndIntentsMaps(vector<std::set<String>>& fieldToInten
   }
 }
 
-std::map<std::pair<unsigned int, unsigned int>, unsigned int> MSMetaData::getSpwIDPolIDToDataDescIDMap() const {
+std::map<std::pair<unsigned int, unsigned int>, unsigned int>
+MSMetaData::getSpwIDPolIDToDataDescIDMap() const {
   if (!_spwPolIDToDataDescIDMap.empty()) {
     return _spwPolIDToDataDescIDMap;
   }
@@ -4135,7 +4146,8 @@ vector<unsigned int> MSMetaData::getDataDescIDToSpwMap() const {
   return dataDescToSpwMap;
 }
 
-std::set<unsigned int> MSMetaData::getPolarizationIDs(unsigned int obsID, int arrayID, int scan, unsigned int spwid) const {
+std::set<unsigned int> MSMetaData::getPolarizationIDs(unsigned int obsID, int arrayID, int scan,
+                                                      unsigned int spwid) const {
   ScanKey scanKey;
   scanKey.obsID = obsID;
   scanKey.arrayID = arrayID;
@@ -4169,11 +4181,13 @@ std::set<unsigned int> MSMetaData::getPolarizationIDs(unsigned int obsID, int ar
   return mymap[std::pair<ScanKey, unsigned int>(scanKey, spwid)];
 }
 
-unsigned int MSMetaData::_sizeof(const std::map<std::pair<int, unsigned int>, std::set<unsigned int>>& map) {
+unsigned int MSMetaData::_sizeof(
+    const std::map<std::pair<int, unsigned int>, std::set<unsigned int>>& map) {
   unsigned int size = 0;
   unsigned int uSize = sizeof(unsigned int);
   unsigned int iSize = sizeof(int);
-  for (std::map<std::pair<int, unsigned int>, std::set<unsigned int>>::const_iterator iter = map.begin();
+  for (std::map<std::pair<int, unsigned int>, std::set<unsigned int>>::const_iterator iter =
+           map.begin();
        iter != map.end(); ++iter) {
     size += iSize + uSize * (iter->second.size() + 1);
   }
@@ -4209,9 +4223,9 @@ vector<MSMetaData::SpwProperties> MSMetaData::_getSpwInfo(std::set<unsigned int>
     return _spwInfo;
   }
   vector<SpwProperties> spwInfo = _getSpwInfo2(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
-  unsigned int mysize = sizeof(unsigned int) * (avgSpw.size() + tdmSpw.size() + fdmSpw.size() + wvrSpw.size() +
-                                sqldSpw.size()) +
-                2 * sizeof(int) * spwInfo.size() + 2 * sizeof(double) * spwInfo.size();
+  unsigned int mysize = sizeof(unsigned int) * (avgSpw.size() + tdmSpw.size() + fdmSpw.size() +
+                                                wvrSpw.size() + sqldSpw.size()) +
+                        2 * sizeof(int) * spwInfo.size() + 2 * sizeof(double) * spwInfo.size();
   vector<SpwProperties>::const_iterator end = spwInfo.end();
   for (vector<SpwProperties>::const_iterator iter = spwInfo.begin(); iter != end; ++iter) {
     mysize += 4 * (sizeof(double) * iter->nchans + 20);

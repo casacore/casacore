@@ -118,7 +118,8 @@ class BucketFile {
   // It can be indicated if a MMapfdIO and/or FilebufIO object must be
   // created for the file. If a MultiFileBase is used, memory-mapped IO
   // cannot be used and mappedFile is ignored.
-  BucketFile(const String& fileName, bool writable, unsigned int bufSizeFile = 0, bool mappedFile = false,
+  BucketFile(const String& fileName, bool writable, unsigned int bufSizeFile = 0,
+             bool mappedFile = false,
              const std::shared_ptr<MultiFileBase>& mfile = std::shared_ptr<MultiFileBase>());
 
   // The destructor closes the file (if open).
@@ -170,13 +171,13 @@ class BucketFile {
 
   // Seek in the file.
   // <group>
-  virtual void seek(Int64 offset);
+  virtual void seek(int64_t offset);
   void seek(int offset);
   // </group>
 
   // Get the (physical) size of the file.
   // This is doing a seek and sets the file pointer to end-of-file.
-  virtual Int64 fileSize() const;
+  virtual int64_t fileSize() const;
 
   // Is the file cached, mapped, or buffered?
   // <group>
@@ -213,7 +214,7 @@ inline const String& BucketFile::name() const { return name_p; }
 
 inline bool BucketFile::isWritable() const { return isWritable_p; }
 
-inline void BucketFile::seek(int offset) { seek(Int64(offset)); }
+inline void BucketFile::seek(int offset) { seek(int64_t(offset)); }
 
 inline bool BucketFile::isCached() const { return !isMapped_p && bufSize_p == 0; }
 inline bool BucketFile::isMapped() const { return isMapped_p; }

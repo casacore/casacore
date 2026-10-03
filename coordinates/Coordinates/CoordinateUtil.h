@@ -232,8 +232,8 @@ class CoordinateUtil {
   // This should really be a method of CoordinateSystem, but the
   // code was moved from ImageUtilities which makes heavy use
   // of CoordUtil methods (which aren't available to CoordinateSystem)
-  static unsigned int addAxes(CoordinateSystem& csys, bool direction, bool spectral, const String& stokes,
-                      bool linear, bool tabular, bool silent = false);
+  static unsigned int addAxes(CoordinateSystem& csys, bool direction, bool spectral,
+                              const String& stokes, bool linear, bool tabular, bool silent = false);
 
   // Return a 2-dimensional coordinate system with RA/DEC axes only.
   static CoordinateSystem defaultCoords2D();
@@ -399,7 +399,8 @@ class CoordinateUtil {
 
   // Set world axis units for specific Coordinate.  Returnd false if fails to set units
   // with error in cSys.errorMessage().
-  static bool setCoordinateUnits(CoordinateSystem& cSys, const Vector<String>& units, unsigned int which);
+  static bool setCoordinateUnits(CoordinateSystem& cSys, const Vector<String>& units,
+                                 unsigned int which);
 
   // Set a unit for all unremoved world axes in the DirectionCoordinate in the
   // CS.  Returns false if fails to set unit with error in cSys.  If no DC
@@ -467,8 +468,8 @@ class CoordinateUtil {
   // whether world or pixel labels required, whether absolute or
   // relative.   For spectral coordinates, doVel says if you want to
   // use the velocity information contained in it to generate the label
-  static String axisLabel(const Coordinate& coord, unsigned int axisInCoordinate = 0, bool doWorld = true,
-                          bool doAbs = true, bool doVel = false);
+  static String axisLabel(const Coordinate& coord, unsigned int axisInCoordinate = 0,
+                          bool doWorld = true, bool doAbs = true, bool doVel = false);
 
   // <group name=Coordinate comparison>
   // Check how the coordinates of this and that compare.

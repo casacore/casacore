@@ -90,7 +90,7 @@ void StManColumnAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) {
       ios.put(nrval, (unsigned int*)dp);
       break;
     case TpInt64:
-      ios.put(nrval, (Int64*)dp);
+      ios.put(nrval, (int64_t*)dp);
       break;
     case TpFloat:
       ios.put(nrval, (float*)dp);
@@ -142,7 +142,8 @@ void StManColumnAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
   columnCache().invalidate();
 }
 
-void StManColumnAipsIO::getData(void* datap, unsigned int inx, unsigned int nrval, AipsIO& ios, unsigned int) {
+void StManColumnAipsIO::getData(void* datap, unsigned int inx, unsigned int nrval, AipsIO& ios,
+                                unsigned int) {
   unsigned int nr;
   ios >> nr;
   switch (dtype()) {
@@ -165,7 +166,7 @@ void StManColumnAipsIO::getData(void* datap, unsigned int inx, unsigned int nrva
       ios.get(nrval, (unsigned int*)datap + inx);
       break;
     case TpInt64:
-      ios.get(nrval, (Int64*)datap + inx);
+      ios.get(nrval, (int64_t*)datap + inx);
       break;
     case TpFloat:
       ios.get(nrval, (float*)datap + inx);

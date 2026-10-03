@@ -67,7 +67,8 @@ void createTable() {
   td.addColumn(ArrayColumnDesc<bool>("virtualcol2"));
   td.addColumn(ArrayColumnDesc<short>("storedcol2"));
   td.addColumn(ArrayColumnDesc<bool>("virtualcol3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-  td.addColumn(ArrayColumnDesc<unsigned char>("storedcol3", "", IPosition(2, 3, 4), ColumnDesc::Direct));
+  td.addColumn(
+      ArrayColumnDesc<unsigned char>("storedcol3", "", IPosition(2, 3, 4), ColumnDesc::Direct));
   // Define keywords telling the bitmask.
   ColumnDesc& cdesc = td.rwColumnDesc("storedcol1");
   Record brec;

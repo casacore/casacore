@@ -80,7 +80,8 @@ FITSQualityImage::FITSQualityImage(const String& name)
   setup();
 }
 
-FITSQualityImage::FITSQualityImage(const String& name, unsigned int whichDataHDU, unsigned int whichErrorHDU)
+FITSQualityImage::FITSQualityImage(const String& name, unsigned int whichDataHDU,
+                                   unsigned int whichErrorHDU)
     : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
@@ -607,7 +608,8 @@ void FITSQualityImage::setup() {
   IPosition mm_shape(data_shape.nelements() + 1);
 
   // set the shape
-  for (unsigned int index = 0; index < data_shape.nelements(); index++) mm_shape(index) = data_shape(index);
+  for (unsigned int index = 0; index < data_shape.nelements(); index++)
+    mm_shape(index) = data_shape(index);
   mm_shape(mm_shape.nelements() - 1) = 2;
 
   // grab the coo-sys of the data image image

@@ -29,7 +29,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-BucketBase::BucketBase(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets)
+BucketBase::BucketBase(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+                       unsigned int nrOfBuckets)
     : itsFile(file),
       itsStartOffset(startOffset),
       itsBucketSize(bucketSize),
@@ -43,7 +44,7 @@ BucketBase::BucketBase(BucketFile* file, Int64 startOffset, unsigned int bucketS
   // Open the file if not open yet and get its physical size.
   // Use that to determine the number of buckets in the file.
   itsFile->open();
-  Int64 size = itsFile->fileSize();
+  int64_t size = itsFile->fileSize();
   if (size > startOffset) {
     itsCurNrOfBuckets = (size - startOffset) / bucketSize;
     if (itsCurNrOfBuckets > itsNewNrOfBuckets) {

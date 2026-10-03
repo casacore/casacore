@@ -86,13 +86,15 @@ class ISMBase : public DataManager {
   // The bucket size has to be given in bytes and the cache size in buckets.
   // The bucket size is checked or calculated (if 0) as described in
   // IncrementalStMan.h.
-  explicit ISMBase(unsigned int bucketSize = 0, bool checkBucketSize = true, unsigned int cacheSize = 1);
+  explicit ISMBase(unsigned int bucketSize = 0, bool checkBucketSize = true,
+                   unsigned int cacheSize = 1);
 
   // Create an incremental storage manager with the given name.
   // The bucket size has to be given in bytes and the cache size in buckets.
   // The bucket size is checked or calculated (if 0) as described in
   // IncrementalStMan.h.
-  ISMBase(const String& dataManagerName, unsigned int bucketSize, bool checkBucketSize, unsigned int cacheSize);
+  ISMBase(const String& dataManagerName, unsigned int bucketSize, bool checkBucketSize,
+          unsigned int cacheSize);
 
   // Create an incremental storage manager with the given name.
   // The specifications are in the record (as created by dataManagerSpec).
@@ -223,8 +225,9 @@ class ISMBase : public DataManager {
 
   // Check that there are no repeated rowIds in the buckets comprising this ISM.
   bool checkBucketLayout(unsigned int& offendingCursor, rownr_t& offendingBucketStartRow,
-                         unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr, unsigned int& offendingCol,
-                         unsigned int& ffendingIndex, rownr_t& offendingRow, rownr_t& offendingPrevRow);
+                         unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr,
+                         unsigned int& offendingCol, unsigned int& ffendingIndex,
+                         rownr_t& offendingRow, rownr_t& offendingPrevRow);
 
  private:
   // Copy constructor (only meant for clone function).

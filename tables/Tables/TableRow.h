@@ -188,7 +188,7 @@ class ROTableRow {
 
   // Get the number of the last row read.
   // -1 is returned when no Table is attached or no row has been read yet.
-  Int64 rowNumber() const;
+  int64_t rowNumber() const;
 
   // Get a vector consisting of all columns names.
   // This can, for instance, be used to construct a TableRow object
@@ -255,7 +255,7 @@ class ROTableRow {
   // # A cache for itsRecord.nfields()
   unsigned int itsNrused;
   // # The last rownr read (-1 is nothing read yet).
-  mutable Int64 itsLastRow;
+  mutable int64_t itsLastRow;
   // # A switch to indicate that the last row has to be reread.
   // # This is the case when it has been put after being read.
   mutable bool itsReread;
@@ -482,7 +482,7 @@ class TableRow : public ROTableRow {
 
 inline bool ROTableRow::isAttached() const { return (itsRecord != 0); }
 inline const Table& ROTableRow::table() const { return itsTable; }
-inline Int64 ROTableRow::rowNumber() const { return itsLastRow; }
+inline int64_t ROTableRow::rowNumber() const { return itsLastRow; }
 inline const TableRecord& ROTableRow::record() const { return *itsRecord; }
 inline const Block<bool>& ROTableRow::getDefined() const { return itsDefined; }
 inline TableRecord& TableRow::record() { return *itsRecord; }

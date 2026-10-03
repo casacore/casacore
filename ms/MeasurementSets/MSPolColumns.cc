@@ -49,7 +49,7 @@ void MSPolarizationColumns::attach(const MSPolarization& msPolarization) {
   numCorr_p.attach(msPolarization, MSPolarization::columnName(MSPolarization::NUM_CORR));
 }
 
-Int64 MSPolarizationColumns::match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow) {
+int64_t MSPolarizationColumns::match(const Vector<Stokes::StokesTypes>& polType, int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the corrType to Integers.

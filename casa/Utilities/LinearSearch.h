@@ -125,8 +125,8 @@ int linearSearch(bool& found, const Container& container, const ElType& value, u
 template <class Container, class ElType>
 int linearSearchBrackets1(const Container& container, const ElType& value, unsigned int lower = 0);
 template <class Container, class ElType>
-int linearSearchBrackets(bool& found, const Container& container, const ElType& value, unsigned int n,
-                         unsigned int lower = 0);
+int linearSearchBrackets(bool& found, const Container& container, const ElType& value,
+                         unsigned int n, unsigned int lower = 0);
 // </group>
 // </group>
 

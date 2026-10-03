@@ -34,8 +34,8 @@
 
 void printfparameters(Function<double> &f);
 void printparameters(Matrix<double> &m);
-void createdata(casacore::Matrix<double> &pos, casacore::Vector<double> &f,
-                float range, unsigned int n, casacore::Matrix<double> &components);
+void createdata(casacore::Matrix<double> &pos, casacore::Vector<double> &f, float range,
+                unsigned int n, casacore::Matrix<double> &components);
 int ipow(int base, unsigned int power);
 
 int main() {
@@ -368,8 +368,8 @@ int main() {
   return fail;
 }
 
-void createdata(casacore::Matrix<double> &pos, casacore::Vector<double> &f,
-                float range, unsigned int n, casacore::Matrix<double> &components) {
+void createdata(casacore::Matrix<double> &pos, casacore::Vector<double> &f, float range,
+                unsigned int n, casacore::Matrix<double> &components) {
   unsigned int i = 0;
   unsigned int dim = components.ncolumn() / 3;
   unsigned int imax = ipow(n, dim);

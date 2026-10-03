@@ -100,10 +100,10 @@ class VectorKernel {
   // the kernel length will be the max of the provided shape and an
   // autoestimate (e.g. from +/- 5sigma limits for a Gaussian).
   // <group>
-  static Vector<double> make(KernelTypes kernelType, double width, unsigned int shape, bool useShapeExactly,
-                             bool peakIsUnity = false);
-  static Vector<float> make(KernelTypes kernelType, float width, unsigned int shape, bool useShapeExactly,
-                            bool peakIsUnity = false);
+  static Vector<double> make(KernelTypes kernelType, double width, unsigned int shape,
+                             bool useShapeExactly, bool peakIsUnity = false);
+  static Vector<float> make(KernelTypes kernelType, float width, unsigned int shape,
+                            bool useShapeExactly, bool peakIsUnity = false);
   // </group>
 
   // Helper function to convert a string containing a list of desired smoothed kernel types

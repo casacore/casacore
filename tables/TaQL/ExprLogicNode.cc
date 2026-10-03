@@ -187,18 +187,18 @@ void TableExprNodeINInt::optimize() { doOptimize(rnode_p); }
 void TableExprNodeINInt::doOptimize(TENShPtr& rnode) {
   if (rnode->isConstant() && rnode->valueType() == VTArray) {
     // Convert a constant array for faster lookup.
-    MArray<Int64> values = rnode->getArrayInt(0);
-    Array<Int64> arr(values.array());
+    MArray<int64_t> values = rnode->getArrayInt(0);
+    Array<int64_t> arr(values.array());
     if (values.hasMask()) {
       // Remove masked elements.
       arr.reference(values.flatten());
     }
     // Use an unordered_map for fast lookup.
-    rnode = std::make_shared<TableExprNodeSetOptUSet<Int64>>(*rnode, arr);
+    rnode = std::make_shared<TableExprNodeSetOptUSet<int64_t>>(*rnode, arr);
   }
 }
 bool TableExprNodeINInt::getBool(const TableExprId& id) {
-  Int64 val = lnode_p->getInt(id);
+  int64_t val = lnode_p->getInt(id);
   return rnode_p->contains(id, val);
 }
 

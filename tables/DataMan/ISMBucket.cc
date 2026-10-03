@@ -102,8 +102,8 @@ unsigned int& ISMBucket::getOffset(unsigned int colnr, rownr_t rownr) {
   return (*(offIndex_p[colnr]))[inx];
 }
 
-unsigned int ISMBucket::getInterval(unsigned int colnr, rownr_t rownr, rownr_t bucketNrrow, rownr_t& start,
-                            rownr_t& end, unsigned int& offset) const {
+unsigned int ISMBucket::getInterval(unsigned int colnr, rownr_t rownr, rownr_t bucketNrrow,
+                                    rownr_t& start, rownr_t& end, unsigned int& offset) const {
   Block<rownr_t>& rowIndex = *(rowIndex_p[colnr]);
   bool found;
   unsigned int inx = binarySearchBrackets(found, rowIndex, rownr, indexUsed_p[colnr]);
@@ -132,7 +132,8 @@ bool ISMBucket::canReplaceData(unsigned int newLeng, unsigned int oldLeng) const
   }
   return false;
 }
-void ISMBucket::replaceData(unsigned int& offset, const char* data, unsigned int newLeng, unsigned int oldLeng) {
+void ISMBucket::replaceData(unsigned int& offset, const char* data, unsigned int newLeng,
+                            unsigned int oldLeng) {
 #ifdef AIPS_TRACE
   cout << "  replace at offset " << offset << ": oldleng=" << oldLeng << ", new=" << newLeng
        << endl;
@@ -157,7 +158,8 @@ bool ISMBucket::canAddData(unsigned int leng) const {
   return false;
 }
 
-void ISMBucket::addData(unsigned int colnr, rownr_t rownr, unsigned int index, const char* data, unsigned int leng) {
+void ISMBucket::addData(unsigned int colnr, rownr_t rownr, unsigned int index, const char* data,
+                        unsigned int leng) {
 #ifdef AIPS_TRACE
   cout << "  add at index " << index << endl;
 #endif
@@ -199,8 +201,8 @@ unsigned int ISMBucket::getLength(unsigned int fixedLength, const char* data) co
   return leng;
 }
 
-void ISMBucket::shiftLeft(unsigned int index, unsigned int nr, Block<rownr_t>& rowIndex, Block<unsigned int>& offIndex,
-                          unsigned int& nused, unsigned int leng) {
+void ISMBucket::shiftLeft(unsigned int index, unsigned int nr, Block<rownr_t>& rowIndex,
+                          Block<unsigned int>& offIndex, unsigned int& nused, unsigned int leng) {
 #ifdef AIPS_TRACE
   cout << "   shift left " << nr << " elements" << endl;
 #endif
@@ -398,8 +400,8 @@ bool ISMBucket::simpleSplit(ISMBucket* left, ISMBucket* right, Block<bool>& dupl
 }
 
 rownr_t ISMBucket::split(ISMBucket*& left, ISMBucket*& right, Block<bool>& duplicated,
-                         rownr_t bucketStartRow, rownr_t bucketNrrow, unsigned int colnr, rownr_t rownr,
-                         unsigned int lengToAdd) {
+                         rownr_t bucketStartRow, rownr_t bucketNrrow, unsigned int colnr,
+                         rownr_t rownr, unsigned int lengToAdd) {
   AlwaysAssert(bucketNrrow > 1, AipsError);
   unsigned int nrcol = stmanPtr_p->ncolumn();
   duplicated.resize(nrcol);
@@ -429,7 +431,8 @@ rownr_t ISMBucket::split(ISMBucket*& left, ISMBucket*& right, Block<bool>& dupli
     }
   }
   // Sort it (uniquely) to get all row numbers with a value.
-  unsigned int nruniq = GenSort<rownr_t>::sort(rows, rows.nelements(), Sort::Ascending, Sort::NoDuplicates);
+  unsigned int nruniq =
+      GenSort<rownr_t>::sort(rows, rows.nelements(), Sort::Ascending, Sort::NoDuplicates);
   // If the bucket contains values of only one row, a simple split
   // can be done (and should succeed).
   if (nruniq == 1) {
@@ -447,7 +450,7 @@ rownr_t ISMBucket::split(ISMBucket*& left, ISMBucket*& right, Block<bool>& dupli
     for (unsigned int i = 0; i < nrcol; i++) {
       if (cursor[i] < indexUsed_p[i] && (*rowIndex_p[i])[cursor[i]] == rows[j]) {
         unsigned int leng = getLength(stmanPtr_p->getColumn(i).getFixedLength(),
-                              data_p + (*offIndex_p[i])[cursor[i]]);
+                                      data_p + (*offIndex_p[i])[cursor[i]]);
         itemLeng(i, j) = 2 * uIntSize_p + leng;
         cursor[i]++;
       }
@@ -536,7 +539,8 @@ rownr_t ISMBucket::split(ISMBucket*& left, ISMBucket*& right, Block<bool>& dupli
   return splitRownr;
 }
 
-unsigned int ISMBucket::getSplit(unsigned int totLeng, const Block<unsigned int>& rowLeng, const Block<unsigned int>& cumLeng) {
+unsigned int ISMBucket::getSplit(unsigned int totLeng, const Block<unsigned int>& rowLeng,
+                                 const Block<unsigned int>& cumLeng) {
   // If there are only 2 elements, we can only split in the middle.
   unsigned int nr = rowLeng.nelements();
   if (nr <= 2) {
@@ -569,8 +573,8 @@ unsigned int ISMBucket::getSplit(unsigned int totLeng, const Block<unsigned int>
   return i;
 }
 
-unsigned int ISMBucket::copyData(ISMBucket& other, unsigned int colnr, rownr_t toRownr, unsigned int fromIndex,
-                         unsigned int toIndex) const {
+unsigned int ISMBucket::copyData(ISMBucket& other, unsigned int colnr, rownr_t toRownr,
+                                 unsigned int fromIndex, unsigned int toIndex) const {
   // Determine the length of the data item.
   // If variable, read it from the data.
   char* data = data_p + (*offIndex_p[colnr])[fromIndex];
@@ -591,8 +595,8 @@ void ISMBucket::show(ostream& os) const {
   }
 }
 
-bool ISMBucket::check(unsigned int& offendingCol, unsigned int& offendingIndex, rownr_t& offendingRow,
-                      rownr_t& offendingPrevRow) const {
+bool ISMBucket::check(unsigned int& offendingCol, unsigned int& offendingIndex,
+                      rownr_t& offendingRow, rownr_t& offendingPrevRow) const {
   unsigned int ncols = stmanPtr_p->ncolumn();
   for (unsigned int col_i = 0; col_i < ncols; ++col_i) {
     for (unsigned int it = 1; it < indexUsed_p[col_i]; ++it) {

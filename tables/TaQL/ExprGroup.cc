@@ -150,7 +150,7 @@ std::shared_ptr<vector<TableExprId>> TableExprGroupFuncBase::getIds() const {
 bool TableExprGroupFuncBase::getBool(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getBool not implemented");
 }
-Int64 TableExprGroupFuncBase::getInt(const vector<TableExprId>&) {
+int64_t TableExprGroupFuncBase::getInt(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getInt not implemented");
 }
 double TableExprGroupFuncBase::getDouble(const vector<TableExprId>&) {
@@ -168,7 +168,7 @@ String TableExprGroupFuncBase::getString(const vector<TableExprId>&) {
 MArray<bool> TableExprGroupFuncBase::getArrayBool(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getArrayBool not implemented");
 }
-MArray<Int64> TableExprGroupFuncBase::getArrayInt(const vector<TableExprId>&) {
+MArray<int64_t> TableExprGroupFuncBase::getArrayInt(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getArrayInt not implemented");
 }
 MArray<double> TableExprGroupFuncBase::getArrayDouble(const vector<TableExprId>&) {
@@ -202,7 +202,9 @@ void TableExprGroupFirst::apply(const TableExprId& id) {
   }
 }
 bool TableExprGroupFirst::getBool(const vector<TableExprId>&) { return itsOperand->getBool(itsId); }
-Int64 TableExprGroupFirst::getInt(const vector<TableExprId>&) { return itsOperand->getInt(itsId); }
+int64_t TableExprGroupFirst::getInt(const vector<TableExprId>&) {
+  return itsOperand->getInt(itsId);
+}
 double TableExprGroupFirst::getDouble(const vector<TableExprId>&) {
   return itsOperand->getDouble(itsId);
 }
@@ -218,7 +220,7 @@ String TableExprGroupFirst::getString(const vector<TableExprId>&) {
 MArray<bool> TableExprGroupFirst::getArrayBool(const vector<TableExprId>&) {
   return itsOperand->getArrayBool(itsId);
 }
-MArray<Int64> TableExprGroupFirst::getArrayInt(const vector<TableExprId>&) {
+MArray<int64_t> TableExprGroupFirst::getArrayInt(const vector<TableExprId>&) {
   return itsOperand->getArrayInt(itsId);
 }
 MArray<double> TableExprGroupFirst::getArrayDouble(const vector<TableExprId>&) {
@@ -252,12 +254,12 @@ bool TableExprGroupRowid::isLazy() const { return true; }
 void TableExprGroupRowid::apply(const TableExprId&) {
   throw TableInvExpr("TableExprGroupRowid::apply should not be called");
 }
-MArray<Int64> TableExprGroupRowid::getArrayInt(const vector<TableExprId>& ids) {
-  Vector<Int64> rowIds(ids.size());
+MArray<int64_t> TableExprGroupRowid::getArrayInt(const vector<TableExprId>& ids) {
+  Vector<int64_t> rowIds(ids.size());
   for (size_t i = 0; i < ids.size(); ++i) {
     rowIds[i] = ids[i].rownr();
   }
-  return MArray<Int64>(rowIds);
+  return MArray<int64_t>(rowIds);
 }
 
 TableExprGroupAggr::TableExprGroupAggr(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
@@ -269,8 +271,8 @@ void TableExprGroupAggr::apply(const TableExprId&) {
 MArray<bool> TableExprGroupAggr::getArrayBool(const vector<TableExprId>& ids) {
   return getArray<bool>(ids);
 }
-MArray<Int64> TableExprGroupAggr::getArrayInt(const vector<TableExprId>& ids) {
-  return getArray<Int64>(ids);
+MArray<int64_t> TableExprGroupAggr::getArrayInt(const vector<TableExprId>& ids) {
+  return getArray<int64_t>(ids);
 }
 MArray<double> TableExprGroupAggr::getArrayDouble(const vector<TableExprId>& ids) {
   return getArray<double>(ids);
@@ -289,7 +291,7 @@ TableExprGroupFuncBool::~TableExprGroupFuncBool() {}
 bool TableExprGroupFuncBool::getBool(const vector<TableExprId>&) { return itsValue; }
 
 TableExprGroupFuncInt::~TableExprGroupFuncInt() {}
-Int64 TableExprGroupFuncInt::getInt(const vector<TableExprId>&) { return itsValue; }
+int64_t TableExprGroupFuncInt::getInt(const vector<TableExprId>&) { return itsValue; }
 double TableExprGroupFuncInt::getDouble(const vector<TableExprId>&) { return itsValue; }
 
 TableExprGroupFuncDouble::~TableExprGroupFuncDouble() {}
@@ -318,8 +320,8 @@ bool TableExprGroupFuncArrayBool::checkShape(const MArrayBase& arr, const String
 }
 
 TableExprGroupFuncArrayInt::~TableExprGroupFuncArrayInt() {}
-MArray<Int64> TableExprGroupFuncArrayInt::getArrayInt(const vector<TableExprId>&) {
-  return MArray<Int64>(itsValue);
+MArray<int64_t> TableExprGroupFuncArrayInt::getArrayInt(const vector<TableExprId>&) {
+  return MArray<int64_t>(itsValue);
 }
 bool TableExprGroupFuncArrayInt::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {

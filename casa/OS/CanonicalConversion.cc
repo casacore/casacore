@@ -162,9 +162,9 @@ CANONICALCONVERSION_DO(CONVERT_CAN_INT, SIZE_CAN_INT, toLocalInt, fromLocalInt, 
 CANONICALCONVERSION_DO(CONVERT_CAN_UINT, SIZE_CAN_UINT, toLocalUInt, fromLocalUInt, byteToLocalUInt,
                        byteFromLocalUInt, unsigned int)
 CANONICALCONVERSION_DO(CONVERT_CAN_INT64, SIZE_CAN_INT64, toLocalInt64, fromLocalInt64,
-                       byteToLocalInt64, byteFromLocalInt64, Int64)
+                       byteToLocalInt64, byteFromLocalInt64, int64_t)
 CANONICALCONVERSION_DO(CONVERT_CAN_UINT64, SIZE_CAN_UINT64, toLocalUInt64, fromLocalUInt64,
-                       byteToLocalUInt64, byteFromLocalUInt64, uInt64)
+                       byteToLocalUInt64, byteFromLocalUInt64, uint64_t)
 CANONICALCONVERSION_DO(CONVERT_CAN_FLOAT, SIZE_CAN_FLOAT, toLocalFloat, fromLocalFloat,
                        byteToLocalFloat, byteFromLocalFloat, float)
 CANONICALCONVERSION_DO(CONVERT_CAN_DOUBLE, SIZE_CAN_DOUBLE, toLocalDouble, fromLocalDouble,

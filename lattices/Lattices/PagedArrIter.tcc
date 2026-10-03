@@ -75,7 +75,7 @@ void PagedArrIter<T>::setupTileCache() {
   const ROTiledStManAccessor& acc = itsData.accessor();
   unsigned int rownr = itsData.rowNumber();
   unsigned int cacheSize = itsNavPtr->calcCacheSize(acc.hypercubeShape(rownr), acc.tileShape(rownr),
-                                            acc.maximumCacheSize(), acc.bucketSize(rownr));
+                                                    acc.maximumCacheSize(), acc.bucketSize(rownr));
   itsData.setCacheSizeInTiles(cacheSize);
 }
 

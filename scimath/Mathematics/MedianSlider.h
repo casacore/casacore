@@ -113,7 +113,8 @@ class MedianSlider {
 
   // returns total memory usage (in bytes) for a given halfwin size
   static size_t objsize(int halfwin) {
-    return sizeof(MedianSlider) + (sizeof(float) + sizeof(unsigned int) + sizeof(bool)) * (halfwin * 2 + 1);
+    return sizeof(MedianSlider) +
+           (sizeof(float) + sizeof(unsigned int) + sizeof(bool)) * (halfwin * 2 + 1);
   }
 
   // For testing purposes only: verifies current value of median.

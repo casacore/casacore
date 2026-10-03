@@ -374,8 +374,10 @@ class CoordinateSystem : public Coordinate {
   // find the corresponding coordinate number and axis in that Coordinate.
   // The returned values are set to -1 if the axis does not exist.
   // <group>
-  void findWorldAxis(int& coordinate, int& axisInCoordinate, unsigned int axisInCoordinateSystem) const;
-  void findPixelAxis(int& coordinate, int& axisInCoordinate, unsigned int axisInCoordinateSystem) const;
+  void findWorldAxis(int& coordinate, int& axisInCoordinate,
+                     unsigned int axisInCoordinateSystem) const;
+  void findPixelAxis(int& coordinate, int& axisInCoordinate,
+                     unsigned int axisInCoordinateSystem) const;
   // </group>
 
   // Find the world axis for the given pixel axis in a CoordinateSystem.
@@ -881,28 +883,31 @@ class CoordinateSystem : public Coordinate {
   void listDirectionSystem(LogIO& os) const;
   void listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const;
   void listPointingCenter(LogIO& os) const;
-  void getFieldWidths(LogIO& os, unsigned int& widthAxis, unsigned int& widthCoordType, unsigned int& widthCoordNumber,
-                      unsigned int& widthName, unsigned int& widthProj, unsigned int& widthShape, unsigned int& widthTile,
-                      unsigned int& widthRefValue, unsigned int& widthRefPixel, unsigned int& widthInc, unsigned int& widthUnits,
-                      int& precRefValSci, int& precRefValFloat, int& precRefValRADEC,
-                      int& precRefPixFloat, int& precIncSci, String& nameAxis,
-                      String& nameCoordType, String& nameCoordNumber, String& nameName,
-                      String& nameProj, String& nameShape, String& nameTile, String& nameRefValue,
+  void getFieldWidths(LogIO& os, unsigned int& widthAxis, unsigned int& widthCoordType,
+                      unsigned int& widthCoordNumber, unsigned int& widthName,
+                      unsigned int& widthProj, unsigned int& widthShape, unsigned int& widthTile,
+                      unsigned int& widthRefValue, unsigned int& widthRefPixel,
+                      unsigned int& widthInc, unsigned int& widthUnits, int& precRefValSci,
+                      int& precRefValFloat, int& precRefValRADEC, int& precRefPixFloat,
+                      int& precIncSci, String& nameAxis, String& nameCoordType,
+                      String& nameCoordNumber, String& nameName, String& nameProj,
+                      String& nameShape, String& nameTile, String& nameRefValue,
                       String& nameRefPixel, String& nameInc, String& nameUnits,
                       MDoppler::Types velocityType, const IPosition& latticeShape,
                       const IPosition& tileShape) const;
 
   void listHeader(LogIO& os, Coordinate* pc, unsigned int& widthAxis, unsigned int& widthCoordType,
-                  unsigned int& widthCoordNumber, unsigned int& widthName, unsigned int& widthProj, unsigned int& widthShape,
-                  unsigned int& widthTile, unsigned int& widthRefValue, unsigned int& widthRefPixel, unsigned int& widthInc,
-                  unsigned int& widthUnits, bool findWidths, int coordinate, int axisInCoordinate,
-                  int pixelAxis, int precRefValSci, int precRefValFloat, int precRefValRADEC,
-                  int precRefPixFloat, int precIncSci, const IPosition& latticeShape,
-                  const IPosition& tileShape) const;
+                  unsigned int& widthCoordNumber, unsigned int& widthName, unsigned int& widthProj,
+                  unsigned int& widthShape, unsigned int& widthTile, unsigned int& widthRefValue,
+                  unsigned int& widthRefPixel, unsigned int& widthInc, unsigned int& widthUnits,
+                  bool findWidths, int coordinate, int axisInCoordinate, int pixelAxis,
+                  int precRefValSci, int precRefValFloat, int precRefValRADEC, int precRefPixFloat,
+                  int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
   void listVelocity(LogIO& os, Coordinate* pc, unsigned int widthAxis, unsigned int widthCoordType,
-                    unsigned int widthCoordNumber, unsigned int& widthName, unsigned int widthProj, unsigned int widthShape,
-                    unsigned int widthTile, unsigned int& widthRefValue, unsigned int widthRefPixel, unsigned int& widthInc,
-                    unsigned int& widthUnits, bool findWidths, int axisInCoordinate, int pixelAxis,
+                    unsigned int widthCoordNumber, unsigned int& widthName, unsigned int widthProj,
+                    unsigned int widthShape, unsigned int widthTile, unsigned int& widthRefValue,
+                    unsigned int widthRefPixel, unsigned int& widthInc, unsigned int& widthUnits,
+                    bool findWidths, int axisInCoordinate, int pixelAxis,
                     MDoppler::Types velocityType, int precRefValSci, int precRefValFloat,
                     int precRefValRADEC, int precRefPixFloat, int precIncSci) const;
   void clearFlags(LogIO& os) const;

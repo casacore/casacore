@@ -78,7 +78,7 @@ class TableExprAggrNodeArray : public TableExprFuncNodeArray {
   // Functions to get the result of an aggregate function.
   // <group>
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
   virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);

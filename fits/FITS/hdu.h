@@ -1169,21 +1169,21 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   virtual int readrow();
   virtual int writerow(FitsOutput &);
   //</group>
-  unsigned char *fitsrow;  // the FITS data row buffer
-  unsigned int *fits_offset;       // Offsets to the fields within a FITS row
-  unsigned int fitsrowsize;        // size in bytes of a FITS data row
-  bool isoptimum;          // tells whether optimum case exists or not
+  unsigned char *fitsrow;     // the FITS data row buffer
+  unsigned int *fits_offset;  // Offsets to the fields within a FITS row
+  unsigned int fitsrowsize;   // size in bytes of a FITS data row
+  bool isoptimum;             // tells whether optimum case exists or not
 
   // sets field addresses in the current row
   void set_fitsrow(int);
 
-  unsigned char *table;  // the table in local format
-  unsigned int tablerowsize;     // size in bytes of a table row
-  unsigned int alloc_row;        // number of currently allocated rows
-  int beg_row;           // range of rows currently in memory
+  unsigned char *table;       // the table in local format
+  unsigned int tablerowsize;  // size in bytes of a table row
+  unsigned int alloc_row;     // number of currently allocated rows
+  int beg_row;                // range of rows currently in memory
   int end_row;
   int curr_row;
-  FitsBase **fld;      // The array of fields
+  FitsBase **fld;              // The array of fields
   unsigned int *table_offset;  // Offsets to the fields within a table row
   // data addresses of fields of current row
   void **data_addr;
@@ -1215,7 +1215,7 @@ class AsciiTableExtension : public BinaryTableExtension {
   int *tbcol_x;
   char **tnulla_x;
   unsigned int *fits_width;  // widths of the fields within a FITS row
-  char **format;     // converted formats of the fields
+  char **format;             // converted formats of the fields
 
   // read and write the next FITS data row
   //<group>

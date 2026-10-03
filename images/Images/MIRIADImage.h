@@ -255,8 +255,8 @@ class MIRIADImage : public ImageInterface<float> {
   //  Short          magic_p;
   TiledShape shape_p;
   bool hasBlanks_p;
-  DataType dataType_p;  // always float's for miriad
-  Int64 fileOffset_p;   // always 4 for direct (tiled) access
+  DataType dataType_p;   // always float's for miriad
+  int64_t fileOffset_p;  // always 4 for direct (tiled) access
   bool isClosed_p;
 
   // Reopen the image if needed.

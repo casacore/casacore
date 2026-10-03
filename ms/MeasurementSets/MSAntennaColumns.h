@@ -154,20 +154,20 @@ class MSAntennaColumns {
   // to see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int64 matchAntenna(const MPosition& antennaPos, const Quantum<double>& tolerance,
-                     Int64 tryRow = -1);
+  int64_t matchAntenna(const MPosition& antennaPos, const Quantum<double>& tolerance,
+                       int64_t tryRow = -1);
 
   // Same as the previous function except that the antenna name must also
   // match.
-  Int64 matchAntenna(const String& antName, const MPosition& antennaPos,
-                     const Quantum<double>& tolerance, Int64 tryRow = -1);
+  int64_t matchAntenna(const String& antName, const MPosition& antennaPos,
+                       const Quantum<double>& tolerance, int64_t tryRow = -1);
 
   // Same as the previous function except that the station name must also
   // match.
-  Int64 matchAntennaAndStation(const String& antName,
-                               const String& stationName,  // ignored when empty
-                               const MPosition& antennaPos, const Quantum<double>& tolerance,
-                               Int64 tryRow = -1);
+  int64_t matchAntennaAndStation(const String& antName,
+                                 const String& stationName,  // ignored when empty
+                                 const MPosition& antennaPos, const Quantum<double>& tolerance,
+                                 int64_t tryRow = -1);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

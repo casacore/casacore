@@ -106,7 +106,7 @@ MSSummary::~MSSummary() {}
 //
 // Retrieve number of rows
 //
-Int64 MSSummary::nrow() const { return _msmd->nRows(); }
+int64_t MSSummary::nrow() const { return _msmd->nRows(); }
 
 //
 // Get ms name
@@ -327,7 +327,7 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
     int lastscan = 0;
     for (; siter != send; ++siter) {
       const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
-      Int64 nrow = props.acRows + props.xcRows;
+      int64_t nrow = props.acRows + props.xcRows;
       int thisscan = siter->scan;
       std::set<unsigned int> ddIDs = props.ddIDs;
       std::set<int> stateIDs = props.stateIDs;
@@ -388,7 +388,8 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
         os << spw;
         os.output().width(widthLead);
         os << "  ";
-        const std::map<unsigned int, Quantity>& intToScanMap = ssprops->find(*siter)->second.meanInterval;
+        const std::map<unsigned int, Quantity>& intToScanMap =
+            ssprops->find(*siter)->second.meanInterval;
         os << "[";
         for (std::set<unsigned int>::const_iterator spwiter = spw.begin(); spwiter != spw.end();
              ++spwiter) {
@@ -533,7 +534,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
     int nst(1);
     double btime(0.0), etime(0.0);
     bool firsttime(true);
-    Int64 thisnrow(0);
+    int64_t thisnrow(0);
     double meanIntTim(0.0);
 
     //    os.output().precision(3);
@@ -542,7 +543,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
     while (!stiter.pastEnd()) {
       // ms table at this timestamp
       Table t(stiter.table());
-      Int64 nrow = t.nrow();
+      int64_t nrow = t.nrow();
 
       // relevant columns
       TableVector<double> timecol(t, "TIME");
@@ -573,7 +574,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
       nVisPerField_(fldids(0)) += nrow;
 
       // fill field and ddi lists for this timestamp
-      for (Int64 i = 1; i < nrow; i++) {
+      for (int64_t i = 1; i < nrow; i++) {
         if (!anyEQ(fldids, fldcol(i))) {
           nfld++;
           fldids.resize(nfld, true);
@@ -1671,25 +1672,25 @@ void MSSummary::listWeather(LogIO& os, bool verbose) const {
 
 void MSSummary::listTables(LogIO& os, bool verbose) const {
   // Get nrows for each table (=-1 if table absent)
-  Vector<Int64> tableRows(18);
+  Vector<int64_t> tableRows(18);
   tableRows(0) = nrow();
   tableRows(1) = pMS->antenna().nrow();
   tableRows(2) = pMS->dataDescription().nrow();
-  tableRows(3) = (pMS->doppler().isNull() ? -1 : (Int64)pMS->doppler().nrow());
+  tableRows(3) = (pMS->doppler().isNull() ? -1 : (int64_t)pMS->doppler().nrow());
   tableRows(4) = pMS->feed().nrow();
   tableRows(5) = pMS->field().nrow();
   tableRows(6) = pMS->flagCmd().nrow();
-  tableRows(7) = (pMS->freqOffset().isNull() ? -1 : (Int64)pMS->freqOffset().nrow());
+  tableRows(7) = (pMS->freqOffset().isNull() ? -1 : (int64_t)pMS->freqOffset().nrow());
   tableRows(8) = pMS->history().nrow();
   tableRows(9) = pMS->observation().nrow();
   tableRows(10) = pMS->pointing().nrow();
   tableRows(11) = pMS->polarization().nrow();
   tableRows(12) = pMS->processor().nrow();
-  tableRows(13) = (pMS->source().isNull() ? -1 : (Int64)pMS->source().nrow());
+  tableRows(13) = (pMS->source().isNull() ? -1 : (int64_t)pMS->source().nrow());
   tableRows(14) = pMS->spectralWindow().nrow();
   tableRows(15) = pMS->state().nrow();
-  tableRows(16) = (pMS->sysCal().isNull() ? -1 : (Int64)pMS->sysCal().nrow());
-  tableRows(17) = (pMS->weather().isNull() ? -1 : (Int64)pMS->weather().nrow());
+  tableRows(16) = (pMS->sysCal().isNull() ? -1 : (int64_t)pMS->sysCal().nrow());
+  tableRows(17) = (pMS->weather().isNull() ? -1 : (int64_t)pMS->weather().nrow());
 
   Vector<String> rowStrings(18), tableStrings(18);
   rowStrings = " rows";

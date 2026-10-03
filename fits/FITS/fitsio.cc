@@ -109,7 +109,8 @@ char *FitsDiskInput::skip(int n) {  // skip n logical records and read
   // move the i/o pointer to the end position of the skipped block.
   // (m_iosize - m_current ) is the bytes of data left within the m_buffer
   // still need to test this part with big fits file.
-  OFF_T bytpost = (m_fptr->Fptr)->bytepos + (m_recsize * static_cast<unsigned int>(n)) - (m_iosize - m_current);
+  OFF_T bytpost =
+      (m_fptr->Fptr)->bytepos + (m_recsize * static_cast<unsigned int>(n)) - (m_iosize - m_current);
   int l_status = 0;
   ffmbyt(m_fptr, bytpost, REPORT_EOF, &l_status);
   if (l_status) {

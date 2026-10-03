@@ -87,7 +87,7 @@ void DataManagerColumn::getShort(rownr_t, short*) { throwGet(); }
 void DataManagerColumn::getuShort(rownr_t, unsigned short*) { throwGet(); }
 void DataManagerColumn::getInt(rownr_t, int*) { throwGet(); }
 void DataManagerColumn::getuInt(rownr_t, unsigned int*) { throwGet(); }
-void DataManagerColumn::getInt64(rownr_t, Int64*) { throwGet(); }
+void DataManagerColumn::getInt64(rownr_t, int64_t*) { throwGet(); }
 void DataManagerColumn::getfloat(rownr_t, float*) { throwGet(); }
 void DataManagerColumn::getdouble(rownr_t, double*) { throwGet(); }
 void DataManagerColumn::getComplex(rownr_t, Complex*) { throwGet(); }
@@ -100,7 +100,7 @@ void DataManagerColumn::putShort(rownr_t, const short*) { throwPut(); }
 void DataManagerColumn::putuShort(rownr_t, const unsigned short*) { throwPut(); }
 void DataManagerColumn::putInt(rownr_t, const int*) { throwPut(); }
 void DataManagerColumn::putuInt(rownr_t, const unsigned int*) { throwPut(); }
-void DataManagerColumn::putInt64(rownr_t, const Int64*) { throwPut(); }
+void DataManagerColumn::putInt64(rownr_t, const int64_t*) { throwPut(); }
 void DataManagerColumn::putfloat(rownr_t, const float*) { throwPut(); }
 void DataManagerColumn::putdouble(rownr_t, const double*) { throwPut(); }
 void DataManagerColumn::putComplex(rownr_t, const Complex*) { throwPut(); }
@@ -293,7 +293,7 @@ void DataManagerColumn::getScalarColumnBase(ArrayBase& arr) {
       GetCol<unsigned int>(arr);
       break;
     case TpInt64:
-      GetCol<Int64>(arr);
+      GetCol<int64_t>(arr);
       break;
     case TpFloat:
       GetCol<float>(arr);
@@ -339,7 +339,7 @@ void DataManagerColumn::putScalarColumnBase(const ArrayBase& arr) {
       PutCol<unsigned int>(arr);
       break;
     case TpInt64:
-      PutCol<Int64>(arr);
+      PutCol<int64_t>(arr);
       break;
     case TpFloat:
       PutCol<float>(arr);
@@ -385,7 +385,7 @@ void DataManagerColumn::getScalarColumnCellsBase(const RefRows& rownrs, ArrayBas
       GetCells<unsigned int>(rownrs, arr);
       break;
     case TpInt64:
-      GetCells<Int64>(rownrs, arr);
+      GetCells<int64_t>(rownrs, arr);
       break;
     case TpFloat:
       GetCells<float>(rownrs, arr);
@@ -431,7 +431,7 @@ void DataManagerColumn::putScalarColumnCellsBase(const RefRows& rownrs, const Ar
       PutCells<unsigned int>(rownrs, arr);
       break;
     case TpInt64:
-      PutCells<Int64>(rownrs, arr);
+      PutCells<int64_t>(rownrs, arr);
       break;
     case TpFloat:
       PutCells<float>(rownrs, arr);

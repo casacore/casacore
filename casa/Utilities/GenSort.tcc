@@ -809,7 +809,7 @@ INX GenSortIndirect<T, INX>::insSortAsc(INX* inx, const T* data, INX nr, int opt
 template <class T, class INX>
 INX GenSortIndirect<T, INX>::insSortAscDup(INX* inx, const T* data, INX nr) {
   for (INX i = 1; i < nr; i++) {
-    Int64 j = i;
+    int64_t j = i;
     INX cur = inx[i];
     while (j > 0 && isAscending(data, inx[j - 1], cur)) {
       inx[j] = inx[j - 1];
@@ -829,13 +829,13 @@ INX GenSortIndirect<T, INX>::insSortAscNoDup(INX* inx, const T* data, INX nr) {
   }
   INX n = 1;
   for (INX i = 1; i < nr; i++) {
-    Int64 j = n;
+    int64_t j = n;
     INX cur = inx[i];
     while (j > 0 && data[inx[j - 1]] > data[cur]) {
       j--;
     }
     if (j <= 0 || !(data[inx[j - 1]] == data[cur])) {  // no equal key
-      for (Int64 k = n - 1; k >= j; k--) {
+      for (int64_t k = n - 1; k >= j; k--) {
         inx[k + 1] = inx[k];  // now shift to right
       }
       inx[j] = cur;  // insert in right place

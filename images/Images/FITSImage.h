@@ -107,7 +107,8 @@ class FITSImage : public ImageInterface<float> {
   explicit FITSImage(const String& name, unsigned int whichRep = 0, unsigned int whichHDU = 0);
 
   // Construct a FITSImage from the disk FITS file name and extension and apply mask or not.
-  FITSImage(const String& name, const MaskSpecifier& mask, unsigned int whichRep = 0, unsigned int whichHDU = 0);
+  FITSImage(const String& name, const MaskSpecifier& mask, unsigned int whichRep = 0,
+            unsigned int whichHDU = 0);
 
   // Copy constructor (reference semantics)
   FITSImage(const FITSImage& other);
@@ -266,7 +267,7 @@ class FITSImage : public ImageInterface<float> {
   int longMagic_p;
   bool hasBlanks_p;
   DataType dataType_p;
-  Int64 fileOffset_p;
+  int64_t fileOffset_p;
   bool isClosed_p;
   bool filterZeroMask_p;
   unsigned int whichRep_p;
@@ -287,16 +288,17 @@ class FITSImage : public ImageInterface<float> {
   // Fish things out of the FITS file
   void getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& info,
                           Unit& brightnessUnit, RecordInterface& miscInfo, int& recsize, int& recno,
-                          FITS::ValueType& dataType, float& scale, float& offset, unsigned char& uCharMagic,
-                          short& shortMagic, int& longMagic, bool& hasBlanks, const String& name,
-                          unsigned int whichRep, unsigned int whichHDU);
+                          FITS::ValueType& dataType, float& scale, float& offset,
+                          unsigned char& uCharMagic, short& shortMagic, int& longMagic,
+                          bool& hasBlanks, const String& name, unsigned int whichRep,
+                          unsigned int whichHDU);
 
   // Crack a primary header
   template <typename T>
   void crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                    Unit& brightnessUnit, RecordInterface& miscInfo, float& scale, float& offset,
-                   unsigned char& magicUChar, short& magicShort, int& magicLong, bool& hasBlanks, LogIO& os,
-                   FitsInput& infile, unsigned int whichRep);
+                   unsigned char& magicUChar, short& magicShort, int& magicLong, bool& hasBlanks,
+                   LogIO& os, FitsInput& infile, unsigned int whichRep);
 
   // Crack an image extension header
   template <typename T>

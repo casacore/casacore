@@ -42,8 +42,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &description, unsigned int nrows,
-                                 const Record &extraKeywords, bool freeOutput)
+FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &description,
+                                 unsigned int nrows, const Record &extraKeywords, bool freeOutput)
     : delete_writer_p(freeOutput),
       writer_p(0),
       nrows_written_p(0),

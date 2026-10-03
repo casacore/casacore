@@ -106,7 +106,7 @@ Fit2D& Fit2D::operator=(const Fit2D& other)
 }
 
 unsigned int Fit2D::addModel(Fit2D::Types type, const Vector<double>& parameters,
-                     const Vector<bool>& parameterMask) {
+                             const Vector<bool>& parameterMask) {
   const unsigned int nModels = itsTypeList.nelements() + 1;
   itsTypeList.resize(nModels, true);
   //

@@ -157,15 +157,18 @@ class MCBase {
   // </ul>
   // <group>
   // Routine to make the transition table if necessary
-  static void makeState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]);
+  static void makeState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout,
+                        const unsigned int list[][3]);
   // Return a fromatted String with matrix information (based on < 100 types)
-  static String showState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]);
+  static String showState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout,
+                          const unsigned int list[][3]);
 
  private:
   // Routine to find the shortest route between two points
-  static bool findState(unsigned int &len, unsigned int *state, unsigned int *mcnt, bool &okall, bool *visit,
-                        const unsigned int *tcnt, const unsigned int *tree, const unsigned int &in, const unsigned int &out,
-                        const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]);
+  static bool findState(unsigned int &len, unsigned int *state, unsigned int *mcnt, bool &okall,
+                        bool *visit, const unsigned int *tcnt, const unsigned int *tree,
+                        const unsigned int &in, const unsigned int &out, const unsigned int ntyp,
+                        const unsigned int nrout, const unsigned int list[][3]);
   // </group>
 };
 

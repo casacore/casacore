@@ -132,7 +132,8 @@ class StManColumnAipsIO : public MSMColumn {
 
   // Get data (nrval elements) into an extension (starting at datap
   // plus the given index).
-  virtual void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&, unsigned int version);
+  virtual void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&,
+                       unsigned int version);
 };
 
 // <summary>

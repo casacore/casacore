@@ -76,7 +76,7 @@ void ISMColumn::clear() {
       delete[] (unsigned int*)lastValue_p;
       break;
     case TpInt64:
-      delete[] (Int64*)lastValue_p;
+      delete[] (int64_t*)lastValue_p;
       break;
     case TpFloat:
       delete[] (float*)lastValue_p;
@@ -184,9 +184,9 @@ void ISMColumn::getuInt(rownr_t rownr, unsigned int* value) {
   getValue(rownr, lastValue_p, true);
   *value = *(unsigned int*)lastValue_p;
 }
-void ISMColumn::getInt64(rownr_t rownr, Int64* value) {
+void ISMColumn::getInt64(rownr_t rownr, int64_t* value) {
   getValue(rownr, lastValue_p, true);
-  *value = *(Int64*)lastValue_p;
+  *value = *(int64_t*)lastValue_p;
 }
 void ISMColumn::getfloat(rownr_t rownr, float* value) {
   getValue(rownr, lastValue_p, true);
@@ -230,7 +230,7 @@ void ISMColumn::getScalarColumnV(ArrayBase& dataPtr) {
       getScaCol(static_cast<Vector<unsigned int>&>(dataPtr));
       break;
     case TpInt64:
-      getScaCol(static_cast<Vector<Int64>&>(dataPtr));
+      getScaCol(static_cast<Vector<int64_t>&>(dataPtr));
       break;
     case TpFloat:
       getScaCol(static_cast<Vector<float>&>(dataPtr));
@@ -273,7 +273,7 @@ void ISMColumn::getScalarColumnCellsV(const RefRows& rows, ArrayBase& dataPtr) {
       getScaColCells(rows, static_cast<Vector<unsigned int>&>(dataPtr));
       break;
     case TpInt64:
-      getScaColCells(rows, static_cast<Vector<Int64>&>(dataPtr));
+      getScaColCells(rows, static_cast<Vector<int64_t>&>(dataPtr));
       break;
     case TpFloat:
       getScaColCells(rows, static_cast<Vector<float>&>(dataPtr));
@@ -323,7 +323,7 @@ void ISMColumn::putShort(rownr_t rownr, const short* value) { putValue(rownr, va
 void ISMColumn::putuShort(rownr_t rownr, const unsigned short* value) { putValue(rownr, value); }
 void ISMColumn::putInt(rownr_t rownr, const int* value) { putValue(rownr, value); }
 void ISMColumn::putuInt(rownr_t rownr, const unsigned int* value) { putValue(rownr, value); }
-void ISMColumn::putInt64(rownr_t rownr, const Int64* value) { putValue(rownr, value); }
+void ISMColumn::putInt64(rownr_t rownr, const int64_t* value) { putValue(rownr, value); }
 void ISMColumn::putfloat(rownr_t rownr, const float* value) { putValue(rownr, value); }
 void ISMColumn::putdouble(rownr_t rownr, const double* value) { putValue(rownr, value); }
 void ISMColumn::putComplex(rownr_t rownr, const Complex* value) { putValue(rownr, value); }
@@ -351,7 +351,7 @@ void ISMColumn::putScalarColumnV(const ArrayBase& dataPtr) {
       putScaCol(static_cast<const Vector<unsigned int>&>(dataPtr));
       break;
     case TpInt64:
-      putScaCol(static_cast<const Vector<Int64>&>(dataPtr));
+      putScaCol(static_cast<const Vector<int64_t>&>(dataPtr));
       break;
     case TpFloat:
       putScaCol(static_cast<const Vector<float>&>(dataPtr));
@@ -619,8 +619,8 @@ void ISMColumn::putFromRow(rownr_t rownr, const char* data, unsigned int lenData
 }
 
 void ISMColumn::putData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
-                        rownr_t bucketRownr, const char* data, unsigned int lenData, bool afterLastRow,
-                        bool canSplit) {
+                        rownr_t bucketRownr, const char* data, unsigned int lenData,
+                        bool afterLastRow, bool canSplit) {
   // Determine the index.
   unsigned int inx, dum3;
   rownr_t start, end;
@@ -636,8 +636,8 @@ void ISMColumn::putData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucke
 }
 
 void ISMColumn::replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
-                            rownr_t bucketRownr, unsigned int& offset, const char* data, unsigned int lenData,
-                            bool canSplit) {
+                            rownr_t bucketRownr, unsigned int& offset, const char* data,
+                            unsigned int lenData, bool canSplit) {
   // Replacing a value means removing the old value.
   // So give the opportunity to handle a removal before the
   // actual replace is done.
@@ -677,8 +677,8 @@ void ISMColumn::replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t b
 }
 
 bool ISMColumn::addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
-                        rownr_t bucketRownr, unsigned int inx, const char* data, unsigned int lenData,
-                        bool afterLastRow, bool canSplit) {
+                        rownr_t bucketRownr, unsigned int inx, const char* data,
+                        unsigned int lenData, bool afterLastRow, bool canSplit) {
   // If the value fits in the bucket, it can simply be added.
   if (bucket->canAddData(lenData)) {
     bucket->addData(colnr_p, bucketRownr, inx, data, lenData);
@@ -814,10 +814,10 @@ void ISMColumn::init() {
       objset((unsigned int*)lastValue_p, undef, nrelem_p);
     } break;
     case TpInt64: {
-      compareFunc_p = ObjCompare<Int64>::compare;
-      lastValue_p = new Int64[nrelem_p];
-      Int64 undef = 0;
-      objset((Int64*)lastValue_p, undef, nrelem_p);
+      compareFunc_p = ObjCompare<int64_t>::compare;
+      lastValue_p = new int64_t[nrelem_p];
+      int64_t undef = 0;
+      objset((int64_t*)lastValue_p, undef, nrelem_p);
     } break;
     case TpFloat: {
       compareFunc_p = ObjCompare<float>::compare;

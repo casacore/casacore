@@ -226,8 +226,8 @@ void Directory::removeRecursive(bool keepDir) {
   }
 }
 
-Int64 Directory::size() const {
-  Int64 totSize = 0;
+int64_t Directory::size() const {
+  int64_t totSize = 0;
   DirectoryIterator iter(*this);
   while (!iter.pastEnd()) {
     File file = iter.file();

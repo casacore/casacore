@@ -55,7 +55,7 @@ class StatisticsDataset {
     // start of data
     DataIterator data;
     // total number of points
-    uInt64 count;
+    uint64_t count;
     // data stride
     unsigned int dataStride;
     // associated ranges. If nullptr, then there are none. If not, the
@@ -99,10 +99,12 @@ class StatisticsDataset {
                bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, unsigned int nr, const DataRanges& dataRanges,
-               bool isInclude = true, unsigned int dataStride = 1, bool nrAccountsForStride = false);
+               bool isInclude = true, unsigned int dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
-               unsigned int dataStride = 1, bool nrAccountsForStride = false, unsigned int maskStride = 1);
+               unsigned int dataStride = 1, bool nrAccountsForStride = false,
+               unsigned int maskStride = 1);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
                const DataRanges& dataRanges, bool isInclude = true, unsigned int dataStride = 1,
@@ -129,39 +131,40 @@ class StatisticsDataset {
   bool empty() const;
 
   // get data counts associated with the underlying data sets
-  const std::vector<Int64>& getCounts() const { return _counts; }
+  const std::vector<int64_t>& getCounts() const { return _counts; }
 
   StatsDataProvider<CASA_STATP>* getDataProvider() { return _dataProvider; }
 
   const StatsDataProvider<CASA_STATP>* getDataProvider() const { return _dataProvider; }
 
-  Int64 iDataset() const { return _idataset; }
+  int64_t iDataset() const { return _idataset; }
 
   bool increment(bool includeIDataset);
 
   void incrementThreadIters(DataIterator& dataIter, MaskIterator& maskIter,
-                            WeightsIterator& weightsIter, uInt64& offset, unsigned int nthreads) const;
+                            WeightsIterator& weightsIter, uint64_t& offset,
+                            unsigned int nthreads) const;
 
   void initIterators();
 
   // used for threaded methods
-  void initLoopVars(uInt64& chunkCount, unsigned int& chunkStride, bool& chunkHasRanges,
+  void initLoopVars(uint64_t& chunkCount, unsigned int& chunkStride, bool& chunkHasRanges,
                     DataRanges& chunkRanges, bool& chunkIsIncludeRanges, bool& chunkHasMask,
                     unsigned int& chunkMaskStride, bool& chunkHasWeights);
 
   // used for unthreaded methods
-  void initLoopVars(DataIterator& chunkData, uInt64& chunkCount, unsigned int& chunkStride,
+  void initLoopVars(DataIterator& chunkData, uint64_t& chunkCount, unsigned int& chunkStride,
                     bool& chunkHasRanges, DataRanges& chunkRanges, bool& chunkIsIncludeRanges,
                     bool& chunkHasMask, MaskIterator& chunkMask, unsigned int& chunkMaskStride,
                     bool& chunkHasWeights, WeightsIterator& chunkWeights);
 
   const ChunkData& initLoopVars();
 
-  void initThreadVars(unsigned int& nBlocks, uInt64& extra, unsigned int& nthreads,
+  void initThreadVars(unsigned int& nBlocks, uint64_t& extra, unsigned int& nthreads,
                       std::unique_ptr<DataIterator[]>& dataIter,
                       std::unique_ptr<MaskIterator[]>& maskIter,
                       std::unique_ptr<WeightsIterator[]>& weightsIter,
-                      std::unique_ptr<uInt64[]>& offset, unsigned int nThreadsMax) const;
+                      std::unique_ptr<uint64_t[]>& offset, unsigned int nThreadsMax) const;
 
   void reset();
 
@@ -176,10 +179,12 @@ class StatisticsDataset {
                bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, unsigned int nr, const DataRanges& dataRanges,
-               bool isInclude = true, unsigned int dataStride = 1, bool nrAccountsForStride = false);
+               bool isInclude = true, unsigned int dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
-               unsigned int dataStride = 1, bool nrAccountsForStride = false, unsigned int maskStride = 1);
+               unsigned int dataStride = 1, bool nrAccountsForStride = false,
+               unsigned int maskStride = 1);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, unsigned int nr,
                const DataRanges& dataRanges, bool isInclude = true, unsigned int dataStride = 1,
@@ -215,16 +220,16 @@ class StatisticsDataset {
   std::map<unsigned int, WeightsIterator> _weights{};
   // maps data to masks
   std::map<unsigned int, MaskIterator> _masks{};
-  std::vector<Int64> _counts{};
+  std::vector<int64_t> _counts{};
   std::vector<unsigned int> _dataStrides{};
   std::map<unsigned int, unsigned int> _maskStrides{};
   std::map<unsigned int, bool> _isIncludeRanges{};
   std::map<unsigned int, DataRanges> _dataRanges{};
   StatsDataProvider<CASA_STATP>* _dataProvider{nullptr};
 
-  Int64 _idataset{0};
+  int64_t _idataset{0};
   typename std::vector<DataIterator>::const_iterator _dend{}, _diter{};
-  std::vector<Int64>::const_iterator _citer{};
+  std::vector<int64_t>::const_iterator _citer{};
   std::vector<unsigned int>::const_iterator _dsiter{};
   unsigned int _dataCount{0};
   ChunkData _chunk;

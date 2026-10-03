@@ -91,9 +91,9 @@ void TableIndexProxy::setChanged(const Vector<String>& columnNames) {
   }
 }
 
-Int64 TableIndexProxy::getRowNumber(const Record& key) {
+int64_t TableIndexProxy::getRowNumber(const Record& key) {
   bool found;
-  Int64 rownr;
+  int64_t rownr;
   if (scaIndex_p != 0) {
     rownr = scaIndex_p->getRowNumber(found, key);
   } else {
@@ -105,27 +105,27 @@ Int64 TableIndexProxy::getRowNumber(const Record& key) {
   return rownr;
 }
 
-Vector<Int64> TableIndexProxy::getRowNumbers(const Record& key) {
+Vector<int64_t> TableIndexProxy::getRowNumbers(const Record& key) {
   RowNumbers rows;
   if (scaIndex_p != 0) {
     rows = scaIndex_p->getRowNumbers(key);
   } else {
     rows = arrIndex_p->getRowNumbers(key);
   }
-  Vector<Int64> rownrs(rows.shape());
+  Vector<int64_t> rownrs(rows.shape());
   convertArray(rownrs, rows);
   return rownrs;
 }
 
-Vector<Int64> TableIndexProxy::getRowNumbersRange(const Record& lower, const Record& upper,
-                                                  bool lowerInclusive, bool upperInclusive) {
+Vector<int64_t> TableIndexProxy::getRowNumbersRange(const Record& lower, const Record& upper,
+                                                    bool lowerInclusive, bool upperInclusive) {
   RowNumbers rows;
   if (scaIndex_p != 0) {
     rows = scaIndex_p->getRowNumbers(lower, upper, lowerInclusive, upperInclusive);
   } else {
     rows = arrIndex_p->getRowNumbers(lower, upper, lowerInclusive, upperInclusive);
   }
-  Vector<Int64> rownrs(rows.shape());
+  Vector<int64_t> rownrs(rows.shape());
   convertArray(rownrs, rows);
   return rownrs;
 }

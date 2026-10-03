@@ -87,8 +87,8 @@ void HingesFencesStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    uInt64 nr, unsigned int dataStride) const {
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    uint64_t nr, unsigned int dataStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(npts, dataBegin, nr, dataStride);
   } else {
@@ -97,8 +97,8 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    uInt64 nr, unsigned int dataStride,
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    uint64_t nr, unsigned int dataStride,
                                                     const DataRanges& ranges,
                                                     bool isInclude) const {
   if (_hasRange) {
@@ -110,8 +110,8 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    uInt64 nr, unsigned int dataStride,
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    uint64_t nr, unsigned int dataStride,
                                                     const MaskIterator& maskBegin,
                                                     unsigned int maskStride) const {
   if (_hasRange) {
@@ -124,9 +124,10 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    uInt64 nr, unsigned int dataStride,
-                                                    const MaskIterator& maskBegin, unsigned int maskStride,
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    uint64_t nr, unsigned int dataStride,
+                                                    const MaskIterator& maskBegin,
+                                                    unsigned int maskStride,
                                                     const DataRanges& ranges,
                                                     bool isInclude) const {
   if (_hasRange) {
@@ -139,9 +140,9 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    const WeightsIterator& weightsBegin, uInt64 nr,
-                                                    unsigned int dataStride) const {
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    const WeightsIterator& weightsBegin,
+                                                    uint64_t nr, unsigned int dataStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(npts, dataBegin, weightsBegin, nr,
                                                        dataStride);
@@ -151,9 +152,10 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    const WeightsIterator& weightsBegin, uInt64 nr,
-                                                    unsigned int dataStride, const DataRanges& ranges,
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    const WeightsIterator& weightsBegin,
+                                                    uint64_t nr, unsigned int dataStride,
+                                                    const DataRanges& ranges,
                                                     bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(npts, dataBegin, weightsBegin, nr,
@@ -165,11 +167,10 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    const WeightsIterator& weightsBegin, uInt64 nr,
-                                                    unsigned int dataStride, const MaskIterator& maskBegin,
-                                                    unsigned int maskStride, const DataRanges& ranges,
-                                                    bool isInclude) const {
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
+    uint64_t& npts, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const DataRanges& ranges, bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
         npts, dataBegin, weightsBegin, nr, dataStride, maskBegin, maskStride, ranges, isInclude);
@@ -180,9 +181,10 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                                                    const WeightsIterator& weightsBegin, uInt64 nr,
-                                                    unsigned int dataStride, const MaskIterator& maskBegin,
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                                                    const WeightsIterator& weightsBegin,
+                                                    uint64_t nr, unsigned int dataStride,
+                                                    const MaskIterator& maskBegin,
                                                     unsigned int maskStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(npts, dataBegin, weightsBegin, nr,
@@ -196,7 +198,7 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIter
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                                  std::shared_ptr<AccumType>& mymax,
-                                                 const DataIterator& dataBegin, uInt64 nr,
+                                                 const DataIterator& dataBegin, uint64_t nr,
                                                  unsigned int dataStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMax(mymin, mymax, dataBegin, nr, dataStride);
@@ -208,7 +210,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mym
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                                  std::shared_ptr<AccumType>& mymax,
-                                                 const DataIterator& dataBegin, uInt64 nr,
+                                                 const DataIterator& dataBegin, uint64_t nr,
                                                  unsigned int dataStride, const DataRanges& ranges,
                                                  bool isInclude) const {
   if (_hasRange) {
@@ -223,8 +225,9 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mym
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                                  std::shared_ptr<AccumType>& mymax,
-                                                 const DataIterator& dataBegin, uInt64 nr,
-                                                 unsigned int dataStride, const MaskIterator& maskBegin,
+                                                 const DataIterator& dataBegin, uint64_t nr,
+                                                 unsigned int dataStride,
+                                                 const MaskIterator& maskBegin,
                                                  unsigned int maskStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMax(mymin, mymax, dataBegin, nr, dataStride,
@@ -238,8 +241,9 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mym
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                                  std::shared_ptr<AccumType>& mymax,
-                                                 const DataIterator& dataBegin, uInt64 nr,
-                                                 unsigned int dataStride, const MaskIterator& maskBegin,
+                                                 const DataIterator& dataBegin, uint64_t nr,
+                                                 unsigned int dataStride,
+                                                 const MaskIterator& maskBegin,
                                                  unsigned int maskStride, const DataRanges& ranges,
                                                  bool isInclude) const {
   if (_hasRange) {
@@ -255,7 +259,7 @@ CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                                  std::shared_ptr<AccumType>& mymax,
                                                  const DataIterator& dataBegin,
-                                                 const WeightsIterator& weightsBegin, uInt64 nr,
+                                                 const WeightsIterator& weightsBegin, uint64_t nr,
                                                  unsigned int dataStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMax(mymin, mymax, dataBegin, weightsBegin, nr,
@@ -269,7 +273,7 @@ CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
                                                  std::shared_ptr<AccumType>& mymax,
                                                  const DataIterator& dataBegin,
-                                                 const WeightsIterator& weightsBegin, uInt64 nr,
+                                                 const WeightsIterator& weightsBegin, uint64_t nr,
                                                  unsigned int dataStride, const DataRanges& ranges,
                                                  bool isInclude) const {
   if (_hasRange) {
@@ -282,13 +286,11 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mym
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
-                                                 std::shared_ptr<AccumType>& mymax,
-                                                 const DataIterator& dataBegin,
-                                                 const WeightsIterator& weightsBegin, uInt64 nr,
-                                                 unsigned int dataStride, const MaskIterator& maskBegin,
-                                                 unsigned int maskStride, const DataRanges& ranges,
-                                                 bool isInclude) const {
+void HingesFencesStatistics<CASA_STATP>::_minMax(
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const DataRanges& ranges, bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMax(mymin, mymax, dataBegin, weightsBegin, nr,
                                                     dataStride, maskBegin, maskStride, ranges,
@@ -300,12 +302,10 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mym
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mymin,
-                                                 std::shared_ptr<AccumType>& mymax,
-                                                 const DataIterator& dataBegin,
-                                                 const WeightsIterator& weightsBegin, uInt64 nr,
-                                                 unsigned int dataStride, const MaskIterator& maskBegin,
-                                                 unsigned int maskStride) const {
+void HingesFencesStatistics<CASA_STATP>::_minMax(
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMax(mymin, mymax, dataBegin, weightsBegin, nr,
                                                     dataStride, maskBegin, maskStride);
@@ -316,10 +316,10 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>& mym
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
+void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uint64_t& npts,
                                                      std::shared_ptr<AccumType>& mymin,
                                                      std::shared_ptr<AccumType>& mymax,
-                                                     const DataIterator& dataBegin, uInt64 nr,
+                                                     const DataIterator& dataBegin, uint64_t nr,
                                                      unsigned int dataStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, nr,
@@ -330,12 +330,10 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
-                                                     std::shared_ptr<AccumType>& mymin,
-                                                     std::shared_ptr<AccumType>& mymax,
-                                                     const DataIterator& dataBegin, uInt64 nr,
-                                                     unsigned int dataStride, const DataRanges& ranges,
-                                                     bool isInclude) const {
+void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
+    uint64_t& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
+    bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, nr,
                                                         dataStride, ranges, isInclude);
@@ -346,12 +344,10 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
-                                                     std::shared_ptr<AccumType>& mymin,
-                                                     std::shared_ptr<AccumType>& mymax,
-                                                     const DataIterator& dataBegin, uInt64 nr,
-                                                     unsigned int dataStride, const MaskIterator& maskBegin,
-                                                     unsigned int maskStride) const {
+void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
+    uint64_t& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, nr,
                                                         dataStride, maskBegin, maskStride);
@@ -363,9 +359,10 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
-    unsigned int maskStride, const DataRanges& ranges, bool isInclude) const {
+    uint64_t& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+    bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
         npts, mymin, mymax, dataBegin, nr, dataStride, maskBegin, maskStride, ranges, isInclude);
@@ -376,12 +373,12 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 }
 
 CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
+void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uint64_t& npts,
                                                      std::shared_ptr<AccumType>& mymin,
                                                      std::shared_ptr<AccumType>& mymax,
                                                      const DataIterator& dataBegin,
-                                                     const WeightsIterator& weightsBegin, uInt64 nr,
-                                                     unsigned int dataStride) const {
+                                                     const WeightsIterator& weightsBegin,
+                                                     uint64_t nr, unsigned int dataStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, weightsBegin,
                                                         nr, dataStride);
@@ -393,9 +390,9 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-    const DataRanges& ranges, bool isInclude) const {
+    uint64_t& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const DataRanges& ranges, bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, weightsBegin,
                                                         nr, dataStride, ranges, isInclude);
@@ -407,10 +404,10 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-    bool isInclude) const {
+    uint64_t& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
+    const DataRanges& ranges, bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, weightsBegin,
                                                         nr, dataStride, maskBegin, maskStride,
@@ -424,9 +421,9 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-    const MaskIterator& maskBegin, unsigned int maskStride) const {
+    uint64_t& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uint64_t nr,
+    unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride) const {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(npts, mymin, mymax, dataBegin, weightsBegin,
                                                         nr, dataStride, maskBegin, maskStride);
@@ -460,9 +457,9 @@ void HingesFencesStatistics<CASA_STATP>::_setRange() {
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& stats,
-                                                          uInt64& ngood, LocationType& location,
-                                                          const DataIterator& dataBegin, uInt64 nr,
-                                                          unsigned int dataStride) {
+                                                          uint64_t& ngood, LocationType& location,
+                                                          const DataIterator& dataBegin,
+                                                          uint64_t nr, unsigned int dataStride) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(stats, ngood, location, dataBegin, nr,
                                                              dataStride);
@@ -474,9 +471,10 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& 
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& stats,
-                                                          uInt64& ngood, LocationType& location,
-                                                          const DataIterator& dataBegin, uInt64 nr,
-                                                          unsigned int dataStride, const DataRanges& ranges,
+                                                          uint64_t& ngood, LocationType& location,
+                                                          const DataIterator& dataBegin,
+                                                          uint64_t nr, unsigned int dataStride,
+                                                          const DataRanges& ranges,
                                                           bool isInclude) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(stats, ngood, location, dataBegin, nr,
@@ -489,9 +487,9 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& 
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& stats,
-                                                          uInt64& ngood, LocationType& location,
-                                                          const DataIterator& dataBegin, uInt64 nr,
-                                                          unsigned int dataStride,
+                                                          uint64_t& ngood, LocationType& location,
+                                                          const DataIterator& dataBegin,
+                                                          uint64_t nr, unsigned int dataStride,
                                                           const MaskIterator& maskBegin,
                                                           unsigned int maskStride) {
   if (_hasRange) {
@@ -505,9 +503,10 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& 
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
-    unsigned int maskStride, const DataRanges& ranges, bool isInclude) {
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+    bool isInclude) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(stats, ngood, location, dataBegin, nr,
                                                              dataStride, maskBegin, maskStride,
@@ -524,7 +523,7 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& st
                                                         LocationType& location,
                                                         const DataIterator& dataBegin,
                                                         const WeightsIterator& weightsBegin,
-                                                        uInt64 nr, unsigned int dataStride) {
+                                                        uint64_t nr, unsigned int dataStride) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(stats, location, dataBegin, weightsBegin,
                                                            nr, dataStride);
@@ -539,7 +538,7 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& st
                                                         LocationType& location,
                                                         const DataIterator& dataBegin,
                                                         const WeightsIterator& weightsBegin,
-                                                        uInt64 nr, unsigned int dataStride,
+                                                        uint64_t nr, unsigned int dataStride,
                                                         const DataRanges& ranges, bool isInclude) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(stats, location, dataBegin, weightsBegin,
@@ -553,8 +552,9 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& st
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
-    unsigned int maskStride, const DataRanges& ranges, bool isInclude) {
+    const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+    bool isInclude) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(stats, location, dataBegin, weightsBegin,
                                                            nr, dataStride, maskBegin, maskStride,
@@ -569,8 +569,8 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
-    unsigned int maskStride) {
+    const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+    const MaskIterator& maskBegin, unsigned int maskStride) {
   if (_hasRange) {
     ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(stats, location, dataBegin, weightsBegin,
                                                            nr, dataStride, maskBegin, maskStride);

@@ -42,7 +42,7 @@ class RecordInterface;
 // # fields in a record select expression.
 // #
 // # Data types Bool, Double, DComplex and String are used.
-// # Char, uChar, Short, uShort, Int and uInt are converted to Int64,
+// # Char, uChar, Short, uShort, Int and uInt are converted to int64_t,
 // # float to Double, and Complex to DComplex.
 // # Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 // # Also &&, ||, parentheses and unary +, - and ! are recognized.
@@ -76,7 +76,7 @@ class TableExprNodeRecordField : public TableExprNodeBinary {
   virtual bool isDefined(const TableExprId& id);
 
   virtual bool getBool(const TableExprId& id);
-  virtual Int64 getInt(const TableExprId& id);
+  virtual int64_t getInt(const TableExprId& id);
   virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
@@ -119,7 +119,7 @@ class TableExprNodeRecordFieldArray : public TableExprNodeArray {
   virtual const IPosition& getShape(const TableExprId& id);
 
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
   virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);

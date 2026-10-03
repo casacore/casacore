@@ -34,7 +34,7 @@ template class ScalarColumn<short>;
 template class ScalarColumn<unsigned short>;
 template class ScalarColumn<int>;
 template class ScalarColumn<unsigned int>;
-template class ScalarColumn<Int64>;
+template class ScalarColumn<int64_t>;
 template class ScalarColumn<float>;
 template class ScalarColumn<double>;
 template class ScalarColumn<Complex>;

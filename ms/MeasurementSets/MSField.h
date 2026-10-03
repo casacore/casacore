@@ -118,7 +118,8 @@ class MSField : public MSFieldEnums, public MSTable<MSFieldEnums> {
   // If any tables of the same id exist already, they are removed beforehand.
   // The optional EPHEMERIS_ID column is added if it doesn't exist, yet.
   // Return false in case of errors.
-  bool addEphemeris(const unsigned int id, const String &inputEphemTableName, const String &comment);
+  bool addEphemeris(const unsigned int id, const String &inputEphemTableName,
+                    const String &comment);
 
   // Remove (delete) any ephemeris tables with given id (without changes to
   // the EPHEMERIS_ID column).

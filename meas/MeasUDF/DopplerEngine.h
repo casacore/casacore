@@ -116,7 +116,8 @@ class DopplerEngine : public MeasEngine<MDoppler> {
   // (with proper type). If not. false is returned.
   // The 'allow' arguments tell if the doppler can be specified by means of
   // a radial velocity or freq/restfreq.
-  void handleDoppler(std::vector<TENShPtr>& args, unsigned int& argnr, bool allowRadVel, bool allowFreq);
+  void handleDoppler(std::vector<TENShPtr>& args, unsigned int& argnr, bool allowRadVel,
+                     bool allowFreq);
 
   // Set the MeasConvert object.
   void setConverter(MDoppler::Types toType);

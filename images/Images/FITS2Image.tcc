@@ -47,8 +47,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <typename T>
 void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                             Unit& brightnessUnit, RecordInterface& miscInfo, float& scale,
-                            float& offset, unsigned char& magicUChar, short& magicShort, int& magicInt,
-                            bool& hasBlanks, LogIO& os, FitsInput& infile, unsigned int whichRep) {
+                            float& offset, unsigned char& magicUChar, short& magicShort,
+                            int& magicInt, bool& hasBlanks, LogIO& os, FitsInput& infile,
+                            unsigned int whichRep) {
   // Shape
   PrimaryArray<T> fitsImage(infile);
   int ndim = fitsImage.dims();
@@ -203,8 +204,9 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
 template <typename T>
 void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                                Unit& brightnessUnit, RecordInterface& miscInfo, float& scale,
-                               float& offset, unsigned char& magicUChar, short& magicShort, int& magicInt,
-                               bool& hasBlanks, LogIO& os, FitsInput& infile, unsigned int whichRep) {
+                               float& offset, unsigned char& magicUChar, short& magicShort,
+                               int& magicInt, bool& hasBlanks, LogIO& os, FitsInput& infile,
+                               unsigned int whichRep) {
   // Shape
 
   ImageExtension<T> fitsImage(infile);
@@ -362,12 +364,12 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 
 /*
 template void FITSImage::crackHeader<double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int); template
-void FITSImage::crackHeader<float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int); template
-void FITSImage::crackHeader<int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int); template
-void FITSImage::crackHeader<short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int);
+template void FITSImage::crackHeader<float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int);
+template void FITSImage::crackHeader<int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int);
+template void FITSImage::crackHeader<short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
 RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int);
 */
 

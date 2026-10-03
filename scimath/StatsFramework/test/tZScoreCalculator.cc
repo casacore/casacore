@@ -35,7 +35,7 @@ int main() {
       cout << z << " " << ZScoreCalculator::zscoreToNpts(z) << endl;
     }
     unsigned int count = 0;
-    uInt64 x = 10;
+    uint64_t x = 10;
     while (count < 15) {
       cout << "log(npts) " << log10(x) << " zscore " << ZScoreCalculator::getMaxZScore(x) << endl;
       ++count;

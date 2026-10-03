@@ -435,7 +435,7 @@ extern template class ArrayColumn<short>;
 extern template class ArrayColumn<unsigned short>;
 extern template class ArrayColumn<int>;
 extern template class ArrayColumn<unsigned int>;
-extern template class ArrayColumn<Int64>;
+extern template class ArrayColumn<int64_t>;
 extern template class ArrayColumn<float>;
 extern template class ArrayColumn<double>;
 extern template class ArrayColumn<Complex>;

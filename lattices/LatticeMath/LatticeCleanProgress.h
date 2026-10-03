@@ -100,7 +100,8 @@ class LatticeCleanProgress {
  protected:
  private:
   // initizalize the arrays and such
-  void initialize(const unsigned int nScales, const float& maxResidual, const unsigned int numIterations);
+  void initialize(const unsigned int nScales, const float& maxResidual,
+                  const unsigned int numIterations);
 
   // As the iterations trickle in, we will from time to time
   // need to make the Matrices larger.  Increase to 2*n+1

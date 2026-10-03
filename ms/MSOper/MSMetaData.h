@@ -133,14 +133,17 @@ class MSMetaData {
   // occurrence, namesToIDsMap will have the full set of IDs for antenna names that appear
   // multiple times.
 
-  vector<String> getAntennaNames(std::map<String, unsigned int>& namesToIDsMap,
-                                 const vector<unsigned int>& antennaIDs = vector<unsigned int>(0)) const;
+  vector<String> getAntennaNames(
+      std::map<String, unsigned int>& namesToIDsMap,
+      const vector<unsigned int>& antennaIDs = vector<unsigned int>(0)) const;
 
-  vector<String> getAntennaNames(std::map<String, std::set<unsigned int>>& namesToIDsMap,
-                                 const vector<unsigned int>& antennaIDs = vector<unsigned int>(0)) const;
+  vector<String> getAntennaNames(
+      std::map<String, std::set<unsigned int>>& namesToIDsMap,
+      const vector<unsigned int>& antennaIDs = vector<unsigned int>(0)) const;
 
   // get the antenna stations for the specified antenna IDs
-  vector<String> getAntennaStations(const vector<unsigned int>& antennaIDs = vector<unsigned int>());
+  vector<String> getAntennaStations(
+      const vector<unsigned int>& antennaIDs = vector<unsigned int>());
 
   // get the antenna stations for the specified antenna names. The outer vector is ordered
   // respective to antennaNames. Because an antenna name can appear more than once in
@@ -360,7 +363,8 @@ class MSMetaData {
 
   // get the positions of the specified antennas. If <src>which</src> is empty, return
   // all antenna positions.
-  vector<MPosition> getAntennaPositions(const vector<unsigned int>& which = std::vector<unsigned int>(0)) const;
+  vector<MPosition> getAntennaPositions(
+      const vector<unsigned int>& which = std::vector<unsigned int>(0)) const;
 
   // <src>names</src> cannot be empty.
   vector<vector<MPosition>> getAntennaPositions(const vector<String>& names);
@@ -459,7 +463,8 @@ class MSMetaData {
   std::set<int> getScansForField(const String& field, int obsID, int arrayID) const;
 
   // The first value of the pair is spw, the second is polarization ID.
-  std::map<std::pair<unsigned int, unsigned int>, unsigned int> getSpwIDPolIDToDataDescIDMap() const;
+  std::map<std::pair<unsigned int, unsigned int>, unsigned int> getSpwIDPolIDToDataDescIDMap()
+      const;
 
   // get a map of the spwIDs to spw names from the spw table
   vector<String> getSpwNames() const;
@@ -546,8 +551,8 @@ class MSMetaData {
 
   double nUnflaggedRows(CorrelationType cType) const;
 
-  double nUnflaggedRows(CorrelationType cType, int arrayID, unsigned int observationID, int scanNumber,
-                        unsigned int fieldID) const;
+  double nUnflaggedRows(CorrelationType cType, int arrayID, unsigned int observationID,
+                        int scanNumber, unsigned int fieldID) const;
 
   double nUnflaggedRows(CorrelationType cType, int fieldID) const;
 
@@ -592,7 +597,8 @@ class MSMetaData {
   std::map<ScanKey, FirstExposureTimeMap> getScanToFirstExposureTimeMap(bool showProgress) const;
 
   // get polarization IDs for the specified scan and spwid
-  std::set<unsigned int> getPolarizationIDs(unsigned int obsID, int arrayID, int scan, unsigned int spwid) const;
+  std::set<unsigned int> getPolarizationIDs(unsigned int obsID, int arrayID, int scan,
+                                            unsigned int spwid) const;
 
   // get the unique antennas (the union of the ANTENNA_1 and ANTENNA_2 columns) from
   // the main table
@@ -729,8 +735,8 @@ class MSMetaData {
   mutable float _cacheMB;
   const float _maxCacheMB;
   mutable rownr_t _nACRows, _nXCRows;
-  mutable unsigned int _nStates, _nSpw, _nFields, _nAntennas, _nObservations, _nScans, _nArrays, _nrows,
-      _nPol, _nDataDescIDs;
+  mutable unsigned int _nStates, _nSpw, _nFields, _nAntennas, _nObservations, _nScans, _nArrays,
+      _nrows, _nPol, _nDataDescIDs;
   mutable std::map<ScanKey, std::set<unsigned int>> _scanToSpwsMap, _scanToDDIDsMap;
   mutable vector<unsigned int> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
   mutable std::map<int, std::set<unsigned int>> _fieldToSpwMap;
@@ -897,7 +903,8 @@ class MSMetaData {
                              const Vector<int>& observations, const Vector<int>& ant1,
                              const Vector<int>& ant2, const Quantum<Vector<double>>& exposureTimes,
                              const Quantum<Vector<double>>& intervalTimes,
-                             const vector<unsigned int>& ddIDToSpw, rownr_t beginRow, rownr_t endRow) const;
+                             const vector<unsigned int>& ddIDToSpw, rownr_t beginRow,
+                             rownr_t endRow) const;
 
   std::shared_ptr<Vector<int>> _getDataDescIDs() const;
 
@@ -1084,7 +1091,8 @@ class MSMetaData {
 
   static unsigned int _sizeof(const vector<std::map<int, Quantity>>& map);
 
-  static unsigned int _sizeof(const std::map<std::pair<int, unsigned int>, std::set<unsigned int>>& map);
+  static unsigned int _sizeof(
+      const std::map<std::pair<int, unsigned int>, std::set<unsigned int>>& map);
 
   static std::map<int, unsigned int> _toUIntMap(const Vector<int>& v);
 

@@ -173,7 +173,7 @@ void TableTrace::trace(int tabid, const String& columnName, char oper) {
   writeTraceFirst(tabid, columnName, oper);
   *theirStream << '*' << endl;
 }
-void TableTrace::trace(int tabid, const String& columnName, char oper, Int64 row) {
+void TableTrace::trace(int tabid, const String& columnName, char oper, int64_t row) {
   writeTraceFirst(tabid, columnName, oper);
   *theirStream << row << endl;
 }
@@ -189,7 +189,7 @@ void TableTrace::trace(int tabid, const String& columnName, char oper, const IPo
   showContainer(*theirStream, shape);
   *theirStream << endl;
 }
-void TableTrace::trace(int tabid, const String& columnName, char oper, Int64 row,
+void TableTrace::trace(int tabid, const String& columnName, char oper, int64_t row,
                        const IPosition& shape) {
   writeTraceFirst(tabid, columnName, oper);
   *theirStream << row << ' ';
@@ -213,7 +213,7 @@ void TableTrace::trace(int tabid, const String& columnName, char oper, const IPo
   writeSlice(blc, trc, inc);
   *theirStream << endl;
 }
-void TableTrace::trace(int tabid, const String& columnName, char oper, Int64 row,
+void TableTrace::trace(int tabid, const String& columnName, char oper, int64_t row,
                        const IPosition& shape, const IPosition& blc, const IPosition& trc,
                        const IPosition& inc) {
   writeTraceFirst(tabid, columnName, oper);

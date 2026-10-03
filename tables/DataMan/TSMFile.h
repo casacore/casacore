@@ -115,13 +115,13 @@ class TSMFile {
   BucketFile* bucketFile();
 
   // Return the logical file length.
-  Int64 length() const;
+  int64_t length() const;
 
   // Return the file sequence number.
   unsigned int sequenceNumber() const;
 
   // Increment the logical file length.
-  void extend(Int64 increment);
+  void extend(int64_t increment);
 
  private:
   // The file sequence number.
@@ -129,14 +129,14 @@ class TSMFile {
   // The file object.
   BucketFile* file_p;
   // The (logical) length of the file.
-  Int64 length_p;
+  int64_t length_p;
 };
 
-inline Int64 TSMFile::length() const { return length_p; }
+inline int64_t TSMFile::length() const { return length_p; }
 
 inline unsigned int TSMFile::sequenceNumber() const { return fileSeqnr_p; }
 
-inline void TSMFile::extend(Int64 increment) { length_p += increment; }
+inline void TSMFile::extend(int64_t increment) { length_p += increment; }
 
 inline BucketFile* TSMFile::bucketFile() { return file_p; }
 

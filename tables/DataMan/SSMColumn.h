@@ -141,7 +141,7 @@ class SSMColumn : public StManColumnBase {
   virtual void getuShort(rownr_t aRowNr, unsigned short* aDataPtr);
   virtual void getInt(rownr_t aRowNr, int* aDataPtr);
   virtual void getuInt(rownr_t aRowNr, unsigned int* aDataPtr);
-  virtual void getInt64(rownr_t aRowNr, Int64* aDataPtr);
+  virtual void getInt64(rownr_t aRowNr, int64_t* aDataPtr);
   virtual void getfloat(rownr_t aRowNr, float* aDataPtr);
   virtual void getdouble(rownr_t aRowNr, double* aDataPtr);
   virtual void getComplex(rownr_t aRowNr, Complex* aDataPtr);
@@ -158,7 +158,7 @@ class SSMColumn : public StManColumnBase {
   virtual void putuShort(rownr_t aRowNr, const unsigned short* aDataPtr);
   virtual void putInt(rownr_t aRowNr, const int* aDataPtr);
   virtual void putuInt(rownr_t aRowNr, const unsigned int* aDataPtr);
-  virtual void putInt64(rownr_t aRowNr, const Int64* aDataPtr);
+  virtual void putInt64(rownr_t aRowNr, const int64_t* aDataPtr);
   virtual void putfloat(rownr_t aRowNr, const float* aDataPtr);
   virtual void putdouble(rownr_t aRowNr, const double* aDataPtr);
   virtual void putComplex(rownr_t aRowNr, const Complex* aDataPtr);

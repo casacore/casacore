@@ -242,8 +242,8 @@ int main() {
       AlwaysAssert(near(got.variance, expec.variance), AipsError);
       AlwaysAssert(*got.max == *expec.max, AipsError);
       AlwaysAssert(*got.min == *expec.min, AipsError);
-      AlwaysAssert(got.maxpos == std::pair<Int64 COMMA Int64>(0, 2), AipsError);
-      AlwaysAssert(got.minpos == std::pair<Int64 COMMA Int64>(1, 2), AipsError);
+      AlwaysAssert(got.maxpos == std::pair<int64_t COMMA int64_t>(0, 2), AipsError);
+      AlwaysAssert(got.minpos == std::pair<int64_t COMMA int64_t>(1, 2), AipsError);
 
       ClassicalStatistics<double, double *> cs10;
       cs10.addData(d, 3);
@@ -272,8 +272,8 @@ int main() {
       AlwaysAssert(near(got.variance, expec.variance), AipsError);
       AlwaysAssert(*got.max == *expec.max, AipsError);
       AlwaysAssert(*got.min == *expec.min, AipsError);
-      AlwaysAssert(got.maxpos == std::pair<Int64 COMMA Int64>(0, 2), AipsError);
-      AlwaysAssert(got.minpos == std::pair<Int64 COMMA Int64>(2, 0), AipsError);
+      AlwaysAssert(got.maxpos == std::pair<int64_t COMMA int64_t>(0, 2), AipsError);
+      AlwaysAssert(got.minpos == std::pair<int64_t COMMA int64_t>(2, 0), AipsError);
     }
   } catch (const std::exception &x) {
     cout << x.what() << endl;

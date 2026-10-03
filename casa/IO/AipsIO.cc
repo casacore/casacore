@@ -159,9 +159,9 @@ void AipsIO::close() {
 // Note that these functions only return a valid result if a disk file
 // is used (it will not work for IPC).
 
-Int64 AipsIO::getpos() { return io_p->seek(0, ByteIO::Current); }
+int64_t AipsIO::getpos() { return io_p->seek(0, ByteIO::Current); }
 
-Int64 AipsIO::setpos(Int64 pos) {
+int64_t AipsIO::setpos(int64_t pos) {
   if (level_p != 0) {
     throw(
         AipsError("AipsIO::setpos cannot be done while "
@@ -218,13 +218,13 @@ AipsIO& AipsIO::operator<<(const unsigned int& var) {
   return (*this);
 }
 
-AipsIO& AipsIO::operator<<(const Int64& var) {
+AipsIO& AipsIO::operator<<(const int64_t& var) {
   testput();
   objlen_p[level_p] += io_p->write(1, &var);
   return (*this);
 }
 
-AipsIO& AipsIO::operator<<(const uInt64& var) {
+AipsIO& AipsIO::operator<<(const uint64_t& var) {
   testput();
   objlen_p[level_p] += io_p->write(1, &var);
   return (*this);
@@ -334,7 +334,7 @@ AipsIO& AipsIO::put(unsigned int nrv, const unsigned int* var, bool putNR) {
   return (*this);
 }
 
-AipsIO& AipsIO::put(unsigned int nrv, const Int64* var, bool putNR) {
+AipsIO& AipsIO::put(unsigned int nrv, const int64_t* var, bool putNR) {
   testput();
   if (putNR) {
     operator<<(nrv);  // store #values
@@ -343,7 +343,7 @@ AipsIO& AipsIO::put(unsigned int nrv, const Int64* var, bool putNR) {
   return (*this);
 }
 
-AipsIO& AipsIO::put(unsigned int nrv, const uInt64* var, bool putNR) {
+AipsIO& AipsIO::put(unsigned int nrv, const uint64_t* var, bool putNR) {
   testput();
   if (putNR) {
     operator<<(nrv);  // store #values
@@ -414,7 +414,9 @@ AipsIO& AipsIO::put(const vector<bool>& vec) {
 // It puts the object type and version and reserves space for the length.
 // It increases the level for each object to hold the length.
 
-unsigned int AipsIO::putstart(const char* type, unsigned int vers) { return (putstart(String(type), vers)); }
+unsigned int AipsIO::putstart(const char* type, unsigned int vers) {
+  return (putstart(String(type), vers));
+}
 
 unsigned int AipsIO::putstart(const String& type, unsigned int vers) {
   if (opened_p == 0 || swput_p < 0 || swget_p > 0) {
@@ -448,7 +450,7 @@ unsigned int AipsIO::putend() {
   }
   unsigned int len = objlen_p[level_p];  // object length
   if (seekable_p) {
-    Int64 pos = getpos();
+    int64_t pos = getpos();
     io_p->seek(objptr_p[level_p]);
     operator<<(objlen_p[level_p]);
     io_p->seek(pos);
@@ -517,14 +519,14 @@ AipsIO& AipsIO::operator>>(unsigned int& var) {
   return (*this);
 }
 
-AipsIO& AipsIO::operator>>(Int64& var) {
+AipsIO& AipsIO::operator>>(int64_t& var) {
   testget();
   objlen_p[level_p] += io_p->read(1, &var);
   testgetLength();
   return (*this);
 }
 
-AipsIO& AipsIO::operator>>(uInt64& var) {
+AipsIO& AipsIO::operator>>(uint64_t& var) {
   testget();
   objlen_p[level_p] += io_p->read(1, &var);
   testgetLength();
@@ -622,14 +624,14 @@ AipsIO& AipsIO::get(unsigned int nrv, unsigned int* var) {
   return (*this);
 }
 
-AipsIO& AipsIO::get(unsigned int nrv, Int64* var) {
+AipsIO& AipsIO::get(unsigned int nrv, int64_t* var) {
   testget();
   objlen_p[level_p] += io_p->read(nrv, var);
   testgetLength();
   return (*this);
 }
 
-AipsIO& AipsIO::get(unsigned int nrv, uInt64* var) {
+AipsIO& AipsIO::get(unsigned int nrv, uint64_t* var) {
   testget();
   objlen_p[level_p] += io_p->read(nrv, var);
   testgetLength();
@@ -734,16 +736,16 @@ AipsIO& AipsIO::getnew(unsigned int& nrv, unsigned int*& var) {
   return (*this);
 }
 
-AipsIO& AipsIO::getnew(unsigned int& nrv, Int64*& var) {
+AipsIO& AipsIO::getnew(unsigned int& nrv, int64_t*& var) {
   operator>>(nrv);
-  var = new Int64[nrv];
+  var = new int64_t[nrv];
   get(nrv, var);
   return (*this);
 }
 
-AipsIO& AipsIO::getnew(unsigned int& nrv, uInt64*& var) {
+AipsIO& AipsIO::getnew(unsigned int& nrv, uint64_t*& var) {
   operator>>(nrv);
-  var = new uInt64[nrv];
+  var = new uint64_t[nrv];
   get(nrv, var);
   return (*this);
 }

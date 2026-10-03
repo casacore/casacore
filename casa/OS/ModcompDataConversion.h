@@ -76,8 +76,8 @@ class ModcompDataConversion : public DataConversion {
   virtual size_t toLocal(unsigned short& to, const void* from) const;
   virtual size_t toLocal(int& to, const void* from) const;
   virtual size_t toLocal(unsigned int& to, const void* from) const;
-  virtual size_t toLocal(Int64& to, const void* from) const;
-  virtual size_t toLocal(uInt64& to, const void* from) const;
+  virtual size_t toLocal(int64_t& to, const void* from) const;
+  virtual size_t toLocal(uint64_t& to, const void* from) const;
   virtual size_t toLocal(float& to, const void* from) const;
   virtual size_t toLocal(double& to, const void* from) const;
   // </group>
@@ -91,8 +91,8 @@ class ModcompDataConversion : public DataConversion {
   virtual size_t toLocal(unsigned short* to, const void* from, size_t nr) const;
   virtual size_t toLocal(int* to, const void* from, size_t nr) const;
   virtual size_t toLocal(unsigned int* to, const void* from, size_t nr) const;
-  virtual size_t toLocal(Int64* to, const void* from, size_t nr) const;
-  virtual size_t toLocal(uInt64* to, const void* from, size_t nr) const;
+  virtual size_t toLocal(int64_t* to, const void* from, size_t nr) const;
+  virtual size_t toLocal(uint64_t* to, const void* from, size_t nr) const;
   virtual size_t toLocal(float* to, const void* from, size_t nr) const;
   virtual size_t toLocal(double* to, const void* from, size_t nr) const;
   // </group>
@@ -106,8 +106,8 @@ class ModcompDataConversion : public DataConversion {
   virtual size_t fromLocal(void* to, unsigned short from) const;
   virtual size_t fromLocal(void* to, int from) const;
   virtual size_t fromLocal(void* to, unsigned int from) const;
-  virtual size_t fromLocal(void* to, Int64 from) const;
-  virtual size_t fromLocal(void* to, uInt64 from) const;
+  virtual size_t fromLocal(void* to, int64_t from) const;
+  virtual size_t fromLocal(void* to, uint64_t from) const;
   virtual size_t fromLocal(void* to, float from) const;
   virtual size_t fromLocal(void* to, double from) const;
   // </group>
@@ -121,8 +121,8 @@ class ModcompDataConversion : public DataConversion {
   virtual size_t fromLocal(void* to, const unsigned short* from, size_t nr) const;
   virtual size_t fromLocal(void* to, const int* from, size_t nr) const;
   virtual size_t fromLocal(void* to, const unsigned int* from, size_t nr) const;
-  virtual size_t fromLocal(void* to, const Int64* from, size_t nr) const;
-  virtual size_t fromLocal(void* to, const uInt64* from, size_t nr) const;
+  virtual size_t fromLocal(void* to, const int64_t* from, size_t nr) const;
+  virtual size_t fromLocal(void* to, const uint64_t* from, size_t nr) const;
   virtual size_t fromLocal(void* to, const float* from, size_t nr) const;
   virtual size_t fromLocal(void* to, const double* from, size_t nr) const;
   // </group>
@@ -136,8 +136,8 @@ class ModcompDataConversion : public DataConversion {
   virtual bool canCopy(const unsigned short*) const;
   virtual bool canCopy(const int*) const;
   virtual bool canCopy(const unsigned int*) const;
-  virtual bool canCopy(const Int64*) const;
-  virtual bool canCopy(const uInt64*) const;
+  virtual bool canCopy(const int64_t*) const;
+  virtual bool canCopy(const uint64_t*) const;
   virtual bool canCopy(const float*) const;
   virtual bool canCopy(const double*) const;
   // </group>
@@ -150,8 +150,8 @@ class ModcompDataConversion : public DataConversion {
   virtual unsigned int externalSize(const unsigned short*) const;
   virtual unsigned int externalSize(const int*) const;
   virtual unsigned int externalSize(const unsigned int*) const;
-  virtual unsigned int externalSize(const Int64*) const;
-  virtual unsigned int externalSize(const uInt64*) const;
+  virtual unsigned int externalSize(const int64_t*) const;
+  virtual unsigned int externalSize(const uint64_t*) const;
   virtual unsigned int externalSize(const float*) const;
   virtual unsigned int externalSize(const double*) const;
   // </group>

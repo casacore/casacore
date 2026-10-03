@@ -133,7 +133,9 @@ bool StManColumnIndArrayAipsIO::isShapeDefined(rownr_t rownr) {
   return (STMANINDGETBLOCK(rownr) == 0 ? false : true);
 }
 
-unsigned int StManColumnIndArrayAipsIO::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
+unsigned int StManColumnIndArrayAipsIO::ndim(rownr_t rownr) {
+  return getShape(rownr)->shape().nelements();
+}
 
 IPosition StManColumnIndArrayAipsIO::shape(rownr_t rownr) { return getShape(rownr)->shape(); }
 
@@ -186,7 +188,7 @@ void StManColumnIndArrayAipsIO::putData(void* dp, unsigned int nrval, AipsIO& io
     if (*dpa == 0) {
       ios << (unsigned int)0;
     } else {
-      Int64 off = (*dpa)->fileOffset();
+      int64_t off = (*dpa)->fileOffset();
       if (off <= 2u * 1024u * 1024u * 1024u) {
         ios << static_cast<unsigned int>(off);
       } else {
@@ -209,8 +211,9 @@ void StManColumnIndArrayAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
   ios.getend();
 }
 
-void StManColumnIndArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int nrval, AipsIO& ios, unsigned int) {
-  Int64 offset;
+void StManColumnIndArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int nrval, AipsIO& ios,
+                                        unsigned int) {
+  int64_t offset;
   unsigned int off;
   StIndArray** dpa = (StIndArray**)dp;
   dpa += inx;

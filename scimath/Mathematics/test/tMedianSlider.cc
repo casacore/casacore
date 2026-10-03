@@ -100,7 +100,8 @@ int main() {
 
   bool flag = false;
 
-  cout << "The value takes 4 step back from end " << m1.prevVal(static_cast<unsigned int>(4), flag) << endl;
+  cout << "The value takes 4 step back from end " << m1.prevVal(static_cast<unsigned int>(4), flag)
+       << endl;
   cout << "The value at the midpoint " << m1.midpoint(flag) << endl;
   cout << "The difference between the current median and the value at the window center "
        << m1.diff(flag) << endl;

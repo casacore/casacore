@@ -615,8 +615,9 @@ void ImageInfo::combineBeams(const ImageInfo& infoThat, const IPosition& shapeTh
   _beams = beamSet;
 }
 
-unsigned int ImageInfo::setInfoSplitBeamSet(unsigned int ndone, const ImageInfo& concatInfo, const IPosition& shape,
-                                    const CoordinateSystem& csys, int concatAxis) {
+unsigned int ImageInfo::setInfoSplitBeamSet(unsigned int ndone, const ImageInfo& concatInfo,
+                                            const IPosition& shape, const CoordinateSystem& csys,
+                                            int concatAxis) {
   // Copy the non-beam info.
   _warnBeam = concatInfo._warnBeam;
   itsImageType = concatInfo.itsImageType;

@@ -186,7 +186,8 @@ class LCSlicer {
 
  private:
   // Fill the pixel based flags from the general ones.
-  void fillFlags(bool fractional, int absRel, unsigned int nrblc, unsigned int nrtrc, unsigned int nrinc);
+  void fillFlags(bool fractional, int absRel, unsigned int nrblc, unsigned int nrtrc,
+                 unsigned int nrinc);
 
   // Fill the vectors from the values given as doubles.
   void fillFromDouble(const Vector<double>& blc, const Vector<double>& trc,

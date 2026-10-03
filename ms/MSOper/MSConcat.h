@@ -80,11 +80,11 @@ class MSConcat : public MSColumns {
                      const String& obsidAndProcAndScanTableName = "");
 
   void concatenate(const MeasurementSet& otherMS,
-                   const unsigned int handling = 0,         // # 0 (default): complete concat of all tables
-                                                    // # 1 : don't concatenate the MAIN table
-                                                    // # 2 : don't concatenate the POINTING table
-                                                    // # 3 : neither concat MAIN nor POINTING table
-                   const String& destMSName = "");  // # support for virtual concat
+                   const unsigned int handling = 0,  // # 0 (default): complete concat of all tables
+                                                     // # 1 : don't concatenate the MAIN table
+                                                     // # 2 : don't concatenate the POINTING table
+                                                     // # 3 : neither concat MAIN nor POINTING table
+                   const String& destMSName = "");   // # support for virtual concat
 
   void setTolerance(Quantum<double>& freqTol, Quantum<double>& dirTol);
   void setWeightScale(const float weightScale);
@@ -114,8 +114,9 @@ class MSConcat : public MSColumns {
   Block<unsigned int> copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed& otherFeed);
   Block<unsigned int> copyState(const MSState& otherState);
   Block<unsigned int> copyField(const MeasurementSet& otherms);
-  Block<unsigned int> copySpwAndPol(const MSSpectralWindow& otherSpw, const MSPolarization& otherPol,
-                            const MSDataDescription& otherDD);
+  Block<unsigned int> copySpwAndPol(const MSSpectralWindow& otherSpw,
+                                    const MSPolarization& otherPol,
+                                    const MSDataDescription& otherDD);
   bool copySource(const MeasurementSet& otherms);
   bool updateSource();
   bool updateSource2();
@@ -126,7 +127,8 @@ class MSConcat : public MSColumns {
   bool obsRowsEquivalent(const MSObservationColumns& obsCol, const rownr_t& rowi,
                          const rownr_t& rowj);
 
-  bool procRowsEquivalent(const MSProcessorColumns& procCol, const unsigned int& rowi, const unsigned int& rowj);
+  bool procRowsEquivalent(const MSProcessorColumns& procCol, const unsigned int& rowi,
+                          const unsigned int& rowj);
 
   void updateModelDataKeywords(MeasurementSet& ms);
 

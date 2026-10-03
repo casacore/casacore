@@ -151,7 +151,7 @@ class MultiHDF5 : public MultiFileBase {
   // Do the class-specific actions on deleting a file.
   void doDeleteFile(MultiFileInfo&) override;
   // Truncate the file to <src>nrblk</src> blocks (does nothing).
-  void doTruncateFile(MultiFileInfo& info, uInt64 nrblk) override;
+  void doTruncateFile(MultiFileInfo& info, uint64_t nrblk) override;
   // Flush the file itself.
   void doFlushFile() override;
   // Flush and close the file.
@@ -162,11 +162,11 @@ class MultiHDF5 : public MultiFileBase {
   // header counter has changed.
   void readHeader(bool always = true) override;
   // Extend the virtual file to fit lastblk.
-  void extend(MultiFileInfo& info, Int64 lastblk) override;
+  void extend(MultiFileInfo& info, int64_t lastblk) override;
   // Read a data block.
-  void readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) override;
+  void readBlock(MultiFileInfo& info, int64_t blknr, void* buffer) override;
   // Write a data block.
-  void writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) override;
+  void writeBlock(MultiFileInfo& info, int64_t blknr, const void* buffer) override;
 
   // # Data members
   std::shared_ptr<HDF5File> itsFile;

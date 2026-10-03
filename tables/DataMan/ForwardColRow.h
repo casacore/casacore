@@ -125,7 +125,7 @@ class ForwardColumnIndexedRow : public ForwardColumn {
   virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
   virtual void getInt(rownr_t rownr, int* dataPtr);
   virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
+  virtual void getInt64(rownr_t rownr, int64_t* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
   virtual void getComplex(rownr_t rownr, Complex* dataPtr);
@@ -145,7 +145,7 @@ class ForwardColumnIndexedRow : public ForwardColumn {
   virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr);
   virtual void putInt(rownr_t rownr, const int* dataPtr);
   virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr);
-  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
+  virtual void putInt64(rownr_t rownr, const int64_t* dataPtr);
   virtual void putfloat(rownr_t rownr, const float* dataPtr);
   virtual void putdouble(rownr_t rownr, const double* dataPtr);
   virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
@@ -347,7 +347,7 @@ class ForwardColumnIndexedRowEngine : public ForwardColumnEngine {
   // Define the various engine column objects.
   Block<ForwardColumnIndexedRow*> refColumns_p;
   // Cache of last row used to get row number.
-  Int64 lastRow_p;
+  int64_t lastRow_p;
   rownr_t rowNumber_p;
 
  public:
@@ -364,7 +364,7 @@ class ForwardColumnIndexedRowEngine : public ForwardColumnEngine {
 };
 
 inline rownr_t ForwardColumnIndexedRowEngine::convertRownr(rownr_t rownr) {
-  if (Int64(rownr) != lastRow_p) {
+  if (int64_t(rownr) != lastRow_p) {
     rowNumber_p = rowColumn_p(rownr);
     lastRow_p = rownr;
   }

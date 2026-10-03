@@ -130,7 +130,8 @@ bool MSDerivedValues::setRestFrequency(const int fieldid, const int spwid, const
       return false;
     }
 
-    if ((restFreqVec.nelements() > 0) && (static_cast<unsigned int>(whichline) <= restFreqVec.nelements())) {
+    if ((restFreqVec.nelements() > 0) &&
+        (static_cast<unsigned int>(whichline) <= restFreqVec.nelements())) {
       // using  the first
 
       setRestFrequency(Quantity(restFreqVec[whichline], "Hz"));

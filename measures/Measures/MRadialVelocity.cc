@@ -107,9 +107,9 @@ const String *MRadialVelocity::allMyTypes(int &nall, int &nextra, const unsigned
                                        "TOPO", "GALACTO", "LGROUP", "CMB"};
 
   static const unsigned int oname[N_name] = {MRadialVelocity::LSRK,   MRadialVelocity::LSRD,
-                                     MRadialVelocity::BARY,   MRadialVelocity::GEO,
-                                     MRadialVelocity::TOPO,   MRadialVelocity::GALACTO,
-                                     MRadialVelocity::LGROUP, MRadialVelocity::CMB};
+                                             MRadialVelocity::BARY,   MRadialVelocity::GEO,
+                                             MRadialVelocity::TOPO,   MRadialVelocity::GALACTO,
+                                             MRadialVelocity::LGROUP, MRadialVelocity::CMB};
 
   MRadialVelocity::checkMyTypes();
   nall = N_name;

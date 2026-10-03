@@ -68,7 +68,7 @@ RetypedArrayEngine<S, T>::RetypedArrayEngine(const Record& spec)
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
     setNames(spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
     if (spec.isDefined("SHAPE")) {
-      Vector<Int64> shp;
+      Vector<int64_t> shp;
       spec.get("SHAPE", shp);
       shape_p.fill(shp.size(), shp.begin());
     }
@@ -143,7 +143,7 @@ template <class S, class T>
 void RetypedArrayEngine<S, T>::prepare() {
   // Get the various parameters from keywords in this column.
   TableColumn thisCol(table(), virtualName());
-  Vector<Int64> vec(thisCol.keywordSet().toArrayInt64("_RetypedArrayEngine_Shape"));
+  Vector<int64_t> vec(thisCol.keywordSet().toArrayInt64("_RetypedArrayEngine_Shape"));
   shape_p.fill(vec.size(), vec.begin());
   record_p = thisCol.keywordSet().subRecord("_RetypedArrayEngine_Record");
   // Set the column shape in the base class (when needed).

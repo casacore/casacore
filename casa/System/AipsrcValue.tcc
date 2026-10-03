@@ -82,7 +82,7 @@ unsigned int AipsrcValue<T>::registerRC(const String &keyword, const T &deflt) {
 
 template <class T>
 unsigned int AipsrcValue<T>::registerRC(const String &keyword, const Unit &default_unit,
-                                const Unit &result_unit, const T &deflt) {
+                                        const Unit &result_unit, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);

@@ -113,7 +113,7 @@ void MultiHDF5::writeHeader() {
   rec.define("blockSize", itsBlockSize);
   rec.define("hdrCounter", itsHdrCounter);
   Vector<String> names(itsInfo.size());
-  Vector<Int64> sizes(itsInfo.size());
+  Vector<int64_t> sizes(itsInfo.size());
   for (unsigned int i = 0; i < itsInfo.size(); ++i) {
     names[i] = itsInfo[i].name;
     sizes[i] = itsInfo[i].fsize;
@@ -126,14 +126,14 @@ void MultiHDF5::writeHeader() {
 void MultiHDF5::readHeader(bool always) {
   Record rec = HDF5Record::readRecord(*itsHDF5, "__MultiHDF5_Header__");
   itsBlockSize = rec.asInt64("blockSize");
-  Int64 hdrCounter = rec.asInt64("hdrCounter");
+  int64_t hdrCounter = rec.asInt64("hdrCounter");
   // Only if needed, interpret the rest of the header.
   if (hdrCounter == itsHdrCounter && !always) {
     return;
   }
   itsHdrCounter = hdrCounter;
   Vector<String> names(rec.asArrayString("names"));
-  Vector<Int64> sizes(rec.asArrayInt64("sizes"));
+  Vector<int64_t> sizes(rec.asArrayInt64("sizes"));
   // Set info fields.
   itsInfo.reserve(names.size());
   for (unsigned int i = 0; i < names.size(); ++i) {
@@ -159,19 +159,19 @@ void MultiHDF5::doDeleteFile(MultiFileInfo& info) {
   HDF5Group::remove(*itsHDF5, info.name);
 }
 
-void MultiHDF5::doTruncateFile(MultiFileInfo&, uInt64) {}
+void MultiHDF5::doTruncateFile(MultiFileInfo&, uint64_t) {}
 
-void MultiHDF5::extend(MultiFileInfo& info, Int64 lastblk) {
+void MultiHDF5::extend(MultiFileInfo& info, int64_t lastblk) {
   info.dataSet->extend(IPosition(2, itsBlockSize, lastblk + 1));
   itsNrBlock = lastblk + 1;
 }
 
-void MultiHDF5::readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) {
+void MultiHDF5::readBlock(MultiFileInfo& info, int64_t blknr, void* buffer) {
   Slicer slicer(IPosition(2, 0, blknr), IPosition(2, itsBlockSize, 1));
   info.dataSet->get(slicer, buffer);
 }
 
-void MultiHDF5::writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) {
+void MultiHDF5::writeBlock(MultiFileInfo& info, int64_t blknr, const void* buffer) {
   Slicer slicer(IPosition(2, 0, blknr), IPosition(2, itsBlockSize, 1));
   info.dataSet->put(slicer, buffer);
 }

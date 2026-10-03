@@ -151,7 +151,8 @@ class DirectionEngine : public MeasEngine<MDirection> {
 
   // Handle the argument(s) giving the input directions and reference type.
   // The direction can be a column in a table.
-  void handleDirection(const std::vector<TENShPtr>& args, unsigned int& argnr, bool riseSet, bool asDirCos);
+  void handleDirection(const std::vector<TENShPtr>& args, unsigned int& argnr, bool riseSet,
+                       bool asDirCos);
 
   // Set the MeasConvert object.
   void setConverter(MDirection::Types toType);

@@ -161,7 +161,7 @@ class ISMColumn : public StManColumnBase {
   virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
   virtual void getInt(rownr_t rownr, int* dataPtr);
   virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
+  virtual void getInt64(rownr_t rownr, int64_t* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
   virtual void getComplex(rownr_t rownr, Complex* dataPtr);
@@ -177,7 +177,7 @@ class ISMColumn : public StManColumnBase {
   virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr);
   virtual void putInt(rownr_t rownr, const int* dataPtr);
   virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr);
-  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
+  virtual void putInt64(rownr_t rownr, const int64_t* dataPtr);
   virtual void putfloat(rownr_t rownr, const float* dataPtr);
   virtual void putdouble(rownr_t rownr, const double* dataPtr);
   virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
@@ -301,8 +301,8 @@ class ISMColumn : public StManColumnBase {
   // Replace a value at the given offset in the bucket.
   // If the bucket is too small, it will be split (if allowed).
   void replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
-                   rownr_t bucketRownr, unsigned int& offset, const char* data, unsigned int lenData,
-                   bool canSplit = true);
+                   rownr_t bucketRownr, unsigned int& offset, const char* data,
+                   unsigned int lenData, bool canSplit = true);
 
   // Add a value at the given index in the bucket.
   // If the bucket is too small, it will be split (if allowed).

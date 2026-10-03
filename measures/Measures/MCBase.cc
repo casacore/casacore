@@ -39,7 +39,8 @@ MCBase::~MCBase() {}
 // # Operators
 
 // # Member functions
-void MCBase::makeState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]) {
+void MCBase::makeState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout,
+                       const unsigned int list[][3]) {
   // Make trees
   unsigned int *tcnt = new unsigned int[ntyp];
   unsigned int *tree = new unsigned int[ntyp * ntyp];
@@ -77,9 +78,10 @@ void MCBase::makeState(unsigned int *state, const unsigned int ntyp, const unsig
   delete[] mcnt;
 }
 
-bool MCBase::findState(unsigned int &len, unsigned int *state, unsigned int *mcnt, bool &okall, bool *visit,
-                       const unsigned int *tcnt, const unsigned int *tree, const unsigned int &in, const unsigned int &out,
-                       const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]) {
+bool MCBase::findState(unsigned int &len, unsigned int *state, unsigned int *mcnt, bool &okall,
+                       bool *visit, const unsigned int *tcnt, const unsigned int *tree,
+                       const unsigned int &in, const unsigned int &out, const unsigned int ntyp,
+                       const unsigned int nrout, const unsigned int list[][3]) {
   // Check loop
   if (visit[in]) return false;
   unsigned int minlen = 100 * nrout;
@@ -112,7 +114,8 @@ bool MCBase::findState(unsigned int &len, unsigned int *state, unsigned int *mcn
   return true;
 }
 
-String MCBase::showState(unsigned int *state, const unsigned int ntyp, const unsigned int, const unsigned int list[][3]) {
+String MCBase::showState(unsigned int *state, const unsigned int ntyp, const unsigned int,
+                         const unsigned int list[][3]) {
   ostringstream oss;
   oss << "   |";
   for (unsigned int i = 0; i < ntyp; i++) oss << setw(3) << i;

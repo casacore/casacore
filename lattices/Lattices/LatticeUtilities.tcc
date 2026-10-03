@@ -126,7 +126,8 @@ void LatticeUtilities::replicate(Lattice<T>& lat, const Slicer& region, const Ar
 }
 
 template <class T>
-void LatticeUtilities::addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>& latIn, unsigned int nDim) {
+void LatticeUtilities::addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>& latIn,
+                                         unsigned int nDim) {
   delete pLatOut;
   pLatOut = 0;
   const unsigned int dimIn = latIn.ndim();
@@ -146,7 +147,8 @@ void LatticeUtilities::addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>&
 }
 
 template <typename T>
-void LatticeUtilities::bin(MaskedArray<T>& out, const MaskedArray<T>& in, unsigned int axis, unsigned int bin) {
+void LatticeUtilities::bin(MaskedArray<T>& out, const MaskedArray<T>& in, unsigned int axis,
+                           unsigned int bin) {
   // Check
 
   const unsigned int nDim = in.ndim();

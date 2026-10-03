@@ -211,9 +211,9 @@ class MSFieldColumns {
   // see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int64 matchDirection(const MDirection& referenceDirection, const MDirection& delayDirection,
-                       const MDirection& phaseDirection, const Quantum<double>& maxSeparation,
-                       Int64 tryRow = -1, double time = 0);
+  int64_t matchDirection(const MDirection& referenceDirection, const MDirection& delayDirection,
+                         const MDirection& phaseDirection, const Quantum<double>& maxSeparation,
+                         int64_t tryRow = -1, double time = 0);
 
   // Update the MeasComets objects belonging to this FIELD table.
   // Needed when the entries in the EPHEMERIS_ID column have changed.

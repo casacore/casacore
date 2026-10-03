@@ -443,11 +443,12 @@ IPosition ImageConcat<T>::doNiceCursorShape(unsigned int maxPixels) const {
     Vector<int> dirpixaxes, dirworldaxes;
     int coordaxis;
     CoordinateUtil::findDirectionAxes(dirpixaxes, dirworldaxes, coordaxis, coordinates());
-    Int64 minprod = std::numeric_limits<Int64>::max();
+    int64_t minprod = std::numeric_limits<int64_t>::max();
     int minimage = -1;
     for (unsigned int k = 0; k < nimages(); ++k) {
       IPosition curshape = image(k).niceCursorShape(maxPixels);
-      Int64 prod = curshape.product() / Int64(curshape(dirpixaxes(0)) * curshape(dirpixaxes(1)));
+      int64_t prod =
+          curshape.product() / int64_t(curshape(dirpixaxes(0)) * curshape(dirpixaxes(1)));
       if (prod < minprod) {
         minprod = prod;
         minimage = k;

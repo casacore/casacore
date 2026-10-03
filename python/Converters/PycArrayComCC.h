@@ -98,14 +98,14 @@ struct TypeConvTraits<unsigned int> {
   static NPY_TYPES pyType() { return NPY_UINT32; }
 };
 template <>
-struct TypeConvTraits<Int64> {
-  typedef Int64 casa_type;
+struct TypeConvTraits<int64_t> {
+  typedef int64_t casa_type;
   typedef npy_int64 python_type;
   static NPY_TYPES pyType() { return NPY_INT64; }
 };
 template <>
-struct TypeConvTraits<casacore::uInt64> {
-  typedef casacore::uInt64 casa_type;
+struct TypeConvTraits<uint64_t> {
+  typedef uint64_t casa_type;
   typedef npy_uint64 python_type;
   static NPY_TYPES pyType() { return NPY_UINT64; }
 };
@@ -308,7 +308,7 @@ ValueHolder makeArray(PyObject* obj_ptr, bool copyData) {
     case NPY_UINT32:
       return ValueHolder(ArrayCopy<unsigned int>::toArray(shp, PyArray_DATA(po), docopy));
     case NPY_INT64:
-      return ValueHolder(ArrayCopy<Int64>::toArray(shp, PyArray_DATA(po), docopy));
+      return ValueHolder(ArrayCopy<int64_t>::toArray(shp, PyArray_DATA(po), docopy));
     case NPY_FLOAT32:
       return ValueHolder(ArrayCopy<float>::toArray(shp, PyArray_DATA(po), docopy));
     case NPY_FLOAT64:
@@ -326,8 +326,8 @@ ValueHolder makeArray(PyObject* obj_ptr, bool copyData) {
       // Similarly for STRING which exists for numpy and is set to
       // INT for numarray.
       if (PyArray_TYPE(po) == NPY_UINT64) {
-        Array<uInt64> arr = ArrayCopy<uInt64>::toArray(shp, PyArray_DATA(po), false);
-        Array<Int64> res(arr.shape());
+        Array<uint64_t> arr = ArrayCopy<uint64_t>::toArray(shp, PyArray_DATA(po), false);
+        Array<int64_t> res(arr.shape());
         convertArray(res, arr);
         return ValueHolder(res);
       } else if (PyArray_TYPE(po) == NPY_INT8) {
@@ -369,8 +369,8 @@ template struct ArrayCopy<short>;
 template struct ArrayCopy<unsigned short>;
 template struct ArrayCopy<int>;
 template struct ArrayCopy<unsigned int>;
-template struct ArrayCopy<Int64>;
-template struct ArrayCopy<uInt64>;
+template struct ArrayCopy<int64_t>;
+template struct ArrayCopy<uint64_t>;
 template struct ArrayCopy<float>;
 template struct ArrayCopy<double>;
 
@@ -380,7 +380,7 @@ template boost::python::object makePyArrayObject(casacore::Array<short> const& a
 template boost::python::object makePyArrayObject(casacore::Array<unsigned short> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<int> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<unsigned int> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Int64> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<int64_t> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<float> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<double> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<Complex> const& arr);

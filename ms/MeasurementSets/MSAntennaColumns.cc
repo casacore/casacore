@@ -79,8 +79,8 @@ void MSAntennaColumns::setPositionRef(MPosition::Types ref) { positionMeas_p.set
 
 void MSAntennaColumns::setOffsetRef(MPosition::Types ref) { offsetMeas_p.setDescRefCode(ref); }
 
-Int64 MSAntennaColumns::matchAntenna(const MPosition& antennaPos, const Quantum<double>& tolerance,
-                                     Int64 tryRow) {
+int64_t MSAntennaColumns::matchAntenna(const MPosition& antennaPos,
+                                       const Quantum<double>& tolerance, int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -122,14 +122,14 @@ Int64 MSAntennaColumns::matchAntenna(const MPosition& antennaPos, const Quantum<
   return -1;
 }
 
-Int64 MSAntennaColumns::matchAntenna(const String& antName, const MPosition& antennaPos,
-                                     const Quantum<double>& tolerance, Int64 tryRow) {
+int64_t MSAntennaColumns::matchAntenna(const String& antName, const MPosition& antennaPos,
+                                       const Quantum<double>& tolerance, int64_t tryRow) {
   return matchAntennaAndStation(antName, "", antennaPos, tolerance, tryRow);
 }
 
-Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName, const String& stationName,
-                                               const MPosition& antennaPos,
-                                               const Quantum<double>& tolerance, Int64 tryRow) {
+int64_t MSAntennaColumns::matchAntennaAndStation(const String& antName, const String& stationName,
+                                                 const MPosition& antennaPos,
+                                                 const Quantum<double>& tolerance, int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.

@@ -352,7 +352,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // 'get' Functions to get the desired result of a function
   // <group>
   bool getBool(const TableExprId& id);
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
   String getString(const TableExprId& id);
@@ -405,7 +405,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // If possible, a double value is converted to radians if formatted as angle.
   // <group>
   static String stringValue(bool val, const String& fmt, int width);
-  static String stringValue(Int64 val, const String& fmt, int width);
+  static String stringValue(int64_t val, const String& fmt, int width);
   static String stringValue(double val, const String& fmt, int width, int prec,
                             const std::pair<int, int>& mvFormat, const Unit& unit);
   static String stringValue(const DComplex& val, const String& fmt, int width, int prec);
@@ -430,7 +430,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   }
 
   // Read a string as an integer, double, complex or bool.
-  static Int64 string2Int(const String&);
+  static int64_t string2Int(const String&);
   static double string2Real(const String&);
   static DComplex string2Complex(const String&);
   static bool string2Bool(const String&);
@@ -442,7 +442,8 @@ class TableExprFuncNode : public TableExprNodeMulti {
 
   // Make the units of nodes from <src>starg</src> till <src>endarg</src>
   // equal. Return the unit found.
-  static const Unit& makeEqualUnits(std::vector<TENShPtr>& nodes, unsigned int starg, unsigned int endarg);
+  static const Unit& makeEqualUnits(std::vector<TENShPtr>& nodes, unsigned int starg,
+                                    unsigned int endarg);
 
   // # Data members.
   FunctionType funcType_p;     // which function

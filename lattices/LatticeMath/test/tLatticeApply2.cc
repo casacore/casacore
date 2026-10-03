@@ -106,10 +106,10 @@ class MyTiledCollapser : public TiledCollapser<float> {
   virtual ~MyTiledCollapser();
   virtual void init(unsigned int nOutPixelsPerCollapse);
   virtual bool canHandleNullMask() const;
-  virtual void initAccumulator(uInt64 n1, uInt64 n3);
-  virtual void process(unsigned int index1, unsigned int index3, const float* inData, const bool* inMask,
-                       unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition& pos,
-                       const IPosition& shape);
+  virtual void initAccumulator(uint64_t n1, uint64_t n3);
+  virtual void process(unsigned int index1, unsigned int index3, const float* inData,
+                       const bool* inMask, unsigned int inDataIncr, unsigned int inMaskIncr,
+                       unsigned int nrval, const IPosition& pos, const IPosition& shape);
   virtual void endAccumulator(Array<float>& result, Array<bool>& resultMask,
                               const IPosition& shape);
 
@@ -128,7 +128,7 @@ MyTiledCollapser::~MyTiledCollapser() {
 void MyTiledCollapser::init(unsigned int nOutPixelsPerCollapse) {
   AlwaysAssert(nOutPixelsPerCollapse == 2, AipsError);
 }
-void MyTiledCollapser::initAccumulator(uInt64 n1, uInt64 n3) {
+void MyTiledCollapser::initAccumulator(uint64_t n1, uint64_t n3) {
   itsSum1 = new Matrix<float>(n1, n3);
   itsSum2 = new Block<float>(n1 * n3);
   itsNpts = new Matrix<unsigned int>(n1, n3);
@@ -139,9 +139,9 @@ void MyTiledCollapser::initAccumulator(uInt64 n1, uInt64 n3) {
   itsn3 = n3;
 }
 bool MyTiledCollapser::canHandleNullMask() const { return false; }
-void MyTiledCollapser::process(unsigned int index1, unsigned int index3, const float* inData, const bool* inMask,
-                               unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition&,
-                               const IPosition&) {
+void MyTiledCollapser::process(unsigned int index1, unsigned int index3, const float* inData,
+                               const bool* inMask, unsigned int inDataIncr, unsigned int inMaskIncr,
+                               unsigned int nrval, const IPosition&, const IPosition&) {
   float& sum1 = (*itsSum1)(index1, index3);
   float& sum2 = (*itsSum2)[index1 + index3 * itsn1];
   unsigned int& npts = (*itsNpts)(index1, index3);

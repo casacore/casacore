@@ -93,14 +93,14 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
   // number of points. For a dataset with an even number of points, the median
   // is the mean of the values at indices int(N/2)-1 and int(N/2) in the
   // sorted dataset.
-  virtual AccumType getMedian(std::shared_ptr<uInt64> knownNpts = nullptr,
+  virtual AccumType getMedian(std::shared_ptr<uint64_t> knownNpts = nullptr,
                               std::shared_ptr<AccumType> knownMin = nullptr,
                               std::shared_ptr<AccumType> knownMax = nullptr,
                               unsigned int binningThreshholdSizeBytes = 4096 * 4096,
                               bool persistSortedArray = false, unsigned int nBins = 10000);
 
   // get the median of the absolute deviation about the median of the data.
-  virtual AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
+  virtual AccumType getMedianAbsDevMed(std::shared_ptr<uint64_t> knownNpts = nullptr,
                                        std::shared_ptr<AccumType> knownMin = nullptr,
                                        std::shared_ptr<AccumType> knownMax = nullptr,
                                        unsigned int binningThreshholdSizeBytes = 4096 * 4096,
@@ -113,21 +113,20 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
   // the quantiles are returned in the <src>quantileToValue</src> map.
   virtual AccumType getMedianAndQuantiles(std::map<double, AccumType>& quantileToValue,
                                           const std::set<double>& quantiles,
-                                          std::shared_ptr<uInt64> knownNpts = nullptr,
+                                          std::shared_ptr<uint64_t> knownNpts = nullptr,
                                           std::shared_ptr<AccumType> knownMin = nullptr,
                                           std::shared_ptr<AccumType> knownMax = nullptr,
                                           unsigned int binningThreshholdSizeBytes = 4096 * 4096,
-                                          bool persistSortedArray = false, unsigned int nBins = 10000);
+                                          bool persistSortedArray = false,
+                                          unsigned int nBins = 10000);
 
   // Get the specified quantiles. <src>quantiles</src> must be between 0 and
   // 1, noninclusive.
-  virtual std::map<double, AccumType> getQuantiles(const std::set<double>& quantiles,
-                                                   std::shared_ptr<uInt64> knownNpts = nullptr,
-                                                   std::shared_ptr<AccumType> knownMin = nullptr,
-                                                   std::shared_ptr<AccumType> knownMax = NULL,
-                                                   unsigned int binningThreshholdSizeBytes = 4096 * 4096,
-                                                   bool persistSortedArray = false,
-                                                   unsigned int nBins = 10000);
+  virtual std::map<double, AccumType> getQuantiles(
+      const std::set<double>& quantiles, std::shared_ptr<uint64_t> knownNpts = nullptr,
+      std::shared_ptr<AccumType> knownMin = nullptr, std::shared_ptr<AccumType> knownMax = NULL,
+      unsigned int binningThreshholdSizeBytes = 4096 * 4096, bool persistSortedArray = false,
+      unsigned int nBins = 10000);
   // </group>
 
   // get the min and max of the data set
@@ -138,7 +137,7 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
   // called and NPTS has been excluded. If setCalculateAsAdded(true) has
   // previously been called after this object has been (re)initialized, an
   // exception will be thrown.
-  virtual uInt64 getNPts();
+  virtual uint64_t getNPts();
 
   // see base class description
   virtual LocationType getStatisticIndex(StatisticsData::STATS stat);
@@ -166,33 +165,35 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
   // weight > 0, within range) points. The first with no mask, no ranges, and
   // no weights is trivial with npts = nr in this class, but is implemented
   // here so that derived classes may override it.
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataStart, uInt64 nr,
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataStart, uint64_t nr,
                           unsigned int dataStride) const;
 
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataStart, uInt64 nr, unsigned int dataStride,
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataStart, uint64_t nr,
+                          unsigned int dataStride, const DataRanges& ranges, bool isInclude) const;
+
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataBegin, uint64_t nr,
+                          unsigned int dataStride, const MaskIterator& maskBegin,
+                          unsigned int maskStride) const;
+
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataBegin, uint64_t nr,
+                          unsigned int dataStride, const MaskIterator& maskBegin,
+                          unsigned int maskStride, const DataRanges& ranges, bool isInclude) const;
+
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                          const WeightsIterator& weightsBegin, uint64_t nr,
+                          unsigned int dataStride) const;
+
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                          const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
                           const DataRanges& ranges, bool isInclude) const;
 
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                          const MaskIterator& maskBegin, unsigned int maskStride) const;
-
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                          const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-                          bool isInclude) const;
-
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                          const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride) const;
-
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                          const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                          const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+                          const MaskIterator& maskBegin, unsigned int maskStride,
                           const DataRanges& ranges, bool isInclude) const;
 
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                          const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-                          const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-                          bool isInclude) const;
-
-  virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
-                          const WeightsIterator& weightBegin, uInt64 nr, unsigned int dataStride,
+  virtual void _accumNpts(uint64_t& npts, const DataIterator& dataBegin,
+                          const WeightsIterator& weightBegin, uint64_t nr, unsigned int dataStride,
                           const MaskIterator& maskBegin, unsigned int maskStride) const;
   // </group>
 
@@ -202,78 +203,81 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
 
   // <group>
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride) const;
+                       const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+                       const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
                        const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+                       const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
                        const MaskIterator& maskBegin, unsigned int maskStride) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                       const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
+                       const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+                       const MaskIterator& maskBegin, unsigned int maskStride,
+                       const DataRanges& ranges, bool isInclude) const;
+
+  virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+                       const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+                       uint64_t nr, unsigned int dataStride) const;
+
+  virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
+                       const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+                       uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
                        bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                       uInt64 nr, unsigned int dataStride) const;
+                       uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                       unsigned int maskStride, const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                       uInt64 nr, unsigned int dataStride, const DataRanges& ranges, bool isInclude) const;
-
-  virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                       uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
-                       const DataRanges& ranges, bool isInclude) const;
-
-  virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
-                       const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
-                       unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride) const;
+                       const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+                       uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                       unsigned int maskStride) const;
   // </group>
 
   // <group>
   // Sometimes we want the min, max, and npts all in one scan.
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           uInt64 nr, unsigned int dataStride) const;
+                           uint64_t nr, unsigned int dataStride) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           uInt64 nr, unsigned int dataStride, const DataRanges& ranges,
+                           uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
                            bool isInclude) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                           uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
                            unsigned int maskStride) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                           uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
                            unsigned int maskStride, const DataRanges& ranges, bool isInclude) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride) const;
+                           const WeightsIterator& weightsBegin, uint64_t nr,
+                           unsigned int dataStride) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-                           const DataRanges& ranges, bool isInclude) const;
+                           const WeightsIterator& weightsBegin, uint64_t nr,
+                           unsigned int dataStride, const DataRanges& ranges, bool isInclude) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
-                           const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
-                           bool isInclude) const;
+                           const WeightsIterator& weightsBegin, uint64_t nr,
+                           unsigned int dataStride, const MaskIterator& maskBegin,
+                           unsigned int maskStride, const DataRanges& ranges, bool isInclude) const;
 
-  virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
+  virtual void _minMaxNpts(uint64_t& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
-                           const WeightsIterator& weightBegin, uInt64 nr, unsigned int dataStride,
+                           const WeightsIterator& weightBegin, uint64_t nr, unsigned int dataStride,
                            const MaskIterator& maskBegin, unsigned int maskStride) const;
   // </group>
 
@@ -286,42 +290,45 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
 
   // <group>
   // no weights, no mask, no ranges
-  virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                                const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride);
+  virtual void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood,
+                                LocationType& location, const DataIterator& dataBegin, uint64_t nr,
+                                unsigned int dataStride);
 
   // no weights, no mask
-  virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                                const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                                const DataRanges& ranges, bool isInclude);
+  virtual void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood,
+                                LocationType& location, const DataIterator& dataBegin, uint64_t nr,
+                                unsigned int dataStride, const DataRanges& ranges, bool isInclude);
 
-  virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                                const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                                const MaskIterator& maskBegin, unsigned int maskStride);
+  virtual void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood,
+                                LocationType& location, const DataIterator& dataBegin, uint64_t nr,
+                                unsigned int dataStride, const MaskIterator& maskBegin,
+                                unsigned int maskStride);
 
-  virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-                                const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
-                                const MaskIterator& maskBegin, unsigned int maskStride,
-                                const DataRanges& ranges, bool isInclude);
+  virtual void _unweightedStats(StatsData<AccumType>& stats, uint64_t& ngood,
+                                LocationType& location, const DataIterator& dataBegin, uint64_t nr,
+                                unsigned int dataStride, const MaskIterator& maskBegin,
+                                unsigned int maskStride, const DataRanges& ranges, bool isInclude);
   // </group>
 
   // <group>
   // has weights, but no mask, no ranges
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                              uInt64 nr, unsigned int dataStride);
+                              uint64_t nr, unsigned int dataStride);
 
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                              uInt64 nr, unsigned int dataStride, const DataRanges& ranges, bool isInclude);
+                              uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
+                              bool isInclude);
 
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-                              uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                              uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
                               unsigned int maskStride);
 
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-                              uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                              uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
                               unsigned int maskStride, const DataRanges& ranges, bool isInclude);
   // </group>
 

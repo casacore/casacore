@@ -501,8 +501,8 @@ class DirectionCoordinate : public Coordinate {
   //<group>
   virtual void getPrecision(int& precision, Coordinate::formatType& format, bool showAsAbsolute,
                             int defPrecScientific, int defPrecFixed, int defPrecTime) const;
-  virtual String format(String& units, Coordinate::formatType format, double worldValue, unsigned int axis,
-                        bool isAbsolute, bool showAsAbsolute, int precision = -1,
+  virtual String format(String& units, Coordinate::formatType format, double worldValue,
+                        unsigned int axis, bool isAbsolute, bool showAsAbsolute, int precision = -1,
                         bool usePrecForMixed = false) const;
   //</group>
 

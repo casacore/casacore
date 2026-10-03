@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TiledDataStMan::TiledDataStMan() : TiledStMan(), nrrowLast_p(0) {}
 
-TiledDataStMan::TiledDataStMan(const String& hypercolumnName, uInt64 maximumCacheSize)
+TiledDataStMan::TiledDataStMan(const String& hypercolumnName, uint64_t maximumCacheSize)
     : TiledStMan(hypercolumnName, maximumCacheSize), nrrowLast_p(0) {}
 
 TiledDataStMan::TiledDataStMan(const String& hypercolumnName, const Record& spec)
@@ -123,7 +123,7 @@ void TiledDataStMan::addRow64(rownr_t nrow) {
   setDataChanged();
 }
 
-void TiledDataStMan::checkNrrow(const IPosition& cubeShape, uInt64 incrInLastDim) const {
+void TiledDataStMan::checkNrrow(const IPosition& cubeShape, uint64_t incrInLastDim) const {
   rownr_t nrrow = addedNrrow(cubeShape, incrInLastDim);
   if (nrrowLast_p + nrrow > nrrow_p) {
     throw(TSMError("Insufficient #rows in table for add/extendHypercube"));
@@ -144,7 +144,7 @@ void TiledDataStMan::addHypercube(const IPosition& cubeShape, const IPosition& t
   updateRowMap(ncube, cubeShape(nrdim_p - 1));
 }
 
-void TiledDataStMan::extendHypercube(uInt64 incrInLastDim, const Record& values) {
+void TiledDataStMan::extendHypercube(uint64_t incrInLastDim, const Record& values) {
   // Check if id values are correctly given.
   // Get the hypercube using the id values.
   checkValues(idColSet_p, values);
@@ -163,7 +163,7 @@ void TiledDataStMan::extendHypercube(uInt64 incrInLastDim, const Record& values)
   setDataChanged();
 }
 
-void TiledDataStMan::updateRowMap(unsigned int cubeNr, uInt64 incrInLastDim) {
+void TiledDataStMan::updateRowMap(unsigned int cubeNr, uint64_t incrInLastDim) {
   if (incrInLastDim == 0) {
     return;
   }

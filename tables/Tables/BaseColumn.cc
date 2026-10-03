@@ -297,7 +297,7 @@ void BaseColumn::getScalar(rownr_t rownr, unsigned int& value) const {
   }
 }
 
-void BaseColumn::getScalar(rownr_t rownr, Int64& value) const {
+void BaseColumn::getScalar(rownr_t rownr, int64_t& value) const {
   if (!colDescPtr_p->isScalar()) {
     throwGetScalar();
   }
@@ -366,7 +366,7 @@ void BaseColumn::getScalar(rownr_t rownr, float& value) const {
       value = valui;
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       get(rownr, &vali64);
       value = vali64;
       return;
@@ -414,7 +414,7 @@ void BaseColumn::getScalar(rownr_t rownr, double& value) const {
       value = valui;
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       get(rownr, &vali64);
       value = vali64;
       return;
@@ -462,7 +462,7 @@ void BaseColumn::getScalar(rownr_t rownr, Complex& value) const {
       value = Complex((float)valui);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       get(rownr, &vali64);
       value = vali64;
       return;
@@ -521,7 +521,7 @@ void BaseColumn::getScalar(rownr_t rownr, DComplex& value) const {
       value = DComplex((double)valui);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       get(rownr, &vali64);
       value = vali64;
       return;
@@ -627,7 +627,7 @@ void BaseColumn::putScalar(rownr_t rownr, const unsigned char& value) {
       put(rownr, &valui);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       vali64 = value;
       put(rownr, &vali64);
       return;
@@ -670,7 +670,7 @@ void BaseColumn::putScalar(rownr_t rownr, const short& value) {
       put(rownr, &vali);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       vali64 = value;
       put(rownr, &vali64);
       return;
@@ -718,7 +718,7 @@ void BaseColumn::putScalar(rownr_t rownr, const unsigned short& value) {
       put(rownr, &valui);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       vali64 = value;
       put(rownr, &vali64);
       return;
@@ -756,7 +756,7 @@ void BaseColumn::putScalar(rownr_t rownr, const int& value) {
       put(rownr, &value);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       vali64 = value;
       put(rownr, &vali64);
       return;
@@ -794,7 +794,7 @@ void BaseColumn::putScalar(rownr_t rownr, const unsigned int& value) {
       put(rownr, &value);
       return;
     case TpInt64:
-      Int64 vali64;
+      int64_t vali64;
       vali64 = value;
       put(rownr, &vali64);
       return;
@@ -823,7 +823,7 @@ void BaseColumn::putScalar(rownr_t rownr, const unsigned int& value) {
   }
 }
 
-void BaseColumn::putScalar(rownr_t rownr, const Int64& value) {
+void BaseColumn::putScalar(rownr_t rownr, const int64_t& value) {
   if (!colDescPtr_p->isScalar()) {
     throwPutScalar();
   }

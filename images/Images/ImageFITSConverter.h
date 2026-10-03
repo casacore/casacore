@@ -250,8 +250,9 @@ class ImageFITSConverter {
   // Helper function - used to calculate a cursor appropriate for the
   // desired memory use. It's not intended that application programmers
   // call this, but you may if it's useful to you.
-  static IPosition copyCursorShape(String &report, const IPosition &shape, unsigned int imagePixelSize,
-                                   unsigned int fitsPixelSize, unsigned int memoryInMB);
+  static IPosition copyCursorShape(String &report, const IPosition &shape,
+                                   unsigned int imagePixelSize, unsigned int fitsPixelSize,
+                                   unsigned int memoryInMB);
 
   // Recover CoordinateSystem from header.
   // Used keywords are removed from header and the unused ones returned
@@ -259,7 +260,8 @@ class ImageFITSConverter {
   // Degenerate axes may be added to shape if needed.
   static CoordinateSystem getCoordinateSystem(int &imageType, RecordInterface &headerRec,
                                               const Vector<String> &header, LogIO &os,
-                                              unsigned int whichRep, IPosition &shape, bool dropStokes);
+                                              unsigned int whichRep, IPosition &shape,
+                                              bool dropStokes);
 
   // Recover ImageInfo from header. Used keywords are removed from header
   static ImageInfo getImageInfo(RecordInterface &header);
@@ -287,9 +289,10 @@ class ImageFITSConverter {
   //   <li> <src>allowAppend</src> Allow to append extension HDU's.
   // </ul>
   static bool ImageToFITSOut(String &error, LogIO &os, const ImageInterface<float> &image,
-                             FitsOutput *output, unsigned int memoryInMB = 64, bool preferVelocity = true,
-                             bool opticalVelocity = true, int BITPIX = -32, float minPix = 1.0,
-                             float maxPix = -1.0, bool degenerateLast = false, bool verbose = true,
+                             FitsOutput *output, unsigned int memoryInMB = 64,
+                             bool preferVelocity = true, bool opticalVelocity = true,
+                             int BITPIX = -32, float minPix = 1.0, float maxPix = -1.0,
+                             bool degenerateLast = false, bool verbose = true,
                              bool stokesLast = false, bool preferWavelength = false,
                              bool airWavelength = false, bool primHead = true,
                              bool allowAppend = false, const String &origin = String(),
@@ -337,8 +340,8 @@ template <class HDUType>
 class ImageFITSConverterImpl {
  public:
   static void FITSToImage(ImageInterface<float> *&newImage, String &error,
-                          const String &newImageName, const unsigned int whichRep, HDUType &fitsImage,
-                          const String &fitsFilename, const DataType dataType,
+                          const String &newImageName, const unsigned int whichRep,
+                          HDUType &fitsImage, const String &fitsFilename, const DataType dataType,
                           const unsigned int memoryInMB = 64, const bool zeroBlanks = false);
 };
 

@@ -47,8 +47,9 @@ unsigned int LatticeHistSpecialize::bin(float datum, float dmin, float width, un
 
 void LatticeHistSpecialize::process(const Complex* pInData, const bool* pInMask,
                                     Block<Complex>* pHist, const Vector<Complex>& clip,
-                                    Complex binWidth, unsigned int offset, unsigned int nrval, unsigned int nBins,
-                                    unsigned int dataIncr, unsigned int maskIncr) {
+                                    Complex binWidth, unsigned int offset, unsigned int nrval,
+                                    unsigned int nBins, unsigned int dataIncr,
+                                    unsigned int maskIncr) {
   Complex datum, useIt;
   unsigned int rbin;
   unsigned int index;
@@ -143,8 +144,8 @@ void LatticeHistSpecialize::makeGauss(unsigned int& nGPts, float& gMax, Vector<f
   if (doLog) makeLogarithmic(gY, gMax, nGPts);
 }
 
-void LatticeHistSpecialize::makeCumulative(Vector<Complex>& counts, Complex& yMax, unsigned int nBins,
-                                           float scale)
+void LatticeHistSpecialize::makeCumulative(Vector<Complex>& counts, Complex& yMax,
+                                           unsigned int nBins, float scale)
 //
 // Code is the same as Float.  Could really make this
 // templated, but still need access to this function
@@ -158,7 +159,8 @@ void LatticeHistSpecialize::makeCumulative(Vector<Complex>& counts, Complex& yMa
   yMax = counts(nBins - 1);
 }
 
-void LatticeHistSpecialize::makeLogarithmic(Vector<Complex>& counts, Complex& yMax, unsigned int nBins) {
+void LatticeHistSpecialize::makeLogarithmic(Vector<Complex>& counts, Complex& yMax,
+                                            unsigned int nBins) {
   yMax = 0.0;
   for (unsigned int i = 0; i < nBins; i++) {
     ///     if (real(counts(i)) > 0.0) counts(i).real() = log10(counts(i).real());
@@ -190,7 +192,8 @@ Complex LatticeHistSpecialize::mul(Complex v1, Complex v2) {
 void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, bool doLog,
                                  float linearSum, float yMax, float binWidth,
                                  const Vector<float>& values, const Vector<float>& counts,
-                                 const Vector<float>& stats, unsigned int label, unsigned int ci, bool page)
+                                 const Vector<float>& stats, unsigned int label, unsigned int ci,
+                                 bool page)
 //
 // The histogram is already in its desired form - linear, log, cumu
 // yMax is in that form too.

@@ -82,12 +82,12 @@ ByteSink& ByteSink::operator<<(unsigned int value) {
   return *this;
 }
 
-ByteSink& ByteSink::operator<<(Int64 value) {
+ByteSink& ByteSink::operator<<(int64_t value) {
   itsTypeIO->write(1, &value);
   return *this;
 }
 
-ByteSink& ByteSink::operator<<(uInt64 value) {
+ByteSink& ByteSink::operator<<(uint64_t value) {
   itsTypeIO->write(1, &value);
   return *this;
 }
@@ -127,19 +127,25 @@ void ByteSink::write(size_t nvalues, const bool* value) { itsTypeIO->write(nvalu
 
 void ByteSink::write(size_t nvalues, const char* value) { itsTypeIO->write(nvalues, value); }
 
-void ByteSink::write(size_t nvalues, const unsigned char* value) { itsTypeIO->write(nvalues, value); }
+void ByteSink::write(size_t nvalues, const unsigned char* value) {
+  itsTypeIO->write(nvalues, value);
+}
 
 void ByteSink::write(size_t nvalues, const short* value) { itsTypeIO->write(nvalues, value); }
 
-void ByteSink::write(size_t nvalues, const unsigned short* value) { itsTypeIO->write(nvalues, value); }
+void ByteSink::write(size_t nvalues, const unsigned short* value) {
+  itsTypeIO->write(nvalues, value);
+}
 
 void ByteSink::write(size_t nvalues, const int* value) { itsTypeIO->write(nvalues, value); }
 
-void ByteSink::write(size_t nvalues, const unsigned int* value) { itsTypeIO->write(nvalues, value); }
+void ByteSink::write(size_t nvalues, const unsigned int* value) {
+  itsTypeIO->write(nvalues, value);
+}
 
-void ByteSink::write(size_t nvalues, const Int64* value) { itsTypeIO->write(nvalues, value); }
+void ByteSink::write(size_t nvalues, const int64_t* value) { itsTypeIO->write(nvalues, value); }
 
-void ByteSink::write(size_t nvalues, const uInt64* value) { itsTypeIO->write(nvalues, value); }
+void ByteSink::write(size_t nvalues, const uint64_t* value) { itsTypeIO->write(nvalues, value); }
 
 void ByteSink::write(size_t nvalues, const float* value) { itsTypeIO->write(nvalues, value); }
 

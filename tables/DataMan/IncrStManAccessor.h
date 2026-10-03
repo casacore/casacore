@@ -138,9 +138,9 @@ class ROIncrementalStManAccessor : public RODataManAccessor {
 
   // Check that there are no repeated rowIds in the buckets comprising this ISM
   bool checkBucketLayout(unsigned int& offendingCursor, rownr_t& offendingBucketStartRow,
-                         unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr, unsigned int& offendingCol,
-                         unsigned int& offendingIndex, rownr_t& offendingRow,
-                         rownr_t& offendingPrevRow) const;
+                         unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr,
+                         unsigned int& offendingCol, unsigned int& offendingIndex,
+                         rownr_t& offendingRow, rownr_t& offendingPrevRow) const;
 
  private:
   // # Declare the data members.

@@ -130,8 +130,8 @@ void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const IPos
 }
 
 template <class T>
-void LatticeSlice1D<T>::getPosition(unsigned int& axis0, unsigned int& axis1, Vector<float>& x, Vector<float>& y,
-                                    Vector<float>& distance) const {
+void LatticeSlice1D<T>::getPosition(unsigned int& axis0, unsigned int& axis1, Vector<float>& x,
+                                    Vector<float>& y, Vector<float>& distance) const {
   x.resize(0);
   x = itsX;
   y.resize(0);

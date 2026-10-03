@@ -53,7 +53,7 @@ void MSDataDescColumns::attachOptionalCols(const MSDataDescription& msDataDesc) 
   }
 }
 
-Int64 MSDataDescColumns::match(unsigned int spwId, unsigned int polId, Int64 tryRow) {
+int64_t MSDataDescColumns::match(unsigned int spwId, unsigned int polId, int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   const int spw = spwId;

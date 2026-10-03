@@ -63,7 +63,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::doMakeGroupAggrF
   } else if (funcType() == TableExprFuncNode::growidFUNC) {
     return std::make_shared<TableExprGroupRowid>(this);
   } else if (funcType() == TableExprFuncNode::ghistFUNC) {
-    Int64 nbin = operands()[1]->getInt(0);
+    int64_t nbin = operands()[1]->getInt(0);
     double start = operands()[2]->getDouble(0);
     double end = operands()[3]->getDouble(0);
     if (operands()[0]->valueType() == VTScalar) {
@@ -176,7 +176,7 @@ MArray<bool> TableExprAggrNodeArray::getArrayBool(const TableExprId& id) {
   TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
   return set.getFuncs()[itsFunc->seqnr()]->getArrayBool();
 }
-MArray<Int64> TableExprAggrNodeArray::getArrayInt(const TableExprId& id) {
+MArray<int64_t> TableExprAggrNodeArray::getArrayInt(const TableExprId& id) {
   const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
   if (itsFunc->isLazy()) {
     return itsFunc->getArrayInt(aid.result().ids(id.rownr()));

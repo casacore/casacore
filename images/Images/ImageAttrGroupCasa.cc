@@ -97,8 +97,9 @@ Vector<String> ImageAttrGroupCasa::getMeasInfo(const String& attrName) {
   return Vector<String>();
 }
 
-void ImageAttrGroupCasa::putData(const String& attrName, unsigned int rownr, const ValueHolder& data,
-                                 const Vector<String>& units, const Vector<String>& measInfo) {
+void ImageAttrGroupCasa::putData(const String& attrName, unsigned int rownr,
+                                 const ValueHolder& data, const Vector<String>& units,
+                                 const Vector<String>& measInfo) {
   itsTable.reopenRW();
   // If needed, add the column for the attribute.
   if (addNewColumn(attrName, data)) {
@@ -120,7 +121,7 @@ void ImageAttrGroupCasa::putData(const String& attrName, unsigned int rownr, con
     }
   }
   checkRows(attrName, rownr);
-  itsTable.putCell(attrName, Vector<Int64>(1, rownr), data);
+  itsTable.putCell(attrName, Vector<int64_t>(1, rownr), data);
 }
 
 void ImageAttrGroupCasa::checkRows(const std::string& attrName, unsigned int rownr) {

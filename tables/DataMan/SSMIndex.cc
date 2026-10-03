@@ -128,8 +128,8 @@ void SSMIndex::addRow(rownr_t aNrRows) {
     if (itsNUsed > 1) {
       usedLast -= itsLastRow[itsNUsed - 2] + 1;
     }
-    uInt64 fitLast = itsRowsPerBucket - usedLast;
-    uInt64 toAdd = std::min(fitLast, aNrRows);
+    uint64_t fitLast = itsRowsPerBucket - usedLast;
+    uint64_t toAdd = std::min(fitLast, aNrRows);
 
     itsLastRow[itsNUsed - 1] += toAdd;
     aNrRows -= toAdd;
@@ -300,8 +300,8 @@ void SSMIndex::addColumn(int anOffset, unsigned int nbits) {
   }
 }
 
-void SSMIndex::find(rownr_t aRowNumber, unsigned int& aBucketNr, rownr_t& aStartRow, rownr_t& anEndRow,
-                    const String& colName) const {
+void SSMIndex::find(rownr_t aRowNumber, unsigned int& aBucketNr, rownr_t& aStartRow,
+                    rownr_t& anEndRow, const String& colName) const {
   unsigned int anIndex = getIndex(aRowNumber, colName);
   aBucketNr = itsBucketNumber[anIndex];
   anEndRow = itsLastRow[anIndex];

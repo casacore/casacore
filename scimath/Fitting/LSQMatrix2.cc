@@ -63,8 +63,8 @@ const String &LSQMatrix::ident() const {
   return myid;
 }
 
-bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
-                          const double *const in) {
+bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname,
+                          unsigned int len, const double *const in) {
   if (len) {
     if (in) {
       Vector<double> vt(len);
@@ -78,8 +78,8 @@ bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fna
   return true;
 }
 
-bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
-                          double *&out) {
+bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname,
+                          unsigned int len, double *&out) {
   if (in.isDefined(fname) && in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayDouble) {
     Vector<double> vt;
     in.get(RecordFieldId(fname), vt);
@@ -94,8 +94,8 @@ bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String
   return true;
 }
 
-bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
-                          const unsigned int *const in) {
+bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname,
+                          unsigned int len, const unsigned int *const in) {
   if (len) {
     if (in) {
       Vector<int> vt(len);
@@ -109,8 +109,8 @@ bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fna
   return true;
 }
 
-bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
-                          unsigned int *&out) {
+bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname,
+                          unsigned int len, unsigned int *&out) {
   if (in.isDefined(fname) && in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayInt) {
     Vector<int> vt;
     in.get(RecordFieldId(fname), vt);

@@ -181,7 +181,7 @@ std::shared_ptr<TableExprGroupResult> TableParseGroupby::aggregate(Vector<rownr_
   if (itsGroupbyNodes.size() == 1 && itsGroupbyNodes[0].dataType() == TpDouble) {
     funcSets = singleKey<double>(immediateNodes, rownrs);
   } else if (itsGroupbyNodes.size() == 1 && itsGroupbyNodes[0].dataType() == TpInt) {
-    funcSets = singleKey<Int64>(immediateNodes, rownrs);
+    funcSets = singleKey<int64_t>(immediateNodes, rownrs);
   } else {
     funcSets = multiKey(immediateNodes, rownrs);
   }

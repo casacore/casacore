@@ -38,7 +38,7 @@ bool TableExprData::getBool(const Block<int>&) const {
   throw(AipsError("TableExprData::getBool not implemented"));
 }
 
-Int64 TableExprData::getInt(const Block<int>&) const {
+int64_t TableExprData::getInt(const Block<int>&) const {
   throw(AipsError("TableExprData::getInt not implemented"));
 }
 
@@ -56,12 +56,12 @@ Array<bool> TableExprData::getArrayBool(const Block<int>&) const {
   throw(AipsError("TableExprData::getArrayBool not implemented"));
 }
 
-Array<Int64> TableExprData::getArrayInt(const Block<int>&) const {
+Array<int64_t> TableExprData::getArrayInt(const Block<int>&) const {
   throw(AipsError("TableExprData::getArrayInt not implemented"));
 }
 
 Array<double> TableExprData::getArrayDouble(const Block<int>& fieldNrs) const {
-  Array<Int64> tmp = getArrayInt(fieldNrs);
+  Array<int64_t> tmp = getArrayInt(fieldNrs);
   Array<double> result(tmp.shape());
   convertArray(result, tmp);
   return result;

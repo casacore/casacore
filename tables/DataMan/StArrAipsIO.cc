@@ -164,7 +164,7 @@ void StManColumnArrayAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) 
       STMANCOLUMNARRAYAIPSIO_PUTDATA(unsigned int)
       break;
     case TpInt64:
-      STMANCOLUMNARRAYAIPSIO_PUTDATA(Int64)
+      STMANCOLUMNARRAYAIPSIO_PUTDATA(int64_t)
       break;
     case TpFloat:
       STMANCOLUMNARRAYAIPSIO_PUTDATA(float)
@@ -188,7 +188,7 @@ void StManColumnArrayAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) 
 
 #define STMANCOLUMNARRAYAIPSIO_GETDATA(T)   \
   {                                         \
-    unsigned int nr;                                \
+    unsigned int nr;                        \
     T** dparr = (T**)dp + inx;              \
     T* dpd;                                 \
     while (nrval--) {                       \
@@ -201,7 +201,8 @@ void StManColumnArrayAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) 
     }                                       \
   }
 
-void StManColumnArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int nrval, AipsIO& ios, unsigned int version) {
+void StManColumnArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int nrval, AipsIO& ios,
+                                     unsigned int version) {
   unsigned int nr;
   if (version > 1) {
     ios >> nr;
@@ -226,7 +227,7 @@ void StManColumnArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int nr
       STMANCOLUMNARRAYAIPSIO_GETDATA(unsigned int)
       break;
     case TpInt64:
-      STMANCOLUMNARRAYAIPSIO_GETDATA(Int64)
+      STMANCOLUMNARRAYAIPSIO_GETDATA(int64_t)
       break;
     case TpFloat:
       STMANCOLUMNARRAYAIPSIO_GETDATA(float)

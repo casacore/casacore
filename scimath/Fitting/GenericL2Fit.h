@@ -267,7 +267,7 @@ class GenericL2Fit : public LSQaips {
       const unsigned int n, const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
   bool setConstraint(const unsigned int n, const typename FunctionTraits<T>::BaseType y =
-                                       typename FunctionTraits<T>::BaseType(0));
+                                               typename FunctionTraits<T>::BaseType(0));
   bool addConstraint(
       const Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType>
           &function,
@@ -321,7 +321,8 @@ class GenericL2Fit : public LSQaips {
 
   // Return the nth constraint equation derived from SVD
   // Note that the number present will be given by <src>getDeficiency()</src>
-  Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> getSVDConstraint(unsigned int n);
+  Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> getSVDConstraint(
+      unsigned int n);
   // Set the parameter values. The input is a vector of parameters; all
   // or only the masked ones' values will be set, using the input values
   // <group>
@@ -534,8 +535,8 @@ class GenericL2Fit : public LSQaips {
   //  <li> Aipserror if size inconsistencies
   // </thrown>
   unsigned int testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
-                   const Vector<typename FunctionTraits<T>::BaseType> &y,
-                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma);
+                           const Vector<typename FunctionTraits<T>::BaseType> &y,
+                           const Vector<typename FunctionTraits<T>::BaseType> *const sigma);
   // Reset all the input
   void resetFunction();
 

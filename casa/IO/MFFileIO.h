@@ -86,10 +86,10 @@ class MFFileIO : public ByteIO {
   // bytes actually read, or a negative number if an error occurred. Will also
   // throw an Exception (AipsError) if the requested number of bytes could
   // not be read unless throwException is set to false.
-  Int64 read(Int64 size, void* buf, bool throwException = true) override;
+  int64_t read(int64_t size, void* buf, bool throwException = true) override;
 
   // Write a block at the current offset.
-  void write(Int64 size, const void* buffer) override;
+  void write(int64_t size, const void* buffer) override;
 
   // Reopen the file (and possibly underlying MultiFileBase) for read/write access.
   // Nothing will be done if the stream is writable already.
@@ -105,7 +105,7 @@ class MFFileIO : public ByteIO {
   void flush() override;
 
   // Get the length of the file.
-  Int64 length() override;
+  int64_t length() override;
 
   // The file is always readable.
   bool isReadable() const override;
@@ -123,11 +123,11 @@ class MFFileIO : public ByteIO {
   void fsync() override;
 
   // Truncate the file to the given size.
-  void truncate(Int64 size) override;
+  void truncate(int64_t size) override;
 
   // Reset the position pointer to the given value. It returns the
   // new position.
-  Int64 doSeek(Int64 offset, ByteIO::SeekOption) override;
+  int64_t doSeek(int64_t offset, ByteIO::SeekOption) override;
 
   // Get the MultiFileInfo object for this file.
   const MultiFileInfo& getInfo() const;
@@ -135,7 +135,7 @@ class MFFileIO : public ByteIO {
  private:
   // # Data members
   std::shared_ptr<MultiFileBase> itsFile;
-  Int64 itsPosition;
+  int64_t itsPosition;
   String itsName;
   int itsId;
   bool itsIsWritable;

@@ -380,7 +380,8 @@ class ChebyshevParamModeImpl : public ChebyshevParam<T> {
                          const T &defval = T(0))
       : ChebyshevParam<T>(coeffs, min, max, mode, defval) {}
 
-  ChebyshevParamModeImpl(unsigned int order, const RecordInterface &mode) : ChebyshevParam<T>(order, mode) {
+  ChebyshevParamModeImpl(unsigned int order, const RecordInterface &mode)
+      : ChebyshevParam<T>(order, mode) {
     setMode(mode);
   }
   ChebyshevParamModeImpl(const Vector<T> &coeffs, const RecordInterface &mode)

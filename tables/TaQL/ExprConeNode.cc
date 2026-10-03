@@ -183,7 +183,7 @@ bool TableExprConeNode::getBool(const TableExprId& id) {
   return true;
 }
 
-Int64 TableExprConeNode::getInt(const TableExprId& id) {
+int64_t TableExprConeNode::getInt(const TableExprId& id) {
   switch (funcType()) {
     case TableExprFuncNode::findconeFUNC: {
       Array<double> srcArr = operands()[0]->getArrayDouble(id).array();
@@ -203,7 +203,7 @@ Int64 TableExprConeNode::getInt(const TableExprId& id) {
       const double* cone = coneArr.getStorage(deleteCone);
       const double ra = src[0];
       const double dec = src[1];
-      Int64 res = -1;
+      int64_t res = -1;
       for (size_t i = 0; i < coneArr.nelements(); i += 3) {
         const double raCone = cone[i];
         const double decCone = cone[i + 1];
@@ -250,7 +250,7 @@ Int64 TableExprConeNode::getInt(const TableExprId& id) {
       }
       const double ra = src[0];
       const double dec = src[1];
-      Int64 res = -1;
+      int64_t res = -1;
       for (size_t i = 0; i < coneArr.nelements(); i += 2) {
         const double raCone = cone[i];
         const double decCone = cone[i + 1];
@@ -335,7 +335,7 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands(Block<int>& dtyp
 }
 
 int TableExprConeNode::findNelem(const TENShPtr& node) {
-  Int64 nelem = -1;
+  int64_t nelem = -1;
   if (node->valueType() == VTSet) {
     const TableExprNodeSet* set = dynamic_cast<const TableExprNodeSet*>(node.get());
     AlwaysAssert(set, AipsError);
@@ -464,7 +464,7 @@ MArray<bool> TableExprConeNodeArray::getArrayBool(const TableExprId& id) {
   }
 }
 
-MArray<Int64> TableExprConeNodeArray::getArrayInt(const TableExprId& id) {
+MArray<int64_t> TableExprConeNodeArray::getArrayInt(const TableExprId& id) {
   switch (funcType()) {
     case TableExprFuncNode::findconeFUNC: {
       Array<double> srcArr = operands()[0]->getArrayDouble(id).array();
@@ -488,11 +488,11 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt(const TableExprId& id) {
         shp = shpc;
         shp[0] = shp[0] / 2;
       }
-      Array<Int64> resArr(shp);
+      Array<int64_t> resArr(shp);
       bool deleteSrc, deleteCone;
       const double* src = srcArr.getStorage(deleteSrc);
       const double* cone = coneArr.getStorage(deleteCone);
-      Int64* res = resArr.data();
+      int64_t* res = resArr.data();
       for (size_t j = 0; j < srcArr.nelements(); j += 2) {
         const double ra = src[j];
         const double dec = src[j + 1];
@@ -511,7 +511,7 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt(const TableExprId& id) {
       }
       srcArr.freeStorage(src, deleteSrc);
       coneArr.freeStorage(cone, deleteCone);
-      return MArray<Int64>(resArr);
+      return MArray<int64_t>(resArr);
     }
     case TableExprFuncNode::findcone3FUNC: {
       Array<double> srcArr = operands()[0]->getArrayDouble(id).array();
@@ -550,8 +550,8 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt(const TableExprId& id) {
       const double* src = srcArr.getStorage(deleteSrc);
       const double* cone = coneArr.getStorage(deleteCone);
       const double* rad = radArr.getStorage(deleteRad);
-      Array<Int64> resArr(shp);
-      Int64* res = resArr.data();
+      Array<int64_t> resArr(shp);
+      int64_t* res = resArr.data();
       for (size_t j = 0; j < srcArr.nelements(); j += 2) {
         const double ra = src[j];
         const double dec = src[j + 1];
@@ -573,7 +573,7 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt(const TableExprId& id) {
       srcArr.freeStorage(src, deleteSrc);
       coneArr.freeStorage(cone, deleteCone);
       radArr.freeStorage(rad, deleteRad);
-      return MArray<Int64>(resArr);
+      return MArray<int64_t>(resArr);
     }
     default:
       throw(

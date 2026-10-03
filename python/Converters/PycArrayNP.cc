@@ -173,9 +173,9 @@ ValueHolder makeScalar(PyObject* obj_ptr, int type) {
       case NPY_UINT32:
         return ValueHolder(uint(*(::npy_uint32*)(PyArray_DATA(obj))));
       case NPY_INT64:
-        return ValueHolder(Int64(*(::npy_int64*)(PyArray_DATA(obj))));
+        return ValueHolder(int64_t(*(::npy_int64*)(PyArray_DATA(obj))));
       case NPY_UINT64:
-        return ValueHolder(Int64(*(::npy_uint64*)(PyArray_DATA(obj))));
+        return ValueHolder(int64_t(*(::npy_uint64*)(PyArray_DATA(obj))));
       case NPY_FLOAT32:
         return ValueHolder(float(*(::npy_float32*)(PyArray_DATA(obj))));
       case NPY_FLOAT64:
@@ -221,11 +221,11 @@ ValueHolder makeScalar(PyObject* obj_ptr, int type) {
       }
       case NPY_INT64: {
         ::npy_int64* ptr = (::npy_int64*)buffer;
-        return ValueHolder(Int64(*ptr));
+        return ValueHolder(int64_t(*ptr));
       }
       case NPY_UINT64: {
         ::npy_uint64* ptr = (::npy_uint64*)buffer;
-        return ValueHolder(Int64(*ptr));
+        return ValueHolder(int64_t(*ptr));
       }
       case NPY_FLOAT32: {
         ::npy_float32* ptr = (::npy_float32*)buffer;
@@ -262,8 +262,8 @@ void register_convert_arrayscalars() {
   array_scalar_from_python<unsigned int>();
   array_scalar_from_python<long>();
   array_scalar_from_python<unsigned long>();
-  array_scalar_from_python<Int64>();
-  array_scalar_from_python<uInt64>();
+  array_scalar_from_python<int64_t>();
+  array_scalar_from_python<uint64_t>();
   array_scalar_from_python<float>();
   array_scalar_from_python<double>();
   array_scalar_from_python<Complex>();

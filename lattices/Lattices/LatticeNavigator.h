@@ -326,7 +326,7 @@ class LatticeNavigator {
   // A zero bucket size indicates that the data are not tiled, but in memory.
   // Then a cache size of 0 is returned.
   virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             unsigned int maxCacheSize, unsigned int bucketSize) const = 0;
+                                     unsigned int maxCacheSize, unsigned int bucketSize) const = 0;
 
   // Function which returns a pointer to dynamic memory of an exact copy
   // of this LatticeNavigator. It is the responsibility of the caller to

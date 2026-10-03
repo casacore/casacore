@@ -120,7 +120,8 @@ class FITSHistoryUtil {
   // strings will have no embedded newlines. strings is not resized if it is more
   // than large enough to hold the number of history cards in the group (i.e. there
   // may be values at the end of strings which are not part of the requested group.
-  static unsigned int getHistoryGroup(Vector<String>& strings, String& groupType, ConstFitsKeywordList& in);
+  static unsigned int getHistoryGroup(Vector<String>& strings, String& groupType,
+                                      ConstFitsKeywordList& in);
 
   // Add history strings of the specified groupType to an existing FitsKeywordList.
   // This function will split long strings across HISTORY cards and set
@@ -154,14 +155,15 @@ class FITSHistoryUtil {
   // [OBJID='xxx'] and the second lins is the message.  These entries are in
   // an AIPS++ START LOGTABLE history sequence.
   // <group>
-  static void fromHISTORY(LoggerHolder& logSink, const Vector<String>& history, unsigned int nstrings,
-                          bool aipsppFormat);
+  static void fromHISTORY(LoggerHolder& logSink, const Vector<String>& history,
+                          unsigned int nstrings, bool aipsppFormat);
 
   // toHistory signals that it is done by setting nstrings to 0.
   // The returned value is firstLine + n_lines_read, i.e. use
   // it as firstLine in your next call.
-  static unsigned int toHISTORY(std::vector<String>& history, bool& aipsppFormat, unsigned int& nstrings,
-                        unsigned int firstLine, const LoggerHolder& logSink);
+  static unsigned int toHISTORY(std::vector<String>& history, bool& aipsppFormat,
+                                unsigned int& nstrings, unsigned int firstLine,
+                                const LoggerHolder& logSink);
   // </group>
 };
 

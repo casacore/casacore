@@ -168,7 +168,7 @@ struct inputValues {
   bool renew;             // Force renew complete table, rather than an update
   Block<int> derange;     // Range of DE table years.
   String ofile;           // Name of output link file
-  unsigned int x__n;              // Current pointer in list of processes
+  unsigned int x__n;      // Current pointer in list of processes
   bool x__rep;            // Repeating
   bool x__fn;             // Should be a filename given
   vector<double> x__val;  // Parameter values
@@ -251,10 +251,10 @@ struct columnDescr {
     CTAD,       // Double array
     N_ColTypes  // Number of types
   };
-  String colName;    // Name of column
-  String unit;       // Units in column
-  ColTypes colType;  // Column type
-  unsigned int colId;        // Number input column
+  String colName;      // Name of column
+  String unit;         // Units in column
+  ColTypes colType;    // Column type
+  unsigned int colId;  // Number input column
 };
 
 // TAI_UTC
@@ -337,7 +337,7 @@ struct tableProperties {
   const columnDescr *cdesc;                        // Column descriptions
   TableDesc *td;                                   // Table descriptor
   vector<String> colnames;                         // Column names
-  vector<unsigned int> colids;                             // Input column id
+  vector<unsigned int> colids;                     // Input column id
   vector<TableColumn *> columns;                   // Table columns for access
   String title;                                    // Long title
   String contents;                                 // Contents indicator; e.g. leapSecond
@@ -1671,7 +1671,8 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   tab->rwKeywordSet().define("MJD0", tprop.MJD0);
   tprop.dMJD = incepo;
   tab->rwKeywordSet().define("dMJD", tprop.dMJD);
-  for (unsigned int i = 0; i < kwnames.size(); ++i) tab->rwKeywordSet().define(kwnames[i], kwval[i]);
+  for (unsigned int i = 0; i < kwnames.size(); ++i)
+    tab->rwKeywordSet().define(kwnames[i], kwval[i]);
   createColumns(tab, tprop);
   TableColumn tcd = TableColumn(*tab, "x");
   tcd.rwKeywordSet().define("Rows", 3);

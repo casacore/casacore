@@ -40,7 +40,7 @@ TableParseJoin::TableParseJoin(TableParseQuery* parent)
   }
 }
 
-Int64 TableParseJoin::findRow(const TableExprId& id) const {
+int64_t TableParseJoin::findRow(const TableExprId& id) const {
   // In the initialization phase of TaQLJoin, the itsJoin pointer
   // is not set. In that case the given row id is already the original
   // rownr in the join table and should be returned as such.
@@ -210,7 +210,7 @@ void TableParseJoin::addUniqueTables(std::vector<Table>& tables, const std::vect
 }
 
 unsigned int TableParseJoin::findMatchingTables(const std::vector<Table>& exprTables,
-                                        const std::vector<Table>& tables) const {
+                                                const std::vector<Table>& tables) const {
   unsigned int nmatch = 0;
   for (const Table& exprTab : exprTables) {
     for (const Table& tab : tables) {

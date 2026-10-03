@@ -438,12 +438,12 @@ class HistTiledCollapser : public TiledCollapser<T, T> {
   virtual void init(unsigned int nOutPixelsPerCollapse);
 
   // Initialize the accumulator
-  virtual void initAccumulator(uInt64 n1, uInt64 n3);
+  virtual void initAccumulator(uint64_t n1, uint64_t n3);
 
   // Process the data in the current chunk.
-  virtual void process(unsigned int accumIndex1, unsigned int accumIndex3, const T* inData, const bool* inMask,
-                       unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition& startPos,
-                       const IPosition& shape);
+  virtual void process(unsigned int accumIndex1, unsigned int accumIndex3, const T* inData,
+                       const bool* inMask, unsigned int inDataIncr, unsigned int inMaskIncr,
+                       unsigned int nrval, const IPosition& startPos, const IPosition& shape);
 
   // End the accumulation process and return the result arrays
   virtual void endAccumulator(Array<T>& result, Array<bool>& resultMask, const IPosition& shape);
@@ -455,8 +455,8 @@ class HistTiledCollapser : public TiledCollapser<T, T> {
   LatticeStatistics<T>* pStats_p;
   Block<T>* pHist_p;
   unsigned int nBins_p;
-  uInt64 n1_p;
-  uInt64 n3_p;
+  uint64_t n1_p;
+  uint64_t n3_p;
 };
 
 }  // namespace casacore

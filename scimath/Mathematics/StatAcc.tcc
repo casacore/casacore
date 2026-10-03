@@ -281,7 +281,7 @@ StatAcc<T> StatAcc<T>::operator+(const StatAcc<T>& that) {
 template <class T>
 void StatAcc<T>::printSummaryLine(ostream& os, const String& caption) const {
   ios::fmtflags flags = os.flags();  // save current setting
-  unsigned int p = 4;                        // precision
+  unsigned int p = 4;                // precision
   os.setf(ios::right, ios::adjustfield);
 
   if (itsWtot != 0) {
@@ -304,7 +304,7 @@ void StatAcc<T>::printSummaryLine(ostream& os, const String& caption) const {
 template <class T>
 void StatAcc<T>::printSummaryLineHeader(ostream& os, const String& caption) const {
   ios::fmtflags flags = os.flags();  // save current setting
-  unsigned int p = 4;                        // precision
+  unsigned int p = 4;                // precision
 
   // print one-line header
   os.setf(ios::right, ios::adjustfield);

@@ -222,7 +222,8 @@ ImageRegion ImageInterface<T>::getRegion(const String& regionName,
 }
 
 template <class T>
-String ImageInterface<T>::makeUniqueRegionName(const String& rootName, unsigned int startNumber) const {
+String ImageInterface<T>::makeUniqueRegionName(const String& rootName,
+                                               unsigned int startNumber) const {
   return regHandPtr_p->makeUniqueRegionName(rootName, startNumber);
 }
 

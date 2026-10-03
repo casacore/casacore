@@ -97,15 +97,17 @@ class LatticeFit {
   // return data-fit, otherwise return the fit.  For baseline and continuum
   // subtraction, returnResiduals would normally be true.
   static unsigned int fitProfiles(Lattice<float>& outImage, Vector<float>& fittedParameters,
-                          LinearFit<float>& fitter, const Lattice<float>& inImage, unsigned int whichAxis,
-                          const Vector<bool>& fitMask, bool returnResiduals);
+                                  LinearFit<float>& fitter, const Lattice<float>& inImage,
+                                  unsigned int whichAxis, const Vector<bool>& fitMask,
+                                  bool returnResiduals);
 
   // Fit baseline to MaskedLattice.  Fit and residuals can be optionally
   // written (leave pointers at zero to not write out these lattices)
   // You can optionally specify a weights lattice (1.0 if not given).
   static unsigned int fitProfiles(MaskedLattice<float>* pOutFit, MaskedLattice<float>* pOutResid,
-                          MaskedLattice<float>& in, Lattice<float>* pSigma,
-                          LinearFit<float>& fitter, unsigned int axis, bool showProgress = false);
+                                  MaskedLattice<float>& in, Lattice<float>* pSigma,
+                                  LinearFit<float>& fitter, unsigned int axis,
+                                  bool showProgress = false);
 };
 
 }  // namespace casacore

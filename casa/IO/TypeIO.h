@@ -100,8 +100,8 @@ class TypeIO {
   virtual size_t write(size_t nvalues, const unsigned short* value) = 0;
   virtual size_t write(size_t nvalues, const int* value) = 0;
   virtual size_t write(size_t nvalues, const unsigned int* value) = 0;
-  virtual size_t write(size_t nvalues, const Int64* value) = 0;
-  virtual size_t write(size_t nvalues, const uInt64* value) = 0;
+  virtual size_t write(size_t nvalues, const int64_t* value) = 0;
+  virtual size_t write(size_t nvalues, const uint64_t* value) = 0;
   virtual size_t write(size_t nvalues, const float* value) = 0;
   virtual size_t write(size_t nvalues, const double* value) = 0;
   virtual size_t write(size_t nvalues, const Complex* value);
@@ -121,8 +121,8 @@ class TypeIO {
   virtual size_t read(size_t nvalues, unsigned short* value) = 0;
   virtual size_t read(size_t nvalues, int* value) = 0;
   virtual size_t read(size_t nvalues, unsigned int* value) = 0;
-  virtual size_t read(size_t nvalues, Int64* value) = 0;
-  virtual size_t read(size_t nvalues, uInt64* value) = 0;
+  virtual size_t read(size_t nvalues, int64_t* value) = 0;
+  virtual size_t read(size_t nvalues, uint64_t* value) = 0;
   virtual size_t read(size_t nvalues, float* value) = 0;
   virtual size_t read(size_t nvalues, double* value) = 0;
   virtual size_t read(size_t nvalues, Complex* value);
@@ -134,8 +134,8 @@ class TypeIO {
   // The seek option defines from which file position the seek is done.
   // -1 is returned if not seekable.
   // <group>
-  Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-  Int64 seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
+  int64_t seek(int64_t offset, ByteIO::SeekOption = ByteIO::Begin);
+  int64_t seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
   // </group>
 
   // Is the TypeIO stream readable?

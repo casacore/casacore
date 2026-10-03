@@ -414,8 +414,8 @@ class Block : public BlockTrace {
     if (whichOne >= get_size()) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
       throw(indexError<unsigned int>(whichOne,
-                             "Block::remove() - "
-                             "index out of range"));
+                                     "Block::remove() - "
+                                     "index out of range"));
 #else
       return;
 #endif
@@ -513,8 +513,8 @@ class Block : public BlockTrace {
     // unsigned.
     if ((get_size() == 0) || (index > get_size() - 1)) {
       throw(indexError<unsigned int>(index,
-                             "Block::operator[] - "
-                             "index out of range"));
+                                     "Block::operator[] - "
+                                     "index out of range"));
     };
 #endif
     return array[index];
@@ -523,8 +523,8 @@ class Block : public BlockTrace {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if ((get_size() == 0) || (index > get_size() - 1)) {
       throw(indexError<unsigned int>(index,
-                             "Block::operator[] const - "
-                             "index out of range"));
+                                     "Block::operator[] const - "
+                                     "index out of range"));
     };
 #endif
     return array[index];
@@ -708,7 +708,7 @@ extern template class Block<short>;
 extern template class Block<unsigned short>;
 extern template class Block<int>;
 extern template class Block<unsigned int>;
-extern template class Block<Int64>;
+extern template class Block<int64_t>;
 extern template class Block<float>;
 extern template class Block<double>;
 extern template class Block<Complex>;

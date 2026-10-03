@@ -64,7 +64,7 @@ void doPos(T v, U, DataType dt) {
   AlwaysAssertExit(vh.asuShort() == static_cast<unsigned short>(v));
   AlwaysAssertExit(vh.asInt() == int(v));
   AlwaysAssertExit(vh.asuInt() == static_cast<unsigned int>(v));
-  AlwaysAssertExit(vh.asInt64() == Int64(v));
+  AlwaysAssertExit(vh.asInt64() == int64_t(v));
   AlwaysAssertExit(vh.asFloat() == float(v));
   AlwaysAssertExit(vh.asDouble() == double(v));
   AlwaysAssertExit(vh.asComplex() == Complex(float(v), 0));
@@ -81,8 +81,8 @@ void doPos(T v, U, DataType dt) {
   AlwaysAssertExit(vecInt.size() == 1 && vecInt.data()[0] == int(v));
   Vector<unsigned int> vecuInt = vh.asArrayuInt();
   AlwaysAssertExit(vecuInt.size() == 1 && vecuInt.data()[0] == static_cast<unsigned int>(v));
-  Vector<Int64> vecInt64 = vh.asArrayInt64();
-  AlwaysAssertExit(vecInt64.size() == 1 && vecInt64.data()[0] == Int64(v));
+  Vector<int64_t> vecInt64 = vh.asArrayInt64();
+  AlwaysAssertExit(vecInt64.size() == 1 && vecInt64.data()[0] == int64_t(v));
   Vector<float> vecfloat = vh.asArrayFloat();
   AlwaysAssertExit(vecfloat.size() == 1 && vecfloat.data()[0] == float(v));
   Vector<double> vecdouble = vh.asArrayDouble();
@@ -116,7 +116,7 @@ void doNeg(T v, U, DataType dt) {
   AlwaysAssertExit(vh.asBool());
   AlwaysAssertExit(vh.asShort() == short(v));
   AlwaysAssertExit(vh.asInt() == int(v));
-  AlwaysAssertExit(vh.asInt64() == Int64(v));
+  AlwaysAssertExit(vh.asInt64() == int64_t(v));
   AlwaysAssertExit(vh.asFloat() == float(v));
   AlwaysAssertExit(vh.asDouble() == double(v));
   AlwaysAssertExit(vh.asComplex() == Complex(float(v), 0));
@@ -127,8 +127,8 @@ void doNeg(T v, U, DataType dt) {
   AlwaysAssertExit(vecShort.size() == 1 && vecShort.data()[0] == short(v));
   Vector<int> vecInt = vh.asArrayInt();
   AlwaysAssertExit(vecInt.size() == 1 && vecInt.data()[0] == int(v));
-  Vector<Int64> vecInt64 = vh.asArrayInt64();
-  AlwaysAssertExit(vecInt64.size() == 1 && vecInt64.data()[0] == Int64(v));
+  Vector<int64_t> vecInt64 = vh.asArrayInt64();
+  AlwaysAssertExit(vecInt64.size() == 1 && vecInt64.data()[0] == int64_t(v));
   Vector<float> vecfloat = vh.asArrayFloat();
   AlwaysAssertExit(vecfloat.size() == 1 && vecfloat.data()[0] == float(v));
   Vector<double> vecdouble = vh.asArrayDouble();
@@ -268,7 +268,7 @@ int main() {
     doBool(false);
     doNeg(short(-4), short(0), TpShort);
     doNeg(int(-7), int(0), TpInt);
-    doNeg(Int64(-40), Int64(0), TpInt64);
+    doNeg(int64_t(-40), int64_t(0), TpInt64);
     doNeg(float(-4.1), float(0), TpFloat);
     doNeg(double(-4.7), double(0), TpDouble);
     doPos(static_cast<unsigned char>(13), static_cast<unsigned char>(0), TpUChar);
@@ -276,7 +276,7 @@ int main() {
     doPos(static_cast<unsigned short>(14), static_cast<unsigned short>(0), TpUShort);
     doPos(int(17), int(0), TpInt);
     doPos(static_cast<unsigned int>(10), static_cast<unsigned int>(0), TpUInt);
-    doPos(Int64(40), Int64(0), TpInt64);
+    doPos(int64_t(40), int64_t(0), TpInt64);
     doPos(float(4.1), float(0), TpFloat);
     doPos(double(4.7), double(0), TpDouble);
     doString(String());

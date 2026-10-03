@@ -48,7 +48,8 @@ int main() {
     bool aipsppFormat = true;
     unsigned int nstrings, nread;
     nstrings = nread = 0;
-    nread = FITSHistoryUtil::toHISTORY(history, aipsppFormat, nstrings, static_cast<unsigned int>(0), logger);
+    nread = FITSHistoryUtil::toHISTORY(history, aipsppFormat, nstrings,
+                                       static_cast<unsigned int>(0), logger);
     // there are 2 things inserted here, so nread should be 2
     AlwaysAssertExit(nread == 2);
 

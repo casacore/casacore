@@ -250,7 +250,7 @@ class TileStepper : public LatticeNavigator {
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
   virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             unsigned int maxCacheSize, unsigned int bucketSize) const;
+                                     unsigned int maxCacheSize, unsigned int bucketSize) const;
 
  private:
   // Prevent the default constructor from being used.
@@ -266,7 +266,7 @@ class TileStepper : public LatticeNavigator {
   IPosition itsAxisPath;         // # Path for traversing
   IPosition itsCurBlc;           // # Blc of the current position.
   IPosition itsCurTrc;           // # Trc of the current position.
-  unsigned int itsNsteps;                // # The number of iterator steps taken so far
+  unsigned int itsNsteps;        // # The number of iterator steps taken so far
   bool itsEnd;                   // # Is the cursor beyond the end?
   bool itsStart;                 // # Is the cursor at the beginning?
 };

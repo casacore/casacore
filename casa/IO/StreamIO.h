@@ -70,17 +70,17 @@ class StreamIO : public ByteIO {
   virtual ~StreamIO();
 
   // Write the specified number of bytes.
-  virtual void write(Int64 size, const void* buf);
+  virtual void write(int64_t size, const void* buf);
 
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
   // exception (AipsError) if the requested number of bytes could not be read,
   // or an error occured, unless throwException is set to false.
-  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
+  virtual int64_t read(int64_t size, void* buf, bool throwException = true);
 
   // Get the length of the stream.  Not a meaningful function for this
   // class and this function always returns -1.
-  virtual Int64 length();
+  virtual int64_t length();
 
   // Is the stream readable? This function always returns true.
   virtual bool isReadable() const;
@@ -95,7 +95,7 @@ class StreamIO : public ByteIO {
   // Reset the position pointer to the given value. It returns the new
   // position. As stream devices are not seekable calling this function will
   // always throw an AipsError exception.
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
 
  private:
   // The following functions are made private so that the compiler does not

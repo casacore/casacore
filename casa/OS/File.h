@@ -175,7 +175,7 @@ class File {
 
   // Return the size of the file. If the file
   // does not exist, an exception will be thrown.
-  virtual Int64 size() const;
+  virtual int64_t size() const;
 
   // Return the permissions as a decimal value.
   unsigned int readPermissions() const;

@@ -305,7 +305,7 @@ class ColumnSet {
   BaseTable* baseTablePtr_p;
   TableLockData* lockPtr_p;          // # lock object
   std::map<String, void*> colMap_p;  // # list of PlainColumns
-  unsigned int seqCount_p;                   // # sequence number count
+  unsigned int seqCount_p;           // # sequence number count
   // #                                           (used for unique seqnr)
   Block<void*> blockDataMan_p;   // # list of data managers
   Block<bool> dataManChanged_p;  // # data has changed

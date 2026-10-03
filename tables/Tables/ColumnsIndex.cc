@@ -113,9 +113,9 @@ void ColumnsIndex::deleteObjects() {
         delete (Vector<unsigned int>*)(itsDataVectors[i]);
         break;
       case TpInt64:
-        delete (RecordFieldPtr<Int64>*)(itsLowerFields[i]);
-        delete (RecordFieldPtr<Int64>*)(itsUpperFields[i]);
-        delete (Vector<Int64>*)(itsDataVectors[i]);
+        delete (RecordFieldPtr<int64_t>*)(itsLowerFields[i]);
+        delete (RecordFieldPtr<int64_t>*)(itsUpperFields[i]);
+        delete (Vector<int64_t>*)(itsDataVectors[i]);
         break;
       case TpFloat:
         delete (RecordFieldPtr<float>*)(itsLowerFields[i]);
@@ -237,9 +237,9 @@ void ColumnsIndex::makeObjects(const RecordDesc& description) {
         break;
       }
       case TpInt64: {
-        itsLowerFields[i] = new RecordFieldPtr<Int64>(*itsLowerKeyPtr, i);
-        itsUpperFields[i] = new RecordFieldPtr<Int64>(*itsUpperKeyPtr, i);
-        itsDataVectors[i] = new Vector<Int64>;
+        itsLowerFields[i] = new RecordFieldPtr<int64_t>(*itsLowerKeyPtr, i);
+        itsUpperFields[i] = new RecordFieldPtr<int64_t>(*itsUpperKeyPtr, i);
+        itsDataVectors[i] = new Vector<int64_t>;
         break;
       }
       case TpFloat: {
@@ -343,9 +343,9 @@ void ColumnsIndex::readData() {
         break;
       }
       case TpInt64: {
-        Vector<Int64>* vecptr = (Vector<Int64>*)itsDataVectors[i];
+        Vector<int64_t>* vecptr = (Vector<int64_t>*)itsDataVectors[i];
         if (itsColumnChanged[i]) {
-          ScalarColumn<Int64>(itsTable, name).getColumn(*vecptr, true);
+          ScalarColumn<int64_t>(itsTable, name).getColumn(*vecptr, true);
         }
         itsData[i] = vecptr->getStorage(deleteIt);
         sort.sortKey(itsData[i], desc.type(i));
@@ -419,10 +419,10 @@ void ColumnsIndex::readData() {
 
 rownr_t ColumnsIndex::bsearch(bool& found, const Block<void*>& fieldPtrs) const {
   found = false;
-  Int64 lower = 0;
-  Int64 upper = itsUniqueIndex.nelements();
+  int64_t lower = 0;
+  int64_t upper = itsUniqueIndex.nelements();
   upper--;
-  Int64 middle = 0;
+  int64_t middle = 0;
   while (lower <= upper) {
     middle = (upper + lower) / 2;
     int cmp = itsCompare(fieldPtrs, itsData, itsDataTypes, itsDataInx[itsUniqueInx[middle]]);
@@ -495,8 +495,8 @@ int ColumnsIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& dat
         break;
       }
       case TpInt64: {
-        const Int64 left = *(*(RecordFieldPtr<Int64>*)(fieldPtrs[i]));
-        const Int64 right = ((const Int64*)(dataPtrs[i]))[index];
+        const int64_t left = *(*(RecordFieldPtr<int64_t>*)(fieldPtrs[i]));
+        const int64_t right = ((const int64_t*)(dataPtrs[i]))[index];
         if (left < right) {
           return -1;
         } else if (left > right) {
@@ -680,7 +680,7 @@ void ColumnsIndex::copyKeyField(void* fieldPtr, int dtype, const Record& key) {
       copyKeyField(*(RecordFieldPtr<unsigned int>*)(fieldPtr), key);
       break;
     case TpInt64:
-      copyKeyField(*(RecordFieldPtr<Int64>*)(fieldPtr), key);
+      copyKeyField(*(RecordFieldPtr<int64_t>*)(fieldPtr), key);
       break;
     case TpFloat:
       copyKeyField(*(RecordFieldPtr<float>*)(fieldPtr), key);

@@ -42,7 +42,8 @@ PGPlotter::PGPlotter(PGPlotterInterface *worker) : worker_p(worker) {
   // Nothing
 }
 
-PGPlotter::PGPlotter(const String &device, unsigned int mincolors, unsigned int maxcolors, unsigned int sizex, unsigned int sizey) {
+PGPlotter::PGPlotter(const String &device, unsigned int mincolors, unsigned int maxcolors,
+                     unsigned int sizex, unsigned int sizey) {
   *this = create(device, mincolors, maxcolors, sizex, sizey);
 }
 
@@ -59,8 +60,8 @@ PGPlotter::~PGPlotter() {
   // Nothing
 }
 
-PGPlotter PGPlotter::create(const String &device, unsigned int mincolors, unsigned int maxcolors, unsigned int sizex,
-                            unsigned int sizey) {
+PGPlotter PGPlotter::create(const String &device, unsigned int mincolors, unsigned int maxcolors,
+                            unsigned int sizex, unsigned int sizey) {
   if (creator_p == 0) {
     return PGPlotterNull::createPlotter(device, mincolors, maxcolors, sizex, sizey);
   }

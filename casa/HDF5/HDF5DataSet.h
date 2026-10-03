@@ -102,7 +102,7 @@ class HDF5DataSet : public HDF5Object {
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
               const int*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const Int64*);
+              const int64_t*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
               const float*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
@@ -122,7 +122,7 @@ class HDF5DataSet : public HDF5Object {
   HDF5DataSet(const HDF5Object&, const String&, const unsigned char*);
   HDF5DataSet(const HDF5Object&, const String&, const short*);
   HDF5DataSet(const HDF5Object&, const String&, const int*);
-  HDF5DataSet(const HDF5Object&, const String&, const Int64*);
+  HDF5DataSet(const HDF5Object&, const String&, const int64_t*);
   HDF5DataSet(const HDF5Object&, const String&, const float*);
   HDF5DataSet(const HDF5Object&, const String&, const double*);
   HDF5DataSet(const HDF5Object&, const String&, const Complex*);

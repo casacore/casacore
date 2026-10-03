@@ -229,7 +229,7 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap() {
   regMap.insert(std::make_pair(scdi.className(), &scdi.makeDesc));
   ScalarColumnDesc<unsigned int> scdui("x");
   regMap.insert(std::make_pair(scdui.className(), &scdui.makeDesc));
-  ScalarColumnDesc<Int64> scdi64("x");
+  ScalarColumnDesc<int64_t> scdi64("x");
   regMap.insert(std::make_pair(scdi64.className(), &scdi64.makeDesc));
   ScalarColumnDesc<float> scdf("x");
   regMap.insert(std::make_pair(scdf.className(), &scdf.makeDesc));
@@ -257,7 +257,7 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap() {
   regMap.insert(std::make_pair(acdi.className(), &acdi.makeDesc));
   ArrayColumnDesc<unsigned int> acdui("x");
   regMap.insert(std::make_pair(acdui.className(), &acdui.makeDesc));
-  ArrayColumnDesc<Int64> acdi64("x");
+  ArrayColumnDesc<int64_t> acdi64("x");
   regMap.insert(std::make_pair(acdi64.className(), &acdi64.makeDesc));
   ArrayColumnDesc<float> acdf("x");
   regMap.insert(std::make_pair(acdf.className(), &acdf.makeDesc));

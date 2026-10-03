@@ -123,7 +123,8 @@ void Convolver<FType>::makeXfr(const Array<FType>& psf, const IPosition& imageSi
         theFFTSize(i) =
             std::max(thePsfSize(i), convImageSize(i) + 2 * int((thePsfSize(i) + 3) / 4));
   else
-    for (unsigned int i = 0; i < psfDim; i++) theFFTSize(i) = std::max(thePsfSize(i), convImageSize(i));
+    for (unsigned int i = 0; i < psfDim; i++)
+      theFFTSize(i) = std::max(thePsfSize(i), convImageSize(i));
   {
     IPosition tmp = theXfr.shape();
     tmp = 0;

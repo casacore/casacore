@@ -40,7 +40,7 @@
 using namespace casacore;
 using namespace std;
 
-void makeFile(Int64 blockSize, bool useODirect, bool useCRC) {
+void makeFile(int64_t blockSize, bool useODirect, bool useCRC) {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, blockSize, useODirect, useCRC);
   AlwaysAssertExit(mfile.isWritable());
   mfile.show(cout);
@@ -74,18 +74,18 @@ void writeFiles1() {
   int id0 = mfile.openFile("file0");
   int id1 = mfile.openFile("file1");
   int id2 = mfile.openFile("file2");
-  Vector<Int64> buf(128);
+  Vector<int64_t> buf(128);
   indgen(buf);
   mfile.write(id0, buf.data(), 1024, 0);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id2, buf.data(), 1024, 0);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id0, buf.data(), 1024, 1024);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id0, buf.data(), 1024, 2048);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id1, buf.data(), 1024, 1024);  // also creates block at offset 0
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id2, buf.data(), 1024, 1024);
   cout << mfile.info() << endl;
   mfile.closeFile(id0);
@@ -97,7 +97,7 @@ void checkFiles1(bool do1 = true) {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
   int id0 = mfile.openFile("file0");
   int id2 = mfile.openFile("file2");
-  Vector<Int64> buf1(128), buf(128), buff(3 * 128);
+  Vector<int64_t> buf1(128), buf(128), buff(3 * 128);
   indgen(buf1);
   mfile.read(id0, buf.data(), 1024, 0);
   if (do1) {
@@ -105,23 +105,23 @@ void checkFiles1(bool do1 = true) {
   } else {
     AlwaysAssertExit(buf[0] == buf1[0] && allEQ(buf(Slice(1, 127)), buf1(Slice(0, 127))));
   }
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id2, buf.data(), 1024, 0);
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id0, buf.data(), 1024, 1024);
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id0, buf.data(), 1024, 2048);
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   if (do1) {
     int id1 = mfile.openFile("file1");
     mfile.read(id1, buf.data(), 1024, 1024);
     AlwaysAssertExit(allEQ(buf, buf1));
     mfile.closeFile(id1);
   }
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id2, buf.data(), 1024, 1024);
   AlwaysAssertExit(allEQ(buf, buf1));
   // Check a single read.
@@ -129,13 +129,13 @@ void checkFiles1(bool do1 = true) {
     indgen(buf1);
     mfile.read(id0, buff.data(), 3072, 0);
     AlwaysAssertExit(allEQ(buff(Slice(0, 128)), buf1));
-    AlwaysAssertExit(allEQ(buff(Slice(128, 128)), buf1 + Int64(256)));
-    AlwaysAssertExit(allEQ(buff(Slice(256, 128)), buf1 + Int64(384)));
+    AlwaysAssertExit(allEQ(buff(Slice(128, 128)), buf1 + int64_t(256)));
+    AlwaysAssertExit(allEQ(buff(Slice(256, 128)), buf1 + int64_t(384)));
     // Read partial blocks.
     mfile.read(id0, buff.data(), 3072 - 24, 8);
     AlwaysAssertExit(allEQ(buff(Slice(0, 127)), buf1(Slice(1, 127))));
-    AlwaysAssertExit(allEQ(buff(Slice(127, 128)), buf1 + Int64(256)));
-    AlwaysAssertExit(allEQ(buff(Slice(255, 126)), buf1(Slice(0, 126)) + Int64(384)));
+    AlwaysAssertExit(allEQ(buff(Slice(127, 128)), buf1 + int64_t(256)));
+    AlwaysAssertExit(allEQ(buff(Slice(255, 126)), buf1(Slice(0, 126)) + int64_t(384)));
     // Check that remainder of receiving buffer is not overwritten by read
     AlwaysAssertExit(buff[380] == 509 && buff[381] == 509);
   }
@@ -158,7 +158,7 @@ void writeFiles2() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
   int id0 = mfile.openFile("file0");
   int id2 = mfile.openFile("file2");
-  Vector<Int64> buf(128), buf1(128);
+  Vector<int64_t> buf(128), buf1(128);
   indgen(buf);
   mfile.write(id0, buf.data(), 1016, 8);
   mfile.read(id0, buf1.data(), 1024, 0);
@@ -173,14 +173,14 @@ void checkFiles2(const String& name = "tMultiFile_tmp.dat") {
   checkFiles1(false);
   MultiFile mfile(name, ByteIO::Old);
   int id2 = mfile.openFile("file2");
-  Vector<Int64> buf1(2), buf(2);
+  Vector<int64_t> buf1(2), buf(2);
   indgen(buf1);
   mfile.read(id2, buf.data(), 16, 2048);
   AlwaysAssertExit(allEQ(buf, buf1));
   mfile.closeFile(id2);
 }
 
-void doTest(Int64 blockSize, bool useODirect = false, bool useCRC = false) {
+void doTest(int64_t blockSize, bool useODirect = false, bool useCRC = false) {
   cout << "MultiFile test with blockSize=" << blockSize << ", useCRC=" << useCRC
        << ", useODirect=" << useODirect << endl;
   makeFile(blockSize, useODirect, useCRC);
@@ -200,7 +200,7 @@ void doTest(Int64 blockSize, bool useODirect = false, bool useCRC = false) {
 void timeExact() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
   int id = mfile.createFile("file0");
-  Vector<Int64> buf(32768 / 8, 0);
+  Vector<int64_t> buf(32768 / 8, 0);
   for (int j = 0; j < 2; ++j) {
     Timer timer;
     for (unsigned int i = 0; i < 1000; ++i) {
@@ -215,7 +215,7 @@ void timeExact() {
 void timeDouble() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 16384);
   int id = mfile.createFile("file0");
-  Vector<Int64> buf(32768 / 8, 0);
+  Vector<int64_t> buf(32768 / 8, 0);
   for (int j = 0; j < 2; ++j) {
     Timer timer;
     for (unsigned int i = 0; i < 1000; ++i) {
@@ -230,7 +230,7 @@ void timeDouble() {
 void timePartly() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
   int id = mfile.createFile("file0");
-  Vector<Int64> buf(16384 / 8, 0);
+  Vector<int64_t> buf(16384 / 8, 0);
   for (int j = 0; j < 2; ++j) {
     Timer timer;
     for (unsigned int i = 0; i < 2000; ++i) {
@@ -242,22 +242,22 @@ void timePartly() {
   mfile.closeFile(id);
 }
 
-void timePack(Int64 incr) {
-  std::vector<Int64> bl(1000000);
+void timePack(int64_t incr) {
+  std::vector<int64_t> bl(1000000);
   for (size_t i = 0; i < bl.size(); ++i) {
     bl[i] = i * incr;
   }
   Timer timer;
-  std::vector<Int64> pck = MultiFile::packIndex(bl);
+  std::vector<int64_t> pck = MultiFile::packIndex(bl);
   timer.show("pack  ");
   Timer timer2;
-  std::vector<Int64> orig = MultiFile::packIndex(pck);
+  std::vector<int64_t> orig = MultiFile::packIndex(pck);
   timer2.show("unpack");
 }
 
 void timeMove1() {
-  Vector<Int64> buf1(4, 3);
-  Vector<Int64> buf2(4, 0);
+  Vector<int64_t> buf1(4, 3);
+  Vector<int64_t> buf2(4, 0);
   Timer timer;
   for (unsigned int i = 0; i < 5000000; ++i) {
     memcpy(buf2.data(), buf1.data(), 8 * 4);
@@ -269,8 +269,8 @@ typedef void* moveFunc(void*, const void*, size_t);
 void* mymemcpy(void* to, const void* from, size_t n) { return memcpy(to, from, n); }
 
 void timeMove2(moveFunc func) {
-  Vector<Int64> buf1(4, 3);
-  Vector<Int64> buf2(4, 0);
+  Vector<int64_t> buf1(4, 3);
+  Vector<int64_t> buf2(4, 0);
   Timer timer;
   for (unsigned int i = 0; i < 5000000; ++i) {
     func(buf2.data(), buf1.data(), 8 * 4);
@@ -279,8 +279,8 @@ void timeMove2(moveFunc func) {
 }
 
 void timeMove3() {
-  Vector<Int64> buf1(4, 3);
-  Vector<Int64> buf2(4, 0);
+  Vector<int64_t> buf1(4, 3);
+  Vector<int64_t> buf2(4, 0);
   Timer timer;
   for (unsigned int i = 0; i < 5000000; ++i) {
     for (unsigned int j = 0; j < 4; ++j) {
@@ -297,7 +297,7 @@ void testV1() {
   cout << endl;
 }
 
-void testNested(Int64 blockSizeParent, Int64 blockSizeChild) {
+void testNested(int64_t blockSizeParent, int64_t blockSizeChild) {
   cout << "Test nested with block sizes " << blockSizeParent << " and " << blockSizeChild << endl;
   {
     MultiFile* parentmf = new MultiFile("tMultiFile_tmp.nest", ByteIO::New, blockSizeParent);
@@ -350,14 +350,14 @@ void testTruncate() {
   AlwaysAssertExit(mfile->freeBlocks().size() == 0);
 }
 
-void doPackTest(const std::vector<Int64>& bl, const std::vector<Int64>& exp) {
-  std::vector<Int64> pck = MultiFile::packIndex(bl);
+void doPackTest(const std::vector<int64_t>& bl, const std::vector<int64_t>& exp) {
+  std::vector<int64_t> pck = MultiFile::packIndex(bl);
   AlwaysAssertExit(pck.size() <= bl.size());
   AlwaysAssertExit(pck.size() == exp.size());
   for (size_t i = 0; i < pck.size(); ++i) {
     AlwaysAssertExit(pck[i] == exp[i]);
   }
-  std::vector<Int64> orig = MultiFile::unpackIndex(pck);
+  std::vector<int64_t> orig = MultiFile::unpackIndex(pck);
   AlwaysAssertExit(orig.size() == bl.size());
   for (size_t i = 0; i < bl.size(); ++i) {
     AlwaysAssertExit(orig[i] == bl[i]);
@@ -367,10 +367,10 @@ void doPackTest(const std::vector<Int64>& bl, const std::vector<Int64>& exp) {
 int main() {
   try {
     // First test if packing/unpacking works correctly.
-    doPackTest(std::vector<Int64>(), std::vector<Int64>());
-    doPackTest(std::vector<Int64>({1, 2, 3, 4, 5}), std::vector<Int64>({1, -4}));
-    doPackTest(std::vector<Int64>({1, 3, 5, 7, 9}), std::vector<Int64>({1, 3, 5, 7, 9}));
-    doPackTest(std::vector<Int64>({1, 3, 4, 7, 8}), std::vector<Int64>({1, 3, -1, 7, -1}));
+    doPackTest(std::vector<int64_t>(), std::vector<int64_t>());
+    doPackTest(std::vector<int64_t>({1, 2, 3, 4, 5}), std::vector<int64_t>({1, -4}));
+    doPackTest(std::vector<int64_t>({1, 3, 5, 7, 9}), std::vector<int64_t>({1, 3, 5, 7, 9}));
+    doPackTest(std::vector<int64_t>({1, 3, 4, 7, 8}), std::vector<int64_t>({1, 3, -1, 7, -1}));
     // Do some MultiFile tests.
     doTest(1024);              // no extra header file
     doTest(128);               // requires extra header file

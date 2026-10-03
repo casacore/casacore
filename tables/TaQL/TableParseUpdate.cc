@@ -351,44 +351,44 @@ void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<bool>& maskCol
     case TableExprNodeRep::NTInt:
       switch (col.columnDesc().dataType()) {
         case TpUChar:
-          updateValue<unsigned char, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                    maskCol);
+          updateValue<unsigned char, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                              slicerPtr, maskCol);
           break;
         case TpShort:
-          updateValue<short, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                    maskCol);
-          break;
-        case TpUShort:
-          updateValue<unsigned short, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                     maskCol);
-          break;
-        case TpInt:
-          updateValue<int, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                  maskCol);
-          break;
-        case TpUInt:
-          updateValue<unsigned int, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                   maskCol);
-          break;
-        case TpInt64:
-          updateValue<Int64, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                    maskCol);
-          break;
-        case TpFloat:
-          updateValue<float, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                    maskCol);
-          break;
-        case TpDouble:
-          updateValue<double, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                     maskCol);
-          break;
-        case TpComplex:
-          updateValue<Complex, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
+          updateValue<short, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
                                       maskCol);
           break;
-        case TpDComplex:
-          updateValue<DComplex, Int64>(row, rowid, isScalarCol, node_p, mask.array(), col,
+        case TpUShort:
+          updateValue<unsigned short, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                               slicerPtr, maskCol);
+          break;
+        case TpInt:
+          updateValue<int, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
+                                    maskCol);
+          break;
+        case TpUInt:
+          updateValue<unsigned int, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                             slicerPtr, maskCol);
+          break;
+        case TpInt64:
+          updateValue<int64_t, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                        slicerPtr, maskCol);
+          break;
+        case TpFloat:
+          updateValue<float, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
+                                      maskCol);
+          break;
+        case TpDouble:
+          updateValue<double, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
                                        slicerPtr, maskCol);
+          break;
+        case TpComplex:
+          updateValue<Complex, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                        slicerPtr, maskCol);
+          break;
+        case TpDComplex:
+          updateValue<DComplex, int64_t>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                         slicerPtr, maskCol);
           break;
         default:
           throw TableInvExpr("Column " + columnName_p +
@@ -401,28 +401,28 @@ void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<bool>& maskCol
     case TableExprNodeRep::NTDate:
       switch (col.columnDesc().dataType()) {
         case TpUChar:
-          updateValue<unsigned char, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                     maskCol);
+          updateValue<unsigned char, double>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                             slicerPtr, maskCol);
           break;
         case TpShort:
           updateValue<short, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
                                      maskCol);
           break;
         case TpUShort:
-          updateValue<unsigned short, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                      maskCol);
+          updateValue<unsigned short, double>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                              slicerPtr, maskCol);
           break;
         case TpInt:
           updateValue<int, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
                                    maskCol);
           break;
         case TpUInt:
-          updateValue<unsigned int, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                    maskCol);
+          updateValue<unsigned int, double>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                            slicerPtr, maskCol);
           break;
         case TpInt64:
-          updateValue<Int64, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,
-                                     maskCol);
+          updateValue<int64_t, double>(row, rowid, isScalarCol, node_p, mask.array(), col,
+                                       slicerPtr, maskCol);
           break;
         case TpFloat:
           updateValue<float, double>(row, rowid, isScalarCol, node_p, mask.array(), col, slicerPtr,

@@ -77,7 +77,7 @@ class MSReader {
 
   // Return the current row number in the named table.  This returns
   // -1 if that table has no row as a result of the most recent gotoRow.
-  Int64 rowNumber(const String &name) const;
+  int64_t rowNumber(const String &name) const;
 
   // Return a reference to the MS
   const MeasurementSet &ms() const { return itsMS; }
@@ -125,7 +125,7 @@ class MSReader {
 
   // What row number for each table is the most recent gotoRow call.  Set to
   // -1 if there was no matching row as a result of that call.
-  Block<Int64> itsRowNumbers;
+  Block<int64_t> itsRowNumbers;
 
   // this empty record is returned by tableRow when the name argument does not exist
   Record emptyRecord;

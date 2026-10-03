@@ -38,11 +38,11 @@ TableExprNodeArrayConstBool::TableExprNodeArrayConstBool(const MArray<bool>& val
 TableExprNodeArrayConstBool::~TableExprNodeArrayConstBool() {}
 MArray<bool> TableExprNodeArrayConstBool::getArrayBool(const TableExprId&) { return value_p; }
 
-TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<uInt64>& val)
+TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<uint64_t>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<Int64>& val)
+TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<int64_t>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()), value_p(val) {}
 TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<unsigned int>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()) {
@@ -64,11 +64,11 @@ TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<unsigned char
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const MArray<uInt64>& val)
+TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const MArray<uint64_t>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const MArray<Int64>& val)
+TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const MArray<int64_t>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()), value_p(val) {}
 TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const MArray<unsigned int>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()) {
@@ -91,7 +91,7 @@ TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const MArray<unsigned cha
   value_p.fill(val);
 }
 TableExprNodeArrayConstInt::~TableExprNodeArrayConstInt() {}
-MArray<Int64> TableExprNodeArrayConstInt::getArrayInt(const TableExprId&) { return value_p; }
+MArray<int64_t> TableExprNodeArrayConstInt::getArrayInt(const TableExprId&) { return value_p; }
 MArray<double> TableExprNodeArrayConstInt::getArrayDouble(const TableExprId&) {
   MArray<double> arr;
   arr.fill(value_p);
@@ -109,7 +109,7 @@ TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble(const Array<float>&
     : TableExprNodeArray(NTDouble, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble(const Array<Int64>& val)
+TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble(const Array<int64_t>& val)
     : TableExprNodeArray(NTDouble, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
@@ -119,7 +119,7 @@ TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble(const MArray<float>
     : TableExprNodeArray(NTDouble, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble(const MArray<Int64>& val)
+TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble(const MArray<int64_t>& val)
     : TableExprNodeArray(NTDouble, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
@@ -141,7 +141,7 @@ TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex(const Array<dou
     : TableExprNodeArray(NTComplex, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex(const Array<Int64>& val)
+TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex(const Array<int64_t>& val)
     : TableExprNodeArray(NTComplex, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
@@ -155,7 +155,7 @@ TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex(const MArray<do
     : TableExprNodeArray(NTComplex, OtLiteral, val.shape()) {
   value_p.fill(val);
 }
-TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex(const MArray<Int64>& val)
+TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex(const MArray<int64_t>& val)
     : TableExprNodeArray(NTComplex, OtLiteral, val.shape()) {
   value_p.fill(val);
 }

@@ -309,7 +309,7 @@ void ISMBase::readIndex() {
     os >> firstFree_p;
   }
   os.getend();
-  Int64 off = nbucketInit_p;
+  int64_t off = nbucketInit_p;
   os.setpos(512 + off * bucketSize_p);
   index_p->get(os);
   os.close();
@@ -348,7 +348,7 @@ void ISMBase::writeIndex() {
   os << getCache().firstFreeBucket();
   os.putend();
   // Write the index itself at the very end of the file.
-  Int64 off = nbuckets;
+  int64_t off = nbuckets;
   os.setpos(512 + off * bucketSize_p);
   index_p->put(os);
   os.close();
@@ -359,7 +359,8 @@ ISMBucket* ISMBase::getBucket(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& b
   return (ISMBucket*)(getCache().getBucket(bucketNr));
 }
 
-ISMBucket* ISMBase::nextBucket(unsigned int& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow) {
+ISMBucket* ISMBase::nextBucket(unsigned int& cursor, rownr_t& bucketStartRow,
+                               rownr_t& bucketNrrow) {
   unsigned int bucketNr;
   if (getIndex().nextBucketNr(cursor, bucketStartRow, bucketNrrow, bucketNr)) {
     return (ISMBucket*)(getCache().getBucket(bucketNr));
@@ -659,8 +660,8 @@ void ISMBase::init() {
 
 bool ISMBase::checkBucketLayout(unsigned int& offendingCursor, rownr_t& offendingBucketStartRow,
                                 unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr,
-                                unsigned int& offendingCol, unsigned int& offendingIndex, rownr_t& offendingRow,
-                                rownr_t& offendingPrevRow) {
+                                unsigned int& offendingCol, unsigned int& offendingIndex,
+                                rownr_t& offendingRow, rownr_t& offendingPrevRow) {
   bool ok = false;
   unsigned int cursor = 0;
   rownr_t bucketStartRow = 0;

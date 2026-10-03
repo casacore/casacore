@@ -84,8 +84,9 @@ class FrequencyAligner {
   // be aligned, a reference epoch to which all spectra will
   // be aligned, a direction on the sky,  a position on the earth (the observatory),
   // and desired frequency system to align in.
-  FrequencyAligner(const SpectralCoordinate& specCoord, unsigned int nPixels, const MEpoch& refEpoch,
-                   const MDirection& dir, const MPosition& pos, MFrequency::Types freqSystem);
+  FrequencyAligner(const SpectralCoordinate& specCoord, unsigned int nPixels,
+                   const MEpoch& refEpoch, const MDirection& dir, const MPosition& pos,
+                   MFrequency::Types freqSystem);
 
   // Copy constructor (copy semantics)
   FrequencyAligner(const FrequencyAligner<T>& other);

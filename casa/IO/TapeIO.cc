@@ -95,7 +95,7 @@ void TapeIO::attach(const Path& device, bool writable) {
   itsDeviceName = device.absoluteName();
 }
 
-void TapeIO::write(Int64 size, const void* buf) {
+void TapeIO::write(int64_t size, const void* buf) {
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw(AipsError("TapeIO object is not writable"));
@@ -105,11 +105,11 @@ void TapeIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 TapeIO::read(Int64 size, void* buf, bool throwException) {
+int64_t TapeIO::read(int64_t size, void* buf, bool throwException) {
   if (!itsReadable) {
     throw(AipsError("TapeIO::read - tape is not readable"));
   }
-  Int64 bytesRead = ::read(itsDevice, buf, size);
+  int64_t bytesRead = ::read(itsDevice, buf, size);
   if (bytesRead < 0) {
     throw(AipsError(String("TapeIO::read - "
                            " error returned by system call: ") +
@@ -239,7 +239,7 @@ unsigned int TapeIO::getBlockSize() const {
 #endif
 }
 
-Int64 TapeIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
+int64_t TapeIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
   switch (dir) {
     case ByteIO::Begin:
       return ::lseek(itsDevice, offset, SEEK_SET);
@@ -251,7 +251,7 @@ Int64 TapeIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
   return ::lseek(itsDevice, offset, SEEK_CUR);
 }
 
-Int64 TapeIO::length() { return -1; }
+int64_t TapeIO::length() { return -1; }
 
 bool TapeIO::isReadable() const { return itsReadable; }
 

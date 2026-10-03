@@ -83,8 +83,8 @@ int binarySearch(bool &found, const Container &container, const ElType &value, u
 }
 
 template <class Container, class ElType>
-int binarySearchBrackets(bool &found, const Container &container, const ElType &value, unsigned int n,
-                         int originalLower) {
+int binarySearchBrackets(bool &found, const Container &container, const ElType &value,
+                         unsigned int n, int originalLower) {
   found = false;
   if (n == 0) {
     return 0;

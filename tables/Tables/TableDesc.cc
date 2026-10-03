@@ -413,7 +413,8 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, unsigned int nd
   }
   // Check if all names are used only once.
   // Copying them into one vector makes life easier.
-  unsigned int nr = dataColumnNames.nelements() + coordColumnNames.nelements() + idColumnNames.nelements();
+  unsigned int nr =
+      dataColumnNames.nelements() + coordColumnNames.nelements() + idColumnNames.nelements();
   Vector<String> names(nr);
   names(Slice(0, dataColumnNames.nelements())) = dataColumnNames;
   nr = dataColumnNames.nelements();
@@ -489,8 +490,8 @@ Vector<String> TableDesc::hypercolumnNames() const {
 }
 
 unsigned int TableDesc::hypercolumnDesc(const String& name, Vector<String>& dataColumnNames,
-                                Vector<String>& coordColumnNames,
-                                Vector<String>& idColumnNames) const {
+                                        Vector<String>& coordColumnNames,
+                                        Vector<String>& idColumnNames) const {
   const TableRecord& set = privKey_p->subRecord(theHyperPrefix + name);
   // Make vectors empty, so assignment will be possible.
   dataColumnNames.resize(0);

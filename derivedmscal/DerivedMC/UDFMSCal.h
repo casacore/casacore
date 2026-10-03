@@ -202,12 +202,12 @@ class UDFMSCal : public UDFBase {
 
   // Get the value.
   virtual bool getBool(const TableExprId& id);
-  virtual Int64 getInt(const TableExprId& id);
+  virtual int64_t getInt(const TableExprId& id);
   virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
   virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
@@ -234,7 +234,7 @@ class UDFMSCal : public UDFBase {
 
   // Get the rownr in the subtable for GetValue.
   // If itsArg==1 it uses indirection using itsDDIds.
-  Int64 getRowNr(const TableExprId& id);
+  int64_t getRowNr(const TableExprId& id);
 
   // Convert the UVW coordinates to wavelengths for the full spectrum.
   Array<double> toWvls(const TableExprId&);

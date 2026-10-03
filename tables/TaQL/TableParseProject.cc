@@ -530,13 +530,15 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
         td.addColumn(ScalarColumnDesc<bool>(colName, comment, dmType, dmGroup, options));
         break;
       case TpUChar:
-        td.addColumn(ScalarColumnDesc<unsigned char>(colName, comment, dmType, dmGroup, 0, options));
+        td.addColumn(
+            ScalarColumnDesc<unsigned char>(colName, comment, dmType, dmGroup, 0, options));
         break;
       case TpShort:
         td.addColumn(ScalarColumnDesc<short>(colName, comment, dmType, dmGroup, 0, options));
         break;
       case TpUShort:
-        td.addColumn(ScalarColumnDesc<unsigned short>(colName, comment, dmType, dmGroup, 0, options));
+        td.addColumn(
+            ScalarColumnDesc<unsigned short>(colName, comment, dmType, dmGroup, 0, options));
         break;
       case TpInt:
         td.addColumn(ScalarColumnDesc<int>(colName, comment, dmType, dmGroup, 0, options));
@@ -545,7 +547,7 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
         td.addColumn(ScalarColumnDesc<unsigned int>(colName, comment, dmType, dmGroup, 0, options));
         break;
       case TpInt64:
-        td.addColumn(ScalarColumnDesc<Int64>(colName, comment, dmType, dmGroup, 0, options));
+        td.addColumn(ScalarColumnDesc<int64_t>(colName, comment, dmType, dmGroup, 0, options));
         break;
       case TpFloat:
         td.addColumn(ScalarColumnDesc<float>(colName, comment, dmType, dmGroup, options));
@@ -577,16 +579,16 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
             ArrayColumnDesc<bool>(colName, comment, dmType, dmGroup, shape, options, ndim));
         break;
       case TpUChar:
-        td.addColumn(
-            ArrayColumnDesc<unsigned char>(colName, comment, dmType, dmGroup, shape, options, ndim));
+        td.addColumn(ArrayColumnDesc<unsigned char>(colName, comment, dmType, dmGroup, shape,
+                                                    options, ndim));
         break;
       case TpShort:
         td.addColumn(
             ArrayColumnDesc<short>(colName, comment, dmType, dmGroup, shape, options, ndim));
         break;
       case TpUShort:
-        td.addColumn(
-            ArrayColumnDesc<unsigned short>(colName, comment, dmType, dmGroup, shape, options, ndim));
+        td.addColumn(ArrayColumnDesc<unsigned short>(colName, comment, dmType, dmGroup, shape,
+                                                     options, ndim));
         break;
       case TpInt:
         td.addColumn(ArrayColumnDesc<int>(colName, comment, dmType, dmGroup, shape, options, ndim));
@@ -597,7 +599,7 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
         break;
       case TpInt64:
         td.addColumn(
-            ArrayColumnDesc<Int64>(colName, comment, dmType, dmGroup, shape, options, ndim));
+            ArrayColumnDesc<int64_t>(colName, comment, dmType, dmGroup, shape, options, ndim));
         break;
       case TpFloat:
         td.addColumn(

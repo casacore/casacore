@@ -317,17 +317,18 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
 }
 
 ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
-                                     const Quantity& b, const Quantity& pa, const unsigned int pixelAxis0,
-                                     const unsigned int pixelAxis1, const CoordinateSystem& csys,
-                                     const String& absrel) {
+                                     const Quantity& b, const Quantity& pa,
+                                     const unsigned int pixelAxis0, const unsigned int pixelAxis1,
+                                     const CoordinateSystem& csys, const String& absrel) {
   RegionType::AbsRelType leType = RegionType::absRelTypeFromString(absrel);
   WCEllipsoid wellipse(xc, yc, a, b, pa, pixelAxis0, pixelAxis1, csys, leType);
   return new ImageRegion(wellipse);
 }
 
 ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
-                                     const Quantity& b, const Quantity& pa, const unsigned int pixelAxis0,
-                                     const unsigned int pixelAxis1, const String& absrel) const {
+                                     const Quantity& b, const Quantity& pa,
+                                     const unsigned int pixelAxis0, const unsigned int pixelAxis1,
+                                     const String& absrel) const {
   *itsLog << LogOrigin("RegionManager", __FUNCTION__);
   if (!itsCSys) {
     throw(AipsError("CoordinateSystem not set in RegionManager tool"));

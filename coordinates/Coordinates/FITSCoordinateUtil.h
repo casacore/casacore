@@ -116,7 +116,8 @@ class FITSCoordinateUtil {
   // # cf comment in toFITS.
   //<group>
   bool fromFITSHeader(int& stokesFITSValue, CoordinateSystem& coordsys, RecordInterface& recHeader,
-                      const Vector<String>& header, const IPosition& shape, unsigned int which = 0) const;
+                      const Vector<String>& header, const IPosition& shape,
+                      unsigned int which = 0) const;
   //</group>
 
   // Helper function to create a FITS style CTYPE vector from the

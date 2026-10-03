@@ -120,7 +120,7 @@ void MSMDirColumn::getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& arr
       doGetSlice(rownr, slicer, static_cast<Array<unsigned int>&>(arr));
       break;
     case TpInt64:
-      doGetSlice(rownr, slicer, static_cast<Array<Int64>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<int64_t>&>(arr));
       break;
     case TpFloat:
       doGetSlice(rownr, slicer, static_cast<Array<float>&>(arr));
@@ -163,7 +163,7 @@ void MSMDirColumn::putSliceV(rownr_t rownr, const Slicer& slicer, const ArrayBas
       doPutSlice(rownr, slicer, static_cast<const Array<unsigned int>&>(arr));
       break;
     case TpInt64:
-      doPutSlice(rownr, slicer, static_cast<const Array<Int64>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<int64_t>&>(arr));
       break;
     case TpFloat:
       doPutSlice(rownr, slicer, static_cast<const Array<float>&>(arr));

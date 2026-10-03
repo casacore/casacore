@@ -62,7 +62,9 @@ Euler::Euler(double in0, double in1, double in2) : euler(3), axes(3) {
   indgen(axes, 1, 1);
 }
 
-Euler::Euler(double in0, unsigned int ax0, double in1, unsigned int ax1, double in2, unsigned int ax2) : euler(3), axes(3) {
+Euler::Euler(double in0, unsigned int ax0, double in1, unsigned int ax1, double in2,
+             unsigned int ax2)
+    : euler(3), axes(3) {
   DebugAssert(ax0 <= 3 && ax1 <= 3 && ax2 <= 3, AipsError);
   euler(0) = in0;
   euler(1) = in1;
@@ -102,7 +104,8 @@ Euler::Euler(const Quantity &in0, unsigned int ax0) : euler(3), axes(3) {
   axes(1) = 0;
   axes(2) = 0;
 }
-Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1) : euler(3), axes(3) {
+Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1)
+    : euler(3), axes(3) {
   DebugAssert(ax0 <= 3 && ax1 <= 3, AipsError);
   euler(0) = Euler::makeRad(in0);
   euler(1) = Euler::makeRad(in1);
@@ -111,8 +114,8 @@ Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigne
   axes(1) = ax1;
   axes(2) = 0;
 }
-Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1, const Quantity &in2,
-             unsigned int ax2)
+Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1,
+             const Quantity &in2, unsigned int ax2)
     : euler(3), axes(3) {
   DebugAssert(ax0 <= 3 && ax1 <= 3 && ax2 <= 3, AipsError);
   euler(0) = Euler::makeRad(in0);
@@ -137,7 +140,8 @@ Euler::Euler(const Quantum<Vector<double>> &in) : euler(3), axes(3) {
   indgen(axes, 1, 1);
 }
 
-Euler::Euler(const Quantum<Vector<double>> &in, const Vector<unsigned int> &ax) : euler(3), axes(3) {
+Euler::Euler(const Quantum<Vector<double>> &in, const Vector<unsigned int> &ax)
+    : euler(3), axes(3) {
   Vector<double> tmp = Euler::makeRad(in);
   int j = tmp.size();
   j = min(j, 3);

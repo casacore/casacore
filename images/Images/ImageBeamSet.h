@@ -102,7 +102,8 @@ class ImageBeamSet {
 
   // Create an ImageBeamSet of the specified shape with all
   // GaussianBeams initialized to <src>beam</src>.
-  ImageBeamSet(unsigned int nchan, unsigned int nstokes, const GaussianBeam& beam = GaussianBeam::NULL_BEAM);
+  ImageBeamSet(unsigned int nchan, unsigned int nstokes,
+               const GaussianBeam& beam = GaussianBeam::NULL_BEAM);
 
   // The copy constructor (reference semantics).
   ImageBeamSet(const ImageBeamSet& other);
@@ -271,8 +272,9 @@ class ImageBeamSet {
                     const IPosition& location2, bool overwriteMaxMin);
 
   // Show the spectral info.
-  static void _chanInfoToStream(ostream& os, const SpectralCoordinate* spCoord, const unsigned int chan,
-                                const unsigned int chanWidth, const unsigned int freqPrec, const unsigned int velWidth,
+  static void _chanInfoToStream(ostream& os, const SpectralCoordinate* spCoord,
+                                const unsigned int chan, const unsigned int chanWidth,
+                                const unsigned int freqPrec, const unsigned int velWidth,
                                 const unsigned int velPrec);
 
   // Show the beam info.

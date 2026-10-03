@@ -34,7 +34,7 @@ template class ArrayColumnDesc<short>;
 template class ArrayColumnDesc<unsigned short>;
 template class ArrayColumnDesc<int>;
 template class ArrayColumnDesc<unsigned int>;
-template class ArrayColumnDesc<Int64>;
+template class ArrayColumnDesc<int64_t>;
 template class ArrayColumnDesc<float>;
 template class ArrayColumnDesc<double>;
 template class ArrayColumnDesc<Complex>;

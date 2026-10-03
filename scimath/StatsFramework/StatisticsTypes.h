@@ -46,8 +46,8 @@ class Record;
 #define DataRanges std::vector<std::pair<AccumType, AccumType>>
 #define IncludeLimits std::vector<std::pair<AccumType, AccumType>>
 
-using BinCountArray = std::vector<uInt64>;
-using LocationType = std::pair<Int64, Int64>;
+using BinCountArray = std::vector<uint64_t>;
+using LocationType = std::pair<int64_t, int64_t>;
 
 template <class AccumType>
 struct StatsData {

@@ -267,7 +267,7 @@ unsigned int Aipsrc::registerRC(const String &keyword, const String &default_val
 }
 
 unsigned int Aipsrc::registerRC(const String &keyword, int Nname, const String tname[],
-                        const String &default_value) {
+                                const String &default_value) {
   const unsigned int n = Aipsrc::registerRC(keyword, coded_names_);
   if (n > coded_values_.size()) coded_values_.resize(n);
   find(coded_values_[n - 1], keyword, Nname, tname, default_value);
@@ -275,7 +275,7 @@ unsigned int Aipsrc::registerRC(const String &keyword, int Nname, const String t
 }
 
 unsigned int Aipsrc::registerRC(const String &keyword, const Vector<String> &tname,
-                        const String &default_value) {
+                                const String &default_value) {
   const unsigned int n = Aipsrc::registerRC(keyword, coded_names_);
   if (n > coded_values_.size()) coded_values_.resize(n);
   find(coded_values_[n - 1], keyword, tname, default_value);
@@ -298,7 +298,8 @@ void Aipsrc::set(unsigned int keyword, const String &default_value) {
   string_values_[keyword - 1] = default_value;
 }
 
-void Aipsrc::set(unsigned int keyword, int Nname, const String tname[], const String &default_value) {
+void Aipsrc::set(unsigned int keyword, int Nname, const String tname[],
+                 const String &default_value) {
   AlwaysAssert(keyword > 0 && keyword <= coded_values_.size(), AipsError);
   find(coded_values_[keyword - 1], std::to_string(keyword), Nname, tname, default_value);
 }
@@ -424,14 +425,14 @@ void Aipsrc::doParse(String &fileList) {
   }
 }
 
-unsigned int Aipsrc::genParse(Block<String> &keywordPattern, Block<String> &keywordValue, unsigned int &fileEnd,
-                      const String &fileList) {
+unsigned int Aipsrc::genParse(Block<String> &keywordPattern, Block<String> &keywordValue,
+                              unsigned int &fileEnd, const String &fileList) {
   keywordValue.resize(0, true);  // Clear the old values if any
   keywordPattern.resize(0, true);
   Block<String> keywordFile;
   fileEnd = 0;
-  unsigned int nkw = 0;   // # of keywords found
-  int nfile = 0;  // # of files found
+  unsigned int nkw = 0;  // # of keywords found
+  int nfile = 0;         // # of files found
 
   // This here be the parse function. It looks through all the directories
   // looking for files to parse.
@@ -508,7 +509,8 @@ void Aipsrc::show(ostream &oStream) {
 }
 
 // General usage routines
-unsigned int Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst, const String &fileList) {
+unsigned int Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
+                                const String &fileList) {
   unsigned int ef;
   Block<String> nl;
   Block<String> vl;

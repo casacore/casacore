@@ -208,11 +208,11 @@ class Interpolate1D : public Function1D<Domain, Range> {
   // A private function for doing polynomial interpolation
   Range polynomialInterpolation(const Domain x, unsigned int n, unsigned int offset) const;
 
-  unsigned int curMethod;         // interpolation method to use
-  unsigned int nElements;         // how many elements in the data set
-  Block<Domain> xValues;  // the abscissa of the data set (sorted)
-  Block<Range> yValues;   // The corresponding ordinate of the data set
-  Block<Range> y2Values;  // The numerical second derivates (only for splines)
+  unsigned int curMethod;  // interpolation method to use
+  unsigned int nElements;  // how many elements in the data set
+  Block<Domain> xValues;   // the abscissa of the data set (sorted)
+  Block<Range> yValues;    // The corresponding ordinate of the data set
+  Block<Range> y2Values;   // The numerical second derivates (only for splines)
 };
 
 }  // namespace casacore

@@ -196,7 +196,8 @@ class MeasComet {
   // Helper functions for accessing ldat_p.  index should be either 0 or 1, but
   // that isn't checked!
   MVPosition getRelPosition(const unsigned int index) const;
-  MVDirection getDiskLongLat(const unsigned int index) const;  // Must not be called if !haveDiskLongLat_p
+  MVDirection getDiskLongLat(
+      const unsigned int index) const;  // Must not be called if !haveDiskLongLat_p
 
   // Try to read mean_rad_p and temperature_p, returning whether or not it was
   // successful.  (but the real mark of success is whether or not they are

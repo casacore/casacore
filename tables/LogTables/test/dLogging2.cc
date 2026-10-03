@@ -88,8 +88,8 @@ void DataClass::set(int toWhat) {
                       .line(__LINE__)
                       .                                      // 5
                   message(buffer.str()));                    // 6
-  unsigned int n = data_p.nelements();                               // 7
-  for (unsigned int i = 0; i < n; i++) {                             // 8
+  unsigned int n = data_p.nelements();                       // 7
+  for (unsigned int i = 0; i < n; i++) {                     // 8
 #ifdef AIPS_DEBUG                                            // 9
     ostringstream buffer;                                    // 10
     buffer << "Setting element  " << i << " to " << toWhat;  // 11

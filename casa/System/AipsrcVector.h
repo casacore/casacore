@@ -108,7 +108,7 @@ class AipsrcVector : public Aipsrc {
   // <group>
   static unsigned int registerRC(const String &keyword, const Vector<T> &deflt);
   static unsigned int registerRC(const String &keyword, const Unit &defun, const Unit &resun,
-                         const Vector<T> &deflt);
+                                 const Vector<T> &deflt);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.

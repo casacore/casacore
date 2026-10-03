@@ -172,7 +172,6 @@ inline int min(int a, int b) {
   else
     return a;
 }
-
 inline unsigned int max(unsigned int a, unsigned int b) {
   if (a > b)
     return a;
@@ -186,13 +185,13 @@ inline unsigned int min(unsigned int a, unsigned int b) {
     return a;
 }
 
-inline uInt64 max(uInt64 a, uInt64 b) {
+inline uint64_t max(uint64_t a, uint64_t b) {
   if (a > b)
     return a;
   else
     return b;
 }
-inline uInt64 min(uInt64 a, uInt64 b) {
+inline uint64_t min(uint64_t a, uint64_t b) {
   if (a > b)
     return b;
   else
@@ -253,7 +252,7 @@ inline float min(float a, float b) {
 // Return the square of a value.
 // <group>
 inline int square(int val) { return val * val; }
-inline Int64 square(Int64 val) { return val * val; }
+inline int64_t square(int64_t val) { return val * val; }
 inline float square(float val) { return val * val; }
 inline double square(double val) { return val * val; }
 // </group>
@@ -261,7 +260,7 @@ inline double square(double val) { return val * val; }
 // Return the cube of a value.
 // <group>
 inline int cube(int val) { return val * val * val; }
-inline Int64 cube(Int64 val) { return val * val * val; }
+inline int64_t cube(int64_t val) { return val * val * val; }
 inline float cube(float val) { return val * val * val; }
 inline double cube(double val) { return val * val * val; }
 // </group>
@@ -269,7 +268,7 @@ inline double cube(double val) { return val * val * val; }
 // Return the sign of a value.
 // <group>
 inline int sign(int val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
-inline Int64 sign(Int64 val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
+inline int64_t sign(int64_t val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
 inline float sign(float val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
 inline double sign(double val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
 // </group>
@@ -284,8 +283,8 @@ inline int floormod(int x, int y) {
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
-inline Int64 floormod(Int64 x, Int64 y) {
-  Int64 r = x % y;
+inline int64_t floormod(int64_t x, int64_t y) {
+  int64_t r = x % y;
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
@@ -318,7 +317,9 @@ bool near(double val1, double val2, double tol = 1.0e-13);
 // exist to make template functions that work for both arrays and scalars
 // easier to write. These functions should be moved to ArrayMath.h
 // <group>
-inline bool allNear(unsigned int val1, unsigned int val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(unsigned int val1, unsigned int val2, double tol = 1.0e-5) {
+  return near(val1, val2, tol);
+}
 inline bool allNear(int val1, int val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
 inline bool allNear(float val1, double val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
 inline bool allNear(double val1, float val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
@@ -343,7 +344,9 @@ bool nearAbs(double val1, double val2, double tol = 1.0e-13);
 // versions. They exist to make template functions that work for both arrays
 // and scalars easier to write. These functions should be in ArrayMath.h
 // <group>
-inline bool allNearAbs(unsigned int val1, unsigned int val2, unsigned int tol = 1) { return nearAbs(val1, val2, tol); }
+inline bool allNearAbs(unsigned int val1, unsigned int val2, unsigned int tol = 1) {
+  return nearAbs(val1, val2, tol);
+}
 inline bool allNearAbs(int val1, int val2, int tol = 1) { return nearAbs(val1, val2, tol); }
 inline bool allNearAbs(float val1, float val2, double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);

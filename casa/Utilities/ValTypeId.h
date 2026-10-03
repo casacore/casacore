@@ -64,7 +64,7 @@ inline String valDataTypeId(const short* obj) { return ValType::getTypeStr(obj);
 inline String valDataTypeId(const unsigned short* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const int* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const unsigned int* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const Int64* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const int64_t* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const float* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const double* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const Complex* obj) { return ValType::getTypeStr(obj); }

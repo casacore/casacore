@@ -179,9 +179,9 @@ void CompressFloat::findMinMax(float& minVal, float& maxVal, const Array<float>&
   setNaN(maxVal);
   bool deleteIt;
   const float* data = array.getStorage(deleteIt);
-  const Int64 nr = array.nelements();
+  const int64_t nr = array.nelements();
   bool firstTime = true;
-  for (Int64 i = 0; i < nr; i++) {
+  for (int64_t i = 0; i < nr; i++) {
     if (isFinite(data[i])) {
       if (firstTime) {
         minVal = data[i];
@@ -220,8 +220,8 @@ void CompressFloat::scaleOnGet(float scale, float offset, Array<float>& array,
   bool deleteIn, deleteOut;
   float* out = array.getStorage(deleteOut);
   const short* in = target.getStorage(deleteIn);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     if (in[i] == -32768) {
       setNaN(out[i]);
     } else {
@@ -238,8 +238,8 @@ void CompressFloat::scaleOnPut(float scale, float offset, const Array<float>& ar
   bool deleteIn, deleteOut;
   const float* in = array.getStorage(deleteIn);
   short* out = target.getStorage(deleteOut);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     if (isFinite(in[i])) {
       float tmp = (in[i] - offset) / scale;
       if (tmp < 0) {

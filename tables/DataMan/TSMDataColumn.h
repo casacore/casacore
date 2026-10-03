@@ -109,7 +109,7 @@ class TSMDataColumn : public TSMColumn {
   unsigned int localPixelSize() const;
 
   // Determine the length to store the given number of pixels.
-  uInt64 dataLength(uInt64 nrPixels) const;
+  uint64_t dataLength(uint64_t nrPixels) const;
 
   // Set column sequence number.
   void setColumnNumber(unsigned int colnr);
@@ -144,12 +144,16 @@ class TSMDataColumn : public TSMColumn {
   // (which is guaranteed by the Scalar/ArrayColumn get function).
   // <group>
   virtual void getBool(rownr_t rownr, bool* dataPtr) { accessCell(rownr, dataPtr, false); }
-  virtual void getuChar(rownr_t rownr, unsigned char* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getuChar(rownr_t rownr, unsigned char* dataPtr) {
+    accessCell(rownr, dataPtr, false);
+  }
   virtual void getShort(rownr_t rownr, short* dataPtr) { accessCell(rownr, dataPtr, false); }
-  virtual void getuShort(rownr_t rownr, unsigned short* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getuShort(rownr_t rownr, unsigned short* dataPtr) {
+    accessCell(rownr, dataPtr, false);
+  }
   virtual void getInt(rownr_t rownr, int* dataPtr) { accessCell(rownr, dataPtr, false); }
   virtual void getuInt(rownr_t rownr, unsigned int* dataPtr) { accessCell(rownr, dataPtr, false); }
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr) { accessCell(rownr, dataPtr, false); }
+  virtual void getInt64(rownr_t rownr, int64_t* dataPtr) { accessCell(rownr, dataPtr, false); }
   virtual void getfloat(rownr_t rownr, float* dataPtr) { accessCell(rownr, dataPtr, false); }
   virtual void getdouble(rownr_t rownr, double* dataPtr) { accessCell(rownr, dataPtr, false); }
   virtual void getComplex(rownr_t rownr, Complex* dataPtr) { accessCell(rownr, dataPtr, false); }
@@ -161,12 +165,18 @@ class TSMDataColumn : public TSMColumn {
   // (which is guaranteed by the Scalar/ArrayColumn put function).
   // <group>
   virtual void putBool(rownr_t rownr, const bool* dataPtr) { accessCell(rownr, dataPtr, true); }
-  virtual void putuChar(rownr_t rownr, const unsigned char* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putuChar(rownr_t rownr, const unsigned char* dataPtr) {
+    accessCell(rownr, dataPtr, true);
+  }
   virtual void putShort(rownr_t rownr, const short* dataPtr) { accessCell(rownr, dataPtr, true); }
-  virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr) {
+    accessCell(rownr, dataPtr, true);
+  }
   virtual void putInt(rownr_t rownr, const int* dataPtr) { accessCell(rownr, dataPtr, true); }
-  virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr) { accessCell(rownr, dataPtr, true); }
-  virtual void putInt64(rownr_t rownr, const Int64* dataPtr) { accessCell(rownr, dataPtr, true); }
+  virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr) {
+    accessCell(rownr, dataPtr, true);
+  }
+  virtual void putInt64(rownr_t rownr, const int64_t* dataPtr) { accessCell(rownr, dataPtr, true); }
   virtual void putfloat(rownr_t rownr, const float* dataPtr) { accessCell(rownr, dataPtr, true); }
   virtual void putdouble(rownr_t rownr, const double* dataPtr) { accessCell(rownr, dataPtr, true); }
   virtual void putComplex(rownr_t rownr, const Complex* dataPtr) {

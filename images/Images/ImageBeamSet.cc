@@ -248,7 +248,8 @@ const GaussianBeam& ImageBeamSet::getMinAreaBeamForPol(IPosition& pos, unsigned 
   return _beams(pos);
 }
 
-const GaussianBeam& ImageBeamSet::getMedianAreaBeamForPol(IPosition& pos, unsigned int stokes) const {
+const GaussianBeam& ImageBeamSet::getMedianAreaBeamForPol(IPosition& pos,
+                                                          unsigned int stokes) const {
   pos.resize(2);
   pos = _beams.shape() - 1;
   if (nstokes() > 1) {
@@ -602,8 +603,9 @@ const std::map<String, Quantum<Matrix<double>>> ImageBeamSet::paramMatrices(
 }
 
 void ImageBeamSet::_chanInfoToStream(ostream& os, const SpectralCoordinate* spCoord,
-                                     const unsigned int chan, const unsigned int chanWidth, const unsigned int freqPrec,
-                                     const unsigned int velWidth, const unsigned int velPrec) {
+                                     const unsigned int chan, const unsigned int chanWidth,
+                                     const unsigned int freqPrec, const unsigned int velWidth,
+                                     const unsigned int velPrec) {
   os << std::fixed << std::setw(chanWidth) << chan << " ";
   double freq;
   spCoord->toWorld(freq, chan);

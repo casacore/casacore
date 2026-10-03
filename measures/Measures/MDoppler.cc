@@ -91,7 +91,9 @@ const String &MDoppler::showType(MDoppler::Types tp) {
   return tname[tp];
 }
 
-const String &MDoppler::showType(unsigned int tp) { return MDoppler::showType(MDoppler::castType(tp)); }
+const String &MDoppler::showType(unsigned int tp) {
+  return MDoppler::showType(MDoppler::castType(tp));
+}
 
 const String *MDoppler::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
   static const int N_name = 8;
@@ -99,8 +101,9 @@ const String *MDoppler::allMyTypes(int &nall, int &nextra, const unsigned int *&
   static const String tname[N_name] = {"RADIO", "Z",       "RATIO", "BETA",
                                        "GAMMA", "OPTICAL", "TRUE",  "RELATIVISTIC"};
 
-  static const unsigned int oname[N_name] = {MDoppler::RADIO, MDoppler::Z, MDoppler::RATIO, MDoppler::BETA,
-                                     MDoppler::GAMMA, MDoppler::Z, MDoppler::BETA,  MDoppler::BETA};
+  static const unsigned int oname[N_name] = {MDoppler::RADIO, MDoppler::Z,     MDoppler::RATIO,
+                                             MDoppler::BETA,  MDoppler::GAMMA, MDoppler::Z,
+                                             MDoppler::BETA,  MDoppler::BETA};
 
   MDoppler::checkMyTypes();
   nall = N_name;

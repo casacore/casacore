@@ -178,14 +178,20 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   // Get the scalar value in the given row.
   // <group>
   void getBool(rownr_t rownr, bool* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getuChar(rownr_t rownr, unsigned char* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getuChar(rownr_t rownr, unsigned char* dataPtr) override {
+    getVirtualScalar(this, rownr, dataPtr);
+  }
   void getShort(rownr_t rownr, short* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getuShort(rownr_t rownr, unsigned short* dataPtr) override {
     getVirtualScalar(this, rownr, dataPtr);
   }
   void getInt(rownr_t rownr, int* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getuInt(rownr_t rownr, unsigned int* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getInt64(rownr_t rownr, Int64* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getuInt(rownr_t rownr, unsigned int* dataPtr) override {
+    getVirtualScalar(this, rownr, dataPtr);
+  }
+  void getInt64(rownr_t rownr, int64_t* dataPtr) override {
+    getVirtualScalar(this, rownr, dataPtr);
+  }
   void getfloat(rownr_t rownr, float* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getdouble(rownr_t rownr, double* dataPtr) override {
     getVirtualScalar(this, rownr, dataPtr);
@@ -224,7 +230,7 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   void putuInt(rownr_t rownr, const unsigned int* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
-  void putInt64(rownr_t rownr, const Int64* dataPtr) override {
+  void putInt64(rownr_t rownr, const int64_t* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
   void putfloat(rownr_t rownr, const float* dataPtr) override {

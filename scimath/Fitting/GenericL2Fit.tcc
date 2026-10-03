@@ -193,7 +193,8 @@ bool GenericL2Fit<T>::setConstraint(const unsigned int n,
 }
 
 template <class T>
-bool GenericL2Fit<T>::setConstraint(const unsigned int n, const typename FunctionTraits<T>::BaseType y) {
+bool GenericL2Fit<T>::setConstraint(const unsigned int n,
+                                    const typename FunctionTraits<T>::BaseType y) {
   if (!ptr_derive_p) return false;
   HyperPlane<typename FunctionTraits<T>::DiffType> function(ptr_derive_p->nparameters());
   Vector<typename FunctionTraits<T>::BaseType> x(function.ndim());
@@ -492,9 +493,10 @@ void GenericL2Fit<T>::initfit_p(unsigned int parcnt) {
 }
 
 template <class T>
-unsigned int GenericL2Fit<T>::testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
-                                  const Vector<typename FunctionTraits<T>::BaseType> &y,
-                                  const Vector<typename FunctionTraits<T>::BaseType> *const sigma) {
+unsigned int GenericL2Fit<T>::testInput_p(
+    const Array<typename FunctionTraits<T>::BaseType> &x,
+    const Vector<typename FunctionTraits<T>::BaseType> &y,
+    const Vector<typename FunctionTraits<T>::BaseType> *const sigma) {
   unsigned int xRows = (x.ndim() == 1 || x.ndim() == 2) ? x.shape()(0) : 0;
   if (xRows * ndim_p != y.nelements() * ndim_p || (sigma && xRows != sigma->nelements())) {
     throw(
@@ -588,7 +590,8 @@ void GenericL2Fit<T>::buildConstraint() {
   VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);
   for (unsigned int i = 0; i < constrFun_p.nelements(); ++i) {  // all constraints
     // Copy parameters from function to be fitted
-    for (unsigned int j = 0; j < pCount_p; ++j) (*constrFun_p[i])[j].value() = (*ptr_derive_p)[j].value();
+    for (unsigned int j = 0; j < pCount_p; ++j)
+      (*constrFun_p[i])[j].value() = (*ptr_derive_p)[j].value();
     typename FunctionTraits<T>::BaseType b(*constrVal_p[i]);  // known value
     // Get arguments
     carg_p.resize(constrArg_p[i]->nelements());

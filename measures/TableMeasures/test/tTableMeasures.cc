@@ -1077,14 +1077,16 @@ void testMain(bool doExcep) {
 // type:      LAST LMST GMST1 GAST UT1 UT2 UTC
 // old code:   0    1     2    8    4   5
 // new code:   0    1     2    5    8   3   4
-void getRef1(Vector<String>& curTypes, Vector<unsigned int>& curCodes, const MeasureHolder& measHolder) {
+void getRef1(Vector<String>& curTypes, Vector<unsigned int>& curCodes,
+             const MeasureHolder& measHolder) {
   TableMeasRefDesc::defaultTypesFunc(curTypes, curCodes, measHolder);
   AlwaysAssertExit(curTypes.nelements() > 10);
   curCodes[3] = 8;
   curTypes.resize(6, true);
   curCodes.resize(6, true);
 }
-void getRef2(Vector<String>& curTypes, Vector<unsigned int>& curCodes, const MeasureHolder& measHolder) {
+void getRef2(Vector<String>& curTypes, Vector<unsigned int>& curCodes,
+             const MeasureHolder& measHolder) {
   TableMeasRefDesc::defaultTypesFunc(curTypes, curCodes, measHolder);
   AlwaysAssertExit(curTypes.nelements() > 10);
   curTypes.resize(7, true);

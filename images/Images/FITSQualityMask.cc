@@ -70,7 +70,8 @@ IPosition FITSQualityMask::shape() const {
   IPosition mm_shape(data_shape.nelements() + 1);
 
   // set the shape
-  for (unsigned int index = 0; index < data_shape.nelements(); index++) mm_shape(index) = data_shape(index);
+  for (unsigned int index = 0; index < data_shape.nelements(); index++)
+    mm_shape(index) = data_shape(index);
   mm_shape(mm_shape.nelements() - 1) = 2;
 
   return mm_shape;

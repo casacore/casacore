@@ -126,7 +126,9 @@ void LCMask::setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& 
   itsMask->setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 }
 
-void LCMask::setCacheSizeInTiles(unsigned int howManyTiles) { itsMask->setCacheSizeInTiles(howManyTiles); }
+void LCMask::setCacheSizeInTiles(unsigned int howManyTiles) {
+  itsMask->setCacheSizeInTiles(howManyTiles);
+}
 
 void LCMask::clearCache() { itsMask->clearCache(); }
 

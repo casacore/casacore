@@ -188,6 +188,6 @@ void RegularFile::move(const Path& target, bool overwrite) {
   remove();
 }
 
-Int64 RegularFile::size() const { return itsFile.size(); }
+int64_t RegularFile::size() const { return itsFile.size(); }
 
 }  // namespace casacore

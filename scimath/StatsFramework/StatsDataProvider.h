@@ -57,7 +57,7 @@ class StatsDataProvider {
   // method, be certain to take stride into account; ie for a data set with
   // nominally 100 elements that is to have a stride of two, this method
   // should return 50.
-  virtual uInt64 getCount() = 0;
+  virtual uint64_t getCount() = 0;
 
   // get an iterator to the first element of the current dataset
   virtual DataIterator getData() = 0;

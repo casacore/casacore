@@ -88,27 +88,27 @@ class TableExprNodeArrayConstBool : public TableExprNodeArray {
 
 class TableExprNodeArrayConstInt : public TableExprNodeArray {
  public:
-  TableExprNodeArrayConstInt(const Array<uInt64>& value);
-  TableExprNodeArrayConstInt(const Array<Int64>& value);
+  TableExprNodeArrayConstInt(const Array<uint64_t>& value);
+  TableExprNodeArrayConstInt(const Array<int64_t>& value);
   TableExprNodeArrayConstInt(const Array<unsigned int>& value);
   TableExprNodeArrayConstInt(const Array<int>& value);
   TableExprNodeArrayConstInt(const Array<unsigned short>& value);
   TableExprNodeArrayConstInt(const Array<short>& value);
   TableExprNodeArrayConstInt(const Array<unsigned char>& value);
-  TableExprNodeArrayConstInt(const MArray<uInt64>& value);
-  TableExprNodeArrayConstInt(const MArray<Int64>& value);
+  TableExprNodeArrayConstInt(const MArray<uint64_t>& value);
+  TableExprNodeArrayConstInt(const MArray<int64_t>& value);
   TableExprNodeArrayConstInt(const MArray<unsigned int>& value);
   TableExprNodeArrayConstInt(const MArray<int>& value);
   TableExprNodeArrayConstInt(const MArray<unsigned short>& value);
   TableExprNodeArrayConstInt(const MArray<short>& value);
   TableExprNodeArrayConstInt(const MArray<unsigned char>& value);
   ~TableExprNodeArrayConstInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
   MArray<double> getArrayDouble(const TableExprId& id);
   MArray<DComplex> getArrayDComplex(const TableExprId& id);
 
  private:
-  MArray<Int64> value_p;
+  MArray<int64_t> value_p;
 };
 
 // <summary>
@@ -135,10 +135,10 @@ class TableExprNodeArrayConstDouble : public TableExprNodeArray {
  public:
   TableExprNodeArrayConstDouble(const Array<double>& value);
   TableExprNodeArrayConstDouble(const Array<float>& value);
-  TableExprNodeArrayConstDouble(const Array<Int64>& value);
+  TableExprNodeArrayConstDouble(const Array<int64_t>& value);
   TableExprNodeArrayConstDouble(const MArray<double>& value);
   TableExprNodeArrayConstDouble(const MArray<float>& value);
-  TableExprNodeArrayConstDouble(const MArray<Int64>& value);
+  TableExprNodeArrayConstDouble(const MArray<int64_t>& value);
   ~TableExprNodeArrayConstDouble();
   MArray<double> getArrayDouble(const TableExprId& id);
   MArray<DComplex> getArrayDComplex(const TableExprId& id);
@@ -172,11 +172,11 @@ class TableExprNodeArrayConstDComplex : public TableExprNodeArray {
   TableExprNodeArrayConstDComplex(const Array<DComplex>& value);
   TableExprNodeArrayConstDComplex(const Array<Complex>& value);
   TableExprNodeArrayConstDComplex(const Array<double>& value);
-  TableExprNodeArrayConstDComplex(const Array<Int64>& value);
+  TableExprNodeArrayConstDComplex(const Array<int64_t>& value);
   TableExprNodeArrayConstDComplex(const MArray<DComplex>& value);
   TableExprNodeArrayConstDComplex(const MArray<Complex>& value);
   TableExprNodeArrayConstDComplex(const MArray<double>& value);
-  TableExprNodeArrayConstDComplex(const MArray<Int64>& value);
+  TableExprNodeArrayConstDComplex(const MArray<int64_t>& value);
   ~TableExprNodeArrayConstDComplex();
   MArray<DComplex> getArrayDComplex(const TableExprId& id);
 

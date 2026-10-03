@@ -104,8 +104,8 @@ class MarshButterworthBandpass : public SimButterworthBandpass<T>, public Functi
   MarshButterworthBandpass() : SimButterworthBandpass<T>(), FunctionMarshallable(FUNCTYPE) {}
 
   // create a Butterworth bandpass function.
-  MarshButterworthBandpass(unsigned int minord, unsigned int maxord, T mincut = T(-1), T maxcut = T(1),
-                           T center = T(0), T peak = T(1))
+  MarshButterworthBandpass(unsigned int minord, unsigned int maxord, T mincut = T(-1),
+                           T maxcut = T(1), T center = T(0), T peak = T(1))
       : SimButterworthBandpass<T>(minord, maxord, mincut, maxcut, center, peak),
         FunctionMarshallable(FUNCTYPE) {}
 

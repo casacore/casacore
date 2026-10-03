@@ -140,8 +140,8 @@ int binarySearch(bool &found, const Container &container, const ElType &value, u
                  int lower = 0);
 // This version of the function is for containers that use [] for indexing.
 template <class Container, class ElType>
-int binarySearchBrackets(bool &found, const Container &container, const ElType &value, unsigned int n,
-                         int lower = 0);
+int binarySearchBrackets(bool &found, const Container &container, const ElType &value,
+                         unsigned int n, int lower = 0);
 // </group>
 // </group>
 

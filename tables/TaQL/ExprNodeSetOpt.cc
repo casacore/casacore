@@ -35,7 +35,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableExprNodeSetOptBase::TableExprNodeSetOptBase(const TableExprNodeRep& orig)
     : TableExprNodeRep(orig) {}
-bool TableExprNodeSetOptBase::contains(const TableExprId&, Int64 value) {
+bool TableExprNodeSetOptBase::contains(const TableExprId&, int64_t value) {
   return (find(value) >= 0);
 }
 bool TableExprNodeSetOptBase::contains(const TableExprId&, double value) {
@@ -44,10 +44,10 @@ bool TableExprNodeSetOptBase::contains(const TableExprId&, double value) {
 bool TableExprNodeSetOptBase::contains(const TableExprId&, String value) {
   return (find(value) >= 0);
 }
-MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<Int64>& value) {
+MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<int64_t>& value) {
   Array<bool> result(value.shape());
   bool deleteIn, deleteOut;
-  const Int64* in = value.array().getStorage(deleteIn);
+  const int64_t* in = value.array().getStorage(deleteIn);
   bool* out = result.getStorage(deleteOut);
   for (size_t i = 0; i < value.size(); ++i) {
     out[i] = (find(in[i]) >= 0);
@@ -80,9 +80,9 @@ MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<
   result.putStorage(out, deleteOut);
   return MArray<bool>(result, value.mask());
 }
-Int64 TableExprNodeSetOptBase::find(Int64) const { return -1; }
-Int64 TableExprNodeSetOptBase::find(double) const { return -1; }
-Int64 TableExprNodeSetOptBase::find(String) const { return -1; }
+int64_t TableExprNodeSetOptBase::find(int64_t) const { return -1; }
+int64_t TableExprNodeSetOptBase::find(double) const { return -1; }
+int64_t TableExprNodeSetOptBase::find(String) const { return -1; }
 
 template <typename T>
 TableExprNodeSetOptUSet<T>::TableExprNodeSetOptUSet(const TableExprNodeRep& orig,
@@ -103,7 +103,7 @@ void TableExprNodeSetOptUSet<T>::show(ostream& os, unsigned int indent) const {
 }
 
 template <typename T>
-Int64 TableExprNodeSetOptUSet<T>::find(T value) const {
+int64_t TableExprNodeSetOptUSet<T>::find(T value) const {
   auto iter = itsMap.find(value);
   if (iter == itsMap.end()) {
     return -1;
@@ -147,15 +147,15 @@ TENShPtr TableExprNodeSetOptContSetBase<T>::transform(const TableExprNodeSet& se
     }
   }
   // Sort the start values indirectly.
-  Vector<Int64> index;
-  GenSortIndirect<T, Int64>::sort(index, stvals, stvals.size());
+  Vector<int64_t> index;
+  GenSortIndirect<T, int64_t>::sort(index, stvals, stvals.size());
   std::vector<T> newStart;
   std::vector<T> newEnd;
   std::vector<bool> newLeftC;
   std::vector<bool> newRightC;
   if (!combine) {
     for (size_t i = 0; i < index.size(); ++i) {
-      Int64 inx = index[i];
+      int64_t inx = index[i];
       newStart.push_back(stvals[inx]);
       newEnd.push_back(endvals[inx]);
       newLeftC.push_back(set[inx]->isLeftClosed());
@@ -169,7 +169,7 @@ TENShPtr TableExprNodeSetOptContSetBase<T>::transform(const TableExprNodeSet& se
     bool rightC = set[index[0]]->isRightClosed();
     // Loop through the next intervals and combine if possible.
     for (size_t i = 1; i < index.size(); i++) {
-      Int64 inx = index[i];
+      int64_t inx = index[i];
       T st2 = stvals[inx];
       T end2 = endvals[inx];
       // Combine intervals if they overlap.
@@ -269,7 +269,7 @@ void TableExprNodeSetOptContSetMixOC<T>::show(ostream& os, unsigned int indent) 
 }
 
 template <typename T>
-Int64 TableExprNodeSetOptContSetMixOC<T>::find(T value) const {
+int64_t TableExprNodeSetOptContSetMixOC<T>::find(T value) const {
   for (size_t i = 0; i < this->itsStarts.size(); ++i) {
     if ((value > this->itsStarts[i] && value < this->itsEnds[i]) ||
         (value == this->itsStarts[i] && this->itsLeftC[i]) ||
@@ -290,13 +290,14 @@ TableExprNodeSetOptContSet<T, LeftComp, RightComp>::TableExprNodeSetOptContSet(
       itsCmpType(cmpType) {}
 
 template <typename T, typename LeftComp, typename RightComp>
-void TableExprNodeSetOptContSet<T, LeftComp, RightComp>::show(ostream& os, unsigned int indent) const {
+void TableExprNodeSetOptContSet<T, LeftComp, RightComp>::show(ostream& os,
+                                                              unsigned int indent) const {
   TableExprNodeSetOptContSetBase<T>::show(os, indent);
   os << "   as TableExprNodeSetOptContSet" << itsCmpType << endl;
 }
 
 template <typename T, typename LeftComp, typename RightComp>
-Int64 TableExprNodeSetOptContSet<T, LeftComp, RightComp>::find(T value) const {
+int64_t TableExprNodeSetOptContSet<T, LeftComp, RightComp>::find(T value) const {
   auto iter = std::upper_bound(this->itsEnds.begin(), this->itsEnds.end(), value, itsRightCmp);
   if (iter != this->itsEnds.end()) {
     size_t index = std::distance(this->itsEnds.begin(), iter);
@@ -307,12 +308,12 @@ Int64 TableExprNodeSetOptContSet<T, LeftComp, RightComp>::find(T value) const {
   return -1;
 }
 
-// Instantiate as needed for Int64, Double and String.
+// Instantiate as needed for int64_t, Double and String.
 // Only the instantiated types are used in the TaQL code for the
 // IN and join operator. Datetime is handled as Double.
 // Bool, DComplex and Regex are not used in these operators.
 // std::less is for an open interval side, std::less_equal for a closed side.
-template class TableExprNodeSetOptUSet<Int64>;
+template class TableExprNodeSetOptUSet<int64_t>;
 template class TableExprNodeSetOptUSet<String>;
 template class TableExprNodeSetOptContSetBase<double>;
 template class TableExprNodeSetOptContSetBase<String>;

@@ -121,7 +121,7 @@ void getnewAipsIO(AipsIO& aios, unsigned int& n, T** data);
 // </group>
 
 // # Specializations for the builtin data types.
-#define AIPSIO_FUNC_SPEC(T)                                                         \
+#define AIPSIO_FUNC_SPEC(T)                                                                 \
   inline void putAipsIO(AipsIO& aios, unsigned int n, const T* data) { aios.put(n, data); } \
   inline void getAipsIO(AipsIO& aios, unsigned int n, T* data) { aios.get(n, data); }       \
   inline void getnewAipsIO(AipsIO& aios, unsigned int& n, T** data) { aios.getnew(n, *data); }
@@ -136,8 +136,8 @@ AIPSIO_FUNC_SPEC(short)
 AIPSIO_FUNC_SPEC(unsigned short)
 AIPSIO_FUNC_SPEC(int)
 AIPSIO_FUNC_SPEC(unsigned int)
-AIPSIO_FUNC_SPEC(Int64)
-AIPSIO_FUNC_SPEC(uInt64)
+AIPSIO_FUNC_SPEC(int64_t)
+AIPSIO_FUNC_SPEC(uint64_t)
 AIPSIO_FUNC_SPEC(float)
 AIPSIO_FUNC_SPEC(double)
 AIPSIO_FUNC_SPEC(Complex)

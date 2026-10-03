@@ -118,8 +118,8 @@ class ByteSink : virtual public BaseSinkSource {
   ByteSink& operator<<(unsigned short value);
   ByteSink& operator<<(int value);
   ByteSink& operator<<(unsigned int value);
-  ByteSink& operator<<(Int64 value);
-  ByteSink& operator<<(uInt64 value);
+  ByteSink& operator<<(int64_t value);
+  ByteSink& operator<<(uint64_t value);
   ByteSink& operator<<(float value);
   ByteSink& operator<<(double value);
   ByteSink& operator<<(const Complex& value);
@@ -138,8 +138,8 @@ class ByteSink : virtual public BaseSinkSource {
   void write(size_t nvalues, const unsigned short* value);
   void write(size_t nvalues, const int* value);
   void write(size_t nvalues, const unsigned int* value);
-  void write(size_t nvalues, const Int64* value);
-  void write(size_t nvalues, const uInt64* value);
+  void write(size_t nvalues, const int64_t* value);
+  void write(size_t nvalues, const uint64_t* value);
   void write(size_t nvalues, const float* value);
   void write(size_t nvalues, const double* value);
   void write(size_t nvalues, const Complex* value);

@@ -39,7 +39,7 @@ int main() {
   {
     // Make sure the sizes are OK.
     AlwaysAssertExit(sizeof(int) == 4 && sizeof(unsigned int) == 4 && sizeof(short) == 2 &&
-                     sizeof(unsigned short) == 2 && sizeof(Int64) == 8 && sizeof(uInt64) == 8 &&
+                     sizeof(unsigned short) == 2 && sizeof(int64_t) == 8 && sizeof(uint64_t) == 8 &&
                      sizeof(float) == 4 && sizeof(double) == 8 &&
                      sizeof(long double) >= sizeof(double));
   }

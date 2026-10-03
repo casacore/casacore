@@ -96,7 +96,7 @@ void MultiFileBase::setNewFile() {
   if (itsBlockSize <= 0) {
     struct fileSTAT sfs;
     fileSTAT(itsName.c_str(), &sfs);
-    Int64 blksz = sfs.st_blksize;
+    int64_t blksz = sfs.st_blksize;
     itsBlockSize = std::max(-itsBlockSize, blksz);
   }
   AlwaysAssert(itsBlockSize > 0, AipsError);
@@ -175,7 +175,7 @@ void MultiFileBase::closeFile(int fileId) {
   doCloseFile(itsInfo[fileId]);
 }
 
-Int64 MultiFileBase::read(int fileId, void* buf, Int64 size, Int64 offset) {
+int64_t MultiFileBase::read(int fileId, void* buf, int64_t size, int64_t offset) {
   if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::read - invalid fileId given");
   }
@@ -183,15 +183,15 @@ Int64 MultiFileBase::read(int fileId, void* buf, Int64 size, Int64 offset) {
   MultiFileInfo& info = itsInfo[fileId];
   char* infoBuffer = info.buffer->data();
   // Determine the logical block to read and the start offset in that block.
-  Int64 nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
-  Int64 blknr = offset / itsBlockSize;
-  Int64 start = offset - blknr * itsBlockSize;
-  Int64 done = 0;
-  Int64 szdo = std::min(size, info.fsize - offset);  // not past EOF
+  int64_t nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
+  int64_t blknr = offset / itsBlockSize;
+  int64_t start = offset - blknr * itsBlockSize;
+  int64_t done = 0;
+  int64_t szdo = std::min(size, info.fsize - offset);  // not past EOF
   // Read until done.
   while (done < szdo) {
     AlwaysAssert(blknr < nrblk, AipsError);
-    Int64 todo = std::min(szdo - done, itsBlockSize - start);
+    int64_t todo = std::min(szdo - done, itsBlockSize - start);
     // If already in buffer, copy from there.
     if (blknr == info.curBlock) {
       memcpy(buffer, infoBuffer + start, todo);
@@ -220,7 +220,7 @@ Int64 MultiFileBase::read(int fileId, void* buf, Int64 size, Int64 offset) {
   return done;
 }
 
-Int64 MultiFileBase::write(int fileId, const void* buf, Int64 size, Int64 offset) {
+int64_t MultiFileBase::write(int fileId, const void* buf, int64_t size, int64_t offset) {
   if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::write - invalid fileId given");
   }
@@ -229,19 +229,19 @@ Int64 MultiFileBase::write(int fileId, const void* buf, Int64 size, Int64 offset
   MultiFileInfo& info = itsInfo[fileId];
   char* infoBuffer = info.buffer->data();
   // Determine the logical block to write and the start offset in that block.
-  Int64 blknr = offset / itsBlockSize;
-  Int64 start = offset - blknr * itsBlockSize;
-  Int64 done = 0;
+  int64_t blknr = offset / itsBlockSize;
+  int64_t start = offset - blknr * itsBlockSize;
+  int64_t done = 0;
   // If beyond EOF, add blocks as needed.
-  Int64 lastblk = blknr + (start + size + itsBlockSize - 1) / itsBlockSize;
-  Int64 curnrb = (info.fsize + itsBlockSize - 1) / itsBlockSize;
+  int64_t lastblk = blknr + (start + size + itsBlockSize - 1) / itsBlockSize;
+  int64_t curnrb = (info.fsize + itsBlockSize - 1) / itsBlockSize;
   if (lastblk >= curnrb) {
     extend(info, lastblk);
     itsChanged = true;
   }
   // Write until all done.
   while (done < size) {
-    Int64 todo = std::min(size - done, itsBlockSize - start);
+    int64_t todo = std::min(size - done, itsBlockSize - start);
     // Favor sequential writing, thus write current buffer first.
     if (blknr == info.curBlock) {
       memcpy(infoBuffer + start, buffer, todo);
@@ -280,7 +280,7 @@ Int64 MultiFileBase::write(int fileId, const void* buf, Int64 size, Int64 offset
   return done;
 }
 
-void MultiFileBase::truncate(int fileId, Int64 size) {
+void MultiFileBase::truncate(int fileId, int64_t size) {
   if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::truncate - invalid fileId given");
   }
@@ -373,7 +373,7 @@ void MultiFileBase::deleteFile(int fileId) {
   itsChanged = true;
 }
 
-Int64 MultiFileBase::fileSize(int fileId) const {
+int64_t MultiFileBase::fileSize(int fileId) const {
   if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::fileSize - invalid fileId given");
   }

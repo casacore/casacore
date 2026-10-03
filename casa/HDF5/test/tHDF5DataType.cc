@@ -84,7 +84,7 @@ int main() {
     testDT<short>(TpShort, TpArrayShort, 2);
     testDT<int>(TpInt, TpArrayInt, 4);
     testDT<unsigned int>(TpUInt, TpArrayUInt, 4);
-    testDT<Int64>(TpInt64, TpArrayInt64, 8);
+    testDT<int64_t>(TpInt64, TpArrayInt64, 8);
     testDT<float>(TpFloat, TpArrayFloat, 4);
     testDT<double>(TpDouble, TpArrayDouble, 8);
     testDT<Complex>(TpComplex, TpArrayComplex, 8, true);

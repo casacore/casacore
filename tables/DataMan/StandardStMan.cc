@@ -27,7 +27,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-StandardStMan::StandardStMan(int bucketSize, unsigned int cacheSize) : SSMBase(bucketSize, cacheSize) {}
+StandardStMan::StandardStMan(int bucketSize, unsigned int cacheSize)
+    : SSMBase(bucketSize, cacheSize) {}
 
 StandardStMan::StandardStMan(const String& dataManagerName, int bucketSize, unsigned int cacheSize)
     : SSMBase(dataManagerName, bucketSize, cacheSize) {}

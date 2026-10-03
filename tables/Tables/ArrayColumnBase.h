@@ -318,7 +318,7 @@ class ArrayColumnBase : public TableColumn {
   // Adapt the shape of the array if possible. If the array is empty or
   // if <src>resize=True</src>, the array is resized if needed.
   // Otherwise checkShape is used to throw an exception if not conforming.
-  void adaptShape(const IPosition& shp, ArrayBase& arr, bool resize, Int64 rownr,
+  void adaptShape(const IPosition& shp, ArrayBase& arr, bool resize, int64_t rownr,
                   const String& where) const;
 
   // Throw an exception if the array does not have the expected shape.
@@ -326,8 +326,8 @@ class ArrayColumnBase : public TableColumn {
   // (meaning no slices are put and the shape of a full row can change).
   // The column name is made part of the error message, as well as the rownr
   // if it is not negative (meaning a put of a column).
-  bool checkShape(const IPosition& expShape, const IPosition& arrShape, bool noSlicing, Int64 rownr,
-                  const String& where) const;
+  bool checkShape(const IPosition& expShape, const IPosition& arrShape, bool noSlicing,
+                  int64_t rownr, const String& where) const;
 
   // A common function used by all functions that can get or put irregular
   // array slices. The functor performs the get or put operation.

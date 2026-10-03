@@ -136,7 +136,7 @@ class Fit2D {
   // the model number added (0, 1, 2 etc)
   //<group>
   unsigned int addModel(Fit2D::Types type, const Vector<double>& parameters,
-                const Vector<bool>& parameterMask);
+                        const Vector<bool>& parameterMask);
   unsigned int addModel(Fit2D::Types type, const Vector<double>& parameters);
   //</group>
 

@@ -207,7 +207,8 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   //  Constructors
   //  <group>
   Function() : param_p(), arg_p(0), parset_p(false), locked_p(false) {}
-  explicit Function(const unsigned int n) : param_p(n), arg_p(0), parset_p(false), locked_p(false) {}
+  explicit Function(const unsigned int n)
+      : param_p(n), arg_p(0), parset_p(false), locked_p(false) {}
   explicit Function(const Vector<T> &in)
       : param_p(in), arg_p(0), parset_p(false), locked_p(false) {}
   Function(const FunctionParam<T> &other)

@@ -57,7 +57,8 @@ int main() {
     }
 
     SparseDiff<float> x(2.0, 1);
-    if (x.value() != 2.0 || x.nDerivatives() != 1 || x.derivative(0) != pair<unsigned int, float>(1, 1)) {
+    if (x.value() != 2.0 || x.nDerivatives() != 1 ||
+        x.derivative(0) != pair<unsigned int, float>(1, 1)) {
       cerr << "SparseDiff<Float> x(2.0, 1); failed x = " << x << endl;
       nerr++;
     }
@@ -71,7 +72,8 @@ int main() {
 
     float val = 5.0;
     SparseDiff<float> z(val, 2, 73.);
-    if (z.value() != val || z.nDerivatives() != 1 || z.derivative(0) != pair<unsigned int, float>(2, 73.)) {
+    if (z.value() != val || z.nDerivatives() != 1 ||
+        z.derivative(0) != pair<unsigned int, float>(2, 73.)) {
       cerr << "SparseDiff<Float> z(val, 2, 73.); failed z = " << z << " val = " << val << endl;
       nerr++;
     }

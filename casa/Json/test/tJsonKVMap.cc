@@ -44,7 +44,7 @@ void showpar3(JsonKVMap& par3) {
   jout.putArray(Vector<bool>(par3["b1"].getVecBool()), String(), true);
   cout << endl;
   cout << par3["i1"].getInt() << ' ';
-  jout.putArray(Vector<Int64>(par3["i1"].getVecInt()), String(), true);
+  jout.putArray(Vector<int64_t>(par3["i1"].getVecInt()), String(), true);
   cout << endl;
   cout << par3["i1"].getDouble() << ' ';
   jout.putArray(Vector<double>(par3["i1"].getVecDouble()), String(), true);

@@ -69,10 +69,12 @@ int main() {
       AlwaysAssert(sd.sum == 10, AipsError);
       AlwaysAssert(sd.sumsq == 22.5, AipsError);
       AlwaysAssert(sd.variance == 0.625, AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(0, 3),
-                   AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(0, 3),
+          AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::NPTS) == 5, AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::RMS) == sqrt(22.5 / 5.0), AipsError);
     }
@@ -96,10 +98,12 @@ int main() {
       AlwaysAssert(sd.sum == 10, AipsError);
       AlwaysAssert(sd.sumsq == 22.5, AipsError);
       AlwaysAssert(sd.variance == 0.625, AipsError);
-      AlwaysAssert(cs1.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(0, 3),
-                   AipsError);
-      AlwaysAssert(cs1.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          cs1.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(0, 3),
+          AipsError);
+      AlwaysAssert(
+          cs1.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(cs1.getStatistic(StatisticsData::NPTS) == 5, AipsError);
       AlwaysAssert(cs1.getStatistic(StatisticsData::RMS) == sqrt(22.5 / 5.0), AipsError);
     }
@@ -127,10 +131,12 @@ int main() {
       AlwaysAssert(sd.sum == 33, AipsError);
       AlwaysAssert(sd.sumsq == 211.5, AipsError);
       AlwaysAssert(near(sd.variance, variance), AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(1, 2),
-                   AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(1, 2),
+          AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::NPTS) == 8, AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::RMS) == sqrt(211.5 / 8.0), AipsError);
       // Now reverse the order that the datasets were added. results
@@ -153,10 +159,12 @@ int main() {
       AlwaysAssert(sd.sum == 33, AipsError);
       AlwaysAssert(sd.sumsq == 211.5, AipsError);
       AlwaysAssert(near(sd.variance, variance), AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(0, 2),
-                   AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(1, 1),
-                   AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(0, 2),
+          AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(1, 1),
+          AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::NPTS) == 8, AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::RMS) == sqrt(211.5 / 8.0), AipsError);
     }
@@ -599,10 +607,12 @@ int main() {
       AlwaysAssert(sd.sumweights == 11.0, AipsError);
       AlwaysAssert(sd.sumsq == 195.25, AipsError);
       AlwaysAssert(near(sd.variance, variance), AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(1, 1),
-                   AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(1, 1),
+          AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::NPTS) == 3, AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::RMS) == sqrt(195.25 / 11.0), AipsError);
     }
@@ -657,10 +667,12 @@ int main() {
       AlwaysAssert(sd.sumweights == 11.0, AipsError);
       AlwaysAssert(sd.sumsq == 195.25, AipsError);
       AlwaysAssert(near(sd.variance, variance), AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(1, 1),
-                   AipsError);
-      AlwaysAssert(cs.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(1, 1),
+          AipsError);
+      AlwaysAssert(
+          cs.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::NPTS) == 3, AipsError);
       AlwaysAssert(cs.getStatistic(StatisticsData::RMS) == sqrt(195.25 / 11.0), AipsError);
     }
@@ -1722,7 +1734,7 @@ int main() {
     vector<double> bigData(npts);
     vector<double>::iterator iter = bigData.begin();
     vector<double>::iterator end = bigData.end();
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (iter != end) {
       *iter = count % 2 == 0 ? double(count) : -double(count * count);
       ++iter;
@@ -1770,7 +1782,7 @@ int main() {
       std::set<double> quantiles;
       quantiles.insert(0.25);
       quantiles.insert(0.75);
-      std::shared_ptr<uInt64> npts;
+      std::shared_ptr<uint64_t> npts;
       std::shared_ptr<double> mymin, mymax;
       std::map<double, double> quantileToValue;
       double median = cs.getMedianAndQuantiles(quantileToValue, quantiles, npts, mymin, mymax, 100);
@@ -1788,7 +1800,7 @@ int main() {
       std::set<double> quantiles;
       quantiles.insert(0.25);
       quantiles.insert(0.75);
-      std::shared_ptr<uInt64> npts;
+      std::shared_ptr<uint64_t> npts;
       std::shared_ptr<double> mymin, mymax;
       std::map<double, double> quantileToValue;
       double median = cs.getMedianAndQuantiles(quantileToValue, quantiles, npts, mymin, mymax, 100);
@@ -1856,7 +1868,7 @@ int main() {
       ClassicalStatistics<double, std::vector<double>::const_iterator,
                           std::vector<bool>::const_iterator>
           cs;
-      uInt64 expec = 0;
+      uint64_t expec = 0;
       for (unsigned int i = 0; i < n; ++i) {
         unsigned int s = size[i];
         expec += s;

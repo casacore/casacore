@@ -169,7 +169,7 @@ size_t Conversion::bitToBool_(void* to, const void* from, size_t nvalues) {
 typedef union {
   // __m64d wide;
   bool b[8];  // must be the first member for the initialization below.
-  Int64 d;
+  int64_t d;
 } m64d_t;
 
 // Define all flag patterns for values 0 till 255.

@@ -68,7 +68,8 @@ IPosition LatticeBase::doNiceCursorShape(unsigned int maxPixels) const {
   if (ndim > 0) {
     cursorShape = 1;
     cursorShape(0) = originalShape(0);
-    for (unsigned int i = 1; i < ndim && cursorShape.product() * originalShape(i) <= int(maxPixels); i++) {
+    for (unsigned int i = 1; i < ndim && cursorShape.product() * originalShape(i) <= int(maxPixels);
+         i++) {
       cursorShape(i) = originalShape(i);
     }
   }

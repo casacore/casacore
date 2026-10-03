@@ -78,8 +78,8 @@ ImageRegrid<T>& ImageRegrid<T>::operator=(const ImageRegrid& other) {
 template <class T>
 void ImageRegrid<T>::regrid(ImageInterface<T>& outImage, typename Interpolate2D::Method method,
                             const IPosition& outPixelAxesU, const ImageInterface<T>& inImage,
-                            bool replicate, unsigned int decimate, bool showProgress, bool forceRegrid,
-                            bool verbose) {
+                            bool replicate, unsigned int decimate, bool showProgress,
+                            bool forceRegrid, bool verbose) {
   LogIO os(LogOrigin("ImageRegrid", __func__, WHERE));
   Timer t0;
   IPosition outShape = outImage.shape();
@@ -238,8 +238,8 @@ void ImageRegrid<T>::_regridOneCoordinate(
     LogIO& os, IPosition& outShape2, Vector<bool>& doneOutPixelAxes, MaskedLattice<T>*& finalOutPtr,
     MaskedLattice<T>*& inPtr, MaskedLattice<T>*& outPtr, CoordinateSystem& outCoords,
     const CoordinateSystem& inCoords, int outPixelAxis, const ImageInterface<T>& inImage,
-    const IPosition& outShape, bool replicate, unsigned int decimate, bool outIsMasked, bool showProgress,
-    bool forceRegrid, typename Interpolate2D::Method method, bool verbose) {
+    const IPosition& outShape, bool replicate, unsigned int decimate, bool outIsMasked,
+    bool showProgress, bool forceRegrid, typename Interpolate2D::Method method, bool verbose) {
   Timer t0;
   double s0 = 0.0;
   // Find world and pixel axis maps
@@ -969,9 +969,9 @@ void ImageRegrid<T>::make2DCoordinateGrid(
     LogIO& os, bool& allFailed, bool& missedIt, double& minInX, double& minInY, double& maxInX,
     double& maxInY, Cube<double>& in2DPos, Matrix<bool>& succeed, const CoordinateSystem& inCoords,
     const CoordinateSystem& outCoords, int inCoordinate, int outCoordinate, unsigned int xInAxis,
-    unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis, const IPosition& inPixelAxes,
-    const IPosition& outPixelAxes, const IPosition& inShape, const IPosition& outPos,
-    const IPosition& outCursorShape, unsigned int decimate) {
+    unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis,
+    const IPosition& inPixelAxes, const IPosition& outPixelAxes, const IPosition& inShape,
+    const IPosition& outPos, const IPosition& outCursorShape, unsigned int decimate) {
   //
   // in2DPos says where the output pixel (i,j) is located in the input image
   //
@@ -1313,7 +1313,8 @@ template <class T>
 void ImageRegrid<T>::make2DCoordinateGrid(Cube<double>& in2DPos, double& minInX, double& minInY,
                                           double& maxInX, double& maxInY,
                                           const Vector<double>& pixelScale, unsigned int xInAxis,
-                                          unsigned int yInAxis, unsigned int xOutAxis, unsigned int yOutAxis, unsigned int, unsigned int,
+                                          unsigned int yInAxis, unsigned int xOutAxis,
+                                          unsigned int yOutAxis, unsigned int, unsigned int,
                                           unsigned int xOutCorrAxis, unsigned int yOutCorrAxis,
                                           const IPosition& outPos, const IPosition& outCursorShape)
 
@@ -1361,8 +1362,9 @@ void ImageRegrid<T>::make2DCoordinateGrid(Cube<double>& in2DPos, double& minInX,
 template <class T>
 void ImageRegrid<T>::findXYExtent(bool& missedIt, bool& allFailed, double& minInX, double& minInY,
                                   double& maxInX, double& maxInY, Cube<double>& in2DPos,
-                                  const Matrix<bool>& succeed, unsigned int xInAxis, unsigned int yInAxis,
-                                  unsigned int xOutAxis, unsigned int yOutAxis, const IPosition& outPos,
+                                  const Matrix<bool>& succeed, unsigned int xInAxis,
+                                  unsigned int yInAxis, unsigned int xOutAxis,
+                                  unsigned int yOutAxis, const IPosition& outPos,
                                   const IPosition& outCursorShape, const IPosition& inShape)
 //
 // Finds the blc and trc (absolute pixel coordinates) of the INPUT image
@@ -1413,8 +1415,9 @@ void ImageRegrid<T>::findXYExtent(bool& missedIt, bool& allFailed, double& minIn
 template <class T>
 void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<bool>*& outMaskIterPtr,
                                     const Interpolate2D& interp, ProgressMeter*& pProgressMeter,
-                                    double& iPix, unsigned int nDim, unsigned int xInAxis, unsigned int yInAxis,
-                                    unsigned int xOutAxis, unsigned int yOutAxis, double scale, bool inIsMasked,
+                                    double& iPix, unsigned int nDim, unsigned int xInAxis,
+                                    unsigned int yInAxis, unsigned int xOutAxis,
+                                    unsigned int yOutAxis, double scale, bool inIsMasked,
                                     bool outIsMasked, const IPosition& outPos,
                                     const IPosition& outCursorShape, const IPosition& inChunkShape,
                                     const IPosition& inChunkBlc, const IPosition& pixelAxisMap2,
@@ -1941,8 +1944,8 @@ void ImageRegrid<T>::_checkAxes(IPosition& outPixelAxes, const IPosition& inShap
 }
 
 template <class T>
-void ImageRegrid<T>::findMaps(unsigned int nDim, Vector<int>& pixelAxisMap1, Vector<int>& pixelAxisMap2,
-                              const CoordinateSystem& inCoords,
+void ImageRegrid<T>::findMaps(unsigned int nDim, Vector<int>& pixelAxisMap1,
+                              Vector<int>& pixelAxisMap2, const CoordinateSystem& inCoords,
                               const CoordinateSystem& outCoords) const {
   // Find mapping between CoordinateSystems
   //

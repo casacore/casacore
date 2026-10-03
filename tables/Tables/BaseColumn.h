@@ -221,7 +221,7 @@ class BaseColumn {
   // Get the value from the row and convert it to the required type.
   // This can only be used for scalar columns with a standard data type.
   // Note that an unsigned integer cannot be converted to a signed integer
-  // with the same length. So only Int64 can handle all integer values.
+  // with the same length. So only int64_t can handle all integer values.
   // <group>
   void getScalar(rownr_t rownr, bool& value) const;
   void getScalar(rownr_t rownr, unsigned char& value) const;
@@ -229,7 +229,7 @@ class BaseColumn {
   void getScalar(rownr_t rownr, unsigned short& value) const;
   void getScalar(rownr_t rownr, int& value) const;
   void getScalar(rownr_t rownr, unsigned int& value) const;
-  void getScalar(rownr_t rownr, Int64& value) const;
+  void getScalar(rownr_t rownr, int64_t& value) const;
   void getScalar(rownr_t rownr, float& value) const;
   void getScalar(rownr_t rownr, double& value) const;
   void getScalar(rownr_t rownr, Complex& value) const;
@@ -251,7 +251,7 @@ class BaseColumn {
   void putScalar(rownr_t rownr, const unsigned short& value);
   void putScalar(rownr_t rownr, const int& value);
   void putScalar(rownr_t rownr, const unsigned int& value);
-  void putScalar(rownr_t rownr, const Int64& value);
+  void putScalar(rownr_t rownr, const int64_t& value);
   void putScalar(rownr_t rownr, const float& value);
   void putScalar(rownr_t rownr, const double& value);
   void putScalar(rownr_t rownr, const Complex& value);

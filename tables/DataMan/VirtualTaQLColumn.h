@@ -179,7 +179,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
   virtual void getInt(rownr_t rownr, int* dataPtr);
   virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
+  virtual void getInt64(rownr_t rownr, int64_t* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
   virtual void getComplex(rownr_t rownr, Complex* dataPtr);
@@ -221,7 +221,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   String itsStyle;         // # TaQL style
   TableExprNode* itsNode;  // # compiled TaQL expression
   IPosition itsShape;      // # The shape of the column.
-  unsigned int itsMaxLen;          // # The maximum length of a 'fixed length' string.
+  unsigned int itsMaxLen;  // # The maximum length of a 'fixed length' string.
   union {
     bool itsBool;  // # Constant scalar values
     unsigned char itsuChar;
@@ -229,7 +229,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
     unsigned short itsuShort;
     int itsInt;
     unsigned int itsuInt;
-    Int64 itsInt64;
+    int64_t itsInt64;
     float itsFloat;
     double itsDouble;
   };

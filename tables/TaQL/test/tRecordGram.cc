@@ -192,7 +192,7 @@ void testExpr2() {
   AlwaysAssertExit(RecordGram::expr2Double("4 kHz", vars, "Hz") == 4000);
   AlwaysAssertExit(RecordGram::expr2Double("1.2m", vars, "m") == 1.2);
   Array<bool> arrb;
-  Array<Int64> arri;
+  Array<int64_t> arri;
   Array<double> arrd;
   Array<DComplex> arrc;
   Array<String> arrs;

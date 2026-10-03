@@ -109,7 +109,7 @@ class TableMeasType {
  private:
   int itsNtypes;                // # number of refcodes/strings
   const String* itsStypes;      // # refcode strings
-  const unsigned int* itsTyps;          // # refcodes
+  const unsigned int* itsTyps;  // # refcodes
   MeasureHolder itsMeasHolder;  // # Holds the measure
 };
 

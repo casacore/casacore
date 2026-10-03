@@ -154,7 +154,9 @@ const String &MPosition::showType(MPosition::Types tp) {
   return tname[tp];
 }
 
-const String &MPosition::showType(unsigned int tp) { return MPosition::showType(MPosition::castType(tp)); }
+const String &MPosition::showType(unsigned int tp) {
+  return MPosition::showType(MPosition::castType(tp));
+}
 
 bool MPosition::getType(MPosition::Types &tp, const String &in) {
   const unsigned int *oname;

@@ -33,7 +33,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-BucketBuffered::BucketBuffered(BucketFile* file, Int64 startOffset, unsigned int bucketSize,
+BucketBuffered::BucketBuffered(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
                                unsigned int nrOfBuckets)
     : BucketBase(file, startOffset, bucketSize, nrOfBuckets), itsBuffer(0) {
   AlwaysAssert(itsFile->bufferedFile() != 0, AipsError);
@@ -43,11 +43,12 @@ BucketBuffered::BucketBuffered(BucketFile* file, Int64 startOffset, unsigned int
 
 BucketBuffered::~BucketBuffered() { delete[] itsBuffer; }
 
-void BucketBuffered::read(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes, unsigned int bufferOffset) {
+void BucketBuffered::read(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes,
+                          unsigned int bufferOffset) {
   if (bucketNr >= itsNewNrOfBuckets) {
     throw(indexError<int>(bucketNr));
   }
-  itsFile->bufferedFile()->seek(itsStartOffset + Int64(bucketNr) * itsBucketSize + bucketOffset);
+  itsFile->bufferedFile()->seek(itsStartOffset + int64_t(bucketNr) * itsBucketSize + bucketOffset);
   // When doing read/write, it can happen that not all bytes are written yet.
   // So accept it if not all bytes could be read.
   unsigned int nread = itsFile->bufferedFile()->read(nbytes, itsBuffer + bufferOffset, false);
@@ -63,15 +64,15 @@ void BucketBuffered::write(unsigned int bucketNr, unsigned int bucketOffset, uns
     }
     itsCurNrOfBuckets = bucketNr + 1;
   }
-  itsFile->bufferedFile()->seek(itsStartOffset + Int64(bucketNr) * itsBucketSize + bucketOffset);
+  itsFile->bufferedFile()->seek(itsStartOffset + int64_t(bucketNr) * itsBucketSize + bucketOffset);
   itsFile->bufferedFile()->write(nbytes, itsBuffer);
   setWritten();
 }
 
 void BucketBuffered::doFlush() {
   // Make sure the length is an integer nr of tiles.
-  Int64 cubeLen = itsFile->bufferedFile()->length() - itsStartOffset;
-  Int64 expLen = itsNewNrOfBuckets * itsBucketSize;
+  int64_t cubeLen = itsFile->bufferedFile()->length() - itsStartOffset;
+  int64_t expLen = itsNewNrOfBuckets * itsBucketSize;
   if (expLen > cubeLen) {
     doExtend(0);
   }
@@ -91,7 +92,7 @@ void BucketBuffered::initializeBuckets(unsigned int bucketNr) {
   if (itsCurNrOfBuckets <= bucketNr) {
     memset(itsBuffer, 0, itsBucketSize);
     // Writing is sequentially, so seek needs to be done only once.
-    itsFile->bufferedFile()->seek(itsStartOffset + Int64(itsCurNrOfBuckets) * itsBucketSize);
+    itsFile->bufferedFile()->seek(itsStartOffset + int64_t(itsCurNrOfBuckets) * itsBucketSize);
     while (itsCurNrOfBuckets <= bucketNr) {
       itsFile->bufferedFile()->write(itsBucketSize, itsBuffer);
       itsCurNrOfBuckets++;

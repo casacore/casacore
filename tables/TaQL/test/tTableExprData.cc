@@ -53,7 +53,7 @@ class MyTestClass : public TableExprData {
   void next() { itsEntry++; }
   // Note that only the get functions for the possible types are needed.
   // The exception should never be thrown unless things are screwed up.
-  virtual Int64 getInt(const Block<int>& fieldNrs) const {
+  virtual int64_t getInt(const Block<int>& fieldNrs) const {
     switch (fieldNrs[0]) {
       case 0:
         return itsFld1(itsEntry);

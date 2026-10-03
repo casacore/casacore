@@ -221,12 +221,12 @@ void partialArrayMath(MArray<RES>& res, const MArray<T>& a, const IPosition& col
   ReadOnlyArrayIterator<bool> miter(a.mask(), collapseAxes);
   IPosition shape(a.array().shape().removeAxes(collapseAxes));
   /*
-  Int64 nr = 1;
+  int64_t nr = 1;
   for (unsigned int i=0; i<collapseAxes.size(); ++i) {
     nr *= a.array().shape()[collapseAxes[i]];
   }
   ///#pragma omp parallel
-  for (Int64 i=0; i<nr; ++i) {
+  for (int64_t i=0; i<nr; ++i) {
     IPosition pos = findPos(i);
     IPosition endPos = pos + cursorShape - 1;
     *data[pos] = funcObj(MArray<T>(a.array()(pos,endPos), a.mask()(pos,endpos)));
@@ -836,7 +836,7 @@ T max(const MArray<T>& a) {
 
 template <typename T>
 T mean(const MArray<T>& a) {
-  Int64 nv = a.nvalid();
+  int64_t nv = a.nvalid();
   if (nv == 0) return T();
   if (!a.hasMask()) return mean(a.array());
   return T(sum(a) / (1.0 * nv));
@@ -844,7 +844,7 @@ T mean(const MArray<T>& a) {
 
 template <typename T>
 T variance(const MArray<T>& a, T mean, unsigned int ddof) {
-  Int64 nv = a.nvalid();
+  int64_t nv = a.nvalid();
   if (nv < ddof + 1) return T();
   if (!a.hasMask()) return pvariance(a.array(), mean, ddof);
   T sum = a.array().contiguousStorage() && a.mask().contiguousStorage()
@@ -872,7 +872,7 @@ T stddev(const MArray<T>& a, T mean, unsigned int ddof) {
 
 template <typename T>
 T avdev(const MArray<T>& a, T mean) {
-  Int64 nv = a.nvalid();
+  int64_t nv = a.nvalid();
   if (nv == 0) return T();
   if (!a.hasMask()) return avdev(a.array(), mean);
   T sum = a.array().contiguousStorage() && a.mask().contiguousStorage()
@@ -890,7 +890,7 @@ T avdev(const MArray<T>& a) {
 
 template <typename T>
 T rms(const MArray<T>& a) {
-  Int64 nv = a.nvalid();
+  int64_t nv = a.nvalid();
   if (nv == 0) return T();
   if (!a.hasMask()) return rms(a.array());
   T sum = a.array().contiguousStorage() && a.mask().contiguousStorage()
@@ -907,7 +907,7 @@ T median(const MArray<T>& a, bool sorted, bool takeEvenMean, bool inPlace = fals
   if (a.empty()) return T();
   if (!a.hasMask()) return median(a.array(), sorted, takeEvenMean, inPlace);
   Block<T> buf(a.size());
-  Int64 nv = a.flatten(buf.storage(), buf.size());
+  int64_t nv = a.flatten(buf.storage(), buf.size());
   if (nv == 0) return T();
   Array<T> arr(IPosition(1, nv), buf.storage(), SHARE);
   // Median can be taken in place.
@@ -937,7 +937,7 @@ T fractile(const MArray<T>& a, float fraction, bool sorted = false, bool inPlace
   if (a.empty()) return T();
   if (!a.hasMask()) return fractile(a.array(), fraction, sorted, inPlace);
   Block<T> buf(a.size());
-  Int64 nv = a.flatten(buf.storage(), a.size());
+  int64_t nv = a.flatten(buf.storage(), a.size());
   if (nv == 0) return T();
   Array<T> arr(IPosition(1, nv), buf.storage(), SHARE);
   return fractile(arr, fraction, sorted, true);

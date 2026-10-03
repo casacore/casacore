@@ -98,8 +98,8 @@ class CanonicalIO : public TypeIO {
   virtual size_t write(size_t nvalues, const unsigned short* data);
   virtual size_t write(size_t nvalues, const int* data);
   virtual size_t write(size_t nvalues, const unsigned int* data);
-  virtual size_t write(size_t nvalues, const Int64* data);
-  virtual size_t write(size_t nvalues, const uInt64* data);
+  virtual size_t write(size_t nvalues, const int64_t* data);
+  virtual size_t write(size_t nvalues, const uint64_t* data);
   virtual size_t write(size_t nvalues, const float* data);
   virtual size_t write(size_t nvalues, const double* data);
   virtual size_t write(size_t nvalues, const Complex* value);
@@ -117,8 +117,8 @@ class CanonicalIO : public TypeIO {
   virtual size_t read(size_t nvalues, unsigned short* data);
   virtual size_t read(size_t nvalues, int* data);
   virtual size_t read(size_t nvalues, unsigned int* data);
-  virtual size_t read(size_t nvalues, Int64* data);
-  virtual size_t read(size_t nvalues, uInt64* data);
+  virtual size_t read(size_t nvalues, int64_t* data);
+  virtual size_t read(size_t nvalues, uint64_t* data);
   virtual size_t read(size_t nvalues, float* data);
   virtual size_t read(size_t nvalues, double* data);
   virtual size_t read(size_t nvalues, Complex* value);

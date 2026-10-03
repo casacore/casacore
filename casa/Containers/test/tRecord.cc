@@ -331,7 +331,7 @@ void doIt(bool doExcp) {
   rd.addField("TpInt2a", TpInt);
   record.define("TpUInt2", static_cast<unsigned int>(4));
   rd.addField("TpUInt2a", TpUInt);
-  record.define("TpInt642", Int64(2e10));
+  record.define("TpInt642", int64_t(2e10));
   rd.addField("TpInt642a", TpInt64);
   record.define("TpFloat2", float(5));
   rd.addField("TpFloat2a", TpFloat);
@@ -425,7 +425,7 @@ void doIt(bool doExcp) {
   RecordFieldPtr<short> shortField(record, 2);
   RecordFieldPtr<int> intField(record, 3);
   RecordFieldPtr<unsigned int> uintField(record, 4);
-  RecordFieldPtr<Int64> int64Field(record, 5);
+  RecordFieldPtr<int64_t> int64Field(record, 5);
   RecordFieldPtr<float> floatField(record, 6);
   RecordFieldPtr<double> doubleField(record, 7);
   RecordFieldPtr<Complex> complexField(record, 8);
@@ -441,7 +441,7 @@ void doIt(bool doExcp) {
   *shortField = 32767;
   *intField = -1234567;
   uintField.define(1234567);
-  *int64Field = Int64(3e10);
+  *int64Field = int64_t(3e10);
   *floatField = 7.0f;
   *doubleField = 9.0;
   *complexField = Complex(1.0f, 11.0f);
@@ -454,7 +454,7 @@ void doIt(bool doExcp) {
   RecordFieldPtr<Array<short>> arrayshortField(record, 13);
   RecordFieldPtr<Array<int>> arrayintField(record, 14);
   RecordFieldPtr<Array<unsigned int>> arrayuintField(record, 15);
-  RecordFieldPtr<Array<Int64>> arrayint64Field(record, 16);
+  RecordFieldPtr<Array<int64_t>> arrayint64Field(record, 16);
   RecordFieldPtr<Array<float>> arrayfloatField(record, 17);
   RecordFieldPtr<Array<double>> arraydoubleField(record, 18);
   RecordFieldPtr<Array<Complex>> arraycomplexField(record, 19);
@@ -466,7 +466,7 @@ void doIt(bool doExcp) {
   *arrayshortField = 32767;
   *arrayintField = -1234567;
   *arrayuintField = 1234567;
-  *arrayint64Field = Int64(3e10);
+  *arrayint64Field = int64_t(3e10);
   *arrayfloatField = 7.0f;
   *arraydoubleField = 9.0;
   *arraycomplexField = Complex(1.0f, 11.0f);
@@ -696,7 +696,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   RORecordFieldPtr<short> shortField(record, 2);
   RORecordFieldPtr<int> intField(record, 3);
   RORecordFieldPtr<unsigned int> uintField(record, 4);
-  RORecordFieldPtr<Int64> int64Field(record, 5);
+  RORecordFieldPtr<int64_t> int64Field(record, 5);
   RORecordFieldPtr<float> floatField(record, 6);
   RORecordFieldPtr<double> doubleField(record, 7);
   RORecordFieldPtr<Complex> complexField(record, 8);
@@ -710,7 +710,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   AlwaysAssertExit(*shortField == 32767);
   AlwaysAssertExit(intField.get() == intValue);
   AlwaysAssertExit(uintField.get() == 1234567);
-  AlwaysAssertExit(*int64Field == Int64(3e10));
+  AlwaysAssertExit(*int64Field == int64_t(3e10));
   AlwaysAssertExit(*floatField == 7.0f);
   AlwaysAssertExit(*doubleField == 9.0);
   AlwaysAssertExit(*complexField == Complex(1.0f, 11.0f));
@@ -722,7 +722,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   short sv;
   int iv;
   unsigned int uiv;
-  Int64 i64v;
+  int64_t i64v;
   float fv;
   double dv;
   Complex cv;
@@ -745,7 +745,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   AlwaysAssertExit(sv == 2);
   AlwaysAssertExit(iv == 3);
   AlwaysAssertExit(uiv == 4);
-  AlwaysAssertExit(i64v == Int64(2e10));
+  AlwaysAssertExit(i64v == int64_t(2e10));
   AlwaysAssertExit(fv == 5);
   AlwaysAssertExit(dv == 6);
   AlwaysAssertExit(cv == Complex(7, 8));
@@ -779,7 +779,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   AlwaysAssertExit(allEQ(record.toArrayShort(12), short(*ucharField)));
   AlwaysAssertExit(allEQ(record.toArrayInt(12), int(*ucharField)));
   AlwaysAssertExit(allEQ(record.toArrayuInt(12), static_cast<unsigned int>(*ucharField)));
-  AlwaysAssertExit(allEQ(record.toArrayInt64(12), Int64(*ucharField)));
+  AlwaysAssertExit(allEQ(record.toArrayInt64(12), int64_t(*ucharField)));
   AlwaysAssertExit(allEQ(record.toArrayFloat(12), float(*ucharField)));
   AlwaysAssertExit(allEQ(record.toArrayDouble(12), double(*ucharField)));
   AlwaysAssertExit(allEQ(record.toArrayComplex(12), Complex(*ucharField, 0)));
@@ -787,19 +787,19 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   AlwaysAssertExit(allEQ(record.toArrayShort(13), *shortField));
   AlwaysAssertExit(allEQ(record.toArrayInt(13), int(*shortField)));
   AlwaysAssertExit(allEQ(record.toArrayuInt(13), static_cast<unsigned int>(*shortField)));
-  AlwaysAssertExit(allEQ(record.toArrayInt64(13), Int64(*shortField)));
+  AlwaysAssertExit(allEQ(record.toArrayInt64(13), int64_t(*shortField)));
   AlwaysAssertExit(allEQ(record.toArrayFloat(13), float(*shortField)));
   AlwaysAssertExit(allEQ(record.toArrayDouble(13), double(*shortField)));
   AlwaysAssertExit(allEQ(record.toArrayComplex(13), Complex(*shortField, 0)));
   AlwaysAssertExit(allEQ(record.toArrayDComplex(13), DComplex(*shortField, 0)));
   AlwaysAssertExit(allEQ(record.toArrayInt(14), *intField));
-  AlwaysAssertExit(allEQ(record.toArrayInt64(14), Int64(*intField)));
+  AlwaysAssertExit(allEQ(record.toArrayInt64(14), int64_t(*intField)));
   AlwaysAssertExit(allEQ(record.toArrayFloat(14), float(*intField)));
   AlwaysAssertExit(allEQ(record.toArrayDouble(14), double(*intField)));
   AlwaysAssertExit(allEQ(record.toArrayComplex(14), Complex(*intField, 0)));
   AlwaysAssertExit(allEQ(record.toArrayDComplex(14), DComplex(*intField, 0)));
   AlwaysAssertExit(allEQ(record.toArrayuInt(15), *uintField));
-  AlwaysAssertExit(allEQ(record.toArrayInt64(15), Int64(*uintField)));
+  AlwaysAssertExit(allEQ(record.toArrayInt64(15), int64_t(*uintField)));
   AlwaysAssertExit(allEQ(record.toArrayFloat(15), float(*uintField)));
   AlwaysAssertExit(allEQ(record.toArrayDouble(15), double(*uintField)));
   AlwaysAssertExit(allEQ(record.toArrayComplex(15), Complex(*uintField, 0)));
@@ -830,7 +830,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   RORecordFieldPtr<Array<short>> shortFieldA(record, 2);
   RORecordFieldPtr<Array<int>> intFieldA(record, 3);
   RORecordFieldPtr<Array<unsigned int>> uintFieldA(record, 4);
-  RORecordFieldPtr<Array<Int64>> int64FieldA(record, 5);
+  RORecordFieldPtr<Array<int64_t>> int64FieldA(record, 5);
   RORecordFieldPtr<Array<float>> floatFieldA(record, 6);
   RORecordFieldPtr<Array<double>> doubleFieldA(record, 7);
   RORecordFieldPtr<Array<Complex>> complexFieldA(record, 8);
@@ -841,7 +841,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   AlwaysAssertExit(allEQ(*shortFieldA, Vector<short>(1, *shortField)));
   AlwaysAssertExit(allEQ(*intFieldA, Vector<int>(1, *intField)));
   AlwaysAssertExit(allEQ(*uintFieldA, Vector<unsigned int>(1, *uintField)));
-  AlwaysAssertExit(allEQ(*int64FieldA, Vector<Int64>(1, *int64Field)));
+  AlwaysAssertExit(allEQ(*int64FieldA, Vector<int64_t>(1, *int64Field)));
   AlwaysAssertExit(allEQ(*floatFieldA, Vector<float>(1, *floatField)));
   AlwaysAssertExit(allEQ(*doubleFieldA, Vector<double>(1, *doubleField)));
   AlwaysAssertExit(allEQ(*complexFieldA, Vector<Complex>(1, *complexField)));
@@ -854,7 +854,7 @@ void check(const Record& record, int intValue, unsigned int nrField) {
   RORecordFieldPtr<Array<short>> arrayshortField(record, 13);
   RORecordFieldPtr<Array<int>> arrayintField(record, 14);
   RORecordFieldPtr<Array<unsigned int>> arrayuintField(record, 15);
-  RORecordFieldPtr<Array<Int64>> arrayint64Field(record, 16);
+  RORecordFieldPtr<Array<int64_t>> arrayint64Field(record, 16);
   RORecordFieldPtr<Array<float>> arrayfloatField(record, 17);
   RORecordFieldPtr<Array<double>> arraydoubleField(record, 18);
   RORecordFieldPtr<Array<Complex>> arraycomplexField(record, 19);

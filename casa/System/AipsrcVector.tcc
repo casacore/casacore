@@ -101,8 +101,8 @@ unsigned int AipsrcVector<T>::registerRC(const String &keyword, const Vector<T> 
 }
 
 template <class T>
-unsigned int AipsrcVector<T>::registerRC(const String &keyword, const Unit &defun, const Unit &resun,
-                                 const Vector<T> &deflt) {
+unsigned int AipsrcVector<T>::registerRC(const String &keyword, const Unit &defun,
+                                         const Unit &resun, const Vector<T> &deflt) {
   const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(tlst[n - 1], keyword, defun, resun, deflt);

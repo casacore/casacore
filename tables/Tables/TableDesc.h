@@ -446,7 +446,8 @@ class TableDesc {
   // It returns the dimensionality of the hypercolumn.
   // An exception is thrown if the hypercolumn does not exist.
   unsigned int hypercolumnDesc(const String& hypercolumnName, Vector<String>& dataColumnNames,
-                       Vector<String>& coordColumnNames, Vector<String>& idColumnNames) const;
+                               Vector<String>& coordColumnNames,
+                               Vector<String>& idColumnNames) const;
 
   // Adjust the hypercolumn definitions (for a RefTable).
   // It removes and/or renames columns as necessary.

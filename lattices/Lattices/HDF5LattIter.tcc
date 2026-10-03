@@ -73,7 +73,8 @@ LatticeIterInterface<T>* HDF5LattIter<T>::clone() const {
 template <class T>
 void HDF5LattIter<T>::setupTileCache() {
   const IPosition& tileShape = itsData.niceCursorShape();
-  unsigned int cacheSize = itsNavPtr->calcCacheSize(itsData.shape(), tileShape, 0, tileShape.product());
+  unsigned int cacheSize =
+      itsNavPtr->calcCacheSize(itsData.shape(), tileShape, 0, tileShape.product());
   itsData.setCacheSizeInTiles(cacheSize);
 }
 

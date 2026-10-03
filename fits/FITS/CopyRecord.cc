@@ -158,7 +158,8 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable, const RecordInterface &
           break;
         case TpArrayUChar:
           record_array_char[which].attachToRecord(inputBuffer, i);
-          table_array_char[which] = new ArrayColumn<unsigned char>(outputTable, colnames(inputMap(i)));
+          table_array_char[which] =
+              new ArrayColumn<unsigned char>(outputTable, colnames(inputMap(i)));
           AlwaysAssert(table_array_char[which] != 0, AipsError);
           break;
         case TpArrayShort:
@@ -569,7 +570,8 @@ void addRecordDesc(TableDesc &tableDescription, const RecordDesc &recDesc, const
           break;
         case TpArrayUChar:
           if (options != 0) {
-            tableDescription.addColumn(ArrayColumnDesc<unsigned char>(colname, recDesc.shape(i), options));
+            tableDescription.addColumn(
+                ArrayColumnDesc<unsigned char>(colname, recDesc.shape(i), options));
           } else {
             tableDescription.addColumn(ArrayColumnDesc<unsigned char>(colname, options));
           }

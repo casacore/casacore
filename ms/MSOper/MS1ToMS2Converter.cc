@@ -243,8 +243,8 @@ bool MS1ToMS2Converter::convert() {
     MSAntenna::addColumnToDesc(dishtd, MSAntenna::DISH_DIAMETER);
     dish.rwKeywordSet().assign(dishtd[0].keywordSet());
 
-    for (unsigned int j = MSAntenna::NUMBER_REQUIRED_COLUMNS + 1; j < MSAntenna::NUMBER_PREDEFINED_COLUMNS;
-         j = j + 1) {
+    for (unsigned int j = MSAntenna::NUMBER_REQUIRED_COLUMNS + 1;
+         j < MSAntenna::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
       MSAntenna::PredefinedColumns i = (MSAntenna::PredefinedColumns)j;
       if (anTab.tableDesc().isColumn(MSAntenna::columnName(i))) {
         TableColumn tbc(anTab, MSAntenna::columnName(i));
@@ -771,8 +771,8 @@ bool MS1ToMS2Converter::convert() {
     MSSource::addColumnToDesc(timetd, MSSource::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    for (unsigned int j = MSSource::NUMBER_REQUIRED_COLUMNS + 1; j < MSSource::NUMBER_PREDEFINED_COLUMNS;
-         j = j + 1) {
+    for (unsigned int j = MSSource::NUMBER_REQUIRED_COLUMNS + 1;
+         j < MSSource::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
       MSSource::PredefinedColumns i = (MSSource::PredefinedColumns)j;
       if (sourceTab.tableDesc().isColumn(MSSource::columnName(i))) {
         TableColumn tbc(sourceTab, MSSource::columnName(i));
@@ -832,8 +832,8 @@ bool MS1ToMS2Converter::convert() {
     MSSysCal::addColumnToDesc(timetd, MSSysCal::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    for (unsigned int j = MSSysCal::NUMBER_REQUIRED_COLUMNS + 1; j < MSSysCal::NUMBER_PREDEFINED_COLUMNS;
-         j = j + 1) {
+    for (unsigned int j = MSSysCal::NUMBER_REQUIRED_COLUMNS + 1;
+         j < MSSysCal::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
       MSSysCal::PredefinedColumns i = (MSSysCal::PredefinedColumns)j;
       if (syscalTab.tableDesc().isColumn(MSSysCal::columnName(i))) {
         TableColumn tbc(syscalTab, MSSysCal::columnName(i));
@@ -859,8 +859,8 @@ bool MS1ToMS2Converter::convert() {
     MSWeather::addColumnToDesc(timetd, MSWeather::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    for (unsigned int j = MSWeather::NUMBER_REQUIRED_COLUMNS + 1; j < MSWeather::NUMBER_PREDEFINED_COLUMNS;
-         j = j + 1) {
+    for (unsigned int j = MSWeather::NUMBER_REQUIRED_COLUMNS + 1;
+         j < MSWeather::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
       MSWeather::PredefinedColumns i = (MSWeather::PredefinedColumns)j;
       if (weatherTab.tableDesc().isColumn(MSWeather::columnName(i))) {
         TableColumn tbc(weatherTab, MSWeather::columnName(i));

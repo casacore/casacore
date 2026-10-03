@@ -884,8 +884,9 @@ void LatticeStatistics<T>::_doStatsLoop(unsigned int nsets,
   subLat.setRegion(slicer);
   const auto setSize = subLat.size();
   const auto nMaxThreads = OMP::nMaxThreads();
-  const auto nDPMaxThreads = min(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
-  const auto nArrMaxThreads = min(nMaxThreads, nsets);
+  const auto nDPMaxThreads =
+      std::min<size_t>(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
+  const auto nArrMaxThreads = std::min<size_t>(nMaxThreads, nsets);
   auto computed = false;
   const auto forceUsingArrays =
       _latticeStatsAlgortihm && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
@@ -930,23 +931,23 @@ void LatticeStatistics<T>::_doStatsLoop(unsigned int nsets,
 }
 
 template <class T>
-IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const {
+IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uint64_t setSize) const {
   const unsigned int ndim = pInLattice_p->ndim();
   IPosition cursorShape(ndim, 1);
   const auto isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
   // arbitrary, but reasonable, max memory limit in bytes for storing arrays in bytes
-  static const uInt64 limit = 2e7;
+  static const uint64_t limit = 2e7;
   static const unsigned int sizeT = sizeof(T);
   static const unsigned int sizeBool = sizeof(bool);
   static const unsigned int sizeInt = sizeof(int);
   static const unsigned int sizeStats = sizeof(StatsData<AccumType>);
   const unsigned int posSize = sizeof(int) * ndim;
   unsigned int chunkMult = pInLattice_p->isMasked() ? sizeT + sizeBool : sizeT;
-  uInt64 chunkSize = chunkMult * setSize + sizeStats + posSize;
+  uint64_t chunkSize = chunkMult * setSize + sizeStats + posSize;
   if (isChauv) {
     chunkSize += sizeInt;
   }
-  const uInt64 nIterToAccum = limit / chunkSize;
+  const uint64_t nIterToAccum = limit / chunkSize;
   if (nIterToAccum == 0) {
     // chunk size is too big, we cannot use this method
     return IPosition(0);
@@ -957,10 +958,10 @@ IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const
     const auto curAx = cursorAxes_p[i];
     cursorShape[curAx] = latShape[curAx];
   }
-  uInt64 x = nIterToAccum;
+  uint64_t x = nIterToAccum;
   const auto nDisplayAxes = displayAxes_p.size();
   for (unsigned int i = 0; i < nDisplayAxes; ++i) {
-    cursorShape[displayAxes_p[i]] = min(x, (uInt64)latShape[displayAxes_p[i]]);
+    cursorShape[displayAxes_p[i]] = min(x, (uint64_t)latShape[displayAxes_p[i]]);
     x /= cursorShape[displayAxes_p[i]];
     if (x == 0) {
       break;
@@ -1348,7 +1349,7 @@ void LatticeStatistics<T>::generateRobust() {
   IPosition curPos, pos, pos2, pos3, posQ1, posQ3, posNpts, posMax, posMin;
   Slicer slicer;
   SubLattice<T> subLat;
-  uInt64 knownNpts;
+  uint64_t knownNpts;
   AccumType knownMax, knownMin;
   sa = _saf.createStatsAlgorithm();
   _configureDataProviders(lattDP, maskedLattDP);
@@ -1363,7 +1364,7 @@ void LatticeStatistics<T>::generateRobust() {
     posQ1 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q1);
     posQ3 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q3);
     posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
-    knownNpts = (uInt64)abs(pStoreLattice_p->getAt(posNpts));
+    knownNpts = (uint64_t)abs(pStoreLattice_p->getAt(posNpts));
     if (knownNpts == 0) {
       // Stick zero in storage lattice (it's not initialized)
       static const AccumType val(0);
@@ -1401,18 +1402,18 @@ template <class T>
 template <class U, class V>
 void LatticeStatistics<T>::_computeQuantiles(
     AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
-    std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg, uInt64 knownNpts,
+    std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg, uint64_t knownNpts,
     AccumType knownMin, AccumType knownMax) const {
   static const std::set<double> fracs = quartileFracs();
   std::map<double, AccumType> quantiles;
   static const unsigned int maxArraySizeBytes = 1e8;
   // try to prevent multiple passes for
   // large images
-  uInt64 nBins = max((uInt64)10000, knownNpts / 1000);
+  uint64_t nBins = max((uint64_t)10000, knownNpts / 1000);
   // computing the median and the quartiles simultaneously minimizes
   // the number of necessary data scans, as opposed to first calling
   // getMedian() and getQuartiles() separately
-  std::shared_ptr<uInt64> npts = std::make_shared<uInt64>(knownNpts);
+  std::shared_ptr<uint64_t> npts = std::make_shared<uint64_t>(knownNpts);
   std::shared_ptr<AccumType> mymin = std::make_shared<AccumType>(knownMin);
   std::shared_ptr<AccumType> mymax = std::make_shared<AccumType>(knownMax);
   median = statsAlg->getMedianAndQuantiles(quantiles, fracs, npts, mymin, mymax, maxArraySizeBytes,
@@ -2397,10 +2398,10 @@ bool LatticeStatistics<T>::someGoodPoints()
       pStoreLattice_p->getSlice(stats, pos, shape, IPosition(1, 1));
 
       pos(0) = NPTS;
-      // this needs to be Int64, not Int as it was, to support > 2.1 Gpixel images
+      // this needs to be int64_t, not Int as it was, to support > 2.1 Gpixel images
       // of course it will still fail for > 9.1 Epixel images, but hopefully we
       // won't have to worry about those for a few more Moore timescales.
-      someGoodPointsValue_p = Int64(real(stats(pos)) + 0.1) > 0;
+      someGoodPointsValue_p = int64_t(real(stats(pos)) + 0.1) > 0;
       return someGoodPointsValue_p;
     } else {
       // Iterate through storage lattice by planes (first and last axis of storage lattice)
@@ -2424,7 +2425,7 @@ bool LatticeStatistics<T>::someGoodPoints()
 
       for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
         for (int i = 0; i < n1; i++) {
-          if (uInt64(real(pixelIterator.matrixCursor()(i, NPTS)) + 0.1) > 0) {
+          if (uint64_t(real(pixelIterator.matrixCursor()(i, NPTS)) + 0.1) > 0) {
             someGoodPointsValue_p = true;
             return someGoodPointsValue_p;
           }

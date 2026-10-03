@@ -105,7 +105,8 @@ class RecordDescRep {
   // from a scalar type to an array type if necessary, e.g.,
   // <src>TpInt ->TpArrayInt</src>.  Returns the number of fields in
   // the description.
-  unsigned int addArray(const String& fieldName, DataType scalarOrArrayType, const IPosition& shape);
+  unsigned int addArray(const String& fieldName, DataType scalarOrArrayType,
+                        const IPosition& shape);
 
   // Add a Record field to the description. This allows hierarchical
   // descriptions to be developed. Returns the number of fields in the

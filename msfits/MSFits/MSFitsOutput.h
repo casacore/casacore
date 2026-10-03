@@ -161,12 +161,14 @@ class MSFitsOutput {
 
   // Write the TY table.
   static bool _writeTY(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
-                       const Table& syscal, const Block<int>& spwidMap, unsigned int nrif, bool combineSpw);
+                       const Table& syscal, const Block<int>& spwidMap, unsigned int nrif,
+                       bool combineSpw);
 
   // Write the GC table.
   static bool _writeGC(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
-                       const Table& syscal, const Block<int>& spwidMap, unsigned int nrif, bool combineSpw,
-                       double sensitivity, int refPixelFreq, double refFreq, double chanbw);
+                       const Table& syscal, const Block<int>& spwidMap, unsigned int nrif,
+                       bool combineSpw, double sensitivity, int refPixelFreq, double refFreq,
+                       double chanbw);
 
   // Write the WX table.
   static bool _writeWX(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms);
@@ -180,7 +182,8 @@ class MSFitsOutput {
 
   // Get the time and hourangle from the MS at the given row.
   // It uses the field-id and observation-id to calculate the hourangle.
-  static void getStartHA(double& startTime, double& startHA, const MeasurementSet& ms, unsigned int rownr);
+  static void getStartHA(double& startTime, double& startHA, const MeasurementSet& ms,
+                         unsigned int rownr);
 
   // Discern the antenna numbers that go into UVFITS
   static void _handleAntNumbers(const MeasurementSet& ms, Vector<int>& antnumbers);
@@ -218,10 +221,11 @@ class MSFitsOutput {
   //    @return Last row # with the same time, baseline, and apparent field as rownr.
   //    @warning Assumes that the columns are sorted by time(_centroid), ant1,
   //             ant2 (, field, DDID).
-  static unsigned int get_tbf_end(const unsigned int rownr, const unsigned int nrow, const unsigned int nif,
-                          const ScalarColumn<double>& timec, const ScalarColumn<double>& ininterval,
-                          const ScalarColumn<int>& ant1, const ScalarColumn<int>& ant2,
-                          const bool asMultiSource, const ScalarColumn<int>& fieldid);
+  static unsigned int get_tbf_end(const unsigned int rownr, const unsigned int nrow,
+                                  const unsigned int nif, const ScalarColumn<double>& timec,
+                                  const ScalarColumn<double>& ininterval,
+                                  const ScalarColumn<int>& ant1, const ScalarColumn<int>& ant2,
+                                  const bool asMultiSource, const ScalarColumn<int>& fieldid);
 
   static void _checkReceptorAngles(const Vector<Quantity>& ra0, Vector<Quantity>& ra1, int antnum);
 };

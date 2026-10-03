@@ -90,13 +90,13 @@ class TiledFileAccess {
   // The data is assumed to be in local canonical format
   // (thus big endian on e.g. SUN and little endian on e.g. PC).
   // The TSMOption determines how the file is accessed.
-  TiledFileAccess(const String& fileName, Int64 fileOffset, const IPosition& shape,
+  TiledFileAccess(const String& fileName, int64_t fileOffset, const IPosition& shape,
                   const IPosition& tileShape, DataType dataType, const TSMOption& = TSMOption(),
                   bool writable = false);
 
   // Create a TiledFileAccess object.
   // The endian format of the data is explicitly given.
-  TiledFileAccess(const String& fileName, Int64 fileOffset, const IPosition& shape,
+  TiledFileAccess(const String& fileName, int64_t fileOffset, const IPosition& shape,
                   const IPosition& tileShape, DataType dataType, const TSMOption&, bool writable,
                   bool bigEndian);
 
@@ -145,8 +145,8 @@ class TiledFileAccess {
                         bool examineForDeleteValues = true);
   Array<float> getFloat(const Slicer& section, float scale, float offset, int deleteValue,
                         bool examineForDeleteValues = true);
-  void get(Array<float>&, const Slicer& section, float scale, float offset, unsigned char deleteValue,
-           bool examineForDeleteValues = true);
+  void get(Array<float>&, const Slicer& section, float scale, float offset,
+           unsigned char deleteValue, bool examineForDeleteValues = true);
   void get(Array<float>&, const Slicer& section, float scale, float offset, short deleteValue,
            bool examineForDeleteValues = true);
   void get(Array<float>&, const Slicer& section, float scale, float offset, int deleteValue,
@@ -185,10 +185,10 @@ class TiledFileAccess {
 
   // Set the maximum cache size (in bytes).
   // 0 means no maximum.
-  void setMaximumCacheSize(uInt64 nbytes);
+  void setMaximumCacheSize(uint64_t nbytes);
 
   // Get the maximum cache size (in bytes).
-  uInt64 maximumCacheSize() const;
+  uint64_t maximumCacheSize() const;
 
   // Get the current cache size (in buckets).
   unsigned int cacheSize() const { return itsCube->cacheSize(); }

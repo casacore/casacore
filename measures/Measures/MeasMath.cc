@@ -37,8 +37,7 @@
 #include <casacore/measures/Measures/SolarPos.h>
 
 namespace {
-inline void updatePosition(double const angle0, double const angle1,
-                           casacore::MVPosition &pos) {
+inline void updatePosition(double const angle0, double const angle1, casacore::MVPosition &pos) {
   if (angle1 == 0) {
     pos(0) = std::cos(angle0);
     pos(1) = std::sin(angle0);

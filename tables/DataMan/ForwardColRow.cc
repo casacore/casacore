@@ -130,7 +130,9 @@ void ForwardColumnIndexedRow::setShape(rownr_t, const IPosition&) {
   throw(DataManInvOper("setShape not supported by data manager ForwardColumnIndexedRow"));
 }
 
-unsigned int ForwardColumnIndexedRow::ndim(rownr_t rownr) { return colPtr()->ndim(convertRownr(rownr)); }
+unsigned int ForwardColumnIndexedRow::ndim(rownr_t rownr) {
+  return colPtr()->ndim(convertRownr(rownr));
+}
 
 IPosition ForwardColumnIndexedRow::shape(rownr_t rownr) {
   return colPtr()->shape(convertRownr(rownr));
@@ -202,10 +204,10 @@ void ForwardColumnIndexedRow::putuInt(rownr_t, const unsigned int*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getInt64(rownr_t rownr, Int64* dataPtr) {
+void ForwardColumnIndexedRow::getInt64(rownr_t rownr, int64_t* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putInt64(rownr_t, const Int64*) {
+void ForwardColumnIndexedRow::putInt64(rownr_t, const int64_t*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 

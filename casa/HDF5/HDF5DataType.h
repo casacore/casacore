@@ -100,7 +100,7 @@ class HDF5DataType {
   explicit HDF5DataType(const unsigned short*);
   explicit HDF5DataType(const int*);
   explicit HDF5DataType(const unsigned int*);
-  explicit HDF5DataType(const Int64*);
+  explicit HDF5DataType(const int64_t*);
   explicit HDF5DataType(const float*);
   explicit HDF5DataType(const double*);
   explicit HDF5DataType(const Complex*);

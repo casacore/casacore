@@ -174,7 +174,9 @@ class TempLatticeImpl {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  void setCacheSizeInTiles(unsigned int howManyTiles) { itsLatticePtr->setCacheSizeInTiles(howManyTiles); }
+  void setCacheSizeInTiles(unsigned int howManyTiles) {
+    itsLatticePtr->setCacheSizeInTiles(howManyTiles);
+  }
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called

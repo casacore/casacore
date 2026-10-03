@@ -45,7 +45,7 @@ void showWithTables(ostream& os, const TaQLMultiNode& with) {
 
 TaQLConstNodeRep::TaQLConstNodeRep(bool value)
     : TaQLNodeRep(TaQLNode_Const), itsType(CTBool), itsIsTableName(false), itsBValue(value) {}
-TaQLConstNodeRep::TaQLConstNodeRep(Int64 value)
+TaQLConstNodeRep::TaQLConstNodeRep(int64_t value)
     : TaQLNodeRep(TaQLNode_Const),
       itsType(CTInt),
       itsIsTableName(false),
@@ -79,7 +79,7 @@ TaQLConstNodeRep::TaQLConstNodeRep(const MVTime& value)
       itsRValue(value),
       itsCValue(value, 0.),
       itsTValue(value) {}
-TaQLConstNodeRep::TaQLConstNodeRep(Int64 value, const String& subTableName)
+TaQLConstNodeRep::TaQLConstNodeRep(int64_t value, const String& subTableName)
     : TaQLNodeRep(TaQLNode_Const),
       itsType(CTInt),
       itsIsTableName(true),
@@ -179,7 +179,7 @@ TaQLNode TaQLConstNodeRep::restore(AipsIO& aio) {
       return new TaQLConstNodeRep(value);
     }
     case CTInt: {
-      Int64 value;
+      int64_t value;
       aio >> value;
       if (isTableName) {
         String name;

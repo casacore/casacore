@@ -82,12 +82,12 @@ ByteSource& ByteSource::operator>>(unsigned int& value) {
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(Int64& value) {
+ByteSource& ByteSource::operator>>(int64_t& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(uInt64& value) {
+ByteSource& ByteSource::operator>>(uint64_t& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
@@ -131,9 +131,9 @@ void ByteSource::read(size_t nvalues, int* value) { itsTypeIO->read(nvalues, val
 
 void ByteSource::read(size_t nvalues, unsigned int* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, Int64* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, int64_t* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, uInt64* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, uint64_t* value) { itsTypeIO->read(nvalues, value); }
 
 void ByteSource::read(size_t nvalues, float* value) { itsTypeIO->read(nvalues, value); }
 

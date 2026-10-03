@@ -1009,8 +1009,8 @@ bool SpectralCoordinate::setRestFrequency(double newFrequency, bool append) {
   return true;
 }
 
-void SpectralCoordinate::setRestFrequencies(const Vector<double>& restFrequencies, unsigned int which,
-                                            bool append) {
+void SpectralCoordinate::setRestFrequencies(const Vector<double>& restFrequencies,
+                                            unsigned int which, bool append) {
   for (unsigned int i = 0; i < restFrequencies.nelements(); i++) {
     AlwaysAssert(restFrequencies(i) >= 0.0, AipsError);
   }

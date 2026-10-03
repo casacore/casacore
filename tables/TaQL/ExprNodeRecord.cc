@@ -121,7 +121,7 @@ bool TableExprNodeRecordField::getBool(const TableExprId& id) {
   }
   return getRecord(id).asBool(fieldNrs_p[lastEntry_p]);
 }
-Int64 TableExprNodeRecordField::getInt(const TableExprId& id) {
+int64_t TableExprNodeRecordField::getInt(const TableExprId& id) {
   if (id.byData()) {
     return id.data().getInt(fieldNrs_p);
   }
@@ -248,11 +248,11 @@ MArray<bool> TableExprNodeRecordFieldArray::getArrayBool(const TableExprId& id) 
   return MArray<bool>(getRecord(id).asArrayBool(fieldNrs_p[lastEntry_p]));
 }
 
-MArray<Int64> TableExprNodeRecordFieldArray::getArrayInt(const TableExprId& id) {
+MArray<int64_t> TableExprNodeRecordFieldArray::getArrayInt(const TableExprId& id) {
   if (id.byData()) {
-    return MArray<Int64>(id.data().getArrayInt(fieldNrs_p));
+    return MArray<int64_t>(id.data().getArrayInt(fieldNrs_p));
   }
-  return MArray<Int64>(getRecord(id).toArrayInt64(fieldNrs_p[lastEntry_p]));
+  return MArray<int64_t>(getRecord(id).toArrayInt64(fieldNrs_p[lastEntry_p]));
 }
 
 MArray<double> TableExprNodeRecordFieldArray::getArrayDouble(const TableExprId& id) {

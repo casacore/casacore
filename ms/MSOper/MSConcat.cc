@@ -1826,7 +1826,8 @@ void MSConcat::checkCategories(const MSMainColumns& otherCols) const {
   }
 }
 
-bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<unsigned int>& newAntIndices) {
+bool MSConcat::copyPointing(const MSPointing& otherPoint,
+                            const Block<unsigned int>& newAntIndices) {
   LogIO os(LogOrigin("MSConcat", "copyPointing"));
 
   bool itsPointingNull = (itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0));
@@ -2063,7 +2064,8 @@ bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<unsigned int>
   return true;
 }
 
-bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<unsigned int>& newAntIndices) {
+bool MSConcat::copyWeather(const MSWeather& otherWeather,
+                           const Block<unsigned int>& newAntIndices) {
   LogIO os(LogOrigin("MSConcat", "copyWeather"));
 
   bool itsWeatherNull = (itsMS.weather().isNull() || (itsMS.weather().nrow() == 0));
@@ -2134,7 +2136,8 @@ bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<unsigned i
   return true;
 }
 
-bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<unsigned int>& newAntIndices) {
+bool MSConcat::copyGainCurve(const MeasurementSet& otherMS,
+                             const Block<unsigned int>& newAntIndices) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copyGainCurve"));
@@ -2233,7 +2236,8 @@ bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<unsigned
   return true;
 }
 
-bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<unsigned int>& newAntIndices) {
+bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS,
+                            const Block<unsigned int>& newAntIndices) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copyPhaseCal"));
@@ -2505,7 +2509,7 @@ int MSConcat::copyProcessor(const MSProcessor& otherProc, const bool remRedunPro
     vector<rownr_t> rowsToBeRemoved;
     for (unsigned int j = 0; j < proc.nrow(); j++) {        // loop over PROC table rows
       for (unsigned int k = j + 1; k < proc.nrow(); k++) {  // loop over remaining PROC table rows
-        if (procRowsEquivalent(procCol, j, k)) {    // rows equivalent?
+        if (procRowsEquivalent(procCol, j, k)) {            // rows equivalent?
           // make entry in map for (k,j) and mark k for deletion
           tempProcIndex2[k] = j;
           rowToBeRemoved(k) = true;
@@ -2571,7 +2575,8 @@ int MSConcat::copyProcessor(const MSProcessor& otherProc, const bool remRedunPro
   return proc.nrow();
 }
 
-Block<unsigned int> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed& otherFeed) {
+Block<unsigned int> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
+                                                 const MSFeed& otherFeed) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copyAntennaAndFeed"));
@@ -2888,7 +2893,7 @@ Block<unsigned int> MSConcat::copyField(const MeasurementSet& otherms) {
     // Attempt to preserve field names by looking up the field by name
     // and passing it as a hint when searching for fields with
     // matching directions below.
-    Int64 tryRow = fieldCols.nrow() - 1;
+    int64_t tryRow = fieldCols.nrow() - 1;
     while (tryRow >= 0) {
       if (fieldCols.name()(tryRow) == otherFieldCols.name()(f)) break;
       tryRow--;
@@ -3464,8 +3469,8 @@ bool MSConcat::procRowsEquivalent(const MSProcessorColumns& procCol, const unsig
 }
 
 Block<unsigned int> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
-                                    const MSPolarization& otherPol,
-                                    const MSDataDescription& otherDD) {
+                                            const MSPolarization& otherPol,
+                                            const MSDataDescription& otherDD) {
   LogIO os(LogOrigin("MSConcat", "copySpwAndPol"));
 
   const unsigned int nDDs = otherDD.nrow();

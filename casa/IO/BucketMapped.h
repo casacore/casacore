@@ -76,7 +76,8 @@ class BucketMapped : public BucketBase {
   // bucketSize*nrOfBuckets bytes.
   // If the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketMapped(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets);
+  BucketMapped(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+               unsigned int nrOfBuckets);
 
   // Unmap the file
   ~BucketMapped();

@@ -61,7 +61,7 @@ class StatisticsUtilities {
   // in the weighted case Its basic definition is
   // nvariance = sum((x_i - mean)**2),
   // wnvariance = sum((weight_i*(x_i - mean)**2)
-  // npts is a Double rather than an Int64 because of compilation issues when
+  // npts is a Double rather than an int64_t because of compilation issues when
   // T is a Complex
   inline static void accumulate(double& npts, AccumType& sum, AccumType& mean,
                                 const AccumType& datum);
@@ -156,8 +156,8 @@ class StatisticsUtilities {
 
   // The array can be changed by partially sorting it up to the largest index.
   // Return a map of index to value in the sorted array.
-  static std::map<uInt64, AccumType> indicesToValues(std::vector<AccumType>& myArray,
-                                                     const std::set<uInt64>& indices);
+  static std::map<uint64_t, AccumType> indicesToValues(std::vector<AccumType>& myArray,
+                                                       const std::set<uint64_t>& indices);
 
   static void mergeResults(
       std::vector<BinCountArray>& bins, std::vector<std::shared_ptr<AccumType>>& sameVal,

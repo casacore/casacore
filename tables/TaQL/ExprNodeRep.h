@@ -305,7 +305,7 @@ class TableExprNodeRep {
   // operator on the resulting values.
   // <group>
   virtual bool getBool(const TableExprId& id);
-  virtual Int64 getInt(const TableExprId& id);
+  virtual int64_t getInt(const TableExprId& id);
   virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
@@ -319,7 +319,7 @@ class TableExprNodeRep {
   // operator on the resulting values.
   // <group>
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
   virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
@@ -329,13 +329,13 @@ class TableExprNodeRep {
   // General get functions for template purposes.
   // <group>
   void get(const TableExprId& id, bool& value) { value = getBool(id); }
-  void get(const TableExprId& id, Int64& value) { value = getInt(id); }
+  void get(const TableExprId& id, int64_t& value) { value = getInt(id); }
   void get(const TableExprId& id, double& value) { value = getDouble(id); }
   void get(const TableExprId& id, DComplex& value) { value = getDComplex(id); }
   void get(const TableExprId& id, MVTime& value) { value = getDate(id); }
   void get(const TableExprId& id, String& value) { value = getString(id); }
   void get(const TableExprId& id, MArray<bool>& value) { value = getArrayBool(id); }
-  void get(const TableExprId& id, MArray<Int64>& value) { value = getArrayInt(id); }
+  void get(const TableExprId& id, MArray<int64_t>& value) { value = getArrayInt(id); }
   void get(const TableExprId& id, MArray<double>& value) { value = getArrayDouble(id); }
   void get(const TableExprId& id, MArray<DComplex>& value) { value = getArrayDComplex(id); }
   void get(const TableExprId& id, MArray<MVTime>& value) { value = getArrayDate(id); }
@@ -346,7 +346,7 @@ class TableExprNodeRep {
   // This is useful if one could give an argument as scalar or array.
   // <group>
   MArray<bool> getBoolAS(const TableExprId& id);
-  MArray<Int64> getIntAS(const TableExprId& id);
+  MArray<int64_t> getIntAS(const TableExprId& id);
   MArray<double> getDoubleAS(const TableExprId& id);
   MArray<DComplex> getDComplexAS(const TableExprId& id);
   MArray<String> getStringAS(const TableExprId& id);
@@ -358,13 +358,13 @@ class TableExprNodeRep {
   // thus tests if it is equal to the given value.
   // <group>
   virtual bool contains(const TableExprId& id, bool value);
-  virtual bool contains(const TableExprId& id, Int64 value);
+  virtual bool contains(const TableExprId& id, int64_t value);
   virtual bool contains(const TableExprId& id, double value);
   virtual bool contains(const TableExprId& id, DComplex value);
   virtual bool contains(const TableExprId& id, String value);
   virtual bool contains(const TableExprId& id, MVTime value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<bool>& value);
-  virtual MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<int64_t>& value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<double>& value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<String>& value);
@@ -392,7 +392,7 @@ class TableExprNodeRep {
   virtual Array<unsigned short> getColumnuShort(const Vector<rownr_t>& rownrs);
   virtual Array<int> getColumnInt(const Vector<rownr_t>& rownrs);
   virtual Array<unsigned int> getColumnuInt(const Vector<rownr_t>& rownrs);
-  virtual Array<Int64> getColumnInt64(const Vector<rownr_t>& rownrs);
+  virtual Array<int64_t> getColumnInt64(const Vector<rownr_t>& rownrs);
   virtual Array<float> getColumnFloat(const Vector<rownr_t>& rownrs);
   virtual Array<double> getColumnDouble(const Vector<rownr_t>& rownrs);
   virtual Array<Complex> getColumnComplex(const Vector<rownr_t>& rownrs);
@@ -651,7 +651,8 @@ class TableExprNodeMulti : public TableExprNodeRep {
   // Check number of arguments
   // low <= number_of_args <= high
   // It throws an exception if wrong number of arguments.
-  static unsigned int checkNumOfArg(unsigned int low, unsigned int high, const std::vector<TENShPtr>& nodes);
+  static unsigned int checkNumOfArg(unsigned int low, unsigned int high,
+                                    const std::vector<TENShPtr>& nodes);
 
   // Get the child nodes.
   const std::vector<TENShPtr>& getChildren() const { return operands_p; }

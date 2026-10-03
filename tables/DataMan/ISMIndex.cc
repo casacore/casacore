@@ -126,7 +126,8 @@ unsigned int ISMIndex::getIndex(rownr_t rownr) const {
   return index;
 }
 
-unsigned int ISMIndex::getBucketNr(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& bucketNrrow) const {
+unsigned int ISMIndex::getBucketNr(rownr_t rownr, rownr_t& bucketStartRow,
+                                   rownr_t& bucketNrrow) const {
   unsigned int index = getIndex(rownr);
   bucketStartRow = rows_p[index];
   bucketNrrow = rows_p[index + 1] - bucketStartRow;

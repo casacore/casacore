@@ -163,7 +163,8 @@ String makeMSName(int seqnr, const String& msName) {
   return name;
 }
 
-void showParmsHDF5(const IPosition& tileShape, unsigned int tileSize, unsigned int nspw, const Record& attr) {
+void showParmsHDF5(const IPosition& tileShape, unsigned int tileSize, unsigned int nspw,
+                   const Record& attr) {
   cout << " nms       = " << myNPart << "    " << myMsName << std::endl;
   cout << " nthread   = " << OMP::maxThreads() << std::endl;
   cout << " nant      = " << attr.asInt("NAntenna") << "   (" << attr.asInt("NBaseline")
@@ -218,13 +219,13 @@ void showParms() {
   MeasurementSet ms(parts[0]);
   TableIterator iter(ms, "TIME", TableIterator::Ascending, TableIterator::NoSort);
   Table tab1 = iter.table();
-  Int64 ntime = ms.nrow() / tab1.nrow();
-  Int64 nspw = tableCommand("select unique DATA_DESC_ID from $1", tab1).table().nrow();
-  Int64 nbl = tableCommand("select unique ANTENNA1,ANTENNA2 from $1", tab1).table().nrow();
-  Int64 nant = ms.antenna().nrow();
-  Int64 nfield = ms.field().nrow();
-  Int64 ntimefield = 0;
-  if (Int64(tab1.nrow()) != nbl * nspw * nfield) {
+  int64_t ntime = ms.nrow() / tab1.nrow();
+  int64_t nspw = tableCommand("select unique DATA_DESC_ID from $1", tab1).table().nrow();
+  int64_t nbl = tableCommand("select unique ANTENNA1,ANTENNA2 from $1", tab1).table().nrow();
+  int64_t nant = ms.antenna().nrow();
+  int64_t nfield = ms.field().nrow();
+  int64_t ntimefield = 0;
+  if (int64_t(tab1.nrow()) != nbl * nspw * nfield) {
     TableIterator iterfld(ms, "FIELD_ID", TableIterator::Ascending, TableIterator::NoSort);
     ntimefield = iterfld.table().nrow() / tab1.nrow();
   }
@@ -343,7 +344,7 @@ void readRows(ArrayColumn<Complex>& dataCol, ArrayColumn<float>& floatDataCol,
   }
 }
 
-Int64 readNoIter(MeasurementSet& tab, Int64& niter) {
+int64_t readNoIter(MeasurementSet& tab, int64_t& niter) {
   Array<Complex> data;
   Array<float> floatData;
   Array<bool> flags;
@@ -405,14 +406,14 @@ Int64 readNoIter(MeasurementSet& tab, Int64& niter) {
   return tab.nrow();
 }
 
-Int64 readSteps(MeasurementSet& ms, Int64& niter) {
+int64_t readSteps(MeasurementSet& ms, int64_t& niter) {
   niter = 0;
   Table tab(ms);
   if (myIterCols1.empty() && myIterCols2.empty()) {
     return readNoIter(ms, niter);
   }
   // Read with iteration (outer and/or inner).
-  Int64 nrow = 0;
+  int64_t nrow = 0;
   Block<String> itercols1(myIterCols1.size());
   std::copy(myIterCols1.begin(), myIterCols1.end(), itercols1.begin());
   Block<String> itercols2(myIterCols2.size());
@@ -517,7 +518,7 @@ void setTSMCacheSize(const Table& tab, const String& columnName, int cacheSize) 
 void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
                   const std::shared_ptr<HDF5DataSet>& hdata,
                   const std::shared_ptr<HDF5DataSet>& hfloatdata,
-                  const std::shared_ptr<HDF5DataSet>& hweight, Int64 row, Int64 nrow) {
+                  const std::shared_ptr<HDF5DataSet>& hweight, int64_t row, int64_t nrow) {
   if (myReadRowWise) {
     IPosition shp(hflag->shape());
     shp[2] = 1;
@@ -528,7 +529,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
     IPosition s(3, 0);
     IPosition e(shp - 1);
     Slicer slicer(s, shp);
-    for (Int64 r = 0; r < nrow; ++r) {
+    for (int64_t r = 0; r < nrow; ++r) {
       s[2] = row + r;
       e[2] = row + r;
       slicer.setStart(s);
@@ -576,8 +577,8 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
   IPosition shp(slicer.length());
   IPosition s(slicer.start());
   IPosition e(slicer.end());
-  Int64 srow = s[2];
-  Int64 erow = e[2];
+  int64_t srow = s[2];
+  int64_t erow = e[2];
   if (myReadRowWise) {
     shp[2] = 1;
     Array<Complex> data(shp);
@@ -587,7 +588,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
     // Make a slicer with length 1.
     s[2] = 1;
     Slicer slicer(s, shp);
-    for (Int64 row = srow; row <= erow; ++row) {
+    for (int64_t row = srow; row <= erow; ++row) {
       s[2] = row;
       e[2] = row;
       slicer.setStart(s);
@@ -625,10 +626,11 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
   }
 }
 
-Int64 readStepsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
-                    const std::shared_ptr<HDF5DataSet>& hdata,
-                    const std::shared_ptr<HDF5DataSet>& hfloatdata,
-                    const std::shared_ptr<HDF5DataSet>& hweightspectrum, Int64 nrow, Int64& niter) {
+int64_t readStepsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
+                      const std::shared_ptr<HDF5DataSet>& hdata,
+                      const std::shared_ptr<HDF5DataSet>& hfloatdata,
+                      const std::shared_ptr<HDF5DataSet>& hweightspectrum, int64_t nrow,
+                      int64_t& niter) {
   niter = 0;
   IPosition shape = hflag->shape();
   int lastchan = myStartChan + myNChan;
@@ -641,7 +643,7 @@ Int64 readStepsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
   }
   for (int fchan = myStartChan; fchan < lastchan; fchan += chansize) {
     int lchan = fchan + chansize;
-    for (Int64 row = 0; row < shape[2]; row += nrow) {
+    for (int64_t row = 0; row < shape[2]; row += nrow) {
       if (fchan > 0 || lchan < shape[1] || myNPol < shape[0]) {
         AlwaysAssert(fchan < shape[1], AipsError);
         int nchan = std::min(lchan, int(shape[1])) - fchan;
@@ -664,9 +666,9 @@ Int64 readStepsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
   return shape[2];
 }
 
-std::vector<Int64> doHDF5(int seqnr, const String& name) {
+std::vector<int64_t> doHDF5(int seqnr, const String& name) {
   Timer timer;
-  std::vector<Int64> res(2);
+  std::vector<int64_t> res(2);
   res[0] = 0;
   HDF5File hfile(name, ByteIO::Old);
   // There is a group per spectral window. Get all groups.
@@ -724,8 +726,8 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
     // Determine nr of rows to read per time step.
     int ntoread = attr.asInt("NBaseline");
     if (attr.asInt("NTimeField") > 0) ntoread *= attr.asInt("NField");
-    Int64 niter;
-    Int64 nrow = readStepsHDF5(hflag, hdata, hfloatdata, hweightspectrum, ntoread, niter);
+    int64_t niter;
+    int64_t nrow = readStepsHDF5(hflag, hdata, hfloatdata, hweightspectrum, ntoread, niter);
     res[0] += nrow;
     timer.show("Read " + std::to_string(nrow) + " rows (in " + std::to_string(niter) +
                " iterations) from MS " + std::string(name));
@@ -734,7 +736,7 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
   return res;
 }
 
-std::vector<Int64> doOne(int seqnr, const String& msName) {
+std::vector<int64_t> doOne(int seqnr, const String& msName) {
   // Form the MS name.
   // If it contains %d, use that to fill in the seqnr.
   // Otherwise append _seqnr to the name (unless a single part is done).
@@ -742,7 +744,7 @@ std::vector<Int64> doOne(int seqnr, const String& msName) {
   if (myIsHDF5) {
     return doHDF5(seqnr, name);
   }
-  vector<Int64> res(2);
+  vector<int64_t> res(2);
   // Open the MS.
   Timer timer;
   Table tab(name);
@@ -786,8 +788,8 @@ std::vector<Int64> doOne(int seqnr, const String& msName) {
     timer.mark();
   }
   MeasurementSet ms(tab);
-  Int64 niter;
-  Int64 nrow = readSteps(ms, niter);
+  int64_t niter;
+  int64_t nrow = readSteps(ms, niter);
   timer.show("Read " + std::to_string(nrow) + " rows (in " + std::to_string(niter) +
              " iterations) from MS " + std::string(msName));
   if (seqnr == 0) {
@@ -797,13 +799,13 @@ std::vector<Int64> doOne(int seqnr, const String& msName) {
 }
 
 void doAll() {
-  Int64 nrow = 0, selNrow = 0;
+  int64_t nrow = 0, selNrow = 0;
   int nthread = OMP::maxThreads();
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
 #endif
   for (int i = 0; i < myNPart; ++i) {
-    vector<Int64> res = doOne(i, myMsName);
+    vector<int64_t> res = doOne(i, myMsName);
     if (i == 0) {
       nrow = res[0];
       selNrow = res[1];

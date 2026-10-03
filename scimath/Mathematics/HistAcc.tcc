@@ -402,7 +402,8 @@ std::optional<T> HistAcc<T>::getBinValue(const unsigned int index) const {
 
 // Result: get the Histogram itself in two Blocks (simple vectors)
 template <class T>
-std::optional<unsigned int> HistAcc<T>::getHistogram(Block<unsigned int>& binContents, Block<T>& binValues) {
+std::optional<unsigned int> HistAcc<T>::getHistogram(Block<unsigned int>& binContents,
+                                                     Block<T>& binValues) {
   if (itsAutoDefineMode) {
     autoDefineBins();
   }

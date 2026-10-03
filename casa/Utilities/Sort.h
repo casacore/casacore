@@ -74,7 +74,7 @@ class SortKey {
   // If it succeeds, it returns the resulting number of elements.
   // Otherwise it returns 0.
   unsigned int tryGenSort(Vector<unsigned int>& indexVector, unsigned int nrrec, int opt) const;
-  uInt64 tryGenSort(Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const;
+  uint64_t tryGenSort(Vector<uint64_t>& indexVector, uint64_t nrrec, int opt) const;
 
   // Get the sort order.
   int order() const { return order_p; }
@@ -316,10 +316,10 @@ class Sort {
   // is resized to that number.
   // <br> By default it'll try if the faster GenSortIndirect can be used
   // if a sort on a single key is used.
-  unsigned int sort(Vector<unsigned int>& indexVector, unsigned int nrrec, int options = DefaultSort,
-            bool tryGenSort = true) const;
-  uInt64 sort(Vector<uInt64>& indexVector, uInt64 nrrec, int options = DefaultSort,
-              bool tryGenSort = true) const;
+  unsigned int sort(Vector<unsigned int>& indexVector, unsigned int nrrec,
+                    int options = DefaultSort, bool tryGenSort = true) const;
+  uint64_t sort(Vector<uint64_t>& indexVector, uint64_t nrrec, int options = DefaultSort,
+                bool tryGenSort = true) const;
 
   // Get all unique records in a sorted array. The array order is
   // given in the indexVector (as possibly returned by the sort function).
@@ -339,13 +339,14 @@ class Sort {
   // of the keyword that will change at the end of the group.
   // <group>
   unsigned int unique(Vector<unsigned int>& uniqueVector, unsigned int nrrec) const;
-  unsigned int unique(Vector<unsigned int>& uniqueVector, const Vector<unsigned int>& indexVector) const;
+  unsigned int unique(Vector<unsigned int>& uniqueVector,
+                      const Vector<unsigned int>& indexVector) const;
   unsigned int unique(Vector<unsigned int>& uniqueVector, Vector<size_t>& changeKey,
-              const Vector<unsigned int>& indexVector) const;
-  uInt64 unique(Vector<uInt64>& uniqueVector, uInt64 nrrec) const;
-  uInt64 unique(Vector<uInt64>& uniqueVector, const Vector<uInt64>& indexVector) const;
-  uInt64 unique(Vector<uInt64>& uniqueVector, Vector<size_t>& changeKey,
-                const Vector<uInt64>& indexVector) const;
+                      const Vector<unsigned int>& indexVector) const;
+  uint64_t unique(Vector<uint64_t>& uniqueVector, uint64_t nrrec) const;
+  uint64_t unique(Vector<uint64_t>& uniqueVector, const Vector<uint64_t>& indexVector) const;
+  uint64_t unique(Vector<uint64_t>& uniqueVector, Vector<size_t>& changeKey,
+                  const Vector<uint64_t>& indexVector) const;
   // </group>
 
  private:
@@ -430,7 +431,7 @@ class Sort {
   Block<SortKey*> keys_p;  // # keys to sort on
   size_t nrkey_p;          // # #sort-keys
   const void* data_p;      // # pointer to data records
-  unsigned int size_p;             // # size of data record
+  unsigned int size_p;     // # size of data record
   int order_p;             // # -1=asc 0=mixed 1=desc
 };
 

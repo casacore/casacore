@@ -266,7 +266,8 @@ class TableMeasRefDesc {
   // <group>
   typedef void TypesFunc(Vector<String>& types, Vector<unsigned int>& codes, const MeasureHolder&);
   static void setTypesFunc(TypesFunc* func) { theirTypesFunc = func; }
-  static void defaultTypesFunc(Vector<String>& types, Vector<unsigned int>& codes, const MeasureHolder&);
+  static void defaultTypesFunc(Vector<String>& types, Vector<unsigned int>& codes,
+                               const MeasureHolder&);
   static TypesFunc* theirTypesFunc;
   // </group>
 
@@ -294,8 +295,9 @@ class TableMeasRefDesc {
   // <group>
   void initTabRefMap();
   void fillTabRefMap(const MeasureHolder& measHolder);
-  unsigned int fillMap(Block<int>& f2t, const Vector<unsigned int>& codesf, const Vector<String>& typesf,
-               Vector<unsigned int>& codest, Vector<String>& typest, int maxnr);
+  unsigned int fillMap(Block<int>& f2t, const Vector<unsigned int>& codesf,
+                       const Vector<String>& typesf, Vector<unsigned int>& codest,
+                       Vector<String>& typest, int maxnr);
   // </group>
 
   // Write the actual keywords.

@@ -296,11 +296,12 @@ bool MSFitsOutput::writeFitsFile(const String& fitsfile, const MeasurementSet& m
   return true;
 }
 
-unsigned int MSFitsOutput::get_tbf_end(const unsigned int rownr, const unsigned int nrow, const unsigned int nif,
-                               const ScalarColumn<double>& intimec,
-                               const ScalarColumn<double>& timewidthcol,
-                               const ScalarColumn<int>& inant1, const ScalarColumn<int>& inant2,
-                               const bool asMultiSource, const ScalarColumn<int>& infieldid) {
+unsigned int MSFitsOutput::get_tbf_end(const unsigned int rownr, const unsigned int nrow,
+                                       const unsigned int nif, const ScalarColumn<double>& intimec,
+                                       const ScalarColumn<double>& timewidthcol,
+                                       const ScalarColumn<int>& inant1,
+                                       const ScalarColumn<int>& inant2, const bool asMultiSource,
+                                       const ScalarColumn<int>& infieldid) {
   const double maxTime = intimec(rownr) + 0.2 * timewidthcol(rownr);
   const int startant1 = inant1(rownr);
   const int startant2 = inant2(rownr);
@@ -875,7 +876,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
       }
     }
 
-    if (nif > 1) {          // Don't bother counting all the inspwinids
+    if (nif > 1) {                  // Don't bother counting all the inspwinids
       Vector<unsigned int> nperIF;  // unless there is > 1 kind.
       nperIF.resize(nif);
       nperIF.set(0);
@@ -935,7 +936,8 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
         if (haveProblem) {
           os << LogIO::SEVERE << "The number of rows per spectral window varies:\n"
              << " Output SpW   # of rows\n";
-          for (unsigned int m = 0; m < nif; ++m) os << "    " << m << "       " << nperIF[m] << "\n";
+          for (unsigned int m = 0; m < nif; ++m)
+            os << "    " << m << "       " << nperIF[m] << "\n";
           os << " the spectral windows cannot be combined without padwithflags." << LogIO::POST;
           return 0;
         }

@@ -80,14 +80,15 @@ void MSFeedColumns::setDirectionRef(MDirection::Types ref) { beamOffsetMeas_p.se
 
 void MSFeedColumns::setPositionRef(MPosition::Types ref) { positionMeas_p.setDescRefCode(ref); }
 
-Int64 MSFeedColumns::matchFeed(Quantum<double>& newTimeQ, Quantum<double>& newIntervalQ, int antId,
-                               int fId, int spwId, const Quantum<double>& timeQ,
-                               const Quantum<double>& intervalQ, int numRec,
-                               const Array<Quantum<double>>& beamOffsetQ,
-                               const Array<String>& polType, const Array<Complex>& polResp,
-                               const Array<Quantum<double>>& positionQ,
-                               const Array<Quantum<double>>& receptorAngleQ,
-                               const RowNumbers& ignoreRows, const Quantum<double>& focusLengthQ) {
+int64_t MSFeedColumns::matchFeed(Quantum<double>& newTimeQ, Quantum<double>& newIntervalQ,
+                                 int antId, int fId, int spwId, const Quantum<double>& timeQ,
+                                 const Quantum<double>& intervalQ, int numRec,
+                                 const Array<Quantum<double>>& beamOffsetQ,
+                                 const Array<String>& polType, const Array<Complex>& polResp,
+                                 const Array<Quantum<double>>& positionQ,
+                                 const Array<Quantum<double>>& receptorAngleQ,
+                                 const RowNumbers& ignoreRows,
+                                 const Quantum<double>& focusLengthQ) {
   const Unit d("deg");
   const Unit s("s");
   const Unit m("m");

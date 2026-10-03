@@ -498,7 +498,7 @@ void DataManInfo::showDataManStats(const Table& tab, std::ostream& os) {
     String col = dmInfo.subRecord(i).asArrayString("COLUMNS").data()[0];
     RODataManAccessor acc(tab, col, true);
     os << "  Statistics for column " << col << " e.a.: ";
-    Int64 pos = os.tellp();
+    int64_t pos = os.tellp();
     acc.showCacheStatistics(os);
     if (os.tellp() == pos) {
       // Nothing written, thus end the line.

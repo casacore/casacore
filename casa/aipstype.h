@@ -26,13 +26,6 @@
 #ifndef CASA_AIPSTYPE_H
 #define CASA_AIPSTYPE_H
 
-// For temporary backward namespace compatibility, use casa as alias for casacore.
-// # Note: namespace casa = casacore; does not work for forward declarations.
-
-#if defined(UseCasaNamespace)
-#define casacore casa
-#endif
-
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Define the standard types used by Casacore

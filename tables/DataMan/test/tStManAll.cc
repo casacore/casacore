@@ -59,19 +59,19 @@
 // </summary>
 
 // Define a macro to execute a function for all column types.
-#define ExecFunc(funcName, tab, prefix)                    \
-  funcName<bool>(tab, prefix + "b", BoolArrays);           \
-  funcName<unsigned char>(tab, prefix + "uc", uCharArrays);        \
-  funcName<short>(tab, prefix + "s", ShortArrays);         \
-  funcName<unsigned short>(tab, prefix + "us", uShortArrays);      \
-  funcName<int>(tab, prefix + "i", IntArrays);             \
-  funcName<unsigned int>(tab, prefix + "ui", uIntArrays);          \
-  funcName<Int64>(tab, prefix + "i64", Int64Arrays);       \
-  funcName<float>(tab, prefix + "f", FloatArrays);         \
-  funcName<double>(tab, prefix + "d", DoubleArrays);       \
-  funcName<Complex>(tab, prefix + "cx", ComplexArrays);    \
-  funcName<DComplex>(tab, prefix + "dcx", DComplexArrays); \
-  funcName<String>(tab, prefix + "sf", FStringArrays);     \
+#define ExecFunc(funcName, tab, prefix)                       \
+  funcName<bool>(tab, prefix + "b", BoolArrays);              \
+  funcName<unsigned char>(tab, prefix + "uc", uCharArrays);   \
+  funcName<short>(tab, prefix + "s", ShortArrays);            \
+  funcName<unsigned short>(tab, prefix + "us", uShortArrays); \
+  funcName<int>(tab, prefix + "i", IntArrays);                \
+  funcName<unsigned int>(tab, prefix + "ui", uIntArrays);     \
+  funcName<int64_t>(tab, prefix + "i64", Int64Arrays);        \
+  funcName<float>(tab, prefix + "f", FloatArrays);            \
+  funcName<double>(tab, prefix + "d", DoubleArrays);          \
+  funcName<Complex>(tab, prefix + "cx", ComplexArrays);       \
+  funcName<DComplex>(tab, prefix + "dcx", DComplexArrays);    \
+  funcName<String>(tab, prefix + "sf", FStringArrays);        \
   funcName<String>(tab, prefix + "sv", VStringArrays);
 
 #define updateTable(funcName)                        \
@@ -93,7 +93,7 @@ Array<short> ShortArrays[4];
 Array<unsigned short> uShortArrays[4];
 Array<int> IntArrays[4];
 Array<unsigned int> uIntArrays[4];
-Array<Int64> Int64Arrays[4];
+Array<int64_t> Int64Arrays[4];
 Array<float> FloatArrays[4];
 Array<double> DoubleArrays[4];
 Array<Complex> ComplexArrays[4];
@@ -158,7 +158,7 @@ void createArrays(unsigned int nrow) {
     uShortArrays[i].reference(makeArray<unsigned short>(shape, 0, 10));
     IntArrays[i].reference(makeArray<int>(shape, -32768 * 65536, 100000));
     uIntArrays[i].reference(makeArray<unsigned int>(shape, 0, 100000));
-    Int64Arrays[i].reference(makeArray<Int64>(shape, -6553600000L, 100000001));
+    Int64Arrays[i].reference(makeArray<int64_t>(shape, -6553600000L, 100000001));
     FloatArrays[i].reference(makeArray<float>(shape, -10.5, 1));
     DoubleArrays[i].reference(makeArray<double>(shape, -100.3, 22));
     ComplexArrays[i].reference(makeArray<Complex>(shape, Complex(-10.5, 20), Complex(1, 3.1)));
@@ -554,8 +554,8 @@ void bindVirtual(SetupNewTable& newtab, const String& name) {
 
 // Create a new table and fill a few cells with an empty array.
 // An empty table name defaults to tStMan_tmp.data.
-Table maketab(unsigned int nrrow, const DataManager& stman, bool tiled, const String& tabName = String(),
-              bool addVirtual = false) {
+Table maketab(unsigned int nrrow, const DataManager& stman, bool tiled,
+              const String& tabName = String(), bool addVirtual = false) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   addColDesc<bool>(td, "b", addVirtual);
@@ -564,7 +564,7 @@ Table maketab(unsigned int nrrow, const DataManager& stman, bool tiled, const St
   addColDesc<unsigned short>(td, "us", addVirtual);
   addColDesc<int>(td, "i", addVirtual);
   addColDesc<unsigned int>(td, "ui", addVirtual);
-  addColDesc<Int64>(td, "i64", addVirtual);
+  addColDesc<int64_t>(td, "i64", addVirtual);
   addColDesc<float>(td, "f", addVirtual);
   addColDesc<double>(td, "d", addVirtual);
   addColDesc<Complex>(td, "cx", addVirtual);
@@ -624,7 +624,7 @@ Table maketab(unsigned int nrrow, const DataManager& stman, bool tiled, const St
   checkDefined<unsigned short>(tab, "us", tiled);
   checkDefined<int>(tab, "i", tiled);
   checkDefined<unsigned int>(tab, "ui", tiled);
-  checkDefined<Int64>(tab, "i64", tiled);
+  checkDefined<int64_t>(tab, "i64", tiled);
   checkDefined<float>(tab, "f", tiled);
   checkDefined<double>(tab, "d", tiled);
   checkDefined<Complex>(tab, "cx", tiled);
@@ -677,7 +677,7 @@ void checknewtab(const Table& table, unsigned int nrrow, bool tiled) {
   checkDefined<unsigned short>(tab, "us", tiled);
   checkDefined<int>(tab, "i", tiled);
   checkDefined<unsigned int>(tab, "ui", tiled);
-  checkDefined<Int64>(tab, "i64", tiled);
+  checkDefined<int64_t>(tab, "i64", tiled);
   checkDefined<float>(subtab, "f", tiled);
   checkDefined<double>(tab, "d", tiled);
   checkDefined<Complex>(tab, "cx", tiled);

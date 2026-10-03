@@ -423,7 +423,8 @@ bool LatticeStepper::niceFit() const {
 LatticeNavigator* LatticeStepper::clone() const { return new LatticeStepper(*this); }
 
 unsigned int LatticeStepper::calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                                   unsigned int maxCacheSize, unsigned int bucketSize) const {
+                                           unsigned int maxCacheSize,
+                                           unsigned int bucketSize) const {
   return (bucketSize == 0
               ? 0
               : TSMCube::calcCacheSize(cubeShape, tileShape, false, itsCursorShape, blc(),

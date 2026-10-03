@@ -39,7 +39,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 GaussianConvert::GaussianConvert() : itsValid(false) {}
 
-GaussianConvert::GaussianConvert(const CoordinateSystem& cSys, const Vector<unsigned int>& worldAxes)
+GaussianConvert::GaussianConvert(const CoordinateSystem& cSys,
+                                 const Vector<unsigned int>& worldAxes)
     : itsCSys(cSys), itsWorldAxes(worldAxes.copy()), itsErrorMessage(""), itsValid(true) {
   checkWorldAxes();
   checkCoordinateSystem();

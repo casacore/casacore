@@ -96,7 +96,9 @@ void UDFBase::setAggregate(bool isAggregate) { itsIsAggregate = isAggregate; }
 bool UDFBase::getBool(const TableExprId&) {
   throw TableInvExpr("UDFBase::getBool not implemented");
 }
-Int64 UDFBase::getInt(const TableExprId&) { throw TableInvExpr("UDFBase::getInt not implemented"); }
+int64_t UDFBase::getInt(const TableExprId&) {
+  throw TableInvExpr("UDFBase::getInt not implemented");
+}
 double UDFBase::getDouble(const TableExprId&) {
   throw TableInvExpr("UDFBase::getDouble not implemented");
 }
@@ -115,7 +117,7 @@ MVTime UDFBase::getDate(const TableExprId&) {
 MArray<bool> UDFBase::getArrayBool(const TableExprId&) {
   throw TableInvExpr("UDFBase::getArrayBool not implemented");
 }
-MArray<Int64> UDFBase::getArrayInt(const TableExprId&) {
+MArray<int64_t> UDFBase::getArrayInt(const TableExprId&) {
   throw TableInvExpr("UDFBase::getArrayInt not implemented");
 }
 MArray<double> UDFBase::getArrayDouble(const TableExprId&) {

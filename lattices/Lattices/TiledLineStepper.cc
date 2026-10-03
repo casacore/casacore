@@ -381,8 +381,8 @@ const IPosition& TiledLineStepper::axisPath() const {
   return itsAxisPath;
 }
 
-unsigned int TiledLineStepper::calcCacheSize(const IPosition&, const IPosition& tileShape, unsigned int,
-                                     unsigned int bucketSize) const {
+unsigned int TiledLineStepper::calcCacheSize(const IPosition&, const IPosition& tileShape,
+                                             unsigned int, unsigned int bucketSize) const {
   if (bucketSize == 0) {
     return 0;
   }

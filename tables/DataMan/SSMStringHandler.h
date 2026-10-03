@@ -221,18 +221,18 @@ class SSMStringHandler {
   void replaceData(int& offset, int length, const char* data);
   // </group>
 
-  SSMBase* itsSSMPtr;    // Pointer to SSMBase stucture
-  int itsCurrentBucket;  // bucketnr of current string bucket (-1 is none)
-  int itsLength;         // length of bucket in use (only the string part)
-  int itsNDeleted;       // #bytes deleted from the string part of the bucket
-  int itsUsedLength;     // #bytes used from the string part of the bucket
-  int itsNextBucket;     // next bucket for long strings
-  char* itsData;         // bucket string data
-  char* itsIntBuf;       // buffer for initialisation params
-  bool isChanged;        // has current bucket been changed?
-  unsigned int itsIntSize;       // size of integers in this system
-  int itsLastBucket;     // last string bucket used
-  unsigned int itsStart;         // Start position of actual data in bucket
+  SSMBase* itsSSMPtr;       // Pointer to SSMBase stucture
+  int itsCurrentBucket;     // bucketnr of current string bucket (-1 is none)
+  int itsLength;            // length of bucket in use (only the string part)
+  int itsNDeleted;          // #bytes deleted from the string part of the bucket
+  int itsUsedLength;        // #bytes used from the string part of the bucket
+  int itsNextBucket;        // next bucket for long strings
+  char* itsData;            // bucket string data
+  char* itsIntBuf;          // buffer for initialisation params
+  bool isChanged;           // has current bucket been changed?
+  unsigned int itsIntSize;  // size of integers in this system
+  int itsLastBucket;        // last string bucket used
+  unsigned int itsStart;    // Start position of actual data in bucket
 };
 
 inline void SSMStringHandler::setLastStringBucket(int lastStringBucket) {

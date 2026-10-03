@@ -139,7 +139,8 @@ void BitVector::set(unsigned int start, unsigned int length, bool state) {
   }
 }
 
-void BitVector::copy(unsigned int start, unsigned int length, const BitVector& that, unsigned int thatStart) {
+void BitVector::copy(unsigned int start, unsigned int length, const BitVector& that,
+                     unsigned int thatStart) {
   if (start + length > size_p) {
     throw(AipsError("BitVector::set past end-of-thisvector"));
   }

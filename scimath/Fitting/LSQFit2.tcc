@@ -285,7 +285,7 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs,
     for (unsigned int i = 0; i < ln; i++) {
       double *i2 = norm_p->row(2 * i);                               // row pointer real
       double *i2i = norm_p->row(2 * i + 1);                          // row pointer imag
-      for (unsigned int i1 = i; i1 < ln; i1++) {                             // real part
+      for (unsigned int i1 = i; i1 < ln; i1++) {                     // real part
         i2[2 * i1] += cEq[i].real() * cEq[i1].real() * weight;       // real part
         i2i[2 * i1 + 1] += cEq[i].imag() * cEq[i1].imag() * weight;  // imag part
       }
@@ -342,8 +342,8 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs,
 // (Linux is ok). Solaris does not zero the low-order part of a Double from
 // a Float, giving non-repeatable results.
 template <class U, class V, class W>
-void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                      bool doNorm, bool doKnown) {
+void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                      const U &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (unsigned int i = 0; i < nIndex; ++i) {
       unsigned int cEqIndex_i = cEqIndex[i];
@@ -371,8 +371,8 @@ void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, cons
 }
 
 template <class U, class V, class W>
-void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
-                      const U &obs, const U &obs2, bool doNorm, bool doKnown) {
+void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const V &cEq2,
+                      const U &weight, const U &obs, const U &obs2, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (unsigned int i = 0; i < nIndex; ++i) {
       unsigned int cEqIndex_i = cEqIndex[i];
@@ -403,8 +403,8 @@ void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, cons
 }
 
 template <class U, class V, class W>
-void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                      LSQFit::Real, bool doNorm, bool doKnown) {
+void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &weight,
+                      const U &obs, LSQFit::Real, bool doNorm, bool doKnown) {
   makeNorm(nIndex, cEqIndex, cEq, weight, obs, doNorm, doKnown);
 }
 
@@ -422,7 +422,7 @@ void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, cons
           i2[2 * cEqIndex[i1] + 1] += dci.imag() * weight;  // imag. equations
         }
       }
-      double *i4 = norm_p->row(2 * cEqIndex[i] + 1);              // next line row pointer
+      double *i4 = norm_p->row(2 * cEqIndex[i] + 1);                      // next line row pointer
       for (unsigned int i1 = 2 * cEqIndex[i] + 1; i1 < nun_p; i1 += 2) {  // duplicate
         i4[i1] = i2[i1 - 1];
       }
@@ -639,15 +639,16 @@ void LSQFit::makeNorm(unsigned int nIndex, const W &cEqIndex, const V &cEq, cons
 }
 //
 template <class U, class V>
-void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const U &weight, const U &obs,
-                      bool doNorm, bool doKnown) {
+void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const U &weight,
+                      const U &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin(); i != cEq.end();
-         ++i) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin();
+         i != cEq.end(); ++i) {
       double *i2 = norm_p->row(i->first);  // row pointer
       double eq(i->second);
       eq *= weight;
-      for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = i; i1 != cEq.end(); ++i1) {
+      for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = i; i1 != cEq.end();
+           ++i1) {
         i2[i1->first] += eq * double(i1->second);  // equations
       }
     }
@@ -655,8 +656,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
   }
   if (doKnown) {
     double obswt = obs * weight;
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin(); i1 != cEq.end();
-         ++i1) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
+         i1 != cEq.end(); ++i1) {
       known_p[i1->first] += double(i1->second) * obswt;  // data vector
     }
     error_p[NC] += 1;               // cnt equations
@@ -666,8 +667,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
 }
 
 template <class U, class V>
-void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const U &weight, const U &obs,
-                      LSQFit::Real, bool doNorm, bool doKnown) {
+void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const U &weight,
+                      const U &obs, LSQFit::Real, bool doNorm, bool doKnown) {
   makeNorm(cEq, weight, obs, doNorm, doKnown);
 }
 
@@ -676,8 +677,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
                       const std::complex<U> &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
     std::complex<U> dci;
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin(); i != cEq.end();
-         ++i) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin();
+         i != cEq.end(); ++i) {
       double *i2 = norm_p->row(2 * i->first);  // row pointer
       for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
            i1 != cEq.end(); ++i1) {
@@ -687,7 +688,7 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
           i2[2 * i1->first + 1] += dci.imag() * weight;  // imag. equations
         }
       }
-      double *i4 = norm_p->row(2 * i->first + 1);              // next line row pointer
+      double *i4 = norm_p->row(2 * i->first + 1);                      // next line row pointer
       for (unsigned int i1 = 2 * i->first + 1; i1 < nun_p; i1 += 2) {  // duplicate
         i4[i1] = i2[i1 - 1];
       }
@@ -699,8 +700,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
   }
   if (doKnown) {
     std::complex<U> dci;
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin(); i1 != cEq.end();
-         ++i1) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
+         i1 != cEq.end(); ++i1) {
       dci = obs * conj(i1->second);
       known_p[2 * i1->first] += dci.real() * weight;      // real part
       known_p[2 * i1->first + 1] += dci.imag() * weight;  // imag part
@@ -722,8 +723,8 @@ template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const U &weight,
                       const std::complex<U> &obs, LSQFit::Separable, bool doNorm, bool doKnown) {
   if (doNorm) {
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin(); i != cEq.end();
-         ++i) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin();
+         i != cEq.end(); ++i) {
       double *i2 = norm_p->row(i->first);  // row pointer
       if (i->first % 2 == 0) {
         for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
@@ -756,8 +757,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
     state_p &= ~TRIANGLE;
   }
   if (doKnown) {
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin(); i1 != cEq.end();
-         ++i1) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
+         i1 != cEq.end(); ++i1) {
       if (i1->first % 2 == 0) {
         known_p[i1->first] += realMC(obs, i1->second) * weight;
       } else {
@@ -775,8 +776,8 @@ template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const U &weight,
                       const std::complex<U> &obs, LSQFit::AsReal, bool doNorm, bool doKnown) {
   if (doNorm) {
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin(); i != cEq.end();
-         ++i) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin();
+         i != cEq.end(); ++i) {
       double *i2 = norm_p->row(2 * i->first);       // row pointer real
       double *i2i = norm_p->row(2 * i->first + 1);  // row pointer imag
       for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
@@ -790,8 +791,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
     state_p &= ~TRIANGLE;
   }
   if (doKnown) {
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin(); i1 != cEq.end();
-         ++i1) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
+         i1 != cEq.end(); ++i1) {
       known_p[2 * i1->first] += i1->second.real() * obs.real() * weight;      // real
       known_p[2 * i1->first + 1] += i1->second.imag() * obs.imag() * weight;  // imag
     }
@@ -807,8 +808,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
                       const std::complex<U> &obs, LSQFit::Conjugate, bool doNorm, bool doKnown) {
   if (doNorm) {
     std::complex<U> tmp(0);
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin(); i != cEq.end();
-         ++i) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i = cEq.begin();
+         i != cEq.end(); ++i) {
       if (i->first < nun_p) {
         double *i2 = norm_p->row(i->first);  // row pointer
         for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
@@ -896,8 +897,8 @@ void LSQFit::makeNorm(const std::vector<std::pair<unsigned int, V>> &cEq, const 
   }
   if (doKnown) {
     std::complex<U> tmp(0);
-    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin(); i1 != cEq.end();
-         ++i1) {
+    for (typename std::vector<std::pair<unsigned int, V>>::const_iterator i1 = cEq.begin();
+         i1 != cEq.end(); ++i1) {
       tmp = obs * conj(i1->second) * weight;
       if (i1->first % 2 == 0) {
         known_p[i1->first] += tmp.real();
@@ -983,7 +984,7 @@ bool LSQFit::getConstraint(unsigned int n, U *cEq) const {
     for (unsigned int i1 = r_p; i1 < nun_p; ++i1) {  // final values
       cEq[piv_p[i1]] = 0;
     }
-    cEq[piv_p[n]] = 1;                                         // unit extend
+    cEq[piv_p[n]] = 1;                                                 // unit extend
     for (unsigned int i1 = 0; i1 <= n; ++i1) cEq[piv_p[i1]] /= U(r0);  // normalise
     return true;
   }
@@ -1048,7 +1049,8 @@ bool LSQFit::setConstraint(unsigned int n, const V &cEq, const std::complex<U> &
 }
 
 template <class U, class V, class W>
-bool LSQFit::setConstraint(unsigned int n, unsigned int nIndex, const W &cEqIndex, const V &cEq, const U &obs) {
+bool LSQFit::setConstraint(unsigned int n, unsigned int nIndex, const W &cEqIndex, const V &cEq,
+                           const U &obs) {
   if (n >= ncon_p || nun_p == 0) return false;
   for (unsigned int i = 0; i < nIndex; ++i) constr_p[n * nun_p + cEqIndex[i]] = cEq[i];
   known_p[nun_p + n] = obs;

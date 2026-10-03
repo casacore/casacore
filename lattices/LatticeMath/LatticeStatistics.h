@@ -543,7 +543,7 @@ class LatticeStatistics : public LatticeStatsBase {
   template <class U, class V>
   void _computeQuantiles(AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
                          std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg,
-                         uInt64 knownNpts, AccumType knownMin, AccumType knownMax) const;
+                         uint64_t knownNpts, AccumType knownMin, AccumType knownMax) const;
 
   template <class U, class V>
   void _computeQuantilesForStatsFramework(
@@ -597,7 +597,7 @@ class LatticeStatistics : public LatticeStatsBase {
                                            std::shared_ptr<LattStatsProgress> progressMeter,
                                            unsigned int nsets);
 
-  IPosition _cursorShapeForArrayMethod(uInt64 setSize) const;
+  IPosition _cursorShapeForArrayMethod(uint64_t setSize) const;
 
   void _doComputationUsingArrays(
       std::vector<std::shared_ptr<StatisticsAlgorithm<AccumType, typename Array<T>::const_iterator,

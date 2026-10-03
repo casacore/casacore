@@ -140,9 +140,9 @@ unsigned int TableColumn::asuInt(rownr_t rownr) const {
   baseColPtr_p->getScalar(rownr, value);
   return value;
 }
-Int64 TableColumn::asInt64(rownr_t rownr) const {
+int64_t TableColumn::asInt64(rownr_t rownr) const {
   TABLECOLUMNCHECKROW(rownr);
-  Int64 value;
+  int64_t value;
   baseColPtr_p->getScalar(rownr, value);
   return value;
 }
@@ -278,7 +278,7 @@ void TableColumn::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRo
           vh = ValueHolder(array);
         } break;
         case TpInt64: {
-          Array<Int64> array(shape);
+          Array<int64_t> array(shape);
           baseColPtr(that)->get(thatRownr, &array);
           vh = ValueHolder(array);
         } break;
@@ -336,7 +336,7 @@ void TableColumn::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRo
           baseColPtr_p->putArray(thisRownr, arr);
         } break;
         case TpInt64: {
-          Array<Int64> arr(vh.asArrayInt64());
+          Array<int64_t> arr(vh.asArrayInt64());
           baseColPtr_p->put(thisRownr, &arr);
         } break;
         case TpFloat: {

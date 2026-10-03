@@ -47,7 +47,7 @@ static Record emptyRecord;
 TiledShapeStMan::TiledShapeStMan() : TiledStMan(), nrUsedRowMap_p(0), lastHC_p(-1) {}
 
 TiledShapeStMan::TiledShapeStMan(const String& hypercolumnName, const IPosition& defaultTileShape,
-                                 uInt64 maximumCacheSize)
+                                 uint64_t maximumCacheSize)
     : TiledStMan(hypercolumnName, maximumCacheSize),
       defaultTileShape_p(defaultTileShape),
       nrUsedRowMap_p(0),
@@ -104,7 +104,7 @@ TSMCube* TiledShapeStMan::singleHypercube() {
 void TiledShapeStMan::setShape(rownr_t rownr, TSMCube*, const IPosition& shape,
                                const IPosition& tileShape) {
   IPosition cubeShape = shape;
-  uInt64 n = shape.nelements();
+  uint64_t n = shape.nelements();
   cubeShape.resize(n + 1);
   cubeShape(n) = 0;  // hypercube is extensible
   // Find a hypercube with given shape.
@@ -124,8 +124,8 @@ void TiledShapeStMan::setShape(rownr_t rownr, TSMCube*, const IPosition& shape,
 int TiledShapeStMan::findHypercube(const IPosition& shape) {
   // A hypercube matches when its shape matches.
   // Its last axis is excluded, because it represents the rows.
-  uInt64 n = cubeSet_p.nelements();
-  for (uInt64 i = 1; i < n; i++) {
+  uint64_t n = cubeSet_p.nelements();
+  for (uint64_t i = 1; i < n; i++) {
     if (shape.isEqual(cubeSet_p[i]->cubeShape(), size_t(nrdim_p - 1))) {
       return i;
     }
@@ -232,7 +232,7 @@ void TiledShapeStMan::addHypercube(rownr_t rownr, const IPosition& cubeShape,
 
 void TiledShapeStMan::extendHypercube(rownr_t rownr, unsigned int cubeNr) {
   TSMCube* hypercube = cubeSet_p[cubeNr];
-  uInt64 pos = hypercube->cubeShape()(nrdim_p - 1);
+  uint64_t pos = hypercube->cubeShape()(nrdim_p - 1);
   hypercube->extend(1, emptyRecord, coordColSet_p[nrdim_p - 1]);
   updateRowMap(cubeNr, pos, rownr);
   setDataChanged();

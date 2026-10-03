@@ -153,7 +153,8 @@ class StManColumnArrayAipsIO : public StManColumnAipsIO {
   // Get data arrays into a data block at the given index.
   // datap is an array of pointers to arrays. nrval arrays will
   // be allocated and read starting at datap[index].
-  virtual void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&, unsigned int version);
+  virtual void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&,
+                       unsigned int version);
 };
 
 }  // namespace casacore

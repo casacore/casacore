@@ -27,7 +27,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-IncrementalStMan::IncrementalStMan(unsigned int bucketSize, bool checkBucketSize, unsigned int cacheSize)
+IncrementalStMan::IncrementalStMan(unsigned int bucketSize, bool checkBucketSize,
+                                   unsigned int cacheSize)
     : ISMBase(bucketSize, checkBucketSize, cacheSize) {}
 
 IncrementalStMan::IncrementalStMan(const String& dataManagerName, unsigned int bucketSize,

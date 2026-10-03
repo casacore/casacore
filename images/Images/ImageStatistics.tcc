@@ -295,7 +295,9 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   CoordinateSystem cSys = pInImage_p->coordinates();
   ImageUtilities::pixToWorld(sWorld, cSys, displayAxes_p(0), cursorAxes_p, blc, trc, pixels, -1);
   String cName = ImageUtilities::shortAxisName(cSys.worldAxisNames()(displayAxes_p(0)));
-  int oCWidth = max(static_cast<unsigned int>(cName.length()), static_cast<unsigned int>(sWorld(0).length())) + 1;
+  int oCWidth = max(static_cast<unsigned int>(cName.length()),
+                    static_cast<unsigned int>(sWorld(0).length())) +
+                1;
 
   // Write headers
 

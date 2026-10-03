@@ -251,7 +251,7 @@ extern template class ScalarColumn<short>;
 extern template class ScalarColumn<unsigned short>;
 extern template class ScalarColumn<int>;
 extern template class ScalarColumn<unsigned int>;
-extern template class ScalarColumn<Int64>;
+extern template class ScalarColumn<int64_t>;
 extern template class ScalarColumn<float>;
 extern template class ScalarColumn<double>;
 extern template class ScalarColumn<Complex>;

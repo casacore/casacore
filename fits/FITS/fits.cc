@@ -59,19 +59,19 @@ int FITS::fitssize(FITS::ValueType t) {
 
 int FITS::localsize(FITS::ValueType t) {
   static int LocalDataSize[13] = {
-      0,                    // 0
-      sizeof(FitsLogical),  // 1
-      sizeof(FitsBit),      // 2
-      sizeof(char),         // 3
-      sizeof(unsigned char),        // 4
-      sizeof(short),        // 5
-      sizeof(FitsLong),     // 6
-      sizeof(float),        // 7
-      sizeof(double),       // 8
-      sizeof(Complex),      // 9
-      sizeof(IComplex),     // 10
-      sizeof(DComplex),     // 11
-      sizeof(FitsVADesc)    // 12
+      0,                      // 0
+      sizeof(FitsLogical),    // 1
+      sizeof(FitsBit),        // 2
+      sizeof(char),           // 3
+      sizeof(unsigned char),  // 4
+      sizeof(short),          // 5
+      sizeof(FitsLong),       // 6
+      sizeof(float),          // 7
+      sizeof(double),         // 8
+      sizeof(Complex),        // 9
+      sizeof(IComplex),       // 10
+      sizeof(DComplex),       // 11
+      sizeof(FitsVADesc)      // 12
   };
   return LocalDataSize[t];
 }

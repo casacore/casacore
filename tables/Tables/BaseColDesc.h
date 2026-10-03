@@ -107,7 +107,8 @@ class BaseColumnDesc {
   // Construct the column base object.
   BaseColumnDesc(const String& name, const String& comment, const String& dataManagerType,
                  const String& dataManagerGroup, DataType, const String& dataTypeId, int options,
-                 unsigned int ndim, const IPosition& shape, bool isScalar, bool isArray, bool isTable);
+                 unsigned int ndim, const IPosition& shape, bool isScalar, bool isArray,
+                 bool isTable);
 
   // Copy constructor (copy semantics).
   BaseColumnDesc(const BaseColumnDesc&);
@@ -228,7 +229,7 @@ class BaseColumnDesc {
   int option_p;              // # column options
   int nrdim_p;               // # #dimensions (<0 = unknown)
   IPosition shape_p;         // # table array shape
-  unsigned int maxLength_p;          // # maximum value length (for strings)
+  unsigned int maxLength_p;  // # maximum value length (for strings)
   TableRecord* keySetPtr_p;  // # set of keywords
   bool isScalar_p;           // # true = column contains scalars
   bool isArray_p;            // # true = column contains arrays

@@ -867,7 +867,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os, const Vector<T>& stats, T b
   }
   //
   os << "No. binned = ";
-  os.output() << setw(oWidth) << Int64(std::real(stats(LatticeStatsBase::NPTS)) + 0.1) << endl;
+  os.output() << setw(oWidth) << int64_t(std::real(stats(LatticeStatsBase::NPTS)) + 0.1) << endl;
 
   os << "Sum        = ";
   os0 << stats(LatticeStatsBase::SUM);
@@ -1118,7 +1118,7 @@ void HistTiledCollapser<T>::init(unsigned int nOutPixelsPerCollapse) {
 }
 
 template <class T>
-void HistTiledCollapser<T>::initAccumulator(uInt64 n1, uInt64 n3)
+void HistTiledCollapser<T>::initAccumulator(uint64_t n1, uint64_t n3)
 //
 // pHist_p contains the histograms for each chunk
 // It is T not uInt so we can handle Complex types
@@ -1131,8 +1131,9 @@ void HistTiledCollapser<T>::initAccumulator(uInt64 n1, uInt64 n3)
 }
 
 template <class T>
-void HistTiledCollapser<T>::process(unsigned int index1, unsigned int index3, const T* pInData, const bool* pInMask,
-                                    unsigned int dataIncr, unsigned int maskIncr, unsigned int nrval,
+void HistTiledCollapser<T>::process(unsigned int index1, unsigned int index3, const T* pInData,
+                                    const bool* pInMask, unsigned int dataIncr,
+                                    unsigned int maskIncr, unsigned int nrval,
                                     const IPosition& startPos, const IPosition&) {
   //
   // Process the data in the current chunk.   Everything in this

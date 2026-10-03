@@ -35,8 +35,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # This file defines classes derived from TableExprNode representing
 // # the data type and operator in a table expression.
 // #
-// # Data types Bool, Int64, Double, DComplex and String are used.
-// # Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
+// # Data types Bool, int64_t, Double, DComplex and String are used.
+// # Char, uChar, Short, uShort, Int, and uInt are converted to int64_t,
 // # Float to Double, and Complex to DComplex.
 // # Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 // # Also &&, ||, parentheses and unary +, - and ! are recognized.
@@ -92,7 +92,7 @@ class TableExprNodePlusInt : public TableExprNodePlus {
  public:
   TableExprNodePlusInt(const TableExprNodeRep&);
   ~TableExprNodePlusInt();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -267,7 +267,7 @@ class TableExprNodeMinusInt : public TableExprNodeMinus {
   TableExprNodeMinusInt(const TableExprNodeRep&);
   ~TableExprNodeMinusInt();
   virtual void handleUnits();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -411,7 +411,7 @@ class TableExprNodeTimesInt : public TableExprNodeTimes {
  public:
   TableExprNodeTimesInt(const TableExprNodeRep&);
   ~TableExprNodeTimesInt();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -606,7 +606,7 @@ class TableExprNodeModuloInt : public TableExprNodeModulo {
  public:
   TableExprNodeModuloInt(const TableExprNodeRep&);
   ~TableExprNodeModuloInt();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -663,7 +663,7 @@ class TableExprNodeBitAndInt : public TableExprNodeBinary {
  public:
   TableExprNodeBitAndInt(const TableExprNodeRep&);
   ~TableExprNodeBitAndInt();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -692,7 +692,7 @@ class TableExprNodeBitOrInt : public TableExprNodeBinary {
  public:
   TableExprNodeBitOrInt(const TableExprNodeRep&);
   ~TableExprNodeBitOrInt();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -721,7 +721,7 @@ class TableExprNodeBitXorInt : public TableExprNodeBinary {
  public:
   TableExprNodeBitXorInt(const TableExprNodeRep&);
   ~TableExprNodeBitXorInt();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -749,7 +749,7 @@ class TableExprNodeMIN : public TableExprNodeBinary {
  public:
   TableExprNodeMIN(const TableExprNodeRep&);
   ~TableExprNodeMIN();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
@@ -777,7 +777,7 @@ class TableExprNodeBitNegate : public TableExprNodeBinary {
  public:
   TableExprNodeBitNegate(const TableExprNodeRep&);
   ~TableExprNodeBitNegate();
-  Int64 getInt(const TableExprId& id);
+  int64_t getInt(const TableExprId& id);
   double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };

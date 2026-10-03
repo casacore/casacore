@@ -363,13 +363,19 @@ void ForwardColumn::putColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns
 void ForwardColumn::getBool(rownr_t rownr, bool* dataPtr) { colPtr_p->get(rownr, dataPtr); }
 void ForwardColumn::putBool(rownr_t rownr, const bool* dataPtr) { colPtr_p->put(rownr, dataPtr); }
 
-void ForwardColumn::getuChar(rownr_t rownr, unsigned char* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putuChar(rownr_t rownr, const unsigned char* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::getuChar(rownr_t rownr, unsigned char* dataPtr) {
+  colPtr_p->get(rownr, dataPtr);
+}
+void ForwardColumn::putuChar(rownr_t rownr, const unsigned char* dataPtr) {
+  colPtr_p->put(rownr, dataPtr);
+}
 
 void ForwardColumn::getShort(rownr_t rownr, short* dataPtr) { colPtr_p->get(rownr, dataPtr); }
 void ForwardColumn::putShort(rownr_t rownr, const short* dataPtr) { colPtr_p->put(rownr, dataPtr); }
 
-void ForwardColumn::getuShort(rownr_t rownr, unsigned short* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::getuShort(rownr_t rownr, unsigned short* dataPtr) {
+  colPtr_p->get(rownr, dataPtr);
+}
 void ForwardColumn::putuShort(rownr_t rownr, const unsigned short* dataPtr) {
   colPtr_p->put(rownr, dataPtr);
 }
@@ -378,10 +384,14 @@ void ForwardColumn::getInt(rownr_t rownr, int* dataPtr) { colPtr_p->get(rownr, d
 void ForwardColumn::putInt(rownr_t rownr, const int* dataPtr) { colPtr_p->put(rownr, dataPtr); }
 
 void ForwardColumn::getuInt(rownr_t rownr, unsigned int* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putuInt(rownr_t rownr, const unsigned int* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::putuInt(rownr_t rownr, const unsigned int* dataPtr) {
+  colPtr_p->put(rownr, dataPtr);
+}
 
-void ForwardColumn::getInt64(rownr_t rownr, Int64* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putInt64(rownr_t rownr, const Int64* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::getInt64(rownr_t rownr, int64_t* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::putInt64(rownr_t rownr, const int64_t* dataPtr) {
+  colPtr_p->put(rownr, dataPtr);
+}
 
 void ForwardColumn::getfloat(rownr_t rownr, float* dataPtr) { colPtr_p->get(rownr, dataPtr); }
 void ForwardColumn::putfloat(rownr_t rownr, const float* dataPtr) { colPtr_p->put(rownr, dataPtr); }

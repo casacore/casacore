@@ -52,7 +52,7 @@ void ArrayColumnBase::reference(const ArrayColumnBase& that) { TableColumn::refe
 ArrayColumnBase::~ArrayColumnBase() {}
 
 bool ArrayColumnBase::checkShape(const IPosition& expShape, const IPosition& arrShape,
-                                 bool noSlicing, Int64 rownr, const String& where) const {
+                                 bool noSlicing, int64_t rownr, const String& where) const {
   if (!expShape.isEqual(arrShape)) {
     if (noSlicing && canChangeShape_p) {
       return false;
@@ -67,7 +67,7 @@ bool ArrayColumnBase::checkShape(const IPosition& expShape, const IPosition& arr
   return true;
 }
 
-void ArrayColumnBase::adaptShape(const IPosition& shp, ArrayBase& arr, bool resize, Int64 rownr,
+void ArrayColumnBase::adaptShape(const IPosition& shp, ArrayBase& arr, bool resize, int64_t rownr,
                                  const String& where) const {
   if (!shp.isEqual(arr.shape())) {
     if (resize || arr.nelements() == 0) {
@@ -472,7 +472,7 @@ void ArrayColumnBase::acbPutColumnCells(const RefRows& rows,
                                         const ArrayBase& source) {
   checkWritable();
   // Check if the nr of rows in the array matches.
-  if (Int64(rows.nrows()) != source.shape()[source.ndim() - 1]) {
+  if (int64_t(rows.nrows()) != source.shape()[source.ndim() - 1]) {
     throw TableArrayConformanceError(
         "ArrayColumn::putColumnCells - number of "
         "rows in RefRows and Array mismatches");

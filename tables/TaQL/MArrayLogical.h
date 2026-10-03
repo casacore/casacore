@@ -470,7 +470,8 @@ MArray<bool> partialAnys(const MArray<T>& a, const IPosition& collapseAxes) {
 
 // Get sliding ntrues.
 template <typename T>
-MArray<unsigned int> slidingNTrue(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
+MArray<unsigned int> slidingNTrue(const MArray<T>& a, const IPosition& halfBoxSize,
+                                  bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<unsigned int>();
   } else if (!a.hasMask()) {
@@ -484,7 +485,8 @@ MArray<unsigned int> slidingNTrue(const MArray<T>& a, const IPosition& halfBoxSi
 }
 // Get sliding nfalses.
 template <typename T>
-MArray<unsigned int> slidingNFalse(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
+MArray<unsigned int> slidingNFalse(const MArray<T>& a, const IPosition& halfBoxSize,
+                                   bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<unsigned int>();
   } else if (!a.hasMask()) {

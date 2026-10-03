@@ -71,10 +71,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
@@ -120,10 +121,11 @@ int main() {
       AlwaysAssert(near(sd.sum, 8.8), AipsError);
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(0, 3),
-                   AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(0, 3),
+          AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
@@ -152,10 +154,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
@@ -182,10 +185,11 @@ int main() {
       AlwaysAssert(near(sd.sum, 12.0), AipsError);
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(0, 3),
-                   AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(0, 3),
+          AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
@@ -214,10 +218,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
@@ -244,10 +249,11 @@ int main() {
       AlwaysAssert(near(sd.sum, 10.0), AipsError);
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(0, 3),
-                   AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(0, 3),
+          AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
@@ -278,10 +284,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
@@ -314,10 +321,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
       // Now reverse the order that the datasets were added. results
@@ -341,10 +349,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(1, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(1, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / npts)), AipsError);
     }
@@ -391,10 +400,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 2),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 2),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / npts)), AipsError);
     }
@@ -444,10 +454,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / npts)), AipsError);
 
@@ -473,10 +484,10 @@ int main() {
       AlwaysAssert(sd1.sumsq == sd.sumsq, AipsError);
       AlwaysAssert(sd1.variance == sd.variance, AipsError);
       AlwaysAssert(
-          fh1->getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh1->getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
       AlwaysAssert(
-          fh1->getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
+          fh1->getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
           AipsError);
       AlwaysAssert(fh1->getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh1->getStatistic(StatisticsData::RMS), sqrt(sumsq / npts)), AipsError);
@@ -520,10 +531,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / npts)), AipsError);
     }
@@ -572,10 +584,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (npts - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / npts)), AipsError);
     }
@@ -619,10 +632,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -666,10 +680,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 1),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 1),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -720,10 +735,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -773,10 +789,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -837,10 +854,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -900,10 +918,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -956,10 +975,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -1013,10 +1033,11 @@ int main() {
       AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
       AlwaysAssert(near(sd.variance, nvariance / (sumofweights - 1)), AipsError);
       AlwaysAssert(
-          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<Int64 COMMA Int64>(-1, -1),
+          fh.getStatisticIndex(StatisticsData::MAX) == std::pair<int64_t COMMA int64_t>(-1, -1),
           AipsError);
-      AlwaysAssert(fh.getStatisticIndex(StatisticsData::MIN) == std::pair<Int64 COMMA Int64>(0, 4),
-                   AipsError);
+      AlwaysAssert(
+          fh.getStatisticIndex(StatisticsData::MIN) == std::pair<int64_t COMMA int64_t>(0, 4),
+          AipsError);
       AlwaysAssert(fh.getStatistic(StatisticsData::NPTS) == npts, AipsError);
       AlwaysAssert(near(fh.getStatistic(StatisticsData::RMS), sqrt(sumsq / sumofweights)),
                    AipsError);
@@ -1307,7 +1328,7 @@ int main() {
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 1.5);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
-      uInt64 npts = fh.getNPts();
+      uint64_t npts = fh.getNPts();
       AlwaysAssert(npts == 4, AipsError);
       // check calling it again works
       npts = fh.getNPts();
@@ -1547,7 +1568,7 @@ int main() {
     vector<double>::iterator iter = bigData.begin();
     vector<double>::iterator end = bigData.end();
     {
-      uInt64 count = 0;
+      uint64_t count = 0;
       while (iter != end) {
         *iter = count % 2 == 0 ? count : (-1) * (double)(count * count);
         ++iter;
@@ -1599,7 +1620,7 @@ int main() {
       std::set<double> quantiles;
       quantiles.insert(0.25);
       quantiles.insert(0.75);
-      std::shared_ptr<uInt64> npts;
+      std::shared_ptr<uint64_t> npts;
       std::shared_ptr<double> mymin, mymax;
       std::map<double, double> quantileToValue;
       double median = fh.getMedianAndQuantiles(quantileToValue, quantiles, npts, mymin, mymax, 100);
@@ -1625,7 +1646,7 @@ int main() {
       quantiles.insert(0.25);
       quantiles.insert(0.75);
       std::map<double, double> quantileToValue;
-      std::shared_ptr<uInt64> npts;
+      std::shared_ptr<uint64_t> npts;
       std::shared_ptr<double> mymin, mymax;
       double median = fh.getMedianAndQuantiles(quantileToValue, quantiles, npts, mymin, mymax, 100);
       AlwaysAssert(near(median, -0.75, 1e-12), AipsError);

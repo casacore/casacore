@@ -67,7 +67,7 @@ void FiledesIO::fillRWFlags(int fd) {
 
 void FiledesIO::fillSeekable() { itsSeekable = (seek(0, ByteIO::Current) >= 0); }
 
-void FiledesIO::write(Int64 size, const void* buf) {
+void FiledesIO::write(int64_t size, const void* buf) {
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw AipsError("FiledesIO::write - " + itsFileName + " is not writable");
@@ -78,7 +78,7 @@ void FiledesIO::write(Int64 size, const void* buf) {
   }
 }
 
-void FiledesIO::pwrite(Int64 size, Int64 offset, const void* buf) {
+void FiledesIO::pwrite(int64_t size, int64_t offset, const void* buf) {
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw AipsError("FiledesIO::pwrite - " + itsFileName + " is not writable");
@@ -89,12 +89,12 @@ void FiledesIO::pwrite(Int64 size, Int64 offset, const void* buf) {
   }
 }
 
-Int64 FiledesIO::read(Int64 size, void* buf, bool throwException) {
+int64_t FiledesIO::read(int64_t size, void* buf, bool throwException) {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError("FiledesIO::read " + itsFileName + " - is not readable");
   }
-  Int64 bytesRead = ::traceREAD(itsFile, (char*)buf, size);
+  int64_t bytesRead = ::traceREAD(itsFile, (char*)buf, size);
   int error = errno;
   if (bytesRead > size) {  // Should never be executed
     throw AipsError("FiledesIO::read " + itsFileName + " - read returned a bad value");
@@ -112,12 +112,12 @@ Int64 FiledesIO::read(Int64 size, void* buf, bool throwException) {
   return bytesRead;
 }
 
-Int64 FiledesIO::pread(Int64 size, Int64 offset, void* buf, bool throwException) {
+int64_t FiledesIO::pread(int64_t size, int64_t offset, void* buf, bool throwException) {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError("FiledesIO::pread " + itsFileName + " - is not readable");
   }
-  Int64 bytesRead = ::tracePREAD(itsFile, (char*)buf, size, offset);
+  int64_t bytesRead = ::tracePREAD(itsFile, (char*)buf, size, offset);
   int error = errno;
   if (bytesRead > size) {  // Should never be executed
     throw AipsError("FiledesIO::pread " + itsFileName + " - read returned a bad value");
@@ -135,7 +135,7 @@ Int64 FiledesIO::pread(Int64 size, Int64 offset, void* buf, bool throwException)
   return bytesRead;
 }
 
-Int64 FiledesIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
+int64_t FiledesIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
   switch (dir) {
     case ByteIO::Begin:
       return ::traceLSEEK(itsFile, offset, SEEK_SET);
@@ -147,12 +147,12 @@ Int64 FiledesIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
   return ::traceLSEEK(itsFile, offset, SEEK_CUR);
 }
 
-Int64 FiledesIO::length() {
+int64_t FiledesIO::length() {
   // Get current position to be able to reposition.
-  Int64 pos = seek(0, ByteIO::Current);
+  int64_t pos = seek(0, ByteIO::Current);
   // Seek to the end of the stream.
   // If it fails, we cannot seek and the current position is the length.
-  Int64 len = seek(0, ByteIO::End);
+  int64_t len = seek(0, ByteIO::End);
   if (len < 0) {
     return pos;
   }
@@ -171,7 +171,7 @@ String FiledesIO::fileName() const { return itsFileName; }
 
 void FiledesIO::fsync() { ::fsync(itsFile); }
 
-void FiledesIO::truncate(Int64 size) {
+void FiledesIO::truncate(int64_t size) {
   if (::ftruncate(itsFile, size) == -1) throw std::runtime_error("ftruncate reported an error");
 }
 

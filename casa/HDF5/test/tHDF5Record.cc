@@ -62,9 +62,9 @@ Array<unsigned int> arrui() {
   indgen(arrui, 32768u * 65536u);
   return arrui;
 }
-Array<Int64> arri64() {
-  Array<Int64> arri(IPosition(3, 2, 2, 2));
-  indgen(arri, Int64(2e10));
+Array<int64_t> arri64() {
+  Array<int64_t> arri(IPosition(3, 2, 2, 2));
+  indgen(arri, int64_t(2e10));
   return arri;
 }
 Array<float> arrf() {
@@ -105,7 +105,7 @@ Array<unsigned char> emparruc() { return Array<unsigned char>(IPosition(0, 0)); 
 Array<short> emparrs() { return Array<short>(IPosition(0, 0)); }
 Array<int> emparri() { return Array<int>(IPosition(0, 0)); }
 Array<unsigned int> emparrui() { return Array<unsigned int>(IPosition(1, 0)); }
-Array<Int64> emparri64() { return Array<Int64>(IPosition(2, 0)); }
+Array<int64_t> emparri64() { return Array<int64_t>(IPosition(2, 0)); }
 Array<float> emparrf() { return Array<float>(IPosition(2, 0)); }
 Array<double> emparrd() { return Array<double>(IPosition(1, 0)); }
 Array<Complex> emparrc() { return Array<Complex>(IPosition(2, 0, 0)); }
@@ -119,7 +119,7 @@ void checkRecord(const RecordInterface& rec) {
   AlwaysAssertExit(rec.asShort("short") == -2);
   AlwaysAssertExit(rec.asInt("int") == 2);
   AlwaysAssertExit(rec.asuInt("uint") == 21);
-  AlwaysAssertExit(rec.asInt64("int64") == Int64(1e10));
+  AlwaysAssertExit(rec.asInt64("int64") == int64_t(1e10));
   AlwaysAssertExit(rec.asFloat("float") == 3.);
   AlwaysAssertExit(rec.asDouble("double") == -2.1);
   AlwaysAssertExit(rec.asComplex("complex") == Complex(-2.1, 1.1));
@@ -178,7 +178,7 @@ int main() {
     rec1.define("short", (short)-2);
     rec1.define("int", (int)2);
     rec1.define("uint", (unsigned int)21);
-    rec1.define("int64", Int64(1e10));
+    rec1.define("int64", int64_t(1e10));
     rec1.define("float", (float)3.);
     rec1.define("double", (double)-2.1);
     rec1.define("complex", Complex(-2.1, 1.1));

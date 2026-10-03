@@ -58,12 +58,12 @@ void makeFile(const std::shared_ptr<MultiFileBase>& mfile) {
 
 void writeFiles1(const std::shared_ptr<MultiFileBase>& mfile) {
   MFFileIO mff(mfile, "mff1", ByteIO::Update);
-  Vector<Int64> buf(120);
+  Vector<int64_t> buf(120);
   indgen(buf);
   mff.write(960, buf.data());
-  buf += Int64(120);
+  buf += int64_t(120);
   mff.write(960, buf.data());
-  buf += Int64(120);
+  buf += int64_t(120);
   mff.write(80, buf.data());
   showMFFile(mff);
   cout << mfile->info() << endl;
@@ -71,8 +71,8 @@ void writeFiles1(const std::shared_ptr<MultiFileBase>& mfile) {
 
 void checkFiles1(const std::shared_ptr<MultiFileBase>& mfile) {
   MFFileIO mff(mfile, "mff1", ByteIO::Update);
-  Vector<Int64> bufcheck(250);
-  Vector<Int64> buf(250);
+  Vector<int64_t> bufcheck(250);
+  Vector<int64_t> buf(250);
   indgen(bufcheck);
   mff.read(2000, buf.data());
   AlwaysAssertExit(allEQ(buf, bufcheck));
@@ -83,11 +83,11 @@ void testWriteNested(const std::shared_ptr<MultiFileBase>& parent) {
   cout << "testWriteNested ..." << endl;
   std::shared_ptr<MultiFileBase> mfile1(parent->makeNested(parent, "mfile1", ByteIO::New, 500));
   MFFileIO mff11(mfile1, "mff11", ByteIO::New);
-  Vector<Int64> buf(300);
+  Vector<int64_t> buf(300);
   indgen(buf);
   mff11.write(8 * 150, buf.data());
   MFFileIO mff12(mfile1, "mff12", ByteIO::New);
-  buf += Int64(150);
+  buf += int64_t(150);
   mff12.write(8 * 300, buf.data());
   std::shared_ptr<MultiFileBase> mfile2(parent->makeNested(parent, "mfile2", ByteIO::New, 500));
   MFFileIO mff21(mfile2, "mff21", ByteIO::New);
@@ -105,18 +105,18 @@ void testReadNested(const std::shared_ptr<MultiFileBase>& parent) {
   cout << "testReadNested ..." << endl;
   std::shared_ptr<MultiFileBase> mfile1(parent->makeNested(parent, "mfile1", ByteIO::Old, 0));
   MFFileIO mff11(mfile1, "mff11");
-  Vector<Int64> bufcheck(300);
-  Vector<Int64> buf(300);
+  Vector<int64_t> bufcheck(300);
+  Vector<int64_t> buf(300);
   indgen(bufcheck);
   mff11.read(8 * 300, buf.data());
   AlwaysAssertExit(allEQ(buf, bufcheck));
   MFFileIO mff12(mfile1, "mff12");
-  bufcheck += Int64(150);
+  bufcheck += int64_t(150);
   mff12.read(8 * 300, buf.data());
   AlwaysAssertExit(allEQ(buf, bufcheck));
   std::shared_ptr<MultiFileBase> mfile2(parent->makeNested(parent, "mfile2", ByteIO::Old, 0));
   MFFileIO mff21(mfile2, "mff21");
-  Int64 nread = mff21.read(8 * 300, buf.data(), false);  // only 250 were written
+  int64_t nread = mff21.read(8 * 300, buf.data(), false);  // only 250 were written
   AlwaysAssertExit(nread == 8 * 250);
   AlwaysAssertExit(allEQ(buf, bufcheck));  // last 50 elements not overwritten
 }
@@ -127,10 +127,10 @@ void testTruncate(const std::shared_ptr<MultiFileBase>& parent) {
   MFFileIO mff11(mfile1, "mff11", ByteIO::Update);
   mff11.truncate(8 * 120);
   AlwaysAssertExit(mff11.length() == 8 * 120);
-  Vector<Int64> bufcheck(120);
-  Vector<Int64> buf(300);
+  Vector<int64_t> bufcheck(120);
+  Vector<int64_t> buf(300);
   indgen(bufcheck);
-  Int64 nread = mff11.read(8 * 300, buf.data(), false);  // only 120 are left
+  int64_t nread = mff11.read(8 * 300, buf.data(), false);  // only 120 are left
   AlwaysAssertExit(nread == 8 * 120);
   AlwaysAssertExit(allEQ(buf(Slice(0, 120)), bufcheck));
   mfile1->flush();

@@ -59,7 +59,8 @@ class BucketBase {
   // bucketSize*nrOfBuckets bytes.
   // If the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketBase(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets);
+  BucketBase(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+             unsigned int nrOfBuckets);
 
   // Detach the file. The BucketFile is not closed.
   virtual ~BucketBase();
@@ -111,7 +112,7 @@ class BucketBase {
   // The file used.
   BucketFile* itsFile;
   // The starting offsets of the buckets in the file.
-  Int64 itsStartOffset;
+  int64_t itsStartOffset;
   // The bucket size.
   unsigned int itsBucketSize;
   // The current nr of buckets in the file.

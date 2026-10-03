@@ -43,8 +43,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 unsigned int LatticeFit::fitProfiles(Lattice<float>& outImage, Vector<float>& fittedParameters,
-                             LinearFit<float>& fitter, const Lattice<float>& inImage,
-                             unsigned int whichAxis, const Vector<bool>& fitMask, bool returnResiduals) {
+                                     LinearFit<float>& fitter, const Lattice<float>& inImage,
+                                     unsigned int whichAxis, const Vector<bool>& fitMask,
+                                     bool returnResiduals) {
   IPosition outShape = outImage.shape();
   IPosition inShape = inImage.shape();
 
@@ -116,8 +117,9 @@ unsigned int LatticeFit::fitProfiles(Lattice<float>& outImage, Vector<float>& fi
 }
 
 unsigned int LatticeFit::fitProfiles(MaskedLattice<float>* pFit, MaskedLattice<float>* pResid,
-                             MaskedLattice<float>& in, Lattice<float>* pSigma,
-                             LinearFit<float>& fitter, unsigned int axis, bool showProgress) {
+                                     MaskedLattice<float>& in, Lattice<float>* pSigma,
+                                     LinearFit<float>& fitter, unsigned int axis,
+                                     bool showProgress) {
   LogIO os(LogOrigin("LatticeFit", "fitProfiles"));
   //
   IPosition inShape = in.shape();

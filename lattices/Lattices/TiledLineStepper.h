@@ -193,7 +193,8 @@ class TiledLineStepper : public LatticeNavigator {
   // tileShape identical to the Lattice tileShape. This can be obtained by
   // <src>lat.niceCursorShape(lat.advisedMaxPixels())</src>
   // where <src>lat</src> is a Lattice object.
-  TiledLineStepper(const IPosition& latticeShape, const IPosition& tileShape, const unsigned int axis);
+  TiledLineStepper(const IPosition& latticeShape, const IPosition& tileShape,
+                   const unsigned int axis);
 
   // The copy constructor uses copy semantics.
   TiledLineStepper(const TiledLineStepper& other);
@@ -313,7 +314,7 @@ class TiledLineStepper : public LatticeNavigator {
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
   virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             unsigned int maxCacheSize, unsigned int bucketSize) const;
+                                     unsigned int maxCacheSize, unsigned int bucketSize) const;
 
  private:
   // Prevent the default constructor from being used.
@@ -330,8 +331,8 @@ class TiledLineStepper : public LatticeNavigator {
   IPosition itsCursorShape;       // # The shape of the cursor for itsIndexer
   IPosition itsTileShape;         // # The tile shape (= itsTiler cursor shape)
   IPosition itsAxisPath;          // # Path for traversing
-  unsigned int itsNsteps;                 // # The number of iterator steps taken so far;
-  unsigned int itsAxis;                   // # The axis containing the data vector
+  unsigned int itsNsteps;         // # The number of iterator steps taken so far;
+  unsigned int itsAxis;           // # The axis containing the data vector
   bool itsEnd;                    // # Is the cursor beyond the end?
   bool itsStart;                  // # Is the cursor at the beginning?
 };

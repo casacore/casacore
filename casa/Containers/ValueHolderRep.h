@@ -67,7 +67,7 @@ class ValueHolderRep {
   explicit ValueHolderRep(unsigned short value);
   explicit ValueHolderRep(int value);
   explicit ValueHolderRep(unsigned int value);
-  explicit ValueHolderRep(Int64 value);
+  explicit ValueHolderRep(int64_t value);
   explicit ValueHolderRep(float value);
   explicit ValueHolderRep(double value);
   explicit ValueHolderRep(const Complex& value);
@@ -80,7 +80,7 @@ class ValueHolderRep {
   explicit ValueHolderRep(const Array<unsigned short>& value);
   explicit ValueHolderRep(const Array<int>& value);
   explicit ValueHolderRep(const Array<unsigned int>& value);
-  explicit ValueHolderRep(const Array<Int64>& value);
+  explicit ValueHolderRep(const Array<int64_t>& value);
   explicit ValueHolderRep(const Array<float>& value);
   explicit ValueHolderRep(const Array<double>& value);
   explicit ValueHolderRep(const Array<Complex>& value);
@@ -115,7 +115,7 @@ class ValueHolderRep {
   unsigned short asuShort() const;
   int asInt() const;
   unsigned int asuInt() const;
-  Int64 asInt64() const;
+  int64_t asInt64() const;
   float asFloat() const;
   double asDouble() const;
   Complex asComplex() const;
@@ -127,7 +127,7 @@ class ValueHolderRep {
   const Array<unsigned short> asArrayuShort() const;
   const Array<int> asArrayInt() const;
   const Array<unsigned int> asArrayuInt() const;
-  const Array<Int64> asArrayInt64() const;
+  const Array<int64_t> asArrayInt64() const;
   const Array<float> asArrayFloat() const;
   const Array<double> asArrayDouble() const;
   const Array<Complex> asArrayComplex() const;
@@ -160,7 +160,7 @@ class ValueHolderRep {
   DataType itsType;
   union {
     bool itsBool;
-    Int64 itsInt64;
+    int64_t itsInt64;
     float itsFloat;
     double itsDouble;
     void* itsPtr;

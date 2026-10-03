@@ -282,11 +282,11 @@ Record MSRange::range(const Vector<int>& keys, bool useFlags, bool oneBased) {
       } break;
       case MSS::ROWS: {
         // Glish doesn't like uInt (like me), so convert
-        Int64 n = ms_p.nrow();
+        int64_t n = ms_p.nrow();
         Vector<rownr_t> rowNumbers = ms_p.rowNumbers();
-        Vector<Int64> rows(n);
+        Vector<int64_t> rows(n);
         convertArray(rows, rowNumbers);
-        if (oneBased) rows += Int64(1);
+        if (oneBased) rows += int64_t(1);
         out.define(keyword, rows);
       } break;
       case MSS::SCAN_NUMBER:
@@ -313,7 +313,7 @@ Record MSRange::range(const Vector<int>& keys, bool useFlags, bool oneBased) {
       } break;
       case MSS::TIMES: {
         Vector<double> times = msc.time().getColumn();
-        Int64 n = GenSort<double>::sort(times, order, option);
+        int64_t n = GenSort<double>::sort(times, order, option);
         out.define(keyword, times(Slice(0, n)));
       } break;
       case MSS::U:
@@ -472,7 +472,7 @@ Vector<int> MSRange::scalarRange(const ScalarColumn<int>& id) {
   const int option = Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order = Sort::Ascending;
   Vector<int> idvec = id.getColumn();
-  Int64 n = GenSort<int>::sort(idvec, order, option);
+  int64_t n = GenSort<int>::sort(idvec, order, option);
   Vector<int> ids = idvec(Slice(0, n));
   return ids;
 }
@@ -592,7 +592,7 @@ Vector<int> MSRange::ifrNumbers(const ScalarColumn<int>& ant1, const ScalarColum
   DebugAssert(max(a1) < 1000 && max(a2) < 1000, AipsError);
   a1 *= 1000;
   a1 += a2;
-  Int64 n = GenSort<int>::sort(a1, order, option);
+  int64_t n = GenSort<int>::sort(a1, order, option);
   return a1(Slice(0, n));
 }
 

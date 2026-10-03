@@ -113,7 +113,7 @@ class TapeIO : public ByteIO {
   void attach(const Path& device, bool writable = false);
 
   // Write the specified number of bytes.
-  virtual void write(Int64 size, const void* buf);
+  virtual void write(int64_t size, const void* buf);
 
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
@@ -122,7 +122,7 @@ class TapeIO : public ByteIO {
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
   // current file (and size is non-zero and throwException is false).
-  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
+  virtual int64_t read(int64_t size, void* buf, bool throwException = true);
 
   // Rewind the tape device to the beginning.
   virtual void rewind();
@@ -153,7 +153,7 @@ class TapeIO : public ByteIO {
 
   // Get the length of the tape device.  Not a meaningful function for this
   // class and this function always returns -1.
-  virtual Int64 length();
+  virtual int64_t length();
 
   // Is the tape device readable?
   virtual bool isReadable() const;
@@ -190,7 +190,7 @@ class TapeIO : public ByteIO {
   // position. May not work on all Tape devices use the isSeekable(0 member
   // function to see if this function is usuable. Otherwise an Exception
   // (AipsError) is thrown.
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
 
  private:
   // The following functions are made private so that the compiler does not

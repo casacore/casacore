@@ -207,7 +207,7 @@ CoordinateSystem CoordinateUtil::defaultCoords(unsigned int dims) {
 }
 
 unsigned int CoordinateUtil::addAxes(CoordinateSystem& csys, bool direction, bool spectral,
-                             const String& stokes, bool linear, bool tabular, bool silent) {
+                                     const String& stokes, bool linear, bool tabular, bool silent) {
   unsigned int nExtra = 0;
   if (direction) {
     if (!csys.hasDirectionCoordinate()) {
@@ -1717,8 +1717,8 @@ CoordinateSystem CoordinateUtil::makeBinnedCoordinateSystem(const IPosition& fac
   return csysOut;
 }
 
-String CoordinateUtil::axisLabel(const Coordinate& coord, unsigned int axis, bool doWorld, bool doAbs,
-                                 bool doVel) {
+String CoordinateUtil::axisLabel(const Coordinate& coord, unsigned int axis, bool doWorld,
+                                 bool doAbs, bool doVel) {
   String axisName = coord.worldAxisNames()(axis);
   //
   String nativeUnit = coord.worldAxisUnits()(axis);

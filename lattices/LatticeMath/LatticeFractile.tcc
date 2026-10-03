@@ -41,7 +41,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 unsigned int LatticeFractile<T>::findBin(unsigned int& fractileInx, T& stv, T& endv, T minv, T maxv,
-                                 const Block<unsigned int>& hist, const Block<T>& boundaries) {
+                                         const Block<unsigned int>& hist,
+                                         const Block<T>& boundaries) {
   // Return 0 if minimum and maximum value are about equal.
   if (near(minv, maxv)) {
     endv = (minv + maxv) / 2;
@@ -84,8 +85,9 @@ unsigned int LatticeFractile<T>::findBin(unsigned int& fractileInx, T& stv, T& e
 }
 
 template <class T>
-void LatticeFractile<T>::unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<unsigned int>& hist,
-                                           Block<T>& boundaries, const Lattice<T>& lattice) {
+void LatticeFractile<T>::unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv,
+                                           Block<unsigned int>& hist, Block<T>& boundaries,
+                                           const Lattice<T>& lattice) {
   AlwaysAssert(hist.nelements() == boundaries.nelements(), AipsError);
   // Find number of bins (last one is for extraneous values).
   // Scale between -50 and +50 (which is usually okay for
@@ -141,8 +143,9 @@ void LatticeFractile<T>::unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv, Bl
 }
 
 template <class T>
-unsigned int LatticeFractile<T>::maskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<unsigned int>& hist,
-                                         Block<T>& boundaries, const MaskedLattice<T>& lattice) {
+unsigned int LatticeFractile<T>::maskedHistogram(T& stv, T& endv, T& minv, T& maxv,
+                                                 Block<unsigned int>& hist, Block<T>& boundaries,
+                                                 const MaskedLattice<T>& lattice) {
   AlwaysAssert(hist.nelements() == boundaries.nelements(), AipsError);
   unsigned int ntodo = 0;
   // Find number of bins (last one is for extraneous values).

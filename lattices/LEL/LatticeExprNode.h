@@ -497,10 +497,9 @@ class LatticeExprNode {
 
   // Unary constant expression constructors.
   // <group>
-  LatticeExprNode(Int64 constant);
+  LatticeExprNode(int64_t constant);
   LatticeExprNode(int constant);
   LatticeExprNode(unsigned int constant);
-  LatticeExprNode(long constant);
   LatticeExprNode(float constant);
   LatticeExprNode(double constant);
   LatticeExprNode(const Complex& constant);

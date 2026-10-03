@@ -182,13 +182,13 @@ class MSFeedColumns {
   // Ignore the Feed table rows contained in vector ignoreRows.
   // focusLengthQ is only compared if this optional column is present and
   // if the value of focusLengthQ is not dimensionless.
-  Int64 matchFeed(Quantum<double>& newTimeQ, Quantum<double>& newIntervalQ, int antId, int feedId,
-                  int spwId, const Quantum<double>& timeQ, const Quantum<double>& intervalQ,
-                  int numReceptor, const Array<Quantum<double>>& beamOffsetQ,
-                  const Array<String>& polType, const Array<Complex>& polResp,
-                  const Array<Quantum<double>>& positionQ,
-                  const Array<Quantum<double>>& receptorAngleQ, const RowNumbers& ignoreRows,
-                  const Quantum<double>& focusLengthQ = Quantum<double>());
+  int64_t matchFeed(Quantum<double>& newTimeQ, Quantum<double>& newIntervalQ, int antId, int feedId,
+                    int spwId, const Quantum<double>& timeQ, const Quantum<double>& intervalQ,
+                    int numReceptor, const Array<Quantum<double>>& beamOffsetQ,
+                    const Array<String>& polType, const Array<Complex>& polResp,
+                    const Array<Quantum<double>>& positionQ,
+                    const Array<Quantum<double>>& receptorAngleQ, const RowNumbers& ignoreRows,
+                    const Quantum<double>& focusLengthQ = Quantum<double>());
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach

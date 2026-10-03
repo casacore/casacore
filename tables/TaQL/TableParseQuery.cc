@@ -154,7 +154,7 @@ void TableParseQuery::handleColumnFinish(bool distinct) {
   projectExprTable_p = tableProject_p.handleColumnFinish(distinct, resultSet_p, *this);
 }
 
-Table TableParseQuery::createTable(const TableDesc& td, Int64 nrow, const Record& dmInfo,
+Table TableParseQuery::createTable(const TableDesc& td, int64_t nrow, const Record& dmInfo,
                                    const std::vector<const Table*>& tempTables,
                                    const std::vector<TableParseQuery*>& stack) {
   // If the table name contains ::, a subtable has to be created.
@@ -183,7 +183,7 @@ Table TableParseQuery::createTable(const TableDesc& td, Int64 nrow, const Record
   return tab;
 }
 
-Table TableParseQuery::createSubTable(const String& subtableName, const TableDesc& td, Int64 nrow,
+Table TableParseQuery::createSubTable(const String& subtableName, const TableDesc& td, int64_t nrow,
                                       const Record& dmInfo,
                                       const std::vector<const Table*>& tempTables,
                                       const std::vector<TableParseQuery*>& stack) {
@@ -365,7 +365,7 @@ TableExprNode TableParseQuery::doExists(bool notexists, bool showTimings) {
     timer.show("  Exists query");
   }
   // Flag notexists tells if NOT EXISTS or EXISTS was given.
-  return TableExprNode(notexists == (Int64(table_p.nrow()) < limit_p));
+  return TableExprNode(notexists == (int64_t(table_p.nrow()) < limit_p));
 }
 
 // # Execute a subquery and create the correct node object for it.
@@ -428,7 +428,7 @@ void TableParseQuery::handleTableNoFrom() {
         "tables are given in the FROM clause");
   }
   // Use 1 row if limit_p nor endrow_p is given.
-  Int64 nrow = 1;
+  int64_t nrow = 1;
   if (limit_p > 0) {
     nrow = limit_p + offset_p;
   } else if (endrow_p > 0) {
@@ -445,7 +445,7 @@ void TableParseQuery::handleAddRow(const TableExprNode& expr) {
   table_p.addRow(evalIntScaExpr(expr));
 }
 
-Int64 TableParseQuery::evalIntScaExpr(const TableExprNode& expr) const {
+int64_t TableParseQuery::evalIntScaExpr(const TableExprNode& expr) const {
   TableParseGroupby::checkAggrFuncs(expr);
   if (!TableExprNodeUtil::getNodeTables(expr.getRep().get(), false).empty()) {
     throw TableInvExpr("LIMIT or OFFSET expression cannot contain columns");
@@ -456,9 +456,9 @@ Int64 TableParseQuery::evalIntScaExpr(const TableExprNode& expr) const {
   double val;
   expr.get(rowid, val);
   if (val >= 0) {
-    return static_cast<Int64>(val + 0.5);
+    return static_cast<int64_t>(val + 0.5);
   }
-  return -static_cast<Int64>(-val + 0.5);
+  return -static_cast<int64_t>(-val + 0.5);
 }
 
 void TableParseQuery::handleUpdate() {
@@ -546,9 +546,9 @@ Table TableParseQuery::doInsert(bool showTimings, Table& table) {
   // Select rows and use update to put the expressions into the rows.
   if (update_p.size() > 0) {
     unsigned int nexpr = insertExprs_p.size();
-    Int64 nrowex = nexpr / update_p.size();
+    int64_t nrowex = nexpr / update_p.size();
     AlwaysAssert(nrowex * update_p.size() == nexpr, AipsError);
-    Int64 nrow = nrowex;
+    int64_t nrow = nrowex;
     if (limit_p > 0) {
       // See if #rows is given explicitly.
       nrow = limit_p;
@@ -567,8 +567,8 @@ Table TableParseQuery::doInsert(bool showTimings, Table& table) {
     }
     // Add one row at a time, because an insert expression might use
     // the table itself.
-    Int64 inx = 0;
-    for (Int64 i = 0; i < nrow; ++i) {
+    int64_t inx = 0;
+    for (int64_t i = 0; i < nrow; ++i) {
       selRownrs[0] = table.nrow();
       table.addRow();
       Table sel = table(selRownrs);
@@ -659,10 +659,10 @@ Table TableParseQuery::doCount(bool showTimings, const Table& table) {
   Table intab = doProject(false, table);
   // Create an empty memory table with the same description as the input table.
   Table tab = TableCopy::makeEmptyMemoryTable("", intab, true);
-  // Add the Int64 _COUNT_ column.
-  ScalarColumnDesc<Int64> countDesc("_COUNT_");
+  // Add the int64_t _COUNT_ column.
+  ScalarColumnDesc<int64_t> countDesc("_COUNT_");
   tab.addColumn(countDesc);
-  ScalarColumn<Int64> countCol(tab, "_COUNT_");
+  ScalarColumn<int64_t> countCol(tab, "_COUNT_");
   // Iterate for all columns through the input table.
   Vector<String> colNames = intab.tableDesc().columnNames();
   Block<String> bcolNames(colNames.size());
@@ -754,7 +754,7 @@ void TableParseQuery::doLimOff(bool showTimings) {
   Timer timer;
   Vector<rownr_t> newRownrs;
   // Negative values mean from the end (a la Python indexing).
-  Int64 nrow = rownrs_p.size();
+  int64_t nrow = rownrs_p.size();
   if (offset_p < 0) {
     offset_p += nrow;
     if (offset_p < 0) offset_p = 0;
@@ -771,7 +771,7 @@ void TableParseQuery::doLimOff(bool showTimings) {
   }
   if (endrow_p > nrow) endrow_p = nrow;
   if (offset_p < endrow_p) {
-    Int64 nr = 1 + (endrow_p - offset_p - 1) / stride_p;
+    int64_t nr = 1 + (endrow_p - offset_p - 1) / stride_p;
     newRownrs.reference(rownrs_p(Slice(offset_p, nr, stride_p)).copy());
   }
   rownrs_p.reference(newRownrs);

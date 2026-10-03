@@ -245,7 +245,8 @@ class ImageInfo : public RecordTransformable {
 
   // <group>
   // Initialize all per-plane beams to the same value
-  void setAllBeams(const unsigned int nChannels, const unsigned int nStokes, const GaussianBeam& beam);
+  void setAllBeams(const unsigned int nChannels, const unsigned int nStokes,
+                   const GaussianBeam& beam);
 
   // Set the per plane beams array directly.
   void setBeams(const ImageBeamSet& beams);
@@ -283,8 +284,9 @@ class ImageInfo : public RecordTransformable {
   // Reset the info and beamset of this image with the appropriate part of
   // the beam set of the concat image it is part of.
   // It returns the number of channels or polarizations handled.
-  unsigned int setInfoSplitBeamSet(unsigned int ndone, const ImageInfo& concatInfo, const IPosition& shape,
-                           const CoordinateSystem& csys, int concatAxis);
+  unsigned int setInfoSplitBeamSet(unsigned int ndone, const ImageInfo& concatInfo,
+                                   const IPosition& shape, const CoordinateSystem& csys,
+                                   int concatAxis);
 
   // Concatenate the beam sets along the frequency axis.
   void concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, int nchanThis,

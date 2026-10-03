@@ -46,7 +46,7 @@ void StatsTiledCollapser<T, U>::init(unsigned int nOutPixelsPerCollapse) {
 }
 
 template <class T, class U>
-void StatsTiledCollapser<T, U>::initAccumulator(uInt64 n1, uInt64 n3) {
+void StatsTiledCollapser<T, U>::initAccumulator(uint64_t n1, uint64_t n3) {
   _sum = std::make_shared<Block<U>>(n1 * n3);
   _sumSq = std::make_shared<Block<U>>(n1 * n3);
   _npts = std::make_shared<Block<double>>(n1 * n3);
@@ -75,13 +75,13 @@ void StatsTiledCollapser<T, U>::initAccumulator(uInt64 n1, uInt64 n3) {
 
 template <class T, class U>
 void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3, const T* pInData,
-                                        const bool* pInMask, unsigned int dataIncr, unsigned int maskIncr,
-                                        unsigned int nrval, const IPosition& startPos,
-                                        const IPosition& shape) {
+                                        const bool* pInMask, unsigned int dataIncr,
+                                        unsigned int maskIncr, unsigned int nrval,
+                                        const IPosition& startPos, const IPosition& shape) {
   // Process the data in the current chunk.   Everything in this
   // chunk belongs in one output location in the storage
   // lattices
-  uInt64 index = index1 + index3 * _n1;
+  uint64_t index = index1 + index3 * _n1;
   U& sum = (*_sum)[index];
   U& sumSq = (*_sumSq)[index];
   double& nPts = (*_npts)[index];
@@ -94,8 +94,8 @@ void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3
 
   // If these are != -1 after the accumulating, then
   // the min and max were updated
-  Int64 minLoc = -1;
-  Int64 maxLoc = -1;
+  int64_t minLoc = -1;
+  int64_t maxLoc = -1;
 
   std::vector<std::pair<U, U>> ranges;
   bool isInclude = false;
@@ -107,11 +107,11 @@ void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3
   }
   typename vector<std::pair<U, U>>::const_iterator beginRange = ranges.begin();
   typename vector<std::pair<U, U>>::const_iterator endRange = ranges.end();
-  Int64 i = 0;
+  int64_t i = 0;
   if (pInMask == 0) {
     // All pixels are unmasked
     if (hasRange) {
-      for (i = 0; i < (Int64)nrval; ++i) {
+      for (i = 0; i < (int64_t)nrval; ++i) {
         if (StatisticsUtilities<U>::includeDatum(*pInData, beginRange, endRange, isInclude)) {
           StatisticsUtilities<U>::accumulate(nPts, sum, mean, nvariance, sumSq, dataMin, dataMax,
                                              minLoc, maxLoc, *pInData, i);
@@ -124,7 +124,7 @@ void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3
       }
     } else {
       // no range
-      for (Int64 i = 0; i < (Int64)nrval; ++i) {
+      for (int64_t i = 0; i < (int64_t)nrval; ++i) {
         StatisticsUtilities<U>::accumulate(nPts, sum, mean, nvariance, sumSq, dataMin, dataMax,
                                            minLoc, maxLoc, *pInData, i);
         pInData += dataIncr;
@@ -133,7 +133,7 @@ void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3
   } else {
     // Some pixels are masked
     if (hasRange) {
-      for (i = 0; i < (Int64)nrval; ++i) {
+      for (i = 0; i < (int64_t)nrval; ++i) {
         if (*pInMask &&
             StatisticsUtilities<U>::includeDatum(*pInData, beginRange, endRange, isInclude)) {
           StatisticsUtilities<U>::accumulate(nPts, sum, mean, nvariance, sumSq, dataMin, dataMax,
@@ -148,7 +148,7 @@ void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3
       }
     } else {
       // no ranges
-      for (i = 0; i < (Int64)nrval; ++i) {
+      for (i = 0; i < (int64_t)nrval; ++i) {
         if (*pInMask) {
           StatisticsUtilities<U>::accumulate(nPts, sum, mean, nvariance, sumSq, dataMin, dataMax,
                                              minLoc, maxLoc, *pInData, i);
@@ -203,7 +203,7 @@ void StatsTiledCollapser<T, U>::endAccumulator(Array<U>& result, Array<bool>& re
   U* sigmaPtr = _sigma->storage();
   const T* minPtr = _min->storage();
   const T* maxPtr = _max->storage();
-  uInt64 i, j;
+  uint64_t i, j;
   U* resptr_root = resptr;
   for (i = 0; i < _n3; ++i) {
     resptr = resptr_root + (int(LatticeStatsBase::NPTS) * _n1);
@@ -257,7 +257,7 @@ void StatsTiledCollapser<T, U>::_convertNPts(DComplex*& nptsPtr,
                                              std::shared_ptr<Block<DComplex>> nptsComplex) const {
   DComplex* storage = nptsComplex->storage();
   double* realStorage = npts->storage();
-  for (uInt64 i = 0; i < _n1 * _n3; ++i) {
+  for (uint64_t i = 0; i < _n1 * _n3; ++i) {
     /// C++11 storage[i].real(realStorage[i]);
     /// C++11 storage[i].imag(0);
     storage[i] = DComplex(realStorage[i], 0);

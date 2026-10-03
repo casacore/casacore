@@ -262,7 +262,8 @@ void doCopyTable(std::string inTable, std::string outTable, std::string column) 
   TableCopy::copyColumnData(tab, column, duptab, column, false);
 }
 
-void doReadCopiedTable(std::string filename, std::string column, unsigned int rows, IPosition array_pos) {
+void doReadCopiedTable(std::string filename, std::string column, unsigned int rows,
+                       IPosition array_pos) {
   Table tab(filename);
   VerifyArrayColumn<Complex>(tab, column, rows, array_pos);
 }

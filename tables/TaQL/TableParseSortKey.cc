@@ -107,9 +107,9 @@ std::shared_ptr<ArrayBase> TableParseSortKey::addSortValues(Sort& sort, Sort::Or
       sort.sortKey(array->data(), TpUInt, 0, order);
     } break;
     case TpInt64: {
-      auto array = std::make_shared<Array<Int64>>(node_p.getColumnInt64(rownrs));
+      auto array = std::make_shared<Array<int64_t>>(node_p.getColumnInt64(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<Int64>>(array->copy());
+        array = std::make_shared<Array<int64_t>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpInt64, 0, order);

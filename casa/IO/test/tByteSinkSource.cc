@@ -55,8 +55,8 @@ int main() {
     unsigned short testuShort = 10;
     int testInt = -20;
     unsigned int testuInt = 80;
-    Int64 testInt64 = -100000;
-    uInt64 testuInt64 = 100000;
+    int64_t testInt64 = -100000;
+    uint64_t testuInt64 = 100000;
     float testFloat = 18.45;
     double testDouble = 23.987;
     Complex testComplex(2, 3);

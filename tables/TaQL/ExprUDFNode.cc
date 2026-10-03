@@ -65,7 +65,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprUDFNode::makeGroupAggrFunc() {
 }
 
 bool TableExprUDFNode::getBool(const TableExprId& id) { return itsUDF->getBool(id); }
-Int64 TableExprUDFNode::getInt(const TableExprId& id) { return itsUDF->getInt(id); }
+int64_t TableExprUDFNode::getInt(const TableExprId& id) { return itsUDF->getInt(id); }
 double TableExprUDFNode::getDouble(const TableExprId& id) { return itsUDF->getDouble(id); }
 DComplex TableExprUDFNode::getDComplex(const TableExprId& id) { return itsUDF->getDComplex(id); }
 String TableExprUDFNode::getString(const TableExprId& id) { return itsUDF->getString(id); }

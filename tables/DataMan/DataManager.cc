@@ -97,7 +97,9 @@ void DataManager::create64(rownr_t nrrow) {
   create(static_cast<unsigned int>(nrrow));
 }
 
-rownr_t DataManager::open64(rownr_t nrrow, AipsIO& ios) { return open1(static_cast<unsigned int>(nrrow), ios); }
+rownr_t DataManager::open64(rownr_t nrrow, AipsIO& ios) {
+  return open1(static_cast<unsigned int>(nrrow), ios);
+}
 
 rownr_t DataManager::resync64(rownr_t nrrow) {
   AlwaysAssert(nrrow < std::numeric_limits<unsigned int>::max(), AipsError);
@@ -400,8 +402,8 @@ std::map<String, DataManagerCtor> DataManager::initRegisterMap() {
       std::make_pair(ForwardColumnEngine::className(), ForwardColumnEngine::makeObject));
   theirRegisterMap.insert(
       std::make_pair(VirtualTaQLColumn::className(), VirtualTaQLColumn::makeObject));
-  theirRegisterMap.insert(
-      std::make_pair(BitFlagsEngine<unsigned char>::className(), BitFlagsEngine<unsigned char>::makeObject));
+  theirRegisterMap.insert(std::make_pair(BitFlagsEngine<unsigned char>::className(),
+                                         BitFlagsEngine<unsigned char>::makeObject));
   theirRegisterMap.insert(
       std::make_pair(BitFlagsEngine<short>::className(), BitFlagsEngine<short>::makeObject));
   theirRegisterMap.insert(

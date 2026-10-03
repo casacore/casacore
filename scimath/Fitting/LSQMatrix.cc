@@ -32,7 +32,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constructors
 LSQMatrix::LSQMatrix() : n_p(0), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {}
 
-LSQMatrix::LSQMatrix(unsigned int n) : n_p(n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {
+LSQMatrix::LSQMatrix(unsigned int n)
+    : n_p(n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {
   init();
   clear();
 }

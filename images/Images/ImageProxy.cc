@@ -563,7 +563,8 @@ unsigned int ImageProxy::attrNrows(const String& groupName) const {
   return itsAttrHandler->openGroup(groupName).nrows();
 }
 
-ValueHolder ImageProxy::getAttr(const String& groupName, const String& attrName, unsigned int rownr) const {
+ValueHolder ImageProxy::getAttr(const String& groupName, const String& attrName,
+                                unsigned int rownr) const {
   checkNull();
   return itsAttrHandler->openGroup(groupName).getData(attrName, rownr);
 }

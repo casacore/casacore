@@ -176,8 +176,8 @@ void TableMeasRefDesc::fillTabRefMap(const MeasureHolder& measHolder) {
 }
 
 unsigned int TableMeasRefDesc::fillMap(Block<int>& f2t, const Vector<unsigned int>& codesf,
-                               const Vector<String>& typesf, Vector<unsigned int>& codest,
-                               Vector<String>& typest, int maxnr) {
+                                       const Vector<String>& typesf, Vector<unsigned int>& codest,
+                                       Vector<String>& typest, int maxnr) {
   f2t = -1;
   unsigned int nt = typest.nelements();
   for (unsigned int i = 0; i < typesf.size(); i++) {

@@ -452,7 +452,8 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
         case TpUChar:
         case TpArrayUChar:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<unsigned char>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(
+                ArrayColumnDesc<unsigned char>(desc.name(i), desc.comment(i), shape, options));
           } else {
             td.addColumn(ArrayColumnDesc<unsigned char>(desc.name(i), desc.comment(i)));
           }
@@ -708,7 +709,8 @@ bool FITSTable::reopen(const String &fileName) {
   if (raw_table_p->pcount()) {
     raw_table_p->read(raw_table_p->nrows());
     if (raw_table_p->notnull(raw_table_p->theap())) {
-      unsigned int heapOffset = raw_table_p->theap() - raw_table_p->rowsize() * raw_table_p->nrows();
+      unsigned int heapOffset =
+          raw_table_p->theap() - raw_table_p->rowsize() * raw_table_p->nrows();
       // skip to the start of the heap
       // I don't see any way except to read these bogus bytes
       Block<char> junk(heapOffset);
@@ -1032,7 +1034,8 @@ void FITSTable::fill_row() {
       case FITS::BYTE: {
         FitsField<unsigned char> &fitsRef = (FitsField<unsigned char> &)(raw_table_p->field(i));
         if (field_types_p[i] == TpUChar) {
-          RecordFieldPtr<unsigned char> &rowRef = *((RecordFieldPtr<unsigned char> *)row_fields_p[i]);
+          RecordFieldPtr<unsigned char> &rowRef =
+              *((RecordFieldPtr<unsigned char> *)row_fields_p[i]);
           (*rowRef) = fitsRef();
         } else {
           if (promoted_p[i]) {

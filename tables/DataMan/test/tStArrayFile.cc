@@ -39,9 +39,9 @@
 // This class is meant to store indirect table arrays, but could
 // in principle also be used for other array purposes.
 
-void a(bool, unsigned int, Int64&, Int64&, Int64&, Int64&);
-void b(bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
-void c(bool, Int64, Int64, Int64, Int64);
+void a(bool, unsigned int, int64_t&, int64_t&, int64_t&, int64_t&);
+void b(bool, int64_t, int64_t, int64_t, int64_t, int64_t&, int64_t&, int64_t&, int64_t&);
+void c(bool, int64_t, int64_t, int64_t, int64_t);
 
 int main(int argc, const char* argv[]) {
   unsigned int stVersion = 0;
@@ -57,7 +57,7 @@ int main(int argc, const char* argv[]) {
   }
   try {
     for (unsigned int i = stVersion; i <= endVersion; i++) {
-      Int64 off1, off2, off3, off4, offc1, offc2, offc3, offc4;
+      int64_t off1, off2, off3, off4, offc1, offc2, offc3, offc4;
       cout << "test of StArrayFile with version " << i << " in canonical format " << endl;
       a(true, i, off1, off2, off3, off4);
       b(true, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
@@ -77,7 +77,8 @@ int main(int argc, const char* argv[]) {
 }
 
 // Write some arrays (in chunks).
-void a(bool canonical, unsigned int version, Int64& off1, Int64& off2, Int64& off3, Int64& off4) {
+void a(bool canonical, unsigned int version, int64_t& off1, int64_t& off2, int64_t& off3,
+       int64_t& off4) {
   unsigned int l1, l2, l3, l4;
   bool bbuf[10000];
   int ibuf[10000];
@@ -127,12 +128,12 @@ void a(bool canonical, unsigned int version, Int64& off1, Int64& off2, Int64& of
 }
 
 // Read back and update and copy some arrays.
-void b(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& offc1, Int64& offc2,
-       Int64& offc3, Int64& offc4) {
+void b(bool canonical, int64_t off1, int64_t off2, int64_t off3, int64_t off4, int64_t& offc1,
+       int64_t& offc2, int64_t& offc3, int64_t& offc4) {
   StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Update, 0, canonical);
   cout << "Length=" << io.length() << endl;
   IPosition shp, shp1, shp2, shp3, shp4;
-  Int64 offs;
+  int64_t offs;
   unsigned int nref;
   bool bbuf[10000];
   int ibuf[10000];
@@ -212,7 +213,7 @@ void b(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& of
 }
 
 // Read back.
-void c(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4) {
+void c(bool canonical, int64_t off1, int64_t off2, int64_t off3, int64_t off4) {
   StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Old, 0, canonical);
   cout << "Length=" << io.length() << endl;
   unsigned int nref;

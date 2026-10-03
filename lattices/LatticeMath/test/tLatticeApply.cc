@@ -105,18 +105,18 @@ class MyTiledCollapser : public TiledCollapser<int> {
   virtual ~MyTiledCollapser();
   virtual void init(unsigned int nOutPixelsPerCollapse);
   virtual bool canHandleNullMask() const;
-  virtual void initAccumulator(uInt64 n1, uInt64 n3);
-  virtual void process(unsigned int index1, unsigned int index3, const int* inData, const bool* inMask,
-                       unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition& pos,
-                       const IPosition& shape);
+  virtual void initAccumulator(uint64_t n1, uint64_t n3);
+  virtual void process(unsigned int index1, unsigned int index3, const int* inData,
+                       const bool* inMask, unsigned int inDataIncr, unsigned int inMaskIncr,
+                       unsigned int nrval, const IPosition& pos, const IPosition& shape);
   virtual void endAccumulator(Array<int>& result, Array<bool>& resultMask, const IPosition& shape);
 
  private:
   Matrix<unsigned int>* itsSum1;
   Block<int>* itsSum2;
   Matrix<unsigned int>* itsNpts;
-  uInt64 itsn1;
-  uInt64 itsn3;
+  uint64_t itsn1;
+  uint64_t itsn3;
 };
 MyTiledCollapser::~MyTiledCollapser() {
   delete itsSum1;
@@ -126,7 +126,7 @@ MyTiledCollapser::~MyTiledCollapser() {
 void MyTiledCollapser::init(unsigned int nOutPixelsPerCollapse) {
   AlwaysAssert(nOutPixelsPerCollapse == 2, AipsError);
 }
-void MyTiledCollapser::initAccumulator(uInt64 n1, uInt64 n3) {
+void MyTiledCollapser::initAccumulator(uint64_t n1, uint64_t n3) {
   itsSum1 = new Matrix<unsigned int>(n1, n3);
   itsSum2 = new Block<int>(n1 * n3);
   itsNpts = new Matrix<unsigned int>(n1, n3);
@@ -137,9 +137,9 @@ void MyTiledCollapser::initAccumulator(uInt64 n1, uInt64 n3) {
   itsn3 = n3;
 }
 bool MyTiledCollapser::canHandleNullMask() const { return false; }
-void MyTiledCollapser::process(unsigned int index1, unsigned int index3, const int* inData, const bool* inMask,
-                               unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition&,
-                               const IPosition&) {
+void MyTiledCollapser::process(unsigned int index1, unsigned int index3, const int* inData,
+                               const bool* inMask, unsigned int inDataIncr, unsigned int inMaskIncr,
+                               unsigned int nrval, const IPosition&, const IPosition&) {
   unsigned int& sum1 = (*itsSum1)(index1, index3);
   int& sum2 = (*itsSum2)[index1 + index3 * itsn1];
   unsigned int& npts = (*itsNpts)(index1, index3);

@@ -73,9 +73,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 const String ImageFITSConverter::CASAMBM = "casambm";
 
 bool ImageFITSConverter::FITSToImage(ImageInterface<float>*& newImage, String& error,
-                                     const String& imageName, const String& fitsName, unsigned int whichRep,
-                                     int whichHDU, unsigned int memoryInMB, bool allowOverwrite,
-                                     bool zeroBlanks) {
+                                     const String& imageName, const String& fitsName,
+                                     unsigned int whichRep, int whichHDU, unsigned int memoryInMB,
+                                     bool allowOverwrite, bool zeroBlanks) {
   LogIO os(LogOrigin("ImageFITSConverter"));
 
   newImage = 0;
@@ -270,10 +270,11 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<float>*& newImage, String& e
 }
 
 bool ImageFITSConverter::ImageToFITS(String& error, ImageInterface<float>& image,
-                                     const String& fitsName, unsigned int memoryInMB, bool preferVelocity,
-                                     bool opticalVelocity, int BITPIX, float minPix, float maxPix,
-                                     bool allowOverwrite, bool degenerateLast, bool verbose,
-                                     bool stokesLast, bool preferWavelength, bool airWavelength,
+                                     const String& fitsName, unsigned int memoryInMB,
+                                     bool preferVelocity, bool opticalVelocity, int BITPIX,
+                                     float minPix, float maxPix, bool allowOverwrite,
+                                     bool degenerateLast, bool verbose, bool stokesLast,
+                                     bool preferWavelength, bool airWavelength,
                                      const String& origin, bool history) {
   LogIO os;
   os << LogOrigin("ImageFitsConverter", __FUNCTION__, WHERE);
@@ -310,8 +311,8 @@ bool ImageFITSConverter::ImageToFITS(String& error, ImageInterface<float>& image
 }
 
 IPosition ImageFITSConverter::copyCursorShape(String& report, const IPosition& shape,
-                                              unsigned int imagePixelSize, unsigned int fitsPixelSize,
-                                              unsigned int memoryInMB) {
+                                              unsigned int imagePixelSize,
+                                              unsigned int fitsPixelSize, unsigned int memoryInMB) {
   // We could make this more sophisticated by querying the actual tile
   // shape. However, the image will basically always need all but the
   // last dimension in memory for efficient traversal.
@@ -775,7 +776,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
         fhi.newShape(i) = shape(i);
       }
       for (unsigned int i = 0; i < ndim; i++) {  // loop over axes
-        if (cNames(i) == "Stokes") {     // swap to back
+        if (cNames(i) == "Stokes") {             // swap to back
           nStokes++;
           order(ndim - nStokes) = i;
           fhi.newShape(ndim - nStokes) = shape(i);
@@ -794,14 +795,14 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
       }
       unsigned int j = 0;
       for (unsigned int i = 0; i < ndim - nStokes; i++) {  // loop over axes
-        if (shape(i) > 1) {                        // axis is not degenerate
-          order(j) = i;                            // put it in front, keeping order
+        if (shape(i) > 1) {                                // axis is not degenerate
+          order(j) = i;                                    // put it in front, keeping order
           fhi.newShape(j) = shape(i);
           j++;
         }
       }
       for (unsigned int i = 0; i < ndim - nStokes; i++) {  // loop over axes again
-        if (shape(i) == 1) {                       // axis is degenerate
+        if (shape(i) == 1) {                               // axis is degenerate
           order(j) = i;
           fhi.newShape(j) = shape(i);
           j++;
@@ -1185,13 +1186,11 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
   return true;
 }
 
-bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
-                                        const ImageInterface<float>& image, FitsOutput* outfile,
-                                        unsigned int memoryInMB, bool preferVelocity, bool opticalVelocity,
-                                        int BITPIX, float minPix, float maxPix, bool degenerateLast,
-                                        bool verbose, bool stokesLast, bool preferWavelength,
-                                        bool airWavelength, bool primHead, bool allowAppend,
-                                        const String& origin, bool history) {
+bool ImageFITSConverter::ImageToFITSOut(
+    String& error, LogIO& os, const ImageInterface<float>& image, FitsOutput* outfile,
+    unsigned int memoryInMB, bool preferVelocity, bool opticalVelocity, int BITPIX, float minPix,
+    float maxPix, bool degenerateLast, bool verbose, bool stokesLast, bool preferWavelength,
+    bool airWavelength, bool primHead, bool allowAppend, const String& origin, bool history) {
   // Write the headers.
   ImageFITSHeaderInfo fhi;
   if (!ImageHeaderToFITS(error, fhi, image, preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
@@ -1468,10 +1467,10 @@ void ImageFITSConverter::_writeBeamsTable(FitsOutput* const& outfile, const Imag
 }
 
 bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterface<float>& image,
-                                          FitsOutput* outfile, unsigned int memoryInMB, bool preferVelocity,
-                                          bool opticalVelocity, int BITPIX, float minPix,
-                                          float maxPix, bool degenerateLast, bool verbose,
-                                          bool stokesLast, bool preferWavelength,
+                                          FitsOutput* outfile, unsigned int memoryInMB,
+                                          bool preferVelocity, bool opticalVelocity, int BITPIX,
+                                          float minPix, float maxPix, bool degenerateLast,
+                                          bool verbose, bool stokesLast, bool preferWavelength,
                                           bool airWavelength, const String& origin, bool history) {
   // check whether the image is a generic FITS image
   FITSQualityImage* fitsQI = dynamic_cast<FITSQualityImage*>(&image);

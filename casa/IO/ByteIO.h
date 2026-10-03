@@ -89,21 +89,21 @@ class ByteIO {
   virtual ~ByteIO();
 
   // Write <src>size</src> bytes to the byte stream.
-  virtual void write(Int64 size, const void* buf) = 0;
+  virtual void write(int64_t size, const void* buf) = 0;
 
   // Write <src>size</src> bytes to the byte stream at <src>offset</src>.
   // The file offset is not changed
-  virtual void pwrite(Int64 size, Int64 offset, const void* buf);
+  virtual void pwrite(int64_t size, int64_t offset, const void* buf);
 
   // Read <src>size</src> bytes from the byte stream. Returns the number of
   // bytes actually read, or a negative number if an error occurred. Will also
   // throw an Exception (AipsError) if the requested number of bytes could
   // not be read unless throwException is set to false.
-  virtual Int64 read(Int64 size, void* buf, bool throwException = true) = 0;
+  virtual int64_t read(int64_t size, void* buf, bool throwException = true) = 0;
 
   // Like read but reads from offset of start of the file
   // The file offset is not changed
-  virtual Int64 pread(Int64 size, Int64 offset, void* buf, bool throwException = true);
+  virtual int64_t pread(int64_t size, int64_t offset, void* buf, bool throwException = true);
 
   // Reopen the underlying IO stream for read/write access.
   // Nothing will be done if the stream is writable already.
@@ -117,8 +117,8 @@ class ByteIO {
   // The seek option defines from which file position the seek is done.
   // -1 is returned if not seekable.
   // <group>
-  Int64 seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
-  Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
+  int64_t seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
+  int64_t seek(int64_t offset, ByteIO::SeekOption = ByteIO::Begin);
   // </group>
 
   // Flush the data to the file.
@@ -135,14 +135,14 @@ class ByteIO {
 
   // Truncate the file to the given size.
   // The default implementation does nothing.
-  virtual void truncate(Int64 size);
+  virtual void truncate(int64_t size);
 
   // Get the file name of the file attached.
   // The default implementation returns an empty string.
   virtual String fileName() const;
 
   // Get the length of the byte stream.
-  virtual Int64 length() = 0;
+  virtual int64_t length() = 0;
 
   // Is the byte stream readable?
   virtual bool isReadable() const = 0;
@@ -161,7 +161,7 @@ class ByteIO {
   ByteIO& operator=(const ByteIO& byteIO);
   // </group>
 
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption) = 0;
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption) = 0;
 };
 
 inline ByteIO::ByteIO() {}
@@ -170,11 +170,11 @@ inline ByteIO::ByteIO(const ByteIO&) {}
 
 inline ByteIO& ByteIO::operator=(const ByteIO&) { return *this; }
 
-inline Int64 ByteIO::seek(Int64 offset, ByteIO::SeekOption option) {
+inline int64_t ByteIO::seek(int64_t offset, ByteIO::SeekOption option) {
   return doSeek(offset, option);
 }
-inline Int64 ByteIO::seek(int offset, ByteIO::SeekOption option) {
-  return doSeek(Int64(offset), option);
+inline int64_t ByteIO::seek(int offset, ByteIO::SeekOption option) {
+  return doSeek(int64_t(offset), option);
 }
 
 }  // namespace casacore

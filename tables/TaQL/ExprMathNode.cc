@@ -40,7 +40,7 @@ TableExprNodePlus::~TableExprNodePlus() {}
 TableExprNodePlusInt::TableExprNodePlusInt(const TableExprNodeRep& node)
     : TableExprNodePlus(NTInt, node) {}
 TableExprNodePlusInt::~TableExprNodePlusInt() {}
-Int64 TableExprNodePlusInt::getInt(const TableExprId& id) {
+int64_t TableExprNodePlusInt::getInt(const TableExprId& id) {
   return lnode_p->getInt(id) + rnode_p->getInt(id);
 }
 double TableExprNodePlusInt::getDouble(const TableExprId& id) {
@@ -105,7 +105,7 @@ void TableExprNodeMinusInt::handleUnits() {
     TableExprNodeBinary::handleUnits();
   }
 }
-Int64 TableExprNodeMinusInt::getInt(const TableExprId& id) {
+int64_t TableExprNodeMinusInt::getInt(const TableExprId& id) {
   return lnode_p->getInt(id) - rnode_p->getInt(id);
 }
 double TableExprNodeMinusInt::getDouble(const TableExprId& id) {
@@ -171,7 +171,7 @@ void TableExprNodeTimes::handleUnits() {
 TableExprNodeTimesInt::TableExprNodeTimesInt(const TableExprNodeRep& node)
     : TableExprNodeTimes(NTInt, node) {}
 TableExprNodeTimesInt::~TableExprNodeTimesInt() {}
-Int64 TableExprNodeTimesInt::getInt(const TableExprId& id) {
+int64_t TableExprNodeTimesInt::getInt(const TableExprId& id) {
   return lnode_p->getInt(id) * rnode_p->getInt(id);
 }
 double TableExprNodeTimesInt::getDouble(const TableExprId& id) {
@@ -255,7 +255,7 @@ void TableExprNodeModulo::handleUnits() { TableExprNodeBinary::handleUnits(); }
 TableExprNodeModuloInt::TableExprNodeModuloInt(const TableExprNodeRep& node)
     : TableExprNodeModulo(NTInt, node) {}
 TableExprNodeModuloInt::~TableExprNodeModuloInt() {}
-Int64 TableExprNodeModuloInt::getInt(const TableExprId& id) {
+int64_t TableExprNodeModuloInt::getInt(const TableExprId& id) {
   return floormod(lnode_p->getInt(id), rnode_p->getInt(id));
 }
 double TableExprNodeModuloInt::getDouble(const TableExprId& id) { return getInt(id); }
@@ -272,7 +272,7 @@ DComplex TableExprNodeModuloDouble::getDComplex(const TableExprId& id) { return 
 TableExprNodeBitAndInt::TableExprNodeBitAndInt(const TableExprNodeRep& node)
     : TableExprNodeBinary(NTInt, node, OtBitAnd) {}
 TableExprNodeBitAndInt::~TableExprNodeBitAndInt() {}
-Int64 TableExprNodeBitAndInt::getInt(const TableExprId& id) {
+int64_t TableExprNodeBitAndInt::getInt(const TableExprId& id) {
   return lnode_p->getInt(id) & rnode_p->getInt(id);
 }
 double TableExprNodeBitAndInt::getDouble(const TableExprId& id) {
@@ -285,7 +285,7 @@ DComplex TableExprNodeBitAndInt::getDComplex(const TableExprId& id) {
 TableExprNodeBitOrInt::TableExprNodeBitOrInt(const TableExprNodeRep& node)
     : TableExprNodeBinary(NTInt, node, OtBitOr) {}
 TableExprNodeBitOrInt::~TableExprNodeBitOrInt() {}
-Int64 TableExprNodeBitOrInt::getInt(const TableExprId& id) {
+int64_t TableExprNodeBitOrInt::getInt(const TableExprId& id) {
   return lnode_p->getInt(id) | rnode_p->getInt(id);
 }
 double TableExprNodeBitOrInt::getDouble(const TableExprId& id) {
@@ -298,7 +298,7 @@ DComplex TableExprNodeBitOrInt::getDComplex(const TableExprId& id) {
 TableExprNodeBitXorInt::TableExprNodeBitXorInt(const TableExprNodeRep& node)
     : TableExprNodeBinary(NTInt, node, OtBitXor) {}
 TableExprNodeBitXorInt::~TableExprNodeBitXorInt() {}
-Int64 TableExprNodeBitXorInt::getInt(const TableExprId& id) {
+int64_t TableExprNodeBitXorInt::getInt(const TableExprId& id) {
   return lnode_p->getInt(id) ^ rnode_p->getInt(id);
 }
 double TableExprNodeBitXorInt::getDouble(const TableExprId& id) {
@@ -311,7 +311,7 @@ DComplex TableExprNodeBitXorInt::getDComplex(const TableExprId& id) {
 TableExprNodeMIN::TableExprNodeMIN(const TableExprNodeRep& node)
     : TableExprNodeBinary(node.dataType(), node, OtMIN) {}
 TableExprNodeMIN::~TableExprNodeMIN() {}
-Int64 TableExprNodeMIN::getInt(const TableExprId& id) { return -(lnode_p->getInt(id)); }
+int64_t TableExprNodeMIN::getInt(const TableExprId& id) { return -(lnode_p->getInt(id)); }
 double TableExprNodeMIN::getDouble(const TableExprId& id) { return -(lnode_p->getDouble(id)); }
 DComplex TableExprNodeMIN::getDComplex(const TableExprId& id) {
   return -(lnode_p->getDComplex(id));
@@ -320,7 +320,7 @@ DComplex TableExprNodeMIN::getDComplex(const TableExprId& id) {
 TableExprNodeBitNegate::TableExprNodeBitNegate(const TableExprNodeRep& node)
     : TableExprNodeBinary(node.dataType(), node, OtBitNegate) {}
 TableExprNodeBitNegate::~TableExprNodeBitNegate() {}
-Int64 TableExprNodeBitNegate::getInt(const TableExprId& id) { return ~(lnode_p->getInt(id)); }
+int64_t TableExprNodeBitNegate::getInt(const TableExprId& id) { return ~(lnode_p->getInt(id)); }
 double TableExprNodeBitNegate::getDouble(const TableExprId& id) {
   return double(~(lnode_p->getInt(id)));
 }

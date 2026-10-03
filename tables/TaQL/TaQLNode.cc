@@ -227,7 +227,9 @@ void TaQLMultiNode::setPPFix(const String& prefix, const String& postfix) {
 }
 
 void TaQLMultiNode::setSeparator(const String& sep) { itsNRep->setSeparator(sep); }
-void TaQLMultiNode::setSeparator(unsigned int incr, const String& sep) { itsNRep->setSeparator(incr, sep); }
+void TaQLMultiNode::setSeparator(unsigned int incr, const String& sep) {
+  itsNRep->setSeparator(incr, sep);
+}
 
 TaQLQueryNode::TaQLQueryNode(TaQLQueryNodeRep* rep) : TaQLNode(rep), itsNRep(rep) {}
 

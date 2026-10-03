@@ -128,7 +128,8 @@ class RecordDesc {
   // <src>TpInt ->TpArrayInt</src>.  Returns the number of fields in
   // the description.
   // A shape of [-1] indicates a variable shape.
-  unsigned int addField(const String& fieldName, DataType scalarOrArrayType, const IPosition& shape);
+  unsigned int addField(const String& fieldName, DataType scalarOrArrayType,
+                        const IPosition& shape);
 
   // Add a Record field to the description. This allows hierarchical
   // descriptions to be developed. Returns the number of fields in the
@@ -169,8 +170,8 @@ class RecordDesc {
 
   // Add all the fields from another RecordDesc to the current objects.
   // It returns the new number of fields.
-  unsigned int merge(const RecordDesc& other,
-             RecordInterface::DuplicatesFlag DuplicateAction = RecordInterface::ThrowOnDuplicates);
+  unsigned int merge(const RecordDesc& other, RecordInterface::DuplicatesFlag DuplicateAction =
+                                                  RecordInterface::ThrowOnDuplicates);
 
   // Remove the given field from the description.
   // It returns the new number of fields.
@@ -307,7 +308,7 @@ inline unsigned int RecordDesc::addField(const String& fieldName, DataType dataT
 }
 
 inline unsigned int RecordDesc::addField(const String& fieldName, DataType scalarOrArrayType,
-                                 const IPosition& shape) {
+                                         const IPosition& shape) {
   return desc_p.rwRef().addArray(fieldName, scalarOrArrayType, shape);
 }
 
@@ -332,12 +333,12 @@ inline void RecordDesc::setShape(int whichField, const IPosition& shape) {
 }
 
 inline unsigned int RecordDesc::mergeField(const RecordDesc& other, int whichFieldFromOther,
-                                   RecordInterface::DuplicatesFlag duplicateAction) {
+                                           RecordInterface::DuplicatesFlag duplicateAction) {
   return desc_p.rwRef().mergeField(other.desc_p.ref(), whichFieldFromOther, duplicateAction);
 }
 
 inline unsigned int RecordDesc::merge(const RecordDesc& other,
-                              RecordInterface::DuplicatesFlag duplicateAction) {
+                                      RecordInterface::DuplicatesFlag duplicateAction) {
   return desc_p.rwRef().merge(other.desc_p.ref(), duplicateAction);
 }
 

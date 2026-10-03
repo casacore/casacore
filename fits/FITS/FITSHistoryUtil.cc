@@ -42,7 +42,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 unsigned int FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType,
-                                      ConstFitsKeywordList &in) {
+                                              ConstFitsKeywordList &in) {
   LogIO os;
   os << LogOrigin("FITSHistoryUtil", "getHistoryGroup", WHERE);
 
@@ -264,8 +264,9 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &hi
   }
 }
 
-unsigned int FITSHistoryUtil::toHISTORY(vector<String> &history, bool &aipsppFormat, unsigned int &nstrings,
-                                unsigned int firstLine, const LoggerHolder &logger) {
+unsigned int FITSHistoryUtil::toHISTORY(vector<String> &history, bool &aipsppFormat,
+                                        unsigned int &nstrings, unsigned int firstLine,
+                                        const LoggerHolder &logger) {
   String priority, message, location, id;
   double timeInSec;
   history.resize(0);

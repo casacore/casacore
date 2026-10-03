@@ -1308,7 +1308,7 @@ int main() {
       BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
-      uInt64 expec = 0;
+      uint64_t expec = 0;
       for (unsigned int i = 0; i < n; ++i) {
         unsigned int s = size[i];
         expec += s;

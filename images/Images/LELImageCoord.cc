@@ -54,7 +54,7 @@ bool LELImageCoord::hasCoordinates() const { return true; }
 String LELImageCoord::classname() const { return "LELImageCoord"; }
 
 unsigned int LELImageCoord::getSpectralInfo(Vector<double>& worldCoordinates,
-                                    const IPosition& shape) const {
+                                            const IPosition& shape) const {
   // Find the coordinate number of the spectral coordinate.
   const CoordinateSystem& csys = coordinates();
   int which = csys.findCoordinate(Coordinate::SPECTRAL);

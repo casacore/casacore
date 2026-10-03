@@ -79,7 +79,7 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // 'get' Functions to get the desired result of a function
   // <group>
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
   virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
@@ -108,7 +108,8 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // Get the collapse axes for the partial functions.
   // It compares the values with the #dim and removes them if too high.
   // axarg gives the argument nr of the axes.
-  IPosition getAxes(const TableExprId& id, int ndim, unsigned int axarg = 1, bool swapRemove = true);
+  IPosition getAxes(const TableExprId& id, int ndim, unsigned int axarg = 1,
+                    bool swapRemove = true);
 
   // Remove axes exceeding ndim.
   IPosition removeAxes(const IPosition& axes, int ndim) const;

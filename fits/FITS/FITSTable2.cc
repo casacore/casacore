@@ -41,7 +41,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-unsigned int sizeofStringField(const RecordDesc &description, const Record &sizes, unsigned int whichField) {
+unsigned int sizeofStringField(const RecordDesc &description, const Record &sizes,
+                               unsigned int whichField) {
   int size = FITSTableWriter::DefaultMaxStringSize;
   AlwaysAssert(description.type(whichField) == TpString, AipsError);
   String name = description.name(whichField);
@@ -53,8 +54,9 @@ unsigned int sizeofStringField(const RecordDesc &description, const Record &size
 }
 
 FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description,
-                                 const Record &maxLengths, unsigned int nrows, const Record &extraKeywords,
-                                 const Record &units, bool freeOutput, const Record &variableShapes)
+                                 const Record &maxLengths, unsigned int nrows,
+                                 const Record &extraKeywords, const Record &units, bool freeOutput,
+                                 const Record &variableShapes)
     : delete_writer_p(freeOutput),
       writer_p(file),
       nrows_written_p(0),
@@ -435,14 +437,16 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
         }
       } break;
       case TpArrayUChar: {
-        RORecordFieldPtr<Array<unsigned char>> *rptr = new RORecordFieldPtr<Array<unsigned char>>(row_p, i);
+        RORecordFieldPtr<Array<unsigned char>> *rptr =
+            new RORecordFieldPtr<Array<unsigned char>>(row_p, i);
         FitsField<unsigned char> *fptr = new FitsField<unsigned char>(fieldSizes[i]);
         bintable_p->bind(whichField, *fptr);
         if (whichTdim >= 0) {
           FitsField<char> *tdirptr =
               new FitsField<char>(variableShapes.asString(description.name(i)).length());
           bintable_p->bind(whichTdim, *tdirptr);
-          copiers_p[i] = new VariableArrayFITSFieldCopier<unsigned char, unsigned char>(rptr, fptr, tdirptr);
+          copiers_p[i] =
+              new VariableArrayFITSFieldCopier<unsigned char, unsigned char>(rptr, fptr, tdirptr);
         } else {
           copiers_p[i] = new ArrayFITSFieldCopier<unsigned char, unsigned char>(rptr, fptr);
         }

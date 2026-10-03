@@ -31,11 +31,11 @@
 
 namespace casacore {
 
-std::map<uInt64, double> ZScoreCalculator::_nptsToMaxZScore;
+std::map<uint64_t, double> ZScoreCalculator::_nptsToMaxZScore;
 
 std::mutex ZScoreCalculator::_mutex;
 
-double ZScoreCalculator::getMaxZScore(uInt64 npts) {
+double ZScoreCalculator::getMaxZScore(uint64_t npts) {
   std::lock_guard<std::mutex> lock(_mutex);
   if (_nptsToMaxZScore.empty()) {
     // initialize the map

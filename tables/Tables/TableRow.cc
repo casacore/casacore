@@ -141,12 +141,12 @@ void ROTableRow::deleteObjects() {
         delete (RecordFieldPtr<Array<unsigned int>>*)(itsFields[i]);
         break;
       case TpInt64:
-        delete (ScalarColumn<Int64>*)(itsColumns[i]);
-        delete (RecordFieldPtr<Int64>*)(itsFields[i]);
+        delete (ScalarColumn<int64_t>*)(itsColumns[i]);
+        delete (RecordFieldPtr<int64_t>*)(itsFields[i]);
         break;
       case TpArrayInt64:
-        delete (ArrayColumn<Int64>*)(itsColumns[i]);
-        delete (RecordFieldPtr<Array<Int64>>*)(itsFields[i]);
+        delete (ArrayColumn<int64_t>*)(itsColumns[i]);
+        delete (RecordFieldPtr<Array<int64_t>>*)(itsFields[i]);
         break;
       case TpFloat:
         delete (ScalarColumn<float>*)(itsColumns[i]);
@@ -325,8 +325,8 @@ void ROTableRow::makeObjects(const RecordDesc& description) {
         itsFields[i] = new RecordFieldPtr<unsigned int>(*itsRecord, i);
         break;
       case TpInt64:
-        itsColumns[i] = new ScalarColumn<Int64>(itsTable, name);
-        itsFields[i] = new RecordFieldPtr<Int64>(*itsRecord, i);
+        itsColumns[i] = new ScalarColumn<int64_t>(itsTable, name);
+        itsFields[i] = new RecordFieldPtr<int64_t>(*itsRecord, i);
         break;
       case TpFloat:
         itsColumns[i] = new ScalarColumn<float>(itsTable, name);
@@ -373,8 +373,8 @@ void ROTableRow::makeObjects(const RecordDesc& description) {
         itsFields[i] = new RecordFieldPtr<Array<unsigned int>>(*itsRecord, i);
         break;
       case TpArrayInt64:
-        itsColumns[i] = new ArrayColumn<Int64>(itsTable, name);
-        itsFields[i] = new RecordFieldPtr<Array<Int64>>(*itsRecord, i);
+        itsColumns[i] = new ArrayColumn<int64_t>(itsTable, name);
+        itsFields[i] = new RecordFieldPtr<Array<int64_t>>(*itsRecord, i);
         break;
       case TpArrayFloat:
         itsColumns[i] = new ArrayColumn<float>(itsTable, name);
@@ -406,7 +406,7 @@ void ROTableRow::makeObjects(const RecordDesc& description) {
 
 const TableRecord& ROTableRow::get(rownr_t rownr, bool alwaysRead) const {
   // Only read when needed.
-  if (Int64(rownr) == itsLastRow && !itsReread && !alwaysRead) {
+  if (int64_t(rownr) == itsLastRow && !itsReread && !alwaysRead) {
     return *itsRecord;
   }
   const RecordDesc& desc = itsRecord->description();
@@ -448,7 +448,8 @@ const TableRecord& ROTableRow::get(rownr_t rownr, bool alwaysRead) const {
           (*(const ArrayColumn<unsigned char>*)(itsColumns[i]))
               .get(rownr, *(*(RecordFieldPtr<Array<unsigned char>>*)itsFields[i]), true);
         } else {
-          (*(RecordFieldPtr<Array<unsigned char>>*)(itsFields[i])).define(Array<unsigned char>(IPosition(ndim, 0)));
+          (*(RecordFieldPtr<Array<unsigned char>>*)(itsFields[i]))
+              .define(Array<unsigned char>(IPosition(ndim, 0)));
         }
         break;
       case TpShort:
@@ -484,19 +485,21 @@ const TableRecord& ROTableRow::get(rownr_t rownr, bool alwaysRead) const {
           (*(const ArrayColumn<unsigned int>*)(itsColumns[i]))
               .get(rownr, *(*(RecordFieldPtr<Array<unsigned int>>*)itsFields[i]), true);
         } else {
-          (*(RecordFieldPtr<Array<unsigned int>>*)(itsFields[i])).define(Array<unsigned int>(IPosition(ndim, 0)));
+          (*(RecordFieldPtr<Array<unsigned int>>*)(itsFields[i]))
+              .define(Array<unsigned int>(IPosition(ndim, 0)));
         }
         break;
       case TpInt64:
-        (*(const ScalarColumn<Int64>*)(itsColumns[i]))
-            .get(rownr, *(*(RecordFieldPtr<Int64>*)itsFields[i]));
+        (*(const ScalarColumn<int64_t>*)(itsColumns[i]))
+            .get(rownr, *(*(RecordFieldPtr<int64_t>*)itsFields[i]));
         break;
       case TpArrayInt64:
         if (isDefined) {
-          (*(const ArrayColumn<Int64>*)(itsColumns[i]))
-              .get(rownr, *(*(RecordFieldPtr<Array<Int64>>*)itsFields[i]), true);
+          (*(const ArrayColumn<int64_t>*)(itsColumns[i]))
+              .get(rownr, *(*(RecordFieldPtr<Array<int64_t>>*)itsFields[i]), true);
         } else {
-          (*(RecordFieldPtr<Array<Int64>>*)(itsFields[i])).define(Array<Int64>(IPosition(ndim, 0)));
+          (*(RecordFieldPtr<Array<int64_t>>*)(itsFields[i]))
+              .define(Array<int64_t>(IPosition(ndim, 0)));
         }
         break;
       case TpFloat:
@@ -579,7 +582,7 @@ const TableRecord& ROTableRow::get(rownr_t rownr, bool alwaysRead) const {
 // The values (might) have changed, which is not reflected in the
 // internal record. Be sure to reread when the same row is asked for.
 void ROTableRow::setReread(rownr_t rownr) {
-  if (Int64(rownr) == itsLastRow) {
+  if (int64_t(rownr) == itsLastRow) {
     itsReread = true;
   }
 }
@@ -607,7 +610,8 @@ void ROTableRow::putField(rownr_t rownr, const TableRecord& record, int whichCol
       PutFieldArray<bool>(rownr, record, whichColumn, whichField);
       break;
     case TpUChar:
-      (*(ScalarColumn<unsigned char>*)(itsColumns[whichColumn])).put(rownr, record.asuChar(whichField));
+      (*(ScalarColumn<unsigned char>*)(itsColumns[whichColumn]))
+          .put(rownr, record.asuChar(whichField));
       break;
     case TpArrayUChar:
       PutFieldArray<unsigned char>(rownr, record, whichColumn, whichField);
@@ -625,16 +629,17 @@ void ROTableRow::putField(rownr_t rownr, const TableRecord& record, int whichCol
       PutFieldArray<int>(rownr, record, whichColumn, whichField);
       break;
     case TpUInt:
-      (*(ScalarColumn<unsigned int>*)(itsColumns[whichColumn])).put(rownr, record.asuInt(whichField));
+      (*(ScalarColumn<unsigned int>*)(itsColumns[whichColumn]))
+          .put(rownr, record.asuInt(whichField));
       break;
     case TpArrayUInt:
       PutFieldArray<unsigned int>(rownr, record, whichColumn, whichField);
       break;
     case TpInt64:
-      (*(ScalarColumn<Int64>*)(itsColumns[whichColumn])).put(rownr, record.asInt64(whichField));
+      (*(ScalarColumn<int64_t>*)(itsColumns[whichColumn])).put(rownr, record.asInt64(whichField));
       break;
     case TpArrayInt64:
-      PutFieldArray<Int64>(rownr, record, whichColumn, whichField);
+      PutFieldArray<int64_t>(rownr, record, whichColumn, whichField);
       break;
     case TpFloat:
       (*(ScalarColumn<float>*)(itsColumns[whichColumn])).put(rownr, record.asfloat(whichField));
@@ -722,12 +727,12 @@ void ROTableRow::putRecord(rownr_t rownr) {
             .put(rownr, (*(RecordFieldPtr<Array<unsigned int>>*)itsFields[i]).get());
         break;
       case TpInt64:
-        (*(ScalarColumn<Int64>*)(itsColumns[i]))
-            .put(rownr, (*(RecordFieldPtr<Int64>*)itsFields[i]).get());
+        (*(ScalarColumn<int64_t>*)(itsColumns[i]))
+            .put(rownr, (*(RecordFieldPtr<int64_t>*)itsFields[i]).get());
         break;
       case TpArrayInt64:
-        (*(ArrayColumn<Int64>*)(itsColumns[i]))
-            .put(rownr, (*(RecordFieldPtr<Array<Int64>>*)itsFields[i]).get());
+        (*(ArrayColumn<int64_t>*)(itsColumns[i]))
+            .put(rownr, (*(RecordFieldPtr<Array<int64_t>>*)itsFields[i]).get());
         break;
       case TpFloat:
         (*(ScalarColumn<float>*)(itsColumns[i]))

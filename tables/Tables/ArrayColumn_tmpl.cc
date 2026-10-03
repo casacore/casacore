@@ -34,7 +34,7 @@ template class ArrayColumn<short>;
 template class ArrayColumn<unsigned short>;
 template class ArrayColumn<int>;
 template class ArrayColumn<unsigned int>;
-template class ArrayColumn<Int64>;
+template class ArrayColumn<int64_t>;
 template class ArrayColumn<float>;
 template class ArrayColumn<double>;
 template class ArrayColumn<Complex>;

@@ -192,7 +192,8 @@ bool LCSlicer::operator==(const LCSlicer& other) const {
   return true;
 }
 
-void LCSlicer::fillFlags(bool fractional, int absRel, unsigned int nrblc, unsigned int nrtrc, unsigned int nrinc) {
+void LCSlicer::fillFlags(bool fractional, int absRel, unsigned int nrblc, unsigned int nrtrc,
+                         unsigned int nrinc) {
   itsFracBlc.resize(nrblc);
   itsFracTrc.resize(nrtrc);
   itsFracInc.resize(nrinc);
@@ -299,12 +300,12 @@ void LCSlicer::fill() {
   itsIsUnspecified = false;
   itsIsStrided = false;
   for (unsigned int i = 0; i < nr; i++) {
-    if (static_cast<Int64>(itsBlc[i]) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(itsBlc[i]) < Slicer::MimicSource + 10) {
       itsIsUnspecified = true;
       itsFracBlc[i] = false;
       itsAbsRelBlc[i] = RegionType::Abs;
     }
-    if (static_cast<Int64>(itsTrc[i]) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(itsTrc[i]) < Slicer::MimicSource + 10) {
       itsIsUnspecified = true;
       itsFracTrc[i] = false;
       itsAbsRelTrc[i] = RegionType::Abs;
@@ -367,7 +368,7 @@ Slicer LCSlicer::toSlicer(const Vector<float>& referencePixel,
   // last digits, so be relaxed in testing it. Use a margin of 10.
   for (i = 0; i < ndreg; i++) {
     float v = itsBlc[i];
-    if (static_cast<Int64>(v) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(v) < Slicer::MimicSource + 10) {
       v = 0;
     } else {
       if (itsFracBlc[i]) {
@@ -381,7 +382,7 @@ Slicer LCSlicer::toSlicer(const Vector<float>& referencePixel,
     }
     blc[i] = int(v + 0.5);
     v = itsTrc[i];
-    if (static_cast<Int64>(v) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(v) < Slicer::MimicSource + 10) {
       v = newLatticeShape[i] - 1;
     } else {
       if (itsFracTrc[i]) {
@@ -396,7 +397,7 @@ Slicer LCSlicer::toSlicer(const Vector<float>& referencePixel,
     }
     trc[i] = int(v + 0.5);
     v = itsInc[i];
-    if (static_cast<Int64>(v) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(v) < Slicer::MimicSource + 10) {
       v = 1;
     } else {
       if (itsFracInc[i]) {
