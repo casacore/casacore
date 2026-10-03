@@ -17,10 +17,10 @@
 
 // CASACORE_HAVE_SOFA is defined when the lib is found, but the header
 // file may not be present, so never use SOFA for now.
-//#ifdef CASACORE_HAVE_SOFA
-//#include <sofa.h>
-//#define SOFA_OR_ERFA(erfa_fn, sofa_fn) sofa_fn
-//#elif defined(CASACORE_HAVE_ERFA)
+// #ifdef CASACORE_HAVE_SOFA
+// #include <sofa.h>
+// #define SOFA_OR_ERFA(erfa_fn, sofa_fn) sofa_fn
+// #elif defined(CASACORE_HAVE_ERFA)
 #ifdef CASACORE_HAVE_ERFA
 #include <erfa.h>
 #define SOFA_OR_ERFA(erfa_fn, sofa_fn) erfa_fn

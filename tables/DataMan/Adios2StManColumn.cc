@@ -292,93 +292,67 @@ void Adios2StManColumn::putColumnSliceCellsV(const RefRows &rownrs, const Slicer
   toAdios(&data);
 }
 
-void Adios2StManColumn::putBool(rownr_t rownr, const bool* dataPtr) {
+void Adios2StManColumn::putBool(rownr_t rownr, const bool *dataPtr) { putScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::getBool(rownr_t rownr, bool *dataPtr) { getScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::putuChar(rownr_t rownr, const unsigned char *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getBool(rownr_t rownr, bool* dataPtr) {
+void Adios2StManColumn::getuChar(rownr_t rownr, unsigned char *dataPtr) {
   getScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::putuChar(rownr_t rownr, const unsigned char* dataPtr) {
+void Adios2StManColumn::putShort(rownr_t rownr, const short *dataPtr) { putScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::getShort(rownr_t rownr, short *dataPtr) { getScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::putuShort(rownr_t rownr, const unsigned short *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getuChar(rownr_t rownr, unsigned char* dataPtr) {
+void Adios2StManColumn::getuShort(rownr_t rownr, unsigned short *dataPtr) {
   getScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::putShort(rownr_t rownr, const short* dataPtr) {
+void Adios2StManColumn::putInt(rownr_t rownr, const int *dataPtr) { putScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::getInt(rownr_t rownr, int *dataPtr) { getScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::putuInt(rownr_t rownr, const unsigned int *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getShort(rownr_t rownr, short* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
+void Adios2StManColumn::getuInt(rownr_t rownr, unsigned int *dataPtr) { getScalar(rownr, dataPtr); }
 
-void Adios2StManColumn::putuShort(rownr_t rownr, const unsigned short* dataPtr) {
+void Adios2StManColumn::putfloat(rownr_t rownr, const float *dataPtr) { putScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::getfloat(rownr_t rownr, float *dataPtr) { getScalar(rownr, dataPtr); }
+
+void Adios2StManColumn::putdouble(rownr_t rownr, const double *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getuShort(rownr_t rownr, unsigned short* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
+void Adios2StManColumn::getdouble(rownr_t rownr, double *dataPtr) { getScalar(rownr, dataPtr); }
 
-void Adios2StManColumn::putInt(rownr_t rownr, const int* dataPtr) {
+void Adios2StManColumn::putComplex(rownr_t rownr, const Complex *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getInt(rownr_t rownr, int* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
+void Adios2StManColumn::getComplex(rownr_t rownr, Complex *dataPtr) { getScalar(rownr, dataPtr); }
 
-void Adios2StManColumn::putuInt(rownr_t rownr, const unsigned int* dataPtr) {
+void Adios2StManColumn::putDComplex(rownr_t rownr, const DComplex *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getuInt(rownr_t rownr, unsigned int* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
+void Adios2StManColumn::getDComplex(rownr_t rownr, DComplex *dataPtr) { getScalar(rownr, dataPtr); }
 
-void Adios2StManColumn::putfloat(rownr_t rownr, const float* dataPtr) {
+void Adios2StManColumn::putInt64(rownr_t rownr, const int64_t *dataPtr) {
   putScalar(rownr, dataPtr);
 }
 
-void Adios2StManColumn::getfloat(rownr_t rownr, float* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::putdouble(rownr_t rownr, const double* dataPtr) {
-  putScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::getdouble(rownr_t rownr, double* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::putComplex(rownr_t rownr, const Complex* dataPtr) {
-  putScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::getComplex(rownr_t rownr, Complex* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::putDComplex(rownr_t rownr, const DComplex* dataPtr) {
-  putScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::getDComplex(rownr_t rownr, DComplex* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::putInt64(rownr_t rownr, const int64_t* dataPtr) {
-  putScalar(rownr, dataPtr);
-}
-
-void Adios2StManColumn::getInt64(rownr_t rownr, int64_t* dataPtr) {
-  getScalar(rownr, dataPtr);
-}
+void Adios2StManColumn::getInt64(rownr_t rownr, int64_t *dataPtr) { getScalar(rownr, dataPtr); }
 
 // string
 
