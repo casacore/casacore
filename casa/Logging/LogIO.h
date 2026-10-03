@@ -291,9 +291,10 @@ LogIO &operator<<(LogIO &os, Complex item);
 LogIO &operator<<(LogIO &os, DComplex item);
 LogIO &operator<<(LogIO &os, int item);
 LogIO &operator<<(LogIO &os, unsigned int item);
-LogIO &operator<<(LogIO &os, int64_t item);
-LogIO &operator<<(LogIO &os, uint64_t item);
 LogIO &operator<<(LogIO &os, long item);
+LogIO &operator<<(LogIO &os, unsigned long item);
+LogIO &operator<<(LogIO &os, long long item);
+LogIO &operator<<(LogIO &os, unsigned long long item);
 LogIO &operator<<(LogIO &os, bool item);
 LogIO &operator<<(LogIO &os, ostream &(*item)(ostream &));
 // </group>

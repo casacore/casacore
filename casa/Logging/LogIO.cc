@@ -222,12 +222,22 @@ LogIO &operator<<(LogIO &os, unsigned int item) {
   return os;
 }
 
-LogIO &operator<<(LogIO &os, int64_t item) {
+LogIO &operator<<(LogIO &os, long item) {
   os.output() << item;
   return os;
 }
 
-LogIO &operator<<(LogIO &os, uint64_t item) {
+LogIO &operator<<(LogIO &os, unsigned long item) {
+  os.output() << item;
+  return os;
+}
+
+LogIO &operator<<(LogIO &os, long long item) {
+  os.output() << item;
+  return os;
+}
+
+LogIO &operator<<(LogIO &os, unsigned long long item) {
   os.output() << item;
   return os;
 }
