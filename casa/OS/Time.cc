@@ -154,7 +154,7 @@ bool Time::operator<(const Time &other) const {
 }
 
 String Time::toString(const bool iso) const {
-  // if iso is True, then use ISO 8601 format
+  // if iso is true, then use ISO 8601 format
   // otherwise,
   // Produce the string of the form
   // Tue Mar 22 16:40:24 1994
@@ -585,7 +585,7 @@ bool Time::isLeapYear(uInt lyear) {
 }
 
 // Used internally here to determine if Daylight Savings Time (Summer
-// Time) is currently active.  1 is True, 0 False.
+// Time) is currently active.  1 is true, 0 false.
 static Int isDST() {
   time_t tim = time(NULL);
   struct tm *tm_info = localtime(&tim);

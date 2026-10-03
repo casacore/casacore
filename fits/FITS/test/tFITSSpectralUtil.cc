@@ -113,7 +113,7 @@ int main() {
                                                       freqs, refFrameOut, velPrefOut, restFreqOut,
                                                       logger, header, 'c', false));
     AlwaysAssertExit(whichAxis == 0);
-    // note: the following is only true when onRelative==False in
+    // note: the following is only true when onRelative==false in
     // fromFITSHeader
     AlwaysAssertExit(near(refPix, refPixOut));
     AlwaysAssertExit(near(refFreq, refFreqOut));
@@ -229,7 +229,7 @@ int main() {
                                                       freqs, refFrameOut, velPrefOut, restFreqOut,
                                                       logger, header, 'c', false));
     AlwaysAssertExit(whichAxis == 0);
-    // note: the following is only true when onRelative==False in
+    // note: the following is only true when onRelative==false in
     // fromFITSHeader
     AlwaysAssertExit(near(refPix, refPixOut));
     AlwaysAssertExit(near(refFreq, refFreqOut));
@@ -316,7 +316,7 @@ int main() {
                                                       freqs, refFrameOut, velPrefOut, restFreqOut,
                                                       logger, header, 'c', false));
     AlwaysAssertExit(whichAxis == 0);
-    // note: the following is only true when onRelative==False in
+    // note: the following is only true when onRelative==false in
     // fromFITSHeader
     AlwaysAssertExit(near(refPix, refPixOut));
     AlwaysAssertExit(near(refFreq, refFreqOut, 1E-11));

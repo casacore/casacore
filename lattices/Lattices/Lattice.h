@@ -167,11 +167,11 @@ class LatticeIterInterface;
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
 //
 //   IPosition start(4,0);
-//   Bool isARef;
+//   bool isARef;
 //   for (uInt c = 0; c < nchan; c++){
 //     for (uInt p = 0; p < npol; p++){
 //       isARef = input.getSlice(inputArrPtr,
-//                               Slicer(start,inputSliceShape), True);
+//                               Slicer(start,inputSliceShape), true);
 //       FFT2D.fft(resultArray, *inputArrPtr);
 //       result.putSlice(resultArray, start);
 //       start(2) += 1;
@@ -278,7 +278,7 @@ class Lattice : public LatticeBase {
   //      "empty" axis created in buffer. (e.g. extracting an n-dimensional
   //      from an (n+1)-dimensional will fill 'buffer' with an array that
   //      has a degenerate axis (i.e. one axis will have a length = 1.)
-  //      Setting removeDegenerateAxes = True will return a buffer with
+  //      Setting removeDegenerateAxes = true will return a buffer with
   //      a shape that doesn't reflect these superfluous axes.)
   // </ul>
   //

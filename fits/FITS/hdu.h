@@ -117,7 +117,7 @@ class HeaderDataUnit {
   // Determines the HDU type and the data type
   // Parameterss: keyword list, hdu type, data type, error handler and
   // error status.
-  // Returns False if a serious error was detected, otherwise True
+  // Returns false if a serious error was detected, otherwise true
   static bool determine_type(FitsKeywordList &, FITS::HDUType &, FITS::ValueType &,
                              FITSErrorHandler, HDUErrs &);
 
@@ -125,7 +125,7 @@ class HeaderDataUnit {
   // The number of dimensions is also determined.  This routine
   // assumes that hdu type has been appropriately set, but it may
   // be changed in the process.  Data type is also determined.
-  // Returns False if a serious error was detected, otherwise True
+  // Returns false if a serious error was detected, otherwise true
   static bool compute_size(FitsKeywordList &, OFF_T &, Int &, FITS::HDUType &, FITS::ValueType &,
                            FITSErrorHandler, HDUErrs &);
 

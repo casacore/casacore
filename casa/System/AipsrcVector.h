@@ -88,7 +88,7 @@ class AipsrcVector : public Aipsrc {
   // # Member functions
   //  The <src>find()</src> functions will, given a keyword, return the value
   //  of a matched keyword found in the files. If no match found the
-  //  function will be False, and the default returned if specified.
+  //  function will be false, and the default returned if specified.
   //  <group>
   static bool find(Vector<T> &value, const String &keyword);
   static bool find(Vector<T> &value, const String &keyword, const Vector<T> &deflt);

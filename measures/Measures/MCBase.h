@@ -80,7 +80,7 @@ class String;
 // </srcblock>
 // To get a static state transition matrix:
 // <srcblock>
-//	static Bool made = False;		// set not yet done
+//	static bool made = false;		// set not yet done
 //	enum types {				// states
 //		A=0, B, C, D, E, ntyp };
 //	enum routes {				// routes
@@ -101,7 +101,7 @@ class String;
 //					// diagonal == nrout
 //	// Make the state machine
 //	MCBase::makeState(state[0], ntyp, nrout, routes);
-//      made = True;
+//      made = true;
 // </srcblock>
 // </example>
 //

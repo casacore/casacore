@@ -176,7 +176,7 @@ class DataManagerColumn {
   // This does not test if the data file is writable, only if
   // it is in principle allowed to store data into the column.
   // (It may not be allowed for virtual columns).
-  // The default is True.
+  // The default is true.
   virtual bool isWritable() const;
 
   // Set the maximum length of the value (can be used for strings).
@@ -201,7 +201,7 @@ class DataManagerColumn {
   virtual void setShapeTiled(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
 
   // Is the value shape defined in the given row?
-  // By default it returns True.
+  // By default it returns true.
   virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.

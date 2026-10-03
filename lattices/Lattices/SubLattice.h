@@ -241,7 +241,7 @@ class SubLattice : public MaskedLattice<T> {
   virtual void putAt(const T& value, const IPosition& where);
   // </group>
 
-  // Check class internals - used for debugging. Should always return True
+  // Check class internals - used for debugging. Should always return true
   virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an

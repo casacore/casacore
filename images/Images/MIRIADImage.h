@@ -80,7 +80,7 @@ class FitsInput;
 //    MIRIADImage im("cube1");
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(im, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    bool ok = stats.display();                              // Display statistics
 // </srcblock>
 // </example>
 
@@ -150,10 +150,10 @@ class MIRIADImage : public ImageInterface<Float> {
 
   // Has the object really a mask?  The MIRIADImage always
   // has a pixel mask and never has a region mask so this
-  // should always return True
+  // should always return true
   virtual bool isMasked() const;
 
-  // MIRIADimage always has a pixel mask so should return True
+  // MIRIADimage always has a pixel mask so should return true
   virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  MIRIADImage always has a pixel mask.
@@ -163,7 +163,7 @@ class MIRIADImage : public ImageInterface<Float> {
   // </group>
 
   // Do the actual get of the mask data.   The return value is always
-  // False, thus the buffer does not reference another array.
+  // false, thus the buffer does not reference another array.
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Get the region used.  There is no region.
@@ -173,7 +173,7 @@ class MIRIADImage : public ImageInterface<Float> {
   // # Lattice virtual functions
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
+  // Returns false as the data do not reference another Array
   virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The MIRIADImage is not writable, so this throws an exception.

@@ -128,10 +128,10 @@ class TSMShape {
   //     TSMShape TSM (array.shape());
   //     IPosition offsetIncr = TSM.offsetIncrement (subArrayShape);
   //     Array<T> subArray(subArrayShape);
-  //     Bool deleteMain;
+  //     bool deleteMain;
   //     const T* mainData = array.getStorage (deleteMain);
   //     mainData += TSM.offset (subArrayStart)
-  //     Bool deleteSub;
+  //     bool deleteSub;
   //     T* subData = subArray.getStorage (deleteSub);
   //     for (uInt i=0; i<subArrayShape(2); i++) {
   //         for (uInt j=0; j<subArrayShape(1); j++) {

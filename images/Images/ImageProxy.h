@@ -175,7 +175,7 @@ class ImageProxy {
 
   // Put a chunk of the mask.
   // The mask will be created if not present yet.
-  // That will not be done if the entire mask is True.
+  // That will not be done if the entire mask is true.
   void putMask(const ValueHolder& value, const IPosition& blc, const IPosition& inc);
 
   // Does the image have a read or write lock?

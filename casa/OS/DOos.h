@@ -79,7 +79,7 @@ class DOos {
   static Vector<bool> isValidPathName(const Vector<String>& pathName);
 
   // Do the given files exist?
-  // If follow is False, symbolic links are not followed.
+  // If follow is false, symbolic links are not followed.
   static Vector<bool> fileExists(const Vector<String>& fileName, bool follow = true);
 
   // Give the type of the given files.
@@ -128,28 +128,28 @@ class DOos {
 
   // Return the total size (in bytes) for each file or directory given.
   // For a directory the size of all files (recursively) in it is given.
-  // If follow is False, symbolic links are not followed.
+  // If follow is false, symbolic links are not followed.
   // <group>
   static Vector<Double> totalSize(const Vector<String>& fileName, bool follow = true);
   static Double totalSize(const String& fileName, bool follow = true);
   // </group>
 
   // Return the total size on the devices the given directories are on.
-  // If follow is False, symbolic links are not followed.
+  // If follow is false, symbolic links are not followed.
   static Vector<Double> freeSpace(const Vector<String>& fileName, bool follow = true);
 
   // Copy the file (or directory recursively).
-  // If from is a symbolic link and follow is False, only the
+  // If from is a symbolic link and follow is false, only the
   // symbolic link is copied.
   static void copy(const String& to, const String& from, bool overwrite = true, bool follow = true);
 
   // Move the file or directory.
-  // If from is a symbolic link and follow is False, only the
+  // If from is a symbolic link and follow is false, only the
   // symbolic link is moved.
   static void move(const String& to, const String& from, bool overwrite = true, bool follow = true);
 
   // Remove the files (or directories recursively).
-  // If fileName is a symbolic link and follow is False, only the
+  // If fileName is a symbolic link and follow is false, only the
   // symbolic link is removed.
   // <group>
   static void remove(const String& fileName, bool recursive, bool mustExist = true,

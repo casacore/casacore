@@ -89,7 +89,7 @@ class LatticeFFT {
   // N-D real->complex FFT. Only one half of the Hermition result is
   // returned. Transforms are only done on selected dimensions. The origin of
   // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
-  // doShift is True. Otherwise it is the first element ie., [0,0,...]
+  // doShift is true. Otherwise it is the first element ie., [0,0,...]
   template <class ComplexType>
   static void rcfft(Lattice<ComplexType> &out,
                     const Lattice<typename NumericTraits<ComplexType>::ConjugateType> &in,
@@ -103,7 +103,7 @@ class LatticeFFT {
   // N-D real->complex FFT. Only one half of the Hermition result is
   // returned. Transform over all dimensions. The origin of
   // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
-  // doShift is True. Otherwise it is the first element ie., [0,0,...]
+  // doShift is true. Otherwise it is the first element ie., [0,0,...]
   template <class ComplexType>
   static void rcfft(Lattice<ComplexType> &out,
                     const Lattice<typename NumericTraits<ComplexType>::ConjugateType> &in,
@@ -117,7 +117,7 @@ class LatticeFFT {
   // required. If whichAxis is specified Transforms are only done on selected
   // dimensions otherwise they are done on all axes. The origin of the
   // transform is the center of the Lattice ie., [nx/2,ny/2,...] if doShift is
-  // True, otherwise it is the first element ie., [0,0,...]
+  // true, otherwise it is the first element ie., [0,0,...]
 
   // These functions will <b>scramble the input Lattice</b> unless the versions
   // with const inputs are used. The const input versions are less efficient as

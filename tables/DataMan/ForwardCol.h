@@ -324,7 +324,7 @@ class ForwardColumn : public DataManagerColumn {
   TableColumn refCol_p;              // # Column in referenced table
   // #                                    This is only filled in when
   // #                                    a new table is created.
-  bool writable_p;       // # True = column is writable
+  bool writable_p;       // # true = column is writable
   Table origTable_p;     // # The original table for this column
   BaseColumn* colPtr_p;  // # pointer to column in original table
 };

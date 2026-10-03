@@ -43,9 +43,9 @@ namespace casacore {
 // with no special filtering beyond optional range filtering etc.
 //
 // setCalculateAsAdded() allows one to specify if statistics should be
-// calculated and updated on upon each call to set/addData(). If False,
+// calculated and updated on upon each call to set/addData(). If false,
 // statistics will be calculated only when getStatistic(), getStatistics(), or
-// similar statistics computing methods are called. Setting this value to True
+// similar statistics computing methods are called. Setting this value to true
 // allows the caller to not have to keep all the data accessible at once. Note
 // however, that all data must be simultaneously accessible if quantile-like
 // (eg median) calculations are desired.
@@ -80,11 +80,11 @@ class ClassicalStatistics : public StatisticsAlgorithm<CASA_STATP> {
   // In the following group of methods, if the size of the composite dataset
   // is smaller than <src>binningThreshholdSizeBytes</src>, the composite
   // dataset will be (perhaps partially) sorted and persisted in memory during
-  // the call. In that case, and if <src>persistSortedArray</src> is True,
+  // the call. In that case, and if <src>persistSortedArray</src> is true,
   // this sorted array will remain in memory after the call and will be used
   // on subsequent calls of this method when
   // <src>binningThreshholdSizeBytes</src> is greater than the size of the
-  // composite dataset. If <src>persistSortedArray</src> is False, the sorted
+  // composite dataset. If <src>persistSortedArray</src> is false, the sorted
   // array will not be stored after this call completes and so any subsequent
   // calls for which the dataset size is less than
   // <src>binningThreshholdSizeBytes</src>, the dataset will be sorted from
@@ -102,12 +102,12 @@ class ClassicalStatistics : public StatisticsAlgorithm<CASA_STATP> {
   // hurt anything). If provided, npts, the number of points falling in the
   // specified ranges which are not masked and have weights > 0, should be
   // exactly correct. <src>min</src> can be less than the true minimum, and
-  // <src>max</src> can be greater than the True maximum, but for best
+  // <src>max</src> can be greater than the true maximum, but for best
   // performance, these should be as close to the actual min and max as
   // possible. In order for quantile computations to occur over multiple
   // datasets, all datasets must be available. This means that if
   // setCalculateAsAdded() was previously called by passing in a value of
-  // True, these methods will throw an exception as the previous call
+  // true, these methods will throw an exception as the previous call
   // indicates that there is no guarantee that all datasets will be available.
   // If one uses a data provider (by having called setDataProvider()), then
   // this should not be an issue.
@@ -164,7 +164,7 @@ class ClassicalStatistics : public StatisticsAlgorithm<CASA_STATP> {
   // <group>
   // scan the dataset(s) that have been added, and find the min and max. This
   // method may be called even if setStatsToCaclulate has been called and MAX
-  // and MIN has been excluded. If setCalculateAsAdded(True) has previously
+  // and MIN has been excluded. If setCalculateAsAdded(true) has previously
   // been called after this object has been (re)initialized, an exception will
   // be thrown. The second version also determines npts in the same scan.
   virtual void getMinMax(AccumType& mymin, AccumType& mymax);
@@ -174,7 +174,7 @@ class ClassicalStatistics : public StatisticsAlgorithm<CASA_STATP> {
 
   // scan the dataset(s) that have been added, and find the number of good
   // points. This method may be called even if setStatsToCaclulate has been
-  // called and NPTS has been excluded. If setCalculateAsAdded(True) has
+  // called and NPTS has been excluded. If setCalculateAsAdded(true) has
   // previously been called after this object has been (re)initialized, an
   // exception will be thrown.
   virtual uInt64 getNPts();
@@ -192,7 +192,7 @@ class ClassicalStatistics : public StatisticsAlgorithm<CASA_STATP> {
   // references to data et al. after this method has been called.
   virtual void setCalculateAsAdded(bool c);
 
-  // An exception will be thrown if setCalculateAsAdded(True) has been called.
+  // An exception will be thrown if setCalculateAsAdded(true) has been called.
   virtual void setDataProvider(StatsDataProvider<CASA_STATP>* dataProvider);
 
   // Allow derived objects to set the quantile computer object. API developers

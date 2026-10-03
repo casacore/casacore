@@ -134,7 +134,7 @@ class DirectionUDF : public UDFBase {
   PositionEngine itsPositionEngine;
   FuncType itsType;
   MDirection::Types itsRefType;
-  bool itsRiseSet;  // # True = calculate rise/set time
+  bool itsRiseSet;  // # true = calculate rise/set time
 };
 
 }  // namespace casacore

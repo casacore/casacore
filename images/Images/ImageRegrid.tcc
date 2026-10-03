@@ -902,7 +902,7 @@ void ImageRegrid<T>::regridTwoAxisCoordinate(
       // to know that allowing 3
       // pixels on either side is enough.
       // If this should change, the interpolation
-      // would return False at the edges
+      // would return false at the edges
       i2 = static_cast<Int>(floor(minInX)) - 3;
       inChunkBlc(xInAxis) = max(0, i2);
       i2 = static_cast<Int>(floor(minInY)) - 3;

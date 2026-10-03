@@ -88,7 +88,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // // Construct the concatenation for a range (given as a relative box).
 // // Extend along the y-axis (axis numbers start counting at 0!).
 // // Take over the region pointers.
-// LCConcatenation region (True, cirPtr, 1, LCBox(n/2-n, n/2-1));
+// LCConcatenation region (true, cirPtr, 1, LCBox(n/2-n, n/2-1));
 // </srcblock>
 // </example>
 
@@ -101,7 +101,7 @@ class LCConcatenation : public LCRegionMulti {
   LCConcatenation();
 
   // Combine the given regions.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   // The extend range has to be given as a 1-dimensional box.
   // The default range is the entire axis.

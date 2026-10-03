@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Also &&, ||, and unary ! are recognized.
 
 // <summary>
-// Bool comparison == in table select expression tree
+// bool comparison == in table select expression tree
 // </summary>
 
 // <use visibility=local>

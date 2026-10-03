@@ -134,7 +134,7 @@ struct Options {
 //  If so, an interactive session is started if no TaQL command is given. It also tells if
 //  possible quotes are removed from option values.
 //  The TableMap holds a map of name to temporary table.
-//  It returns False if exit (or quit) is given.
+//  It returns false if exit (or quit) is given.
 bool executeArgs(const vector<String> args, bool topLevel, TableMap& tableMap, Options& options);
 
 void removeCR(String& line) {

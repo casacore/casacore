@@ -94,7 +94,7 @@ class TableParseGroupby {
   std::shared_ptr<TableExprGroupResult> execGroupAggr(Vector<rownr_t>& rownrs) const;
 
   // Execute the HAVING clause (if present).
-  // Return False in no HAVING.
+  // Return false in no HAVING.
   bool execHaving(Vector<rownr_t>& rownrs, const std::shared_ptr<TableExprGroupResult>& groups);
 
  private:

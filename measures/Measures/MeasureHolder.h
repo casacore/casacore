@@ -136,7 +136,7 @@ class MeasureHolder : public RecordTransformable {
 
   // # Member Functions
   //  Check the the MeasureHolder holds the specified Measure type. Return
-  //  True if if does and False otherwise.
+  //  true if if does and false otherwise.
   //  <group>
   bool isEmpty() const;
   bool isMeasure() const;
@@ -169,8 +169,8 @@ class MeasureHolder : public RecordTransformable {
   const Muvw &asMuvw() const;
   const MEarthMagnetic &asMEarthMagnetic() const;
   // </group>
-  // Create a Measure from a record. An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
+  // Create a Measure from a record. An error message is generated, and false
+  // returned if an invalid record is given. A valid record will return true.
   // A valid record contains the following fields (any additional fields are
   // ignored):
   // <ul>
@@ -197,7 +197,7 @@ class MeasureHolder : public RecordTransformable {
   virtual bool fromRecord(String &error, const RecordInterface &in);
   virtual bool fromString(String &error, const String &in);
   // </group>
-  // Create a record from a Measure. The return will be False and an error
+  // Create a record from a Measure. The return will be false and an error
   // message generated only if the MeasureHolder does not contain a Measure.
   // Error messages are postfixed to error.
   virtual bool toRecord(String &error, RecordInterface &out) const;
@@ -222,7 +222,7 @@ class MeasureHolder : public RecordTransformable {
   void makeMV(uInt n) { createMV(n); }
   // Get number of MeasValue pointers in block
   uInt nelements() const { return mvhold_p.nelements(); }
-  // Set a measvalue at position pos (False if illegal pos)
+  // Set a measvalue at position pos (false if illegal pos)
   bool setMV(uInt pos, const MeasValue &in);
   // Get a pointer to a MeasValue (or 0)
   MeasValue *getMV(uInt pos) const;

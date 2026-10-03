@@ -103,7 +103,7 @@ class RadialVelocityUDF : public UDFBase {
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
 
  private:
-  // Try if the value is given as Doppler. True is returned if so.
+  // Try if the value is given as Doppler. true is returned if so.
   bool tryDoppler(uInt& argnr);
 
   // # Data members.

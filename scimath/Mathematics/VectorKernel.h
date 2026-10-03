@@ -95,8 +95,8 @@ class VectorKernel {
 
   // Create kernel vector for width in pixels.  For Gaussian, width is FWHM,
   // for Boxcar, width is full width.  For Hanning width is ignored.
-  // If useShapeExactly is True, the provided shape is used exactly.
-  // If useShapeExactly is False,
+  // If useShapeExactly is true, the provided shape is used exactly.
+  // If useShapeExactly is false,
   // the kernel length will be the max of the provided shape and an
   // autoestimate (e.g. from +/- 5sigma limits for a Gaussian).
   // <group>

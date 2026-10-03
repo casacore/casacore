@@ -107,7 +107,7 @@ class StatisticsUtilities {
   // </group>
 
   // <group>
-  // return True if the max or min was updated, False otherwise.
+  // return true if the max or min was updated, false otherwise.
   template <class LocationType>
   inline static bool doMax(AccumType& datamax, LocationType& maxpos, bool isFirst,
                            const AccumType& datum, const LocationType& location);

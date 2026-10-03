@@ -75,7 +75,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void reset();
 
   // This class does not allow statistics to be calculated as datasets are
-  // added, so an exception will be thrown if <src>c</src> is True.
+  // added, so an exception will be thrown if <src>c</src> is true.
   void setCalculateAsAdded(bool c);
 
  protected:

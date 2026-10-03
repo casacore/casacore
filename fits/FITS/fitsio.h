@@ -135,10 +135,10 @@ class FitsIO {
 
   fitsfile *m_fptr;
   const int m_recsize;
-  bool m_valid_fits;             // True if SIMPLE == T
-  bool m_extend;                 // True if EXTEND == T
-  bool m_isaprimary;             // True if there is a primary HDU
-  bool m_header_done;            // True if header has been processed
+  bool m_valid_fits;             // true if SIMPLE == T
+  bool m_extend;                 // true if EXTEND == T
+  bool m_isaprimary;             // true if there is a primary HDU
+  bool m_header_done;            // true if header has been processed
   FITS::FitsRecType m_rec_type;  // always set
   FITS::HDUType m_hdu_type;      // always set
 

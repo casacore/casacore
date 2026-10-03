@@ -135,7 +135,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // will print at run time the version of the program being run.
 // <li> run time checking of ranges
 // <src> inp.makeMaskFromRanges(const String &ranges, uInt length,
-//					 Bool oneRelative=False); </src>
+//					 bool oneRelative=false); </src>
 // </ol>
 // </synopsis>
 //
@@ -280,9 +280,9 @@ class Input {
   void announce();
 
   // Turn a string in the form "5,7,9-11,13,2-4" into a Vector<Bool>, where
-  // each specified position or range, is set to True and every other position
-  // is set to False. While the returned vector always has a zero origin, if
-  // oneRelative is True, all the numbers in the supplied string are
+  // each specified position or range, is set to true and every other position
+  // is set to false. While the returned vector always has a zero origin, if
+  // oneRelative is true, all the numbers in the supplied string are
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
   // of the Vector<Bool> results in an exception being thrown.

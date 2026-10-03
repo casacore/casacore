@@ -286,7 +286,7 @@ bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
     }
 
     // Don't use function "setPointingCenter" as it will set
-    // isPointingCenterInitial_p to False
+    // isPointingCenterInitial_p to false
 
     isPointingCenterInitial_p = b;
     pointingCenter_p = MVDirection(v);

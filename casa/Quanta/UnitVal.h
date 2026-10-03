@@ -94,7 +94,7 @@ class UMaps;
 //   <li> *, /	generates combined UnitVal (e.g. 1 yd * 1 m = 0.9 m2)
 //   <li> pow(Int)	UnitVal(2,"km")->pow(2) = 4000000 m2
 //   <li> root(Int)	UnitVal(4000000,"m2")->root(2) = 2 km
-//   <li> ==, !=	compares dimensions only: 1 yd == 5 ly: True
+//   <li> ==, !=	compares dimensions only: 1 yd == 5 ly: true
 //   <li> getFac()	will return the factor (Double)
 //   <li> getDim()	will return the dimensions (as UnitDim)
 //   <li> <<		will output formatted unit (factor and dimension)
@@ -124,7 +124,7 @@ class UMaps;
 // The validity of a unit string can be checked by:
 // <srcblock>
 // // Check if the given String is a valid unit representation. The String
-// // will be cached in the unit maps for later reference if True
+// // will be cached in the unit maps for later reference if true
 // if ( UnitVal::check( "km/s/Mpc") ) {...}
 // </srcblock>
 //
@@ -237,11 +237,11 @@ class UnitVal {
 
   // # Helper functions
   //  Convert a unit string to a proper unit value and cache the result. The
-  //  function will return False if invalid string specified
+  //  function will return false if invalid string specified
   static bool check(const String &s);
 
   // Convert a unit string to a proper unit value, cache the result and compare
-  // the dimension with the specified unit value. False if any of the steps fails
+  // the dimension with the specified unit value. false if any of the steps fails
   static bool check(const String &s, UnitVal &loc);
 
   // # Data members

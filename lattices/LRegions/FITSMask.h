@@ -58,7 +58,7 @@ class TiledFileAccess;
 // Masked values are indicated in FITS images via magic
 // value blanking.  This class provides an on-the-fly mask.
 // The doGetSlice function reads the data values and returns
-// an Array<Bool> which is True (good) or False (bad - blanked)
+// an Array<Bool> which is true (good) or false (bad - blanked)
 //
 // Because FITSMask inherits from Lattice<Bool> it can be
 // used as the private pixel mask data member for FITSImage
@@ -126,7 +126,7 @@ class FITSMask : public Lattice<bool> {
   // Make a copy of the object (reference semantics).
   virtual Lattice<bool>* clone() const;
 
-  // Is the FITSMask writable? Returns False. Although it is not hard
+  // Is the FITSMask writable? Returns false. Although it is not hard
   // to implement writing of the mask, data values would be lost
   // because of magic blanking.
   virtual bool isWritable() const;

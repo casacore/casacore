@@ -274,7 +274,7 @@ class TableRecord : public RecordInterface {
   // Change the structure of this TableRecord to contain the fields in
   // newDescription. After calling restructure, <src>description() ==
   // newDescription</src>. Any existing RecordFieldPtr objects are
-  // invalidated (their <src>isAttached()</src> members return False) after
+  // invalidated (their <src>isAttached()</src> members return false) after
   // this call.
   // <br>When the new description contains subrecords, those subrecords
   // will be restructured if <src>recursive=True</src> is given.
@@ -285,13 +285,13 @@ class TableRecord : public RecordInterface {
   // if the Record has a fixed structure.
   virtual void restructure(const RecordDesc& newDescription, bool recursive = true);
 
-  // Returns True if this and other have the same RecordDesc, other
+  // Returns true if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
   // order of the fields must be identical (recursively for fixed
   // structured sub-Records in this).
   // <note role=caution>
-  // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-  // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+  // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+  // <br><src>thatRecord.conform(thisRecord) == true</src>, because
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>
@@ -433,7 +433,7 @@ class TableRecord : public RecordInterface {
   // <br>However, it can also be used to achieve that all subtables of a
   // read/write table are opened as readonly. E.g.:
   // <srcblock>
-  //   TableAttr newAttr(String(), False, mainTable.lockOptions());
+  //   TableAttr newAttr(String(), false, mainTable.lockOptions());
   //   mainTable.keywordSet().setTableAttr (TableRecord(), newAttr);
   // </srcblock>
   void setTableAttr(const TableRecord& other, const TableAttr& defaultAttr);

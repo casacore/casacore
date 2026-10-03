@@ -141,7 +141,7 @@ class SSMStringHandler {
   // length occupied in the buckets.
   // An array of strings is flattened first (a la SSMColumn::writeString).
   // <br>
-  // If <src>handleShape</src> is True (for variable shaped arrays), the
+  // If <src>handleShape</src> is true (for variable shaped arrays), the
   // shape will be put first.
   // <group>
   void put(Int& bucketNr, Int& offset, Int& length, const String& string);
@@ -168,7 +168,7 @@ class SSMStringHandler {
 
   // Get a string or an array of strings.
   // The array must have the correct shape.
-  // <src>handleShape</src> will be True for variable shaped arrays
+  // <src>handleShape</src> will be true for variable shaped arrays
   // indicating that the data are preceeded by the shape.
   // <group>
   void get(String& string, Int bucket, Int offset, Int length);
@@ -190,12 +190,12 @@ class SSMStringHandler {
   // Get the given bucket and make it current.
   // It first writes the current bucket if it has changed.
   // <br>
-  // If <src>isNew</src> is True the bucket is new,
+  // If <src>isNew</src> is true the bucket is new,
   // so the Ints at its beginning do not have to be interpreted.
   void getBucket(uInt bucketNr, bool isNew = false);
 
   // Get a new bucket and make it current.
-  // If <src>doConcat</src> is True, the new bucket is a continuation,
+  // If <src>doConcat</src> is true, the new bucket is a continuation,
   // so <src>itsNextBucket</src> in the currently used bucket is filled
   // with the new bucket number.
   void getNewBucket(bool doConcat);

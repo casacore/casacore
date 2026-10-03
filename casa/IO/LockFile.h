@@ -176,9 +176,9 @@ class LockFile {
   // <br>When addToRequestList=False, function <src>acquire</src> does not
   // add the request to the lock file when a lock cannot be acquired.
   // This may result in better performance, but should be used with care.
-  // <br> If <src>create==True</src>, a new lock file will always be created.
+  // <br> If <src>create==true</src>, a new lock file will always be created.
   // Otherwise it will be created if it does not exist yet.
-  // <br> If <src>mustExist==False</src>, it is allowed that the LockFile
+  // <br> If <src>mustExist==false</src>, it is allowed that the LockFile
   // does not exist and cannot be created either.
   // <br> The seqnr is used to set the offset where LockFile will use 2 bytes
   // to set the locks on. Only in special cases it should be other than 0.
@@ -232,9 +232,9 @@ class LockFile {
   // request list is not empty).
   // It only inspects if the time passed since the last inspection
   // exceeds the inspection interval as given in the constructor.
-  // If the time passed is too short, False is returned (indicating
+  // If the time passed is too short, false is returned (indicating
   // that no access is needed).
-  // If <src>always==True</src>, no test on inspection interval is done,
+  // If <src>always==true</src>, no test on inspection interval is done,
   // so the inspect is always done.
   bool inspect(bool always = false);
 

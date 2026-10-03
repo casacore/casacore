@@ -169,7 +169,7 @@ Double Directory::freeSpace() const {
 }
 
 void Directory::create(bool overwrite) {
-  // If overwrite is False the directory will not be overwritten.
+  // If overwrite is false the directory will not be overwritten.
   if (exists()) {
     if (!itsFile.isDirectory()) {
       throw(AipsError("Directory::create: " + itsFile.path().expandedName() +

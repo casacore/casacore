@@ -67,7 +67,7 @@ class MSFitsOutputAstron {
                                bool asMultiSource, bool combineSpw);
 
   // Write the FQ table.
-  // If combineSpw is True, all spectral-windows are written in one
+  // If combineSpw is true, all spectral-windows are written in one
   // row of the FITS table.
   static bool writeFQ(FitsOutput* output, const MeasurementSet& ms, const Block<Int>& spwidMap,
                       Int nrspw, Double refFreq, Int refPixelFreq, Double chanbw, bool combineSpw);
@@ -106,7 +106,7 @@ class MSFitsOutputAstron {
   // id is not selected. Furthermore it fills a vector with the
   // selected id numbers.
   // The input is a vector containing all ids in the main table.
-  // If isSubset is False the main table is not a selection, but
+  // If isSubset is false the main table is not a selection, but
   // represents an entire MS. In that case the map and selids are
   // simply filled with values 0-nrid.
   static Int makeIdMap(Block<Int>& map, Vector<Int>& selids, const Vector<Int>& allids,

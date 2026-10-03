@@ -138,7 +138,7 @@ class LELCoordinates {
   bool isNull() const { return !coords_p; }
 
   // Does the class have true coordinates?
-  // It returns False if this is a null object.
+  // It returns false if this is a null object.
   bool hasCoordinates() const;
 
   // Check how the coordinates of this and that compare.

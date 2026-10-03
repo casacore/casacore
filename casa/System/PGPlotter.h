@@ -95,7 +95,7 @@ class PGPlotter : public PGPlotterInterface {
                                    uInt sizey);
 
   // The default constructor does not attach to any plotter, that is
-  // <src>isAttached()</src> returns False. An exception is thrown if you
+  // <src>isAttached()</src> returns false. An exception is thrown if you
   // attempt to plot to an unattached PGPlotter.
   PGPlotter();
 
@@ -124,11 +124,11 @@ class PGPlotter : public PGPlotterInterface {
   // Set the create function. It returns the current create function.
   // It is, for example, used by ObjectController to attach to glish.
   // The initial create function creates a detached PGPlotter object.
-  // If <src>override==False</src>, the function is only set if it was
+  // If <src>override==false</src>, the function is only set if it was
   // not already set.
   static CreateFunction *setCreateFunction(CreateFunction *, bool override = true);
 
-  // True if it is OK to plot to this object.
+  // true if it is OK to plot to this object.
   virtual bool isAttached() const;
 
   // Detach from the object. If this is the last reference to the object,

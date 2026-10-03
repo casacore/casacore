@@ -225,7 +225,7 @@ class BucketCache {
   // By default the entire cache is flushed.
   // When the entire cache is flushed, possible remaining uninitialized
   // buckets will be initialized first.
-  // A True status is returned when buckets had to be written.
+  // A true status is returned when buckets had to be written.
   bool flush(uInt fromSlot = 0);
 
   // Clear the cache from the given slot on.

@@ -199,7 +199,7 @@ class FITSImgParser {
 // <example>
 // <srcblock>
 //    FITSImgParser fitsImg("in.fits");
-//    FITSExtInfo extinfo("in.fits", 0, "SCI", 1, True);
+//    FITSExtInfo extinfo("in.fits", 0, "SCI", 1, true);
 //    Int index = fitsImg.get_index(extinfo);              // get the index of extension "[SCI, 1]"
 // </srcblock>
 // </example>

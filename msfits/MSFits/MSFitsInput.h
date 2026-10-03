@@ -305,7 +305,7 @@ class MSFitsInput {
   bool _msCreated;
 
   // Check that the input is a UV fits file with required contents.
-  // Returns False if not ok.
+  // Returns false if not ok.
   bool _checkInput(FitsInput& infile);
 
   // Read the axis info of the primary group, throws an exception if required
@@ -313,7 +313,7 @@ class MSFitsInput {
   void getPrimaryGroupAxisInfo();
 
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
-  // If useTSM is True, the Tiled Storage Manager will be used to store
+  // If useTSM is true, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM. Use obsType to choose the tiling
   // scheme.
   void setupMeasurementSet(const String& MSFileName, bool useTSM = true,

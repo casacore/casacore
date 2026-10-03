@@ -79,7 +79,7 @@ class String;
 //    String errMsg;
 //    Vector<Double> world, pixel(2);
 //    pixel = 10.0;
-//    Bool ok = lxf.reverse(world, pixel, errMsg);
+//    bool ok = lxf.reverse(world, pixel, errMsg);
 //    if (ok) {
 //       cerr << "pixel, world = " << pixel << world << endl;
 //    } else {
@@ -135,8 +135,8 @@ class LinearXform {
   uInt nWorldAxes() const;
 
   // Convert world coordinates to pixel coordinates (forward), or pixel
-  // coordinates to world (reverse). If the conversion works True is returned,
-  // otherwise False is returned and errorMsg is set.  The output vectors
+  // coordinates to world (reverse). If the conversion works true is returned,
+  // otherwise false is returned and errorMsg is set.  The output vectors
   // are resized appropriately.
   // <group>
   bool forward(Vector<Double> &pixel, const Vector<Double> &world, String &errorMsg) const;

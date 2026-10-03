@@ -224,7 +224,7 @@ class MSLister {
 
   // List of channels
   Matrix<Int> chanList_p;
-  // True if listing multiple channels.
+  // true if listing multiple channels.
   bool multiChan_p;
 
   // Pol counters
@@ -236,7 +236,7 @@ class MSLister {
 
   // SpWId map from DDIs:
   Vector<Int> spwins_p;
-  // True if listing multiple spws
+  // true if listing multiple spws
   bool multiSpw_p;
 
   // Polarization indexing variables; for polarization (correlation) selection.

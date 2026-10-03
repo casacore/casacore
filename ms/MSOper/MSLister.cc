@@ -156,7 +156,7 @@ void MSLister::initList() {
 
   // Store spwin ref freqs for later use:
   //   (should get channel freqs for multi-channel MS's)
-  //  freqs_p.resize(4,False);
+  //  freqs_p.resize(4,false);
   freqs_p = msSpWinC.refFrequency().getColumn();
 
   // Create map from data_desc_id to spwid:
@@ -416,7 +416,7 @@ void MSLister::selectvis(const String& timerange, const String& spw, const Strin
     //   Int nChanAdd = (chanList(i,2) - chanList(i,1) + 1) / chanList(i,3) + 1;
     //   Int lenChannels;
     //   channels_p.shape(lenChannels);
-    //   channels_p.resize(lenChannels + nChanAdd, True);
+    //   channels_p.resize(lenChannels + nChanAdd, true);
     //   if(chanList(i,3) > 0) {
     //     for(Int j=chanList(i,1); j<=chanList(i,2); j+=chanList(i,3)) {
     //       // push j onto end of Array channels_p
@@ -429,7 +429,7 @@ void MSLister::selectvis(const String& timerange, const String& spw, const Strin
     //   }
     // }
     // if (chanList.nrow() == 0) {
-    //   channels_p.resize(0,False);
+    //   channels_p.resize(0,false);
     // }
     // channels_p.shape(nchan_p);
 
@@ -467,7 +467,7 @@ void MSLister::selectvis(const String& timerange, const String& spw, const Strin
     logStream_p << LogIO::DEBUG2 << "polarizationSetup done." << LogIO::POST;
     // MSPolarizationColumns msPolC(pMSSel_p->polarization());
     // npols_p = msPolC.corrType()(0).nelements();
-    // pols_p.resize(npols_p,False);
+    // pols_p.resize(npols_p,false);
     // for (uInt i=0; i<npols_p; i++) {
     //   pols_p(i) = Stokes::name(Stokes::type
     //                      (msPolC.corrType()(0)(IPosition(1,i))));
@@ -479,13 +479,13 @@ void MSLister::selectvis(const String& timerange, const String& spw, const Strin
     // Re-initialize with the existing MS
     logStream_p << LogOrigin("MSLister", "selectvis", WHERE) << LogIO::SEVERE
                 << "Caught exception: " << x.what() << LogIO::POST;
-    // initialize(*pMS_p,False);
+    // initialize(*pMS_p,false);
     throw(AipsError("Error in data selection specification."));
   } catch (std::exception& x) {
     // Re-initialize with the existing MS
     logStream_p << LogOrigin("MSLister", "selectvis", WHERE) << LogIO::SEVERE
                 << "Caught exception: " << x.what() << LogIO::POST;
-    // initialize(*pMS_p,False);
+    // initialize(*pMS_p,false);
     throw(AipsError("Error in MSLister::selectvis()"));
   }
 }  // end selectvis
@@ -524,7 +524,7 @@ void MSLister::listData(const int pageRows, const String listfile) {
 
     ofstream file;         // Optional output file.
     if (listfile != "") {  // non-interactive -> redirect output to file.
-      // prompt = False;
+      // prompt = false;
 
       // Guard against trampling existing file
       File diskfile(listfile);
@@ -1000,7 +1000,7 @@ void MSLister::listData(const int pageRows, const String listfile) {
       hSeparator[colPos] = '|';
       // myout << "wTotal_p=" << wTotal_p << " colPos=" << colPos << std::endl;
       // myout << "hSeparator.length=" << hSeparator.size() << std::endl;
-      // hSeparator.resize(colPos, True);
+      // hSeparator.resize(colPos, true);
 
       Vector<String> flagSym(2);
       flagSym(0) = " ";
@@ -1397,7 +1397,7 @@ void MSLister::polarizationParse(String correlation) {
                       << ", and pols_p(" << j << ") = " << pols_p(j) << LogIO::POST;
           verifyCorr = true;
           // Build indexPols_p here.
-          /// logStream_p << LogIO::DEBUG2 << "verifyCorr assigned True." << LogIO::POST;
+          /// logStream_p << LogIO::DEBUG2 << "verifyCorr assigned true." << LogIO::POST;
           indexPols_p(i) = j;  // indexPols_p holds indices to pols_p
                                /// logStream_p << LogIO::DEBUG2 << "end of j loop" << LogIO::POST;
         }

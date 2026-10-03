@@ -50,7 +50,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
 
   // fill this instance. The pointer must be dynamically allocated. Default
   // behavior is to delete the pointer when this instance's destructer is
-  // called.  "deleteIt = False" implies the pointer is being maintained by
+  // called.  "deleteIt = false" implies the pointer is being maintained by
   // another object,(i.e. this is a copy - do not delete.) The
   // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
@@ -64,7 +64,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   COW.rwRef().set(22.0);
   AlwaysAssert(allEQ(COW.rwRef(), 22.0f), AipsError);
 
-  // returns False if this contains a non-null ptr. Otherwise, True.
+  // returns false if this contains a non-null ptr. Otherwise, true.
   AlwaysAssert(COW.isNull() == false, AipsError);
 
   // make this a copy if more than one exist.
@@ -84,7 +84,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   // default ctor
   COWPtr<Array<float>> deflt;
 
-  // returns False if this contains a non-null ptr. Otherwise, True.
+  // returns false if this contains a non-null ptr. Otherwise, true.
   AlwaysAssert(deflt.isNull() == true, AipsError);
 
   // assignment operator with reference semantics
@@ -102,7 +102,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
 
   // fill this instance. The pointer must be dynamically allocated. Default
   // behavior is to delete the pointer when this instance's destructer is
-  // called.  "deleteIt = False" implies the pointer is being maintained by
+  // called.  "deleteIt = false" implies the pointer is being maintained by
   // another object,(i.e. this is a copy - do not delete.) The
   // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
@@ -138,7 +138,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
 
   // fill this instance. The pointer must be dynamically allocated. Default
   // behavior is to delete the pointer when this instance's destructer is
-  // called.  "deleteIt = False" implies the pointer is being maintained by
+  // called.  "deleteIt = false" implies the pointer is being maintained by
   // another object,(i.e. this is a copy - do not delete.) The
   // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
@@ -151,7 +151,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   copy.rwRef().set(22.0);
   AlwaysAssert(allEQ(copy.rwRef(), 22.0f), AipsError);
 
-  // returns False if this contains a non-null ptr. Otherwise, True.
+  // returns false if this contains a non-null ptr. Otherwise, true.
   AlwaysAssert(copy.isNull() == false, AipsError);
 
   // make this a copy if more than one exist.

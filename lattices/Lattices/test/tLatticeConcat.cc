@@ -695,7 +695,7 @@ int main() {
       AlwaysAssert(lc.lock(FileLocker::Write, 1), AipsError);
       AlwaysAssert(lc.hasLock(FileLocker::Write), AipsError);
 
-      // ArrayLattices will always return True for hasLock
+      // ArrayLattices will always return true for hasLock
 
       lc.unlock();
       AlwaysAssert(lc.hasLock(FileLocker::Read), AipsError);

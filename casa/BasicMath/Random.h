@@ -503,7 +503,7 @@ class Random {
   // These function allow you to manipulate the parameters (mean variance etc.)
   // of random number distribution. The parameters() function returns the
   // current value, the setParameters function allows you to change the
-  // parameters and the checkParameters function will return False if the
+  // parameters and the checkParameters function will return false if the
   // supplied parameters are not appropriate for the distribution.
   // <group>
   virtual void setParameters(const Vector<Double>& parms) = 0;

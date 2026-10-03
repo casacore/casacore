@@ -152,7 +152,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // In addition the UnitVal class contains a check facility to determine the
 // legality of a unit string:
 // <srcblock>
-// Bool UnitVal::check("string");
+// bool UnitVal::check("string");
 // </srcblock>
 //
 // </synopsis>

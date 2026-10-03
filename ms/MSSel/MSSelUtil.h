@@ -46,7 +46,7 @@ class MSSelUtil {
  public:
   // Compute the absolute difference of the data, subtracting
   // either the previous value (window==2) or the average over
-  // the window (window>2). If doMedian==True is specified, the
+  // the window (window>2). If doMedian==true is specified, the
   // median difference over the window is returned for window>2.
   // Takes flagging into account.
   // diffAxis==2,3: row or time, diffAxis==1: channel

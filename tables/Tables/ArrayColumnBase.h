@@ -322,7 +322,7 @@ class ArrayColumnBase : public TableColumn {
                   const String& where) const;
 
   // Throw an exception if the array does not have the expected shape.
-  // However, False is returned if noSlicing and canChangeShape_p are True
+  // However, false is returned if noSlicing and canChangeShape_p are true
   // (meaning no slices are put and the shape of a full row can change).
   // The column name is made part of the error message, as well as the rownr
   // if it is not negative (meaning a put of a column).

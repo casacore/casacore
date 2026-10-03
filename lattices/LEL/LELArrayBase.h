@@ -107,7 +107,7 @@ class LELArrayBase {
 
   // Combine the mask with the given value in case of an OR or AND.
   // It means the mask is set to true if value is desiredValue
-  // (which should be True for OR and False for AND).
+  // (which should be true for OR and false for AND).
   // <group>
   // Combine with a single scalar value for which the mask is false.
   void combineOrAnd(bool desiredValue, const Array<bool>& value);
@@ -120,7 +120,7 @@ class LELArrayBase {
   // into account.
   // The mask and value are set to desiredValue if the temp value is desiredValue
   // and its temp mask it true.
-  // The mask is set to false if the temp mask is False.
+  // The mask is set to false if the temp mask is false.
   void combineOrAnd(bool desiredValue, Array<bool>& value, const Array<bool>& temp,
                     const Array<bool>& tempMask);
   // </group>

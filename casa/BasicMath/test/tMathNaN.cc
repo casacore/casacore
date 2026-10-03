@@ -151,7 +151,7 @@ bool doIt(Int n, Float x, bool nan) {
   //    }
   //    if (nf != nrnan) {
   //      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-  //      ok = False;
+  //      ok = false;
   //    }
   //    cout << "nf=" << nf << "   by val ";
   //    t.show();

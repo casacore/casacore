@@ -164,8 +164,8 @@ class LELInterface {
   LELArray<T> getArray() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  // It returns True if the expression is an invalid scalar
-  // (i.e. with a False mask).
+  // It returns true if the expression is an invalid scalar
+  // (i.e. with a false mask).
   // That can happen if the expression has a component with an invalid
   // scalar value (e.g. min(lattice) where lattice contains no valid elements).
   virtual bool prepareScalarExpr() = 0;
@@ -183,13 +183,13 @@ class LELInterface {
   virtual String className() const = 0;
 
   // If the given expression is a valid scalar, replace it by its result.
-  // It returns False if the expression is no scalar or if the expression
-  // is an invalid scalar (i.e. with a False mask).
+  // It returns false if the expression is no scalar or if the expression
+  // is an invalid scalar (i.e. with a false mask).
   static bool replaceScalarExpr(std::shared_ptr<LELInterface<T>>& expr);
 
   // Handle locking/syncing of the parts of a lattice expression.
   // <br>By default the functions do not do anything at all.
-  // lock() and hasLock return True.
+  // lock() and hasLock return true.
   // <group>
   virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();

@@ -371,7 +371,7 @@ void doIt(bool doExcp) {
   }
 
   //    TableRecord(const TableRecord &other);
-  //    Bool conform(const TableRecord &other);
+  //    bool conform(const TableRecord &other);
   TableRecord record3(record2);
   TableRecord record4(record2.description());
   record4 = record3;
@@ -511,7 +511,7 @@ void doIt(bool doExcp) {
   // RecordFieldPtr members.
   //    RecordFieldPtr();
   //    void attachToRecord(TableRecord &record, uInt whichField);
-  //    virtual Bool isAttached()
+  //    virtual bool isAttached()
   RecordFieldPtr<uChar> ucharField2;
   AlwaysAssertExit(!ucharField2.isAttached());
   ucharField2.attachToRecord(record, 1);

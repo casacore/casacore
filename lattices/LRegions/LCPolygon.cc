@@ -241,7 +241,7 @@ void LCPolygon::defineMask() {
   itsX.freeStorage(ptrX, delX);
   itsY.freeStorage(ptrY, delY);
   mask.putStorage(ptrM, delM);
-  // Test if rows/columns at the edges are all False.
+  // Test if rows/columns at the edges are all false.
   // If so, remove them and adjust the bounding box.
   Int stx = 0;
   Int sty = 0;

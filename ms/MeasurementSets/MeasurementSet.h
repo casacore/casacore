@@ -402,7 +402,7 @@ class MeasurementSet : public MSTable<MSMainEnums>, public MSMainEnums {
   // Initialize the references to the subtables. You need to call
   // this only if you assign new subtables to the table keywords.
   // This also checks for validity of the table and its subtables.
-  // Set clear to True to clear the subtable references (used in assignment)
+  // Set clear to true to clear the subtable references (used in assignment)
   void initRefs(bool clear = false);
 
   // Create default subtables: fills the required subtable keywords with
@@ -421,7 +421,7 @@ class MeasurementSet : public MSTable<MSMainEnums>, public MSMainEnums {
   static MSTableMaps initMaps();
 
   // Create DATA column from existing FLOAT_DATA column. Noop if DATA already
-  // exists or neither exists (returns False in that case).
+  // exists or neither exists (returns false in that case).
   bool makeComplexData();
 
   // Validate Measure references - check that all Measure columns have their

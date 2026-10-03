@@ -92,7 +92,7 @@ class GaussianConvert {
   void setWorldAxes(const Vector<uInt>& worldAxes);
 
   // Convert Gaussian parameters from pixels to world.  Returns
-  // False if it fails with an error message recoverable with
+  // false if it fails with an error message recoverable with
   // function errorMessage.  If you set the units of the output
   // axis quanta they will be honoured, otherwise they will come out
   // in the axis units of the coordinate system.  For the output position angle,
@@ -103,7 +103,7 @@ class GaussianConvert {
                const Quantum<Double>& positionAngleIn);
 
   // Convert Gaussian parameters from world to pixel.  Returns
-  // False if it fails with an error message recoverable with
+  // false if it fails with an error message recoverable with
   // function errorMessage. For the output position angle,
   // if the output units are not set, the units of the input position angle
   // will be used.

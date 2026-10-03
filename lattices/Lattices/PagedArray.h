@@ -274,11 +274,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // SetupNewTable maskSetup("mask_tmp.array", TableDesc(), Table::New);
 // Table maskTable(maskSetup);
 // PagedArray<Bool> maskArray(IPosition(4,1024,1024,4,256), maskTable);
-// maskArray.set(False);
+// maskArray.set(false);
 // COWPtr<Array<Bool>> maskPtr;
 // maskArray.getSlice(maskPtr, IPosition(4,240,240,3,0),
 // 		      IPosition(4,32,32,1,1), IPosition(4,1));
-// maskPtr.rwRef() = True;
+// maskPtr.rwRef() = true;
 // maskArray.putSlice(*maskPtr, IPosition(4,240,240,3,1));
 // </srcblock>
 //
@@ -520,7 +520,7 @@ class PagedArray : public Lattice<T> {
   // Put the value of a single element.
   virtual void putAt(const T& value, const IPosition& where);
 
-  // A function which checks for internal consistency. Returns False if
+  // A function which checks for internal consistency. Returns false if
   // something nasty has happened to the PagedArray. In that case
   // it also throws an exception.
   virtual bool ok() const;

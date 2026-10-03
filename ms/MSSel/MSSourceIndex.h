@@ -85,11 +85,11 @@ class MSSourceIndex : public MSTableIndex {
 
   void attach(const MSSource& source);
 
-  // access to the source ID key, throws an exception if isNull() is False
+  // access to the source ID key, throws an exception if isNull() is false
   Int& sourceId() { return *sourceId_p; }
 
   // access to the spectral window ID key, throws an
-  // exception if isNull() is False
+  // exception if isNull() is false
   Int& spectralWindowId() { return *spwId_p; }
 
   // Match a source name or list of source names to a set of SOURCE_ID's

@@ -79,7 +79,7 @@ class String;
 // <srcblock>
 // Record rec;
 // rec.define("hello", 6.5);
-// rec.define("world", True);
+// rec.define("world", true);
 // Vector<Int> naxis(5);
 // naxis(0) = 128;
 // naxis(1) = 64;
@@ -139,7 +139,7 @@ class FITSKeywordUtil {
   // (COMMENT and HISTORY may be of any capitalization). Note however that
   // you will generally add History keywords with the class
   // <linkto class=FITSHistoryUtil>FITSHistoryUtil</linkto>.
-  // Returns False in the following instances:
+  // Returns false in the following instances:
   // <ul>
   // <li> The value of a string field is longer than 68 characters.  The value is truncated.
   // <li> An illegal type for a FITS keyword (e.g. Complex).  The field is ignored.
@@ -162,7 +162,7 @@ class FITSKeywordUtil {
   // By default history keywords are ignored, since they
   // should be handled in class
   // <linkto class=FITSHistoryUtil>FITSHistoryUtil</linkto>.
-  // This always returns True.
+  // This always returns true.
   static bool getKeywords(RecordInterface &out, ConstFitsKeywordList &in,
                           const Vector<String> &ignore, bool ignoreHistory = true);
 
@@ -173,11 +173,11 @@ class FITSKeywordUtil {
   static void removeKeywords(RecordInterface &out, const Vector<String> &ignore);
 
   // Convert a TDIMnnn keyword value into an IPosition.  This returns
-  // False if the tdim string has an invalid format.
+  // false if the tdim string has an invalid format.
   static bool fromTDIM(IPosition &shape, const String &tdim);
 
   // Convert an IPosition to a String appropriate for use as the
-  // value of a TDIMnnn keyword.  This returns False if the
+  // value of a TDIMnnn keyword.  This returns false if the
   // converted string has more than 71 characters
   // (making it impossible to be used as a string keyword value).
   static bool toTDIM(String &tdim, const IPosition &shape);

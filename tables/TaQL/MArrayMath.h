@@ -53,7 +53,7 @@ namespace casacore {
 // These functions perform element by element mathematical operations on
 // optionally masked arrays and/or scalars.
 // If two arrays are used, the arrays must conform, except for allEQ which
-// returns False if the arrays do not conform.
+// returns false if the arrays do not conform.
 //
 // The functions in this file can be divided in 3 groups:
 // <ul>
@@ -66,7 +66,7 @@ namespace casacore {
 //       mask is the OR of both masks.
 //  <li> Full reduction functions like ntrue, all, allEQ, etc.
 //       They operate on the unmasked elements only. If there are no unmasked
-//       elements, the results is 0 or True.
+//       elements, the results is 0 or true.
 //  <li> Reduction functions working on unmasked elements in parts of the
 //       input array. The result is an MArray that has a mask if the input
 //       array has a mask. An output element is masked off if its input
@@ -76,7 +76,7 @@ namespace casacore {
 //       There are 3 flavours:
 //   <ul>
 //    <li> partialXXX reduces one or more axes. E.g. one can count the
-//         number of True elements for particular array axes.
+//         number of true elements for particular array axes.
 //         The result is an array with a lower dimensionality.
 //         They can be seen as a special versions of the boxedXXX functions.
 //    <li> slidingXXX operates in a sliding window over the array. So the

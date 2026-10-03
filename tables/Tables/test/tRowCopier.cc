@@ -323,7 +323,7 @@ int main() {
     return 1;
   }
 
-  // and finally, some checks that False is returned when appropriate.
+  // and finally, some checks that false is returned when appropriate.
   cout << "\nChecking that copy() returns False when appropriate" << endl;
   {
     RowCopier rc(maintab, maintab);

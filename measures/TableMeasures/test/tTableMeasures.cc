@@ -275,7 +275,7 @@ void testMain(bool doExcep) {
     // The descriptor gives the offset column a type.
     TableMeasDesc<MEpoch> tmdOffset(arrOffset);
 
-    // the True says wants to have an ArrayMeasColumn for offset
+    // the true says wants to have an ArrayMeasColumn for offset
     TableMeasOffsetDesc tmodOS(tmdOffset, true);
 
     TableMeasRefDesc tmrdGast(MEpoch::GAST, tmodOS);

@@ -164,7 +164,7 @@ class CurvedLattice2D : public MaskedLattice<T> {
   // include in the cursor of an iterator.
   virtual uInt advisedMaxPixels() const;
 
-  // Check class internals - used for debugging. Should always return True
+  // Check class internals - used for debugging. Should always return true
   virtual bool ok() const;
 
   // Do the actual getting of an array of values.

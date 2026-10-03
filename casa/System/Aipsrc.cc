@@ -551,7 +551,7 @@ void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst, const String
   uInt n = Aipsrc::registerRC(nam, nl);
   if (n > vallst.nelements()) vallst.resize(n, true);
   vallst(n - 1) = val;
-  //   if (n > namlst.nelements()) namlst.resize(n, True);
+  //   if (n > namlst.nelements()) namlst.resize(n, true);
   namlst.resize(0);
   namlst = Vector<String>(nl.begin(), nl.end());
 }

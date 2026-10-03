@@ -179,13 +179,13 @@ class LogSink : public LogSinkInterface {
   ~LogSink();
 
   // Send <src>message</src> to both the local and global sink. Return
-  // <src>True</src> if it passes either of them.
+  // <src>true</src> if it passes either of them.
   bool post(const LogMessage &message);
 
-  // Send <src>message</src> to the global sink only. Returns <src>True</src>
+  // Send <src>message</src> to the global sink only. Returns <src>true</src>
   // if it passes the filter.
   static bool postGlobally(const LogMessage &message);
-  // Send <src>message</src> to the local sink only. Returns <src>True</src>
+  // Send <src>message</src> to the local sink only. Returns <src>true</src>
   // if it passes the filter.
   virtual bool postLocally(const LogMessage &message);
 

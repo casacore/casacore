@@ -168,7 +168,7 @@ class LSQaips : public LSQFit {
   template <class U>
   bool solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, bool doSVD = false);
   // </group>
-  // Get the covariance matrix. False if an error occurred
+  // Get the covariance matrix. false if an error occurred
   // (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>

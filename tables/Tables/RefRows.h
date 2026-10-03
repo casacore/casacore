@@ -81,10 +81,10 @@ class Slicer;
 class RefRows {
  public:
   // Create the object from a Vector containing the row numbers.
-  // When <src>isSliced==False</src>, the vector is treated as
+  // When <src>isSliced==false</src>, the vector is treated as
   // containing individual row numbers, otherwise as containing
   // (possibly multiple) slices in the form start,end,incr.
-  // When <src>collapse==True</src>, it will try to collapse the
+  // When <src>collapse==true</src>, it will try to collapse the
   // individual row numbers to the slice form (to save memory).
   RefRows(const Vector<rownr_t>& rowNumbers, bool isSliced = false, bool collapse = false);
 #ifdef IMPLICIT_CTDS_32BIT
@@ -143,7 +143,7 @@ class RefRows {
 
   Vector<rownr_t> itsRows;
   rownr_t itsNrows;  // # 0 = still unknown
-  bool itsSliced;    // # True = vector contains slices
+  bool itsSliced;    // # true = vector contains slices
 };
 
 // <summary>

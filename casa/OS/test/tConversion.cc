@@ -71,7 +71,7 @@ int main() {
   uChar* bits = new uChar[nbyte];
   uInt i;
 
-  // # Initialize all bits and check if resulting Bools are all False.
+  // # Initialize all bits and check if resulting Bools are all false.
   for (i = 0; i < nbyte; i++) {
     bits[i] = 0;
   }

@@ -130,11 +130,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <dt> Complex max(Complex x,Complex y);
 // <dd> Returns the maximum of x,y (using operator>=, i.e. the norm).
 //
-// <dt>Bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
+// <dt>bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is relatively near val2 (see Math.h).
 //	(Note the Double tolerance) </dd>
 //
-// <dt>Bool nearAbs(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
+// <dt>bool nearAbs(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is absolutely near val2 (see Math.h).
 //	(Note the Double tolerance) </dd>
 //

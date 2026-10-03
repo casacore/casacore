@@ -110,7 +110,7 @@ struct ImageFITSHeaderInfo {
 // images are always written to the primary HDU.
 //
 // Pixels in the FITS file which are blanked are masked out (the mask
-// is set to False) in the output image.   On conversion to FITS,
+// is set to false) in the output image.   On conversion to FITS,
 // masked values are blanked.    The mask which is read is the current
 // default mask.
 // </synopsis>
@@ -122,12 +122,12 @@ struct ImageFITSHeaderInfo {
 //    String fitsName = "exists.fits";
 //    String imageName = "new.image";
 //    String error;
-//    Bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
+//    bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
 //    if (!image) ... error ...
 // </srcBlock>
 // A couple of things to note:
 // <ul>
-//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+//    <li> If <src>ok</src> is false, the conversion failed and <src>error</src>
 //         will be set.
 //    <li> The pointer "image" is set if the conversion succeeds. If it is
 //         zero the conversion failed and <src>error</src> will contain an
@@ -141,11 +141,11 @@ struct ImageFITSHeaderInfo {
 //    PagedImage<Float> image = ...; // An existing image from somewhere
 //    String fitsName = "new.fits";
 //    String error;
-//    Bool ok = ImageFITSConverter::ImageToFITS(error, image, fitsName);
+//    bool ok = ImageFITSConverter::ImageToFITS(error, image, fitsName);
 // </srcBlock>
 // A couple of similar remarks can be made about this example:
 // <ul>
-//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+//    <li> If <src>ok</src> is false, the conversion failed and <src>error</src>
 //         will be set.
 // </ul>
 // </example>
@@ -186,9 +186,9 @@ class ImageFITSConverter {
   //   <li> <src>memoryInMB</src>. Setting this to zero will result in
   //        row-by-row copying, otherwise it will attempt to with as large
   //        a chunk-size as possible, while fitting in the desired memory.
-  //   <li> <src>allowOverwrite</src> If True, allow imageName to be
+  //   <li> <src>allowOverwrite</src> If true, allow imageName to be
   //        overwritten if it already exists.
-  //   <li> <src>zeroBlanks</src> If True, allow any blanked pixels are set
+  //   <li> <src>zeroBlanks</src> If true, allow any blanked pixels are set
   //         to zero rather than NaN
   // </ul>
   static bool FITSToImage(ImageInterface<Float> *&newImage, String &error, const String &imageName,
@@ -198,7 +198,7 @@ class ImageFITSConverter {
 
   // Convert a Casacore image to a FITS file.
   // <ul>
-  //   <li> <src>return</src> True if the conversion succeeds, False
+  //   <li> <src>return</src> true if the conversion succeeds, false
   //        otherwise.
   //   <li> <src>error</src> will be set if the conversion fails.
   //   <li> <src>image</src> The image to convert.
@@ -219,12 +219,12 @@ class ImageFITSConverter {
   //        values will be used and pixels outside that range will be
   //        truncated to the minimum and maximum pixel values (note that
   //        this truncation does not occur for BITPIX=-32).
-  //   <li> <src>allowOverwrite</src> If True, allow fitsName to be
+  //   <li> <src>allowOverwrite</src> If true, allow fitsName to be
   //        overwritten if it already exists.
-  //   <li> <src>degenerateLast</src> If True, axes of length 1 will be written
+  //   <li> <src>degenerateLast</src> If true, axes of length 1 will be written
   //        last to the header.
-  //   <li> <src>preferWavelength</src> If True, write a wavelength primary axis.
-  //   <li> <src>airWavelength</src> If True and <src>preferWavelength</src> is True write
+  //   <li> <src>preferWavelength</src> If true, write a wavelength primary axis.
+  //   <li> <src>airWavelength</src> If true and <src>preferWavelength</src> is true write
   //        an air wavelength primary axis.
   //   <li> <src>origin</src> gives the origin, i.e., the name of the package.
   //        If empty, it defaults to "casacore-"getVersion().

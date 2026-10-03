@@ -378,7 +378,7 @@ class Lane {
   }
 
   /**
-   * True when write_end() was called. Even when end, the lane may still
+   * true when write_end() was called. Even when end, the lane may still
    * contain items.
    */
   bool is_end() const {
@@ -387,7 +387,7 @@ class Lane {
   }
 
   /**
-   * True when write_end() and the lane does not contain items.
+   * true when write_end() and the lane does not contain items.
    */
   bool is_end_and_empty() const {
     std::lock_guard<std::mutex> lock(_mutex);

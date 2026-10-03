@@ -131,7 +131,7 @@ class RawDataConversion : public DataConversion {
   // </group>
 
   // Determine if the data for a data type can be simply copied, thus
-  // if no conversion is needed. This is always True.
+  // if no conversion is needed. This is always true.
   // <group>
   bool canCopy(const char*) const override;
   bool canCopy(const unsigned char*) const override;

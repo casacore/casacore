@@ -65,7 +65,7 @@ class String;
 // <srcblock>
 // void calculate(uInt n) {
 //   Int skip = n / 200;
-//   ProgressMeter meter(0, n, "Title", "Subtitle", "", "", True, skip);
+//   ProgressMeter meter(0, n, "Title", "Subtitle", "", "", true, skip);
 //   for (uInt i=0; i<n; i++) {
 //       ... calculate ...
 //       meter.update(i);
@@ -92,7 +92,7 @@ class ProgressMeter {
   ProgressMeter();
 
   // Create a progress meter with the given min and max values and labels.
-  // if <src>estimateTime</src> is <src>True</src>, an estimate of the
+  // if <src>estimateTime</src> is <src>true</src>, an estimate of the
   // time remaining will be made for the user. This estimate assumes that
   // the remaining portion will compute at the same rate as the portion
   // completed so far, so the time should not be estimated for processes

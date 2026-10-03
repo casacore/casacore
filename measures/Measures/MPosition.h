@@ -161,9 +161,9 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition>> {
 
   bool giveMe(MPosition::Ref &mr, const String &in);
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
+  // Set the offset in the reference (false if non-matching Measure)
   virtual bool setOffset(const Measure &in);
-  // Set the reference type to the specified String. False if illegal
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
   virtual bool setRefString(const String &in);
   // Get the default reference type

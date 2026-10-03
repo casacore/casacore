@@ -63,7 +63,7 @@ class TableRecord;
 // <src>String</src>, <src>Complex</src> and <src>DComplex</src>.
 // As a rule, the smallest possible value of a data type is used as its
 // "undefined value"; for <src>String</src> we use the null string, and
-// for <src>Bool</src> the value <em>False</em>.
+// for <src>Bool</src> the value <em>false</em>.
 //
 // The class does not contain data. It merely defines constants and
 // has overloaded functions that return in some form the "undefined

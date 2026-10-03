@@ -526,7 +526,7 @@ bool VanVleck::dcoff3(Double &dcoffset, Double &threshold, Double zerolag, Doubl
   bool result = true;
   Double rtbias = sqrt(bias);
   if (bias < 0.0 || bias >= 1.0 || rtbias >= zerolag || zerolag >= (2.0 - rtbias)) {
-    // fall back and return False
+    // fall back and return false
     result = false;
     dcoffset = 0.0;
     threshold = threshN3(zerolag);

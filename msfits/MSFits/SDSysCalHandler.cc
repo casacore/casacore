@@ -171,7 +171,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
         !isNaN(*phaseDiffField_p) && !isInf(*phaseDiffField_p)) {
       // we seem to have a valid phase diff value
       // is it flagged
-      // newRow != True here -> PHASE_DIFF col must exist -> PHASE_DIFF_FLAG must also exist
+      // newRow != true here -> PHASE_DIFF col must exist -> PHASE_DIFF_FLAG must also exist
       newRow = !newRow && msSysCalCols_p->phaseDiff()(rownr_p) != *phaseDiffField_p;
       newRow = !newRow && phaseDiffFlagField_p.isAttached() &&
                *phaseDiffFlagField_p != msSysCalCols_p->phaseDiffFlag()(rownr_p);

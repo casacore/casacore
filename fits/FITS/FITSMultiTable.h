@@ -77,7 +77,7 @@ class FITSMultiTable : public FITSTabular {
 
   virtual const String &name() const { return table_p->name(); }
 
-  // Only returns True when all files are exhausted.
+  // Only returns true when all files are exhausted.
   virtual bool pastEnd() const;
   // When end of data is hit on the current file, the next file is opened
   // automatically.
@@ -90,7 +90,7 @@ class FITSMultiTable : public FITSTabular {
   // Has the descriptor changed from when the file was opened
   virtual bool hasChanged() const { return hasChanged_p; }
 
-  // set hasChanged to False - used after hasChanged has been checked
+  // set hasChanged to false - used after hasChanged has been checked
   void resetChangedFlag() { hasChanged_p = false; }
 
   // A helper function to generate a list of fileNames. This function returns
@@ -98,8 +98,8 @@ class FITSMultiTable : public FITSTabular {
   // yyyy_mm_dd_hh:mm:ss_*.fits and which are (even partially)
   // in the time range specified by startTime and endTime. It is used to
   // generate a set of file names for use in the FITSMultiTable constructor.
-  // If verboseStatus is True, some status messages appear on cout.
-  // If verboseErrors is True improperly named files names (not matching the above
+  // If verboseStatus is true, some status messages appear on cout.
+  // If verboseErrors is true improperly named files names (not matching the above
   // pattern) are named on cerrt.
   static Vector<String> filesInTimeRange(const String &directoryName, const Time &startTime,
                                          const Time &endTime, bool verboseErrors = false,

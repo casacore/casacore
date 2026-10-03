@@ -128,7 +128,7 @@ int main() {
       if (pWCBox != 0) delete pWCBox;
     }
 
-    // Can extend is True
+    // Can extend is true
 
     AlwaysAssert(box.canExtend(), AipsError);
 

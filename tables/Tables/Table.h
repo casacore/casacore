@@ -468,7 +468,7 @@ class Table {
   bool isNull() const { return (baseTabPtr_p == 0 ? true : baseTabPtr_p->isNull()); }
 
   // Throw an exception if the object is null, i.e.
-  // if function isNull() is True.
+  // if function isNull() is true.
   void throwIfNull() const;
 
   // Test if the given data type is native to the table system.
@@ -484,7 +484,7 @@ class Table {
   static String fileName(const String& tableName);
 
   // Test if a table with the given name exists and is readable.
-  // If not, an exception is thrown if <src>throwIf==True</src>.
+  // If not, an exception is thrown if <src>throwIf==true</src>.
   static bool isReadable(const String& tableName, bool throwIf = false);
 
   // Show the structure of the table.
@@ -607,7 +607,7 @@ class Table {
   // makes a physical copy of all referenced table rows and columns, thus
   // the result is a PlainTable.
   // <br>For PlainTables <src>deepCopy</src> is the same as <src>copy</src>
-  // unless <src>valueCopy==True</src> is given. In that case the values
+  // unless <src>valueCopy==true</src> is given. In that case the values
   // are copied which takes longer, but reorganizes the data files to get
   // rid of gaps in the data. Also if specific DataManager info is given
   // or if no rows have to be copied, a deep copy is made.
@@ -766,7 +766,7 @@ class Table {
 
   // Select rows using a mask block.
   // The length of the block must match the number of rows in the table.
-  // If an element in the mask is True, the corresponding row will be
+  // If an element in the mask is true, the corresponding row will be
   // selected.
   Table operator()(const Block<bool>& mask) const;
 
@@ -874,7 +874,7 @@ class Table {
   // data manager in the column description.
   void addColumn(const ColumnDesc& columnDesc, bool addToParent = true);
   // Use an existing data manager with the given name or type.
-  // If the flag byName is True, a name is given, otherwise a type.
+  // If the flag byName is true, a name is given, otherwise a type.
   // If a name is given, an exception is thrown if the data manager is
   // unknown or does not allow addition of columns.
   // If a type is given, a storage manager of the given type will be
@@ -1038,7 +1038,7 @@ class Table {
   BaseTable* lookCache(const String& name, int tableOption, const TableLock& tableInfo);
 
   // Try if v1 is a subset of v2 and fill rows with its indices in v2.
-  // Return False if not a proper subset.
+  // Return false if not a proper subset.
   bool fastRowNumbers(const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
                       Vector<rownr_t>& rows) const;
 

@@ -157,7 +157,7 @@ class LatticeStatsBase {
 
   // Check and fill in defaults for a <src>Vector<Int></src> containing the
   // number of subplots in x and y to be put on a plot.  The <src>Vector<Int></src>
-  // is resized to 2 before assignment.  A return value of <src>False</src> indicates
+  // is resized to 2 before assignment.  A return value of <src>false</src> indicates
   // invalid arguments.
   static bool setNxy(Vector<Int>& nxy, std::ostream& os);
 

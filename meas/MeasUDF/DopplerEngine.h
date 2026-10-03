@@ -101,7 +101,7 @@ class DopplerEngine : public MeasEngine<MDoppler> {
   virtual ~DopplerEngine();
 
   // Handle a possible rest frequency.
-  // False is returned if it appears to be no rest frequency.
+  // false is returned if it appears to be no rest frequency.
   bool handleRestFreq(const TENShPtr&);
 
   // Get the values.
@@ -112,8 +112,8 @@ class DopplerEngine : public MeasEngine<MDoppler> {
 
   // Handle the argument(s) giving the input dopplers and reference type.
   // The doppler can be a column in a table.
-  // If 'proper' is True, it is tested if a proper doppler is given
-  // (with proper type). If not. False is returned.
+  // If 'proper' is true, it is tested if a proper doppler is given
+  // (with proper type). If not. false is returned.
   // The 'allow' arguments tell if the doppler can be specified by means of
   // a radial velocity or freq/restfreq.
   void handleDoppler(std::vector<TENShPtr>& args, uInt& argnr, bool allowRadVel, bool allowFreq);

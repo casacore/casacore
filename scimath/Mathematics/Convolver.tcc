@@ -138,14 +138,14 @@ void Convolver<FType>::makeXfr(const Array<FType>& psf, const IPosition& imageSi
     paddedPsf(blc, trc) = psfND;
     // And do the fft
     if (doFast_p) {
-      // theFFT.flip(paddedPsf, True, False);
+      // theFFT.flip(paddedPsf, true, false);
       theFFT.fft0(theXfr, paddedPsf, false);
     } else {
       theFFT.fft(theXfr, paddedPsf, false);
     }
   } else {
     if (doFast_p) {
-      // theFFT.flip(psfND, True, False);
+      // theFFT.flip(psfND, true, false);
       theFFT.fft0(theXfr, psfND);
     } else {
       theFFT.fft(theXfr, psfND);
@@ -158,7 +158,7 @@ void Convolver<FType>::makePsf(Array<FType>& psf) {
   validate();
   if (thePsf.nelements() == 0) {
     Array<FType> paddedPsf(theFFTSize);
-    //    theIFFT.flip(paddedPsf, True, False);
+    //    theIFFT.flip(paddedPsf, true, false);
     if (doFast_p) {
       theIFFT.fft0(paddedPsf, theXfr, true);
       theIFFT.flip(paddedPsf, false, false);
@@ -219,7 +219,7 @@ void Convolver<FType>::doConvolution(Array<FType>& result, const Array<FType>& m
     paddedModel = 0.;
     paddedModel(blc, trc) = model;
     // And calculate its transform
-    //    theFFT.flip(paddedModel, True, False);
+    //    theFFT.flip(paddedModel, true, false);
     if (doFast_p) {
       theFFT.fft0(fftModel, paddedModel);
     } else {
@@ -229,7 +229,7 @@ void Convolver<FType>::doConvolution(Array<FType>& result, const Array<FType>& m
     Array<FType> paddedModel = model;
     if (doFast_p) {
       Array<FType> paddedModel = model;
-      //    theFFT.flip(paddedModel, True, False);
+      //    theFFT.flip(paddedModel, true, false);
       theFFT.fft0(fftModel, paddedModel);
     } else {
       theFFT.fft(fftModel, model);

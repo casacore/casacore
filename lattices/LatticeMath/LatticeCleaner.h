@@ -134,9 +134,9 @@ class LatticeCleaner {
   // fThreshold - fractional threshold (i.e. given w.r.t. maximum residual)
   //              to stop iterations. This parameter is specified as
   //              Quantity so it can be given in per cents.
-  // choose - unused at the moment, specify False. Original meaning is
+  // choose - unused at the moment, specify false. Original meaning is
   // to allow interactive decision on whether to continue iterations.
-  // This method always returns True.
+  // This method always returns true.
   bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
                   const Quantity& aThreshold, const Quantity& fThreshold, const bool choose = true);
 
@@ -174,7 +174,7 @@ class LatticeCleaner {
   // Tell the algorithm to NOT clean just the inner quarter
   // (This is useful when multiscale clean is being used
   // inside a major cycle for MF or WF algorithms)
-  // if True, the full image deconvolution will be attempted
+  // if true, the full image deconvolution will be attempted
   void ignoreCenterBox(bool huh) { itsIgnoreCenterBox = huh; }
 
   // Consider the case of a point source:
@@ -296,7 +296,7 @@ class LatticeCleaner {
   Float itsNDouble;
 
   // # Stop now?
-  // #//  Bool stopnow();   Removed on 8-Apr-2004 by GvD
+  // #//  bool stopnow();   Removed on 8-Apr-2004 by GvD
 
   // Calculate index into PsfConvScales
   Int index(const Int scale, const Int otherscale);

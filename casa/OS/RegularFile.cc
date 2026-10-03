@@ -88,7 +88,7 @@ void RegularFile::checkPath() {
 }
 
 void RegularFile::create(bool overwrite) {
-  // If overwrite is False the file will not be overwritten.
+  // If overwrite is false the file will not be overwritten.
   if (exists()) {
     if (!itsFile.isRegular(false)) {
       throw(AipsError("RegularFile::create: " + itsFile.path().expandedName() +

@@ -1451,7 +1451,7 @@ bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName) {
   //    inpRec          const Record&     Input Record
   //    fieldName       const String&     Field name
   // Ouput:
-  //    definedAndSet   Bool              True if field defined and
+  //    definedAndSet   Bool              true if field defined and
   //                                      not unset
   //
   bool retval = false;

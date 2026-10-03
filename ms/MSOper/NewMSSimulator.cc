@@ -115,7 +115,7 @@ struct MSFeedParameterExtractor : protected MSIter {
   // in the feed table). The cube axes are receptor, antenna, feed.
   using MSIter::getBeamOffsets;
 
-  // True if all elements of the cube returned by getBeamOffsets are zero
+  // true if all elements of the cube returned by getBeamOffsets are zero
   using MSIter::allBeamOffsetsZero;
 };
 //

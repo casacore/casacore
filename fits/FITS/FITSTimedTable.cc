@@ -138,7 +138,7 @@ bool FITSTimedTable::pastEnd() const {
 
 bool FITSTimedTable::pastEnd() {
   // if how_past_end_p indicates we've been past the end
-  // but table_p->pastEnd() is False, resyncronize with table
+  // but table_p->pastEnd() is false, resyncronize with table
   if (!table_p) return true;
   if (how_past_end_p && !table_p->pastEnd()) {
     how_past_end_p = 0;

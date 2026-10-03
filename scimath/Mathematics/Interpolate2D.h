@@ -74,7 +74,7 @@ class String;
 // where(0) = 3.452;  where(1) = 6.1;
 // Interpolate2D myInterp(Interpolate2D::LINEAR);
 // Float result;
-// Bool ok = myInterp.interp(result, where, matt);
+// bool ok = myInterp.interp(result, where, matt);
 //
 // </srcblock>
 // </example>
@@ -119,8 +119,8 @@ class Interpolate2D {
   // Assignment operator (copy semantics)
   Interpolate2D &operator=(const Interpolate2D &other);
 
-  // Do one Float interpolation, supply Matrix and mask (True is good),
-  // and pixel coordinate.  Returns False if coordinate out of range or data
+  // Do one Float interpolation, supply Matrix and mask (true is good),
+  // and pixel coordinate.  Returns false if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above).
   // <group>
   bool interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data) const;
@@ -128,8 +128,8 @@ class Interpolate2D {
               const Matrix<bool> &mask) const;
   // </group>
 
-  // Do one Double interpolation, supply Matrix/Array and mask (True is good),
-  // and pixel coordinate.  Returns False if coordinate out of range or data
+  // Do one Double interpolation, supply Matrix/Array and mask (true is good),
+  // and pixel coordinate.  Returns false if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above).
   // <group>
   bool interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data) const;
@@ -137,8 +137,8 @@ class Interpolate2D {
               const Matrix<bool> &mask) const;
   // </group>
 
-  // Do one Complex interpolation, supply Matrix/Array and mask (True is good),
-  // and pixel coordinate.  Returns False if coordinate out of range or data
+  // Do one Complex interpolation, supply Matrix/Array and mask (true is good),
+  // and pixel coordinate.  Returns false if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above). The real
   // and imaginary parts are treated independently (see CAS-11375).
   // <group>
@@ -147,8 +147,8 @@ class Interpolate2D {
               const Matrix<bool> &mask) const;
   // </group>
 
-  // Do one DComplex interpolation, supply Matrix/Array and mask (True is good),
-  // and pixel coordinate.  Returns False if coordinate out of range or data
+  // Do one DComplex interpolation, supply Matrix/Array and mask (true is good),
+  // and pixel coordinate.  Returns false if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above). The real
   // and imaginary parts are treated independently (see CAS-11375).
   // <group>
@@ -169,10 +169,10 @@ class Interpolate2D {
                      const Matrix<T> &dataJ, const Matrix<bool> &mask) const;
   // </group>
 
-  // Do one interpolation, supply boolean Matrix (True is good),
-  // and pixel coordinate.  Returns False if coordinate
-  // out of range. The result is False if any data value in the interpolation
-  // grid are False (bad), else True.  No shape integrity checking is done.
+  // Do one interpolation, supply boolean Matrix (true is good),
+  // and pixel coordinate.  Returns false if coordinate
+  // out of range. The result is false if any data value in the interpolation
+  // grid are false (bad), else true.  No shape integrity checking is done.
   // <group>
   bool interp(bool &result, const Vector<Double> &where, const Matrix<bool> &data) const;
   // </group>
@@ -182,7 +182,7 @@ class Interpolate2D {
   static Interpolate2D::Method stringToMethod(const String &method);
 
  private:
-  // Are any of the mask pixels bad ? Returns False if no mask.
+  // Are any of the mask pixels bad ? Returns false if no mask.
   bool anyBadMaskPixels(const Matrix<bool> *&mask, Int i1, Int i2, Int j1, Int j2) const;
 
   // nearest neighbour interpolation

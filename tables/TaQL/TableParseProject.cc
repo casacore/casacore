@@ -443,7 +443,7 @@ void TableParseProject::makeProjectExprSel() {
   // elsewhere.
   projectExprSelColumn_p.resize(columnNames_p.size());
   std::fill(projectExprSelColumn_p.begin(), projectExprSelColumn_p.end(), false);
-  // Set to True for the used columns.
+  // Set to true for the used columns.
   uInt ncol = 0;
   for (uInt i = 0; i < projectExprSubset_p.size(); ++i) {
     AlwaysAssert(projectExprSubset_p[i] < projectExprSelColumn_p.size(), AipsError);

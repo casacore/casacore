@@ -151,7 +151,7 @@ class MeasMath {
   void deapplyAberrationB1950(MVPosition &in, bool doin = true);
   //   </group>
   // Solar bending for J2000 (IAU definition) and in coordinates.
-  // False if dependent on frame direction rather than input one.
+  // false if dependent on frame direction rather than input one.
   //   <group>
   void createSolarPos();
   void applySolarPos(MVPosition &in, bool doin = true);
@@ -290,7 +290,7 @@ class MeasMath {
 
   // Get information from the frame
   // <thrown>
-  //  <li> AipsError if information not available; or False return if
+  //  <li> AipsError if information not available; or false return if
   //		<em>ret=True</em>
   // </thrown>
   // <group>
@@ -298,7 +298,7 @@ class MeasMath {
   // </group>
 
   // Make a shift of coordinate into a rotation and apply it when doin is
-  // False. Else apply a shift.
+  // false. Else apply a shift.
   // Given are the longitude and latitude codes of the direction to be used,
   // and the shift to be applied in that system to the in coordinate.
   void rotateShift(MVPosition &in, const MVPosition &shft, const FrameInfo lng, const FrameInfo lat,

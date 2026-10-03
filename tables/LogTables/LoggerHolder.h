@@ -82,7 +82,7 @@ class TableLogSink;
 
 // <example>
 // <srcblock>
-//  LoggerHolder logger ("tLoggerHolder_tmp.log", True);
+//  LoggerHolder logger ("tLoggerHolder_tmp.log", true);
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
 //  for (LoggerHolder::const_iterator iter = logger.begin();
@@ -96,7 +96,7 @@ class TableLogSink;
 // The latter part shows how to iterate through all messages.
 //
 // <srcblock>
-//  LoggerHolder logger (False);
+//  LoggerHolder logger (false);
 //  logger.addParent (parent.logger());
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
@@ -185,7 +185,7 @@ class LoggerHolder {
   // Only a const forward iterator is available.
   // It makes it possible to iterate through all messages in the logger.
   // <srcblock>
-  //  LoggerHolder logger("log.name", False)
+  //  LoggerHolder logger("log.name", false)
   //  for (LoggerHolder::const_iterator iter=arr.begin();
   //       iter!=arr.end(); iter++) {
   //    cout << iter.message() << endl;
@@ -301,7 +301,7 @@ class LoggerHolderRep {
   // Only a const forward iterator is available.
   // It makes it possible to iterate through all messages in the logger.
   // <srcblock>
-  //  LoggerHolder logger("log.name", False)
+  //  LoggerHolder logger("log.name", false)
   //  for (LoggerHolder::const_iterator iter=arr.begin();
   //       iter!=arr.end(); iter++) {
   //    cout << iter.message() << endl;
@@ -414,7 +414,7 @@ class LogHolderIter {
   LogHolderIter& operator=(const LogHolderIter&) = delete;
 
   // Increment to next message.
-  // Returns False if at the end.
+  // Returns false if at the end.
   bool next();
 
   // Get the entry.
@@ -452,7 +452,7 @@ class LogHolderIter {
 
 // <example>
 // <srcblock>
-//  LoggerHolder logger ("tLoggerHolder_tmp.log", True);
+//  LoggerHolder logger ("tLoggerHolder_tmp.log", true);
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
 //  for (LoggerHolder::const_iterator iter = logger.begin();

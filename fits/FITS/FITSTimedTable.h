@@ -69,13 +69,13 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class FITSTimedTable : public FITSTabular {
  public:
-  // This is not connected to any data, isValid always returns True,
+  // This is not connected to any data, isValid always returns true,
   // keywords and description return the default versions
-  // hasChanged returns False, name returns an empty string
-  // pastEnd returns False and next does nothing.
+  // hasChanged returns false, name returns an empty string
+  // pastEnd returns false and next does nothing.
   // setTime does nothing, currentRow returns an empty record
   // and currentTime returns 0.0
-  // and ok returns True and nextTime returns 0.0
+  // and ok returns true and nextTime returns 0.0
   FITSTimedTable();
   // Note, originalTable cannot be destructed, reopened, ...,during the
   // lifetime of this object.
@@ -107,8 +107,8 @@ class FITSTimedTable : public FITSTabular {
   // What is the time of the current row?
   Double currentTime() const;
 
-  // this is True if the last setTime() finished as expected
-  // It is False only if the requested time is before the current time
+  // this is true if the last setTime() finished as expected
+  // It is false only if the requested time is before the current time
   // and the timed table as just been opened
   bool ok() const { return ok_p; }
 

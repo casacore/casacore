@@ -923,7 +923,7 @@ void doIt() {
   checkScaDComplex("product(arrz)", exprid, product(earrz1), Complex(1.55851e42, 1.62512e42));
   checkScaDComplex("sumSquare(arrz)", exprid, sumSquare(earrz1), Complex(-358100, 859440));
 
-  // Check the functions operating on Bool arrays (and scalars).
+  // Check the functions operating on bool arrays (and scalars).
   checkScaBool("any(sb)", exprid, any(esb1), sb1);
   checkScaBool("all(sb)", exprid, all(esb1), sb1);
   checkScaInt("ntrue(sb)", exprid, ntrue(esb1), 1);

@@ -148,7 +148,7 @@ class BaseColumnDesc {
   String& dataManagerGroup() { return dataManGroup_p; }
 
   // Set the data manager type and group to the default.
-  // If <src>always==True</src> they are always set, otherwise only if empty.
+  // If <src>always==true</src> they are always set, otherwise only if empty.
   void setDefaultDataManager(bool always);
 
   // Get comment string.
@@ -230,9 +230,9 @@ class BaseColumnDesc {
   IPosition shape_p;         // # table array shape
   uInt maxLength_p;          // # maximum value length (for strings)
   TableRecord* keySetPtr_p;  // # set of keywords
-  bool isScalar_p;           // # True = column contains scalars
-  bool isArray_p;            // # True = column contains arrays
-  bool isTable_p;            // # True = column contains tables
+  bool isScalar_p;           // # true = column contains scalars
+  bool isArray_p;            // # true = column contains arrays
+  bool isTable_p;            // # true = column contains tables
 
   // Assignment (copy semantics).
   BaseColumnDesc& operator=(const BaseColumnDesc&);

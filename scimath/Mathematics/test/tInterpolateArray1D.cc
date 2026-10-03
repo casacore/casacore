@@ -51,7 +51,7 @@
   } while (0)
 
 unsigned tests_done = 0;
-const bool debug = false;  // True;
+const bool debug = false;  // true;
 
 template <class T, class S>
 class TestLinearInterpolation1 {

@@ -95,7 +95,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //     Undefined is only useful for scalars. If not given, all possible
 //     values of the scalar have a meaning. If given, a value equal to
 //     the default value in the column description is an undefined value.
-//     The function TableColumn::isDefined will return False for such
+//     The function TableColumn::isDefined will return false for such
 //     values.
 // </dl>
 // </synopsis>
@@ -206,7 +206,7 @@ class ColumnDesc {
   // (allowing it to be changed).
   String& dataManagerGroup() { return colPtr_p->dataManagerGroup(); }
 
-  // If <src>always==True</src> they are always set, otherwise only if empty.
+  // If <src>always==true</src> they are always set, otherwise only if empty.
   void setDefaultDataManager(bool always = true) { colPtr_p->setDefaultDataManager(always); }
 
   // Get comment string.
@@ -387,7 +387,7 @@ class ColumnDesc {
 
  protected:
   BaseColumnDesc* colPtr_p;
-  bool allocated_p;  // # False = not allocated -> do not delete
+  bool allocated_p;  // # false = not allocated -> do not delete
 };
 
 }  // namespace casacore

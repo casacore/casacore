@@ -346,7 +346,7 @@ class TableParseQuery {
   std::shared_ptr<TableExprGroupResult> doGroupby(bool showTimings);
 
   // Do the HAVING step.
-  // It returns False if no HAVING step was given.
+  // It returns false if no HAVING step was given.
   bool doHaving(bool showTimings, const std::shared_ptr<TableExprGroupResult>& groups);
 
   // Do the sort step.

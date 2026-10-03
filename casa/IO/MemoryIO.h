@@ -92,11 +92,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&rawio);
 //    // Write values.
 //    stream << (Int)10;
-//    stream << True;
+//    stream << true;
 //    // Seek to beginning of buffer and read data in.
 //    stream.setpos (0);
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 //
 //    // One can obtain the buffer and its length and use it later.
@@ -146,7 +146,7 @@ class MemoryIO : public ByteIO {
   // This means that <src>buffer</src> does not point to the data
   // anymore. However, when <src>expandSize==0</src>, the buffer
   // cannot be expanded and the pointer is always valid.
-  // <br>When canDelete is True, buffer expansion means that the
+  // <br>When canDelete is true, buffer expansion means that the
   // old buffer gets deleted.
   MemoryIO(void* buffer, uInt64 size, ByteIO::OpenOption, uInt64 expandSize = 0,
            bool canDelete = false);
@@ -165,7 +165,7 @@ class MemoryIO : public ByteIO {
   // Read <src>size</src> bytes from the memory buffer. Returns the number of
   // bytes actually read. Will throw an Exception (AipsError) if the
   // requested number of bytes could not be read unless throwException is set
-  // to False. Will always throw an exception if the buffer is not readable
+  // to false. Will always throw an exception if the buffer is not readable
   // or the buffer pointer is at an invalid position.
   virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 

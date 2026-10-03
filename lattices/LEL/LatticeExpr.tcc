@@ -204,7 +204,7 @@ bool LatticeExpr<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) 
       return true;
     }
   }
-  // Not masked, so we can simply fill the buffer with True values.
+  // Not masked, so we can simply fill the buffer with true values.
   buffer.resize(section.length());
   buffer = true;
   return false;

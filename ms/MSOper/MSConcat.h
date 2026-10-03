@@ -89,7 +89,7 @@ class MSConcat : public MSColumns {
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol);
   void setWeightScale(const Float weightScale);
   void setRespectForFieldName(
-      const bool respectFieldName);  // # If True, fields of same direction are not merged
+      const bool respectFieldName);  // # If true, fields of same direction are not merged
                                      // # if their name is different
 
  private:

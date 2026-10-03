@@ -159,7 +159,7 @@ class StIndArray {
   // Set the shape and allocate the array in the file.
   // This will define the array and fill in the file offset.
   // If the shape is already defined and does not change,
-  // nothing is done and a False value is returned.
+  // nothing is done and a false value is returned.
   // If the shape changes, the old file space is lost.
   bool setShape(StManArrayFile&, int dataType, const IPosition& shape);
 

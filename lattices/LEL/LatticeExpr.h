@@ -110,7 +110,7 @@ class LELArray;
 //  ArrayLattice<Complex> c(IPosition (2,nx,ny));
 //  ArrayLattice<Bool>    b(IPosition (2,nx,ny));
 //
-//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(True);
+//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(true);
 //  f1.copyData( (3.5*f2) + (cos(d)) - (10/min(d,f2)*(-abs(c))*ntrue(b)) - (C::pi) );
 // </srcblock>
 //
@@ -168,11 +168,11 @@ class LatticeExpr : public MaskedLattice<T> {
   // Get the region used (always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
-  // Returns False, as the LatticeExpr lattice is not writable.
+  // Returns false, as the LatticeExpr lattice is not writable.
   virtual bool isWritable() const;
 
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
-  // <br>hasLock() is True if all parts of the expression return True.
+  // <br>hasLock() is true if all parts of the expression return true.
   // <br>It is strongly recommended to use class
   // <linkto class=LatticeLocker>LatticeLocker</linkto> to
   // handle lattice locking. It also contains a more detailed
@@ -202,12 +202,12 @@ class LatticeExpr : public MaskedLattice<T> {
   virtual LELCoordinates lelCoordinates() const;
 
   // Do the actual get of the data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.
   virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual get of the mask data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 

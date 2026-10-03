@@ -285,7 +285,7 @@ class ImageExprParse {
   static String addDir(const String& fileName);
 
   // Try if the name represent a lattice or image.
-  // Return False if not.
+  // Return false if not.
   bool tryLatticeNode(LatticeExprNode& node, const String& name) const;
 
   // Make the node from the image name and a mask name.

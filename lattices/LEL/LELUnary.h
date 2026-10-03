@@ -77,7 +77,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // ArrayLattice<Float> y(shape);
 // ArrayLattice<Float> z(shape);
 // y.copyData(x+2.0);                 // y = x + 2.0
-// z.copyData(True);                  // z = True
+// z.copyData(true);                  // z = true
 // </srcblock>
 // </example>
 //
@@ -250,7 +250,7 @@ class LELUnary : public LELInterface<T> {
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(True);
+// ArrayLattice<Bool> x(shape); x.set(true);
 // ArrayLattice<Bool> y(shape);
 // y.copyData(!x);                 // y = !x
 // </srcblock>

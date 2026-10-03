@@ -111,7 +111,7 @@ class LofarStMan : public DataManager {
   LofarStMan& operator=(const LofarStMan& that);
 
   // Flush and optionally fsync the data.
-  // It does nothing, and returns False.
+  // It does nothing, and returns false.
   virtual bool flush(AipsIO&, bool doFsync) override;
 
   // Let the storage manager create files as needed for a new table.
@@ -244,7 +244,7 @@ class ZeroColumn : public LofarColumn {
   Int itsValue;
 };
 
-// <summary>All columns in the LOFAR Storage Manager with value False.</summary>
+// <summary>All columns in the LOFAR Storage Manager with value false.</summary>
 // <use visibility=local>
 class FalseColumn : public LofarColumn {
  public:

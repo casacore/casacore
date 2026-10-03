@@ -188,7 +188,7 @@ void SDAntennaHandler::fill(const Record &row) {
         pos =
             MPosition(MVPosition(Quantum<Vector<Double>>(*positionField_p, "m")), MPosition::ITRF);
       } else {
-        // if this returns False, pos will still be set at its unset value (0,0,0)
+        // if this returns false, pos will still be set at its unset value (0,0,0)
         MeasTable::Observatory(pos, *nameKey_p);
       }
     }

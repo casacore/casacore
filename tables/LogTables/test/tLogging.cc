@@ -66,7 +66,7 @@ void testLogFilter() {
   AlwaysAssertExit((tmp.lowestPriority() == copy.lowestPriority()) &&
                    (tmp.lowestPriority() == LogMessage::SEVERE));
 
-  // Bool pass(const LogMessage &message) const;
+  // bool pass(const LogMessage &message) const;
   message.priority(LogMessage::DEBUGGING);
   AlwaysAssertExit(low.pass(message) && !normal.pass(message) && !warn.pass(message) &&
                    !severe.pass(message));
@@ -128,7 +128,7 @@ void testLogMessage() {
                      m4.origin().functionName() == m2.origin().functionName());
   }
 
-  // LogMessage &message(const String &message, Bool keepLastTime = False);
+  // LogMessage &message(const String &message, bool keepLastTime = false);
   // const Time &messageTime() const;
   // uInt line() const;
   // LogMessage &line(uInt which);
@@ -284,7 +284,7 @@ void testLogSink() {
   AlwaysAssertExit(copy == &LogSink::globalSink());
   LogMessage message;
   message.message("test");
-  // Bool post(const LogMessage &message);
+  // bool post(const LogMessage &message);
   AlwaysAssertExit(!sink1.post(message) && !sink2.post(message) && !sink3.post(message));
   message.priority(LogMessage::SEVERE);
   AlwaysAssertExit(sink1.post(message) && sink2.post(message) && sink3.post(message));
@@ -307,10 +307,10 @@ void testLogSink() {
   AlwaysAssertExit(logTable.nrow() == 3 && messageColumn(1) == "test" &&
                    messageColumn(2) == "test");
   AlwaysAssertExit(logTable2.nrow() == 5 && messageColumn2(4) == "test");
-  // static Bool postGlobally(const LogMessage &message);
+  // static bool postGlobally(const LogMessage &message);
   sink5.postGlobally(message);
   AlwaysAssertExit(logTable2.nrow() == 6);
-  // virtual Bool postLocally(const LogMessage &message);
+  // virtual bool postLocally(const LogMessage &message);
   sink5.postLocally(message);
   AlwaysAssertExit(logTable.nrow() == 4);
   // const LogSinkInterface &localSink() const;

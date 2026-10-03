@@ -170,7 +170,7 @@ class ConcatTable : public BaseTable {
   virtual const StorageOption& storageOption() const;
 
   // Is the table in use (i.e. open) in another process?
-  // It always returns False.
+  // It always returns false.
   virtual bool isMultiUsed(bool checkSubTable) const;
 
   // Get the locking info.
@@ -336,7 +336,7 @@ class ConcatTable : public BaseTable {
   Block<Table> tables_p;                     // # Tables forming the concat
   std::map<String, ConcatColumn*> colMap_p;  // # map name to column
   TableRecord keywordSet_p;
-  bool changed_p;  // # True = changed since last write
+  bool changed_p;  // # true = changed since last write
   ConcatRows rows_p;
 };
 

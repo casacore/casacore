@@ -85,13 +85,13 @@ class MSFeedIndex : public MSTableIndex {
 
   void attach(const MSFeed& feed);
 
-  // access to the antenna ID key, throws an exception if isNull() is False
+  // access to the antenna ID key, throws an exception if isNull() is false
   Int& antennaId() { return *antennaId_p; }
 
-  // access to the feed ID key, throws an exception if isNull() is False
+  // access to the feed ID key, throws an exception if isNull() is false
   Int& feedId() { return *feedId_p; }
 
-  // access to the spectral window ID key, throws an exception if isNull() is False
+  // access to the spectral window ID key, throws an exception if isNull() is false
   Int& spectralWindowId() { return *spwId_p; }
 
   // return feed id.'s (and associated row numbers) for a given antenna id.,

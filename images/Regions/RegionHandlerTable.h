@@ -121,7 +121,7 @@ class RegionHandlerTable : public RegionHandler {
   // If overwrite=False, an exception will be thrown if the region
   // already exists in the "regions" or "masks" keyword.
   // Otherwise the region will be removed first.
-  // <br>A False status is returned if the table is not writable
+  // <br>A false status is returned if the table is not writable
   virtual bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
                             bool overwrite = false);
 
@@ -145,7 +145,7 @@ class RegionHandlerTable : public RegionHandler {
 
   // Remove a region belonging to the table.
   // <br>Optionally an exception is thrown if the region does not exist.
-  // <br>A False status is returned if the table is not writable
+  // <br>A false status is returned if the table is not writable
   virtual bool removeRegion(const String& name, RegionHandler::GroupType = Any,
                             bool throwIfUnknown = true);
 

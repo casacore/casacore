@@ -261,7 +261,7 @@ bool sortarr2(Int* arr, uInt nr, int opt) {
   Vector<uInt> ptr;
   Timer tim;
   sort.sort(ptr, nr, opt);
-  /// sort.sort (ptr,nr,opt,False);
+  /// sort.sort (ptr,nr,opt,false);
   tim.show("  with obj");
   for (uInt i = 1; i < nr; i++) {
     if (arr[ptr(i)] < arr[ptr(i - 1)]) {

@@ -165,8 +165,8 @@ class TabularCoordinate : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel position to a world position or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel position to a world position or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // errorMessage contains an error message.  The output
   // vectors are appropriately resized.
   // The Bool parameter in toWorld() has no effect as this coordinate does
@@ -179,9 +179,9 @@ class TabularCoordinate : public Coordinate {
   // </group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
-  // of the matrices contain the coordinates. Returns False if any conversion
+  // of the matrices contain the coordinates. Returns false if any conversion
   // failed  and  <src>errorMessage()</src> will hold a message.
-  // The <src>failures</src> array (True for fail, False for success)
+  // The <src>failures</src> array (true for fail, false for success)
   // is the length of the number of conversions and
   // holds an error status for each conversion.
   // <group>
@@ -242,7 +242,7 @@ class TabularCoordinate : public Coordinate {
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False, method
+  // axes in the Coordinate.  If the comparison returns false, method
   // errorMessage() contains a message about why.
   // <group>
   virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
@@ -260,7 +260,7 @@ class TabularCoordinate : public Coordinate {
                                             const Vector<Int> &shape) const;
 
   // Save the TabularCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
+  // The field must not exist, otherwise <src>false</src> is returned.
   virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Recover the TabularCoordinate from a record.

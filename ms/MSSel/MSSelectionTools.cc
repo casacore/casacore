@@ -114,8 +114,8 @@ bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS, const Str
     // Apply the internal accumulated TEN to the MS and produce the
     // selected MS.
     //
-    // If the accumulated TEN is NULL, this returns False.  Else
-    // return True.
+    // If the accumulated TEN is NULL, this returns false.  Else
+    // return true.
     //
     rstat = mss->getSelectedMS(selectedMS, outMSName);
   } catch (std::exception& x) {
@@ -164,8 +164,8 @@ bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
     // Apply the internal accumulated TEN to the MS and produce the
     // selected MS.
     //
-    // If the accumulated TEN is NULL, this returns False.  Else
-    // return True.
+    // If the accumulated TEN is NULL, this returns false.  Else
+    // return true.
     //
     rstat = mss->getSelectedMS(selectedMS, outMSName);
 

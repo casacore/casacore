@@ -89,7 +89,7 @@ void checkTab() {
   }
 }
 
-// Update some rows by setting them to False.
+// Update some rows by setting them to false.
 void updateTab(uInt step) {
   if (step > 0) {
     Table tab("tIncrementalStMan2_tmp.data", Table::Update);

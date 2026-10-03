@@ -73,15 +73,15 @@ Table openParentTable(const String& fullName, const String& subTableName,
 // <src>[shorthand][column][::key1.key2.key3...]</src> where the
 // square brackets indicate optional parts. Note that a single name given
 // before :: is interpreted as a shorthand unless preceded by a period.
-// <br>True is returned if the name contains a keyword part.
+// <br>true is returned if the name contains a keyword part.
 // In that case fieldNames contains the keyword name and the possible
 // subfields. The possible shorthand and the column name are
 // filled in if it is a column keyword.
 // If the name contains a column, fieldNames is filled with  the subfields
 // of the column (for the case where the column contains records).
-// <br>If isKeyword is True, the first part of name is a keyword,
+// <br>If isKeyword is true, the first part of name is a keyword,
 // even if no :: is given.
-// If allowNoKey is True, a single :: is allowed, otherwise the name is invalid.
+// If allowNoKey is true, a single :: is allowed, otherwise the name is invalid.
 // If the name is invalid, exceptions are only thrown if checkError=True.
 // Otherwise the name is treated as a normal name without keyword.
 bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames,

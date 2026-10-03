@@ -210,8 +210,8 @@ class LatticeIterInterface {
   //</group>
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False. The default
-  // implementation of this function always returns True.
+  // Returns true if everything is fine otherwise returns false. The default
+  // implementation of this function always returns true.
   bool ok() const;
 
  protected:
@@ -254,7 +254,7 @@ class LatticeIterInterface {
   bool itsUseRef;
   // Is the cursor a reference to the lattice?
   bool itsIsRef;
-  // Have the data been read after a cursor update? (False=not read)
+  // Have the data been read after a cursor update? (false=not read)
   bool itsHaveRead;
   // Rewrite the cursor data before moving or destructing?
   bool itsRewrite;

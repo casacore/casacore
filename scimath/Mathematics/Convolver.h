@@ -96,8 +96,8 @@ typedef Convolver<Double> DoubleConvolver;
 // then their linear and circular convolutions are:
 // <srcblock>
 // circular convolution =         [1 .1  0  0  0 .5]
-//   linear convolution =         [1 .1  0  0  0  0]    (fullSize == False)
-//   linear convolution =   [0 .5  1 .1  0  0  0  0  0] (fullSize == True)
+//   linear convolution =         [1 .1  0  0  0  0]    (fullSize == false)
+//   linear convolution =   [0 .5  1 .1  0  0  0  0  0] (fullSize == true)
 // </srcblock>
 // The circular convolution "wraps around" whereas the linear one does not.
 // Usage of the fullSize option is explained below. As can be seen from the
@@ -123,7 +123,7 @@ typedef Convolver<Double> DoubleConvolver;
 // <em> n^2 Log(n) </em> for 2 dimensional convolutions.
 
 // The size of the convolved result is always the same as the input model
-// unless linear convolution is done with the fullSize option set to True.
+// unless linear convolution is done with the fullSize option set to true.
 // In this case the result will be larger than the model and include the
 // full linear convolution (resultSize = psfSize+modelSize-1), rather than
 // the central portion.
@@ -137,7 +137,7 @@ typedef Convolver<Double> DoubleConvolver;
 
 // <note role=tip>
 // If you are intending to do 'fullsize' linear convolutions
-// you should also set the fullsize option to True as the cached transfer
+// you should also set the fullsize option to true as the cached transfer
 // function is a different size for fullsize linear convolutions.
 // </note>
 
@@ -260,7 +260,7 @@ class Convolver {
   // </group>
 
   // Perform linear convolution of the model with the previously
-  // specified psf. Return the answer in result. Set fullSize to True if you
+  // specified psf. Return the answer in result. Set fullSize to true if you
   // want the full convolution, rather than the central portion (the same
   // size as the model) returned.
   // <group>

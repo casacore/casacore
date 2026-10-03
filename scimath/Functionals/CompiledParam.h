@@ -132,7 +132,7 @@ class CompiledParam : public Function<T> {
     return x;
   }
 
-  // Set a function. The return will be False (and an error message will be
+  // Set a function. The return will be false (and an error message will be
   // set) if a compilation error occurs
   bool setFunction(const String &newFunction);
 

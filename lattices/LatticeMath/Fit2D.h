@@ -68,7 +68,7 @@ class MaskedLattice;
 // you may specify which parameters are to be held fixed
 // during the fitting process.  This is done with the
 // parameterMask Vector which is in the same order as the
-// parameter Vector.  A value of True indicates the parameter
+// parameter Vector.  A value of true indicates the parameter
 // will be fitted for.  Presently, when you say fix the minor axis,
 // you really end up fixing the axial ratio (internals).  I don't
 // have a solution for this presently.
@@ -132,7 +132,7 @@ class Fit2D {
   // Add a model to the list to be simultaneously fit and
   // return its index.  Specify the initial guesses for
   // the model and a mask indicating whether the parameter
-  // is fixed (False) during the fit or not.  Returns the
+  // is fixed (false) during the fit or not.  Returns the
   // the model number added (0, 1, 2 etc)
   //<group>
   uInt addModel(Fit2D::Types type, const Vector<Double>& parameters,

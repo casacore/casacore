@@ -72,7 +72,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&fio);
 //    // Read the data.
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -113,7 +113,7 @@ class FiledesIO : public ByteIO {
   // Read <src>size</src> bytes from the descriptor. Returns the number of
   // bytes actually read or a negative number if an error occurred. Will throw
   // an Exception (AipsError) if the requested number of bytes could not be
-  // read, or an error occured, unless throwException is set to False. Will
+  // read, or an error occured, unless throwException is set to false. Will
   // always throw an exception if the descriptor is not readable or the
   // system call returned an undocumented value.
   virtual Int64 read(Int64 size, void* buf, bool throwException = true);

@@ -1056,7 +1056,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
   Double discernedInt(DBL_MAX);
 
   // ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",//               "",
-  // True,  nGroups/100);
+  // true,  nGroups/100);
 
   Matrix<Double> uvw(3, totRows);
 
@@ -3420,7 +3420,7 @@ void MSFitsInput::fillSourceTable() {
     mss.listMain(_log, mainRec);
 
     // Record fieldRec;
-    // mss.listField(_log, fieldRec, True);
+    // mss.listField(_log, fieldRec, true);
     ProgressMeter meter(0.0, mainRec.nfields() * 1.0, "UVFITS Filler", "rows copied", "", "", true,
                         mainRec.nfields() * 300 / 100);
 

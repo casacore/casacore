@@ -71,7 +71,7 @@ class Path;
 //    AipsIO stream (&fio);
 //    // Read the data.
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -118,10 +118,10 @@ class TapeIO : public ByteIO {
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
   // exception (AipsError) if the requested number of bytes could not be read,
-  // or an error occured, unless throwException is set to False. Will always
+  // or an error occured, unless throwException is set to false. Will always
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
-  // current file (and size is non-zero and throwException is False).
+  // current file (and size is non-zero and throwException is false).
   virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 
   // Rewind the tape device to the beginning.
@@ -134,7 +134,7 @@ class TapeIO : public ByteIO {
   // write the specified number of filemarks.
   virtual void mark(uInt howMany = 1);
 
-  // returns True if the tape device is configured to use a fixed block size
+  // returns true if the tape device is configured to use a fixed block size
   bool fixedBlocks() const;
 
   // returns the block size in bytes. Returns zero if the device is configured

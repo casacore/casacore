@@ -68,8 +68,8 @@ typedef Float FType;  // floating type (Float, Double)
 //  Array<FType> & psf);</src> Set the image and the Point Spread Function
 //  (beam).  Setting this should reset the internal state, e.g.
 //  CurrentIter()==0.
-//  <li> <src>Bool solve();</src>  Perform solution of AX=B.
-//       Returns True if algorithm has converged or stop criterium reached.
+//  <li> <src>bool solve();</src>  Perform solution of AX=B.
+//       Returns true if algorithm has converged or stop criterium reached.
 // </ol>
 // </synopsis>
 //

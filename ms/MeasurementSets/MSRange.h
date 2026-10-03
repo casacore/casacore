@@ -136,8 +136,8 @@ class MSRange {
   // Items with varying array shape will not be returned by this function (i.e.
   //  you may need to preselect the MS passed to MSRange).
   // See the enum description in MSSelector for the list of supported items.
-  // Use the data flags if useFlags is True.
-  // Correct for one-based indexing if oneBased is True.
+  // Use the data flags if useFlags is true.
+  // Correct for one-based indexing if oneBased is true.
   Record range(const Vector<String>& items, bool useFlags = true, bool OneBased = false);
 
   // Same as previous function, with Vector of MSS::Field keys instead
@@ -158,7 +158,7 @@ class MSRange {
   bool checkShapes();
 
   // get the range of a ScalarColumn<Int>, correct for 1-based
-  // indexing if oneBased is True, and add to out record.
+  // indexing if oneBased is true, and add to out record.
   void scalarRange(Record& out, const String& item, const ScalarColumn<Int>& id, bool oneBased);
 
   // get the range of a ScalarColumn<Int>

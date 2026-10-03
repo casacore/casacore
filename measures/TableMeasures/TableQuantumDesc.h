@@ -305,7 +305,7 @@ class TableQuantumDesc {
   // unit constructor was used or because the units are variable.
   const Vector<String>& getUnits() const { return itsUnitsName; }
 
-  // Returns True if descriptor set for variable units (one per row)
+  // Returns true if descriptor set for variable units (one per row)
   bool isUnitVariable() const { return (!itsUnitsColName.empty()); }
 
   // Returns the name of the quantum column.

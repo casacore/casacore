@@ -662,7 +662,7 @@ void ImageProxy::doPutMask(ImageInterface<T>& image, const ValueHolder& value, c
   if (!image.hasPixelMask()) {
     // No mask yet.
     // Do not put if the entire mask is true. This might reflect a get
-    // where all True-s are filled in if there is no mask.
+    // where all true-s are filled in if there is no mask.
     if (anyEQ(maskArr, false)) {
       // Create a mask and make it the default mask.
       image.makeMask("mask0", true, true);

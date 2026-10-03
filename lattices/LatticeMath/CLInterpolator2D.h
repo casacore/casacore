@@ -125,7 +125,7 @@ class CLInterpolator2D {
   uInt itsAxis1;
   uInt itsAxis2;
   uInt itsCurveAxis;
-  bool itsIsRef;  // True = lattice returns array reference
+  bool itsIsRef;  // true = lattice returns array reference
 };
 
 }  // namespace casacore

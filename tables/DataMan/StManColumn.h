@@ -93,7 +93,7 @@ class StManColumn : public StManColumnBase {
   virtual void setShapeTiled(uInt rownr, const IPosition& shape, const IPosition& tileShape);
 
   // Is the value shape defined in the given row?
-  // By default it returns True.
+  // By default it returns true.
   virtual bool isShapeDefined(rownr_t rownr);
   virtual bool isShapeDefined(uInt rownr);
 

@@ -61,7 +61,7 @@ class MArray;
 // <group name="Array basic functions">
 
 // Define STL-like accumulate function operating on arrays with masks.
-// A mask value True means masked-off, thus is not taken into account.
+// A mask value true means masked-off, thus is not taken into account.
 // <group>
 // <br>The first function initializes the accumulator to the first
 // unmasked value. This is useful if it is not possible to initialize
@@ -173,7 +173,7 @@ inline bool compareAllRightMasked(InputIterator1 first1, InputIterator1 last1, T
 
 // Define a function to compare the unmasked elements of two sequences.
 // It returns true if any element compares true.
-// If there are no unmasked elements, it returns False.
+// If there are no unmasked elements, it returns false.
 // An example compare operator is <src>std::equal_to</src>.
 // <group>
 template <typename InputIterator1, typename InputIterator2, typename MaskIterator,

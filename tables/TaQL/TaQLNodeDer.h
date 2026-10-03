@@ -115,7 +115,7 @@ class TaQLRegexNodeRep : public TaQLNodeRep {
 
   String itsValue;
   bool itsCaseInsensitive;
-  bool itsNegate;  // # True means !~
+  bool itsNegate;  // # true means !~
   // # The following members are only used for distance.
   bool itsIgnoreBlanks;
   Int itsMaxDistance;

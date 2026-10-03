@@ -93,7 +93,7 @@ int main()
       // Check the mask functions using the iterator.
       testVectorROIter(mask, true, true);
       ///      testArrayRWIter (mask);
-      ///      testVectorROIter (mask, False, True);
+      ///      testVectorROIter (mask, false, true);
       TableRecord rec = mask.toRecord("");
       LCRegion* copmask = LCRegion::fromRecord(rec, "");
       AlwaysAssertExit(!copmask->isWritable());
@@ -108,7 +108,7 @@ int main()
       ///      AlwaysAssertExit (trmask->shape() == latticeShape);
       ///      AlwaysAssertExit (trmask->boundingBox().start()
       ///                        == IPosition(4,2,0,0,0));
-      ///      testVectorROIter (*trmask, False, True);
+      ///      testVectorROIter (*trmask, false, true);
       delete copmask;
       ///      delete trmask;
     }

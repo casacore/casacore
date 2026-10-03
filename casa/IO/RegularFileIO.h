@@ -65,11 +65,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&regio);
 //    // Write values.
 //    stream << (Int)10;
-//    stream << True;
+//    stream << true;
 //    // Seek to beginning of file and read data in.
 //    stream.setpos (0);
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>

@@ -298,9 +298,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // addition or comparing) by the following two member functions, which will
 // return a Bool value or raise an exception:
 // <ul>
-//   <li> <src>Bool isConform(Unit)</src>
-//   <li> <src>Bool isConform(Quantum<any>)</src>
-//   <li> <src>Bool check(UnitVal)</src>
+//   <li> <src>bool isConform(Unit)</src>
+//   <li> <src>bool isConform(Quantum<any>)</src>
+//   <li> <src>bool check(UnitVal)</src>
 //   <li> <src> void assure(UnitVal)</src>
 // </ul>
 //

@@ -136,12 +136,12 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
   // If not needed, it is possible to use assignment because for smaller arrays
   // it is faster than memcpy.
   // Not done yet; might be in future.
-  ///  Bool mustConvert = dataColumn->isConversionNeeded();
+  ///  bool mustConvert = dataColumn->isConversionNeeded();
   ///  if (!mustConvert) {
   ///    if (tileOffset % sizeof(int) != 0
   ///    ||  tileSize_p % sizeof(int) != 0
   ///    ||  localPixelSize % sizeof(int) != 0) {
-  ///      mustConvert = True;
+  ///      mustConvert = true;
   ///    }
   ///  }
   // A Bool column is stored as bits and has to be treated differently.

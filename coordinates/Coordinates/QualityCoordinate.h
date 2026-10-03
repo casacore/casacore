@@ -98,8 +98,8 @@ class QualityCoordinate : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel to a world coordinate or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel to a world coordinate or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // <src>errorMessage</src> returns an error message.
   // The output vectors are appropriately resized before use.
   // The Bool parameter in toWorld() is ignored as this coordinate does not
@@ -110,7 +110,7 @@ class QualityCoordinate : public Coordinate {
   // </group>
 
   // Interconvert between pixel and world as a Quality type.
-  // It returns False if no conversion could be done.
+  // It returns false if no conversion could be done.
   // <group>
   bool toPixel(Int &pixel, Quality::QualityTypes quality) const;
   bool toWorld(Quality::QualityTypes &quality, Int pixel) const;
@@ -153,7 +153,7 @@ class QualityCoordinate : public Coordinate {
   // </group>
 
   // Set the value of the requested attribute.  For the QualityCoordinate,
-  // these have no effect (always return True) except for setWorldAxisNames.
+  // these have no effect (always return true) except for setWorldAxisNames.
   // <group>
   virtual bool setWorldAxisNames(const Vector<String> &names);
   virtual bool setReferencePixel(const Vector<Double> &refPix);
@@ -163,7 +163,7 @@ class QualityCoordinate : public Coordinate {
   // </group>
 
   // The set function has no effect as the units must be empty for a QualityCoordinate
-  // Always returns True
+  // Always returns true
   // <group>
   virtual bool setWorldAxisUnits(const Vector<String> &units);
   virtual Vector<String> worldAxisUnits() const;
@@ -173,7 +173,7 @@ class QualityCoordinate : public Coordinate {
   // for  a lattice of the given shape (for this coordinate).
   // The implementation here gives world coordinates at the start
   // and end of the Quality axis.
-  // The output vectors are resized.  Returns False if fails (and
+  // The output vectors are resized.  Returns false if fails (and
   // then <src>setDefaultWorldMixRanges</src> generates the ranges)
   // with a reason in <src>errorMessage()</src>.
   // The <src>setDefaultWorldMixRanges</src> function
@@ -199,7 +199,7 @@ class QualityCoordinate : public Coordinate {
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False,  method
+  // axes in the Coordinate.  If the comparison returns false,  method
   // errorMessage returns a message about why.
   // <group>
   virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
@@ -208,7 +208,7 @@ class QualityCoordinate : public Coordinate {
   // </group>
 
   // Save the QualityCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
+  // The field must not exist, otherwise <src>false</src> is returned.
   virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Recover the QualityCoordinate from a record.

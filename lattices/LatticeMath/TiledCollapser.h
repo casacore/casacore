@@ -103,8 +103,8 @@ class TiledCollapser {
   // Can the process function in the derived class handle a null mask pointer?
   // If not, LatticeApply ensures that it'll always pass a mask block,
   // even if the lattice does not have a mask (in that case that mask block
-  // contains all True values).
-  // <br>The default implementation returns False.
+  // contains all true values).
+  // <br>The default implementation returns false.
   // <br>The function is there to make optimization possible when no masks
   // are involved. On the other side, it allows the casual user to ignore
   // optimization.
@@ -126,8 +126,8 @@ class TiledCollapser {
   // with an increment of <src>inDataIncr</src> elements).
   // <src>inMask</src> is a Bool block representing a mask with the
   // same nr of values and increment as the input data. If a mask
-  // value is False, the corresponding input value is masked off.
-  // <br>When function <src>canHandleNullMask</src> returned True,
+  // value is false, the corresponding input value is masked off.
+  // <br>When function <src>canHandleNullMask</src> returned true,
   // it is possible that <src>inMask</src> is a null pointer indicating
   // that the input has no mask, thus all values are valid.
   // <br>

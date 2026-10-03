@@ -1240,12 +1240,12 @@ void FITSIDItoMS1::getAxisInfo() {
     Int nAxis = 0;
     uInt imaxis = 0;
     uInt idx = 0;
-    //    Bool setMAXIS = False;
+    //    bool setMAXIS = false;
     const FitsKeyword* kw;
     String kwname;
     kwl.first();
 
-    // while((kw = kwl.next())&& setMAXIS == False)
+    // while((kw = kwl.next())&& setMAXIS == false)
     while ((kw = kwl.next())) {
       kwname = kw->name();
       // cout << "kwname1=" << kwname <<endl;
@@ -1254,7 +1254,7 @@ void FITSIDItoMS1::getAxisInfo() {
       if (kwname == "MAXIS") {
         nAxis = kw->asInt();
         // cout << "nAxis=" << nAxis << endl;;
-        //	setMAXIS = True;
+        //	setMAXIS = true;
       }
     }
     if (nAxis < 1) {
@@ -1889,7 +1889,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   lastSpW = -1;
   Int putrow = -1;
   //  Double lastTime=0;
-  //  Bool lastRowFlag=False;
+  //  bool lastRowFlag=false;
   Int nScan = 0;
 
   if (firstMain) {
@@ -2495,7 +2495,7 @@ void FITSIDItoMS1::fillAntennaTable() {
 
   // All "VLBI" (==arrayXYZ<1000) requires y-axis reflection:
   //  (ATCA looks like "VLBI" in UVFITS, but is already correct)
-  // Bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));
+  // bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));
 
   // continue definition of antenna number to antenna id mapping
   for (Int inRow = 0; inRow < nAnt; inRow++) {

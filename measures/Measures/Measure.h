@@ -286,7 +286,7 @@ class Measure {
   virtual void set(const MeasValue &dt) = 0;
   virtual bool putValue(const Vector<Quantum<Double>> &in) = 0;
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
+  // Set the offset in the reference (false if non-matching Measure)
   virtual bool setOffset(const Measure &in) = 0;
   //
   // Check the type of derived Measure entity (e.g. "Epoch")
@@ -323,18 +323,18 @@ class Measure {
   virtual bool isModel() const;
   //
   // Each derived class should have a string-to-code translation routine
-  // for the reference type. The routine returns False if unknown String (and
+  // for the reference type. The routine returns false if unknown String (and
   // a default mr), else an appropiate mr reference.
   // <srcblock>
-  //	Bool giveMe(Measure::Ref &mr, const String &in);
-  //	static Bool getType(Measure::Types &tp, const String &in);
+  //	bool giveMe(Measure::Ref &mr, const String &in);
+  //	static bool getType(Measure::Types &tp, const String &in);
   // </srcblock>
   // <group>
   // Dummy for cxx2html
   void dummy_giveMe() const {}
   // </group>
   //
-  // Set the reference type to the specified String. False if illegal
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
   virtual bool setRefString(const String &in) = 0;
   // Get the default reference type

@@ -1018,10 +1018,10 @@ bool LatticeHistograms<T>::setInclude(Vector<T>& range, bool& noInclude, const V
 //             no include range
 //   os        Output stream for reporting
 // Outputs:
-//   noInclude If True user did not give an include range
+//   noInclude If true user did not give an include range
 //   range     A pixel value selection range.  Will be resized to
-//             zero length if both noInclude and noExclude are True
-//   Bool      True if successfull, will fail if user tries to give too
+//             zero length if both noInclude and noExclude are true
+//   Bool      true if successfull, will fail if user tries to give too
 //             many values for includeB or excludeB, or tries to give
 //             values for both
 {

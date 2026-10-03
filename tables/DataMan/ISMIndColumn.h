@@ -82,7 +82,7 @@ class AipsIO;
 // file, so for each row an array is present.
 // On the other hand adding a row does nothing for variable shaped arrays.
 // So when no data is put or shape is set, a row may contain no array at all.
-// In that case the function <src>isShapeDefined</src> returns False for
+// In that case the function <src>isShapeDefined</src> returns false for
 // that row.
 // </synopsis>
 
@@ -179,7 +179,7 @@ class ISMIndColumn : public ISMColumn {
 
   // Compare the values to check if a value to be put matches the
   // value in the previous or next row.
-  // It always return False, because comparing large arrays is
+  // It always return false, because comparing large arrays is
   // too expensive (it could be changed in the future).
   virtual bool compareValue(const void* val1, const void* val2) const;
 

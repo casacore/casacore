@@ -78,10 +78,10 @@
 //
 //             The default is to exclude no data.
 //
-//    list     Only active if making a plot.  If True, write the statistics to the
+//    list     Only active if making a plot.  If true, write the statistics to the
 //             standard output.
 //
-//             Default is True.
+//             Default is true.
 //
 //    plotter  The PGPLOT device.
 //

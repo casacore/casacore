@@ -109,7 +109,7 @@ class ColumnDescSet {
   // It is equal if the number of columns is equal and all field names in
   // this set occur in the other too. The order of the columns
   // is not important.
-  // <br>The flag equalDataTypes is set to True if the data types
+  // <br>The flag equalDataTypes is set to true if the data types
   // of all columns match.
   bool isEqual(const ColumnDescSet& other, bool& equalDataTypes) const;
 
@@ -164,7 +164,7 @@ class ColumnDescSet {
   void rename(const String& newname, const String& oldname);
 
   // Test if all columns are part of the other set.
-  // The flag equalDataTypes is set to True if the data types of the
+  // The flag equalDataTypes is set to true if the data types of the
   // columns in both sets are the same.
   bool allExist(const ColumnDescSet&, bool& equalDataTypes) const;
 

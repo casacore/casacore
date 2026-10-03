@@ -55,11 +55,11 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
   // is smaller than
   // <src>binningThreshholdSizeBytes</src>, the composite dataset
   // will be (perhaps partially) sorted and persisted in memory during the
-  // call. In that case, and if <src>persistSortedArray</src> is True, this
+  // call. In that case, and if <src>persistSortedArray</src> is true, this
   // sorted array will remain in memory after the call and will be used on
   // subsequent calls of this method when
   // <src>binningThreshholdSizeBytes</src> is greater than the size of the
-  // composite dataset. If <src>persistSortedArray</src> is False, the sorted
+  // composite dataset. If <src>persistSortedArray</src> is false, the sorted
   // array will not be stored after this call completes and so any subsequent
   // calls for which the dataset size is less than
   // <src>binningThreshholdSizeBytes</src>, the dataset will be sorted from
@@ -77,12 +77,12 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
   // hurt anything). If provided, npts, the number of points falling in the
   // specified ranges which are not masked and have weights > 0, should be
   // exactly correct. <src>min</src> can be less than the true minimum, and
-  // <src>max</src> can be greater than the True maximum, but for best
+  // <src>max</src> can be greater than the true maximum, but for best
   // performance, these should be as close to the actual min and max as
   // possible. In order for quantile computations to occur over multiple
   // datasets, all datasets must be available. This means that if
   // setCalculateAsAdded() was previously called by passing in a value of
-  // True, these methods will throw an exception as the previous call
+  // true, these methods will throw an exception as the previous call
   // indicates that there is no guarantee that all datasets will be available.
   // If one uses a data provider (by having called setDataProvider()), then
   // this should not be an issue.
@@ -135,7 +135,7 @@ class ConstrainedRangeStatistics : public ClassicalStatistics<CASA_STATP> {
 
   // scan the dataset(s) that have been added, and find the number of good
   // points. This method may be called even if setStatsToCaclulate has been
-  // called and NPTS has been excluded. If setCalculateAsAdded(True) has
+  // called and NPTS has been excluded. If setCalculateAsAdded(true) has
   // previously been called after this object has been (re)initialized, an
   // exception will be thrown.
   virtual uInt64 getNPts();

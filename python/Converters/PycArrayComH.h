@@ -35,7 +35,7 @@ void loadAPI();
 // </group>
 
 // Convert the python array to a Casacore array in the ValueHolder.
-// If copyData is True, the array data is always copied.
+// If copyData is true, the array data is always copied.
 // Otherwise only if needed.
 ValueHolder makeArray(PyObject* obj_ptr, bool copyData);
 

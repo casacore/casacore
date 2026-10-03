@@ -110,9 +110,9 @@ class String;
 //    ...
 //    // set up column and TableMeasDesc as before
 //    ...
-//    // Setting the asArray parameter to True in the constructor specifies
+//    // Setting the asArray parameter to true in the constructor specifies
 //    // per element offset storage
-//    TableMeasOffsetDesc offsetDesc(offset, True);
+//    TableMeasOffsetDesc offsetDesc(offset, true);
 // </srcblock>
 // </ol>
 //
@@ -145,7 +145,7 @@ class TableMeasOffsetDesc {
   // measures in the columns will have the same offset.
   TableMeasOffsetDesc(const Measure& offset);
 
-  // Constructor for defining a variable offset.  If asArray is True then
+  // Constructor for defining a variable offset.  If asArray is true then
   // the offset is stored per array element.  The default is for the
   // offset to be stored (and hence variable) per row.
   TableMeasOffsetDesc(const TableMeasDescBase& offsetColumn, bool asArray = false);
@@ -166,10 +166,10 @@ class TableMeasOffsetDesc {
   // exist (thus if the offset is variable), an exception is thrown.
   const Measure& getOffset() const;
 
-  // Returns True if the offset varies per row.
+  // Returns true if the offset varies per row.
   bool isVariable() const { return (itsTMDesc != 0); }
 
-  // Returns True if the offset varies per array element.
+  // Returns true if the offset varies per array element.
   bool isArray() const { return (isVariable() && itsVarPerArr); }
 
   // Gets the name of the column which stores the variable offset.

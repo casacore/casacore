@@ -299,14 +299,14 @@ bool isScalarFun(DataType type);  //{return isScalar(type);}
 // </group>
 
 // It is sometimes useful to discover if a DataType represents a real
-// numeric value (i.e., can it be cast to a Double?) This returns True
+// numeric value (i.e., can it be cast to a Double?) This returns true
 // for both real scalar and array type.
 bool isReal(DataType type);
 
-// Returns True for Complex or DComplex scalar or array types
+// Returns true for Complex or DComplex scalar or array types
 bool isComplex(DataType type);
 
-// Returns True if the type is either Real or Complex/DComplex
+// Returns true if the type is either Real or Complex/DComplex
 bool isNumeric(DataType type);
 
 // </group>

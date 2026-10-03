@@ -76,7 +76,7 @@ class TableDesc;
 class FITSTabular {
  public:
   virtual ~FITSTabular();
-  // isValid() returns False if this object isn't a valid Tabular data
+  // isValid() returns false if this object isn't a valid Tabular data
   // structure.
   virtual bool isValid() const = 0;
   // Returns keywords which are associated with the underlying FITS files.
@@ -103,30 +103,30 @@ class FITSTabular {
   // any TNULL values will be assigned a value of NaN.
   virtual const Record &nulls() const = 0;
 
-  // Returns True if we have advanced past the end of data.
+  // Returns true if we have advanced past the end of data.
   virtual bool pastEnd() const = 0;
 
-  // Advance the row if possible (guaranteed harmless if pastEnd() is True.
+  // Advance the row if possible (guaranteed harmless if pastEnd() is true.
   virtual void next() = 0;
 
-  // Reopen the table, default behavior is to do nothing, return False
+  // Reopen the table, default behavior is to do nothing, return false
   virtual bool reopen(const String &) { return false; }
 
   // return the name
   virtual const String &name() const = 0;
 
-  // Has the description changed since construction, default is False
+  // Has the description changed since construction, default is false
   virtual bool hasChanged() const { return false; }
   // reset the changed flag, default do nothing
   virtual void resetChangedFlag() { ; }
 
   // Return the currentRow. This is guaranteed to be valid so long as only
   // member functions of this base class are called (so you can safely attach
-  // RecordFieldPtr objects to it. The result is undefined if pastEnd() is True.
+  // RecordFieldPtr objects to it. The result is undefined if pastEnd() is true.
   virtual const Record &currentRow() const = 0;
 
   // Helper function for retrieving keywords from a native-FITS hdu.
-  // If allKeywords is not True, some keywords will be excluded
+  // If allKeywords is not true, some keywords will be excluded
   // from the list.  Currently the list of excluded keywords
   // includes TTYPEnnn, TFORMnnn, and TUNITnnn
   static TableRecord keywordsFromHDU(HeaderDataUnit &hdu, bool allKeywords = false);
@@ -193,7 +193,7 @@ class FITSTabular {
 
 class FITSTable : public FITSTabular {
  public:
-  // this creates an invalid (isValid() return False) FITSTable
+  // this creates an invalid (isValid() return false) FITSTable
   // Its primary purpose is so that FITSTables can be created before
   // the file name is known.  reopen() is then used to open the file.
   FITSTable(uInt whichHDU = 1, bool allKeywords = false);
@@ -201,7 +201,7 @@ class FITSTable : public FITSTabular {
   // 0-relative HDU. It can never be zero by the FITS rules.
   // allKeywords is passed to FITSTabular::keywordsFromHDU
   // See the documentation for that function for a list of
-  // excluded keywords when allKeywords is False.
+  // excluded keywords when allKeywords is false.
   FITSTable(const String &fileName, uInt whichHDU = 1, bool allKeywords = false);
   ~FITSTable() { clear_self(); }
 
@@ -251,7 +251,7 @@ class FITSTable : public FITSTabular {
   // direct access to those data members at the public level.
   // The named keywords and values are appended to the end of
   // row_p and removed from keywords_p, description_p is modified
-  // appropriately.  The returned value is False if any named
+  // appropriately.  The returned value is false if any named
   // keyword did not appear in keywords_p (however, all named
   // keywords that DO appear in keywords_p will have been correctly
   // moved).
@@ -351,7 +351,7 @@ class FITSTableWriter {
   // The size of the table (nrows) must be given at creation.  Use extraKeywords to
   // indicate any keywords not automatically created.  The units record is used to
   // indicate the units for any column.  Provide a string field with the same name as
-  // the column field in description.  If freeOutput is True, file must come from new
+  // the column field in description.  If freeOutput is true, file must come from new
   // since it will be deleted upon destruction.  You might not want this to happen if
   // you are going to write many tables to the same fits file.  Use variableShapes to
   // signal which array columns have variable shape and use maxLengths to indicate
@@ -435,7 +435,7 @@ class FITSGroupWriter {
   // with a FitsOutput.  description indicates the names of the random groups parameters.
   // nrows is a synonym for ngroups.  Use extraKeywords to
   // indicate any keywords not automatically created (SIMPLE, BITPIX, NAXIS*, EXTEND,
-  // BLOCKED, GROUPS, PCOUNT, GOUNT, ORIGIN, END). If freeOutput is True, file will be
+  // BLOCKED, GROUPS, PCOUNT, GOUNT, ORIGIN, END). If freeOutput is true, file will be
   // deleted by the destructor.  You might not want this to happen if
   // you are going to write any extensions to the same fits file.  You can get the
   // FitsOutput used here from write()

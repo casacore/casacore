@@ -116,7 +116,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
     feedId_p = -1;
     Vector<rownr_t> foundRows = index_p->getRowNumbers();
     uInt whichOne = 0;
-    // this is True if the row has probably come from a MS AND FEED1 == FEED2
+    // this is true if the row has probably come from a MS AND FEED1 == FEED2
     // When true, fill will try and reuse the same feed number if possible
     bool doMSCheck =
         feed1Field_p.isAttached() && feed2Field_p.isAttached() && *feed1Field_p == *feed2Field_p;

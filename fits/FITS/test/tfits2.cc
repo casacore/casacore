@@ -60,7 +60,7 @@ int main() {
   st.mk(1, FITS::NAXIS, row);
   st.mk(2, FITS::NAXIS, col);
   st.mk(FITS::EXTEND, true, "Extension exists");
-  // st.mk(FITS::EXTEND,False,"Extension exists");
+  // st.mk(FITS::EXTEND,false,"Extension exists");
   st.spaces();
   st.comment("This is test 2.");
   st.spaces();

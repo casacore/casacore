@@ -304,9 +304,9 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   static bool getType(MDirection::Types &tp, const String &in);
   bool giveMe(MDirection::Ref &mr, const String &in);
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
+  // Set the offset in the reference (false if non-matching Measure)
   virtual bool setOffset(const Measure &in);
-  // Set the reference type to the specified String. False if illegal
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
   virtual bool setRefString(const String &in);
   // Get the default reference type
@@ -339,7 +339,7 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   Quantum<Vector<Double>> getAngle(const Unit &inunit) const;
   // </group>
   // Shift the direction in longitude (radians if Double) and/or latitude.
-  // If the trueAngle switch is True, the longitude shift will be in
+  // If the trueAngle switch is true, the longitude shift will be in
   // angular units perpendicular to the direction to pole, along a great
   // circle. See <linkto class=MVDirection>MVDirection</linkto>
   // for more details.

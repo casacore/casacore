@@ -187,7 +187,7 @@ class TableExprGroupFuncBase {
   TableExprGroupFuncBase(const TableExprGroupFuncBase&) = delete;
   TableExprGroupFuncBase& operator=(const TableExprGroupFuncBase&) = delete;
   // Does the aggregate function use lazy semantics?
-  // The default implementation returns False.
+  // The default implementation returns false.
   virtual bool isLazy() const;
   // Get the function's sequence nr.
   uInt seqnr() const { return itsSeqnr; }

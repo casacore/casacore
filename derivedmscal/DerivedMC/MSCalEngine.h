@@ -205,7 +205,7 @@ class MSCalEngine {
   vector<vector<MPosition>> itsAntPos;       // # ITRF antenna positions
   vector<vector<Int>> itsMount;              // # 1=alt-az  0=else
   vector<vector<MDirection>> itsFieldDir;    // # J2000 field directions
-  bool itsReadFieldDir;                      // # False: explicit directions
+  bool itsReadFieldDir;                      // # false: explicit directions
   String itsDirColName;                      // # FIELD DIR column to read
   vector<vector<MBaseline>> itsAntMB;        // # J2000 MBaseline per antenna
   vector<vector<Vector<double>>> itsAntUvw;  // # J2000 UVW per antenna

@@ -53,7 +53,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <example>
 // NewFile validFile;
 // String newFileName("bigone"), error;
-// Bool ok = validFile.valueOK(newFileName, error);
+// bool ok = validFile.valueOK(newFileName, error);
 // if (!ok) {
 //    cout << error << endl;
 // }
@@ -83,7 +83,7 @@ class NewFile {
   ~NewFile();
 
   // Indicates whether the specified string is a valid new file,
-  // invoking the choice GUI.  If it returns False, an error
+  // invoking the choice GUI.  If it returns false, an error
   // message is returned.
   bool valueOK(const String &value, String &error) const;
 

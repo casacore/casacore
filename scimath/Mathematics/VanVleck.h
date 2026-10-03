@@ -111,7 +111,7 @@ class VanVleck {
   // Set the x and y quantization levels for the case
   // of equi-spaced levels with a possible non-zero
   // offset.  The total number of levels is given by n,
-  // which must be 3 or 9.  If n is not 3 or 9, False
+  // which must be 3 or 9.  If n is not 3 or 9, false
   // will be returned and no quantization will have been
   // set.  For the 3- and 9- level cases a bivarate normal
   // integral calculation will be used.  That is much faster

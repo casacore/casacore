@@ -151,7 +151,7 @@ class TableColumn {
   bool isNull() const { return (baseColPtr_p == 0 ? true : false); }
 
   // Throw an exception if the object is null, i.e.
-  // if function isNull() is True.
+  // if function isNull() is true.
   void throwIfNull() const;
 
   // Test if the column can be written to, thus if the column and

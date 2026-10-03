@@ -49,7 +49,7 @@ class String;  // Forward declarations
 // FITS.h and fits.h.
 //</motivation>
 //<synopsis>
-// Read FITS from a file into a Casacore Array. Sets "ok" to False if there
+// Read FITS from a file into a Casacore Array. Sets "ok" to false if there
 // is any problem. We only deal with data in the primary data array.
 // If ReadFITS fails, the state of array is undefined. Trailing
 // degenerate (length==1) axes are NOT removed. If desired, you may do
@@ -95,7 +95,7 @@ Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, Stri
 // <here>WriteFITS</here> Casacore interface routines.
 //</linkfrom>
 //<synopsis>
-// Write a FITS file from a Casacore Array. Returns False if there is any
+// Write a FITS file from a Casacore Array. Returns false if there is any
 // proglem. The data is written into the primary data array, and the data
 // is written in floating point (BITPIX=-32). If the operation fails,
 // ErrorMessage will contain an informative error. At the moment this

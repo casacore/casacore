@@ -65,7 +65,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   bool atEnd() const;
 
   // Take any actions necessary to finalize the provider. This will be called when
-  // atEnd() returns True.
+  // atEnd() returns true.
   void finalize();
 
   // get the count of elements in the current data set. When implementing this method, be
@@ -76,7 +76,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // get the current data set
   const T* getData();
 
-  // Get the associated mask of the current dataset. Only called if hasMask() returns True;
+  // Get the associated mask of the current dataset. Only called if hasMask() returns true;
   const bool* getMask();
 
   // returns something reasonable based on the lattice size.

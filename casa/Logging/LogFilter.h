@@ -97,7 +97,7 @@ class LogFilter : public LogFilterInterface {
   // Clone the object.
   virtual LogFilter* clone() const;
 
-  // Return True if <src>message</src> passes this filter.
+  // Return true if <src>message</src> passes this filter.
   virtual bool pass(const LogMessage& message) const;
 
   // Return the lowest priority which will pass this filter.

@@ -235,7 +235,7 @@ class MSIter {
   // Reset iterator to start of data
   virtual void origin();
 
-  // Return False if there is no more data
+  // Return false if there is no more data
   virtual bool more() const;
 
   // Advance iterator through data
@@ -273,7 +273,7 @@ class MSIter {
   // Return the ArrayId of the first element in this iteration
   Int arrayId() const;
 
-  // Return True if ArrayId has changed since last iteration
+  // Return true if ArrayId has changed since last iteration
   // Note that if MS_ARRAY is not part of the sorting columns this
   // will always be true.
   bool newArray() const;
@@ -281,7 +281,7 @@ class MSIter {
   // Return the FieldId of the first element in this iteration
   Int fieldId() const;
 
-  // Return True if FieldId/Source has changed since last iteration
+  // Return true if FieldId/Source has changed since last iteration
   // Note that if MS_FIELD_ID is not part of the sorting columns this
   // will always be true.
   bool newField() const;
@@ -289,7 +289,7 @@ class MSIter {
   // Return SpectralWindow of the first element in this iteration
   Int spectralWindowId() const;
 
-  // Return True if SpectralWindow has changed since last iteration
+  // Return true if SpectralWindow has changed since last iteration
   // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
   // will always be true.
   bool newSpectralWindow() const;
@@ -297,7 +297,7 @@ class MSIter {
   // Return DataDescriptionId of the first element in this iteration
   Int dataDescriptionId() const;
 
-  // Return True if DataDescriptionId has changed since last iteration
+  // Return true if DataDescriptionId has changed since last iteration
   // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
   // will always be true.
   bool newDataDescriptionId() const;
@@ -305,7 +305,7 @@ class MSIter {
   // Return PolarizationId of the first element in this iteration
   Int polarizationId() const;
 
-  // Return True if polarization has changed since last iteration
+  // Return true if polarization has changed since last iteration
   // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
   // will always be true.
   bool newPolarizationId() const;
@@ -360,7 +360,7 @@ class MSIter {
   // in the feed table). The cube axes are receptor, antenna, feed.
   const Cube<RigidVector<Double, 2>>& getBeamOffsets() const;
 
-  // True if all elements of the cube returned by getBeamOffsets are zero
+  // true if all elements of the cube returned by getBeamOffsets are zero
   bool allBeamOffsetsZero() const;
 
   // Get the spw, start  and nchan for all the ms's is this msiter that
@@ -481,7 +481,7 @@ class MSIter {
                                                        // each element of the cube in radians)
                                                        // in the antenna coordinate system.
                                                        // Cube axes are: receptor, antenna, feed.
-  mutable bool allBeamOffsetsZero_p;                   // True if all elements of beamOffsets_p
+  mutable bool allBeamOffsetsZero_p;                   // true if all elements of beamOffsets_p
                                                        // are zero (to speed things up in a
                                                        // single beam case)
   mutable PolFrame polFrame_p;                         // polarization Frame. It is lazily cached,

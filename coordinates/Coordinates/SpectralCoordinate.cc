@@ -684,7 +684,7 @@ bool SpectralCoordinate::setNativeType(const SpectralCoordinate::SpecType spcTyp
   return true;
 }
 
-// static Bool stringtoSpecType(SpecType &specType, const String &stypeString) const;
+// static bool stringtoSpecType(SpecType &specType, const String &stypeString) const;
 // String SpectralCoordinate::specTypetoString(SpecType specType)
 bool SpectralCoordinate::specTypetoString(String& stypeString, const SpecType& specType) {
   bool rvalue = true;
@@ -715,7 +715,7 @@ bool SpectralCoordinate::specTypetoString(String& stypeString, const SpecType& s
   return rvalue;
 }
 
-// static Bool stringtoSpecType(SpecType &specType, const String &stypeString) const;
+// static bool stringtoSpecType(SpecType &specType, const String &stypeString) const;
 // SpectralCoordinate::SpecType SpectralCoordinate::stringtoSpecType(String stypeString)
 bool SpectralCoordinate::stringtoSpecType(SpecType& specType, const String& stypeString) {
   if (!stypeString.compare("frequency")) {

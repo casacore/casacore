@@ -149,7 +149,7 @@ class Quantum;
 // We can actually perform a transformation like this as follows. If
 // it succeeds we print the value of the world coordinate.
 // <srcblock>
-//    Bool ok = radec.toWorld(world, pixel);                        // 13
+//    bool ok = radec.toWorld(world, pixel);                        // 13
 //    if (!ok) {                                                    // 14
 //      cout << "Error: " << radec.errorMessage() << endl;          // 15
 //      return 1;                                                   // 16
@@ -304,8 +304,8 @@ class DirectionCoordinate : public Coordinate {
   void getReferenceConversion(MDirection::Types& type) const { type = conversionType_p; };
   // </group>
 
-  // Convert a pixel position to a world position or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel position to a world position or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // errorMessage returns its error message.
   // The output vectors are appropriately resized.
   // if <src>useConversionFrame</src>, if the coordinate has a conversion
@@ -324,9 +324,9 @@ class DirectionCoordinate : public Coordinate {
   // <src>worldIn</src> and <src>worldAxes</src> are of length
   // nWorldAxes.
   // <src>pixelIn</src> and <src>pixelAxes</src> are of length nPixelAxes.
-  // <src>worldAxes(i)=True</src> specifies you have given a world
+  // <src>worldAxes(i)=true</src> specifies you have given a world
   // value in <src>worldIn(i)</src> to convert to pixel.
-  // <src>pixelAxes(i)=True</src> specifies you have given a pixel
+  // <src>pixelAxes(i)=true</src> specifies you have given a pixel
   // value in <src>pixelIn(i)</src> to convert to world.
   // You cannot specify the same axis via <src>worldAxes</src>
   // and <src>pixelAxes</src>.
@@ -350,7 +350,7 @@ class DirectionCoordinate : public Coordinate {
   // axis with remaining corresponding world axis will
   // correctly be converted to world using the replacement
   // value).
-  // Returns True if the conversion succeeds, otherwise it returns False and
+  // Returns true if the conversion succeeds, otherwise it returns false and
   // <src>errorMessage()</src> contains an error message. The output vectors
   // are resized.
   //
@@ -374,7 +374,7 @@ class DirectionCoordinate : public Coordinate {
   // for that axis.  The default range is used for that axis.  This situation
   // arises in a CoordinateSystem for which a pixel, but not a world axis
   // has been removed.
-  // The output vectors are resized.  Returns False if fails (and
+  // The output vectors are resized.  Returns false if fails (and
   // then <src>setDefaultWorldMixRanges</src> generates the ranges)
   // with a reason in <src>errorMessage()</src>.
   // The <src>setDefaultWorldMixRanges</src> function
@@ -394,7 +394,7 @@ class DirectionCoordinate : public Coordinate {
   // expected that normally one would just call this once to get a template
   // MDirection, and then call the vector versions.
   // <br>In case of a failure, the versions with a Bool return value will return
-  // False. The other versions will throw an exception.
+  // false. The other versions will throw an exception.
   // <group>
   bool toWorld(MDirection& world, const Vector<Double>& pixel) const;
   bool toPixel(Vector<Double>& pixel, const MDirection& world) const;
@@ -406,10 +406,10 @@ class DirectionCoordinate : public Coordinate {
   //</group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
-  // of the matrices contain the coordinates. Returns False if any conversion
+  // of the matrices contain the coordinates. Returns false if any conversion
   // failed  and  <src>errorMessage()</src> will hold a message.
   // The <src>failures</src> array is the length of the number of conversions
-  // (True for failure, False for success)
+  // (true for failure, false for success)
   // <group>
   virtual bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
                            Vector<bool>& failures) const;
@@ -472,7 +472,7 @@ class DirectionCoordinate : public Coordinate {
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False,  method
+  // axes in the Coordinate.  If the comparison returns false,  method
   // errorMessage returns a message about why.
   // <group>
   virtual bool near(const Coordinate& other, Double tol = 1e-6) const;
@@ -507,7 +507,7 @@ class DirectionCoordinate : public Coordinate {
   //</group>
 
   // Fix cylindrical coordinates to put the longitude in [-180,180] range.
-  // If False returned, it failed an an error is in <src>errorMessage</src>
+  // If false returned, it failed an an error is in <src>errorMessage</src>
   // This fix is not done automatically internally because of the dependence
   // on the image shape.  It should be called for any foreign image
   // (such as FITS) that is imported
@@ -523,7 +523,7 @@ class DirectionCoordinate : public Coordinate {
                                             const Vector<Int>& shape) const;
 
   // Save the DirectionCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
+  // The field must not exist, otherwise <src>false</src> is returned.
   virtual bool save(RecordInterface& container, const String& fieldName) const;
 
   // Recover the DirectionCoordinate from a record.

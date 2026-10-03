@@ -67,8 +67,8 @@ class Regex;
 //		starting at the beginning of the string
 //   <li> testX(arg)  -- all test methods test if the next available
 //		character(s) fulfill the specified argument test. E.g.
-//		<src>Bool testSign()</src> test if current character is + or -.
-//		If at end of string; False is returned, except for
+//		<src>bool testSign()</src> test if current character is + or -.
+//		If at end of string; false is returned, except for
 //		<src>testBlank()</src>. No pointer update. Any method with
 //		<em>NC</em> at the end (for no-case) will test irrespective
 //		of the case.
@@ -82,8 +82,8 @@ class Regex;
 //		Pointer updated. A get will always return a valid result.
 //		However, if the value did not exist (e.g.
 //		<src>Double getDouble()</src> form a string like <src>"abc"</src>
-//		will return 0.0) a False status will be saved. It can be
-//		interrogated by the <src>Bool status()</src> function.
+//		will return 0.0) a false status will be saved. It can be
+//		interrogated by the <src>bool status()</src> function.
 //		The string part used in producing the value is also
 //		saved, and can be obtained with
 //		<src>const String &lastGet()</src>.
@@ -152,21 +152,21 @@ class Regex;
 //  switch (tp) {
 // case 0: {
 //    UnitVal u; String us;
-//    if (!MVAngle::unitString(u,us,tmp)) return False;
+//    if (!MVAngle::unitString(u,us,tmp)) return false;
 //    r *= s;
 //    if (u == UnitVal::NODIM) {	// check correct dimension
 //      res = Quantity(r,"rad");
-//      return True;
+//      return true;
 //    };
 //    if (u == UnitVal::ANGLE) {
 //      res = Quantity(r,us);
-//      return True;
+//      return true;
 //    };
 //    if (u == UnitVal::TIME) {
 //      res = Quantity(Quantity(r/240.,us).getBaseValue(), "deg");
-//      return True;
+//      return true;
 //    };
-//    return False;
+//    return false;
 //  };
 //  break;
 //
@@ -209,7 +209,7 @@ class Regex;
 //    break;
 //
 //  };
-//  return True;
+//  return true;
 // </srcblock>
 // </example>
 //
@@ -274,7 +274,7 @@ class MUString {
   Int getSign();
   // </group>
 
-  // Act on integer field. If no integer found in 0 returned; and False
+  // Act on integer field. If no integer found in 0 returned; and false
   // <group>
   void skipInt();
   bool testInt() const;
@@ -286,7 +286,7 @@ class MUString {
   uInt getuInt();
   // </group>
 
-  // Act on Double field. If no value 0 returned and False.
+  // Act on Double field. If no value 0 returned and false.
   // <group>
   void skipDouble();
   bool testDouble() const;
@@ -339,9 +339,9 @@ class MUString {
   // </group>
 
   // Match a pair of opening(at pointer)/closing characters (e.g. ( and )).
-  // Return False if wrong semantics. The string between the pair
+  // Return false if wrong semantics. The string between the pair
   // (excluding them)
-  // will be put in Last. If false, the ptr will be as originally; if True
+  // will be put in Last. If false, the ptr will be as originally; if true
   // it will point beyond the matched closing character
   bool matchPair(Char nd);
 

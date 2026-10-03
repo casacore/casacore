@@ -117,7 +117,7 @@ const uInt N_FITS = 19;
 // </note>
 //
 // Information about the contents of the unit maps can be obtained by
-// the Bool functions (False if not present):
+// the bool functions (false if not present):
 // <ul>
 //   <li> UnitMap::getPref("string", UnitName &)	prefix
 //   <li> UnitMap::getUnit("string", UnitName &)	search user,
@@ -216,7 +216,7 @@ class UnitMap {
   ~UnitMap();
 
   // # General member functions
-  //  Check if a unit name is known, and return its value if True
+  //  Check if a unit name is known, and return its value if true
   //  <group name="find">
   //  Get a prefix definition from key
   static bool getPref(const String &s, UnitName &name, UMaps *maps = 0);

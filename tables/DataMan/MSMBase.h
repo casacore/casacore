@@ -112,7 +112,7 @@ class MSMBase : public DataManager {
 
  private:
   // Flush and optionally fsync the data.
-  // It does not done anything and always returns a False status.
+  // It does not done anything and always returns a false status.
   virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create the nr of rows needed.

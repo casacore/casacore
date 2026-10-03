@@ -76,7 +76,7 @@ class MSMainColInterface : public MSSelectableMainColumn {
   }
   virtual const ArrayColumn<bool>& flag() { return msCols_p->flag(); }
 
-  //    virtual Bool flagRow(const Int& i) {return allTrue(msCols_p->flag()(i));}
+  //    virtual bool flagRow(const Int& i) {return allTrue(msCols_p->flag()(i));}
   virtual bool flagRow(rownr_t i) { return msCols_p->flagRow()(i); }
   virtual const ScalarQuantColumn<Double>& exposureQuant() { return msCols_p->exposureQuant(); }
   virtual const ScalarQuantColumn<Double>& timeQuant() { return msCols_p->timeQuant(); }

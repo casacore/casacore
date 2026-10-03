@@ -76,7 +76,7 @@ class String;
 //    ByteSource source (&canio);
 //    // Read data.
 //    Int vali;
-//    Bool flag;
+//    bool flag;
 //    source >> vali >> flag;
 // </srcblock>
 // </example>

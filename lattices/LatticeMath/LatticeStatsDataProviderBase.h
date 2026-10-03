@@ -50,10 +50,10 @@ class LatticeStatsDataProviderBase
 
   virtual void finalize();
 
-  // Get the stride for the current mask (only called if hasMask() returns True).
+  // Get the stride for the current mask (only called if hasMask() returns true).
   uInt getMaskStride();
 
-  // Get the associated range(s) of the current dataset. Only called if hasRanges() returns True;
+  // Get the associated range(s) of the current dataset. Only called if hasRanges() returns true;
   std::vector<
       std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType>>
   getRanges();
@@ -67,11 +67,11 @@ class LatticeStatsDataProviderBase
   // Does the current data set have associated range(s)?
   bool hasRanges() const;
 
-  // returns False; lattices do not have associated weights.
+  // returns false; lattices do not have associated weights.
   bool hasWeights() const;
 
-  // If the associated data set has ranges, are these include (return True) or
-  // exclude (return False) ranges?
+  // If the associated data set has ranges, are these include (return true) or
+  // exclude (return false) ranges?
   bool isInclude() const;
 
   // get the positions of the min and max

@@ -125,7 +125,7 @@ bool MeasIERS::get(Double &returnValue, MeasIERS::Files file, MeasIERS::Types ty
   // if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
   //   Double f = date - ldat[which][0][indx];
   //   returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
-  //   return True;
+  //   return true;
   // }
 
   if (indx >= 0 && indx < Int(ldat[which][0].size()) - 1) {

@@ -110,7 +110,7 @@ int main(int argc, const char* argv[]) {
     String itsProj = proj;
     String itsMDir = dirref;
 
-    // Bool changeRefFrame = False;
+    // bool changeRefFrame = false;
     // changeRefFrame = (itsProj != "" || itsMDir != "");
     CoordinateSystem csys(itsImage->coordinates());
     Int dircoordNo = itsImage->coordinates().findCoordinate(Coordinate::DIRECTION, -1);

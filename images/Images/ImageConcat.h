@@ -94,8 +94,8 @@ class MaskedLattice;
 //
 //// Relax coordinate constraints
 //
-//      concat.setImage(im1, True);
-//      concat.setImage(im2, True);
+//      concat.setImage(im1, true);
+//      concat.setImage(im2, true);
 //
 //// Make output image  and mask (if required, which it will be in this case)
 //
@@ -165,9 +165,9 @@ class ImageConcat : public ImageInterface<T> {
   virtual bool isPersistent() const;
 
   // Sets a new image into the list to be concatenated.
-  // If relax is False, throws an exception if the images
+  // If relax is false, throws an exception if the images
   // are not contiguous along the concatenation axis.
-  // If relax is True, it will create a non-regular TabularCoordinate
+  // If relax is true, it will create a non-regular TabularCoordinate
   // for non-contiguous images if the coordinates are monotonic.
   // Otherwise, it just uses the coordinates of the image
   void setImage(ImageInterface<T>& image, bool relax);
@@ -225,7 +225,7 @@ class ImageConcat : public ImageInterface<T> {
   // Get the region used (always returns 0)
   virtual const LatticeRegion* getRegionPtr() const;
 
-  // If all of the underlying lattices are writable returns True
+  // If all of the underlying lattices are writable returns true
   virtual bool isWritable() const;
 
   // Return the shape of the concatenated image
@@ -238,12 +238,12 @@ class ImageConcat : public ImageInterface<T> {
   virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Do the actual get of the data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.  Generally the user should use function getSlice
   virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual get of the mask data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array. Generally the user should use function getMaskSlice
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 

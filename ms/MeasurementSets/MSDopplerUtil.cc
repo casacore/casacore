@@ -56,7 +56,7 @@ bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
   // tracking of the specified spectral window id.
   // Output:
   //    restFrequency    Vector<Double>     List of rest frequencies
-  //    dopplerInfo      Bool               True if Doppler info. found
+  //    dopplerInfo      Bool               true if Doppler info. found
   //
   // Initialization
   restFrequency.resize();
@@ -80,7 +80,7 @@ bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
 
         // When loading g192_a.ms (from regression) into plotxy (probably a
         // wrong thing to do), transId is -1, which causes a segv further down
-        // when transId is used as an index. Returning False here causes things
+        // when transId is used as an index. Returning false here causes things
         // to die with an allocation error later on...
         if (transId < 0) {
           throw(AipsError("MSDopplerUtil::dopplerInfo(): invalid transition id"));

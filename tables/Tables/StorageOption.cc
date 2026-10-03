@@ -57,7 +57,7 @@ void StorageOption::fillOption() {
   if (itsBlockSize <= 0) {
     itsBlockSize = 4 * 1024 * 1024;
   }
-  // Default O_DIRECT support is False.
+  // Default O_DIRECT support is false.
   if (itsUseAipsrcODirect) {
     AipsrcValue<bool>::find(itsUseODirect, "table.storage.odirect", false);
   }

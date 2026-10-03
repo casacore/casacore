@@ -62,11 +62,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&mf1);
 //    // Write values.
 //    stream << (Int)10;
-//    stream << True;
+//    stream << true;
 //    // Seek to beginning of file and read data in.
 //    stream.setpos (0);
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -85,7 +85,7 @@ class MFFileIO : public ByteIO {
   // Read <src>size</src> bytes from the byte stream. Returns the number of
   // bytes actually read, or a negative number if an error occurred. Will also
   // throw an Exception (AipsError) if the requested number of bytes could
-  // not be read unless throwException is set to False.
+  // not be read unless throwException is set to false.
   Int64 read(Int64 size, void* buf, bool throwException = true) override;
 
   // Write a block at the current offset.

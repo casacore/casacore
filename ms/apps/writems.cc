@@ -235,7 +235,7 @@ class MSCreate {
 
   // Write all rows for a single time step.
   // It sets the shape of the data array.
-  // All flags are set to False.
+  // All flags are set to false.
   void writeTimeStep(int ntimeField, bool perRow);
 
   // Write a spectral window row by row.

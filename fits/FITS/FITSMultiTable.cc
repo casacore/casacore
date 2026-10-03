@@ -111,7 +111,7 @@ void FITSMultiTable::next() {
       }
     }
   }
-  // if status is False
+  // if status is false
   // reopen previous successfully opened file
   if (!status) {
     table_p->reopen(file_names_p(thisWhich));

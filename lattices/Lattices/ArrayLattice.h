@@ -199,7 +199,7 @@ class ArrayLattice : public Lattice<T> {
   // Put the value of a single element.
   virtual void putAt(const T& value, const IPosition& where);
 
-  // Check for internal consistency. Returns False if
+  // Check for internal consistency. Returns false if
   // something nasty has happened to the ArrayLattice.
   virtual bool ok() const;
 

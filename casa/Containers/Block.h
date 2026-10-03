@@ -224,12 +224,12 @@ class Block : public BlockTrace {
   }
 
   // Create a <src>Block</src> from a C-array (i.e. pointer). If
-  // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
+  // <src>takeOverStorage</src> is <src>true</src>, The Block assumes that
   // it owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
   // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
-  // whenever <src>takeOverStorage</src> == True
+  // whenever <src>takeOverStorage</src> == true
   // to let <src>Block</src> to know how to release the <src>storagePointer</src>.
   // The default allocator set by this constructor will be changed from
   // <src>NewDelAllocator<T>::value</src> to <src>DefaultAllocator<T>::value</src> in future.
@@ -242,7 +242,7 @@ class Block : public BlockTrace {
     if (destroyPointer) storagePointer = 0;
   }
   // Create a <src>Block</src> from a C-array (i.e. pointer). If
-  // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
+  // <src>takeOverStorage</src> is <src>true</src>, The Block assumes that
   // it owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
@@ -330,13 +330,13 @@ class Block : public BlockTrace {
   // <srcblock>
   // Block<float> bf(100, 0.0);
   // bf.resize(10);        // bf.nelements() == 100
-  // bf.resize(10, True)   // bf.nelements() == 10
+  // bf.resize(10, true)   // bf.nelements() == 10
   // bf.resize(200)        // bf.nelements() == 200
   // </srcblock>
   // Normally the old elements are copied over (although if the
   // Block is lengthened the trailing elements will have undefined
   // values), however this can be turned off by setting copyElements to
-  // False.
+  // false.
   //
   // This is written as three functions because default parameters do
   // not always work properly with templates.
@@ -396,15 +396,15 @@ class Block : public BlockTrace {
   }
   // </group>
 
-  // Remove a single element from the Block. If forceSmaller is True this
+  // Remove a single element from the Block. If forceSmaller is true this
   // will resize the Block and hence involve new memory allocations. This is
-  // relatively expensive so setting forceSmaller to False is preferred. When
-  // forceSmaller is False the Block is not resized but the elements with an
+  // relatively expensive so setting forceSmaller to false is preferred. When
+  // forceSmaller is false the Block is not resized but the elements with an
   // index above the removed element are shuffled down by one. For backward
-  // compatibility forceSmaller is True by default.
+  // compatibility forceSmaller is true by default.
   //
   // <src>initPolicy</src> makes sense to determine whether new storage
-  // should be initialized or not before copying when <src>forceSmaller</src> is True.
+  // should be initialized or not before copying when <src>forceSmaller</src> is true.
   // <group>
   void remove(size_t whichOne, bool forceSmaller = true) {
     remove(whichOne, forceSmaller,
@@ -467,17 +467,17 @@ class Block : public BlockTrace {
   // </group>
 
   // Replace the internal storage with a C-array (i.e. pointer).
-  // If <src>takeOverStorage</src> is True, The Block assumes that it
+  // If <src>takeOverStorage</src> is true, The Block assumes that it
   // owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when the
   // <src>Block</src>is destructed, otherwise the actual storage is not destroyed.
   // If true, storagePointer is set to <src>NULL</src>.
   // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
-  // whenever <src>takeOverStorage</src> == True
+  // whenever <src>takeOverStorage</src> == true
   // to let <src>Block</src> to know how to release the <src>storagePointer</src>.
   // The default parameter of allocator will be changed from <src>AllocSpec<NewDelAllocator<T>
   // >::value</src> to <src>AllocSpec<DefaultAllocator<T> >::value</src> in future. AipsError is
   // thrown if allocator is incompatible with the current allocator of the instance and changing
-  // allocator is prohibited, even if takeOverStorage == False. <group>
+  // allocator is prohibited, even if takeOverStorage == false. <group>
   void replaceStorage(size_t n, T *&storagePointer, bool takeOverStorage = true) {
     replaceStorage(n, storagePointer, takeOverStorage, AllocSpec<NewDelAllocator<T>>::value);
   }

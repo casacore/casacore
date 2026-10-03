@@ -108,7 +108,7 @@ class FITSErrorImage : public FITSImage {
   virtual String imageType() const;
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
+  // Returns false as the data do not reference another Array
   virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.

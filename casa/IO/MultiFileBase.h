@@ -132,7 +132,7 @@ class MultiFileBase {
   // but it will not be less than the absolute value of the given block size.
   // <br>If useODIrect=True, it means that O_DIRECT is used. If the OS does not
   // support it (as determined at configure time), the flag will always be
-  // set to False. If True, the data buffers will have a proper alignment
+  // set to false. If true, the data buffers will have a proper alignment
   // and size (as needed by O_DIRECT).
   MultiFileBase(const String& name, Int blockSize, bool useODirect);
 
@@ -264,7 +264,7 @@ class MultiFileBase {
   virtual void close() = 0;
   // Write the header info.
   virtual void writeHeader() = 0;
-  // Read the header info. If always==False, the info is only read if the
+  // Read the header info. If always==false, the info is only read if the
   // header counter has changed.
   virtual void readHeader(bool always = true) = 0;
   // Extend a logical file to fit lastblk.

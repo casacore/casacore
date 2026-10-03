@@ -136,7 +136,7 @@ int main() {
   //   virtual void setAvailableParam(uInt which, const Type &value);
   //   virtual Type getAvailableParam(uInt which) const;
   //   virtual void setAvailableParamMask(uInt which, const Bool mask);
-  //   virtual Bool getAvailableParamMask(uInt which) const;
+  //   virtual bool getAvailableParamMask(uInt which) const;
   Gaussian1D<Double> gauss2(gauss1);
   Gaussian1D<Double> gauss3;
   gauss3 = gauss2;

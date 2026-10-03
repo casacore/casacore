@@ -141,7 +141,7 @@ class TableParseUpdate {
   // # Data members
   String columnName_p;
   String columnNameMask_p;
-  bool maskFirst_p;                // # True = mask is given before slice
+  bool maskFirst_p;                // # true = mask is given before slice
   TableExprNodeIndex* indexPtr_p;  // # copy of pointer in indexNode_p; no need to delete
   TableExprNode indexNode_p;
   TableExprNode mask_p;

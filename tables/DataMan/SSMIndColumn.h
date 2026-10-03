@@ -71,7 +71,7 @@ class AipsIO;
 // file, so for each row an array is present.
 // On the other hand adding a row does nothing for variable shaped arrays.
 // So when no data is put or shape is set, a row may contain no array at all.
-// In that case the function <src>isShapeDefined</src> returns False for
+// In that case the function <src>isShapeDefined</src> returns false for
 // that row.
 // <p>
 // Indirect arrays containing strings are not handled by this class, but

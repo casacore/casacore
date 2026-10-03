@@ -74,7 +74,7 @@ class LCDifference : public LCRegionMulti {
   LCDifference(const LCRegion& region1, const LCRegion& region2);
 
   // Construct from multiple regions given as a Block.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   LCDifference(bool takeOver, const Block<const LCRegion*>& regions);
 

@@ -1043,7 +1043,7 @@ TableExprNode arrayData(const TableExprNode& array);
 TableExprNode arrayFlatten(const TableExprNode& array);
 
 // Get the mask of a masked array.
-// If the array has no mask, it return an array with all False values.
+// If the array has no mask, it return an array with all false values.
 TableExprNode arrayMask(const TableExprNode& array);
 
 // Get the diagonal of a (masked) array;
@@ -1081,7 +1081,7 @@ TableExprNode shape(const TableExprNode& array);
 
 // Function resembling the ternary <src>?:</src> construct in C++.
 // The argument "condition" has to be a Bool value.
-// If an element in "condition" is True, the corresponding element from
+// If an element in "condition" is true, the corresponding element from
 // "arg1" is taken, otherwise it is taken from "arg2".
 // The arguments can be scalars or array or any combination.
 TableExprNode iif(const TableExprNode& condition, const TableExprNode& arg1,

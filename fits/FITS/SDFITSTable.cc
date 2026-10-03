@@ -78,7 +78,7 @@ bool SDFITSTable::reopen(const String& fileName) {
 
 bool SDFITSTable::isSDFitsColumn(const String& name) {
   bool result;
-  // if name is not reserved, return True
+  // if name is not reserved, return true
   if (!FITS::ResWord.isreserved(name.c_str(), name.length())) {
     result = true;
   } else if (name != FITS::ResWord.aname(FITS::COMMENT) &&
@@ -122,7 +122,7 @@ void SDFITSTable::sdfits_shuffle() {
         virtCols(virtCount++) = kwName;
       }
     }
-    // virtualColumns should never return False
+    // virtualColumns should never return false
     AlwaysAssert(virtualColumns(virtCols(Slice(0, virtCount))), AipsError);
     // check to see that all core keywords are in currentRow()
     // stopping when the first core keyword is NOT found

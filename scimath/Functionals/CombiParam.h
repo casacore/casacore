@@ -154,7 +154,7 @@ class CombiParam : public Function<T> {
   // as the first one.  Returns the (zero relative) number (<src>i</src>)
   // of the function just added.
   // The default initial parameter value (<src>a(i)</src>) is
-  // initialized to 1. The parameter mask is set <src>True</src>.
+  // initialized to 1. The parameter mask is set <src>true</src>.
   uInt addFunction(const Function<T> &newFunction);
 
   // Return the total number of functions.  The number is equal to the

@@ -253,7 +253,7 @@ class TableDesc {
   // Add another table description to this table description.
   // It merges the column descriptions, the special keywordSet
   // (containing hypercolumn definitions) and the user keywordSet
-  // (this last one is not added if the flag is False).
+  // (this last one is not added if the flag is false).
   // The two table descriptions have to be disjoint, i.e. no column
   // nor keyword should already exist. Otherwise an TableInvOper
   // exception is thrown and nothing gets added.
@@ -451,7 +451,7 @@ class TableDesc {
   // Adjust the hypercolumn definitions (for a RefTable).
   // It removes and/or renames columns as necessary.
   // Column names which are not part of the map are removed if
-  // <src>keepUnknown==False</src>.
+  // <src>keepUnknown==false</src>.
   // If all data columns of a hypercolumn are removed, the entire
   // hypercolumn is removed.
   void adjustHypercolumns(const std::map<String, String>& old2new, bool keepUnknownData = false,
@@ -481,7 +481,7 @@ class TableDesc {
   TableRecord* key_p;      // # user set of keywords
   TableRecord* privKey_p;  // # Private set of keywords
   ColumnDescSet col_p;     // # set of column names + indices
-  bool swwrite_p;          // # True = description can be written
+  bool swwrite_p;          // # true = description can be written
   TDOption option_p;       // # Table desc. open option
   AipsIO iofil_p;          // # File
 

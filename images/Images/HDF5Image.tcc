@@ -235,13 +235,13 @@ void HDF5Image<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& whe
   //    Array<T> map;
   // Array<Bool> mask;
   // IPosition shape(sourceBuffer.shape());
-  // mask_p->getSlice(mask, where, shape, stride, True);
-  // map_p.getSlice(map, where, shape, stride, True);
+  // mask_p->getSlice(mask, where, shape, stride, true);
+  // map_p.getSlice(map, where, shape, stride, true);
   // use maskedarrays to do all the work.
-  // map(mask==False) = sourceBuffer;
+  // map(mask==false) = sourceBuffer;
   // map_p.putSlice(map,where,stride);
   //  } else {
-  //    throw(AipsError("HDF5Image<T>::putSlice - throughmask==False but no "
+  //    throw(AipsError("HDF5Image<T>::putSlice - throughmask==false but no "
   //		    "mask exists."));
   //  }
 }

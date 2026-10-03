@@ -66,7 +66,7 @@ class Slicer;
 //   It implements the dataType function, so it is not needed to implement
 //   that in derived classes.
 //  <li>
-//   It has a default implementation of False for function isWritable.
+//   It has a default implementation of false for function isWritable.
 //   Thus by default virtual scalar columns are not writable, which will
 //   often be the case. Only if a virtual scalar column can be writable,
 //   it has to be implemented in the derived class.

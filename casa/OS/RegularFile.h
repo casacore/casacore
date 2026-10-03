@@ -69,7 +69,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    RegularFile rFile ("isFile");
 //
 //    // Create file; if the file exists it will be overwritten
-//    rFile.create (True);
+//    rFile.create (true);
 //    rFile.copy (newPath);
 //
 //    cout << rFile.size() << endl;     // Get the size of the file
@@ -132,13 +132,13 @@ class RegularFile : public File {
   // The target path can be a directory or a file (as in cp).
   // An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target file already exists and overwrite==False
+  // <br>- or the target file already exists and overwrite==false
   // <br>- or the target file already exists and is not writable
   // <note role=caution>
   // When a readonly file is copied, the resulting
   // file is also readonly. Therefore <src>chmod</src> is used to
   // set user write permission after the copy.
-  // The flag <src>setUserWritePermission</src> can be set to False
+  // The flag <src>setUserWritePermission</src> can be set to false
   // when that should not be done.
   // </note>
   // <group>
@@ -156,7 +156,7 @@ class RegularFile : public File {
   // The target path can be a directory or a file (as in mv).
   // An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target file already exists and overwrite==False
+  // <br>- or the target file already exists and overwrite==false
   // <br>- or the target file already exists and is not writable
   // <note role=tip> The system command mv is used instead of the
   // library function rename to be able to move across file systems.

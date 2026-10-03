@@ -105,7 +105,7 @@ class WCComplement : public WCCompound {
   static WCComplement* fromRecord(const TableRecord&, const String& tableName);
 
   // Construct from multiple regions.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   WCComplement(bool takeOver, const Block<const WCRegion*>& regions);
 

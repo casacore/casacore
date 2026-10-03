@@ -109,7 +109,7 @@ template <class T>
 class RecordFieldPtr {
  public:
   // This object does not point to any field, i.e.
-  // <src>this->isAttached() == False;</src>
+  // <src>this->isAttached() == false;</src>
   RecordFieldPtr();
 
   // Attach this field pointer to the given field. If it does not exist

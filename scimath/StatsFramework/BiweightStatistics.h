@@ -175,7 +175,7 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   // accumulators, etc.
   virtual void reset();
 
-  // If c is True, an exception is thrown; this algorithm does not support
+  // If c is true, an exception is thrown; this algorithm does not support
   // computing stats as data are added.
   virtual void setCalculateAsAdded(bool c);
 

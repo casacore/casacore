@@ -171,7 +171,7 @@ int main() {
 
       cout << " the set/get PA test" << endl;
       if (!failed) {
-        ///	if (g.nAvailableParams() != 6) failed = True;
+        ///	if (g.nAvailableParams() != 6) failed = true;
         ///	Vector<Double> parms = g.getAvailableParams();
         Vector<Double> parms = g.parameters().getParameters();
         Vector<Double> expectedParms(6);
@@ -191,7 +191,7 @@ int main() {
 
         // Mask parameters 5 and 6
     */
-    /*	g.setAvailableParamMask(4, False);
+    /*	g.setAvailableParamMask(4, false);
     g.setAvailableParamMask(5, False);
     for (uInt i = 0; i < 4; i++) {
       if (g.getAvailableParamMask(i) == False) failed = True;

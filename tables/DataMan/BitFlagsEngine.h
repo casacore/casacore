@@ -145,7 +145,7 @@ class BFEngineMask {
 // // function. This will also set the shape of the underlying Int array.
 // ArrayColumn data (table, "virtualArray");
 // Array<Bool> someArray(IPosition(4,2,3,4));
-// someArray = True;
+// someArray = true;
 // for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
 //     table.addRow();
 //     data.put (i, someArray)
@@ -347,7 +347,7 @@ class BitFlagsEngine : public BaseMappedArrayEngine<bool, StoredType> {
   BFEngineMask itsBFEWriteMask;
   StoredType itsReadMask;
   StoredType itsWriteMask;
-  bool itsIsNew;  // # True = new table
+  bool itsIsNew;  // # true = new table
 };
 
 }  // namespace casacore

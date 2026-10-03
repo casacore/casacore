@@ -149,7 +149,7 @@ class LatticeRegion : public Lattice<bool> {
   // Returns the total number of elements in this LatticeRegion.
   virtual size_t nelements() const;
 
-  // Check class internals - used for debugging. Should always return True
+  // Check class internals - used for debugging. Should always return true
   virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an

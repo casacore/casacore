@@ -37,8 +37,8 @@
 // # in the MeasurementSet's FLAG column.
 // # But the opposite value sounds somewhat better (same as MaskedArray)
 // # because something like DATA[isnan(DATA)] = 0 is much more intuitive.
-// #  #define MArrayValid False
-// #  #define MArrayInvalid True
+// #  #define MArrayValid false
+// #  #define MArrayInvalid true
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
@@ -65,7 +65,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // MArrayMath contains functions to operate on such arrays.
 //
 // Similar to numpy.masked_array and the MeasurementSet FLAG definition,
-// a mask value True means that the corresponding value is masked off,
+// a mask value true means that the corresponding value is masked off,
 // thus is not taken into account in reduction functions like <src>sum</src>.
 // on a masked array. In operations like addition, masked off values are
 // processed because testing the mask value is more expensive than an
@@ -155,7 +155,7 @@ class MArrayBase {
   IPosition itsShape;
   size_t itsSize;
   mutable Int64 itsNValid;
-  bool itsNull;  // True = array is null, thus undefined in a column
+  bool itsNull;  // true = array is null, thus undefined in a column
 };
 
 }  // namespace casacore

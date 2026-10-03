@@ -82,7 +82,7 @@ class StatisticsDataset {
   // Add a dataset to an existing set of datasets on which statistics are to
   // be calculated. nr is the number of points to be considered. If
   // <src>dataStride</src> is greater than 1, when
-  // <src>nrAccountsForStride</src>=True indicates that the stride has been
+  // <src>nrAccountsForStride</src>=true indicates that the stride has been
   // taken into account in the value of <src>nr</src>. Otherwise, it has not
   // so that the actual number of points to include is nr/dataStride if
   // nr % dataStride == 0 or (int)(nr/dataStride) + 1 otherwise. If one calls
@@ -90,10 +90,10 @@ class StatisticsDataset {
   // thrown. In this case, one should call setData(), rather than addData(),
   // to indicate that the underlying data provider should be removed.
   // <src>dataRanges</src> provide the ranges of data to include if
-  // <src>isInclude</src> is True, or ranges of data to exclude if
-  // <src>isInclude</src> is False. If a datum equals the end point of a data
-  // range, it is considered good (included) if <src>isInclude</src> is True,
-  // and it is considered bad (excluded) if <src>isInclude</src> is False.
+  // <src>isInclude</src> is true, or ranges of data to exclude if
+  // <src>isInclude</src> is false. If a datum equals the end point of a data
+  // range, it is considered good (included) if <src>isInclude</src> is true,
+  // and it is considered bad (excluded) if <src>isInclude</src> is false.
 
   void addData(const DataIterator& first, uInt nr, uInt dataStride = 1,
                bool nrAccountsForStride = false);

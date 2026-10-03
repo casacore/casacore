@@ -281,7 +281,7 @@ class DyscoStMan : public casacore::DataManager {
    * This method returns @c true when the number of rows per block and the
    * number of antennae per block are known. This is only the case once the
    * first time- block was written to the file.
-   * @returns True when the nr of rows per block and antennae are available.
+   * @returns true when the nr of rows per block and antennae are available.
    */
   bool areOffsetsInitialized() const { return _rowsPerBlock != 0; }
 

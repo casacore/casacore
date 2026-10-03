@@ -212,7 +212,7 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk) {
   if (chunk.weights) {
     // no need to put these in atomic or critical blocks because
-    // they always get set to True here
+    // they always get set to true here
     this->_getStatsData().weighted = true;
     if (chunk.mask) {
       this->_getStatsData().masked = true;

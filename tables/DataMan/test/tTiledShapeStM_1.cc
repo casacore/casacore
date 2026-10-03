@@ -56,8 +56,8 @@ typedef Double Type;
 #define ARRINIT indgen(array)
 #define ARRINCR array += (Type)1
 
-// typedef Bool Type;
-// #define ARRINIT array = False
+// typedef bool Type;
+// #define ARRINIT array = false
 // #define ARRINCR array = !array
 
 TSMOption makeAcc(int acc, bool read = true) {

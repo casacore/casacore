@@ -973,13 +973,13 @@ bool LatticeCleaner<T>::destroyMasks() {
 // # Removed on 8-Apr-2004 by GvD because it is not used and add Tasking
 // # dependencies to Lattices
 //  template<class T>
-//  Bool LatticeCleaner<T>::stopnow() {
+//  bool LatticeCleaner<T>::stopnow() {
 //    if(itsChoose) {
 //      LogIO os(LogOrigin("LatticeCleaner", "stopnow()", WHERE));
-//      Bool stop = ApplicationEnvironment::stop();
+//      bool stop = ApplicationEnvironment::stop();
 //      if(stop) {
 //        os << "Lattice clean stopped at user request" << LogIO::POST;
-//        return True;
+//        return true;
 //      }
 //      Vector<String> choices(2);
 //      choices(0)="Continue";
@@ -989,20 +989,20 @@ bool LatticeCleaner<T>::destroyMasks() {
 //        ApplicationEnvironment::choice("Do you want to continue or stop?",
 //  				     choices);
 //      if (choice==choices(0)) {
-//        return False;
+//        return false;
 //      }
 //      else if (choice==choices(2)) {
 //        itsChoose=False;
 //        os << "Continuing: won't ask again" << LogIO::POST;
-//        return False;
+//        return false;
 //      }
 //      else {
 //        os << "Lattice clean stopped at user request" << LogIO::POST;
-//        return True;
+//        return true;
 //      }
 //    }
 //    else {
-//      return False;
+//      return false;
 //    }
 //  }
 

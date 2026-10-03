@@ -163,7 +163,7 @@ void LatticeFFT::rcfft(Lattice<ComplexType>& out,
                  inIter++, outIter++) {
               if (doShift) {
                 if (doFast) {
-                  // ffts.flip(inIter.rwVectorCursor(), True, False);
+                  // ffts.flip(inIter.rwVectorCursor(), true, false);
                   ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
                 } else {
                   ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
@@ -251,7 +251,7 @@ void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
             LatticeIterator<ComplexType> iter(out, TiledLineStepper(outShape, tileShape, dim));
             for (iter.reset(); !iter.atEnd(); iter++) {
               if (doShift) {
-                //		  ffts.fft(iter.rwVectorCursor(), 1, True);
+                //		  ffts.fft(iter.rwVectorCursor(), 1, true);
                 ffts.flip(iter.rwVectorCursor(), true, false);
                 ffts.fft0(iter.rwVectorCursor(), true);
               } else {
@@ -323,7 +323,7 @@ void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateTyp
                 ffts.fft0(iter.rwVectorCursor(), false);
                 ffts.flip(iter.rwVectorCursor(), false, false);
               } else {
-                //	      ffts.fft(iter.rwVectorCursor(), 2, False);
+                //	      ffts.fft(iter.rwVectorCursor(), 2, false);
                 ffts.fft(iter.rwVectorCursor(), false);
               }
             } else {

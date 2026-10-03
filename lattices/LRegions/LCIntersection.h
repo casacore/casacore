@@ -78,7 +78,7 @@ class LCIntersection : public LCRegionMulti {
                  const LCRegion* region9 = 0, const LCRegion* region10 = 0);
 
   // Construct from multiple regions given as a Block.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   LCIntersection(bool takeOver, const Block<const LCRegion*>& regions);
 

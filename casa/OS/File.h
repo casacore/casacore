@@ -130,11 +130,11 @@ class File {
   const Path& path() const;
 
   // Check if the file is a regular file. If the boolean followSymLink is
-  // False a symbolic link will not be followed.
+  // false a symbolic link will not be followed.
   bool isRegular(bool followSymLink = true) const;
 
   // Check if the file is a directory. If the boolean followSymLink is
-  // False a symbolic link will not be followed.
+  // false a symbolic link will not be followed.
   bool isDirectory(bool followSymLink = true) const;
 
   // Check if the file is a symbolic link.
@@ -261,14 +261,14 @@ class File {
   // Check if the new path for a copy or move is valid.
   // An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target file already exists and overwrite==False
+  // <br>- or the target file already exists and overwrite==false
   // <br>- or the target file already exists and is not writable
   // <br>When the targetName represents a directory, the basename
   // of the file is appended to it. This is done to cover the
   // case where the source is a symlink to a file. In that case
   // the target will get the basename of the symlink and not the
   // the basename of the file pointed to. This is not done when
-  // forDirectory==True (which is used by class Directory).
+  // forDirectory==true (which is used by class Directory).
   void checkTarget(Path& targetName, bool overwrite, bool forDirectory = false) const;
 
  private:

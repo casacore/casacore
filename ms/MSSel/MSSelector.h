@@ -164,7 +164,7 @@ class MSSelector {
   // Select the MS based on the selections present in the input record.
   // The format of this record is the same as that returned by range.
   // Not all possible items can be selected on, some are quietly ignored.
-  // Correct for one-based indexing if oneBased is True.
+  // Correct for one-based indexing if oneBased is true.
   bool select(const Record& items, bool oneBased = false);
 
   // Select the MS based on the TaQL selection string
@@ -173,7 +173,7 @@ class MSSelector {
   // Return the data for the items requested, all returned values
   // will be arrays, the last dimension of these is the table row number.
   // The data arrays are normally 3D with axes: polarization, frequency, row.
-  // If ifrAxis is set to True, the data arrays returned will be 4D, with
+  // If ifrAxis is set to true, the data arrays returned will be 4D, with
   // the data being split out along an extra interferometer axis, the
   // axes will be: polarization, frequency, interferometer and time.
   // Missing interferometers will be marked flagged.
@@ -184,8 +184,8 @@ class MSSelector {
   // Use average=True to vector average the data along the row or time axis
   // taking the weights column into account (use selectChannel to average
   // channels together as well). Note that different interferometers will be
-  // averaged together if ifrAxis is False.
-  // Correct for one-based indexing if oneBased is True.
+  // averaged together if ifrAxis is false.
+  // Correct for one-based indexing if oneBased is true.
   Record getData(const Vector<String>& items, bool ifrAxis, Int ifrAxisGap = 0, Int inc = 1,
                  bool average = false, bool oneBased = false);
 
@@ -272,7 +272,7 @@ class MSSelector {
                    const Array<Float>& weights);
 
   // check if the data description selection has been done & do default
-  // selection if not. Return False if the selection fails.
+  // selection if not. Return false if the selection fails.
   bool checkSelection();
 
  private:

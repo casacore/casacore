@@ -140,7 +140,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // // control of the dynamic pointer's destruction.  The second "True"
 // // argument indicates the array is read only and should make a copy of
 // // itself if writing is needed.
-// obj.set(new Array<Float>(nonConstArray.getSlice(...), True, True));
+// obj.set(new Array<Float>(nonConstArray.getSlice(...), true, true));
 // }
 // </srcblock>
 // The caller of the function will get their piece of a const array without
@@ -202,13 +202,13 @@ class COWPtr {
 
   // The dynamic "pointer to object" constructor: default behavior is to
   // delete the allocated memory when this instance's of COWPtr is destructed.
-  // Or the Boolean argument of "deleteIt = False" implies the pointer is
+  // Or the Boolean argument of "deleteIt = false" implies the pointer is
   // being maintained by an object other than this instance of COWPtr and
   // will not delete the allocated memory upon this instance's destruction.
   // Control of copying is provided by the Boolean "readOnly" argument.  The
-  // default value of "readOnly = False" forces a copy if the number of
+  // default value of "readOnly = false" forces a copy if the number of
   // references to the dynamic memory is greater than one.  Copying is always
-  // done if the constructor is given an argument of "readOnly = True".
+  // done if the constructor is given an argument of "readOnly = true".
   // <note> The only copying done (if ever) is upon a call to
   // COWPtr<T>::rwRef().</note>
   explicit COWPtr(T *obj, bool deleteIt = true, bool readOnly = false);
@@ -228,13 +228,13 @@ class COWPtr {
   // Function used to change this instance of COWPtr. The pointer must be
   // dynamically allocated.  Default behavior is to
   // delete the allocated memory when this instance's of COWPtr is destructed.
-  // Or the Boolean argument of "deleteIt = False" implies the pointer is
+  // Or the Boolean argument of "deleteIt = false" implies the pointer is
   // being maintained by an object other than this instance of COWPtr and
   // will not delete the allocated memory upon this instance's destruction.
   // Control of copying is provided by the Boolean "readOnly" argument.  The
-  // default value of "readOnly = False" forces a copy if the number of
+  // default value of "readOnly = false" forces a copy if the number of
   // references to the dynamic memory is greater than one.  Copying is always
-  // done if the constructor is given an argument of "readOnly = True".
+  // done if the constructor is given an argument of "readOnly = true".
   // <note> The only copying done (if ever) is upon a call to
   // COWPtr<T>::rwRef().
   // </note>
@@ -244,23 +244,23 @@ class COWPtr {
   inline const T &ref() const;
 
   // return a readable and writable reference to this instance.  Instances of
-  // COWPtr constructed with argument "readOnly = True" will be made a copy.
+  // COWPtr constructed with argument "readOnly = true" will be made a copy.
   // Additionally, all instances of COWPtr with more than one reference to
   // the allocated memory stored within will be copied.
   inline T &rwRef();
 
-  // returns False if this contains a non-null ptr, otherwise, return True.
+  // returns false if this contains a non-null ptr, otherwise, return true.
   inline bool isNull() const;
 
-  // returns True if the object is const, otherwise, return False.
+  // returns true if the object is const, otherwise, return false.
   inline bool isReadOnly() const;
 
-  // returns True if the object is the only instance, otherwise, return False.
+  // returns true if the object is the only instance, otherwise, return false.
   inline bool isUnique() const;
 
-  // Return True if copied, otherwise, False.  This function will make this
+  // Return true if copied, otherwise, false.  This function will make this
   // instance's object a copy if it is constructed with
-  // "readOnly = True."  Additionally, all instances of COWPtr with more
+  // "readOnly = true."  Additionally, all instances of COWPtr with more
   // than one reference to the allocated memory stored within will be
   // copied.
   bool makeUnique();
@@ -270,7 +270,7 @@ class COWPtr {
   bool const_p;
 };
 
-// # Make our own default pointer - deleteIt==True by default, const_p==False
+// # Make our own default pointer - deleteIt==true by default, const_p==false
 template <class T>
 inline COWPtr<T>::COWPtr() : obj_p(nullptr, Deleter(true)), const_p(false) {
   // does nothing

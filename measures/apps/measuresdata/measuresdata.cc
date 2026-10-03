@@ -327,7 +327,7 @@ struct tableProperties {
   String type;       // Table type (e.g. TAI_UTC)
   Double version;    // Double version of table
   Double updper;     // Minimum update period in days
-  bool renew;        // Always renew, not update this table (normally False)
+  bool renew;        // Always renew, not update this table (normally false)
   Double MJD0;       // Start MJD of table
   Double dMJD;       // Increment MJD in table
   String tnam;       // Table name (e.g. geodetic/TAI_UTC)
@@ -1020,8 +1020,8 @@ Table *create_table(const inputValues &inVal, tableProperties &tprop) {
 
 //*************************************************************************//
 // Close table tab (with name tnam) and update version (if vsup>0);
-// the version date (if timup True);
-// and show the table time statistics (if timshow True).
+// the version date (if timup true);
+// and show the table time statistics (if timshow true).
 bool close_table(const String &tnam, Table *&tab, Double vsup, bool timup, bool timshow) {
   Double vs = dget_version(tab);
   uInt n = tab->nrow();
@@ -1500,7 +1500,7 @@ bool IGRF(tableProperties &tprop, inputValues &inVal) {
 const uInt DE_FN_INC = 20;  // DE ascii files are for 20 year intervals
 bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   /// cout << "--- JPL tables cannot be created yet ----" << endl;;;
-  /// return True;;;
+  /// return true;;;
   // Test if to update
   if (testu_table(tprop, inVal) && inVal.noup) return true;
 

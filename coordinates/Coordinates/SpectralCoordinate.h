@@ -204,7 +204,7 @@ class SpectralCoordinate : public Coordinate {
   // This axis can be nonlinear; the increments and related
   // functions return the <src>average</src> values
   // (calculated from the first and last pixel's frequencies).
-  // If inAir is True, the input wavelengths are assumed to be Air Wavelengths.
+  // If inAir is true, the input wavelengths are assumed to be Air Wavelengths.
   // They are converted to vacuum frequency using the refractive index
   // which is calculated based on the mean input air wavelength.
   //
@@ -257,8 +257,8 @@ class SpectralCoordinate : public Coordinate {
   // conversions occur.   Some conversions will fail.  These are the
   // ones that require extra frame information (radial velocity) such
   // as to REST. This will be added later.  In this case this function
-  // returns False (and the conversion parameters are all left as they were),
-  //  else it returns True.
+  // returns false (and the conversion parameters are all left as they were),
+  //  else it returns true.
   // <group>
   bool setReferenceConversion(MFrequency::Types type, const MEpoch& epoch,
                               const MPosition& position, const MDirection& direction);
@@ -271,8 +271,8 @@ class SpectralCoordinate : public Coordinate {
   };
   // </group>
 
-  // Convert a pixel to a world coordinate or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and
+  // Convert a pixel to a world coordinate or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and
   // <src>errorMessage()</src> contains an error message.  The input vectors
   // must be of length one and the output vectors are resized if they are not
   // already of length one.
@@ -298,9 +298,9 @@ class SpectralCoordinate : public Coordinate {
   // </group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
-  // of the matrices contain the coordinates. Returns False if any conversion
+  // of the matrices contain the coordinates. Returns false if any conversion
   // failed  and  <src>errorMessage()</src> will hold a message.
-  // The <src>failures</src> array (True for fail, False for success)
+  // The <src>failures</src> array (true for fail, false for success)
   // is the length of the number of conversions and
   // holds an error status for each conversion.
   // <group>
@@ -316,7 +316,7 @@ class SpectralCoordinate : public Coordinate {
   // and <src>mm</src> as the wavelength conversion state.
   // The functions in this class which use this state are those that convert
   // to or from velocity.  Also, function <src>format</src> uses the Doppler
-  // state set here.  If the function returns False it means the unit was
+  // state set here.  If the function returns false it means the unit was
   // not valid.  There will be an error message in function <src>errorMessage</src>
   // <group>
   bool setVelocity(const String& velUnit = String("km/s"),
@@ -475,7 +475,7 @@ class SpectralCoordinate : public Coordinate {
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False,
+  // axes in the Coordinate.  If the comparison returns false,
   // <src>errorMessage()</src> contains a message about why.
   // <group>
   virtual bool near(const Coordinate& other, Double tol = 1e-6) const;
@@ -515,7 +515,7 @@ class SpectralCoordinate : public Coordinate {
 
   // Set the default formatter unit (which is initialized to empty).  Must
   // be consistent with Hz or km/s.
-  // If the given unit is illegal, False is returned and the internal state unchanged.
+  // If the given unit is illegal, false is returned and the internal state unchanged.
   // This unit is used by the function <src>format</src> when the given
   // unit is empty.
   // <group>
@@ -539,14 +539,14 @@ class SpectralCoordinate : public Coordinate {
               bool airWaveDef = false) const;
 
   // Old interface.  Handled by wcs in new interface in FITSCoordinateUtil.cc
-  //    static Bool fromFITSOld(SpectralCoordinate &out, String &error,
+  //    static bool fromFITSOld(SpectralCoordinate &out, String &error,
   //   			 const RecordInterface &header,
   //			 uInt whichAxis,
-  //			 LogIO &logger, Bool oneRelative=True);
+  //			 LogIO &logger, bool oneRelative=true);
   //</group>
 
   // Save the SpectralCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
+  // The field must not exist, otherwise <src>false</src> is returned.
   virtual bool save(RecordInterface& container, const String& fieldName) const;
 
   // Recover the SpectralCoordinate from a record.

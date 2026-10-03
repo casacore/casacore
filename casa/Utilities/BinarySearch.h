@@ -86,7 +86,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // ...  // Sets vi somehow
 // genSort(vi);
 // Int val;
-// Bool found;
+// bool found;
 // while (cin >> val && val != -999) {
 //     Int where = binarySearch(found, vi, val, vi.nelements());
 //     if (found) {

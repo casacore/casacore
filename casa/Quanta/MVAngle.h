@@ -185,7 +185,7 @@ class MUString;
 // a <src>print</src> or <src>string</src> that accepts a Format object.
 //
 // Strings and input can be converted to an MVAngle (or Quantity) by
-// <src>Bool read(Quantity &out, const String &in)</src> and
+// <src>bool read(Quantity &out, const String &in)</src> and
 // <src> istream >> MVAngle &</src>. In the latter case the actual
 // reading is done by the String read, which reads between white-spaces.<br>
 // The following input formats (note no blanks allowed) are supported
@@ -340,7 +340,7 @@ class MVAngle {
   static bool read(Quantity &res, MUString &in, bool chk, bool throwExcp);
   // </group>
   // Handle a read error. An exception is thrown if indicated so.
-  // Otherwise in.pop() is called and False is returned.
+  // Otherwise in.pop() is called and false is returned.
   static bool handleReadError(MUString &in, bool throwExcp);
 
   // Make co-angle (e.g. zenith distance from elevation)

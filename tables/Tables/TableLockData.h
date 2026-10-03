@@ -86,7 +86,7 @@ class TableLockData : public TableLock {
   // It throws an exception when acquire failed while it had to wait.
   bool acquire(MemoryIO* info, FileLocker::LockType, uInt nattempts);
 
-  // Release the lock. When always==False, the lock is not released
+  // Release the lock. When always==false, the lock is not released
   // when a permanent lock is used.
   // It does nothing when permanent locking is used.
   // It throws an exception when the release failed.

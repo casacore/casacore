@@ -90,15 +90,15 @@ void LELBinaryBool::eval(LELArray<bool>& result, const Slicer& section) const {
     case LELBinaryEnums::OR:
       if (pLeftExpr_p->isScalar()) {
         LELScalar<bool> temp = pLeftExpr_p->getScalar();
-        // Note that having a False mask is in fact an Unknown value.
-        // If True scalar value, result is all True.
+        // Note that having a false mask is in fact an Unknown value.
+        // If true scalar value, result is all true.
         if (temp.value() && temp.mask()) {
           result.value() = true;
           result.removeMask();
         } else {
           pRightExpr_p->eval(result, section);
-          // If False scalar value, result array is same as original.
-          // If Unknown scalar, result is Unknown where not True.
+          // If false scalar value, result array is same as original.
+          // If Unknown scalar, result is Unknown where not true.
           if (!temp.mask()) {
             result.combineOrAnd(true, result.value());
           }
@@ -128,15 +128,15 @@ void LELBinaryBool::eval(LELArray<bool>& result, const Slicer& section) const {
     case LELBinaryEnums::AND:
       if (pLeftExpr_p->isScalar()) {
         LELScalar<bool> temp = pLeftExpr_p->getScalar();
-        // Note that having a False mask is in fact an Unknown value.
-        // If False scalar value, result is all False.
+        // Note that having a false mask is in fact an Unknown value.
+        // If false scalar value, result is all false.
         if (!temp.value() && temp.mask()) {
           result.value() = false;
           result.removeMask();
         } else {
           pRightExpr_p->eval(result, section);
-          // If True scalar value, result array is same as original.
-          // If Unknown scalar, result is Unknown where not False.
+          // If true scalar value, result array is same as original.
+          // If Unknown scalar, result is Unknown where not false.
           if (!temp.mask()) {
             result.combineOrAnd(false, result.value());
           }

@@ -153,8 +153,8 @@ class MeasComet {
   Int nelements() const;
   // Get a comet position
   bool get(MVPosition &returnValue, Double date) const;
-  // Get the local on-disk direction.  Returns False if the time or sub-observer
-  // longitude and latitude are unavailable, True on success.
+  // Get the local on-disk direction.  Returns false if the time or sub-observer
+  // longitude and latitude are unavailable, true on success.
   bool getDisk(MVDirection &returnValue, Double date) const;
   // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
   bool getRadVel(MVRadialVelocity &returnValue, Double date) const;

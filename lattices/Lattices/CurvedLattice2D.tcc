@@ -221,7 +221,7 @@ bool CurvedLattice2D<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& secti
     // Let the interpolator get all mask pixels for the given section.
     itsInterpolator->getMask(buffer, x, y, section);
   } else {
-    // Not masked, so we can simply fill the buffer with True values.
+    // Not masked, so we can simply fill the buffer with true values.
     buffer = true;
   }
   return false;

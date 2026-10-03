@@ -345,7 +345,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Select rows using a mask block.
   // The length of the block must match the number of rows in the table.
-  // If True, the corresponding row will be selected.
+  // If true, the corresponding row will be selected.
   std::shared_ptr<BaseTable> select(const Block<bool>& mask);
 
   // Project the given columns (i.e. select the columns).
@@ -469,10 +469,10 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   std::shared_ptr<TableDesc> tdescPtr_p;  // # Pointer to table description
   String name_p;                          // # table name
   int option_p;                           // # Table constructor option
-  bool noWrite_p;                         // # False = do not write the table
-  bool delete_p;                          // # True = delete when destructed
+  bool noWrite_p;                         // # false = do not write the table
+  bool delete_p;                          // # true = delete when destructed
   TableInfo info_p;                       // # Table information (type, etc.)
-  bool madeDir_p;                         // # True = table dir has been created
+  bool madeDir_p;                         // # true = table dir has been created
   int itsTraceId;                         // # table-id for TableTrace tracing
 
   // Do the callback for scratch tables (if callback is set).
@@ -480,7 +480,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Create the table directory when needed (and possible).
   // When the file already exists, check if it is a directory.
-  // It returns True when it actually created the directory.
+  // It returns true when it actually created the directory.
   bool makeTableDir();
 
   // Make a true deep copy of the table.
@@ -511,7 +511,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   void writeEnd(AipsIO&);
 
   // Should the table be written.
-  // This flag is False if an exception was thrown.
+  // This flag is false if an exception was thrown.
   bool shouldNotWrite() const { return noWrite_p; }
 
   // Read the TableInfo object.

@@ -161,10 +161,10 @@ class InterpolateArray1D {
   // Output array yout has interpolated values for x coordinates xout.
   // This version handles flagged data in a simple way: all outputs
   // depending on a flagged input are flagged.
-  // If goodIsTrue==True, then that means
-  // a good data point has a flag value of True (usually for
-  // visibilities, good is False and for images good is True)
-  // If extrapolate==False, then xout points outside the range of xin
+  // If goodIsTrue==true, then that means
+  // a good data point has a flag value of true (usually for
+  // visibilities, good is false and for images good is true)
+  // If extrapolate==false, then xout points outside the range of xin
   // will always be marked as flagged.
   // TODO: implement flags for cubic and spline (presently input flags
   // are copied to output).
@@ -193,10 +193,10 @@ class InterpolateArray1D {
   // Output array yout has interpolated values for x coordinates xout.
   // This version handles flagged data in a simple way: all outputs
   // depending on a flagged input are flagged.
-  // If goodIsTrue==True, then that means
-  // a good data point has a flag value of True (usually for
-  // visibilities, good is False and for images good is True)
-  // If extrapolate==False, then xout points outside the range of xin
+  // If goodIsTrue==true, then that means
+  // a good data point has a flag value of true (usually for
+  // visibilities, good is false and for images good is true)
+  // If extrapolate==false, then xout points outside the range of xin
   // will always be marked as flagged.
   // Currently only linear interpolation method is implemented.
   // TODO: add support for nearest neiborhood, cubic, and cubic spline.

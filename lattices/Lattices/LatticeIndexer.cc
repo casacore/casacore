@@ -171,7 +171,7 @@ void LatticeIndexer::fullSize() {
 // necessary.  The path of movement is based upon the third IPosition
 // argument (a cursor heading) that is zero-based e.g. IPosition(3,0,2,1)
 // implies starting movement along the x-axis, then the z-axis, and then
-// the y-axis.  Returns a value of False if the beginning/end of the
+// the y-axis.  Returns a value of false if the beginning/end of the
 // sub-Lattice is reached. The cursorPosition is relative to the origin of
 // the sub-Lattice. To get its location relative to the main Lattice use
 // the absolutePosition() function.
@@ -234,8 +234,8 @@ bool LatticeIndexer::tiledCursorMove(bool incr, IPosition& cursorPos, const IPos
   return false;
 }
 
-// function which returns a value of True if the IPosition argument
-// is within the sub-Lattice.  Returns False if the IPosition argument is
+// function which returns a value of true if the IPosition argument
+// is within the sub-Lattice.  Returns false if the IPosition argument is
 // outside the sub-Lattice or if the argument doesn't conform to the
 // data members.
 bool LatticeIndexer::isInside(const IPosition& index) const {
@@ -294,27 +294,27 @@ IPosition LatticeIndexer::absolutePosition(const IPosition& position) const {
   return itsOffset + position * itsAxisInc;
 }
 
-// function which returns True if all the elements in this
+// function which returns true if all the elements in this
 // sub-Lattice, are arranged contiguously,
 // i.e. without any gaps caused by increments or subSectioning.
 // THIS FUNCTION IS NOT FINISHED YET.
-// Bool LatticeIndexer::isContiguous() const
+// bool LatticeIndexer::isContiguous() const
 // {
-//   DebugAssert(ok() == True, AipsError);
-//   Bool checkDegenerate = False;
+//   DebugAssert(ok() == true, AipsError);
+//   bool checkDegenerate = false;
 //   for (uInt i=0; i < itsNdim; i++) {
 //     if (itsAxisInc(i) > 1)
-//       checkDegenerate = True;
+//       checkDegenerate = true;
 //     if (itsOffset(i) != 0  &&  i != 0)
-//       return False;
+//       return false;
 //     if (checkDegenerate  &&  shape(i) > 1)
-//       return False;
+//       return false;
 //   }
-//   return True;
+//   return true;
 // }
 
 // Is this LatticeIndexer consistent, i.e. are the class invariants valid?
-// return True if every thing is fine otherwise return False
+// return true if every thing is fine otherwise return false
 bool LatticeIndexer::ok() const {
   ostringstream str;
   str << "LatticeIndexer::ok - ";

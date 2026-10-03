@@ -213,7 +213,7 @@ class HDF5Lattice : public Lattice<T> {
   // Put the value of a single element.
   virtual void putAt(const T& value, const IPosition& where);
 
-  // A function which checks for internal consistency. Returns False if
+  // A function which checks for internal consistency. Returns false if
   // something nasty has happened to the HDF5Lattice. In that case
   // it also throws an exception.
   virtual bool ok() const;

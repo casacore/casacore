@@ -273,7 +273,7 @@ class TiledShapeStMan : public TiledStMan {
   virtual void setupCheck(const TableDesc& tableDesc, const Vector<String>& dataNames) const;
 
   // Flush and optionally fsync the data.
-  // It returns a True status if it had to flush (i.e. if data have changed).
+  // It returns a true status if it had to flush (i.e. if data have changed).
   virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.

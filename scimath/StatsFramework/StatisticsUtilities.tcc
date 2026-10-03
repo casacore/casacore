@@ -316,7 +316,7 @@ void StatisticsUtilities<AccumType>::mergeResults(
                    *aiter = false;
                  }
                } else {
-                 // *aiter = True, *witer = False, all values are not the same
+                 // *aiter = true, *witer = false, all values are not the same
                  svalue.reset();
                  *aiter = false;
                }

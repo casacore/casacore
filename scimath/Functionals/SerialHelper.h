@@ -114,7 +114,7 @@ class SerialHelper {
 
   // load the function type name as given in the record's "functype"
   // field into the given String <em>ftype</em>.  <em>gr</em> is the
-  //  record to extract from.  False is returned if the record
+  //  record to extract from.  false is returned if the record
   // does not contain this field.
   // <thrown>
   //   <li> InvalidSerializationError if "functype" exists but is
@@ -127,7 +127,7 @@ class SerialHelper {
   // InvalidSerializationError is thrown.
   void checkFuncType(const String& ftype) const;
 
-  // return True if a field with the given <em>name</em> exists
+  // return true if a field with the given <em>name</em> exists
   bool exists(const String& name) const { return gr.isDefined(name); }
 
   // Get the <em>index</em>th element of the <em>name</em> field

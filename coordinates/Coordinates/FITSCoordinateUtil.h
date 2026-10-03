@@ -85,10 +85,10 @@ class FITSCoordinateUtil {
 
   // Convert CoordinateSystem to a FITS header.  In the record
   // the keywords are vectors, it is expected that the actual FITS code will
-  // split them into scalars and upcase the names. Returns False if one of the
+  // split them into scalars and upcase the names. Returns false if one of the
   // keywords is already taken.
   //
-  // If writeWCS is True, attempt to write the WCS convention (Greisen and
+  // If writeWCS is true, attempt to write the WCS convention (Greisen and
   // Calabretta "Representation of celestial coordinates in FITS") as
   // approved in version 3.0 of the FITS standard.
   // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
@@ -104,7 +104,7 @@ class FITSCoordinateUtil {
                     bool preferVelocity = true, bool opticalVelocity = true,
                     bool preferWavelength = false, bool airWavelength = false) const;
 
-  // Probably even if we return False we should set up the best linear
+  // Probably even if we return false we should set up the best linear
   // coordinate that we can.   On output, <src>stokesFITSValue</src>
   // holds the FITS value of any unofficial Stokes (beam, optical depth,
   // spectral index) for the last unofficial value accessed (-1 if none).

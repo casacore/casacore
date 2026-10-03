@@ -451,7 +451,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
           someMatchFailed |= ((start = findChanIndex_p(start, cf, true, (cwDir > 0))) == -1);
           someMatchFailed |= ((stop = findChanIndex_p(stop, cf, false, (cwDir > 0))) == -1);
 
-          // Bool found=False;
+          // bool found=false;
           // Int n=cf.nelements();
           // {
           //   if (start <= cf(0)) start=0;

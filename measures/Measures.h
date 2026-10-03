@@ -480,7 +480,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // for e.g. MDirection)
 // enable the user to obtain the value of the measure.<br>
 // A <src>String tellMe()</src> will tell the type of Measure; a
-// <src>void assured(String)</src> and <src>Bool areYou(String)</src> will
+// <src>void assured(String)</src> and <src>bool areYou(String)</src> will
 // check the type; while a <src>String showType(Measure::TYPE)</src> will
 // return the string value of a reference type code (e.g. J2000).<br>
 // <p>
@@ -516,7 +516,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // instance will be <em>razed</em> to an integer number of days; hence providing
 // an easy way to specify sidereal times offset with the beginning of the
 // current sidereal day.<br>
-// To aid with external data, a <src>Bool giveMe(String, uInt)</src> will
+// To aid with external data, a <src>bool giveMe(String, uInt)</src> will
 // give the correct reference type to be used given the String type.
 // Note that the
 // uInt, rather than the corresponding enum is used, due to templating
@@ -652,7 +652,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // The reference type can be set with a set() function, and set() functions
 // for the offset and frame will be present as well.<br>
-// A <src>Bool empty()</src> checks if the reference is empty; <src>get()</src>
+// A <src>bool empty()</src> checks if the reference is empty; <src>get()</src>
 // functions provide the information in the reference; and a
 // <src>String showMe()</src> will return the type of measure (e.g. "Epoch") the
 // MeasRef can be used for.

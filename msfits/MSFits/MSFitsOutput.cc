@@ -715,10 +715,10 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
   }
 
   // EXTEND - already written by FITSGroupWriter
-  //  ek.define("extend", True);
+  //  ek.define("extend", true);
 
   // BLOCKED - already written by FITSGroupWriter
-  //  ek.define("blocked", True);
+  //  ek.define("blocked", true);
 
   // OBJECT
   if (asMultiSource) {
@@ -1019,7 +1019,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     }
 
     // Will only write a record if some non-flagged data found
-    //    Bool dowrite(True);   // temporarily disable, because FITSGroupWriter chokes
+    //    bool dowrite(true);   // temporarily disable, because FITSGroupWriter chokes
 
     Float* outptr = optr;  // reset for each spectral-window
 
@@ -1664,7 +1664,7 @@ bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
     // A hack for old WSRT observations which stored the antenna name
     // in the STATION column instead of the NAME column.
     // So if all NAMES are equal use STATIONS (unless they are all equal).
-    // Also: if writeStation==True use station names instead of antenna names
+    // Also: if writeStation==true use station names instead of antenna names
     // for the output fits file (input fits file tends to have this).
     Vector<String> anames = antid.getColumn();
     Vector<Double> antDiams = msmd.getAntennaDiameters().getValue("m");
@@ -2746,7 +2746,7 @@ Table MSFitsOutput::handleSysCal(const MeasurementSet& ms, const Vector<Int>& sp
     if (minant1 < 0 || minant2 < 0) {
       throw(AipsError("Antenna1 or antenna2 < 0 in MS " + ms.tableName()));
     }
-    // Make an array which contains a flag True for all antennas in the
+    // Make an array which contains a flag true for all antennas in the
     // main table.
     Int nrant = 1 + max(maxant1, maxant2);
     antFlag.resize(nrant);

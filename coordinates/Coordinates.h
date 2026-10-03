@@ -201,7 +201,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // We can actually perform a transformation like this as follows. If
 // it succeeds we print the value of the world coordinate.
 // <srcblock>
-//    Bool ok = radec.toWorld(world, pixel);                        // 13
+//    bool ok = radec.toWorld(world, pixel);                        // 13
 //    if (!ok) {                                                    // 14
 //	cout << "Error: " << radec.errorMessage() << endl;          // 15
 //	return 1;                                                   // 16
@@ -234,8 +234,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    Int plane;                                                   // 24
 //    ok = stokes.toPixel(plane, Stokes::Q);                       // 25
 // </srcblock>
-// Here it will return <src>True</src> and set plane to 1. On the other
-// hand, it would return <src>False</src> for:
+// Here it will return <src>true</src> and set plane to 1. On the other
+// hand, it would return <src>false</src> for:
 // <srcblock>
 //    ok = stokes.toPixel(plane, Stokes::XX);                      // 26
 // </srcblock>

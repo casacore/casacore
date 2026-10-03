@@ -129,7 +129,7 @@ class LCSlicer {
   LCSlicer& operator=(const LCSlicer& other);
 
   // Test for equality.
-  // True is returned when the given region is a slicer with exactly
+  // true is returned when the given region is a slicer with exactly
   // the same specification as this slicer.
   // It does not compare the comment.
   // <group>

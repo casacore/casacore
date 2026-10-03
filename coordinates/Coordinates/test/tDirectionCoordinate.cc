@@ -499,7 +499,7 @@ int main() {
       dc.setReferenceConversion(MDirection::GALACTIC);
       Vector<Double> pixel(2, 60);
       Vector<Double> world(2);
-      // default uses True
+      // default uses true
       dc.toWorld(world, pixel);
       AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
       AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);

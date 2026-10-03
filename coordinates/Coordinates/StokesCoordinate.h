@@ -126,8 +126,8 @@ class StokesCoordinate : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel to a world coordinate or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel to a world coordinate or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // <src>errorMessage</src> returns an error message.
   // The output vectors are appropriately resized before use.
   // The Bool parameter in toWorld() is ignored as this coordinate does not
@@ -138,7 +138,7 @@ class StokesCoordinate : public Coordinate {
   // </group>
 
   // Interconvert between pixel and world as a Stokes type.
-  // It returns False if no conversion could be done.
+  // It returns false if no conversion could be done.
   // <group>
   bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
   bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
@@ -184,7 +184,7 @@ class StokesCoordinate : public Coordinate {
   // </group>
 
   // Set the value of the requested attribute.  For the StokesCoordinate,
-  // these have no effect (always return True) except for setWorldAxisNames.
+  // these have no effect (always return true) except for setWorldAxisNames.
   // <group>
   virtual bool setWorldAxisNames(const Vector<String> &names);
   virtual bool setReferencePixel(const Vector<Double> &refPix);
@@ -194,7 +194,7 @@ class StokesCoordinate : public Coordinate {
   // </group>
 
   // The set function has no effect as the units must be empty for a StokesCoordinate
-  // Always returns True
+  // Always returns true
   // <group>
   virtual bool setWorldAxisUnits(const Vector<String> &units);
   virtual Vector<String> worldAxisUnits() const;
@@ -204,7 +204,7 @@ class StokesCoordinate : public Coordinate {
   // for  a lattice of the given shape (for this coordinate).
   // The implementation here gives world coordinates at the start
   // and end of the Stokes axis.
-  // The output vectors are resized.  Returns False if fails (and
+  // The output vectors are resized.  Returns false if fails (and
   // then <src>setDefaultWorldMixRanges</src> generates the ranges)
   // with a reason in <src>errorMessage()</src>.
   // The <src>setDefaultWorldMixRanges</src> function
@@ -230,7 +230,7 @@ class StokesCoordinate : public Coordinate {
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False,  method
+  // axes in the Coordinate.  If the comparison returns false,  method
   // errorMessage returns a message about why.
   // <group>
   virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
@@ -239,7 +239,7 @@ class StokesCoordinate : public Coordinate {
   // </group>
 
   // Save the StokesCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
+  // The field must not exist, otherwise <src>false</src> is returned.
   virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Recover the StokesCoordinate from a record.

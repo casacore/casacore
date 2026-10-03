@@ -246,7 +246,7 @@ void doIt(int argc, const char* argv[]) {
   MyLatticeProgress showProgress;
   {
     //
-    // Make a ML with the corner x profiles all False
+    // Make a ML with the corner x profiles all false
     //
     ArrayLattice<Float> lat(latticeShape);
     ArrayLattice<bool> mask(latticeShape);

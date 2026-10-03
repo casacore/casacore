@@ -77,11 +77,11 @@ class NoConvert {
 // Here is an example of the FitsLogical class.
 //<srcblock>
 //	FitsLogical x;
-//	FitsLogical y(True);
+//	FitsLogical y(true);
 //	FitsLogical z = x;
 //	...
-//	x = y; y = False; x.undefine();
-//	Bool b;
+//	x = y; y = false; x.undefine();
+//	bool b;
 //	if (x.isdefined())
 //		b = x;
 //	b = y;  If y is undefined, b will be false.
@@ -99,7 +99,7 @@ class FitsLogical {
   }
   /// ARO 2021-02-20:
   /// Removed the following function, because it seems incorrectly implemented and isn't used
-  /// Bool isdefined() const { return v == '\0' ? True : False; }
+  /// bool isdefined() const { return v == '\0' ? true : false; }
   void undefine() { v = '\0'; }
   operator bool() const { return v == 'T'; }
 

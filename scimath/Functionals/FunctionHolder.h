@@ -115,7 +115,7 @@ class FunctionHolder : public RecordTransformable {
     String nam;
     // type
     Types tp;
-    // Order (True if needed)
+    // Order (true if needed)
     bool order;
   };
 
@@ -135,7 +135,7 @@ class FunctionHolder : public RecordTransformable {
 
   // # Member Functions
   //  Check the the FunctionHolder holds the specified type. Return
-  //  True if if does and False otherwise.
+  //  true if if does and false otherwise.
   //  <group>
   bool isEmpty() const;
   // </group>
@@ -154,8 +154,8 @@ class FunctionHolder : public RecordTransformable {
   bool addFunction(const Function<T> &fnc);
   // Get the type of currently filled holder
   Types type() const;
-  // Create a Function from a record. An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
+  // Create a Function from a record. An error message is generated, and false
+  // returned if an invalid record is given. A valid record will return true.
   // A valid record contains at least the following fields (any additional fields are
   // ignored):
   // <ul>
@@ -176,7 +176,7 @@ class FunctionHolder : public RecordTransformable {
   template <class U>
   bool getRecord(String &error, Function<U> *&fn, const RecordInterface &in);
   // </group>
-  // Create a record from a Function. The return will be False and an error
+  // Create a record from a Function. The return will be false and an error
   // message generated only if the FunctionHolder does not contain a Function.
   // Error messages are postfixed to error.
   virtual bool toRecord(String &error, RecordInterface &out) const;

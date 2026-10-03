@@ -151,7 +151,7 @@ class MSFieldColumns {
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
   void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
@@ -181,7 +181,7 @@ class MSFieldColumns {
   // In addtion to the directions, if there is an ephemeris available,
   // also the radial velocity and the distance rho can be accessed.
   //
-  // The method needInterTime returns True if there is a polynomial or ephemeris
+  // The method needInterTime returns true if there is a polynomial or ephemeris
   // connected to this field table row, and an interpolation time value should
   // be provided.
   // The method ephemPath returns the absolute path to the ephemeris table connected to
@@ -204,7 +204,7 @@ class MSFieldColumns {
   // returns the last row that has a reference direction, phase direction and
   // delay direction that match, to within the specified angular separation,
   // the supplied values. Only matches on rows where the direction is constant
-  // ie., NUM_POLY is 0 and where FLAG_ROW is False. Throws an exception
+  // ie., NUM_POLY is 0 and where FLAG_ROW is false. Throws an exception
   // (AipsError) if the reference frames do not match or if the separation does
   // not have angular units (when compiled in debug mode). Returns -1 if no
   // match could be found. If tryRow is positive, then that row is tested to

@@ -154,7 +154,7 @@ class ArrayQuantColumn {
   // </group>
 
   // Get the quantum array in the specified row.
-  // If resize is True the resulting array is resized if its shape
+  // If resize is true the resulting array is resized if its shape
   // is not correct. Otherwise a "conformance exception" is thrown
   // if the array is not empty and its shape mismatches.
   // <group name="get">

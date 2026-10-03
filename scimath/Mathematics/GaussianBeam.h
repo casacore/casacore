@@ -104,7 +104,7 @@ class GaussianBeam {
   Double getMinor(const Unit& u) const;
 
   // returns the position angle's value as it was at construction,
-  // unless <src>unwrap</src> is True, in which case the value of the angle
+  // unless <src>unwrap</src> is true, in which case the value of the angle
   // returned will be between -90 and 90 degrees (but with unit the same
   // as it had when this object was constructed).
   Quantity getPA(const bool unwrap = true) const;
@@ -133,7 +133,7 @@ class GaussianBeam {
   static GaussianBeam fromRecord(const Record& rec);
 
   // convert this object to a three-Vector of (major FWHM, minor FWHM, and pa).
-  // If <src>unwrap</src> is True, the returned pa will fall between -90 and +90
+  // If <src>unwrap</src> is true, the returned pa will fall between -90 and +90
   // degrees.
   Vector<Quantity> toVector(const bool unwrap = true) const;
 

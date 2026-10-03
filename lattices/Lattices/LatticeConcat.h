@@ -83,8 +83,8 @@ class Slicer;
 //
 //// Turn these into MaskedLattices
 //
-//   SubLattice<Float> ml1(al1, True);
-//   SubLattice<Float> ml2(al2, True);
+//   SubLattice<Float> ml1(al1, true);
+//   SubLattice<Float> ml2(al2, true);
 //
 //// Concatenate along axis 1
 //
@@ -95,7 +95,7 @@ class Slicer;
 //// Make output
 //
 //   ArrayLattice<Float> al3(lc.shape());
-//   SubLattice<Float> ml3(al3, True);
+//   SubLattice<Float> ml3(al3, true);
 //
 //// Copy data to output (mask has to be copied separately)
 //
@@ -131,7 +131,7 @@ class LatticeConcat : public MaskedLattice<T> {
   LatticeConcat(uInt axis, bool tempClose = true);
 
   // Default constructor.  Sets the concatenation axis to 0
-  // and tempClose is True
+  // and tempClose is true
   LatticeConcat();
 
   // Copy constructor (reference semantics)
@@ -198,7 +198,7 @@ class LatticeConcat : public MaskedLattice<T> {
   // Get the region used (always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
-  // If all of the underlying lattices are writable returns True
+  // If all of the underlying lattices are writable returns true
   virtual bool isWritable() const;
 
   // Does the lattice have a pixelmask?
@@ -222,12 +222,12 @@ class LatticeConcat : public MaskedLattice<T> {
   virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Do the actual get of the data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.  Generally the user should use function getSlice
   virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual get of the mask data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array. Generally the user should use function getMaskSlice
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 

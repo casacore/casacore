@@ -123,10 +123,10 @@ typedef AipsrcVector<String> AipsrcVString;
 // If AIPSPATH is not set in either way, it is set to the home directory.
 // <p>
 // The basic interaction with the class is with the static keyword match function
-// <srcblock>Bool Aipsrc::find(String &result, const String &keyword)
+// <srcblock>bool Aipsrc::find(String &result, const String &keyword)
 // </srcblock>
 // A set of
-// <srcblock>Bool AipsrcValue::find(Type &result, const String &keyword, ...)
+// <srcblock>bool AipsrcValue::find(Type &result, const String &keyword, ...)
 // </srcblock>
 // are available to interpret the string value found.
 // (see <linkto class="AipsrcValue">AipsrcValue</linkto>).<br>
@@ -229,7 +229,7 @@ class Aipsrc {
   //  </thrown>
   //  The <src>find()</src> functions will, given a keyword, return the value
   //  with a matched keyword found in the files. If no match found the
-  //  function will be False. The <src>findNoHome()</src> emulates the <src>-i</src>
+  //  function will be false. The <src>findNoHome()</src> emulates the <src>-i</src>
   //  switch of getrc by bypassing the <src>~/.aipsrc</src> file.
   //  <group>
   static bool find(String &value, const String &keyword);
@@ -239,14 +239,14 @@ class Aipsrc {
   // These finds check a (possible) value of the keyword against a list
   // of coded values provided, and return an index into the list (N if not
   // found). Matching is minimax, case insensitive. Always better to use
-  // the one with default. return is False if no keyword or no match.
+  // the one with default. return is false if no keyword or no match.
   // <group>
   static bool find(uInt &value, const String &keyword, Int Nname, const String tname[]);
   static bool find(uInt &value, const String &keyword, const Vector<String> &tname);
   // </group>
   // This find usually saves you some lines of code, since you can supply the
   // default you want to use when no such keyword is defined.
-  // If the return value is False, the keyword was not found and the default
+  // If the return value is false, the keyword was not found and the default
   // was used.
   // <group>
   static bool find(String &value, const String &keyword, const String &default_value);
@@ -351,7 +351,7 @@ class Aipsrc {
   // Set (new or overwrite) keyword/value pair
   static void genSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam,
                      const String &val);
-  // Remove a keyword from list (False if not in list)
+  // Remove a keyword from list (false if not in list)
   static bool genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam);
   // Get the value of a keyword
   static bool genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,

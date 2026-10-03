@@ -122,7 +122,7 @@ class DynBuffer {
   void nextstart();
 
   // Get the pointer to the next buffer and its used length in bytes.
-  // The function returns a <src>False</src> value if there are no more
+  // The function returns a <src>false</src> value if there are no more
   // buffers.
   bool next(uInt& usedLength, Char*& ptr);
 

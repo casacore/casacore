@@ -86,7 +86,7 @@ class LELSpectralIndex : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  // Returns False.
+  // Returns false.
   virtual bool prepareScalarExpr();
 
   // Get class name

@@ -107,7 +107,7 @@ class LatticeCleanProgress {
   void resizeDataStorage();
 
   // this will redraw the plot with a new scale;
-  // if plotMatrices = False, just draw the boxes,
+  // if plotMatrices = false, just draw the boxes,
   // else, replot all past data.
   //
   void basicSetUp(bool plotMatrices = false);

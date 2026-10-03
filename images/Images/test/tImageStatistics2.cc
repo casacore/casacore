@@ -302,7 +302,7 @@ AlwaysAssert(stats.asInt64("npts") == im.size(), AipsError);
             //LatticeStatsDataProvider<Double, Float> *dataProvider
             //				= new LatticeStatsDataProvider<Double, Float>(im);
             //			ClassicalStatistics<Double, const Float*> cs;
-            //			StatsDataProvider<Double, const Float*, const Bool*> *dp =
+            //			StatsDataProvider<Double, const Float*, const bool*> *dp =
             //				dynamic_cast<StatsDataProvider<Double, const Float*, const
 Bool*>* >(
             //					dataProvider
@@ -336,8 +336,8 @@ Double median = cs.getMedian();
     = new LatticeStatsDataProvider<Double, Float>(im);
             ClassicalStatistics<Double, const Float*> cs;
 cout << im.name() << endl;
-            // StatsDataProvider<Double, const Float*, const Bool*> *dp =
-            //	dynamic_cast<StatsDataProvider<Double, const Float*, const Bool*>* >(
+            // StatsDataProvider<Double, const Float*, const bool*> *dp =
+            //	dynamic_cast<StatsDataProvider<Double, const Float*, const bool*>* >(
             //		dataProvider
             //	);
             cs.setDataProvider(dataProvider);

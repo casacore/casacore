@@ -123,13 +123,13 @@ class TableRecordRep : public RecordRep {
   // newDescription</src>.
   void restructure(const RecordDesc& newDescription, bool recursive);
 
-  // Returns True if this and other have the same RecordDesc, other
+  // Returns true if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
   // order of the fields must be identical (recursively for fixed
   // structured sub-Records in this).
   // <note role=caution>
-  // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-  // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+  // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+  // <br><src>thatRecord.conform(thisRecord) == true</src>, because
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>

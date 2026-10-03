@@ -142,7 +142,7 @@ class Directory : public File {
 
   // Remove the directory and its contents (recursively in all
   // subdirectories).
-  // If <src>keepDir==True</src>, the directory itself is kept
+  // If <src>keepDir==true</src>, the directory itself is kept
   //(to keep properties like placement on Lustre).
   void removeRecursive(bool keepDir = false);
 
@@ -154,7 +154,7 @@ class Directory : public File {
   // directory is copied to the new directory.
   // <br>An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target already exists and overwrite!=True
+  // <br>- or the target already exists and overwrite!=true
   // <note role=caution>
   // 1. The behavior of this copy function is different from cp when the
   // target directory already exists. Cp copies the source to a
@@ -162,7 +162,7 @@ class Directory : public File {
   // <br>2. When a readonly file is copied, <src>cp</src> the resulting
   // file is also readonly. Therefore <src>chmod</src> is used to
   // set user write permission after the copy.
-  // The flag <src>setUserWritePermission</src> can be set to False
+  // The flag <src>setUserWritePermission</src> can be set to false
   // when that should not be done.
   // </note>
   // <group>
@@ -181,7 +181,7 @@ class Directory : public File {
   // The source directory is moved (thus renamed) to the target.
   // <br>An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target already exists and overwrite!=True
+  // <br>- or the target already exists and overwrite!=true
   // <note role=caution>
   // The behavior of this move function is different from mv when the
   // target directory already exists. Mv moves the source to a

@@ -199,10 +199,10 @@ class TableColumn;
 //    String dataManagerName() const;
 // </src>
 // <dt><src>
-//    Bool canAddRow() const;
+//    bool canAddRow() const;
 // </src>
 // <dt><src>
-//    Bool canRemoveRow() const;
+//    bool canRemoveRow() const;
 // </src>
 // <dt><src>
 //    void addRow64 (rownr_t nrrow);
@@ -221,10 +221,10 @@ class TableColumn;
 //						 const String& dataTypeId);
 // </src>
 // <dt><src>
-//    Bool isWritable() const;
+//    bool isWritable() const;
 // </src>
 // <dt><src>
-//    Bool isShapeDefined (rownr_t rownr);
+//    bool isShapeDefined (rownr_t rownr);
 // </src>
 // </dl>
 // </ul>
@@ -453,11 +453,11 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
   String virtualName_p;  // # virtual column name
   String storedName_p;   // # stored column name
   bool isWritable_p;     // # is virtual column writable?
-  bool tempWritable_p;   // # True =  create phase, so column
+  bool tempWritable_p;   // # true =  create phase, so column
   // #                                              is temporarily writable
-  // #                                      False = asks stored column
+  // #                                      false = asks stored column
   rownr_t initialNrrow_p;             // # initial #rows in case of create
-  bool arrayIsFixed_p;                // # True = virtual is FixedShape array
+  bool arrayIsFixed_p;                // # true = virtual is FixedShape array
   IPosition shapeFixed_p;             // # shape in case FixedShape array
   ArrayColumn<StoredType>* column_p;  // # the stored column
 };

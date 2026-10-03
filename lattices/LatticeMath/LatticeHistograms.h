@@ -122,7 +122,7 @@ class PGPlotter;
 //
 //// Set to list and plot mean, sigma and rms
 //
-//      if (!histo.setList(True)) return 1;
+//      if (!histo.setList(true)) return 1;
 //      String device = "/xs";
 //      Vector<Int> nxy(2);
 //      nxy(0) = 3;
@@ -181,7 +181,7 @@ class LatticeHistograms {
   // Assignment operator (copy semantics)
   LatticeHistograms<T>& operator=(const LatticeHistograms<T>& other);
 
-  // Set the cursor axes (0 relative).  A return value of <src>False</src>
+  // Set the cursor axes (0 relative).  A return value of <src>false</src>
   // indicates you have asked for an invalid axis or that the internal
   // status of the class is bad.  The default state of the class is to set
   // the cursor axes to all axes in the lattice.
@@ -189,7 +189,7 @@ class LatticeHistograms {
 
   // Set the number of bins for the histogram.  Note that the bin width is
   // worked out for each histogram separately from the data minimum and maximum.
-  // The default state of the class is to set 25 bins.  A return value of <src>False</src>
+  // The default state of the class is to set 25 bins.  A return value of <src>false</src>
   // indicates you gave a non-positive bin width or  that the internal status of the
   // class is bad.
   bool setNBins(const uInt& nBins);
@@ -197,28 +197,28 @@ class LatticeHistograms {
   // Specify a pixel intensity range for which all pixels in that range are
   // included.  A vector of length 1 for <src>include</src> means that the
   // range will be set to <src>-abs(include(0))</src> to <src>abs(include(0))</src>.
-  // A return value of <src>False</src> indicates that the internal
+  // A return value of <src>false</src> indicates that the internal
   // status of the class is bad. If you don't call this function, the default
   // state of the class is to include all pixels.
   bool setIncludeRange(const Vector<T>& include);
 
   // Specify that a Gaussian overlay should be plotted on the histogram. This
   // Gaussian has the same mean and standard deviation as the data that were
-  // binned, and the same integral as the histogram.   A return value of <src>False</src>
+  // binned, and the same integral as the histogram.   A return value of <src>false</src>
   // indicates that the internal status of the class is bad. The default state of
   // the class is to not draw a Gaussian overlay.
   bool setGaussian(const bool& doGauss);
 
   // Specify the form of the histogram.   It can be plotted linearly or
   // logarithmically, and cumulatively or non-cumulatively.   A return value
-  // of <src>False</src> indicates that the internal status of the class is bad.
+  // of <src>false</src> indicates that the internal status of the class is bad.
   // The default state of the class is to draw the histograms linearly and
   // non-cumulatively.
   bool setForm(const bool& doLog, const bool& doCumu);
 
   // This function allows you to control whether some statistics of the
   // data that contributed to the histogram are written to  the output
-  // stream.   A return value of <src>False</src> indicates that the internal
+  // stream.   A return value of <src>false</src> indicates that the internal
   // status of the class is bad. The default state of the class is to not
   // list statistics.
   bool setStatsList(const bool& doList);
@@ -226,13 +226,13 @@ class LatticeHistograms {
   // This function sets the name of the PGPLOT plotting device and the number of
   // subplots in x and y per page.   If you set <src>plotter</src> but offer
   // a zero length array for <src>nxy</src> then <src>nxy</src> is set
-  // to [1,1].  A return value of <src>False</src> indicates invalid
+  // to [1,1].  A return value of <src>false</src> indicates invalid
   // plotting arguments or that the internal status of the class is bad. If you
   // don't call this function, the default state of the class is to not set
   // a plotting device.
   bool setPlotting(PGPlotter& plotter, const Vector<Int>& nxy);
 
-  // Display the histograms by plotting them.  A return value of <src>False</src>
+  // Display the histograms by plotting them.  A return value of <src>false</src>
   // indicates an invalid plotting device, or that the internal status of the class is bad.
   // If you don't call this function you won't see any histograms.
   bool display();
@@ -249,7 +249,7 @@ class LatticeHistograms {
   // [nx,ny,nz] and you ask for histograms of the y axis the shape of the returned
   // array would be [nbins,nx,nz].    The histograms are retrieved in the form
   // specified by the <src>setForm</src> function. The arrays are resized internally.
-  // A return value of <src>False</src> indicates  that the internal status of the class is bad.
+  // A return value of <src>false</src> indicates  that the internal status of the class is bad.
   bool getHistograms(Array<T>& values, Array<T>& counts);
 
   // in this version, the set of stats for each histogram is also returned. The
@@ -262,7 +262,7 @@ class LatticeHistograms {
   // internally. If <src>posInLattice=True</src> then the location is a
   // location in the input lattice.  Any positions on the display axes
   // are ignored.  Otherwise, you should just give locations for
-  // the display axes only. A return  value of <src>False</src> indicates  that
+  // the display axes only. A return  value of <src>false</src> indicates  that
   // the internal status  of the class is bad.
   bool getHistogram(Vector<T>& values, Vector<T>& counts, const IPosition& pos,
                     const bool posInLattice = false);
@@ -277,7 +277,7 @@ class LatticeHistograms {
   // Recover last error message
   String errorMessage() const { return error_p; };
 
-  // Set a MaskedLattice.  A return value of <src>False</src> indicates the
+  // Set a MaskedLattice.  A return value of <src>false</src> indicates the
   // lattice had an invalid type or that the internal status of the class is bad.
   bool setNewLattice(const MaskedLattice<T>& lattice);
 

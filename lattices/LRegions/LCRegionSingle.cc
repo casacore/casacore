@@ -65,7 +65,7 @@ bool LCRegionSingle::masksEqual(const LCRegion& other) const {
   if (hasMask() != other.hasMask()) {
     return false;
   }
-  // True if both do not have a mask.
+  // true if both do not have a mask.
   if (!hasMask() && !other.hasMask()) {
     return true;
   }

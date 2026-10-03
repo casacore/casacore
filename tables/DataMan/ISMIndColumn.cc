@@ -146,7 +146,7 @@ StIndArray* ISMIndColumn::putShape(rownr_t rownr, const IPosition& shape) {
   // # Insert an entry for this row and set its shape.
   // # Nothing will be done if it is already defined.
   return putArrayPtr(rownr, shape, false);
-  //    StIndArray* ptr = putArrayPtr (rownr, shape, False);
+  //    StIndArray* ptr = putArrayPtr (rownr, shape, false);
   //    ptr->setShape (*iosfile_p, dataType(), shape);
   //    return ptr;
 }

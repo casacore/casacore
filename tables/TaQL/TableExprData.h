@@ -173,7 +173,7 @@ class Block;
 //   // The matching entry numbers are stored in a vector.
 //   Vector<uInt> result(fld1.nelements());
 //   uInt nr=0;
-//   Bool valb;
+//   bool valb;
 //   for (uInt i=0; i<fld1.nelements(); i++) {
 //     expr.get (eid, valb);
 //     if (valb) {
@@ -181,7 +181,7 @@ class Block;
 //     }
 //     subj.next();         // Next time the next entry must be used
 //   }
-//   result.resize (nr, True);
+//   result.resize (nr, true);
 //   return result;
 // }
 // </srcBlock>

@@ -144,7 +144,7 @@ class TSMCubeBuff : public TSMCube {
                     bool userSet) override;
 
   // Resize the cache object.
-  // If forceSmaller is False, the cache will only be resized when it grows.
+  // If forceSmaller is false, the cache will only be resized when it grows.
   // If the given size exceeds the maximum size with more
   // than 10%, the maximum size will be used.
   // The cacheSize has to be given in buckets.

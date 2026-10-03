@@ -518,8 +518,8 @@ LatticeExprNode ImageExprParse::makeIndexinNode(const LatticeExprNode& axis,
       maxEnd = slices[i].end();
     }
   }
-  // Create a vector of that length and initialize to False.
-  // Set the vector to True for all ranges.
+  // Create a vector of that length and initialize to false.
+  // Set the vector to true for all ranges.
   Vector<bool> flags(maxEnd + 1, false);
   for (uInt i = 0; i < slices.size(); i++) {
     const Slice& slice = slices[i];

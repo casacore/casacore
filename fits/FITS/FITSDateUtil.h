@@ -92,7 +92,7 @@ class FITSDateUtil {
                      uInt precision = 12);
 
   // Convert a FITS date string and TIMESYS keyword value into an MVTime and system.
-  // Returns False if it can't decode date and timesys. It tries to convert as
+  // Returns false if it can't decode date and timesys. It tries to convert as
   // much as possible, for example if it can't decode timesys it still
   // attempts to decode the time. It sets the date to Jan 1/1900 if it can't
   // decode the time, and UTC if it can't decode timesys. If timesys is the

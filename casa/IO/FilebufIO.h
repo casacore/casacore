@@ -74,7 +74,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&fio);
 //    // Read the data.
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -112,7 +112,7 @@ class FilebufIO : public ByteIO {
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
-  // False. Will always throw an exception if the file is not readable or
+  // false. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
   virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 

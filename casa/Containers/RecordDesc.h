@@ -159,7 +159,7 @@ class RecordDesc {
   // An exception will be thrown if the field is no array.
   void setShape(Int whichField, const IPosition& shape);
 
-  // Merge a single field from other.  If allowDuplicates is True, silently
+  // Merge a single field from other.  If allowDuplicates is true, silently
   // throw away fields if one with the same name and type already exists,
   // otherwise an exception is thrown.  Conflicting types always cause an
   // exception. Returns the number of fields in the description.
@@ -202,16 +202,16 @@ class RecordDesc {
   // j is the minimal number needed to make it unique.
   String uniqueName(const String& name) const;
 
-  // Returns True if whichField is an array.
+  // Returns true if whichField is an array.
   bool isArray(Int whichField) const;
 
-  // Returns True if whichField is a scalar.
+  // Returns true if whichField is a scalar.
   bool isScalar(Int whichField) const;
 
-  // Returns True if whichField is a sub-record.
+  // Returns true if whichField is a sub-record.
   bool isSubRecord(Int whichField) const;
 
-  // Returns True if whichField is a table.
+  // Returns true if whichField is a table.
   bool isTable(Int whichField) const;
 
   // What is the shape of the given field. Returns [1] if the field is a
@@ -252,7 +252,7 @@ class RecordDesc {
   // It is equal if the number of fields is equal and all field names in
   // this description occur in the other too. The order of the fields
   // is not important.
-  // <br>The flag equalDataTypes is set to True if the data types
+  // <br>The flag equalDataTypes is set to true if the data types
   // of all fields match.
   // <br>Use function operator== if order and types are important,
   // but names are not.

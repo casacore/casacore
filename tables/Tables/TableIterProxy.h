@@ -115,7 +115,7 @@ class TableIterProxy {
   const TableIterator& iterator() const { return iter_p; }
 
   // Get the next subtable and return it in the TableProxy argument.
-  // When no more subtables are available, it returns False.
+  // When no more subtables are available, it returns false.
   bool nextPart(TableProxy& table);
 
   // Iterate to the next part (for Python use).
@@ -132,7 +132,7 @@ class TableIterProxy {
 
   // # Data members
   TableIterator iter_p;
-  bool firstTime_p;  // # True = first time
+  bool firstTime_p;  // # true = first time
 };
 
 }  // namespace casacore

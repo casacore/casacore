@@ -66,7 +66,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Vector<Int> vi;
 // ...  // Sets vi somehow
 // Int val;
-// Bool found;
+// bool found;
 // while (cin >> val  &&  val != -999) {
 //     Int where = linearSearch(found, vi, val, vi.nelements());
 //     if (found) {
@@ -111,7 +111,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // indices in the range <src>[lower ... lower + n - 1]</src> Return the index
 // of the first element which is greater than or equal to (ascending order) or
 // less than or equal to (descending order) the value.
-// When not found, -1 is returned and found is set to False.
+// When not found, -1 is returned and found is set to false.
 // # GvD 19971008: The functions need different names, because g++ gives errors
 // # when instantiating.
 // <group>

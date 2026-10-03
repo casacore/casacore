@@ -55,7 +55,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <br> The class is primarily developed for TaQL masked arrays, but
 // could be used elsewhere as well.
 //
-// A mask value True means that the corresponding value is masked off, thus
+// A mask value true means that the corresponding value is masked off, thus
 // not taken into account in reduction functions like <src>sum</src>. This
 // is the same as the numpy masked array.
 //

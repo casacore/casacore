@@ -1190,7 +1190,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
                                                true);  // noRows
       TableCopy::copyInfo(newtab, otherMS);
       TableCopy::copySubTables(newtab, itsMS,
-                               false);  // noRows==False, i.e. subtables are copied
+                               false);  // noRows==false, i.e. subtables are copied
     }
     tempMS =
         MeasurementSet(destMSName, Table::Update);  // open as the output MS for the new Main rows
@@ -1928,7 +1928,7 @@ bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIn
   //     indgen(delrows);
   //     itsMS.pointing().removeRow(delrows);
 
-  //     return False;
+  //     return false;
 
   //   }
 
@@ -3573,7 +3573,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
           // We need to check if there exists an entry in the DATA_DESCRIPTION
           // table with the required spectral window and polarization index.
           ddMap[d] = ddIndex.getRowNumber(
-              matchedDD);  // sets matchedDD to True if a matching DD table entry is found
+              matchedDD);  // sets matchedDD to true if a matching DD table entry is found
         }
         // cout << "Found matching pol. Fould matching DD? " << matchedDD << " d ddMap[d] " << d <<
         // " " << ddMap[d] << std::endl;

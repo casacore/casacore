@@ -92,9 +92,9 @@ class SubImage : public ImageInterface<T> {
   // while for the non-const version one has to specify if the SubImage
   // should be writable (if the original image is non-writable, the
   // SubImage is always set to non-writable).
-  // <br>If preserveAxesOrder is True, the axes order will be preserved. This
+  // <br>If preserveAxesOrder is true, the axes order will be preserved. This
   // is only important in cases where pixel axes are to be dropped, if not
-  // the axes order will be preserved. If False and pixel axes are dropped,
+  // the axes order will be preserved. If false and pixel axes are dropped,
   // the order of the coordinates will be preserved, but not necessarily
   // the axes.
   // <group>
@@ -245,7 +245,7 @@ class SubImage : public ImageInterface<T> {
  private:
   // Set the coordinates.
   // It removes world axes if the subimage has axes removed.
-  // <br>If preserveAxesOrder is True and axes are dropped, it will preserve
+  // <br>If preserveAxesOrder is true and axes are dropped, it will preserve
   // the order of the axes as well as the order of the coordinates.
   void setCoords(const CoordinateSystem& coords, bool preserveAxesOrder);
   void setCoords(const CoordinateSystem& coords);

@@ -313,8 +313,8 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual void getMode(RecordInterface &mode) const;
   // </group>
 
-  // return True if the implementing function supports a mode.  The default
-  // implementation returns False.
+  // return true if the implementing function supports a mode.  The default
+  // implementation returns false.
   virtual bool hasMode() const;
 
   // Print the function (i.e. the parameters)

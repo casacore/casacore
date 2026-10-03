@@ -89,7 +89,7 @@ MArray<T> TEFNAiifAS(bool useArray, const MArray<T>& arr, const TENShPtr& node,
   return MArray<T>(res);
 }
 
-// Result mask is True if cond.mask=True, otherwise mask1 or mask2.
+// Result mask is true if cond.mask=True, otherwise mask1 or mask2.
 // Result is null if one of the operands is null. Only if condition
 // is scalar and operands are arrays, the result might be non-null.
 template <typename T>

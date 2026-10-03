@@ -118,7 +118,7 @@ class TableColumn;
 // // Its data type has to match the data type of the column.
 // RecordFieldPtr<String> nameFld(colInx.accessKey(), "NAME");
 // // Find the row for a given name.
-// Bool found;
+// bool found;
 // // Fill the key field and get the row number.
 // // NAME is a unique key, so only one row number matches.
 // // Otherwise function getRowNumbers had to be used.
@@ -132,7 +132,7 @@ class TableColumn;
 // RecordFieldPtr<String> nameUpp(colInx.accessUpperKey(), "NAME");
 // *nameFld = "LOWER";
 // *nameUpp = "UPPER";
-// RowNumbers rownrs = colInx.getRowNumbers (True, True, True);
+// RowNumbers rownrs = colInx.getRowNumbers (true, true, true);
 // </srcblock>
 
 // <motivation>
@@ -143,7 +143,7 @@ class ColumnsIndexArray {
  public:
   // Create an index on the given table for the given column.
   // The column can be a scalar or an array column.
-  // If <src>noSort==True</src>, the table is already in order of that
+  // If <src>noSort==true</src>, the table is already in order of that
   // column and the sort step will not be done.
   // It only supports String and integer columns.
   ColumnsIndexArray(const Table&, const String& columnName);
@@ -191,7 +191,7 @@ class ColumnsIndexArray {
 
   // Find the row number matching the key. All keys have to be unique,
   // otherwise an exception is thrown.
-  // If no match is found, <src>found</src> is set to False.
+  // If no match is found, <src>found</src> is set to false.
   // The 2nd version makes it possible to pass in your own Record
   // instead of using the internal record via the <src>accessKey</src>
   // functions. Note that the given Record will be copied to the internal
@@ -209,7 +209,7 @@ class ColumnsIndexArray {
   // record, thus overwrites it.
   // <br>A row can contain multiple equal values. In such a case the
   // same row number can occur multiple times in the output vector,
-  // unless <src>unique</src> is set to True. Note that making the row
+  // unless <src>unique</src> is set to true. Note that making the row
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
@@ -226,7 +226,7 @@ class ColumnsIndexArray {
   // records, thus overwrite them.
   // <br>A row can contain multiple matching values. In such a case the
   // same row number can occur multiple times in the output vector,
-  // unless <src>unique</src> is set to True. Note that making the row
+  // unless <src>unique</src> is set to true. Note that making the row
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
@@ -243,7 +243,7 @@ class ColumnsIndexArray {
   void deleteObjects();
 
   // Add a column to the record description for the keys.
-  // If the switch <src>arrayPossible</src> is True, the column can
+  // If the switch <src>arrayPossible</src> is true, the column can
   // be an array. Otherwise it has to be a scalar.
   void addColumnToDesc(RecordDesc& description, const TableColumn& column);
 
@@ -256,9 +256,9 @@ class ColumnsIndexArray {
 
   // Do a binary search on <src>itsUniqueIndexArray</src> for the key in
   // <src>fieldPtrs</src>.
-  // If the key is found, <src>found</src> is set to True and the index
+  // If the key is found, <src>found</src> is set to true and the index
   // in <src>itsUniqueIndexArray</src> is returned.
-  // If not found, <src>found</src> is set to False and the index
+  // If not found, <src>found</src> is set to false and the index
   // of the next higher key is returned.
   rownr_t bsearch(bool& found, void* fieldPtr) const;
 
@@ -268,7 +268,7 @@ class ColumnsIndexArray {
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
-  // If <src>unique</src> is True, the row numbers will be made unique.
+  // If <src>unique</src> is true, the row numbers will be made unique.
   void fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t end, bool unique) const;
 
   // Get the data if the column is an array.

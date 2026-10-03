@@ -79,7 +79,7 @@ class CompositeNumber {
   // return the closest even composite number
   uInt nearestEven(const uInt value);
 
-  // returns True is value is composite
+  // returns true is value is composite
   bool isComposite(const uInt value);
 
  private:

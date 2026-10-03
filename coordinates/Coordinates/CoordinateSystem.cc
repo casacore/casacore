@@ -391,7 +391,7 @@ bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap, Vector<Int>& worldAxi
 //
 // Make a map from "*this" to "other"
 //
-// . Returns False if either "*this" or "other" have no valid
+// . Returns false if either "*this" or "other" have no valid
 //   world axes.   Otherwise true.
 // . The coordinate systems can have arbitrary numbers of coordinates
 //   in any relative order.
@@ -403,7 +403,7 @@ bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap, Vector<Int>& worldAxi
 //   in other.   It tells you how to transpose
 //   "other" to be in the order of "*this".  A value of -1 indicates
 //   that a world axis could not be matched.
-// . If refChange(i) is True, it means that if the coordinate matched,
+// . If refChange(i) is true, it means that if the coordinate matched,
 //   there is a difference in reference type (E.g J2000->B1950)
 //   for worldAxis i in "other"
 {
@@ -1767,7 +1767,7 @@ bool CoordinateSystem::convert(Matrix<Double>& coordsOut, const Matrix<Double>& 
       relPixelIn = relPixelRefIn;
 
       // Pick out each of abs/rel world/pixel values into vectors of that type
-      // Presently, worldAxes(i) will be False for velocity.  We must
+      // Presently, worldAxes(i) will be false for velocity.  We must
       // do that after
 
       for (uInt i = 0; i < n; i++) {
@@ -2759,7 +2759,7 @@ Coordinate* CoordinateSystem::makeFourierCoordinate(const Vector<bool>& axes,
   //
   const uInt nCoord = nCoordinates();
   for (uInt i = 0; i < nCoord; i++) {
-    // Are there some axes True for this coordinate and are their
+    // Are there some axes true for this coordinate and are their
     // world/pixel axes not removed ?
 
     if (checkAxesInThisCoordinate(axes, i)) {

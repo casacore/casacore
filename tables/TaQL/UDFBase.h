@@ -153,7 +153,7 @@ namespace casacore {
 //
 // <example>
 // The following examples show a normal UDF function.
-// <br>It returns True if the function argument matches 1.
+// <br>It returns true if the function argument matches 1.
 // It can be seen that it checks if the argument is an integer scalar.
 // <srcblock>
 // class TestUDF: public UDFBase
@@ -178,7 +178,7 @@ namespace casacore {
 //   }
 //   // Get the value for the given id.
 //   // It gets the value of the operand and checks if it is 1.
-//   Bool getBool (const TableExprId& id)
+//   bool getBool (const TableExprId& id)
 //     { return operands()[0]->getInt(id) == 1; }
 // };
 // </srcblock>
@@ -204,7 +204,7 @@ namespace casacore {
 //     AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
 //     setDataType (TableExprNodeRep::NTInt);
 //     setNDim (0);           // scalar
-//     setAggregate (True);   // aggregate function
+//     setAggregate (true);   // aggregate function
 //   }
 //   // Get the value of a group.
 //   // It aggregates the values of multiple rows.

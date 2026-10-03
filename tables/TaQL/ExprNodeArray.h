@@ -197,7 +197,7 @@ class TableExprNodeArrayColumn : public TableExprNodeArray {
   bool isDefined(const TableExprId& id) override;
 
   // Get the data type of this column.
-  // It returns with a True status.
+  // It returns with a true status.
   bool getColumnDataType(DataType&) const override;
 
  protected:
@@ -688,7 +688,7 @@ class TableExprNodeIndex : public TableExprNodeMulti {
  protected:
   Int origin_p;            // # origin 0 for C++/Python; 1 for Glish
   Int endMinus_p;          // # subtract from end (origin and endExcl)
-  bool isCOrder_p;         // # True for Python
+  bool isCOrder_p;         // # true for Python
   IPosition start_p;       // # precalculated start values
   IPosition end_p;         // # precalculated end values (<0 = till end)
   IPosition incr_p;        // # precalculated increment values
@@ -751,7 +751,7 @@ class TableExprNodeArrayPart : public TableExprNodeArray {
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
 
   // Get the data type of this column (if possible).
-  // It returns with a False status when the index is not constant
+  // It returns with a false status when the index is not constant
   // (that means that the index can vary with row number).
   bool getColumnDataType(DataType&) const override;
 

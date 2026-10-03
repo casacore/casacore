@@ -132,7 +132,7 @@ void LCUnion::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
       reg->doGetSlice(tmpbuf, Slicer(streg, endreg, inc, Slicer::endIsLast));
       Array<bool> bufreg = buffer(stbuf, endbuf);
       DebugAssert(bufreg.shape() == tmpbuf.shape(), AipsError);
-      // Make pixel in buffer True when tmpbuf has a True pixel.
+      // Make pixel in buffer true when tmpbuf has a true pixel.
       bool deleteBuf, deleteTmp;
       bool* buf = bufreg.getStorage(deleteBuf);
       bool* bufptr = buf;

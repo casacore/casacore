@@ -180,7 +180,7 @@ class FitGaussian {
   // Return the RMS of the fit
   T RMS();
 
-  // Returns True if the fit (eventually) converged to a value.
+  // Returns true if the fit (eventually) converged to a value.
   bool converged();
 
  private:

@@ -112,16 +112,16 @@ class Template {
   const String &getTDname(uInt n) { return tdname_p[n]; };
   // </group>
 
-  // Canonicalise the template entries in the object. If switch True, do only
+  // Canonicalise the template entries in the object. If switch true, do only
   // the templates entry for duplication
   void canonical(const bool tmplonly = false);
   // Split the entries in number, name id, rest
   void splitName();
   // Sort the data on name and number and fill in missing number. If switch
-  // is True, renumber all template entries in sequence.
+  // is true, renumber all template entries in sequence.
   void sortName(const bool renumber = false);
   // Write the data formatted to the specified file. Notify errors and warnings
-  // by writing to <src>cerr</src>. If <src>warn</src> is False, some warnings will be
+  // by writing to <src>cerr</src>. If <src>warn</src> is false, some warnings will be
   // compressed into a general warning.
   void writeOut(ostream &os, const bool warn = false);
   // Write the duplicate list; the userFile gets ***; isSys gives the system switch

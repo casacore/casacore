@@ -103,13 +103,13 @@ class MSFlagger {
   // except that the data is not returned, but kept around for further
   // processing. Only a single DATA related quantity can be requested, the
   // corresponding FLAG and FLAG_ROW columns are read automatically.
-  // Reorder the data to 4d with ifr and time axis if ifrAxis is True.
+  // Reorder the data to 4d with ifr and time axis if ifrAxis is true.
   bool fillDataBuffer(const String& item, bool ifrAxis);
 
   // Difference the data, subtracting the average over a window of
   // specified width and taking the absolute value. Complex quantities are
   // turned into the corresponding amplitude after differencing.
-  // If doMedian==True the median difference is returned for window>2.
+  // If doMedian==true the median difference is returned for window>2.
   // For a window width of one, the previous sample is
   // subtracted, giving a derivative like quantity.
   // Note that the subtraction is done on row-by-row basis for TIME
@@ -148,13 +148,13 @@ class MSFlagger {
   }
 
   // Create the FLAG_HISTORY column and initialize it from the
-  // FLAG_ROW and FLAG columns. Returns False if FLAG_HISTORY already exists.
+  // FLAG_ROW and FLAG columns. Returns false if FLAG_HISTORY already exists.
   // The first flagging bit is filled with the flags as found in the MS,
   // subsequent bits can be used for user generated flags.
   bool createFlagHistory(Int nHis = 2);
 
   // Apply the flags in the FLAG_HISTORY column to the FLAG and FLAG_ROW
-  // columns. Returns False if FLAG_HISTORY doesn't exist.
+  // columns. Returns false if FLAG_HISTORY doesn't exist.
   // The default argument will apply the currently active flag level
   // (as specified by the FLAG_LEVEL column keyword).
   // Sets the current level to the flag level restored.

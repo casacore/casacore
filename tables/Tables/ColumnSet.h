@@ -146,10 +146,10 @@ class ColumnSet {
   void autoReleaseLock();
 
   // If needed, get a temporary user lock.
-  // It returns False if the lock was already there.
+  // It returns false if the lock was already there.
   bool userLock(FileLocker::LockType, bool wait);
 
-  // Release a temporary user lock if the given release flag is True.
+  // Release a temporary user lock if the given release flag is true.
   void userUnlock(bool releaseFlag);
 
   // Do all data managers and engines allow to add rows?
@@ -208,7 +208,7 @@ class ColumnSet {
 
   // Write all the data and let the data managers flush their data.
   // This function is called when a table gets written (i.e. flushed).
-  // It returns True if any data manager wrote something.
+  // It returns true if any data manager wrote something.
   bool putFile(bool writeTable, AipsIO&, const TableAttr&, bool fsync);
 
   // Read the data, reconstruct the data managers, and link those to
@@ -276,7 +276,7 @@ class ColumnSet {
 
   // Check if a data manager name has not already been used.
   // Start checking at the given index in the array.
-  // It returns False if the name has already been used.
+  // It returns false if the name has already been used.
   // By default an exception is thrown if the name has already been used.
   bool checkDataManagerName(const String& name, uInt from, const String& tableName,
                             bool doTthrow = true) const;
@@ -288,7 +288,7 @@ class ColumnSet {
   // It returns a map of DataManager* telling how many columns for
   // a data manager have to be removed. A count of -1 means that all
   // columns have to be removed. For such columns the flag in the
-  // returned Block is False, otherwise True.
+  // returned Block is false, otherwise true.
   std::map<void*, Int> checkRemoveColumn(const Vector<String>& columnNames);
 
   // Check if the table is locked for read or write.

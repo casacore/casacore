@@ -49,7 +49,7 @@ namespace casacore {
 // These functions perform element by element logical operations on
 // optionally masked arrays and/or scalars.
 // If two arrays are used, the arrays must conform, except for allEQ which
-// returns False if the arrays do not conform.
+// returns false if the arrays do not conform.
 //
 // The functions in this file can be divided in 3 groups:
 // <ul>
@@ -62,7 +62,7 @@ namespace casacore {
 //       mask is the OR of both masks.
 //  <li> Full reduction functions like ntrue, all, allEQ, etc.
 //       They operate on the unmasked elements only. If there are no unmasked
-//       elements, the results is 0 or True.
+//       elements, the results is 0 or true.
 //  <li> Reduction functions working on unmasked elements in parts of the
 //       input array. The result is an MArray that has a mask if the input
 //       array has a mask. An output element is masked off if its input
@@ -72,7 +72,7 @@ namespace casacore {
 //       There are 3 flavours:
 //   <ul>
 //    <li> partialXXX reduces one or more axes. E.g. one can count the
-//         number of True elements for particular array axes.
+//         number of true elements for particular array axes.
 //         The result is an array with a lower dimensionality.
 //         They can be seen as a special versions of the boxedXXX functions.
 //    <li> slidingXXX operates in a sliding window over the array. So the
@@ -320,7 +320,7 @@ MArray<bool> isFinite(const MArray<T>& arr) {
 }
 
 // Are all unmasked elements equal?
-// The result is True if there are no unmasked elements.
+// The result is true if there are no unmasked elements.
 // <group>
 template <typename T>
 bool allEQ(const MArray<T>& left, const MArray<T>& right) {
@@ -354,7 +354,7 @@ inline bool allEQ(const T& value, const MArray<T>& array) {
 // </group>
 
 // Is any unmasked element equal?
-// The result is False if there are no unmasked elements.
+// The result is false if there are no unmasked elements.
 // <group>
 template <typename T>
 bool anyEQ(const MArray<T>& left, const MArray<T>& right) {
@@ -393,7 +393,7 @@ inline bool allTrue(const MArray<bool>& array) { return allEQ(array, true); }
 // Is any unmasked element true?
 inline bool anyTrue(const MArray<bool>& array) { return anyEQ(array, true); }
 
-// Count the number of unmasked elements that are True.
+// Count the number of unmasked elements that are true.
 template <typename T>
 size_t ntrue(const MArray<T>& a) {
   if (a.hasMask()) {
@@ -404,7 +404,7 @@ size_t ntrue(const MArray<T>& a) {
   return ntrue(a.array());
 }
 
-// Count the number of unmasked elements that are False.
+// Count the number of unmasked elements that are false.
 template <typename T>
 size_t nfalse(const MArray<T>& a) {
   if (a.hasMask()) {

@@ -87,11 +87,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&mf1);
 //    // Write values.
 //    stream << (Int)10;
-//    stream << True;
+//    stream << true;
 //    // Seek to beginning of file and read data in.
 //    stream.setpos (0);
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -158,7 +158,7 @@ class MultiHDF5 : public MultiFileBase {
   void close() override;
   // Write the header info.
   void writeHeader() override;
-  // Read the header info. If always==False, the info is only read if the
+  // Read the header info. If always==false, the info is only read if the
   // header counter has changed.
   void readHeader(bool always = true) override;
   // Extend the virtual file to fit lastblk.

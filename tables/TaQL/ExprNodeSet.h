@@ -115,7 +115,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   // Add an element to the set.
   // If adaptType=True, the data type is the highest of the elements added.
   // Otherwise it is that of the first element.
-  // True is meant for a set of values, False for function arguments.
+  // true is meant for a set of values, false for function arguments.
   // <br>A constant mid-width interval is added as a normal interval.
   // In this way constant intervals can never be mid-width which makes
   // optimization easier.
@@ -233,7 +233,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   bool itsSingle;
   bool itsDiscrete;
   bool itsBounded;     // # Set is discrete and all starts/ends are defined
-  bool itsCheckTypes;  // # True = checking data types is not needed
+  bool itsCheckTypes;  // # true = checking data types is not needed
 };
 
 inline bool TableExprNodeSet::isSingle() const { return itsSingle; }
@@ -299,7 +299,7 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
         }
         mask(s, e) = marr.mask().reform(maskShp);
       } else if (!mask.empty()) {
-        // This array has no mask, so set to False in resulting mask.
+        // This array has no mask, so set to false in resulting mask.
         mask(s, e) = false;
       }
     }

@@ -100,10 +100,10 @@ class PGPlotterInterface {
  public:
   virtual ~PGPlotterInterface();
 
-  // True if it is OK to plot to this object. This method is implemented for
+  // true if it is OK to plot to this object. This method is implemented for
   // devices where you have to worry about devices detaching (e.g., the Glish
   // pgplotter might be dismissed by the user). The default implementation is
-  // to always return True.
+  // to always return true.
   virtual bool isAttached() const;
 
   // This is not a standard PGPLOT command. In the Glish/PGPLOT window, it

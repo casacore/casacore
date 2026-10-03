@@ -134,10 +134,10 @@ class MeasValue {
   //  <srcblock>
   //  MV &operator+=(const MV &meas);
   //  MV &operator-=(const MV &meas);
-  //  Bool operator==(const MV &meas) const;
+  //  bool operator==(const MV &meas) const;
   //  Bool operator!=(const MV &meas) const;
-  //  Bool near(const MV &meas, Double tol = 1e-13) const;
-  //  Bool nearAbs(const MV &meas, Double tol = 1e-13) const;
+  //  bool near(const MV &meas, Double tol = 1e-13) const;
+  //  bool nearAbs(const MV &meas, Double tol = 1e-13) const;
   //  </srcblock>
   //  Dummy for cxx2html
   void dummy_operator() const { ; };

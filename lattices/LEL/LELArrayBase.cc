@@ -93,7 +93,7 @@ void LELArrayBase::combineOrAnd(bool desiredValue, const Array<bool>& value) {
     *itsMaskPtr = true;
   }
   // If value is unequal desiredValue, mask should also be false
-  // (because  False || Unknown == Unknown  and  True && Unknown == Unknown).
+  // (because  false || Unknown == Unknown  and  true && Unknown == Unknown).
   bool* m = itsMaskPtr->getStorage(deleteMask);
   uInt ntrue = 0;
   for (uInt i = 0; i < nr; i++) {

@@ -66,11 +66,11 @@ void doIt(bool doExcp) {
   //    const String &comment (uInt whichField) const;
   //    const String &name(uInt whichField) const;
   //    const IPosition &shape(uInt whichField) const;
-  //    Bool isArray(uInt whichField) const;
-  //    Bool isScalar(uInt whichField) const;
-  //    Bool isSubRecord(uInt whichField) const;
-  //    Bool isTable(uInt whichField) const;
-  //    Bool operator==(const RecordDesc &other) const;
+  //    bool isArray(uInt whichField) const;
+  //    bool isScalar(uInt whichField) const;
+  //    bool isSubRecord(uInt whichField) const;
+  //    bool isTable(uInt whichField) const;
+  //    bool operator==(const RecordDesc &other) const;
   //    Bool operator!=(const RecordDesc &other) const;
   AlwaysAssertExit(a.isDisjoint(b));
   AlwaysAssertExit(b.isDisjoint(a));

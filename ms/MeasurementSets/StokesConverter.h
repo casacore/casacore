@@ -115,7 +115,7 @@ class StokesConverter {
   // The rescale option will correct for crosscorrelation data that
   // has been scaled to the level Stokes I (common practice
   // in radioastronomy: even though officially I=XX+YY, in practice
-  // we need to do I=(XX+YY)/2, set rescale to True to do the latter).
+  // we need to do I=(XX+YY)/2, set rescale to true to do the latter).
   StokesConverter(const Vector<Int>& out, const Vector<Int>& in, bool rescale = false);
 
   // desctructor
@@ -145,7 +145,7 @@ class StokesConverter {
   // convert weights, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed.
-  // Set sigma to True when converting sigma's using this routine.
+  // Set sigma to true when converting sigma's using this routine.
   void convert(Array<Float>& out, const Array<Float>& in, bool sigma = false) const;
 
   // invert flags, first dimension of input must match

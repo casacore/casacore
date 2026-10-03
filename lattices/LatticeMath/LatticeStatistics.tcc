@@ -1209,7 +1209,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
       dataProvider = &lattDP;
     }
     if (stepper.atStart() && progressMeter && !nsetsIsLarge) {
-      // if _doRobust_p = True, one scan for accumulated stats
+      // if _doRobust_p = true, one scan for accumulated stats
       // + one scan for median and quantiles + one scan for
       // medabsdevmed = at least 3. In practice this can be more
       // because there can be multiple scans for median/quantiles

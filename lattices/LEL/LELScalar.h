@@ -54,7 +54,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class T>
 class LELScalar {
  public:
-  // Default constructor sets a False mask.
+  // Default constructor sets a false mask.
   LELScalar();
 
   // Constructor takes value and optional mask.

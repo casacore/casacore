@@ -280,7 +280,7 @@ void LatticeCache<T>::readTile(Int tile, bool readonly) {
 
 // Get a free tile. The contents are undefined since
 // we will overwrite them immediately anyway. If readonly is
-// True then we discard the current contents iso possibly
+// true then we discard the current contents iso possibly
 // writing them out. This is needed for a const version of tile.
 template <class T>
 Int LatticeCache<T>::getFreeTile(bool readonly) {
@@ -297,7 +297,7 @@ Int LatticeCache<T>::getFreeTile(bool readonly) {
   if (foundTile < 0) {
     // We didn't find an unallocated tile so we look for the
     // least-recently-used tile and use it, if readonly is
-    // False, we have to first write it to disk
+    // false, we have to first write it to disk
     Int oldest = cacheAccesses;
     for (Int tile = 0; tile < numberTiles; tile++) {
       if ((tileSequence[tile] > 0) && (tileSequence[tile] < oldest)) {

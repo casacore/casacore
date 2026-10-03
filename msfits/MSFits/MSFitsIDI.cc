@@ -57,18 +57,18 @@ MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, const bool& ov
   // Input:
   //    tapeDevice           const String&      Tape device name
   //    msOut                const String&      Output MS name
-  //    overWrite            const Bool&        True if existing MS is to
+  //    overWrite            const bool&        true if existing MS is to
   //                                            be overwritten
   // Output to private data:
   //    itsDataSource        String             Tape name or input file name
   //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
   //    itsMSOut             String             Output MS name
   // DP//    itsMS                MeasurementSet*    Pointer to output MS
-  //    itsMSExists          Bool               True if output MS already exists
-  // DP//    itsOverWrite         Bool               True if existing MS is to
+  //    itsMSExists          Bool               true if output MS already exists
+  // DP//    itsOverWrite         Bool               true if existing MS is to
   // DP//                                            be overwritten
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   init(tapeDevice.absoluteName(), FITS::Tape9, msOut, overWrite, obsType);
   //
@@ -83,24 +83,24 @@ MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut, const bool& over
       itsMSOut(""),
       // DP  itsMS(0),
       itsMSExists(false),
-      // DP itsOverWrite(False),
+      // DP itsOverWrite(false),
       itsSelectedFiles(0) {
   // Construct from an input FITS-IDI file name and an output MS file name
   // Input:
   //    inFile               const String&      Input FITS-IDI file name
   //    msOut                const String&      Output MS name
-  //    overWrite            const Bool&        True if existing MS is to
+  //    overWrite            const bool&        true if existing MS is to
   //                                            be overwritten
   // Output to private data:
   //    itsDataSource        String             Tape name or input file name
   //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
   //    itsMSOut             String             Output MS name
   // DP//    itsMS                MeasurementSet*    Pointer to output MS
-  //    itsMSExists          Bool               True if output MS already exists
-  // DP//    itsOverWrite         Bool               True if existing MS is to
+  //    itsMSExists          Bool               true if output MS already exists
+  // DP//    itsOverWrite         Bool               true if existing MS is to
   //                                            be overwritten
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   init(inFile, FITS::Disk, msOut, overWrite, obsType);
   //
@@ -126,7 +126,7 @@ void MSFitsIDI::selectFiles(const Vector<Int>& files) {
   //    files                const Vector<Int>  List of selected file numbers
   // Output to private data:
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   itsSelectedFiles.resize(files.nelements());
   itsSelectedFiles = files;
@@ -202,18 +202,18 @@ void MSFitsIDI::init(const String& dataSource, const FITS::FitsDevice& deviceTyp
   //    dataSource    const String&            Input file name or tape device
   //    deviceType    const FITS::FitsDevice   FITS device type (tape or disk)
   //    msOut         const String&            Output MS name
-  //    overWrite     const Bool&              True if existing MS is to
+  //    overWrite     const bool&              true if existing MS is to
   //                                           be overwritten
   // Output to private data:
   //    itsDataSource        String             Tape name or input file name
   //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
   //    itsMSOut             String             Output MS name
   //    itsMS                MeasurementSet*    Pointer to output MS
-  //    itsMSExists          Bool               True if output MS already exists
-  //    itsOverWrite         Bool               True if existing MS is to
+  //    itsMSExists          Bool               true if output MS already exists
+  //    itsOverWrite         Bool               true if existing MS is to
   //                                            be overwritten
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   LogIO os(LogOrigin("MSFitsIDI", "init()", WHERE));
 
@@ -252,7 +252,7 @@ void MSFitsIDI::init(const String& dataSource, const FITS::FitsDevice& deviceTyp
 void MSFitsIDI::readFITSFile(bool& atEnd) {
   // Read and process the current FITS-IDI input file (on tape or disk)
   // Output:
-  //    atEnd                Bool               True if at EOF
+  //    atEnd                Bool               true if at EOF
   //
   LogIO os(LogOrigin("MSFitsIDI", "readFITSFile()", WHERE));
   atEnd = false;

@@ -105,7 +105,7 @@ class FrequencyAligner {
   void setTolerance(Double tol) { itsDiffTol = abs(tol); };
 
   // Align (via regridding) one spectrum taken at the specified epoch to
-  // the reference epoch.  Your provide the ordinate and mask (True==Good)
+  // the reference epoch.  Your provide the ordinate and mask (true==Good)
   // for the spectrum.  The lengths of these vectors must be the same
   // as <src>nPixels</src> given in the constructor.  The output vectors
   // are resized as needed.
@@ -114,9 +114,9 @@ class FrequencyAligner {
   // at the same epoch to convert (e.g. different polarizations).
   // If you do this, it is your responsibility to make sure that you
   // have called this function at least once with <src>useCachedAbcissa=False</src>.
-  //  If <src>extrapolate</src> is True, the regridding process is allowed
+  //  If <src>extrapolate</src> is true, the regridding process is allowed
   // to extrapolate outside of the abcissa domain. Otherwise masked pixels will result.
-  // Returns True if a regrid triggered, else False if just copied (see function
+  // Returns true if a regrid triggered, else false if just copied (see function
   // <src>setTolerance</src>.
   bool align(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<T>& yIn,
              const Vector<bool>& maskIn, const MEpoch& epoch, bool useCachedAbcissa,
@@ -141,7 +141,7 @@ class FrequencyAligner {
 
   // Align many spectra stored in an Array along the specified axis.  All spectra are aligned
   // to the same frequency abcissa (as described in previous function).  If any alignment
-  // returns False, then the return value will be False, otherwise  True is returned.
+  // returns false, then the return value will be false, otherwise  true is returned.
   bool alignMany(Array<T>& yOut, Array<bool>& maskOut, const Array<T>& yIn,
                  const Array<bool>& maskIn, uInt axis, const MEpoch& epoch,
                  typename InterpolateArray1D<Double, T>::InterpolationMethod method,

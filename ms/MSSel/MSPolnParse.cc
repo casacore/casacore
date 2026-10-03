@@ -181,7 +181,7 @@ Vector<Int> MSPolnParse::getMapToDDIDsV2(const String& polnExpr, const Vector<In
       setIDLists(polnIDs[p], 1, thisDDList);
       validPolIDs.resize((n = validPolIDs.nelements()) + 1, true);
       validPolIDs[n] = polnIDs[p];
-      // validPolIndices.resize((n=validPolIndices.nelements())+1,True);
+      // validPolIndices.resize((n=validPolIndices.nelements())+1,true);
       // validPolIndices[n]=polnIndices[p];
     }
     // else

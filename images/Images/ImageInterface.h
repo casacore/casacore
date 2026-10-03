@@ -120,7 +120,7 @@ class TiledShape;
 //   IPosition shape() const;
 //
 //   // doGetSlice is another function required of all Lattice objects.
-//   Bool doGetSlice(<Array<T>& buffer, const Slicer& section);
+//   bool doGetSlice(<Array<T>& buffer, const Slicer& section);
 //
 //  // etc...
 // private:
@@ -172,7 +172,7 @@ class ImageInterface : public MaskedLattice<T> {
 
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
-  // False if it cannot set the unit for some reason (e.g. the underlying
+  // false if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   // <group>
   virtual bool setUnits(const Unit& newUnits);
@@ -185,7 +185,7 @@ class ImageInterface : public MaskedLattice<T> {
   virtual String name(bool stripPath = false) const = 0;
 
   // Functions to set or replace the coordinate information in the Image
-  // Returns False on failure, e.g. if the number of axes do not match.
+  // Returns false on failure, e.g. if the number of axes do not match.
   // <group>
   virtual bool setCoordinateInfo(const CoordinateSystem& coords);
   const CoordinateSystem& coordinates() const { return coords_p; }
@@ -257,7 +257,7 @@ class ImageInterface : public MaskedLattice<T> {
   // The group type determines if it stored as a region or mask.
   // If overwrite=False, an exception will be thrown if the region
   // already exists.
-  // <br>An exception is thrown if canDefineRegion is False.
+  // <br>An exception is thrown if canDefineRegion is false.
   virtual void defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
                             bool overwrite = false);
 

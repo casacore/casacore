@@ -54,7 +54,7 @@ const uInt WORDSIZE = sizeof(uInt) * 8;
 // </etymology>
 
 // <synopsis>
-// Bit vectors are an efficent method of keeping <em>True/False</em>
+// Bit vectors are an efficent method of keeping <em>true/false</em>
 // information on a set of items or conditions. Class BitVector
 // provides functions to manipulate individual bits in the vector and
 // to perform logical operations on whole bit vectors.
@@ -62,18 +62,18 @@ const uInt WORDSIZE = sizeof(uInt) * 8;
 
 // <example>
 // <srcblock>
-// // Create a bit vector with 20 bits (and set them all to False).
-// BitVector bv (20, False);
+// // Create a bit vector with 20 bits (and set them all to false).
+// BitVector bv (20, false);
 //
 // // Change some individual bits:
-// // Turn On (make True) bit 19.
+// // Turn On (make true) bit 19.
 // bv.setBit (19);
-// // Turn Off (make False) bit 12 (superfluous here).
+// // Turn Off (make false) bit 12 (superfluous here).
 // bv.clearBit (12);
-// // Toggle bit 5 (here: change value from 0 (False) to 1 (True)).
+// // Toggle bit 5 (here: change value from 0 (false) to 1 (true)).
 // bv.toggleBit (5)
 // // Another way of setting a bit using the index operator.
-// bv[0] = True;
+// bv[0] = true;
 // // Assign the value of bit 0 to bit 1  (in three ways).
 // bv[1] = bv.getBit(0);
 // bv[1] = bv[0];
@@ -85,8 +85,8 @@ const uInt WORDSIZE = sizeof(uInt) * 8;
 //
 // // Perform logical operations on bit vectors.
 // // Create two more bit vectors.
-// BitVector bv2 (40, False);
-// BitVector bv3 (40, True);
+// BitVector bv2 (40, false);
+// BitVector bv3 (40, true);
 // // bitwise OR
 // bv = bv2 | bv3;
 // // bitwise AND
@@ -96,13 +96,13 @@ const uInt WORDSIZE = sizeof(uInt) * 8;
 // // bitwise NOT
 // bv = ~bv2;
 //
-// // Reset all bits to False, and then to True
-// bv = False;
-// bv.set (True);
+// // Reset all bits to false, and then to true
+// bv = false;
+// bv.set (true);
 // // Change the vector's size to 10 (and copy the old values).
 // bv.resize (10);
-// // Change back to original size and set all bits to True.
-// void bv.resize (size, True, False);
+// // Change back to original size and set all bits to true.
+// void bv.resize (size, true, false);
 // </srcblock>
 // </example>
 
@@ -185,11 +185,11 @@ class BitVector {
   void reverse();
   // </group>
 
-  // Returns True if all bits are equal.
+  // Returns true if all bits are equal.
   // An exception is thrown if the lengths of the vectors differ.
   bool operator==(const BitVector& that) const;
 
-  // Returns True if a bit differs.
+  // Returns true if a bit differs.
   // An exception is thrown if the lengths of the vectors differ.
   bool operator!=(const BitVector& that) const;
 

@@ -79,7 +79,7 @@ bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const M
   if (j == sj) --j;
 
   // 2x2 starting from [i,j]
-  // mask==True is a good pixel
+  // mask==true is a good pixel
   if (i < si && j < sj) {
     if (maskPtr) {
       if (!(*maskPtr)(i, j) || !(*maskPtr)(i + 1, j) || !(*maskPtr)(i, j + 1) ||
@@ -116,7 +116,7 @@ bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &
   if (i == si) --i;
   if (j == sj) --j;
   // 2x2 starting from [i,j]
-  // mask==True is a good pixel
+  // mask==true is a good pixel
   if (i < si && j < sj) {
     uInt k0 = dataI.steps()[0];
     uInt k1 = dataI.steps()[1];

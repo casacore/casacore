@@ -156,7 +156,7 @@ class IPosition;
 //
 //// Set to list and plot mean, sigma and rms
 //
-//      if (!stats.setList(True)) return 1;
+//      if (!stats.setList(true)) return 1;
 //      String device = "/xs";
 //      Vector<Int> nxy(2);
 //      nxy(0) = 1;
@@ -203,9 +203,9 @@ class LatticeStatistics : public LatticeStatsBase {
   // You can specify whether you want to see progress meters or not.
   // You can force the storage lattice to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  // If <src>clone</src> is True, the input lattice will be cloned, so the caller
+  // If <src>clone</src> is true, the input lattice will be cloned, so the caller
   // can make changes to the input lattice, but the statistics will reflect the
-  // lattice as it was at construction. If False, a reference to the input lattice
+  // lattice as it was at construction. If false, a reference to the input lattice
   // is used, and so the caller shouldn't make changes to the input lattice between
   // construction and calling statistics computation methods, unless it calls setNewLattice()
   // to update the changed lattice. Obviously, cloning the lattice impacts performance
@@ -233,7 +233,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // already been created for "other".
   LatticeStatistics<T>& operator=(const LatticeStatistics<T>& other);
 
-  // Set the cursor axes (0 relative).  A return value of <src>False</src>
+  // Set the cursor axes (0 relative).  A return value of <src>false</src>
   // indicates you have asked for an invalid axis.  The default state of the class
   // is to set the cursor axes to all axes in the lattice.
   bool setAxes(const Vector<Int>& cursorAxes);
@@ -246,12 +246,12 @@ class LatticeStatistics : public LatticeStatsBase {
   // range, then if you set <src>setMinMaxToInclude=True</src>, the
   // minimum and maximum values that this class returns will always be
   // the minimum and maximum of the <src>include</src> range, respectively.
-  // A return value of <src>False</src> indicates that
+  // A return value of <src>false</src> indicates that
   // you have given both an <src>include</src> and an <src>exclude</src>
   // range.  A vector of length 1 for <src>include</src> and/or <src>exclude</src>
   // means that the range will be set to (say for <src>include</src>)
   // <src>-abs(include(0))</src> to <src>abs(include(0))</src>.  A return value
-  // of <src>False</src> indicates that both an inclusion and exclusion
+  // of <src>false</src> indicates that both an inclusion and exclusion
   // range were given or that the internal state of the class is bad.   If you don't
   // call this function, the default state of the class  is to include all pixels.
   bool setInExCludeRange(const Vector<T>& include, const Vector<T>& exclude,
@@ -259,7 +259,7 @@ class LatticeStatistics : public LatticeStatsBase {
 
   // This function allows you to control whether the statistics are written to
   // the output stream if you are also making a plot.  A return value of
-  // <src>False</src> indicates that the internal state of the class is bad.
+  // <src>false</src> indicates that the internal state of the class is bad.
   // If you have created the <src>LatticeStatistics</src> object without
   // a <src>LogIO</src> object, you won't see any listings, but no error
   // conditions will be generated.  The default state of the class is to
@@ -267,7 +267,7 @@ class LatticeStatistics : public LatticeStatsBase {
   bool setList(const bool& doList);
 
   // Display the statistics by listing and/or plotting them.  If you don't call
-  // this function then you won't see anything !  A return value of <src>False</src>
+  // this function then you won't see anything !  A return value of <src>false</src>
   // indicates an invalid plotting device, or that the internal state of the class is bad.
 
   bool display();
@@ -291,7 +291,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // array is the shape of the display axes (e.g. if the shape of the lattice is
   // [nx,ny,nz] and you ask for the mean of the y axis the shape of the returned
   // array would be [nx,nz].    A returned array of zero shape indicates that there
-  // were no good values.   A return   value of <src>False</src>
+  // were no good values.   A return   value of <src>false</src>
   // indicates that the internal state of  the class is bad.
   // <group>
   bool getStatistic(Array<AccumType>& stat, LatticeStatsBase::StatisticsTypes type,
@@ -303,7 +303,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // Recover position of min and max. Only works if there are no
   // display axes (i.e. statistics found over entire image), otherwise,
   // the returned values are resized to 0 shape.  A return
-  // value of <src>False</src> indicates that the internal state of
+  // value of <src>false</src> indicates that the internal state of
   // the class is bad.
   bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
 
@@ -315,7 +315,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // Use can use the enum in class LatticeStatsBase to find out
   // which locations in the vector contain which statistics.
   // A returned vector of zero shape indicates that there
-  // were no good values. A return  value of <src>False</src>
+  // were no good values. A return  value of <src>false</src>
   // indicates that the  internal state of the class is bad.
   bool getStats(Vector<AccumType>&, const IPosition& pos, const bool posInLattice = false);
 
@@ -326,18 +326,18 @@ class LatticeStatistics : public LatticeStatsBase {
   // This function allows you to reset that internal state to good.
   void resetError() { goodParameterStatus_p = true; };
 
-  // Get full lattice min and max only.  Returns False if no unmasked data, else returns True.
+  // Get full lattice min and max only.  Returns false if no unmasked data, else returns true.
   // Honours any include or exclude range if set.
   bool getFullMinMax(T& dataMin, T& dataMax);
 
   // Recover last error message
   String errorMessage() const { return error_p; };
 
-  // Set a new MaskedLattice object.  A return value of <src>False</src> indicates the
+  // Set a new MaskedLattice object.  A return value of <src>false</src> indicates the
   // lattice had an invalid type or that the internal state of the class is bad.
-  // If <src>clone</src> is True, the input lattice will be cloned, so the caller
+  // If <src>clone</src> is true, the input lattice will be cloned, so the caller
   // can make changes to the input lattice, but the statistics will reflect the
-  // lattice as it was at construction. If False, a reference to the input lattice
+  // lattice as it was at construction. If false, a reference to the input lattice
   // is used, and so the caller shouldn't make changes to the input lattice between
   // construction and calling statistics computation methods, unless it calls setNewLattice()
   // to update the changed lattice. Obviously, cloning the lattice impacts performance
@@ -347,9 +347,9 @@ class LatticeStatistics : public LatticeStatsBase {
   // Did we construct with a logger ?
   bool hasLogger() const { return haveLogger_p; };
 
-  // The configure methods return True if reconfiguration is actually
+  // The configure methods return true if reconfiguration is actually
   // necessary (ie if the underlying storage lattice needs to be recomputed).
-  // If no reconfiguration is necessary, False is returned.
+  // If no reconfiguration is necessary, false is returned.
 
   // configure to use biweight algorithm.
   bool configureBiweight(Int maxIter, Double c);
@@ -433,8 +433,8 @@ class LatticeStatistics : public LatticeStatsBase {
   // FIXME The indirect dependence of this class on ImageInterface related
   // issues (eg flux density) breaks encapsulation. All the ImageInterface related code should be
   // encapsulated in ImageStatistics. Unfortunately, that requires significantly
-  // more time than I have atm. A return value of False means that the object in
-  // question cannot compute flux density values. The default implementation returns False.
+  // more time than I have atm. A return value of false means that the object in
+  // question cannot compute flux density values. The default implementation returns false.
   virtual bool _canDoFlux() const { return false; }
 
   virtual Quantum<AccumType> _flux(bool&, AccumType, Double) const {
@@ -453,7 +453,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // lattice.  dPos is the location of the start of the cursor in the
   // storage image for this row.  stats(j,i) is the statistics matrix.
   // for the jth point and the ith statistic.
-  // The return value is False if something goes wrong !
+  // The return value is false if something goes wrong !
   // Have a look at the implementation to see what you really
   // have to do.
   virtual bool listStats(bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
@@ -483,7 +483,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // in storagePos will not be changed and only the first N elements
   // will be modified where N = the number of elements in latticePos.
   // <src>storagePos</src> must therefore have at least as many elements
-  // as <src>latticePos</src>. Returns False if
+  // as <src>latticePos</src>. Returns false if
   //<src>latticePos</src> is inconsistent with the input lattice.
   void _latticePosToStoragePos(IPosition& storagePos, const IPosition& latticePos);
 

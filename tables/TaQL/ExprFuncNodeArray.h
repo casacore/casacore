@@ -147,8 +147,8 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   TableExprFuncNode node_p;
   Int origin_p;           // # axes origin
   bool isCOrder_p;        // # axes order
-  bool constAxes_p;       // # True = collapse axes are constant
-  bool constAlt_p;        // # True = expandAlt_p is constant
+  bool constAxes_p;       // # true = collapse axes are constant
+  bool constAlt_p;        // # true = expandAlt_p is constant
   IPosition ipos_p;       // # the (maybe constant) axes or shape
   IPosition iposN_p;      // # the non-reversed axes or shape
   IPosition expandAlt_p;  // # alternate for expand/resize

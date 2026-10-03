@@ -225,11 +225,11 @@ Vector<Int> MSAntennaIndex::matchStationName(const String& station) {
   //     String subStationName = station.at(0, station.length()-1);
   //     Vector<String> stationNames = msAntennaCols_p.station().getColumn();
   //     uInt len = stationNames.nelements();
-  //     Vector<Bool> matchstationnames(len, False);
+  //     Vector<Bool> matchstationnames(len, false);
   //     for(uInt j = 0; j < len; j++)
   // 	{
   // 	  if(stationNames[j].contains(subStationName))
-  // 	    matchstationnames(j) = True;
+  // 	    matchstationnames(j) = true;
   // 	}
   //     LogicalArray maskArray( matchstationnames && (msAntennaCols_p.flagRow().getColumn()==
   // 						    msAntennaCols_p.flagRow().getColumn()));

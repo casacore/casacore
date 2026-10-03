@@ -266,7 +266,7 @@ class DataManager {
   // Tell if the data manager wants to reallocate the data manager
   // column objects.
   // This is used by the tiling storage manager.
-  // By default it returns False.
+  // By default it returns false.
   virtual bool canReallocateColumns() const;
 
   // Reallocate the column object if it is part of this data manager.
@@ -304,7 +304,7 @@ class DataManager {
 
   // Is this a regular storage manager?
   // It is regular if it allows addition of rows and writing data in them.
-  // <br>The default implementation returns True.
+  // <br>The default implementation returns true.
   virtual bool isRegular() const;
 
   // Get the table this object is associated with.
@@ -378,8 +378,8 @@ class DataManager {
   void setMultiFile(const std::shared_ptr<MultiFileBase>& mfile);
 
   // Does the data manager support use of MultiFile?
-  // A derived class has to return True if it can use the MultiFile.
-  // The default implementation returns False.
+  // A derived class has to return true if it can use the MultiFile.
+  // The default implementation returns false.
   virtual bool hasMultiFileSupport() const;
 
   // Throw an exception in case data type is TpOther, because the
@@ -440,7 +440,7 @@ class DataManager {
   // Flush and optionally fsync the data.
   // The AipsIO stream represents the main table file and can be
   // used by virtual column engines to store SMALL amounts of data.
-  // It returns a True status if it had to flush (i.e. if data have changed).
+  // It returns a true status if it had to flush (i.e. if data have changed).
   virtual bool flush(AipsIO& ios, bool fsync) = 0;
 
   // Let the data manager initialize itself for a new table.

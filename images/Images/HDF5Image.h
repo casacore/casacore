@@ -83,8 +83,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //   // Create a mask for the image.
 //   // The mask will be stored in a subtable of the image.
 //   LCPagedMask mask (RegionHandler::makeMask (myimage, "mask.name"));
-//   // Fill the mask with whatever values (e.g. all True).
-//   mask.set (True);
+//   // Fill the mask with whatever values (e.g. all true).
+//   mask.set (true);
 //   // Make the mask known to the image (with name mask1).
 //   myimage.defineRegion ("mask1", mask, RegionHandler::Masks);
 //   // Make the mask the default mask for this image.
@@ -221,7 +221,7 @@ class HDF5Image : public ImageInterface<T> {
 
   // Function which sets the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
-  // False if it cannot set the unit for some reason (e.g. the underlying
+  // false if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   virtual bool setUnits(const Unit& newUnits);
 

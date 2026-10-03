@@ -124,7 +124,7 @@ class MSHistoryColumns {
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
   void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);

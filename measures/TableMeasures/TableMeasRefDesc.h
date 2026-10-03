@@ -212,13 +212,13 @@ class TableMeasRefDesc {
   // For old tables this might not be the case.
   bool hasRefTab() const { return itsHasRefTab; }
 
-  // Returns True if the reference has an offset.
+  // Returns true if the reference has an offset.
   bool hasOffset() const { return (itsOffset != 0); }
 
-  // Returns True if the offset is variable.
+  // Returns true if the offset is variable.
   bool isOffsetVariable() const { return (itsOffset != 0 ? itsOffset->isVariable() : false); }
 
-  // Returns True is the offset is variable and it is an ArrayMeasColumn.
+  // Returns true is the offset is variable and it is an ArrayMeasColumn.
   bool isOffsetArray() const { return (itsOffset != 0 ? itsOffset->isArray() : false); }
 
   // Return the fixed Measure offset.

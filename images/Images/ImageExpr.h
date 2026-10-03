@@ -88,7 +88,7 @@ class String;
 //    LogOrigin or("imageImpl", "main()", WHERE);   // Create statistics object
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(iExpr, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    bool ok = stats.display();                              // Display statistics
 //
 // </srcblock>
 // The ImageExpr object is evaluated during the call to
@@ -165,7 +165,7 @@ class ImageExpr : public ImageInterface<T> {
   virtual void resize(const TiledShape& newShape);
 
   // Do the actual get of the mask data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
@@ -187,7 +187,7 @@ class ImageExpr : public ImageInterface<T> {
   // <note> not for public use </note>
   virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
-  // Returns False, as the ImageExpr is not writable.
+  // Returns false, as the ImageExpr is not writable.
   virtual bool isWritable() const;
 
   // Is the lattice persistent and can it be loaded by other processes as well?

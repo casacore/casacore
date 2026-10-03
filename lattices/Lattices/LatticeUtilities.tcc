@@ -60,7 +60,7 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const M
 // we leave it as it is
 {
   // Do we need to stuff about with masks ?  Even if the input
-  // does not have a mask, it has a 'virtual' mask of all True.
+  // does not have a mask, it has a 'virtual' mask of all true.
   // Therefore we need to transfer those mask values to the
   // output if an output mask exists.
 

@@ -480,7 +480,7 @@ class MSMetaData {
   std::shared_ptr<const std::map<SubScanKey, SubScanProperties>> getSubScanProperties(
       bool showProgress = false) const;
 
-  // If True, force the subscan properties structure to be
+  // If true, force the subscan properties structure to be
   // cached regardless of the stipulations on the maximum cache. Normally,
   // the subscan properties structure is small compared to the size of any
   // one column that is necessary to create it, and since creating this
@@ -508,7 +508,7 @@ class MSMetaData {
   Matrix<bool> getUniqueBaselines();
 
   // get the number of unique baselines represented in the main MS table which in theory can be
-  // less than n*(n-1)/2. If <src>includeAutoCorrelation</src> is True, include autocorrelation
+  // less than n*(n-1)/2. If <src>includeAutoCorrelation</src> is true, include autocorrelation
   // "baselines" in the enumeration.
   virtual uInt nBaselines(bool includeAutoCorrelation = false);
 
@@ -559,7 +559,7 @@ class MSMetaData {
 
   // get the effective bandwidth for each channel. Each element in
   // the returned vector represents a separate spectral window, with
-  // ID given by its location in the vector. If asVelWidths is True,
+  // ID given by its location in the vector. If asVelWidths is true,
   // convert the values to velocity widths.
   vector<QVD> getChanEffectiveBWs(bool asVelWidths) const;
 
@@ -567,7 +567,7 @@ class MSMetaData {
 
   // get the resolution for each channel. Each element in
   // the returned vector represents a separate spectral window, with
-  // ID given by its location in the vector. If asVelWidths is True,
+  // ID given by its location in the vector. If asVelWidths is true,
   // convert the values to velocity widths.
   vector<QVD> getChanResolutions(bool asVelWidths) const;
 

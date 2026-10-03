@@ -264,7 +264,7 @@ class TableExprNodeRep {
   virtual ~TableExprNodeRep() = default;
 
   // Is the node an aggegation node.
-  // The default implementation returns False.
+  // The default implementation returns false.
   virtual bool isAggregate() const;
 
   // Get the table info.
@@ -295,7 +295,7 @@ class TableExprNodeRep {
   virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
   // Is the aggregate function a lazy or an immediate one?
-  // The default implementation returns True
+  // The default implementation returns true
   // (because all UDF aggregate functions have to be lazy).
   virtual bool isLazyAggregate() const;
 
@@ -377,9 +377,9 @@ class TableExprNodeRep {
   rownr_t nrow();
 
   // Get the data type of the column.
-  // It returns True when it could set the data type (which it can
+  // It returns true when it could set the data type (which it can
   // if the expression is a scalar column or a constant array column pixel).
-  // Otherwise it returns False.
+  // Otherwise it returns false.
   virtual bool getColumnDataType(DataType&) const;
 
   // Get the value of the expression evaluated for the entire column.
@@ -461,7 +461,7 @@ class TableExprNodeRep {
   const IPosition& shape(const TableExprId& id);
 
   // Is the value in the given row defined?
-  // The default implementation returns True.
+  // The default implementation returns true.
   virtual bool isDefined(const TableExprId& id);
 
   // Show the expression tree.

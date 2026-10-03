@@ -54,7 +54,7 @@
   } while (0)
 
 unsigned tests_done = 0;
-const bool debug = false;  // True;
+const bool debug = false;  // true;
 
 template <class T>
 void dum(const Array<T> &d) {
@@ -2032,7 +2032,7 @@ class TestR2C  // real->complex and complex->real
                                  shift<T>(input, input.shape(), expectedResult.shape()),
                                  shift<S>(expectedResult, input.shape(), expectedResult.shape()));
 
-    // Test the non-default  constInput = True
+    // Test the non-default  constInput = true
     bool constInput = true;
 
     Array<T> input_before;

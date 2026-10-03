@@ -295,7 +295,7 @@ void PlainTable::closeObject() {
     }
   } else {
     // # Check if table can indeed be deleted.
-    // # If not, set delete flag to False.
+    // # If not, set delete flag to false.
     // # It only checks if the main table is multi-used.
     // # File locking support in Lustre (maybe other file systems too)
     // # seems to be asynchronous to some degree, so try a few times.

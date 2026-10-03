@@ -612,10 +612,10 @@ FitsOutput* MSFitsOutputAstron::writeMain(Int& refPixelFreq, Double& refFreq, Do
   }
 
   // EXTEND - already written by FITSGroupWriter
-  //  ek.define("extend", True);
+  //  ek.define("extend", true);
 
   // BLOCKED - already written by FITSGroupWriter
-  //  ek.define("blocked", True);
+  //  ek.define("blocked", true);
 
   // OBJECT
   if (asMultiSource) {
@@ -1192,7 +1192,7 @@ bool MSFitsOutputAstron::writeAN(FitsOutput* output, const MeasurementSet& ms, D
     // A hack for old WSRT observations which stored the antenna name
     // in the STATION column instead of the NAME column.
     // So if all NAMES are equal use STATIONS (unless they are all equal).
-    // Also: if writeStation==True use station names instead of antenna names
+    // Also: if writeStation==true use station names instead of antenna names
     // for the output fits file (input fits file tends to have this).
     Vector<String> anames = antid.getColumn();
     if (anames.nelements() > 0) {
@@ -1862,7 +1862,7 @@ Table MSFitsOutputAstron::handleSysCal(const MeasurementSet& ms, const Vector<In
     if (minant1 < 0 || minant2 < 0) {
       throw(AipsError("Antenna1 or antenna2 < 0 in MS " + ms.tableName()));
     }
-    // Make an array which contains a flag True for all antennas in the
+    // Make an array which contains a flag true for all antennas in the
     // main table.
     Int nrant = 1 + max(maxant1, maxant2);
     antFlag.resize(nrant);

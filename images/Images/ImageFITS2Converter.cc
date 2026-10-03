@@ -875,7 +875,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
           (*fhi.pMask) = iter.getMask(false);
           const bool* maskPtr = fhi.pMask->getStorage(deleteMaskPtr);
           //
-          // If a pixel is a NaN or the mask is False, it goes out as a NaN
+          // If a pixel is a NaN or the mask is false, it goes out as a NaN
           //
           for (uInt i = 0; i < n; i++) {
             if (isNaN(cptr[i]) || !maskPtr[i]) {
@@ -1005,7 +1005,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
       return false;
     }
   }
-  // When this if test is True, it means some pixel axes had been removed from
+  // When this if test is true, it means some pixel axes had been removed from
   // the coordinate system and degenerate axes were added.
 
   if (naxis.nelements() != shapeCopy.nelements()) {
@@ -1149,7 +1149,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
     header.define(CASAMBM, true);
     header.setComment(CASAMBM, "CASA multiple BEAMS table present");
   }
-  // kw.mk(FITS::EXTEND, True, "Tables may follow");
+  // kw.mk(FITS::EXTEND, true, "Tables may follow");
   //  add the general keywords for WCS and so on
   ok = FITSKeywordUtil::addKeywords(fhi.kw, header);
   if (!ok) {

@@ -82,22 +82,22 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   virtual void flattenTree(std::vector<TableExprNodeRep*>&) override;
 
   // Is it a discrete set element.
-  // Default implementation returns False.
+  // Default implementation returns false.
   virtual bool isDiscrete() const;
 
   // Is a single value given?
-  // Default implementation returns False.
+  // Default implementation returns false.
   virtual bool isSingle() const;
 
   // Is the interval left or right closed?
-  // Default implementation returns False.
+  // Default implementation returns false.
   // <group>
   virtual bool isLeftClosed() const;
   virtual bool isRightClosed() const;
   // </group>
 
   // Is the interval given as mid-width?
-  // Default implementation returns False.
+  // Default implementation returns false.
   virtual bool isMidWidth() const;
 
   // Get the start, end or increment expression.
@@ -125,7 +125,7 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
   virtual void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const;
@@ -229,7 +229,7 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
   void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const override;
@@ -317,7 +317,7 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
   void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
@@ -398,7 +398,7 @@ class TableExprNodeSetElemCont : public TableExprNodeSetElemBase {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
   void matchDouble(bool* match, const Double* value, size_t nval,
@@ -467,7 +467,7 @@ class TableExprNodeSetElemMidWidth : public TableExprNodeSetElemCont {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
   void matchDouble(bool* match, const Double* value, size_t nval,

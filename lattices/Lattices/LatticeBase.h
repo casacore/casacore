@@ -92,21 +92,21 @@ class LatticeBase {
   // Is the lattice persistent and can it be loaded by other processes as well?
   // That is the case for a PagedArray or PagedImage and for an ImageExpr
   // which does not use transient lattices or regions.
-  // <br>The default implementation returns False.
+  // <br>The default implementation returns false.
   virtual bool isPersistent() const;
 
   // Is the lattice paged to disk?
-  // <br>The default implementation returns False.
+  // <br>The default implementation returns false.
   virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
   // That is the case for an ArrayLattice or a Temp/SubLattice using it.
   // It is used by LatticeIterInterface.
-  // <br>The default implementation returns False.
+  // <br>The default implementation returns false.
   virtual bool canReferenceArray() const;
 
   // Is the lattice writable?
-  // <br>The default implementation returns True.
+  // <br>The default implementation returns true.
   virtual bool isWritable() const;
 
   // Save the image in an AipsIO file with the given name.
@@ -120,7 +120,7 @@ class LatticeBase {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <br>By default the functions do not do anything at all.
-  // lock() and hasLock return True, which is suitable for all
+  // lock() and hasLock return true, which is suitable for all
   // non-paged lattices.
   // <group>
   virtual bool lock(FileLocker::LockType, uInt nattempts);
@@ -201,7 +201,7 @@ class LatticeBase {
   IPosition niceCursorShape() const { return doNiceCursorShape(advisedMaxPixels()); }
   // </group>
 
-  // Check class internals - used for debugging. Should always return True
+  // Check class internals - used for debugging. Should always return true
   virtual bool ok() const;
 
   // The function (in the derived classes) doing the actual work.

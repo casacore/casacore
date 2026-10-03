@@ -340,7 +340,7 @@ bool Fit2D::selectData(Matrix<Double>& pos, Vector<Double>& values, Vector<Doubl
 // If the sigma array is of zero length the weights are given
 // the value 1.0
 //
-// If there are no good pixels returns False
+// If there are no good pixels returns false
 //
 {
   auto shape = pixels.shape();

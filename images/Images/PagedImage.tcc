@@ -385,13 +385,13 @@ void PagedImage<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& wh
   //    Array<T> map;
   // Array<Bool> mask;
   // IPosition shape(sourceBuffer.shape());
-  // mask_p->getSlice(mask, where, shape, stride, True);
-  // map_p.getSlice(map, where, shape, stride, True);
+  // mask_p->getSlice(mask, where, shape, stride, true);
+  // map_p.getSlice(map, where, shape, stride, true);
   // use maskedarrays to do all the work.
-  // map(mask==False) = sourceBuffer;
+  // map(mask==false) = sourceBuffer;
   // map_p.putSlice(map,where,stride);
   //  } else {
-  //    throw(AipsError("PagedImage<T>::putSlice - throughmask==False but no "
+  //    throw(AipsError("PagedImage<T>::putSlice - throughmask==false but no "
   //		    "mask exists."));
   //  }
 }

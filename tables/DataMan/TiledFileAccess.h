@@ -209,7 +209,7 @@ class TiledFileAccess {
   // Set the cache size for accessing the data.
   // When the give cache size exceeds the maximum cache size with more
   // than 10%, the maximum cache size is used instead.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
   void setCacheSize(uInt nbuckets, bool forceSmaller = true) {
     itsCube->setCacheSize(nbuckets, forceSmaller, true);

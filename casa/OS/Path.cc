@@ -268,11 +268,11 @@ String Path::expandName(const String& inString) const {
   uInt i = 0;
   bool flag = true;
   uInt count = 0;
-  // Flag is set True if an environment variable is detected. When this
+  // Flag is set true if an environment variable is detected. When this
   // happens more then 25 times, there is probably a recursive variable set.
   // In that case an exception will be thrown.
   while (flag && count < 25) {
-    // flag is False, if there is not an environment variable
+    // flag is false, if there is not an environment variable
     // the name will not be checked again
     flag = false;
     count++;     // count is increased when the string is
@@ -338,7 +338,7 @@ String Path::expandName(const String& inString) const {
             // Update the index for the changed part.
             i = last + Int(res.size()) - Int(tempString.size());
             tempString = res;
-            // flag is set True, so the name will be checked again
+            // flag is set true, so the name will be checked again
             // for environment variables
             flag = true;
           }

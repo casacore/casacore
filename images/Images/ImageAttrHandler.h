@@ -97,7 +97,7 @@ class ImageAttrHandler {
   virtual void flush();
 
   // Test if the given attribute group is present.
-  // The default implementation returns False.
+  // The default implementation returns false.
   virtual bool hasGroup(const String& name);
 
   // Get all attribute group names.

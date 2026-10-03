@@ -96,9 +96,9 @@ class LatticeTwoPtCorr {
   ~LatticeTwoPtCorr() {}
 
   // Compute specified autocorrelation function for the planes of the given TWO axes.
-  // If the output lattice has a mask, it will first be set to False (bad)
+  // If the output lattice has a mask, it will first be set to false (bad)
   // and then any output pixel with some contributing values will be set to
-  // True (good).
+  // true (good).
   // <group>
   void autoCorrelation(MaskedLattice<T>& out, const MaskedLattice<T>& in, const IPosition& axes,
                        Method method, bool showProgress = true) const;

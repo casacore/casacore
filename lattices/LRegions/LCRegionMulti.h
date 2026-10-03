@@ -85,7 +85,7 @@ class LCRegionMulti : public LCRegion {
                 const LCRegion* region9 = 0, const LCRegion* region10 = 0);
 
   // Construct from multiple regions given as a Block.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   LCRegionMulti(bool takeOver, const Block<const LCRegion*>& regions);
 
@@ -118,7 +118,7 @@ class LCRegionMulti : public LCRegion {
   void fillHasMask();
 
   // Find which area of the section and region are needed.
-  // False is returned if no part of the region is included in the section.
+  // false is returned if no part of the region is included in the section.
   bool findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart, IPosition& regEnd,
                  const Slicer& section, uInt regNr) const;
 

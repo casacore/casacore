@@ -171,19 +171,19 @@ class LatticeIndexer {
   // necessary.  The path of movement is based upon the third IPosition
   // argument (a cursor heading) that is zero-based e.g. IPosition(3,0,2,1)
   // implies starting movement along the x-axis, then the z-axis, and then
-  // the y-axis.  Returns a value of False if the beginning/end of the
+  // the y-axis.  Returns a value of false if the beginning/end of the
   // sub-Lattice is reached. The cursorPosition is relative to the origin of
   // the sub-Lattice. To get its location relative to the main Lattice use
   // the absolutePosition() function.
   bool tiledCursorMove(bool incr, IPosition& cursorPos, const IPosition& cursorShape,
                        const IPosition& cursorHeading) const;
 
-  // Function which returns a value of True if the IPosition argument
-  // is within the sub-Lattice.  Returns False if the IPosition argument is
+  // Function which returns a value of true if the IPosition argument
+  // is within the sub-Lattice.  Returns false if the IPosition argument is
   // outside the sub-Lattice or if the argument doesn't conform to the
   // data members.
   // <note role=warning> Due to zero-origins, an index argument equal to the
-  // shape of this sub-Lattice lies outside and returns False.
+  // shape of this sub-Lattice lies outside and returns false.
   // </note>
   bool isInside(const IPosition& index) const;
 
@@ -211,13 +211,13 @@ class LatticeIndexer {
   // Lattice(s).
   IPosition absolutePosition(const IPosition& position) const;
 
-  // # function which returns True if all the elements in this
+  // # function which returns true if all the elements in this
   // # LatticeIndexer, or LatticeIndexer subsection, are arranged contiguously,
   // # i.e. without any gaps caused by increments or subSectioning.
-  // #   Bool isContiguous() const;
+  // #   bool isContiguous() const;
 
   // Is this LatticeIndexer consistent, i.e. are the class invariants valid?
-  // Returns True if every thing is fine otherwise returns False
+  // Returns true if every thing is fine otherwise returns false
   bool ok() const;
 
  private:

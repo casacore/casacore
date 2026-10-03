@@ -113,7 +113,7 @@ int main() {
     TableLock lock(TableLock::UserLocking);
     lock.merge(TableLock());
     checkLockOption(lock, TableLock::UserLocking, true, false);
-    ////checkLockOption (lock, TableLock::AutoLocking, True, False);
+    ////checkLockOption (lock, TableLock::AutoLocking, true, false);
     lock.merge(TableLock(TableLock::AutoLocking, 20, 2));
     checkLockOption(lock, TableLock::AutoLocking, true, false);
     AlwaysAssertExit(lock.interval() == 20);

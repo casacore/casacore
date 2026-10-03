@@ -153,11 +153,11 @@ class TileStepper : public LatticeNavigator {
   TileStepper& operator=(const TileStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
-  // forward one step. Returns True if the cursor was moved.
+  // forward one step. Returns true if the cursor was moved.
   virtual bool operator++(int);
 
   // Decrement operator (postfix or prefix version) - move the cursor
-  // backwards one step. Returns True if the cursor was moved.
+  // backwards one step. Returns true if the cursor was moved.
   virtual bool operator--(int);
 
   // Function to move the cursor to the beginning of the Lattice. Also
@@ -211,7 +211,7 @@ class TileStepper : public LatticeNavigator {
 
   // Function which returns "True" if the increment/decrement operators have
   // moved the cursor position such that part of the cursor beginning or end
-  // is hanging over the edge of the Lattice. This always returns False.
+  // is hanging over the edge of the Lattice. This always returns false.
   virtual bool hangOver() const;
 
   // Functions to specify a "section" of the Lattice to step over. A section
@@ -244,7 +244,7 @@ class TileStepper : public LatticeNavigator {
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values.
-  // Returns True if everything is fine otherwise returns False
+  // Returns true if everything is fine otherwise returns false
   virtual bool ok() const;
 
   // Calculate the cache size (in tiles) for this type of access to a lattice

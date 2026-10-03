@@ -75,20 +75,20 @@ class StreamIO : public ByteIO {
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
   // exception (AipsError) if the requested number of bytes could not be read,
-  // or an error occured, unless throwException is set to False.
+  // or an error occured, unless throwException is set to false.
   virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 
   // Get the length of the stream.  Not a meaningful function for this
   // class and this function always returns -1.
   virtual Int64 length();
 
-  // Is the stream readable? This function always returns True.
+  // Is the stream readable? This function always returns true.
   virtual bool isReadable() const;
 
-  // Is the stream writable? This function always returns True.
+  // Is the stream writable? This function always returns true.
   virtual bool isWritable() const;
 
-  // Is the stream seekable? This function always returns False.
+  // Is the stream seekable? This function always returns false.
   virtual bool isSeekable() const;
 
  protected:

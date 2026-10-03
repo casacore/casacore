@@ -47,11 +47,11 @@ bool LattStatsSpecialize::setIncludeExclude(String& errorMessage, Vector<T>& ran
   //             no include range
   //   exclude   Exclude range given by user. As above.
   // Outputs:
-  //   noInclude If True user did not give an include range
-  //   noExclude If True user did not give an exclude range
+  //   noInclude If true user did not give an include range
+  //   noExclude If true user did not give an exclude range
   //   range     A pixel value selection range.  Will be resized to
-  //             zero length if both noInclude and noExclude are True
-  //   Bool      True if successfull, will fail if user tries to give too
+  //             zero length if both noInclude and noExclude are true
+  //   Bool      true if successfull, will fail if user tries to give too
   //             many values for includeB or excludeB, or tries to give
   //             values for both
   ThrowIf(!isReal(whatType<T>()), "Logic error, this method is for real data types only");

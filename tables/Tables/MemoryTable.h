@@ -103,7 +103,7 @@ class MemoryTable : public BaseTable {
   virtual const StorageOption& storageOption() const;
 
   // Is the table in use (i.e. open) in another process?
-  // It always returns False.
+  // It always returns false.
   virtual bool isMultiUsed(bool checkSubTable) const;
 
   // Get the locking info.
@@ -116,7 +116,7 @@ class MemoryTable : public BaseTable {
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  // It always returns True.
+  // It always returns true.
   virtual bool hasLock(FileLocker::LockType) const;
 
   // Locking the table is a no-op.
@@ -134,7 +134,7 @@ class MemoryTable : public BaseTable {
   // Get the modify counter. It always returns 0.
   virtual uInt getModifyCounter() const;
 
-  // Test if the table is opened as writable. It always returns True.
+  // Test if the table is opened as writable. It always returns true.
   virtual bool isWritable() const;
 
   // Copy the table and all its subtables.

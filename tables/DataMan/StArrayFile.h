@@ -98,12 +98,12 @@ class IPosition;
 //     // It fills in the file offset where the shape is stored
 //     // and returns the length of the shape in the file.
 //     Int64 offset;
-//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<Bool*>(0));
+//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<bool*>(0));
 //     // Now put the actual array.
 //     // This has to be put at the returned file offset plus the length
 //     // of the shape in the file.
-//     Bool deleteIt;
-//     const Bool* dataPtr = array.getStorage (deleteIt);
+//     bool deleteIt;
+//     const bool* dataPtr = array.getStorage (deleteIt);
 //     arrayFile.put (offset+shapeLength, 0, array.nelements(), dataPtr);
 //     array.freeStorage (dataPtr, deleteIt);
 // }
@@ -139,7 +139,7 @@ class StManArrayFile {
   ~StManArrayFile();
 
   // Flush and optionally fsync the data.
-  // It returns True when any data was written since the last flush.
+  // It returns true when any data was written since the last flush.
   bool flush(bool fsync);
 
   // Reopen the file for read/write access.
@@ -257,8 +257,8 @@ class StManArrayFile {
   std::shared_ptr<TypeIO> iofil_p;  // # IO object
   Int64 leng_p;                     // # File length
   uInt version_p;                   // # Version of StArrayFile file
-  bool swput_p;                     // # True = put is possible
-  bool hasPut_p;                    // # True = put since last flush
+  bool swput_p;                     // # true = put is possible
+  bool hasPut_p;                    // # true = put since last flush
   uInt sizeChar_p;
   uInt sizeuChar_p;
   uInt sizeShort_p;

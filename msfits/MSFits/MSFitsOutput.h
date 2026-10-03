@@ -143,7 +143,7 @@ class MSFitsOutput {
                                          bool asMultiSource) const;
 
   // Write the FQ table.
-  // If combineSpw is True, all spectral-windows are written in one
+  // If combineSpw is true, all spectral-windows are written in one
   // row of the FITS table.
   static bool _writeFQ(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
                        const Block<Int>& spwidMap, Int nrspw, Double refFreq, Int refPixelFreq,

@@ -193,8 +193,8 @@ class Coordinate {
   // </group>
 
   // Convert an absolute pixel position to an absolute world position or vice
-  // versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // errorMessage contains an error message. The input vector must be of length
   // <src>nPixelAxes</src> or <src>nWorldAxes</src>.  The output vector
   // is resized appropriately.
@@ -210,9 +210,9 @@ class Coordinate {
   // Mixed absolute pixel/world coordinate conversion.
   // worldIn and worldAxes are vectors of length <src>nWorldAxes</src>.
   // <src>pixelIn</src> and <src>pixelAxes</src> are of length <src>nPixelAxes</src>.
-  // <src>worldAxes(i) = True</src> specifies you have given a world
+  // <src>worldAxes(i) = true</src> specifies you have given a world
   // value in <src>worldIn(i)</src> to convert to pixel.
-  // <src>pixelAxes(i)=True</src> specifies you have given a pixel
+  // <src>pixelAxes(i)=true</src> specifies you have given a pixel
   // value in <src>pixelIn(i)</src> to convert to world.
   // You cannot specify the same axis via <src>worldAxes</src>
   // and <src>pixelAxes</src>.
@@ -235,7 +235,7 @@ class Coordinate {
   // axis with remaining corresponding world axis will
   // correctly be converted to world using the replacement
   // value).
-  // Returns True if the conversion succeeds, otherwise it returns False and
+  // Returns true if the conversion succeeds, otherwise it returns false and
   // <src>errorMessage()</src> contains an error message. The output vectors
   // are resized.
   virtual bool toMix(Vector<Double>& worldOut, Vector<Double>& pixelOut,
@@ -246,7 +246,7 @@ class Coordinate {
   // Set the world min and max ranges, for use in function <src>toMix</src>, for
   // a lattice of the given shape for this coordinate. The default implementation
   // here sets the range for pixels dangling 25% off the image.
-  // Returns False if fails with a reason  in <src>errorMessage()</src>.
+  // Returns false if fails with a reason  in <src>errorMessage()</src>.
   // setDefaultWorldMixRanges sets the range for each axis to +/-1e99
   // The ranges remain zero length vectors until you explicitly
   // initialize them.
@@ -258,9 +258,9 @@ class Coordinate {
   //</group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
-  // of the matrices contain the coordinates. Returns False if any conversion
+  // of the matrices contain the coordinates. Returns false if any conversion
   // failed  and  <src>errorMessage()</src> will hold a message.
-  // The <src>failures</src> array (True for fail, False for success)
+  // The <src>failures</src> array (true for fail, false for success)
   // is the length of the number of conversions and
   // holds an error status for each conversion.  The default
   // implementation is provided that works with the "single" version of
@@ -347,7 +347,7 @@ class Coordinate {
 
   // Comparison to fractional tolerance (for floating point values).
   // Don't compare on specified axes in Coordinate. If the comparison
-  // returns False, <src>errorMessage()</src> contains a message.
+  // returns false, <src>errorMessage()</src> contains a message.
   // <group>
   virtual bool near(const Coordinate& other, Double tol = 1.0e-6) const = 0;
   virtual bool near(const Coordinate& other, const Vector<Int>& excludeAxes,
@@ -423,7 +423,7 @@ class Coordinate {
   //</group>
 
   // Used for persistence. Derived classes will have similar static
-  // restore methods. It will typically only return False if fieldName
+  // restore methods. It will typically only return false if fieldName
   // has already been defined.
   virtual bool save(RecordInterface& container, const String& fieldName) const = 0;
 

@@ -649,7 +649,7 @@ void LatticeExprNode::eval(LELArray<Float>& result, const Slicer& section) const
   if (!donePrepare_p) {
     doPrepare();
   }
-  // If scalar, remove mask if scalar is valid. Otherwise set False mask.
+  // If scalar, remove mask if scalar is valid. Otherwise set false mask.
   // If array, evaluate for this section.
   if (isScalar()) {
     LELScalar<Float> value = pExprFloat_p->getScalar();
@@ -675,7 +675,7 @@ void LatticeExprNode::eval(LELArray<Double>& result, const Slicer& section) cons
     This->replaceScalarExpr();
     This->donePrepare_p = true;
   }
-  // If scalar, remove mask if scalar is valid. Otherwise set False mask.
+  // If scalar, remove mask if scalar is valid. Otherwise set false mask.
   // If array, evaluate for this section.
   if (isScalar()) {
     LELScalar<Double> value = pExprDouble_p->getScalar();
@@ -701,7 +701,7 @@ void LatticeExprNode::eval(LELArray<Complex>& result, const Slicer& section) con
     This->replaceScalarExpr();
     This->donePrepare_p = true;
   }
-  // If scalar, remove mask if scalar is valid. Otherwise set False mask.
+  // If scalar, remove mask if scalar is valid. Otherwise set false mask.
   // If array, evaluate for this section.
   if (isScalar()) {
     LELScalar<Complex> value = pExprComplex_p->getScalar();
@@ -727,7 +727,7 @@ void LatticeExprNode::eval(LELArray<DComplex>& result, const Slicer& section) co
     This->replaceScalarExpr();
     This->donePrepare_p = true;
   }
-  // If scalar, remove mask if scalar is valid. Otherwise set False mask.
+  // If scalar, remove mask if scalar is valid. Otherwise set false mask.
   // If array, evaluate for this section.
   if (isScalar()) {
     LELScalar<DComplex> value = pExprDComplex_p->getScalar();
@@ -753,7 +753,7 @@ void LatticeExprNode::eval(LELArray<bool>& result, const Slicer& section) const 
     This->replaceScalarExpr();
     This->donePrepare_p = true;
   }
-  // If scalar, remove mask if scalar is valid. Otherwise set False mask.
+  // If scalar, remove mask if scalar is valid. Otherwise set false mask.
   // If array, evaluate for this section.
   if (isScalar()) {
     LELScalar<bool> value = pExprBool_p->getScalar();

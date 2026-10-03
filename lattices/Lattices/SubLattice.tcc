@@ -450,7 +450,7 @@ bool SubLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   // If the lattice has no mask, we can return the region and/or pixel mask.
   if (itsMaskLatPtr == 0) {
     if (itsOwnPixelMask == 0) {
-      // Note that if the region has no mask, it will return all True.
+      // Note that if the region has no mask, it will return all true.
       return getRegionDataSlice(buffer, section);
     }
     if (!itsRegion.hasMask()) {

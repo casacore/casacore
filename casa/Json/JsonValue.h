@@ -153,7 +153,7 @@ class JsonValue {
 
   // Get the value in the given data type.
   // Numeric data type promotion can be done as well as conversion of
-  // integer to bool (0=False, other=True). An exception is thrown if
+  // integer to bool (0=false, other=True). An exception is thrown if
   // a mismatching data type is used.
   // Note that a null value can only be obtained as double (giving NaN).
   // <group>

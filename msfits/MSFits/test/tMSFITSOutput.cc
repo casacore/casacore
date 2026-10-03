@@ -50,7 +50,7 @@ int main() {
     AlwaysAssert(MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, false, false, false,
                                              false, 1.0, false, 1, 0, true),
                  AipsError);
-    // this should fail since overwrite is False
+    // this should fail since overwrite is false
     bool thrown = false;
     try {
       MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, false, false, false, false, 1.0,
@@ -59,7 +59,7 @@ int main() {
       thrown = true;
     }
     AlwaysAssert(thrown, AipsError);
-    // this should succeed, since overwrite is True
+    // this should succeed, since overwrite is true
     AlwaysAssert(MSFitsOutput::writeFitsFile(fitsFile, ms, "DATA", 0, 1, 1, false, false, false,
                                              false, 1.0, false, 1, 0, true),
                  AipsError);

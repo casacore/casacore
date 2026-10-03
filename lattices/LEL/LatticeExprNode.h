@@ -162,7 +162,7 @@ LatticeExprNode fractileRange(const LatticeExprNode& expr, const LatticeExprNode
 // </group>
 
 // 1-argument function to get the number of elements in a lattice.
-// If the lattice is masked, only the True elements are counted.
+// If the lattice is masked, only the true elements are counted.
 // Results in a scalar Double.
 LatticeExprNode nelements(const LatticeExprNode& expr);
 
@@ -183,8 +183,8 @@ LatticeExprNode length(const LatticeExprNode& expr, const LatticeExprNode& axis)
 
 // 2-argument function telling per pixel if its index on the given axis
 // is contained in the 2nd argument. The 2nd argument should be a boolean
-// vector where True means that the index is contained.
-// For indices >= vector_length, the 2nd argument defaults to False.
+// vector where true means that the index is contained.
+// For indices >= vector_length, the 2nd argument defaults to false.
 // Results in a Bool array.
 // <note role=caution>
 // Axes start counting at 0.
@@ -212,7 +212,7 @@ LatticeExprNode nfalse(const LatticeExprNode& expr);
 // </group>
 
 // This function returns the mask of the given expression.
-// If it has no mask, the result is an array with all True values.
+// If it has no mask, the result is an array with all true values.
 LatticeExprNode mask(const LatticeExprNode& expr);
 
 // This function returns the value of the expression without a mask.
@@ -234,7 +234,7 @@ LatticeExprNode spectralindex(const LatticeExprNode& left, const LatticeExprNode
 
 // Function resembling the ternary <src>?:</src> construct in C++.
 // The argument "condition" has to be a Bool scalar or lattice.
-// If an element in "condition" is True, the corresponding element from
+// If an element in "condition" is true, the corresponding element from
 // "arg1" is taken, otherwise it is taken from "arg2".
 LatticeExprNode iif(const LatticeExprNode& condition, const LatticeExprNode& arg1,
                     const LatticeExprNode& arg2);
@@ -362,7 +362,7 @@ LatticeExprNode convertType(const LatticeExprNode& expr, const bool*);
 //  ArrayLattice<Complex> c(IPosition (2,nx,ny));
 //  ArrayLattice<Bool>    b(IPosition (2,nx,ny));
 //
-//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(True);
+//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(true);
 //  f1.copyData( (3.5*f2) + (cos(d)) - (10/min(d,f2)*(-abs(c))*ntrue(b)) - (C::pi) );
 // </srcblock>
 //

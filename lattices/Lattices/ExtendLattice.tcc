@@ -256,7 +256,7 @@ IPosition ExtendLattice<T>::doNiceCursorShape(uInt maxPixels) const {
 
 template <class T>
 bool ExtendLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
-  // When lattice has no mask, set mask to True.
+  // When lattice has no mask, set mask to true.
   if (itsMaskLatPtr == 0) {
     buffer = true;
     return false;

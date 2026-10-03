@@ -53,8 +53,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //
 // Each parameter can be masked. The mask can, e.g., be used to indicate to a
 // generic least-squares fitting routine to only adjust parameters with
-// a <em>True</em> mask (the default). For that reason methods that only
-// handle <em>True</em> data items have names with <em>Adjust</em> in
+// a <em>true</em> mask (the default). For that reason methods that only
+// handle <em>true</em> data items have names with <em>Adjust</em> in
 // the names. In general the user should not be concerned with these
 // methods, but should only manipulate the parameter <src>flags</src> and
 // <src>values</src>.
@@ -89,10 +89,10 @@ class FunctionParam {
   //  Construct a default FunctionParam with 0 parameters
   FunctionParam();
   // Construct a FunctionParam with <src>n</src> parameters with zero value and
-  // all masks <em>True</em>
+  // all masks <em>true</em>
   explicit FunctionParam(const uInt n);
   // Construct a FunctionParam from the given vector, with all masks
-  // <em>True</em>
+  // <em>true</em>
   explicit FunctionParam(const Vector<T> &in);
   // Copy constructor (deep copy)
   FunctionParam(const FunctionParam<T> &other);
@@ -160,7 +160,7 @@ class FunctionParam {
   // Operations on the masked parameters only. For possible re-use the
   // results are cached.
   // <group>
-  // Number of masked (<src>=True</src>) parameters
+  // Number of masked (<src>=true</src>) parameters
   uInt nMaskedParameters() const;
   // All masked parameters only
   // <group>

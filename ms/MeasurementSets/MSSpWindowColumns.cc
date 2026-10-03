@@ -176,7 +176,7 @@ Int64 MSSpWindowColumns::matchSpw(const MFrequency& refFreq, const MFrequency& /
     if (!flagRow()(tr) && matchNumChan(tr, nChan) && matchIfConvChain(tr, ifChain) &&
         // matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
         matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz / 4.) &&
-        (/*matchRefFreqCnvtrd(tr, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
+        (/*matchRefFreqCnvtrd(tr, chanFreq1, false, measFrm, msdopc, mssrcc, tolInHz)||*/
          matchRefFreqCnvtrd(tr, refFreq, true, measFrm, msdopc, mssrcc, tolInHz))) {
       return tr;
     }
@@ -187,7 +187,7 @@ Int64 MSSpWindowColumns::matchSpw(const MFrequency& refFreq, const MFrequency& /
     if (!flagRow()(r) && matchNumChan(r, nChan) && matchIfConvChain(r, ifChain) &&
         // matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
         matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz / 4.) &&
-        (/*matchRefFreqCnvtrd(r, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
+        (/*matchRefFreqCnvtrd(r, chanFreq1, false, measFrm, msdopc, mssrcc, tolInHz)||*/
          matchRefFreqCnvtrd(r, refFreq, true, measFrm, msdopc, mssrcc, tolInHz))) {
       return r;
     }
@@ -218,7 +218,7 @@ RowNumbers MSSpWindowColumns::allMatchedSpw(const MFrequency& refFreq, uInt nCha
         // matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz/4) &&
         matchTotalBandwidth(k, bandwidthInHz, bandwidthInHz / 4.) &&
         matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
-      // matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+      // matchRefFreqCnvtrd(r, refFreq, true, measFrm, msdopc, mssrcc, tolInHz))) {
       ++numMatch;
       matched.resize(numMatch, true);
       matched(numMatch - 1) = k;

@@ -3769,7 +3769,7 @@ void MSMetaData::_getUnflaggedRowStats(Double& nACRows, Double& nXCRows,
   Vector<Int>::const_iterator dIter = dataDescIDs->begin();
   uInt i = 0;
   // uInt64 count = 0;
-  //  a flag value of True means the datum is bad (flagged), so False => unflagged
+  //  a flag value of true means the datum is bad (flagged), so false => unflagged
   vector<uInt> dataDescIDToSpwMap = getDataDescIDToSpwMap();
   std::set<uInt> a, b, c, d, e;
   vector<SpwProperties> spwInfo = _getSpwInfo(a, b, c, d, e);
@@ -3795,7 +3795,7 @@ void MSMetaData::_getUnflaggedRowStats(Double& nACRows, Double& nXCRows,
       Double bwSum = 0;
 
       for (uInt corr = 0; corr < nCorrelations; ++corr) {
-        // invert the meaning here, so that a True value
+        // invert the meaning here, so that a true value
         // in corrRow means the datum is good (unflagged)
         // it will make the masked sum below more obvious
         Vector<bool> corrRow = !flagsMatrix.row(corr);

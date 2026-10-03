@@ -148,7 +148,7 @@ class TableCopy {
   // Note that the data types of the column do not need to match; data type
   // promotion is done if needed.
   // <br>The <src>preserveTileShape</src> argument tells if the original
-  // tile shape is kept if a tiled data manager is used. If False, the
+  // tile shape is kept if a tiled data manager is used. If false, the
   // default tile shape of the data manager is used.
   // <note role=tip>
   // Note that a TaQL command can be used to fill a column in any way.

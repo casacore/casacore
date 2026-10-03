@@ -136,7 +136,7 @@ class ROTableRow {
  public:
   // Create a detached ROTableRow object.
   // This means that no Table, etc. is contained in it.
-  // Function isAttached will return False for it.
+  // Function isAttached will return false for it.
   // <br>
   // This constructor should normally not be used, because it does not
   // result in a valid object. It should only be used when really needed
@@ -147,7 +147,7 @@ class ROTableRow {
   // Its TableRecord will contain all columns except columns with
   // datatype TpOther (i.e. non-standard data types).
   // <br>
-  // If the flag <src>storedColumnsOnly</src> is True, only the
+  // If the flag <src>storedColumnsOnly</src> is true, only the
   // columns actually stored by a storage manager will be selected.
   // This is useful when the contents of an entire row have to be copied.
   // Virtual columns are calculated on-the-fly (often using stored columns),
@@ -197,7 +197,7 @@ class ROTableRow {
 
   // Get the values of all columns used from the given row.
   // When the given row number equals the current one, nothing
-  // will be read unless the alwaysRead flag is set to True.
+  // will be read unless the alwaysRead flag is set to true.
   // <br>The TableRecord& returned is the same one as returned by the
   // record() function. So one can ignore the return value of get().
   const TableRecord& get(rownr_t rownr, bool alwaysRead = false) const;
@@ -268,7 +268,7 @@ class ROTableRow {
   void makeDescExclude(RecordDesc& description, const Vector<String>& columnNames, bool writable);
 
   // Add a column to the record.
-  // When skipOther is True, columns with a non-standard data type
+  // When skipOther is true, columns with a non-standard data type
   // will be silently skipped.
   void addColumnToDesc(RecordDesc& description, const TableColumn& column, bool skipOther);
 
@@ -381,7 +381,7 @@ class TableRow : public ROTableRow {
  public:
   // Create a detached TableRow object.
   // This means that no Table, etc. is contained in it.
-  // Function isAttached (in the base class) will return False for it.
+  // Function isAttached (in the base class) will return false for it.
   // <br>
   // This constructor should normally not be used, because it does not
   // result in a valid object. It should only be used when really needed
@@ -392,7 +392,7 @@ class TableRow : public ROTableRow {
   // Its TableRecord will contain all columns except columns with
   // datatype TpOther and columns which are not writable.
   // <br>
-  // If the flag <src>storedColumnsOnly</src> is True, only the
+  // If the flag <src>storedColumnsOnly</src> is true, only the
   // columns actually stored by a storage manager will be selected.
   // This is useful when the contents of an entire row have to be copied.
   // Virtual columns are calculated on-the-fly (often using stored columns),

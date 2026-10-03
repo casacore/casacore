@@ -479,7 +479,7 @@ class LELFunctionFloat : public LELInterface<Float> {
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> v(shape); v.set(True);
+// ArrayLattice<Bool> v(shape); v.set(true);
 // ArrayLattice<DComplex> w(shape); w.set(DComplex(2.0,3.0));
 // ArrayLattice<Double> x(shape); x.set(0.05);
 // ArrayLattice<Double> y(shape); y.set(2.0);
@@ -760,11 +760,11 @@ class LELFunctionDComplex : public LELInterface<DComplex> {
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(True);
+// ArrayLattice<Bool> x(shape); x.set(true);
 // ArrayLattice<Bool> y(shape);
 // y.copyData(any(x));                // y = any(x)
 // </srcblock>
-// The result of the any function (were any of the values True) is
+// The result of the any function (were any of the values true) is
 // a Bool scalar. So the output Lattice is filled with that one value.
 // </example>
 //

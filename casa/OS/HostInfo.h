@@ -103,8 +103,8 @@ class HostInfo {
   static Int processID();
   static Double secondsFrom1970();
 
-  // Returns True for big endian machines (like SUN).
-  // Returns False for little endian machines (like PC).
+  // Returns true for big endian machines (like SUN).
+  // Returns false for little endian machines (like PC).
   static bool bigEndian();
 
   // Returns 0 if unable to determine the number of CPUs.

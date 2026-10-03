@@ -721,7 +721,7 @@ bool LSQFit::merge(const LSQFit &other) {
 }
 
 bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
-  ///  if (other.nun_p != nIndex || state_p || other.state_p) return False;
+  ///  if (other.nun_p != nIndex || state_p || other.state_p) return false;
   if (other.nun_p != nIndex) return false;
   // Copy normal equations
   for (uInt i = 0; i < nIndex; ++i) {

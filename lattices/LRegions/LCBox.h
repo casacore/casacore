@@ -114,8 +114,8 @@ class LCBox : public LCRegionFixed {
 
   // Verify a box specification.  Illegal (inlcuding blc > trc) or
   // unspecified values are  given 0 (blc) shape (trc) or
-  // unity (inc).  Returns <src>True</src> if any of the blc/trc/inc
-  // are changed from their input values, else returns <src>False</src>
+  // unity (inc).  Returns <src>true</src> if any of the blc/trc/inc
+  // are changed from their input values, else returns <src>false</src>
   static bool verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPosition& shape);
 
  protected:

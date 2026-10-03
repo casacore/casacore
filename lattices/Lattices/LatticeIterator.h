@@ -254,7 +254,7 @@ class RO_LatticeIterator {
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
   // postfix and prefix versions will do the same thing.
-  // <br>They return True if the cursor moved (which should always be the
+  // <br>They return true if the cursor moved (which should always be the
   // case if the iterator is not at the end).
   // <group>
   bool operator++();
@@ -264,7 +264,7 @@ class RO_LatticeIterator {
   // Decrement operator - decrement the cursor to the previous
   // position. These functions are forwarded to the current LatticeNavigator
   // and both postfix and prefix versions will do the same thing.
-  // <br>They return True if the cursor moved (which should always be the
+  // <br>They return true if the cursor moved (which should always be the
   // case if the iterator is not at the start).
   // <group>
   bool operator--();
@@ -324,7 +324,7 @@ class RO_LatticeIterator {
   // </group>
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False.
+  // Returns true if everything is fine otherwise returns false.
   bool ok() const;
 
  protected:
@@ -486,7 +486,7 @@ class LatticeIterator : public RO_LatticeIterator<T> {
   //</group>
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine. Otherwise returns False.
+  // Returns true if everything is fine. Otherwise returns false.
   bool ok() const;
 
   // # Make members of parent class known.

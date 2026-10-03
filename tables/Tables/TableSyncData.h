@@ -96,7 +96,7 @@ class TableSyncData {
   // Read the synchronization data from the MemoryIO object.
   // This function is called when a lock is acquired to see if
   // table data has to be reread.
-  // <br>It returns False when the MemoryIO object is empty.
+  // <br>It returns false when the MemoryIO object is empty.
   bool read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged, Block<bool>& dataManChanged);
 
   // Get the MemoryIO object.

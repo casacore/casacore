@@ -77,7 +77,7 @@ MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, bool initialize)
   nrrowToAdd_p = 0;
   nrrow_p = nrrow;
   // The table is transient, thus deleted when destructed.
-  // It is set, so Table::isMarkedForDelete() returns True.
+  // It is set, so Table::isMarkedForDelete() returns true.
   markForDelete(false, "");
 }
 

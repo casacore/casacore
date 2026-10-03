@@ -172,7 +172,7 @@ class RecordInterface {
   // The function can check if the name and/or data type are valid.
   // The extra argument is the argument given to the Record constructor
   // which can be used to pass non-Record information.
-  // The function should return False if name or data type is invalid.
+  // The function should return false if name or data type is invalid.
   // In that case it can fill the message string, which will be added
   // to the message in the thrown exception.
   typedef bool CheckFieldFunction(const String& fieldName, DataType dataType,
@@ -260,7 +260,7 @@ class RecordInterface {
   // Change the structure of this Record to contain the fields in
   // newDescription. After calling restructure, <src>description() ==
   // newDescription</src>. Any existing RecordFieldPtr objects are
-  // invalidated (their <src>isAttached()</src> members return False) after
+  // invalidated (their <src>isAttached()</src> members return false) after
   // this call.
   // <br>If the new description contains subrecords, those subrecords
   // will be restructured if <src>recursive=True</src> is given.

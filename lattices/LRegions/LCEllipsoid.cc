@@ -261,7 +261,7 @@ void LCEllipsoid::defineMask() {
   }
   uInt i;
   // Create the mask with the shape of the bounding box.
-  // Set the mask initially to False.
+  // Set the mask initially to false.
   const IPosition& length = boundingBox().length();
   uInt nrdim = length.nelements();
   Array<bool> mask(length);
@@ -331,7 +331,7 @@ void LCEllipsoid::defineMask() {
 
 void LCEllipsoid::_defineMask2D() {
   // Create the mask with the shape of the bounding box.
-  // Set the mask initially to False.
+  // Set the mask initially to false.
   const IPosition& length = boundingBox().length();
   uInt ndim = length.size();
   AlwaysAssert(ndim == 2, AipsError);
@@ -372,7 +372,7 @@ void LCEllipsoid::_defineMask2D() {
 
 void LCEllipsoid::_doOutside() {
   // Create the mask with the shape of the bounding box.
-  // Set the mask initially to False.
+  // Set the mask initially to false.
   const IPosition& length = boundingBox().length();
   Float center0 = itsCenter[0] - boundingBox().start()[0];
   uInt ndim = length.size();

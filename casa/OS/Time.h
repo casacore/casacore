@@ -119,7 +119,7 @@ class Time {
   bool operator>(const Time& other) const;
   bool operator<(const Time& other) const;
 
-  // if iso is True, then use ISO 8601 format
+  // if iso is true, then use ISO 8601 format
   // otherwise, produce the string of the form
   // Tue Mar 22 16:40:24 1994
   // with GMT time
@@ -404,8 +404,8 @@ class Time {
 // #
 // # </code>
 // #
-// # The function isLeapYear() return bool value. True if is a leap year
-// # and False in other case.
+// # The function isLeapYear() return bool value. true if is a leap year
+// # and false in other case.
 // #
 // # The function is invoked looks as follows
 // #

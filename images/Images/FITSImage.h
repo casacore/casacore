@@ -90,7 +90,7 @@ class FitsInput;
 //    FITSImage im("in.fits");
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(im, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    bool ok = stats.display();                              // Display statistics
 // </srcblock>
 // </example>
 
@@ -150,10 +150,10 @@ class FITSImage : public ImageInterface<Float> {
 
   // Has the object really a mask?  The FITSImage always
   // has a pixel mask and never has a region mask so this
-  // always returns True
+  // always returns true
   virtual bool isMasked() const;
 
-  // FITSimage always has a pixel mask so returns True
+  // FITSimage always has a pixel mask so returns true
   virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  FITSImage always has a pixel mask.
@@ -163,7 +163,7 @@ class FITSImage : public ImageInterface<Float> {
   // </group>
 
   // Do the actual get of the mask data.   The return value is always
-  // False, thus the buffer does not reference another array.
+  // false, thus the buffer does not reference another array.
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Get the region used.  There is no region.
@@ -173,7 +173,7 @@ class FITSImage : public ImageInterface<Float> {
   // # Lattice virtual functions
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
+  // Returns false as the data do not reference another Array
   virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.

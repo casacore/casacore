@@ -191,7 +191,7 @@ class TableIterator {
   bool isNull() const { return !tabIterPtr_p; }
 
   // Throw an exception if the object is null, i.e.
-  // if function isNull() is True.
+  // if function isNull() is true.
   void throwIfNull() const;
 
   // Reset the iterator (i.e. restart iteration).

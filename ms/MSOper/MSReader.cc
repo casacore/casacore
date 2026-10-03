@@ -304,7 +304,7 @@ MSReader::MSReader(const MeasurementSet &ms)
 
 void MSReader::gotoRow(rownr_t which) {
   // give up if this isn't a valid row.  Perhaps this should do something more
-  // obnoxious, like make this a boolean fn and return False?
+  // obnoxious, like make this a boolean fn and return false?
   if (which >= itsMS.nrow()) return;
 
   // don't do anything if which is the same as the previous call.

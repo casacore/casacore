@@ -461,7 +461,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
         os << LogIO::SEVERE
            << "More than one longitude axis is "
               "present in header!";
-        // return False;
+        // return false;
       }
       longAxis = i;
     } else if (subDEC == String("DEC") || StringContains(ctype(i), "LAT") ||
@@ -470,7 +470,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
         os << LogIO::SEVERE
            << "More than one latitude axis is "
               "present in header!";
-        // return False; // we already have a latitude axis!
+        // return false; // we already have a latitude axis!
       }
       latAxis = i;
     } else if (StringContains(ctype(i), "STOKES")) {
@@ -486,11 +486,11 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
 
   if (longAxis >= 0 && latAxis < 0) {
     os << LogIO::SEVERE << "We have a longitude axis but no latitude axis!";
-    // return False;
+    // return false;
   }
   if (latAxis >= 0 && longAxis < 0) {
     os << LogIO::SEVERE << "We have a latitude axis but no longitude axis!";
-    // return False;
+    // return false;
   }
 
   // DIRECTION
@@ -540,7 +540,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
          << "Longitude and latitude axes have different"
             " projections ("
          << proj1 << "!=" << proj2 << ")" << LogIO::POST;
-      // return False;
+      // return false;
     }
 
     // OK, let's make our Direction coordinate and add it to the
@@ -571,7 +571,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
       ptype = Projection::type(proj1);
       if (ptype == Projection::N_PROJ) {
         os << LogIO::SEVERE << "Unknown projection: (" << proj1 << ")";
-        // return False;
+        // return false;
       }
       // projp header keyword not used in miriad
     }
@@ -587,7 +587,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
          << "Error forming projection, maybe the "
             "wrong number of parameters\n("
          << x.what() << ")" << LogIO::POST;
-      // return False;
+      // return false;
     }
 
     // fish out LONG/LATPOLE  (use defaults, since miriad does not
@@ -727,7 +727,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
            << "FELO axis does not have rest frequency "
               "information (RESTFREQ)"
            << LogIO::POST;
-        // return False;
+        // return false;
       } else {
         // Have RESTFREQ, deduce freq's from velocities and rest freq
         referenceChannel = rpix;
@@ -738,7 +738,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
           } break;
           case MDoppler::RADIO: {
             os << LogIO::SEVERE << "FELO/RADIO is illegal" << LogIO::POST;
-            // return False;
+            // return false;
           } break;
           default: {
             AlwaysAssert(0, AipsError);  // NOTREACHED
@@ -757,7 +757,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
            << "VELO axis does not have rest frequency "
               "information (RESTFREQ)"
            << LogIO::POST;
-        // return False;
+        // return false;
       } else {
         // Have RESTFREQ
         os << LogIO::NORMAL
@@ -773,7 +773,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
           } break;
           case MDoppler::OPTICAL: {
             os << LogIO::SEVERE << "VELO/OPTICAL is not implemented" << LogIO::POST;
-            // return False;
+            // return false;
           } break;
           default: {
             AlwaysAssert(0, AipsError);  // NOTREACHED
@@ -799,7 +799,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
   if (stokesAxis >= 0) {
     if (shape(stokesAxis) > 4) {
       os << "Stokes axis longer than 4 pixels.  This is not acceptable" << LogIO::EXCEPTION;
-      // return False;
+      // return false;
     }
     Vector<Int> stokes(shape(stokesAxis));
 
@@ -910,7 +910,7 @@ void MIRIADImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, I
       cSys.addCoordinate(sc);
     } catch (std::exception& x) {
       os << LogIO::SEVERE << "Error forming stokes axis : " << x.what() << LogIO::POST;
-      // return False;
+      // return false;
     }
   }
 

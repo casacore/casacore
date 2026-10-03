@@ -311,8 +311,8 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // get values from sorted array if the array is small enough to be held in
   // memory. Note that this is the array containing all good data, not data in
   // just a single bin representing a subset of good data.
-  // Returns True if the data were successfully retrieved.
-  // If True is returned, the values map will contain a map of index to value.
+  // Returns true if the data were successfully retrieved.
+  // If true is returned, the values map will contain a map of index to value.
   // It is the caller's responsibility to check that <src>mynpts</src> is not
   // 0; no checking is done here.
   bool _valuesFromSortedArray(std::map<uInt64, AccumType>& values, uInt64 mynpts,

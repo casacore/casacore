@@ -113,7 +113,7 @@ void doCopy() {
     AlwaysAssert(allNear(mLatOut.get(), Float(1.0), 1.0e-6), AipsError);
     AlwaysAssert(allEQ(mLatOut.getMask(), true), AipsError);
 
-    // Now set one mask value to False so the output pixel should be zero
+    // Now set one mask value to false so the output pixel should be zero
 
     Lattice<bool>& pixelMaskIn = mLatIn.pixelMask();
     pixelMaskIn.set(true);

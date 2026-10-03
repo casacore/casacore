@@ -93,7 +93,7 @@ int main() {
     }
     {
       // "sumweights" should be absent from output record when "weighted"
-      // flag is False.
+      // flag is false.
       stats.weighted = false;
       Record rec = toRecord(stats);
       AlwaysAssert(rec.isDefined(StatisticsData::toString(StatisticsData::SUMWEIGHTS)), AipsError);

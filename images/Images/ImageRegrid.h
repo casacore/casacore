@@ -134,7 +134,7 @@ class ImageRegrid {
 
   // Regrid inImage onto the grid specified by outImage.
   // If outImage has a writable mask, it will be updated in that
-  // output pixels at which the regridding failed will be masked bad (False)
+  // output pixels at which the regridding failed will be masked bad (false)
   // and the pixel value set to zero. Otherwise the output mask is not changed.
   // Specify which pixel axes of outImage are to be
   // regridded.  The coordinate and axis order of outImage
@@ -160,7 +160,7 @@ class ImageRegrid {
   // regridded many planes of a cube in one call to regrid, the coordinate grid
   // is cached for you.   To trigger successive calls to regrid to go back to
   // internal computation, set zero length Cube and Matrix.  <src>gridMask</src>
-  // is True for successfull coordinate conversions, and False otherwise.
+  // is true for successfull coordinate conversions, and false otherwise.
   // <group>
   void get2DCoordinateGrid(Cube<Double>& grid, Matrix<bool>& gridMask) const;
   void set2DCoordinateGrid(const Cube<Double>& grid, const Matrix<bool>& gridMask,
@@ -173,7 +173,7 @@ class ImageRegrid {
   // the outPixelLocation vector is of zero length, then the images
   // are aligned by their reference pixels.  Only integral shifts are done
   // in the aligment process. If outImage has a mask,  it will be updated.
-  // Returns False if no overlap of images, in which case the
+  // Returns false if no overlap of images, in which case the
   // output is not updated.
   bool insert(ImageInterface<T>& outImage, const Vector<Double>& outPixelLocation,
               const ImageInterface<T>& inImage);

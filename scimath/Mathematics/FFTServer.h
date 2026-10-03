@@ -163,7 +163,7 @@ class FFTEnums {
 // guaranteed. Modification of the input Array can be avoided, at the expense
 // of copying the data to temporary storage, by either:
 // <ul> <li> Ensuring the input Array is a const Array.
-//      <li> Setting the constInput Flag to True.
+//      <li> Setting the constInput Flag to true.
 // </ul>
 // The latter option is provided to avoid users having to cast non-const
 // Arrays to const ones in order to prevent there input Array from being
@@ -287,15 +287,15 @@ class FFTServer {
 
   // Complex to complex in-place fft. The origin of the transform is in the
   // centre of the Array. The direction of the transform is controlled by the
-  // toFrequency variable. If True then a forward, or time to frequency,
-  // transform is performed. If False a backward or frequency to time transform
+  // toFrequency variable. If true then a forward, or time to frequency,
+  // transform is performed. If false a backward or frequency to time transform
   // is done. Scaling is always done on the backward transform.
   void fft(Array<S>& cValues, const bool toFrequency = true);
 
   // Complex to complex fft. The origin of the transform is in the centre of
   // the Array. The direction of the transform is controlled by the toFrequency
-  // variable. If True then a forward, or time to frequency, transform is
-  // performed. If False a backward or frequency to time transform is
+  // variable. If true then a forward, or time to frequency, transform is
+  // performed. If false a backward or frequency to time transform is
   // done. Scaling is always done on the backward transform. The output Array
   // must either either contain no elements or be the same as the input Array,
   // ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an AipsError is
@@ -316,7 +316,7 @@ class FFTServer {
   void fft0(Array<T>& rResult, const Array<S>& cData);
   void fft0(Array<S>& cValues, const bool toFrequency = true);
   void fft0(Array<S>& cResult, const Array<S>& cData, const bool toFrequency = true);
-  // # void fft0(Array<T> & rValues, const Bool toFrequency=True);
+  // # void fft0(Array<T> & rValues, const bool toFrequency=true);
 
   // </group>
   // # Flips the quadrants in a complex Array so that the point at
@@ -330,7 +330,7 @@ class FFTServer {
   // # passed a Hermitian Array where half the complex plane is implicit (eg as
   // # produced by a real->complex Transform) it is not necessary to flip the
   // # first dimension of the Array. In this case the isHermitian flag should
-  // # be set to True.  For complex<->complex transforms this should be False.
+  // # be set to true.  For complex<->complex transforms this should be false.
   // <group>
   void flip(Array<T>& rData, const bool toZero, const bool isHermitian);
   void flip(Array<S>& cData, const bool toZero, const bool isHermitian);

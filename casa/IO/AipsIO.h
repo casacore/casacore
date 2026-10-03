@@ -438,7 +438,7 @@ class AipsIO {
   Block<uInt> objtln_p;
   // Offset of length at each level
   Block<Int64> objptr_p;
-  // True = the object type has already been read
+  // true = the object type has already been read
   bool hasCachedType_p;
   // The cached object type.
   String objectType_p;

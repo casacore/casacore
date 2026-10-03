@@ -49,7 +49,7 @@ MeasuresProxy::MeasuresProxy() : pcomet_p(0) { ; }
 MeasuresProxy::~MeasuresProxy() { delete pcomet_p; }
 
 String MeasuresProxy::getMeasureType(const Record &in) {
-  // Bool b;
+  // bool b;
   String out;
   if (in.isDefined("type")) {
     out = "???";  // b = GlishArray(in.get("type")).get(out);

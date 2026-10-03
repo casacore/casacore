@@ -225,7 +225,7 @@ bool Coordinate::setWorldAxisUnits(const Vector<String>& units) {
     set_error("Wrong number of elements in units vector");
     return false;
   } else {
-    // If the units are unchanged just return True.
+    // If the units are unchanged just return true.
     Vector<String> old = worldAxisUnits();
     if (allEQ(old, units)) {
       return true;

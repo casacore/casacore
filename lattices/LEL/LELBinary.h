@@ -274,9 +274,9 @@ class LELBinaryCmp : public LELInterface<bool> {
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(False);
-// ArrayLattice<Bool> y(shape); y.set(True);
-// ArrayLattice<Bool> z(shape); z.set(False);
+// ArrayLattice<Bool> x(shape); x.set(false);
+// ArrayLattice<Bool> y(shape); y.set(true);
+// ArrayLattice<Bool> z(shape); z.set(false);
 // z.copyData(x&&y);                // z = x && y;
 // z.copyData(x||y);                // z = x || y;
 // z.copyData(x==y);                // z = x == y;

@@ -235,7 +235,7 @@ Lattice<bool>& TempImage<T>::pixelMask() {
 
 template <class T>
 bool TempImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
-  // If no mask, base implementation returns a True mask.
+  // If no mask, base implementation returns a true mask.
   if (maskPtr_p == 0) {
     return MaskedLattice<T>::doGetMaskSlice(buffer, section);
   }

@@ -696,7 +696,7 @@ bool FITSImgParser::index_is_HDUtype(const Int &ext_index, const String &hdutype
     if (kw_hdutype.size() > 0 && !kw_hdutype.compare(hdutype)) return true;
   }
 
-  // return False as default
+  // return false as default
   return false;
 }
 

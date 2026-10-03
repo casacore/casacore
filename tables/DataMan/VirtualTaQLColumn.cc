@@ -229,7 +229,7 @@ void VirtualTaQLColumn::setMaxLength(uInt maxLength) { itsMaxLen = maxLength; }
 int VirtualTaQLColumn::dataType() const { return itsDataType; }
 
 bool VirtualTaQLColumn::isWritable() const {
-  // This is always False except temporarily in function create64 to define a keyword.
+  // This is always false except temporarily in function create64 to define a keyword.
   return itsTempWritable;
 }
 

@@ -134,7 +134,7 @@ class QuantumHolder : public RecordTransformable {
 
   // # Member Functions
   //  Check if it holds a Quantity. Note that a Vector of length 1 will give
-  //  True to scalar questions.
+  //  true to scalar questions.
   //  <group>
   bool isEmpty() const;
   bool isQuantum() const;
@@ -205,12 +205,12 @@ class QuantumHolder : public RecordTransformable {
   // </ul>
   // A valid string will be one of the special time/angle formats or a
   // value with a valid unit string.
-  // Illegal values or units will return False and write an error message.
+  // Illegal values or units will return false and write an error message.
   // <group>
   virtual bool fromRecord(String &error, const RecordInterface &in);
   virtual bool fromString(String &error, const String &in);
   // </group>
-  // Create a record from a Quantum. A False return and an error message is
+  // Create a record from a Quantum. A false return and an error message is
   // only generated if there is no valid Quantum in the holder.
   virtual bool toRecord(String &error, RecordInterface &out) const;
   // this version throws an exception rather than returning false

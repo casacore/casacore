@@ -103,7 +103,7 @@ class LELImageCoord : public LELLattCoord {
   virtual LatticeExprNode makeRebinLattice(const LatticeExprNode& expr,
                                            const IPosition& binning) const;
 
-  // The class has true coordinates (thus returns True).
+  // The class has true coordinates (thus returns true).
   virtual bool hasCoordinates() const;
 
   // Get the coordinates of the spectral axis for the given shape.

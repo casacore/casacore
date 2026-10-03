@@ -65,7 +65,7 @@ class Slicer;
 class LatticeUtilities {
  public:
   // Copy data and mask from input to output.  If the input has no mask,
-  // that means all True (good), and these values will be transferred
+  // that means all true (good), and these values will be transferred
   // to the output.   Mask transfer only  occurs if the output has
   // a writeable mask.
   template <class T>

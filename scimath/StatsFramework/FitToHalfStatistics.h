@@ -86,11 +86,11 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // In the following group of methods, if the size of the composite dataset
   // is smaller than <src>binningThreshholdSizeBytes</src>, the composite
   // dataset will be (perhaps partially) sorted and persisted in memory during
-  // the call. In that case, and if <src>persistSortedArray</src> is True,
+  // the call. In that case, and if <src>persistSortedArray</src> is true,
   // this sorted array will remain in memory after the call and will be used
   // on subsequent calls of this method when
   // <src>binningThreshholdSizeBytes</src> is greater than the size of the
-  // composite dataset. If <src>persistSortedArray</src> is False, the sorted
+  // composite dataset. If <src>persistSortedArray</src> is false, the sorted
   // array will not be stored after this call completes and so any subsequent
   // calls for which the dataset size is less than
   // <src>binningThreshholdSizeBytes</src>, the dataset will be sorted from
@@ -108,7 +108,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // explicitly shouldn't hurt anything). If provided, npts, the number of
   // points falling in the specified ranges which are not masked and have
   // weights > 0, should be correct. <src>min</src> can be less than the true
-  // minimum, and <src>max</src> can be greater than the True maximum, but for
+  // minimum, and <src>max</src> can be greater than the true maximum, but for
   // best performance, these should be as close to the actual min and max as
   // possible (and ideally the actual min/max values of the data set).
   AccumType getMedianAndQuantiles(std::map<Double, AccumType>& quantiles,
@@ -143,7 +143,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   // scan the dataset(s) that have been added, and find the number of good
   // points. This method may be called even if setStatsToCaclulate has been
-  // called and NPTS has been excluded. If setCalculateAsAdded(True) has
+  // called and NPTS has been excluded. If setCalculateAsAdded(true) has
   // previously been called after this object has been (re)initialized, an
   // exception will be thrown.
   uInt64 getNPts();
@@ -154,7 +154,7 @@ class FitToHalfStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void reset();
 
   // This class does not allow statistics to be calculated as datasets are
-  // added, so an exception will be thrown if <src>c</src> is True.
+  // added, so an exception will be thrown if <src>c</src> is true.
   void setCalculateAsAdded(bool c);
 
   // Override base class method by requiring mean to be computed in addition

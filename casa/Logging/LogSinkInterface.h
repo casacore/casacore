@@ -126,7 +126,7 @@ class LogSinkInterface {
 
   // This function must be over-ridden in derived classes. If the filter
   // passes the message, do what is necessary with the message and return
-  // <src>True</src>.
+  // <src>true</src>.
   virtual bool postLocally(const LogMessage &message) = 0;
 
   // Write any pending output.

@@ -66,7 +66,7 @@ class BucketBase {
 
   // Flush the cached buckets.
   // Possibly remaining uninitialized buckets will be initialized first.
-  // A True status is returned if buckets had to be written.
+  // A true status is returned if buckets had to be written.
   // The actual flushing is done using <src>doFlush</src> in the derived
   // class.
   bool flush();

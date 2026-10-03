@@ -156,8 +156,8 @@ class VirtualColumnEngine : public DataManager {
   // is called AFTER the keywords are written. Thus, in this way the
   // information has to be stored and read back in create, open and/or
   // prepare.
-  // It returns a True status if it had to flush (i.e. if data have changed).
-  // <br>The default implementation does nothing and returns False.
+  // It returns a true status if it had to flush (i.e. if data have changed).
+  // <br>The default implementation does nothing and returns false.
   virtual bool flush(AipsIO&, bool fsync);
 
   // Resync the storage manager with the new file contents.

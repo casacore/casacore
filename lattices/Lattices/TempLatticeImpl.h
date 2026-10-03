@@ -196,7 +196,7 @@ class TempLatticeImpl {
   }
   // </group>
 
-  // Check class internals - used for debugging. Should always return True
+  // Check class internals - used for debugging. Should always return true
   bool ok() const {
     doReopen();
     return itsLatticePtr->ok();

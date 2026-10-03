@@ -1101,7 +1101,7 @@ Int MultiTermLatticeCleaner<T>::checkConvergence(bool choosespec, Float thresh, 
   /* Stop, if there are negatives on the largest scale in the Io image */
   // if(nscales_p>1 && maxscaleindex == nscales_p-2)
   //	if((*matCoeffs_p[IND2(0,maxscaleindex)]).getAt(globalmaxpos) < 0.0)
-  //	{converged = False;break;}
+  //	{converged = false;break;}
 
   return convergedflag;
 

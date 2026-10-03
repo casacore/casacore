@@ -147,7 +147,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // on the 'balanced' factor. The LM factor is either added in some way to all
 // diagonal elements (if balanced) or all diagonal elements are multiplied by
 // <src>(1+factor)</src> After each loop convergence can be tested
-// by the <src>isReady()</src> call; which will return <src>False</src> or
+// by the <src>isReady()</src> call; which will return <src>false</src> or
 // a non-zero code indicating the ready reason. Reasons for stopping can be:
 // <ul>
 // <li> SOLINCREMENT: the relative change in the norm of the parameter
@@ -234,7 +234,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //     Double sol[3];
 //     Double sd, mu;
 //     uInt rank;
-//     Bool ok;
+//     bool ok;
 //
 //     // LSQ object
 //     LSQFit fit(2);
@@ -267,7 +267,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //     // Retry with 3 unknowns; but 1 condition equation and use SVD
 //     fit.reset();
 //     for (uInt i=0; i<1; i++) fit.makeNorm(ce[i], 1.0, m[i]);
-//     ok = fit.invert(rank, True);
+//     ok = fit.invert(rank, true);
 //     cout << "ok? " << ok << "; rank: " << rank << endl;
 //     if (ok) {
 //       fit.solve(sol, &sd, &mu);
@@ -407,7 +407,7 @@ class LSQFit {
   //  of the sine of the angle between a column in the normal equations and
   //  the plane suspended by the other columns: if too
   //  parallel, the equations are degenerate).
-  //  If <src>doSVD</src> is given as False, False is returned if rank not
+  //  If <src>doSVD</src> is given as false, false is returned if rank not
   //  maximal, else an <src>SVD</src> solution is done.
   bool invert(uInt &nRank, bool doSVD = false);
   // Copy date from beg to end; converting if necessary to complex data
@@ -593,7 +593,7 @@ class LSQFit {
   // Get the <src>n-th</src> (from 0 to the rank deficiency, or missing rank,
   // see e.g. <src>getDeficiency()</src>)
   // constraint equation as determined by <src>invert()</src> in SVD-mode in
-  // <src> cEq[nUnknown]</src>. False returned for illegal n. Note
+  // <src> cEq[nUnknown]</src>. false returned for illegal n. Note
   // that nMissing will be equal to the number of unknowns
   // (<src>nUnknowns</src>, or double that for the complex case) minus the
   // rank as returned from the <src>invert()</src> method.
@@ -606,7 +606,7 @@ class LSQFit {
   bool getConstraint(uInt n, U &cEq) const;
   // </group>
   // Add a new constraint equation (updating nConstraints); or set a
-  // numbered constraint equation (0..nConstraints-1). False if illegal
+  // numbered constraint equation (0..nConstraints-1). false if illegal
   // number n. The constraints are equations with <src>nUnknowns</src> terms,
   // and a constant value. E.g. measuring three angles of a triangle
   // could lead to equation <src>[1,1,1]</src> with obs as
@@ -636,7 +636,7 @@ class LSQFit {
   // related information) into <src>this</src>. Both objects must have the
   // same number of unknowns, and be pure normal equations (i.e. no
   // <src>invert(), solve(), solveLoop()</src> or statistics calls
-  // should have been made). If merging cannot be done, <src>False</src>
+  // should have been made). If merging cannot be done, <src>false</src>
   // is returned. The index case (the index is an iterator) assumes that
   // the normal equations to be merged are a sparse subset of the complete
   // matrix. The index 'vector' specifies which unknowns are present. An index
@@ -750,14 +750,14 @@ class LSQFit {
                Double &nonlin) const;
   //
   // Create an LSQFit object from a record.
-  // An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
+  // An error message is generated, and false
+  // returned if an invalid record is given. A valid record will return true.
   // Error messages are postfixed to error.
   // <group>
   bool fromRecord(String &error, const RecordInterface &in);
   // </group>
   // Create a record from an LSQFit object.
-  // The return will be False and an error
+  // The return will be false and an error
   // message generated only if the object does not contain a valid object.
   // Error messages are postfixed to error.
   bool toRecord(String &error, RecordInterface &out) const;
@@ -917,7 +917,7 @@ class LSQFit {
   void save(bool all = true);
   // Restore current status
   void restore(bool all = true);
-  // Copy data. If all False, only the relevant data for non-linear
+  // Copy data. If all false, only the relevant data for non-linear
   // solution are copied (normal equations, knows and errors).
   void copy(const LSQFit &other, bool all = true);
   // Extend the constraint equation area to the specify number of

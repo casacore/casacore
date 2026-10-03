@@ -160,8 +160,8 @@ class LinearCoordinate : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel position to a worl position or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel position to a worl position or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // errorMessage returns an error message.  The output
   // vectors are appropriately resized. The value of the Bool parameter passed
   // to toWorld() has no effect as this type of coordinate does not support a
@@ -203,7 +203,7 @@ class LinearCoordinate : public Coordinate {
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't
   // compare on the specified
-  // axes in the Coordinate.  If the comparison returns False, method
+  // axes in the Coordinate.  If the comparison returns false, method
   // errorMessage contains a message about why.
   // <group>
   virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
@@ -221,7 +221,7 @@ class LinearCoordinate : public Coordinate {
                                             const Vector<Int> &shape) const;
 
   // Save the LinearCoordinate into the supplied record using the supplied field name.
-  // The field must not already exist, otherwise <src>False</src> is returned.
+  // The field must not already exist, otherwise <src>false</src> is returned.
   virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Restore the LinearCoordinate from a record.

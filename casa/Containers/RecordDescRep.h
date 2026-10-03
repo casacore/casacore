@@ -126,7 +126,7 @@ class RecordDescRep {
   // An exception will be thrown if the field is no array.
   void setShape(Int whichField, const IPosition& shape);
 
-  // Merge a single field from other.  If allowDuplicates is True, silently
+  // Merge a single field from other.  If allowDuplicates is true, silently
   // throw away fields if one with the same name and type already exists,
   // otherwise an exception is thrown.  Conflicting types always cause an
   // exception. Returns the number of fields in the description.
@@ -164,16 +164,16 @@ class RecordDescRep {
   // j is the minimal number needed to make it unique.
   String uniqueName(const String& name) const;
 
-  // Returns True if whichField is an array.
+  // Returns true if whichField is an array.
   bool isArray(Int whichField) const;
 
-  // Returns True if whichField is a scalar.
+  // Returns true if whichField is a scalar.
   bool isScalar(Int whichField) const;
 
-  // Returns True if whichField is a sub-record.
+  // Returns true if whichField is a sub-record.
   bool isSubRecord(Int whichField) const;
 
-  // Returns True if whichField is a table.
+  // Returns true if whichField is a table.
   bool isTable(Int whichField) const;
 
   // What is the shape of the given field. Returns [1] if the field is a
@@ -211,7 +211,7 @@ class RecordDescRep {
   // It is equal if the number of fields is equal and all field names in
   // this description occur in the other too. The order of the fields
   // is not important.
-  // <br>The flag equalDataTypes is set to True if the data types
+  // <br>The flag equalDataTypes is set to true if the data types
   // of all fields match.
   // <br>Use function operator== if order and types are important,
   // but names are not.
@@ -257,7 +257,7 @@ class RecordDescRep {
 
  private:
   // Test if all fields are part of the other description.
-  // The flag equalDataTypes is set to True if the data types of the
+  // The flag equalDataTypes is set to true if the data types of the
   // fields in both descriptions are the same.
   bool allExist(const RecordDescRep&, bool& equalDataTypes) const;
 
@@ -274,7 +274,7 @@ class RecordDescRep {
   Block<RecordDesc*> sub_records_p;
   // The shape of the field [1] for scalars and sub-records.
   Block<IPosition> shapes_p;
-  // True if the corresponding field is an array.
+  // true if the corresponding field is an array.
   Block<bool> is_array_p;
   // Table description name for table fields.
   Block<String> tableDescNames_p;

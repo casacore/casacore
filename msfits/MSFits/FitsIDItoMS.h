@@ -218,7 +218,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
-  // Returns False if it encounters an unsupported extension.
+  // Returns false if it encounters an unsupported extension.
   bool readFitsFile(const String& msFile);
 
   // is this the first UV_DATA extension
@@ -229,7 +229,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   void getAxisInfo();
 
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
-  // If useTSM is True, the Tiled Storage Manager will be used to store
+  // If useTSM is true, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM
   void setupMeasurementSet(const String& MSFileName, bool useTSM = true, bool mainTbl = false,
                            bool addCorrMod = false, bool addSyscal = false, bool addWeather = false,

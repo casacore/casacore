@@ -166,13 +166,13 @@ class ImageSummary {
   // Return telescope
   String telescope() const;
 
-  // Return rest frequency.  Returns False if none.
+  // Return rest frequency.  Returns false if none.
   bool restFrequency(String& restFreqString, Quantum<Double>& restFreq) const;
 
-  // Return frequency system.  Returns False if none.
+  // Return frequency system.  Returns false if none.
   bool frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const;
 
-  // Return direction system.  Returns False if none.
+  // Return direction system.  Returns false if none.
   bool directionSystem(String& dirTypeString, MDirection::Types& dirType) const;
 
   // Retrieve whether image has mask or not
@@ -195,7 +195,7 @@ class ImageSummary {
   // formatting (e.g. RA is  shown as HH:MM:SS.S).
   // For spectral axes, both frequency and velocity information is listed. You
   // can specify what velocity definition you want with <src>velocityType</src>
-  // If postLocally is True, the formatted strings are returned in the return value
+  // If postLocally is true, the formatted strings are returned in the return value
   Vector<String> list(LogIO& os, const MDoppler::Types velocityType = MDoppler::RADIO,
                       bool postLocally = false, const bool verbose = false);
 

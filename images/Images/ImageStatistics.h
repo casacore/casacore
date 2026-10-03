@@ -100,9 +100,9 @@ class ImageStatistics : public LatticeStatistics<T> {
   // You can specify whether you want to see progress meters or not.
   // You can force the storage image to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  // If <src>clone</src> is True, the input image will be cloned, so the caller
+  // If <src>clone</src> is true, the input image will be cloned, so the caller
   // can make changes to the input image, but the statistics will reflect the
-  // image as it was at construction. If False, a reference to the input image
+  // image as it was at construction. If false, a reference to the input image
   // is used, and so the caller shouldn't make changes to the input image between
   // construction and calling statistics computation methods, unless it calls setNewImage()
   // to update the changed image. Obviously, cloning the image impacts performance
@@ -130,11 +130,11 @@ class ImageStatistics : public LatticeStatistics<T> {
   // already been created for "other".
   ImageStatistics<T>& operator=(const ImageStatistics<T>& other);
 
-  // Set a new ImageInterface object.  A return value of <src>False</src> indicates the
+  // Set a new ImageInterface object.  A return value of <src>false</src> indicates the
   // image had an invalid type or that the internal state of the class is bad.
-  // If <src>clone</src> is True, the input image will be cloned, so the caller
+  // If <src>clone</src> is true, the input image will be cloned, so the caller
   // can make changes to the input image, but the statistics will reflect the
-  // image as it was at construction. If False, a reference to the input image
+  // image as it was at construction. If false, a reference to the input image
   // is used, and so the caller shouldn't make changes to the input image between
   // construction and calling statistics computation methods, unless it calls setNewImage()
   // to update the changed image. Obviously, cloning the image impacts performance
@@ -182,7 +182,7 @@ class ImageStatistics : public LatticeStatistics<T> {
   // Get label for higher order axes
   virtual void getLabels(String& higherOrder, String& xAxis, const IPosition& dPos) const;
 
-  // Get beam area in pixels if possible. Return False if the beam area could not be
+  // Get beam area in pixels if possible. Return false if the beam area could not be
   // calculated.
   virtual bool _getBeamArea(Array<Double>& beamArea, String& msg) const;
 
@@ -198,7 +198,7 @@ class ImageStatistics : public LatticeStatistics<T> {
                             AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
                             AccumType q1, AccumType q3);
 
-  // If <src>isFluxDensity</src> is False, then the computed value is
+  // If <src>isFluxDensity</src> is false, then the computed value is
   // a flux (ie flux density integrated over a spectral extent)
   Quantum<AccumType> _flux(bool& isFluxDensity, AccumType sum, Double beamAreaInPixels) const;
 

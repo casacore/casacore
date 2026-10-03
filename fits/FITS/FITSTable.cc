@@ -113,7 +113,7 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu, bool allKeywords) 
   while (key) {
     name = key->name();
     kwname = key->kw().name();
-    // skip certain keywords if allKeywords is not True
+    // skip certain keywords if allKeywords is not true
     if (!allKeywords && key->isreserved() &&
         (kwname == FITS::BITPIX || kwname == FITS::GCOUNT || kwname == FITS::NAXIS ||
          kwname == FITS::PCOUNT || kwname == FITS::TBCOL || kwname == FITS::TDIM ||

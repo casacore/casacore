@@ -76,7 +76,7 @@ class Block;
 
 class ObjectID {
  public:
-  // If <src>makeNull</src> is True, make the null ObjectID, otherwise create
+  // If <src>makeNull</src> is true, make the null ObjectID, otherwise create
   // a unique ObjectID.
   ObjectID(bool makeNull = false);
   // Create explicitly from the provided constituents.

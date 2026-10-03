@@ -118,7 +118,7 @@ class RefTable : public BaseTable {
 
   // Create a reference table object out of a mask.
   // The row number vector will consist of the rows for which the
-  // mask has a True value.
+  // mask has a true value.
   // The length of the mask must be the number of rows in the BaseTable.
   RefTable(BaseTable*, const Vector<bool>& rowMask);
 
@@ -164,7 +164,7 @@ class RefTable : public BaseTable {
   virtual const StorageOption& storageOption() const;
 
   // Is the table in use (i.e. open) in another process?
-  // It always returns False.
+  // It always returns false.
   virtual bool isMultiUsed(bool checkSubTable) const;
 
   // Get the locking info.
@@ -321,11 +321,11 @@ class RefTable : public BaseTable {
 
  private:
   std::shared_ptr<BaseTable> baseTabPtr_p;  // # pointer to parent table
-  bool rowOrd_p;                            // # True = table is in row order
+  bool rowOrd_p;                            // # true = table is in row order
   Vector<rownr_t> rowStorage_p;             // # row numbers in parent table
   std::map<String, String> nameMap_p;       // # map to column name in parent
   std::map<String, RefColumn*> colMap_p;    // # map name to column
-  bool changed_p;                           // # True = changed since last write
+  bool changed_p;                           // # true = changed since last write
 
   // Get the names of the tables this table consists of.
   virtual void getPartNames(Block<String>& names, bool recursive) const;
@@ -356,7 +356,7 @@ class RefTable : public BaseTable {
   // Copy a RefTable that is not persistent. It requires some special logic.
   void copyRefTable(const String& newName, int tableOption);
 
-  // Check if a column can be added. Return True if it can and must be
+  // Check if a column can be added. Return true if it can and must be
   // added to the parent table first.
   bool checkAddColumn(const String& name, bool addToParent);
 

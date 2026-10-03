@@ -188,13 +188,13 @@ class LSQMatrix : public RecordTransformable {
   void addDiagonal(uInt n, Double fac);
   // Determine max of abs values of n-length of diagonal
   Double maxDiagonal(uInt n);
-  // Create a Matrix from a record. An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
+  // Create a Matrix from a record. An error message is generated, and false
+  // returned if an invalid record is given. A valid record will return true.
   // Error messages are postfixed to error.
   // <group>
   bool fromRecord(String &error, const RecordInterface &in);
   // </group>
-  // Create a record from an LSQMatrix. The return will be False and an error
+  // Create a record from an LSQMatrix. The return will be false and an error
   // message generated only if the object does not contain a valid Matrix.
   // Error messages are postfixed to error.
   bool toRecord(String &error, RecordInterface &out) const;
@@ -202,7 +202,7 @@ class LSQMatrix : public RecordTransformable {
   const String &ident() const;
   // Convert a <src>carray</src> to/from a record. Field only written if
   // non-zero length. No carray created if field does not exist on input.
-  // False returned if unexpectedly no data available for non-zero length
+  // false returned if unexpectedly no data available for non-zero length
   // (put), or a field has zero length vector(get).
   // <group>
   static bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,

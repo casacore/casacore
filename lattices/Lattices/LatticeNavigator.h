@@ -111,7 +111,7 @@ class ROTiledStManAccessor;
 //
 // It is possible that for some positions of the cursor, part of it will
 // "hang over" the edge of the Lattice. When this occurs the
-// <src>hangOver</src> member function will return True. This will occur
+// <src>hangOver</src> member function will return true. This will occur
 // with a LatticeStepper if the Lattice shape is not a multiple of the
 // cursor shape. Hangover cannot occur with the TiledLineStepper as the length
 // of the Vector cursor is defined by the Lattice Shape.
@@ -334,8 +334,8 @@ class LatticeNavigator {
   virtual LatticeNavigator* clone() const = 0;
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False. The default
-  // implementation always returns True.
+  // Returns true if everything is fine otherwise returns false. The default
+  // implementation always returns true.
   virtual bool ok() const;
 };
 

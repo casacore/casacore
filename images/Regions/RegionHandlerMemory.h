@@ -112,7 +112,7 @@ class RegionHandlerMemory : public RegionHandler {
   // If overwrite=False, an exception will be thrown if the region
   // already exists in the "regions" or "masks" group.
   // Otherwise the region will be removed first.
-  // <br>It always returns a True status.
+  // <br>It always returns a true status.
   virtual bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
                             bool overwrite = false);
 
@@ -131,13 +131,13 @@ class RegionHandlerMemory : public RegionHandler {
   // an exception is thrown (depending on <src>overwrite</src>).
   // The region name is looked up in the given group(s).
   // <br>An exception is thrown if the old region name does not exist.
-  // <br>It always returns a True status.
+  // <br>It always returns a true status.
   virtual bool renameRegion(const String& newName, const String& oldName,
                             RegionHandler::GroupType = Any, bool overwrite = false);
 
   // Remove a region from the given group.
   // <br>Optionally an exception is thrown if the region does not exist.
-  // <br>It always returns a True status.
+  // <br>It always returns a true status.
   virtual bool removeRegion(const String& name, RegionHandler::GroupType = Any,
                             bool throwIfUnknown = true);
 

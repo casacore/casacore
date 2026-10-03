@@ -197,7 +197,7 @@ class ScalarMeasColumn : public TableMeasColumn {
   // However, it is possible that part of the table is already
   // written and that the entire measure column is filled in later.
   // In that case the reference, offset, or units can be set by using
-  // a False <src>tableMustBeEmpty</src> argument.
+  // a false <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
   void setDescRefCode(uInt refCode, bool tableMustBeEmpty = true);
@@ -215,7 +215,7 @@ class ScalarMeasColumn : public TableMeasColumn {
   MeasRef<M> makeMeasRef(rownr_t rownr) const;
 
  private:
-  // # Whether conversion is needed during a put.  True if either
+  // # Whether conversion is needed during a put.  true if either
   // # the reference code or offset is fixed for the column
   bool itsConvFlag;
   // # Column which contains the Measure's actual data. An array column

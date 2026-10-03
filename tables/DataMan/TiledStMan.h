@@ -191,7 +191,7 @@ class TiledStMan : public DataManager {
   // Can the tiled storage manager access an entire column.
   // TiledColumnStMan can always do that.
   // The others might be able to do it (for this time).
-  // The default implementation returns True if there is only 1 hypercube.
+  // The default implementation returns true if there is only 1 hypercube.
   virtual bool canAccessColumn() const;
 
   // The data manager supports use of MultiFile.
@@ -215,7 +215,7 @@ class TiledStMan : public DataManager {
   // thereafter x and y. An axis can occur only once in the axisPath.
   // The non-specified <src>axisPath</src> parts get the natural order.
   // E.g. in the previous example axisPath=[2] defines the same path.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
   // <br>A flag is set indicating that the TSMDataColumn
   // access functions do not need to size the cache.
@@ -230,7 +230,7 @@ class TiledStMan : public DataManager {
   // Set the cache size for accessing the hypercube containing the given row.
   // When the give cache size exceeds the maximum cache size with more
   // than 10%, the maximum cache size is used instead.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
   // <br>A flag is set indicating that the TSMDataColumn
   // access functions do not need to size the cache.
@@ -367,7 +367,7 @@ class TiledStMan : public DataManager {
 
   // Get the bindings of the columns with the given names.
   // If bound, the pointer to the TSMColumn object is stored in the block.
-  // If mustExist is True, an exception is thrown if the column
+  // If mustExist is true, an exception is thrown if the column
   // is not bound.
   // It returns the number of bound columns.
   uInt getBindings(const Vector<String>& columnNames, Block<TSMColumn*>& colSet,

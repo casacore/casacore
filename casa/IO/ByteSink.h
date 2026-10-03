@@ -81,7 +81,7 @@ class String;
 //    ByteSink sink (&canio);
 //    // Write data.
 //    Int vali;
-//    sink << vali << True;
+//    sink << vali << true;
 // </srcblock>
 // </example>
 

@@ -60,7 +60,7 @@ class TableColumn;
 //
 // The table columns are filled from a file containing the data values
 // separated by a separator (optionally followed by whitespace). The
-// default separator is a comma. Non-given values default to 0, False, or
+// default separator is a comma. Non-given values default to 0, false, or
 // blank string (depending on data type). A value is not given between 2
 // consecutive separators or if less values are given than needed.
 // One line per table row should be given.
@@ -96,13 +96,13 @@ class TableColumn;
 //        The last column can contain a 0 in one of the shape numbers.
 //        It indicates that the arrays are variable shaped; it "consumes"
 //        all remaining numbers in each input data line. If needed,
-//        the arrays are filled with default values (0, False, or blank).
+//        the arrays are filled with default values (0, false, or blank).
 //        E.g. <src>I0</src> indicates a variable shaped vector.
 //        <src>I0,4</src> with a line with remaining input
 //        <src>1 2 3 4 5 6 7 8 9</src> results in an array with shape [3,4]
 //        (filled with with 3 zeroes).
 // </ol>
-// If the <src>autoHeader</src> argument is True, the column definition
+// If the <src>autoHeader</src> argument is true, the column definition
 // lines should not be given. It recognizes the types from the first data
 // line. It gives the names 'column0', etc. to the columns.
 // It can recognize integer, double, and string types.
@@ -179,13 +179,13 @@ class TableColumn;
 // <group name=readAsciiTable>
 
 // Create a table with name as given by tableName.
-// If autoHeader==True, the format is automatically derived from the
+// If autoHeader==true, the format is automatically derived from the
 // first data line. It can recognize integer, double, and String types.
 // The columns will be named column1, column2, etc..
 // If the autoShape argument is given with 1 or more axes, all values are
 // treated as a single column with the given shape. Note that one of the
 // can have length 0 indicating a variable shaped array.
-// If autoHeader==False, the layout of the table has to be defined in
+// If autoHeader==false, the layout of the table has to be defined in
 // the first 2 lines of the input file. The remaining lines in the
 // input file contain the data.
 //
@@ -305,7 +305,7 @@ class ReadAsciiTable {
                     const String& commentMarkerRegex, Int firstLine, Int lastLine);
 
   // Read a position using MVAngle.
-  // If isDMS is True, a position with : is treated as DMS instead of HMS.
+  // If isDMS is true, a position with : is treated as DMS instead of HMS.
   // This function is a bit more relaxed than MVAngle::read.
   // It allows whitespace. Furthermore it allows whitespace as separator :.
   static double stringToPos(const String& pos, bool isDMS);
@@ -343,7 +343,7 @@ class ReadAsciiTable {
                        Int lastLine);
 
   // Get the next line. Skip lines to be ignored.
-  // It returns False when no more lines are available.
+  // It returns false when no more lines are available.
   static bool getLine(ifstream& file, Int& lineNumber, char* line, Int lineSize, bool testComment,
                       const Regex& commentMarker, Int firstLine, Int lastLine);
 
@@ -356,7 +356,7 @@ class ReadAsciiTable {
                        Char* string2, Char separator);
 
   // Turn the string into a Bool value.
-  // Empty string, value 0 and any value starting with f, F, n or N are False.
+  // Empty string, value 0 and any value starting with f, F, n or N are false.
   static bool makeBool(const String& str);
 
   // Handle a keyword set.

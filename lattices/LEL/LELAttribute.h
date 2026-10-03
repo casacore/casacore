@@ -91,7 +91,7 @@ class LELAttribute {
 
   // Constructor that combines the two attributes given.
   // An array can be combined with a scalar.
-  // If matchAxes is True and if two arrays are given, the shapes and
+  // If matchAxes is true and if two arrays are given, the shapes and
   // coordinates have to match exactly, otherwise one can be a subset of
   // the other (and LEL will auto-extend).
   LELAttribute(const LELAttribute& attrLeft, const LELAttribute& attrRight, bool matchAxes = true);

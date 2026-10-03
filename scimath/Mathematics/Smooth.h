@@ -64,8 +64,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //     			       outFlags, // the output mask
 //			       yin, // the input
 //			       yinFlags, // the input mask
-//			       False,  // for flagging: good is not true
-//                             True); // use the default scheme for producing output flags
+//			       false,  // for flagging: good is not true
+//                             true); // use the default scheme for producing output flags
 // </srcBlock>
 // </example>
 

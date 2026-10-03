@@ -204,7 +204,7 @@ class MVDirection : public MVPosition {
   // Set the internal value, using the longitude and latitude (in rad) given
   void setAngle(Double angle0, Double angle1);
   // Shift the direction in longitude (radians if Double) and/or latitude.
-  // If the trueAngle switch is True, the longitude shift will be in
+  // If the trueAngle switch is true, the longitude shift will be in
   // angular units perpendicular to the direction to the pole at the shifted
   // latitude, along a great circle.
   // <group>

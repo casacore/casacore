@@ -68,7 +68,7 @@ void SymLink::checkPath() const {
 }
 
 void SymLink::create(const Path& target, bool overwrite) {
-  // If overwrite is False the file will not be overwritten.
+  // If overwrite is false the file will not be overwritten.
   if (exists()) {
     if (!isSymLink()) {
       throw(AipsError("SymLink::create: " + path().expandedName() +

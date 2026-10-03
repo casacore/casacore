@@ -129,7 +129,7 @@ class EclecticFunctionFactory : public FunctionFactory<T> {
   // return the number of factories that have been loaded thus far.
   Int ndefined() { return lookup.ndefined(); }
 
-  // return True if a factory with a given "functype" name has been
+  // return true if a factory with a given "functype" name has been
   // loaded.
   bool isDefined(const String& type) { return lookup.isDefined(type); }
 

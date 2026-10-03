@@ -58,14 +58,14 @@ template <class T>
 class LELArray : public LELArrayBase {
  public:
   // Constructor takes value.
-  // Its mask is set to all True.
+  // Its mask is set to all true.
   LELArray(const Array<T>& value) : itsValue(value) {}
 
   // Constructor takes value and mask.
   LELArray(const Array<T>& value, const Array<bool>& mask) : LELArrayBase(mask), itsValue(value) {}
 
   // Constructor takes shape.
-  // Its mask is set to all True.
+  // Its mask is set to all true.
   LELArray(const IPosition& shape);
 
   // Copy constructor (reference semantics).
@@ -119,7 +119,7 @@ template <class T>
 class LELArrayRef : public LELArray<T> {
  public:
   // Constructor takes shape.
-  // Its mask is set to all True.
+  // Its mask is set to all true.
   LELArrayRef(const IPosition& shape) : LELArray<T>(shape) {}
 
   ~LELArrayRef() {}

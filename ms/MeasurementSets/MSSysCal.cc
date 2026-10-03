@@ -38,7 +38,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-// set hasBeenDestroyed to True to avoid validity check in destructor.
+// set hasBeenDestroyed to true to avoid validity check in destructor.
 MSSysCal::MSSysCal() : hasBeenDestroyed_p(true) {}
 
 MSSysCal::MSSysCal(const String &tableName, TableOption option)
