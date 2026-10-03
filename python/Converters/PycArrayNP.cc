@@ -260,8 +260,6 @@ void register_convert_arrayscalars() {
   array_scalar_from_python<unsigned short>();
   array_scalar_from_python<int>();
   array_scalar_from_python<unsigned int>();
-  array_scalar_from_python<long>();
-  array_scalar_from_python<unsigned long>();
   array_scalar_from_python<int64_t>();
   array_scalar_from_python<uint64_t>();
   array_scalar_from_python<float>();

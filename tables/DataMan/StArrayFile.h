@@ -160,40 +160,40 @@ class StManArrayFile {
   // actual array data (which can be used by get and put).
   // Space is reserved to store the reference count.
   // <group>
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const bool* dummy);
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const char* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const bool*);
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const char*) {
     return putRes(shape, fileOffset, sizeChar_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const unsigned char* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const unsigned char*) {
     return putRes(shape, fileOffset, sizeuChar_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const short* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const short*) {
     return putRes(shape, fileOffset, sizeShort_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const unsigned short* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const unsigned short*) {
     return putRes(shape, fileOffset, sizeuShort_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const int* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const int*) {
     return putRes(shape, fileOffset, sizeInt_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const unsigned int* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const unsigned int*) {
     return putRes(shape, fileOffset, sizeuInt_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const int64_t* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const int64_t*) {
     return putRes(shape, fileOffset, sizeInt64_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const uint64_t* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const uint64_t*) {
     return putRes(shape, fileOffset, sizeuInt64_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const float* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const float*) {
     return putRes(shape, fileOffset, sizeFloat_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const double* dummy) {
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const double*) {
     return putRes(shape, fileOffset, sizeDouble_p);
   }
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const Complex* dummy);
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const DComplex* dummy);
-  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const String* dummy);
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const Complex*);
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const DComplex*);
+  unsigned int putShape(const IPosition& shape, int64_t& fileOffset, const String*);
   // </group>
 
   // Get the reference count.

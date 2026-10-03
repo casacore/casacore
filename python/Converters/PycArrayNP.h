@@ -91,12 +91,20 @@ inline unsigned int getScalar(const ValueHolder& vh) {
   return vh.asuInt();
 }
 template <>
-inline int64_t getScalar(const ValueHolder& vh) {
-  return vh.asInt();
+inline long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
 }
 template <>
-inline uint64_t getScalar(const ValueHolder& vh) {
-  return vh.asuInt();
+inline unsigned long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
+}
+template <>
+inline long long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
+}
+template <>
+inline unsigned long long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
 }
 template <>
 inline float getScalar(const ValueHolder& vh) {
